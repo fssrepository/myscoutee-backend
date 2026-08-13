@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ENTRY-CONSENT-002
+checkpoint: ENTRY-CONSENT-003
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
-ledger_status: MANUAL UI + SERVER ORACLE PASS / CLOSED; VISUAL V5 PREVIEW ACTIVE
-state: ENTRY-DEMO-REG-001, ENTRY-CONSENT-001 and ENTRY-CONSENT-002 are PASS/CLOSED. ENTRY-CONSENT-002 terminal verify passed at 2026-08-13T19:19:53.689Z with immutable v3 consent 6a7e170d67960971c52a31b6 and exact v4 consent 6a7e188067960971c52a31b8. At user request, preview-v5 snapshot the verified v4 revision and temporarily exposed the same controlled revision as active v5 at 2026-08-13T19:21:48.358Z. This is only a header visual aid, not a testcase or consent transition. The same Nova browser has not reloaded since preview activation. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
-required_resume: Do not rerun a closed branch, approve the v5 preview, restage, relaunch or create another testcase. The next action is reload the same Nova browser once and only view the header v5 badge. After the user confirms viewing, run reset entry-consent ENTRY-CONSENT-002; reset must first restore the snapshotted verified v4 revision, then deactivate the QA revisions and restore the original active privacy revision while retaining both exact consent records. Verify not-staged afterward
-event: none; ENTRY-CONSENT-002 must use disposable privacy revisions and identity/consent evidence without mutating retained event fixtures
+ledger_status: MANUAL UI / IN PROGRESS
+state: ENTRY-DEMO-REG-001, ENTRY-CONSENT-001 and ENTRY-CONSENT-002 are PASS/CLOSED. ENTRY-CONSENT-003 staged at 2026-08-13T19:34:55.567Z from Nova's exact retained v4 consent 6a7e188067960971c52a31b8, which contains only qa-current-analytics. Distinct v5 revision manual-qa-entry-consent-003-20260813193455567 is sole active; baseline Nova/total/ownerless counts are 4/28/0 and all deltas 0. A fresh managed Nova browser with bootstrap consent disabled shows mandatory v5 with exactly qa-current-analytics selected; prior-unselected qa-current-marketing and new qa-product-research are both unselected, and v5 consent is absent. The ledger contains 189 real tests: 133 Core and 56 EXT. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
+required_resume: Do not restage, reset, relaunch, alter v4 evidence or replay closed checkpoints. If continuity is uncertain, server status must show baseline, distinct v5 sole active, exact v4 source consent, no v5 consent and all deltas 0; browser state must show Nova session, mandatory v5 popup, selected IDs exactly [qa-current-analytics], all four expected section IDs and no local entry consent/audit. The next action is select Product research while leaving Current analytics selected and Current marketing empty, then Approve privacy. After the user reports completion, run browser and terminal verify; expect one separate settings-source v5 consent with exactly analytics plus product research, byte-identical v4 revision/consent, target/total +1 and ownerless 0
+event: none; ENTRY-CONSENT-003 uses Nova's retained v4 privacy evidence and a new v5 revision without mutating event fixtures
 actors:
-  active: one disposable browser session after the ENTRY-CONSENT-002 fixture proves its baseline
-  controls: rejection/no-session proof, old acceptance versus newer active revision, current immutable consent and audit-history oracle; no extra Google-account window
-next_actor: User reloads the same Nova browser once, views the v5 header badge and does not approve; then reports megvan
+  active: one managed Nova browser after the ENTRY-CONSENT-003 fixture proves its baseline
+  controls: exact retained v4 consent/revision snapshot, v5 initial selection and separate v5 consent cardinality oracle; no extra Google-account window
+next_actor: User selects Product research, keeps Current analytics selected, leaves Current marketing unselected and clicks Approve privacy; then reports megvan
 stop_phrase: none
 ```
 
@@ -109,10 +109,10 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
 are PASS/CLOSED and their retained evidence must not be replayed or deleted.
-`ENTRY-CONSENT-002` is PASS/CLOSED and its temporary v5 header preview is
-active. Reload the same Nova browser only to view the v5 badge; do not approve.
-After confirmation, reset must restore verified v4 internally and then restore
-the original active privacy revision.
+`ENTRY-CONSENT-003` is active. Its distinct v5 baseline and display-inheritance
+branch are proven. Select Product research, retain Current analytics, leave
+Current marketing unselected and click Approve privacy. Then run the browser
+and terminal final oracles before reset.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -187,6 +187,13 @@ the user.
 - When the user requests a newly discovered behavior as a separate case, give
   it a new stable checkpoint ID, a QA-pack definition and a new matrix CSV row;
   add fixture/harness/browser configuration only when that case needs it.
+- For revisioned policy/content workflows, a new version used as transaction
+  evidence must be a new revision record with its own identity; changing the
+  version field on the active record is only suitable for an explicitly named
+  temporary visual preview. Stable optional-section IDs define which prior
+  choices may be prefilled. Filter the latest prior consent through the new
+  revision's IDs, default every newly introduced ID to unselected, and require
+  Save to create a separate new-revision consent without rewriting history.
 - Do not create a new row merely because one test case has multiple branches
   or an incidental observation occurred. A new row requires a genuinely new
   test case and the user's requested split; otherwise name the tests inside the
@@ -644,7 +651,7 @@ checkpoints remain closed. The active Core expansion continuation is:
 
 ```text
 ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
--> ENTRY-CONSENT-002 (prepare next)
+-> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (active)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase

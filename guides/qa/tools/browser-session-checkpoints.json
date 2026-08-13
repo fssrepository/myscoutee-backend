@@ -58,6 +58,39 @@
         }
       ]
     },
+    "ENTRY-CONSENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova consent inheritance",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova v4 choices carried into a new v5 revision"
+        }
+      ]
+    },
+    "EVENT-LIFE-002": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3

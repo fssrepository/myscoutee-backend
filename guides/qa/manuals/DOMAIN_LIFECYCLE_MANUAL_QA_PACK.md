@@ -3442,12 +3442,54 @@ runtime remained untouched. This closes `ENTRY-CONSENT-002`; the requested v5
 header preview after closure is a temporary visual aid inside the same harness,
 not another testcase or acceptance oracle.
 
+`ENTRY-CONSENT-003` is a separate bounded contract discovered during the v5
+header observation. Unlike the visual preview, its v5 must be a new immutable
+revision record. It retains the stable optional section IDs
+`qa-current-analytics` and `qa-current-marketing` from v4 and adds the new
+`qa-product-research` rubric. On the mandatory v5 popup, only the analytics
+choice previously approved in Nova's exact retained v4 consent may be
+preselected; the previously unselected marketing choice and newly introduced
+product-research choice must both start unselected. After explicitly selecting
+Product research and approving, one new settings-source v5 consent must contain
+exactly analytics plus product research, while the v4 revision and consent
+remain byte-identical and no optional choice is silently broadened.
+
+The `ENTRY-CONSENT-003` baseline staged at `2026-08-13T19:34:55.567Z` from
+Nova's retained v4 settings consent `6a7e188067960971c52a31b8`. That source
+contains only `qa-current-analytics`; Nova had 4 consents, the database had 28
+consents and zero were ownerless. The new distinct revision
+`manual-qa-entry-consent-003-20260813193455567` became the sole active English
+v5 while its own consent and every delta remained zero. A fresh Nova browser
+with consent bootstrap disabled opened the mandatory v5 popup with exactly
+`qa-current-analytics` selected. `qa-current-marketing` and the newly added
+`qa-product-research` were both unselected; there was no browser-local entry
+consent or audit that could have manufactured the selection. This proves the
+display-inheritance branch. Nova then retained Current analytics, explicitly
+selected Product research, left Current marketing unselected and approved.
+The browser oracle showed the mandatory popup closed with the Nova demo session
+still active. The first terminal verification exposed a checkpoint-stage defect:
+the fixture had updated metadata on every English privacy revision while
+deactivating the prior active revision. The stage query was corrected to mutate
+only the active revision, and the versioned `repair-stage` command restored all
+three originally inactive revision snapshots without changing any consent.
+The repeated terminal oracle passed at `2026-08-13T19:40:23.017Z`. Separate
+settings-source v5 consent `6a7e1ce567960971c52a31b9` contains exactly
+`qa-current-analytics` plus `qa-product-research`; `qa-current-marketing` is
+absent. The retained v4 revision and consent are byte-identical, Nova and total
+consent cardinalities are each exactly `+1`, ownerless consent delta is `0`, and
+event fixtures/payment runtime remain untouched. This closes
+`ENTRY-CONSENT-003`. The guarded reset completed at
+`2026-08-13T19:41:32.631Z`: `privacy-default-v1` is again the sole active
+English privacy revision, checkpoint state is absent, and the inactive v5
+revision plus v5 consent and immutable v4 consent remain as evidence.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |
 | `ENTRY-FIREBASE-REG-001` | Register/onboard a new Firebase identity after a verified revision is activated. | One verified Firebase subject and its real identity email link to one user/profile; the development member-default email is never saved for this branch, and reload/login reuses the identity without colliding with an existing demo or global identity. |
 | `ENTRY-CONSENT-001` | Accept required privacy plus a controlled optional section before registration. | Exact active revision/version and selected optional IDs persist; anonymous entry evidence transfers once to the authenticated user without broadening consent. |
 | `ENTRY-CONSENT-002` | Reject once, then activate a newer privacy revision and revisit. | Rejection creates no session; an old acceptance cannot satisfy the newer revision, while reacceptance creates one current immutable consent and leaves old audit history intact. |
+| `ENTRY-CONSENT-003` | Create a new privacy revision that retains existing optional rubrics and adds one new rubric. | The latest consent preselects only matching stable IDs; every new or previously unselected optional rubric starts unselected, and approval creates a separate v5 consent without rewriting v4. |
 | `OPERATOR-BOOTSTRAP-001` | Use a disposable bootstrap credential once, then retry and recover through the documented boundary. | First use creates the operator session and consumes/rotates bootstrap authority; replay and ordinary user access fail closed without exposing the secret. |
 | `OPERATOR-CONFIG-001` | Add/reorder one admin email, save, reopen and restore. | Server-normalized unique admin list persists once; role access follows the active configuration and invalid/empty/duplicate inputs preserve the prior revision. |
 | `OPERATOR-BRANDING-001` | Change product name, logo character/image, home label and theme, then observe open and fresh clients. | Public configuration revision changes once; header/entry/PWA branding converges without stale cross-revision cache and rollback restores the prior revision exactly. |

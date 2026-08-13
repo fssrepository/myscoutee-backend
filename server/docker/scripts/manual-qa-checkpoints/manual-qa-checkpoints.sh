@@ -81,6 +81,11 @@ Usage:
   bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-002
   bash manual-qa-checkpoints.sh preview-v5 entry-consent ENTRY-CONSENT-002
   bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh stage entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh repair-stage entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-003
 
 The default schedule delay is 30 seconds; accepted values are 10..120.
 Only demo_db and e2e_db are accepted. This tool never starts or restarts Mongo,
@@ -140,6 +145,8 @@ run_scenario() {
     entry-consent)
       if [ "${checkpoint_id}" = "ENTRY-CONSENT-002" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-revision-checkpoints.js"
+      elif [ "${checkpoint_id}" = "ENTRY-CONSENT-003" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-inheritance-checkpoints.js"
       else
         scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-checkpoints.js"
       fi
@@ -254,7 +261,7 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   entry-domain:stage|entry-domain:status|entry-domain:verify|entry-domain:reset|\
-  entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:verify|entry-consent:preview-v5|entry-consent:reset)
+  entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:repair-stage|entry-consent:verify|entry-consent:preview-v5|entry-consent:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
