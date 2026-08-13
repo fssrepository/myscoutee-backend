@@ -34,9 +34,9 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-008
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-008--two-similar-events-keep-physical-tickets-isolated
 scenario: event-domain
-ledger_status: UNPUBLISH FULL PASS; REPUBLISH SERVER PASS; SMARTLIST POLL + PUBLICATION MENU REPAIRS BUILT / FOCUSED REPLAY PENDING
-state: Focused replay fixture remains pristine A+B active with Nova exact tickets/counters 2/2 because no producer ran; pre-producer Casey screenshot showed stale Publish for published A and later normal poll corrected it to Unpublish; root cause was converted row patched without retained source DTO; publication actions now emit the established Activity Event source sync so card/menu change together; two-direction regression added; frontend-sync hot-deploy passed at 02:33:44+02; Nova remains open A+B/count2, Riley idle, exactly three sessions
-required_resume: Codex reloads only existing Casey page onto the 02:33:44 bundle. Nova keeps Ticket A+B/count2 open. Casey opens My Events A menu, confirms baseline Unpublish, executes it once, then immediately reopens A menu before any periodic poll and requires Publish. Without Nova reload/reopen, wait for its normal poll to become B-only/count1; reply megvan. Riley stays idle
+ledger_status: UNPUBLISH SERVER PASS; TICKET POPUP POLL FAIL; SHARED CORE REVERTED; TICKET HTTP+LOCAL DELTA REPAIR BUILT; CLEAN BASELINE READY / REPLAY PENDING
+state: The failed midpoint was reset and image-staged. Independent status proves A+B active/Ticketing On through 2026-08-13T15:07:37.047Z, Nova exact active tickets TKT-cc7f973d-f97b-471a-9559-7dde22e12086 and TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5 with counters2/2, Casey/Riley0/0, and no lifecycle task/outbox/notification or stage-relative recompute residue. The versioned fixture cleanup now owns scheduledMessageTasks, closing the reset gap exposed by the first attempted restage. Only the same three managed pages were reloaded; read-only DOM proved Casey/Nova/Riley identities and Ticket counters0/2/0. The broad SmartList core page-size change remains exactly reverted. Ticket uses the established Notification-style pollDelta/cacheable/sort contract with a Java /assets/tickets/sync owner and equivalent frontend-local repository; open popups defer side-menu domain snapshots while notification count remains independent. Existing backend and frontend watchers built green; authenticated Java sync preflight returned removed A, B upsert, total1 against the failed midpoint
+required_resume: Issue the fully labelled manual step: Nova opens Ticket > Upcoming A+B/count2 and keeps it open; Casey Unpublishes only A and immediately requires Publish in A's menu; Nova must reach B-only/header1/red Ticket1 through POST /assets/tickets/sync without reload. Riley stays idle. Reply megvan
 event: Manual QA EVENT-TICKET-008 A / B
 actors:
   left: Casey Bridge
@@ -108,13 +108,16 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Codex first reloads only Casey's existing page onto the repaired bundle. Keep
-Nova's middle **Ticket > Upcoming** popup open at count `2`, A+B. In Casey's
-left window open **Events > My Events**, open A's menu and require
-**Unpublish**, then confirm it exactly once. Immediately reopen A's menu—before
-waiting for any periodic poll—and require **Publish**. Do not reload or reopen
-Nova; wait for its already-open Ticket popup to change by normal poll to count
-`1`, B-only, then reply `megvan`. Riley stays idle.
+The clean `EVENT-TICKET-008` A+B baseline is restored and independently
+verified. Only the existing three managed pages were reloaded onto the repaired
+bundle and identity-checked. Issue
+`EVENT-TICKET-008 — Ticket delta removal + immediate Unpublish menu replay`:
+Nova opens **Ticket > Upcoming** at exactly A+B/count `2` and leaves it open;
+Casey Unpublishes only A and immediately requires **Publish** in A's reopened
+menu; Nova must reach B-only/header `1`/red Ticket `1` through the Ticket
+foreground delta poll without reload. The decisive access-log request is
+`POST /api/assets/tickets/sync`; the side-menu realtime path must not apply
+domain counters while the popup owns foreground polling. Riley stays idle.
 
 ## QA working method
 
@@ -217,6 +220,11 @@ the user.
 
 ### 1.2 Exact manual producer instructions
 
+- Start every manual instruction with the active testcase ID and short name,
+  then name the current subtest. In plain language state what the user should
+  do, why that observation belongs at this boundary, and the exact visible
+  condition that counts as PASS. Do this even when continuing the same case,
+  so the user never has to reconstruct the test purpose from earlier messages.
 - Treat a sudden message unrelated to the active checkpoint as a possible
   cross-window message, not as implicit authorization to change task scope.
   Stop mutations, keep the current checkpoint intact and confirm the context
@@ -413,14 +421,23 @@ personal profile paths and names out of Git.
   external producer action, verify the realtime response payload independently
   from the rendered menu DOM, and require the item-level badge without reload.
   A total avatar badge is not proof that the named menu counter converged.
-- When a normal SmartList poll reconciles an absolute pageable result, its
-  current-window request must not shrink below the configured page capacity
-  merely because the last response partially filled that page. Otherwise a
-  newly inserted row that sorts ahead can replace a retained control row while
-  the total counter still grows. Test both directions: removal from a partially
-  filled open window and insertion ahead of its existing row, then compare the
-  rendered identities, total and request `pageSize`. If more than one page is
-  already loaded, the poll must preserve that larger bounded visible window.
+- Do not change shared SmartList paging merely because one surface's ordinary
+  absolute poll cannot reconcile insertion/removal in a partially filled
+  loaded window. First inspect whether an established SmartList extension
+  contract already owns that need. For dynamic identity windows, prefer the
+  existing Notification-style `pollDelta` contract (`knownItems`, revisions,
+  loaded tail, `upserts`, `removedIds`, absolute total) plus `cacheable`
+  identity and local sort on that domain surface. Implement the same contract
+  behind both HTTP and frontend-local adapters. A shared SmartList core change
+  requires proof that the invariant applies to its existing consumers and a
+  regression audit proportionate to that cross-surface blast radius.
+- A popup foreground task poll owns its domain list, header and corresponding
+  menu bucket while that popup is visible. The side-menu realtime poll may
+  keep its independent notification lane alive, but must not apply ordinary
+  domain counter snapshots under the foreground owner. The foreground result
+  updates its items, absolute total and menu counter together. Describe two
+  simultaneous writers as a race only when ordering-dependent overwrite has
+  actually been demonstrated; ownership overlap alone is not proof of a race.
 - Counters come from physical active ticket state and must agree in both
   `tickets` and `asset.tickets` fields.
 - The Riley window is an unchanged control unless a checkpoint explicitly

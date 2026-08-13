@@ -2430,6 +2430,72 @@ Restart evidence on 2026-08-06:
   `frontend-sync` owner built and deployed it successfully at
   `02:33:44+02:00`. Replay must prove each owning action menu flips immediately
   before waiting for Nova's external normal poll.
+- Interrupted replay and restart boundary (2026-08-13): **REQUIRED UI
+  OBSERVATIONS NOT EXECUTED**. Nginx retained four successful lifecycle writes
+  on the old replay fixture—Unpublish/Publish at `02:27:16/02:27:50+02:00` and
+  again at `02:37:40/02:37:44+02:00`—but no stop phrase was matched to the
+  required immediate Casey menu and complete Nova list observations. The
+  resulting A audit-ticket sequence was D, D, A while B retained its active
+  ticket. By the later full-stack restart the old event window had expired;
+  read-only status returned `events=[]` and zero live counters. Therefore the
+  old UI replay is neither PASS nor a product FAIL. Preserve the earlier
+  server/isolation evidence, discard only the stale fixture through the
+  guarded harness route and replay the two repaired UI paths on a clean
+  baseline.
+- Post-restart focused replay baseline (2026-08-13): **READY**. The restarted
+  backend is healthy and the existing `frontend-sync` owner built and synced
+  the current repaired bundle at `11:25:20/11:25:23+02:00`. Resource preflight
+  showed `7.3 GiB` available RAM and zero swap use. Guarded `discard-stale`, an
+  image-qualified stage and independent status proved future A+B events active,
+  Public and Ticketing On until `16:37:19+02:00`; Nova owns exact active tickets
+  `TKT-66b31ab7-75f9-4929-b0e3-1ec3fb546093` and
+  `TKT-1624f5d2-9181-49bf-b467-7859e21d3726`, counters `2/2`, Casey/Riley
+  `0/0`, and stage-relative outbox/recompute counts zero. The expired managed
+  browsers were absent before exactly three new Casey/Nova/Riley sessions
+  launched and identity-verified. Closed-menu DOM preflight shows Casey My
+  Events `2`, Nova Ticket `2` and Riley Ticket `0`. Replay only the named
+  Unpublish immediate-menu plus B-only normal-poll boundary next.
+- Post-restart Unpublish replay (2026-08-13): **SERVER PASS / OPEN TICKET UI
+  FAIL**. Casey sent exactly one A Unpublish at `11:43:46+02:00`. The dedicated
+  isolation oracle proved A=`DR`, its exact original ticket
+  `TKT-66b31ab7-75f9-4929-b0e3-1ec3fb546093` changed to D, B remained active
+  with exact ticket `TKT-1624f5d2-9181-49bf-b467-7859e21d3726`, and Nova's
+  stored counters became `1/1`. Nova's Ticket GET at `11:44:14+02:00` returned
+  B-only/total `1`, and the visible red Ticket badge also became `1`, but the
+  open popup screenshot still showed header `2 ticketed events` and both A+B.
+  Later ordinary polls converged, so this captured boundary remains FAIL.
+  There is no demonstrated race: the defect is a split ownership/reconciliation
+  path. The foreground Ticket list used an ordinary absolute page poll, while
+  the side-menu notification-lane realtime response still applied domain
+  counters under an open popup.
+- Ticket delta repair boundary (2026-08-13): **BUILT / CLEAN REPLAY PENDING**.
+  The earlier shared SmartList page-size change and its added core regressions
+  were restored exactly to the parent of `9f03d9bf`; no shared SmartList
+  behavior remains changed. Ticket now uses the established Notification-style
+  `pollDelta` contract with stable ticket identity/revision, loaded tail,
+  upserts, removed IDs and absolute total. Java owns authenticated
+  `POST /assets/tickets/sync`; the frontend-local ticket repository implements
+  the same service contract. While any foreground popup is visible, the
+  side-menu realtime lane retains notification handling but does not apply its
+  non-notification domain snapshot; the Ticket poll result alone updates its
+  list/header/red counter. Existing backend `compileJava` + restart and
+  frontend watcher build/sync passed. An authenticated read-only endpoint
+  preflight against the failed midpoint returned removed A, B upsert and total
+  `1`. Reset/stage and replay only removal plus insertion before closure.
+- Ticket delta clean replay baseline (2026-08-13): **READY**. The first reset
+  attempt exposed that the versioned checkpoint selected lifecycle tasks for
+  its oracle but did not own `scheduledMessageTasks` in reset cleanup. The
+  harness now selects and removes only tasks for its controlled event IDs; a
+  second reset plus image-qualified stage and independent status proved no
+  retained lifecycle task, outbox, notification, recompute task or stage
+  effect. A and B are active/Ticketing On through
+  `2026-08-13T15:07:37.047Z`; Nova owns exact active tickets
+  `TKT-cc7f973d-f97b-471a-9559-7dde22e12086` and
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`, counters `2/2`, while
+  Casey/Riley remain `0/0`. Only the same three managed pages were reloaded;
+  read-only DOM proved Casey/Nova/Riley identities and Ticket counters `0/2/0`.
+  Replay A removal through `POST /api/assets/tickets/sync` before the insertion
+  direction.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 

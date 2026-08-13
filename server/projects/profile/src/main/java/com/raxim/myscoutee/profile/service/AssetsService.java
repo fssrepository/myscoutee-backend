@@ -58,6 +58,9 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceReques
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketScanPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncKnownItemDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
@@ -336,6 +339,60 @@ public class AssetsService {
         int startIndex = Math.min(visible.size(), normalizedPage * normalizedPageSize);
         int endIndex = Math.min(visible.size(), startIndex + normalizedPageSize);
         return new AssetTicketsPageDto(visible.subList(startIndex, endIndex), visible.size());
+    }
+
+    public AssetTicketSyncResponseDto syncTickets(AssetTicketSyncRequestDto request) {
+        if (request == null) {
+            return new AssetTicketSyncResponseDto(List.of(), List.of(), 0);
+        }
+        AssetTicketsPageDto page = queryTicketPage(request.userId(), 0, Integer.MAX_VALUE, request.order());
+        List<AssetTicketDto> rows = page.items() == null ? List.of() : page.items();
+        Map<String, AssetTicketDto> currentById = new LinkedHashMap<>();
+        for (AssetTicketDto row : rows) {
+            currentById.put(assetTicketIdentity(row), row);
+        }
+
+        Map<String, String> knownRevisions = new LinkedHashMap<>();
+        for (AssetTicketSyncKnownItemDto item : request.knownItems() == null ? List.<AssetTicketSyncKnownItemDto>of() : request.knownItems()) {
+            String id = safeText(item == null ? null : item.id());
+            if (StringUtils.hasText(id)) {
+                knownRevisions.put(id, safeText(item.revision()));
+            }
+        }
+        List<String> removedIds = knownRevisions.keySet().stream()
+                .filter(id -> !currentById.containsKey(id))
+                .toList();
+        Map<String, AssetTicketDto> upsertsById = new LinkedHashMap<>();
+        knownRevisions.forEach((id, revision) -> {
+            AssetTicketDto current = currentById.get(id);
+            if (current != null && !Objects.equals(safeText(current.revision()), revision)) {
+                upsertsById.put(id, current);
+            }
+        });
+
+        int limit = Math.max(1, Math.min(100, request.limit() == null ? 18 : request.limit().intValue()));
+        String tailId = safeText(request.loadedTail() == null ? null : request.loadedTail().id());
+        int tailIndex = -1;
+        for (int index = 0; index < rows.size(); index++) {
+            if (Objects.equals(assetTicketIdentity(rows.get(index)), tailId)) {
+                tailIndex = index;
+                break;
+            }
+        }
+        int windowLimit = tailIndex >= 0
+                ? Math.max(knownRevisions.size() + limit, tailIndex + 1 + limit)
+                : (knownRevisions.isEmpty() ? limit : knownRevisions.size() + limit);
+        for (AssetTicketDto row : rows.subList(0, Math.min(rows.size(), windowLimit))) {
+            String id = assetTicketIdentity(row);
+            String knownRevision = knownRevisions.get(id);
+            if (knownRevision == null || !Objects.equals(knownRevision, safeText(row.revision()))) {
+                upsertsById.put(id, row);
+            }
+        }
+        return new AssetTicketSyncResponseDto(
+                List.copyOf(upsertsById.values()),
+                removedIds,
+                page.total());
     }
 
     public AssetTicketValidationDto validateTicket(AssetTicketValidationRequestDto request) {
@@ -1745,7 +1802,32 @@ public class AssetsService {
                 safeText(event.getImageUrl()),
                 safeText(event.getVisibility()),
                 safeText(event.getCreatorInitials()),
-                safeText(event.getCreatorInitials()));
+                safeText(event.getCreatorInitials()),
+                assetTicketRevision(event, credential));
+    }
+
+    private String assetTicketIdentity(AssetTicketDto ticket) {
+        if (ticket == null) {
+            return "";
+        }
+        return safeText(ticket.type()) + ":" + normalizeId(ticket.id());
+    }
+
+    private String assetTicketRevision(ActivityEvent event, EventTicket credential) {
+        return String.join("\u001f",
+                normalizeId(credential == null ? null : credential.getId()),
+                safeText(credential == null ? null : credential.getCode()),
+                safeText(credential == null ? null : credential.getStatus()),
+                safeText(credential == null ? null : credential.getIssuedAtIso()),
+                safeText(credential == null ? null : credential.getUsedAtIso()),
+                safeText(event == null ? null : event.getStatus()),
+                safeText(event == null ? null : event.getTitle()),
+                safeText(event == null ? null : event.getSubtitle()),
+                safeText(event == null ? null : event.getTimeframe()),
+                safeText(event == null ? null : event.getStartAtIso()),
+                safeText(event == null ? null : event.getEndAtIso()),
+                safeText(event == null ? null : event.getImageUrl()),
+                safeText(event == null ? null : event.getVisibility()));
     }
 
     private AssetTicketScanPayloadDto toTicketScanPayload(EventTicket ticket, ActivityEvent event) {

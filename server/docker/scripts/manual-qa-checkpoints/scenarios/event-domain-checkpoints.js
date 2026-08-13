@@ -1258,6 +1258,7 @@
       { collection: "eventTicketAudit", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "userNotifications", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
+      { collection: "scheduledMessageTasks", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: EVENT_IDS } } },
       { collection: "schedulerPlanMarkers", selector: { ownerId: { $in: EVENT_IDS } } },
       ...(checkpointId === "EVENT-TICKET-007"
@@ -1318,6 +1319,7 @@
       { "payload.eventId": { $in: eventIds } },
       { "payload.chatId": { $in: chatIds } }
     ] });
+    Q.collection("scheduledMessageTasks").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("affinityRecomputeTasks").deleteMany({ targetId: { $in: eventIds } });
     Q.collection("schedulerPlanMarkers").deleteMany({ ownerId: { $in: eventIds } });
     Q.collection("events").deleteMany({

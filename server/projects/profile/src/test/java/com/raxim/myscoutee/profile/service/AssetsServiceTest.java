@@ -37,6 +37,8 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRe
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncKnownItemDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
@@ -59,6 +61,49 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void ticketSyncReportsRemovedRowsAgainstTheKnownSmartListWindow() {
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivityEvent eventA = ticketListEvent("event-a", "holder-user", "2030-04-18T19:00:00Z");
+        ActivityEvent eventB = ticketListEvent("event-b", "holder-user", "2030-04-19T19:00:00Z");
+        EventTicket ticketA = activeTicket("ticket-a", "event-a", "holder-user", "TKT-a");
+        EventTicket ticketB = activeTicket("ticket-b", "event-b", "holder-user", "TKT-b");
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.queryTicketRecordsForUser("holder-user"))
+                .thenReturn(List.of(eventA, eventB), List.of(eventB));
+        when(ticketService.findActiveCredential(eventA)).thenReturn(ticketA);
+        when(ticketService.findActiveCredential(eventB)).thenReturn(ticketB);
+        AssetsService service = ticketValidationService(
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                ticketService,
+                mock(NotificationOutboxService.class),
+                accessControlService);
+
+        var initial = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user",
+                "upcoming",
+                6,
+                List.of(),
+                null));
+        var known = initial.upserts().stream()
+                .map(row -> new AssetTicketSyncKnownItemDto(row.type() + ":" + row.id(), row.revision()))
+                .toList();
+        var afterRemoval = service.syncTickets(new AssetTicketSyncRequestDto(
+                "holder-user",
+                "upcoming",
+                6,
+                known,
+                null));
+
+        assertThat(initial.upserts()).extracting(row -> row.id()).containsExactly("event-a", "event-b");
+        assertThat(afterRemoval.removedIds()).containsExactly("events:event-a");
+        assertThat(afterRemoval.upserts()).isEmpty();
+        assertThat(afterRemoval.total()).isEqualTo(1);
+    }
+
     @Test
     void successfulTicketCheckInReturnsCanonicalPayloadWhenHolderLookupFails() {
         UsersRepository usersRepository = mock(UsersRepository.class);
@@ -1623,6 +1668,33 @@ class AssetsServiceTest {
         ticket.setUsedAtIso("2026-07-31T09:00:00Z");
         ticket.setUsedByUserId("scanner-user");
         return ticket;
+    }
+
+    private EventTicket activeTicket(String id, String eventId, String holderUserId, String code) {
+        EventTicket ticket = new EventTicket();
+        ticket.setId(id);
+        ticket.setCode(code);
+        ticket.setEventId(eventId);
+        ticket.setHolderUserId(holderUserId);
+        ticket.setStatus(EventTicket.STATUS_ACTIVE);
+        ticket.setIssuedAtIso("2026-08-13T09:37:19Z");
+        return ticket;
+    }
+
+    private ActivityEvent ticketListEvent(String eventId, String holderUserId, String startAtIso) {
+        ActivityEvent event = new ActivityEvent();
+        event.setId(eventId + ":overlay:" + holderUserId);
+        event.setSourceId(eventId);
+        event.setOwnerUserId(holderUserId);
+        event.setCreatorUserId("host-user");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        event.setTicketing(true);
+        event.setTitle(eventId);
+        event.setSubtitle("Ticket sync");
+        event.setTimeframe("Future");
+        event.setStartAtIso(startAtIso);
+        event.setEndAtIso("2030-04-20T19:00:00Z");
+        return event;
     }
 
     private ActivityEvent ticketEvent() {
