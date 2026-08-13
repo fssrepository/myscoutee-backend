@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-011
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-011--successful-check-in-projects-attendance-into-event-members
 scenario: event-domain
-ledger_status: IN PROGRESS / FIX HOT-DEPLOYED / BASELINE READY
-state: EVENT-TICKET-011 attendance fields, authoritative first-use projection, replay recovery, member delta endpoint/popup poll and frontend-local parity are implemented. Shared SmartList was not changed. Existing frontend watcher is green; existing backend watcher reported BUILD SUCCESSFUL in 3s and Started Main at 2026-08-13T14:30:06+02:00. Fresh staged oracle at 2026-08-13T12:26:19.963Z proves QA EVENT-TICKET-011 active at 2/8 with Casey Admin and Nova accepted, no attendance, one Nova A/unused ticket manual-qa-checkpoint:v1:event-domain:ticket, zero replay audits/tasks/outbox. ADB device and tcp:8080->tcp:80 reverse are active; exactly three isolated 011 browser sessions are open
-required_resume: Run only the EVENT-TICKET-011 baseline UI observation now. Casey opens QA EVENT-TICKET-011 Members from the 2/8 capacity control and keeps it open; Nova opens the one Upcoming Ticket and its QR. Prove Nova appears once as accepted/member with no Checked in label. Then scan once as Casey without closing/reloading Members, wait for its own member delta poll, and run verify-ticket-attendance-first-scan. After that replay only the same QR once and run verify-ticket-attendance-replay; do not restart the case
+ledger_status: IN PROGRESS / FIRST SCAN + IN-PLACE PASS / REPLAY NEXT
+state: EVENT-TICKET-011 baseline and first authorized scan are PASS. Persisted ticket/member time is exactly 2026-08-13T12:51:48.620332085Z, actor Casey, exact physical ticket ID; Nova remains accepted with unchanged actionAt, Casey Admin, 2 members, event active 2/8, profiles/counters unchanged, zero replay audits. The never-reopened Casey Members popup updated in-place to one Nova row with green Checked in and localized 2:51:48 PM; scanner result displayed the same time. Because the original instruction omitted retaining the pre-use QR and the product correctly hid it after use, an ephemeral labeled QA tab is now open in the same Nova session from its retained server-issued scanCode; no state was changed and the raw code was not logged
+required_resume: Replay only the QR displayed on Nova's labeled EVENT-TICKET-011 retained replay tab once as authorized Casey. Keep Casey Members open and do not reload. The scanner must return already used; the member row must remain single and retain the same Checked in time. Then immediately run verify-ticket-attendance-replay, which compares the complete stored first-scan snapshot and requires exactly one replay audit with the original ticket/time/actor. Close the temporary tab after the oracle. Do not restage or repeat the first scan
 event: QA EVENT-TICKET-011 / manual-qa-checkpoint:v1:event-domain:event
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: User baseline UI observation in Casey and Nova; no scan yet
+next_actor: User one same-QR replay as Casey; Casey Members stays open
 stop_phrase: megvan
 ```
 
@@ -109,10 +109,10 @@ the checkpoint says otherwise.
 ### Next manual action
 
 `EVENT-TICKET-011 — successful check-in projects attendance into Event Members`
-is staged at its exact unused-ticket baseline. In Casey open the event's 2/8
-Members list and keep it open. In Nova open Ticket -> Upcoming and the sole QR.
-Confirm Nova appears once as accepted/member with no Checked in label. Do not
-scan yet; reply `megvan`.
+first scan and in-place Members update are PASS. Keep Casey Members open and
+scan the same retained Nova QR exactly once more as Casey. Do not reload. Expect
+Already used while Nova stays one Checked in row at the same 2:51:48 PM time.
+Reply with the replay result and whether the member time stayed unchanged.
 
 ## QA working method
 
@@ -198,6 +198,11 @@ the user.
   setup. After the producer action, never reload before capturing the in-place
   result; otherwise the immediate and reload/read branches become
   indistinguishable.
+- Before a one-time credential action whose success state intentionally hides
+  the original code, explicitly retain the complete QR in a controlled QA
+  screenshot/tab before issuing the producer instruction. This is required
+  setup for an exact same-credential replay and avoids restaging or repeating
+  the already-proven first-use branch. Never print the raw code into QA logs.
 - A human-observed time-window checkpoint must stage into a stable, non-expiring
   precondition. Browser preparation, oracle reads and the user round trip must
   never consume the tested interval. Start the interval only through an

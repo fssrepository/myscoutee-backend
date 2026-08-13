@@ -2844,7 +2844,38 @@ Execution 2026-08-13 (in progress):
   one Nova A/unused ticket `manual-qa-checkpoint:v1:event-domain:ticket`, zero
   replay audit/outbox/task effects. A second read-only status matched. ADB and
   `tcp:8080 -> tcp:80` reverse are active; three isolated actor sessions are
-  open. Manual baseline/UI poll and replay evidence remain pending.
+  open.
+- Manual pre-scan baseline PASS at 14:34 local: Casey's already-open Members
+  popup showed exactly Casey Admin and Nova Member once, with no false Checked
+  in label; Nova's Upcoming Ticket showed exactly one matching ticket. The
+  immediate read oracle still had Nova `status=accepted`, all four attendance
+  fields empty, ticket `A` with `usedAtIso=null`, exact 2/8, unchanged counters
+  and zero replay artifacts. First-scan in-place poll and replay remain pending.
+- First authorized scan + in-place member delta PASS at 14:51-14:52 local.
+  Scanner returned Checked in. Persisted ticket and Nova member share exact
+  `2026-08-13T12:51:48.620332085Z`; actor is Casey and member ticket reference
+  is `manual-qa-checkpoint:v1:event-domain:ticket`. Nova remains `accepted`,
+  `actionAtIso` remains the staged value, Casey remains Admin, member/ticket
+  cardinality stays 2/1, event stays active 2/8, profile state and all captured
+  activity/ticket counters are unchanged, and replay audit count is still zero.
+  The never-reopened Casey Members popup converged to exactly one Nova row with
+  green Checked in chip and localized `8/13/2026, 2:51:48 PM` detail; the scan
+  result showed the same time.
+- Same-QR replay PASS/CLOSED. Because the success state correctly hides a used
+  QR and the original instruction omitted retaining it, an ephemeral labeled
+  Nova QA tab reproduced the exact in-memory server-issued `scanCode` using the
+  application's own QR settings; the raw code was not logged and the tab was
+  closed after the oracle. Casey's one replay returned Already used. The named
+  verifier proved the complete first-scan snapshot unchanged: member/ticket
+  time stayed `2026-08-13T12:51:48.620332085Z`, accepted membership,
+  `actionAtIso`, Casey Admin, 2/8, profiles, all counters and one-ticket/two-member
+  cardinality remained exact. Exactly one immutable replay audit references
+  the original ticket, Nova holder, Casey actor and original use. Read-only DOM
+  on the never-reopened Members popup proved `2 members`, one Nova occurrence,
+  Checked in and the same `2:51:48 PM` text after replay. Previously proven
+  invalid/unauthorized/revoked/expired rejection evidence remains applicable:
+  the new projection is reachable only after those guards, so those unrelated
+  branches were not replayed.
 
 ### `EVENT-TICKET-012` — a saved QR is revoked immediately after Unpublish
 
