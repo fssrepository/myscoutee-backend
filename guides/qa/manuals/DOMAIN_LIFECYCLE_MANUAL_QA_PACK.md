@@ -472,6 +472,53 @@ Execution state on 2026-08-04:
   `manual-qa-checkpoint:v1:event-domain:event`. Its machine baseline has zero
   event chats and zero action deltas. The next action is exactly one Casey
   Draft-card Publish with Nova and Riley as negative controls.
+- Clean retest restaged on 2026-08-13 at `2026-08-13T13:03:40.831Z` and matched
+  by a second read-only status: exactly one `DR` draft `QA
+  EVENT-PUBLISH-CHAT-001`; Casey is the sole accepted Admin, Nova and Riley are
+  pending invitees, occupancy is 1/8 plus pending 2. Event chats, messages,
+  chat notifications/outbox/tasks are empty. For every actor, `chats`,
+  `chat.all` and `chat.event` are zero and every captured action delta is zero.
+  Three isolated sessions are open.
+- Pre-Publish baseline **PASS** on 2026-08-13: Casey, Nova and Riley each opened
+  Activities -> Chats -> All and the controlled event was absent from every
+  list. Read-only DOM inspection also found zero occurrences of the title in
+  all three sessions. Casey then closed only the Chats popup while Nova and
+  Riley left Chat All open. The immediate persisted oracle still reported the
+  event as `DR`, with zero event chats, messages, chat notification outbox and
+  chat notifications; all three users retained `chats=0`, `chat.all=0` and
+  `chat.event=0`, with zero action delta. No Publish has yet been issued.
+- Publish counter branch **FAIL** on 2026-08-13: the user sampled Publish both
+  from My Events and from Drafts. From My Events the counters appeared correct.
+  From Drafts the row and Drafts count decreased immediately, but the
+  draft-inclusive My Events counter disappeared and returned only after My
+  Events was clicked and its list loaded. The invariant is: Publish changes
+  `Drafts 1 -> 0`, while My Events remains `1` from either producer surface.
+  The repeated lifecycle sampling means this fixture is no longer admissible
+  as the final clean oracle, but the UI failure is decisive.
+- The immediate persisted inspection after those samples retained one active
+  event and exactly one Casey main-event chat with unread `0`, no chat message,
+  no chat notification outbox and no chat notification. It also showed the
+  expected extra lifecycle artifacts caused by the repeated Unpublish/Publish
+  samples, so a clean restage is required before the final chat proof.
+- ROOT CAUSE / FRONTEND FIX: removing the published row from Drafts can emit a
+  SmartList state whose query still names the previous `my-events` scope. The
+  Activities popup accepted that stale `total=0` as the My Events bucket count;
+  the later operation-owned `drafts=-1` delta correctly changed only Drafts and
+  therefore could not restore My Events. The popup now accepts a list total
+  only when its query primary filter and event scope exactly match the current
+  selection. The shared SmartList is unchanged. Matching, stale-scope and
+  loading/calendar policy regressions were added. The existing Angular watcher
+  rebuilt successfully in 6.6 seconds and hot-synced the new bundle; no second
+  build or test process ran.
+- CLEAN FIX REPLAY BASELINE: the contaminated fixture was reset, independently
+  verified `not-staged`, then staged again at `2026-08-13T13:34:21.092Z`.
+  Persisted state is exactly one `DR` event, Casey My Events `1` and Drafts
+  `1`, Nova/Riley pending, zero chats/messages/chat notification artifacts,
+  zero lifecycle artifacts and zero action deltas. The launcher replaced the
+  old windows with exactly three fresh Casey/Nova/Riley sessions loading the
+  hot-deployed bundle. Read-only Casey DOM shows My Events `1`. Only the short
+  Draft Publish counter branch is next; earlier Chat All baseline steps are not
+  repeated before this counter repair replay.
 
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 

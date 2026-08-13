@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-011
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-011--successful-check-in-projects-attendance-into-event-members
+checkpoint: EVENT-PUBLISH-CHAT-001
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-publish-chat-001--publish-materializes-the-accepted-admin-chat
 scenario: event-domain
-ledger_status: IN PROGRESS / FIRST SCAN + IN-PLACE PASS / REPLAY NEXT
-state: EVENT-TICKET-011 baseline and first authorized scan are PASS. Persisted ticket/member time is exactly 2026-08-13T12:51:48.620332085Z, actor Casey, exact physical ticket ID; Nova remains accepted with unchanged actionAt, Casey Admin, 2 members, event active 2/8, profiles/counters unchanged, zero replay audits. The never-reopened Casey Members popup updated in-place to one Nova row with green Checked in and localized 2:51:48 PM; scanner result displayed the same time. Because the original instruction omitted retaining the pre-use QR and the product correctly hid it after use, an ephemeral labeled QA tab is now open in the same Nova session from its retained server-issued scanCode; no state was changed and the raw code was not logged
-required_resume: Replay only the QR displayed on Nova's labeled EVENT-TICKET-011 retained replay tab once as authorized Casey. Keep Casey Members open and do not reload. The scanner must return already used; the member row must remain single and retain the same Checked in time. Then immediately run verify-ticket-attendance-replay, which compares the complete stored first-scan snapshot and requires exactly one replay audit with the original ticket/time/actor. Close the temporary tab after the oracle. Do not restage or repeat the first scan
-event: QA EVENT-TICKET-011 / manual-qa-checkpoint:v1:event-domain:event
+ledger_status: FIX HOT-DEPLOYED / CLEAN REPLAY STAGED
+state: The Draft Publish stale-scope counter failure is recorded. Activities popup now rejects list totals whose query scope differs from the current scope; shared SmartList is untouched and the existing Angular watcher rebuilt/hot-synced green. The contaminated fixture was reset, verified not-staged and staged cleanly at 2026-08-13T13:34:21.092Z. Persisted baseline is DR, Casey My Events 1 plus Drafts 1, Nova/Riley pending, zero chat/lifecycle artifacts and zero action deltas. Exactly three fresh managed sessions load the new bundle; Casey DOM shows My Events 1
+required_resume: Replay only the failed Draft Publish counter branch. In Casey open Activities -> Events -> Drafts and confirm Drafts 1 plus My Events 1. Publish QA EVENT-PUBLISH-CHAT-001 exactly once from Drafts. Do not click My Events and do not reload. The Draft row and Drafts counter must disappear/decrement to 0 while the My Events counter remains visibly 1. Report the immediate two counter values before any navigation; Nova and Riley remain untouched
+event: QA EVENT-PUBLISH-CHAT-001 / manual-qa-checkpoint:v1:event-domain:event
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: User one same-QR replay as Casey; Casey Members stays open
+next_actor: User replays only the Casey Draft Publish counter branch without clicking My Events or reloading
 stop_phrase: megvan
 ```
 
@@ -108,11 +108,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`EVENT-TICKET-011 — successful check-in projects attendance into Event Members`
-first scan and in-place Members update are PASS. Keep Casey Members open and
-scan the same retained Nova QR exactly once more as Casey. Do not reload. Expect
-Already used while Nova stays one Checked in row at the same 2:51:48 PM time.
-Reply with the replay result and whether the member time stayed unchanged.
+`EVENT-PUBLISH-CHAT-001` is cleanly restaged with the stale-scope counter fix
+hot-deployed. Casey shows My Events `1`; the persisted oracle has Drafts `1`.
+In Casey open Activities -> Events -> Drafts, confirm both counters are `1`,
+then Publish `QA EVENT-PUBLISH-CHAT-001` exactly once from the Draft card. Do
+not click My Events and do not reload. The Draft row and Drafts counter must
+become `0`, while My Events must remain visibly `1`. Report both immediate
+values with `megvan`.
 
 ## QA working method
 
