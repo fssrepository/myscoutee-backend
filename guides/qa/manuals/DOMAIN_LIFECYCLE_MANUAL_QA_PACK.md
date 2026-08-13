@@ -3334,28 +3334,39 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
 
-`ENTRY-DEMO-REG-001` active execution checkpoint (2026-08-13): the existing
-dev stack is healthy and resolves `FIREBASE_ENABLED=false`. The versioned
-`entry-domain` oracle staged at `2026-08-13T17:20:09.898Z` with 56 total users,
-zero pre-existing `demo-profile-*` users and no domain-fixture mutation. One
-managed anonymous Chrome session is open at Entry; no New profile action or
-user write had occurred at baseline. The user then selected Member > New
-profile once; the empty onboarding gate opened and the immediate server status
-still reported zero post-baseline registration users, proving that popup open
-is not a hidden registration write. After the required Basics values were
-entered and the flow advanced to Photos, a second server status still reported
-zero post-baseline users. Three separate profile images were then uploaded and
-rendered in their slots; the third pre-Save status still reported zero new
-users and the backend log contained no upload/media error. Verification must
-find exactly one post-baseline user. The Review step showed the named required
-Basics values and `3 / 8` photos while optional Lifestyle remained unchanged;
-no Save had occurred at that boundary. Verification must find exactly one post-baseline
-registration, one experience profile, completed active/public profile form v2,
-at least three images and no Firebase/Google/Facebook provider identity fields.
-The Firebase-disabled development member email may retain its configured
-default; this is not treated as a Firebase identity. `ENTRY-FIREBASE-REG-001`
-must instead prove that a Firebase registration persists the real identity
-email and never the development member default.
+`ENTRY-DEMO-REG-001` completed execution checkpoint (2026-08-13): the existing
+dev stack was healthy and resolved `FIREBASE_ENABLED=false`. The final
+versioned `entry-domain` baseline staged at `2026-08-13T17:51:52.005Z` with 56
+total users, zero pre-existing `demo-profile-*` users and no event/payment
+fixture mutation. Opening Member > New profile, advancing Basics to Photos,
+selecting three separate images and reaching Review each retained zero
+post-baseline registration users; no upload/media error appeared. The Review
+showed the required profile values, `3 / 8` photos and unchanged optional
+Lifestyle before one Save.
+
+The first Review observation also exposed a bounded frontend defect: after
+pasting `170`, the browser number input displayed `170`, but the Angular draft
+and Review both contained `"0170"`; manual typing did not reproduce it because
+the value was rebound after each key. Read-only CDP inspection proved the three
+separate values before any Save. The shared `FormFlow` number control was
+repaired to keep an empty numeric control empty and normalize each non-empty
+numeric input event before writing the draft. The existing `frontend-sync`
+watcher compiled and deployed the change successfully. The in-flight draft was
+corrected by typing once so the registration transaction could finish without
+reload. A fresh managed browser then replayed only the failing paste boundary
+against the new bundle: input `170`, numeric draft `170`, Review summary `170`,
+and no second registration write.
+
+The single Save persisted
+`demo-profile-7e3c471d-d5fb-4175-ba07-885db86856fe`. The terminal oracle passed
+at `2026-08-13T18:11:30.900Z`: exactly one post-baseline user and one experience
+profile, `public` / `A`, profile form v2, one language, three images, no
+Firebase/Google/Facebook provider identity, and one owner of the stable unique
+development email
+`member+f715483d1fb835fa838a28f288a804e6@myscoutee.local`. The retained
+registration is transaction evidence. `ENTRY-FIREBASE-REG-001` must instead
+prove that a Firebase registration persists the real verified identity email
+and reuses the same user on login.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |

@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ENTRY-DEMO-REG-001
+checkpoint: ENTRY-CONSENT-001
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
-ledger_status: DESIGN CAPTURED / BASELINE STAGED / MANUAL ACTION PENDING
-state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. Eighty-two bounded cases were appended, bringing the authoritative CSV/XLSX total to 188 real tests: 132 Core and 56 EXT. The user explicitly selected Core-first execution, so payment, operator, registry and deployment EXT rows are deferred. ENTRY-DEMO-REG-001 has one completed Save awaiting the corrected terminal oracle. The first verify rejected the configured member-default email, but the user clarified that this is valid in Firebase-disabled demo mode; only Firebase/Google/Facebook provider IDs must be absent here. ENTRY-FIREBASE-REG-001 separately requires the real Firebase email and forbids retaining the development default. The existing dev stack is healthy. The payment simulator passed container startup/health smoke, but no payment transaction testcase has started; its backend QA switches are current-container-only
-required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay already closed Core checkpoints or restage ENTRY-DEMO-REG-001. First rerun verify entry-domain ENTRY-DEMO-REG-001 with the corrected Firebase-disabled email oracle; do not repeat the browser flow or Save. Do not start PAYMENT-STRIPE-001 or another EXT row unless the user explicitly changes the Core-first execution choice
-event: none; ENTRY-DEMO-REG-001 uses a disposable registration identity and must not mutate retained event fixtures
+ledger_status: DESIGN CAPTURED / FIXTURE PREPARATION PENDING
+state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. The authoritative CSV/XLSX contains 188 real tests: 132 Core and 56 EXT. Core-first remains selected. ENTRY-DEMO-REG-001 is PASS/CLOSED and its pointer was reset at 2026-08-13T18:16:50.795Z without deleting retained profile evidence. Its shared FormFlow numeric paste defect was repaired and the fresh-bundle focused replay passed. ENTRY-FIREBASE-REG-001 requires a verified Firebase revision that is not prepared, so the next independently runnable Core case is ENTRY-CONSENT-001. Payment, operator, registry and deployment EXT execution remains deferred
+required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay ENTRY-DEMO-REG-001 or delete its retained disposable profile. Inspect the current consent implementation and persisted evidence boundary, then add/stage the versioned ENTRY-CONSENT-001 fixture and read-only baseline before asking for a user action. Do not treat the launcher-bootstrapped default consent as proof of the test's controlled optional selection and transfer. Do not start ENTRY-FIREBASE-REG-001 until its verified Firebase configuration prerequisite exists, and do not start an EXT row unless the user changes Core-first
+event: none; ENTRY-CONSENT-001 must use disposable consent/identity evidence and must not mutate retained event fixtures
 actors:
-  active: one disposable unauthenticated registration browser session, to be defined by the checkpoint fixture
-  controls: server-side user/session/Firebase identity cardinality oracle; no extra Google-account window unless the checkpoint requires it
-next_actor: Codex reruns the corrected terminal server oracle against the existing saved profile; the user performs no repeat Save or browser action
+  active: one disposable anonymous-to-member browser session after the fixture proves its baseline
+  controls: server-side privacy revision, anonymous evidence, authenticated consent and user cardinality oracle; no extra Google-account window
+next_actor: Codex prepares and stages ENTRY-CONSENT-001; the user performs no action until the versioned status oracle proves the exact baseline
 stop_phrase: none
 ```
 
@@ -107,12 +107,15 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The coverage audit is complete and the dev stack is healthy. The next Core
-case is `ENTRY-DEMO-REG-001`; prepare its disposable Firebase-inactive baseline
-before asking for a browser action. `PAYMENT-STRIPE-001` and every other EXT
-row remain deferred until the user explicitly switches away from Core-first
-execution. Never replay a closed ticket, invitation or chat checkpoint merely
-to reach this independent registration case.
+The coverage audit is complete, `ENTRY-DEMO-REG-001` is PASS/CLOSED and the dev
+stack is healthy. The next independently runnable Core case is
+`ENTRY-CONSENT-001`; prepare its versioned privacy-revision, anonymous-evidence
+and user-cardinality baseline before asking for a browser action.
+`ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
+`PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
+explicitly switches away from Core-first execution. Never replay a closed
+ticket, invitation, chat or registration checkpoint merely to reach this
+independent consent case.
 
 ## QA working method
 
@@ -311,6 +314,21 @@ the user.
   surface from the implementation and, when the current UI is ambiguous, from
   the managed browser's read-only DOM. Name the complete interaction path,
   including row/menu identity and any confirmation button.
+- When an editable input and its later Review/summary disagree, do not infer
+  which display is wrong. Capture the live DOM `value`/typed value, the owning
+  component draft/store value and the summary formatter output separately.
+  Copy/paste is its own input-event branch: a browser number input may display
+  a normalized number while the raw pasted string remains different in the
+  application draft. Diagnose and replay that exact event path before Save.
+- Read-only CDP inspection must close only its temporary WebSocket connection.
+  Never call Playwright/CDP `browser.close()` or a browser-level close command
+  against a managed QA Chrome merely to detach an inspector; that terminates
+  the user's checkpoint window and discards in-memory evidence.
+- A successful static frontend hot-deploy does not replace JavaScript already
+  loaded in an open page. Preserve an uncontaminated in-flight transaction and
+  finish it without reload when a safe manual correction exists, then replace
+  only the checkpoint-managed browser and replay the shortest failing branch
+  against the fresh bundle. The watcher build alone is not behavioral proof.
 - Do not turn obvious navigation or opening an unambiguous card menu into its
   own manual stop. A stop must either produce evidence or protect against a
   real destructive ambiguity. When stable titles/IDs already distinguish the
@@ -562,6 +580,15 @@ Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
 process or a standalone build/test compilation. A healthy watcher build and the
 checkpoint replay are the active-session verification path.
 
+Treat watched Mongo seed files as runtime-mutating inputs, not passive test
+sources. Before editing one during an active checkpoint, inspect the running
+`mongodb-sync` import mode. A replace-collection import can delete every live
+manual-QA transaction in that collection before reimporting the seed and can
+leave dependent runtime documents orphaned. Do not edit a watched seed while
+transaction evidence is live unless the checkpoint has an explicit export and
+replay boundary or the sync service is proven to use a non-destructive
+preserve/upsert mode. A Git backup does not protect Mongo runtime state.
+
 ### 5.1 Git HEAD backups during the session
 
 The user may periodically commit the current work as a backup, moving the
@@ -610,16 +637,14 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-The ticket/visibility continuation through `EVENT-VISIBILITY-001` is
-PASS/CLOSED and reset. The active independent checkpoint is
-`EVENT-TICKET-008`; continue only from its fresh resume pointer. The completed
-retained chain remains defined, not duplicated, in the QA pack:
+The completed ticket, visibility, invitation, chat and demo-registration
+checkpoints remain closed. The active Core expansion continuation is:
 
 ```text
-EVENT-TICKET-005 -> EVENT-TICKET-006 -> EVENT-TICKET-007
--> EVENT-VISIBILITY-001 (closed)
+ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (prepare next)
+-> ENTRY-CONSENT-002
 ```
 
-`EVENT-TICKET-008` is the active two-event ticket-isolation branch.
-`EVENT-TICKET-009` (offline cached QR with online scanner) remains independent.
-Do not pull either into `EVENT-TICKET-005`.
+`ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
+revision prerequisite. The EXT payment/operator/registry/deployment sequence
+remains deferred under Core-first execution.

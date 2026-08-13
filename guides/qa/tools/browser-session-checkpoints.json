@@ -28,6 +28,21 @@
         }
       ]
     },
+    "ENTRY-CONSENT-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable consent member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated controlled-consent entry"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3
