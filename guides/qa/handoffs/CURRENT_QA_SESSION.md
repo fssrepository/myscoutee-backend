@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-13
+Updated: 2026-08-14
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -161,13 +161,15 @@ the user.
   workbook totals. Verify the CSV has 16 columns per logical record, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
-  per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF` overview
-  formulas into the XLSX, with automatic recalculation on open, so changing a
-  status in Excel immediately updates `Total`, `Done` (including its completion
-  percentage), `Pending`, `Not started` and `Failed`. It also classifies stable IDs beginning
-  `OPERATOR-`, `PAYMENT-` or `DEPLOY-` as teal `EXT` scope without rewriting
-  testcase rows, adds `EXT` to the left overview legend, and calculates `Core`
-  and `External` totals in the right overview block. Scope is orthogonal to
+  per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
+  formulas into the XLSX, with automatic recalculation on open. The overview
+  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`, `External`,
+  `Total`. The four status rows and the Done percentage are filtered to Core
+  tests only, so they partition the displayed Core total instead of mixing EXT
+  scope into product progress. Stable IDs beginning `OPERATOR-`, `PAYMENT-` or
+  `DEPLOY-` remain teal `EXT` without rewriting testcase rows; `External` is a
+  separate count and `Total` is the final Core+External count. The generator
+  also adds `EXT` to the left overview legend. Scope is orthogonal to
   status. Read the generated formulas and cached totals back after
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a

@@ -74,12 +74,14 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
     def compact_row(*values: str) -> list[str]:
         return [*values, *("" for _ in range(len(headers) - len(values)))]
 
-    counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
+    core_counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
     scope_counts = {"core": 0, "external": 0}
     for row in test_rows:
         item = dict(zip(headers, row))
-        counts[qa_status_bucket(item)] += 1
-        scope_counts[qa_scope_bucket(item)] += 1
+        scope = qa_scope_bucket(item)
+        scope_counts[scope] += 1
+        if scope == "core":
+            core_counts[qa_status_bucket(item)] += 1
     legend_items = [
         (
             item["ID"].removeprefix("LEGEND-"),
@@ -88,18 +90,18 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         for item in (dict(zip(headers, row)) for row in legend_source_rows)
     ]
     status_items = [
-        ("Total", str(len(test_rows))),
         (
             "Done",
-            f"{counts['done']} ({(counts['done'] / len(test_rows)):.0%})"
-            if test_rows
+            f"{core_counts['done']} ({(core_counts['done'] / scope_counts['core']):.0%})"
+            if scope_counts["core"]
             else "0 (0%)",
         ),
-        ("Pending", str(counts["pending"])),
-        ("Not started", str(counts["not-started"])),
-        ("Failed", str(counts["failed"])),
+        ("Pending", str(core_counts["pending"])),
+        ("Not started", str(core_counts["not-started"])),
+        ("Failed", str(core_counts["failed"])),
         ("Core", str(scope_counts["core"])),
         ("External", str(scope_counts["external"])),
+        ("Total", str(len(test_rows))),
     ]
     overview_rows = [compact_row(
         EFFECT_MARKERS_TITLE,
@@ -530,18 +532,29 @@ def build_sheet(
         "External": "external",
     }
     summary_formulas = {
-        "Total": f"COUNTA(A{first_test_row}:A{last_test_row})",
         "Done": (
-            f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done")'
-            f'&" ("&IF(COUNTA(A{first_test_row}:A{last_test_row})=0,"0%",'
-            f'TEXT(COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done")/'
-            f'COUNTA(A{first_test_row}:A{last_test_row}),"0%"))&")"'
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+            f'&" ("&IF(COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")=0,"0%",'
+            f'TEXT(COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")/'
+            f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core"),"0%"))&")"'
         ),
-        "Pending": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Pending")',
-        "Not started": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Not started")',
-        "Failed": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Failed")',
+        "Pending": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Pending",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
+        "Not started": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Not started",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
+        "Failed": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Failed",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
         "Core": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")',
         "External": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"External")',
+        "Total": f"COUNTA(A{first_test_row}:A{last_test_row})",
     }
     helper_values = {
         "done": "Done",
