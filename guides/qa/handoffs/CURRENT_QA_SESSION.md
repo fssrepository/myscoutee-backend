@@ -35,13 +35,13 @@ checkpoint: ENTRY-CONSENT-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
 ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 remain PASS/CLOSED. ENTRY-CONSENT-002 staged at 2026-08-13T19:03:26.065Z for Nova. The previous controlled revision manual-qa-entry-consent-002-20260813190326065-previous v3 is the sole active English revision; controlled newer v4 is inactive. Baseline is Nova consents 2, total consents 26, ownerless 0 and no controlled-revision consent. One fresh anonymous managed browser shows exact v3 at /entry with no optional selection, consent, audit or session. No rejection/acceptance has occurred. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
-required_resume: Do not restage, reset, relaunch, accept consent, activate v4 or replay closed entry checkpoints. If continuity is uncertain, run read-only status entry-consent ENTRY-CONSENT-002 and read-entry-consent-browser-state.mjs ENTRY-CONSENT-002; expect phase previous-active, v3 sole active, all server deltas 0, /entry, v3 popup, no consent/audit/session. The next action is exactly one Cancel click. After the user reports completion, prove one rejected v3 audit, no browser consent/session and unchanged server cardinality before asking for any acceptance. Do not start Firebase or EXT work
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 remain PASS/CLOSED. ENTRY-CONSENT-002 is phase previous-active from 2026-08-13T19:03:26.065Z for Nova; controlled v3 is sole active and v4 inactive. Cancel produced one rejected v3 audit at 19:05:46.050Z, and the login gate reopened v3 correctly. The user then selected only qa-previous-analytics and accepted at 19:10:22.951Z. Browser oracle proves exact local v3 consent/approval, accepted then rejected audit history, closed popup and no session. Server oracle still proves controlled consents 0 and target/total/ownerless deltas 0. No login or revision activation has occurred. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
+required_resume: Do not restage, reset, relaunch, activate v4 or replay closed checkpoints. If continuity is uncertain, browser state must show /entry, local accepted v3 with only qa-previous-analytics, audit order accepted then rejected, no session and closed popup; server status must show previous-active and all deltas 0. The next action is click Login/Member and select Nova Social. After the user reports completion, prove Nova session and exactly one entry-source v3 consent with target/total delta +1 and ownerless delta 0 before activate-newer. Do not start Firebase or EXT work
 event: none; ENTRY-CONSENT-002 must use disposable privacy revisions and identity/consent evidence without mutating retained event fixtures
 actors:
   active: one disposable browser session after the ENTRY-CONSENT-002 fixture proves its baseline
   controls: rejection/no-session proof, old acceptance versus newer active revision, current immutable consent and audit-history oracle; no extra Google-account window
-next_actor: User clicks Cancel once in the visible v3 privacy popup and makes no other selection or login action; then reports megvan
+next_actor: User clicks Login/Member and selects Nova Social; then reports megvan without opening or changing privacy settings
 stop_phrase: none
 ```
 
@@ -109,10 +109,10 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
 are PASS/CLOSED and their retained evidence must not be replayed or deleted.
-The active Core case is `ENTRY-CONSENT-002`. Its v3/v4 fixture and anonymous
-browser baseline are proven. Click Cancel exactly once in the visible v3
-privacy popup; do not select an optional section or start login yet. Then run
-the browser and server rejection oracles before issuing the acceptance step.
+The active Core case is `ENTRY-CONSENT-002`. Its anonymous rejection and exact
+v3 acceptance branches are proven. Click Login/Member and select Nova Social.
+Do not open or change privacy settings. Then prove the one-time v3 transfer
+before activating the controlled newer revision.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed

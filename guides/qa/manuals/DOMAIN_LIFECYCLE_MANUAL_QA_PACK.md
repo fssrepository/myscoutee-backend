@@ -3403,8 +3403,20 @@ has 2 pre-existing Nova consents, 26 total consents, zero ownerless consents,
 and no consent for either controlled revision. A fresh anonymous managed
 browser loaded `/entry` with the exact v3 required section and
 `qa-previous-analytics`, no selected optional IDs, consent, audit or session,
-and a visible Cancel/Accept boundary. The next named branch is the rejection
-proof; no acceptance or revision activation has occurred yet.
+and a visible Cancel/Accept boundary. One Cancel at
+`2026-08-13T19:05:46.050Z` produced exactly one local `rejected` audit for the
+controlled v3 while leaving browser consent and session absent. The independent
+server oracle still showed zero controlled-revision consents, target and total
+consent deltas `0`, and ownerless delta `0`. The next boundary proves that a
+Member/login request reopens the same v3 gate. That boundary passed: the popup
+again showed v3 with no selected optional IDs, while the sole rejection audit
+remained unchanged and browser consent/session stayed absent; all server
+consent deltas remained `0`. Selecting only `qa-previous-analytics` and
+accepting at `2026-08-13T19:10:22.951Z` then stored the exact v3 consent and
+optional revision key locally. The accepted audit was prepended without
+altering the earlier rejected audit; the popup closed, no session appeared,
+and all server consent deltas remained `0`. No login or revision activation
+has occurred yet.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
