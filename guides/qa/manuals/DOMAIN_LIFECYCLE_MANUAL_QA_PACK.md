@@ -944,10 +944,15 @@ Baseline evidence on 2026-08-13:
   `2026-08-13T21:05:00.659Z` and still found exactly that one row with an empty
   `readAtIso`, one matching pending dev-mode outbox and no duplicate lifecycle
   effect.
-- Remaining proof before closing this checkpoint: a fresh-bundle/read branch
-  must reconstruct the same bucket ownership. `EVENT-LIFE-003` Restore then
-  provides the focused inverse runtime replay that an open event bucket receives
-  the complete counter snapshot without repeating this Delete producer.
+- Fresh-bundle participant reconstruction **PASS**: after one Nova reload,
+  Events > All was empty and neither the main Events control nor the All bucket
+  showed a red counter. This loaded the synced frontend fix and agreed with the
+  persisted Active/All `0/0` oracle without a corrective second bucket load.
+- Remaining proof before closing this checkpoint: Casey's fresh-bundle organizer
+  read must reconstruct the same event exactly once in Trash. `EVENT-LIFE-003`
+  Restore then provides the focused inverse runtime replay that an open event
+  bucket receives the complete counter snapshot without repeating this Delete
+  producer.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
