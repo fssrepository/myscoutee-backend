@@ -1868,9 +1868,10 @@
       title: Q.text(event.title),
       imageUrl: Q.text(event.imageUrl),
       status: Q.text(event.status),
-      published: event.published,
-      isTrashed: event.isTrashed,
+      published: Q.text(event.status) === "A",
+      isTrashed: Q.text(event.status) === "T" || event.isTrashed === true,
       statusBeforeSuppression: event.statusBeforeSuppression,
+      trashedAtIso: Q.text(event.trashedAtIso),
       ticketing: event.ticketing,
       visibility: Q.text(event.visibility),
       blindMode: Q.text(event.blindMode),
@@ -2005,11 +2006,11 @@
       eventId: { $in: dynamicEventIds }
     }).sort({ updatedDate: 1, _id: 1 }).toArray();
     const eventLifecycleOutbox = Q.collection("notificationOutbox").find({
-      notificationType: { $in: ["event-under-review", "event-modified", "event-details-changed"] },
+      notificationType: { $in: ["event-deleted", "event-under-review", "event-modified", "event-details-changed"] },
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).sort({ createdDate: 1, _id: 1 }).toArray();
     const eventLifecycleNotifications = Q.collection("userNotifications").find({
-      kind: { $in: ["event-under-review", "event-modified", "event-details-changed"] },
+      kind: { $in: ["event-deleted", "event-under-review", "event-modified", "event-details-changed"] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).sort({ createdDate: 1, _id: 1 }).toArray();
     const eventRecomputeTasks = Q.collection("affinityRecomputeTasks").find({
@@ -2061,8 +2062,9 @@
       events: eventSummary(),
       primaryEvent: {
         status: Q.text(event.status),
-        isTrashed: event.isTrashed === true,
+        isTrashed: Q.text(event.status) === "T" || event.isTrashed === true,
         statusBeforeSuppression: Q.text(event.statusBeforeSuppression),
+        trashedAtIso: Q.text(event.trashedAtIso),
         ticketing: event.ticketing === true
       },
       members: members.map(member => ({
@@ -5159,6 +5161,129 @@
     });
   }
 
+  function verifyLifecycleTrash() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-002") {
+      Q.fail("verify-lifecycle-trash currently supports only EVENT-LIFE-002.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.lifecycleActionBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-002 requires its saved lifecycle action baseline before Trash verification.");
+    }
+    const current = oracle(state);
+    const event = (current.events || []).find(item => item.eventId === EVENT_ID);
+    if (!event
+        || event.status !== "T"
+        || event.statusBeforeSuppression !== "A"
+        || !event.trashedAtIso
+        || event.trashedAtIso <= baseline.capturedAtIso
+        || event.acceptedMembers !== 2
+        || event.capacityTotal !== 8
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])) {
+      Q.fail("EVENT-LIFE-002 must retain the canonical Casey/Nova 2 / 8 identity with T, statusBeforeSuppression=A and a post-baseline trashedAtIso.");
+    }
+
+    const acceptedMembers = (current.members || [])
+      .filter(member => member.eventId === EVENT_ID && member.status === "accepted");
+    if (acceptedMembers.length !== 2
+        || !sameIds(acceptedMembers.map(member => member.userId), [hostUserId, participantUserId])
+        || !acceptedMembers.some(member => member.userId === hostUserId && member.role === "Admin")
+        || !acceptedMembers.some(member => member.userId === participantUserId && member.role === "Member")) {
+      Q.fail("Organizer Trash must retain the exact accepted Casey Admin and Nova Member membership audit rows.");
+    }
+
+    const countersByUserId = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.user && item.user.userId), item.current || {}]));
+    const hostCounters = countersByUserId.get(hostUserId) || {};
+    const participantCounters = countersByUserId.get(participantUserId) || {};
+    const hostEvent = hostCounters.event || {};
+    const participantEvent = participantCounters.event || {};
+    if (Number(hostCounters.hosting || 0) !== 0
+        || Number(hostEvent.all || 0) !== 0
+        || Number(hostEvent.hosting || 0) !== 0
+        || Number(hostEvent.trash || 0) !== 1) {
+      Q.fail("Casey must finish Hosting/All/Hosting bucket 0 with organizer Trash exactly 1.");
+    }
+    if (Number(participantCounters.events || 0) !== 0
+        || Number(participantEvent.all || 0) !== 0
+        || Number(participantEvent.active || 0) !== 0
+        || Number(participantEvent.trash || 0) !== 0) {
+      Q.fail("Nova must lose Active/All without gaining a personal Trash entry.");
+    }
+
+    const baselineLifecycleTaskIds = new Set((baseline.eventLifecycleTasks || []).map(item => Q.text(item.id)));
+    const lifecycleTaskDelta = (current.eventLifecycleTasks || [])
+      .filter(item => !baselineLifecycleTaskIds.has(Q.text(item.id)));
+    if (lifecycleTaskDelta.length !== 1
+        || lifecycleTaskDelta[0].status !== "completed"
+        || lifecycleTaskDelta[0].lastRunStatus !== "completed"
+        || lifecycleTaskDelta[0].lastRunCount !== 1
+        || !sameIds(lifecycleTaskDelta[0].audienceUserIds, [participantUserId])
+        || !sameIds(lifecycleTaskDelta[0].changeReasons, ["deleted"])) {
+      Q.fail("Trash must produce exactly one completed deleted lifecycle task for Nova.");
+    }
+
+    const baselineNotificationIds = new Set((baseline.eventLifecycleNotifications || []).map(item => Q.text(item.id)));
+    const notificationDelta = (current.eventLifecycleNotifications || [])
+      .filter(item => !baselineNotificationIds.has(Q.text(item.id)));
+    if (notificationDelta.length !== 1
+        || notificationDelta[0].recipientUserId !== participantUserId
+        || notificationDelta[0].kind !== "event-deleted"
+        || notificationDelta[0].eventId !== EVENT_ID
+        || notificationDelta[0].readAtIso) {
+      Q.fail("Trash must create exactly one unread event-deleted notification for Nova and none for Casey.");
+    }
+
+    const baselineOutboxIds = new Set((baseline.eventLifecycleOutbox || []).map(item => Q.text(item.id)));
+    const outboxDelta = (current.eventLifecycleOutbox || [])
+      .filter(item => !baselineOutboxIds.has(Q.text(item.id)));
+    if (outboxDelta.length !== 1
+        || outboxDelta[0].notificationType !== "event-deleted"
+        || outboxDelta[0].eventId !== EVENT_ID
+        || outboxDelta[0].status !== "pending"
+        || !sameIds(outboxDelta[0].recipientUserIds, [participantUserId])) {
+      Q.fail("Dev-mode Trash must retain exactly one pending Firebase event-deleted outbox record for Nova.");
+    }
+
+    const baselineRecomputeById = new Map((baseline.eventRecomputeTasks || [])
+      .map(item => [Q.text(item.id), item]));
+    const recomputeDelta = (current.eventRecomputeTasks || []).filter(item => {
+      const before = baselineRecomputeById.get(Q.text(item.id));
+      return !before || Q.text(item.updatedDate) > Q.text(before.updatedDate);
+    });
+    if (recomputeDelta.length !== 1
+        || !recomputeDelta[0].reasons.includes("EVENT_CHANGED")
+        || recomputeDelta[0].status !== "done"
+        || !recomputeDelta[0].completedAtIso
+        || recomputeDelta[0].updatedDate <= baseline.capturedAtIso) {
+      Q.fail("Trash must add exactly one terminal EVENT_CHANGED recompute delta after the saved action baseline.");
+    }
+
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "lifecycle-trash-verified",
+      verifiedAtIso: Q.nowIso(),
+      actionBaselineCapturedAtIso: baseline.capturedAtIso,
+      event: {
+        eventId: event.eventId,
+        status: event.status,
+        statusBeforeSuppression: event.statusBeforeSuppression,
+        trashedAtIso: event.trashedAtIso,
+        acceptedMembers: event.acceptedMembers,
+        capacityTotal: event.capacityTotal
+      },
+      counters: { host: hostCounters, participant: participantCounters },
+      lifecycleTask: lifecycleTaskDelta[0],
+      lifecycleOutbox: outboxDelta[0],
+      notification: notificationDelta[0],
+      recompute: recomputeDelta[0],
+      immediateTrashCounterObservation: "NOT EXECUTED: the user did not observe whether Casey Trash +1 came from the action delta or a later poll.",
+      next: "Open Casey Events > Trash and prove the same event exactly once. Keep Nova untouched; then EVENT-LIFE-003 may carry this state forward for Restore."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5253,6 +5378,7 @@
     case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
     case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;
     case "capture-lifecycle-action-baseline": captureLifecycleActionBaseline(); break;
+    case "verify-lifecycle-trash": verifyLifecycleTrash(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

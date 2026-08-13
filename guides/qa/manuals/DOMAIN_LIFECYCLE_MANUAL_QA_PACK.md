@@ -892,6 +892,33 @@ Baseline evidence on 2026-08-13:
   recovered through their normal poll. Casey again showed My Events `1`; Nova
   showed Events/Active Events `1`. The saved action baseline remains the sole
   producer attribution boundary, and Delete Event is still the next action.
+- Producer and immediate removal **PASS** at
+  `2026-08-13T20:40:43.192579877Z`: the user activated Casey's card
+  **Delete Event** confirmation exactly once. Without reload, Casey My Events
+  and Nova Active Events both removed the card and their visible active/hosting
+  counters became zero. Casey's organizer Trash `+1` timing was not watched at
+  the action boundary, so action-delta versus later-poll presentation is
+  explicitly **NOT EXECUTED**, not retroactive PASS; the whole checkpoint is
+  not replayed solely for this missed observation.
+- The versioned terminal verifier passed at
+  `2026-08-13T20:46:09.146Z` against the retained action baseline: canonical
+  status `T`, `statusBeforeSuppression=A`, one post-baseline `trashedAtIso`,
+  unchanged Casey Admin plus Nova Member audit rows and `2 / 8` occupancy.
+  Casey finished Hosting/All/Hosting-bucket `0/0/0` and organizer Trash `1`;
+  Nova finished Events/Active/All/Trash `0/0/0/0`, proving organizer Trash did
+  not become personal participant Trash.
+- Exactly one completed `deleted` lifecycle task targeted Nova and created one
+  unread `event-deleted` Notification Center row. Dev mode retained exactly one
+  matching `pending` Firebase outbox record because Firebase delivery is
+  disabled; Casey received neither. The pre-action recompute identity gained
+  the sole `EVENT_CHANGED` reason and completed `done` on attempt `2` with no
+  error. The reusable oracle now exposes canonical `isTrashed/published` from
+  status, `trashedAtIso`, `event-deleted` notification/outbox and a guarded
+  `verify-lifecycle-trash` command.
+- Remaining UI proof before closing this checkpoint: Casey opens the organizer
+  Trash bucket and sees the same identity exactly once; Nova opens Notifications
+  **New** and sees the one unread deletion row without opening/marking it read.
+  A later fresh-read/reload branch must reconstruct the same bucket ownership.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 

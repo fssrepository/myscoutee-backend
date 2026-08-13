@@ -35,14 +35,14 @@ checkpoint: EVENT-LIFE-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-002--organizer-trash-moves-the-event-to-trash-only
 scenario: event-domain
 ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 remains at its active pre-producer boundary. The missing reload counters were repaired through the canonical persisted projection; closed-popup reload replay passed Casey My Events=1 and Nova Events=1. Both opened lists showed the same event once. A second fixture defect omitted Casey's accepted Admin from embedded occupancy; the shared builder and guarded live fixture are repaired, and both already-open lists converged from 1/8 to canonical 2/8 without reload. Static review also fixed the common Java counter projector so global organizer Trash cannot leak into an accepted participant's personal Trash counter, with a regression source added. The action baseline was captured at 2026-08-13T20:16:21.233Z with A/public, Casey+Nova 2/8, lifecycle task/outbox/notification 0 and one completed pre-action recompute retained as an excluded control. Before any producer action, Codex's Java hot restart briefly left the event-list controller unmapped; both open polls showed empty and zeroed visible badges, but the persisted event/counters/action baseline never changed. This is NOT EXECUTED and not attributed to the user. The existing owner was repaired with a post-classes DevTools trigger; list adapters no longer translate transport/server failure into an authoritative empty page. After the sole backend-container restart, both endpoints returned 200 and both already-open lists recovered in place to the same event 2/8 plus Casey My Events=1 and Nova Events/Active Events=1, with no reload or interaction. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Do not restage, reset, relaunch, reload, close/reopen either Activities popup or replay any proven baseline branch. If continuity is uncertain, read-only status must still show active public EVENT-LIFE-002 with Casey/Nova accepted at 2/8, no suppression, Casey Hosting/All=1, Nova Active/All=1, and the saved lifecycleActionBaseline timestamp 2026-08-13T20:16:21.233Z. The two already-open lists must show that same identity after normal poll; a transient empty state caused by Codex's pre-action runtime restart is documented as NOT EXECUTED and must never be bound to the user's stop phrase. Keep exactly the two managed browsers. Continue with the single producer action: Casey opens the QA EVENT-LIFE-002 card overflow menu and chooses Delete Event once; Nova does not interact
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; active public, ticketing off, Casey owner/Admin and Nova accepted Member
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 producer action is complete but its UI read branches remain in progress. The saved action baseline is 2026-08-13T20:16:21.233Z. Before the producer, Codex's Java hot restart caused a documented NOT EXECUTED transient empty state; it was repaired and both open lists recovered without reload. The user then confirmed Casey Delete Event exactly once. Immediate UI PASS: Casey My Events and Nova Active Events removed the card without reload and active/hosting badges became zero. Casey Trash +1 timing was not manually watched, so action delta versus later poll is NOT EXECUTED and must not be retroactively passed or cause a full replay. The guarded terminal verifier passed at 2026-08-13T20:46:09.146Z: T/statusBeforeSuppression=A/post-baseline trashedAtIso, unchanged Casey Admin + Nova Member 2/8 audit rows, Casey organizer Trash=1, Nova Active/All/Trash=0, one completed Nova-only deleted lifecycle task, one unread event-deleted notification, one matching dev-mode pending Firebase outbox and one terminal EVENT_CHANGED recompute. The oracle now exposes these fields and command. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Do not restage, reset, relaunch or replay the Delete producer. Keep exactly the two managed browsers. Casey's open My Events list is empty and Nova's open Active Events list is empty; that immediate branch is already PASS. Next use Casey only to switch the Events popup bucket to Trash and prove QA EVENT-LIFE-002 appears exactly once. Do not reload and do not touch Nova yet. After that proof, inspect Nova Notifications New for the exact unread event-deleted row without opening it. Casey Trash +1 immediate action-delta timing remains NOT EXECUTED; do not infer it from the later Trash read
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-13T20:40:43.192579877Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
 actors:
   active: Casey and Nova in two managed browser windows
   controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: User uses Casey only: on the visible QA EVENT-LIFE-002 card, open the three-dot card menu and choose Delete Event exactly once; leave Nova untouched; then report megvan
-stop_phrase: none
+next_actor: User uses Casey only: in the already-open Events popup switch My Events to Trash and confirm QA EVENT-LIFE-002 appears exactly once; leave Nova untouched; then report megvan
+stop_phrase: megvan after Casey sees the one QA EVENT-LIFE-002 row in Events > Trash
 ```
 
 ### Efficient resume gate
@@ -109,10 +109,13 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
 `ENTRY-CONSENT-*` checkpoints are PASS/CLOSED and their retained evidence must
-not be replayed or deleted. `EVENT-LIFE-002` is active at its captured
-pre-producer boundary. Reload counters, list identity and canonical `2 / 8`
-occupancy are already PASS and must not be replayed. Casey's one **Delete
-Event** action is next while Nova stays untouched.
+not be replayed or deleted. `EVENT-LIFE-002` has completed its single Delete
+producer and terminal persisted verifier. Pre-action counters, list identity,
+canonical `2 / 8` occupancy, immediate card removal and worker effects are
+already PASS and must not be replayed. Casey now switches the already-open
+Events popup from My Events to Trash and proves the same event once while Nova
+stays untouched. Then Nova's unread deletion notification remains the final
+in-place UI branch before a fresh-read reconstruction.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
