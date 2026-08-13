@@ -502,7 +502,12 @@ public final class SharedDtos {
             String metWhere,
             String avatarUrl,
             UserDto profile,
-            List<ActivityMemberInvolvementDto> involvements) {
+            List<ActivityMemberInvolvementDto> involvements,
+            String revision,
+            String attendanceStatus,
+            String checkedInAtIso,
+            String checkedInByUserId,
+            String checkedInTicketId) {
     }
 
     public record ActivityMembersSummaryDto(

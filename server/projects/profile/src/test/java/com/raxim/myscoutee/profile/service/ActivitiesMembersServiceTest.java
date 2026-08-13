@@ -2796,7 +2796,12 @@ class ActivitiesMembersServiceTest {
                 "",
                 null,
                 null,
-                List.of());
+                List.of(),
+                "2026-05-12T10:00:00Z",
+                null,
+                null,
+                null,
+                null);
     }
 
     private ActivityMemberEntryDto invitationEntry(String userId, String inviterUserId) {
@@ -2819,6 +2824,11 @@ class ActivitiesMembersServiceTest {
                 "",
                 null,
                 null,
-                List.of());
+                List.of(),
+                "2026-05-12T10:00:00Z",
+                null,
+                null,
+                null,
+                null);
     }
 }

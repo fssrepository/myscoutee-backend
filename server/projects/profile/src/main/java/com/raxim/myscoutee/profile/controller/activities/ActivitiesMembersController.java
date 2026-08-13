@@ -13,6 +13,8 @@ import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.Activ
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
@@ -39,6 +41,11 @@ public class ActivitiesMembersController {
     @PostMapping("/summaries")
     public List<ActivityMembersSummaryDto> querySummaries(@RequestBody ActivityMembersSummariesRequestDto request) {
         return activitiesMembersService.querySummaries(request);
+    }
+
+    @PostMapping("/sync")
+    public ActivityMembersSyncResponseDto syncMembers(@RequestBody ActivityMembersSyncRequestDto request) {
+        return activitiesMembersService.syncMembers(request);
     }
 
     @PostMapping("/replace")

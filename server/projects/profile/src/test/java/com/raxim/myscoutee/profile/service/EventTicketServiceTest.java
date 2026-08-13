@@ -251,11 +251,36 @@ class EventTicketServiceTest {
         assertThat(update.getValue().getUpdateObject().toJson())
                 .contains("\"usedAtIso\": \"" + NOW + "\"")
                 .contains("\"usedByUserId\": \"" + SCANNER_USER_ID + "\"");
+
+        ArgumentCaptor<Query> memberQuery = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> memberUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).findAndModify(
+                memberQuery.capture(),
+                memberUpdate.capture(),
+                any(FindAndModifyOptions.class),
+                eq(ActivityMember.class));
+        assertThat(memberQuery.getValue().getQueryObject().toJson())
+                .contains("\"ownerType\": \"event\"")
+                .contains("\"ownerId\": \"" + EVENT_ID + "\"")
+                .contains("\"userId\": \"" + HOLDER_USER_ID + "\"")
+                .contains("\"status\": \"accepted\"")
+                .contains("\"checkedInAtIso\": {\"$exists\": false}")
+                .contains("\"checkedInAtIso\": null")
+                .contains("\"checkedInAtIso\": \"\"");
+        assertThat(memberUpdate.getValue().getUpdateObject().toJson())
+                .contains("\"attendanceStatus\": \"checked-in\"")
+                .contains("\"checkedInAtIso\": \"" + NOW + "\"")
+                .contains("\"checkedInByUserId\": \"" + SCANNER_USER_ID + "\"")
+                .contains("\"checkedInTicketId\": \"" + TICKET_ID + "\"")
+                .contains("\"updatedDate\": \"" + NOW + "\"")
+                .doesNotContain("\"actionAtIso\"")
+                .doesNotContain("\"status\":");
     }
 
     @Test
-    void repeatedCheckInReturnsAlreadyUsedWithoutAnotherCas() {
-        EventTicket used = usedTicket(NOW.minusSeconds(30), SCANNER_USER_ID);
+    void repeatedCheckInReturnsAlreadyUsedAndIdempotentlyRepairsAttendanceFromOriginalUse() {
+        Instant originalUse = NOW.minusSeconds(30);
+        EventTicket used = usedTicket(originalUse, SCANNER_USER_ID);
         stubValidCheckIn(used, activeEvent());
 
         EventTicketService.CheckInResult result = service.checkIn(CODE, SCANNER_USER_ID, NOW);
@@ -268,6 +293,16 @@ class EventTicketServiceTest {
                 any(Update.class),
                 any(FindAndModifyOptions.class),
                 eq(EventTicket.class));
+        ArgumentCaptor<Update> memberUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).findAndModify(
+                any(Query.class),
+                memberUpdate.capture(),
+                any(FindAndModifyOptions.class),
+                eq(ActivityMember.class));
+        assertThat(memberUpdate.getValue().getUpdateObject().toJson())
+                .contains("\"checkedInAtIso\": \"" + originalUse + "\"")
+                .contains("\"checkedInByUserId\": \"" + SCANNER_USER_ID + "\"")
+                .contains("\"checkedInTicketId\": \"" + TICKET_ID + "\"");
     }
 
     @Test
@@ -293,6 +328,16 @@ class EventTicketServiceTest {
                 any(Update.class),
                 any(FindAndModifyOptions.class),
                 eq(EventTicket.class));
+        ArgumentCaptor<Update> memberUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).findAndModify(
+                any(Query.class),
+                memberUpdate.capture(),
+                any(FindAndModifyOptions.class),
+                eq(ActivityMember.class));
+        assertThat(memberUpdate.getValue().getUpdateObject().toJson())
+                .contains("\"checkedInAtIso\": \"" + NOW.minusMillis(1) + "\"")
+                .contains("\"checkedInByUserId\": \"other-scanner\"")
+                .contains("\"checkedInTicketId\": \"" + TICKET_ID + "\"");
     }
 
     @Test

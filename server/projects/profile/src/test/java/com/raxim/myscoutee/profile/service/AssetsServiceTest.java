@@ -430,7 +430,7 @@ class AssetsServiceTest {
         ActivityMemberEntryDto invited = new ActivityMemberEntryDto(
                 null, "u4", "New Group A", "NA", "man", "", "Waiting", "Member", "pending",
                 "admin", "invite", "u1", true, "2026-05-12T10:00:00Z", "2026-05-12T10:00:00Z",
-                "", null, null, List.of());
+                "", null, null, List.of(), "2026-05-12T10:00:00Z", null, null, null, null);
 
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));

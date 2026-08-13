@@ -696,6 +696,13 @@
       action: "Capture Nova's two ticket cards and both ticket identities. As Casey, Unpublish only the event whose title ends in A; prove only A disappears and its physical ticket becomes D. Publish A again with Ticketing still On and prove a new A credential appears while event B retains its original id/code/status throughout.",
       expected: "Both events start published and Ticketing On with Casey Admin, Nova accepted and Riley pending. Nova owns two distinct A tickets. Event A Unpublish changes only A to D and counters 2 -> 1; event B remains visible with the same A ticket. Event A republish creates a new id/code and counters return 1 -> 2 without changing or duplicating event B.",
       worker: "Only event A lifecycle writes may change A's overlay/ticket/counters and run their normal recompute. Event B and all Ticket reads MUST remain X."
+    },
+    "EVENT-TICKET-011": {
+      stage: "ticket-ready",
+      why: "Prove that the first successful physical-ticket check-in writes an event-scoped attendance projection without replacing accepted membership.",
+      action: "Keep Casey's Event Members popup open on Nova's accepted row, display Nova's unused QR, and scan it once through Casey's authorized scanner. Wait for the open Members list's own delta poll; do not close or reload it.",
+      expected: "Nova remains accepted and appears exactly once with Checked in plus the scan time. Ticket usedAtIso and member checkedInAtIso are identical, Casey is the actor, and the member references the exact physical ticket. Casey membership, event capacity and counters remain unchanged.",
+      worker: "MUST NOT RUN: the first scan is a direct ticket/member write. The already-open Members delta poll is read-only and must not replace the shared SmartList implementation."
     }
   };
 
@@ -1974,6 +1981,11 @@
         userId: Q.text(member.userId),
         role: Q.text(member.role),
         status: Q.text(member.status),
+        attendanceStatus: Q.text(member.attendanceStatus),
+        checkedInAtIso: Q.text(member.checkedInAtIso),
+        checkedInByUserId: Q.text(member.checkedInByUserId),
+        checkedInTicketId: Q.text(member.checkedInTicketId),
+        actionAtIso: Q.text(member.actionAtIso),
         requestKind: Q.text(member.requestKind),
         pendingSource: Q.text(member.pendingSource),
         invitedByUserId: Q.text(member.invitedByUserId),
@@ -2426,6 +2438,189 @@
     };
   }
 
+  function ticketAttendanceSnapshot() {
+    const canonicalEvent = Q.collection("events").findOne({
+      sourceId: EVENT_ID,
+      ownerUserId: hostUserId
+    }) || {};
+    const members = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: EVENT_ID
+    }).sort({ userId: 1, _id: 1 }).toArray();
+    const tickets = Q.collection("eventTickets").find({ eventId: EVENT_ID })
+      .sort({ issuedAtIso: 1, _id: 1 }).toArray();
+    const replayAudits = Q.collection("eventTicketAudit").find({
+      eventId: EVENT_ID,
+      action: "check-in-replay",
+      result: "already_used"
+    }).sort({ createdDate: 1, _id: 1 }).toArray();
+    const memberSummary = member => member ? {
+      id: Q.text(member._id),
+      status: Q.text(member.status),
+      role: Q.text(member.role),
+      actionAtIso: Q.text(member.actionAtIso),
+      attendanceStatus: Q.text(member.attendanceStatus),
+      checkedInAtIso: Q.text(member.checkedInAtIso),
+      checkedInByUserId: Q.text(member.checkedInByUserId),
+      checkedInTicketId: Q.text(member.checkedInTicketId),
+      updatedDate: Q.text(member.updatedDate)
+    } : null;
+    const ticketSummary = ticket => ticket ? {
+      id: Q.text(ticket._id),
+      status: Q.text(ticket.status),
+      issuedAtIso: Q.text(ticket.issuedAtIso),
+      usedAtIso: Q.text(ticket.usedAtIso),
+      usedByUserId: Q.text(ticket.usedByUserId)
+    } : null;
+    const counterSummary = userId => {
+      const saved = userActivitiesSnapshot(userId);
+      const activities = saved.activities.value || {};
+      return {
+        events: nestedNumber(activities, "events"),
+        hosting: nestedNumber(activities, "hosting"),
+        tickets: nestedNumber(activities, "tickets"),
+        assetTickets: nestedNumber(activities, "asset.tickets"),
+        eventAll: nestedNumber(activities, "event.all"),
+        eventActive: nestedNumber(activities, "event.active"),
+        eventHosting: nestedNumber(activities, "event.hosting")
+      };
+    };
+    const profileStatus = userId => {
+      const user = Q.collection("users").findOne({ $or: [{ _id: userId }, { userId }] }) || {};
+      return Q.text(user.status);
+    };
+    return {
+      event: {
+        id: Q.text(canonicalEvent._id),
+        status: Q.text(canonicalEvent.status),
+        acceptedMembers: Number(canonicalEvent.acceptedMembers || 0),
+        pendingMembers: Number(canonicalEvent.pendingMembers || 0),
+        capacityTotal: Number(canonicalEvent.capacityTotal || 0)
+      },
+      memberCount: members.length,
+      hostMember: memberSummary(members.find(member => Q.text(member.userId) === hostUserId)),
+      participantMember: memberSummary(
+        members.find(member => Q.text(member.userId) === participantUserId)
+      ),
+      ticketCount: tickets.length,
+      ticket: ticketSummary(tickets[0]),
+      hostCounters: counterSummary(hostUserId),
+      participantCounters: counterSummary(participantUserId),
+      hostProfileStatus: profileStatus(hostUserId),
+      participantProfileStatus: profileStatus(participantUserId),
+      replayAudits: replayAudits.map(item => ({
+        id: Q.text(item._id),
+        ticketId: Q.text(item.ticketId),
+        holderUserId: Q.text(item.holderUserId),
+        actorUserId: Q.text(item.actorUserId),
+        originalUsedAtIso: Q.text(item.originalUsedAtIso),
+        originalUsedByUserId: Q.text(item.originalUsedByUserId)
+      }))
+    };
+  }
+
+  function sameJson(left, right) {
+    return JSON.stringify(left) === JSON.stringify(right);
+  }
+
+  function verifyTicketAttendanceFirstScan() {
+    if (checkpointId !== "EVENT-TICKET-011") {
+      Q.fail("verify-ticket-attendance-first-scan is only valid for EVENT-TICKET-011.");
+    }
+    const state = requireMatchingState();
+    if (state.ticketAttendanceFirstScan) {
+      Q.fail("EVENT-TICKET-011 first-scan oracle is already recorded; continue with the replay.");
+    }
+    const before = state.ticketAttendanceBaseline;
+    const current = ticketAttendanceSnapshot();
+    if (!before || before.memberCount !== 2 || before.ticketCount !== 1
+        || !before.hostMember || !before.participantMember || !before.ticket) {
+      Q.fail("EVENT-TICKET-011 has no exact two-member, one-unused-ticket staging baseline.");
+    }
+    if (before.participantMember.status !== "accepted"
+        || before.participantMember.attendanceStatus
+        || before.participantMember.checkedInAtIso
+        || before.participantMember.checkedInByUserId
+        || before.participantMember.checkedInTicketId
+        || before.ticket.status !== "A" || before.ticket.usedAtIso || before.ticket.usedByUserId) {
+      Q.fail("EVENT-TICKET-011 staging baseline already contained attendance or a consumed ticket.");
+    }
+    if (current.memberCount !== 2 || current.ticketCount !== 1
+        || !current.hostMember || !current.participantMember || !current.ticket) {
+      Q.fail("the first scan changed the controlled member/ticket cardinality.");
+    }
+    if (current.participantMember.status !== "accepted"
+        || current.participantMember.attendanceStatus !== "checked-in"
+        || !current.participantMember.checkedInAtIso
+        || current.participantMember.checkedInAtIso !== current.ticket.usedAtIso
+        || current.participantMember.checkedInByUserId !== hostUserId
+        || current.participantMember.checkedInByUserId !== current.ticket.usedByUserId
+        || current.participantMember.checkedInTicketId !== current.ticket.id) {
+      Q.fail("the first scan did not persist the exact accepted-member attendance identity.");
+    }
+    if (current.ticket.id !== before.ticket.id || current.ticket.status !== "A"
+        || current.ticket.issuedAtIso !== before.ticket.issuedAtIso
+        || current.hostMember.status !== before.hostMember.status
+        || current.hostMember.actionAtIso !== before.hostMember.actionAtIso
+        || current.hostMember.attendanceStatus || current.hostMember.checkedInAtIso
+        || current.hostMember.checkedInByUserId || current.hostMember.checkedInTicketId
+        || current.participantMember.actionAtIso !== before.participantMember.actionAtIso
+        || !sameJson(current.event, before.event)
+        || !sameJson(current.hostCounters, before.hostCounters)
+        || !sameJson(current.participantCounters, before.participantCounters)
+        || current.hostProfileStatus !== before.hostProfileStatus
+        || current.participantProfileStatus !== before.participantProfileStatus
+        || current.replayAudits.length !== 0) {
+      Q.fail("the first scan changed membership, capacity, counters, profile status or replay audit controls.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      { $set: { ticketAttendanceFirstScan: current } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-attendance-first-scan-verified",
+      attendance: current,
+      next: "Scan the same saved Nova QR once more as Casey, then run verify-ticket-attendance-replay."
+    });
+  }
+
+  function verifyTicketAttendanceReplay() {
+    if (checkpointId !== "EVENT-TICKET-011") {
+      Q.fail("verify-ticket-attendance-replay is only valid for EVENT-TICKET-011.");
+    }
+    const state = requireMatchingState();
+    const first = state.ticketAttendanceFirstScan;
+    if (!first || !first.ticket || !first.participantMember) {
+      Q.fail("verify the first EVENT-TICKET-011 scan before verifying its replay.");
+    }
+    const current = ticketAttendanceSnapshot();
+    const immutableFirst = { ...first, replayAudits: [] };
+    const immutableCurrent = { ...current, replayAudits: [] };
+    if (!sameJson(immutableCurrent, immutableFirst)) {
+      Q.fail("the replay rewrote attendance, ticket, membership, capacity, counters or profile state.");
+    }
+    if (current.replayAudits.length !== first.replayAudits.length + 1) {
+      Q.fail("the single replay did not create exactly one immutable already-used audit.");
+    }
+    const audit = current.replayAudits[current.replayAudits.length - 1];
+    if (audit.ticketId !== first.ticket.id
+        || audit.holderUserId !== participantUserId
+        || audit.actorUserId !== hostUserId
+        || audit.originalUsedAtIso !== first.ticket.usedAtIso
+        || audit.originalUsedByUserId !== hostUserId) {
+      Q.fail("the replay audit does not preserve the first scan's ticket/holder/actor identity.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-attendance-replay-verified",
+      attendance: current,
+      next: "If Casey's still-open Members row stayed single and unchanged during replay, record EVENT-TICKET-011 PASS/CLOSED."
+    });
+  }
+
   function stage() {
     const selected = config();
     if (selected.stage === "visibility-friends") {
@@ -2491,6 +2686,13 @@
       clearFixture();
       stageData(selected.stage, stagedAtIso, runtimeContext);
       stageFeedbackProjection(selected.stage, stagedAtIso, state);
+      if (checkpointId === "EVENT-TICKET-011") {
+        state.ticketAttendanceBaseline = ticketAttendanceSnapshot();
+        Q.collection(Q.STATE_COLLECTION).updateOne(
+          { _id: state._id },
+          { $set: { ticketAttendanceBaseline: state.ticketAttendanceBaseline } }
+        );
+      }
       if (selected.stage === "publish-chat-draft") {
         state.actionBaselineUserActivitySnapshots = [hostUserId, participantUserId, thirdUserId]
           .map(userActivitiesSnapshot);
@@ -4725,6 +4927,8 @@
     case "verify-ticket-poll-resume": verifyTicketPollResume(); break;
     case "verify-ticket-isolation-unpublish": verifyTicketIsolation("unpublished"); break;
     case "verify-ticket-isolation-republish": verifyTicketIsolation("republished"); break;
+    case "verify-ticket-attendance-first-scan": verifyTicketAttendanceFirstScan(); break;
+    case "verify-ticket-attendance-replay": verifyTicketAttendanceReplay(); break;
     case "status": status(); break;
     case "reset": reset(); break;
     case "discard-stale": discardStale(); break;

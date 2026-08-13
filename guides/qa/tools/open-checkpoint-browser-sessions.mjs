@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
-import { readFile, writeFile, mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, rm, readdir } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -62,6 +62,7 @@ if (dismissGuidesOnly) {
   }
   process.exit(0);
 }
+await closeOtherManagedCheckpointSessions(manifestPath);
 await closePreviousCheckpointSessions(manifestPath);
 
 const manifest = {
@@ -191,6 +192,19 @@ async function closePreviousCheckpointSessions(filePath) {
     }
   }
   await rm(filePath, { force: true });
+}
+
+async function closeOtherManagedCheckpointSessions(currentManifestPath) {
+  const entries = await readdir(runtimeRoot, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith('.json')) {
+      continue;
+    }
+    const filePath = path.join(runtimeRoot, entry.name);
+    if (filePath !== currentManifestPath) {
+      await closePreviousCheckpointSessions(filePath);
+    }
+  }
 }
 
 function ownsRuntimeDirectory(pid, directory) {

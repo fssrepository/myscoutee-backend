@@ -2643,6 +2643,40 @@ Restart evidence on 2026-08-06:
   `offlineTicketSnapshot` currently prewarms ticket data/code, while image
   bytes remain owned independently by the service-worker media cache. Keep
   Nova's B QR visible and let Casey perform the first physical scan next.
+- First physical B scan on 2026-08-13: **PASS**. Casey's authorized ADB phone
+  sent exactly one `POST /api/assets/tickets/validate` at `13:54:29+02:00` and
+  received HTTP 200. The persisted oracle proves the original B credential
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5` has canonical `usedAtIso`
+  `2026-08-13T11:54:29.767918052Z` and
+  `usedByUserId=650000000000000000000061` (Casey). Nova remained offline with
+  the same complete QR visible and its intentionally stale snapshot unchanged;
+  no replay audit existed before the replay action. Scan that same QR once more
+  next. Require already-used and byte-for-byte unchanged canonical ticket use;
+  record separately owned replay audit/warning effects without calling them a
+  second ticket-use mutation.
+- Physical replay scan on 2026-08-13: **PASS**. Casey sent the second and only
+  replay `POST /api/assets/tickets/validate` at `13:57:04+02:00`; its compact
+  HTTP 200 response was already-used. B retained canonical `usedAtIso`
+  `2026-08-13T11:54:29.767918052Z` and Casey actor byte-for-byte. The replay
+  created exactly one immutable `check-in-replay` / `already_used` audit at
+  `2026-08-13T11:57:04.092881795Z`, one pending warning outbox row and one Nova
+  warning with `occurrenceCount=1`. All record the original ticket identity and
+  actor while `rawCodePresent=false`; they are separately owned security
+  evidence, not a second canonical ticket-use mutation. Nova remained held
+  offline with the same QR and stale snapshot. Restore Nova online and prove
+  two-row/no-duplicate reconciliation next.
+- Online restoration and reconciliation on 2026-08-13: **PASS / CHECKPOINT
+  CLOSED**. The held CDP process was released in finally and reported its
+  explicit online restoration, then Nova's same isolated page reloaded once.
+  After one normal side-menu realtime cycle the authenticated Upcoming snapshot
+  advanced to `2026-08-13T12:00:05.116Z`. Read oracle proved
+  `navigator.onLine=true`, active controlling worker with no waiting worker,
+  ordinary Public shell, Ticket counter/snapshot total exactly 2 and only the
+  original A/B row IDs. Both rows carry their original checked-in times; B is
+  exactly `2026-08-13T11:54:29.767918052Z`. Persisted oracle retained the same
+  B credential and Casey actor, exactly one replay audit/warning occurrence and
+  no replacement, duplicate or reconnect-created mutation. `EVENT-TICKET-009`
+  is complete.
 - Run this as a separate physical-phone checkpoint after the online check-in
   contract is closed. Start with a fresh active Nova ticket. The backend and
   Casey Admin's physical-phone scanner remain online throughout this case.
@@ -2759,9 +2793,10 @@ Restart evidence on 2026-08-06:
 
 ### `EVENT-TICKET-011` — successful check-in projects attendance into Event Members
 
-- This is a newly captured GAP checkpoint. The current implementation consumes
-  the physical ticket but leaves Nova's `activityMembers.status=accepted` and
-  has no separate event-scoped attendance field or Members-row check-in badge.
+- This checkpoint was captured from the original GAP where physical ticket use
+  left Nova's `activityMembers.status=accepted` without any separate attendance
+  field or Members-row check-in badge. The write-side repair is now hot-deployed
+  and its focused manual replay is in progress.
 - Membership eligibility and attendance are independent dimensions. A valid
   check-in must **not** replace `status=accepted`; it must persist a separate
   attendance projection such as `attendanceStatus=checked-in`, together with
@@ -2788,6 +2823,28 @@ Restart evidence on 2026-08-06:
   This checkpoint proves only the first successful entry projection and its
   exact-once identity; it must not infer no-show merely from an unused ticket
   before the event is closed.
+
+Execution 2026-08-13 (in progress):
+
+- Backend first-use ticket CAS now writes the accepted event member's separate
+  attendance identity. An authorized already-used replay runs the same
+  only-if-missing member projection from the ticket's original persisted
+  `usedAtIso`/`usedByUserId`, closing the cross-document interruption window
+  without rewriting completed attendance. Rejected paths remain non-producers.
+- The Event Members surface owns a revision-based delta endpoint and a
+  foreground popup poll in both HTTP and frontend-local adapters. It patches
+  only changed member rows; shared SmartList code was not modified. The local
+  ticket repository updates ticket use and member attendance in one state
+  write.
+- Existing watchers only: frontend build was green; backend hot-deploy reported
+  `BUILD SUCCESSFUL in 3s` and `Started Main` at 14:30:06 local time. No second
+  Gradle/npm/test/server process was started.
+- Fresh staged baseline `2026-08-13T12:26:19.963Z`: one active `QA
+  EVENT-TICKET-011`, Casey Admin + Nova accepted at exact 2/8, no attendance,
+  one Nova A/unused ticket `manual-qa-checkpoint:v1:event-domain:ticket`, zero
+  replay audit/outbox/task effects. A second read-only status matched. ADB and
+  `tcp:8080 -> tcp:80` reverse are active; three isolated actor sessions are
+  open. Manual baseline/UI poll and replay evidence remain pending.
 
 ### `EVENT-TICKET-012` — a saved QR is revoked immediately after Unpublish
 

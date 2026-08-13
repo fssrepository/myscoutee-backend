@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-009
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-009--holder-can-present-a-cached-qr-while-offline
+checkpoint: EVENT-TICKET-011
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-011--successful-check-in-projects-attendance-into-event-members
 scenario: event-domain
-ledger_status: OFFLINE SHELL + AUTO-WARM + SNAPSHOT B QR PASS / FIRST PHYSICAL SCAN PENDING
-state: EVENT-TICKET-009 owns the dev-only http://localhost/game?pwa=on switch; production ignores the query override. Held Offline+reload shell/policy and automatic no-popup Upcoming warm pass. The first B QR result was retracted because app-sw.js had returned its separate cached GET /api/assets/tickets response. The product fix removed that route from the service-worker API cache and the existing watcher synced at 13:37:19+02; online SmartList still owns /assets/tickets plus /assets/tickets/sync, while offline failure reaches the user-scoped snapshot cache. The waiting worker was explicitly activated through the QA helper. Corrected shortest replay now passes: Nova remains held target-offline by agent-owned process session 56217 with active/no-waiting worker; Ticket -> Upcoming shows A+B and exact B full QR; cache timestamp stayed byte-for-byte 2026-08-13T11:40:47.443Z; nginx logged no /api/assets/tickets request; persisted oracle retained B code TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5 status A with null use/actor. The visible shared medium.webp card image is also a service-worker CacheStorage hit. This proves the already-cached image serves offline, not that offlineTicketSnapshot automatically prefetches a previously unseen image; snapshot warming currently owns data/code only. Casey phone/backend remain online and Riley is idle
-required_resume: Keep Nova's current offline B QR visible. On Casey's already-open physical phone scanner, scan it exactly once and reply megvan. Codex proves one canonical B use with Casey actor and documents it. Then scan the same still-visible QR exactly once more; Codex proves already-used with no second mutation, restores Nova online by releasing process session 56217 in finally, reloads once and checks no replacement or duplicate
-event: Manual QA EVENT-TICKET-008 B
+ledger_status: IN PROGRESS / FIX HOT-DEPLOYED / BASELINE READY
+state: EVENT-TICKET-011 attendance fields, authoritative first-use projection, replay recovery, member delta endpoint/popup poll and frontend-local parity are implemented. Shared SmartList was not changed. Existing frontend watcher is green; existing backend watcher reported BUILD SUCCESSFUL in 3s and Started Main at 2026-08-13T14:30:06+02:00. Fresh staged oracle at 2026-08-13T12:26:19.963Z proves QA EVENT-TICKET-011 active at 2/8 with Casey Admin and Nova accepted, no attendance, one Nova A/unused ticket manual-qa-checkpoint:v1:event-domain:ticket, zero replay audits/tasks/outbox. ADB device and tcp:8080->tcp:80 reverse are active; exactly three isolated 011 browser sessions are open
+required_resume: Run only the EVENT-TICKET-011 baseline UI observation now. Casey opens QA EVENT-TICKET-011 Members from the 2/8 capacity control and keeps it open; Nova opens the one Upcoming Ticket and its QR. Prove Nova appears once as accepted/member with no Checked in label. Then scan once as Casey without closing/reloading Members, wait for its own member delta poll, and run verify-ticket-attendance-first-scan. After that replay only the same QR once and run verify-ticket-attendance-replay; do not restart the case
+event: QA EVENT-TICKET-011 / manual-qa-checkpoint:v1:event-domain:event
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Casey Bridge physical phone scanner; Nova keeps the offline cached B QR visible
+next_actor: User baseline UI observation in Casey and Nova; no scan yet
 stop_phrase: megvan
 ```
 
@@ -108,12 +108,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-For `EVENT-TICKET-009 — cached B QR while offline`, Nova's corrected
-snapshot-source replay passed and exact B's complete QR is already visible
-while Nova remains held offline. On Casey's already-open physical phone
-scanner, scan that QR **exactly once**, then reply `megvan`. PASS at this stop
-means one canonical B use by Casey; the already-used replay remains a separate
-next producer action.
+`EVENT-TICKET-011 — successful check-in projects attendance into Event Members`
+is staged at its exact unused-ticket baseline. In Casey open the event's 2/8
+Members list and keep it open. In Nova open Ticket -> Upcoming and the sole QR.
+Confirm Nova appears once as accepted/member with no Checked in label. Do not
+scan yet; reply `megvan`.
 
 ## QA working method
 
@@ -437,6 +436,10 @@ with two named UI phases, not two simultaneous five-actor layouts and not a new
 testcase row. Check memory/swap/CPU before and after every replacement. Keep
 personal profile paths and names out of Git.
 
+The managed launcher treats those three slots as exclusive: before opening a
+checkpoint it closes and removes only earlier launcher-owned manifests and
+temporary profiles. It must not touch personal Chrome windows or profiles.
+
 ### 4. Domain invariants behind ticket tests
 
 - Membership, checkout basket, ticket, users-table counters and notification
@@ -448,6 +451,13 @@ personal profile paths and names out of Git.
 - Publish synchronizes tickets for participants already accepted; later
   approval/acceptance creates only the newly eligible user's ticket.
 - Ticket reads and popup opens never create or replace a ticket.
+- When one direct action must project across two Mongo documents but the dev
+  deployment has no cross-document transaction, the first write stays the
+  authoritative CAS and the second write is an ID-scoped, only-if-missing
+  projection. The canonical replay path must idempotently repair a missing
+  projection from the original persisted identity/time/actor without rewriting
+  a completed one. Frontend-local mode performs the equivalent pair in its one
+  local state write. Reads must never synthesize the projection.
 - A visible domain popup must not indefinitely block global realtime menu
   counters. When popup-specific profile/impressions state must be deferred,
   apply the global counter projection separately and keep the profile cursor

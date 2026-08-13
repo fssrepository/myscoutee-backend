@@ -13,6 +13,24 @@ public final class ActivityMembersDtos {
             List<ActivityMemberOwnerRefDto> owners) {
     }
 
+    public record ActivityMemberSyncKnownItemDto(
+            String id,
+            String revision) {
+    }
+
+    public record ActivityMembersSyncRequestDto(
+            ActivityMemberOwnerRefDto owner,
+            List<ActivityMemberSyncKnownItemDto> knownItems,
+            String eventId,
+            String subEventId) {
+    }
+
+    public record ActivityMembersSyncResponseDto(
+            List<ActivityMemberEntryDto> upserts,
+            List<String> removedIds,
+            Integer total) {
+    }
+
     /** Lightweight Mongo projection for one user's membership state per owner. */
     public record ActivityMemberStatusDto(
             String ownerId,

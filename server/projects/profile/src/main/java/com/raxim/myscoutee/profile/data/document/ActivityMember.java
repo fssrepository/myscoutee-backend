@@ -37,6 +37,10 @@ public class ActivityMember {
     private String metAtIso;
     private String actionAtIso;
     private String metWhere;
+    private String attendanceStatus;
+    private String checkedInAtIso;
+    private String checkedInByUserId;
+    private String checkedInTicketId;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -168,6 +172,38 @@ public class ActivityMember {
 
     public void setMetWhere(String metWhere) {
         this.metWhere = metWhere;
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public void setAttendanceStatus(String attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
+    }
+
+    public String getCheckedInAtIso() {
+        return checkedInAtIso;
+    }
+
+    public void setCheckedInAtIso(String checkedInAtIso) {
+        this.checkedInAtIso = checkedInAtIso;
+    }
+
+    public String getCheckedInByUserId() {
+        return checkedInByUserId;
+    }
+
+    public void setCheckedInByUserId(String checkedInByUserId) {
+        this.checkedInByUserId = checkedInByUserId;
+    }
+
+    public String getCheckedInTicketId() {
+        return checkedInTicketId;
+    }
+
+    public void setCheckedInTicketId(String checkedInTicketId) {
+        this.checkedInTicketId = checkedInTicketId;
     }
 
     public String getCreatedDate() {

@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 public class EventTicketService {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String ATTENDANCE_STATUS_CHECKED_IN = "checked-in";
     private static final String CODE_PREFIX = "TKT-";
     private static final Pattern CODE_PATTERN = Pattern.compile(
             "^TKT-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
@@ -226,6 +227,7 @@ public class EventTicketService {
             return CheckInResult.invalid("revoked", ticket, event);
         }
         if (StringUtils.hasText(ticket.getUsedAtIso())) {
+            projectFirstAttendance(ticket);
             return CheckInResult.invalid("already_used", ticket, event);
         }
 
@@ -255,14 +257,50 @@ public class EventTicketService {
                 FindAndModifyOptions.options().returnNew(true),
                 EventTicket.class);
         if (consumed != null) {
+            projectFirstAttendance(consumed);
             return CheckInResult.checkedIn(consumed, event);
         }
 
         EventTicket current = eventTicketsRepository.findById(ticket.getId()).orElse(null);
         if (current != null && StringUtils.hasText(current.getUsedAtIso())) {
+            projectFirstAttendance(current);
             return CheckInResult.invalid("already_used", current, event);
         }
         return CheckInResult.invalid("revoked", current, event);
+    }
+
+    private void projectFirstAttendance(EventTicket consumed) {
+        Instant checkedAt = parseInstant(consumed == null ? null : consumed.getUsedAtIso());
+        String scannerUserId = normalizeId(consumed == null ? null : consumed.getUsedByUserId());
+        if (consumed == null
+                || checkedAt == null
+                || !StringUtils.hasText(scannerUserId)
+                || !StringUtils.hasText(normalizeId(consumed.getId()))
+                || !StringUtils.hasText(normalizeId(consumed.getEventId()))
+                || !StringUtils.hasText(normalizeId(consumed.getHolderUserId()))) {
+            return;
+        }
+        Criteria attendanceUnset = new Criteria().orOperator(
+                Criteria.where("checkedInAtIso").exists(false),
+                Criteria.where("checkedInAtIso").is(null),
+                Criteria.where("checkedInAtIso").is(""));
+        Query memberQuery = Query.query(Criteria.where("ownerType").is(OWNER_TYPE_EVENT)
+                .and("ownerId").is(normalizeId(consumed.getEventId()))
+                .and("userId").is(normalizeId(consumed.getHolderUserId()))
+                .and("status").is(MEMBER_STATUS_ACCEPTED)
+                .andOperator(attendanceUnset));
+        String checkedAtIso = checkedAt.toString();
+        mongoTemplate.findAndModify(
+                memberQuery,
+                new Update()
+                        .set("attendanceStatus", ATTENDANCE_STATUS_CHECKED_IN)
+                        .set("checkedInAtIso", checkedAtIso)
+                        .set("checkedInByUserId", scannerUserId)
+                        .set("checkedInTicketId", normalizeId(consumed.getId()))
+                        .set("updatedDate", checkedAtIso)
+                        .set("updatedUser", scannerUserId),
+                FindAndModifyOptions.options().returnNew(true),
+                ActivityMember.class);
     }
 
     private ActivityEvent findCanonicalEvent(String eventId) {
