@@ -2373,6 +2373,63 @@ Restart evidence on 2026-08-06:
   accepted-participant lifecycle row, so its already-open New list must remain
   exactly the one A under-review row. Casey actor and control event B receive
   no Republish notification or ticket delta.
+- First Republish producer/server boundary (2026-08-13): **SERVER PASS / LIVE
+  SMARTLIST POLL FAIL**. Casey published only A once. The dedicated persisted
+  oracle proved A active with one new active ticket
+  `6a7d0c43f8a7d3829acd809b` /
+  `TKT-888bb042-3d3f-45cb-9baf-15ae9d2e565a` beside the original D audit
+  ticket; control B remained active with the exact unchanged ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`, and Nova's stored counters
+  returned to `2/2`. Nova's notification counter changed `1 -> 2`; Riley's
+  already-open New list remained the one under-review row/count `1`. The open
+  Ticket surface changed its total/filter count `1 -> 2`, but rendered only
+  the newly returned A card and lost the previously visible B card. HTTP
+  evidence showed the normal poll had collapsed to `pageSize=1`; once A sorted
+  ahead of B, that one-row result replaced the whole visible window. This is a
+  frontend SmartList current-window reconciliation failure, not a ticket
+  write/read or event-isolation failure.
+- Repair boundary (2026-08-13): the shared normal-poll query now requests at
+  least the configured current page while still preserving a larger already
+  loaded window. Focused regressions cover a partially filled 1-of-18 window
+  and a loaded two-page window. The existing `frontend-sync` owner rebuilt and
+  deployed the change successfully at `02:21:31+02:00`; no parallel build or
+  test process ran. Restore the canonical fixture and replay only the
+  Unpublish -> B-only -> Republish -> A+B live-poll causal path before closure;
+  retain the earlier notification and fresh-read PASS evidence without
+  repeating it.
+- Focused replay baseline (2026-08-13): **READY**. The versioned reset restored
+  the previous snapshot, a new image-qualified stage produced two active
+  Ticketing On events with stable future window
+  `03:24:48 -> 05:24:48+02:00`, and an independent status retained the exact
+  four canonical/overlay rows, Nova counters `2/2`, Casey/Riley `0/0` and zero
+  stage-relative outbox/recompute. Nova's new A/B ticket codes are
+  `TKT-2b136618-7f8f-424f-b931-1e6a4af24c16` and
+  `TKT-a6d1861a-746d-4609-8493-c054eb9a3b89`. Only the three existing managed
+  Casey/Nova/Riley pages were reloaded onto the deployed bundle; read-only DOM
+  identity checks proved all three actors and the closed-menu Ticket counters
+  Casey `0`, Nova `2`, Riley `0`. Open Nova Ticket > Upcoming and Casey My
+  Events, then execute only A Unpublish and retain the popup for the normal
+  poll `A+B -> B-only` midpoint.
+- Focused replay pre-producer menu boundary (2026-08-13): **FAIL / REPAIR
+  BUILT**. Before any replay mutation, the persisted oracle retained A and B
+  active/Ticketing On with Nova counters `2/2`; Nova's open Ticket list also
+  showed A+B/count `2`. Casey's A action menu nevertheless rendered **Publish**
+  in the `02:28:02+02:00` screenshot while A was still published, then changed
+  to the correct **Unpublish** only after the later Activities poll. The user
+  also observed the inverse stale action after the opposite lifecycle
+  transition. The first wrong boundary was the July on-the-fly publication
+  patch: it replaced only the converted `InfoCardData` row, while the shared
+  menu derives publication status from SmartList's retained source DTO. The
+  two representations could therefore disagree until a poll reconverted the
+  source. The repair now resolves the row's exact source DTO and emits the
+  established Activity Event sync with the deterministic new status, so the
+  SmartList source, converted card, card revision and menu are reconciled by
+  one path. A focused regression covers both `DR -> A` and `A -> DR`, asserts
+  the source sync and forbids the old converted-row-only patch. The existing
+  `frontend-sync` owner built and deployed it successfully at
+  `02:33:44+02:00`. Replay must prove each owning action menu flips immediately
+  before waiting for Nova's external normal poll.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 

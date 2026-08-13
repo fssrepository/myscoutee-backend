@@ -73,11 +73,10 @@ def append_ending_tail(parts: list[str], motif_index: int) -> None:
         )
         return
     if motif_index == 1:
-        # Chapter 3 is already an indivisible short-chapter block. Keep its
-        # ornament with that chapter, but leave Chapter 2's final sentence with
-        # the preceding prose instead of pulling it onto an otherwise empty
-        # page before Chapter 3.
-        tail_count = 1
+        # Keep Chapter 3's three closing paragraphs with its ornament. This
+        # prevents the final contrast from spilling onto an almost empty page
+        # in the longer Hungarian layout.
+        tail_count = min(3, len(parts))
         tail = parts[-tail_count:]
         del parts[-tail_count:]
         parts.append(

@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-008
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-008--two-similar-events-keep-physical-tickets-isolated
 scenario: event-domain
-ledger_status: A-ONLY UNPUBLISH FULL PASS; A-ONLY REPUBLISH PRODUCER PENDING
-state: A Unpublish made only A DR/ticket D; B remains active with byte-stable A ticket; Nova converged 2/2->1/1 B-only both in-place and after fresh Ticket GET/reopen; repeated reads preserved the isolation oracle; exact under-review notification full PASS for Nova accepted + Riley pending, Casey actor/B none; A recompute done attempt1 empty-error; Nova Ticket B-only, Riley New one A under-review row and Casey My Events are open; exactly three windows run
-required_resume: In Casey's left My Events list use Manual QA EVENT-TICKET-008 A card menu, choose Publish, then confirm Publish exactly once; do not reload/reopen; keep Nova Ticket Upcoming open until it changes from one B card/count1 to A+B/count2 and Nova notification count changes 1->2; Riley keeps Notifications New open and must remain exactly one under-review row/count1; reply megvan
+ledger_status: UNPUBLISH FULL PASS; REPUBLISH SERVER PASS; SMARTLIST POLL + PUBLICATION MENU REPAIRS BUILT / FOCUSED REPLAY PENDING
+state: Focused replay fixture remains pristine A+B active with Nova exact tickets/counters 2/2 because no producer ran; pre-producer Casey screenshot showed stale Publish for published A and later normal poll corrected it to Unpublish; root cause was converted row patched without retained source DTO; publication actions now emit the established Activity Event source sync so card/menu change together; two-direction regression added; frontend-sync hot-deploy passed at 02:33:44+02; Nova remains open A+B/count2, Riley idle, exactly three sessions
+required_resume: Codex reloads only existing Casey page onto the 02:33:44 bundle. Nova keeps Ticket A+B/count2 open. Casey opens My Events A menu, confirms baseline Unpublish, executes it once, then immediately reopens A menu before any periodic poll and requires Publish. Without Nova reload/reopen, wait for its normal poll to become B-only/count1; reply megvan. Riley stays idle
 event: Manual QA EVENT-TICKET-008 A / B
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Casey Bridge
+next_actor: Nova Social baseline, then Casey Bridge producer
 stop_phrase: megvan
 ```
 
@@ -108,13 +108,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The complete A-only Unpublish branch is **PASS**, including fresh Ticket
-reconstruction. In Casey's left My Events list, on **Manual QA
-EVENT-TICKET-008 A**, choose **three dots -> Publish**, then confirm **Publish**
-exactly once. Do not reload or reopen anything. Keep Nova Ticket > Upcoming
-open until it changes from B-only/count `1` to A+B/count `2`, and Nova's top
-notification count changes `1 -> 2`. Riley keeps Notifications > New open and
-must remain at exactly its one under-review row/count `1`. Then reply `megvan`.
+Codex first reloads only Casey's existing page onto the repaired bundle. Keep
+Nova's middle **Ticket > Upcoming** popup open at count `2`, A+B. In Casey's
+left window open **Events > My Events**, open A's menu and require
+**Unpublish**, then confirm it exactly once. Immediately reopen A's menu—before
+waiting for any periodic poll—and require **Publish**. Do not reload or reopen
+Nova; wait for its already-open Ticket popup to change by normal poll to count
+`1`, B-only, then reply `megvan`. Riley stays idle.
 
 ## QA working method
 
@@ -413,12 +413,26 @@ personal profile paths and names out of Git.
   external producer action, verify the realtime response payload independently
   from the rendered menu DOM, and require the item-level badge without reload.
   A total avatar badge is not proof that the named menu counter converged.
+- When a normal SmartList poll reconciles an absolute pageable result, its
+  current-window request must not shrink below the configured page capacity
+  merely because the last response partially filled that page. Otherwise a
+  newly inserted row that sorts ahead can replace a retained control row while
+  the total counter still grows. Test both directions: removal from a partially
+  filled open window and insertion ahead of its existing row, then compare the
+  rendered identities, total and request `pageSize`. If more than one page is
+  already loaded, the poll must preserve that larger bounded visible window.
 - Counters come from physical active ticket state and must agree in both
   `tickets` and `asset.tickets` fields.
 - The Riley window is an unchanged control unless a checkpoint explicitly
   makes Riley an actor.
 - An action emits only its own ID-scoped delta. Normal polling reconciles
   absolute state; it must not manufacture domain writes.
+- A successful owner-triggered Publish/Unpublish must update the same
+  SmartList source DTO that owns the converted card and shared action menu.
+  Require the opposite valid action immediately after confirmation, before a
+  periodic poll can hide a stale source/card split. The poll is only the
+  convergence proof for another actor's already-open surface; it is never the
+  repair mechanism for the producer's own menu.
 
 ### 5. Logs and running stack
 
