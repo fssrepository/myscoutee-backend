@@ -159,11 +159,19 @@
     if (Q.number(user.profileFormVersion) !== CURRENT_PROFILE_FORM_VERSION) {
       Q.fail(`new registration '${userId}' has profileFormVersion=${Q.number(user.profileFormVersion)}; expected ${CURRENT_PROFILE_FORM_VERSION}.`);
     }
-    const identityFields = ["email", "firebaseUid", "googleId", "facebookId"];
+    const identityFields = ["firebaseUid", "googleId", "facebookId"];
     for (const field of identityFields) {
       if (Q.text(user[field])) {
         Q.fail(`Firebase-inactive demo registration manufactured identity field '${field}'.`);
       }
+    }
+    const developmentEmail = Q.text(user.email).toLowerCase();
+    if (!/^member\+[0-9a-f]{32}@myscoutee\.local$/.test(developmentEmail)) {
+      Q.fail(`new registration '${userId}' does not have a stable per-profile development email.`);
+    }
+    const emailOwners = Q.collection("users").countDocuments({ email: developmentEmail });
+    if (emailOwners !== 1) {
+      Q.fail(`development email '${developmentEmail}' has ${emailOwners} owners; expected exactly one.`);
     }
     const experienceProfiles = Q.collection("userExperienceProfiles")
       .find({ userId })
@@ -200,6 +208,7 @@
       verifiedAtIso,
       user: {
         userId,
+        developmentEmail,
         name: required.name,
         city: required.city,
         profileStatus: Q.text(user.profileStatus),
@@ -211,10 +220,12 @@
       cardinality: {
         newUsersSinceBaseline: candidates.length,
         experienceProfiles: experienceProfiles.length,
-        firebaseLinkedUsers
+        firebaseLinkedUsers,
+        developmentEmailOwners: emailOwners
       },
       unchanged: {
-        externalIdentityFields: "absent",
+        externalProviderIdentityFields: "absent",
+        developmentEmailPolicy: "a stable per-profile development email is unique; ENTRY-FIREBASE-REG-001 must persist the real verified identity email instead",
         eventFixtures: "not touched",
         paymentRuntime: "not used"
       },

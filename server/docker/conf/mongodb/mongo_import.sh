@@ -254,7 +254,7 @@ ensure_collection_indexes() {
         --eval "
 db.getCollection('users').createIndex({ syncKey: 1 }, { name: 'users_sync_key', unique: true, sparse: true });
 db.getCollection('users').createIndex({ userId: 1 }, { name: 'users_user_id', unique: true });
-db.getCollection('users').createIndex({ email: 1 }, { name: 'users_email', sparse: true });
+db.getCollection('users').createIndex({ email: 1 }, { name: 'users_email', unique: true, sparse: true });
 db.getCollection('users').createIndex({ partitionKey: 1 }, { name: 'users_partition_key', sparse: true });
 db.getCollection('users').createIndex({ profileStatus: 1 }, { name: 'users_profile_status' });
 db.getCollection('users').createIndex({ profileStatus: 1, deletedAtIso: 1 }, { name: 'users_profile_status_deleted' });

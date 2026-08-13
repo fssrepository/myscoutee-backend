@@ -805,17 +805,23 @@ grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
 
 for seed_file in "${DEMO_USERS}" "${E2E_USERS}"; do
   jq -e '
-    [.[] | select(
-      .email == "member@myscoutee.local"
-      and (.operator // false) == false
+    ([.[].email | ascii_downcase] | length == (unique | length))
+    and ([.[] | select(
+      (.operator // false) == false
       and .hostTier != "Operator"
-    )] | length == 1
+      and .hostTier != "Admin"
+      and (.email | test("^member[0-9]+@myscoutee\\.local$"))
+    )] | length == 53)
+    and ([.[] | select(
+      .hostTier == "Admin"
+      and (.email | test("^admin[0-9]+@myscoutee\\.local$"))
+    )] | length == 2)
   ' "${seed_file}" >/dev/null \
-    || fail "${seed_file} does not contain exactly one default demo member"
+    || fail "${seed_file} does not contain one unique numbered email per demo member/admin"
   jq -e '
     [.[] | select(
       .userId == "operator@myscoutee.local"
-      and .email == "operator@myscoutee.local"
+      and .email == "operator1@myscoutee.local"
       and .operator == true
       and .hostTier == "Operator"
     )] | length == 1
@@ -903,8 +909,8 @@ if docker compose version >/dev/null 2>&1; then
     and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-demo-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
-    and .services.profilemanagement.environment.MEMBER_USER == "member@myscoutee.local"
-    and .services.profilemanagement.environment.OPERATOR_USER == "operator@myscoutee.local"
+    and .services.profilemanagement.environment.MEMBER_USER == "member1@myscoutee.local"
+    and .services.profilemanagement.environment.OPERATOR_USER == "operator1@myscoutee.local"
     and .services.profilemanagement.environment.REGISTRY_DEMO_PRIVATE_KEY_PATH
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"
     and .services.profilemanagement.environment.REGISTRY_DEMO_STATE_DIR

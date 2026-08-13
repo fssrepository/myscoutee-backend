@@ -52,9 +52,9 @@ public class AdminModerationService {
             .ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
     private static final List<AdminUserDto> DEMO_ADMINS = List.of(
-            new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "ava.admin@myscoutee.local",
+            new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "admin1@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
-            new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "noel.admin@myscoutee.local",
+            new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "admin2@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()));
 
     private final ConfigProperties configProperties;

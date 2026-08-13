@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -567,9 +568,16 @@ public class HomeUserProfileService {
         boolean wasTrackedForAccountPurge = existing != null
                 && Boolean.TRUE.equals(existing.getAccountPurgePendingCounterTracked());
         Users merged = mergeUserDocument(existing, user);
+        requireUniqueEmailOwner(merged);
         boolean shouldTrackForAccountPurge = isAccountPurgeCandidate(merged);
         merged.setAccountPurgePendingCounterTracked(shouldTrackForAccountPurge);
-        Users saved = usersRepository.save(merged);
+        Users saved;
+        try {
+            saved = usersRepository.save(merged);
+        } catch (DataIntegrityViolationException exception) {
+            throwEmailConflictIfPresent(merged, exception);
+            throw exception;
+        }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
             adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
         }
@@ -2280,7 +2288,54 @@ public class HomeUserProfileService {
             return user;
         }
         user.setEmail(resolvedEmail);
-        return usersRepository.save(user);
+        requireUniqueEmailOwner(user);
+        try {
+            return usersRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throwEmailConflictIfPresent(user, exception);
+            throw exception;
+        }
+    }
+
+    private void requireUniqueEmailOwner(Users user) {
+        if (user == null) {
+            return;
+        }
+        String normalizedEmail = normalizeUserEmail(user.getEmail());
+        user.setEmail(StringUtils.hasText(normalizedEmail) ? normalizedEmail : null);
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return;
+        }
+        Users currentOwner = usersRepository.findFirstByEmail(normalizedEmail).orElse(null);
+        if (currentOwner != null
+                && !normalizeId(currentOwner.getId()).equals(normalizeId(user.getId()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This email address is already registered.");
+        }
+    }
+
+    private void throwEmailConflictIfPresent(
+            Users attemptedUser,
+            DataIntegrityViolationException exception) {
+        String normalizedEmail = normalizeUserEmail(
+                attemptedUser == null ? null : attemptedUser.getEmail());
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return;
+        }
+        Users currentOwner = usersRepository.findFirstByEmail(normalizedEmail).orElse(null);
+        if (currentOwner != null
+                && !normalizeId(currentOwner.getId()).equals(
+                        normalizeId(attemptedUser.getId()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This email address is already registered.",
+                    exception);
+        }
+    }
+
+    private String normalizeUserEmail(String email) {
+        return safeText(email).toLowerCase(Locale.ROOT);
     }
 
     void evictUserReadCaches(Collection<String> userIds) {
@@ -2340,9 +2395,9 @@ public class HomeUserProfileService {
     private String resolveStoredEmail(String userId, String fallbackEmail) {
         String resolvedPrincipalEmail = resolveAuthenticatedEmailForUser(userId);
         if (StringUtils.hasText(resolvedPrincipalEmail)) {
-            return resolvedPrincipalEmail;
+            return normalizeUserEmail(resolvedPrincipalEmail);
         }
-        return safeText(fallbackEmail);
+        return normalizeUserEmail(fallbackEmail);
     }
 
     private String resolveAuthenticatedEmailForUser(String userId) {

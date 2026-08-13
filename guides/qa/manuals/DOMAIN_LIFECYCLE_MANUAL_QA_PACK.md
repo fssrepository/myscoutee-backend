@@ -3339,14 +3339,28 @@ dev stack is healthy and resolves `FIREBASE_ENABLED=false`. The versioned
 `entry-domain` oracle staged at `2026-08-13T17:20:09.898Z` with 56 total users,
 zero pre-existing `demo-profile-*` users and no domain-fixture mutation. One
 managed anonymous Chrome session is open at Entry; no New profile action or
-user write has occurred yet. Verification must find exactly one post-baseline
+user write had occurred at baseline. The user then selected Member > New
+profile once; the empty onboarding gate opened and the immediate server status
+still reported zero post-baseline registration users, proving that popup open
+is not a hidden registration write. After the required Basics values were
+entered and the flow advanced to Photos, a second server status still reported
+zero post-baseline users. Three separate profile images were then uploaded and
+rendered in their slots; the third pre-Save status still reported zero new
+users and the backend log contained no upload/media error. Verification must
+find exactly one post-baseline user. The Review step showed the named required
+Basics values and `3 / 8` photos while optional Lifestyle remained unchanged;
+no Save had occurred at that boundary. Verification must find exactly one post-baseline
 registration, one experience profile, completed active/public profile form v2,
-at least three images and no email/Firebase/Google/Facebook identity fields.
+at least three images and no Firebase/Google/Facebook provider identity fields.
+The Firebase-disabled development member email may retain its configured
+default; this is not treated as a Firebase identity. `ENTRY-FIREBASE-REG-001`
+must instead prove that a Firebase registration persists the real identity
+email and never the development member default.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |
-| `ENTRY-FIREBASE-REG-001` | Register/onboard a new Firebase identity after a verified revision is activated. | One verified Firebase subject links to one user/profile; reload/login reuses it and cannot collide with an existing demo or global identity. |
+| `ENTRY-FIREBASE-REG-001` | Register/onboard a new Firebase identity after a verified revision is activated. | One verified Firebase subject and its real identity email link to one user/profile; the development member-default email is never saved for this branch, and reload/login reuses the identity without colliding with an existing demo or global identity. |
 | `ENTRY-CONSENT-001` | Accept required privacy plus a controlled optional section before registration. | Exact active revision/version and selected optional IDs persist; anonymous entry evidence transfers once to the authenticated user without broadening consent. |
 | `ENTRY-CONSENT-002` | Reject once, then activate a newer privacy revision and revisit. | Rejection creates no session; an old acceptance cannot satisfy the newer revision, while reacceptance creates one current immutable consent and leaves old audit history intact. |
 | `OPERATOR-BOOTSTRAP-001` | Use a disposable bootstrap credential once, then retry and recover through the documented boundary. | First use creates the operator session and consumes/rotates bootstrap authority; replay and ordinary user access fail closed without exposing the secret. |
