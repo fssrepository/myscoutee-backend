@@ -3334,6 +3334,15 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
 
+`ENTRY-DEMO-REG-001` active execution checkpoint (2026-08-13): the existing
+dev stack is healthy and resolves `FIREBASE_ENABLED=false`. The versioned
+`entry-domain` oracle staged at `2026-08-13T17:20:09.898Z` with 56 total users,
+zero pre-existing `demo-profile-*` users and no domain-fixture mutation. One
+managed anonymous Chrome session is open at Entry; no New profile action or
+user write has occurred yet. Verification must find exactly one post-baseline
+registration, one experience profile, completed active/public profile form v2,
+at least three images and no email/Firebase/Google/Facebook identity fields.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |

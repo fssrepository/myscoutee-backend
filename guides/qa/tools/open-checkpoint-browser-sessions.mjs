@@ -74,6 +74,7 @@ const manifest = {
 try {
   for (const [index, session] of checkpoint.sessions.entries()) {
     validateSession(session);
+    const sessionKind = `${session.sessionKind ?? 'demo'}`.trim().toLowerCase();
     const actorSlug = `${session.actor}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const userDataDirectory = await mkdtemp(
       path.join(runtimeRoot, `${safeCheckpointId}-${index + 1}-${actorSlug}-`)
@@ -109,6 +110,7 @@ try {
     const runtimeSession = {
       actor: session.actor,
       expectedName: session.expectedName,
+      sessionKind,
       userId: session.userId,
       pid: browser.pid,
       userDataDirectory,
@@ -120,12 +122,20 @@ try {
     const port = await waitForDevToolsPort(userDataDirectory);
     runtimeSession.devToolsPort = port;
     await prepareBrowserLocation(port, entryUrl, geolocation);
-    await installDemoSession(port, storageScope, session.userId, targetUrl);
-    if (bootstrapEntryConsent) {
-      await acceptEntryConsent(port, storageScope, targetUrl);
+    if (sessionKind === 'anonymous') {
+      await clearManagedSession(port, storageScope);
+      if (bootstrapEntryConsent) {
+        await acceptEntryConsentOnCurrentEntry(port, storageScope);
+      }
+      await waitForAnonymousEntry(port, storageScope, entryUrl);
+    } else {
+      await installDemoSession(port, storageScope, session.userId, targetUrl);
+      if (bootstrapEntryConsent) {
+        await acceptEntryConsent(port, storageScope, targetUrl);
+      }
+      await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
+      await dismissExplanationGuide(port, storageScope);
     }
-    await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
-    await dismissExplanationGuide(port, storageScope);
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);
   }
@@ -142,7 +152,11 @@ function positiveInteger(raw, fallback) {
 }
 
 function validateSession(session) {
-  if (!session || !`${session.actor ?? ''}`.trim() || !`${session.userId ?? ''}`.trim()) {
+  const sessionKind = `${session?.sessionKind ?? 'demo'}`.trim().toLowerCase();
+  const validKind = sessionKind === 'demo' || sessionKind === 'anonymous';
+  const hasRequiredIdentity = sessionKind === 'anonymous'
+    || Boolean(`${session?.userId ?? ''}`.trim());
+  if (!session || !`${session.actor ?? ''}`.trim() || !validKind || !hasRequiredIdentity) {
     throw new Error(`Invalid browser-session entry in ${checkpointId}`);
   }
 }
@@ -261,6 +275,16 @@ async function installDemoSession(port, scope, userId, destinationUrl) {
   await evaluateInOnlyPage(port, expression, true);
 }
 
+async function clearManagedSession(port, scope) {
+  const sessionKey = `myscoutee.${scope}.session.v1`;
+  const activeUserKey = `myscoutee.${scope}.demo.active-user.v1`;
+  await evaluateInOnlyPage(port, `(() => {
+    localStorage.removeItem(${JSON.stringify(sessionKey)});
+    localStorage.removeItem(${JSON.stringify(activeUserKey)});
+    return true;
+  })()`);
+}
+
 async function prepareBrowserLocation(port, entryPageUrl, location) {
   const origin = new URL(entryPageUrl).origin;
   const browser = await jsonRequest(`http://127.0.0.1:${port}/json/version`);
@@ -329,6 +353,28 @@ async function acceptEntryConsent(port, scope, destinationUrl) {
   );
 }
 
+async function acceptEntryConsentOnCurrentEntry(port, scope) {
+  const consentKey = `myscoutee.${scope}.entry.gdpr-consent.v1`;
+  await waitUntil(async () => {
+    try {
+      return await evaluateInOnlyPage(port, `(() => {
+        const raw = localStorage.getItem(${JSON.stringify(consentKey)});
+        const consent = raw ? JSON.parse(raw) : null;
+        if (consent?.accepted === true) return true;
+        const footer = document.querySelector('.document-viewer-actions');
+        if (!footer) return false;
+        const buttons = Array.from(footer.querySelectorAll('button:not([disabled])'));
+        const accept = buttons.at(-1);
+        if (!accept) return false;
+        accept.click();
+        return false;
+      })()`);
+    } catch {
+      return false;
+    }
+  }, 30000, `persisted entry consent on DevTools port ${port}`);
+}
+
 async function dismissExplanationGuide(port, scope) {
   const dismissedContextsKey = `myscoutee.${scope}.explanation-guide.dismissed-contexts.v1`;
   await waitUntil(async () => {
@@ -368,6 +414,22 @@ async function waitForConfiguredSession(port, scope, userId, destinationUrl) {
       return false;
     }
   }, 30000, `MyScoutee session ${userId} on DevTools port ${port}`);
+}
+
+async function waitForAnonymousEntry(port, scope, entryPageUrl) {
+  const sessionKey = `myscoutee.${scope}.session.v1`;
+  const expectedPath = new URL(entryPageUrl).pathname;
+  await waitUntil(async () => {
+    try {
+      const value = await evaluateInOnlyPage(port, `({
+        hasSession: Boolean(localStorage.getItem(${JSON.stringify(sessionKey)})),
+        pathname: window.location.pathname
+      })`);
+      return value?.hasSession === false && value?.pathname === expectedPath;
+    } catch {
+      return false;
+    }
+  }, 30000, `anonymous MyScoutee entry on DevTools port ${port}`);
 }
 
 async function evaluateInOnlyPage(port, expression, tolerateNavigation = false) {

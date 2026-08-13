@@ -67,6 +67,10 @@ Usage:
   bash manual-qa-checkpoints.sh next operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh status operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh reset operator-domain OPERATOR-FIREBASE-001
+  bash manual-qa-checkpoints.sh stage entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh status entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh verify entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh reset entry-domain ENTRY-DEMO-REG-001
 
 The default schedule delay is 30 seconds; accepted values are 10..120.
 Only demo_db and e2e_db are accepted. This tool never starts or restarts Mongo,
@@ -122,6 +126,7 @@ run_scenario() {
     event-domain) scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js" ;;
     asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
+    entry-domain) scenario_script="${SCRIPT_DIR}/scenarios/entry-domain-checkpoints.js" ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
@@ -228,6 +233,10 @@ case "${scenario}:${command}" in
   event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  entry-domain:stage|entry-domain:status|entry-domain:verify|entry-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

@@ -14,6 +14,20 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "ENTRY-DEMO-REG-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated registration entry"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3

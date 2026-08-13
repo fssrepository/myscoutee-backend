@@ -31,18 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: QA-EXPANSION-CP01
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp01--payment-authorization-and-provider-callbacks
-scenario: coverage-expansion
-ledger_status: DESIGNED / IMPLEMENTATION FOUNDATION PASS / RUNTIME NOT STARTED
-state: The original 106-test workflow spine is unchanged. Eighty-two bounded cases were appended in eleven resumable checkpoints, bringing the authoritative CSV/XLSX total to 188 real tests. The provider-neutral Java payment foundation and isolated Stripe/Barion simulator tests pass, while Compose and payment runtime execution were deliberately not started under the user's laptop-resource constraint. PAYMENT-REPLACEMENT-001 and PAYMENT-EXPIRY-001 remain explicit design gaps. The retained EVENT-PUBLISH-CHAT-001 fixture was not mutated or reset and remains available for the separate EVENT-INV-003 continuation
-required_resume: Do not repeat the coverage audit, rewrite the original 106 rows or reset EVENT-PUBLISH-CHAT-001. First run the handoff resource/process gate and inspect the existing dev-stack owner without starting a second build or Compose stack. When the user authorizes runtime continuation, configure only the documented dev payment simulator switches, start or restart only the existing owning process as needed, and execute PAYMENT-STRIPE-001. If the user instead asks to resume the retained event lifecycle, use the guarded EVENT-INV-003 continuation without rebuilding the Publish baseline
-event: none for QA-EXPANSION-CP01; retained QA EVENT-PUBLISH-CHAT-001 remains untouched
+checkpoint: ENTRY-DEMO-REG-001
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
+scenario: core-coverage-expansion
+ledger_status: DESIGN CAPTURED / BASELINE STAGED / MANUAL ACTION PENDING
+state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. Eighty-two bounded cases were appended, bringing the authoritative CSV/XLSX total to 188 real tests: 132 Core and 56 EXT. The user explicitly selected Core-first execution, so payment, operator, registry and deployment EXT rows are deferred. ENTRY-DEMO-REG-001 has a verified Firebase-inactive, non-mutating entry-domain baseline and exactly one managed anonymous Entry browser is open; no New profile action or user write has occurred. The existing dev stack is healthy. The payment simulator passed container startup/health smoke, but no payment transaction testcase has started; its backend QA switches are current-container-only
+required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay already closed Core checkpoints or restage ENTRY-DEMO-REG-001. First inspect entry-domain status. If it still reports baseline with zero new registration users, continue in the already managed anonymous Entry browser: open Member authentication and choose New profile once. If the managed window is gone but the baseline is intact, relaunch only ENTRY-DEMO-REG-001. Do not start PAYMENT-STRIPE-001 or another EXT row unless the user explicitly changes the Core-first execution choice
+event: none; ENTRY-DEMO-REG-001 uses a disposable registration identity and must not mutate retained event fixtures
 actors:
-  left: Casey Bridge / event administrator and payment control
-  middle: Nova Social / payer
-  right: Riley Outside / unchanged control when required
-next_actor: Codex performs the read-only resource/dev-stack gate; the user starts PAYMENT-STRIPE-001 only after runtime is explicitly authorized
+  active: one disposable unauthenticated registration browser session, to be defined by the checkpoint fixture
+  controls: server-side user/session/Firebase identity cardinality oracle; no extra Google-account window unless the checkpoint requires it
+next_actor: The user opens Member authentication and chooses New profile once in the managed anonymous Entry window; do not fill or Save until the empty onboarding gate is confirmed
 stop_phrase: none
 ```
 
@@ -108,12 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The coverage audit is complete and no manual browser action is pending while
-the heavy runtime stack remains intentionally stopped. The next expansion case
-is `PAYMENT-STRIPE-001`; start it only after the user authorizes runtime work.
-`EVENT-PUBLISH-CHAT-001` remains **PASS / CLOSED** and retained for the separate
-guarded `EVENT-INV-003` continuation; do not mutate or reset it while starting
-the payment checkpoint.
+The coverage audit is complete and the dev stack is healthy. The next Core
+case is `ENTRY-DEMO-REG-001`; prepare its disposable Firebase-inactive baseline
+before asking for a browser action. `PAYMENT-STRIPE-001` and every other EXT
+row remain deferred until the user explicitly switches away from Core-first
+execution. Never replay a closed ticket, invitation or chat checkpoint merely
+to reach this independent registration case.
 
 ## QA working method
 
