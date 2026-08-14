@@ -10,6 +10,11 @@ from each of S01–S06 and all 192 frames from S07, producing an expected
 accepted Flow-generated music, ambience and physical effects. Do not add a
 title card or end card.
 
+The frame-accurate trims and audio fades require one final encode. The assembly
+script reads the accepted 48-second master render's delivered video and audio
+bitrates and uses those exact values as its output targets; it must not replace
+them with a lower CRF-based encode.
+
 At 00:00 composite `assets/frames/PR_OPENING_BRANDED.png` as the exact first
 appearance, or rebuild its deterministic layers over S01: unmodified
 `heart.png`, editable `yScoutee`, and `MATCH ≠ MEETING`. Fade the overlay only;

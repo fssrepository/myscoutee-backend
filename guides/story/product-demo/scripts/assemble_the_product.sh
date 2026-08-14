@@ -19,6 +19,22 @@ for input in "$short_render" "$s02_render" "$s03_render" "$long_render"; do
   fi
 done
 
+# Frame-accurate trims, concatenation and boundary fades require one final
+# encode. Preserve the accepted long master render's delivered average video
+# and audio bitrate instead of replacing it with a CRF-defined quality level.
+master_video_bitrate=$(ffprobe -v error -select_streams v:0 \
+  -show_entries stream=bit_rate -of default=nw=1:nk=1 "$long_render")
+master_audio_bitrate=$(ffprobe -v error -select_streams a:0 \
+  -show_entries stream=bit_rate -of default=nw=1:nk=1 "$long_render")
+if [[ ! "$master_video_bitrate" =~ ^[0-9]+$ ]] || \
+   [[ ! "$master_audio_bitrate" =~ ^[0-9]+$ ]]; then
+  echo "Could not read numeric master bitrates from: $long_render" >&2
+  exit 2
+fi
+video_buffer_size=$((master_video_bitrate * 2))
+
+echo "Preserving master targets: video=${master_video_bitrate} bit/s, audio=${master_audio_bitrate} bit/s"
+
 if [[ -e "$output" ]]; then
   echo "Output already exists; refusing to overwrite: $output" >&2
   exit 2
@@ -46,8 +62,10 @@ done
 # new standalone renders, and S04–S07 come from seconds 16–48 of the long
 # render. Keep frames 0..184 from the first six logical shots and all 192 frames
 # from the final shot: 1302 frames / 24 fps = 54.25 seconds.
-# Picture joins remain hard cuts. A 120 ms fade-out/fade-in pair only softens
-# incompatible generated music and ambience without changing A/V duration.
+# Picture joins remain hard cuts. Each outgoing audio segment keeps 120 ms from
+# the otherwise removed visual tail, then overlaps the incoming segment with an
+# equal-power crossfade. This softens incompatible music without inserting a
+# silent dip or changing the final A/V duration.
 ffmpeg -n -hide_banner -loglevel warning -stats \
   -i "$short_render" \
   -i "$s02_render" \
@@ -63,19 +81,27 @@ ffmpeg -n -hide_banner -loglevel warning -stats \
     [3:v]trim=start_frame=960:end_frame=1152,setpts=N/(24*TB),format=yuv420p[v6];
     [v0][v1][v2][v3][v4][v5][v6]concat=n=7:v=1:a=0[vout];
 
-    [0:a]atrim=start=0:end=7.708333333,asetpts=PTS-STARTPTS,afade=t=out:st=7.588333333:d=0.12[a0];
-    [1:a]atrim=start=0:end=7.708333333,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12,afade=t=out:st=7.588333333:d=0.12[a1];
-    [2:a]atrim=start=0:end=7.708333333,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12,afade=t=out:st=7.588333333:d=0.12[a2];
-    [3:a]atrim=start=16:end=23.708333333,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12,afade=t=out:st=7.588333333:d=0.12[a3];
-    [3:a]atrim=start=24:end=31.708333333,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12,afade=t=out:st=7.588333333:d=0.12[a4];
-    [3:a]atrim=start=32:end=39.708333333,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12,afade=t=out:st=7.588333333:d=0.12[a5];
-    [3:a]atrim=start=40:end=48,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.12[a6];
-    [a0][a1][a2][a3][a4][a5][a6]concat=n=7:v=0:a=1[aout]
+    [0:a]atrim=start=0:end=7.828333333,asetpts=PTS-STARTPTS[a0];
+    [1:a]atrim=start=0:end=7.828333333,asetpts=PTS-STARTPTS[a1];
+    [2:a]atrim=start=0:end=7.828333333,asetpts=PTS-STARTPTS[a2];
+    [3:a]atrim=start=16:end=23.828333333,asetpts=PTS-STARTPTS[a3];
+    [3:a]atrim=start=24:end=31.828333333,asetpts=PTS-STARTPTS[a4];
+    [3:a]atrim=start=32:end=39.828333333,asetpts=PTS-STARTPTS[a5];
+    [3:a]atrim=start=40:end=48,asetpts=PTS-STARTPTS[a6];
+    [a0][a1]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[x01];
+    [x01][a2]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[x012];
+    [x012][a3]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[x0123];
+    [x0123][a4]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[x01234];
+    [x01234][a5]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[x012345];
+    [x012345][a6]acrossfade=d=0.12:o=1:c1=qsin:c2=qsin[aout]
   " \
   -map "[vout]" -map "[aout]" \
-  -r 24 -c:v libx264 -preset medium -crf 18 -threads 2 \
-  -profile:v high -pix_fmt yuv420p \
-  -c:a aac -b:a 192k -ar 48000 \
+  -r 24 -c:v libx264 -preset medium -threads 2 \
+  -b:v "$master_video_bitrate" -minrate "$master_video_bitrate" \
+  -maxrate "$master_video_bitrate" -bufsize "$video_buffer_size" \
+  -x264-params "nal-hrd=cbr:force-cfr=1" \
+  -profile:v high -level:v 3.2 -pix_fmt yuv420p \
+  -c:a aac -b:a "$master_audio_bitrate" -ar 48000 \
   -movflags +faststart \
   "$output"
 

@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: AUTH-SESSION-001 — two-session limit, new-login warning and audit
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#auth-session-001--two-session-limit-new-login-warning-and-audit
-scenario: auth-session
+checkpoint: LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#landing-eligibility-001--browser-coordinate-login-eligibility
+scenario: entry-domain (fixture/CDP route readiness audit pending)
 ledger_status: DESIGN CAPTURED / NOT RUN
-state: EVENT-INV-006 is PASS/CLOSED and reset/not-staged; never replay either acceptance. AUTH-SESSION-001 is active. Branch A login/reload and Branch B second login are proven. First C BLOCKED_LIMIT attempt exposed a generic selector error; the repaired C replay at 2026-08-14T20:09:16.631777810Z preserved the first immutable attempt and produced the exact ordered ACCEPTED/ACCEPTED/BLOCKED_LIMIT/BLOCKED_LIMIT audit sequence. Two active sessions remained, and three normalized unread security notification/outbox rows exist. C stayed on Entry and rendered “Two sessions are already active. Sign out from one of them, then try again.” with no raw key. A and B both converged in-place to notification counter 3. The got.it/demo-bundle race and selector error-propagation fixes remain queued for final accepted-C replay evidence.
-required_resume: Explicitly log out Client A once through the ordinary visible Logout action. Do not close the window and do not touch B or C. Then run status auth-session AUTH-SESSION-001 and require activeSessionCount=1 with B retained, auditCount=4 unchanged, and security notification/outbox counts still 3. Only after that oracle may C retry.
-event: AUTH-SESSION-001 blocked-UI repair replay PASS; activeSessionCount=2, auditCount=4, securityNotificationCount=3, securityOutboxCount=3; A/B visible counters both 3
+state: AUTH-SESSION-001 is PASS/CLOSED in pack/CSV/XLSX. Its final screenshot and DOM showed two New login plus two Blocked login attempt rows with normalized Chrome on Linux desktop labels, no sensitive values, and independent unread state. The repair-run audit sequence and fixes are documented. Guarded reset completed at 2026-08-14T20:24:40.680Z and status proves zero session/audit/notification/outbox residue. XLSX summary after synchronization: Core 133, Done 53, External 56, Total 189. The next unclosed core ledger row is LANDING-ELIGIBILITY-001.
+required_resume: Do not restage AUTH or reuse its login attempts. Audit the existing landing /auth/eligibility implementation, country-partition seed and browser launcher/CDP geolocation support first. Determine the smallest dev-only Firebase-enabled or faithful login-gate route that does not weaken production and does not start a second frontend/backend process. Add a guarded LANDING-ELIGIBILITY-001 fixture/oracle only if missing. Prove a clean anonymous baseline before replacing stale AUTH documents with the checkpoint's fresh browser targets.
+event: AUTH-SESSION-001 reset/not-staged with zero residue; LANDING-ELIGIBILITY-001 not staged
 actors:
-  active: Client A port41963, Client B port36767 and Client C port44279 are fresh isolated anonymous Entry documents opened at 2026-08-14T19:44:19.539Z
-  controls: all three will authenticate as the same controlled Nova Social account; B and C must remain untouched during Branch A
-next_actor: User explicitly logs out only Client A through the visible UI; Codex proves the server slot was released before C retries.
-stop_phrase: megvan
+  active: AUTH documents A port41963, B port36767 and C port44279 are stale after the guarded fixture reset and must not be used as LANDING evidence
+  controls: LANDING requires fresh anonymous target-scoped geolocation/permission contexts; exact ports/pages are assigned only after fixture and environment readiness
+next_actor: Codex audits the LANDING implementation and guarded fixture/CDP route; no user action until a clean anonymous baseline and exact target identities are proven.
+stop_phrase: LANDING clean baseline and exact browser targets proven before the first coordinate branch
 ```
 
 ### Efficient resume gate
@@ -107,11 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`AUTH-SESSION-001 — two-session limit, new-login warning and audit`, Branch A.
-The guarded clean baseline and the three exact isolated A/B/C clients are
-ready. Sign in only Client A as Nova Social; leave B and C untouched. The next
-machine oracle must show one accepted audit, one active session and zero
-security warnings before the reload branch.
+Prepare `LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility`.
+Audit the existing server eligibility decision, country-partition seed,
+Firebase-enabled dev gate and target-scoped CDP geolocation/permission path.
+Do not replace the stale AUTH documents or ask for a coordinate action until a
+guarded clean anonymous baseline and exact browser identities are proven.
 
 ## QA working method
 

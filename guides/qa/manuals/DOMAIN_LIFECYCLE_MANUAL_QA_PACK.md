@@ -3996,6 +3996,36 @@ Execution 2026-08-13 (in progress):
   sessions after the rejected attempt, and successful C admission only after
   one slot is released. Notifications may be read independently from the
   immutable audit history.
+- Manual result — **PASS / CLOSED** (2026-08-14):
+  - Guarded baseline at `2026-08-14T19:43:56.436Z` proved zero active sessions,
+    audits, security notifications and outbox rows for Nova Social.
+  - Client A created one `ACCEPTED` audit/session and no warning. Its reload was
+    captured at `2026-08-14T19:50:16.665Z` with the same one slot/audit and no
+    new warning.
+  - Client B created the second `ACCEPTED` session/audit and the first
+    normalized `Chrome on Linux desktop` warning. A and B remained usable.
+  - Client C was denied while A/B were active. The first correct
+    `BLOCKED_LIMIT` server decision exposed two frontend defects: the tracked
+    demo session was published before Java accepted it, racing the demo i18n
+    bundle, and the selector replaced the specific session-limit message with
+    a generic error. The frontend now publishes/persists only after
+    `ACCEPTED` and carries the translated failure key into the selector.
+  - The repair replay preserved the first immutable audit rather than deleting
+    it. C remained on Entry and rendered “Two sessions are already active.
+    Sign out from one of them, then try again.” with no raw key. The run's exact
+    audit order therefore became `ACCEPTED`, `ACCEPTED`, `BLOCKED_LIMIT`,
+    `BLOCKED_LIMIT`, `ACCEPTED`.
+  - Explicit A logout removed only A's server slot. C then entered as the
+    second active session beside B. Final state contained exactly two active
+    opaque sessions, five immutable explicit-attempt audits and four matching
+    security notification/outbox rows.
+  - B and C both converged in-place to unread counter 4. C loaded
+    `demo.en` bundle `2026.08.14.en.56` with `got.it` rendered as **Got it**.
+    The final Notification Center screenshot at
+    `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-14 22-21-30.png`
+    shows two New login and two Blocked login attempt rows, all normalized and
+    with no raw user-agent, IP, token or session identifier. Opening the list
+    did not mark the rows read; the immutable audits remained independent.
 
 ### `LANDING-ELIGIBILITY-001` — browser-coordinate login eligibility
 
