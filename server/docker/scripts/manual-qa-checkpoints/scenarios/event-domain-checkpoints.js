@@ -5291,6 +5291,193 @@
     });
   }
 
+  function lifecycleResourceSnapshot() {
+    return Q.collection("activityResources").find({
+      ownerId: { $regex: `^${PREFIX}` }
+    }).sort({ _id: 1 }).toArray().map(item => ({
+      id: Q.text(item._id),
+      ownerId: Q.text(item.ownerId),
+      ownerType: Q.text(item.ownerType),
+      type: Q.text(item.type),
+      status: Q.text(item.status)
+    }));
+  }
+
+  function captureLifecycleRestoreBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-003") {
+      Q.fail("capture-lifecycle-restore-baseline currently supports only EVENT-LIFE-003.");
+    }
+    const state = requireMatchingState();
+    if (state.lifecycleRestoreBaseline && state.lifecycleRestoreBaseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-003 already has a saved Restore baseline.");
+    }
+    const current = oracle(state);
+    const event = (current.events || []).find(item => item.eventId === EVENT_ID);
+    const acceptedMembers = (current.members || [])
+      .filter(member => member.eventId === EVENT_ID && member.status === "accepted");
+    const countersByUserId = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.user && item.user.userId), item.current || {}]));
+    const hostCounters = countersByUserId.get(hostUserId) || {};
+    const participantCounters = countersByUserId.get(participantUserId) || {};
+    const hostEvent = hostCounters.event || {};
+    const participantEvent = participantCounters.event || {};
+    if ((current.events || []).length !== 1
+        || !event
+        || event.status !== "T"
+        || event.statusBeforeSuppression !== "A"
+        || !event.trashedAtIso
+        || event.acceptedMembers !== 2
+        || event.capacityTotal !== 8
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || acceptedMembers.length !== 2
+        || !sameIds(acceptedMembers.map(member => member.userId), [hostUserId, participantUserId])
+        || Number(hostCounters.hosting || 0) !== 0
+        || Number(hostEvent.all || 0) !== 0
+        || Number(hostEvent.trash || 0) !== 1
+        || Number(participantCounters.events || 0) !== 0
+        || Number(participantEvent.all || 0) !== 0
+        || Number(participantEvent.active || 0) !== 0
+        || Number(participantEvent.trash || 0) !== 0
+        || (current.eventLifecycleTasks || []).length !== 0
+        || (current.eventLifecycleOutbox || []).length !== 0
+        || (current.eventLifecycleNotifications || []).length !== 0
+        || (current.eventRecomputeTasks || []).length !== 0) {
+      Q.fail("EVENT-LIFE-003 is not at the exact clean Casey-only Trash baseline.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const lifecycleRestoreBaseline = {
+      capturedAtIso,
+      events: current.events,
+      members: current.members,
+      resources: lifecycleResourceSnapshot(),
+      checkoutBasketItems: current.checkoutBasketItems,
+      payments: current.payments,
+      tickets: current.tickets,
+      eventChats: current.eventChats,
+      eventLifecycleTasks: current.eventLifecycleTasks,
+      eventLifecycleOutbox: current.eventLifecycleOutbox,
+      eventLifecycleNotifications: current.eventLifecycleNotifications,
+      eventRecomputeTasks: current.eventRecomputeTasks
+    };
+    const lifecycleActionBaselineUserActivitySnapshots = [hostUserId, participantUserId]
+      .map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { lifecycleRestoreBaseline, lifecycleActionBaselineUserActivitySnapshots }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "lifecycle-restore-baseline-captured",
+      capturedAtIso,
+      event: {
+        eventId: event.eventId,
+        status: event.status,
+        statusBeforeSuppression: event.statusBeforeSuppression,
+        trashedAtIso: event.trashedAtIso,
+        acceptedMembers: event.acceptedMembers,
+        capacityTotal: event.capacityTotal
+      },
+      counters: { host: hostCounters, participant: participantCounters },
+      cardinality: {
+        events: current.events.length,
+        members: current.members.length,
+        resources: lifecycleRestoreBaseline.resources.length,
+        tickets: current.tickets.length
+      },
+      next: "Casey restores QA EVENT-LIFE-003 exactly once from Events > Trash."
+    });
+  }
+
+  function verifyLifecycleRestore() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-003") {
+      Q.fail("verify-lifecycle-restore currently supports only EVENT-LIFE-003.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.lifecycleRestoreBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-003 requires its saved Restore baseline before verification.");
+    }
+    const current = oracle(state);
+    const event = (current.events || []).find(item => item.eventId === EVENT_ID);
+    const originalEvent = (baseline.events || [])[0] || {};
+    if ((current.events || []).length !== 1
+        || !event
+        || event.recordId !== originalEvent.recordId
+        || event.eventId !== originalEvent.eventId
+        || event.title !== originalEvent.title
+        || event.status !== "A"
+        || event.published !== true
+        || event.isTrashed !== false
+        || event.statusBeforeSuppression
+        || event.trashedAtIso
+        || event.acceptedMembers !== 2
+        || event.capacityTotal !== 8
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])) {
+      Q.fail("Restore must preserve one event identity and return it to A with suppression fields cleared.");
+    }
+    if (!sameJson(current.members || [], baseline.members || [])
+        || !sameJson(lifecycleResourceSnapshot(), baseline.resources || [])
+        || !sameJson(current.checkoutBasketItems || [], baseline.checkoutBasketItems || [])
+        || !sameJson(current.payments || [], baseline.payments || [])
+        || !sameJson(current.tickets || [], baseline.tickets || [])
+        || !sameJson(current.eventChats || [], baseline.eventChats || [])) {
+      Q.fail("Restore duplicated or rewrote member, resource, basket, payment, ticket or chat identity.");
+    }
+    const countersByUserId = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.user && item.user.userId), item.current || {}]));
+    const hostCounters = countersByUserId.get(hostUserId) || {};
+    const participantCounters = countersByUserId.get(participantUserId) || {};
+    const hostEvent = hostCounters.event || {};
+    const participantEvent = participantCounters.event || {};
+    if (Number(hostCounters.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(participantCounters.events || 0) !== 1
+        || Number(participantEvent.all || 0) !== 1
+        || Number(participantEvent.active || 0) !== 1
+        || Number(participantEvent.trash || 0) !== 0) {
+      Q.fail("Restore must return Casey to Hosting/All and Nova to Active/All exactly once.");
+    }
+    if (!sameJson(current.eventLifecycleTasks || [], baseline.eventLifecycleTasks || [])
+        || !sameJson(current.eventLifecycleOutbox || [], baseline.eventLifecycleOutbox || [])
+        || !sameJson(current.eventLifecycleNotifications || [], baseline.eventLifecycleNotifications || [])) {
+      Q.fail("Restore must not manufacture a lifecycle message, outbox row or notification.");
+    }
+    const baselineRecomputeById = new Map((baseline.eventRecomputeTasks || [])
+      .map(item => [Q.text(item.id), item]));
+    const recomputeDelta = (current.eventRecomputeTasks || []).filter(item => {
+      const before = baselineRecomputeById.get(Q.text(item.id));
+      return !before || Q.text(item.updatedDate) > Q.text(before.updatedDate);
+    });
+    if (recomputeDelta.length !== 1
+        || !recomputeDelta[0].reasons.includes("EVENT_CHANGED")
+        || recomputeDelta[0].status !== "done"
+        || !recomputeDelta[0].completedAtIso
+        || recomputeDelta[0].updatedDate <= baseline.capturedAtIso) {
+      Q.fail("Restore must produce exactly one terminal EVENT_CHANGED recompute delta.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "lifecycle-restore-verified",
+      verifiedAtIso: Q.nowIso(),
+      actionBaselineCapturedAtIso: baseline.capturedAtIso,
+      event,
+      counters: { host: hostCounters, participant: participantCounters },
+      recompute: recomputeDelta[0],
+      unchangedCardinality: {
+        events: current.events.length,
+        members: current.members.length,
+        resources: lifecycleResourceSnapshot().length,
+        tickets: current.tickets.length
+      },
+      next: "Run the documented fresh read-only Casey/Nova UI reconstruction; it must not create another task."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5386,6 +5573,8 @@
     case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;
     case "capture-lifecycle-action-baseline": captureLifecycleActionBaseline(); break;
     case "verify-lifecycle-trash": verifyLifecycleTrash(); break;
+    case "capture-lifecycle-restore-baseline": captureLifecycleRestoreBaseline(); break;
+    case "verify-lifecycle-restore": verifyLifecycleRestore(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
