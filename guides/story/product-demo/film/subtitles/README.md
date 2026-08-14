@@ -6,10 +6,10 @@ independent rewrite.
 
 ## Files
 
-- `MYSCOUTEE_THE_PRODUCT_EN.srt` and `.vtt`: English correction/upload files;
-- `MYSCOUTEE_THE_PRODUCT_HU.srt` and `.vtt`: Hungarian YouTube upload files;
-- `MyScoutee_The_Product.en_US.srt`: optional Facebook English copy;
-- `MyScoutee_The_Product.hu_HU.srt`: **Facebook Hungarian upload file**;
+- `MyScoutee_The_Product.en_US.srt`: single English upload file for Facebook
+  and YouTube;
+- `MyScoutee_The_Product.hu_HU.srt`: single Hungarian upload file for Facebook
+  and YouTube;
 - `MYSCOUTEE_THE_PRODUCT_EN_TRANSCRIPT.txt`: clean English text for
   ElevenLabs, auto-sync and auto-caption correction.
 
@@ -29,9 +29,9 @@ filename as US English. The rule is documented at
 
 ## YouTube
 
-Upload the SRT or WebVTT under **Hungarian** in YouTube Studio. SRT must remain
-plain UTF-8 text. YouTube accepts basic `.srt` and `.vtt`; the language is chosen
-in Studio rather than encoded in the generic filename. See
+Upload `MyScoutee_The_Product.hu_HU.srt` under **Hungarian** in YouTube Studio.
+The same file is used for Facebook; YouTube does not require a separate copy or
+generic filename. SRT must remain plain UTF-8 text. See
 <https://support.google.com/youtube/answer/2734698?hl=en> and
 <https://support.google.com/youtube/answer/2734796?hl=en>.
 
@@ -41,6 +41,8 @@ against the committed transcript—especially `MyScoutee`, `priority list`, and
 
 ## Timing status
 
-These cues target the expected `00:54.250` picture lock. Micro-retime them after
-the final Jon waveform and final picture are locked. Keep at most two lines and
-avoid the bottom slogan during approximately 00:51.75–00:54.25.
+These cues are locked to the final `00:54.250` narrated master and the actual
+continuous Jon waveform. The four spoken blocks begin at `00:00.250`,
+`00:15.417`, `00:30.833` and `00:46.250`; no speech was time-stretched. Every
+cue uses at most two lines, and the final cue clears at `00:52.950` so the last
+branded beat can breathe.

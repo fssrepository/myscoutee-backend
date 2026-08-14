@@ -518,7 +518,7 @@ public class HomeUserProfileService {
         }
 
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
-            return new UserLocationEligibilityResponseDto(false, null, null, true, false);
+            return new UserLocationEligibilityResponseDto(false, null, null, true, true);
         }
 
         LocationCoordinatesDto coordinates = new LocationCoordinatesDto(latitude, longitude);

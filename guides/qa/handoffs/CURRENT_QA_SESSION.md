@@ -33,16 +33,16 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#landing-eligibility-001--browser-coordinate-login-eligibility
-scenario: entry-domain (fixture/CDP route readiness audit pending)
-ledger_status: DESIGN CAPTURED / NOT RUN
-state: AUTH-SESSION-001 is PASS/CLOSED in pack/CSV/XLSX. Its final screenshot and DOM showed two New login plus two Blocked login attempt rows with normalized Chrome on Linux desktop labels, no sensitive values, and independent unread state. The repair-run audit sequence and fixes are documented. Guarded reset completed at 2026-08-14T20:24:40.680Z and status proves zero session/audit/notification/outbox residue. XLSX summary after synchronization: Core 133, Done 53, External 56, Total 189. The next unclosed core ledger row is LANDING-ELIGIBILITY-001.
-required_resume: Do not restage AUTH or reuse its login attempts. Audit the existing landing /auth/eligibility implementation, country-partition seed and browser launcher/CDP geolocation support first. Determine the smallest dev-only Firebase-enabled or faithful login-gate route that does not weaken production and does not start a second frontend/backend process. Add a guarded LANDING-ELIGIBILITY-001 fixture/oracle only if missing. Prove a clean anonymous baseline before replacing stale AUTH documents with the checkpoint's fresh browser targets.
-event: AUTH-SESSION-001 reset/not-staged with zero residue; LANDING-ELIGIBILITY-001 not staged
+scenario: entry-domain (baseline staged at 2026-08-14T20:44:01.551Z)
+ledger_status: EXECUTING / BASELINE PROVEN
+state: LANDING-ELIGIBILITY-001 has a guarded, write-free baseline with users=56, userSessionStates=0 and userLoginAudits=0. Versioned OSM MultiPolygon partitions country:hu and country:gb are present in every seed and the current demo database; country:fr is absent. Watcher builds and direct Java validation reads are green. Budapest is PASS with exact coordinate/country:hu/Login and zero writes. Screenshot 2026-08-14 23-05-56 plus independent browser/Mongo oracle makes London PASS with exact 51.5074/-0.1278, country:gb and enabled login, and Paris granted-location PASS with exact 48.8566/2.3522, no partition and disabled Unavailable in your country. Only the right Paris target was then changed. Its persistent holder now owns both CDP permission=denied and the location override; read-only state shows no eligibility request, no session, explicit Allow location and unchanged database counts. The first one-shot permission attempt did not execute the branch because Chrome reverted to granted when that CDP connection closed; it is harness evidence only.
+required_resume: Continue from the current managed windows; do not stage, relaunch or repeat Budapest/London/Paris-granted. Obtain the user's visual confirmation that the right Paris target now shows the enabled Allow location action. Then run the final read-only browser/Mongo oracle, restore Grant on only that target to prove retry, and close/reset according to the checkpoint definition. Do not attempt real Firebase authentication completion while the deployment Firebase client configuration remains inactive; record that substep as pending rather than faking it.
+event: Budapest, London and Paris granted-location branches PASS; Paris denied machine baseline ready
 actors:
-  active: AUTH documents A port41963, B port36767 and C port44279 are stale after the guarded fixture reset and must not be used as LANDING evidence
-  controls: LANDING requires fresh anonymous target-scoped geolocation/permission contexts; exact ports/pages are assigned only after fixture and environment readiness
-next_actor: Codex audits the LANDING implementation and guarded fixture/CDP route; no user action until a clean anonymous baseline and exact target identities are proven.
-stop_phrase: LANDING clean baseline and exact browser targets proven before the first coordinate branch
+  active: Budapest eligibility left port45167; London eligibility middle port36899; Paris eligibility right port44021
+  controls: all three are anonymous with no local session; Paris is the later permission-denied target and must not be replaced between its two branches
+next_actor: User visually confirms the right Paris target shows the enabled Allow location action; Codex then checks the final denied-state browser/Mongo oracle.
+stop_phrase: megvan
 ```
 
 ### Efficient resume gate
@@ -107,11 +107,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Prepare `LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility`.
-Audit the existing server eligibility decision, country-partition seed,
-Firebase-enabled dev gate and target-scoped CDP geolocation/permission path.
-Do not replace the stale AUTH documents or ask for a coordinate action until a
-guarded clean anonymous baseline and exact browser identities are proven.
+`LANDING-ELIGIBILITY-001 — permission denied branch`: in the right Paris
+window, visually confirm that the top-right action is now the enabled **Allow
+location**, not **Unavailable in your country** or **Login**. Do not click it
+yet. Then write `megvan`; Codex owns the browser and Mongo oracle.
 
 ## QA working method
 
@@ -408,6 +407,17 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   Never call Playwright/CDP `browser.close()` or a browser-level close command
   against a managed QA Chrome merely to detach an inspector; that terminates
   the user's checkpoint window and discards in-memory evidence.
+- In the Chrome build used by this campaign, CDP
+  `Emulation.setGeolocationOverride` and `Browser.setPermission` must both be
+  treated as session-scoped: closing their connections can silently restore
+  the host geolocation or profile-default permission even though the commands
+  returned success. A coordinate-controlled checkpoint must keep its
+  launcher-owned target and browser connections alive, record the holder PID
+  in the runtime manifest, and terminate that holder with its managed Chrome.
+  Prove the application request URL, effective permission and resolved
+  partition from a separate read-only inspector before asking for manual
+  evidence; differently labelled windows or a successful one-shot command are
+  not proof that different coordinates/permissions remain applied.
 - A synthetic browser API replay must reproduce the application's identity
   transport, not merely its JSON body or cookies. In demo mode every API call
   that stands in for Angular `HttpClient` must include

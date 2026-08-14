@@ -74,6 +74,49 @@
         }
       ]
     },
+    "LANDING-ELIGIBILITY-001": {
+      "targetUrl": "http://localhost/entry?qaAuth=firebase&redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?qaAuth=firebase&redirect=%2Fgame",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Budapest eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:hu landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "London eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:gb landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 51.5074,
+            "longitude": -0.1278,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Paris eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Not-yet-enabled country:fr and permission-denied control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 48.8566,
+            "longitude": 2.3522,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2

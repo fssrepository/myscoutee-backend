@@ -1,4 +1,4 @@
-# Product reel — ElevenLabs Jon narration
+# The Product — ElevenLabs Jon narration
 
 Raw source target: `00:56.000`, seven exact 8-second shots.
 Expected picture lock: `00:54.250` after removing seven repeated frames at
@@ -6,13 +6,16 @@ each of the six joins.
 
 Voice: **Jon — Warm & Grounded Storyteller**
 Model: `Eleven Multilingual v2`
-Speed: `0.97`
-Stability: `62`
-Similarity: `55`
-Style exaggeration: `20`
+Speed: `0.98`
+Stability: `58`
+Similarity: `60`
+Style exaggeration: `10`
 Speaker boost: `Off`
 
-These are the approved story-edition values. Before paid generation, record the
+This is the product-film lock: slightly freer and more conversational than the
+story-edition read, with less style exaggeration so it stays credible rather
+than sounding like a trailer. The modest similarity increase helps hold Jon's
+identity through one continuous generation. Before paid generation, record the
 live ElevenLabs voice ID and exact model version in
 `NARRATION_MIX_MANIFEST.json`; the display name alone is not a reproducible
 identifier.
@@ -29,6 +32,33 @@ meeting.” a short pause afterwards. Stress **private, editable priority list**
 
 Generate speech only: no ElevenLabs music, sound effects or enhancement. Prefer
 48 kHz WAV; high-quality MP3 is acceptable if it is decoded once to PCM.
+
+## Preferred production generation — one continuous read
+
+Generate the complete narration in one request and export it as
+`PR_JON_FULL.wav`. If WAV export is unavailable, use the same basename with the
+highest-quality MP3 option. Keep the seven paragraphs as natural thought
+boundaries; do not change the voice settings between paragraphs.
+
+```text
+A match is only a yes. Reaching a real meeting still needs people, timing, a place, and a shared plan.
+
+MyScoutee starts with your private, editable priority list. Your choices are a signal, not the final answer.
+
+Everyone arranges their own list independently. Profile fit, context, distance, and mutual interest help shape what comes next.
+
+Together, those signals can form balanced groups, so more people get a real chance to meet.
+
+The group stays full when plans change, while everyone organizes people, transport, place, and supplies.
+
+Then the plan becomes a real meeting. Profiles gain voices. Shared experience creates context. Private priorities stay private.
+
+You do not have to meet everyone to reach the right person. MyScoutee is designed for the meeting.
+```
+
+The four sections below are fallback regeneration blocks only. Use them if one
+passage in the continuous read is defective; they are not the preferred first
+generation for this short film.
 
 ## JON-01 — target 00:00.000–00:15.417
 
@@ -87,11 +117,11 @@ Timing intent:
 
 ## Fit rule
 
-Assemble the four blocks at their exact picture-lock boundaries. First trim
-excess leading/trailing silence and edit natural breaths. If a block still
-misses its window, regenerate only that block before applying time correction.
-Any final transparent time adjustment stays within approximately `±2%`; do not
-make Jon sound hurried or stretched.
+First trim only excess leading/trailing silence from the continuous master and
+check its natural phrase positions against the picture. Edit pauses before
+changing words. If one passage is defective, regenerate only its fallback
+block and replace it at a breath. Any final transparent time adjustment stays
+within approximately `±2%`; do not make Jon sound hurried or stretched.
 
 The Flow-generated music, ambience and effects remain underneath. Duck them
 under Jon; do not replace the accepted source soundtracks during the narration

@@ -5,15 +5,173 @@
   const Q = ManualQa;
   const SCENARIO = "entry-domain";
   const CHECKPOINT = "ENTRY-DEMO-REG-001";
+  const LANDING_CHECKPOINT = "LANDING-ELIGIBILITY-001";
   const USER_ID_PREFIX = "demo-profile-";
   const CURRENT_PROFILE_FORM_VERSION = 2;
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
   function config() {
-    if (checkpointId !== CHECKPOINT) {
-      Q.fail(`entry-domain currently supports only ${CHECKPOINT}.`);
+    if (checkpointId !== CHECKPOINT && checkpointId !== LANDING_CHECKPOINT) {
+      Q.fail(`entry-domain supports ${CHECKPOINT} and ${LANDING_CHECKPOINT}.`);
     }
+  }
+
+  function isLandingCheckpoint() {
+    return checkpointId === LANDING_CHECKPOINT;
+  }
+
+  function landingDomainSnapshot() {
+    return {
+      users: Q.collection("users").countDocuments({}),
+      userSessionStates: Q.collection("userSessionStates").countDocuments({}),
+      userLoginAudits: Q.collection("userLoginAudits").countDocuments({})
+    };
+  }
+
+  function countryPartitions() {
+    return Q.collection("countryPartitions")
+      .find({}, {
+        _id: 0,
+        partitionKey: 1,
+        countryCode: 1,
+        countryName: 1,
+        source: 1,
+        osmType: 1,
+        osmId: 1,
+        "geometry.type": 1
+      })
+      .sort({ partitionKey: 1 })
+      .toArray();
+  }
+
+  function assertLandingCountryBaseline(partitions) {
+    const byKey = new Map(partitions.map(partition => [Q.text(partition.partitionKey), partition]));
+    for (const expected of [
+      ["country:hu", "HU"],
+      ["country:gb", "GB"]
+    ]) {
+      const partition = byKey.get(expected[0]);
+      if (!partition
+          || Q.text(partition.countryCode).toUpperCase() !== expected[1]
+          || Q.text(partition.source) !== "openstreetmap"
+          || Q.text(partition.geometry && partition.geometry.type) !== "MultiPolygon") {
+        Q.fail(`required OSM partition '${expected[0]}' is missing or malformed.`);
+      }
+    }
+    if (byKey.has("country:fr")) {
+      Q.fail("country:fr is already imported; select and document a different not-yet-enabled control before staging.");
+    }
+  }
+
+  function stageLanding() {
+    Q.assertNotStaged(SCENARIO);
+    Q.assertNoOtherActiveScenario(SCENARIO);
+    const partitions = countryPartitions();
+    assertLandingCountryBaseline(partitions);
+    const stagedAtIso = Q.nowIso();
+    const domainBaseline = landingDomainSnapshot();
+    Q.collection(Q.STATE_COLLECTION).insertOne({
+      _id: Q.stateId(SCENARIO),
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "baseline",
+      stagedAtIso,
+      domainBaseline,
+      countryPartitionKeys: partitions.map(partition => Q.text(partition.partitionKey))
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "baseline",
+      stagedAtIso,
+      fixtureMutation: false,
+      domainBaseline,
+      countryPartitions: partitions,
+      controls: {
+        budapest: "country:hu",
+        london: "country:gb",
+        paris: "not imported; expected eligible=false"
+      },
+      next: "Launch the three managed anonymous LANDING-ELIGIBILITY-001 targets, then execute Budapest, London, Paris and the target-scoped permission-denied branch."
+    });
+  }
+
+  function landingStateStatus(verified) {
+    const state = requireState();
+    const partitions = countryPartitions();
+    assertLandingCountryBaseline(partitions);
+    const current = landingDomainSnapshot();
+    const unchanged = JSON.stringify(current) === JSON.stringify(state.domainBaseline)
+      && JSON.stringify(partitions.map(partition => Q.text(partition.partitionKey)))
+        === JSON.stringify(state.countryPartitionKeys || []);
+    if (verified && !unchanged) {
+      Q.fail("landing eligibility reads changed users, login sessions/audits or the country-partition baseline.");
+    }
+    return { state, partitions, current, unchanged };
+  }
+
+  function statusLanding() {
+    const state = Q.activeState(SCENARIO, false);
+    if (!state) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "not-staged",
+        domain: landingDomainSnapshot(),
+        countryPartitions: countryPartitions(),
+        next: `Run stage entry-domain ${checkpointId}.`
+      });
+      return;
+    }
+    const status = landingStateStatus(false);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: Q.text(status.state.phase) || "baseline",
+      stagedAtIso: status.state.stagedAtIso,
+      baseline: status.state.domainBaseline,
+      current: status.current,
+      countryPartitions: status.partitions,
+      unchanged: status.unchanged,
+      next: status.unchanged
+        ? "Continue the next controlled landing branch."
+        : "Stop: a read-only landing checkpoint changed its persisted domain baseline."
+    });
+  }
+
+  function verifyLanding() {
+    const status = landingStateStatus(true);
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: status.state._id },
+      { $set: { phase: "verified", verifiedAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "verified",
+      verifiedAtIso,
+      baseline: status.state.domainBaseline,
+      current: status.current,
+      countryPartitions: status.partitions,
+      unchanged: true,
+      next: `Record ${checkpointId} PASS/CLOSED only when the browser/server evidence for all coordinate and permission branches is also complete, then reset the checkpoint pointer.`
+    });
+  }
+
+  function resetLanding() {
+    const status = landingStateStatus(true);
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: status.state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "reset-complete",
+      resetAtIso: Q.nowIso(),
+      domainDeletionPerformed: false,
+      unchanged: true,
+      next: `Run status entry-domain ${checkpointId}; expected phase is not-staged.`
+    });
   }
 
   function registrationUsers() {
@@ -64,6 +222,10 @@
 
   function stage() {
     config();
+    if (isLandingCheckpoint()) {
+      stageLanding();
+      return;
+    }
     Q.assertNotStaged(SCENARIO);
     const existing = registrationUsers();
     const stagedAtIso = Q.nowIso();
@@ -92,6 +254,10 @@
 
   function status() {
     config();
+    if (isLandingCheckpoint()) {
+      statusLanding();
+      return;
+    }
     const state = Q.activeState(SCENARIO, false);
     if (!state) {
       Q.printObject({
@@ -129,6 +295,10 @@
 
   function verify() {
     config();
+    if (isLandingCheckpoint()) {
+      verifyLanding();
+      return;
+    }
     const state = requireState();
     const candidates = newRegistrationUsers(state);
     if (candidates.length !== 1) {
@@ -235,6 +405,10 @@
 
   function reset() {
     config();
+    if (isLandingCheckpoint()) {
+      resetLanding();
+      return;
+    }
     const state = requireState();
     const candidates = newRegistrationUsers(state);
     if (candidates.length > 1) {

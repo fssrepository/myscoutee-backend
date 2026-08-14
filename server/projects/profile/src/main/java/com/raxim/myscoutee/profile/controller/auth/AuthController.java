@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +66,26 @@ public class AuthController {
     public UserLocationEligibilityResponseDto queryLocationEligibility(
             @RequestParam(value = "latitude", required = false) Double latitude,
             @RequestParam(value = "longitude", required = false) Double longitude) {
+        validateLocationCoordinates(latitude, longitude);
         return homeUserProfileService.queryLocationEligibility(latitude, longitude);
+    }
+
+    private void validateLocationCoordinates(Double latitude, Double longitude) {
+        if (latitude == null && longitude == null) {
+            return;
+        }
+        if (latitude == null
+                || longitude == null
+                || !Double.isFinite(latitude)
+                || !Double.isFinite(longitude)
+                || latitude < -90.0
+                || latitude > 90.0
+                || longitude < -180.0
+                || longitude > 180.0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Latitude and longitude must be a complete, finite coordinate pair within valid ranges.");
+        }
     }
 
     @PostMapping("/me/realtime/long-poll")

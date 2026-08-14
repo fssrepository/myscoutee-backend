@@ -4038,21 +4038,31 @@ Execution 2026-08-13 (in progress):
   use a target-scoped CDP geolocation override and geolocation permission; for
   manual QA use DevTools **More tools -> Sensors -> Location**. Do not change a
   country partition or user record to manufacture the result.
-- Eligible branch: override the browser to Budapest (`47.4979, 19.0402`),
-  allow location, and reload the landing page. Require
+- Eligible Budapest branch: override the browser to Budapest (`47.4979,
+  19.0402`), allow location, and reload the landing page. Require
   `eligible=true`, `partitionKey=country:hu`, the security gate enabled and the
-  normal login action available. Completing login must retain the resolved
-  partition through the ordinary authentication/profile path.
-- Not-yet-enabled branch: use a clearly external control outside Hungary's demo
-  bounds, London (`51.5074, -0.1278`), in a fresh anonymous context. This is
-  not a banned region: it has no enabled `countryPartition` yet. Require
-  `eligible=false`, no partition key, the configured country-not-available
-  message and an unavailable login path. No user session may be created.
-- Permission-denied branch: reset the site's location permission, choose
-  **Block**, and reload. The landing page must keep the explicit **Allow
-  location** gate and must not silently assume Hungary, submit invented
-  coordinates or start authentication. Granting permission afterward must
-  retry normally without clearing unrelated landing content.
+  normal login action available.
+- Eligible London branch: in a separate fresh anonymous context override the
+  browser to London (`51.5074, -0.1278`) and allow location. The versioned OSM
+  United Kingdom partition must resolve `eligible=true`,
+  `partitionKey=country:gb`, with the same normal login path. The fixture must
+  prove both HU and GB exist rather than assuming the database contains only
+  one country. Completing a real Firebase login must retain the resolved
+  partition through the ordinary authentication/profile path; do not mark
+  that substep PASS while the deployment Firebase configuration is inactive.
+- Not-yet-enabled branch: use Paris (`48.8566, 2.3522`) in a third fresh
+  anonymous context. At stage time the fixture must prove `country:fr` is
+  absent; if it is later imported, choose and document another absent-country
+  control rather than forcing a false result. Absence means not yet available,
+  not banned. Require `eligible=false`, no partition key, the configured
+  country-not-available message and an unavailable login path. No user session
+  may be created.
+- Permission-denied branch: after the Paris result, reset only that target's
+  landing state and location permission, choose **Block**, and reload. The
+  landing page must keep the explicit **Allow location** gate and must not
+  silently assume Hungary, submit invented coordinates or start
+  authentication. Granting permission afterward must retry normally without
+  clearing unrelated landing content.
 - Between branches reset only that target's geolocation override, permission
   and landing eligibility/session storage, then prove the next result is not a
   stale prior coordinate. Record the browser-supplied coordinates and the
@@ -4063,6 +4073,26 @@ Execution 2026-08-13 (in progress):
   gate alone prevents deliberate geolocation spoofing. If eligibility is a
   security boundary, a separately specified server-trusted corroborating
   signal is required.
+- Execution evidence, 2026-08-14 (checkpoint remains in progress):
+  - Guarded stage recorded a write-free baseline of 56 users, zero user
+    sessions and zero login audits with OSM `country:hu` and `country:gb`
+    present and `country:fr` absent.
+  - Budapest branch **PASS**: the managed anonymous target requested
+    `/auth/eligibility?latitude=47.4979&longitude=19.0402`, resolved
+    `eligible=true`, `partitionKey=country:hu`, displayed the ordinary enabled
+    **Login** action, and left all three domain counts unchanged.
+  - London branch **PASS**: the middle anonymous target requested the exact
+    `51.5074/-0.1278` values, resolved `eligible=true`,
+    `partitionKey=country:gb`, and displayed the enabled login action.
+  - Paris granted-location branch **PASS**: the right target requested the
+    exact `48.8566/2.3522` values, resolved `eligible=false` with no partition
+    key, and displayed disabled **Unavailable in your country**. Screenshot
+    `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-14 23-05-56.png`
+    captures Budapest/Login, London/Login and Paris/Unavailable together.
+  - The target-scoped permission-denied state is machine-proven as
+    `permission=denied`, no eligibility request, explicit **Allow location**,
+    no session and unchanged database counts; its final visual observation
+    remains before the row can close.
 
 ## Tournament cases
 

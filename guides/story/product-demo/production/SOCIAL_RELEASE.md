@@ -35,9 +35,9 @@ Suggested tags: `#MyScoutee #OnlineDating #CommunityBuilding #RealWorldConnectio
 ## Platform upload
 
 - YouTube: English spoken language, English auto-caption corrected from the
-  transcript, Hungarian manual track uploaded separately.
-- Facebook: upload `MyScoutee_The_Product.hu_HU.srt` for Hungarian; never rename
-  it to `en_US`.
+  transcript; upload `MyScoutee_The_Product.hu_HU.srt` as the Hungarian manual
+  track.
+- Facebook: use that same Hungarian SRT; never rename it to `en_US`.
 - LinkedIn: upload the same clean master; if sidecar captions are unavailable in
   the chosen post flow, create a separate burned-Hungarian-caption derivative,
   leaving the Git-tracked clean source and SRT unchanged.

@@ -25,7 +25,9 @@ config:
 
 auth:
   region-security:
-    enabled: ${AUTH_REGION_SECURITY_ENABLED:false}
+    # Dev/manual QA exercises the real allowlist gate by default. It remains
+    # explicitly configurable for unrelated local work.
+    enabled: ${AUTH_REGION_SECURITY_ENABLED:true}
 
 admin:
   stats:
