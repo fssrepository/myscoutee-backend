@@ -959,6 +959,15 @@ Baseline evidence on 2026-08-13:
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
+- Resume baseline (2026-08-14): a deliberate full dev-stack seed reset removed
+  the retained `EVENT-LIFE-002` transaction. Its already-PASS Delete was not
+  replayed. The guarded stale checkpoint was discarded and this checkpoint was
+  staged directly at `T`, `statusBeforeSuppression=A`, Casey Admin + Nova
+  accepted Member `2 / 8`, Casey Trash `1`, Nova Active/All/Trash `0`, with no
+  lifecycle or recompute artifacts. The first direct stage incorrectly gave
+  Nova a personal Trash counter; the harness reconstruction was corrected so
+  organizer Trash is host/admin-only while participant membership Trash remains
+  a distinct branch.
 - Restore the same controlled event once from Trash.
 - Verify `statusBeforeSuppression` and `trashedAtIso` are cleared and the event
   returns to its preserved draft or active status, not an arbitrary default.

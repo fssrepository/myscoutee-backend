@@ -353,7 +353,14 @@
           if (!preferred || preference(event, userId) > preference(preferred, userId)) preferred = event;
         }
         if (!preferred) continue;
-        if (isTrash(preferred) || deletedMembershipSourceIdsByUserId.get(userId).has(sourceId)) {
+        if (isTrash(preferred)) {
+          // Organizer Trash is a global event suppression, not a participant
+          // leave. Only the host/admin owns this bucket; accepted members lose
+          // Active/All without receiving a personal Trash entry.
+          if (isHosting(preferred, userId)) counters.trash += 1;
+          continue;
+        }
+        if (deletedMembershipSourceIdsByUserId.get(userId).has(sourceId)) {
           counters.trash += 1;
           continue;
         }

@@ -35,14 +35,14 @@ checkpoint: EVENT-LIFE-003
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-003--organizer-restore-returns-to-the-preserved-bucket
 scenario: event-domain
 ledger_status: NOT RUN
-state: EVENT-LIFE-002 is PASS/CLOSED, including its Activity Events counter defect repair. Casey executed Delete once; canonical T/statusBeforeSuppression=A/trashedAtIso and unchanged Casey Admin + Nova Member 2/8 passed the guarded verifier twice. Casey organizer Trash=1 with exactly one event, Nova participant Active/All/Trash=0, the exact unread deletion notification, one pending dev-mode outbox and one terminal EVENT_CHANGED recompute all passed. The initial stale inclusive All counter was fixed by transporting the complete stored Java event-counter snapshot through HTTP and frontend-local routes and applying it atomically without changing SmartList. Final fresh-bundle reads passed: Nova All empty with no Events/All counter; Casey Trash1 with one exact event. The user explicitly classified the deletion and Activity Events counter fix as fully executed/PASS; no pending replay and no NOT EXECUTED branch remains. No EVENT-LIFE-003 producer or checkpoint advance has been executed. The retained domain state is still the closed EVENT-LIFE-002 trashed identity. Two managed Casey/Nova browsers remain open but may be stale by the next session. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Tomorrow, do not replay EVENT-LIFE-002 Delete and do not restage/reset the retained identity. Start with the handoff read-only resume gate: status event-domain EVENT-LIFE-002 and verify-lifecycle-trash must still match the closed boundary. Check current browser/runtime continuity; relaunch only the two managed Casey/Nova sessions if stale. Then advance the retained checkpoint exactly once from EVENT-LIFE-002 to EVENT-LIFE-003, capture a dedicated pre-Restore baseline before any UI mutation, and begin Restore as a new transaction. Do not treat Restore as unfinished counter-fix replay: the Activity Events counter repair is already PASS/CLOSED
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-13T20:40:43.192579877Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
+state: EVENT-LIFE-002 remains PASS/CLOSED. A deliberate full dev-stack seed reset removed its retained transactional documents; this is expected reset semantics, not a mongodb-sync defect and does not reopen the closed Delete/counter checks. The guarded stale EVENT-LIFE-002 state was discarded and EVENT-LIFE-003 was staged directly at 2026-08-14T11:07:46.026Z. Its first baseline exposed and then fixed a harness-only participant Trash-counter error; the corrected baseline is canonical T/statusBeforeSuppression=A/trashedAtIso, Casey Admin + Nova Member 2/8, Casey Trash=1 and Nova Active/All/Trash=0, with no lifecycle/recompute artifacts. No Restore producer has run. Casey is now being asked to confirm the single Trash card before Restore. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Do not replay EVENT-LIFE-002 Delete. Run status event-domain EVENT-LIFE-003; require the corrected direct Trash baseline with Casey Trash=1, Nova Active/All/Trash=0 and no lifecycle/recompute artifacts. If intact, continue the current Casey UI baseline observation and then execute Restore exactly once. If a deliberate full dev-stack reset has removed the transaction again, use guarded discard-stale plus direct EVENT-LIFE-003 stage; do not reinterpret the reset as a server defect and do not replay the closed Delete checkpoint
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-14T11:07:46.088Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
 actors:
-  active: Casey and Nova in two managed browser windows; validate/relaunch tomorrow only if stale
+  active: Casey and Nova in two managed browser windows; Casey is the current actor and Nova remains closed/untouched until the post-Restore control read
   controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: Codex tomorrow runs the read-only closed-boundary gate, then advances EVENT-LIFE-002 -> EVENT-LIFE-003 and captures the Restore baseline before asking for the first UI action
-stop_phrase: session intentionally stopped before any EVENT-LIFE-003 producer
+next_actor: User confirms Casey Events > Trash counter 1 and one QA EVENT-LIFE-003 card without pressing Restore; Codex then gives the single Restore producer instruction
+stop_phrase: megvan after the corrected Casey Trash baseline is visible; no Restore producer yet
 ```
 
 ### Efficient resume gate
@@ -116,7 +116,12 @@ verification must not be replayed. The user explicitly closed the deletion and
 counter branch as fully executed; do not carry a pending replay or NOT EXECUTED
 marker into the next session. Tomorrow run only the read-only closed-boundary
 gate, then advance the retained trashed identity once into `EVENT-LIFE-003`,
-capture a new Restore baseline and start that independent transaction.
+capture a new Restore baseline and start that independent transaction. On
+2026-08-14 a deliberate full dev-stack seed reset removed that retained
+transaction, so the guarded stale state was discarded and `EVENT-LIFE-003` was
+staged directly at its documented Trash boundary; the closed Delete was not
+replayed. The corrected Restore baseline is active and awaiting Casey's first
+UI observation.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -142,6 +147,15 @@ producer action named by the checkpoint. Codex gives one short manual
 instruction at a time, waits for the stated stop phrase, checks the oracle and
 continues the repair/replay loop without handing the failure decision back to
 the user.
+
+A deliberate dev-stack restart may run the repository's full seed reset. That
+reset is authoritative and is allowed to remove live manual-QA transactions;
+do not diagnose or change `mongodb-sync` merely because retained checkpoint
+data disappeared after such a restart. Detect the lost boundary with the
+read-only resume gate, preserve already-closed ledger evidence, discard only a
+guarded stale zero-snapshot checkpoint, and stage the next independent
+checkpoint directly when its definition provides the required state. Never
+make the user replay an already-PASS producer only to reconstruct reset data.
 
 ### 1.1 Checkpoint granularity and new rows
 

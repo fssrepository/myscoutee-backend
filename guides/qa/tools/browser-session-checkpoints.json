@@ -91,6 +91,23 @@
         }
       ]
     },
+    "EVENT-LIFE-003": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3
