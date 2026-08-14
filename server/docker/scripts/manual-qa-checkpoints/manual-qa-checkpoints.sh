@@ -66,6 +66,12 @@ Usage:
   bash manual-qa-checkpoints.sh capture-participant-leave-state event-domain EVENT-LIFE-004
   bash manual-qa-checkpoints.sh verify-participant-restore event-domain EVENT-LIFE-004
   bash manual-qa-checkpoints.sh verify-participant-leave event-domain EVENT-LIFE-004
+  bash manual-qa-checkpoints.sh capture-bucket-read-baseline event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh verify-bucket-readonly event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh diagnose-bucket-read-changes event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh capture-invitation-action-baseline event-domain EVENT-INV-001
+  bash manual-qa-checkpoints.sh verify-invitation-created event-domain EVENT-INV-001
+  bash manual-qa-checkpoints.sh diagnose-invitation-chat-counter event-domain EVENT-INV-001
   bash manual-qa-checkpoints.sh next event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh reset event-domain <checkpoint-id>
@@ -264,7 +270,7 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

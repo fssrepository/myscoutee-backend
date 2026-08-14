@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-LIFE-004
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-004--participant-leaverestore-is-not-organizer-trash
+checkpoint: EVENT-INV-004
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-004--ordinary-member-invitation-approval-chain
 scenario: event-domain
-ledger_status: NOT RUN
-state: EVENT-LIFE-003 organizer Restore is PASS/CLOSED and must not be replayed. EVENT-LIFE-004 original Leave retained the persisted Nova Trash=0 defect and its later badge loss. The backend projector fix is hot-deployed. First Restore passed and saved the corrected active replay boundary. Nova then performed exactly one corrected Leave at 2026-08-14T11:49:59.492Z; the full persisted verifier passed at 11:50:43.614Z: Casey canonical stayed A/Hosting1 with Casey occupancy 1/8, Nova's same overlay became T/statusBeforeSuppression=A, the same membership became suppressed/statusBeforeSuppression=accepted, Nova stored Active/All/Trash 0/0/1, one member-left message was appended, Nova's chat projection was removed and no lifecycle artifact appeared. Normal polls retained Trash1. Nova then performed the required fresh reload; read-only DOM at 11:57:00.024Z still showed Trash badge1 and exactly one QA EVENT-LIFE-003 card. Java identity/counters were unchanged and the coalesced EVENT_MEMBERS_CHANGED task finished done at 11:55:18.567Z with no error. Poll and fresh-read stability are PASS. Only the final Restore and its verifier remain. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Run status event-domain EVENT-LIFE-004 and require the saved corrected Leave boundary with Nova persisted Trash1 and terminal recompute. Do not stage/reset/relaunch, do not Leave again and do not replay EVENT-LIFE-002/003. Nova Restores exactly once from the currently open Trash card; run verify-participant-restore, then execute the final fresh Casey/Nova read before closing the row
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003 retained source identity; Casey canonical A with Casey Admin 1/8, Nova overlay T/statusBeforeSuppression=A, Nova membership suppressed, Nova persisted Trash1
+ledger_status: IN PROGRESS
+state: EVENT-INV-001 is PASS/CLOSED and reset-complete; never repeat its Invite+Save. EVENT-INV-004 was staged independently at 2026-08-14T13:04:52.610Z. Riley's untouched Invitations baseline passed, then Riley accepted exactly once at 13:24:05.641Z. The same membership remains pending with requestKind=approval and pendingSource=member; accepted/pending stays 2/1, Riley Invitations/Pending changed 1/0 to 0/1, and no duplicate exists. No chat, message or chat notification exists; every flat/nested chat counter remains zero. Casey received exactly one unread event-admin-join-request and no approval artifact exists. In-place DOM at 13:25:28Z shows Casey My Events card 2/8 pending1 and notification 3->4, Nova Events1/Chats0, Riley Invitations0/Chats0. Casey Members DOM at 13:28:29.242Z shows 2 members + 1 pending, Riley once Waiting For Admin Approval, Casey once Admin and Nova once accepted Member; the repeated read oracle is unchanged. Admin approval has not run
+required_resume: Run only status event-domain EVENT-INV-004 and require Riley pending approval, accepted/pending2/1, exact one Casey unread join-request and zero chat/approval artifacts. Do not reset/restage/relaunch or repeat Riley Accept. Keep all three sessions; the next and only action is Casey Approve on Riley's row
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-004; Casey-owned active Open Event, capacity8, Casey Admin accepted, Nova Member accepted, Riley Member pending invite from Nova
 actors:
-  active: Casey and Nova in two managed EVENT-LIFE-003 browser windows; keep both and do not relaunch because EVENT-LIFE-004 uses the same two actors
-  controls: Casey remains the untouched organizer control during Nova Leave; no third browser is needed
-next_actor: Nova chooses Restore exactly once on the currently open single Trash card; Casey remains untouched
-stop_phrase: user reports the final Restore result; do not mutate again before verify-participant-restore
+  active: Casey port33251, Nova port40387 and Riley port44173 are the only three QA Chrome sessions; all were launched after stage and must be retained
+  controls: Casey is the later Admin approver; Nova is the accepted ordinary inviter and must stay accepted; Riley is the pending target. No fourth browser is allowed
+next_actor: In Casey's already-open Members popup, open only Riley Outside's row action menu and choose Approve exactly once. Do not use Casey's notification and do not touch Nova or Riley
+stop_phrase: user reports the one Casey Approve result; then verify accepted3/pending0, chat exact-one projection for all accepted actors, resolved counters and target-only approval notification
 ```
 
 ### Efficient resume gate
@@ -229,6 +229,18 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   after its own query does not prove the reload contract and must not be used
   to conceal a missing stored write-side projection. Reuse the existing
   canonical counter projector; do not add a SmartList special case.
+- A newly staged independent fixture does not rewrite counter snapshots already
+  held by browser documents opened before the stage. Before issuing the first
+  producer action, compare the loaded document's `performance.timeOrigin` (or
+  recorded reload time) with `stagedAtIso` and require a UI baseline for every
+  counter used by the checkpoint, including unchanged negative controls. If
+  the document predates the fixture, first use the product's normal ownership
+  boundary: close the foreground popup so the aside realtime poll can converge,
+  or reload only when the checkpoint explicitly requires it. Then reopen the
+  intended popup and capture the baseline. A stale pre-stage browser snapshot
+  is **NOT EXECUTED / invalid UI baseline**, not a product FAIL; distinguish it
+  with the authenticated realtime response and persisted oracle before editing
+  Java or frontend code.
 - An event fixture that inserts the creator's accepted Admin membership must
   include that same creator in `acceptedMemberUserIds` and `acceptedMembers`;
   validate card occupancy against the canonical membership rows. A list poll
@@ -745,7 +757,8 @@ checkpoints remain closed. The active Core expansion continuation is:
 ```text
 ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
 -> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
--> EVENT-LIFE-002 (active)
+-> EVENT-LIFE-002 through EVENT-LIFE-005 (closed)
+-> EVENT-INV-001 (closed) -> EVENT-INV-004 (active)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase

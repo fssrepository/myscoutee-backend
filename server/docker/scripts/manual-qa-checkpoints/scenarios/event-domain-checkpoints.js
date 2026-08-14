@@ -1085,6 +1085,13 @@
     );
   }
 
+  function invitationFixtureUserIds(stageKind) {
+    return ["invitation-ordinary", "invitation-full", "invitation-visibility"].includes(stageKind)
+        || checkpointId === "EVENT-INV-003"
+      ? [hostUserId, participantUserId, thirdUserId]
+      : [hostUserId, participantUserId];
+  }
+
   function insertEmptyMainEventChat(event, acceptedUserIds, stagedAtIso) {
     const chatId = Q.text(event.sourceId || event._id);
     const memberIds = sortedUnique(acceptedUserIds);
@@ -1996,6 +2003,10 @@
       recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
+    const eventInvitationOutbox = Q.collection("notificationOutbox").find({
+      notificationType: "event-invite",
+      $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1, _id: 1 }).toArray();
     const eventJoinRequestNotifications = Q.collection("userNotifications").find({
       kind: { $in: ["event-admin-join-request", "event-admin-join-request-cancelled"] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
@@ -2248,6 +2259,40 @@
                 }
               };
             })
+        : (checkpointId.startsWith("EVENT-INV-") || checkpointId === "EVENT-ACTIVITY-REFRESH-001")
+          ? invitationFixtureUserIds(config().stage).map(userId => {
+              const current = userActivitiesSnapshot(userId);
+              const baseline = savedUserActivity(state, userId);
+              const currentActivities = current.activities.value || {};
+              const baselineActivities = baseline && baseline.activities.value || {};
+              const delta = path => nestedNumber(currentActivities, path) - nestedNumber(baselineActivities, path);
+              return {
+                user: Q.user(userId),
+                current: {
+                  chats: nestedNumber(currentActivities, "chats"),
+                  chat: currentActivities.chat || {},
+                  invitations: nestedNumber(currentActivities, "invitations"),
+                  events: nestedNumber(currentActivities, "events"),
+                  hosting: nestedNumber(currentActivities, "hosting"),
+                  event: currentActivities.event || {}
+                },
+                stageDelta: {
+                  chats: delta("chats"),
+                  chatAll: delta("chat.all"),
+                  chatEvent: delta("chat.event"),
+                  invitations: delta("invitations"),
+                  events: delta("events"),
+                  hosting: delta("hosting"),
+                  eventAll: delta("event.all"),
+                  eventActive: delta("event.active"),
+                  eventPending: delta("event.pending"),
+                  eventInvitations: delta("event.invitations"),
+                  eventHosting: delta("event.hosting"),
+                  eventDrafts: delta("event.drafts"),
+                  eventTrash: delta("event.trash")
+                }
+              };
+            })
         : checkpointId.startsWith("EVENT-LIFE-")
           ? [hostUserId, participantUserId].map(userId => {
               const current = userActivitiesSnapshot(userId);
@@ -2298,8 +2343,17 @@
         recipientUserId: Q.text(item.recipientUserId),
         kind: Q.text(item.kind),
         eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        senderUserId: Q.text(item.senderUserId || item.payload && item.payload.senderUserId),
         readAtIso: Q.text(item.readAtIso),
         read: Boolean(Q.text(item.readAtIso))
+      })),
+      eventInvitationOutbox: eventInvitationOutbox.map(item => ({
+        id: Q.text(item._id),
+        notificationType: Q.text(item.notificationType),
+        eventId: Q.text(item.entityId || item.payload && item.payload.eventId),
+        senderUserId: Q.text(item.payload && item.payload.senderUserId),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        status: Q.text(item.status)
       })),
       eventJoinRequestNotifications: eventJoinRequestNotifications.map(item => ({
         recipientUserId: Q.text(item.recipientUserId),
@@ -2653,6 +2707,39 @@
     return JSON.stringify(left) === JSON.stringify(right);
   }
 
+  function jsonDifferences(left, right) {
+    const before = JSON.parse(JSON.stringify(left));
+    const after = JSON.parse(JSON.stringify(right));
+    const differences = [];
+    const visit = (beforeValue, afterValue, path) => {
+      if (sameJson(beforeValue, afterValue)) return;
+      if (Array.isArray(beforeValue) && Array.isArray(afterValue)) {
+        if (beforeValue.length !== afterValue.length) {
+          differences.push({
+            path: `${path}.length`,
+            before: beforeValue.length,
+            after: afterValue.length
+          });
+        }
+        const length = Math.max(beforeValue.length, afterValue.length);
+        for (let index = 0; index < length; index += 1) {
+          visit(beforeValue[index], afterValue[index], `${path}[${index}]`);
+        }
+        return;
+      }
+      if (beforeValue && afterValue
+          && typeof beforeValue === "object" && typeof afterValue === "object") {
+        const keys = [...new Set([...Object.keys(beforeValue), ...Object.keys(afterValue)])].sort();
+        keys.forEach(key => visit(
+          beforeValue[key], afterValue[key], path ? `${path}.${key}` : key));
+        return;
+      }
+      differences.push({ path, before: beforeValue, after: afterValue });
+    };
+    visit(before, after, "");
+    return differences;
+  }
+
   function verifyTicketAttendanceFirstScan() {
     if (checkpointId !== "EVENT-TICKET-011") {
       Q.fail("verify-ticket-attendance-first-scan is only valid for EVENT-TICKET-011.");
@@ -2761,7 +2848,8 @@
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
-    if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
+    if (["invitation-ordinary", "invitation-full", "invitation-visibility", "tournament", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
+        || checkpointId === "EVENT-INV-003"
         || checkpointId === "EVENT-FEEDBACK-002"
         || hasTicketPendingControl()
         || checkpointId === "EVENT-TICKET-007") {
@@ -2805,6 +2893,8 @@
           ? ((hasTicketPendingControl() || checkpointId === "EVENT-TICKET-007")
               ? [hostUserId, participantUserId, thirdUserId]
               : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
+          : selected.stage.startsWith("invitation-")
+            ? invitationFixtureUserIds(selected.stage).map(userActivitiesSnapshot)
           : selected.stage.startsWith("feedback-")
             ? (checkpointId === "EVENT-FEEDBACK-002"
                 ? [hostUserId, participantUserId, thirdUserId]
@@ -2817,6 +2907,9 @@
     try {
       clearFixture();
       stageData(selected.stage, stagedAtIso, runtimeContext);
+      if (selected.stage.startsWith("invitation-")) {
+        synchronizeEventActivityCounters(invitationFixtureUserIds(selected.stage));
+      }
       if (checkpointId.startsWith("EVENT-LIFE-")) {
         synchronizeEventActivityCounters([hostUserId, participantUserId]);
       }
@@ -5862,6 +5955,426 @@
     });
   }
 
+  function stableBucketReadValue(value) {
+    if (value === undefined) return null;
+    if (Array.isArray(value)) return value.map(stableBucketReadValue);
+    if (value && typeof value === "object") {
+      return Object.fromEntries(Object.entries(value)
+        .map(([key, item]) => [key, stableBucketReadValue(item)]));
+    }
+    return value;
+  }
+
+  function bucketReadSnapshot(current, capturedAtIso) {
+    return stableBucketReadValue({
+      capturedAtIso,
+      events: current.events || [],
+      members: current.members || [],
+      resources: lifecycleResourceSnapshot(),
+      checkoutBasketItems: current.checkoutBasketItems || [],
+      payments: current.payments || [],
+      tickets: current.tickets || [],
+      ticketReplayAudits: current.ticketReplayAudits || [],
+      ticketReplayOutbox: current.ticketReplayOutbox || [],
+      ticketReplayNotifications: current.ticketReplayNotifications || [],
+      eventChats: current.eventChats || [],
+      eventChatMessages: current.eventChatMessages || [],
+      eventChatNotificationOutbox: current.eventChatNotificationOutbox || [],
+      eventChatNotifications: current.eventChatNotifications || [],
+      invitationAcceptanceOutbox: current.invitationAcceptanceOutbox || [],
+      invitationAcceptanceNotifications: current.invitationAcceptanceNotifications || [],
+      eventInvitationNotifications: current.eventInvitationNotifications || [],
+      eventInvitationOutbox: current.eventInvitationOutbox || [],
+      eventJoinRequestNotifications: current.eventJoinRequestNotifications || [],
+      eventMemberApprovalOutbox: current.eventMemberApprovalOutbox || [],
+      eventMemberApprovalNotifications: current.eventMemberApprovalNotifications || [],
+      eventLifecycleTasks: current.eventLifecycleTasks || [],
+      eventLifecycleOutbox: current.eventLifecycleOutbox || [],
+      eventLifecycleNotifications: current.eventLifecycleNotifications || [],
+      eventRecomputeTasks: current.eventRecomputeTasks || [],
+      feedbackNotificationOutbox: current.feedbackNotificationOutbox || [],
+      feedbackNotifications: current.feedbackNotifications || [],
+      feedbackRecomputeTasks: current.feedbackRecomputeTasks || [],
+      feedbackStates: current.feedbackStates || [],
+      feedbackAnswers: current.feedbackAnswers || [],
+      stageRuntime: current.stageRuntime || [],
+      tournamentGroups: current.tournamentGroups || [],
+      leaderboard: current.leaderboard || [],
+      userActivityCounters: (current.userActivityCounters || []).map(item => ({
+        userId: Q.text(item.user && item.user.userId),
+        current: item.current || {}
+      }))
+    });
+  }
+
+  function assertBucketReadActiveBoundary(current) {
+    const canonical = (current.events || []).find(event => event.ownerUserId === hostUserId);
+    const overlay = (current.events || []).find(event => event.ownerUserId === participantUserId);
+    const counters = participantCounters(current);
+    const hostEvent = counters.host.event || {};
+    const participantEvent = counters.participant.event || {};
+    if ((current.events || []).length !== 2
+        || !canonical || canonical.status !== "A" || canonical.isTrashed
+        || canonical.acceptedMembers !== 2
+        || !sameIds(canonical.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || !overlay || overlay.status !== "A" || overlay.isTrashed
+        || overlay.statusBeforeSuppression || overlay.trashedAtIso
+        || (current.members || []).length !== 2
+        || !(current.members || []).every(member => member.status === "accepted")
+        || Number(counters.host.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.drafts || 0) !== 0
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(counters.participant.events || 0) !== 1
+        || Number(participantEvent.all || 0) !== 1
+        || Number(participantEvent.active || 0) !== 1
+        || Number(participantEvent.invitations || 0) !== 0
+        || Number(participantEvent.trash || 0) !== 0) {
+      Q.fail("EVENT-LIFE-005 requires the exact active Casey Hosting / Nova Attending boundary before and after read-only navigation.");
+    }
+    return { canonical, overlay, counters };
+  }
+
+  function captureBucketReadBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-005") {
+      Q.fail("capture-bucket-read-baseline currently supports only EVENT-LIFE-005.");
+    }
+    const state = requireMatchingState();
+    if (state.bucketReadBaseline && state.bucketReadBaseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-005 already has a saved read-only baseline.");
+    }
+    const current = oracle(state);
+    const active = assertBucketReadActiveBoundary(current);
+    if ((current.eventRecomputeTasks || []).length !== 0) {
+      Q.fail("EVENT-LIFE-005 cannot capture its baseline with a post-advance event recompute delta.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const bucketReadBaseline = bucketReadSnapshot(current, capturedAtIso);
+    const lifecycleActionBaselineUserActivitySnapshots = [hostUserId, participantUserId]
+      .map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { bucketReadBaseline, lifecycleActionBaselineUserActivitySnapshots }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "bucket-read-baseline-captured",
+      capturedAtIso,
+      active,
+      trackedCollections: Object.keys(bucketReadBaseline).filter(key => key !== "capturedAtIso"),
+      next: "Execute only the documented Casey organizer bucket reads, then the Nova participant bucket reads; no action menu or mutation is allowed."
+    });
+  }
+
+  function verifyBucketReadonly() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-005") {
+      Q.fail("verify-bucket-readonly currently supports only EVENT-LIFE-005.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.bucketReadBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-005 requires its saved read-only baseline before verification.");
+    }
+    const current = oracle(state);
+    const active = assertBucketReadActiveBoundary(current);
+    const currentSnapshot = bucketReadSnapshot(current, baseline.capturedAtIso);
+    if (!sameJson(currentSnapshot, baseline)) {
+      const changedKeys = Object.keys(currentSnapshot)
+        .filter(key => !sameJson(currentSnapshot[key], baseline[key]));
+      Q.fail(`EVENT-LIFE-005 navigation changed persisted state in: ${changedKeys.join(", ")}.`);
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { bucketReadVerifiedAtIso: verifiedAtIso }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "bucket-navigation-readonly-verified",
+      baselineCapturedAtIso: baseline.capturedAtIso,
+      verifiedAtIso,
+      active,
+      changedPersistedCollections: [],
+      schedulerNote: "Global worker-rule heartbeat timestamps are intentionally excluded; no event-scoped task/outbox/history record changed.",
+      next: "Record the final Casey/Nova bucket DOM evidence and close EVENT-LIFE-005 without replay."
+    });
+  }
+
+  function diagnoseBucketReadChanges() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-005") {
+      Q.fail("diagnose-bucket-read-changes currently supports only EVENT-LIFE-005.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.bucketReadBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-005 requires its saved read-only baseline before diagnosis.");
+    }
+    const current = oracle(state);
+    const currentSnapshot = bucketReadSnapshot(current, baseline.capturedAtIso);
+    const changedKeys = Object.keys(currentSnapshot)
+      .filter(key => !sameJson(currentSnapshot[key], baseline[key]));
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "bucket-navigation-readonly-diagnosis",
+      baselineCapturedAtIso: baseline.capturedAtIso,
+      diagnosedAtIso: Q.nowIso(),
+      changedKeys,
+      differences: changedKeys.flatMap(key => jsonDifferences(
+        baseline[key], currentSnapshot[key]).map(difference => ({
+          ...difference,
+          path: difference.path ? `${key}.${difference.path}` : key
+        }))),
+      mutation: "none; this command only compares the saved baseline with a fresh oracle snapshot"
+    });
+  }
+
+  function invitationActionSnapshot(state, capturedAtIso) {
+    const current = oracle(state);
+    return stableBucketReadValue({
+      capturedAtIso,
+      events: current.events || [],
+      members: current.members || [],
+      resources: lifecycleResourceSnapshot(),
+      checkoutBasketItems: current.checkoutBasketItems || [],
+      payments: current.payments || [],
+      tickets: current.tickets || [],
+      eventChats: current.eventChats || [],
+      eventChatMessages: current.eventChatMessages || [],
+      eventChatNotificationOutbox: current.eventChatNotificationOutbox || [],
+      eventChatNotifications: current.eventChatNotifications || [],
+      eventInvitationOutbox: current.eventInvitationOutbox || [],
+      eventInvitationNotifications: current.eventInvitationNotifications || [],
+      eventJoinRequestNotifications: current.eventJoinRequestNotifications || [],
+      eventMemberApprovalOutbox: current.eventMemberApprovalOutbox || [],
+      eventMemberApprovalNotifications: current.eventMemberApprovalNotifications || [],
+      eventLifecycleTasks: current.eventLifecycleTasks || [],
+      eventLifecycleOutbox: current.eventLifecycleOutbox || [],
+      eventLifecycleNotifications: current.eventLifecycleNotifications || [],
+      eventRecomputeTasks: current.eventRecomputeTasks || [],
+      userActivityCounters: (current.userActivityCounters || []).map(item => ({
+        userId: Q.text(item.user && item.user.userId),
+        current: item.current || {}
+      }))
+    });
+  }
+
+  function assertInvitationEmptyBoundary(snapshot) {
+    const event = (snapshot.events || [])[0];
+    const member = (snapshot.members || [])[0];
+    const counters = new Map((snapshot.userActivityCounters || [])
+      .map(item => [Q.text(item.userId), item.current || {}]));
+    const hostCounters = counters.get(hostUserId) || {};
+    const participantCounters = counters.get(participantUserId) || {};
+    const hostEvent = hostCounters.event || {};
+    const participantEvent = participantCounters.event || {};
+    if ((snapshot.events || []).length !== 1
+        || !event || event.ownerUserId !== hostUserId || event.status !== "A"
+        || event.acceptedMembers !== 1 || event.pendingMembers !== 0
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId])
+        || (event.pendingMemberUserIds || []).length !== 0
+        || (event.invitedMemberUserIds || []).length !== 0
+        || (snapshot.members || []).length !== 1
+        || !member || member.userId !== hostUserId || member.role !== "Admin"
+        || member.status !== "accepted"
+        || Number(hostCounters.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.drafts || 0) !== 0
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(participantCounters.invitations || 0) !== 0
+        || Number(participantCounters.events || 0) !== 0
+        || Number(participantEvent.all || 0) !== 0
+        || Number(participantEvent.invitations || 0) !== 0
+        || (snapshot.eventInvitationOutbox || []).length !== 0
+        || (snapshot.eventInvitationNotifications || []).length !== 0
+        || (snapshot.eventRecomputeTasks || []).length !== 0) {
+      Q.fail("EVENT-INV-001 requires the exact host-only 1/8 baseline with Casey counters1 and Nova invitation counters0.");
+    }
+    return { event, member, hostCounters, participantCounters };
+  }
+
+  function captureInvitationActionBaseline() {
+    config();
+    if (checkpointId !== "EVENT-INV-001") {
+      Q.fail("capture-invitation-action-baseline currently supports only EVENT-INV-001.");
+    }
+    const state = requireMatchingState();
+    if (state.invitationActionBaseline && state.invitationActionBaseline.capturedAtIso) {
+      Q.fail("EVENT-INV-001 already has a saved invitation action baseline.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const invitationActionBaseline = invitationActionSnapshot(state, capturedAtIso);
+    const active = assertInvitationEmptyBoundary(invitationActionBaseline);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { invitationActionBaseline }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "invitation-action-baseline-captured",
+      capturedAtIso,
+      active,
+      next: "Observe Casey's one-member Event Members baseline, then invite Nova and Save exactly once."
+    });
+  }
+
+  function verifyInvitationCreated() {
+    config();
+    if (checkpointId !== "EVENT-INV-001") {
+      Q.fail("verify-invitation-created currently supports only EVENT-INV-001.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.invitationActionBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-INV-001 requires its saved invitation action baseline before verification.");
+    }
+    if (state.invitationCreatedVerifiedAtIso) {
+      Q.fail("EVENT-INV-001 invitation creation is already verified.");
+    }
+    assertInvitationEmptyBoundary(baseline);
+    const current = invitationActionSnapshot(state, baseline.capturedAtIso);
+    const event = (current.events || [])[0];
+    const hostMember = (current.members || []).find(member => member.userId === hostUserId);
+    const participantMember = (current.members || []).find(member => member.userId === participantUserId);
+    if ((current.events || []).length !== 1
+        || !event || event.ownerUserId !== hostUserId || event.status !== "A"
+        || event.acceptedMembers !== 1 || event.pendingMembers !== 1
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId])
+        || !sameIds(event.pendingMemberUserIds, [participantUserId])
+        || !sameIds(event.invitedMemberUserIds, [participantUserId])
+        || (event.pendingRequestMemberUserIds || []).length !== 0
+        || (current.members || []).length !== 2
+        || !hostMember || hostMember.role !== "Admin" || hostMember.status !== "accepted"
+        || !participantMember || participantMember.role !== "Member"
+        || participantMember.status !== "pending"
+        || participantMember.requestKind !== "invite"
+        || participantMember.pendingSource !== "admin"
+        || participantMember.invitedByUserId !== hostUserId) {
+      Q.fail("EVENT-INV-001 did not persist exactly one Casey-authored pending invitation for Nova.");
+    }
+    const baselineCounters = new Map((baseline.userActivityCounters || [])
+      .map(item => [Q.text(item.userId), item.current || {}]));
+    const currentCounters = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.userId), item.current || {}]));
+    const hostCounters = currentCounters.get(hostUserId) || {};
+    const participantCounters = currentCounters.get(participantUserId) || {};
+    const participantEvent = participantCounters.event || {};
+    if (!sameJson(hostCounters, baselineCounters.get(hostUserId) || {})
+        || Number(participantCounters.invitations || 0) !== 1
+        || Number(participantCounters.events || 0) !== 0
+        || Number(participantCounters.hosting || 0) !== 0
+        || Number(participantEvent.all || 0) !== 1
+        || Number(participantEvent.active || 0) !== 0
+        || Number(participantEvent.pending || 0) !== 0
+        || Number(participantEvent.invitations || 0) !== 1
+        || Number(participantEvent.hosting || 0) !== 0
+        || Number(participantEvent.drafts || 0) !== 0
+        || Number(participantEvent.trash || 0) !== 0) {
+      Q.fail("EVENT-INV-001 invitation did not persist the exact host-stable and Nova Invitations1 counter projection.");
+    }
+    const outbox = current.eventInvitationOutbox || [];
+    const notifications = current.eventInvitationNotifications || [];
+    if (outbox.length !== 1
+        || outbox[0].notificationType !== "event-invite"
+        || outbox[0].eventId !== EVENT_ID
+        || outbox[0].senderUserId !== hostUserId
+        || !sameIds(outbox[0].recipientUserIds, [participantUserId])
+        || notifications.length !== 1
+        || notifications[0].kind !== "event-invite"
+        || notifications[0].eventId !== EVENT_ID
+        || notifications[0].recipientUserId !== participantUserId
+        || notifications[0].senderUserId !== hostUserId
+        || notifications[0].read) {
+      Q.fail("EVENT-INV-001 requires one Casey-to-Nova event-invite outbox item and one unread inbox notification.");
+    }
+    for (const key of [
+      "resources", "checkoutBasketItems", "payments", "tickets", "eventChats",
+      "eventChatMessages", "eventChatNotificationOutbox", "eventChatNotifications",
+      "eventJoinRequestNotifications", "eventMemberApprovalOutbox",
+      "eventMemberApprovalNotifications", "eventLifecycleTasks",
+      "eventLifecycleOutbox", "eventLifecycleNotifications", "eventRecomputeTasks"
+    ]) {
+      if (!sameJson(current[key], baseline[key])) {
+        Q.fail(`EVENT-INV-001 invitation changed unrelated persisted state in '${key}'.`);
+      }
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { invitationCreatedVerifiedAtIso: verifiedAtIso }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "invitation-created-verified",
+      baselineCapturedAtIso: baseline.capturedAtIso,
+      verifiedAtIso,
+      event,
+      members: current.members,
+      counters: { host: hostCounters, participant: participantCounters },
+      outbox,
+      notifications,
+      unchangedUnrelatedCollections: true,
+      next: "Confirm Casey sees Nova once as pending and Nova sees the same event once in Invitations with an unread new notification."
+    });
+  }
+
+  function diagnoseInvitationChatCounter() {
+    config();
+    if (checkpointId !== "EVENT-INV-001") {
+      Q.fail("diagnose-invitation-chat-counter currently supports only EVENT-INV-001.");
+    }
+    const state = requireMatchingState();
+    const saved = savedUserActivity(state, participantUserId);
+    if (!saved || !saved.activities || !saved.activities.present) {
+      Q.fail("EVENT-INV-001 has no saved Nova activity-counter baseline.");
+    }
+    const baselineActivities = saved.activities.value || {};
+    const current = userActivitiesSnapshot(participantUserId);
+    const currentActivities = current.activities.value || {};
+    const eventIds = currentEventIds();
+    const eventChats = Q.collection("chats").find({
+      $or: [
+        { eventId: { $in: eventIds } },
+        { ownerId: { $in: eventIds } },
+        { chatId: { $in: eventIds } }
+      ]
+    }).toArray();
+    const summary = activities => ({
+      chats: nestedNumber(activities, "chats"),
+      chat: activities.chat || {},
+      invitations: nestedNumber(activities, "invitations"),
+      event: activities.event || {}
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "invitation-chat-counter-diagnosis",
+      diagnosedAtIso: Q.nowIso(),
+      participant: Q.user(participantUserId),
+      baseline: summary(baselineActivities),
+      current: summary(currentActivities),
+      delta: {
+        chats: nestedNumber(currentActivities, "chats") - nestedNumber(baselineActivities, "chats"),
+        chatAll: nestedNumber(currentActivities, "chat.all") - nestedNumber(baselineActivities, "chat.all"),
+        chatEvent: nestedNumber(currentActivities, "chat.event") - nestedNumber(baselineActivities, "chat.event")
+      },
+      eventChatDocuments: eventChats.map(chat => ({
+        id: Q.text(chat._id),
+        chatId: Q.text(chat.id || chat.chatId),
+        ownerUserId: Q.text(chat.ownerUserId),
+        eventId: Q.text(chat.eventId),
+        ownerId: Q.text(chat.ownerId),
+        channelType: Q.text(chat.channelType)
+      })),
+      mutation: "none; this command only compares persisted counters and event-chat documents"
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5963,6 +6476,12 @@
     case "capture-participant-leave-state": captureParticipantLeaveState(); break;
     case "verify-participant-restore": verifyParticipantRestore(); break;
     case "verify-participant-leave": verifyParticipantLeave(); break;
+    case "capture-bucket-read-baseline": captureBucketReadBaseline(); break;
+    case "verify-bucket-readonly": verifyBucketReadonly(); break;
+    case "diagnose-bucket-read-changes": diagnoseBucketReadChanges(); break;
+    case "capture-invitation-action-baseline": captureInvitationActionBaseline(); break;
+    case "verify-invitation-created": verifyInvitationCreated(); break;
+    case "diagnose-invitation-chat-counter": diagnoseInvitationChatCounter(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

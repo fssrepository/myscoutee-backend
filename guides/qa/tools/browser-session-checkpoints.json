@@ -108,6 +108,28 @@
         }
       ]
     },
+    "EVENT-INV-004": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Admin approver"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · accepted ordinary inviter"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · pending invitation target"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3

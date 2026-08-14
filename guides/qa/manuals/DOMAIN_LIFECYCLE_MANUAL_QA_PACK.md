@@ -1017,7 +1017,7 @@ Baseline evidence on 2026-08-13:
 - After a write-side repair, replay only Branch B → Branch A → fresh Nova read
   → Branch B. Do not repeat organizer Delete/Restore checkpoints.
 
-Execution evidence in progress on 2026-08-14:
+Execution evidence on 2026-08-14 — PASS/CLOSED:
 
 - Baseline captured at `2026-08-14T11:27:35.272Z`: one active public retained
   source, Casey accepted Admin + Nova accepted Member `2 / 8`, Casey counters
@@ -1061,6 +1061,28 @@ Execution evidence in progress on 2026-08-14:
   `QA EVENT-LIFE-003` card. Java identity/counters were unchanged. The one
   coalesced `EVENT_MEMBERS_CHANGED` task completed at
   `11:55:18.567932813Z` with no error. Only final Restore verification remains.
+- Final corrected Branch B write PASS: Nova restored once at
+  `2026-08-14T11:58:15.854Z`; verifier passed at `11:58:43.059Z`. The same
+  canonical/overlay/member identities returned to active/accepted with all
+  suppression fields cleared, occupancy returned to `2 / 8`, Casey persisted
+  `Hosting/All/Trash=1/1/0`, Nova persisted `Active/All/Trash=1/1/0`, and
+  exactly one further `member-joined` message restored Nova's per-user chat
+  projection. Resource, basket, payment, ticket and organizer lifecycle
+  collections remained unchanged.
+- Final fresh-read PASS: at `12:02:04.080Z` Casey's reloaded My Events DOM and
+  at `12:02:16.892Z` Nova's reloaded Active Events DOM each contained exactly
+  one `QA EVENT-LIFE-003` card at `2 / 8`; neither DOM contained Trash. The
+  Java oracle remained identical.
+- Final worker PASS: the single coalesced `EVENT_MEMBERS_CHANGED` task finished
+  `done` at `12:03:21.935803588Z`, attempt `5`, with empty `lastError`; no
+  organizer lifecycle task/outbox/notification was created.
+- Frontend-local parity was inspected because this defect can affect offline
+  execution: local Leave persists a viewer-owned `T` record, recomputes and
+  persists the user Trash counter, and flushes both event and user state to
+  IndexedDB; local Restore reverses that path. No analogous missing local
+  write was found, so no frontend-local production change was made.
+- PASS/CLOSED. Continue once with `EVENT-LIFE-005`; never replay either
+  participant Leave or Restore producer from this checkpoint.
 
 ### `EVENT-LIFE-005` — bucket reads and no-op navigation
 
@@ -1071,6 +1093,51 @@ Execution evidence in progress on 2026-08-14:
   job history.
 - A duplicate card, a card in mutually exclusive lifecycle buckets, or a
   write caused by navigation is a failed checkpoint.
+
+Execution evidence on 2026-08-14:
+
+- Retained active state advanced once from closed `EVENT-LIFE-004` at
+  `2026-08-14T12:06:16.837Z`; no lifecycle producer was replayed.
+- Read-only baseline captured at `12:08:10.833Z`: same Casey canonical + Nova
+  overlay, Casey Admin + Nova Member `2 / 8`, Casey My Events/All/Trash
+  `1/1/0`, Nova Active/All/Invitations/Trash `1/1/0/0`, and no post-advance
+  recompute delta.
+- The saved oracle covers event, member, resource, basket, payment, ticket,
+  chat, notification, outbox, lifecycle, recompute, feedback, runtime,
+  tournament, leaderboard and both users' complete event-counter snapshots.
+  Global worker heartbeat timestamps are intentionally excluded; the final
+  verifier requires every event-scoped persisted value to remain byte-logically
+  identical.
+- Organizer read/refresh branch PASS: Casey observed exactly one retained
+  `QA EVENT-LIFE-003` card in My Events at `2 / 8`, Drafts empty before and
+  after reload, Trash empty before and after reload, then the same single My
+  Events card after the final reload. No action menu was opened and Nova was
+  untouched. The independent Casey DOM read at
+  `2026-08-14T12:16:03.252Z` confirmed My Events count `1`, the same card at
+  `2 / 8`, and no Trash label/card.
+- Participant read/refresh branch PASS: Nova observed exactly one retained
+  `QA EVENT-LIFE-003` card in Active Events at `2 / 8`, Invitations empty
+  before and after reload, Trash empty before and after reload, then the same
+  single Active Events card after the final reload. No action menu was opened
+  and Casey was untouched. The independent Nova DOM read at
+  `2026-08-14T12:18:28.571Z` confirmed Active Events count `1`, the same card
+  at `2 / 8`, and no Trash label/card.
+- The first terminal comparison correctly stopped on an `events` mismatch,
+  but the new field-level diagnostic proved both event records had the same
+  absent `statusBeforeSuppression` value: the saved BSON snapshot represented
+  it as `null`, while the fresh in-memory object used `undefined`. The harness
+  now recursively canonicalizes absent snapshot values before persistence and
+  comparison and exposes a separate read-only field-diff command. No product,
+  fixture or browser state was changed and no manual branch was replayed.
+- Corrected terminal verifier PASS at `2026-08-14T12:22:09.765Z`: the exact
+  Casey canonical and Nova overlay remain active at `2 / 8`; Casey
+  My Events/All/Drafts/Trash are `1/1/0/0`; Nova
+  Active/All/Invitations/Trash are `1/1/0/0`. No event-scoped event, member,
+  resource, basket, payment, ticket, audit, chat, notification, outbox,
+  lifecycle, recompute, feedback, runtime, tournament, leaderboard or user
+  counter value changed.
+- PASS/CLOSED. Do not replay either read/refresh branch; continue with the
+  independently staged `EVENT-INV-001` invitation transaction.
 
 ## Event invitation and membership cases
 
@@ -1129,9 +1196,82 @@ Execution evidence on 2026-08-04:
 - The Event Members UI must show that exact user once as pending invitation,
   with the correct inviter and event.
 - The recipient's Invitations activity must show the same event once.
+- While that invitation is still pending, it must create neither an event-chat
+  owner copy nor any flat/nested chat counter increment. Chat materialization
+  and its channel counter belong only to terminal acceptance.
 - The membership oracle must be event-scoped, pending and `requestKind=invite`;
   it must not be confused with an asset invitation or a member-origin join
   request.
+
+Execution evidence in progress on 2026-08-14:
+
+- `EVENT-LIFE-005` was closed and reset through its versioned snapshots; the
+  independent invitation fixture was staged at
+  `2026-08-14T12:28:35.835Z` with event identity
+  `manual-qa-checkpoint:v1:event-domain:event`, title `QA EVENT-INV-001`, one
+  Casey Admin membership, accepted/pending `1 / 0`, capacity `8`, and no Nova
+  membership, invitation, notification, outbox or recompute record.
+- The first untouched invitation stage exposed a fixture projection omission:
+  unlike a normal owning write it did not synchronize persisted event menu
+  counters. No manual action had run. The harness now snapshots the relevant
+  users, invokes the shared event-counter projector for every invitation
+  stage, restores those snapshots on reset and includes counters in its
+  oracle. The defective untouched stage was reset and staged cleanly again.
+- Corrected persisted baseline: Casey Hosting/All/My Events is `1/1/1` with
+  Drafts/Trash `0/0`; Nova Events/All/Invitations/Trash is `0/0/0/0`. The
+  fixture delta relative to the pre-stage user snapshots is Casey Hosting+1
+  and All+1 only; Nova remains unchanged.
+- Versioned invitation action baseline captured at
+  `2026-08-14T12:32:13.618Z`. The terminal verifier now requires the one
+  Casey-authored Nova membership (`pending`, `pendingSource=admin`,
+  `requestKind=invite`), accepted/pending `1/1`, Nova Invitations/All `1/1`,
+  exactly one unread Nova `event-invite` inbox record plus its Casey-to-Nova
+  outbox identity, stable Casey counters and no unrelated lifecycle, chat,
+  resource, payment, ticket or recompute change.
+- Owner list baseline PASS at `2026-08-14T12:36:43.730Z`: Casey's reloaded
+  My Events DOM shows counter `1` and exactly one `QA EVENT-INV-001` card at
+  `1 / 8`. The DOM remained on My Events, so the separate Members identity
+  view has not yet been observed and is not inferred from the card.
+- Owner Members baseline PASS at `2026-08-14T12:39:59.759Z`: the exact event
+  Members DOM shows `1 members`, one `Casey Bridge, 32` row with
+  `Admin · Austin`, and no pending member row. Invite is available but no
+  candidate was selected and Save has not run.
+- Single Invite+Save producer executed by Casey at
+  `2026-08-14T12:42:53.087Z`. Casey's still-open Members DOM at
+  `12:43:14.933Z` converged in place to `1 members · 1 pending`, with Nova
+  exactly once as `Invitation Pending`, Casey exactly once as Admin, accepted
+  occupancy still `1 / 8` and pending badge `1`.
+- Terminal persisted verifier PASS at `12:43:33.363Z`: the one canonical event
+  stores accepted/pending `1/1`, Casey accepted Admin and Nova pending Member;
+  Nova has `pendingSource=admin`, `requestKind=invite` and
+  `invitedByUserId=Casey`. Casey counters remained Hosting/All `1/1`; Nova
+  persisted Invitations/All became `1/1`, with Active/Pending/Trash `0/0/0`.
+  Exactly one Casey-to-Nova `event-invite` outbox row and one unread Nova inbox
+  notification exist. Resources, baskets, payments, tickets, chats, member
+  approval, lifecycle and recompute records remained unchanged.
+- Recipient pre-list DOM PASS at `12:43:48.899Z`: Nova shows Invitations badge
+  `1` and notification badge `1`; Notifications contains exactly
+  `1 new notification` for `QA EVENT-INV-001`, attributed to
+  `Casey Bridge · Event`, while Active Events remains empty. The user also
+  confirmed the single notification. The notification item has not been
+  clicked/read.
+- Recipient Invitations-list DOM PASS at `12:48:54.554Z`: Nova shows exactly
+  one `QA EVENT-INV-001` card at accepted occupancy `1 / 8`, pending badge `1`
+  and Invitations counter `1`.
+- A preliminary `Chats 1` observation was isolated as a checkpoint-transition
+  browser baseline defect, not a product write. Nova's document was loaded at
+  `12:18:04.822Z`, before the independent invitation fixture was staged at
+  `12:28:35.835Z`; its retained frontend snapshot still contained the prior
+  event-chat count. The active chat-list poll scope was empty. Persisted Mongo
+  state and an authenticated Nova realtime response both proved `chats=0`,
+  `chat.all=0`, `chat.event=0`, with no event-chat document or message.
+- Focused convergence replay PASS: closing Activities allowed the existing
+  popup-zoned realtime poll to replace the stale snapshot with chat zero while
+  retaining Invitations `1`. Reopening Invitations without reload still
+  showed the same single pending card and no Chats badge or chat channel.
+- **PASS / CLOSED** — the manual pending projections, notification identity,
+  pre-acceptance chat isolation and terminal persisted oracle agree. Do not
+  repeat Invite+Save for later invitation checkpoints.
 
 ### `EVENT-INV-002` — pre-acceptance privacy boundary
 
@@ -1240,6 +1380,45 @@ Execution evidence on 2026-08-04:
   chat and other accepted-only projections remain unavailable.
 - The recipient then accepts once. Only this terminal transition may create
   the accepted projection and chat access.
+
+Execution evidence in progress on 2026-08-14:
+
+- Independent fixture staged at `2026-08-14T13:04:52.610Z`; a second status
+  oracle confirmed one active Open Event `QA EVENT-INV-004`, capacity `8`,
+  accepted/pending `2/1`: Casey accepted Admin, Nova accepted ordinary Member,
+  and Riley pending Member with `pendingSource=member`, `requestKind=invite`
+  and `invitedByUserId=Nova`.
+- Baseline isolation PASS: no event chat, chat message or chat notification
+  exists, and Casey, Nova and Riley all have flat/nested chat counters zero.
+  Riley has Invitations/All `1/1`, Nova has Active/All `1/1`, and Casey has
+  Hosting `1`.
+- Browser baseline PASS at `2026-08-14T13:07Z`: three fresh post-stage managed
+  sessions show Casey `My Events 1 / Chats 0`, Nova `Events 1 / Chats 0`, and
+  Riley `Invitations 1 / Chats 0`. No recipient Accept or Admin Approve action
+  has run.
+- Recipient list/action baseline PASS at `13:13:08.957Z`: Riley's untouched
+  Invitations list contains exactly one `QA EVENT-INV-004` card at accepted
+  occupancy `2 / 8`, pending badge `1` and Invitations counter `1`; Chats has
+  no badge. The second persisted status oracle is the retained pre-Accept
+  comparison boundary.
+- Riley Accept executed once at `2026-08-14T13:24:05.641Z`. Persisted
+  transition PASS: the same Riley membership remains `pending`, accepted/pending
+  remains `2/1`, `requestKind` changes `invite -> approval`, Riley moves from
+  invited IDs to pending-request IDs, Invitations changes `1 -> 0` and Pending
+  changes `0 -> 1`. No duplicate membership was created.
+- Pre-Admin chat isolation PASS: no event chat, message or chat notification
+  exists and all three actors retain flat/nested chat zero. Casey received
+  exactly one unread `event-admin-join-request` notification naming Riley; the
+  Admin approval notification/outbox is still absent.
+- In-place control DOM PASS at `13:25:28Z`: Riley has no Invitations or Chats
+  badge, Nova remains Events `1` with Chats `0`, and Casey's already-open My
+  Events card remains `2 / 8` with pending badge `1`; Casey notification count
+  changed `3 -> 4`. Admin approval has not run.
+- Admin Members/action baseline PASS at `13:28:29.242Z`: Casey sees
+  `2 members · 1 pending`, Riley exactly once as `Member · Austin / Waiting
+  For Admin Approval`, Casey exactly once as Admin and Nova exactly once as an
+  accepted Member. A repeated read-only status retained the same membership,
+  zero-chat and exact-one join-request boundary; opening Members wrote nothing.
 
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 
