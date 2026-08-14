@@ -6,6 +6,7 @@
   const SCENARIO = "entry-domain";
   const CHECKPOINT = "ENTRY-DEMO-REG-001";
   const LANDING_CHECKPOINT = "LANDING-ELIGIBILITY-001";
+  const NOTIFICATION_OUTBOX_RULE = "notification-outbox";
   const USER_ID_PREFIX = "demo-profile-";
   const CURRENT_PROFILE_FORM_VERSION = 2;
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
@@ -171,6 +172,206 @@
       domainDeletionPerformed: false,
       unchanged: true,
       next: `Run status entry-domain ${checkpointId}; expected phase is not-staged.`
+    });
+  }
+
+  function cleanupLandingDemoControl() {
+    const state = requireState();
+    if (!isLandingCheckpoint()) {
+      Q.fail("cleanup-demo-control is only supported for LANDING-ELIGIBILITY-001.");
+    }
+    const baseline = state.domainBaseline || {};
+    if (Q.number(baseline.users) <= 0
+        || Q.number(baseline.userSessionStates) !== 0
+        || Q.number(baseline.userLoginAudits) !== 0) {
+      Q.fail("cleanup-demo-control requires the staged zero-session, zero-audit landing baseline.");
+    }
+    const partitions = countryPartitions();
+    assertLandingCountryBaseline(partitions);
+    if (Q.collection("users").countDocuments({}) !== Q.number(baseline.users)
+        || JSON.stringify(partitions.map(partition => Q.text(partition.partitionKey)))
+          !== JSON.stringify(state.countryPartitionKeys || [])) {
+      Q.fail("users or country partitions changed; refusing demo-control cleanup.");
+    }
+
+    const stagedAtIso = Q.text(state.stagedAtIso);
+    const audits = Q.collection("userLoginAudits").find({}).toArray();
+    const sessionStates = Q.collection("userSessionStates").find({}).toArray();
+    if (audits.length === 0 || sessionStates.length === 0) {
+      Q.fail("no post-stage demo login control artifacts were found.");
+    }
+    const auditsByAttemptId = new Map();
+    const auditsBySessionKey = new Map();
+    for (const audit of audits) {
+      const attemptId = Q.text(audit.attemptId);
+      const userId = Q.text(audit.userId);
+      const sessionId = Q.text(audit.sessionId);
+      if (!attemptId
+          || !userId
+          || !sessionId
+          || Q.text(audit.provider) !== "demo"
+          || Q.text(audit.outcome) !== "ACCEPTED"
+          || Q.text(audit.attemptedAtIso) < stagedAtIso
+          || auditsByAttemptId.has(attemptId)) {
+        Q.fail("every post-stage login audit must be a unique accepted demo control owned by this checkpoint.");
+      }
+      Q.ensureUser(userId, "demo-control audit user");
+      auditsByAttemptId.set(attemptId, audit);
+      auditsBySessionKey.set(`${userId}:${sessionId}`, audit);
+    }
+
+    for (const sessionState of sessionStates) {
+      const userId = Q.text(sessionState.userId || sessionState._id);
+      const activeSessions = Array.isArray(sessionState.activeSessions) ? sessionState.activeSessions : [];
+      if (!userId
+          || Q.text(sessionState._id) !== userId
+          || Q.text(sessionState.createdDate) < stagedAtIso) {
+        Q.fail("a session-state document is not owned by the post-stage demo control.");
+      }
+      Q.ensureUser(userId, "demo-control session user");
+      for (const session of activeSessions) {
+        const sessionId = Q.text(session.sessionId);
+        if (Q.text(session.provider) !== "demo"
+            || Q.text(session.createdAtIso) < stagedAtIso
+            || !auditsBySessionKey.has(`${userId}:${sessionId}`)) {
+          Q.fail("an active session is not matched to an accepted post-stage demo audit.");
+        }
+      }
+    }
+
+    const attemptIds = Array.from(auditsByAttemptId.keys());
+    const outboxes = Q.collection("notificationOutbox")
+      .find({ entityId: { $in: attemptIds } })
+      .toArray();
+    const outboxById = new Map();
+    for (const outbox of outboxes) {
+      const attemptId = Q.text(outbox.entityId);
+      const audit = auditsByAttemptId.get(attemptId);
+      const recipients = Array.isArray(outbox.recipientUserIds)
+        ? outbox.recipientUserIds.map(Q.text).filter(Boolean)
+        : [];
+      if (!audit
+          || Q.text(outbox.notificationType) !== "security-login"
+          || Q.text(outbox.entityType) !== "security"
+          || Q.text(outbox.status) === "running"
+          || Q.text(outbox.createdDate) < stagedAtIso
+          || recipients.length !== 1
+          || recipients[0] !== Q.text(audit.userId)
+          || Q.text(outbox.payload && outbox.payload.loginAttemptId) !== attemptId) {
+        Q.fail("a security outbox linked to the demo audits is malformed or no longer safe to remove.");
+      }
+      outboxById.set(Q.text(outbox._id), outbox);
+    }
+
+    const notifications = Q.collection("userNotifications")
+      .find({ sourceId: { $in: attemptIds } })
+      .toArray();
+    const notificationsByOutboxId = new Map();
+    const unreadByUser = new Map();
+    for (const notification of notifications) {
+      const attemptId = Q.text(notification.sourceId);
+      const audit = auditsByAttemptId.get(attemptId);
+      const outboxId = Q.text(notification.outboxId);
+      const outbox = outboxById.get(outboxId);
+      if (!audit
+          || !outbox
+          || Q.text(notification.kind) !== "security-login"
+          || Q.text(notification.sourceType) !== "security"
+          || Q.text(notification.recipientUserId) !== Q.text(audit.userId)
+          || Q.text(notification.createdDate) < stagedAtIso
+          || notificationsByOutboxId.has(outboxId)) {
+        Q.fail("a materialized security notification is not an exact demo-control artifact.");
+      }
+      notificationsByOutboxId.set(outboxId, notification);
+      if (!Q.text(notification.readAtIso)) {
+        const userId = Q.text(notification.recipientUserId);
+        unreadByUser.set(userId, (unreadByUser.get(userId) || 0) + 1);
+      }
+    }
+    if (notifications.length !== outboxes.length) {
+      Q.fail("every demo-control outbox must have exactly one materialized notification before cleanup.");
+    }
+
+    const trackedPendingOutboxes = outboxes.filter(outbox => Boolean(outbox.pendingCounterTracked));
+    const rule = Q.assertRuleNotRunning(NOTIFICATION_OUTBOX_RULE);
+    const pendingBefore = Q.number(rule.runState && rule.runState.pendingCount);
+    if (trackedPendingOutboxes.length > pendingBefore) {
+      Q.fail("notification-outbox pendingCount is smaller than the owned tracked outbox delta.");
+    }
+    for (const [userId, unreadCount] of unreadByUser.entries()) {
+      const user = Q.ensureUser(userId, "demo-control notification recipient");
+      const current = Q.number(user.activities && user.activities.notifications);
+      if (current < unreadCount) {
+        Q.fail(`user '${userId}' notification counter is smaller than the owned unread delta.`);
+      }
+    }
+
+    for (const [userId, unreadCount] of unreadByUser.entries()) {
+      const result = Q.collection("users").updateOne(
+        { userId, "activities.notifications": { $gte: unreadCount } },
+        { $inc: { "activities.notifications": -unreadCount } }
+      );
+      if (result.modifiedCount !== 1) Q.fail(`failed to remove the exact unread delta for '${userId}'.`);
+    }
+    if (trackedPendingOutboxes.length > 0) {
+      const nowIso = Q.nowIso();
+      const result = Q.collection("notificationRuleConfigs").updateOne(
+        {
+          _id: rule._id,
+          "runState.currentStatus": { $ne: "running" },
+          "runState.pendingCount": { $gte: trackedPendingOutboxes.length }
+        },
+        {
+          $inc: { "runState.pendingCount": -trackedPendingOutboxes.length },
+          $set: {
+            "runState.pendingCountUnit": "admin.jobs.rule.notification.outbox",
+            "runState.pendingCountUpdatedAtIso": nowIso
+          }
+        }
+      );
+      if (result.modifiedCount !== 1) Q.fail("failed to remove the exact notification-outbox pending delta.");
+    }
+
+    const notificationIds = notifications.map(notification => notification._id);
+    const outboxIds = outboxes.map(outbox => outbox._id);
+    const auditIds = audits.map(audit => audit._id);
+    const sessionStateIds = sessionStates.map(sessionState => sessionState._id);
+    if (notificationIds.length > 0) {
+      Q.collection("userNotifications").deleteMany({ _id: { $in: notificationIds } });
+    }
+    if (outboxIds.length > 0) {
+      Q.collection("notificationOutbox").deleteMany({ _id: { $in: outboxIds } });
+    }
+    Q.collection("userLoginAudits").deleteMany({ _id: { $in: auditIds } });
+    Q.collection("userSessionStates").deleteMany({ _id: { $in: sessionStateIds } });
+
+    const current = landingDomainSnapshot();
+    if (JSON.stringify(current) !== JSON.stringify(baseline)
+        || Q.collection("notificationOutbox").countDocuments({ entityId: { $in: attemptIds } }) !== 0
+        || Q.collection("userNotifications").countDocuments({ sourceId: { $in: attemptIds } }) !== 0) {
+      Q.fail("demo-control cleanup did not restore the staged landing domain baseline.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: Q.text(state.phase) || "baseline",
+      cleanup: "demo-control-complete",
+      removed: {
+        sessionStates: sessionStateIds.length,
+        loginAudits: auditIds.length,
+        notificationOutboxes: outboxIds.length,
+        userNotifications: notificationIds.length
+      },
+      correctedProjections: {
+        unreadByUser: Object.fromEntries(unreadByUser),
+        notificationOutboxPendingDelta: trackedPendingOutboxes.length,
+        notificationOutboxPendingBefore: pendingBefore,
+        notificationOutboxPendingAfter: pendingBefore - trackedPendingOutboxes.length
+      },
+      baseline,
+      current,
+      unchanged: true,
+      next: `Run verify entry-domain ${checkpointId}, then reset the checkpoint pointer.`
     });
   }
 
@@ -431,6 +632,7 @@
   switch (command) {
     case "stage": stage(); break;
     case "status": status(); break;
+    case "cleanup-demo-control": cleanupLandingDemoControl(); break;
     case "verify": verify(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

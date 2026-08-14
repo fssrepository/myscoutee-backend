@@ -1,36 +1,36 @@
-sequence,chunk_id,text_file,expected_audio_file,section_at_start,characters,words,estimated_minutes_at_150_wpm,status
-1,TSBU_EN_001,chunks/TSBU_EN_001.txt,TSBU_EN_001.mp3,MyScoutee — The Story,4776,765,5.10,pending
-2,TSBU_EN_002,chunks/TSBU_EN_002.txt,TSBU_EN_002.mp3,A Note to the Reader,4701,731,4.87,pending
-3,TSBU_EN_003,chunks/TSBU_EN_003.txt,TSBU_EN_003.mp3,Prologue — The Other Biography,4547,764,5.09,pending
-4,TSBU_EN_004,chunks/TSBU_EN_004.txt,TSBU_EN_004.mp3,1. The Year That Opened,4885,839,5.59,pending
-5,TSBU_EN_005,chunks/TSBU_EN_005.txt,TSBU_EN_005.mp3,1. The Year That Opened,4639,796,5.31,pending
-6,TSBU_EN_006,chunks/TSBU_EN_006.txt,TSBU_EN_006.mp3,2. A Distorted Choice Can Still Be Legal,4704,750,5.00,pending
-7,TSBU_EN_007,chunks/TSBU_EN_007.txt,TSBU_EN_007.mp3,4. The Low-Trust Triangle,2313,381,2.54,pending
-8,TSBU_EN_008,chunks/TSBU_EN_008.txt,TSBU_EN_008.mp3,4. The Low-Trust Triangle,2615,421,2.81,pending
-9,TSBU_EN_009,chunks/TSBU_EN_009.txt,TSBU_EN_009.mp3,6. Three Attempts at a Subtraction,4881,799,5.33,pending
-10,TSBU_EN_010,chunks/TSBU_EN_010.txt,TSBU_EN_010.mp3,8. Saturday Before Dawn,4943,827,5.51,pending
-11,TSBU_EN_011,chunks/TSBU_EN_011.txt,TSBU_EN_011.mp3,10. A Body With a Deadline,4340,760,5.07,pending
-12,TSBU_EN_012,chunks/TSBU_EN_012.txt,TSBU_EN_012.mp3,11. The Knock One Year Later,4645,797,5.31,pending
-13,TSBU_EN_013,chunks/TSBU_EN_013.txt,TSBU_EN_013.mp3,11. The Knock One Year Later,4771,801,5.34,pending
-14,TSBU_EN_014,chunks/TSBU_EN_014.txt,TSBU_EN_014.mp3,12. Remarks in the Margin,4711,733,4.89,pending
-15,TSBU_EN_015,chunks/TSBU_EN_015.txt,TSBU_EN_015.mp3,13. The Man the Report Invented,4718,767,5.11,pending
-16,TSBU_EN_016,chunks/TSBU_EN_016.txt,TSBU_EN_016.mp3,The file I had to reconstruct,4450,708,4.72,pending
-17,TSBU_EN_017,chunks/TSBU_EN_017.txt,TSBU_EN_017.mp3,Learning the doors,4780,805,5.37,pending
-18,TSBU_EN_018,chunks/TSBU_EN_018.txt,TSBU_EN_018.mp3,Inside the curve,4602,745,4.97,pending
-19,TSBU_EN_019,chunks/TSBU_EN_019.txt,TSBU_EN_019.mp3,15. The Work the File Could Not Explain,4945,796,5.31,pending
-20,TSBU_EN_020,chunks/TSBU_EN_020.txt,TSBU_EN_020.mp3,The mirror,4869,793,5.29,pending
-21,TSBU_EN_021,chunks/TSBU_EN_021.txt,TSBU_EN_021.mp3,The mirror,4929,800,5.33,pending
-22,TSBU_EN_022,chunks/TSBU_EN_022.txt,TSBU_EN_022.mp3,17. Beautiful Cities Can Still Produce Exits,4945,798,5.32,pending
-23,TSBU_EN_023,chunks/TSBU_EN_023.txt,TSBU_EN_023.mp3,19. The Streets Begin to Speak,4932,780,5.20,pending
-24,TSBU_EN_024,chunks/TSBU_EN_024.txt,TSBU_EN_024.mp3,23. When an Eighth Judge Steps Aside,4701,763,5.09,pending
-25,TSBU_EN_025,chunks/TSBU_EN_025.txt,TSBU_EN_025.mp3,25. The Empty Presidential Chair,4921,820,5.47,pending
-26,TSBU_EN_026,chunks/TSBU_EN_026.txt,TSBU_EN_026.mp3,27. Humour Is a Human Audit Trail,4882,799,5.33,pending
-27,TSBU_EN_027,chunks/TSBU_EN_027.txt,TSBU_EN_027.mp3,How to use these notes,3865,563,3.75,pending
-28,TSBU_EN_028,chunks/TSBU_EN_028.txt,TSBU_EN_028.mp3,How to use these notes,4587,677,4.51,pending
-29,TSBU_EN_029,chunks/TSBU_EN_029.txt,TSBU_EN_029.mp3,How to use these notes,4518,676,4.51,pending
-30,TSBU_EN_030,chunks/TSBU_EN_030.txt,TSBU_EN_030.mp3,The primary record,4206,617,4.11,pending
-31,TSBU_EN_031,chunks/TSBU_EN_031.txt,TSBU_EN_031.mp3,The 2019–2021 employment thresholds,4470,644,4.29,pending
-32,TSBU_EN_032,chunks/TSBU_EN_032.txt,TSBU_EN_032.mp3,The government account and the later two-factor change,4910,693,4.62,pending
-33,TSBU_EN_033,chunks/TSBU_EN_033.txt,TSBU_EN_033.mp3,KATA,4515,665,4.43,pending
-34,TSBU_EN_034,chunks/TSBU_EN_034.txt,TSBU_EN_034.mp3,Emergency powers and public reversals,4873,712,4.75,pending
-35,TSBU_EN_035,chunks/TSBU_EN_035.txt,TSBU_EN_035.mp3,The Ukrainian cash-in-transit affair and institutional departures,4848,687,4.58,pending
+sequence,chunk_id,text_file,expected_audio_file,section_at_start,characters,words,estimated_minutes_at_150_wpm,actual_duration_seconds,audio_sha256,status
+1,TSBU_2_EN_001,chunks/TSBU_2_EN_001.txt,TSBU_2_EN_001.mp3,MyScoutee — The Story,4776,765,5.10,307.513438,9a4b799d2d743ec8b26a4bb0eec087e0ceca22c2e12ad9e4152570bb6bf008e9,accepted
+2,TSBU_2_EN_002,chunks/TSBU_2_EN_002.txt,TSBU_2_EN_002.mp3,A Note to the Reader,4701,731,4.87,293.590188,ff403ee4e7c7153b4fe147f7c2aeb2695b8a63d5c4996f50c3a5b8c78c0c6162,accepted
+3,TSBU_2_EN_003,chunks/TSBU_2_EN_003.txt,TSBU_2_EN_003.mp3,Prologue — The Other Biography,4547,764,5.09,294.896313,f35c651eaac36c8d190aa7ca7ddd625d036267e50a8e557de37d501c1f5eb1c3,accepted
+4,TSBU_2_EN_004,chunks/TSBU_2_EN_004.txt,TSBU_2_EN_004.mp3,1. The Year That Opened,4885,839,5.59,305.345250,1558e17cf6debb7619b1017f4acb17eceebeae2c4b4ac0054484408fd262c144,accepted
+5,TSBU_2_EN_005,chunks/TSBU_2_EN_005.txt,TSBU_2_EN_005.mp3,1. The Year That Opened,4639,796,5.31,299.572188,c7e28166aca82c30c43fcae8b91687d70e74e158e31e924c032de7f17ffb8b7d,accepted
+6,TSBU_2_EN_006,chunks/TSBU_2_EN_006.txt,TSBU_2_EN_006.mp3,2. A Distorted Choice Can Still Be Legal,4704,750,5.00,292.231813,76fef5533e809f7313ec5a23c2513316f75d9ee15b36ae10d9580f9bf1513a0a,accepted
+7,TSBU_2_EN_007,chunks/TSBU_2_EN_007.txt,TSBU_2_EN_007.mp3,4. The Low-Trust Triangle,2313,381,2.54,143.621188,229886290347859c4c9a3f63eef7dbc7e94ff60f744365cfbe85886dead0c13a,accepted
+8,TSBU_2_EN_008,chunks/TSBU_2_EN_008.txt,TSBU_2_EN_008.mp3,4. The Low-Trust Triangle,2615,421,2.81,,,pending
+9,TSBU_2_EN_009,chunks/TSBU_2_EN_009.txt,TSBU_2_EN_009.mp3,6. Three Attempts at a Subtraction,4881,799,5.33,,,pending
+10,TSBU_2_EN_010,chunks/TSBU_2_EN_010.txt,TSBU_2_EN_010.mp3,8. Saturday Before Dawn,4943,827,5.51,,,pending
+11,TSBU_2_EN_011,chunks/TSBU_2_EN_011.txt,TSBU_2_EN_011.mp3,10. A Body With a Deadline,4340,760,5.07,,,pending
+12,TSBU_2_EN_012,chunks/TSBU_2_EN_012.txt,TSBU_2_EN_012.mp3,11. The Knock One Year Later,4645,797,5.31,,,pending
+13,TSBU_2_EN_013,chunks/TSBU_2_EN_013.txt,TSBU_2_EN_013.mp3,11. The Knock One Year Later,4771,801,5.34,,,pending
+14,TSBU_2_EN_014,chunks/TSBU_2_EN_014.txt,TSBU_2_EN_014.mp3,12. Remarks in the Margin,4711,733,4.89,,,pending
+15,TSBU_2_EN_015,chunks/TSBU_2_EN_015.txt,TSBU_2_EN_015.mp3,13. The Man the Report Invented,4718,767,5.11,,,pending
+16,TSBU_2_EN_016,chunks/TSBU_2_EN_016.txt,TSBU_2_EN_016.mp3,The file I had to reconstruct,4450,708,4.72,,,pending
+17,TSBU_2_EN_017,chunks/TSBU_2_EN_017.txt,TSBU_2_EN_017.mp3,Learning the doors,4780,805,5.37,,,pending
+18,TSBU_2_EN_018,chunks/TSBU_2_EN_018.txt,TSBU_2_EN_018.mp3,Inside the curve,4602,745,4.97,,,pending
+19,TSBU_2_EN_019,chunks/TSBU_2_EN_019.txt,TSBU_2_EN_019.mp3,15. The Work the File Could Not Explain,4945,796,5.31,,,pending
+20,TSBU_2_EN_020,chunks/TSBU_2_EN_020.txt,TSBU_2_EN_020.mp3,The mirror,4869,793,5.29,,,pending
+21,TSBU_2_EN_021,chunks/TSBU_2_EN_021.txt,TSBU_2_EN_021.mp3,The mirror,4929,800,5.33,,,pending
+22,TSBU_2_EN_022,chunks/TSBU_2_EN_022.txt,TSBU_2_EN_022.mp3,17. Beautiful Cities Can Still Produce Exits,4945,798,5.32,,,pending
+23,TSBU_2_EN_023,chunks/TSBU_2_EN_023.txt,TSBU_2_EN_023.mp3,19. The Streets Begin to Speak,4932,780,5.20,,,pending
+24,TSBU_2_EN_024,chunks/TSBU_2_EN_024.txt,TSBU_2_EN_024.mp3,23. When an Eighth Judge Steps Aside,4701,763,5.09,,,pending
+25,TSBU_2_EN_025,chunks/TSBU_2_EN_025.txt,TSBU_2_EN_025.mp3,25. The Empty Presidential Chair,4921,820,5.47,,,pending
+26,TSBU_2_EN_026,chunks/TSBU_2_EN_026.txt,TSBU_2_EN_026.mp3,27. Humour Is a Human Audit Trail,4882,799,5.33,,,pending
+27,TSBU_2_EN_027,chunks/TSBU_2_EN_027.txt,TSBU_2_EN_027.mp3,How to use these notes,3865,563,3.75,,,pending
+28,TSBU_2_EN_028,chunks/TSBU_2_EN_028.txt,TSBU_2_EN_028.mp3,How to use these notes,4587,677,4.51,,,pending
+29,TSBU_2_EN_029,chunks/TSBU_2_EN_029.txt,TSBU_2_EN_029.mp3,How to use these notes,4518,676,4.51,,,pending
+30,TSBU_2_EN_030,chunks/TSBU_2_EN_030.txt,TSBU_2_EN_030.mp3,The primary record,4206,617,4.11,,,pending
+31,TSBU_2_EN_031,chunks/TSBU_2_EN_031.txt,TSBU_2_EN_031.mp3,The 2019–2021 employment thresholds,4470,644,4.29,,,pending
+32,TSBU_2_EN_032,chunks/TSBU_2_EN_032.txt,TSBU_2_EN_032.mp3,The government account and the later two-factor change,4910,693,4.62,,,pending
+33,TSBU_2_EN_033,chunks/TSBU_2_EN_033.txt,TSBU_2_EN_033.mp3,KATA,4515,665,4.43,,,pending
+34,TSBU_2_EN_034,chunks/TSBU_2_EN_034.txt,TSBU_2_EN_034.mp3,Emergency powers and public reversals,4873,712,4.75,,,pending
+35,TSBU_2_EN_035,chunks/TSBU_2_EN_035.txt,TSBU_2_EN_035.mp3,The Ukrainian cash-in-transit affair and institutional departures,4848,687,4.58,,,pending

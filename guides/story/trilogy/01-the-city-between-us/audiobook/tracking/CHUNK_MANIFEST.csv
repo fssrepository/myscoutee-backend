@@ -1,22 +1,22 @@
-sequence,chunk_id,text_file,expected_audio_file,section_at_start,characters,words,estimated_minutes_at_150_wpm,status
-1,TCBU_EN_001,chunks/TCBU_EN_001.txt,TCBU_EN_001.mp3,MyScoutee — The Story,4939,817,5.45,pending
-2,TCBU_EN_002,chunks/TCBU_EN_002.txt,TCBU_EN_002.mp3,1. What the Soil Teaches,4477,762,5.08,pending
-3,TCBU_EN_003,chunks/TCBU_EN_003.txt,TCBU_EN_003.mp3,The Cornfield and Trivandrum,4893,837,5.58,pending
-4,TCBU_EN_004,chunks/TCBU_EN_004.txt,TCBU_EN_004.mp3,Encounters Without a Reliable Room,4844,806,5.37,pending
-5,TCBU_EN_005,chunks/TCBU_EN_005.txt,TCBU_EN_005.mp3,3. The Key My Parents Gave Me,4506,781,5.21,pending
-6,TCBU_EN_006,chunks/TCBU_EN_006.txt,TCBU_EN_006.mp3,4. The City Opened in Two Stages,4842,833,5.55,pending
-7,TCBU_EN_007,chunks/TCBU_EN_007.txt,TCBU_EN_007.mp3,6. Ten Lives Under One Roof,4711,791,5.27,pending
-8,TCBU_EN_008,chunks/TCBU_EN_008.txt,TCBU_EN_008.mp3,8. The First Three Years and the Fifth,4565,773,5.15,pending
-9,TCBU_EN_009,chunks/TCBU_EN_009.txt,TCBU_EN_009.mp3,10. The Extra Day Nobody Had,4801,837,5.58,pending
-10,TCBU_EN_010,chunks/TCBU_EN_010.txt,TCBU_EN_010.mp3,12. Egypt: Six Days of Temporary Trust,4900,848,5.65,pending
-11,TCBU_EN_011,chunks/TCBU_EN_011.txt,TCBU_EN_011.mp3,"14. Thailand, Cambodia, and the Price of a Ride",4542,748,4.99,pending
-12,TCBU_EN_012,chunks/TCBU_EN_012.txt,TCBU_EN_012.mp3,16. Europe Within Reach,4854,802,5.35,pending
-13,TCBU_EN_013,chunks/TCBU_EN_013.txt,TCBU_EN_013.mp3,18. When the World Closed,4870,845,5.63,pending
-14,TCBU_EN_014,chunks/TCBU_EN_014.txt,TCBU_EN_014.mp3,20. Two Kinds of Silence,4885,815,5.43,pending
-15,TCBU_EN_015,chunks/TCBU_EN_015.txt,TCBU_EN_015.mp3,21. Rooms Full of Beginnings,4604,732,4.88,pending
-16,TCBU_EN_016,chunks/TCBU_EN_016.txt,TCBU_EN_016.mp3,24. A Whole Person Behind the Frame,4795,766,5.11,pending
-17,TCBU_EN_017,chunks/TCBU_EN_017.txt,TCBU_EN_017.mp3,26. Priority Is Not Human Value,4687,755,5.03,pending
-18,TCBU_EN_018,chunks/TCBU_EN_018.txt,TCBU_EN_018.mp3,29. After Strangers Become Known,4784,726,4.84,pending
-19,TCBU_EN_019,chunks/TCBU_EN_019.txt,TCBU_EN_019.mp3,"31. What Is Built, What Is Not Proven",4887,747,4.98,pending
-20,TCBU_EN_020,chunks/TCBU_EN_020.txt,TCBU_EN_020.mp3,"London, Migration, and Return",4795,715,4.77,pending
-21,TCBU_EN_021,chunks/TCBU_EN_021.txt,TCBU_EN_021.mp3,Selected Journey Anchors,1626,232,1.55,pending
+sequence,chunk_id,text_file,expected_audio_file,section_at_start,characters,words,estimated_minutes_at_150_wpm,actual_duration_seconds,audio_sha256,status
+1,TCBU_1_EN_001,chunks/TCBU_1_EN_001.txt,TCBU_1_EN_001.mp3,MyScoutee — The Story,4939,817,5.45,,,pending
+2,TCBU_1_EN_002,chunks/TCBU_1_EN_002.txt,TCBU_1_EN_002.mp3,1. What the Soil Teaches,4477,762,5.08,,,pending
+3,TCBU_1_EN_003,chunks/TCBU_1_EN_003.txt,TCBU_1_EN_003.mp3,The Cornfield and Trivandrum,4893,837,5.58,,,pending
+4,TCBU_1_EN_004,chunks/TCBU_1_EN_004.txt,TCBU_1_EN_004.mp3,Encounters Without a Reliable Room,4844,806,5.37,,,pending
+5,TCBU_1_EN_005,chunks/TCBU_1_EN_005.txt,TCBU_1_EN_005.mp3,3. The Key My Parents Gave Me,4506,781,5.21,,,pending
+6,TCBU_1_EN_006,chunks/TCBU_1_EN_006.txt,TCBU_1_EN_006.mp3,4. The City Opened in Two Stages,4842,833,5.55,,,pending
+7,TCBU_1_EN_007,chunks/TCBU_1_EN_007.txt,TCBU_1_EN_007.mp3,6. Ten Lives Under One Roof,4711,791,5.27,,,pending
+8,TCBU_1_EN_008,chunks/TCBU_1_EN_008.txt,TCBU_1_EN_008.mp3,8. The First Three Years and the Fifth,4565,773,5.15,,,pending
+9,TCBU_1_EN_009,chunks/TCBU_1_EN_009.txt,TCBU_1_EN_009.mp3,10. The Extra Day Nobody Had,4801,837,5.58,,,pending
+10,TCBU_1_EN_010,chunks/TCBU_1_EN_010.txt,TCBU_1_EN_010.mp3,12. Egypt: Six Days of Temporary Trust,4900,848,5.65,,,pending
+11,TCBU_1_EN_011,chunks/TCBU_1_EN_011.txt,TCBU_1_EN_011.mp3,"14. Thailand, Cambodia, and the Price of a Ride",4542,748,4.99,,,pending
+12,TCBU_1_EN_012,chunks/TCBU_1_EN_012.txt,TCBU_1_EN_012.mp3,16. Europe Within Reach,4854,802,5.35,,,pending
+13,TCBU_1_EN_013,chunks/TCBU_1_EN_013.txt,TCBU_1_EN_013.mp3,18. When the World Closed,4870,845,5.63,,,pending
+14,TCBU_1_EN_014,chunks/TCBU_1_EN_014.txt,TCBU_1_EN_014.mp3,20. Two Kinds of Silence,4885,815,5.43,,,pending
+15,TCBU_1_EN_015,chunks/TCBU_1_EN_015.txt,TCBU_1_EN_015.mp3,21. Rooms Full of Beginnings,4604,732,4.88,,,pending
+16,TCBU_1_EN_016,chunks/TCBU_1_EN_016.txt,TCBU_1_EN_016.mp3,24. A Whole Person Behind the Frame,4795,766,5.11,,,pending
+17,TCBU_1_EN_017,chunks/TCBU_1_EN_017.txt,TCBU_1_EN_017.mp3,26. Priority Is Not Human Value,4687,755,5.03,,,pending
+18,TCBU_1_EN_018,chunks/TCBU_1_EN_018.txt,TCBU_1_EN_018.mp3,29. After Strangers Become Known,4784,726,4.84,,,pending
+19,TCBU_1_EN_019,chunks/TCBU_1_EN_019.txt,TCBU_1_EN_019.mp3,"31. What Is Built, What Is Not Proven",4887,747,4.98,,,pending
+20,TCBU_1_EN_020,chunks/TCBU_1_EN_020.txt,TCBU_1_EN_020.mp3,"London, Migration, and Return",4795,715,4.77,,,pending
+21,TCBU_1_EN_021,chunks/TCBU_1_EN_021.txt,TCBU_1_EN_021.mp3,Selected Journey Anchors,1626,232,1.55,,,pending

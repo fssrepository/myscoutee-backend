@@ -14,11 +14,14 @@ end notes and colophon. It is not a summary or a replacement manuscript.
 - `tracking/CHUNK_MANIFEST.csv`: generation order, expected MP3 names and
   progress status;
 - `cover/`: the first page of the locked public PDF, rasterized for the final
-  static-cover video;
-- `audio/` and `final/`: instructions only; generated media is ignored by Git.
+  static-cover video.
 
-Generate `TCBU_EN_001.txt` first and save the accepted result as
-`TCBU_EN_001.mp3`. Continue in numeric order without changing Jon's settings.
+All generated MP3, WAV and MP4 files stay under `~/Downloads/audiobook/` and
+are never copied into this repository.
+
+Part I is production priority 2. Generate it only after the complete Part II
+audiobook, beginning with `TCBU_1_EN_001.txt` and saving the accepted result as
+`TCBU_1_EN_001.mp3`. Continue in numeric order without changing Jon's settings.
 The shared settings and credit-safe procedure are in
 [`AUDIOBOOK_PRODUCTION.md`](../../../shared/production/audio/AUDIOBOOK_PRODUCTION.md).
 

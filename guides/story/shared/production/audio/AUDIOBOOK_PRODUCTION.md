@@ -54,24 +54,27 @@ The package builder reserves a small safety margin under the paid website's
 | Book | Chunks | Generation characters | Approximate read at 150 wpm |
 | --- | ---: | ---: | ---: |
 | Part I — *The City Between Us* | 21 | 96,807 | 1 h 46 min |
-| Part II — *The System Between Us* | 34 | 159,939 | 2 h 50 min |
-| **Total** | **55** | **256,746** | **4 h 36 min** |
+| Part II — *The System Between Us* | 35 | 159,937 | 2 h 50 min |
+| **Total** | **56** | **256,744** | **4 h 36 min** |
 
-The 30,607-credit balance reported on 15 August 2026 covers 30,607 characters
-with Multilingual v2 at a normal `1×` voice rate. That is enough for Part I
-chunks `TCBU_EN_001` through `TCBU_EN_006` (28,501 characters), leaving 2,106
-credits. The total project therefore needs later monthly credits or top-up.
+The 30,607-credit balance reported on 15 August 2026 is reserved for Part II,
+because its existing film covers only part of the book. With Multilingual v2 at
+a normal `1×` voice rate, Part II chunks `TSBU_2_EN_001` through `TSBU_2_EN_007`
+use 30,565 characters and leave only 42 credits. Chunk 7 has a deliberate
+natural paragraph-boundary split for this first credit window; chunk 8 resumes
+the same chapter. Part I follows only after the complete Part II audiobook.
+The total project therefore needs later monthly credits or top-up.
 Check the credit amount shown by ElevenLabs before every generation because a
 shared Voice Library voice may carry its own multiplier.
 
 Flash v2.5 would normally charge half a credit per character, but even then the
-complete pair would need about 128,373 credits. It is not the production lock:
+complete pair would need about 128,372 credits. It is not the production lock:
 Multilingual v2 is ElevenLabs' long-form audiobook/content-creation model and
 matches the already accepted Jon voice.
 
 ## Credit-safe generation
 
-1. Start with `TCBU_EN_001.txt`. It includes the actual title/front matter and
+1. Start with `TSBU_2_EN_001.txt`. It includes the actual title/front matter and
    beginning of the book, so an accepted test is also the first deliverable.
 2. Paste one chunk without adding directions to the spoken text.
 3. Confirm Jon, Multilingual v2 and the locked sliders before selecting
@@ -81,12 +84,13 @@ matches the already accepted Jon voice.
    permits two free regenerations in Speech Synthesis when text, voice and model
    stay unchanged.
 5. Download the accepted result with the exact manifest filename, for example
-   `TCBU_EN_001.mp3`. Prefer the highest-quality export offered by the plan.
+   `TSBU_2_EN_001.mp3`. Prefer the highest-quality export offered by the plan.
 6. Update only the row's `status` in `CHUNK_MANIFEST.csv`; do not edit generated
    speech text by hand or normalize separate chunks.
 
-Downloaded audio and final MP4 files remain outside Git. The repository stores
-the deterministic spoken masters, chunks, manifests, workflow and cover images.
+Downloaded audio and final MP4 files remain together under
+`~/Downloads/audiobook/`, outside Git. The repository stores only the
+deterministic spoken masters, chunks, manifests, workflow and cover images.
 
 Official references checked 15 August 2026:
 

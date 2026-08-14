@@ -37,7 +37,7 @@ BOOKS = (
         "publishedPdf": "published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf",
         "cover": "cover/MyScoutee_The_Story_Part_I_The_City_Between_Us_Audiobook_Cover.png",
         "master": "MyScoutee_The_Story_Part_I_The_City_Between_Us_Audiobook_Master_EN.txt",
-        "prefix": "TCBU_EN",
+        "prefix": "TCBU_1_EN",
         "productionPriority": 2,
     },
     {
@@ -48,7 +48,7 @@ BOOKS = (
         "publishedPdf": "published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf",
         "cover": "cover/MyScoutee_The_Story_Part_II_The_System_Between_Us_Audiobook_Cover.png",
         "master": "MyScoutee_The_Story_Part_II_The_System_Between_Us_Audiobook_Master_EN.txt",
-        "prefix": "TSBU_EN",
+        "prefix": "TSBU_2_EN",
         "productionPriority": 1,
         "initialGenerationBudgetCharacters": 30_607,
     },
@@ -332,8 +332,15 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
         make_chunks(blocks),
         book.get("initialGenerationBudgetCharacters"),
     )
-    for old_chunk in chunks_dir.glob(f"{book['prefix']}_*.txt"):
+    for old_chunk in chunks_dir.glob("*.txt"):
         old_chunk.unlink()
+
+    csv_path = tracking_dir / "CHUNK_MANIFEST.csv"
+    existing_rows: dict[str, dict[str, str]] = {}
+    if csv_path.exists():
+        with csv_path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle):
+                existing_rows[row["chunk_id"]] = row
 
     manifest_rows: list[dict[str, object]] = []
     total_generation_characters = 0
@@ -347,6 +354,7 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
         words = count_words(chunk.text)
         total_generation_characters += characters
         total_words += words
+        existing = existing_rows.get(chunk_id, {})
         manifest_rows.append(
             {
                 "sequence": index,
@@ -357,13 +365,18 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
                 "characters": characters,
                 "words": words,
                 "estimated_minutes_at_150_wpm": f"{words / WORDS_PER_MINUTE:.2f}",
-                "status": "pending",
+                "actual_duration_seconds": existing.get("actual_duration_seconds", ""),
+                "audio_sha256": existing.get("audio_sha256", ""),
+                "status": existing.get("status", "pending"),
             }
         )
 
-    csv_path = tracking_dir / "CHUNK_MANIFEST.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(manifest_rows[0]))
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(manifest_rows[0]),
+            lineterminator="\n",
+        )
         writer.writeheader()
         writer.writerows(manifest_rows)
 

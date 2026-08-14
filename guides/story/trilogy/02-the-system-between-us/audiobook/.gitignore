@@ -1,4 +1,5 @@
-audio/*
-!audio/README.md
-final/*
-!final/README.md
+audio/
+final/
+*.mp3
+*.wav
+*.mp4

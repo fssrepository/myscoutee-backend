@@ -15,12 +15,16 @@ manuscript.
 - `tracking/CHUNK_MANIFEST.csv`: generation order, expected MP3 names and
   progress status;
 - `cover/`: the first page of the locked public PDF, rasterized for the final
-  static-cover video;
-- `audio/` and `final/`: instructions only; generated media is ignored by Git.
+  static-cover video.
 
-Generate this part after Part I, beginning with `TSBU_EN_001.txt`, and save the
-accepted result as `TSBU_EN_001.mp3`. Continue in numeric order without changing
-Jon's settings. The shared settings and credit-safe procedure are in
+All generated MP3, WAV and MP4 files stay under `~/Downloads/audiobook/` and
+are never copied into this repository.
+
+This is production priority 1. Begin with `TSBU_2_EN_001.txt` and save the
+accepted result as `TSBU_2_EN_001.mp3`. The current 30,607-credit window covers
+chunks 1–7; chunk 7 is intentionally shorter and chunk 8 resumes at the next
+natural paragraph. Continue in numeric order without changing Jon's settings.
+The shared settings and credit-safe procedure are in
 [`AUDIOBOOK_PRODUCTION.md`](../../../shared/production/audio/AUDIOBOOK_PRODUCTION.md).
 
 Rebuild both packages from the repository root with:

@@ -43,7 +43,7 @@
     "estimatedCreditsAtOneTimesVoiceRate": 159937,
     "words": 25472,
     "estimatedMinutesAt150Wpm": 169.81,
-    "audioFilenamePattern": "TSBU_EN_NNN.mp3",
+    "audioFilenamePattern": "TSBU_2_EN_NNN.mp3",
     "initialGenerationBudgetCharacters": 30607,
     "initialBudgetChunkCount": 7,
     "initialBudgetUsedCharacters": 30565,

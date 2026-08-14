@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-14
+Updated: 2026-08-15
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#landing-eligibility-001--browser-coordinate-login-eligibility
-scenario: entry-domain (baseline staged at 2026-08-14T20:44:01.551Z)
+checkpoint: TOURNAMENT-001 — manual definition and initial UI
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-001--manual-definition-and-initial-ui
+scenario: event-domain (baseline staged at 2026-08-14T23:09:25.629Z)
 ledger_status: EXECUTING / BASELINE PROVEN
-state: LANDING-ELIGIBILITY-001 has a guarded, write-free baseline with users=56, userSessionStates=0 and userLoginAudits=0. Versioned OSM MultiPolygon partitions country:hu and country:gb are present in every seed and the current demo database; country:fr is absent. Watcher builds and direct Java validation reads are green. Budapest is PASS with exact coordinate/country:hu/Login and zero writes. Screenshot 2026-08-14 23-05-56 plus independent browser/Mongo oracle makes London PASS with exact 51.5074/-0.1278, country:gb and enabled login, and Paris granted-location PASS with exact 48.8566/2.3522, no partition and disabled Unavailable in your country. Only the right Paris target was then changed. Its persistent holder now owns both CDP permission=denied and the location override; read-only state shows no eligibility request, no session, explicit Allow location and unchanged database counts. The first one-shot permission attempt did not execute the branch because Chrome reverted to granted when that CDP connection closed; it is harness evidence only.
-required_resume: Continue from the current managed windows; do not stage, relaunch or repeat Budapest/London/Paris-granted. Obtain the user's visual confirmation that the right Paris target now shows the enabled Allow location action. Then run the final read-only browser/Mongo oracle, restore Grant on only that target to prove retry, and close/reset according to the checkpoint definition. Do not attempt real Firebase authentication completion while the deployment Firebase client configuration remains inactive; record that substep as pending rather than faking it.
-event: Budapest, London and Paris granted-location branches PASS; Paris denied machine baseline ready
+state: LANDING-ELIGIBILITY-001 functional branches are complete and reset; its real Firebase-login retention substep remains deferred. TOURNAMENT-001 now has one guarded canonical event QA TOURNAMENT-001 in Tournament mode, active/published, capacity 3/8 with Casey Admin plus Nova/Riley accepted. Qualifiers is stage 1 with two groups, group capacity 1..2 and advance 1; Final is stage 2 with one group, capacity 1..2 and advance 0. Runtime groups, leaderboard, event tasks, outbox and recompute are all zero. One launcher-owned Casey host browser is open from after stage; the three terminal LANDING windows were replaced.
+required_resume: Continue only in the existing Casey TOURNAMENT-001 browser. First verify the published event's Manage Event editor shows Tournament mode and the two exact stage definitions without saving. Then inspect the runtime Sub Events list and each stage's Groups dashboard without starting a stage. Codex checks the persisted oracle after every read-only surface; no worker or mutation is allowed.
+event: QA TOURNAMENT-001
 actors:
-  active: Budapest eligibility left port45167; London eligibility middle port36899; Paris eligibility right port44021
-  controls: all three are anonymous with no local session; Paris is the later permission-denied target and must not be replaced between its two branches
-next_actor: User visually confirms the right Paris target shows the enabled Allow location action; Codex then checks the final denied-state browser/Mongo oracle.
+  active: Casey tournament host, one launcher-owned demo browser on /game
+  controls: Nova and Riley are persisted accepted-member controls only; no browser windows are required for this read-only checkpoint
+next_actor: Casey opens Activities -> Events -> My Events -> QA TOURNAMENT-001 -> Manage Event and inspects Tournament plus both stage-definition cards without saving.
 stop_phrase: megvan
 ```
 
@@ -107,10 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`LANDING-ELIGIBILITY-001 — permission denied branch`: in the right Paris
-window, visually confirm that the top-right action is now the enabled **Allow
-location**, not **Unavailable in your country** or **Login**. Do not click it
-yet. Then write `megvan`; Codex owns the browser and Mongo oracle.
+`TOURNAMENT-001 — manual definition and initial UI`, editor branch: in the
+existing Casey window open Activities -> Events -> My Events, choose **Manage
+Event** on `QA TOURNAMENT-001`, and inspect Tournament mode plus the Qualifiers
+and Final stage cards without saving. Then write `megvan`; Codex checks the
+read-only persisted oracle before the runtime-list branch.
 
 ## QA working method
 
@@ -418,6 +419,20 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   partition from a separate read-only inspector before asking for manual
   evidence; differently labelled windows or a successful one-shot command are
   not proof that different coordinates/permissions remain applied.
+- `Browser.setPermission(..., setting=prompt)` is not a reliable way to
+  reconstruct Chrome's native location prompt. For a real prompt-recovery
+  branch, restart only the named launcher-owned actor with that isolated
+  profile's geolocation content setting at `prompt`, then use
+  `Browser.resetPermissions` while the coordinate holder remains attached.
+  Prove `prompt -> granted` from a separate inspector and require exactly one
+  application eligibility request from the user's explicit Allow action.
+  Never relaunch the other coordinate controls merely to change this actor.
+- Public country eligibility gates authentication, not the rest of a public
+  landing/demo surface. When an unavailable-country user enters an explicitly
+  supported demo, the browser location may drive UI eligibility but must not be
+  persisted into a seeded demo profile. The ordinary Logout action must revoke
+  the exact tracked backend session as well as clearing local/Firebase state;
+  an empty local store alone is not a logout PASS.
 - A synthetic browser API replay must reproduce the application's identity
   transport, not merely its JSON body or cookies. In demo mode every API call
   that stands in for Angular `HttpClient` must include
@@ -581,6 +596,15 @@ is carried into the next checkpoint. Never infer fixture state from
 screenshots. First call must have Docker-socket access; a sandbox permission
 error is not evidence that MongoDB is stopped and must never cause a second
 stack to start.
+
+A read-only landing checkpoint can intentionally exercise public demo login as
+a control and therefore create otherwise valid session/audit side effects. Its
+cleanup must be a named, guard-first harness command, not an ad-hoc Mongo
+delete. Prove every post-stage audit/session belongs to the demo provider and
+checkpoint time window; follow audit attempt IDs into security outbox and inbox
+rows; reverse unread user counters and `notification-outbox` pendingCount only
+for still-tracked owned rows; then delete exact IDs and prove the original
+domain counts and country partitions before verify/reset.
 
 ### 3. Browser actors are checkpoint data
 
@@ -782,14 +806,18 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-The completed ticket, visibility, invitation, chat and demo-registration
-checkpoints remain closed. The active Core expansion continuation is:
+The completed ticket, visibility, invitation, chat, demo-registration,
+consent, lifecycle and functional landing checkpoints retain their evidence.
+The active Core expansion continuation is:
 
 ```text
 ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
 -> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
 -> EVENT-LIFE-002 through EVENT-LIFE-005 (closed)
--> EVENT-INV-001 (closed) -> EVENT-INV-004 (active)
+-> EVENT-INV-001 through EVENT-INV-006 (closed)
+-> LANDING-ELIGIBILITY-001 (functional branches complete;
+   real Firebase-login retention deferred)
+-> TOURNAMENT-001 (next, not staged)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
