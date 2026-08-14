@@ -1,5 +1,5 @@
 Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use PR_CP32.png as the exact first frame and PR_CP40.png as the
+Veo 3.1 Lite. Use PR_CP05.png as the exact first frame and PR_CP06.png as the
 exact last frame.
 
 Begin on the same six accepted people around the symbolic four-part plan. Move
@@ -11,7 +11,7 @@ sit around one round table and use sketch paper, simple game pieces and cups.
 The supply crate is set aside, the minibus remains visible outside and attention
 circulates naturally around the full group. No pair receives special focus.
 
-Use one slow stable 35 mm camera movement and reach the exact PR_CP40.png
+Use one slow stable 35 mm camera movement and reach the exact PR_CP06.png
 composition by second 7. Preserve every person and room object. No cut, reset,
 morph, duplicate, gender change, extra participant, readable text, logo or
 visible speech. Generate one result only, exact 8 seconds, Veo 3.1 Lite, first

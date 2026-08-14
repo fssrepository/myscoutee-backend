@@ -9,12 +9,12 @@ The seven original checkpoint-image briefs and their shared visual lock are in
 
 | Shot | Prompt | Endpoint pair |
 | --- | --- | --- |
-| S01 | [flow/S01.txt](flow/S01.txt) | `PR_CP00 → PR_CP08` |
-| S02 | [flow/S02.txt](flow/S02.txt) | `PR_CP08 → PR_CP16` |
-| S03 | [flow/S03.txt](flow/S03.txt) | `PR_CP16 → PR_CP24` |
-| S04 | [flow/S04.txt](flow/S04.txt) | `PR_CP24 → PR_CP32` |
-| S05 | [flow/S05.txt](flow/S05.txt) | `PR_CP32 → PR_CP40` |
-| S06 | [flow/S06.txt](flow/S06.txt) | `PR_CP40 → PR_CP48` |
+| S01 | [flow/S01.txt](flow/S01.txt) | `PR_CP01 → PR_CP02` |
+| S02 | [flow/S02.txt](flow/S02.txt) | `PR_CP02 → PR_CP03` |
+| S03 | [flow/S03.txt](flow/S03.txt) | `PR_CP03 → PR_CP04` |
+| S04 | [flow/S04.txt](flow/S04.txt) | `PR_CP04 → PR_CP05` |
+| S05 | [flow/S05.txt](flow/S05.txt) | `PR_CP05 → PR_CP06` |
+| S06 | [flow/S06.txt](flow/S06.txt) | `PR_CP06 → PR_CP07` |
 
-The logo and all readable text are post-only. `PR_P00` and `PR_F48` are review
-references, never Flow inputs.
+The logo and all readable text are post-only. `PR_OPENING_BRANDED` and
+`PR_CLOSING_BRANDED` are review references, never Flow inputs.

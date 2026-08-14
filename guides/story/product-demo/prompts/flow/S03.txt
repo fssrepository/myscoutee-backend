@@ -1,5 +1,5 @@
 Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use PR_CP16.png as the exact first frame and PR_CP24.png as the
+Veo 3.1 Lite. Use PR_CP03.png as the exact first frame and PR_CP04.png as the
 exact last frame.
 
 Begin on the six separate mature adults: five tactile portrait windows around
@@ -14,7 +14,7 @@ rearrange into a balanced circle and the six dotted paths reach the model one by
 one. Keep every adult physically separate: this is the accepted proposal, not
 the real meeting. No pair dominates.
 
-End exactly on PR_CP24.png with six blank cards, six aqua tokens and one central
+End exactly on PR_CP04.png with six blank cards, six aqua tokens and one central
 shared-activity model visible. Preserve all six faces, ages, clothes and
 objects. No seventh or missing participant, forced acceptance, romantic
 spotlight, generated label, logo, guarantee, face morph or visible speech.

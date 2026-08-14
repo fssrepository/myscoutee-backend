@@ -1,5 +1,5 @@
 Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use PR_CP24.png as the exact first frame and PR_CP32.png as the
+Veo 3.1 Lite. Use PR_CP04.png as the exact first frame and PR_CP05.png as the
 exact last frame.
 
 Begin with the same six adults still in separate portrait windows around the
@@ -10,7 +10,7 @@ one building with open door and key, and one crate of ordinary activity
 supplies. Keep one blank shared-activity card in the center. No readable words.
 
 During seconds 7–8, pull back enough to reveal all six accepted participants
-still connected to the one practical plan. End exactly on PR_CP32.png.
+still connected to the one practical plan. End exactly on PR_CP05.png.
 
 Lock all six participant identities, including the bearded man in the dark knit
 cap. No identity swap, fifth resource, seventh participant, logo, caption, child,

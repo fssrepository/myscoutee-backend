@@ -1,19 +1,19 @@
 # 48-second product-reel storyboard
 
 Every shot is one exact eight-second Google Flow / Veo 3.1 Lite first-and-last-
-frame generation. `P00` and `F48` are deterministic post composites, not Flow
-inputs.
+frame generation. The opening and closing branded frames are deterministic post
+composites, not Flow inputs.
 
 | Shot | Time | Exact endpoints | Retention job |
 | --- | --- | --- | --- |
-| S01 | 00:00–00:08 | `PR_CP00 → PR_CP08` | frame-one brand; a match lacks time/place/plan; private intent supplies the first missing step |
-| S02 | 00:08–00:16 | `PR_CP08 → PR_CP16` | private `1–10`, reciprocal/context/distance, six distinct candidates |
-| S03 | 00:16–00:24 | `PR_CP16 → PR_CP24` | six separate acceptances converge on one shared activity proposal |
-| S04 | 00:24–00:32 | `PR_CP24 → PR_CP32` | the accepted proposal becomes people, transport, place and supplies |
-| S05 | 00:32–00:40 | `PR_CP32 → PR_CP40` | the plan becomes a real meeting before 00:37 |
-| S06 | 00:40–00:48 | `PR_CP40 → PR_CP48` | shared context becomes a warmer next invitation; closing brand |
+| S01 | 00:00–00:08 | `PR_CP01 → PR_CP02` | frame-one brand; a match lacks time/place/plan; private intent supplies the first missing step |
+| S02 | 00:08–00:16 | `PR_CP02 → PR_CP03` | private `1–10`, reciprocal/context/distance, six distinct candidates |
+| S03 | 00:16–00:24 | `PR_CP03 → PR_CP04` | six separate acceptances converge on one shared activity proposal |
+| S04 | 00:24–00:32 | `PR_CP04 → PR_CP05` | the accepted proposal becomes people, transport, place and supplies |
+| S05 | 00:32–00:40 | `PR_CP05 → PR_CP06` | the plan becomes a real meeting before 00:37 |
+| S06 | 00:40–00:48 | `PR_CP06 → PR_CP07` | shared context becomes a warmer next invitation; closing brand |
 
-## P00 — first visible frame
+## Opening branded frame — first visible frame
 
 Use the approved binary-choice image as the moving plate. Composite the original
 MyScoutee mark plus editable `yScoutee` at the top and `MATCH ≠ MEETING` at the
@@ -63,5 +63,5 @@ Several conversations continue without forcing romantic pairs. The Founder
 offers one blank tactile card for a future shared activity while the used table
 remains visible inside. Fade in the exact mark and
 `DESIGNED FOR THE MEETING.` during the final 2.5 seconds; end exactly on the
-deterministic `PR_F48` composite over `PR_CP48`. No operator, administrator, server, deployment
+deterministic `PR_CLOSING_BRANDED` composite over `PR_CP07`. No operator, administrator, server, deployment
 or business-model explanation appears.

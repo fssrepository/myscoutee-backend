@@ -7,11 +7,11 @@ stream to `720×1280`, constant `24 fps` and exactly 192 frames. Preserve the
 accepted Flow-generated music, ambience and physical effects with each shot. Do
 not add a title card or end card.
 
-At 00:00 composite `assets/frames/PR_P00.png` as the exact first appearance, or
+At 00:00 composite `assets/frames/PR_OPENING_BRANDED.png` as the exact first appearance, or
 rebuild its deterministic layers over S01: unmodified `heart.png`, editable
 `yScoutee`, and `MATCH ≠ MEETING`. Fade the overlay only; do not ask Flow to
 animate the logo. At 00:45.5 fade in the same mark and
-`DESIGNED FOR THE MEETING.` over S06, converging on `PR_F48.png` at 00:48.
+`DESIGNED FOR THE MEETING.` over S06, converging on `PR_CLOSING_BRANDED.png` at 00:48.
 
 Keep text inside the central mobile-safe area. The platform UI can cover the
 right edge and lower portion of a 9:16 video, so captions should sit above the

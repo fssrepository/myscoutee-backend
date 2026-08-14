@@ -5,7 +5,7 @@
 - [ ] Flow still shows **Veo 3.1 Lite**, Frames, exact first+last, `8 s`, `9:16`.
 - [ ] The live credit charge is confirmed before S01; six accepted first passes
   are budgeted, retries only repair a named defect.
-- [ ] All seven local `PR_CP00.png`–`PR_CP48.png` checkpoints are the exact
+- [ ] All seven local `PR_CP01.png`–`PR_CP07.png` checkpoints are the exact
   uploaded first/last frames in manifest order.
 - [ ] The continuity prefix and one matching Sxx prompt are pasted together.
 - [ ] One result is requested; Flow audio is retained unless it contains speech,
@@ -26,7 +26,8 @@
 - [ ] Six clips decode as exactly 8 seconds and are joined in manifest order.
 - [ ] Total runtime is exactly 48 seconds at constant 24 fps.
 - [ ] The original `heart.png` and editable `yScoutee` are post composites.
-- [ ] First frame matches `PR_P00.png`; last frame matches `PR_F48.png`.
+- [ ] First frame matches `PR_OPENING_BRANDED.png`; last frame matches
+  `PR_CLOSING_BRANDED.png`.
 - [ ] S06 contains only users, shared context and the next invitation; no
   operator, administrator, server or deployment explanation.
 - [ ] Actual meeting is visible by 00:33–00:34 and remains legible at 00:37.

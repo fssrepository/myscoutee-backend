@@ -1,7 +1,7 @@
 shot,start,end,duration_s,flow_model,mode,aspect,first_frame,last_frame,prompt,download_name,status
-S01,00:00,00:08,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP00.png,assets/frames/PR_CP08.png,prompts/flow/S01.txt,PR_S01_v01.mp4,ready
-S02,00:08,00:16,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP08.png,assets/frames/PR_CP16.png,prompts/flow/S02.txt,PR_S02_v01.mp4,ready
-S03,00:16,00:24,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP16.png,assets/frames/PR_CP24.png,prompts/flow/S03.txt,PR_S03_v01.mp4,ready
-S04,00:24,00:32,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP24.png,assets/frames/PR_CP32.png,prompts/flow/S04.txt,PR_S04_v01.mp4,ready
-S05,00:32,00:40,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP32.png,assets/frames/PR_CP40.png,prompts/flow/S05.txt,PR_S05_v01.mp4,ready
-S06,00:40,00:48,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP40.png,assets/frames/PR_CP48.png,prompts/flow/S06.txt,PR_S06_v01.mp4,ready
+S01,00:00,00:08,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP01.png,assets/frames/PR_CP02.png,prompts/flow/S01.txt,PR_S01_v01.mp4,ready
+S02,00:08,00:16,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP02.png,assets/frames/PR_CP03.png,prompts/flow/S02.txt,PR_S02_v01.mp4,ready
+S03,00:16,00:24,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP03.png,assets/frames/PR_CP04.png,prompts/flow/S03.txt,PR_S03_v01.mp4,ready
+S04,00:24,00:32,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP04.png,assets/frames/PR_CP05.png,prompts/flow/S04.txt,PR_S04_v01.mp4,ready
+S05,00:32,00:40,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP05.png,assets/frames/PR_CP06.png,prompts/flow/S05.txt,PR_S05_v01.mp4,ready
+S06,00:40,00:48,8,Veo 3.1 Lite,Frames first+last,9:16,assets/frames/PR_CP06.png,assets/frames/PR_CP07.png,prompts/flow/S06.txt,PR_S06_v01.mp4,ready

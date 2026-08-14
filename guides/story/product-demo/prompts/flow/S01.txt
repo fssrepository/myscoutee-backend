@@ -1,5 +1,5 @@
 Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use PR_CP00.png as the exact first frame and PR_CP08.png as the
+Veo 3.1 Lite. Use PR_CP01.png as the exact first frame and PR_CP02.png as the
 exact last frame.
 
 Begin on the same Founder at the same wooden desk in a familiar moment just
@@ -18,7 +18,7 @@ reciprocal token, one blank activity card and the cognac notebook settle into
 their exact final positions. The Founder moves only once
 and remains thoughtful, not defeated.
 
-End exactly on PR_CP08.png. Preserve the exact Founder face, apparent age,
+End exactly on PR_CP02.png. Preserve the exact Founder face, apparent age,
 clothing, scarf, hands, phone, notebook, desk, lamp, cards, warm room and
 painterly 2.5D style. No logo or readable text: the exact MyScoutee opening mark
 is composited later in post.
