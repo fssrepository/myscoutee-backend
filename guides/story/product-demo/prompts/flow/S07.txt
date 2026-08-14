@@ -1,0 +1,67 @@
+Create one continuous 8-second portrait 9:16 Frames-to-Video clip with Veo 3.1
+Lite. Use PR_CP07.png as the exact first frame and PR_CP08.png as the exact last
+frame.
+
+All characters are original fictional designs created for this project.
+
+Use a premium cinematic 2.5D storybook style with expressive hand-drawn
+character linework, dimensional paper and miniature sets, painted wood, wool
+and graphite textures, realistic warm lamplight, deep navy night shadows and
+restrained natural facial acting.
+
+Begin with the exact six fictional users sharing the round activity table in
+PR_CP07.png. Only these six people appear. Keep every person on the same screen
+side throughout the clip:
+
+- upper-left: gray-bearded man with round glasses and olive jacket;
+- upper-right: bearded man in a dark knit cap and navy shirt;
+- middle-left: chestnut-haired woman with rust scarf;
+- middle-right: Black woman with short natural curls and rust cardigan;
+- lower-left: East Asian woman with black bob and teal shirt;
+- lower-right: dark curly-haired man in a dark jacket.
+
+During seconds 0–2, the shared activity winds down through six different small
+movements. One user sets down a pencil, one gathers a cord, one straightens a
+wooden piece, one closes a sketchbook and two exchange quiet attentive looks.
+The chestnut-haired woman at middle-left picks up one small blank activity card
+from the table. Nobody visibly speaks.
+
+Use one slow, stable 35 mm camera movement backward toward and through the real
+wood-and-glass doorway. During seconds 2–5, the six users stand naturally and
+move from the table toward the evening street. Preserve their screen sides and
+relative order. No person walks across or in front of another person's path.
+
+Use physical 2.5D parallax rather than a cut. The warm workshop interior recedes
+behind the group while the doorway, streetlamp, string lights and parked amber
+minibus become more visible. Keep the used round table and activity materials
+visible through the open door.
+
+During seconds 5–7, the same six people settle into the relaxed outdoor
+arrangement shown in PR_CP08.png. Several small conversations continue within
+the full group without isolating a pair. The chestnut-haired woman remains on
+the left and gently presents the one blank activity card toward the whole group.
+The other five notice it with different subtle reactions: a small smile, a
+thoughtful glance, a slight turn of the head or quiet interest.
+
+The card remains completely blank and unbranded. The visual meaning is that a
+future invitation now begins with shared experience rather than a cold first
+message. It does not promise attendance, friendship or romance.
+
+Reach the exact PR_CP08.png composition by second 7 and hold it through the
+end. Preserve all six fictional character designs, clothing, relative screen
+positions, blank card, open venue, visible used table, parked minibus, warm
+street lighting and painterly palette.
+
+Leave the endpoint image free of generated branding and readable text. The
+exact MyScoutee mark and closing line will be added later in post-production.
+
+No cut, character transformation, position crossing, readable text, logo,
+number, public score, duplicate person, merged character, seventh participant,
+extra invitation card, extra vehicle, floating object, extra hand, forced pair,
+embrace, handshake, raised glass or exaggerated emotion. Keep movement
+restrained and physically coherent.
+
+Generate restrained original instrumental music continuing the previous clips:
+warm felt-piano fragments, low bowed texture, soft hand percussion, gentle
+workshop-to-street ambience, footsteps and subtle paper sounds. No dialogue,
+narration, singing, vocalization, crowd speech or visible lip-sync.

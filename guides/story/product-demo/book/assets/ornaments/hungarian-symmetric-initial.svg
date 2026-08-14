@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Hungarian-inspired chapter initial ornament</title>
+  <desc id="desc">A small symmetric tulip and leaf medallion in muted Hungarian folk colours.</desc>
+  <circle cx="80" cy="80" r="70" fill="#f7efe2" stroke="#d9cdbb" stroke-width="4"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 134V61" stroke="#2d7650" stroke-width="8"/>
+    <path d="M80 107c-22-21-42-20-52-4 16 15 35 17 52 4zm0 0c22-21 42-20 52-4-16 15-35 17-52 4z" fill="#2d7650" stroke="#1f5b3c" stroke-width="4"/>
+    <path d="M80 75C54 59 47 38 61 28c9-6 17 1 19 10 2-9 10-16 19-10 14 10 7 31-19 47z" fill="#b52d3b" stroke="#7f1f2b" stroke-width="4"/>
+    <circle cx="80" cy="21" r="7" fill="#f1b544" stroke="#a06d20" stroke-width="3"/>
+  </g>
+</svg>

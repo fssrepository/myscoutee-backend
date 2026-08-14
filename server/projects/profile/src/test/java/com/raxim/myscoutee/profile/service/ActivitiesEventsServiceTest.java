@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
@@ -853,7 +854,8 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         List.of(),
                         Set.of(),
-                        10);
+                        10,
+                        true);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
@@ -879,6 +881,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.membershipStatus()).isEqualTo("accepted");
+        assertThat(result.changed()).isTrue();
         verify(activitiesMembersService).requestJoin(
                 anyString(),
                 any(Users.class),
@@ -886,6 +889,55 @@ class ActivitiesEventsServiceTest {
                 anyBoolean(),
                 anyBoolean(),
                 anyBoolean());
+        verify(affinityRecomputeTaskService, never())
+                .enqueueEventMembersChanged(anyString(), anyString());
+    }
+
+    @Test
+    void repeatedAcceptedJoinReportsNoMutation() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot acceptedSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "viewer"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(acceptedSnapshot);
+        when(activitiesMembersService.requestJoin(
+                anyString(),
+                any(Users.class),
+                any(ActivityEvent.class),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean())).thenReturn(acceptedSnapshot);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("accepted");
+        assertThat(result.changed()).isFalse();
+        assertThat(result.counterDelta()).isNull();
         verify(affinityRecomputeTaskService, never())
                 .enqueueEventMembersChanged(anyString(), anyString());
     }
@@ -1108,6 +1160,52 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void visibilityOnlyDraftSaveDoesNotNotifyForEquivalentLegacyDefaults() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("draft-1", "host", 0d);
+        existing.setStatus(ActivityEvent.STATUS_DRAFT);
+        existing.setTitle("Draft Event");
+        existing.setTimeframe("May 24, 3:28 AM - 4:28 AM");
+        existing.setStartAtIso("2026-05-24T03:28:00Z");
+        existing.setEndAtIso("2026-05-24T04:28:00Z");
+        existing.setFrequency(null);
+        existing.setSlotsEnabled(null);
+        existing.setSubEventsEnabled(true);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-draft-1",
+                "draft-1",
+                "host",
+                false,
+                false,
+                "Friends only"));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getVisibility()).isEqualTo("Friends only");
+            assertThat(saved.getFrequency()).isEqualTo("One-time");
+            assertThat(saved.getSlotsEnabled()).isFalse();
+            assertThat(saved.getSubEventsEnabled()).isTrue();
+        });
+        verify(scheduledMessageTaskService, never()).scheduleEventDefinitionChanged(
+                anyString(),
+                anyString(),
+                anyCollection(),
+                anyCollection(),
+                anyString());
+    }
+
+    @Test
     void eventEditPersistsExplicitlyClearedImage() {
         Users host = new Users();
         host.setId("host");
@@ -1208,6 +1306,53 @@ class ActivitiesEventsServiceTest {
         assertThat(result.subEventDefinitions())
                 .extracting(SubEventDefinitionDto::id)
                 .containsExactly("stage-1");
+    }
+
+    @Test
+    void friendsOnlyEventDetailUsesTheSameExternalViewerBoundaryAsExplore() {
+        String hostUserId = "650000000000000000000061";
+        String friendUserId = "178e8d0cbe164fa3fede5884";
+        String nonFriendUserId = "2d520f3c98b0440c1556f4af";
+        ActivityEvent friendsOnly = event("event-1", hostUserId, 0d);
+        friendsOnly.setVisibility("Friends only");
+
+        Users friend = new Users();
+        friend.setId(friendUserId);
+        Users nonFriend = new Users();
+        nonFriend.setId(nonFriendUserId);
+        when(homeUserProfileService.resolveCurrentUser(friendUserId)).thenReturn(friend);
+        when(homeUserProfileService.resolveCurrentUser(nonFriendUserId)).thenReturn(nonFriend);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(friendsOnly));
+
+        assertThat(service.loadEventDetailById(friendUserId, "event-1")).isNotNull();
+        assertThat(service.loadEventDetailById(nonFriendUserId, "event-1")).isNull();
+    }
+
+    @Test
+    void trackedParticipantCanLoadInvitationOnlyEventDetail() {
+        Users member = new Users();
+        member.setId("member-1");
+        ActivityEvent invitationOnly = event("event-1", "host", 0d);
+        invitationOnly.setVisibility("Invitation only");
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10);
+
+        when(homeUserProfileService.resolveCurrentUser("member-1")).thenReturn(member);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(invitationOnly));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+
+        assertThat(service.loadEventDetailById("member-1", "event-1")).isNotNull();
     }
 
     @Test
@@ -1464,6 +1609,8 @@ class ActivitiesEventsServiceTest {
         ActivityEvent third = event("event-3", "host", 0d);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(userActivityCountersService.readStoredEventCounters("viewer"))
+                .thenReturn(new UserEventCountersDto(3, 3, 0, 0, 0, 0, 0));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
         AtomicInteger findCalls = new AtomicInteger();
@@ -1481,6 +1628,7 @@ class ActivitiesEventsServiceTest {
         assertThat(page.items()).extracting(EventDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
+        assertThat(page.eventCounters()).isEqualTo(new UserEventCountersDto(3, 3, 0, 0, 0, 0, 0));
         verify(activityEventsRepository, never()).findAll();
         verify(activityEventsRepository, never()).saveAll(anyList());
         verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
@@ -1641,6 +1789,16 @@ class ActivitiesEventsServiceTest {
             String creatorUserId,
             Boolean published,
             Boolean ticketing) {
+        return eventPayload(syncKey, id, creatorUserId, published, ticketing, "Public");
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -1662,7 +1820,7 @@ class ActivitiesEventsServiceTest {
                 "HU",
                 "man",
                 "",
-                "Public",
+                visibility,
                 "Open Event",
                 "2026-05-24T03:28:00Z",
                 "2026-05-24T04:28:00Z",

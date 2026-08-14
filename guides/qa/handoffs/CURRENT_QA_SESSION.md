@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-12
+Updated: 2026-08-14
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -31,18 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-VISIBILITY-001
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-visibility-001--friends-only-explore-discovery-boundary
-scenario: event-domain
-ledger_status: IN PROGRESS / UNPUBLISH + FRIENDS ONLY DRAFT SAVE PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Publish pending
-state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey Unpublish PASS proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets D, counters 0/0, Casey ticketless and no new ticket; its recompute completed at 2026-08-12T22:55:46+02:00 with no error; Casey then edited only visibility Public to Friends only and saved once; the independent oracle proved the event remained DR/Ticketing On with visibility Friends only, both exact D tickets/counters/memberships/controls unchanged and no replacement ticket, while the already-open Casey card changed to the Friends icon without reload; the Save-owned recompute completed normally at 2026-08-12T23:04:50+02:00, attemptCount 3, empty lastError and worker pendingCount 0; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
-required_resume: in Casey's left My Events card open the card actions and choose Publish exactly once; do not touch Lina or Liam yet; stop for the active Friends only event, replacement A-ticket/counter/membership and event-task oracle
-event: QA EVENT-TICKET-007
+checkpoint: LANDING-ELIGIBILITY-001 — browser-coordinate login eligibility
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#landing-eligibility-001--browser-coordinate-login-eligibility
+scenario: entry-domain (baseline staged at 2026-08-14T20:44:01.551Z)
+ledger_status: EXECUTING / BASELINE PROVEN
+state: LANDING-ELIGIBILITY-001 has a guarded, write-free baseline with users=56, userSessionStates=0 and userLoginAudits=0. Versioned OSM MultiPolygon partitions country:hu and country:gb are present in every seed and the current demo database; country:fr is absent. Watcher builds and direct Java validation reads are green. Budapest is PASS with exact coordinate/country:hu/Login and zero writes. Screenshot 2026-08-14 23-05-56 plus independent browser/Mongo oracle makes London PASS with exact 51.5074/-0.1278, country:gb and enabled login, and Paris granted-location PASS with exact 48.8566/2.3522, no partition and disabled Unavailable in your country. Only the right Paris target was then changed. Its persistent holder now owns both CDP permission=denied and the location override; read-only state shows no eligibility request, no session, explicit Allow location and unchanged database counts. The first one-shot permission attempt did not execute the branch because Chrome reverted to granted when that CDP connection closed; it is harness evidence only.
+required_resume: Continue from the current managed windows; do not stage, relaunch or repeat Budapest/London/Paris-granted. Obtain the user's visual confirmation that the right Paris target now shows the enabled Allow location action. Then run the final read-only browser/Mongo oracle, restore Grant on only that target to prove retry, and close/reset according to the checkpoint definition. Do not attempt real Firebase authentication completion while the deployment Firebase client configuration remains inactive; record that substep as pending rather than faking it.
+event: Budapest, London and Paris granted-location branches PASS; Paris denied machine baseline ready
 actors:
-  left: Casey Bridge
-  middle: Lina Park
-  right: Liam Parker
-next_actor: Casey Bridge
+  active: Budapest eligibility left port45167; London eligibility middle port36899; Paris eligibility right port44021
+  controls: all three are anonymous with no local session; Paris is the later permission-denied target and must not be replaced between its two branches
+next_actor: User visually confirms the right Paris target shows the enabled Allow location action; Codex then checks the final denied-state browser/Mongo oracle.
 stop_phrase: megvan
 ```
 
@@ -91,27 +90,27 @@ On a new baseline, do not launch browsers until the second `status` proves the
 linked checkpoint's complete expected baseline. If any predicate differs, stop
 and report it instead of asking the user to compensate in the UI.
 
-After that proof, open or replace exactly these three managed windows with:
+After that proof, open or replace exactly the checkpoint-configured managed
+windows with:
 
 ```bash
 guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005
 ```
 
-The launcher owns three separate ephemeral Chrome profiles, injects the exact
-demo user sessions, grants the configured Austin geolocation, loads `/game`,
-dismisses entry consent/guides and lays the windows out left-to-right. Do not
-open extra browsers, use personal Chrome profile names, or ask the user which
-profile to select. Re-running it replaces only this checkpoint's managed
-windows. Lina and Liam are external visibility controls and must remain
-untouched until the checkpoint says otherwise.
+The launcher owns one separate ephemeral Chrome profile per configured actor,
+injects the exact demo user sessions, grants the configured Austin
+geolocation, loads `/game`, dismisses entry consent/guides and lays the windows
+out in the configured grid. Do not open ad-hoc browsers, use personal Chrome
+profile names, or ask the user which profile to select. Re-running it replaces
+only this checkpoint's managed windows. Idle controls remain untouched until
+the checkpoint says otherwise.
 
 ### Next manual action
 
-In Casey's left **My Events** card open the card actions and choose **Publish**
-exactly once. Do not touch Lina or Liam yet. Stop and reply `megvan` so the active
-Friends only event, both replacement physical tickets, restored ticket
-counters, unchanged memberships/controls and owning event task can be checked
-before either Explore read.
+`LANDING-ELIGIBILITY-001 — permission denied branch`: in the right Paris
+window, visually confirm that the top-right action is now the enabled **Allow
+location**, not **Unavailable in your country** or **Login**. Do not click it
+yet. Then write `megvan`; Codex owns the browser and Mongo oracle.
 
 ## QA working method
 
@@ -133,8 +132,46 @@ instruction at a time, waits for the stated stop phrase, checks the oracle and
 continues the repair/replay loop without handing the failure decision back to
 the user.
 
+A deliberate dev-stack restart may run the repository's full seed reset. That
+reset is authoritative and is allowed to remove live manual-QA transactions;
+do not diagnose or change `mongodb-sync` merely because retained checkpoint
+data disappeared after such a restart. Detect the lost boundary with the
+read-only resume gate, preserve already-closed ledger evidence, discard only a
+guarded stale zero-snapshot checkpoint, and stage the next independent
+checkpoint directly when its definition provides the required state. Never
+make the user replay an already-PASS producer only to reconstruct reset data.
+
 ### 1.1 Checkpoint granularity and new rows
 
+- Treat the already-versioned testcase set as an immutable workflow spine
+  during a coverage-expansion audit. Do not split, merge, rename, renumber or
+  rewrite those rows merely to make the new plan look more uniform. Count
+  logical CSV records rather than physical lines because quoted multiline
+  cells span several file lines; ignore `LEGEND-*` records when quoting the
+  testcase total. Capture a canonical serialized hash of every pre-existing
+  logical row before appending, then prove the same prefix and hash after CSV
+  and XLSX synchronization. New coverage is appended after that prefix with
+  new stable IDs and ordered checkpoint groups. The target count is an audit
+  result, not a quota: record all materially distinct bounded contracts, but
+  never manufacture row splits only to reach an estimate.
+- After appending matrix rows, run the repository's versioned
+  `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
+  workbook totals. Verify the CSV has 16 columns per logical record, unique
+  testcase IDs, the locked pre-existing logical-row prefix/hash, and the
+  expected non-`LEGEND-*` testcase count. The generator writes a hidden
+  per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
+  formulas into the XLSX, with automatic recalculation on open. The overview
+  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`, `External`,
+  `Total`. The four status rows and the Done percentage are filtered to Core
+  tests only, so they partition the displayed Core total instead of mixing EXT
+  scope into product progress. Stable IDs beginning `OPERATOR-`, `PAYMENT-` or
+  `DEPLOY-` remain teal `EXT` without rewriting testcase rows; `External` is a
+  separate count and `Total` is the final Core+External count. The generator
+  also adds `EXT` to the left overview legend. Scope is orthogonal to
+  status. Read the generated formulas and cached totals back after
+  synchronization and prove they match the CSV classifiers.
+  This summary synchronization is part of every append/status update, not a
+  later cleanup step.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
 - One producer action or a short causally continuous sequence may stay in one
@@ -154,6 +191,75 @@ the user.
 - When the user requests a newly discovered behavior as a separate case, give
   it a new stable checkpoint ID, a QA-pack definition and a new matrix CSV row;
   add fixture/harness/browser configuration only when that case needs it.
+- For revisioned policy/content workflows, a new version used as transaction
+  evidence must be a new revision record with its own identity; changing the
+  version field on the active record is only suitable for an explicitly named
+  temporary visual preview. Stable optional-section IDs define which prior
+  choices may be prefilled. Filter the latest prior consent through the new
+  revision's IDs, default every newly introduced ID to unselected, and require
+  Save to create a separate new-revision consent without rewriting history.
+- A fixture that activates a new revision may mutate only the currently active
+  record required by that transition; never bulk-update already inactive
+  historical revisions merely to make the new one sole active. Snapshot
+  immutability checks start immediately after stage so a setup defect is not
+  misattributed to the later application write. If such a stage defect is
+  found after the manual action, use a guarded versioned repair command to
+  restore exact inactive snapshots without touching transaction records, then
+  repeat the terminal oracle instead of replaying unrelated UI steps.
+- A fixture that inserts a canonical event/member/payment record must also
+  stage every persisted projection that a normal owning write would have
+  produced, while snapshotting those fields for reset. Validate reload-owned
+  menu counters before opening the popup. A popup SmartList correcting a badge
+  after its own query does not prove the reload contract and must not be used
+  to conceal a missing stored write-side projection. Reuse the existing
+  canonical counter projector; do not add a SmartList special case.
+- A newly staged independent fixture does not rewrite counter snapshots already
+  held by browser documents opened before the stage. Before issuing the first
+  producer action, compare the loaded document's `performance.timeOrigin` (or
+  recorded reload time) with `stagedAtIso` and require a UI baseline for every
+  counter used by the checkpoint, including unchanged negative controls. If
+  the document predates the fixture, first use the product's normal ownership
+  boundary: close the foreground popup so the aside realtime poll can converge,
+  or reload only when the checkpoint explicitly requires it. Then reopen the
+  intended popup and capture the baseline. A stale pre-stage browser snapshot
+  is **NOT EXECUTED / invalid UI baseline**, not a product FAIL; distinguish it
+  with the authenticated realtime response and persisted oracle before editing
+  Java or frontend code.
+- An event fixture that inserts the creator's accepted Admin membership must
+  include that same creator in `acceptedMemberUserIds` and `acceptedMembers`;
+  validate card occupancy against the canonical membership rows. A list poll
+  correcting fixture data in place is useful replay evidence only after the
+  persisted projection itself has been repaired.
+- Global organizer Trash and personal participant Trash are different
+  projections. A globally trashed canonical event belongs in the
+  organizer/admin Trash counter and list only. The current participant Leave
+  write persists a restorable suppressed root membership plus a viewer-owned
+  `T` overlay while the canonical event remains active; that complete invariant
+  belongs in the participant's personal Trash. Legacy explicit `deleted`
+  memberships remain supported. Never classify a bare suppressed member or a
+  global organizer Trash as personal Trash. Keep the stored counter projector
+  and list query aligned on the same persisted invariant.
+- When a foreground popup bucket poll returns a persisted full counter snapshot,
+  apply that snapshot atomically to every related menu and nested bucket counter.
+  Updating only the selected bucket can leave inclusive or sibling counters stale
+  until the user opens them. Do not derive inclusive counts from the page total,
+  do not use the aside-menu poll while the popup owns polling, and do not modify
+  SmartList to repair a transport omission. HTTP and frontend-local routes must
+  expose the same snapshot contract; local parity is checked when the affected
+  flow can run in local mode.
+- When a mutation changes a counter outside the foreground popup's own list
+  domain, its response must carry the actor's canonical full counter snapshot
+  from the completed write. Apply it atomically with a pre-request revision
+  token. This is required when popup ownership intentionally suppresses the
+  side-menu domain poll: never guess `+1`, reopen the popup to conceal the
+  omission, enable a competing poll, or add a SmartList exception. The
+  frontend-local write must persist the equivalent projections, and a later
+  local realtime poll must rebase from that stored state instead of restoring
+  its pre-action snapshot.
+- If read/setup activity creates a completed task after staging but before the
+  producer, retain it as evidence and capture a versioned action baseline only
+  after it is terminal. Attribute the producer by exact post-minus-action
+  baseline identities instead of deleting the earlier task or restaging.
 - Do not create a new row merely because one test case has multiple branches
   or an incidental observation occurred. A new row requires a genuinely new
   test case and the user's requested split; otherwise name the tests inside the
@@ -177,6 +283,26 @@ the user.
   an earlier shared transaction invariant. If a focused path needs prepared
   state, make it a versioned sub-checkpoint rather than asking the user to
   reproduce unrelated manual steps.
+- Do not leave an active QA defect in `fix compiled / replay pending` state and
+  move to the next independent test. Before closing or pausing the current
+  session, give the affected branch a decisive runtime **PASS** or **FAIL** using
+  the shortest valid replay/read oracle in the current checkpoint. A later test
+  may add coverage, but it must not be made a hidden prerequisite for closing
+  today's fix. When the user explicitly performs the decisive check and accepts
+  the branch, record it as executed/PASS consistently in the QA pack, ledger and
+  resume pointer; remove stale pending or NOT EXECUTED wording for that branch.
+- Before issuing any lifecycle producer instruction whose control is filtered
+  by Upcoming/Active/Past time, compare the event's absolute start/end against
+  the current wall clock and reserve enough time for the remaining manual stops,
+  worker waits and actor replacement. This applies to long continuation
+  checkpoints, not only explicit time-window tests. If the retained fixture can
+  expire during that round trip, do not issue the instruction: add one guarded,
+  versioned preparation that proves the current transaction oracle, moves the
+  whole event projection to a stable future window once and persists the old
+  and new dates. Let an already-open list recover through its normal poll when
+  possible. If expiry removed the action before a modifying request was sent,
+  classify it as **NOT EXECUTED / fixture timing invalid**, retain prior PASS
+  boundaries and continue without replaying them.
 - A versioned server-side replay rearm does not by itself require a full page
   reload. First let the already-open surface reach the prepared pre-action
   boundary through its established read behavior; when that surface loads only
@@ -185,6 +311,11 @@ the user.
   setup. After the producer action, never reload before capturing the in-place
   result; otherwise the immediate and reload/read branches become
   indistinguishable.
+- Before a one-time credential action whose success state intentionally hides
+  the original code, explicitly retain the complete QR in a controlled QA
+  screenshot/tab before issuing the producer instruction. This is required
+  setup for an exact same-credential replay and avoids restaging or repeating
+  the already-proven first-use branch. Never print the raw code into QA logs.
 - A human-observed time-window checkpoint must stage into a stable, non-expiring
   precondition. Browser preparation, oracle reads and the user round trip must
   never consume the tested interval. Start the interval only through an
@@ -202,6 +333,53 @@ the user.
 
 ### 1.2 Exact manual producer instructions
 
+- For an offline checkpoint in a dev stack, first prove the checkpoint-specific
+  service-worker switch is enabled, the worker is activated and controls the
+  current page. The dev override must be ignored in production; production
+  enablement belongs only to its build configuration. A one-shot CDP command
+  that detaches is not an offline interval: keep the target session attached,
+  apply both request blocking and `navigator.onLine=false`, and restore online
+  explicitly in cleanup. Before testing cached domain data, require the
+  offline shell policy itself: only the intentionally supported Ticket action
+  remains enabled, while profile editing and every other menu are disabled.
+- Keep offline presentation separate from profile visibility and invalid
+  presentation. Profile visibility may color the ordinary page, while offline
+  overrides only the page background with its own stronger gray and an explicit
+  status label. Do not recolor menu palettes to represent offline; retain their
+  normal palettes and express unavailability through real disabled state. Rate
+  mode, filter/history controls and editable inputs follow the same rule.
+- In an offline member header, hide actions whose popup cannot serve the
+  checkpoint contract rather than rendering misleading disabled affordances:
+  no profile pencil, notification header entry or notification attention FAB.
+  Hiding launchers must not mark notifications read or change their counters.
+  Override the visibility color only on the page and the profile/visibility
+  part of the open menu; leave the menu content surface and item palettes alone.
+- Record in-place connectivity transition and offline-cache reload as distinct
+  observations when both matter. A synthetic CDP event that changes
+  `navigator.onLine` but is not consumed by the application is harness evidence,
+  not a product PASS or FAIL. The cache-reload branch must start the application
+  with `navigator.onLine=false`, prove an activated controlling worker and read
+  both the computed page state and interactive disabled states. Always release
+  the held target back online in cleanup.
+- For Ticket offline warming, inspect the actual DTO/cache boundary before
+  asking for a detail action. The authenticated side-menu realtime response
+  carries one bounded `offlineTicketSnapshot` for the first **Upcoming**
+  SmartList window, including each complete `AssetTicketDTO` and `scanCode`;
+  the shared user-service poll layer writes it to the user-scoped Upcoming
+  offline cache even when Ticket has never been opened. Past is intentionally
+  not auto-warmed. This snapshot is never an online SmartList data source:
+  online continues through `/assets/tickets` and `/assets/tickets/sync`, while
+  the HTTP adapter reads the snapshot cache only after an offline transport
+  failure. If Ticket is already open, its own coordinated SmartList page/delta
+  poll remains the cache refresher and the ordinary side-menu domain lane need
+  not compete. Opening the QR online is never a separate warm requirement: the
+  QR popup performs no detail read and renders locally from the cached code.
+  Opening the QR offline remains the presentation assertion, not setup.
+- Start every manual instruction with the active testcase ID and short name,
+  then name the current subtest. In plain language state what the user should
+  do, why that observation belongs at this boundary, and the exact visible
+  condition that counts as PASS. Do this even when continuing the same case,
+  so the user never has to reconstruct the test purpose from earlier messages.
 - Treat a sudden message unrelated to the active checkpoint as a possible
   cross-window message, not as implicit authorization to change task scope.
   Stop mutations, keep the current checkpoint intact and confirm the context
@@ -219,6 +397,62 @@ the user.
   surface from the implementation and, when the current UI is ambiguous, from
   the managed browser's read-only DOM. Name the complete interaction path,
   including row/menu identity and any confirmation button.
+- When an editable input and its later Review/summary disagree, do not infer
+  which display is wrong. Capture the live DOM `value`/typed value, the owning
+  component draft/store value and the summary formatter output separately.
+  Copy/paste is its own input-event branch: a browser number input may display
+  a normalized number while the raw pasted string remains different in the
+  application draft. Diagnose and replay that exact event path before Save.
+- Read-only CDP inspection must close only its temporary WebSocket connection.
+  Never call Playwright/CDP `browser.close()` or a browser-level close command
+  against a managed QA Chrome merely to detach an inspector; that terminates
+  the user's checkpoint window and discards in-memory evidence.
+- In the Chrome build used by this campaign, CDP
+  `Emulation.setGeolocationOverride` and `Browser.setPermission` must both be
+  treated as session-scoped: closing their connections can silently restore
+  the host geolocation or profile-default permission even though the commands
+  returned success. A coordinate-controlled checkpoint must keep its
+  launcher-owned target and browser connections alive, record the holder PID
+  in the runtime manifest, and terminate that holder with its managed Chrome.
+  Prove the application request URL, effective permission and resolved
+  partition from a separate read-only inspector before asking for manual
+  evidence; differently labelled windows or a successful one-shot command are
+  not proof that different coordinates/permissions remain applied.
+- A synthetic browser API replay must reproduce the application's identity
+  transport, not merely its JSON body or cookies. In demo mode every API call
+  that stands in for Angular `HttpClient` must include
+  `X-App-Session-Kind: demo` and the actor-specific `X-Demo-User-Id`; Firebase
+  mode must use the current bearer token. Validate the effective actor through
+  a read-only identity boundary before the first synthetic mutation. A raw
+  `fetch(..., credentials: 'include')` without these headers is not an
+  authenticated replay: the non-Firebase dev fallback may select its configured
+  default member. If that creates a foreign write, classify it as an
+  orchestration error, retain the product evidence that predates it, reset the
+  contaminated checkpoint and never hide it with an ad hoc delete.
+- A successful static frontend hot-deploy does not replace JavaScript already
+  loaded in an open page. Preserve an uncontaminated in-flight transaction and
+  finish it without reload when a safe manual correction exists, then replace
+  only the checkpoint-managed browser and replay the shortest failing branch
+  against the fresh bundle. The watcher build alone is not behavioral proof.
+- Before a post-fix replay, compare every participating document's
+  `performance.timeOrigin` with the frontend bundle sync time, not only the
+  producer's document. If any control still carries terminal counters from a
+  prior replay, reload that same managed document and recapture the shared
+  pre-action baseline. Mixed client generations are **NOT EXECUTED**, and a
+  later poll correcting one stale badge is not evidence for the action-owning
+  in-place branch.
+- Do not turn obvious navigation or opening an unambiguous card menu into its
+  own manual stop. A stop must either produce evidence or protect against a
+  real destructive ambiguity. When stable titles/IDs already distinguish the
+  target, combine menu navigation and confirmation into the single producer
+  instruction; spend the saved stops on meaningful in-place convergence,
+  close/reopen or reload reconstruction, negative-control identity stability
+  and the independent persisted oracle.
+- For isolation checkpoints, prove more than the selected record's expected
+  delta: retain one exact adjacent control identity byte-for-byte, observe the
+  affected visible count/list without reload, reconstruct the same result on a
+  fresh read, verify unrelated actors remain unchanged and prove repeated reads
+  create no cross-scope object, counter, outbox or worker effect.
 - Before asking the user to select a named candidate, inspect the real
   candidate service/converter and identify its eligibility source; a visible
   user who is outside the target membership is not by itself a selectable
@@ -252,6 +486,13 @@ the user.
   evidence to the QA pack or matrix. If the verified control was activated but
   its binding emits no request, that is a client defect and must enter the
   normal diagnose/fix/replay loop.
+- A visible card disappearance does not identify its producer. Before
+  attributing it to the user or advancing a lifecycle checkpoint, compare the
+  persisted event/membership/counter oracle and the access log with the saved
+  action baseline. If no modifying request exists and the persisted boundary
+  is unchanged, classify the observation as **NOT EXECUTED**. In particular,
+  an AI-triggered restart or setup failure belongs to Codex's repair evidence,
+  never to the user's manual action.
 - `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
   read-only managed-session tool for resolving an ambiguous current surface;
   it must never be used to perform the user's manual producer action.
@@ -344,14 +585,29 @@ stack to start.
 ### 3. Browser actors are checkpoint data
 
 Before a checkpoint is run, its exact active actors, idle controls and layout
-must exist in `browser-session-checkpoints.json`. Launch them through the
-checkpoint browser script. Actor identity is verified by the script after
-session injection; do not identify users from Google profiles, window order
-alone or remembered sessions.
+must exist in `browser-session-checkpoints.json`. A persisted server oracle
+does not substitute for an actor window when that actor's in-place,
+poll-driven, notification, counter or read/reload UI behavior is an explicit
+expectation. Conversely, do not launch actors used only as persisted negative
+controls. Actor identity is verified by the script after session injection;
+do not identify users from Google profiles, window order alone or remembered
+sessions.
 
-If a new checkpoint needs a different actor set, add a new configuration entry
-instead of reusing a larger three-window setup by habit. Keep personal profile
-paths and names out of Git.
+This workstation has exactly three usable Google-account/browser slots, so QA
+must never launch more than three managed actor windows concurrently. When one
+checkpoint needs UI evidence from more than three identities, split it into
+short causally ordered browser phases with separate configuration entries and
+replace the previous phase's windows before opening the next. For example,
+`EVENT-VISIBILITY-001` uses Casey/Nova/Riley for Save/Publish notification and
+ticket convergence, then `EVENT-VISIBILITY-001-EXPLORE` replaces them with
+Casey/Lina/Liam for friend/non-friend discovery. This is one domain checkpoint
+with two named UI phases, not two simultaneous five-actor layouts and not a new
+testcase row. Check memory/swap/CPU before and after every replacement. Keep
+personal profile paths and names out of Git.
+
+The managed launcher treats those three slots as exclusive: before opening a
+checkpoint it closes and removes only earlier launcher-owned manifests and
+temporary profiles. It must not touch personal Chrome windows or profiles.
 
 ### 4. Domain invariants behind ticket tests
 
@@ -364,6 +620,13 @@ paths and names out of Git.
 - Publish synchronizes tickets for participants already accepted; later
   approval/acceptance creates only the newly eligible user's ticket.
 - Ticket reads and popup opens never create or replace a ticket.
+- When one direct action must project across two Mongo documents but the dev
+  deployment has no cross-document transaction, the first write stays the
+  authoritative CAS and the second write is an ID-scoped, only-if-missing
+  projection. The canonical replay path must idempotently repair a missing
+  projection from the original persisted identity/time/actor without rewriting
+  a completed one. Frontend-local mode performs the equivalent pair in its one
+  local state write. Reads must never synthesize the projection.
 - A visible domain popup must not indefinitely block global realtime menu
   counters. When popup-specific profile/impressions state must be deferred,
   apply the global counter projection separately and keep the profile cursor
@@ -375,12 +638,35 @@ paths and names out of Git.
   external producer action, verify the realtime response payload independently
   from the rendered menu DOM, and require the item-level badge without reload.
   A total avatar badge is not proof that the named menu counter converged.
+- Do not change shared SmartList paging merely because one surface's ordinary
+  absolute poll cannot reconcile insertion/removal in a partially filled
+  loaded window. First inspect whether an established SmartList extension
+  contract already owns that need. For dynamic identity windows, prefer the
+  existing Notification-style `pollDelta` contract (`knownItems`, revisions,
+  loaded tail, `upserts`, `removedIds`, absolute total) plus `cacheable`
+  identity and local sort on that domain surface. Implement the same contract
+  behind both HTTP and frontend-local adapters. A shared SmartList core change
+  requires proof that the invariant applies to its existing consumers and a
+  regression audit proportionate to that cross-surface blast radius.
+- A popup foreground task poll owns its domain list, header and corresponding
+  menu bucket while that popup is visible. The side-menu realtime poll may
+  keep its independent notification lane alive, but must not apply ordinary
+  domain counter snapshots under the foreground owner. The foreground result
+  updates its items, absolute total and menu counter together. Describe two
+  simultaneous writers as a race only when ordering-dependent overwrite has
+  actually been demonstrated; ownership overlap alone is not proof of a race.
 - Counters come from physical active ticket state and must agree in both
   `tickets` and `asset.tickets` fields.
 - The Riley window is an unchanged control unless a checkpoint explicitly
   makes Riley an actor.
 - An action emits only its own ID-scoped delta. Normal polling reconciles
   absolute state; it must not manufacture domain writes.
+- A successful owner-triggered Publish/Unpublish must update the same
+  SmartList source DTO that owns the converted card and shared action menu.
+  Require the opposite valid action immediately after confirmation, before a
+  periodic poll can hide a stale source/card split. The poll is only the
+  convergence proof for another actor's already-open surface; it is never the
+  repair mechanism for the producer's own menu.
 
 ### 5. Logs and running stack
 
@@ -412,6 +698,41 @@ verify its startup plus hot-deploy log; do not launch a replacement beside it.
 Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
 process or a standalone build/test compilation. A healthy watcher build and the
 checkpoint replay are the active-session verification path.
+
+Do not wait through production debounce windows merely because a manual QA
+fixture runs against the dev stack. When the delay itself is not the contract
+under test, expose a dev-only configuration override and keep the real worker
+path: the current event-member recompute default is `15s` in `application-dev`
+and remains `5m` in production. Record the override in the checkpoint, verify
+the existing watcher reload, and never patch an individual task ad hoc. Cases
+whose purpose is timing/debounce must override this explicitly and retain their
+own controlled boundary.
+
+For the profile backend, Gradle continuous `classes` may temporarily remove
+compiled outputs before recreating them. Spring DevTools must therefore use a
+classpath `.reloadtrigger`, and the existing owner build must touch that marker
+only after its successful `classes` completion. A deletion wave is not a safe
+restart boundary: if DevTools restarts during it, component scanning can omit
+controllers even though the process later reports healthy. Verify at least one
+checkpoint-relevant mapped endpoint after the restart, not only container
+health or `Started Main`.
+
+Background list adapters must keep transport/server failure distinct from a
+successful empty response. Do not catch a `404`, restart disconnect or other
+failed request and return `[]`/`total=0`; propagate the failure to the existing
+popup task scheduler so it retains the last successful snapshot and retries.
+A real successful empty response remains authoritative. Apply this invariant
+at the owning HTTP/local adapter boundary and leave the shared SmartList core
+unchanged unless cross-consumer evidence proves a shared defect.
+
+Treat watched Mongo seed files as runtime-mutating inputs, not passive test
+sources. Before editing one during an active checkpoint, inspect the running
+`mongodb-sync` import mode. A replace-collection import can delete every live
+manual-QA transaction in that collection before reimporting the seed and can
+leave dependent runtime documents orphaned. Do not edit a watched seed while
+transaction evidence is live unless the checkpoint has an explicit export and
+replay boundary or the sync service is proven to use a non-destructive
+preserve/upsert mode. A Git backup does not protect Mongo runtime state.
 
 ### 5.1 Git HEAD backups during the session
 
@@ -461,16 +782,16 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-The active checkpoint is `EVENT-VISIBILITY-001`; continue from the resume
-pointer without replaying the already-closed `EVENT-TICKET-005` through
-`EVENT-TICKET-007` branches. The retained continuation chain is defined, not
-duplicated, in the QA pack:
+The completed ticket, visibility, invitation, chat and demo-registration
+checkpoints remain closed. The active Core expansion continuation is:
 
 ```text
-EVENT-TICKET-005 -> EVENT-TICKET-006 -> EVENT-TICKET-007
--> EVENT-VISIBILITY-001
+ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
+-> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
+-> EVENT-LIFE-002 through EVENT-LIFE-005 (closed)
+-> EVENT-INV-001 (closed) -> EVENT-INV-004 (active)
 ```
 
-`EVENT-TICKET-008` (two-event ticket isolation) and `EVENT-TICKET-009`
-(offline cached QR with online scanner) remain independent ticket branches.
-Do not pull them into `EVENT-TICKET-005`.
+`ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
+revision prerequisite. The EXT payment/operator/registry/deployment sequence
+remains deferred under Core-first execution.

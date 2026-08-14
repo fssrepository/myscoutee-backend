@@ -256,7 +256,8 @@ public final class AssetsDtos {
             String imageUrl,
             String visibility,
             String avatarInitials,
-            String creatorInitials) {
+            String creatorInitials,
+            String revision) {
     }
 
     public record AssetTicketValidationRequestDto(
@@ -291,6 +292,30 @@ public final class AssetsDtos {
 
     public record AssetTicketsPageDto(
             List<AssetTicketDto> items,
+            Integer total) {
+    }
+
+    public record AssetTicketSyncKnownItemDto(
+            String id,
+            String revision) {
+    }
+
+    public record AssetTicketSyncBoundaryDto(
+            String id,
+            String dateIso) {
+    }
+
+    public record AssetTicketSyncRequestDto(
+            String userId,
+            String order,
+            Integer limit,
+            List<AssetTicketSyncKnownItemDto> knownItems,
+            AssetTicketSyncBoundaryDto loadedTail) {
+    }
+
+    public record AssetTicketSyncResponseDto(
+            List<AssetTicketDto> upserts,
+            List<String> removedIds,
             Integer total) {
     }
 

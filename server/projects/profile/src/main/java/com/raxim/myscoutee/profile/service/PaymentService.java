@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
+import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
+import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationStatus;
 
 @Service
 public class PaymentService {
@@ -42,6 +45,9 @@ public class PaymentService {
     private static final String REFUND_STATUS_FULL = "full";
     private static final String AUDIT_KIND_PAYMENT = "payment";
     private static final String AUDIT_KIND_BOOKING_PRICE_REVISION = "booking_price_revision";
+    private static final String FULFILLMENT_PENDING = "pending";
+    private static final String FULFILLMENT_SUCCEEDED = "succeeded";
+    private static final String FULFILLMENT_FAILED = "failed";
 
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
@@ -113,34 +119,132 @@ public class PaymentService {
     public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
         String normalizedProvider = resolveConfiguredProvider(provider);
-        EventCheckoutSessionDto sessionDto = !enablePay
-                ? createDummySession(authoritativeRequest, null)
-                : resolveProcessor(normalizedProvider).pay(authoritativeRequest, null);
+        if (!enablePay) {
+            EventCheckoutSessionDto sessionDto = createDummySession(authoritativeRequest, null);
+            Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
+            ensurePaymentRequestCompatible(payment, authoritativeRequest);
+            hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
+            String sessionId = normalizeId(sessionDto.id());
+            payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : sessionId);
+            payment.setGatewaySessionId(sessionId);
+            payment.setStatus(safeText(sessionDto.status()));
+            payment.setFulfillmentStatus(FULFILLMENT_SUCCEEDED);
+            payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
+            payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
+            payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
+            paymentsRepository.save(payment);
+            eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
+            return sessionDto;
+        }
 
-        Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
-        ensurePaymentRequestCompatible(payment, authoritativeRequest);
+        Optional<Payment> reusable = findReusableAuthorization(authoritativeRequest, normalizedProvider);
+        if (reusable.isPresent()) {
+            Payment payment = reusable.get();
+            eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
+            return toCheckoutSession(payment);
+        }
+
+        Payment payment = new Payment();
         hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
-        String sessionId = normalizeId(sessionDto.id());
-        payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : sessionId);
-        payment.setGatewaySessionId(sessionId);
-        payment.setStatus(safeText(sessionDto.status()));
-        payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
-        payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
-        payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
-        paymentsRepository.save(payment);
-        eventCheckoutBasketService.saveBasket(withCheckoutState(
-                authoritativeRequest,
-                "pay",
-                payment.getCheckoutSessionId()));
-        return new EventCheckoutSessionDto(
-                payment.getCheckoutSessionId(),
-                sessionDto.provider(),
-                sessionDto.mode(),
-                sessionDto.status(),
-                sessionDto.amount(),
-                sessionDto.currency(),
-                sessionDto.paymentUrl());
+        payment.setCheckoutSessionId("pay_" + UUID.randomUUID());
+        payment.setStatus(statusValue(AuthorizationStatus.AUTHORIZATION_PENDING));
+        payment.setFulfillmentStatus(FULFILLMENT_PENDING);
+        payment.setBookingStatus(BOOKING_STATUS_INITIATED);
+        payment.setRefundStatus(REFUND_STATUS_NONE);
+        payment.setCreatedDate(nowIso());
+        payment = paymentsRepository.save(payment);
+
+        try {
+            AuthorizationResult authorization = resolveProcessor(normalizedProvider)
+                    .prepareAuthorization(authoritativeRequest, payment.getCheckoutSessionId());
+            validateGatewayResult(payment, authorization);
+            applyGatewayResult(payment, authorization);
+            payment = paymentsRepository.save(payment);
+            eventCheckoutBasketService.saveBasket(withCheckoutState(
+                    authoritativeRequest,
+                    "pay",
+                    payment.getCheckoutSessionId()));
+            return toCheckoutSession(payment);
+        } catch (RuntimeException exception) {
+            payment.setStatus(statusValue(AuthorizationStatus.FAILED));
+            payment.setFailedAtIso(nowIso());
+            payment.setFulfillmentStatus(FULFILLMENT_FAILED);
+            payment.setLastGatewayError(safeGatewayError(exception));
+            paymentsRepository.save(payment);
+            throw exception;
+        }
     }
+
+    public GatewayTransition applyGatewayAuthorization(
+            String internalPaymentSessionId,
+            AuthorizationResult authorization,
+            String gatewayEventId) {
+        Payment payment = findGatewayPayment(internalPaymentSessionId, authorization)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Payment session for the gateway event was not found."));
+        validateGatewayResult(payment, authorization);
+        String normalizedEventId = normalizeId(gatewayEventId);
+        if (hasText(normalizedEventId) && payment.getProcessedGatewayEventIds().contains(normalizedEventId)) {
+            return new GatewayTransition(payment, false, true);
+        }
+        String previousStatus = safeText(payment.getStatus());
+        if (!isAllowedGatewayTransition(previousStatus, authorization.status())) {
+            return new GatewayTransition(payment, false, true);
+        }
+        applyGatewayResult(payment, authorization);
+        if (hasText(normalizedEventId)) {
+            List<String> eventIds = new java.util.ArrayList<>(payment.getProcessedGatewayEventIds());
+            eventIds.add(normalizedEventId);
+            payment.setProcessedGatewayEventIds(eventIds.size() <= 100
+                    ? eventIds
+                    : eventIds.subList(eventIds.size() - 100, eventIds.size()));
+        }
+        Payment saved = paymentsRepository.save(payment);
+        boolean newlyAuthorized = authorization.status() == AuthorizationStatus.AUTHORIZED
+                && !statusValue(AuthorizationStatus.AUTHORIZED).equals(previousStatus);
+        return new GatewayTransition(saved, newlyAuthorized, false);
+    }
+
+    public Payment markGatewayFulfillment(String paymentId, boolean succeeded, String failureReason) {
+        Payment payment = paymentsRepository.findById(normalizeId(paymentId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment was not found."));
+        payment.setFulfillmentStatus(succeeded ? FULFILLMENT_SUCCEEDED : FULFILLMENT_FAILED);
+        payment.setLastGatewayError(succeeded ? null : safeText(failureReason));
+        return paymentsRepository.save(payment);
+    }
+
+    public Payment recordGatewayOperationFailure(String paymentId, RuntimeException failure) {
+        Payment payment = paymentsRepository.findById(normalizeId(paymentId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment was not found."));
+        payment.setLastGatewayError(safeGatewayError(failure));
+        return paymentsRepository.save(payment);
+    }
+
+    public AuthorizationResult releaseGatewayAuthorization(Payment payment, String operationKey) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment is required.");
+        }
+        AuthorizationResult result = resolveProcessor(payment.getProvider()).releaseAuthorization(
+                payment.getGatewayAuthorizationId(),
+                operationKey);
+        applyGatewayAuthorization(payment.getCheckoutSessionId(), result, "operation:" + operationKey);
+        return result;
+    }
+
+    public AuthorizationResult captureGatewayAuthorization(Payment payment, BigDecimal amount, String operationKey) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment is required.");
+        }
+        AuthorizationResult result = resolveProcessor(payment.getProvider()).captureAuthorization(
+                payment.getGatewayAuthorizationId(),
+                amount,
+                operationKey);
+        applyGatewayAuthorization(payment.getCheckoutSessionId(), result, "operation:" + operationKey);
+        return result;
+    }
+
+    public record GatewayTransition(Payment payment, boolean newlyAuthorized, boolean duplicateEvent) {}
 
     public void recordEventJoin(
             String paymentSessionId,
@@ -149,7 +253,32 @@ public class PaymentService {
             String slotSourceId,
             String bookingStartAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
-        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, cancellationPolicy);
+        recordEventJoin(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                null,
+                cancellationPolicy);
+    }
+
+    public void recordEventJoin(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            String bookingEndAtIso,
+            PricingCancellationPolicyDto cancellationPolicy) {
+        recordBooking(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                bookingEndAtIso,
+                cancellationPolicy);
     }
 
     public void recordAssetBooking(
@@ -159,7 +288,7 @@ public class PaymentService {
             String slotSourceId,
             String bookingStartAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
-        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, cancellationPolicy);
+        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, null, cancellationPolicy);
     }
 
     public EventCheckoutPaymentAuditDto loadPaymentAudit(
@@ -287,6 +416,7 @@ public class PaymentService {
             String sourceId,
             String slotSourceId,
             String bookingStartAtIso,
+            String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
         Payment payment = findByAnySessionId(paymentSessionId).orElse(null);
         if (payment == null) {
@@ -305,6 +435,7 @@ public class PaymentService {
         payment.setSourceId(normalizedSourceId);
         payment.setSlotSourceId(normalizeId(slotSourceId));
         payment.setBookingStartAtIso(hasText(bookingStartAtIso) ? bookingStartAtIso.trim() : payment.getBookingStartAtIso());
+        payment.setBookingEndAtIso(hasText(bookingEndAtIso) ? bookingEndAtIso.trim() : payment.getBookingEndAtIso());
         payment.setCancellationPolicy(cancellationPolicy);
         if (!BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus())) || !hasText(payment.getJoinedAtIso())) {
             payment.setJoinedAtIso(nowIso());
@@ -412,6 +543,17 @@ public class PaymentService {
         }
 
         String cancellationTimeIso = nowIso();
+        if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))) {
+            payment.setBookingStatus(BOOKING_STATUS_CANCELLED);
+            payment.setCancelledAtIso(cancellationTimeIso);
+            payment.setRefundStatus(REFUND_STATUS_NONE);
+            payment.setRefundedAmount(null);
+            payment.setRefundedAtIso(null);
+            payment.setRefundRuleId(null);
+            payment.setRefundNote("Authorization release pending.");
+            paymentsRepository.save(payment);
+            return;
+        }
         String bookingStartAtIso = hasText(payment.getBookingStartAtIso())
                 ? payment.getBookingStartAtIso()
                 : (hasText(fallbackBookingStartAtIso) ? fallbackBookingStartAtIso.trim() : null);
@@ -461,6 +603,154 @@ public class PaymentService {
             throw new IllegalArgumentException("Unsupported payment provider: " + provider);
         }
         return processor;
+    }
+
+    private Optional<Payment> findReusableAuthorization(
+            EventCheckoutRequestDto request,
+            String provider) {
+        String userId = normalizeId(request == null ? null : request.userId());
+        String sourceId = normalizeId(request == null ? null : request.sourceId());
+        if (!hasText(userId) || !hasText(sourceId)) {
+            return Optional.empty();
+        }
+        Set<String> reusableStatuses = Set.of(
+                statusValue(AuthorizationStatus.AUTHORIZATION_PENDING),
+                statusValue(AuthorizationStatus.CUSTOMER_ACTION_REQUIRED),
+                statusValue(AuthorizationStatus.AUTHORIZED));
+        return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> provider.equals(safeText(item.getProvider())))
+                .filter(item -> reusableStatuses.contains(safeText(item.getStatus())))
+                .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
+                .filter(item -> !FULFILLMENT_FAILED.equals(safeText(item.getFulfillmentStatus())))
+                .filter(item -> Objects.equals(
+                        normalizeId(item.getSlotSourceId()),
+                        normalizeId(request.slotSourceId())))
+                .filter(item -> safeCurrency(item.getCurrency()).equals(safeCurrency(request.currency())))
+                .filter(item -> roundMoney(safeAmount(item.getAmount())) == roundMoney(safeAmount(request.totalAmount())))
+                .max(Comparator.comparing(item -> sortableIso(item.getCreatedDate())));
+    }
+
+    private Optional<Payment> findGatewayPayment(
+            String internalPaymentSessionId,
+            AuthorizationResult authorization) {
+        String internalId = normalizeId(internalPaymentSessionId);
+        if (hasText(internalId)) {
+            Optional<Payment> byInternalId = paymentsRepository.findByCheckoutSessionId(internalId)
+                    .or(() -> paymentsRepository.findById(internalId));
+            if (byInternalId.isPresent()) {
+                return byInternalId;
+            }
+        }
+        if (authorization != null && hasText(authorization.gatewayAuthorizationId())) {
+            Optional<Payment> byAuthorization = paymentsRepository
+                    .findByGatewayAuthorizationId(normalizeId(authorization.gatewayAuthorizationId()));
+            if (byAuthorization.isPresent()) {
+                return byAuthorization;
+            }
+        }
+        if (authorization != null && hasText(authorization.gatewayCheckoutId())) {
+            return paymentsRepository.findByGatewaySessionId(normalizeId(authorization.gatewayCheckoutId()));
+        }
+        return Optional.empty();
+    }
+
+    private void validateGatewayResult(Payment payment, AuthorizationResult authorization) {
+        if (payment == null || authorization == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Payment provider returned no authorization result.");
+        }
+        if (!safeText(payment.getProvider()).equals(safeText(authorization.provider()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider identity does not match the session.");
+        }
+        BigDecimal expectedAmount = BigDecimal.valueOf(safeAmount(payment.getAmount())).stripTrailingZeros();
+        BigDecimal actualAmount = authorization.amount() == null
+                ? BigDecimal.ZERO
+                : authorization.amount().stripTrailingZeros();
+        boolean exactAuthorizationAmountRequired = switch (authorization.status()) {
+            case PAYMENT_METHOD_READY, AUTHORIZATION_PENDING, CUSTOMER_ACTION_REQUIRED, AUTHORIZED -> true;
+            default -> false;
+        };
+        if ((exactAuthorizationAmountRequired && expectedAmount.compareTo(actualAmount) != 0)
+                || (!exactAuthorizationAmountRequired
+                        && (actualAmount.signum() < 0 || actualAmount.compareTo(expectedAmount) > 0))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider amount does not match the session.");
+        }
+        if (!safeCurrency(payment.getCurrency()).equalsIgnoreCase(safeCurrency(authorization.currency()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider currency does not match the session.");
+        }
+    }
+
+    private void applyGatewayResult(Payment payment, AuthorizationResult authorization) {
+        if (hasText(authorization.gatewayCheckoutId())) {
+            payment.setGatewaySessionId(normalizeId(authorization.gatewayCheckoutId()));
+        }
+        if (hasText(authorization.gatewayAuthorizationId())) {
+            payment.setGatewayAuthorizationId(normalizeId(authorization.gatewayAuthorizationId()));
+        }
+        payment.setStatus(statusValue(authorization.status()));
+        payment.setGatewayStatus(safeText(authorization.providerStatus()));
+        payment.setGatewayActionUrl(normalizeUrl(authorization.customerActionUrl()));
+        payment.setAuthorizationExpiresAtIso(normalizeId(authorization.captureBeforeIso()));
+        switch (authorization.status()) {
+            case AUTHORIZED -> payment.setGatewayApprovedAtIso(
+                    hasText(payment.getGatewayApprovedAtIso()) ? payment.getGatewayApprovedAtIso() : nowIso());
+            case CAPTURED -> payment.setCapturedAtIso(
+                    hasText(payment.getCapturedAtIso()) ? payment.getCapturedAtIso() : nowIso());
+            case RELEASED -> payment.setReleasedAtIso(
+                    hasText(payment.getReleasedAtIso()) ? payment.getReleasedAtIso() : nowIso());
+            case EXPIRED, FAILED -> payment.setFailedAtIso(
+                    hasText(payment.getFailedAtIso()) ? payment.getFailedAtIso() : nowIso());
+            default -> {
+                // Non-terminal provider state: preserve lifecycle timestamps.
+            }
+        }
+    }
+
+    private EventCheckoutSessionDto toCheckoutSession(Payment payment) {
+        return new EventCheckoutSessionDto(
+                payment.getCheckoutSessionId(),
+                payment.getProvider(),
+                "gateway",
+                switch (safeText(payment.getStatus())) {
+                    case "customer_action_required" -> "requires_action";
+                    default -> safeText(payment.getStatus());
+                },
+                safeAmount(payment.getAmount()),
+                safeCurrency(payment.getCurrency()),
+                normalizeUrl(payment.getGatewayActionUrl()));
+    }
+
+    private String statusValue(AuthorizationStatus status) {
+        return status == null ? "failed" : status.name().toLowerCase(java.util.Locale.ROOT);
+    }
+
+    private boolean isAllowedGatewayTransition(String previousStatus, AuthorizationStatus nextStatus) {
+        String previous = safeText(previousStatus);
+        String next = statusValue(nextStatus);
+        if (!hasText(previous) || previous.equals(next)) {
+            return true;
+        }
+        return switch (previous) {
+            case "captured", "released", "expired" -> false;
+            case "authorized" -> Set.of("captured", "released", "expired", "failed").contains(next);
+            case "customer_action_required" -> Set.of(
+                    "authorization_pending", "authorized", "expired", "failed").contains(next);
+            case "failed" -> Set.of(
+                    "authorization_pending", "customer_action_required", "authorized", "expired").contains(next);
+            default -> true;
+        };
+    }
+
+    private String normalizeUrl(String value) {
+        return hasText(value) ? value.trim() : null;
+    }
+
+    private String safeGatewayError(RuntimeException exception) {
+        if (exception instanceof ResponseStatusException responseStatusException
+                && hasText(responseStatusException.getReason())) {
+            return responseStatusException.getReason();
+        }
+        return exception == null ? "Payment provider failure." : exception.getClass().getSimpleName();
     }
 
     private void hydratePaymentRequest(Payment payment, EventCheckoutRequestDto request, String provider) {
@@ -558,6 +848,7 @@ public class PaymentService {
             return Optional.empty();
         }
         return paymentsRepository.findByGatewaySessionId(normalizedSessionId)
+                .or(() -> paymentsRepository.findByGatewayAuthorizationId(normalizedSessionId))
                 .or(() -> paymentsRepository.findByCheckoutSessionId(normalizedSessionId))
                 .or(() -> paymentsRepository.findById(normalizedSessionId));
     }

@@ -251,7 +251,8 @@ Execution evidence on 2026-08-04:
   is draft **Edit -> Visibility: Friends only -> Save** only. Stop before
   Publish and prove that Save changes only the draft definition plus its normal
   event task while both D tickets, counters and memberships remain unchanged.
-- Friends Only draft-Save boundary (2026-08-12): **PASS**. Casey changed only
+- Friends Only draft-Save boundary (2026-08-12): **DOMAIN PASS / NOTIFICATION
+  FAIL**. Casey changed only
   visibility from Public to Friends only and pressed Save once. The canonical
   event remained the same `DR` identity with Ticketing configured On and now
   persisted `visibility=Friends only`. Casey, Nova and Riley remained accepted
@@ -260,15 +261,158 @@ Execution evidence on 2026-08-04:
   replacement appeared, their ticket counters stayed `0/0`, Casey stayed
   ticketless, and Lina/Liam retained neither participation nor ticket artifact.
   Casey's already-open My Events card switched from the Public icon to the
-  Friends icon without reload. The Save refreshed only the normal deduplicated
+  Friends icon without reload. The Save refreshed the normal deduplicated
   event recompute task, due at `2026-08-12T21:04:44.684364061Z`, with empty
   `lastError`. The existing worker completed it normally at
   `2026-08-12T21:04:50.578245727Z`, `attemptCount=3`, and returned to
-  `pendingCount=0`; no manual worker or second process was invoked. The next
-  producer boundary is one Casey **Publish** action. Stop before using Lina or
-  Liam and prove active Friends only state plus one new A ticket ID/code for
-  each accepted non-admin member, restored counters `1/1`, retained D history
-  and unchanged memberships.
+  `pendingCount=0`; no manual worker or second process was invoked. The first
+  oracle did not yet expose generic definition-change artifacts and therefore
+  incorrectly recorded the Save as a full PASS. The strengthened oracle later
+  proved that the visibility-only Save also created one completed
+  `event-definition-changed:<eventId>` task with false reasons
+  `schedule,sub-events`, one unread `event-details-changed` notification for
+  Nova and one for Riley, plus their two pending outbox intents. Both rows said
+  **The event schedule changed.** This is a real backend write-side
+  classification defect; Nova/Riley had no open windows at this boundary, so
+  their in-place notification behavior was **NOT EXECUTED**, not UI PASS.
+- First Publish boundary (2026-08-12): **SERVER/CASEY PASS; NOVA/RILEY UI NOT
+  EXECUTED**. The same event became active with `visibility=Friends only`,
+  Ticketing On and unchanged Casey/Nova/Riley accepted membership `3 / 8`.
+  Both original D tickets remained. Nova received new A ticket
+  `6a7ce077f8a7d3829acd807b` /
+  `TKT-f9c24f1f-6b83-4d66-b0db-2bcb1ef2280b`; Riley received new A ticket
+  `6a7ce077f8a7d3829acd807d` /
+  `TKT-cf9ab939-5da5-4d42-8b13-e5402bf047af`; counters returned to `1/1` and
+  Casey remained ticketless. The lifecycle task completed for exactly Nova and
+  Riley with reason `modified`, materializing one unread **The event is
+  available again.** row per recipient. Casey's already-open My Events card
+  stayed in place. Because Nova and Riley were not open, their notification and
+  ticket UI convergence is retained only as server evidence and must be
+  replayed with Casey/Nova/Riley open.
+- Defect fix/replay plan (2026-08-13): Java definition-change comparison now
+  canonicalizes legacy/missing frequency to `One-time`, missing slots-enabled
+  to `false`, sub-event defaults/lists and event mode before deciding whether a
+  schedule/sub-event change occurred. A regression covers a visibility-only
+  Save across those legacy-equivalent defaults. Existing backend hot deploy
+  compiled successfully and restarted the same server owner; no parallel build
+  or server was used. The guarded `prepare-visibility-save-retest` action
+  preserves the completed join/approval/membership history, retains every
+  physical ticket as D audit history, reconciles ticket/unread counters, removes
+  only the failed Save-owned generic task/outbox/notification occurrence and
+  re-arms the same draft as Public with the legacy-equivalent defaults. Replay
+  with at most three windows at once: Casey/Nova/Riley prove no notification or
+  ticket delta on Save and the normal in-place notification/ticket delta on
+  Publish; then replace them with Casey/Lina/Liam for Explore friend/non-friend
+  reads. Never run five actor windows concurrently on this workstation.
+- Guarded repair-replay baseline (2026-08-13): **READY**. The versioned
+  `prepare-visibility-save-retest` action completed, and a separate read-only
+  status proved the same event at `DR`, Public, Ticketing On with unchanged
+  Casey/Nova/Riley accepted membership `3 / 8`, no pending/invited/request
+  member, and all four retained Nova/Riley physical ticket records at `D`.
+  Nova's and Riley's stored ticket counters are both `0/0`. The failed Save's
+  `event-definition-changed` task plus its two `event-details-changed` outbox
+  intents and unread notifications are absent, while the earlier real
+  under-review/modified lifecycle audit remains. The old browser manifest has
+  no live processes; launch exactly Casey/Nova/Riley for the Save/Publish phase,
+  and close that trio before launching Casey/Lina/Liam for Explore.
+  The replacement launch then identity-verified exactly those three live
+  sessions; no fourth QA browser was opened.
+- Repair-replay pre-Save UI baseline (2026-08-13): **PASS**. Nova's open
+  Notifications > New list shows exactly two unread retained real lifecycle
+  rows for the event: **The event is available again.** and **The event is
+  under review.** Riley's open New list shows exactly those two plus the prior
+  **Your request to join ... was approved.** row, for a total of three. Neither
+  list contains the removed false **The event schedule changed.** occurrence.
+  Both recipient lists remain open while Casey repeats only the visibility Save.
+- Fixed visibility-only Save replay, immediate boundary (2026-08-13): **PASS**.
+  Casey issued exactly one `POST /api/activities/events/sync` at
+  `01:13:16+02:00`. The same event is `DR`, Friends only and Ticketing On with
+  unchanged accepted membership `3 / 8`; all four retained physical tickets
+  remain `D`, and Nova/Riley ticket counters remain `0/0`. No new
+  `event-definition-changed` task, `event-details-changed` outbox intent or
+  notification was created. Nova's already-open New list stayed at the exact
+  same two rows, and Riley's stayed at the exact same three rows without reload
+  or reopen. Casey's My Events list retained the one `3 / 8` draft card. The
+  normal Save-owned event recompute task completed `done` at
+  `01:16:46+02:00`, attempt `5`, with empty `lastError`; the post-worker oracle
+  retained the exact same tickets, counters and lifecycle artifacts. The fixed
+  visibility-only Save replay is therefore full **PASS**.
+- First repair-replay Publish instruction (2026-08-13): **NOT EXECUTED /
+  FIXTURE TIMING INVALID**. The retained event's original end was `01:18` local.
+  Casey's already-open Upcoming/My Events poll returned the one card through
+  `01:17:55`, then changed to the empty response exactly at `01:18:25`; the
+  `01:19:17` screenshot shows the resulting empty list. Access logs contain no
+  Publish mutation, and the persisted oracle remained `DR`, Friends only with
+  four D tickets, counters `0/0` and unchanged lifecycle notifications. This is
+  not a product failure and the proven Save is not replayed.
+- Stable Publish/Explore fixture repair (2026-08-13): **READY**. The guarded,
+  one-shot `prepare-visibility-publish-window` action first required the exact
+  clean post-Save transaction boundary, including terminal recompute and absent
+  false notification artifacts. It then moved all three event projections to
+  `2026-08-13T11:22:23.404Z` through `2026-08-14T11:22:23.404Z`, retaining
+  every membership, ticket, counter and lifecycle artifact. Independent status
+  proved that state. Casey's same open Upcoming/My Events list regained exactly
+  one `3 / 8` card on its normal poll without reload; Nova remained at New `2`
+  and Riley at New `3`. Publish may now be executed once from this card.
+- Clean Publish replay, immediate boundary (2026-08-13): **PASS**. Casey sent
+  exactly one `POST /api/activities/events/publish` at `01:25:27+02:00`. The
+  same event became A/Friends only/Ticketing On with unchanged accepted
+  membership `3 / 8`. All four D audit tickets remain. Nova received new A
+  ticket `6a7d00e7f8a7d3829acd8084` /
+  `TKT-98fa21bc-abd4-4240-873d-09b83c4f3b3c`; Riley received new A ticket
+  `6a7d00e7f8a7d3829acd8085` /
+  `TKT-0cbd5e00-4694-4408-95bf-d21018128526`; their stored ticket counters are
+  `1/1` and Casey remains ticketless. Lifecycle task
+  `6a7d00e7f8a7d3829acd8082` completed for exactly Nova/Riley with reason
+  `modified`, producing one new unread **The event is available again.** row
+  per recipient. Nova's already-open New list changed `2 -> 3` and Riley's
+  `3 -> 4` in-place, while each top Ticket counter changed `0 -> 1`, all without
+  reload. Casey retained one active `3 / 8` My Events card. Nova and Riley then
+  closed only Notifications and opened Ticket without reload; each Upcoming
+  list showed exactly one `QA EVENT-TICKET-007` ticket card. The normal event
+  recompute completed `done` at `01:28:52+02:00`, attempt `6`, with empty
+  `lastError`; its terminal oracle retained the exact six-ticket audit,
+  counters and lifecycle notifications. The Casey/Nova/Riley Save/Publish
+  replay is full **PASS**. Close that entire managed trio before opening the
+  separate Casey/Lina/Liam Explore phase.
+- Explore phase replacement/baseline (2026-08-13): **READY**. The exact
+  manifest PIDs for Casey/Nova/Riley were validated, terminated and proven
+  absent before any replacement launch. Resources were checked, then exactly
+  three new configured sessions were started and identity-verified as Casey,
+  Lina and Liam; no fourth QA window runs. The pre-read oracle retains the
+  active Friends-only Ticketing On event at `3 / 8`. Lina is the deterministic
+  Casey-friend and Liam the deterministic non-friend; neither has membership,
+  tracked participation or a ticket on this event. Lina begins at Events `6`,
+  tickets `0`, event buckets all `10` / active `6` / pending `1` / invitations
+  `2` / hosting `1`. Liam begins at Events `9`, tickets `0`, event buckets all
+  `12` / active `9` / pending `2` / invitations `0` / hosting `1`. The normal
+  event recompute remains terminal `done`. Lina and Liam may now open Event
+  Explore without changing filters or selecting a card.
+- Explore list boundary (2026-08-13): **PASS**. In the two already-open Event
+  Explore lists, Lina saw `QA EVENT-TICKET-007` exactly once with Friends-only
+  presentation and Liam did not see the event at all. Neither actor changed a
+  filter or opened a card. The immediate read-only oracle retained Lina and
+  Liam as external controls with no membership, invitation, ticket or counter
+  delta, and retained Casey/Nova/Riley membership `3 / 8`, the six-ticket
+  audit and the terminal recompute task unchanged.
+- Direct-detail boundary and repair (2026-08-13): **FAIL -> FIXED -> FOCUSED
+  REPLAY PASS**. Before the repair, Liam's direct
+  `/api/activities/events/detail` request returned the complete Friends-only
+  event DTO even though the Explore list correctly excluded him. The first
+  wrong boundary was the Java detail read: it selected and mapped the canonical
+  record without enforcing the same external-viewer visibility rule used by
+  Explore. `ActivitiesEventsService` now authorizes detail reads for an Admin
+  or tracked participant, and otherwise reuses the canonical published
+  Public/Friends-only/Invitation-only boundary used for untracked Explore
+  viewers. Regression sources cover Lina/Liam Friends-only parity and retained
+  participant access to an Invitation-only event. The existing backend owner
+  compiled the source with `BUILD SUCCESSFUL` and performed one healthy Spring
+  restart; no parallel Gradle, test or server process was started. Focused HTTP
+  replay returned `200 / 0 bytes` for Liam and the complete same-event DTO for
+  Lina as friend, Nova as accepted participant and Casey as Admin. The terminal
+  Docker-backed status oracle again proved no read-side write: memberships,
+  tickets, counters, lifecycle artifacts and recompute state remained exactly
+  unchanged. `EVENT-VISIBILITY-001` is therefore **PASS / CLOSED**.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
@@ -328,6 +472,103 @@ Execution state on 2026-08-04:
   `manual-qa-checkpoint:v1:event-domain:event`. Its machine baseline has zero
   event chats and zero action deltas. The next action is exactly one Casey
   Draft-card Publish with Nova and Riley as negative controls.
+- Clean retest restaged on 2026-08-13 at `2026-08-13T13:03:40.831Z` and matched
+  by a second read-only status: exactly one `DR` draft `QA
+  EVENT-PUBLISH-CHAT-001`; Casey is the sole accepted Admin, Nova and Riley are
+  pending invitees, occupancy is 1/8 plus pending 2. Event chats, messages,
+  chat notifications/outbox/tasks are empty. For every actor, `chats`,
+  `chat.all` and `chat.event` are zero and every captured action delta is zero.
+  Three isolated sessions are open.
+- Pre-Publish baseline **PASS** on 2026-08-13: Casey, Nova and Riley each opened
+  Activities -> Chats -> All and the controlled event was absent from every
+  list. Read-only DOM inspection also found zero occurrences of the title in
+  all three sessions. Casey then closed only the Chats popup while Nova and
+  Riley left Chat All open. The immediate persisted oracle still reported the
+  event as `DR`, with zero event chats, messages, chat notification outbox and
+  chat notifications; all three users retained `chats=0`, `chat.all=0` and
+  `chat.event=0`, with zero action delta. No Publish has yet been issued.
+- Publish counter branch **FAIL** on 2026-08-13: the user sampled Publish both
+  from My Events and from Drafts. From My Events the counters appeared correct.
+  From Drafts the row and Drafts count decreased immediately, but the
+  draft-inclusive My Events counter disappeared and returned only after My
+  Events was clicked and its list loaded. The invariant is: Publish changes
+  `Drafts 1 -> 0`, while My Events remains `1` from either producer surface.
+  The repeated lifecycle sampling means this fixture is no longer admissible
+  as the final clean oracle, but the UI failure is decisive.
+- The immediate persisted inspection after those samples retained one active
+  event and exactly one Casey main-event chat with unread `0`, no chat message,
+  no chat notification outbox and no chat notification. It also showed the
+  expected extra lifecycle artifacts caused by the repeated Unpublish/Publish
+  samples, so a clean restage is required before the final chat proof.
+- ROOT CAUSE / FRONTEND FIX: removing the published row from Drafts can emit a
+  SmartList state whose query still names the previous `my-events` scope. The
+  Activities popup accepted that stale `total=0` as the My Events bucket count;
+  the later operation-owned `drafts=-1` delta correctly changed only Drafts and
+  therefore could not restore My Events. The popup now accepts a list total
+  only when its query primary filter and event scope exactly match the current
+  selection. The shared SmartList is unchanged. Matching, stale-scope and
+  loading/calendar policy regressions were added. The existing Angular watcher
+  rebuilt successfully in 6.6 seconds and hot-synced the new bundle; no second
+  build or test process ran.
+- FRONTEND CAUSAL REPLAY **PASS**: with My Events loaded at `1`, switching to
+  Invitations and back produced the SmartList's normal transient reset totals,
+  but neither reset changed the stored Invitations `3` or My Events `1` bucket.
+  Each completed matching load then retained its authoritative server total.
+  This used the hot-deployed bundle and changed no domain data.
+- CHECKPOINT BASELINE DEFECT / HARNESS FIX: the earlier stage helper recomputed
+  only Casey Hosting and Drafts while preserving stale global Invitations and
+  All values. A correct Publish-side Java recompute therefore looked like an
+  unrelated `+3` action delta. Direct authenticated list loads proved those
+  three invitations were legitimate pre-existing events. The fixture now
+  mirrors the complete Java event-counter projection for every controlled
+  actor before capturing the action baseline; production Java was not changed.
+- CLEAN FIX REPLAY BASELINE: the contaminated fixture was reset, independently
+  verified `not-staged`, then staged again at `2026-08-13T14:02:06.075Z`.
+  Persisted state is exactly one `DR` event. Casey is All `4`, Invitations `3`,
+  My Events/Hosting `1` and Drafts `1`; Nova and Riley are pending fixture
+  invitees but correctly remain at zero active-event invitation counters until
+  Publish. Chats/messages/chat notifications, lifecycle artifacts and every
+  captured action delta are zero. Only the short Draft Publish counter branch
+  is next; the already-proven Chat All baseline is not repeated.
+- CLEAN DRAFT PUBLISH COUNTER REPLAY **PASS**: Casey published exactly once at
+  `2026-08-13T14:12:42Z`. Without reload or a My Events click, Drafts changed
+  `1 -> 0` while My Events remained `1`; later switching among event buckets
+  retained the correct menu counts. Read-only client state and MongoDB agree:
+  Casey is All `4`, Invitations `3`, Hosting/My Events `1`, Drafts `0`, and the
+  only Casey action delta is `eventDrafts=-1`.
+- EXPECTED IN-PLACE INVITATION CONVERGENCE: after Publish, Nova and Riley each
+  changed from Invitations `0 -> 1` and received exactly one `event-invite`
+  notification for the controlled event. Those two later-visible entries are
+  the staged draft invitees becoming active-event invitations through normal
+  client polling; Casey stayed at his three unrelated pre-existing invitations
+  and no duplicate invitation was persisted.
+- The same immediate oracle contains exactly one Casey-owned main-event chat
+  with unread `0`, no chat message/outbox/notification, and zero chat-counter
+  delta for all three actors. The normal recompute completed `done` at
+  `2026-08-13T14:16:28.796916646Z`, attempt `1`, empty `lastError`, without
+  changing that oracle. The remaining manual step is the three-client
+  post-Publish chat-list visibility check; do not repeat Publish or the counter
+  branch.
+- THREE-CLIENT CHAT VISIBILITY **PASS** at 16:19 local: Casey Chats > All
+  displayed `QA EVENT-PUBLISH-CHAT-001` exactly once, while Nova and Riley
+  Chats > All both displayed no items. The immediate persisted oracle remained
+  one Casey-only main-event chat with unread `0`, no messages, chat outbox or
+  chat notifications, and zero chat attention/action deltas for every actor.
+  Opening the Casey row and observing the empty channel is the only remaining
+  pre-reload UI check.
+- EMPTY CHANNEL **PASS**: Casey opened the single event-chat row and the UI
+  displayed `No messages yet` / `Start the conversation`. Read-only browser
+  state and MongoDB agreed on one member (Casey), unread `0`, no messages,
+  chat outbox or chat notifications, and zero Chats/All/Event attention delta
+  for Casey, Nova and Riley. Only Casey reload parity remains for this Publish
+  branch.
+- RELOAD PARITY **PASS / CHECKPOINT CLOSED**: after one Casey-only reload, the
+  client restored Chats `0`, Invitations `3`, My Events `1` and Drafts `0`,
+  and retained the same single empty event chat. The terminal database oracle
+  remained bit-for-bit equivalent for the controlled event, chat, message,
+  notification and counter identities. Keep the fixture only for the guarded
+  `EVENT-INV-003` continuation; do not repeat Publish or reconstruct this
+  baseline.
 
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 
@@ -575,8 +816,158 @@ Execution evidence on 2026-08-04:
 - Require one event recompute signal. Any auto-inviter eligibility, reminder,
   active attachment or ticket presentation must become unavailable.
 
+Baseline evidence on 2026-08-13:
+
+- The versioned fixture staged at `2026-08-13T19:44:57.209Z` with canonical
+  event/source ID `manual-qa-checkpoint:v1:event-domain:event`, title
+  `QA EVENT-LIFE-002`, status `A`, `published=true`, public/Open visibility and
+  no suppression fields. Casey is the accepted Admin/owner and Nova is the
+  single accepted Member; capacity is `2/8` including Casey's canonical admin
+  membership.
+- No ticket, payment, lifecycle task/outbox/notification, recompute task or
+  event chat existed at baseline. The affinity worker was completed with
+  pending count `0`; notification-outbox was also at pending count `0` for this
+  fixture boundary. Two managed browser sessions, Casey and Nova, replaced the
+  prior consent session.
+- FAIL before the producer action: after reload Casey's main menu showed no red
+  My Events counter; it appeared only after the popup loaded. Direct
+  `/api/auth/me` evidence agreed, returning top-level `hosting=0` and an all-zero
+  nested event counter. The event and membership were present, so this was a
+  fixture write/projection omission rather than a SmartList race or Trash
+  defect.
+- The lifecycle stage now snapshots Casey/Nova activities and invokes the
+  existing canonical event-counter projection after inserting its controlled
+  event. A guarded repair captured the two missing reset snapshots and applied
+  that same projection to the live untouched baseline without changing the
+  event or SmartList. The post-repair reload source returns Casey
+  `hosting=1`, `event.all=1`, `event.hosting=1`; Nova returns `events=1`,
+  `event.all=1`, `event.active=1`, with identical `counterOverrides`.
+- Focused reload/list replay: **PASS**. Before either popup query could repair a
+  display value, Casey's main My Events and Nova's main Events controls each
+  showed red counter `1`. The subsequently opened My Events and Active Events
+  lists contained the same `QA EVENT-LIFE-002` identity exactly once.
+- The first card oracle exposed a second fixture inconsistency: the fixture had
+  inserted Casey's accepted Admin membership but omitted Casey from the
+  event's embedded `acceptedMemberUserIds`, so both cards initially showed
+  `1 / 8`. The shared fixture event builder now always includes the canonical
+  creator/Admin in its accepted projection. Guarded repair changed only the
+  staged embedded occupancy to Casey+Nova `2 / 8`; both already-open lists
+  converged to `2 / 8` through their normal popup poll without reload, while
+  the two membership records and SmartList implementation stayed unchanged.
+- Pre-action code review found a real backend projection defect: a globally
+  trashed organizer event would have incremented every accepted participant's
+  personal Trash counter although participant Trash is reserved for an
+  explicitly deleted membership and its list would remain empty. The common
+  `UserActivityCountersService` projector now gives global-event Trash only to
+  an organizer/admin and continues to count explicit deleted memberships for
+  participants. A focused regression source covers the accepted-participant
+  exclusion; the existing dev owner compiled the Java change with `BUILD
+  SUCCESSFUL` and Spring restarted healthy without a parallel build.
+- The exact producer attribution boundary was captured at
+  `2026-08-13T20:16:21.233Z`: active/public `A`, no suppression, Casey+Nova
+  `2 / 8`, two unchanged accepted memberships, Casey counters Hosting/All
+  `1/1`, Nova Active/All `1/1`, and zero lifecycle task/outbox/notification.
+  One already-completed pre-action recompute from the earlier read/location
+  boundary is retained in the baseline and must not be attributed to Trash.
+  Casey's one **Delete Event** action is next; Nova must not interact.
+- **NOT EXECUTED / AI runtime failure before the producer:** neither the user
+  nor Codex activated Delete Event, and the persisted oracle remained the
+  exact active/public action baseline. During the preceding Java hot deploy,
+  Gradle's existing continuous `classes` owner temporarily removed compiled
+  classes and Spring DevTools restarted before the build had recreated the
+  controller set. Consequently `/api/activities/events/filter` returned `404`;
+  the open Casey and Nova popup polls then showed an empty page and zeroed the
+  visible bucket badges. This disappearance is not a user Trash action and
+  contributes no product-transition evidence.
+- The runtime owner is repaired without changing SmartList: DevTools now uses
+  a `.reloadtrigger` that the existing `classes` task touches only after a
+  successful owner build. The event HTTP adapter now preserves transport/server
+  failure as an error, while a successful `200` empty page remains a real empty
+  result, so the SmartList scheduler can retain its last good snapshot and
+  retry. The frontend owner build completed successfully; only the existing
+  backend container was restarted after a RAM/swap/CPU check.
+- Focused pre-action recovery **PASS without reload or user interaction**:
+  both authenticated list endpoints returned the same active/public event at
+  `2 / 8`, then the already-open Casey My Events and Nova Active Events lists
+  recovered through their normal poll. Casey again showed My Events `1`; Nova
+  showed Events/Active Events `1`. The saved action baseline remains the sole
+  producer attribution boundary, and Delete Event is still the next action.
+- Producer and foreground removal **PASS** at
+  `2026-08-13T20:40:43.192579877Z`: the user activated Casey's card
+  **Delete Event** confirmation exactly once. Without reload, Casey My Events
+  removed the card through the producer response and Nova Active Events removed
+  it through the already-open popup's normal foreground poll; their visible
+  active/hosting counters became zero. The user completed the final deletion
+  check and classified the deletion/counter branch as executed: Casey's
+  organizer Trash counter was `1` and the exact event appeared there once.
+- The versioned terminal verifier passed at
+  `2026-08-13T20:46:09.146Z` against the retained action baseline: canonical
+  status `T`, `statusBeforeSuppression=A`, one post-baseline `trashedAtIso`,
+  unchanged Casey Admin plus Nova Member audit rows and `2 / 8` occupancy.
+  Casey finished Hosting/All/Hosting-bucket `0/0/0` and organizer Trash `1`;
+  Nova finished Events/Active/All/Trash `0/0/0/0`, proving organizer Trash did
+  not become personal participant Trash.
+- Exactly one completed `deleted` lifecycle task targeted Nova and created one
+  unread `event-deleted` Notification Center row. Dev mode retained exactly one
+  matching `pending` Firebase outbox record because Firebase delivery is
+  disabled; Casey received neither. The pre-action recompute identity gained
+  the sole `EVENT_CHANGED` reason and completed `done` on attempt `2` with no
+  error. The reusable oracle now exposes canonical `isTrashed/published` from
+  status, `trashedAtIso`, `event-deleted` notification/outbox and a guarded
+  `verify-lifecycle-trash` command.
+- Organizer Trash UI read **PASS**: Casey switched the still-open Events popup
+  to Trash and saw exactly one `QA EVENT-LIFE-002` card. The final fresh-bundle
+  organizer reconstruction also showed Trash `1` and the same card exactly
+  once; the user accepted this deletion-counter branch as fully executed.
+- Participant foreground poll scope **INITIAL FAIL, FIX VERIFIED / PASS**:
+  Nova's already-open Active Events list removed the card and set
+  Active/Events to zero, but the inclusive All menu counter incorrectly stayed
+  at `1`. Switching to All returned an empty list and only that All query then
+  corrected the menu counter to `0`. The persisted Java oracle had already
+  stored Active/All `0/0`, so the defect was the frontend applying only the
+  currently queried bucket total.
+- Correct-scope repair keeps SmartList unchanged and does not project counters
+  from query results. Every Java event-list page now carries the complete
+  `users.activities.event` snapshot already materialized by the owning write;
+  both HTTP and frontend-local adapters transport the same contract, and the
+  foreground popup applies the snapshot atomically to Events, Invitations,
+  My Events and all nested event buckets. Legacy responses without a snapshot
+  retain the current-bucket fallback. The existing backend runtime returns Nova
+  All `total=0` plus the full all-zero snapshot and Casey Trash `total=1` plus
+  `trash=1`; the existing frontend watcher compiled and synced the new bundle.
+  Regression sources cover HTTP mapping and the Active-zero/All-stale store
+  transition. No separate build or SmartList-core change was made. Final
+  fresh-bundle reads passed for both roles: Nova All was empty with no
+  Events/All badge, while Casey Trash was `1` with exactly one event. The user
+  explicitly closed the Activity Events counter fix as executed/PASS; no
+  Restore replay remains as a condition of this checkpoint.
+- Notification Center UI read **PASS**: Nova opened Notifications **New** and
+  saw the exact unread `QA EVENT-LIFE-002` / `The event was deleted.` row without
+  opening it. The guarded terminal verifier was repeated at
+  `2026-08-13T21:05:00.659Z` and still found exactly that one row with an empty
+  `readAtIso`, one matching pending dev-mode outbox and no duplicate lifecycle
+  effect.
+- Fresh-bundle participant reconstruction **PASS**: after one Nova reload,
+  Events > All was empty and neither the main Events control nor the All bucket
+  showed a red counter. This loaded the synced frontend fix and agreed with the
+  persisted Active/All `0/0` oracle without a corrective second bucket load.
+- Fresh-bundle organizer reconstruction **PASS**: after one Casey reload,
+  Events > Trash showed counter `1` and exactly one `QA EVENT-LIFE-002` card.
+  `EVENT-LIFE-002` is **PASS/CLOSED**. Its Delete producer must never be replayed;
+  the retained trashed state continues independently into `EVENT-LIFE-003` on
+  the next QA session.
+
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
+- Resume baseline (2026-08-14): a deliberate full dev-stack seed reset removed
+  the retained `EVENT-LIFE-002` transaction. Its already-PASS Delete was not
+  replayed. The guarded stale checkpoint was discarded and this checkpoint was
+  staged directly at `T`, `statusBeforeSuppression=A`, Casey Admin + Nova
+  accepted Member `2 / 8`, Casey Trash `1`, Nova Active/All/Trash `0`, with no
+  lifecycle or recompute artifacts. The first direct stage incorrectly gave
+  Nova a personal Trash counter; the harness reconstruction was corrected so
+  organizer Trash is host/admin-only while participant membership Trash remains
+  a distinct branch.
 - Restore the same controlled event once from Trash.
 - Verify `statusBeforeSuppression` and `trashedAtIso` are cleared and the event
   returns to its preserved draft or active status, not an arbitrary default.
@@ -585,19 +976,113 @@ Execution evidence on 2026-08-04:
   attachment or ticket credential may be created.
 - Require one event recompute signal. Refreshing after the completed restore is
   a read-only `X` checkpoint.
+- Executed **PASS/CLOSED** on 2026-08-14. Casey saw Trash `1` and the single
+  staged card, then restored it exactly once. The card/counter disappeared
+  in-place and Nova's normal foreground poll exposed the restored event without
+  reload. The persisted oracle retained exactly one event identity and the
+  exact Casey Admin + Nova Member `2 / 8`; status returned to `A`, published was
+  true, suppression fields cleared, and member/resource/basket/payment/ticket/
+  chat/lifecycle-notification cardinality stayed unchanged (`1/2/0/0/0/0/0`).
+  Casey counters changed Hosting/My Events `+1`, Trash `-1`; Nova changed
+  Events/Active/All `+1` with Trash unchanged at `0`. Fresh reloads reproduced
+  the same single card for Casey My Events and Nova Active/All without creating
+  another task. The guarded terminal verifier passed at
+  `2026-08-14T11:23:42.462Z` with one completed coalesced recompute record
+  containing `EVENT_CHANGED`. Organizer Restore must not be replayed.
 
 ### `EVENT-LIFE-004` — participant leave/restore is not organizer trash
 
-- From an accepted participant session, leave one event without organizer
-  authority.
-- Verify only that viewer's participation tree becomes suppressed and the
-  event remains active for the organizer and other participants. The canonical
-  event must not enter the global Trash bucket.
-- Restore the viewer participation through its documented UI and verify the
-  membership state and personal Attending/Trash projections without changing
-  the organizer lifecycle.
-- Record the member mutation and its conditional recompute/counter effects
-  separately from organizer lifecycle effects.
+- Branch A — participant Leave:
+  - From Nova's accepted participant session, leave the retained event without
+    organizer authority. Casey remains an untouched organizer control.
+  - In place, Nova loses Active/All and gains exactly one personal Trash card;
+    the canonical Casey event remains active and never enters global Trash.
+  - Persisted state must contain the active Casey canonical record with Casey
+    occupancy `1 / 8`, the same Nova-owned `T` overlay with
+    `statusBeforeSuppression=A`, and Nova's same root membership as
+    `suppressed/statusBeforeSuppression=accepted`. Casey remains Hosting/All/
+    Trash `1/1/0`; Nova is Active/All/Trash `0/0/1`.
+  - The retained main-event chat removes only Nova and appends exactly one
+    `member-left` system message. Resource, basket, payment, ticket, lifecycle
+    notification/outbox/task collections remain unchanged; one coalesced
+    `EVENT_MEMBERS_CHANGED` recompute is conditional.
+- Branch B — participant Restore:
+  - Restore through Nova's documented personal Trash UI. The same overlay and
+    membership identities return to active/accepted with all suppression
+    fields cleared; Casey remains the canonical organizer and occupancy returns
+    to `2 / 8`.
+  - Casey remains Hosting/All/Trash `1/1/0`; Nova returns to Active/All/Trash
+    `1/1/0`. The same chat adds Nova back and appends exactly one
+    `member-joined` system message, without organizer lifecycle artifacts.
+- After a write-side repair, replay only Branch B → Branch A → fresh Nova read
+  → Branch B. Do not repeat organizer Delete/Restore checkpoints.
+
+Execution evidence on 2026-08-14 — PASS/CLOSED:
+
+- Baseline captured at `2026-08-14T11:27:35.272Z`: one active public retained
+  source, Casey accepted Admin + Nova accepted Member `2 / 8`, Casey counters
+  `1/1/0`, Nova counters `1/1/0`, and no resource/ticket/lifecycle/recompute
+  artifacts after advance.
+- Original Branch A UI PASS at `11:30:37.368Z`: Nova disappeared from
+  Active/All and appeared once in personal Trash without reload; Casey was
+  untouched. Canonical/member/chat/recompute identity behavior also matched.
+- FAIL retained as exact transaction evidence at `11:40:21.600Z`: Java stored
+  Nova Active/All/Trash as `0/0/0`. The UI's Trash1 came only from the immediate
+  response delta. After the backend hot-restart/poll, Nova's Trash `+1` did in
+  fact disappear, independently proving that the result was not reload-safe;
+  the unbadged Trash query is checked separately before Restore.
+- Root cause: the stored counter projector recognized only legacy `deleted`
+  membership, not the current restorable suppressed-membership + personal
+  Trash-overlay invariant. The backend projector and focused regressions were
+  updated without changing SmartList or query behavior; hot-deploy compile and
+  same-process restart passed. Corrected Branch A/B replay remains required
+  before this row can close.
+- First corrected Branch B PASS: Nova restored once at
+  `2026-08-14T11:46:51.871Z`; the verifier passed at `11:48:20.510Z`. Both
+  retained event records returned to `A`, Nova's membership returned to
+  accepted with suppression fields cleared, occupancy was `2 / 8`, Casey
+  remained `Hosting/All/Trash=1/1/0`, Nova persisted
+  `Active/All/Trash=1/1/0`, and exactly one `member-joined` system message was
+  appended. Casey and Nova received per-user projections of the same logical
+  main-event `chatId`; no lifecycle artifact was created. This exact active
+  result is the saved boundary for one corrected Leave replay.
+- Corrected Branch A write and poll PASS: Nova left once at
+  `2026-08-14T11:49:59.492Z`; the persisted verifier passed at
+  `11:50:43.614Z`. Casey remained active/Hosting with occupancy `1 / 8`; the
+  same Nova overlay/member identities became restorable Trash/suppressed;
+  Nova stored `Active/All/Trash=0/0/1`; exactly one additional `member-left`
+  message was appended and no organizer lifecycle artifact appeared.
+  `/activities/events/filter` and realtime polls continued repeatedly after
+  the action. A read-only Nova DOM observation at `11:51:56.515Z`, after
+  several of those polls, still showed Trash badge `1` and the single retained
+  card. The earlier poll-to-zero defect is fixed.
+- Corrected Branch A fresh-read PASS: after Nova reloaded, read-only DOM at
+  `2026-08-14T11:57:00.024Z` still showed Trash badge `1` and exactly one
+  `QA EVENT-LIFE-003` card. Java identity/counters were unchanged. The one
+  coalesced `EVENT_MEMBERS_CHANGED` task completed at
+  `11:55:18.567932813Z` with no error. Only final Restore verification remains.
+- Final corrected Branch B write PASS: Nova restored once at
+  `2026-08-14T11:58:15.854Z`; verifier passed at `11:58:43.059Z`. The same
+  canonical/overlay/member identities returned to active/accepted with all
+  suppression fields cleared, occupancy returned to `2 / 8`, Casey persisted
+  `Hosting/All/Trash=1/1/0`, Nova persisted `Active/All/Trash=1/1/0`, and
+  exactly one further `member-joined` message restored Nova's per-user chat
+  projection. Resource, basket, payment, ticket and organizer lifecycle
+  collections remained unchanged.
+- Final fresh-read PASS: at `12:02:04.080Z` Casey's reloaded My Events DOM and
+  at `12:02:16.892Z` Nova's reloaded Active Events DOM each contained exactly
+  one `QA EVENT-LIFE-003` card at `2 / 8`; neither DOM contained Trash. The
+  Java oracle remained identical.
+- Final worker PASS: the single coalesced `EVENT_MEMBERS_CHANGED` task finished
+  `done` at `12:03:21.935803588Z`, attempt `5`, with empty `lastError`; no
+  organizer lifecycle task/outbox/notification was created.
+- Frontend-local parity was inspected because this defect can affect offline
+  execution: local Leave persists a viewer-owned `T` record, recomputes and
+  persists the user Trash counter, and flushes both event and user state to
+  IndexedDB; local Restore reverses that path. No analogous missing local
+  write was found, so no frontend-local production change was made.
+- PASS/CLOSED. Continue once with `EVENT-LIFE-005`; never replay either
+  participant Leave or Restore producer from this checkpoint.
 
 ### `EVENT-LIFE-005` — bucket reads and no-op navigation
 
@@ -608,6 +1093,51 @@ Execution evidence on 2026-08-04:
   job history.
 - A duplicate card, a card in mutually exclusive lifecycle buckets, or a
   write caused by navigation is a failed checkpoint.
+
+Execution evidence on 2026-08-14:
+
+- Retained active state advanced once from closed `EVENT-LIFE-004` at
+  `2026-08-14T12:06:16.837Z`; no lifecycle producer was replayed.
+- Read-only baseline captured at `12:08:10.833Z`: same Casey canonical + Nova
+  overlay, Casey Admin + Nova Member `2 / 8`, Casey My Events/All/Trash
+  `1/1/0`, Nova Active/All/Invitations/Trash `1/1/0/0`, and no post-advance
+  recompute delta.
+- The saved oracle covers event, member, resource, basket, payment, ticket,
+  chat, notification, outbox, lifecycle, recompute, feedback, runtime,
+  tournament, leaderboard and both users' complete event-counter snapshots.
+  Global worker heartbeat timestamps are intentionally excluded; the final
+  verifier requires every event-scoped persisted value to remain byte-logically
+  identical.
+- Organizer read/refresh branch PASS: Casey observed exactly one retained
+  `QA EVENT-LIFE-003` card in My Events at `2 / 8`, Drafts empty before and
+  after reload, Trash empty before and after reload, then the same single My
+  Events card after the final reload. No action menu was opened and Nova was
+  untouched. The independent Casey DOM read at
+  `2026-08-14T12:16:03.252Z` confirmed My Events count `1`, the same card at
+  `2 / 8`, and no Trash label/card.
+- Participant read/refresh branch PASS: Nova observed exactly one retained
+  `QA EVENT-LIFE-003` card in Active Events at `2 / 8`, Invitations empty
+  before and after reload, Trash empty before and after reload, then the same
+  single Active Events card after the final reload. No action menu was opened
+  and Casey was untouched. The independent Nova DOM read at
+  `2026-08-14T12:18:28.571Z` confirmed Active Events count `1`, the same card
+  at `2 / 8`, and no Trash label/card.
+- The first terminal comparison correctly stopped on an `events` mismatch,
+  but the new field-level diagnostic proved both event records had the same
+  absent `statusBeforeSuppression` value: the saved BSON snapshot represented
+  it as `null`, while the fresh in-memory object used `undefined`. The harness
+  now recursively canonicalizes absent snapshot values before persistence and
+  comparison and exposes a separate read-only field-diff command. No product,
+  fixture or browser state was changed and no manual branch was replayed.
+- Corrected terminal verifier PASS at `2026-08-14T12:22:09.765Z`: the exact
+  Casey canonical and Nova overlay remain active at `2 / 8`; Casey
+  My Events/All/Drafts/Trash are `1/1/0/0`; Nova
+  Active/All/Invitations/Trash are `1/1/0/0`. No event-scoped event, member,
+  resource, basket, payment, ticket, audit, chat, notification, outbox,
+  lifecycle, recompute, feedback, runtime, tournament, leaderboard or user
+  counter value changed.
+- PASS/CLOSED. Do not replay either read/refresh branch; continue with the
+  independently staged `EVENT-INV-001` invitation transaction.
 
 ## Event invitation and membership cases
 
@@ -666,9 +1196,82 @@ Execution evidence on 2026-08-04:
 - The Event Members UI must show that exact user once as pending invitation,
   with the correct inviter and event.
 - The recipient's Invitations activity must show the same event once.
+- While that invitation is still pending, it must create neither an event-chat
+  owner copy nor any flat/nested chat counter increment. Chat materialization
+  and its channel counter belong only to terminal acceptance.
 - The membership oracle must be event-scoped, pending and `requestKind=invite`;
   it must not be confused with an asset invitation or a member-origin join
   request.
+
+Execution evidence in progress on 2026-08-14:
+
+- `EVENT-LIFE-005` was closed and reset through its versioned snapshots; the
+  independent invitation fixture was staged at
+  `2026-08-14T12:28:35.835Z` with event identity
+  `manual-qa-checkpoint:v1:event-domain:event`, title `QA EVENT-INV-001`, one
+  Casey Admin membership, accepted/pending `1 / 0`, capacity `8`, and no Nova
+  membership, invitation, notification, outbox or recompute record.
+- The first untouched invitation stage exposed a fixture projection omission:
+  unlike a normal owning write it did not synchronize persisted event menu
+  counters. No manual action had run. The harness now snapshots the relevant
+  users, invokes the shared event-counter projector for every invitation
+  stage, restores those snapshots on reset and includes counters in its
+  oracle. The defective untouched stage was reset and staged cleanly again.
+- Corrected persisted baseline: Casey Hosting/All/My Events is `1/1/1` with
+  Drafts/Trash `0/0`; Nova Events/All/Invitations/Trash is `0/0/0/0`. The
+  fixture delta relative to the pre-stage user snapshots is Casey Hosting+1
+  and All+1 only; Nova remains unchanged.
+- Versioned invitation action baseline captured at
+  `2026-08-14T12:32:13.618Z`. The terminal verifier now requires the one
+  Casey-authored Nova membership (`pending`, `pendingSource=admin`,
+  `requestKind=invite`), accepted/pending `1/1`, Nova Invitations/All `1/1`,
+  exactly one unread Nova `event-invite` inbox record plus its Casey-to-Nova
+  outbox identity, stable Casey counters and no unrelated lifecycle, chat,
+  resource, payment, ticket or recompute change.
+- Owner list baseline PASS at `2026-08-14T12:36:43.730Z`: Casey's reloaded
+  My Events DOM shows counter `1` and exactly one `QA EVENT-INV-001` card at
+  `1 / 8`. The DOM remained on My Events, so the separate Members identity
+  view has not yet been observed and is not inferred from the card.
+- Owner Members baseline PASS at `2026-08-14T12:39:59.759Z`: the exact event
+  Members DOM shows `1 members`, one `Casey Bridge, 32` row with
+  `Admin · Austin`, and no pending member row. Invite is available but no
+  candidate was selected and Save has not run.
+- Single Invite+Save producer executed by Casey at
+  `2026-08-14T12:42:53.087Z`. Casey's still-open Members DOM at
+  `12:43:14.933Z` converged in place to `1 members · 1 pending`, with Nova
+  exactly once as `Invitation Pending`, Casey exactly once as Admin, accepted
+  occupancy still `1 / 8` and pending badge `1`.
+- Terminal persisted verifier PASS at `12:43:33.363Z`: the one canonical event
+  stores accepted/pending `1/1`, Casey accepted Admin and Nova pending Member;
+  Nova has `pendingSource=admin`, `requestKind=invite` and
+  `invitedByUserId=Casey`. Casey counters remained Hosting/All `1/1`; Nova
+  persisted Invitations/All became `1/1`, with Active/Pending/Trash `0/0/0`.
+  Exactly one Casey-to-Nova `event-invite` outbox row and one unread Nova inbox
+  notification exist. Resources, baskets, payments, tickets, chats, member
+  approval, lifecycle and recompute records remained unchanged.
+- Recipient pre-list DOM PASS at `12:43:48.899Z`: Nova shows Invitations badge
+  `1` and notification badge `1`; Notifications contains exactly
+  `1 new notification` for `QA EVENT-INV-001`, attributed to
+  `Casey Bridge · Event`, while Active Events remains empty. The user also
+  confirmed the single notification. The notification item has not been
+  clicked/read.
+- Recipient Invitations-list DOM PASS at `12:48:54.554Z`: Nova shows exactly
+  one `QA EVENT-INV-001` card at accepted occupancy `1 / 8`, pending badge `1`
+  and Invitations counter `1`.
+- A preliminary `Chats 1` observation was isolated as a checkpoint-transition
+  browser baseline defect, not a product write. Nova's document was loaded at
+  `12:18:04.822Z`, before the independent invitation fixture was staged at
+  `12:28:35.835Z`; its retained frontend snapshot still contained the prior
+  event-chat count. The active chat-list poll scope was empty. Persisted Mongo
+  state and an authenticated Nova realtime response both proved `chats=0`,
+  `chat.all=0`, `chat.event=0`, with no event-chat document or message.
+- Focused convergence replay PASS: closing Activities allowed the existing
+  popup-zoned realtime poll to replace the stale snapshot with chat zero while
+  retaining Invitations `1`. Reopening Invitations without reload still
+  showed the same single pending card and no Chats badge or chat channel.
+- **PASS / CLOSED** — the manual pending projections, notification identity,
+  pre-acceptance chat isolation and terminal persisted oracle agree. Do not
+  repeat Invite+Save for later invitation checkpoints.
 
 ### `EVENT-INV-002` — pre-acceptance privacy boundary
 
@@ -778,12 +1381,435 @@ Execution evidence on 2026-08-04:
 - The recipient then accepts once. Only this terminal transition may create
   the accepted projection and chat access.
 
+Execution evidence in progress on 2026-08-14:
+
+- Independent fixture staged at `2026-08-14T13:04:52.610Z`; a second status
+  oracle confirmed one active Open Event `QA EVENT-INV-004`, capacity `8`,
+  accepted/pending `2/1`: Casey accepted Admin, Nova accepted ordinary Member,
+  and Riley pending Member with `pendingSource=member`, `requestKind=invite`
+  and `invitedByUserId=Nova`.
+- Baseline isolation PASS: no event chat, chat message or chat notification
+  exists, and Casey, Nova and Riley all have flat/nested chat counters zero.
+  Riley has Invitations/All `1/1`, Nova has Active/All `1/1`, and Casey has
+  Hosting `1`.
+- Browser baseline PASS at `2026-08-14T13:07Z`: three fresh post-stage managed
+  sessions show Casey `My Events 1 / Chats 0`, Nova `Events 1 / Chats 0`, and
+  Riley `Invitations 1 / Chats 0`. No recipient Accept or Admin Approve action
+  has run.
+- Recipient list/action baseline PASS at `13:13:08.957Z`: Riley's untouched
+  Invitations list contains exactly one `QA EVENT-INV-004` card at accepted
+  occupancy `2 / 8`, pending badge `1` and Invitations counter `1`; Chats has
+  no badge. The second persisted status oracle is the retained pre-Accept
+  comparison boundary.
+- Riley Accept executed once at `2026-08-14T13:24:05.641Z`. Persisted
+  transition PASS: the same Riley membership remains `pending`, accepted/pending
+  remains `2/1`, `requestKind` changes `invite -> approval`, Riley moves from
+  invited IDs to pending-request IDs, Invitations changes `1 -> 0` and Pending
+  changes `0 -> 1`. No duplicate membership was created.
+- Pre-Admin chat isolation PASS: no event chat, message or chat notification
+  exists and all three actors retain flat/nested chat zero. Casey received
+  exactly one unread `event-admin-join-request` notification naming Riley; the
+  Admin approval notification/outbox is still absent.
+- In-place control DOM PASS at `13:25:28Z`: Riley has no Invitations or Chats
+  badge, Nova remains Events `1` with Chats `0`, and Casey's already-open My
+  Events card remains `2 / 8` with pending badge `1`; Casey notification count
+  changed `3 -> 4`. Admin approval has not run.
+- Admin Members/action baseline PASS at `13:28:29.242Z`: Casey sees
+  `2 members · 1 pending`, Riley exactly once as `Member · Austin / Waiting
+  For Admin Approval`, Casey exactly once as Admin and Nova exactly once as an
+  accepted Member. A repeated read-only status retained the same membership,
+  zero-chat and exact-one join-request boundary; opening Members wrote nothing.
+- First Admin Approve executed once at `13:31:14.869Z`. The terminal Java
+  write/read oracle PASSed at accepted/pending `3/0`: Riley became accepted
+  exactly once, one owner projection of the same `mainEvent` chat exists for
+  Casey, Nova and Riley, one `member-joined` system row exists, every actor has
+  flat/nested Chats `1`, and Riley alone received one unread
+  `event-member-approved` notification plus one outbox row. No system-derived
+  chat notification exists.
+- Terminal Members read branches PASS: the user observed the accepted member
+  state through the normal Members poll, after close/reopen and after the
+  refreshed read. The Admin action-owning document nevertheless retained
+  Casey Chats `0` while Members stayed open. This is a focused UI FAIL: popup
+  ownership correctly suppressed the side-menu domain poll, while the action
+  response returned only the member list and omitted the already-persisted
+  canonical actor counters.
+- Repair deployed through the existing dev watchers: the Java member-action
+  response now returns the completed actor counter snapshot; the base frontend
+  applies it atomically with a pre-request revision token. The HTTP adapter
+  tolerates the old array during hot-deploy overlap. Frontend-local parity now
+  synchronizes the event member projection, event chat/system message and
+  stored user counters, and rebases later local realtime reads from that stored
+  state.
+- Focused replay prepared at `2026-08-14T13:56:35.748Z` by a guarded versioned
+  command. It removed only approval-owned chat/message, approval notification,
+  approval outbox and recompute artifacts, restored the same Riley row to
+  pending `requestKind=approval`, and retained Riley's earlier Accept evidence
+  and Casey's exact-one join-request. The proven replay baseline is
+  accepted/pending `2/1`, every Chats counter `0`, zero approval artifacts and
+  no chat. Casey's already-open Members surface converged by its own poll to
+  `2 members · 1 pending` with Riley once Waiting For Admin Approval.
+- Incidental Riley Impressions observation was separated from event attendance
+  evidence before the approval replay continued. The read oracle found only
+  Riley's current pending `EVENT-INV-004` membership, no check-in, no feedback
+  state and no feedback answer. Realtime attendance metrics were all empty
+  (`totalEvents`, `peopleMet` and average rating), while the visible statistics
+  were profile-derived personality percentages with `evidenceCount=0`. Riley's
+  briefly observed red Impressions change badge therefore does **not** prove a
+  prior attended event and is not attributed to this checkpoint transaction.
+  After opening the surface the current realtime change flags were both false.
+- The first repair replay attempts were not valid evidence against the new
+  frontend: Casey's document had loaded `main.js` at `13:06:33Z`, before the
+  repair bundle was generated at `13:53Z`. The Java action endpoint itself was
+  diagnosed without a write and returned the new object shape with three
+  members plus canonical Casey `Chats/All/Event = 1/1/1`. A later screenshot
+  also exposed Nova's retained terminal `Chats 1` after the database had been
+  re-armed to zero. These were stale client generations, not a new product
+  failure. Casey was reloaded at `14:40:35Z`; Nova and Riley were reloaded at
+  `14:57:00Z`. The shared pre-approval UI baseline then proved `Chats 0` in all
+  three documents and the persisted oracle still proved accepted/pending
+  `2/1`, no chat and no approval artifacts.
+- Fixed terminal replay PASS at `2026-08-14T15:13:47Z`: Casey approved Riley
+  exactly once from the freshly loaded document while Members remained open.
+  The same document changed from no Chats badge to `Chats 1` through the action
+  response and showed `3 members`, Riley once accepted and no remaining
+  Approve control. The user's `17:14` screenshot independently shows the same
+  `3 members` list plus Nova and Riley both at `Chats 1`, with Riley's approval
+  notification badge present.
+- Terminal persisted oracle PASS: accepted/pending is `3/0`; Casey, Nova and
+  Riley own the same `mainEvent` channel with the same three member IDs and
+  `unread=1`; exactly one `Riley Outside joined the event.` system row exists.
+  All three stored flat/nested Chats counters are `1/1/1`. Riley alone has one
+  unread `event-member-approved` notification and one matching outbox intent;
+  the system row creates no `chat-message` notification or outbox artifact.
+  The intended simple rule is deliberately shared: the join system event is
+  unread for all current channel members, including the joining member; no
+  actor exception or special WebSocket/channel/aside-poll branch is required.
+- Terminal worker PASS: the single `EVENT_MEMBERS_CHANGED` recompute became
+  eligible at `15:18:47Z` and the normal worker completed it at
+  `15:19:45.623Z` on attempt `1`, with empty `lastError`. The post-worker read
+  retained accepted/pending `3/0`, all three unread owner copies, the exact-one
+  join row and the target-only approval notification. `EVENT-INV-004` is
+  **PASS / CLOSED; FIX VERIFIED**. Do not repeat Riley Accept or Admin Approve.
+
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 
 - Cover recipient rejection, inviter cancellation before response, a seat
   reserved by an existing invitation, a full event and repeated accept/save.
 - No branch may create duplicate memberships, overbook capacity, leave a live
   invitation bell after resolution or grant chat access after reject/cancel.
+- Branch A — recipient rejection is a separate short lineage. Stage Casey and
+  Nova as the two accepted occupants and Riley as the one pending invitation
+  that reserves the third and final seat (`2 accepted + 1 reserved / 3`). Riley
+  rejects once. In place, Riley's invitation card and `Invitations` counter
+  disappear while `Chats` stays zero. The persisted oracle must retain Casey
+  and Nova accepted, suppress only Riley's invitation, clear every live
+  pending/invited projection and resolve the invitation notification without
+  creating chat, acceptance/approval notification or duplicate work.
+- The first 2026-08-14 branch-A attempt is **NOT EXECUTED — fixture defect**.
+  The old fixture incorrectly staged capacity `1` while Casey and Nova were
+  already accepted and Riley held another reserved invitation. Reject itself
+  removed Riley in place and kept chats/artifacts at zero, but the first normal
+  embedded-member refresh necessarily normalized the impossible `1` to the two
+  accepted occupants. This was not accepted as product evidence. The fixture
+  now stages the coherent full/reserved boundary at capacity `3`; replay only
+  Riley Reject after reset, not any earlier checkpoint producer.
+- Repaired branch-A replay, manual/UI and immediate persisted boundary
+  **PASS** at `2026-08-14T15:40:50.696Z`: the user confirmed the predeclared
+  in-place Invitations `1 -> 0` removal with Chats still `0`. The independent
+  oracle retained capacity `3`, accepted/pending `2/0`, exact Casey Admin and
+  Nova Member accepted identities, and one Riley membership suppressed from
+  `pending` under the same event root. Every live pending/invited list is empty;
+  chat/message and invitation/acceptance/approval notification/outbox counts
+  are all zero. Riley's later fresh document reconstructed Invitations `0`,
+  Chats `0` and exactly one personal Trash card for the rejected event. The
+  normal `EVENT_MEMBERS_CHANGED` affinity task is intentionally still pending
+  until its `15:45:50Z` availability boundary; branch A remains open only for
+  that worker exact-once oracle.
+- Branch A terminal worker **PASS/CLOSED**: the one retained recompute completed
+  at `2026-08-14T15:45:57.345Z`, attempt `1`, with empty `lastError`; the normal
+  rule reports `pendingCount=0`. The post-worker oracle remained capacity `3`,
+  accepted/pending `2/0`, Casey+Nova accepted and Riley suppressed, with every
+  chat/message and invitation/acceptance/approval notification/outbox control
+  still zero. Never repeat Riley Reject. Reset before branch B, where Casey
+  independently cancels the still-pending invitation from a fresh baseline.
+- Branch B — inviter cancellation is a separate fresh lineage with the same
+  coherent `2 accepted + 1 reserved / 3` baseline. Casey opens the event's
+  Members list and deletes Riley's pending invitation exactly once; Riley does
+  not respond. Casey's Members header/card must change `2 members · 1 pending`
+  to `2 members` in place, while Riley's `Invitations` card/counter disappears
+  through its normal live route. Capacity stays `3`; Casey and Nova remain the
+  only accepted members; Riley has no chat access. Persisted invitation
+  resolution may update the existing invite signal but must create no join,
+  chat, acceptance/approval notification, duplicate membership or overbooking.
+- First branch-B execution is **FAIL / REPAIR REPLAY REQUIRED**. Casey confirmed
+  Delete invitation once at `2026-08-14T15:51:50.195674866Z`; the still-open
+  Members surface changed in place from `2 members · 1 pending` to `2 members`,
+  Riley disappeared once, Riley Invitations changed `1 -> 0` through the normal
+  live route and Nova remained unchanged. The persisted write retained
+  capacity `3`, Casey+Nova accepted, Riley `deleted`, cleared every live
+  pending/invited projection and left chat/message plus invitation/acceptance/
+  approval notification/outbox artifacts at zero.
+- The same persisted oracle exposed the write-side defect: the cancellation
+  produced zero `EVENT_MEMBERS_CHANGED` tasks. The pending invitation had
+  reserved the final seat, so cancelling it must run the normal released-seat
+  path even though it must not create a ticket or chat. The old Java branch
+  explicitly used `refreshEmbeddedEventMembers(..., false)` and skipped the
+  waitlist. It was corrected to promote the oldest waitlist member first and,
+  when no promotion exists, still refresh the dependent event/slot read model
+  and enqueue the recompute. Regression coverage now asserts both no-waitlist
+  projection and waitlist promotion; the existing dev watcher compiled the
+  main change successfully at `15:57:51Z`. Because swap was effectively full,
+  no second Gradle/test process was started. Replay only Casey's branch-B
+  Delete invitation from a fresh fixture; branch A remains closed.
+- Repair replay baseline **READY** at `2026-08-14T16:01:33.676Z`: reset
+  completed first, stage and the required second read-only status both prove
+  capacity `3`, accepted/pending `2/1`, Casey+Nova accepted, Riley's final-seat
+  invite from Casey, Chats `0` and zero task/artifact controls. The same three
+  managed documents were reloaded rather than relaunched; Casey shows My
+  Events `1`/Chats `0`, Nova Events `1`/Chats `0`, and Riley Invitations
+  `1`/Chats `0`. Replay only Casey Delete invitation once.
+- First repair replay at `2026-08-14T16:06:13.505868724Z` proves the Java
+  repair **PASS**: capacity stayed `3`, accepted/pending became `2/0`, only
+  Riley became `deleted`, all live pending/invited lists cleared, and chats,
+  messages plus invitation/acceptance/approval notification/outbox controls
+  stayed zero. Exactly one `EVENT_MEMBERS_CHANGED` task was created; the normal
+  worker completed it at `16:12:08.607775317Z`, attempt `1`, with empty
+  `lastError` and `pendingCount=0`.
+- The same replay remains **UI FAIL / FRONTEND REPLAY REQUIRED** because the
+  user observed that the underlying event-card pending badge did not change
+  from the membership action signal; a later poll repaired it. The common
+  Activities membership-sync consumer was discarding every sync while the
+  Event Editor state was open, even though the payload is an absolute,
+  idempotent member summary. The gate was removed so stacked Editor/Members
+  surfaces update the underlying card immediately. No Delete-specific branch
+  and no Smart List/poll modification was added. The existing `frontend-sync`
+  watcher rebuilt successfully in `7.612s` at `16:11:29Z`. Reset and replay
+  only Casey Delete invitation once more to prove the badge before any poll.
+- The `2026-08-14T16:13:41.562Z` frontend replay lineage is **NOT EXECUTED —
+  reload boundary not yet proven**. The user requested a clean restart before
+  performing Delete invitation, so no product transition from that lineage is
+  evidence. It was reset rather than continued.
+- Current final frontend replay baseline **READY** at
+  `2026-08-14T16:18:50.026Z`: stage, the required second status and another
+  later read-only status all prove capacity `3`, accepted/pending `2/1`,
+  Riley's pending admin invitation from Casey, Chats `0` and zero tasks or
+  chat/notification artifacts. The same three managed documents were hard
+  reloaded with browser cache and service-worker bypass; their new document
+  origins are Casey `16:19:57.407Z`, Nova `16:19:55.167Z` and Riley
+  `16:19:53.108Z`. The reconstructed counters are Casey My Events `1`/Chats
+  `0`, Nova Events `1`/Chats `0` and Riley Invitations `1`/Chats `0`. Replay
+  only Casey Delete invitation once and observe the event-card pending badge
+  from the same response before any periodic poll.
+- Hard-reloaded frontend replay at `2026-08-14T16:54:18.515456561Z` is
+  **UI FAIL / REPAIR REPLAY REQUIRED**. The write and Members surface were
+  correct, but the user captured the underlying card still showing pending
+  badge `1` about ten seconds after Delete. The independent terminal oracle is
+  otherwise PASS: capacity `3`, accepted/pending `2/0`, only Riley `deleted`,
+  all chat/notification controls zero, and exactly one
+  `EVENT_MEMBERS_CHANGED` task completed at `16:59:28.940091047Z`, attempt
+  `1`, with empty error.
+- Live Angular inspection isolated the remaining frontend cause without
+  projecting a query: the shared membership signal already contained
+  `pendingMembers: 0`, but the Activities consumer rebuilt the card only from
+  `EventsService.peekKnownItemById(...)`. That cache legitimately had no DTO
+  for this server-backed Smart List row, while the Smart List's own source
+  snapshot retained the complete event (`capacityTotal/capacityMax: 3`). The
+  consumer therefore returned the old row unchanged and a later poll repaired
+  it. The common resolver now uses the Smart List source before the optional
+  EventsService cache, patches and re-caches the converted row immediately,
+  preserves the known capacity, and has a direct InfoCard fallback when no DTO
+  exists. No Delete-specific branch and no poll/query behavior changed. The
+  existing frontend watcher built and synced the repair successfully at
+  `17:06:56Z`; focused source-resolution/capacity regression tests were
+  authored but not run in a second process because swap remains full.
+- Source-fallback repair replay baseline **READY** at
+  `2026-08-14T17:09:30.775Z`: reset completed, stage and the required second
+  status both prove capacity `3`, accepted/pending `2/1`, Riley's pending
+  admin invitation from Casey, Chats `0` and zero tasks/artifacts. The same
+  three existing documents were hard reloaded with the repaired bundle; new
+  time origins are Casey `17:10:01.546Z`, Nova `17:10:01.160Z` and Riley
+  `17:10:01.022Z`. Reconstructed controls are Casey My Events `1`, Nova Events
+  `1`, Riley Invitations `1`, all Chats `0`. Replay only Casey Delete once and
+  capture the event-card pending badge from the action signal before poll.
+- Final source-fallback replay immediate boundary **PASS** at
+  `2026-08-14T17:17:47.400237969Z`. Casey's document was created at
+  `17:17:39.954Z`, before the action, and was not reloaded afterward. The live
+  membership signal timestamp matches the action and carries pending `0`; the
+  Activities row and its re-cached Smart List source both hold pending `0`,
+  capacity `3`, and the card DOM shows `2 / 3` with no red pending number.
+  Riley's unchanged document reconstructed Invitations `0`; Nova's unchanged
+  document retained Events `1`. The independent write oracle is capacity `3`,
+  accepted/pending `2/0`, only Riley `deleted`, no chats/messages or invitation/
+  acceptance/approval artifacts, and exactly one `EVENT_MEMBERS_CHANGED` task.
+  The task remains normally pending until `17:22:47.432117404Z`; perform no
+  further UI action and close Branch B only after its terminal exact-once read.
+- Branch B terminal worker **PASS/CLOSED**: its single
+  `EVENT_MEMBERS_CHANGED` task completed at
+  `2026-08-14T17:23:40.030663919Z`, attempt `1`, with empty `lastError`; the
+  worker reports `pendingCount=0`. Capacity `3`, accepted/pending `2/0`, exact
+  Casey+Nova accepted identities, Riley deleted, and all chat/message plus
+  invitation/acceptance/approval notification/outbox controls remained
+  unchanged. Never repeat Casey Delete invitation. Reset before the independent
+  capacity-block branch; keep repeated/no-op acceptance in another lineage.
+- Branch C reserved-seat capacity baseline **READY**: Branch B was reset and
+  `EVENT-INV-005` was independently staged at `2026-08-14T17:27:14.493Z`.
+  Post-stage hard-reload origins are Casey `17:27:43.532Z`, Nova
+  `17:27:41.743Z` and Riley `17:27:39.456Z`. A later read-only oracle remains
+  capacity `3`, accepted/pending `2/1`, with exact Casey+Nova accepted and
+  Riley's admin invitation reserving the final seat; chats, notifications,
+  outbox and recompute tasks are all zero. Casey's authenticated read-only
+  candidate query returned multiple selectable non-members and a repeated
+  oracle proved that query created no write. The actual Invite members UI then
+  showed Riley selected as the existing pending reservation and Farkas Anna as
+  the visible selectable non-member. Casey must next attempt exactly one
+  Farkas Anna invite. The decisive result is unchanged accepted/pending `2/1`,
+  no Farkas Anna membership and zero new task, notification or outbox; do not
+  combine the later repeat-acceptance branch.
+- Branch C first write at `2026-08-14T19:48:43+02:00` is **SERVER/WRITE PASS,
+  UX FAIL — REPAIR REPLAY REQUIRED**. The endpoint returned `200`, capacity
+  stayed `3`, accepted/pending stayed `2/1` with exact Casey+Nova accepted and
+  Riley reserving the final seat, Farkas Anna was not persisted, and task,
+  chat, notification plus outbox controls all stayed zero. The picker closed
+  without explaining that the invitation was rejected. The common invite
+  result must expose the capacity rejection to both HTTP and frontend-local
+  flows, and the existing confirmation dialog must support an actionless
+  information presentation with matching versioned English/Hungarian local
+  assets and Mongo seed messages. Reset and replay only this one Farkas Anna
+  attempt after the repaired bundle is loaded; branches A/B remain closed.
+- Branch C UX repair is **HOT-DEPLOYED / REPLAY REQUIRED**. The Java endpoint
+  now returns the committed member list, exact invited identities and typed
+  `capacity-full`/`already-member` rejections; notifications remain restricted
+  to actual new invitations. The shared frontend path consumes that outcome,
+  and frontend-local applies the same reserved-seat capacity partition before
+  persisting. The existing confirmation dialog gained an actionless notice
+  mode, so no parallel popup system or confirmation buttons were introduced.
+  Local assets and all Mongo seed databases contain matching English/Hungarian
+  capacity plus generic failure messages at bundle version `.55`. The existing
+  backend watcher compiled/restarted successfully; the frontend watcher built
+  at `20:05:23+02:00` and synced at `20:05:26`; the live API returned both
+  `2026.08.14.en.55` and `2026.08.14.hu.55` with the expected keys. Focused Java
+  and frontend regression tests are authored, but no duplicate build/test
+  process was started because the dev watchers own compilation and swap is
+  full. Reset/stage and replay only the Farkas Anna attempt next.
+- Branch C repair replay baseline is **READY** at
+  `2026-08-14T18:11:43.640Z`. Reset completed first and reported
+  `not-staged`; one new stage plus repeated status reads all proved capacity
+  `3`, accepted/pending `2/1`, exact Casey+Nova accepted identities, Riley's
+  pending admin invitation reserving the final place and zero chat/task/
+  notification/outbox artifacts. After the repaired frontend and Mongo bundle
+  sync, the same documents were hard-reloaded with cache/service-worker bypass
+  at Casey `18:13:10.693Z`, Nova `18:13:13.525Z` and Riley
+  `18:13:16.460Z`. Their initial visible counters agree: Casey My Events `1`
+  and Chats `0`, Nova Events `1` and Chats `0`, Riley Invitations `1` and
+  Chats `0`. Casey must attempt exactly one Farkas Anna invite and leave the
+  resulting notice open for DOM plus persisted-oracle verification.
+- Branch C first repaired display is **CONTENT/WRITE PASS, CLOSE CONTROL FAIL**.
+  The screenshot showed the correct `No available places` title and reserved-
+  capacity explanation without confirmation actions; a post-action oracle
+  retained capacity `3`, accepted/pending `2/1`, exact Casey+Nova accepted and
+  Riley pending, with zero chats/messages/invite notifications/outbox/tasks.
+  The notice incorrectly omitted the standard top-right popup close control.
+  The shared dialog now reuses the existing `.popup-close` button/icon only in
+  actionless notice mode; there is no custom footer button and ordinary
+  confirmations are unchanged. The watcher built at `20:21:31+02:00`, synced
+  at `20:21:33`, and Casey alone was hard-reloaded at
+  `18:22:14.622Z` with My Events `1` and Chats `0`. Since the attempt wrote
+  nothing, retain this lineage and replay only the notice display; do not reset
+  or repeat other branches.
+- Branch C standard-close replay remains **WRITE PASS / VISUAL PROOF PENDING**.
+  The post-action oracle again retained capacity `3`, accepted/pending `2/1`,
+  exact Casey+Nova accepted and Riley pending, with every chat/message/task/
+  notification/outbox control at zero. At the CDP inspection boundary the
+  dialog was already closed and Casey's document origin was
+  `18:23:40.879Z`; therefore the new top-right close must not be inferred.
+  Accept an explicit user report that the visible X was used, or repeat only
+  this no-write notice display and leave it open. Do not reset/restage.
+- Branch C terminal **PASS/CLOSED**. The user explicitly confirmed that the
+  corrected notice displayed its standard top-right X and that clicking it
+  closed the popup. Combined with the earlier screenshot proving the exact
+  capacity title/message and absent footer actions, and the post-replay oracle
+  proving unchanged capacity `3`, accepted/pending `2/1` and every artifact
+  control `0`, this closes both UX and write sides. Never repeat Branch C.
+- Branch D — repeated acceptance idempotence is a separate short lineage.
+  Reset/stage the same coherent full baseline, then Riley accepts the pending
+  admin invitation once through the real Invitations UI. First snapshot the
+  terminal accepted membership and exact chat/system-message, recompute task,
+  acceptance notification and outbox effects. Next, replay the identical
+  authenticated `/activities/events/join` request exactly once from Riley's
+  existing managed document. The repeated response must report `changed=false`;
+  capacity stays `3`, Riley has exactly one accepted membership, and every
+  first-write task/chat/system-message/notification/outbox count remains
+  unchanged. This API replay is the server no-op boundary after the only manual
+  accept; it does not open a fourth browser or duplicate the broader
+  Open/Blind visibility assertions owned by `EVENT-INV-006`.
+- Branch D baseline is **READY** at `2026-08-14T18:31:33.042Z`. Reset first
+  reached `not-staged`; one stage and two consecutive status reads prove
+  capacity `3`, exact Casey+Nova accepted plus Riley's pending admin invite on
+  the final seat, and zero chats/messages/tasks/acceptance notifications/
+  outbox/payments. The same documents were hard-reloaded at Casey
+  `18:32:11.813Z`, Nova `18:32:15.329Z` and Riley `18:32:19.418Z`. Initial UI
+  agrees: Casey My Events `1`/Chats `0`, Nova Events `1`/Chats `0`, Riley
+  Invitations `1`/Chats `0`. Riley performs exactly one UI Accept next; do not
+  issue the repeated server request until the complete first-write oracle is
+  captured.
+- Branch D first UI Accept is **FIRST-WRITE PASS** at
+  `2026-08-14T18:35:47.091901466Z`. The user loaded the Invitations list,
+  accepted once and observed `3 / 3`. Persisted membership is exactly
+  Casey+Nova+Riley accepted with pending/invited empty; Riley UI has Events `1`
+  and Chats `1`, while Casey and Nova's original documents each converged to
+  Chats `1` without reload and retained My Events/Events `1`. The comparison
+  fingerprint is three event-chat member projections, one `member-joined`
+  system message, one pending recompute task
+  `6a7f6003ae56910e99a48529` available at
+  `18:40:47.213748207Z`, two acceptance notifications for Casey/Nova, one
+  pending acceptance outbox and zero payments/checkout basket. Replay the
+  identical authenticated join exactly once next; no further manual click.
+- Branch D raw replay at `2026-08-14T18:38:34.950Z` is **NOT AN IDEMPOTENCE
+  EXECUTION — ORCHESTRATION ERROR**. The direct browser `fetch` copied the body
+  but omitted Angular's `X-App-Session-Kind: demo` and actor-specific
+  `X-Demo-User-Id` headers. The non-Firebase dev fallback therefore
+  authenticated configured default member `bf057de7c586eede7e84bdc7`, not
+  Riley, and correctly added that different actor as a pending waitlist member.
+  This contaminates only the post-first-write lineage; it does not invalidate
+  the preceding manual UI/fingerprint PASS and is not a product idempotence
+  FAIL. Do not ad hoc delete the row. Reset/stage fresh, then perform the server
+  pair with Riley's exact demo headers: first request recreates the known
+  fingerprint, second request must be `changed=false` with all counts unchanged.
+  No repeated user action is required.
+- Branch D clean server pair exposed **DATA IDEMPOTENCE PASS / RESPONSE CONTRACT
+  FAIL**. After reset/stage at `18:42:18.724Z`, a read-only `/auth/me` request
+  with the exact demo headers resolved Riley `650000000000000000000063`.
+  The first join at `18:43:38.889Z` returned accepted/`changed=true` and
+  recreated the manual fingerprint. The identical second at
+  `18:44:10.885Z` changed no persisted field: Riley's membership timestamps,
+  accepted/pending `3/0`, chat projections `3`, system messages `1`, task `1`
+  with id `6a7f61daae56910e99a48530` and the same
+  `18:48:38.821670247Z` availability, acceptance notifications/outbox `2/1`
+  and payments/basket `0/0` all remained exact. Its response nevertheless
+  returned `changed=true` with `counterDelta=null`. Java's common participation
+  mapper had hard-coded `true`; it now derives the flag from
+  `OwnerMembersSnapshot.mutationApplied`. Positive and accepted-no-op
+  regressions are authored. The existing watcher built successfully and the
+  app restarted at `20:45:47.587+02:00`; replay only this no-op response without
+  reset, then retain the original task for its terminal exact-once oracle.
+- Branch D post-fix no-op response replay is **RESPONSE/DATA PASS** at
+  `2026-08-14T18:47:37.568Z`: HTTP `200`, membership `accepted`,
+  `changed=false` and `counterDelta=null`. The following oracle retained the
+  same accepted `3`/pending `0`, Riley membership/action timestamp
+  `18:43:38.772815972Z`, chat projections `3`, system messages `1`, task `1`
+  with id `6a7f61daae56910e99a48530` and unchanged
+  `18:48:38.821670247Z` availability, acceptance notifications/outbox `2/1`
+  and payments/basket `0/0`. Never send another join. Close Branch D only after
+  that original task completes exactly once with empty error and every domain
+  fingerprint remains unchanged.
+- Branch D terminal worker **PASS/CLOSED**. Task
+  `6a7f61daae56910e99a48530` completed at
+  `2026-08-14T18:49:15.677199764Z`, attempt `1`, with empty `lastError`; the
+  affinity rule reports `pendingCount=0`. Final membership timestamps and
+  accepted/pending `3/0`, chat projections/system messages `3/1`, acceptance
+  notifications/outbox `2/1`, payments/basket `0/0` all remained exact.
+  Together with branches A-C, `EVENT-INV-005` is **PASS/CLOSED**. Never repeat
+  any producer or replay from this checkpoint.
 
 ### `EVENT-INV-006` — acceptance notification visibility boundary
 
@@ -812,6 +1838,73 @@ Execution evidence on 2026-08-04:
 
   The oracle prints `blindMode` on each event and `eventId` on every acceptance
   outbox/notification row so the Open and Blind results cannot be conflated.
+
+- Execution 2026-08-14 — PASS / CLOSED:
+  - `EVENT-INV-005` was reset and proved not staged before this independent
+    checkpoint was staged once at `2026-08-14T18:51:06Z`.
+  - Two consecutive read-only oracles agreed. Open event
+    `manual-qa-checkpoint:v1:event-domain:event` and Blind event
+    `manual-qa-checkpoint:v1:event-domain:feedback-locked` each have capacity
+    `8`, Casey accepted, and Nova plus Riley pending through admin invitations:
+    `accepted=1`, `pending=2`.
+  - Baseline artifact counts are chat `0`, system-message `0`, acceptance
+    notification `0`, acceptance outbox `0` and recompute task `0`. Riley's
+    current menu exposes exactly the two staged invitations.
+  - A subsequently reported `3/3` was identified as an observation from the
+    already-closed `EVENT-INV-005`; the persisted `EVENT-INV-006` baseline did
+    not change. The next transition is Riley accepting only the Open event.
+    Capture its complete recipient and chat oracle before touching Blind.
+  - Open transition executed once at `2026-08-14T19:04:11.943737458Z`:
+    Riley became accepted while Nova remained pending (`accepted=2`,
+    `pending=1`, capacity `8`); Blind remained unchanged at `1/2/8`.
+    The Open event has exactly one `member-joined` system message and zero
+    chat-message notification/outbox rows. One acceptance outbox targets only
+    Casey and Nova, and the two materialized notification rows name Riley and
+    `QA EVENT-INV-006 OPEN`; Riley has no acceptance notification.
+  - The three live clients converged without reload: Casey's bell is `4` after
+    one new row, Nova's bell is exactly `1`, and Riley's bell remains `0`.
+    Riley simultaneously shows Open `2/8`, Invitations `1` and Active Events
+    `1`. The user then opened both Notification Centers and visually confirmed
+    the same Riley accepted `QA EVENT-INV-006 OPEN` row for Casey and Nova.
+    Together with Riley's zero bell and zero persisted recipient row, the Open
+    visibility branch is PASS.
+  - The transition created the one expected `EVENT_MEMBERS_CHANGED` follow-up
+    task `6a7f66abae56910e99a48536`, initially pending for
+    `2026-08-14T19:09:12.048281308Z`; verify its terminal state without
+    replaying the already-proven Open mutation.
+  - Open follow-up task `6a7f66abae56910e99a48536` completed exactly once at
+    `2026-08-14T19:09:24.118478178Z`, `attemptCount=1`, with empty error and an
+    unchanged Open fingerprint.
+  - Blind transition was executed at `2026-08-14T19:09:18.685469928Z` from
+    Nova's browser rather than Riley's. Nova therefore became the actor and
+    Riley remained the ordinary hidden pending control. Both identities had
+    the same staged Member role and public profile status, so this is a valid
+    role-equivalent substitution for the visibility rule; do not replay the
+    producer merely to restore the originally named person.
+  - Blind now has Casey/Nova accepted and Riley pending (`accepted=2`,
+    `pending=1`, capacity `8`). Exactly one acceptance outbox and notification
+    target Casey. Casey's rendered Notification Center shows “Nova Social
+    accepted the invitation to QA EVENT-INV-006 BLIND”; Nova's existing Open
+    unread count did not increase and Riley remains at zero. Blind contains
+    exactly one `Nova Social joined the event.` system row and zero
+    chat-message notification/outbox artifacts. The immediate Blind privacy
+    boundary is PASS.
+  - Blind's one normal follow-up task is
+    `6a7f67deae56910e99a4853a`, available at
+    `2026-08-14T19:14:18.753678136Z`. Close the checkpoint only after it is
+    terminal once with empty error and the final fingerprint remains stable.
+  - Final terminal proof: Blind task `6a7f67deae56910e99a4853a` completed once
+    at `2026-08-14T19:14:26.173185876Z`, `attemptCount=1`, with empty error.
+    The final fingerprint remained Open and Blind `accepted=2/pending=1`, three
+    visibility-authorized acceptance notifications total, two event-scoped
+    `member-joined` messages, zero chat-message notifications, and zero
+    payment/basket artifacts. Both branches are PASS and the checkpoint is
+    CLOSED; do not replay either acceptance.
+  - QA efficiency repair after closure: the dev profile now binds
+    `affinity.recompute.event-members-changed-debounce` to
+    `${AFFINITY_RECOMPUTE_EVENT_MEMBERS_CHANGED_DEBOUNCE:15s}`. This retains an
+    observable real worker path while removing the five-minute manual wait.
+    Production continues to use the five-minute property default.
 
 ## Chat authorization case
 
@@ -2136,16 +3229,417 @@ Restart evidence on 2026-08-06:
   closing the checkpoint.
 - Repeated Ticket reads are no-ops. No physical ticket, QR, participant
   overlay or counter contribution may cross an `eventId` boundary.
+- Baseline on 2026-08-13: **READY**. `EVENT-VISIBILITY-001` was first recorded
+  PASS/CLOSED, its exact Casey/Lina/Liam managed processes were terminated and
+  proven absent, and the versioned reset returned that fixture to `not-staged`.
+  A fresh `EVENT-TICKET-008` stage plus independent status then proved two
+  active, Public, Ticketing On events: A is
+  `manual-qa-checkpoint:v1:event-domain:event` and B is
+  `manual-qa-checkpoint:v1:event-domain:ticket-isolation-control`. Each retains
+  Casey and Nova accepted, Riley pending, occupancy `2 / 8 (1)`. Nova owns
+  exactly two distinct A tickets: event A ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:a` /
+  `TKT-f7fe4c90-de37-46e2-973e-ce51695454c3` and event B control ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`; both were issued at
+  `2026-08-12T23:46:59.940Z`, are unused, and Nova's stored ticket counters are
+  `2/2`. Casey and Riley are ticketless. Stage created no outbox or recompute
+  task. Resources were checked before exactly three identity-verified managed
+  Casey/Nova/Riley sessions launched; no fourth QA window runs. The first
+  manual boundary is Nova's read-only Upcoming Ticket list with both cards
+  visible exactly once.
+- Nova pre-mutation Ticket boundary (2026-08-13): **PASS**. The already-open
+  Nova **Ticket > Upcoming** surface reported `2 ticketed events` and showed
+  `Manual QA EVENT-TICKET-008 A` and `Manual QA EVENT-TICKET-008 B` exactly
+  once each, with no card or QR opened. The immediate Docker-backed oracle
+  retained both canonical events active with Ticketing On; ticket A and
+  control ticket B kept their exact staged IDs/codes, `status=A` and unused
+  state. Nova's stored counters remained `2/2`, Casey and Riley remained
+  `0/0`, and stage-relative outbox/recompute counts remained zero. Prepare
+  Casey's two-card My Events view next, but do not mutate until A and B are
+  distinguished on that owning surface.
+- Casey pre-Unpublish owning-surface boundary (2026-08-13): **PASS**. Casey's
+  open **Events > My Events** list shows A and B exactly once, both with
+  occupancy `2 / 8` and pending badge `1`. Nova keeps the unchanged two-ticket
+  Upcoming surface open while Riley remains idle. A second immediate status
+  retained both canonical events active/Ticketing On, both exact active ticket
+  IDs/codes, Nova counters `2/2` and zero stage-relative outbox/recompute. The
+  stable A/B titles make a separate menu-only stop unnecessary: execute A's
+  card-menu Unpublish plus its confirmation as one producer action, then spend
+  the next stop on Nova's no-reload `2 -> 1` / B-only convergence.
+- Event-A Unpublish immediate boundary (2026-08-13): **PASS**. Casey executed
+  exactly one `POST /api/activities/events/unpublish` for A at
+  `02:01:34+02:00`. Nova's already-open Ticket > Upcoming list converged by its
+  normal poll from two cards/count `2` to exactly one B card/count `1` without
+  reload or reopen. The dedicated isolation oracle proved A alone changed to
+  `DR`, its exact original ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:a` /
+  `TKT-f7fe4c90-de37-46e2-973e-ce51695454c3` changed only `A -> D`, and Nova's
+  stored counters became `1/1`. Control B remained active/Ticketing On with the
+  byte-stable ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`, `status=A`; Casey and Riley
+  remained ticketless. Casey's open My Events retained both cards because the
+  owning My Events scope includes active and draft records; the A card is
+  patched to draft in-place while B remains published.
+- Unpublish notification boundary (2026-08-13): **SERVER + IN-PLACE COUNTER +
+  ROW UI PASS**. The lifecycle task
+  `6a7d095ef8a7d3829acd808f` completed once for exactly Nova and Riley with
+  reason `under-review` and count `2`. It created one unread
+  `event-under-review` / **The event is under review.** occurrence and one
+  retained Firebase-disabled outbox intent for each recipient, all bound only
+  to event A. Nova and Riley each changed to one New notification in-place.
+  Casey was correctly excluded as actor, and event B received no lifecycle
+  task, notification or outbox. The current backend contract deliberately
+  includes accepted, pending, invited and pending-request identities in an
+  Unpublish audience while removing the acting user; the existing regression
+  explicitly covers accepted plus pending recipients. Nova's and Riley's open
+  **Notifications > New** lists each showed exactly one `Manual QA
+  EVENT-TICKET-008 A` row with **The event is under review.** and no B row.
+  Neither row was clicked, and the post-UI oracle retained both `readAtIso`
+  values empty, proving list open is read-only. The normal A recompute also
+  completed `done` at `02:05:08+02:00` on attempt `1` with empty `lastError`,
+  while tickets and counters retained the exact A-D/B-A isolation boundary.
+  Close Nova's notification surface and reopen Ticket > Upcoming next to prove
+  the same B-only result from a fresh read, not only the previous in-place list.
+- Post-Unpublish fresh Ticket-read boundary (2026-08-13): **PASS**. Nova closed
+  only Notifications and newly opened **Ticket > Upcoming**. The new request at
+  `02:09:54+02:00` returned exactly one ticket and the reconstructed popup
+  showed `1 ticketed event`, only control B, without opening its card or QR.
+  A later normal poll retained the same one-row response. Re-running the
+  dedicated isolation oracle after those reads retained A=`DR` with its exact
+  D ticket, B=`A` with its byte-stable A ticket and Nova counters `1/1`.
+  Therefore both the no-reload and fresh-read branches pass, and repeated
+  Ticket reads remain non-producers.
+- Republish observation contract (2026-08-13): keep Nova's B-only Ticket popup
+  and Riley's one-row New list open while Casey publishes only A. Nova is an
+  accepted non-actor, so the existing lifecycle contract requires one new
+  `event-modified` / **The event is available again.** occurrence even when
+  Publish materializes the missing accepted-member main chat. Nova's
+  notification count must change `1 -> 2` independently while its Ticket list
+  changes `1 -> 2`. Riley is a pending join-request control, not an invited
+  pending recipient; it receives neither an event-invite nor this
+  accepted-participant lifecycle row, so its already-open New list must remain
+  exactly the one A under-review row. Casey actor and control event B receive
+  no Republish notification or ticket delta.
+- First Republish producer/server boundary (2026-08-13): **SERVER PASS / LIVE
+  SMARTLIST POLL FAIL**. Casey published only A once. The dedicated persisted
+  oracle proved A active with one new active ticket
+  `6a7d0c43f8a7d3829acd809b` /
+  `TKT-888bb042-3d3f-45cb-9baf-15ae9d2e565a` beside the original D audit
+  ticket; control B remained active with the exact unchanged ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`, and Nova's stored counters
+  returned to `2/2`. Nova's notification counter changed `1 -> 2`; Riley's
+  already-open New list remained the one under-review row/count `1`. The open
+  Ticket surface changed its total/filter count `1 -> 2`, but rendered only
+  the newly returned A card and lost the previously visible B card. HTTP
+  evidence showed the normal poll had collapsed to `pageSize=1`; once A sorted
+  ahead of B, that one-row result replaced the whole visible window. This is a
+  frontend SmartList current-window reconciliation failure, not a ticket
+  write/read or event-isolation failure.
+- Repair boundary (2026-08-13): the shared normal-poll query now requests at
+  least the configured current page while still preserving a larger already
+  loaded window. Focused regressions cover a partially filled 1-of-18 window
+  and a loaded two-page window. The existing `frontend-sync` owner rebuilt and
+  deployed the change successfully at `02:21:31+02:00`; no parallel build or
+  test process ran. Restore the canonical fixture and replay only the
+  Unpublish -> B-only -> Republish -> A+B live-poll causal path before closure;
+  retain the earlier notification and fresh-read PASS evidence without
+  repeating it.
+- Focused replay baseline (2026-08-13): **READY**. The versioned reset restored
+  the previous snapshot, a new image-qualified stage produced two active
+  Ticketing On events with stable future window
+  `03:24:48 -> 05:24:48+02:00`, and an independent status retained the exact
+  four canonical/overlay rows, Nova counters `2/2`, Casey/Riley `0/0` and zero
+  stage-relative outbox/recompute. Nova's new A/B ticket codes are
+  `TKT-2b136618-7f8f-424f-b931-1e6a4af24c16` and
+  `TKT-a6d1861a-746d-4609-8493-c054eb9a3b89`. Only the three existing managed
+  Casey/Nova/Riley pages were reloaded onto the deployed bundle; read-only DOM
+  identity checks proved all three actors and the closed-menu Ticket counters
+  Casey `0`, Nova `2`, Riley `0`. Open Nova Ticket > Upcoming and Casey My
+  Events, then execute only A Unpublish and retain the popup for the normal
+  poll `A+B -> B-only` midpoint.
+- Focused replay pre-producer menu boundary (2026-08-13): **FAIL / REPAIR
+  BUILT**. Before any replay mutation, the persisted oracle retained A and B
+  active/Ticketing On with Nova counters `2/2`; Nova's open Ticket list also
+  showed A+B/count `2`. Casey's A action menu nevertheless rendered **Publish**
+  in the `02:28:02+02:00` screenshot while A was still published, then changed
+  to the correct **Unpublish** only after the later Activities poll. The user
+  also observed the inverse stale action after the opposite lifecycle
+  transition. The first wrong boundary was the July on-the-fly publication
+  patch: it replaced only the converted `InfoCardData` row, while the shared
+  menu derives publication status from SmartList's retained source DTO. The
+  two representations could therefore disagree until a poll reconverted the
+  source. The repair now resolves the row's exact source DTO and emits the
+  established Activity Event sync with the deterministic new status, so the
+  SmartList source, converted card, card revision and menu are reconciled by
+  one path. A focused regression covers both `DR -> A` and `A -> DR`, asserts
+  the source sync and forbids the old converted-row-only patch. The existing
+  `frontend-sync` owner built and deployed it successfully at
+  `02:33:44+02:00`. Replay must prove each owning action menu flips immediately
+  before waiting for Nova's external normal poll.
+- Interrupted replay and restart boundary (2026-08-13): **REQUIRED UI
+  OBSERVATIONS NOT EXECUTED**. Nginx retained four successful lifecycle writes
+  on the old replay fixture—Unpublish/Publish at `02:27:16/02:27:50+02:00` and
+  again at `02:37:40/02:37:44+02:00`—but no stop phrase was matched to the
+  required immediate Casey menu and complete Nova list observations. The
+  resulting A audit-ticket sequence was D, D, A while B retained its active
+  ticket. By the later full-stack restart the old event window had expired;
+  read-only status returned `events=[]` and zero live counters. Therefore the
+  old UI replay is neither PASS nor a product FAIL. Preserve the earlier
+  server/isolation evidence, discard only the stale fixture through the
+  guarded harness route and replay the two repaired UI paths on a clean
+  baseline.
+- Post-restart focused replay baseline (2026-08-13): **READY**. The restarted
+  backend is healthy and the existing `frontend-sync` owner built and synced
+  the current repaired bundle at `11:25:20/11:25:23+02:00`. Resource preflight
+  showed `7.3 GiB` available RAM and zero swap use. Guarded `discard-stale`, an
+  image-qualified stage and independent status proved future A+B events active,
+  Public and Ticketing On until `16:37:19+02:00`; Nova owns exact active tickets
+  `TKT-66b31ab7-75f9-4929-b0e3-1ec3fb546093` and
+  `TKT-1624f5d2-9181-49bf-b467-7859e21d3726`, counters `2/2`, Casey/Riley
+  `0/0`, and stage-relative outbox/recompute counts zero. The expired managed
+  browsers were absent before exactly three new Casey/Nova/Riley sessions
+  launched and identity-verified. Closed-menu DOM preflight shows Casey My
+  Events `2`, Nova Ticket `2` and Riley Ticket `0`. Replay only the named
+  Unpublish immediate-menu plus B-only normal-poll boundary next.
+- Post-restart Unpublish replay (2026-08-13): **SERVER PASS / OPEN TICKET UI
+  FAIL**. Casey sent exactly one A Unpublish at `11:43:46+02:00`. The dedicated
+  isolation oracle proved A=`DR`, its exact original ticket
+  `TKT-66b31ab7-75f9-4929-b0e3-1ec3fb546093` changed to D, B remained active
+  with exact ticket `TKT-1624f5d2-9181-49bf-b467-7859e21d3726`, and Nova's
+  stored counters became `1/1`. Nova's Ticket GET at `11:44:14+02:00` returned
+  B-only/total `1`, and the visible red Ticket badge also became `1`, but the
+  open popup screenshot still showed header `2 ticketed events` and both A+B.
+  Later ordinary polls converged, so this captured boundary remains FAIL.
+  There is no demonstrated race: the defect is a split ownership/reconciliation
+  path. The foreground Ticket list used an ordinary absolute page poll, while
+  the side-menu notification-lane realtime response still applied domain
+  counters under an open popup.
+- Ticket delta repair boundary (2026-08-13): **BUILT / CLEAN REPLAY PENDING**.
+  The earlier shared SmartList page-size change and its added core regressions
+  were restored exactly to the parent of `9f03d9bf`; no shared SmartList
+  behavior remains changed. Ticket now uses the established Notification-style
+  `pollDelta` contract with stable ticket identity/revision, loaded tail,
+  upserts, removed IDs and absolute total. Java owns authenticated
+  `POST /assets/tickets/sync`; the frontend-local ticket repository implements
+  the same service contract. While any foreground popup is visible, the
+  side-menu realtime lane retains notification handling but does not apply its
+  non-notification domain snapshot; the Ticket poll result alone updates its
+  list/header/red counter. Existing backend `compileJava` + restart and
+  frontend watcher build/sync passed. An authenticated read-only endpoint
+  preflight against the failed midpoint returned removed A, B upsert and total
+  `1`. Reset/stage and replay only removal plus insertion before closure.
+- Ticket delta clean replay baseline (2026-08-13): **READY**. The first reset
+  attempt exposed that the versioned checkpoint selected lifecycle tasks for
+  its oracle but did not own `scheduledMessageTasks` in reset cleanup. The
+  harness now selects and removes only tasks for its controlled event IDs; a
+  second reset plus image-qualified stage and independent status proved no
+  retained lifecycle task, outbox, notification, recompute task or stage
+  effect. A and B are active/Ticketing On through
+  `2026-08-13T15:07:37.047Z`; Nova owns exact active tickets
+  `TKT-cc7f973d-f97b-471a-9559-7dde22e12086` and
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`, counters `2/2`, while
+  Casey/Riley remain `0/0`. Only the same three managed pages were reloaded;
+  read-only DOM proved Casey/Nova/Riley identities and Ticket counters `0/2/0`.
+  Replay A removal through `POST /api/assets/tickets/sync` before the insertion
+  direction.
+- Ticket delta removal replay (2026-08-13): **PASS**. Casey sent exactly one A
+  Unpublish at `12:14:59+02:00`; the matched manual stop confirmed A's menu
+  changed immediately to **Publish**. Nova's already-open Upcoming popup made
+  `POST /api/assets/tickets/sync` at `12:15:24+02:00` and converged without
+  reload/reopen to B-only, header `1`, red Ticket `1`; a later no-op sync
+  retained it. The dedicated persisted oracle proved A=`DR`, exact staged A
+  ticket `TKT-cc7f973d-f97b-471a-9559-7dde22e12086` changed to D, control B
+  retained exact active ticket `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`,
+  and Nova counters became `1/1`. Notification polling remained independent:
+  Nova and idle Riley each visibly reached unread `1`. Replay only the inverse
+  insertion plus immediate Publish-menu flip next.
+- Ticket delta insertion replay (2026-08-13): **PASS / CLOSED**. Casey
+  Published only A at `12:18:36+02:00`; the matched manual stop confirmed A's
+  immediately reopened menu showed **Unpublish**. Nova's already-open popup
+  called `POST /api/assets/tickets/sync` at `12:18:54+02:00` and reached A+B,
+  header `2`, red Ticket `2` without reload/reopen and without losing B. The
+  persisted oracle proved a distinct new active A ticket
+  `6a7d99fce90c0afb4dd44fdb` /
+  `TKT-d5034907-9acd-42b3-bfec-4707fb2e700a`; original A remained D, and
+  control B retained exact active code
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`. Nova counters returned to
+  `2/2`. Nova notification visibly became `2`, while idle Riley stayed `1`.
+  Both removal and insertion now pass through the scoped Java HTTP delta owner;
+  the shared SmartList remains unchanged and the frontend-local adapter has
+  the equivalent contract.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 
+- Preflight on 2026-08-13: **NOT EXECUTED / ADB DEVICE ABSENT**. The existing
+  ADB daemon started, but `adb devices -l` returned no connected device and
+  `adb reverse --list` could not run. Nova was deliberately left online and no
+  QR was warmed or scanned. Reconnect/unlock and authorize the phone, then
+  prove the device and required reverse path before starting this checkpoint;
+  this environmental precondition is not a product FAIL.
+- ADB recovery on 2026-08-13: **READY / PRODUCT ACTION NOT EXECUTED**. Device
+  `aer8vgcmyd9lzxv8` / `22126RN91Y` is authorized as `device`; the required
+  `UsbFfs tcp:8080 tcp:80` reverse was restored and listed. ADB launched
+  `http://localhost:8080/game` in the phone browser. Nova remains online and no
+  QR or scanner action has run. Confirm Casey's phone session and warm the
+  exact active A QR next.
+- First warm attempt on 2026-08-13: **OFFLINE BOUNDARY NOT EXECUTED / TARGET
+  SWITCHED TO B**. Before any Nova offline override, Casey's phone sent
+  `POST /api/assets/tickets/validate` at `12:25:40+02:00`. Persisted ticket A
+  `6a7d99fce90c0afb4dd44fdb` /
+  `TKT-d5034907-9acd-42b3-bfec-4707fb2e700a` now has exact `usedAtIso`
+  `2026-08-13T10:25:40.200998988Z` and `usedByUserId=Casey`. An online scan
+  cannot satisfy or fail the offline checkpoint. Do not reset the closed
+  isolation case: ticket B
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5` remains active and unused, so B
+  becomes the fresh offline target. Nova is still online and no offline
+  override has run.
+- B warm and first offline attempt on 2026-08-13: **DEV QA CONFIG FAIL / PRIOR
+  APP-SHELL PASS RETRACTED**. The matched stop and read-only DOM
+  captured the online QR dialog for `Manual QA EVENT-TICKET-008 B`; independent
+  status retained exact B code `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`
+  active and unused. The first CDP helper detached immediately, so its apparent
+  app-shell result was not a sustained offline interval and is NOT EXECUTED.
+  A corrected held session then produced the `12:35:39+02:00` screenshot with
+  Chrome `ERR_INTERNET_DISCONNECTED`: the dev environment had
+  `serviceWorkerEnabled=false`, and `PwaService` had unregistered the worker and
+  runtime caches. No application shell loaded, so the Ticket/profile policy and
+  cached QR were not executed.
+- Dev PWA repair boundary on 2026-08-13: **BUILT / REPLAY REQUIRED**.
+  `EVENT-TICKET-009` now owns `http://localhost/game?pwa=on`; the existing
+  query switch is explicitly ignored whenever `environment.production=true`,
+  where service-worker enablement remains build-config owned. A focused pure
+  regression covers dev on/off and production ignore. The CDP helper keeps the
+  Nova target attached, uses Chrome 151 `Network.overrideNetworkState` plus
+  `emulateNetworkConditionsByRule`, and restores online on release. The existing
+  watcher built/synced at `12:40:22+02:00`; read-only DOM proves Nova online on
+  the checkpoint URL with one activated controlling worker. Rewarm exact unused
+  B, then require offline authenticated shell, only Ticket enabled, profile
+  editor and every other menu disabled, cached B QR complete.
+- Offline shell-policy repair and replay on 2026-08-13: **PASS / QR AND SCANS
+  PENDING**. The page now gives offline its own stronger dark-gray background
+  and explicit **Offline** status instead of retaining Nova's mint Public
+  visibility color. This is separate from the lighter inactive/invalid visual
+  state. The normal menu palettes remain unchanged; Preferences/rate mode,
+  filter, history, profile edit and every member domain item except Ticket use
+  real disabled state, while Ticket remains active. The existing watcher built
+  and synced `home.component-C6E5CT7Q.js` and
+  `side-menu.component-T5MI6DGP.js` at `12:55:38+02:00`; no parallel build ran.
+  After an online hard reload loaded those exact chunks, a normal online reload
+  restored service-worker control. The authoritative held Offline+reload oracle
+  then proved `navigator.onLine=false`, activated controlling worker,
+  `game-page-status-offline`, computed background `#cbd0d7 -> #aeb5bf`, visible
+  **Offline**, disabled Preferences/filter/history/profile edit and all member
+  domain actions except active Ticket. A pre-action persisted read retained B
+  exact A/unused with code `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`.
+  Nova remains held offline. Open cached B and its complete QR next without a
+  scan; then run Casey's one successful and one already-used phone scan before
+  restoring Nova online.
+- Offline header refinement replay on 2026-08-13: **PASS**. The final existing
+  watcher build synced `side-menu.component-NWMCSRZB.js` at `13:04:29+02:00`.
+  Offline now overrides only the visibility-carrying profile header to the same
+  `#cbd0d7 -> #aeb5bf` gray and places a compact **Offline** badge at its right;
+  the menu content background and item palettes remain ordinary. The profile
+  pencil, notification header entry and notification attention FAB are absent,
+  not disabled. Read oracle found no notification attention launcher and no
+  edit/notification interactive entries; retained notification data was not
+  read or mutated. The information note remains. All prior offline policy
+  assertions and active Ticket remained unchanged.
+- Automatic Upcoming cache warm repair/replay on 2026-08-13: **PASS**. The
+  authenticated Java side-menu realtime response now includes one bounded
+  18-row `offlineTicketSnapshot` for Upcoming. It obtains active credentials in
+  one holder query and pairs them with ticket event records without a
+  credential query per row. The HTTP and frontend-local realtime contracts are
+  equivalent, and the shared user-service poll layer writes the snapshot to
+  Nova's user-scoped Upcoming offline cache. The online Ticket SmartList remains
+  unchanged and continues to use `/assets/tickets` plus
+  `/assets/tickets/sync`; only its existing offline transport fallback reads
+  the cache. Past is deliberately not auto-warmed. The existing watchers built,
+  restarted and synced `users.service-3VAB3CS6.js` by `13:20:03+02:00`; no
+  parallel build ran. After one online reload, Ticket remained closed and was
+  never opened. The next normal side-menu realtime cycle advanced the cache
+  timestamp from `2026-08-13T10:46:45.096Z` to
+  `2026-08-13T11:22:56.950Z` and retained exactly A used once plus B active and
+  unused, both with complete `scanCode`. This proves automatic warming without
+  using the list as a hidden setup action.
+- Offline source-integrity attempt and repair on 2026-08-13: **PASS AFTER FIRST
+  RESULT RETRACTED AND PRODUCT FIX**. Nova visually
+  opened exact B and its complete QR while the page reported offline, and the
+  persisted oracle retained B active and unused. However, opening Ticket moved
+  the user-scoped cache timestamp to `2026-08-13T11:33:33.668Z`. Nginx proved
+  no backend request: the active service worker's separate cached
+  `GET /api/assets/tickets` response had satisfied the online adapter as HTTP
+  success, so this did not prove the required `offlineTicketSnapshot` fallback.
+  `app-sw.js` now excludes `/api/assets/tickets` from its API cache; online
+  SmartList still uses the page/delta APIs, while their failed offline request
+  reaches the user-scoped snapshot cache. The existing frontend watcher built
+  and synced at `13:37:19+02:00`; no parallel build ran. The QA helper then
+  activated the installed waiting worker in Nova's existing isolated browser.
+  With Ticket closed, the normal side-menu cycle rewarmed exact A+B with full
+  codes. Nova is held offline again with active/no-waiting worker and stable
+  pre-open timestamp `2026-08-13T11:40:47.443Z`. The corrected shortest replay
+  opened only Ticket -> Upcoming -> B -> full QR. DOM retained
+  `navigator.onLine=false`, complete B member/event/time QR content and the
+  exact unchanged cache timestamp. Nginx logged no `/api/assets/tickets`
+  request; the persisted oracle retained exact B code
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`, status A, null use and null actor.
+  The common A/B `medium.webp` card background was also a CacheStorage hit, so
+  an already-cached card image serves offline. This does not prove that the
+  realtime snapshot automatically fetches a previously unseen image:
+  `offlineTicketSnapshot` currently prewarms ticket data/code, while image
+  bytes remain owned independently by the service-worker media cache. Keep
+  Nova's B QR visible and let Casey perform the first physical scan next.
+- First physical B scan on 2026-08-13: **PASS**. Casey's authorized ADB phone
+  sent exactly one `POST /api/assets/tickets/validate` at `13:54:29+02:00` and
+  received HTTP 200. The persisted oracle proves the original B credential
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5` has canonical `usedAtIso`
+  `2026-08-13T11:54:29.767918052Z` and
+  `usedByUserId=650000000000000000000061` (Casey). Nova remained offline with
+  the same complete QR visible and its intentionally stale snapshot unchanged;
+  no replay audit existed before the replay action. Scan that same QR once more
+  next. Require already-used and byte-for-byte unchanged canonical ticket use;
+  record separately owned replay audit/warning effects without calling them a
+  second ticket-use mutation.
+- Physical replay scan on 2026-08-13: **PASS**. Casey sent the second and only
+  replay `POST /api/assets/tickets/validate` at `13:57:04+02:00`; its compact
+  HTTP 200 response was already-used. B retained canonical `usedAtIso`
+  `2026-08-13T11:54:29.767918052Z` and Casey actor byte-for-byte. The replay
+  created exactly one immutable `check-in-replay` / `already_used` audit at
+  `2026-08-13T11:57:04.092881795Z`, one pending warning outbox row and one Nova
+  warning with `occurrenceCount=1`. All record the original ticket identity and
+  actor while `rawCodePresent=false`; they are separately owned security
+  evidence, not a second canonical ticket-use mutation. Nova remained held
+  offline with the same QR and stale snapshot. Restore Nova online and prove
+  two-row/no-duplicate reconciliation next.
+- Online restoration and reconciliation on 2026-08-13: **PASS / CHECKPOINT
+  CLOSED**. The held CDP process was released in finally and reported its
+  explicit online restoration, then Nova's same isolated page reloaded once.
+  After one normal side-menu realtime cycle the authenticated Upcoming snapshot
+  advanced to `2026-08-13T12:00:05.116Z`. Read oracle proved
+  `navigator.onLine=true`, active controlling worker with no waiting worker,
+  ordinary Public shell, Ticket counter/snapshot total exactly 2 and only the
+  original A/B row IDs. Both rows carry their original checked-in times; B is
+  exactly `2026-08-13T11:54:29.767918052Z`. Persisted oracle retained the same
+  B credential and Casey actor, exactly one replay audit/warning occurrence and
+  no replacement, duplicate or reconnect-created mutation. `EVENT-TICKET-009`
+  is complete.
 - Run this as a separate physical-phone checkpoint after the online check-in
   contract is closed. Start with a fresh active Nova ticket. The backend and
   Casey Admin's physical-phone scanner remain online throughout this case.
-- In Nova's desktop browser, open the Ticket card and QR while online so the
-  application shell, ticket record and QR presentation are warmed. Record the
-  ticket ID/code and the online QR. A cold client that has never loaded the
-  ticket is not equivalent.
+- Keep Nova online with Ticket closed and let one normal side-menu realtime
+  cycle return the authenticated Upcoming `offlineTicketSnapshot`. Prove its
+  cache timestamp advances and the exact target row includes `scanCode`; do not
+  open Ticket or its QR as a hidden warm step. The snapshot covers the first
+  18-row Upcoming window, matching the Ticket SmartList page size. Past is out
+  of scope. Online SmartList loads continue to use their own ticket page/delta
+  APIs and may also refresh the same cache, but never read the side-menu
+  snapshot while transport is available. After Offline+reload the HTTP
+  adapter's existing fallback reads the cache, and the QR renders locally from
+  the cached code without a detail request. Opening the target QR offline is
+  the presentation assertion itself.
 - This checkpoint owns offline session restoration as well as the cached QR.
   A persisted, warmed member session must survive reload and route from `/`
   back into the cached application; it must not be treated as logout merely
@@ -2248,9 +3742,10 @@ Restart evidence on 2026-08-06:
 
 ### `EVENT-TICKET-011` — successful check-in projects attendance into Event Members
 
-- This is a newly captured GAP checkpoint. The current implementation consumes
-  the physical ticket but leaves Nova's `activityMembers.status=accepted` and
-  has no separate event-scoped attendance field or Members-row check-in badge.
+- This checkpoint was captured from the original GAP where physical ticket use
+  left Nova's `activityMembers.status=accepted` without any separate attendance
+  field or Members-row check-in badge. The write-side repair is now hot-deployed
+  and its focused manual replay is in progress.
 - Membership eligibility and attendance are independent dimensions. A valid
   check-in must **not** replace `status=accepted`; it must persist a separate
   attendance projection such as `attendanceStatus=checked-in`, together with
@@ -2277,6 +3772,59 @@ Restart evidence on 2026-08-06:
   This checkpoint proves only the first successful entry projection and its
   exact-once identity; it must not infer no-show merely from an unused ticket
   before the event is closed.
+
+Execution 2026-08-13 (in progress):
+
+- Backend first-use ticket CAS now writes the accepted event member's separate
+  attendance identity. An authorized already-used replay runs the same
+  only-if-missing member projection from the ticket's original persisted
+  `usedAtIso`/`usedByUserId`, closing the cross-document interruption window
+  without rewriting completed attendance. Rejected paths remain non-producers.
+- The Event Members surface owns a revision-based delta endpoint and a
+  foreground popup poll in both HTTP and frontend-local adapters. It patches
+  only changed member rows; shared SmartList code was not modified. The local
+  ticket repository updates ticket use and member attendance in one state
+  write.
+- Existing watchers only: frontend build was green; backend hot-deploy reported
+  `BUILD SUCCESSFUL in 3s` and `Started Main` at 14:30:06 local time. No second
+  Gradle/npm/test/server process was started.
+- Fresh staged baseline `2026-08-13T12:26:19.963Z`: one active `QA
+  EVENT-TICKET-011`, Casey Admin + Nova accepted at exact 2/8, no attendance,
+  one Nova A/unused ticket `manual-qa-checkpoint:v1:event-domain:ticket`, zero
+  replay audit/outbox/task effects. A second read-only status matched. ADB and
+  `tcp:8080 -> tcp:80` reverse are active; three isolated actor sessions are
+  open.
+- Manual pre-scan baseline PASS at 14:34 local: Casey's already-open Members
+  popup showed exactly Casey Admin and Nova Member once, with no false Checked
+  in label; Nova's Upcoming Ticket showed exactly one matching ticket. The
+  immediate read oracle still had Nova `status=accepted`, all four attendance
+  fields empty, ticket `A` with `usedAtIso=null`, exact 2/8, unchanged counters
+  and zero replay artifacts. First-scan in-place poll and replay remain pending.
+- First authorized scan + in-place member delta PASS at 14:51-14:52 local.
+  Scanner returned Checked in. Persisted ticket and Nova member share exact
+  `2026-08-13T12:51:48.620332085Z`; actor is Casey and member ticket reference
+  is `manual-qa-checkpoint:v1:event-domain:ticket`. Nova remains `accepted`,
+  `actionAtIso` remains the staged value, Casey remains Admin, member/ticket
+  cardinality stays 2/1, event stays active 2/8, profile state and all captured
+  activity/ticket counters are unchanged, and replay audit count is still zero.
+  The never-reopened Casey Members popup converged to exactly one Nova row with
+  green Checked in chip and localized `8/13/2026, 2:51:48 PM` detail; the scan
+  result showed the same time.
+- Same-QR replay PASS/CLOSED. Because the success state correctly hides a used
+  QR and the original instruction omitted retaining it, an ephemeral labeled
+  Nova QA tab reproduced the exact in-memory server-issued `scanCode` using the
+  application's own QR settings; the raw code was not logged and the tab was
+  closed after the oracle. Casey's one replay returned Already used. The named
+  verifier proved the complete first-scan snapshot unchanged: member/ticket
+  time stayed `2026-08-13T12:51:48.620332085Z`, accepted membership,
+  `actionAtIso`, Casey Admin, 2/8, profiles, all counters and one-ticket/two-member
+  cardinality remained exact. Exactly one immutable replay audit references
+  the original ticket, Nova holder, Casey actor and original use. Read-only DOM
+  on the never-reopened Members popup proved `2 members`, one Nova occurrence,
+  Checked in and the same `2:51:48 PM` text after replay. Previously proven
+  invalid/unauthorized/revoked/expired rejection evidence remains applicable:
+  the new projection is reachable only after those guards, so those unrelated
+  branches were not replayed.
 
 ### `EVENT-TICKET-012` — a saved QR is revoked immediately after Unpublish
 
@@ -2448,6 +3996,36 @@ Restart evidence on 2026-08-06:
   sessions after the rejected attempt, and successful C admission only after
   one slot is released. Notifications may be read independently from the
   immutable audit history.
+- Manual result — **PASS / CLOSED** (2026-08-14):
+  - Guarded baseline at `2026-08-14T19:43:56.436Z` proved zero active sessions,
+    audits, security notifications and outbox rows for Nova Social.
+  - Client A created one `ACCEPTED` audit/session and no warning. Its reload was
+    captured at `2026-08-14T19:50:16.665Z` with the same one slot/audit and no
+    new warning.
+  - Client B created the second `ACCEPTED` session/audit and the first
+    normalized `Chrome on Linux desktop` warning. A and B remained usable.
+  - Client C was denied while A/B were active. The first correct
+    `BLOCKED_LIMIT` server decision exposed two frontend defects: the tracked
+    demo session was published before Java accepted it, racing the demo i18n
+    bundle, and the selector replaced the specific session-limit message with
+    a generic error. The frontend now publishes/persists only after
+    `ACCEPTED` and carries the translated failure key into the selector.
+  - The repair replay preserved the first immutable audit rather than deleting
+    it. C remained on Entry and rendered “Two sessions are already active.
+    Sign out from one of them, then try again.” with no raw key. The run's exact
+    audit order therefore became `ACCEPTED`, `ACCEPTED`, `BLOCKED_LIMIT`,
+    `BLOCKED_LIMIT`, `ACCEPTED`.
+  - Explicit A logout removed only A's server slot. C then entered as the
+    second active session beside B. Final state contained exactly two active
+    opaque sessions, five immutable explicit-attempt audits and four matching
+    security notification/outbox rows.
+  - B and C both converged in-place to unread counter 4. C loaded
+    `demo.en` bundle `2026.08.14.en.56` with `got.it` rendered as **Got it**.
+    The final Notification Center screenshot at
+    `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-14 22-21-30.png`
+    shows two New login and two Blocked login attempt rows, all normalized and
+    with no raw user-agent, IP, token or session identifier. Opening the list
+    did not mark the rows read; the immutable audits remained independent.
 
 ### `LANDING-ELIGIBILITY-001` — browser-coordinate login eligibility
 
@@ -2460,21 +4038,31 @@ Restart evidence on 2026-08-06:
   use a target-scoped CDP geolocation override and geolocation permission; for
   manual QA use DevTools **More tools -> Sensors -> Location**. Do not change a
   country partition or user record to manufacture the result.
-- Eligible branch: override the browser to Budapest (`47.4979, 19.0402`),
-  allow location, and reload the landing page. Require
+- Eligible Budapest branch: override the browser to Budapest (`47.4979,
+  19.0402`), allow location, and reload the landing page. Require
   `eligible=true`, `partitionKey=country:hu`, the security gate enabled and the
-  normal login action available. Completing login must retain the resolved
-  partition through the ordinary authentication/profile path.
-- Not-yet-enabled branch: use a clearly external control outside Hungary's demo
-  bounds, London (`51.5074, -0.1278`), in a fresh anonymous context. This is
-  not a banned region: it has no enabled `countryPartition` yet. Require
-  `eligible=false`, no partition key, the configured country-not-available
-  message and an unavailable login path. No user session may be created.
-- Permission-denied branch: reset the site's location permission, choose
-  **Block**, and reload. The landing page must keep the explicit **Allow
-  location** gate and must not silently assume Hungary, submit invented
-  coordinates or start authentication. Granting permission afterward must
-  retry normally without clearing unrelated landing content.
+  normal login action available.
+- Eligible London branch: in a separate fresh anonymous context override the
+  browser to London (`51.5074, -0.1278`) and allow location. The versioned OSM
+  United Kingdom partition must resolve `eligible=true`,
+  `partitionKey=country:gb`, with the same normal login path. The fixture must
+  prove both HU and GB exist rather than assuming the database contains only
+  one country. Completing a real Firebase login must retain the resolved
+  partition through the ordinary authentication/profile path; do not mark
+  that substep PASS while the deployment Firebase configuration is inactive.
+- Not-yet-enabled branch: use Paris (`48.8566, 2.3522`) in a third fresh
+  anonymous context. At stage time the fixture must prove `country:fr` is
+  absent; if it is later imported, choose and document another absent-country
+  control rather than forcing a false result. Absence means not yet available,
+  not banned. Require `eligible=false`, no partition key, the configured
+  country-not-available message and an unavailable login path. No user session
+  may be created.
+- Permission-denied branch: after the Paris result, reset only that target's
+  landing state and location permission, choose **Block**, and reload. The
+  landing page must keep the explicit **Allow location** gate and must not
+  silently assume Hungary, submit invented coordinates or start
+  authentication. Granting permission afterward must retry normally without
+  clearing unrelated landing content.
 - Between branches reset only that target's geolocation override, permission
   and landing eligibility/session storage, then prove the next result is not a
   stale prior coordinate. Record the browser-supplied coordinates and the
@@ -2485,6 +4073,26 @@ Restart evidence on 2026-08-06:
   gate alone prevents deliberate geolocation spoofing. If eligibility is a
   security boundary, a separately specified server-trusted corroborating
   signal is required.
+- Execution evidence, 2026-08-14 (checkpoint remains in progress):
+  - Guarded stage recorded a write-free baseline of 56 users, zero user
+    sessions and zero login audits with OSM `country:hu` and `country:gb`
+    present and `country:fr` absent.
+  - Budapest branch **PASS**: the managed anonymous target requested
+    `/auth/eligibility?latitude=47.4979&longitude=19.0402`, resolved
+    `eligible=true`, `partitionKey=country:hu`, displayed the ordinary enabled
+    **Login** action, and left all three domain counts unchanged.
+  - London branch **PASS**: the middle anonymous target requested the exact
+    `51.5074/-0.1278` values, resolved `eligible=true`,
+    `partitionKey=country:gb`, and displayed the enabled login action.
+  - Paris granted-location branch **PASS**: the right target requested the
+    exact `48.8566/2.3522` values, resolved `eligible=false` with no partition
+    key, and displayed disabled **Unavailable in your country**. Screenshot
+    `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-14 23-05-56.png`
+    captures Budapest/Login, London/Login and Paris/Unavailable together.
+  - The target-scoped permission-denied state is machine-proven as
+    `permission=denied`, no eligibility request, explicit **Allow location**,
+    no session and unchanged database counts; its final visual observation
+    remains before the row can close.
 
 ## Tournament cases
 
@@ -2585,6 +4193,317 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
   revision and outcome, but never the raw payment token. After restoring the
   prior policy, prove access changes exactly once and no stale browser state
   overrides the authoritative server decision.
+
+## Coverage-expansion checkpoints appended after the original 106-case spine
+
+The 106 testcases that existed at the start of the 2026-08-13 coverage audit
+remain the immutable workflow spine. The following 82 cases are new rows, not
+splits or rewrites of that spine. They are deliberately grouped into resumable
+checkpoint sequences, while every row still owns one bounded producer action
+and one decisive persisted oracle. Runtime execution must use at most three
+browser identities at once; mobile observations replace, rather than add to,
+one desktop phase when three desktop accounts are already active.
+
+The XLSX uses the teal `EXT` scope marker for cases whose stable ID starts with
+`OPERATOR-`, `PAYMENT-` or `DEPLOY-`. These cover operator control-plane,
+payment-provider, Registry/network and deployment boundaries outside the core
+application workflow. Scope and execution status remain independent: an `EXT`
+row is still counted by the normal Done/Pending/Not-started/Failed formulas,
+and the overview reports separate Core and External totals.
+
+```text
+QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
+-> QA-EXPANSION-CP04 -> QA-EXPANSION-CP05 -> QA-EXPANSION-CP06
+-> QA-EXPANSION-CP07 -> QA-EXPANSION-CP08 -> QA-EXPANSION-CP09
+-> QA-EXPANSION-CP10 -> QA-EXPANSION-CP11
+```
+
+### `QA-EXPANSION-CP01` — payment authorization and provider callbacks
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `PAYMENT-STRIPE-001` | Select Stripe and press the existing Checkout action once. | One stable internal payment creates one manual-capture Checkout/PaymentIntent and redirects to the simulator; basket is `pay/pending`, membership/ticket/counters remain unchanged. |
+| `PAYMENT-STRIPE-002` | Choose the 3DS route and approve it once. | Signed `requires_capture` webhook produces one `authorized` payment and one membership fulfillment; the amount is held but not captured and a duplicate callback is a no-op. |
+| `PAYMENT-STRIPE-003` | Run decline, customer-cancel and timeout from independent clean sessions. | Each payment reaches its exact failed/expired terminal state without membership, ticket, counter, capture or leaked provider data. |
+| `PAYMENT-STRIPE-WEBHOOK-001` | Send valid, invalid-signature, wrong-provider, wrong-amount and wrong-currency callback variants. | Only the correctly signed, scope-matching PaymentIntent mutates the payment; every rejected request leaves payment, booking and gateway-operation collections unchanged. |
+| `PAYMENT-STRIPE-WEBHOOK-002` | Replay one accepted callback and then deliver older/later states out of order. | Processed event identity and legal transition guards prevent repeated join, regression from a terminal state or duplicate release/capture work. |
+| `PAYMENT-BARION-001` | Select Barion, start DelayedCapture and authorize once; separately call the public callback with a malformed `PaymentId`. | Valid callback contains only a GUID `PaymentId`; MyScoutee reads v4 PaymentState, persists `Authorized`, fulfills once and retains provider-local transaction IDs without capture. Malformed IDs fail before credential resolution or provider traffic. |
+| `PAYMENT-BARION-002` | Exercise direct approval plus bank-challenge approve, decline, cancel and timeout independently. | Each branch maps to the provider-neutral state once; unsuccessful branches create no membership/ticket/capture and callback replay is idempotent. |
+
+### `QA-EXPANSION-CP02` — payment settlement, compensation and isolation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `PAYMENT-CAPTURE-001` | Move one fulfilled authorized booking across its event end and run the real settlement worker; retry with the same payload and probe the same key with a changed amount. | One durable operation captures the exact authorized amount once; retry/restart reuses its operation/idempotency key, while changed content under that key fails closed and cannot charge. |
+| `PAYMENT-RELEASE-001` | Cancel one joined booking before capture. | Booking becomes cancelled while payment remains authorized until one queued provider release completes; no refund record pretends that uncaptured money was charged. |
+| `PAYMENT-COMPENSATE-001` | Fill/remove the last place after authorization but before membership fulfillment. | Fulfillment persists failed and one durable release is queued; callback replay repairs missing queue work without retrying the membership write. |
+| `PAYMENT-REPLACEMENT-001` | Authorize a successor with the other provider, transfer one place, then release the predecessor. | Successor authorization must exist before ownership changes; after exact one seat transfer, each provider operates only on its own ID and predecessor release is durable. **BLOCKED / DESIGN GAP:** provider fields exist, but the replacement saga/seat-transfer writer is not implemented. |
+| `PAYMENT-EXPIRY-001` | Place an event outside the provider hold window, then cross authorization expiry. | The system must never claim an indefinite hold; it stores a payment method or requests fresh authorization before fulfillment and an expired hold cannot capture. **BLOCKED / DESIGN GAP:** setup/reauthorization scheduling is not implemented. |
+| `PAYMENT-PARTIAL-001` | Capture a controlled smaller amount, then retry and attempt over-capture. | Provider and MyScoutee agree on the partial amount/currency; retry is exact-once and zero/negative/over-authorized or currency-mismatched capture fails closed. |
+| `PAYMENT-SIMULATOR-001` | Restart only the future simulator container between authorization and callback replay. | SQLite restores sessions, intents, Barion payments, event order and delivery audit; the same idempotency key returns the same resource and a changed request conflicts. |
+| `PAYMENT-SIMULATOR-SEC-001` | Inspect dev and production-resolved payment configuration and call test controls without capabilities. | Simulator accepts only test credentials, protects outcome/audit controls, binds only as configured in dev, is absent from production topology and production rejects custom API bases. |
+| `PAYMENT-PROVIDER-ROUTING-001` | Repeat equivalent checkout once with Stripe and once with Barion through operator selection. | The user action remains provider-neutral while provider resource IDs, callbacks and operations remain separate; changing selection never reuses the other provider's authorization. |
+
+### `QA-EXPANSION-CP03` — entry, registration and operator configuration
+
+`ENTRY-DEMO-REG-001` completed execution checkpoint (2026-08-13): the existing
+dev stack was healthy and resolved `FIREBASE_ENABLED=false`. The final
+versioned `entry-domain` baseline staged at `2026-08-13T17:51:52.005Z` with 56
+total users, zero pre-existing `demo-profile-*` users and no event/payment
+fixture mutation. Opening Member > New profile, advancing Basics to Photos,
+selecting three separate images and reaching Review each retained zero
+post-baseline registration users; no upload/media error appeared. The Review
+showed the required profile values, `3 / 8` photos and unchanged optional
+Lifestyle before one Save.
+
+The first Review observation also exposed a bounded frontend defect: after
+pasting `170`, the browser number input displayed `170`, but the Angular draft
+and Review both contained `"0170"`; manual typing did not reproduce it because
+the value was rebound after each key. Read-only CDP inspection proved the three
+separate values before any Save. The shared `FormFlow` number control was
+repaired to keep an empty numeric control empty and normalize each non-empty
+numeric input event before writing the draft. The existing `frontend-sync`
+watcher compiled and deployed the change successfully. The in-flight draft was
+corrected by typing once so the registration transaction could finish without
+reload. A fresh managed browser then replayed only the failing paste boundary
+against the new bundle: input `170`, numeric draft `170`, Review summary `170`,
+and no second registration write.
+
+The single Save persisted
+`demo-profile-7e3c471d-d5fb-4175-ba07-885db86856fe`. The terminal oracle passed
+at `2026-08-13T18:11:30.900Z`: exactly one post-baseline user and one experience
+profile, `public` / `A`, profile form v2, one language, three images, no
+Firebase/Google/Facebook provider identity, and one owner of the stable unique
+development email
+`member+f715483d1fb835fa838a28f288a804e6@myscoutee.local`. The retained
+registration is transaction evidence. `ENTRY-FIREBASE-REG-001` must instead
+prove that a Firebase registration persists the real verified identity email
+and reuses the same user on login.
+
+`ENTRY-CONSENT-001` completed execution checkpoint (2026-08-13): the
+versioned `entry-consent` fixture staged at `2026-08-13T18:25:11.953Z` with
+one pre-existing disposable registration user, 25 privacy consents and zero
+ownerless consent records. It made
+`manual-qa-entry-consent-001-20260813182511953` v2 the sole active English
+privacy revision, with one required section, selected target
+`qa-analytics`, and deliberately unselected `qa-marketing`. The anonymous
+browser accepted that exact revision at `2026-08-13T18:42:17.656Z` with only
+`qa-analytics`; read-only browser evidence showed one accepted `entry` audit,
+the exact revision key and no session. The server still had zero post-baseline
+users and no consent delta before Save.
+
+One Save created
+`demo-profile-5b569629-0a7b-46c8-b7e3-044f8f8f80dd` (`QA Consent Transfer`),
+active/public with profile form v2 and three images. The terminal oracle passed
+at `2026-08-13T18:52:00.070Z`: that user owns exactly one consent,
+`6a7e11b267960971c52a31b5`, for the controlled revision/version; its optional
+IDs are exactly `[qa-analytics]`, its source is `entry`, total consent delta is
+`+1`, and ownerless consent delta is `0`. The authenticated `/game` session
+did not reopen the privacy popup. Event fixtures and payment runtime remained
+untouched. The disposable profile, inactive QA revision and consent remain
+transaction evidence after the original active English privacy revision is
+restored. Reset completed at `2026-08-13T18:54:01.813Z`; the follow-up status
+was `not-staged`, with `privacy-default-v1` again the sole active English
+revision, 2 retained disposable registration users and 26 total consents.
+
+`ENTRY-CONSENT-002` in-progress execution checkpoint (2026-08-13): the
+versioned `entry-consent` fixture staged at `2026-08-13T19:03:26.065Z` for
+Nova (`650000000000000000000062`). The controlled previous revision
+`manual-qa-entry-consent-002-20260813190326065-previous` v3 is the sole active
+English revision; the newer controlled v4 exists but is inactive. The baseline
+has 2 pre-existing Nova consents, 26 total consents, zero ownerless consents,
+and no consent for either controlled revision. A fresh anonymous managed
+browser loaded `/entry` with the exact v3 required section and
+`qa-previous-analytics`, no selected optional IDs, consent, audit or session,
+and a visible Cancel/Accept boundary. One Cancel at
+`2026-08-13T19:05:46.050Z` produced exactly one local `rejected` audit for the
+controlled v3 while leaving browser consent and session absent. The independent
+server oracle still showed zero controlled-revision consents, target and total
+consent deltas `0`, and ownerless delta `0`. The next boundary proves that a
+Member/login request reopens the same v3 gate. That boundary passed: the popup
+again showed v3 with no selected optional IDs, while the sole rejection audit
+remained unchanged and browser consent/session stayed absent; all server
+consent deltas remained `0`. Selecting only `qa-previous-analytics` and
+accepting at `2026-08-13T19:10:22.951Z` then stored the exact v3 consent and
+optional revision key locally. The accepted audit was prepended without
+altering the earlier rejected audit; the popup closed, no session appeared,
+and all server consent deltas remained `0`. No login or revision activation
+had occurred at that boundary. Login as Nova then opened `/game` with the same
+local v3 acceptance/audit history and no privacy popup. Server consent
+`6a7e170d67960971c52a31b6` was created once at
+`2026-08-13T19:12:13.224610973Z`, source `entry`, exact v3 and only
+`qa-previous-analytics`. Nova and total consent deltas became `+1`, ownerless
+delta remained `0`, and no v4 consent existed. The v3 document is the immutable
+snapshot for the newer-revision branch. The harness activated only the
+controlled v4 at `2026-08-13T19:13:40.771Z`; its post-transition status kept
+the v3 consent byte-for-byte unchanged, still showed target/total deltas `+1`
+and ownerless delta `0`, and showed no v4 consent. The next boundary is a reload
+of the same Nova session, which must force the newer-revision privacy popup
+before v4 can be accepted. That reload passed: Nova's session remained active
+and the non-backdrop-dismissible v4 popup opened with required v4 plus
+`qa-current-analytics` and `qa-current-marketing`, empty selection and only the
+Approve privacy action. The local v3 consent/approval and accepted-then-rejected
+audit history remained intact, while the server still had no v4 consent and
+kept the v3 record and `+1/+1/0` cardinality unchanged. Selecting only
+`qa-current-analytics` and approving closed the popup. The terminal oracle
+passed at `2026-08-13T19:19:53.689Z`: settings-source v4 consent
+`6a7e188067960971c52a31b8` contains only `qa-current-analytics`; the v3 consent
+remains byte-identical, `qa-current-marketing` is absent, Nova and total consent
+deltas are exactly `+2`, and ownerless delta is `0`. Event fixtures and payment
+runtime remained untouched. This closes `ENTRY-CONSENT-002`; the requested v5
+header preview after closure is a temporary visual aid inside the same harness,
+not another testcase or acceptance oracle.
+
+`ENTRY-CONSENT-003` is a separate bounded contract discovered during the v5
+header observation. Unlike the visual preview, its v5 must be a new immutable
+revision record. It retains the stable optional section IDs
+`qa-current-analytics` and `qa-current-marketing` from v4 and adds the new
+`qa-product-research` rubric. On the mandatory v5 popup, only the analytics
+choice previously approved in Nova's exact retained v4 consent may be
+preselected; the previously unselected marketing choice and newly introduced
+product-research choice must both start unselected. After explicitly selecting
+Product research and approving, one new settings-source v5 consent must contain
+exactly analytics plus product research, while the v4 revision and consent
+remain byte-identical and no optional choice is silently broadened.
+
+The `ENTRY-CONSENT-003` baseline staged at `2026-08-13T19:34:55.567Z` from
+Nova's retained v4 settings consent `6a7e188067960971c52a31b8`. That source
+contains only `qa-current-analytics`; Nova had 4 consents, the database had 28
+consents and zero were ownerless. The new distinct revision
+`manual-qa-entry-consent-003-20260813193455567` became the sole active English
+v5 while its own consent and every delta remained zero. A fresh Nova browser
+with consent bootstrap disabled opened the mandatory v5 popup with exactly
+`qa-current-analytics` selected. `qa-current-marketing` and the newly added
+`qa-product-research` were both unselected; there was no browser-local entry
+consent or audit that could have manufactured the selection. This proves the
+display-inheritance branch. Nova then retained Current analytics, explicitly
+selected Product research, left Current marketing unselected and approved.
+The browser oracle showed the mandatory popup closed with the Nova demo session
+still active. The first terminal verification exposed a checkpoint-stage defect:
+the fixture had updated metadata on every English privacy revision while
+deactivating the prior active revision. The stage query was corrected to mutate
+only the active revision, and the versioned `repair-stage` command restored all
+three originally inactive revision snapshots without changing any consent.
+The repeated terminal oracle passed at `2026-08-13T19:40:23.017Z`. Separate
+settings-source v5 consent `6a7e1ce567960971c52a31b9` contains exactly
+`qa-current-analytics` plus `qa-product-research`; `qa-current-marketing` is
+absent. The retained v4 revision and consent are byte-identical, Nova and total
+consent cardinalities are each exactly `+1`, ownerless consent delta is `0`, and
+event fixtures/payment runtime remain untouched. This closes
+`ENTRY-CONSENT-003`. The guarded reset completed at
+`2026-08-13T19:41:32.631Z`: `privacy-default-v1` is again the sole active
+English privacy revision, checkpoint state is absent, and the inactive v5
+revision plus v5 consent and immutable v4 consent remain as evidence.
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |
+| `ENTRY-FIREBASE-REG-001` | Register/onboard a new Firebase identity after a verified revision is activated. | One verified Firebase subject and its real identity email link to one user/profile; the development member-default email is never saved for this branch, and reload/login reuses the identity without colliding with an existing demo or global identity. |
+| `ENTRY-CONSENT-001` | Accept required privacy plus a controlled optional section before registration. | Exact active revision/version and selected optional IDs persist; anonymous entry evidence transfers once to the authenticated user without broadening consent. |
+| `ENTRY-CONSENT-002` | Reject once, then activate a newer privacy revision and revisit. | Rejection creates no session; an old acceptance cannot satisfy the newer revision, while reacceptance creates one current immutable consent and leaves old audit history intact. |
+| `ENTRY-CONSENT-003` | Create a new privacy revision that retains existing optional rubrics and adds one new rubric. | The latest consent preselects only matching stable IDs; every new or previously unselected optional rubric starts unselected, and approval creates a separate v5 consent without rewriting v4. |
+| `OPERATOR-BOOTSTRAP-001` | Use a disposable bootstrap credential once, then retry and recover through the documented boundary. | First use creates the operator session and consumes/rotates bootstrap authority; replay and ordinary user access fail closed without exposing the secret. |
+| `OPERATOR-CONFIG-001` | Add/reorder one admin email, save, reopen and restore. | Server-normalized unique admin list persists once; role access follows the active configuration and invalid/empty/duplicate inputs preserve the prior revision. |
+| `OPERATOR-BRANDING-001` | Change product name, logo character/image, home label and theme, then observe open and fresh clients. | Public configuration revision changes once; header/entry/PWA branding converges without stale cross-revision cache and rollback restores the prior revision exactly. |
+| `OPERATOR-PRIVACY-001` | Save valid controller/contact values, test invalid partial/email input and restore. | Public deployment config exposes only the valid pair; invalid save is atomic and neither operator secrets nor unrelated branding changes. |
+| `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
+
+### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-FIREBASE-002` | Save a new Firebase revision, fail one capability test and attempt activation. | Any configuration change clears prior tested revisions; unverified activation fails and the currently active login/messaging runtime remains untouched. |
+| `OPERATOR-FIREBASE-003` | Run the messaging capability test with a real disposable browser/device token. | Token/readiness inputs are write-only and absent from DTO/log/audit; one test message reaches only the target and records the tested revision/time. |
+| `MOBILE-PUSH-001` | Keep the phone app visible and produce one target notification from a desktop actor. | Foreground listener shows one in-app notification/counter, no duplicate system notification and the backend inbox/outbox/token identities agree. |
+| `MOBILE-PUSH-002` | Background, then fully close the phone app and produce one target notification. | FCM displays one system notification while the app is not open; no desktop actor receives it and the persisted unread count stays one. |
+| `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
+| `MOBILE-PUSH-004` | Deny permission, rotate/revoke the token and later grant permission. | Denial is non-blocking, stale token failure is safely retired/replaced, and a later message reaches only the new token without leaking token text. |
+
+### `QA-EXPANSION-CP05` — registry, claims and operator network
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-REGISTRY-001` | Inspect a candidate registry endpoint and confirm its identity once. | Inspection is read-only; confirmation pins the expected endpoint/key/semantic version and a changed candidate requires a new explicit decision. |
+| `OPERATOR-REGISTRY-002` | Register the deployment with the local Go registry. | One signed deployment membership is created; backend/operator UI and registry state agree without copying private keys into DTOs or logs. |
+| `OPERATOR-REGISTRY-003` | Make registration delivery fail, then use Retry once. | Failure retains a resumable receipt; retry reuses logical identity/idempotency and creates no duplicate deployment/group membership. |
+| `OPERATOR-REGISTRY-004` | Replace or disconnect an existing binding and simulate replacement failure. | Replacement disconnects only under the documented guarded order; failure reports the retained/disconnected state honestly and never invents a local success. |
+| `OPERATOR-CLAIM-001` | Create a claim and withdraw it before redemption. | Claim state, expiry and audit change exactly once; withdrawn/expired claim cannot be redeemed. |
+| `OPERATOR-CLAIM-002` | Issue, use and revoke one client token. | Raw token is shown only at issuance, stored only as verifier/commitment, grants only declared scope and stops authorizing immediately after revoke. |
+| `OPERATOR-CLAIM-003` | Redeem a valid claim into a group, then revoke the group link. | Deployment/group membership and registry receipt agree; replay is idempotent and unlink does not delete unrelated deployment identity. |
+| `OPERATOR-DEPLOYMENT-STATE-001` | Deactivate and reactivate the registered deployment. | Consumer/admin routes fail closed while operator recovery stays reachable; registry and local state converge once on reactivation. |
+| `OPERATOR-LEADERBOARD-001` | Load groups and one group deployment page after controlled measurement/revenue inputs. | Ranking, membership state and paging agree with registry data; repeated reads are side-effect free and do not leak private deployment details. |
+| `OPERATOR-ANNOUNCEMENT-001` | Publish/receive one controlled registry announcement. | Eligible deployment receives it once in order; acknowledgement/cursor does not hide it from another deployment or create a local notification duplicate. |
+| `OPERATOR-COMMUNITY-001` | Load available community/payment providers with one unavailable control. | Only registry-advertised compatible providers appear; unavailable/malformed metadata cannot become active configuration. |
+
+### `QA-EXPANSION-CP06` — TLS, updates and deployment emulation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-TLS-001` | Save an emulated domain/contact/challenge configuration and run validation. | Normalized config persists without private key exposure; invalid host/contact/challenge preserves the prior active revision. |
+| `OPERATOR-TLS-002` | Run the real TLS worker through issue and renewal against the local/emulated challenge boundary. | Job events progress once to a valid cert/key pair, nginx uses the new generation, permissions are restricted and renewal is idempotent. |
+| `OPERATOR-TLS-003` | Fail issuance/renewal after staging new material. | Current valid certificate remains active, partial files are not promoted and retry resumes from durable job state without exposing ACME/account secrets. |
+| `OPERATOR-UPDATE-001` | Offer and apply one correctly signed compatible release. | Signature/content fingerprint/version are verified before replacement; job events survive restart and active version changes once. |
+| `OPERATOR-UPDATE-002` | Offer invalid-signature, corrupted and downgrade releases. | Every variant fails before activation, current services/data remain intact and audit/log contains no release private key or credentials. |
+| `OPERATOR-UPDATE-003` | Interrupt the update worker and reconnect to job events. | Durable phase and event sequence resume without double extraction/restart; operator UI reconstructs terminal truth after reload. |
+| `DEPLOY-EMU-001` | Render dev and production Compose/config with simulator and registry settings without starting them. | Dev topology resolves named services/health dependencies; production contains neither simulator nor dev endpoint switches and no secret value is baked into config. |
+| `DEPLOY-INSTALL-001` | Install the versioned package on a disposable local VM/container-host analogue. | Prerequisites, numeric ownership, systemd unit, env/secrets split, deployment identity and health qualification pass from a clean host. |
+| `DEPLOY-UPGRADE-001` | Upgrade the disposable install with a signed next release. | Backup/preflight precede mutation; version/data/identity advance once and an injected failure rolls binaries/config back coherently. |
+| `DEPLOY-BACKUP-001` | Back up Mongo/media/config identity and restore into an isolated target. | Counts, selected hashes, ownership and registry/deployment identity match; secrets remain permission-restricted and restore never touches the live source. |
+| `DEPLOY-TLS-001` | Exercise HTTP-to-HTTPS, hostname, certificate chain and renewal presentation on the disposable deployment. | Only intended public ports/routes are reachable, redirects preserve safe paths and renewed certificate is served without mixed old/new material. |
+| `DEPLOY-RESTART-001` | Reboot/restart the disposable host and services in dependency order. | Mongo/Redis/object store/backend/nginx become healthy once, no duplicate worker ownership appears and persisted sessions/tasks recover according to policy. |
+| `DEPLOY-RESOURCE-001` | Inject bounded low-disk, low-memory and unavailable dependency conditions one at a time. | Health and diagnostics identify the owner, writes fail safely, no retry storm/second build appears and recovery clears only the induced condition. |
+| `DEPLOY-SECURITY-001` | Scan resolved listeners, headers, CORS, images/artifacts and filesystem permissions. | Only declared ports are public; security headers/origin policy hold and live/test credentials, private keys and simulator capabilities are absent from images/logs/public files. |
+
+### `QA-EXPANSION-CP07` — operator revenue and measurement
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-REVENUE-001` | Synchronize one known captured payment set. | Provider, period, currency and payment counts aggregate once; authorized/released/dummy/audit-revision records do not become revenue. |
+| `OPERATOR-REVENUE-002` | Produce one failed report then requeue it. | Failure is durable and secret-safe; requeue creates one controlled new attempt and the terminal report is reconstructible after reload. |
+| `OPERATOR-REVENUE-003` | Open settlements around one capture and one release. | Settlement rows reconcile provider operation/payment/booking identities and amounts without combining different providers or currencies. |
+| `OPERATOR-MEASUREMENT-001` | Synchronize one controlled deployment measurement period. | Exact source period, counts and valuation inputs persist once; leaderboard reads consume it without rewriting the report. |
+| `OPERATOR-MEASUREMENT-002` | Fail and requeue one measurement report. | Attempt history remains ordered, duplicate work is prevented and the successful replacement leaves the failed record immutable. |
+
+### `QA-EXPANSION-CP08` — admin access and moderation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ADMIN-ACCESS-001` | Call each admin route as admin, operator and member in separate sessions. | Admin succeeds within policy; operator/member receive backend denial even for direct HTTP calls and no denied read/mutation leaks data. |
+| `ADMIN-REPORT-001` | Resolve one user/content report once and replay. | Exact report becomes resolved with actor/time/reason, target policy effect occurs once and adjacent report/control remains unchanged. |
+| `ADMIN-FEEDBACK-001` | Resolve one pending feedback item once. | Feedback moderation state changes once, creator-facing effect matches policy and no unrelated impression/rating/report changes. |
+| `ADMIN-USER-WARN-001` | Warn one controlled member. | One warning/audit/target notification is created; admin receives no self-notification and replay does not duplicate or increment unrelated counters. |
+| `ADMIN-USER-BLOCK-001` | Block, test active access, then unblock one member. | New and existing protected requests fail according to session policy, public visibility follows block state, operator/admin controls remain usable and unblock restores only authorized access. |
+
+### `QA-EXPANSION-CP09` — admin notification and content revisions
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ADMIN-NOTIFICATION-RULE-001` | Save/reopen one safe notification rule change, test invalid input, then restore. | Version/history and runtime config agree; invalid save is atomic and unrelated rules/outbox rows stay unchanged. |
+| `ADMIN-NOTIFICATION-RUN-001` | Manually run one armed rule with one eligible target. | One named task/outbox/inbox delivery occurs with exact attribution; second unchanged run respects dedupe/idempotency. |
+| `ADMIN-CONTENT-REV-001` | Create and reopen one draft revision for Help/Privacy/Terms/Explanation. | Body, language, version and author persist once while active public content remains unchanged. |
+| `ADMIN-CONTENT-REV-002` | Activate the draft revision once. | Public/landing/settings clients receive exactly the new active revision; Privacy activation invalidates only stale consent and keeps historical consents immutable. |
+| `ADMIN-CONTENT-REV-003` | Delete an inactive revision and attempt to delete the active one. | Inactive revision is removed once; active/bound revision fails closed and public content never disappears. |
+| `ADMIN-IDEA-LIFECYCLE-001` | Trash and restore one idea/article while a public control remains open. | Admin buckets and fresh public inclusion change once per transition; identity/media stay stable and an already-open non-live surface is recorded honestly. |
+| `ADMIN-SUPPORT-SESSION-001` | Open and close one scoped admin support session. | Capability is time/actor/scope bound, sensitive actions remain separately authorized, audit is immutable and expiry/revoke immediately denies reuse. |
+
+### `QA-EXPANSION-CP10` — Android WebView cache and ADB recovery
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `MOBILE-WEBVIEW-001` | Cold-start after a frontend version change with the previous shell/cache installed. | Service worker/WebView serves a coherent single build, promotes the new cache only after success and never mixes old HTML with new chunk names. |
+| `MOBILE-WEBVIEW-002` | Background during a server-side mutation, then resume without manual refresh. | App-state/resume path reconciles user, counters and the open surface once; a stale WebView snapshot cannot overwrite the newer server revision. |
+| `MOBILE-WEBVIEW-003` | Logout/account-switch with populated ticket, image and notification caches. | User-scoped data/QR/counters disappear before the next identity renders; shared public assets may remain, but no authenticated cache crosses users. |
+| `MOBILE-ADB-001` | Use ADB to inspect connectivity, reverse tunnel, WebView console/network and one deliberate offline/online cycle. | Device route and certificate state are explicit, errors identify cache versus transport, offline mode exposes only its supported contract and reconnect converges without app-data clearing. |
+
+### `QA-EXPANSION-CP11` — three-role compound workflows
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ROLE-TRIAD-001` | Keep member, admin and operator sessions open and probe each other's route families. | Each role sees only its own capabilities; direct cross-role calls are denied and activity/admin/operator counters remain independently scoped. |
+| `ROLE-TRIAD-002` | Operator changes branding while member home and admin workspace are already open. | Public revision converges on both consumers without logging out, losing admin state or allowing either consumer to edit operator config. |
+| `ROLE-TRIAD-003` | Operator activates verified Firebase while admin stays in moderation and member starts a new login. | New login uses Firebase, existing authorized admin work remains stable, and activation creates no member/admin notification or role mutation. |
+| `ROLE-TRIAD-004` | Admin blocks the member while the operator monitors deployment state. | Member protected access closes according to policy; operator session/network remains intact and admin action cannot alter deployment/operator authority. |
+| `ROLE-TRIAD-005` | Operator deactivates the deployment while member and admin have open authenticated screens, then reactivates. | Both consumer/admin paths fail closed without stale cached writes; operator recovery remains usable and all three reconstruct correct roles after reactivation. |
 
 ## Execution and evidence rules
 

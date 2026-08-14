@@ -91,7 +91,7 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   );
   portalDb.users.createIndex(
     { email: 1 },
-    { name: 'users_email', sparse: true }
+    { name: 'users_email', unique: true, sparse: true }
   );
   portalDb.users.createIndex(
     { partitionKey: 1 },

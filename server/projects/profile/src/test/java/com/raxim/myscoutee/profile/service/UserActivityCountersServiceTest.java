@@ -106,6 +106,41 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void readStoredEventCountersReturnsTheCompleteWriteSideSnapshot() {
+        Users.UserActivitiesRecord base = activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0);
+        Users user = user("viewer", new Users.UserActivitiesRecord(
+                base.game(),
+                base.chats(),
+                2,
+                3,
+                4,
+                base.cars(),
+                base.accommodation(),
+                base.supplies(),
+                base.tickets(),
+                base.contacts(),
+                base.feedback(),
+                base.chat(),
+                new Users.UserEventCountersRecord(9, 3, 1, 2, 4, 5, 6),
+                base.asset(),
+                base.eventFeedback(),
+                base.adminJobs(),
+                base.adminMetrics(),
+                base.notifications()));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+
+        var snapshot = service.readStoredEventCounters("viewer");
+
+        assertThat(snapshot.all()).isEqualTo(9);
+        assertThat(snapshot.active()).isEqualTo(3);
+        assertThat(snapshot.pending()).isEqualTo(1);
+        assertThat(snapshot.invitations()).isEqualTo(2);
+        assertThat(snapshot.hosting()).isEqualTo(4);
+        assertThat(snapshot.drafts()).isEqualTo(5);
+        assertThat(snapshot.trash()).isEqualTo(6);
+    }
+
+    @Test
     void refreshEventCountersPersistsGlobalTrashAndEventsLeftByTheUser() {
         Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
         ActivityEvent globalTrash = event("event-trash", "viewer", "T");
@@ -131,6 +166,92 @@ class UserActivityCountersServiceTest {
         assertThat(fields.getInteger("activities.event.all")).isZero();
         assertThat(fields.getInteger("activities.events")).isZero();
         assertThat(fields.getInteger("activities.hosting")).isZero();
+    }
+
+    @Test
+    void refreshEventCountersDoesNotProjectOrganizerTrashIntoAcceptedParticipantTrash() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent organizerTrash = event("event-trash", "host", "T");
+        organizerTrash.setOwnerUserId("host");
+        organizerTrash.setAdmins(List.of("host"));
+        organizerTrash.setAcceptedMemberUserIds(List.of("host", "viewer"));
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityEventsRepository.findAcceptedMembershipEvents("viewer"))
+                .thenReturn(List.of(organizerTrash));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(organizerTrash));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isZero();
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.hosting")).isZero();
+    }
+
+    @Test
+    void refreshEventCountersPersistsRestorableParticipantTrashBesideActiveCanonicalEvent() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent canonical = event("event-left", "host", "A");
+        canonical.setOwnerUserId("host");
+        canonical.setAdmins(List.of("host"));
+        canonical.setAcceptedMemberUserIds(List.of("host"));
+        ActivityEvent personalTrash = event("event-left", "host", "T");
+        personalTrash.setOwnerUserId("viewer");
+        personalTrash.setStatusBeforeSuppression("A");
+        ActivityMember suppressedMembership = new ActivityMember();
+        suppressedMembership.setOwnerType("event");
+        suppressedMembership.setOwnerId("event-left");
+        suppressedMembership.setUserId("viewer");
+        suppressedMembership.setStatus("suppressed");
+        suppressedMembership.setStatusBeforeSuppression("accepted");
+        suppressedMembership.setSuppressionRootOwnerId("event-left");
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "viewer"))
+                .thenReturn(List.of(suppressedMembership));
+        when(activityEventsRepository.findDirectOwnerEvents("viewer"))
+                .thenReturn(List.of(personalTrash));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical, personalTrash));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.hosting")).isZero();
+    }
+
+    @Test
+    void refreshEventCountersDoesNotTreatSuppressedMembershipAsTrashWithoutPersonalOverlay() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent canonical = event("event-suppressed", "host", "A");
+        canonical.setOwnerUserId("host");
+        canonical.setAdmins(List.of("host"));
+        ActivityMember suppressedMembership = new ActivityMember();
+        suppressedMembership.setOwnerType("event");
+        suppressedMembership.setOwnerId("event-suppressed");
+        suppressedMembership.setUserId("viewer");
+        suppressedMembership.setStatus("suppressed");
+        suppressedMembership.setStatusBeforeSuppression("accepted");
+        suppressedMembership.setSuppressionRootOwnerId("event-suppressed");
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "viewer"))
+                .thenReturn(List.of(suppressedMembership));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isZero();
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
     }
 
     @Test

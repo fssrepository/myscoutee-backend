@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
-import { readFile, writeFile, mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, rm, readdir } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+const geolocationHolderPath = path.join(scriptDirectory, 'hold-chrome-geolocation.mjs');
 const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
   || path.join(scriptDirectory, 'browser-session-checkpoints.json');
 const chromeBinary = process.env.CHROME_BIN || '/opt/google/chrome/chrome';
@@ -36,7 +37,7 @@ const storageScope = `${checkpoint.storageScope || defaults.storageScope || 'htt
 const bootstrapEntryConsent = checkpoint.bootstrapEntryConsent
   ?? defaults.bootstrapEntryConsent
   ?? true;
-const geolocation = checkpoint.geolocation ?? defaults.geolocation ?? {
+const defaultGeolocation = checkpoint.geolocation ?? defaults.geolocation ?? {
   latitude: 30.2672,
   longitude: -97.7431,
   accuracy: 10
@@ -62,6 +63,7 @@ if (dismissGuidesOnly) {
   }
   process.exit(0);
 }
+await closeOtherManagedCheckpointSessions(manifestPath);
 await closePreviousCheckpointSessions(manifestPath);
 
 const manifest = {
@@ -73,11 +75,16 @@ const manifest = {
 try {
   for (const [index, session] of checkpoint.sessions.entries()) {
     validateSession(session);
+    const sessionKind = `${session.sessionKind ?? 'demo'}`.trim().toLowerCase();
     const actorSlug = `${session.actor}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const userDataDirectory = await mkdtemp(
       path.join(runtimeRoot, `${safeCheckpointId}-${index + 1}-${actorSlug}-`)
     );
-    await prepareChromeProfilePreferences(userDataDirectory);
+    const geolocation = session.geolocation ?? defaultGeolocation;
+    const geolocationPermission = normalizeGeolocationPermission(
+      session.geolocationPermission ?? checkpoint.geolocationPermission ?? 'granted'
+    );
+    await prepareChromeProfilePreferences(userDataDirectory, geolocationPermission);
     const column = index % columns;
     const row = Math.floor(index / columns);
     const position = {
@@ -108,7 +115,10 @@ try {
     const runtimeSession = {
       actor: session.actor,
       expectedName: session.expectedName,
+      sessionKind,
       userId: session.userId,
+      geolocation,
+      geolocationPermission,
       pid: browser.pid,
       userDataDirectory,
       position
@@ -118,13 +128,27 @@ try {
 
     const port = await waitForDevToolsPort(userDataDirectory);
     runtimeSession.devToolsPort = port;
-    await prepareBrowserLocation(port, entryUrl, geolocation);
-    await installDemoSession(port, storageScope, session.userId, targetUrl);
-    if (bootstrapEntryConsent) {
-      await acceptEntryConsent(port, storageScope, targetUrl);
+    runtimeSession.geolocationHolderPid = await prepareBrowserLocation(
+      port,
+      entryUrl,
+      geolocation,
+      geolocationPermission,
+      userDataDirectory
+    );
+    if (sessionKind === 'anonymous') {
+      await clearManagedSession(port, storageScope);
+      if (bootstrapEntryConsent) {
+        await acceptEntryConsentOnCurrentEntry(port, storageScope);
+      }
+      await waitForAnonymousEntry(port, storageScope, entryUrl);
+    } else {
+      await installDemoSession(port, storageScope, session.userId, targetUrl);
+      if (bootstrapEntryConsent) {
+        await acceptEntryConsent(port, storageScope, targetUrl);
+      }
+      await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
+      await dismissExplanationGuide(port, storageScope);
     }
-    await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
-    await dismissExplanationGuide(port, storageScope);
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);
   }
@@ -140,22 +164,35 @@ function positiveInteger(raw, fallback) {
   return Number.isInteger(value) && value > 0 ? value : fallback;
 }
 
+function normalizeGeolocationPermission(raw) {
+  const value = `${raw ?? ''}`.trim().toLowerCase();
+  if (value === 'granted' || value === 'denied' || value === 'prompt') {
+    return value;
+  }
+  throw new Error(`Invalid geolocation permission '${value}' in ${checkpointId}`);
+}
+
 function validateSession(session) {
-  if (!session || !`${session.actor ?? ''}`.trim() || !`${session.userId ?? ''}`.trim()) {
+  const sessionKind = `${session?.sessionKind ?? 'demo'}`.trim().toLowerCase();
+  const validKind = sessionKind === 'demo' || sessionKind === 'anonymous';
+  const hasRequiredIdentity = sessionKind === 'anonymous'
+    || Boolean(`${session?.userId ?? ''}`.trim());
+  if (!session || !`${session.actor ?? ''}`.trim() || !validKind || !hasRequiredIdentity) {
     throw new Error(`Invalid browser-session entry in ${checkpointId}`);
   }
 }
 
-async function prepareChromeProfilePreferences(userDataDirectory) {
+async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission) {
   const defaultProfileDirectory = path.join(userDataDirectory, 'Default');
   await mkdir(defaultProfileDirectory, { recursive: true });
+  const defaultContentSettings = geolocationPermission === 'prompt'
+    ? {}
+    : { geolocation: geolocationPermission === 'granted' ? 1 : 2 };
   await writeFile(path.join(defaultProfileDirectory, 'Preferences'), `${JSON.stringify({
     profile: {
       exit_type: 'Normal',
       exited_cleanly: true,
-      default_content_setting_values: {
-        geolocation: 1
-      }
+      default_content_setting_values: defaultContentSettings
     }
   })}\n`);
 }
@@ -171,6 +208,16 @@ async function closePreviousCheckpointSessions(filePath) {
     return;
   }
   for (const session of previous.sessions ?? []) {
+    const holderPid = Number(session.geolocationHolderPid);
+    if (Number.isInteger(holderPid) && holderPid > 1 && ownsGeolocationHolder(holderPid)) {
+      try {
+        process.kill(holderPid, 'SIGTERM');
+      } catch (error) {
+        if (error?.code !== 'ESRCH') {
+          throw error;
+        }
+      }
+    }
     const pid = Number(session.pid);
     const userDataDirectory = `${session.userDataDirectory ?? ''}`;
     if (Number.isInteger(pid) && pid > 1 && ownsRuntimeDirectory(pid, userDataDirectory)) {
@@ -193,12 +240,33 @@ async function closePreviousCheckpointSessions(filePath) {
   await rm(filePath, { force: true });
 }
 
+async function closeOtherManagedCheckpointSessions(currentManifestPath) {
+  const entries = await readdir(runtimeRoot, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith('.json')) {
+      continue;
+    }
+    const filePath = path.join(runtimeRoot, entry.name);
+    if (filePath !== currentManifestPath) {
+      await closePreviousCheckpointSessions(filePath);
+    }
+  }
+}
+
 function ownsRuntimeDirectory(pid, directory) {
   if (!directory.startsWith(`${runtimeRoot}${path.sep}`)) {
     return false;
   }
   try {
     return readFileSync(`/proc/${pid}/cmdline`, 'utf8').includes(`--user-data-dir=${directory}`);
+  } catch {
+    return false;
+  }
+}
+
+function ownsGeolocationHolder(pid) {
+  try {
+    return readFileSync(`/proc/${pid}/cmdline`, 'utf8').includes(geolocationHolderPath);
   } catch {
     return false;
   }
@@ -247,25 +315,75 @@ async function installDemoSession(port, scope, userId, destinationUrl) {
   await evaluateInOnlyPage(port, expression, true);
 }
 
-async function prepareBrowserLocation(port, entryPageUrl, location) {
+async function clearManagedSession(port, scope) {
+  const sessionKey = `myscoutee.${scope}.session.v1`;
+  const activeUserKey = `myscoutee.${scope}.demo.active-user.v1`;
+  await evaluateInOnlyPage(port, `(() => {
+    localStorage.removeItem(${JSON.stringify(sessionKey)});
+    localStorage.removeItem(${JSON.stringify(activeUserKey)});
+    return true;
+  })()`);
+}
+
+async function prepareBrowserLocation(port, entryPageUrl, location, permission, userDataDirectory) {
   const origin = new URL(entryPageUrl).origin;
   const browser = await jsonRequest(`http://127.0.0.1:${port}/json/version`);
   if (browser.webSocketDebuggerUrl) {
     for (const allowedOrigin of new Set([origin, origin.replace('http:', 'https:')])) {
-      await cdpCommand(browser.webSocketDebuggerUrl, 'Browser.grantPermissions', {
-        origin: allowedOrigin,
-        permissions: ['geolocation']
-      });
+      if (permission === 'granted') {
+        await cdpCommand(browser.webSocketDebuggerUrl, 'Browser.grantPermissions', {
+          origin: allowedOrigin,
+          permissions: ['geolocation']
+        });
+      } else {
+        await cdpCommand(browser.webSocketDebuggerUrl, 'Browser.setPermission', {
+          origin: allowedOrigin,
+          permission: { name: 'geolocation' },
+          setting: permission
+        });
+      }
     }
   }
-  const page = await waitForAnyPageTarget(port);
-  await cdpCommand(page.webSocketDebuggerUrl, 'Emulation.setGeolocationOverride', {
-    latitude: Number(location.latitude),
-    longitude: Number(location.longitude),
-    accuracy: Number(location.accuracy ?? 10)
+  if (!location) {
+    const initialPage = await waitForAnyPageTarget(port);
+    await cdpCommand(initialPage.webSocketDebuggerUrl, 'Page.navigate', { url: entryPageUrl });
+    await waitForAppPageTarget(port);
+    return null;
+  }
+
+  // Geolocation emulation is scoped to the CDP session. A one-shot command is
+  // reverted when that DevTools connection closes, so a tiny holder keeps the
+  // target session alive for exactly as long as this managed Chrome process.
+  const readyFile = path.join(userDataDirectory, 'GeolocationHolderReady.json');
+  const holder = spawn(process.execPath, [
+    geolocationHolderPath,
+    '--port', `${port}`,
+    '--latitude', `${Number(location.latitude)}`,
+    '--longitude', `${Number(location.longitude)}`,
+    '--accuracy', `${Number(location.accuracy ?? 10)}`,
+    '--permission', permission,
+    '--url', entryPageUrl,
+    '--ready-file', readyFile
+  ], {
+    detached: true,
+    stdio: 'ignore'
   });
-  await cdpCommand(page.webSocketDebuggerUrl, 'Page.navigate', { url: entryPageUrl });
+  holder.unref();
+
+  let holderState = null;
+  await waitUntil(() => {
+    try {
+      holderState = JSON.parse(readFileSync(readyFile, 'utf8'));
+      return holderState?.status === 'ready' || holderState?.status === 'error';
+    } catch {
+      return false;
+    }
+  }, 10000, `Chrome geolocation holder on DevTools port ${port}`);
+  if (holderState?.status !== 'ready') {
+    throw new Error(holderState?.message || `Chrome geolocation holder failed on port ${port}.`);
+  }
   await waitForAppPageTarget(port);
+  return holder.pid;
 }
 
 async function acceptEntryConsent(port, scope, destinationUrl) {
@@ -315,6 +433,28 @@ async function acceptEntryConsent(port, scope, destinationUrl) {
   );
 }
 
+async function acceptEntryConsentOnCurrentEntry(port, scope) {
+  const consentKey = `myscoutee.${scope}.entry.gdpr-consent.v1`;
+  await waitUntil(async () => {
+    try {
+      return await evaluateInOnlyPage(port, `(() => {
+        const raw = localStorage.getItem(${JSON.stringify(consentKey)});
+        const consent = raw ? JSON.parse(raw) : null;
+        if (consent?.accepted === true) return true;
+        const footer = document.querySelector('.document-viewer-actions');
+        if (!footer) return false;
+        const buttons = Array.from(footer.querySelectorAll('button:not([disabled])'));
+        const accept = buttons.at(-1);
+        if (!accept) return false;
+        accept.click();
+        return false;
+      })()`);
+    } catch {
+      return false;
+    }
+  }, 30000, `persisted entry consent on DevTools port ${port}`);
+}
+
 async function dismissExplanationGuide(port, scope) {
   const dismissedContextsKey = `myscoutee.${scope}.explanation-guide.dismissed-contexts.v1`;
   await waitUntil(async () => {
@@ -354,6 +494,22 @@ async function waitForConfiguredSession(port, scope, userId, destinationUrl) {
       return false;
     }
   }, 30000, `MyScoutee session ${userId} on DevTools port ${port}`);
+}
+
+async function waitForAnonymousEntry(port, scope, entryPageUrl) {
+  const sessionKey = `myscoutee.${scope}.session.v1`;
+  const expectedPath = new URL(entryPageUrl).pathname;
+  await waitUntil(async () => {
+    try {
+      const value = await evaluateInOnlyPage(port, `({
+        hasSession: Boolean(localStorage.getItem(${JSON.stringify(sessionKey)})),
+        pathname: window.location.pathname
+      })`);
+      return value?.hasSession === false && value?.pathname === expectedPath;
+    } catch {
+      return false;
+    }
+  }, 30000, `anonymous MyScoutee entry on DevTools port ${port}`);
 }
 
 async function evaluateInOnlyPage(port, expression, tolerateNavigation = false) {

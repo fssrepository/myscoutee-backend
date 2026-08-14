@@ -4,9 +4,12 @@ This folder contains the English-first public edition of the MyScoutee origin
 story. It is Part `I` of a planned trilogy, a memoir-led product book, not a
 translation and not a claim of proven product outcomes.
 
-Current state: **Part I · Illustrated public edition v1.0.0 · published 20 August 2026 ·
-technically closed (`locked: true`)**. Its independent draft export remains
-available for later editorial work.
+Current state: **Part I · First illustrated public edition · published 20 August
+2026 · technically closed (`locked: true`)**. Its independent draft export
+remains available for later editorial work.
+
+The English edition source is
+[THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md).
 
 The Hungarian edition source is
 [THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md](THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md).

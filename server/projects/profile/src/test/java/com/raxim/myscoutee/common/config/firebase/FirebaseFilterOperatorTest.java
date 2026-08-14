@@ -18,6 +18,7 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.service.UserLoginSessionService;
 
 import jakarta.servlet.FilterChain;
 
@@ -35,7 +36,8 @@ class FirebaseFilterOperatorTest {
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
-                mock(FirebaseTokenVerifier.class));
+                mock(FirebaseTokenVerifier.class),
+                mock(UserLoginSessionService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         FilterChain chain = mock(FilterChain.class);
 
@@ -65,7 +67,8 @@ class FirebaseFilterOperatorTest {
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
-                mock(FirebaseTokenVerifier.class));
+                mock(FirebaseTokenVerifier.class),
+                mock(UserLoginSessionService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
 
@@ -98,7 +101,8 @@ class FirebaseFilterOperatorTest {
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
-                mock(FirebaseTokenVerifier.class));
+                mock(FirebaseTokenVerifier.class),
+                mock(UserLoginSessionService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
         FilterChain chain = mock(FilterChain.class);
@@ -141,7 +145,8 @@ class FirebaseFilterOperatorTest {
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
-                mock(FirebaseTokenVerifier.class));
+                mock(FirebaseTokenVerifier.class),
+                mock(UserLoginSessionService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("POST", "/api/game-cards/query");
         request.addHeader(
@@ -175,7 +180,8 @@ class FirebaseFilterOperatorTest {
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
-                verifier);
+                verifier,
+                mock(UserLoginSessionService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest(
                         "POST",

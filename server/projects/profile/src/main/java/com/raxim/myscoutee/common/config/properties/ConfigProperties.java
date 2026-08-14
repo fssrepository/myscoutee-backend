@@ -16,7 +16,7 @@ public class ConfigProperties {
     private boolean firebaseEnabled = false;
     private volatile boolean deploymentFirebaseEnabled = false;
     private boolean chatOnlyMode = false;
-    private String memberUser = "member@myscoutee.local";
+    private String memberUser = "member1@myscoutee.local";
     private String facebookAppSecret = "";
     private String websocketAllowedOriginPatterns = "http://localhost,http://localhost:4200,https://localhost,https://localhost:4200";
 

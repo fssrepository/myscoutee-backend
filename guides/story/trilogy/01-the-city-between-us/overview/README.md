@@ -67,15 +67,15 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 
 The English-first memoir and product-origin companion is **MyScoutee — The
 Story**, Part **I** of the planned trilogy, with **The City Between Us** as its
-literary subtitle. The current artifact is **Illustrated public edition
-v1.0.0**, published and technically locked on 8 August 2026. Its source
-manuscript and independent draft export remain editable, while each
+literary subtitle. The current artifact is the **first illustrated public
+edition**, published on 20 August 2026. Its source manuscript and independent
+draft export remain editable, while each
 hash-checked published PDF remains immutable. Its cover uses
 the same wordmark contract as the official manuals: the original mark replaces
 the initial `M`, followed only by `yScoutee`. It never displays the mark beside
 the complete word and never duplicates the `M`.
 
-- [English manuscript](../book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md)
+- [English manuscript](../book/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md)
 - [book build and illustration contract](../book/README.md)
 - [book version source](../book/version.json)
 - [book document metadata](../book/metadata.json)
@@ -130,7 +130,7 @@ contains the locked Veo Lite production filenames.
 | [STANDALONE_FILM_AND_SEQUEL_BRIDGE.md](../film/STANDALONE_FILM_AND_SEQUEL_BRIDGE.md) | Film 1 boundary and future Film 2 handoff |
 | [STORY_AND_PROMPT_COVERAGE.md](../production/STORY_AND_PROMPT_COVERAGE.md) | Canonical coverage map across book, film, prompts, evidence and future work |
 | [TODO.md](../production/TODO.md) | Narrative-first approval gate and all deferred generation work |
-| [THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md](../book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md) | English first-person public book |
+| [THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md](../book/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md) | English first-person book draft |
 | [book build contract](../book/README.md) | Reproducible PDF build, wordmark and optional illustration contract |
 | [SOURCES.md](../research/SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings and approved filenames |

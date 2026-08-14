@@ -13,6 +13,7 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.service.UserLoginSessionService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,14 +29,17 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private final FirebaseService firebaseService;
     private final ConfigProperties configProperties;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
+    private final UserLoginSessionService userLoginSessionService;
 
     public FirebaseFilter(
             FirebaseService firebaseService,
             ConfigProperties configProperties,
-            FirebaseTokenVerifier firebaseTokenVerifier) {
+            FirebaseTokenVerifier firebaseTokenVerifier,
+            UserLoginSessionService userLoginSessionService) {
         this.firebaseService = firebaseService;
         this.configProperties = configProperties;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
+        this.userLoginSessionService = userLoginSessionService;
     }
 
     @Override
@@ -52,26 +56,26 @@ public class FirebaseFilter extends OncePerRequestFilter {
         Authentication existing =
                 SecurityContextHolder.getContext().getAuthentication();
         if (existing != null && existing.isAuthenticated()) {
-            filterChain.doFilter(request, response);
+            continueIfSessionActive(request, response, filterChain);
             return;
         }
         if (DemoSessionRequestSupport.isOperatorRequest(request)
                 && (DemoSessionRequestSupport.isDemoSessionRequest(request)
                         || !configProperties.isFirebaseEnabled())) {
             authenticateDemoOperator(request);
-            filterChain.doFilter(request, response);
+            continueIfSessionActive(request, response, filterChain);
             return;
         }
 
         if (!configProperties.isFirebaseEnabled()) {
             authenticateWithoutFirebase(request);
-            filterChain.doFilter(request, response);
+            continueIfSessionActive(request, response, filterChain);
             return;
         }
 
         String firebaseToken = extractFirebaseToken(request);
         if (firebaseToken == null || firebaseToken.isBlank()) {
-            filterChain.doFilter(request, response);
+            continueIfSessionActive(request, response, filterChain);
             return;
         }
 
@@ -157,6 +161,32 @@ public class FirebaseFilter extends OncePerRequestFilter {
         String requestUri = request == null ? "" : request.getRequestURI();
         return requestUri.endsWith("/activities/chats/ws")
                 || requestUri.endsWith("/admin/notifications/ws");
+    }
+
+    private void continueIfSessionActive(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws IOException, ServletException {
+        if (isSessionLoginRequest(request)
+                || userLoginSessionService == null
+                || !userLoginSessionService.isCurrentUserEnrolled()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String sessionId = request.getHeader(UserLoginSessionService.SESSION_ID_HEADER);
+        if (!StringUtils.hasText(sessionId) && isWebSocketTokenRequest(request)) {
+            sessionId = request.getParameter("sessionId");
+        }
+        if (userLoginSessionService.isCurrentSessionActive(sessionId)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "App session is not active.");
+    }
+
+    private boolean isSessionLoginRequest(HttpServletRequest request) {
+        String requestUri = request == null ? "" : request.getRequestURI();
+        return requestUri.endsWith("/auth/session/login");
     }
 
     private void setAuthentication(UserDetails userDetails, Object credentials) {

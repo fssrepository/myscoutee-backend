@@ -8676,6 +8676,30 @@
     "value": "Invite selected members"
   },
   {
+    "_id": "i18n-message-en-event-members-invite-capacity-full-title",
+    "key": "event.members.invite.capacity.full.title",
+    "lang": "en",
+    "value": "No available places"
+  },
+  {
+    "_id": "i18n-message-en-event-members-invite-capacity-full-message",
+    "key": "event.members.invite.capacity.full.message",
+    "lang": "en",
+    "value": "The selected member was not invited because every place is already taken or reserved."
+  },
+  {
+    "_id": "i18n-message-en-event-members-invite-not-sent-title",
+    "key": "event.members.invite.not.sent.title",
+    "lang": "en",
+    "value": "Invitation not sent"
+  },
+  {
+    "_id": "i18n-message-en-event-members-invite-not-sent-message",
+    "key": "event.members.invite.not.sent.message",
+    "lang": "en",
+    "value": "The selected invitation could not be sent."
+  },
+  {
     "_id": "i18n-message-en-instagram",
     "key": "instagram",
     "lang": "en",
@@ -27978,6 +28002,30 @@
     "value": "Kijelölt tagok meghívása"
   },
   {
+    "_id": "i18n-message-hu-event-members-invite-capacity-full-title",
+    "key": "event.members.invite.capacity.full.title",
+    "lang": "hu",
+    "value": "Nincs szabad hely"
+  },
+  {
+    "_id": "i18n-message-hu-event-members-invite-capacity-full-message",
+    "key": "event.members.invite.capacity.full.message",
+    "lang": "hu",
+    "value": "A kijelölt tagot nem hívtuk meg, mert már minden hely foglalt."
+  },
+  {
+    "_id": "i18n-message-hu-event-members-invite-not-sent-title",
+    "key": "event.members.invite.not.sent.title",
+    "lang": "hu",
+    "value": "A meghívást nem küldtük el"
+  },
+  {
+    "_id": "i18n-message-hu-event-members-invite-not-sent-message",
+    "key": "event.members.invite.not.sent.message",
+    "lang": "hu",
+    "value": "A kijelölt meghívást nem sikerült elküldeni."
+  },
+  {
     "_id": "i18n-message-hu-instagram",
     "key": "instagram",
     "lang": "hu",
@@ -36898,5 +36946,65 @@
     "key": "operator.request.failed",
     "lang": "hu",
     "value": "Az operátori kérés sikertelen."
+  },
+  {
+    "_id": "i18n-message-en-auth-session-limit-reached",
+    "key": "auth.session.limit.reached",
+    "lang": "en",
+    "value": "Two sessions are already active. Sign out from one of them, then try again."
+  },
+  {
+    "_id": "i18n-message-en-auth-session-registration-failed",
+    "key": "auth.session.registration.failed",
+    "lang": "en",
+    "value": "The secure session could not be registered. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-notification-security-login-title",
+    "key": "notification.security.login.title",
+    "lang": "en",
+    "value": "Security alert"
+  },
+  {
+    "_id": "i18n-message-en-notification-security-login-new-message",
+    "key": "notification.security.login.new.message",
+    "lang": "en",
+    "value": "New login from {clientLabel}."
+  },
+  {
+    "_id": "i18n-message-en-notification-security-login-blocked-message",
+    "key": "notification.security.login.blocked.message",
+    "lang": "en",
+    "value": "Blocked login attempt from {clientLabel}: two sessions are already active."
+  },
+  {
+    "_id": "i18n-message-hu-auth-session-limit-reached",
+    "key": "auth.session.limit.reached",
+    "lang": "hu",
+    "value": "Már két aktív munkamenet van használatban. Jelentkezz ki az egyikből, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-auth-session-registration-failed",
+    "key": "auth.session.registration.failed",
+    "lang": "hu",
+    "value": "A biztonságos munkamenetet nem sikerült regisztrálni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-notification-security-login-title",
+    "key": "notification.security.login.title",
+    "lang": "hu",
+    "value": "Biztonsági figyelmeztetés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-security-login-new-message",
+    "key": "notification.security.login.new.message",
+    "lang": "hu",
+    "value": "Új bejelentkezés innen: {clientLabel}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-security-login-blocked-message",
+    "key": "notification.security.login.blocked.message",
+    "lang": "hu",
+    "value": "Blokkolt bejelentkezési kísérlet innen: {clientLabel}. Már két aktív munkamenet van használatban."
   }
 ]

@@ -182,6 +182,28 @@ tasks.withType(JavaCompile).configureEach {
 	options.compilerArgs += ['-parameters']
 }
 
+def profileHotReloadEnabled = providers.environmentVariable('PROFILEMANAGEMENT_HOT_RELOAD')
+	.map { it.equalsIgnoreCase('true') }
+	.orElse(false)
+
+tasks.register('touchDevtoolsReloadTrigger') {
+	description = 'Signals Spring DevTools only after the existing profile classes build completed.'
+	group = 'build setup'
+	onlyIf { profileHotReloadEnabled.get() }
+	doLast {
+		def trigger = layout.buildDirectory.file('resources/main/.reloadtrigger').get().asFile
+		trigger.parentFile.mkdirs()
+		if (!trigger.exists()) {
+			trigger.createNewFile()
+		}
+		trigger.setLastModified(System.currentTimeMillis())
+	}
+}
+
+tasks.named('classes') {
+	finalizedBy tasks.named('touchDevtoolsReloadTrigger')
+}
+
 sonar {
     properties {
 		property 'sonar.projectKey', 'fssrepository_myscoutee_AYnBBjoHSeqh8PdnQJtM'

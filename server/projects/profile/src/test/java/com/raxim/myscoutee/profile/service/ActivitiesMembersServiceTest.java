@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,6 +38,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -237,6 +239,33 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::status)
                 .isEqualTo("accepted");
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void actionContextReturnsCanonicalCountersForTheResolvedActor() {
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
+        UserMenuCountersDto counters = mock(UserMenuCountersDto.class);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(false);
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(List.of(member));
+        when(homeUserProfileService.queryMenuCounters("admin")).thenReturn(counters);
+
+        var result = service.applyActionWithContext(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "disqualify",
+                null));
+
+        assertThat(result.members())
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        assertThat(result.counterOverrides()).isSameAs(counters);
+        verify(homeUserProfileService).queryMenuCounters("admin");
     }
 
     @Test
@@ -1443,7 +1472,7 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
-    void eventMemberCanCancelInvitationTheySentWithoutMemberModerationPermission() {
+    void eventMemberCanCancelInvitationTheySentAndRefreshDependentModelsWithoutTickets() {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
         invitation.setPendingSource("admin");
@@ -1479,8 +1508,8 @@ class ActivitiesMembersServiceTest {
         verify(accessControlService, never()).canRemoveEventMember("event-1", "member-inviter", "target");
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
-        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
-        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(eventSlotReadModelService).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService).enqueueEventMembersChanged("event-1", "system");
         verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
         InOrder cancellationOrder = inOrder(
                 userActivityCountersService,
@@ -1489,6 +1518,82 @@ class ActivitiesMembersServiceTest {
                 .refreshEventCountersForUsers(List.of("target"));
         cancellationOrder.verify(eventInviteNotificationService)
                 .markInvitationResolved("event-1", "target");
+    }
+
+    @Test
+    void cancellingPendingEventInvitationPromotesTheOldestWaitlistMemberIntoTheReleasedSeat() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        event.setCapacityTotal(3);
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember accepted = member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("owner");
+        ActivityMember waiting = waitlistMember("wait-sync", "waiting-user");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(owner, accepted, invitation, waiting));
+
+        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("owner");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "target"))
+                .thenAnswer(invocation -> storedMembers.get().stream()
+                        .filter(member -> "target".equals(member.getUserId()))
+                        .findFirst());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "owner",
+                "target",
+                "remove",
+                null));
+
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "target".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "waiting-user".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("admin");
+                    assertThat(member.getRequestKind()).isEqualTo("waitlist-invite");
+                    assertThat(member.getInvitedByUserId()).isEqualTo("owner");
+                });
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("waiting-user"),
+                "owner");
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("waiting-user"));
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
     }
 
     @Test
@@ -2430,10 +2535,18 @@ class ActivitiesMembersServiceTest {
                 .thenReturn(List.of(existingInvite));
         when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+        var result = service.inviteEventMembers(new ActivityMembersInviteRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
                 List.of("existing", "new-user"),
                 "admin"));
+
+        assertThat(result.invitedUserIds()).containsExactly("new-user");
+        assertThat(result.rejections())
+                .singleElement()
+                .satisfies(rejection -> {
+                    assertThat(rejection.userId()).isEqualTo("existing");
+                    assertThat(rejection.reason()).isEqualTo("already-member");
+                });
 
         verify(eventInviteNotificationService).notifyInvitees(
                 event,
@@ -2450,6 +2563,41 @@ class ActivitiesMembersServiceTest {
                 event,
                 List.of("new-user"),
                 "admin");
+    }
+
+    @Test
+    void inviteEventMembersReportsReservedCapacityRejectionWithoutWriteArtifacts() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setCapacityTotal(2);
+        ActivityMember accepted = member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reservedInvite = member("reserved-sync", "event-1", "reserved-user", "Member", "pending");
+        reservedInvite.setPendingSource("admin");
+        reservedInvite.setRequestKind("invite");
+        List<ActivityMember> existing = List.of(accepted, reservedInvite);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(existing);
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(existing);
+
+        var result = service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of("new-user"),
+                "admin"));
+
+        assertThat(result.invitedUserIds()).isEmpty();
+        assertThat(result.rejections())
+                .singleElement()
+                .satisfies(rejection -> {
+                    assertThat(rejection.userId()).isEqualTo("new-user");
+                    assertThat(rejection.reason()).isEqualTo("capacity-full");
+                });
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(userActivityCountersService, never()).refreshEventCountersForUsers(anyList());
+        verify(eventInviteNotificationService).notifyInvitees(event, List.of(), "admin");
     }
 
     @Test
@@ -2796,7 +2944,12 @@ class ActivitiesMembersServiceTest {
                 "",
                 null,
                 null,
-                List.of());
+                List.of(),
+                "2026-05-12T10:00:00Z",
+                null,
+                null,
+                null,
+                null);
     }
 
     private ActivityMemberEntryDto invitationEntry(String userId, String inviterUserId) {
@@ -2819,6 +2972,11 @@ class ActivitiesMembersServiceTest {
                 "",
                 null,
                 null,
-                List.of());
+                List.of(),
+                "2026-05-12T10:00:00Z",
+                null,
+                null,
+                null,
+                null);
     }
 }

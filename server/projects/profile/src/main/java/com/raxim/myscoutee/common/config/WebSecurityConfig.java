@@ -23,6 +23,7 @@ import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
 import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.service.UserLoginSessionService;
 
 @Configuration
 @EnableWebSecurity
@@ -35,19 +36,22 @@ public class WebSecurityConfig {
     private final OperatorBootstrapAuthenticationService
             operatorBootstrapAuthenticationService;
     private final ConfigProperties configProperties;
+    private final UserLoginSessionService userLoginSessionService;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
             FirebaseTokenVerifier firebaseTokenVerifier,
             OperatorBootstrapAuthenticationService
                     operatorBootstrapAuthenticationService,
-            ConfigProperties configProperties) {
+            ConfigProperties configProperties,
+            UserLoginSessionService userLoginSessionService) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
         this.operatorBootstrapAuthenticationService =
                 operatorBootstrapAuthenticationService;
         this.configProperties = configProperties;
+        this.userLoginSessionService = userLoginSessionService;
     }
 
     @Autowired
@@ -82,6 +86,10 @@ public class WebSecurityConfig {
                             "/api/deployment/configuration",
                             "/deployment/configuration/firebase-config",
                             "/api/deployment/configuration/firebase-config",
+                            "/payment/webhooks/stripe",
+                            "/api/payment/webhooks/stripe",
+                            "/payment/webhooks/barion",
+                            "/api/payment/webhooks/barion",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",
@@ -126,7 +134,11 @@ public class WebSecurityConfig {
     }
 
     private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(firebaseService, configProperties, firebaseTokenVerifier);
+        return new FirebaseFilter(
+                firebaseService,
+                configProperties,
+                firebaseTokenVerifier,
+                userLoginSessionService);
     }
 
     private OperatorBootstrapAuthenticationFilter

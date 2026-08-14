@@ -2,9 +2,13 @@ package com.raxim.myscoutee.profile.controller.auth;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,18 +26,28 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSessionLoginRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
+import com.raxim.myscoutee.profile.service.UserLoginSessionService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
+    private final UserLoginSessionService userLoginSessionService;
 
-    public AuthController(HomeUserProfileService homeUserProfileService) {
+    public AuthController(
+            HomeUserProfileService homeUserProfileService,
+            UserLoginSessionService userLoginSessionService) {
         this.homeUserProfileService = homeUserProfileService;
+        this.userLoginSessionService = userLoginSessionService;
     }
 
     @GetMapping("/demo-users")
@@ -52,7 +66,26 @@ public class AuthController {
     public UserLocationEligibilityResponseDto queryLocationEligibility(
             @RequestParam(value = "latitude", required = false) Double latitude,
             @RequestParam(value = "longitude", required = false) Double longitude) {
+        validateLocationCoordinates(latitude, longitude);
         return homeUserProfileService.queryLocationEligibility(latitude, longitude);
+    }
+
+    private void validateLocationCoordinates(Double latitude, Double longitude) {
+        if (latitude == null && longitude == null) {
+            return;
+        }
+        if (latitude == null
+                || longitude == null
+                || !Double.isFinite(latitude)
+                || !Double.isFinite(longitude)
+                || latitude < -90.0
+                || latitude > 90.0
+                || longitude < -180.0
+                || longitude > 180.0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Latitude and longitude must be a complete, finite coordinate pair within valid ranges.");
+        }
     }
 
     @PostMapping("/me/realtime/long-poll")
@@ -101,8 +134,30 @@ public class AuthController {
     }
 
     @PostMapping("/me/logout")
-    public UserSubmitActionResponseDto logout(@RequestBody(required = false) UserLogoutRequestDto request) {
-        return homeUserProfileService.logout(request);
+    public UserSubmitActionResponseDto logout(
+            @RequestHeader(
+                    value = UserLoginSessionService.SESSION_ID_HEADER,
+                    required = false) String sessionId,
+            @RequestBody(required = false) UserLogoutRequestDto request) {
+        UserSubmitActionResponseDto response = homeUserProfileService.logout(request);
+        if (response != null && response.submitted()) {
+            userLoginSessionService.revokeCurrentSession(sessionId);
+        }
+        return response;
+    }
+
+    @PostMapping("/session/login")
+    public ResponseEntity<UserSessionLoginResponseDto> registerSessionLogin(
+            @RequestHeader(UserLoginSessionService.SESSION_ID_HEADER) String sessionId,
+            @Valid @RequestBody UserSessionLoginRequestDto request,
+            HttpServletRequest servletRequest) {
+        UserSessionLoginResponseDto response = userLoginSessionService.registerLogin(
+                sessionId,
+                request,
+                servletRequest);
+        return ResponseEntity
+                .status(response.accepted() ? HttpStatus.OK : HttpStatus.CONFLICT)
+                .body(response);
     }
 
     @PostMapping("/me/delete")

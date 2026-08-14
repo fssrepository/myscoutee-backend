@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 
@@ -11,6 +12,24 @@ public final class ActivityMembersDtos {
 
     public record ActivityMembersSummariesRequestDto(
             List<ActivityMemberOwnerRefDto> owners) {
+    }
+
+    public record ActivityMemberSyncKnownItemDto(
+            String id,
+            String revision) {
+    }
+
+    public record ActivityMembersSyncRequestDto(
+            ActivityMemberOwnerRefDto owner,
+            List<ActivityMemberSyncKnownItemDto> knownItems,
+            String eventId,
+            String subEventId) {
+    }
+
+    public record ActivityMembersSyncResponseDto(
+            List<ActivityMemberEntryDto> upserts,
+            List<String> removedIds,
+            Integer total) {
     }
 
     /** Lightweight Mongo projection for one user's membership state per owner. */
@@ -41,6 +60,17 @@ public final class ActivityMembersDtos {
             String actorUserId) {
     }
 
+    public record ActivityMemberInviteRejectionDto(
+            String userId,
+            String reason) {
+    }
+
+    public record ActivityMembersInviteResponseDto(
+            List<ActivityMemberEntryDto> members,
+            List<String> invitedUserIds,
+            List<ActivityMemberInviteRejectionDto> rejections) {
+    }
+
     public record ActivityMemberActionRequestDto(
             ActivityMemberOwnerRefDto owner,
             String actorUserId,
@@ -57,5 +87,10 @@ public final class ActivityMembersDtos {
                 String reason) {
             this(owner, actorUserId, targetUserId, action, reason, null, null);
         }
+    }
+
+    public record ActivityMemberActionResponseDto(
+            List<ActivityMemberEntryDto> members,
+            UserMenuCountersDto counterOverrides) {
     }
 }

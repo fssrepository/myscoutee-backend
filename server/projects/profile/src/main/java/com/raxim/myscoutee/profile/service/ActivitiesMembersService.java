@@ -33,10 +33,16 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberInviteRejectionDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberStatusDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberSyncKnownItemDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberInvolvementDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
@@ -205,6 +211,56 @@ public class ActivitiesMembersService {
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .toList();
+    }
+
+    public ActivityMembersSyncResponseDto syncMembers(ActivityMembersSyncRequestDto request) {
+        if (request == null || request.owner() == null) {
+            return new ActivityMembersSyncResponseDto(List.of(), List.of(), 0);
+        }
+        String ownerType = normalizeOwnerType(request.owner().ownerType());
+        String ownerId = normalizeId(request.owner().ownerId());
+        if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId)) {
+            return new ActivityMembersSyncResponseDto(List.of(), List.of(), 0);
+        }
+        if (OWNER_TYPE_EVENT.equals(ownerType)
+                && !accessControlService.canCurrentActorViewEventMembers(ownerId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Authenticated user is not allowed to synchronize members for this event.");
+        }
+        List<ActivityMemberEntryDto> current = queryMembers(
+                ownerType,
+                ownerId,
+                false,
+                request.eventId(),
+                request.subEventId());
+        Map<String, String> knownRevisionsById = new LinkedHashMap<>();
+        for (ActivityMemberSyncKnownItemDto item : request.knownItems() == null
+                ? List.<ActivityMemberSyncKnownItemDto>of()
+                : request.knownItems()) {
+            String id = normalizeId(item == null ? null : item.id());
+            if (StringUtils.hasText(id)) {
+                knownRevisionsById.put(id, safeText(item.revision()));
+            }
+        }
+
+        List<ActivityMemberEntryDto> upserts = new ArrayList<>();
+        Set<String> remainingKnownIds = new LinkedHashSet<>(knownRevisionsById.keySet());
+        for (ActivityMemberEntryDto entry : current) {
+            String id = normalizeId(entry == null ? null : entry.id());
+            if (!StringUtils.hasText(id)) {
+                continue;
+            }
+            remainingKnownIds.remove(id);
+            String knownRevision = knownRevisionsById.get(id);
+            if (knownRevision == null || !Objects.equals(knownRevision, safeText(entry.revision()))) {
+                upserts.add(entry);
+            }
+        }
+        return new ActivityMembersSyncResponseDto(
+                List.copyOf(upserts),
+                List.copyOf(remainingKnownIds),
+                current.size());
     }
 
     private List<ActivityMember> loadScopedAssetDocuments(
@@ -1078,7 +1134,13 @@ public class ActivitiesMembersService {
 
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             if (removingPendingEventMembership) {
-                refreshEmbeddedEventMembers(ownerId, false);
+                int promotedWaitlistMembers = processEventWaitlist(
+                        ownerId,
+                        findPreferredEventRecord(ownerId),
+                        true);
+                if (promotedWaitlistMembers == 0) {
+                    refreshEmbeddedEventMembers(ownerId);
+                }
                 userActivityCountersService.refreshEventCountersForUsers(List.of(targetUserId));
                 if (cancellingEventInvitation) {
                     eventInviteNotificationService.markInvitationResolved(
@@ -1126,6 +1188,14 @@ public class ActivitiesMembersService {
         }
 
         return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+    }
+
+    public ActivityMemberActionResponseDto applyActionWithContext(ActivityMemberActionRequestDto request) {
+        List<ActivityMemberEntryDto> members = applyAction(request);
+        String actorUserId = resolveActorUserId(request == null ? null : request.actorUserId());
+        return new ActivityMemberActionResponseDto(
+                members,
+                homeUserProfileService.queryMenuCounters(actorUserId));
     }
 
     private void persistScopedAssetAction(
@@ -2094,7 +2164,7 @@ public class ActivitiesMembersService {
         return REQUEST_KIND_JOIN;
     }
 
-    public List<ActivityMemberEntryDto> inviteEventMembers(ActivityMembersInviteRequestDto request) {
+    public ActivityMembersInviteResponseDto inviteEventMembers(ActivityMembersInviteRequestDto request) {
         String ownerType = normalizeOwnerType(request == null || request.owner() == null
                 ? null
                 : request.owner().ownerType());
@@ -2113,16 +2183,19 @@ public class ActivitiesMembersService {
         }
 
         ActivityEvent eventRecord = findPreferredEventRecord(eventId);
-        List<String> newlyInvitedUserIds = persistEventInvites(
+        EventInvitePersistenceResult result = persistEventInvites(
                 eventId,
                 actorUserId,
                 request == null ? List.of() : request.userIds(),
                 eventRecord);
         eventInviteNotificationService.notifyInvitees(
                 eventRecord,
-                newlyInvitedUserIds,
+                result.invitedUserIds(),
                 actorUserId);
-        return queryMembers(OWNER_TYPE_EVENT, eventId, false, null, null);
+        return new ActivityMembersInviteResponseDto(
+                queryMembers(OWNER_TYPE_EVENT, eventId, false, null, null),
+                result.invitedUserIds(),
+                result.rejections());
     }
 
     public List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
@@ -2142,10 +2215,11 @@ public class ActivitiesMembersService {
                 normalizedEventId,
                 actorUserId,
                 invitedUserIds,
-                eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord);
+                eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord)
+                .invitedUserIds();
     }
 
-    private List<String> persistEventInvites(
+    private EventInvitePersistenceResult persistEventInvites(
             String eventId,
             String actorUserId,
             List<String> invitedUserIds,
@@ -2159,7 +2233,7 @@ public class ActivitiesMembersService {
         }
     }
 
-    private List<String> persistEventInvitesLocked(
+    private EventInvitePersistenceResult persistEventInvitesLocked(
             String eventId,
             String actorUserId,
             List<String> invitedUserIds,
@@ -2177,14 +2251,17 @@ public class ActivitiesMembersService {
 
         List<ActivityMember> membersToSave = new ArrayList<>();
         List<String> newlyInvitedUserIds = new ArrayList<>();
+        List<ActivityMemberInviteRejectionDto> rejections = new ArrayList<>();
         for (String userId : normalizeUserIds(invitedUserIds)) {
             ActivityMember current = existingByUserId.get(userId);
             if (current != null && !STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                rejections.add(new ActivityMemberInviteRejectionDto(userId, "already-member"));
                 continue;
             }
             List<ActivityMember> occupancy = new ArrayList<>(existing);
             occupancy.addAll(membersToSave);
             if (isCapacityFullForJoin(eventRecord, occupancy, userId)) {
+                rejections.add(new ActivityMemberInviteRejectionDto(userId, "capacity-full"));
                 continue;
             }
 
@@ -2218,7 +2295,14 @@ public class ActivitiesMembersService {
             refreshEmbeddedEventMembers(eventId, false);
             userActivityCountersService.refreshEventCountersForUsers(newlyInvitedUserIds);
         }
-        return newlyInvitedUserIds;
+        return new EventInvitePersistenceResult(
+                List.copyOf(newlyInvitedUserIds),
+                List.copyOf(rejections));
+    }
+
+    private record EventInvitePersistenceResult(
+            List<String> invitedUserIds,
+            List<ActivityMemberInviteRejectionDto> rejections) {
     }
 
     public int sweepEventWaitlists() {
@@ -3319,7 +3403,12 @@ public class ActivitiesMembersService {
                 safeText(member.getMetWhere()),
                 resolveAvatarUrl(user),
                 user == null ? null : homeUserProfileService.toGameCardUserDto(user),
-                List.of());
+                List.of(),
+                memberRevision(member),
+                nullableText(member.getAttendanceStatus()),
+                nullableText(member.getCheckedInAtIso()),
+                nullableText(member.getCheckedInByUserId()),
+                nullableText(member.getCheckedInTicketId()));
     }
 
     private ActivityMemberEntryDto withInvolvements(
@@ -3347,7 +3436,12 @@ public class ActivitiesMembersService {
                 entry.metWhere(),
                 entry.avatarUrl(),
                 entry.profile(),
-                involvements == null ? List.of() : List.copyOf(involvements));
+                involvements == null ? List.of() : List.copyOf(involvements),
+                entry.revision(),
+                entry.attendanceStatus(),
+                entry.checkedInAtIso(),
+                entry.checkedInByUserId(),
+                entry.checkedInTicketId());
     }
 
     private Map<String, List<ActivityMemberInvolvementDto>> memberInvolvementsByUserId(
@@ -4551,11 +4645,32 @@ public class ActivitiesMembersService {
         clone.setMetAtIso(source.getMetAtIso());
         clone.setActionAtIso(source.getActionAtIso());
         clone.setMetWhere(source.getMetWhere());
+        clone.setAttendanceStatus(source.getAttendanceStatus());
+        clone.setCheckedInAtIso(source.getCheckedInAtIso());
+        clone.setCheckedInByUserId(source.getCheckedInByUserId());
+        clone.setCheckedInTicketId(source.getCheckedInTicketId());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
         clone.setUpdatedUser(source.getUpdatedUser());
         return clone;
+    }
+
+    private String memberRevision(ActivityMember member) {
+        String updatedDate = safeText(member == null ? null : member.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            return updatedDate;
+        }
+        String actionAtIso = safeText(member == null ? null : member.getActionAtIso());
+        if (StringUtils.hasText(actionAtIso)) {
+            return actionAtIso;
+        }
+        return safeText(member == null ? null : member.getId());
+    }
+
+    private String nullableText(String value) {
+        String normalized = safeText(value);
+        return StringUtils.hasText(normalized) ? normalized : null;
     }
 
     private String normalizeId(String value) {

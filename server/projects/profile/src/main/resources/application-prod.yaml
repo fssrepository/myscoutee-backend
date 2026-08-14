@@ -24,7 +24,8 @@ config:
 
 auth:
   region-security:
-    enabled: ${AUTH_REGION_SECURITY_ENABLED:false}
+    # Fail closed in production unless the operator deliberately opts out.
+    enabled: ${AUTH_REGION_SECURITY_ENABLED:true}
 
 media:
   enabled: ${MEDIA_ENABLED:true}

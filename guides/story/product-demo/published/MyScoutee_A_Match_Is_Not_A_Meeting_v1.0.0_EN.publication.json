@@ -1,0 +1,25 @@
+{
+  "file": "MyScoutee_A_Match_Is_Not_A_Meeting_v1.0.0_EN.pdf",
+  "sha256": "5760fe28d404c4554b6380d5a736535cba350e2858adefa667e9df3b68692f0a",
+  "kind": "standalone-product-mini-book",
+  "edition_version": "1.0.0",
+  "published": "2026-08-20",
+  "sourceLanguage": "en",
+  "translationOf": null,
+  "metadata": {
+    "title": "A Match Is Not a Meeting",
+    "subtitle": "From a profile to a real shared meeting",
+    "author": "MyScoutee",
+    "subject": "A short product book about the path between a profile and a mutually welcomed real meeting",
+    "keywords": [
+      "MyScoutee",
+      "online dating",
+      "meeting",
+      "group",
+      "community"
+    ],
+    "creator": "MyScoutee mini-book builder",
+    "language": "en",
+    "copyright": "© 2026 MyScoutee. All rights reserved."
+  }
+}

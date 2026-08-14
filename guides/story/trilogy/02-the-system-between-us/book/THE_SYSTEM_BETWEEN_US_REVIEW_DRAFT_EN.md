@@ -4,7 +4,8 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Public edition 1.0.0 · Published 20 August 2026
+> First English edition
+> Published 20 August 2026
 > (Hungary’s State Foundation Day)
 
 <!-- pagebreak -->
@@ -812,7 +813,9 @@ The return was two pages long. By March, it had been alive for seven months. It
 had outlasted my work, the tax debt and the operation. Now it had found the bed.
 
 The investigation later pulled a second sentence from that period, one I had
-never regarded as a threat. I priced twenty lost years at ten billion euros and
+never regarded as a threat. That spring, nearly the same figure was in the news:
+almost ten billion euros in Hungarian cohesion funding was being withheld
+behind rule-of-law conditions. I priced twenty lost years at that amount and
 gave the impossible invoice a crude punchline. If they could act as though
 anything were permitted, then, on the page at least, so could I. My operated
 foot still could not carry me; depression had narrowed the world to the room.
@@ -869,7 +872,8 @@ the wall caught my weight, and metal closed behind my back. Then a boot found
 the foot that had already been cut open and put back together. Pain ran white
 through the narrow hall.
 
-The handcuffs would come off that day. The injury kept repeating the moment.
+They took me to the police station in handcuffs and released me later that day.
+The injury kept repeating the moment.
 The nail came away three times, as if even the body had been pulled into the
 system's habit of beginning again.
 
@@ -905,6 +909,10 @@ assistant was carrying the case. I had been searched, questioned and separated
 from my devices without receiving the complete material from which I could
 understand the accusation.
 
+Five days later, police rang my bell again. They personally delivered a summons
+for three days later. It was urgent for them. They did not say why I had to
+appear.
+
 Eight days later, I walked through the city to the police station. The loose
 nail travelled inside my shoe, shifting under the toe at every step. Saint
 Nicholas Day was approaching; shop windows were beginning to show the little
@@ -916,6 +924,10 @@ Then the next step put the nail under me again.
 Two forensic experts questioned me. The state already had a
 room in which to interpret my mind. I still did not have a stable person helping
 me interpret the case.
+
+By the time I gave my actual police statement roughly a month later, in
+December, I was already suspected on two counts. The tax authority's two
+internal departments had been treated separately.
 
 The later police interviews took place in ordinary rooms, not cinematic
 interrogation chambers. An officer sat opposite me behind a desktop computer.
@@ -939,12 +951,13 @@ The formal defence kept changing shape. The legal assistant warned that she
 would be unavailable while preparing for her professional examination. Calls
 to the office went unanswered, and for almost three months nobody there spoke
 with me. On 19 February, the appointed lawyer asked to be released because the
-office was overloaded. The police accepted the request. Only after he had
-ceased to be my lawyer did he return one of my calls. He told me to leave the
-police to their work and suggested that I say I had not done it. Then the line
-closed. For the months after 19 February, I did not know whether another
-defender had been appointed—or whether I had one at all. I complained in
-writing. Nobody replied.
+office was overloaded. The police accepted the request, and it was from the
+police that I learned he was no longer my lawyer. I then tried to reach him by
+phone. Only then did he return my call. He told me to let the police do their
+job.
+For the months after 19 February, I did not know whether another defender had
+been appointed—or whether I had one at all. I complained in writing. Nobody
+replied.
 
 On 11 June 2024, I was summoned back to the police station. A lawyer I had
 never met appeared beside me. Only then did I learn that, on paper, he had been
@@ -962,18 +975,18 @@ happening in the investigation.
 Around 12 November, I returned alone to collect the investigation material. No
 lawyer sat beside me. A policewoman looked towards the waiting area almost
 timidly, checking that I was there and that the handover could begin. She seemed
-to freeze. A male officer smiled and glanced towards my operated leg. By then I
+to freeze. A male officer glanced towards my operated leg and smiled. By then I
 trusted the continuity of no later account, so I made an undisclosed audio
 recording of the encounter. The act was not a victory over the process. It
 measured the low-trust condition: I no longer believed that even an ordinary
 handover would necessarily survive in one shared version unless I preserved it
 myself.
 
-The glance returned the obscene visual joke I had made while trying to force
-the tax administration to see the body behind its process. Where was the grave
-threat in that image? It had been a huge symbolic kick in an institution's
-backside. The association arrived as she handed over the papers I was still
-waiting to receive.
+The male officer's smile brought back the obscene visual joke I had used to
+show the tax administration that behind the case was a man recovering from
+surgery. Where was the grave threat in that image? It had been a huge symbolic
+kick aimed at an institution's backside. That was what came back to me as they
+finally handed over the papers I had been waiting for.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
@@ -2889,12 +2902,13 @@ a political allegation, not a finding that the new government was or was not
 authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
-The 2022 timing forms part of the public background. In December of that year,
-the Council suspended €6.3 billion in budget commitments under the rule-of-law
-conditionality mechanism. It also approved Hungary's recovery plan on terms
-that required 27 rule-of-law “super milestones” to be completed before any
-payment could be made. Those measures were not connected to the private case;
-they show what was already happening around the same words in national life.
+The 2022 timing forms part of the public background. Other operational
+programmes accounted for nearly €10 billion in EU budget funding—another part
+of the cohesion funds—that was withheld because the enabling conditions had
+not been met. The rule-of-law condition attached to this part included judicial
+independence. The wider framework also contained requirements concerning public
+procurement and academic freedom. The measures had no connection to the private
+case.
 
 Also in July 2026, the Council of the European Union approved a new Hungarian
 recovery plan expected to allow €10 billion to be disbursed. Public reporting
@@ -2943,8 +2957,8 @@ Sources:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
-- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
-- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
+- https://employment-social-affairs.ec.europa.eu/news/commission-considers-hungarys-judicial-reform-addressed-deficiencies-judicial-independence-maintains-2023-12-13_en
+- https://www.europarl.europa.eu/doceo/document/TA-9-2023-0216_EN.html
 - https://www.consilium.europa.eu/en/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
 - https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/

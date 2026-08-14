@@ -340,7 +340,12 @@ public class ActivitiesInviteCandidatesService {
                 firstNonBlank(member.getMetWhere(), "Parent member"),
                 resolveAvatarUrl(user),
                 homeUserProfileService.toGameCardUserDto(user),
-                List.of());
+                List.of(),
+                actionAtIso,
+                null,
+                null,
+                null,
+                null);
     }
 
     private ActivityInviteCandidatesPageDto toPage(
@@ -393,7 +398,12 @@ public class ActivitiesInviteCandidatesService {
                 signal.metWhere(),
                 resolveAvatarUrl(user),
                 homeUserProfileService.toGameCardUserDto(user),
-                List.of());
+                List.of(),
+                signal.metAtIso(),
+                null,
+                null,
+                null,
+                null);
     }
 
     private CandidateSignal toSignal(UserRate rate) {

@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.data.dto.auth;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 
@@ -415,7 +416,7 @@ public final class AuthDtos {
             String statusText,
             Integer completion,
             Integer profileFormVersion,
-            String status,
+            String profileStatus,
             String deletedAtIso) {
     }
 
@@ -423,6 +424,7 @@ public final class AuthDtos {
             String userId,
             UserRealtimeCountersDto counters,
             UserImpressionsDto impressions,
+            AssetTicketsPageDto offlineTicketSnapshot,
             String cursor,
             String serverTsIso) {
     }
@@ -460,6 +462,20 @@ public final class AuthDtos {
 
     public record UserLogoutRequestDto(
             String userId) {
+    }
+
+    public record UserSessionLoginRequestDto(
+            @NotBlank @Size(max = 128) String attemptId,
+            @Size(max = 32) String provider) {
+    }
+
+    public record UserSessionLoginResponseDto(
+            boolean accepted,
+            boolean existingSession,
+            String outcome,
+            Integer activeSessionCount,
+            Integer maxActiveSessions,
+            String message) {
     }
 
     public record UserDeleteRequestDto(

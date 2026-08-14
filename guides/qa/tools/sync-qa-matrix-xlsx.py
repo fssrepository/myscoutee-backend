@@ -19,6 +19,7 @@ XLSX_PATH = QA_ROOT / "matrices" / "ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx"
 SHEET_XML = "xl/worksheets/sheet1.xml"
 SHARED_STRINGS_XML = "xl/sharedStrings.xml"
 STYLES_XML = "xl/styles.xml"
+WORKBOOK_XML = "xl/workbook.xml"
 NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 
 ROW_FILL_COLORS = {
@@ -26,6 +27,7 @@ ROW_FILL_COLORS = {
     "partial": "FFFFC000",
     "fail": "FFFF6666",
     "not-run": "FFB4C6E7",
+    "external": "FF7FC8C8",
     "legend-x": "FFBFBFBF",
     "legend-delta": "FF5B9BD5",
     "legend-indirect": "FFB4A7D6",
@@ -34,7 +36,7 @@ ROW_FILL_COLORS = {
 HEADER_FILL_COLOR = "FF1F4E78"
 LEGEND_SECTION_FILL_COLOR = "FF44546A"
 TEST_SECTION_FILL_COLOR = "FF4472C4"
-EFFECT_MARKERS_TITLE = "EFFECT MARKERS"
+EFFECT_MARKERS_TITLE = "EFFECT / SCOPE MARKERS"
 QA_TEST_CASES_TITLE = "QA TEST CASES"
 
 ET.register_namespace("", NS)
@@ -72,9 +74,14 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
     def compact_row(*values: str) -> list[str]:
         return [*values, *("" for _ in range(len(headers) - len(values)))]
 
-    counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
+    core_counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
+    scope_counts = {"core": 0, "external": 0}
     for row in test_rows:
-        counts[qa_status_bucket(dict(zip(headers, row)))] += 1
+        item = dict(zip(headers, row))
+        scope = qa_scope_bucket(item)
+        scope_counts[scope] += 1
+        if scope == "core":
+            core_counts[qa_status_bucket(item)] += 1
     legend_items = [
         (
             item["ID"].removeprefix("LEGEND-"),
@@ -83,15 +90,18 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         for item in (dict(zip(headers, row)) for row in legend_source_rows)
     ]
     status_items = [
-        ("Total", str(len(test_rows))),
-        ("Done", str(counts["done"])),
-        ("Pending", str(counts["pending"])),
-        ("Not started", str(counts["not-started"])),
-        ("Failed", str(counts["failed"])),
         (
-            "Complete",
-            f"{(counts['done'] / len(test_rows)):.0%}" if test_rows else "0%",
+            "Done",
+            f"{core_counts['done']} ({(core_counts['done'] / scope_counts['core']):.0%})"
+            if scope_counts["core"]
+            else "0 (0%)",
         ),
+        ("Pending", str(core_counts["pending"])),
+        ("Not started", str(core_counts["not-started"])),
+        ("Failed", str(core_counts["failed"])),
+        ("Core", str(scope_counts["core"])),
+        ("External", str(scope_counts["external"])),
+        ("Total", str(len(test_rows))),
     ]
     overview_rows = [compact_row(
         EFFECT_MARKERS_TITLE,
@@ -144,6 +154,62 @@ def qa_status_bucket(item: dict[str, str]) -> str:
     if result == "PASS" or "PASS" in manual_status:
         return "done"
     return "pending"
+
+
+def qa_scope_bucket(item: dict[str, str]) -> str:
+    identifier = item.get("ID", "").strip().upper()
+    return "external" if identifier.startswith(("OPERATOR-", "PAYMENT-", "DEPLOY-")) else "core"
+
+
+def qa_status_formula(row_index: int, manual_column: str, result_column: str) -> str:
+    combined = f'{manual_column}{row_index}&" "&{result_column}{row_index}'
+
+    def contains(marker: str) -> str:
+        return f'ISNUMBER(SEARCH("{marker}",{combined}))'
+
+    failed = ",".join((contains("FAIL"), contains("CLEAN RETEST REQUIRED")))
+    not_started = ",".join((contains("NOT RUN"), contains("NOT IMPLEMENTED")))
+    pending = ",".join(
+        contains(marker)
+        for marker in (
+            "PARTIAL",
+            "PENDING",
+            "IN PROGRESS",
+            "OPEN",
+            "RETEST REQUIRED",
+            "IMPLEMENTATION UPDATED",
+            "REQUIRED EVERY SESSION",
+        )
+    )
+    done = ",".join(
+        (f'{result_column}{row_index}="PASS"', contains("PASS"))
+    )
+    return (
+        f'IF(OR({failed}),"Failed",'
+        f'IF(OR({not_started}),"Not started",'
+        f'IF(OR({pending}),"Pending",'
+        f'IF(OR({done}),"Done","Pending"))))'
+    )
+
+
+def qa_scope_formula(row_index: int, id_column: str) -> str:
+    reference = f"{id_column}{row_index}"
+    return (
+        f'IF(OR(LEFT({reference},9)="OPERATOR-",'
+        f'LEFT({reference},8)="PAYMENT-",'
+        f'LEFT({reference},7)="DEPLOY-"),"External","Core")'
+    )
+
+
+def request_full_workbook_recalculation(existing: bytes) -> bytes:
+    root = ET.fromstring(existing)
+    calculation = root.find(f"{{{NS}}}calcPr")
+    if calculation is None:
+        calculation = ET.SubElement(root, f"{{{NS}}}calcPr")
+    calculation.set("calcMode", "auto")
+    calculation.set("fullCalcOnLoad", "1")
+    calculation.set("forceFullCalc", "1")
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
 def shared_string_table(rows: list[list[str]]) -> tuple[list[str], dict[str, int]]:
@@ -337,13 +403,17 @@ def row_style(values: list[str], headers: list[str]) -> str:
         "LEGEND-DELTA": "legend-delta",
         "LEGEND-INDIRECT": "legend-indirect",
         "LEGEND-GAP": "legend-gap",
+        "LEGEND-EXT": "external",
         "X": "legend-x",
         "DELTA": "legend-delta",
         "INDIRECT": "legend-indirect",
         "GAP": "legend-gap",
+        "EXT": "external",
     }
     if identifier in legend_styles:
         return legend_styles[identifier]
+    if qa_scope_bucket(item) == "external":
+        return "external"
 
     manual_status = item.get("Manual status", "").upper()
     result = item.get("Result", "").upper()
@@ -371,11 +441,25 @@ def build_sheet(
     if dimension is None or sheet_data is None:
         raise RuntimeError("QA workbook sheet structure is unsupported.")
 
-    last_column = cell_column(len(rows[0]) - 1)
+    last_visible_column = cell_column(len(rows[0]) - 1)
+    status_helper_column_index = len(rows[0])
+    status_helper_column = cell_column(status_helper_column_index)
+    scope_helper_column_index = len(rows[0]) + 1
+    scope_helper_column = cell_column(scope_helper_column_index)
     headers = next((row for row in rows if row and row[0] == "ID"), None)
     if headers is None:
         raise RuntimeError("QA workbook rows do not contain the column header.")
-    dimension.set("ref", f"A1:{last_column}{len(rows)}")
+    header_row_index = next(
+        row_index
+        for row_index, values in enumerate(rows, start=1)
+        if values == headers
+    )
+    first_test_row = header_row_index + 1
+    last_test_row = len(rows)
+    manual_column = cell_column(headers.index("Manual status"))
+    result_column = cell_column(headers.index("Result"))
+    id_column = cell_column(headers.index("ID"))
+    dimension.set("ref", f"A1:{scope_helper_column}{len(rows)}")
     sheet_data.clear()
 
     columns = root.find(f"{{{NS}}}cols")
@@ -399,6 +483,28 @@ def build_sheet(
         if minimum == maximum and minimum in overview_widths:
             column.set("width", str(overview_widths[minimum]))
             column.set("customWidth", "true")
+    for helper_column_index in (status_helper_column_index, scope_helper_column_index):
+        helper_definition = next(
+            (
+                column
+                for column in columns.findall(f"{{{NS}}}col")
+                if int(column.get("min", "0")) <= helper_column_index + 1
+                <= int(column.get("max", "0"))
+            ),
+            None,
+        )
+        if helper_definition is None:
+            helper_definition = ET.SubElement(
+                columns,
+                f"{{{NS}}}col",
+                {
+                    "min": str(helper_column_index + 1),
+                    "max": str(helper_column_index + 1),
+                },
+            )
+        helper_definition.set("hidden", "true")
+        helper_definition.set("width", "0.1")
+        helper_definition.set("customWidth", "true")
 
     existing_merges = root.find(f"{{{NS}}}mergeCells")
     if existing_merges is not None:
@@ -406,7 +512,7 @@ def build_sheet(
 
     merged_ranges: list[str] = []
     effect_markers_last_row = 1 + len([
-        row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP"}
+        row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP", "EXT"}
     ])
 
     marker_styles = {
@@ -414,6 +520,7 @@ def build_sheet(
         "DELTA": "legend-delta",
         "INDIRECT": "legend-indirect",
         "GAP": "legend-gap",
+        "EXT": "external",
     }
     status_styles = {
         "Total": "test-section",
@@ -421,7 +528,39 @@ def build_sheet(
         "Pending": "partial",
         "Not started": "not-run",
         "Failed": "fail",
-        "Complete": "pass",
+        "Core": "test-section",
+        "External": "external",
+    }
+    summary_formulas = {
+        "Done": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+            f'&" ("&IF(COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")=0,"0%",'
+            f'TEXT(COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")/'
+            f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core"),"0%"))&")"'
+        ),
+        "Pending": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Pending",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
+        "Not started": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Not started",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
+        "Failed": (
+            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Failed",'
+            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
+        ),
+        "Core": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")',
+        "External": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"External")',
+        "Total": f"COUNTA(A{first_test_row}:A{last_test_row})",
+    }
+    helper_values = {
+        "done": "Done",
+        "pending": "Pending",
+        "not-started": "Not started",
+        "failed": "Failed",
     }
 
     for row_index, values in enumerate(rows, start=1):
@@ -438,7 +577,7 @@ def build_sheet(
         if is_overview_title:
             merged_ranges.append(f"A{row_index}:B{row_index}")
         elif is_test_section:
-            merged_ranges.append(f"A{row_index}:{last_column}{row_index}")
+            merged_ranges.append(f"A{row_index}:{last_visible_column}{row_index}")
         row = ET.SubElement(sheet_data, f"{{{NS}}}row", {
             "r": str(row_index),
             "customFormat": "false",
@@ -491,12 +630,57 @@ def build_sheet(
                 if border_parts:
                     cell_style_key = f"{cell_style_key}-{'-'.join(border_parts)}"
             reference = f"{cell_column(column_index)}{row_index}"
+            if column_index == 4 and values[3] in summary_formulas:
+                cell_attributes = {
+                    "r": reference,
+                    "s": str(style_indexes[cell_style_key]),
+                }
+                if values[3] == "Done":
+                    cell_attributes["t"] = "str"
+                cell = ET.SubElement(row, f"{{{NS}}}c", cell_attributes)
+                ET.SubElement(cell, f"{{{NS}}}f").text = summary_formulas[values[3]]
+                ET.SubElement(cell, f"{{{NS}}}v").text = value
+                continue
             cell = ET.SubElement(row, f"{{{NS}}}c", {
                 "r": reference,
                 "s": str(style_indexes[cell_style_key]),
                 "t": "s",
             })
             ET.SubElement(cell, f"{{{NS}}}v").text = str(indexes[value])
+
+        if first_test_row <= row_index <= last_test_row:
+            bucket = qa_status_bucket(dict(zip(headers, values)))
+            helper_cell = ET.SubElement(
+                row,
+                f"{{{NS}}}c",
+                {
+                    "r": f"{status_helper_column}{row_index}",
+                    "s": str(style_indexes["default"]),
+                    "t": "str",
+                },
+            )
+            ET.SubElement(helper_cell, f"{{{NS}}}f").text = qa_status_formula(
+                row_index,
+                manual_column,
+                result_column,
+            )
+            ET.SubElement(helper_cell, f"{{{NS}}}v").text = helper_values[bucket]
+
+            scope = qa_scope_bucket(dict(zip(headers, values)))
+            scope_cell = ET.SubElement(
+                row,
+                f"{{{NS}}}c",
+                {
+                    "r": f"{scope_helper_column}{row_index}",
+                    "s": str(style_indexes["default"]),
+                    "t": "str",
+                },
+            )
+            ET.SubElement(scope_cell, f"{{{NS}}}f").text = qa_scope_formula(
+                row_index,
+                id_column,
+            )
+            ET.SubElement(scope_cell, f"{{{NS}}}v").text = "External" if scope == "external" else "Core"
 
     merges = ET.Element(f"{{{NS}}}mergeCells", {"count": str(len(merged_ranges))})
     for merged_range in merged_ranges:
@@ -517,6 +701,7 @@ def synchronize() -> None:
         entries = {name: workbook.read(name) for name in workbook.namelist()}
 
     entries[STYLES_XML], style_indexes = build_styles(entries[STYLES_XML])
+    entries[WORKBOOK_XML] = request_full_workbook_recalculation(entries[WORKBOOK_XML])
     entries[SHARED_STRINGS_XML] = build_shared_strings(
         strings,
         sum(len(row) for row in rows),

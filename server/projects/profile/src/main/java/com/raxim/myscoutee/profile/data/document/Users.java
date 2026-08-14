@@ -29,7 +29,7 @@ public class Users {
     @Indexed(name = "users_user_id", unique = true)
     private String userId;
 
-    @Indexed(name = "users_email", sparse = true)
+    @Indexed(name = "users_email", unique = true, sparse = true)
     private String email;
 
     @Indexed(name = "users_firebase_uid", sparse = true)

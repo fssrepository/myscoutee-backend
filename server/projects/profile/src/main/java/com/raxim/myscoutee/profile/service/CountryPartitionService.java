@@ -335,7 +335,11 @@ public class CountryPartitionService {
                 || coordinates.latitude() == null
                 || coordinates.longitude() == null
                 || !Double.isFinite(coordinates.latitude())
-                || !Double.isFinite(coordinates.longitude())) {
+                || !Double.isFinite(coordinates.longitude())
+                || coordinates.latitude() < -90.0
+                || coordinates.latitude() > 90.0
+                || coordinates.longitude() < -180.0
+                || coordinates.longitude() > 180.0) {
             return null;
         }
 

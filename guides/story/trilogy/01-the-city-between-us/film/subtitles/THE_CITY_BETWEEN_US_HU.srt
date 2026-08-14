@@ -32,7 +32,7 @@ Londonban két hét alatt
 találtam programozói munkát.
 
 8
-00:00:20,650 --> 00:00:22,282
+00:00:20,650 --> 00:00:26,000
 Az angolom az ebédlőasztalig
 is alig ért el.
 
@@ -68,7 +68,7 @@ Néhányan boldogabbak voltak ott,
 Az olcsó szoba lehetővé tette az utazást,
 
 16
-00:00:52,100 --> 00:00:54,892
+00:00:52,100 --> 00:00:58,000
 de egy londoni magánlakás
 elvitte volna a pénzem. Budapest nem.
 
@@ -146,7 +146,7 @@ Kávézók, pincezenék
 előadássá változtatták az első randikat.
 
 33
-00:01:52,100 --> 00:01:54,051
+00:01:52,100 --> 00:01:58,000
 Nem az emberekkel volt baj,
 hanem azzal, ahogyan találkoztunk.
 

@@ -10,9 +10,11 @@ import java.util.Optional;
 public interface PaymentsRepository extends MongoRepository<Payment, String> {
     Optional<Payment> findByCheckoutSessionId(String checkoutSessionId);
     Optional<Payment> findByGatewaySessionId(String gatewaySessionId);
+    Optional<Payment> findByGatewayAuthorizationId(String gatewayAuthorizationId);
     java.util.List<Payment> findByUserIdAndSourceId(String userId, String sourceId);
     java.util.List<Payment> findByUserIdAndSourceIdIn(String userId, Collection<String> sourceIds);
     java.util.List<Payment> findByRevisionRootSessionId(String revisionRootSessionId);
+    java.util.List<Payment> findByStatusAndBookingStatus(String status, String bookingStatus);
 
     /**
      * Narrow candidate read for the local revenue ruleset. The service still

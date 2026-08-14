@@ -14,6 +14,165 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "ENTRY-DEMO-REG-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated registration entry"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable consent member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated controlled-consent entry"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-002": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova revision consent",
+          "sessionKind": "anonymous",
+          "expectedName": "Anonymous rejection then Nova revision reconsent"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova consent inheritance",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova v4 choices carried into a new v5 revision"
+        }
+      ]
+    },
+    "LANDING-ELIGIBILITY-001": {
+      "targetUrl": "http://localhost/entry?qaAuth=firebase&redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?qaAuth=firebase&redirect=%2Fgame",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Budapest eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:hu landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "London eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:gb landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 51.5074,
+            "longitude": -0.1278,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Paris eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Not-yet-enabled country:fr and permission-denied control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 48.8566,
+            "longitude": 2.3522,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "EVENT-LIFE-002": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-LIFE-003": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-INV-004": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Admin approver"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · accepted ordinary inviter"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · pending invitation target"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3
@@ -75,7 +234,74 @@
         }
       ]
     },
+    "EVENT-TICKET-008": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-009": {
+      "targetUrl": "http://localhost/game?pwa=on",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
     "EVENT-VISIBILITY-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-VISIBILITY-001-EXPLORE": {
       "layout": {
         "columns": 3
       },
@@ -98,6 +324,74 @@
       ]
     },
     "EVENT-TICKET-010": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-011": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "AUTH-SESSION-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Client A",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client A for Nova Social"
+        },
+        {
+          "actor": "Client B",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client B for Nova Social"
+        },
+        {
+          "actor": "Client C",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client C for Nova Social"
+        }
+      ]
+    },
+    "EVENT-PUBLISH-CHAT-001": {
       "layout": {
         "columns": 3
       },

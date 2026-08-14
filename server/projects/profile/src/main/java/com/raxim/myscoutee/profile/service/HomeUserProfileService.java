@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,6 +73,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
@@ -121,6 +123,7 @@ public class HomeUserProfileService {
     private static final double HOME_FRESHNESS_HALF_LIFE_DAYS = 14d;
     private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
     private static final long USER_READ_SNAPSHOT_CACHE_TTL_MS = 5_000L;
+    private static final int OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE = 18;
     static final int HOME_GAME_RATE_PROJECTION_VERSION = 1;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
@@ -216,6 +219,7 @@ public class HomeUserProfileService {
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
+    private final AssetsService assetsService;
     private NotificationRuleRegistryService notificationRuleRegistryService;
     private UserNotificationPageRepository userNotificationPageRepository;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
@@ -248,7 +252,8 @@ public class HomeUserProfileService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            AssetsService assetsService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
@@ -273,6 +278,7 @@ public class HomeUserProfileService {
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
+        this.assetsService = assetsService;
     }
 
     @Autowired(required = false)
@@ -340,6 +346,12 @@ public class HomeUserProfileService {
                 filterCount,
                 filterPreferences,
                 menuCounters);
+    }
+
+    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
+        String resolvedUserId = resolveSelectedUserId(requestedUserId);
+        Users user = findUser(resolvedUserId);
+        return user == null ? emptyMenuCounters() : buildMenuCounters(user);
     }
 
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
@@ -486,10 +498,16 @@ public class HomeUserProfileService {
 
         UserImpressionsDto impressions = resolveMergedUserImpressions(user);
         UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor(), impressions);
+        AssetTicketsPageDto offlineTicketSnapshot = assetsService.queryTicketPage(
+                resolvedUserId,
+                0,
+                OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE,
+                "upcoming");
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 counters,
                 impressions,
+                offlineTicketSnapshot,
                 buildRealtimeCursor(user, counters, impressions),
                 Instant.now().toString());
     }
@@ -500,7 +518,7 @@ public class HomeUserProfileService {
         }
 
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
-            return new UserLocationEligibilityResponseDto(false, null, null, true, false);
+            return new UserLocationEligibilityResponseDto(false, null, null, true, true);
         }
 
         LocationCoordinatesDto coordinates = new LocationCoordinatesDto(latitude, longitude);
@@ -556,9 +574,16 @@ public class HomeUserProfileService {
         boolean wasTrackedForAccountPurge = existing != null
                 && Boolean.TRUE.equals(existing.getAccountPurgePendingCounterTracked());
         Users merged = mergeUserDocument(existing, user);
+        requireUniqueEmailOwner(merged);
         boolean shouldTrackForAccountPurge = isAccountPurgeCandidate(merged);
         merged.setAccountPurgePendingCounterTracked(shouldTrackForAccountPurge);
-        Users saved = usersRepository.save(merged);
+        Users saved;
+        try {
+            saved = usersRepository.save(merged);
+        } catch (DataIntegrityViolationException exception) {
+            throwEmailConflictIfPresent(merged, exception);
+            throw exception;
+        }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
             adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
         }
@@ -1234,7 +1259,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getStatusText()),
                 normalizeCount(user.getCompletion()),
                 normalizeCount(user.getProfileFormVersion()),
-                safeText(user.getStatus()),
+                safeText(user.getProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()));
     }
 
@@ -2269,7 +2294,54 @@ public class HomeUserProfileService {
             return user;
         }
         user.setEmail(resolvedEmail);
-        return usersRepository.save(user);
+        requireUniqueEmailOwner(user);
+        try {
+            return usersRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throwEmailConflictIfPresent(user, exception);
+            throw exception;
+        }
+    }
+
+    private void requireUniqueEmailOwner(Users user) {
+        if (user == null) {
+            return;
+        }
+        String normalizedEmail = normalizeUserEmail(user.getEmail());
+        user.setEmail(StringUtils.hasText(normalizedEmail) ? normalizedEmail : null);
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return;
+        }
+        Users currentOwner = usersRepository.findFirstByEmail(normalizedEmail).orElse(null);
+        if (currentOwner != null
+                && !normalizeId(currentOwner.getId()).equals(normalizeId(user.getId()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This email address is already registered.");
+        }
+    }
+
+    private void throwEmailConflictIfPresent(
+            Users attemptedUser,
+            DataIntegrityViolationException exception) {
+        String normalizedEmail = normalizeUserEmail(
+                attemptedUser == null ? null : attemptedUser.getEmail());
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return;
+        }
+        Users currentOwner = usersRepository.findFirstByEmail(normalizedEmail).orElse(null);
+        if (currentOwner != null
+                && !normalizeId(currentOwner.getId()).equals(
+                        normalizeId(attemptedUser.getId()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This email address is already registered.",
+                    exception);
+        }
+    }
+
+    private String normalizeUserEmail(String email) {
+        return safeText(email).toLowerCase(Locale.ROOT);
     }
 
     void evictUserReadCaches(Collection<String> userIds) {
@@ -2329,9 +2401,9 @@ public class HomeUserProfileService {
     private String resolveStoredEmail(String userId, String fallbackEmail) {
         String resolvedPrincipalEmail = resolveAuthenticatedEmailForUser(userId);
         if (StringUtils.hasText(resolvedPrincipalEmail)) {
-            return resolvedPrincipalEmail;
+            return normalizeUserEmail(resolvedPrincipalEmail);
         }
-        return safeText(fallbackEmail);
+        return normalizeUserEmail(fallbackEmail);
     }
 
     private String resolveAuthenticatedEmailForUser(String userId) {

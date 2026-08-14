@@ -63,6 +63,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -115,6 +116,8 @@ class HomeUserProfileServiceTest {
     @Mock
     private AccessControlService accessControlService;
     @Mock
+    private AssetsService assetsService;
+    @Mock
     private UserNotificationPageRepository userNotificationPageRepository;
 
     private HomeUserProfileService service;
@@ -130,6 +133,8 @@ class HomeUserProfileServiceTest {
         lenient().when(accessControlService.canCurrentActorEditProfile(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorDeleteProfile(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorUploadMedia(anyString())).thenReturn(true);
+        lenient().when(assetsService.queryTicketPage(anyString(), any(), any(), anyString()))
+                .thenReturn(new AssetTicketsPageDto(List.of(), 0));
         service = new HomeUserProfileService(
                 usersRepository,
                 userFilterPreferencesRepository,
@@ -154,7 +159,8 @@ class HomeUserProfileServiceTest {
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 adminMenuCounterService,
-                accessControlService);
+                accessControlService,
+                assetsService);
         service.setUserNotificationPageRepository(userNotificationPageRepository);
         lenient().when(userNotificationPageRepository.countUnread("active"))
                 .thenReturn(17L);
@@ -674,6 +680,8 @@ class HomeUserProfileServiceTest {
 
         assertFlatCounters(snapshot.counters());
         assertNestedCounters(snapshot.counters());
+        assertThat(snapshot.offlineTicketSnapshot()).isEqualTo(new AssetTicketsPageDto(List.of(), 0));
+        verify(assetsService).queryTicketPage("active", 0, 18, "upcoming");
         verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }

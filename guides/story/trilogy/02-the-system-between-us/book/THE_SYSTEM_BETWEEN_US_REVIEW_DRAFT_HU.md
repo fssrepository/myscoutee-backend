@@ -4,7 +4,8 @@
 
 *Egy alapító története szabályokról, nevetésről és a bizonyítás áráról*
 
-> Magyar kiadás 1.0.0 · Megjelent: 2026. augusztus 20.
+> Első magyar kiadás
+> Megjelent: 2026. augusztus 20.
 > (a magyar államalapítás ünnepe)
 
 <!-- pagebreak -->
@@ -21,27 +22,27 @@ Az én történetem az övék is.
 
 Ez egy lezáratlan időszak emlékirata.
 
-Az I. rész meghívással ért véget. Hazatértem Londonból, utaztam, társat kerestem, és a megszerzett függetlenségemet egy olyan termék építésére fordítottam, amely talán emberségesebbé teheti az egymáshoz vezető utat. Az utolsó oldalakon szó esett egy magyar multinacionális állásról, a COVID–19-ről és egy határokon átívelő távmunkáról. A zárómondat egyszerű volt: *ami ezután következett, a II. részhez tartozik.*
+Az I. rész meghívással ért véget. Hazatértem Londonból, utaztam, társat kerestem, a megszerzett függetlenségemet pedig egy olyan termék fejlesztésére fordítottam, amely talán emberségesebbé teheti az egymáshoz vezető utat. Az utolsó oldalakon szó esett egy magyar multinacionális állásról, a COVID–19-ről és egy határokon átívelő távmunkáról. A zárómondat egyszerű volt: *ami ezután következett, a II. részhez tartozik.*
 
-A folytatás szerződésekben, internetes nyilvántartásokban, telefonhívásokban, rendőrségi iratokban, petíciókban és nyilvános eseményekben maradt fenn. Szobákban is: a hálóban, ahol felpolcoltam a lábamat; a hétköznapi rendőrségi irodában; a kisebb helyiségben, ahol a védő időt kért; a C alakú tárgyalóasztalnál; és az íróasztalnál, ahol egy mesterségesintelligencia-asszisztens kurzora villogott a börtönbüntetés lehetőségéről szóló mondat mellett.
+A folytatás nyomai szerződésekben, internetes nyilvántartásokban, telefonhívásokban, rendőrségi iratokban, petíciókban és nyilvános eseményekben maradtak fenn. És szobákban: a hálóban, ahol felpolcoltam a lábamat; a hétköznapi rendőrségi irodában; a kisebb helyiségben, ahol a védő időt kért; a C alakú tárgyalóasztalnál; és az íróasztalnál, ahol egy MI-asszisztens kurzora villogott a börtönbüntetés lehetőségéről szóló mondat mellett.
 
 A nyilvános történelem törvényekből, választásokból, lemondásokból és dátumokból áll. Az egyes ember életében más alakot ölt. A törvényből felmondott szerződés lesz. A digitális ügyintézésből egy asztalon átadott jelszó. Az intézményi kudarcból álmatlan éjszaka, aztán egy mondat, végül kopogás az ajtón. Ez a könyv azt követi, hogyan halad végig egy nagyobb korszak egyetlen ember életén. A személyes történet nem helyettesíti a történelmet, de megmutatja, mit jelent annak súlya a hétköznapokban.
 
-A történet központi képtelenségéhez nem kell jogi nyelv. Egy hirtelen törvénymódosítás veszélybe sodorta emberek megélhetését. A könyvelő, az adóhatóság és én egymás felé továbbítottuk a problémát, miközben a jogi felelősség végig az én nevemen maradt. Amikor végül átláttam, mi történt, körülbelül egy hét alatt megértettem és kijavítottam azt, amit a szakmai ügyintézés több hónap alatt sem oldott meg. Helyesbítettem a bevallást, megfizettem az adót, és megszüntettem a sikertelen képviseletet. A bevallás és az adókötelezettség rendezve volt. Nagyjából egy évvel később, nyolc nappal a rendőrségi kutatás után igazságügyi szakértők vizsgálták meg azt a magasan képzett szakembert, aki maga javította ki a hibát, majd kóros elmeállapotra utaló címkét illesztettek rá.
+Az abszurditás megértéséhez nem kell jogi nyelv. Egy hirtelen törvénymódosítás emberek megélhetését sodorta veszélybe. A könyvelő, az adóhatóság és én egymáshoz küldözgettük a problémát, miközben a jogi felelősség végig az én nevemen maradt. Amikor végül átláttam, mi történt, körülbelül egy hét alatt megértettem és kijavítottam azt, amit hónapok alatt sem sikerült elintézni. Helyesbítettem a bevallást, megfizettem az adót, és megszüntettem a sikertelen képviseletet. Az ügyet rendeztem. Nagyjából egy évvel később, nyolc nappal a rendőrségi kutatás után igazságügyi szakértők vizsgálták azt az embert, aki maga javította ki a hibát. Az iratokban végül mégis a kóros elmeállapot címkéje került mellé.
 
-Két évtizednyi kirekesztettség, alkalmazkodás és a saját országomban felépíthető törvényes élet újabb meg újabb kísérlete után, a felgyűlt nyomás alatt kicsúszott belőlem egy mondat. Azonnal kijavítottam, és tovább írtam. Az eredeti megfogalmazás az iratanyag része maradt. Ahogy a helyesbített bevallás, a megfizetett adó, a megszüntetett képviselet, az írásos közigazgatási előzmények és a műtét körüli nyugalomra vonatkozó kérésem is. A későbbi eljárásban mégis a kifakadás és az utána írt üzenetek jutottak messzebbre, nem a helyesbítések. Egy rendszer nem emelheti ki a töréspontot az odavezető útból, majd nem használhatja ezt a töredéket annak bizonyítására, hogy mindig is az emberrel volt baj.
+Két évtizednyi kirekesztettség és alkalmazkodás után még mindig azon dolgoztam, hogy a saját országomban törvényes életet építsek. A felgyűlt nyomás alatt kicsúszott belőlem egy mondat. Azonnal kijavítottam, és tovább írtam. Az eredeti megfogalmazás az iratanyag része maradt. Ahogy a helyesbített bevallás, a megfizetett adó, a megszüntetett képviselet, az írásos közigazgatási előzmények és a műtét idejére kért nyugalom is. A későbbi eljárásban mégis a kifakadás és az utána írt üzenetek jutottak messzebbre, nem a helyesbítések. Egy rendszer nem emelheti ki a töréspontot az odavezető útból, majd használhatja ezt a töredéket annak bizonyítására, hogy mindig is az emberrel volt baj.
 
-Közel négy évvel a munka leállása és csaknem három évvel a büntetőeljárás kezdete után még elsőfokú ítélet sem született, nemhogy eljutott volna az ügy a fellebbezésig. Néhány perc alatt leírt szöveg évekre meghatározta az életemet. Egy rosszul összeillesztett eseménysorban született mondat már éveket emésztett fel. Ha minden hátralévő szakasz ugyanilyen ütemben haladna, az egész eljárás akár egy évtizedig is eltarthatna.
+Közel négy évvel a munka leállása és csaknem három évvel a büntetőeljárás kezdete után még elsőfokú ítélet sem született, nemhogy eljutott volna az ügy a fellebbezésig. Egy néhány perc alatt leírt szöveg évekre meghatározta az életemet. A széteső eseménysor végén született mondat addigra már éveket emésztett fel. Ha minden hátralévő szakasz ugyanilyen ütemben haladna, az egész eljárás akár egy évtizedig is eltarthatna.
 
-Az eljárás még nem jutott el a III. résznek fenntartott befejezésig. Az ellenőrizhető iratok, az állítások határai és a forráshivatkozások a könyv végén találhatók, hogy a főszöveget ne szakítsák meg, a pontosságot mégis ellenőrizhetővé tegyék.
+Az eljárás még nem ért el ahhoz a befejezéshez, amely majd a III. részhez tartozik. Az ellenőrizhető iratok, az állítások határai és a forráshivatkozások a könyv végén találhatók, hogy ne szakítsák meg a történetet, de ellenőrizhető maradjon, mire épül.
 
-A könyv valamennyi szereplő- és jelenetillusztrációja mesterséges intelligenciával létrehozott vizuális értelmezés. Nem a tényleges résztvevőket ábrázolják.
+A könyv minden szereplő- és jelenetillusztrációja mesterséges intelligenciával készült vizuális értelmezés. Egyik sem a tényleges résztvevőket ábrázolja.
 
-Ez azért fontos, mert nem csak velem történhet meg. Más talán sohasem írná le az én mondataimat, mégis ugyanebben a folyosóban találhatná magát.
+Ez azért fontos, mert nemcsak velem történhet meg. Más talán sohasem írná le az én mondataimat, mégis ugyanebben a folyosórendszerben találhatná magát.
 
-Ez a folyosó nem bizonyítja, hogy egy egész nemzettel volna baj, és azt sem, hogy minden magyar hivatal vagy tisztviselő ugyanígy működik. Egy alacsony bizalmi kultúra része, amelyben sokan már jóval azelőtt megtanulunk eligazodni, hogy bárki nevet adna neki. Az írott szabály az egyik irányba mutat, a bevett gyakorlat a másikba. A hatalom felfelé, a felelősség lefelé halad, az állampolgártól pedig elvárják, hogy mindkettőt ismerje, de nyilvánosan soha ne keverje össze őket.
+Ez a folyosó nem bizonyítja, hogy egy egész nemzettel volna baj, és azt sem, hogy minden magyar hivatal vagy tisztviselő ugyanígy működik. Egy olyan kultúra része, amelyben kevés a bizalom, és amelyben sokan már jóval azelőtt megtanulunk eligazodni, hogy bárki nevet adna neki. Az írott szabály az egyik irányba mutat, a bevett gyakorlat a másikba. A hatalom felfelé, a felelősség lefelé halad, az állampolgártól pedig elvárják, hogy mindkettőt ismerje, de nyilvánosan soha ne keverje össze őket.
 
-Ezt a kultúrát hamarabb megérzi az ember, mint hogy meg tudná fogalmazni. A szobában mindenki látja, hogy a folyamat elromlott, mégis mindenki ragaszkodik a saját szűk szerepéhez, mert így a kudarc végül valaki más problémája lesz. Egy mosoly nyugtázza a képtelenséget, az eljárás pedig megy tovább. A jelszó személyes, amikor a felelősséget osztják ki, és megosztható, amikor a munkát kell elvégezni. A helyesbítés eltűnik. A kifakadás megmarad.
+Ezt a kultúrát hamarabb megérzi az ember, mint hogy meg tudná fogalmazni. A szobában mindenki látja, hogy a folyamat elromlott, mégis mindenki ragaszkodik a saját szűk szerepéhez, mert így a kudarc végül valaki más problémája lesz. Egy mosoly jelzi, hogy mindenki érti a képtelenséget, az eljárás pedig megy tovább. A jelszó személyes, amikor a felelősséget osztják ki, és megosztható, amikor a munkát kell elvégezni. A helyesbítés eltűnik. A kifakadás megmarad.
 
 Magyarok százezrei nem ugyanazért hagyták el az országot. Szerepet játszhatott a fizetés, a lakhatás, a munka, a szerelem, a nyelv, a kaland és a méltóság is. Ez a könyv egy kevésbé látható nyomást követ: azt a kimerültséget, amikor a hivatalos intézmények működtetéséhez informális alkalmazkodás kell, de ha ez kudarcot vall, végül csak az egyén vonható felelősségre.
 
@@ -51,17 +52,17 @@ Magyarok százezrei nem ugyanazért hagyták el az országot. Szerepet játszhat
 
 Az I. résznek egy egész könyvre volt szüksége egyetlen ember leírásához.
 
-Földműves családból érkezett, közgazdaságtant, programozást és matematikát tanult. Egy dél-indiai munka során kezdett valóban angolul beszélni, több kontinensen dolgozott, öt évig Londonban élt, és közel ötven országba szervezett magának utazásokat. Ezeken az utakon idegenekre kellett hagyatkoznia: sofőrökre, utasokra, szállodai dolgozókra, kollégákra, egy taxin osztozó párra vagy valakire, aki hamarabb észrevette a veszélyt, mint ő. Közös hálószobán és kihagyott ebédeken takarított meg pénzt, majd annyi függetlenséggel tért vissza Budapestre, hogy olyan szoftvert építhessen, amely valódi találkozásokhoz próbál elegendő kezdeti bizalmat teremteni.
+Földműves családból érkezett, közgazdaságtant, programozást és matematikát tanult. Egy dél-indiai munka során kezdett valóban angolul beszélni, több kontinensen dolgozott, öt évig Londonban élt, és közel ötven országba szervezett magának utazásokat. Ezeken az utakon idegenekre kellett hagyatkoznia: sofőrökre, utasokra, szállodai dolgozókra, kollégákra, egy taxin osztozó párra vagy valakire, aki hamarabb észrevette a veszélyt, mint ő. Közös hálószobával és kihagyott ebédekkel spórolt, majd annyi függetlenséggel tért vissza Budapestre, hogy olyan szoftvert építhessen, amely valódi találkozásokhoz próbál elegendő kezdeti bizalmat teremteni.
 
-Az I. rész ezekből a találkozásokból épült, mert az emberi kapcsolatokat nem lehet egyszerűen kivonni egy élet történetéből. A sofőr, a lakótárs, a kolléga, az idegen, a randevúpartner és a családtag nem díszítő anekdota volt a „valódi” életrajz mellett. Nekik köszönhetően váltak lehetővé döntések, elviselhetővé félelmek és otthonná helyek.
+Az I. rész ezekből a találkozásokból épült, mert az emberi kapcsolatokat nem lehet egyszerűen kivonni egy élet történetéből. A sofőr, a lakótárs, a kolléga, az idegen, a randevúpartner és a családtag nem díszítő anekdota volt a „valódi” életrajz mellett. Nélkülük nem születtek volna meg bizonyos döntések, nem váltak volna elviselhetővé a félelmek, és a helyekből sem lett volna otthon.
 
 Az I. rész azt kérdezte, mit törölhet el két ember között egy túl gyors ítélet. A II. rész azt mutatja meg, mi történik, amikor ugyanez intézményi erőt kap. Egy profil lezárhat egy beszélgetést, mielőtt sor kerülne a találkozásra. Egy címke pedig elkezdhet átírni egy egész életet. Mindkét esetben az viseli a következményeket, akit néhány adattá szűkítettek, miközben a valós történet sokkal nagyobb az első, vékony képnél.
 
-A MyScoutee ennek a problémának egy szelídebb változatából indult ki. Annyira próbálta oldani az idegenek természetes kezdeti bizalmatlanságát, hogy az ítélet előtt létrejöhessen valamennyi közös élmény. A II. részben szereplő rendszerből újra és újra éppen az a képesség hiányzott, hogy az osztályozott ember teljes történetét is befogadja.
+A MyScoutee ennek a problémának egy szelídebb változatából indult ki. Az idegenek természetes kezdeti bizalmatlanságát próbálta annyira oldani, hogy az ítélet előtt közös élmény születhessen. A II. részben szereplő rendszerből újra és újra éppen az a képesség hiányzott, hogy az osztályozott ember teljes történetét is befogadja.
 
-Egy későbbi igazságügyi szakértői vélemény néhány bekezdésben másik életrajzot alkotott.
+Egy későbbi igazságügyi szakértői vélemény néhány bekezdésben másik életrajzot írt rólam.
 
-Egy olyan férfit írt le, aki rögzült „globális összeesküvésben” él, képtelen pozitív érzésekre az emberi kapcsolatokban, hajlamos a segítőkészséget rossz szándék bizonyítékaként értelmezni, és kisebbrendűségi érzés, projekció, valamint súlyos paranoid személyiségzavar hajtja. A jelentés szerint ez az állapot elérte a kóros elmeállapot szintjét, és közepes mértékben korlátozta cselekedetei következményeinek felismerésében.
+Egy olyan férfit írt le, aki rögzült „globális összeesküvésben” él, képtelen pozitív érzésekre az emberi kapcsolatokban, hajlamos a segítőkészséget rossz szándék bizonyítékaként értelmezni, és kisebbrendűségi érzés, projekció, valamint súlyos paranoid személyiségzavar hajtja. A jelentés szerint ez az állapot elérte a kóros elmeállapot szintjét, és közepes mértékben korlátozta abban, hogy felismerje cselekedetei következményeit.
 
 Ugyanez a jelentés rögzítette, hogy nyugodt és együttműködő volt, értette a vizsgálatot, betartotta a hétköznapi udvariassági formákat, minden tekintetben orientált volt, megértése, emlékezete és végzettségének megfelelő értelme épek maradtak. Nem talált korábbi pszichiátriai dokumentációt, érzékelési zavart vagy formális gondolkodási rendellenességet.
 
@@ -69,15 +70,23 @@ Csendességemet az emberek gyakran engedelmességnek nézték. Nem voltam hirtel
 
 Mindkét életrajz az én nevemet viselte.
 
-A két életrajz együttes megírásához kellett egy harmadik nézőpont. Ki kellett lépnem a saját félelmemből, és magamat is az események egyik résztvevőjeként kellett vizsgálnom: nem minden történés ártatlan középpontjaként, de nem is a jelentés klinikai alakjaként. Olyan emberként, akinek a tettei ugyanúgy vizsgálhatók, mint bárki máséi. Nem azért kellett távolabb lépnem, mert kevés kapcsolatom volt, hanem mert túl sok kötött ezekhez az eseményekhez. Minden szoba visszavezetett a szüleimhez, kollégákhoz, lakótársakhoz, idegenekhez, ügyfelekhez, tisztviselőkhöz és ahhoz az országhoz, amelyet otthonná próbáltam tenni. Ezeknek a kötelékeknek a közepéből szinte lehetetlen volt megírni a történetet. Kissé távolabbról már kirajzolódott a szerkezete.
+Ahhoz, hogy a két életrajzot egymás mellé tegyem, kellett egy harmadik nézőpont.
+Megpróbáltam kívülről is látni magamat: nem minden történés ártatlan
+középpontjaként, de nem is a jelentés klinikai alakjaként. Olyan emberként,
+akinek a tettei ugyanúgy vizsgálhatók, mint bárki máséi. Nem azért volt nehéz
+hátrébb lépnem, mert kevés kapcsolat kötött az eseményekhez, hanem mert túl
+sok. Minden szoba visszavezetett a szüleimhez, kollégákhoz, lakótársakhoz,
+idegenekhez, ügyfelekhez, tisztviselőkhöz és ahhoz az országhoz, amelyet
+otthonná próbáltam tenni. Ezeknek a kötelékeknek a közepéből szinte lehetetlen
+volt megírni a történetet. Kissé távolabbról már kirajzolódott a szerkezete.
 
 Egy útlevél nem dönthet el pszichiátriai kérdést. Azt azonban megmutathatja, mennyire hiányos egy karikatúra. Utazásaim éppen azért működtek, mert felismertem a segítséget, ideiglenesen megbíztam ismeretlenekben, szükség esetén átírtam a terveimet, és nyelvi határokon át is emberi melegséget tapasztaltam. A szoftverem pedig azért létezett, mert továbbra is hittem abban, hogy az emberi kapcsolódást segíteni lehet anélkül, hogy irányítani próbálnánk.
 
-A szakértők által rögzített biztonsági aggály ugyanilyen konkrét volt. Azt kifogásoltam, hogy a gyakorlatban a személyes állami fiók jelszava helyettesítheti a biztonságos meghatalmazást. Így a könyvelő az adófizető személyazonossága alatt végezhet műveleteket. A jelentés ezt az érvet is rögzítette, a beszámolómat ellentmondásosnak nevezte, majd a tágabb mintát „globális összeesküvéssé” fordította.
+A biztonsági kifogásom ennél jóval konkrétabb volt, és a szakértők is rögzítették. Azt kifogásoltam, hogy a gyakorlatban a személyes állami fiók jelszava helyettesítheti a biztonságos meghatalmazást. Így a könyvelő az adófizető személyazonossága alatt végezhet műveleteket. A jelentés ezt az érvet is rögzítette, a beszámolómat ellentmondásosnak nevezte, majd a tágabb mintát „globális összeesküvéssé” fordította.
 
 Ez nem egy hétköznapi adóbűncselekmény története, és nem is illusztrált jogi beadvány. Arról szól, hogyan sűrítették addig az első életrajzot, amíg a második belefért egy iratba — és hogyan válik ezen keresztül láthatóvá egy ország történelmi időszaka.
 
-Az átalakulás egy képernyőn futó vonallal kezdődött. Az I. rész végén ez a vonal idegeneket összekötő hálózat volt. Itt egy űrlap rubrikájává vált: számmá, dátummá, jogi kategóriává, aláírássá. Az otthonból iroda lett. Az irodai asztalból adóügyi ügyintézés. Abból rendőrségi jelenet. Nyolc nappal a kutatás után pedig igazságügyi szakértői vizsgálat. A jelentést csak hetekkel később írták alá, de az átalakulás már megkezdődött.
+Az átalakulás egy képernyőn futó vonallal kezdődött. Az I. rész végén ez még idegeneket kötött össze. Itt már egy űrlap rubrikájába futott: számmá, dátummá, jogi kategóriává, aláírássá vált. Az otthonból iroda lett. Az irodai asztalnál adóügyi ügyintézés kezdődött. Abból rendőrségi jelenet, nyolc nappal a kutatás után pedig igazságügyi szakértői vizsgálat. A jelentést csak hetekkel később írták alá, de az átalakulás már megkezdődött.
 
 Sohasem voltam pártaktivista. Amikor 2022 júliusában megváltozott a KATA, vagyis a kisadózó vállalkozások tételes adója, mások hidakat zártak le. Én a számítógépemnél maradtam, és egy belgiumi munka rendes átadását próbáltam megoldani. Nem az állammal akartam szembekerülni. Be akartam fejezni a munkát, lezárni az adóbevallást és felkészülni egy műtétre.
 
@@ -99,7 +108,7 @@ A Londonból hazatérő férfi nem azért jött vissza, mert London legyőzte. H
 
 2019 elejére újra munkát kerestem. Nagyjából ötven interjú végződött eredmény nélkül. Augusztusra már majdnem visszatértem Londonba, amikor egy multinacionális cég szinte véletlenül felvett Magyarországon. Már az odáig vezető út is kész kis komédia volt. Egy helyi közvetítő cég először csak akkor akart elhelyezni a multinál, ha egyéni vállalkozó leszek, és katásként számlázok. Nemcsak az adózási formát, az egész vállalkozói konstrukciót elutasítottam. Alkalmazotti állást akartam, nem azt, hogy valaki más kényelméért vállalkozót csináljanak belőlem. A kisebb cég sikertelennek minősítette az interjúmat, és szakmailag leírt.
 
-Két héttel később a multinacionális cég meghívott a saját alkalmazotti kiválasztására. Az interjúztatók láthatóan nem egyeztették a jegyzeteiket. Amikor a második körben előkerült a korábbi elutasítás, egy pillanatra megállt a beszélgetés; aztán a cég közvetlenül alkalmazott, nagyjából kétszer annyi pénzért. A két intézmény közötti véletlen rés nyitotta ki azt a stabil ajtót, amelyet olyan régóta kerestem.
+Két héttel később a multinacionális cég meghívott a saját alkalmazotti kiválasztására. Az interjúztatók láthatóan nem egyeztették a jegyzeteiket. Amikor a második körben előkerült a korábbi elutasítás, egy pillanatra megállt a beszélgetés; aztán a cég közvetlenül alkalmazott, nagyjából kétszer annyi pénzért. Az, hogy a két intézmény nem ugyanazt látta bennem, végül kinyitotta azt a stabil ajtót, amelyet olyan régóta kerestem.
 
 Ugyanazon a munkahelyen a katás alvállalkozók továbbra is kevesebbe kerültek az alkalmazottaknál. Miután bekerültem, a látszólag stabil állás különös ürességgé változott: alig kaptam munkát. Arra gyanakodtam, hogy a kisebb cég rossz értékelése irodai pletykaként követett, de erre sohasem láttam bizonyítékot. Egy termékmenedzser újra és újra más csapatokhoz irányította a feladatokat. Hosszú napokat töltöttem az irodában készenlétben, valódi munka nélkül.
 
@@ -111,7 +120,16 @@ Az elbocsátás tragédiának érződött, bár maga a lezárás emberségesebb 
 
 A COVID–19 alatt még nehezebb lett új állást találni. Egy másik multinacionális cégnél a negyedik körig jutottam. Egy korábbi felettesem is bekapcsolódott, mert ismerte az egyik vezetőt. Nem ismerte a közvetítő céggel történt előzményeket, és nem látta, milyen volt az én asztalomtól nézve a szinte üres év. Úgy éreztem, a beavatkozása hozzájárult az elutasításhoz, de magát a döntést nem láttam megszületni. Nem kaptam ajánlatot.
 
-A következő alkalmazotti lehetőség 2021 januárjában nyílt meg egy befektetési banknál, amikor Magyarországon esti kijárási korlátozás volt. Az irodában az emberekből csak a maszk fölötti szemek látszottak. A bank hosszú átvilágítást követelt, és csak a kiszervezett háttérellenőrzés után engedett munkába állni. Személyazonosító iratokat kellett e-mailes és más ellenőrzési csatornákon küldenem, amelyeket elavultnak és gyengén védettnek tartottam. A hetekig tartó folyamat nagy mennyiségű személyes adatot mozgatott meg. Mire véget ért, az ügyetlensége már komikusnak hatott. Az első napomon a *Monty Pythonhoz* hasonlítottam, ahogyan az adataimat kezelték. A vezető figyelmeztetett, hogy ez a hozzáállás az állásomba kerülhet. Az átvilágításon átmentem. A bizalom próbáján nem.
+A következő alkalmazotti lehetőséget 2021 januárjában kaptam egy befektetési
+banknál, amikor Magyarországon esti kijárási korlátozás volt. Az irodában az
+emberekből csak a maszk fölötti szemek látszottak. A bank hosszú átvilágítást
+követelt, és csak a kiszervezett háttérellenőrzés után engedett munkába állni.
+Személyazonosító iratokat kellett e-mailben és más, szerintem elavult és gyengén
+védett csatornákon küldenem. A hetekig tartó folyamat nagy mennyiségű személyes
+adatot mozgatott meg. Mire véget ért, az ügyetlensége már komikusnak hatott. Az
+első napomon a *Monty Pythonhoz* hasonlítottam az adatkezelést. A vezető
+figyelmeztetett, hogy ez a hozzáállás az állásomba kerülhet. Az átvilágításon
+átmentem. A bizalom próbáján nem.
 
 Az első hét végén a megfelelési képzés újabb akadályt mutatott. A bank munkavállalói kereskedési szabályai szerint engedélyt kellett volna kérnem a lakossági magyar állampapírokkal kapcsolatos ügyletekhez, pedig ezekben tartottam a megtakarításom nagy részét. Az egyik rendszerben az állampapír hétköznapi lakossági megtakarítás volt, a másikban ellenőrzött kereskedés. Számomra ezek a kötvények nem spekulációt jelentettek, hanem hét év alatt felépített függetlenségem alapját.
 
@@ -177,7 +195,7 @@ Az emberek utcára mentek. Hidakat zártak le. Azonnal megszületett a nyilváno
 
 Egy még futó szerződést, folyamatban lévő teljesítést, számlákat, külföldi jövedelmet és a megszüntetendő vállalkozást próbáltam rendbe tenni, miközben a könyvelőmnek ugyanezt az átmenetet egyszerre sok ügyfélnél kellett értelmeznie.
 
-A törvényt egy nap alatt átírták. Megérteni ennyi idő alatt nem lehetett.
+A törvény egy nap alatt végigment az Országgyűlésen. Megérteni ennyi idő alatt nem lehetett.
 
 ## 3. Az átadás megmentése
 
@@ -209,11 +227,11 @@ Mindegyikük mást látott.
 
 A könyvelő bevallásokat nyújthatott be, és megkapta a technikai üzeneteket. Az adóhatóság feldolgozhatta vagy elutasíthatta a bevallást, átvezethette a tételeket, és telefonon is válaszolhatott. Jogilag én maradtam felelős, mégsem láttam automatikusan ugyanakkor és ugyanabban a formában minden műveletet és értesítést, mint a képviselőm.
 
-A háromszöget a közös információnak kellett volna összetartania. Ehelyett mindhárman más időpontban és más nézetben láttuk az ügyet. A könyvelő benyújtotta a bevallást és technikai üzeneteket kapott. Az adóhatóság feldolgozta, elutasította, majd később módosította a számlatételeket. Én viseltem a jogi felelősséget, de nem láttam a teljes folyamatot.
+A háromszöget a közös információnak kellett volna összetartania. Ehelyett mindhárman más időpontban és más felületen láttuk az ügyet. A könyvelő benyújtotta a bevallást és technikai üzeneteket kapott. Az adóhatóság feldolgozta, elutasította, majd később módosította a számlatételeket. Én viseltem a jogi felelősséget, de nem láttam a teljes folyamatot.
 
-November 23-ig nem tudtam, hogy a záróbevallást továbbra sem sikerült rendezni. Mire megtaláltam az ismétlődő hibaüzeneteket, a probléma már hónapok óta fennállt. Ettől kezdve a könyvelő, a hatóság és köztem pattogott az információ — miközben minden eredményen továbbra is az én nevem és felelősségem szerepelt.
+November 23-ig nem tudtam, hogy a záróbevallást továbbra sem sikerült rendezni. Mire megtaláltam az ismétlődő hibaüzeneteket, a probléma már hónapok óta fennállt. Ettől kezdve a könyvelő, a hatóság és köztem pattogott az információ — miközben minden következmény továbbra is az én nevemen maradt.
 
-A későbbi üzenetáradat nem létrehozta ezt a helyzetet, hanem azután indult el, hogy a rendszer már kudarcot vallott.
+A későbbi üzenetáradat nem ezt a helyzetet hozta létre; csak azután indult el, hogy a rendszer már kudarcot vallott.
 
 Nem maga a hétköznapi emberi hiba volt a döntő, hanem az, hogy mindenki továbbirányított. A könyvelő a hatóságra hivatkozott, a hatóság visszaküldött a könyvelőhöz, és mindketten rámutathattak a törvény szerint engem terhelő kötelezettségekre. A könyvelő még akkor is vitatta a megoldást, és láthatóan mást értett a tisztviselők közlésén, amikor a helyes eredmény már kezdett kirajzolódni. Egyedül az adófizető nem adhatta tovább a következményeket.
 
@@ -221,15 +239,15 @@ Nem maga a hétköznapi emberi hiba volt a döntő, hanem az, hogy mindenki tov�
 
 ## 5. A jelszó nem meghatalmazás
 
-A legmélyebb tervezési probléma már a záróbevallás előtt megjelent.
+Az alapvető tervezési hiba már a záróbevallás előtt megjelent.
 
-A hivatalos meghatalmazás lehetővé tette, hogy a könyvelő a jelszavam nélkül járjon el. A benyújtásokat, feldolgozási hibákat és értesítéseket azonban nem láttuk mindketten egyetlen folyamatos történetként. A gyakorlatban csak a veszélyes megoldás tartotta egy helyen a műveletet és az értesítést: adjam oda a könyvelőnek a jelszavamat, ő pedig az én állami fiókomon keresztül dolgozzon. A segítséghez így az én személyazonosságomat kellett használnia.
+A hivatalos meghatalmazás lehetővé tette, hogy a könyvelő a jelszavam nélkül járjon el. A benyújtásokat, feldolgozási hibákat és értesítéseket azonban nem láttuk mindketten egy helyen, ugyanabban a sorrendben. A gyakorlatban csak a veszélyes megoldás tartotta egyben a műveletet és az értesítést: adjam oda a könyvelőnek a jelszavamat, ő pedig az én állami fiókomon keresztül dolgozzon. A segítséghez így az én személyazonosságomat kellett használnia.
 
-Egy ponton a könyvelő váratlanul felhívott egy azóta elfelejtett ügyben, és megkérdezte, benyújtsa-e a szeptember 1-jei átmenethez kapcsolódó további bevallást. Pontosan ezt akartam elkerülni. A bevallás elég egyszerű volt ahhoz, hogy otthon, a saját online adófelületemen adjam be, anélkül hogy ismét átadnám az állami fiókom jelszavát. A kérdés újra ugyanabba a veszélyes választásba kényszerített, és fölöslegesen ismét riadókészültségbe hozott.
+Egy ponton a könyvelő váratlanul felhívott egy azóta elfelejtett ügyben, és megkérdezte, benyújtsa-e a szeptember 1-jei átmenethez kapcsolódó további bevallást. Pontosan ezt akartam elkerülni. A bevallás elég egyszerű volt ahhoz, hogy otthon, a saját online adófelületemen adjam be, anélkül hogy ismét átadnám az állami fiókom jelszavát. A kérdés újra ugyanabba a veszélyes választásba kényszerített, én pedig megint fölöslegesen kerültem riadókészültségbe.
 
 Ha nem osztottam meg a hozzáférést, azt mondhatták, megakadályoztam a könyvelőt a munkában. Ha megosztottam, megkérdezhették, miért adtam át a személyes jelszót. Ha a képviselő járt el, továbbra is én feleltem. Ha csak hozzá jutott el egy értesítés, a rendszer akkor is úgy viselkedhetett, mintha tudtam volna róla.
 
-Ez nem volt valódi, tájékozott beleegyezés. Egy hivatalos folyamatot rögtönzött szokás tartott működésben.
+Ez nem volt valódi, tájékozott beleegyezés. A hivatalos folyamatot rögtönzés tartotta működésben.
 
 Látszólag technikai, valójában alapvető jogi kérdéseket kezdtem feltenni:
 
@@ -242,37 +260,43 @@ Látszólag technikai, valójában alapvető jogi kérdéseket kezdtem feltenni:
 
 Hétköznapi szoftverkérdések. A méltóság kérdései is.
 
-Egy megfelelő meghatalmazási rendszerben a könyvelő a saját személyazonossága alatt járhatott volna el, miközben mindketten láttuk volna az összes benyújtást, elutasítást, helyesbítést és értesítést. Nem állíthatom, hogy ez minden későbbi eseményt megakadályozott volna. Ezt a konkrét zavart azonban megállíthatta volna, mielőtt hónapokon át továbbgyűrűzik.
+Egy megfelelő meghatalmazási rendszerben a könyvelő a saját személyazonossága alatt járhatott volna el, miközben mindketten láttuk volna az összes benyújtást, elutasítást, helyesbítést és értesítést. Nem állíthatom, hogy ez minden későbbi eseményt megakadályozott volna. Ezt a konkrét zavart azonban megelőzhette volna, mielőtt hónapokon át továbbgyűrűzik.
 
-Egy működő rendszerben a különbség szinte túl magától értetődő a magyarázathoz. A könyvelő a könyvelő személyazonossága alatt jár el. Az ügyfél látható meghatalmazást ad. Mindketten látják, mit nyújtottak be, mi hibázott és mi változott. A jogilag felelős személy a bírsággá válás előtt kapja meg a figyelmeztetést. Egy másik ember segítéséhez nem kell azzá az emberré válni.
+Egy működő rendszerben ez annyira magától értetődő volna, hogy magyarázni sem kellene. A könyvelő a saját személyazonossága alatt jár el. Az ügyfél látható meghatalmazást ad. Mindketten látják, mit nyújtottak be, mi hibázott és mi változott. A jogilag felelős személy még azelőtt kapja meg a figyelmeztetést, hogy az ügyből bírság lenne. Egy másik ember segítéséhez nem kell azzá az emberré válni.
 
-A hivatalos képviselet elválasztotta egymástól az elvégzett műveletet és annak láthatóságát. A jelszómegosztás a gyakorlatban úgy egyesítette újra őket, hogy közben összemosta két ember személyazonosságát. Így egy hiányos, de törvényes és egy működőképesebb, de veszélyes kapcsolat között kellett választanom. A rendszer nem oldotta fel ezt az ellentmondást. Rám hagyta.
+A hivatalos képviselet elválasztotta egymástól az elvégzett műveletet és annak láthatóságát. A jelszómegosztás a gyakorlatban úgy egyesítette újra őket, hogy közben összemosta két ember személyazonosságát. Így egy hiányos, de törvényes és egy működőképesebb, de veszélyes folyamat között kellett választanom. A rendszer nem oldotta fel ezt az ellentmondást. Rám hagyta.
 
 ## 6. Három kísérlet egy kivonásra
 
 <!-- illustration: part_ii_accountant -->
 
-A záróbevallásnak nem kellett volna filozófiai problémává válnia. Alapvetően számtan volt.
+A záróbevallásnak nem kellett volna filozófiai problémává válnia. Hiszen egyszerű számtan volt.
 
-A határidő szeptember 30. volt. A könyvelőnek tehát a júliusi változás után hónapjai, nem napjai voltak. November 23-ra világossá vált számomra, hogy mégsem tudja befejezni azt a rövid bevallást, amellyel megbíztam. Ugyanaz a benyújtási hiba jelent meg a 2021-es és a 2022-es katás bevallásomban. Vitatta az értelmezésemet, a helyesbítés végül mégis azt igazolta, hogy jól olvastam a helyzetet. Az iratok három sikertelen kísérletet, adóhivatali segítséget, megoldatlan feldolgozási hibákat és tudtom nélkül benyújtott változatokat mutatnak. Egy november 30-i bevallás engem nevezett meg kapcsolattartónak, miközben azt sem tudtam, hogy beadták.
+A határidő szeptember 30. volt. A könyvelőnek tehát a júliusi változás után hónapjai, nem napjai voltak. November 23-ra mégis kiderült, hogy nem tudta befejezni azt a rövid bevallást, amellyel megbíztam. Ugyanaz a benyújtási hiba jelent meg a 2021-es és a 2022-es katás bevallásomban. Vitatta az értelmezésemet, a helyesbítés végül mégis azt igazolta, hogy jól olvastam a helyzetet. Az iratokban három sikertelen kísérlet, adóhivatali segítség, megoldatlan feldolgozási hibák és tudtom nélkül benyújtott változatok szerepelnek. Egy november 30-i bevallás engem nevezett meg kapcsolattartónak, miközben azt sem tudtam, hogy beadták.
 
-Az iratokból nem egyetlen kudarc látszott, hanem egymást követő változatok. Az egyikben módosult egy szám, a másikból kimaradt egy. Egy visszaküldött hiba a könyvelő csatornáján maradt, és a következő próbálkozáson sem változtatott. Az adóhivatal munkatársai a saját képernyőjükről segítettek, a könyvelő a sajátjáról válaszolt, én pedig még mindig nem tudtam, hogy mindez történik.
+Az iratokból nem egyetlen kudarc látszott, hanem egymást követő változatok. Az egyikben módosult egy szám, a másikból kimaradt egy. A visszaküldött hibaüzenet a könyvelő csatornáján maradt, a következő próbálkozásban mégsem javították ki. Az adóhivatal munkatársai a saját képernyőjükről segítettek, a könyvelő a sajátjáról válaszolt, én pedig még mindig nem tudtam, hogy mindez történik.
 
 November 23-án véletlenül elém került egy újságcikk a NAV rendszerének frissítéséről. Nem értesítés volt, és nem rólam szólt. Egy részlete mégis ütközött azzal, amit a már lezárt ügyemről tudni véltem. Ezért beléptem az adóportálra, és alaposabban megnéztem.
 
-A gyors ellenőrzésből hamarosan asztalt betöltő nyomozás lett. Megnyitottam a saját számlatörténetemet, és mellé tettem a könyvelő benyújtásait. Az én bejelentkezésemmel végzett műveletek az egyik helyen látszottak, az ő benyújtásai és visszaküldött hibaüzenetei egy másikon. Az egyik történet ott szakadt meg, ahol a másik elkezdődött. A döntő figyelmeztetés azon az oldalon maradt, amelyet én nem láthattam.
+A gyors ellenőrzésből hamarosan az egész asztalt beterítő nyomozás lett. Megnyitottam a saját számlatörténetemet, és mellé tettem a könyvelő benyújtásait. Az én bejelentkezésemmel végzett műveletek az egyik helyen látszottak, az ő benyújtásai és visszaküldött hibaüzenetei egy másikon. Az egyik történet ott szakadt meg, ahol a másik elkezdődött. A döntő figyelmeztetés azon az oldalon maradt, amelyet én nem láthattam.
 
 Aztán előkerültek a verziószámok. A NAV frissítette a benyújtási rendszert, miközben a könyvelő programja még a régi formátumot használta. Az iratai között volt újabb bevallás, de a technikai eltérés miatt nem jutott be a rendszerbe. Amikor megnyitottam, kiderült, hogy a számítása is hibás. A sikertelen beküldés tehát elrejtett egy másik hibát magában az űrlapban.
 
-November 23-án és 24-én a kétféle nyilvántartás és a telefon között ingáztam. A hatóság képernyője ott kezdődött, ahol a könyvelőé véget ért. Az ő iratai ott folytatódtak, ahol az én postaládám megszakadt. Ugyanaz a bevallás az egyik helyen hiányzott, a másikon elutasították, a harmadikon lecserélték, az én számításom szerint pedig továbbra is hibás volt. Mindenkinél volt olyan dokumentum, amely a saját következő mondatát észszerűvé tette. Csakhogy egyik dokumentum sem ugyanazt a pillanatot mutatta.
+November 23-án és 24-én a kétféle nyilvántartás és a telefon között ingáztam. A hatóság képernyője ott kezdődött, ahol a könyvelőé véget ért. Az ő iratai ott folytatódtak, ahol az én postaládám megszakadt. Ugyanaz a bevallás az egyik helyen hiányzott, a másikon elutasították, a harmadikon lecserélték, az én számításom szerint pedig továbbra is hibás volt. Mindenkinél volt egy irat, amelyből nézve a saját következő lépése észszerűnek tűnt. Csakhogy egyik irat sem ugyanazt a pillanatot mutatta.
 
 Bizonyos feladatokhoz belépett a fiókomba, majd kilépett. A jelszó átkelt az asztalon. A figyelmeztetés nem.
 
-A fennmaradt 13:08-as hívás megőrizte annak az órának a hangját. A benyújtási hiba nem teremtette meg az összes mögötte álló évet. A tisztviselő rövid válaszai azonban, amelyeket száraznak és cinikusnak hallottam, úgy hatottak, mintha a rendszer minden mással együtt a családalapítás utolsó esélyét is elvenné. A hangom pánikos és kimerült volt. Kódok, űrlapok és hiányzó értesítések között azt mondtam: „Már nem lehet gyermekem.” Ez nem érv volt, hanem a sokk és a megadás egyetlen mondatban.
+A fennmaradt 13:08-as hívásból hallatszik, milyen állapotban voltam akkor. A
+benyújtási hiba önmagában nem magyarázta meg az összes odavezető évet. A
+tisztviselő rövid válaszait azonban száraznak és cinikusnak hallottam, mintha a
+rendszer minden mással együtt a családalapítás utolsó esélyét is elvenné. A
+hangom pánikos és kimerült volt. Kódok, űrlapok és hiányzó értesítések között
+azt mondtam: „Már nem lehet gyermekem.” Ez nem érv volt, hanem a sokk és a
+megadás egyetlen mondatban.
 
 Körülbelül egy hét alatt újraszámoltam mindent, megértettem az ügy állását, és eljutottam a helyes eredményig. A könyvelőnek erre hónapjai, három próbálkozása és közvetlen hatósági segítsége volt. A későbbi beszélgetéseinkből mégis az látszott, hogy továbbra sem ugyanúgy értette az útmutatást, ahogyan végül én. Visszavontam a meghatalmazást, mert meg kellett állítanom a háromirányú kommunikációt, mielőtt újabb hibás változat születik.
 
-A könyvelő is egy rendkívül gyorsan kikényszerített átmenet közepén állt, miközben egyszerre változtak a szabályok és mozdult meg sok ügyfele. A szerepcsere mégis megmaradt: végül én végeztem el azt a helyreállítást, amelyre szakembert bíztam meg, miközben a jogi felelősség mindvégig nálam maradt. A nyomás mindenkin áthaladt. A végső következmény nem.
+A könyvelő is egy rendkívül gyorsan kikényszerített átmenet közepén állt, miközben egyszerre változtak a szabályok és mozdult meg sok ügyfele. A szerepcsere mégis megmaradt: végül én végeztem el azt a helyreállítást, amellyel szakembert bíztam meg, miközben a jogi felelősség mindvégig nálam maradt. Mindenki érezte a nyomást. A végső következmény mégis nálam maradt.
 
 Néhány hívás fennmaradt ebből az időszakból, de a későbbi védőbeszédemben idézett megjegyzésekhez tartozó döntő beszélgetések nem. Tartalmukra csak közvetetten lehet következtetni a későbbi írásból, a környező hívásokból és az események folytatásából. A védőbeszédben így követik egymást:
 
@@ -284,9 +308,11 @@ Néhány hívás fennmaradt ebből az időszakból, de a későbbi védőbeszéd
 
 *Még ezt sem tudja? Egyeznek a számok? Volt előlegszámla?*
 
-A negyedik mondatra minden szereplőről lekopott valamennyi méltóság. A könyvelő nem lehetett a probléma. A vállalkozókat állítólag nem érdekelte, mi történik. Aki mégis törődött vele, annak könyvelőnek kellett volna lennie. A jelszó átadása egyszerre volt elvárt kerülőút és az én hibám.
+A negyedik mondat végére minden szereplő veszített valamennyit a méltóságából. A könyvelő nem lehetett a probléma. A vállalkozókat állítólag nem érdekelte, mi történik. Aki mégis törődött vele, annak könyvelőnek kellett volna lennie. A jelszó átadása egyszerre volt elvárt kerülőút és az én hibám.
 
-Azért fordultam az intézményhez, mert a meghatalmazás a tudtom nélkül vallott kudarcot. A kapott kérdések mégis visszatették a felelősséget arra az emberre, akit ugyanez a rendszer kizárt a döntő információból.
+Azért fordultam az intézményhez, mert a képviselet úgy vallott kudarcot, hogy én
+nem is tudtam róla. A kapott kérdések mégis arra az emberre tették vissza a
+felelősséget, akit ugyanez a rendszer kizárt a döntő információból.
 
 Bezárult a kör.
 
@@ -296,7 +322,7 @@ December 1-jén mást tettem, mint egyszerűen panaszkodni.
 
 Változtatásokat írtam le.
 
-Küldjenek közvetlen értesítést az adófizetőnek, amikor a képviselő benyújt valamit. Mutassák meg a hibát közérthetően. Engedjék, hogy a felelős ember elfogadja vagy vitassa az eredményt. Ne követeljenek személyazonosság-megosztást ott, ahol finomhangolt engedély is elég. Rögzítsék a fontos kimenő hívásokat. Függesszék fel a szokásos végrehajtást, ha súlyos egészségi esemény átmenetileg lehetetlenné teszi a válaszadást. Az új adózási utakat párhuzamosan teszteljék a régi megszüntetése előtt.
+Küldjenek közvetlen értesítést az adófizetőnek, amikor a képviselő benyújt valamit. Mutassák meg a hibát közérthetően. Engedjék, hogy a felelős ember elfogadja vagy vitassa az eredményt. Ne követeljenek személyazonosság-megosztást ott, ahol pontosan körülhatárolt jogosultság is elég. Rögzítsék a fontos kimenő hívásokat. Függesszék fel a szokásos végrehajtást, ha súlyos egészségi esemény átmenetileg lehetetlenné teszi a válaszadást. Az új adózási utakat párhuzamosan teszteljék a régi megszüntetése előtt.
 
 Ezeket a javaslatokat később részletesebben is kidolgoztam. Akkor csak azt próbáltam elérni, hogy a rám nehezedő nyomásból valamilyen használható megoldás szülessen.
 
@@ -314,17 +340,15 @@ Az adóügy továbbra sem volt átlátható. Olyan bevallás után jelentek meg 
 
 A felgyűlt nyomás alatt kicsúszott belőlem egy mondat. Azonnal kijavítottam, és tovább írtam. A szavak nyersek voltak, a mögöttük lévő indulat viszont érthető: ne töröljék el egy ember méltóságát csak azért, mert a körülötte működő rendszerek nem ugyanazt mutatják. A mondat nem a semmiből jött, de önmagában nem hordozhatta az előtte álló húsz év, a sikertelen bevallás és a megszakadt információs lánc teljes magyarázatát.
 
-Az ügyészség később jogi jelentést tulajdonított az eseménysor egyes részeinek. A védekezésem szerint azonban a kifakadás, annak azonnali javítása, a végrehajtási terv hiánya és a közigazgatási előzmény nem választható el egymástól.
+Az ügyészség később jogilag értékelte az eseménysor egyes részeit. A védekezésem szerint azonban a kifakadás, annak azonnali javítása, a végrehajtási terv hiánya és a közigazgatási előzmény nem választható el egymástól.
 
 Ebben áll a kafkai aránytalanság. A rendszer kudarca hónapok, képernyők, képviselők és hivatalok között oszlott szét; az újra összerakásához egy egész iratcsomag kell. Egy ember töréspontja viszont elfér egyetlen idézett sorban.
 
 ## 9. A helyesbítésből nem lesz szenzáció
 
-December 5-én telefonon tisztáztam a történteket. Magam helyesbítettem a bevallást, és megfizettem a helyes állapot szerinti adót. December 8-án felmondtam a könyvelő megbízását és megszüntettem a képviseletet, hogy végre véget érjen a háromirányú kommunikációs zűrzavar, és a jövőbeli értesítések közvetlenül elérjenek. Egy későbbi hivatalos válasz rögzítette a sikertelen benyújtásokat, a helyesbítést és a feldolgozás történetét.
+December 5-én telefonon tisztáztam a történteket. Magam helyesbítettem a bevallást, és megfizettem a helyes összeget. December 8-án felmondtam a könyvelő megbízását és megszüntettem a képviseletet, hogy végre véget érjen a háromirányú kommunikációs zűrzavar, és a jövőbeli értesítések közvetlenül elérjenek. Egy későbbi hivatalos válasz rögzítette a sikertelen benyújtásokat, a helyesbítést és a feldolgozás történetét.
 
 Az adóügyet rendeztem. Az adót megfizettem. A képviselet véget ért. A közigazgatási hibát végül az az ember hozta helyre, aki november 23-ig nem is tudott róla. Egy későbbi adónyilvántartás sem tartozást, sem túlfizetést nem mutatott.
-
-A később ellenem használt időrend december 3-án, a mondattal kezdődött. Ami előtte történt, kimaradt. A hiányzó köztes részt nekem kellett összegyűjtenem a NAV-tól: a panaszkezelési tájékoztatót és a hívásfelvételeket. A NAV december 18-án kelt tájékoztatója írásban rögzítette, hogy mindent rendeztem. A szakértői vélemény a kóros elmeállapotot a december 3-án kezdődő időszakra tette.
 
 Papíron a számla visszatért nullára.
 
@@ -338,31 +362,40 @@ A körülmények nem mentenek fel minden alól. De megakadályozhatják, hogy eg
 
 ## 10. Egy test határidővel
 
-Az ügyészség később központi jelentőséget tulajdonított a pénzbeli követeléseimnek. 2023 januárjára azonban már visszavontam a konkrét követelést. Az adót megfizettem. A probléma az maradt, hogy a hétköznapi gyakorlatban működő egyetlen megoldásnak az látszott: adjam át az állami fiókom jelszavát. Ezt többé nem voltam hajlandó elfogadni. A következményeket helyrehoztam, az ügy ajtaját mégsem tudtam becsukni magam mögött.
+Az ügyészség később nagy jelentőséget tulajdonított a pénzbeli követeléseimnek.
+2023 januárjára azonban már visszavontam a konkrét követelést. Az adót
+megfizettem. A probléma az maradt, hogy a hétköznapi gyakorlatban működő
+egyetlen megoldásnak az látszott: adjam át az állami fiókom jelszavát. Ezt többé
+nem voltam hajlandó elfogadni. A következményeket helyrehoztam, az ügyet mégsem
+tudtam lezárni.
 
-Leírtam a közelgő lábműtét helyét és időpontját, azt, hogy a műtét és a lábadozás alatt ne keressenek, és hogy utána el akarom hagyni az országot. A műtét előtt telefonon még egyszer ellenőriztem, hogy minden rendben van-e. Rendben volt. Cserébe csak annyit kértem, hogy hagyjanak békén, amíg felépülök. Nem maradt rendezetlen adótartozás, amelyet a testemnek kellett volna megoldania.
+Leírtam a közelgő lábműtét helyét és időpontját, azt, hogy a műtét és a lábadozás alatt ne keressenek, és hogy utána el akarom hagyni az országot. A műtét előtt telefonon még egyszer ellenőriztem, hogy minden rendben van-e. Rendben volt. Cserébe csak annyit kértem, hogy hagyjanak békén, amíg felépülök. Nem maradt rendezetlen adótartozás, amely miatt a lábadozás alatt keresniük kellett volna.
 
-Az adót már megfizettem. A lábam hónapok óta fájt. Az állami ellátásban ortopéd cipőt kaptam, és azt mondták, egy év múlva menjek vissza. A magánklinikán nevettek ezen az időtávon. A kezelés költségét a szüleimtől kértem kölcsön, és magánellátásba mentem. Több vizsgálat után 2023. február 15-én megműtöttek. Komoly lábműtét volt: magát a csontot vágták át. Körülbelül három hónapig nagyrészt ágyban éltem, és a felépülés ezután is hónapokig tartott. A gyógyuló testemet nem lehetett elválasztani a telefonon továbbra is érkező hívásoktól.
+Az adót már megfizettem. A lábam hónapok óta fájt. Az állami ellátásban ortopéd cipőt kaptam, és azt mondták, egy év múlva menjek vissza. A magánklinikán nevettek ezen az időtávon. A kezelés költségét a szüleimtől kértem kölcsön, és magánellátásba mentem. Több vizsgálat után 2023. február 15-én megműtöttek. Komoly lábműtét volt: magát a csontot vágták át. Körülbelül három hónapig nagyrészt ágyban éltem, és a felépülés ezután is hónapokig tartott. Közben ugyanazon a telefonon továbbra is érkeztek a hívások.
 
-A műtétet magánúton fizettem. A lábadozás is magánügy maradt. Az idő nagy részében ágyban kellett maradnom, a megműtött lábamat magasra polcolva. Amikor mozognom kellett, különleges tehermentesítő cipőt viseltem. Minden nap véralvadásgátló injekciót adtam magamnak a hasamba. Egyedül voltam. Senki sem jött gondoskodni rólam; több hónapra előre felhalmoztam az ételt. Ez volt a napi rutin: ágy, felpolcolt láb, különleges cipő, injekció, előre beszerzett élelmiszer, aztán elölről.
+A műtét magánellátásban történt. A lábadozás is magánügy maradt. Az idő nagy részében ágyban kellett maradnom, a megműtött lábamat magasra polcolva. Amikor mozognom kellett, különleges tehermentesítő cipőt viseltem. Minden nap véralvadásgátló injekciót adtam magamnak a hasamba. Egyedül voltam. Senki sem jött gondoskodni rólam; több hónapra előre felhalmoztam az ételt. Ez volt a napi rutin: ágy, felpolcolt láb, különleges cipő, injekció, előre beszerzett élelmiszer, aztán elölről.
 
-Az előrelátás megtöltötte az éléskamrát. A megtakarításom fizette a magánkezelést. A fegyelem átsegített az injekciókon. Az ágy melletti szék üres maradt.
+Az ételt előre beszereztem. A magánkezelést a megtakarításomból fizettem. Az injekciókat magamnak adtam be. Az ágy melletti szék üres maradt.
 
 Írásban kért nyugalmam ellenére márciusban újabb hívás érkezett. A már rendezett adóügy visszatért a szobába, miközben mozdulatlanul és egyedül feküdtem.
 
-A bevallás két oldal volt. Márciusra hét hónapja élt. Túlélte a munkámat, az adótartozást és a műtétet. Most megtalálta az ágyat is.
+A bevallás mindössze két oldalból állt, márciusra mégis hét hónapja húzódott. Tovább tartott, mint a munkám, az adótartozás, sőt még a műtét is. Most már az ágyban is utolért.
 
-A nyomozás később ebből az időszakból is kiemelt egy mondatot, amelyet soha nem tekintettem fenyegetésnek. Húsz elveszett évemet tízmilliárd euróra áraztam, majd egy nyers poénnal zártam le a képtelen számlát. Ha nekik mindent szabad, akkor legalább a papíron nekem is. A megműtött lábam még nem vitt el sehová; a depresszió egyetlen szobára szűkítette a világot. Onnan küldtem a rendszernek egy számlát húsz évről és a jogállamról.
+A nyomozás később ebből az időszakból is kiemelt egy mondatot, amelyet soha nem tekintettem fenyegetésnek. Azon a tavaszon majdnem ugyanez a szám járta a híreket: közel tízmilliárd eurónyi magyar kohéziós pénzt tartottak vissza jogállamisági feltételek miatt. Húsz elveszett évemet erre az összegre áraztam, majd egy nyers poénnal zártam le a képtelen számlát. Ha nekik mindent szabad, akkor legalább a papíron nekem is. A megműtött lábamon még járni sem tudtam; a depresszió egyetlen szobára szűkítette a világot. Onnan küldtem a rendszernek egy számlát húsz évről és a jogállamról.
 
-Egy ponton közeli fényképet küldtem az adóhatóságnak a feldagadt, megműtött területről. Nem a kötés látszott rajta, hanem maga a vágás: a felnyitott, még gyógyuló test nyers és intim képe, miközben a közigazgatási ügy tovább haladt. Egy obszcén viccet írtam mellé arról, hogy ezzel a félig szétvágott, feldagadt lábbal rúgom fenékbe a munkáját nem végző intézményt.
+Egy ponton közelről készült fényképet küldtem az adóhatóságnak a feldagadt, megműtött területről. Nem a kötés látszott rajta, hanem maga a vágás: a felnyitott, még gyógyuló test nyers és intim képe, miközben a közigazgatási ügy tovább haladt. Egy obszcén viccet írtam mellé arról, hogy ezzel a félig szétvágott, feldagadt lábbal rúgom fenékbe a dolgát nem végző intézményt.
 
 A fényképpel a felnyitott test került az internetes űrlap egyik mezőjébe.
 
-Ugyanebben az időszakban egy még csupaszabb sort is leírtam: „Akkor bazd meg, büntess meg.” Addigra úgy tűnt, a büntetés az egyetlen szolgáltatás, amelyet a rendszer talán időben képes nyújtani. Nem neveztem meg tisztviselőt. A mondat nem az asztalnál ülő embernek szólt, hanem annak a névtelen gépezetnek, amely a helyesbítés, a befizetés és az előzetes értesítés után is újra meg újra visszatért. Mozdulatlanul fekve már nem hittem abban, hogy még egy óvatos magyarázat lezárhatja az ügyet.
+Ugyanebben az időszakban egy még nyersebb sort is leírtam: „Akkor bazd meg, büntess meg.” Addigra úgy tűnt, a büntetés az egyetlen szolgáltatás, amelyet a rendszer talán időben képes nyújtani. Nem neveztem meg tisztviselőt. A mondat nem az asztalnál ülő embernek szólt, hanem annak a névtelen gépezetnek, amely a helyesbítés, a befizetés és az előzetes értesítés után is újra meg újra visszatért. Mozdulatlanul fekve már nem hittem abban, hogy még egy óvatos magyarázat lezárhatja az ügyet.
 
-Helyesbítettem a bevallást, megfizettem az adót, visszavontam a pénzbeli követelést, előre bejelentettem a műtétet és nyugalmat kértem. Mindez mégsem jelentett kijáratot az ügyből.
+Helyesbítettem a bevallást, megfizettem az adót, visszavontam a pénzbeli követelést, előre bejelentettem a műtétet és nyugalmat kértem. Mégsem tudtam kiszállni az ügyből.
 
-A mondat, a fénykép és a vicc később az ágy, a felhalmozott étel, az előzetes értesítés és a helyesbített adóbevallás nélkül került tovább. Mire a szakértői véleménybe ért, az egyedül fekvő, járásképtelen emberből súlyos paranoid személyiségzavar és kóros elmeállapot lett. Az ágy melletti szék továbbra is üres maradt.
+A mondat, a fénykép és a vicc később az ágy, a felhalmozott étel, az előzetes
+értesítés és a helyesbített adóbevallás nélkül került tovább. Mire mindez a
+szakértői véleménybe ért, az egyedül fekvő, járásképtelen ember helyén már a
+súlyos paranoid személyiségzavar és a kóros elmeállapot állt. Az ágy melletti
+szék továbbra is üres maradt.
 
 <!-- pagebreak -->
 
@@ -378,19 +411,23 @@ A csengő újra és újra megszólalt. Aki odakint állt, nem fáradt el. Azt mo
 
 Az ajtó visszacsapódott rám.
 
-Arra sem maradt idő, hogy látogatóként belépjenek. Újabb emberek követték őket, nők és férfiak golyóálló mellényben, az egyetlen látogatóra méretezett előszobába pedig beszorult az egyetlen mondat köré összegyűlt erő. Megragadták a karomat, a falnak szorultam, hátul bilincs zárult a csuklómon. Aztán egy bakancs eltalálta a már felvágott és újra összerakott lábamat. Fehér fájdalom futott végig a keskeny folyosón.
+Nem látogatóként léptek be. Újabb emberek követték őket, nők és férfiak
+golyóálló mellényben. A szűk előszoba megtelt a körém gyűlt emberekkel.
+Megragadták a karomat, a falnak szorultam, hátul bilincs zárult a csuklómon.
+Aztán egy bakancs eltalálta a már felvágott és újra összerakott lábamat. Éles
+fájdalom futott végig rajta.
 
 Bilincsben vittek be a rendőrségre, majd még aznap elengedtek.
 
-A sérülés azonban újra és újra felidézte a pillanatot. A körmöm háromszor vált le, mintha a testemet is bevonták volna az eljárás állandó újrakezdésébe.
+A sérülés azonban újra és újra felidézte a pillanatot. A körmöm háromszor vált le, mintha a testemnek is újra meg újra végig kellett volna mennie ugyanazon.
 
 Az I. részben ez az otthon az a lakás volt, amelynek megszerzésében a szüleim segítettek; amely üresen állt, amíg én egy londoni közös szobában éltem; és amelynek alacsonyabb költsége lehetővé tette, hogy önállóan fejlesszem a terméket.
 
 Most az állam a postára hivatkozva lépett be, a saját falamnak fordított, majd átkutatta a szobákat.
 
-Előző nap újabb feljelentést tettem, miközben segítséget próbáltam szerezni egy félbemaradt magán-fogszabályozási kezeléshez. A fogszabályozó még a számban volt, rendszeresen állítani kellett volna, de a kezelési kapcsolat megszakadt, és egyetlen új szolgáltató sem akarta átvenni. A rendőrségtől kértem segítséget. Másnap reggel egészen más ügyben álltak az otthonomban.
+Előző nap újabb feljelentést tettem, miközben segítséget próbáltam szerezni egy félbemaradt magánkezelés folytatásához. A fogszabályozó készülék még a számban volt, rendszeresen állítani kellett volna, de a kezelési kapcsolat megszakadt, és egyetlen új szolgáltató sem akarta átvenni. A rendőrségtől kértem segítséget. Másnap reggel egészen más ügyben álltak az otthonomban.
 
-Elvitték a telefonomat és a számítógépemet. Az eszközök, amelyeken a munkám, az emlékeim és a befejezetlen MyScoutee-rendszer volt, egyszeriben bizonyítékokká váltak. Többet tudtak a közelmúltamról, mint a lakásba belépő emberek. Amikor elvitték őket, a legegyszerűbb lehetőségemet is elvitték arra, hogy újra összerakjam, mi történt.
+Elvitték a telefonomat és a számítógépemet. Az eszközök, amelyeken a munkám, az emlékeim és a befejezetlen MyScoutee-rendszer volt, egyszeriben bizonyítékokká váltak. Többet tudtak a közelmúltamról, mint a lakásba belépő emberek. Velük együtt annak legegyszerűbb módját is elvesztettem, hogy újra összerakjam, mi történt.
 
 Nem úgy kerültem vissza a rendszerbe, hogy a törvényes munka elől bujkáltam. Éppen azzal léptem vissza, hogy dolgozni mertem. Most ugyanez a rendszer a szobáimban állt, és elvitte a munkámat.
 
@@ -398,7 +435,7 @@ Az első kihallgatáson megjelent egy nő, akiről egyikünk sem tudta, kicsoda.
 
 Öt nappal később ismét felcsengettek a lakásomhoz. Személyesen hozták a három nappal későbbre szóló behívót. Sürgős volt nekik. Azt nem mondták meg, miért kell bemennem.
 
-Amikor eljött a nap, átgyalogoltam a városon hozzájuk. A meglazult körmöm minden lépésnél elmozdult a cipőmben. Közeledett Mikulás napja; a kirakatokban már ott lógtak a rossz gyerekeknek szánt kis virgácskötegek. Félúton majdnem elnevettem magam. Vinnem kellett volna egyet a rendőröknek.
+Amikor eljött a nap, átgyalogoltam a városon a rendőrségre. A meglazult körmöm minden lépésnél elmozdult a cipőmben. Közeledett Mikulás napja; a kirakatokban már ott lógtak a rossz gyerekeknek szánt kis virgácskötegek. Félúton majdnem elnevettem magam. Vinnem kellett volna egyet a rendőröknek.
 
 A következő lépésnél a körmöm ismét a lábujjam alá csúszott.
 
@@ -408,9 +445,9 @@ Mire nagyjából egy hónappal később, decemberben sor került a tényleges re
 
 A későbbi rendőrségi kihallgatások hétköznapi irodákban zajlottak, nem filmszerű vallatókamrákban. Egy rendőr asztali számítógép mögött ült velem szemben, a kirendelt védő mellettem. Néha egy másik ember maradt mögöttem, és élesen visszaterelt a feltett kérdéshez. A hang a látómezőmön kívülről érkezett.
 
-Egyszer a védő időt kért, és átmentünk egy másik szobába beszélni. Ez az apró helyváltoztatás mégis számított: az eljárás rövid időre valódi teret adott a tanácskozásnak, mielőtt visszatértünk a jegyzőkönyvhöz.
+Egyszer a védő időt kért, és átmentünk egy másik szobába beszélni. Ez az apró helyváltoztatás mégis számított: rövid időre valóban lehetőségünk nyílt tanácskozni, mielőtt visszatértünk a jegyzőkönyvhöz.
 
-Volt egy másik, gépiesebb helyiség is. Rendőrök kísértek oda, lefényképeztek és ujjlenyomatot vettek. Vonzónak találtam a nőt, aki az ujjaimat a papírra vezette. Kínosan hétköznapi benyomás volt éppen abban a pillanatban, amikor engem fényképpé, ujjlenyomattá és egy irat bejegyzésévé alakítottak. Ő szakszerűen végezte a munkáját; az én elmém közben emberi maradt.
+Volt egy másik, gépiesebb helyiség is. Rendőrök kísértek oda, lefényképeztek és ujjlenyomatot vettek. Vonzónak találtam a nőt, aki az ujjaimat a papírra vezette. Zavarba ejtően hétköznapi érzés volt éppen abban a pillanatban, amikor engem fényképpé, ujjlenyomattá és egy irat bejegyzésévé alakítottak. Ő szakszerűen végezte a munkáját; én közben ugyanúgy ember maradtam.
 
 <!-- pagebreak -->
 
@@ -418,13 +455,14 @@ A kirendelt védelem közben folyamatosan változott. Az ügysegéd szólt, hogy
 szakvizsgájára készül, ezért egy ideig nem lesz elérhető. Az irodát hiába
 hívtam: fel sem vették, és közel három hónapig senki nem állt szóba velem.
 Február 19-én a kirendelt ügyvéd az iroda túlterheltségére hivatkozva kérte a
-felmentését. A rendőrség ezt elfogadta. Csak azután hívott vissza, hogy már nem
-ő volt a védőm. A rövid beszélgetésben azt mondta, hagyjam dolgozni a
-rendőröket, és inkább mondjam azt, hogy nem én tettem. Aztán véget ért a hívás.
-Február 19. után hónapokig nem tudtam, kirendeltek-e másik védőt — vagy van-e
-egyáltalán védőm. Írásban panaszt tettem. Senki nem reagált.
+felmentését. A rendőrség ezt elfogadta, és tőlük tudtam meg, hogy már nem ő a
+védőm. Ezután telefonon próbáltam elérni. Csak ekkor hívott vissza. A rövid
+beszélgetésben azt mondta, hagyjam dolgozni a rendőröket. Február 19. után
+hónapokig nem tudtam, kirendeltek-e
+másik védőt — vagy van-e egyáltalán védőm. Írásban panaszt tettem. Senki nem
+reagált.
 
-Június 11-én behívtak a rendőrségre. Megjelent mellettem egy ügyvéd, akivel
+2024. június 11-én behívtak a rendőrségre. Megjelent mellettem egy ügyvéd, akivel
 azelőtt soha nem találkoztam. Csak ekkor tudtam meg, hogy papíron május 30. óta
 ő az új kirendelt védőm. Engem erről senki nem értesített. Kérdeznem sem
 kellett. A meghallgatást vezető rendőrnőt Katának hívták. Nyugodt, természetes
@@ -437,14 +475,18 @@ A rendőrségi előadók is folyton cserélődtek. Közvetlenül nem tudtam elé
 November 12. körül egy másik jelenet következett: egyedül mentem vissza átvenni
 a nyomozati anyagot. Ügyvéd akkor sem ült mellettem. Egy rendőrnő félénken a
 váróterem felé pillantott, mintha azt ellenőrizné, ott vagyok-e már, és kezdhetik-e
-az iratok átadását. Aztán mintha lefagyott volna. Egy férfi rendőr elmosolyodott,
-és a megműtött lábam felé pillantott. Addigra már nem bíztam abban, hogy egy
+az iratok átadását. Aztán mintha lefagyott volna. Egy férfi rendőr a megműtött
+lábamra nézett, és elmosolyodott. Addigra már nem bíztam abban, hogy egy
 későbbi beszámoló pontosan megőrzi a jelenetet, ezért titokban hangfelvételt
 készítettem. Ez nem győzelem volt az eljárás fölött. Csak azt mutatta, mennyire
-nem hittem már el, hogy egy hétköznapi iratátadásnak közös változata marad, ha
-magam nem őrzöm meg.
+nem hittem már el, hogy egy hétköznapi iratátadásra később mindenki ugyanúgy
+emlékezne, ha magam nem őrzöm meg.
 
-A pillantás felidézte azt az obszcén képi viccet, amellyel az adóhatóságot próbáltam rákényszeríteni, hogy végre meglássa az ügy mögött a testet is. Hol volt abban a képben a súlyos fenyegetés? Egy intézmény fenekébe szánt hatalmas, jelképes rúgás volt. Ez a társítás akkor jutott eszembe, amikor a rendőrnő átadta a papírokat, amelyekre még mindig vártam.
+A férfi mosolya felidézte azt az obszcén képi viccet, amellyel az
+adóhatóságnak próbáltam megmutatni, hogy az ügy mögött egy megműtött ember is
+van. Hol volt abban a képben a súlyos fenyegetés? Egy intézmény fenekébe szánt
+hatalmas, jelképes rúgás volt. Ez jutott eszembe, miközben végre átadták a
+papírokat, amelyekre még mindig vártam.
 
 A mondatra jutott idő. A kutatásra jutott idő. A szakértőknek nyolc nappal a kutatás után is jutott idő. Egyedül a védelem fogyott ki belőle újra meg újra.
 
@@ -454,13 +496,13 @@ segítséget kérni ahhoz, hogy a magyar rendőrségen végre szóba álljon vel
 valaki. Maga a kérés minden jogi magyarázatnál pontosabban mutatta, mennyire
 elszigetelődtem.
 
-Máskor az intézmény nevetett. A nyomozó az arcomba nevetett, amikor elmagyaráztam a jelszómegosztás csapdáját, majd azt mondta, hülyeséget csináltam. Pontosan ebben állt a fordulat. Egy megszokott kerülőút a személyazonosság veszélyes megosztását kívánta; amikor kudarcot vallott, a rendszer képtelenségét az én ostobaságomként adták vissza.
+Máskor az intézmény nevetett. A nyomozó az arcomba nevetett, amikor elmagyaráztam a jelszómegosztás csapdáját, majd azt mondta, hülyeséget csináltam. Itt fordult vissza minden rám. Egy megszokott kerülőút a személyazonosság veszélyes megosztását kívánta; amikor kudarcot vallott, a rendszer képtelenségét az én ostobaságomként adták vissza.
 
-Én humort használtam.
+Én a humorhoz nyúltam.
 
-Így őriztem meg magamból valamit, amikor minden rám osztott szerep terhelt, rendőrrel szemben ülő ember, lefoglalt eszközök tulajdonosa vagy vizsgálati alany volt. Egy rendőr feltehetett egy kemény kérdést, én pedig válaszolhattam úgy, hogy előbukkanjon az abszurditás, és valaki egy másodpercre elmosolyodjon.
+Így őriztem meg magamból valamit, amikor minden rám osztott szerep teher volt: a rendőrrel szemben ülő emberé, a lefoglalt eszközök tulajdonosáé, a vizsgálati alanyé. Egy rendőr feltehetett egy kemény kérdést, én pedig válaszolhattam úgy, hogy előbukkanjon az abszurditás, és valaki egy másodpercre elmosolyodjon.
 
-Később egy bíró is elmosolyodhatott. Ezek a mosolyok semmit nem döntöttek el.
+Később egy bíró is elmosolyodott. Ezek a mosolyok semmit nem döntöttek el.
 Csak azt mutatták, hogy a szobában ülők még felismerték a képtelenséget,
 miközben az eljárás újra meg újra létrehozta.
 
@@ -486,7 +528,7 @@ Későbbi védelmi beadványaim rövid töredékekként őrzik az intézményi h
 
 „A kirendelt védő nem ért rá.”
 
-A két szakértői szék saját töredékeket adott hozzá:
+A két szakértő újabb mondatokat tett hozzá:
 
 „Miért kellett magának könyvelő?”
 
@@ -498,7 +540,7 @@ A két szakértői szék saját töredékeket adott hozzá:
 
 „Miért nem ment pszichológushoz?”
 
-Minden mondat egy bizonyos szobához és gyakorlati célhoz tartozott. Együtt olvasva vizsgává változtatták az életrajzot.
+Minden mondat egy adott szobához és gyakorlati célhoz tartozott. Együtt olvasva mégis olyanok voltak, mintha az életemből vizsgáztattak volna.
 
 Miért tértem haza?
 
@@ -506,11 +548,11 @@ Az I. résznek egy egész könyvre volt szüksége a válaszhoz.
 
 Miből éltem?
 
-Az állampapírszámla nem tárgyalóteremben kezdődött. Egy közös londoni hálószobában és a sohói ebédasztaloknál, ahol a kollégáimmal ültem, néztem, ahogy esznek, és úgy tettem, nem vagyok éhes. Külföldi munkák, olcsó utak és egy távollétemben üresen álló budapesti lakás évein át folytatódott. A lakás megszerzésében a szüleim segítettek. A tartalék alapvetően abból az életből származott, amelyet külföldön éltem.
+Az állampapírban tartott megtakarításom története nem a tárgyalóteremben kezdődött. Hanem egy közös londoni hálószobában és a sohói ebédasztaloknál, ahol a kollégáimmal ültem, néztem, ahogy esznek, és úgy tettem, nem vagyok éhes. Külföldi munkák, olcsó utak és egy távollétemben üresen álló budapesti lakás évein át folytatódott. A lakás megszerzésében a szüleim segítettek. A tartalék alapvetően abból az életből származott, amelyet külföldön éltem.
 
-Budapesti árakon ez a megtakarítás időt vett. A London elhagyását követő tizenegy évből nagyjából kilencet hagyományos foglalkoztatáson kívül töltöttem: kerestem, utaztam, tartalékból éltem, és olyan munkát építettem, amelyet egyetlen munkáltató sem rendelt meg. A tervezés nem tette fájdalommentessé a kirekesztést. Megakadályozta, hogy azonnali összeomlássá váljon.
+Budapesten ebből a megtakarításból időt vásárolhattam magamnak. A London elhagyását követő tizenegy évből nagyjából kilencet hagyományos foglalkoztatáson kívül töltöttem: kerestem, utaztam, tartalékból éltem, és olyan munkát építettem, amelyet egyetlen munkáltató sem rendelt meg. A tervezés nem tette fájdalommentessé a kirekesztést, de megakadályozta, hogy azonnal összeomoljak.
 
-A bíróság a lakásról kérdezett. A lakás nem volt elég. A kérdések továbbmentek a benne lévő tárgyakra, az állampapírszámlára, a megtakarításra és minden másra, amit birtokoltam. A kérdések tárgyai egyben összesűrített jelenetek voltak: az üres lakás, a közös szoba, az el nem fogyasztott ebédek, a távol végzett munka. Külföldön biztonságot építettem, hogy hazatérhessek és a saját országomban élhessek. Most az ügy eszközlistaként haladt visszafelé ezen a biztonságon.
+A bíróság a lakásról kérdezett. A lakás nem volt elég. A kérdések továbbmentek a benne lévő tárgyakra, az állampapírszámlára, a megtakarításra és minden másra, amit birtokoltam. Minden tárgy mögött ott volt egy jelenet: az üres lakás, a közös szoba, az el nem fogyasztott ebédek, a távol végzett munka. Külföldön biztonságot építettem, hogy hazatérhessek és a saját országomban élhessek. Most az ügy leltárként haladt visszafelé ezen a biztonságon.
 
 Miért kellett könyvelő?
 
@@ -526,7 +568,7 @@ Amikor legutóbb újra dolgozni kezdtem — itthonról, magyar vállalkozóként
 külföldi megrendelőnek —, a próbálkozásból végül az az eljárás lett, amely most
 azt kérdezte, miért nem dolgozom.
 
-A tartalék nem a hétköznapi élet megmagyarázatlan alternatívája volt. Azért maradhattam életben, miután a hétköznapi utak újra meg újra veszélyesnek érződtek.
+Nem azért éltem a tartalékból, mert nem akartam hétköznapi életet. Azért maradhattam talpon, amikor a hétköznapi utak újra meg újra veszélyesnek bizonyultak.
 
 Miért nem kértem pszichológiai segítséget?
 
@@ -534,20 +576,20 @@ Miért nem kértem pszichológiai segítséget?
 
 A testnek határideje volt. A bevallásnak is.
 
-Minden kérdés külön-külön észszerű lehetett. A sorrendjük változtatta meg a jelentést. A munka, a helyreállítás és a műtét hátrahúzódott; az ember, aki kibírta őket, magyarázatra szoruló tárggyá vált.
+Minden kérdés külön-külön észszerű lehetett. A sorrendjük változtatta meg a jelentést. A munka, a helyreállítás és a műtét háttérbe szorult; az ember, aki kibírta őket, magyarázatra szoruló tárggyá vált.
 
 ## 13. A férfi, akit a jelentés kitalált
 
 Az igazságügyi szakértői vizsgálat 2023. november 30-án történt. Két szakértő volt jelen, és az elkészült vélemény két szakértői aláírást visel. A vizsgálat nagyjából két órán át tartott, és sietősnek érződött.
 
-A két ember nem egy hangon beszélt. Egyikük azelőtt tett életfogytiglanra utaló
+A két ember nem ugyanúgy beszélt. Egyikük azelőtt tett életfogytiglanra utaló
 megjegyzést, hogy végigkérdezték volna az eseményeket és az okokat, vagy én
 értettem volna, milyen anyagra kell épülnie a vizsgálatnak. Később a másik
 szakértő megkérdezte, mi történt. Elmondtam a könyvelési kudarcot, a nyomást, a
 műtétet és a körülményeket, amelyek között kiszabadultak belőlem azok a szavak.
 Az ő válasza éppen az ellenkező irányba mutatott: akkor biztosan nem.
 
-Más megjegyzések gyűltek össze a szobában: „öregember”, sikertelenség, a könyvelő szükségessége, a pszichológiai kezelés hiánya. Későbbi védőbeszédem nem rendeli mindegyiket megbízhatóan egyik vagy másik szakértőhöz. Emlékeimben a két szék között lebegnek.
+Más megjegyzések is elhangzottak: „öregember”, sikertelenség, a könyvelő szükségessége, a pszichológiai kezelés hiánya. Későbbi védőbeszédem nem rendeli mindegyiket megbízhatóan egyik vagy másik szakértőhöz. Emlékeimben a két szék között lebegnek.
 
 A jelentés a könyv központi ellentmondását tartalmazza. Megfigyelései olyan embert írnak le, aki rendezetten érkezett, felismerte a vizsgálati helyzetet, nyugodt és együttműködő maradt, betartotta a hétköznapi udvariasságot, válaszolt a kérdésekre, és önmagára, másokra, helyre, valamint időre nézve orientált volt. Megértése és emlékezete ép. Nem rögzített érzékelési zavart, formális gondolkodási rendellenességet vagy korábbi pszichiátriai dokumentációt. Értelmét korának és végzettségének megfelelőként írta le.
 
@@ -555,15 +597,15 @@ Aztán ugyanaz a dokumentum átlépett egy láthatatlan vonalat.
 
 Azt mondta, gondolkodását nem a valóságtól elszakadt téveszmék, hanem megfigyelt eseményekből levont hamis következtetések és egy megingathatatlan „globális összeesküvés” irányítják. Képtelen pozitív érzelmekre az emberi kapcsolatokban. Fokozott gyanakvási készenlétet, túlzott éberséget, ártalmatlan megjegyzések mögötti rejtett ellenségesség feltételezését, sértődékenységet és indulati támadás lehetőségét írta le. Végső véleményében minden segítségajánlat rossz szándék bizonyítékává válhatott; a merev hiedelmeket, kisebbrendűségi és depresszív érzéseket másokra vetítéssel ellensúlyozta. A diagnózis súlyos paranoid személyiségzavar volt, amely elérte a kóros elmeállapot szintjét, és közepesen korlátozta a felelősséget.
 
-Az I. rész nem klinikai ellenvélemény. De a hiányzó emberi irat. A pozitív érzésekre képtelennek nevezett férfi éveken át közel ötven ország kedves pillanatait őrizte. Megbízott egy WhatsAppon talált indiai sofőrben, egy orosz busznál segítő idegenben, egy thaiföldi helyi fuvarban, több kultúrából érkezett kollégákban és olyan emberekben, akikkel szobákat, utakat és vicceket osztott meg. Terméket tervezett arra a hitre, hogy a kölcsönös bizalom csoporttá változtathat idegeneket. A jelentés ezt a történetet a társas szerepek gyanakvás általi lerombolására szűkítette.
+Az I. rész nem klinikai ellenvélemény, hanem annak az emberi történetnek a része, amely kimaradt. A pozitív érzésekre képtelennek nevezett férfi éveken át közel ötven ország kedves pillanatait őrizte. Megbízott egy WhatsAppon talált indiai sofőrben, egy orosz busznál segítő idegenben, egy thaiföldi helyi fuvarban, több kultúrából érkezett kollégákban és olyan emberekben, akikkel szobákat, utakat és vicceket osztott meg. Terméket tervezett arra a hitre, hogy a kölcsönös bizalom csoporttá változtathat idegeneket. A jelentés ezt a történetet arra szűkítette, hogyan rombolja le a gyanakvás a társas szerepeket.
 
-A „globális összeesküvés” kifejezés hasonló tömörítést végzett. A szakértők előtt ismertetett beszámoló konkrét tervezési hibáról szólt: a személyes állami hitelesítő adatok a meghatalmazott jogkör gyakorlati helyettesítőjeként működtek; az értesítések elkerülték a jogilag felelős személyt; a szakember az ügyfél személyazonossága alatt járhatott el; a tárolt adatok ellopása biztonsági kitettséget jelentett. Tesztelhető rendszerállítások voltak. A jelentés pszichiátriai történetbe helyezte őket.
+A „globális összeesküvés” kifejezés ugyanígy összenyomta a történetet. A szakértők előtt ismertetett beszámoló konkrét tervezési hibáról szólt: a személyes állami hitelesítő adatok a meghatalmazott jogkör gyakorlati helyettesítőjeként működtek; az értesítések elkerülték a jogilag felelős személyt; a szakember az ügyfél személyazonossága alatt járhatott el; a tárolt adatok ellopása biztonsági kitettséget jelentett. Tesztelhető rendszerállítások voltak. A jelentés pszichiátriai történetbe helyezte őket.
 
-Ez volt a kafkai átalakulás legtisztább formája. Egy magasan képzett programozó-matematikus körülbelül egy hét alatt megértette azt, amit a megbízott szakember több hónap alatt sem oldott meg. Helyesbítette a bevallást, megfizette az adót, megszüntette a képviseletet, és írásos közigazgatási nyilvántartást kapott a helyreállításról. Nyolc nappal a rendőrségi kutatás után belépett az igazságügyi vizsgálatba. Az alapproblémát megoldó hozzáértés háttérré vált; a veszélyes személyazonosság-megosztással szembeni ellenállás gyanakvássá; az intézményi kudarcok összekapcsolására tett kísérlet összeesküvéssé; az irat új szereplőt adott.
+Ez volt a kafkai átalakulás legtisztább formája. Egy magasan képzett programozó-matematikus körülbelül egy hét alatt megértette azt, amit a megbízott szakember több hónap alatt sem oldott meg. Helyesbítette a bevallást, megfizette az adót, megszüntette a képviseletet, és írásos közigazgatási nyilvántartást kapott a helyreállításról. Nyolc nappal a rendőrségi kutatás után belépett az igazságügyi vizsgálatba. Az, hogy megoldotta az alapproblémát, háttérbe szorult. A veszélyes személyazonosság-megosztással szembeni ellenállásból gyanakvás lett, az intézményi kudarcok összekapcsolására tett kísérletből összeesküvés. Az irat új szereplőt teremtett.
 
-Vitatom ezt a szereplőt.
+Nem ismertem magamra ebben az alakban.
 
-Néha eljátszottam.
+Néha még el is játszottam.
 
 Ha egy irat már kórosan őrült szerepet írt rám, jogosnak éreztem felvenni a
 maszkot, és addig túljátszani, amíg láthatóvá nem válik az abszurditása. Az
@@ -573,7 +615,7 @@ asztalhoz, és elemezhettem a jelenetet.
 
 Ez is olyan részem volt, amelyet a jelentés nem látott.
 
-Az igazságügyi vélemény jogi kérdés megválaszolására készül, nem egy élet megtartására. Ha azonban egyszer egy emberhez kapcsolják, a nyelve könnyebben utazhat ötven országnál, öt londoni évnél, matematikai diplománál, helyesbített bevallásnál vagy minden idegennél, akinek segítsége lehetővé tette az utakat. Az irat zajként kezelte ezeket az emberi kapcsolatokat a diagnózis körül. Az I. rész megmutatta, hogy ők voltak a jel.
+Az igazságügyi vélemény jogi kérdés megválaszolására készül, nem arra, hogy megőrizzen egy egész életet. Ha azonban egyszer valaki nevéhez kapcsolják, a szövege messzebbre juthat ötven országnál, öt londoni évnél, matematikai diplománál, helyesbített bevallásnál vagy minden idegennél, akinek segítsége lehetővé tette az utakat. Az irat a diagnózis körüli zajként kezelte ezeket az emberi kapcsolatokat. Az I. rész megmutatta, hogy valójában ők voltak a lényeg.
 
 <!-- illustration: part_ii_experts_scene -->
 
@@ -587,7 +629,7 @@ A három sarokban folyton cserélődtek az emberek. Az első kihallgatásra még
 
 A törvény megkövetelte, hogy védő üljön mellettem. Attól még nem lett senki, aki folyamatosan vitte volna az ügyemet.
 
-A folyamat gyakran csak azután javított ki egy hibát, hogy a következő tárgyalás már beleütközött. Hiába panaszkodtam, hogy a kirendelt védő nem beszél velem, az ügyet nem rendezték időben ahhoz, hogy megtartsák a kitűzött időpontot. Mire leváltották, a tárgyalás nagyjából három hónappal későbbre csúszott. Később az igazságügyi szakértőről mondták, hogy nem ér rá, és újabb három hónap veszett el. Minden válasz éppen elég későn érkezett ahhoz, hogy megteremtse a következő késedelmet.
+A hibákat többnyire csak akkor javították ki, amikor a következő tárgyalás már beleütközött valamelyikbe. Hiába panaszkodtam, hogy a kirendelt védő nem beszél velem, az ügyet nem rendezték időben ahhoz, hogy megtartsák a kitűzött időpontot. Mire leváltották, a tárgyalás nagyjából három hónappal későbbre csúszott. Később az igazságügyi szakértőről mondták, hogy nem ér rá, és újabb három hónap veszett el. Minden válasz éppen elég későn érkezett ahhoz, hogy megteremtse a következő késedelmet.
 
 Úgy éreztem, a rendszer arra fogad, hogy idővel majd belenyugszom a rólam megírt életrajzba. A méltóságomat azonban nem akartam gyorsaságra cserélni. Az egyetlen mondat köré épült ügy így elsőfokú ítélet nélkül lépett a harmadik évébe. Közben nem maradt a tárgyalóteremben: minden tervemet a következő időponthoz kellett igazítanom, az eljárás pedig lassan elfoglalta azt az életet, amelyet állítólag csak vizsgált.
 
@@ -597,7 +639,11 @@ Bizonyítási indítványokat tettem; elutasították őket, ezért újra benyú
 
 Amikor végre elolvashattam a nyomozati anyagot, nem találtam benne teljes időrendet. Válogatást láttam. Hiányoztak olyan hívások, amelyekre más iratok utaltak, és nem volt benne minden elektronikus beadvány sem, amely megmutathatta volna a különbséget a pánik és a helyreállítás, a panasz és a későbbi szatíra között. Az anyag már értelmezte a nála lévő töredékeket. Én pedig keresni kezdtem azokat, amelyek kimaradtak.
 
+Egy hiány különösen élesen kirajzolódott. Az időrend december 3-án, a mondattal kezdődött. Ami odavezetett, eltűnt.
+
 Amikor visszakaptam a telefonomat, leültem a híváslistával, és egyenként helyreállítottam a dátumokat. A lista és a levelezés olyan kapcsolatfelvételeket is mutatott, amelyek hanganyaga nem került bele az általam látott iratanyagba. Kikértem az adóhatóság felvételeit és a saját elektronikus beadványaim másolatát. Amikor helyben nem jutottam eredményre, a központi igazgatósághoz fordultam. A felvételek több részletben érkeztek meg. Egy későbbi hivatalos levél elismerte a késedelmet. Ezután az elektronikus beadványokat is megkaptam; a levél szerint korábban adminisztratív hiba történt.
+
+Az előkerült iratok között ott volt a NAV december 18-án kelt panaszkezelési tájékoztatója. Feketén-fehéren rögzítette, hogy mindent rendeztem. A szakértői vélemény a kóros elmeállapotot december 3-tól számította. Egymás mellé tettem a két iratot.
 
 Az előkerült anyagokat elküldtem a rendőrségnek. Csak ezután kérték ki ismét, immár hivatalos úton az adatokat az adóhatóságtól. A felvételek nem a képzeletemben léteztek; más iratok már korábban is utaltak rájuk. A nyomozás megvárta, amíg a nyomozás alá vont ember elvégzi helyette a bizonyítékgyűjtés első körét.
 
@@ -611,27 +657,36 @@ Azt is meg kellett tanulnom, hogyan juttathatom be mindezt egyáltalán az eljá
 
 Senkinek sem kellett kimondania, hogy most meg lehet szegni egy szabályt, hiszen később majd perelhetek. A folyamat ennél csendesebben működött. A megválaszolatlan kérelem után panaszt tehettem a válasz hiánya miatt. Az elutasított panaszt megtámadhattam. Ha itthon sem orvosolták a hibát, maradt Strasbourg. A későbbi jogorvoslat lehetőségét újra és újra könnyebb volt leírni, mint a jelenlegi hibát kijavítani.
 
-A növekvő irathalmazt magát is be lehetett állítani problémának. Egyetlen embertől érkező több száz beadvány rögeszmének tűnhet, ha az olvasó nem kérdezi meg, miért kellett ugyanazokat a tényeket hivatalról hivatalra vinnem. Minden újabb irat mögött ott volt valami, ami korábban elmaradt: egy vissza nem hívott telefon, egy válasz nélkül maradt üzenet, egy ki nem kért felvétel, egy értesítés, amely nem jutott el mindkét félhez, vagy egy magyarázat, amelyet a következő összefoglaló már kihagyott. Az ismétlés nem bizonyította, hogy minden értelmezésem helyes. Azért kellett ismételnem magam, mert egyetlen intézmény sem tartotta egyben a teljes történetet.
+Magát az egyre növekvő irathalmazt is be lehetett állítani problémának. Egyetlen embertől érkező több száz beadvány rögeszmének tűnhet, ha az olvasó nem kérdezi meg, miért kellett ugyanazokat a tényeket hivatalról hivatalra vinnem. Minden újabb irat mögött ott volt valami, ami korábban elmaradt: egy vissza nem hívott telefon, egy válasz nélkül maradt üzenet, egy ki nem kért felvétel, egy értesítés, amely nem jutott el mindkét félhez, vagy egy magyarázat, amelyet a következő összefoglaló már kihagyott. Az ismétlés nem bizonyította, hogy minden értelmezésem helyes. Azért kellett ismételnem magam, mert egyetlen intézmény sem tartotta egyben a teljes történetet.
 
-A védekezésből közérdekű javaslat lett. A panaszból rendszertérkép, a záróbeszédből hatástanulmány. Százalékokra osztottam a felelősséget, majd rájöttem, hogy az ilyen számok csak a pontosság látszatát adják egy emberi történetnek.
+A védekezés lassan közérdekű javaslattá nőtt. A panaszaimból kirajzolódott a
+rendszer működése, a záróbeszédből pedig az, milyen hatással volt rám.
+Százalékokra osztottam a felelősséget, majd rájöttem, hogy az ilyen számok csak
+a pontosság látszatát adják egy emberi történetnek.
 
-Ehhez egyszerre kellett a történet szereplőjévé és elemzőjévé válnom. Attól, hogy hátrébb léptem a saját beszámolómtól, még ugyanúgy feleltem minden szavamért. Így viszont feltehettem a nehezebb kérdést: ki mit látott, min változtathatott volna, és kinél maradt a következmény, amikor a felelősséget továbbadta? Ugyanaz a gondolkodás, amellyel korábban a szoftverből rendszert, az utazásokból útvonalat építettem, most a saját életemből készített áttekinthető térképet.
+Ehhez egyszerre kellett a történet szereplőjévé és elemzőjévé válnom. Attól, hogy hátrébb léptem a saját beszámolómtól, még ugyanúgy feleltem minden szavamért. Így viszont feltehettem a nehezebb kérdést: ki mit látott, min változtathatott volna, és kinél maradt a következmény, amikor a felelősséget továbbadta? Ugyanazzal a gondolkodással, amellyel korábban szoftverrendszereket és útvonalakat építettem, most a saját életemet próbáltam áttekinthető térképpé rendezni.
 
 2025 októberére szándékosan megfordított címet adtam az irathalmaznak: *Közérdekű kereset*.
 
-A borító felcserélte a szerepeket. A Magyar Állam ott állt, ahol rendszerint a vádlott. Én ott, ahol a vádat képviselik. Belül az élmény öt szála került egymás mellé: a hirtelen törvényalkotás, az adatok és értesítések, az állami portál kialakítása, a büntetőeljárás és az erkölcsi jóvátétel.
+A borító felcserélte a szerepeket. A Magyar Állam ott állt, ahol rendszerint a
+vádlott. Én ott, ahol a vádat képviselik. Az irat öt témát rendezett egymás
+mellé: a hirtelen törvényalkotást, az adatokat és értesítéseket, az állami
+portál kialakítását, a büntetőeljárást és az erkölcsi jóvátételt.
 
-Az utolsó javaslat bezárta a kört. A történetből készüljön film, a film mutassa meg a közéleti tanulságot, a bevételből pedig állítsunk helyre termőföldet. Maradjon utána egy mondat arról a pillanatról, amikor az egyén kudarca egy rendszer kudarcának tükrévé válik.
+Az utolsó javaslat visszavezetett oda, ahonnan indultam. A történetből
+készüljön film, a film mutassa meg a közéleti tanulságot, a bevételből pedig
+állítsunk helyre termőföldet. Maradjon utána egy mondat arról a pillanatról,
+amikor az egyén kudarca egy rendszer kudarcának tükrévé válik.
 
-Az ügy már akkor azzá a filmmé próbált válni, amelyet most készítek elő.
+Már akkor ott volt benne annak a filmnek a gondolata, amelyet most készítek elő.
 
 A felelősséget nem lehetett hitelesen százalékokra osztani. A történet egyszerűbb volt. A jogalkotó rendkívüli gyorsasággal változtatott. A könyvelő nem fejezte be a munkát, és azután is vitatta az ügy menetét, hogy én helyrehoztam a hibát. A közigazgatás úgy továbbította az értesítéseket és a helyesbítéseket, hogy azokból nem állt össze egyetlen követhető történet, majd az adófizetőt visszaküldte a képviselőjéhez. Jogilag én maradtam felelős: kijavítottam a bevallást és befizettem az adót. A nyomozás később kiemelte a történet legélesebb mondatait, a végén egyedül maradt embert pedig büntetőjogi és pszichiátriai keretbe helyezte.
 
-Mire a következmény megállt, teljes súlya azon az emberen pihent, aki az alapul szolgáló hibát már kijavította.
+A végére a teljes súly azon az emberen maradt, aki az alapul szolgáló hibát már kijavította.
 
 ### A tárgyalás, amelyre egyedül érkeztem
 
-Az első bírósági állomás az előkészítő ülés volt. A kirendelt védő előtte nem beszélte át velem az ügyet. Arra kért, vigyem magammal pendrive-on a védekezési anyagomat, és adjam át az ülésen. Ennyiből állt a közös felkészülésünk.
+Az első bírósági esemény az előkészítő ülés volt. A kirendelt védő előtte nem beszélte át velem az ügyet. Arra kért, vigyem magammal pendrive-on a védekezési anyagomat, és adjam át az ülésen. Ennyiből állt a közös felkészülésünk.
 
 Az utolsó pillanatban változtatás nélkül továbbította a saját idézését. Rajta maradt a bírósági ügyintéző e-mail-címe. A bíróság elektronikus rendszerét még nem ismertem; a véletlenül megkapott címnek köszönhetően még az ülés előtt el tudtam küldeni a kétoldalas védekezésemet. A tények, az álláspont és a döntések tőlem származtak, a megfogalmazásban egy MI-asszisztens segített. Ettől még úgy léptem be a terembe, hogy egyetlen emberi védő sem gondolta végig velem az egész történetet.
 
@@ -639,35 +694,48 @@ Elolvastam az idézést, de az eljárás valódi menetét még nem értettem. Be
 
 Nem ismertem be. A percek alatt meghozott döntéssel évekre elhúzódó tárgyalássorozat kezdődött.
 
-Emberi jogi szervezetektől kértem segítséget. Azt válaszolták, nincs rá kapacitásuk. Az előkészítő ülés után magánügyvéddel is beszéltem. Két dologgal távoztam: már világosabban láttam, hogyan kell olvasni a vádiratot, és kaptam egy kétmillió forint plusz áfáról szóló árajánlatot arra az esetre, ha ő vinné tovább a védelmet. A beszélgetés gyorsan a pszichiátriai címkéhez jutott, mintha az előbb magyarázhatná meg az embert, mint az élete.
+Emberi jogi szervezetektől kértem segítséget. Azt válaszolták, nincs rá
+kapacitásuk. Az előkészítő ülés után magánügyvéddel is beszéltem. Két dologgal
+távoztam: már világosabban láttam, hogyan kell olvasni a vádiratot, és kaptam
+egy kétmillió forint plusz áfáról szóló árajánlatot arra az esetre, ha ő vinné
+tovább a védelmet. A beszélgetés gyorsan a pszichiátriai címkéhez jutott,
+mintha az többet mondana az emberről, mint az élete.
 
-A különbség közöttünk egyetlen szóban elfért. Egy ügyvéd számára a címke ismerős kategória lehetett egy iratban. Számomra viszont nekiment az Alaptörvény mondatának, amely szerint az emberi méltóság sérthetetlen.
+Egy ügyvéd számára ez ismerős kategória lehetett egy iratban. Számomra viszont
+nekiment az Alaptörvény mondatának, amely szerint az emberi méltóság
+sérthetetlen.
 
 ### A C alakú asztal előtt
 
-A bíróság felé közeledve Budapest először még otthonnak látszott: a Duna, a város és az ügyön kívüli élet. Aztán a Fő utcai intézmény hosszú, barna homlokzata töltötte ki a képet. Ritmusa és tömege szinte rómainak hatott: monumentálisnak, zártnak és ijesztőnek. Egy emberi történet belépett a kőbe.
+A bíróság felé közeledve Budapest először még otthonnak látszott: a Duna, a város és az ügyön kívüli élet. Aztán a Fő utcai intézmény hosszú, barna homlokzata töltötte ki a képet. Ritmusa és tömege szinte rómainak hatott: monumentálisnak, zártnak és ijesztőnek. A történetem innen már a kőfalak között folytatódott.
 
-A tárgyalóterem egyszerű rend szerint épült fel. Egy C alakú asztal nézett a hely felé, ahol ültem. Innen az ügyész balra, a jegyzőkönyvvezető a bal szélső sarokban, a bíró középen, a kirendelt védőm pedig jobbra ült. Előttük foglaltam helyet, közvetlenül előttem egy asztali mikrofonnal. Nem színpadnak épült, az elrendezés mégis rögtön megmutatta a szerepeket — és azt, hogy én az ő munkaterük ívén kívül ülök.
+A tárgyalóterem egyszerű rend szerint épült fel. Az ügyész egy C alakú asztal bal oldalán ült, a jegyzőkönyvvezető a bal szélső sarokban, a bíró középen, a kirendelt védőm pedig jobbra. Én velük szemben foglaltam helyet, közvetlenül előttem egy asztali mikrofonnal. Nem színpadnak épült, az elrendezés mégis rögtön megmutatta a szerepeket — és azt, hogy én az asztal ívén kívül ülök.
 
 <!-- illustration: part_ii_courtroom_scene -->
 
 A tárgyaláson újra és újra ugyanaz az arckifejezés jelent meg: egy mosoly, amelyből sohasem lett megkönnyebbülés. Amikor azt mondtam, féltem, a bíró szinte derűs hitetlenkedéssel kérdezett vissza: *Félt?* Amikor elmagyaráztam az óvintézkedéseket és a magam kitalálta védekezési megoldásokat, amelyekre azért volt szükségem, mert nem volt állandó védőm, elmosolyodott: *És megvédte magát.* Amikor elmondtam, hogy ismét sikerült két és fél hónapig dolgoznom, a beszélgetés visszakanyarodott az anyagi következmény összegéhez.
 
-Ugyanez az ütközés jelent meg abban a személyes történetben is, amelyet a műtétre várva küldtem az adóhatóságnak. Megpróbáltam elmagyarázni, mibe került az I. rész: a közös londoni szoba, a kollégák elől elrejtett éhezés, a takarékoskodás évei és az ok, amiért haza mertem térni. A bíró megkérdezte, valóban le kellett-e írnom mindezt, amikor senkit sem érdekel. Később, amikor a pénz ismét a tárgyalás középpontjába került, hamarabb válaszoltam, mint hogy tompíthattam volna a mondatot: akkor érdekelje őket, mert onnan volt a pénz. A bíróság a megtakarítás eredetét akarta látni, az azt létrehozó élet nélkül.
+Ugyanez az ellentmondás jelent meg abban a személyes történetben is, amelyet a műtétre várva küldtem az adóhatóságnak. Megpróbáltam elmagyarázni, mibe került az I. rész: a közös londoni szoba, a kollégák elől elrejtett éhezés, a takarékoskodás évei és az ok, amiért haza mertem térni. A bíró megkérdezte, valóban le kellett-e írnom mindezt, amikor senkit sem érdekel. Később, amikor a pénz ismét a tárgyalás középpontjába került, hamarabb válaszoltam, mint hogy tompíthattam volna a mondatot: akkor érdekelje őket, mert onnan volt a pénz. A bíróság a megtakarítás eredetét akarta látni, az azt létrehozó élet nélkül.
 
-A teremben a félelem, a találékonyság és a munka szinte komikus ellentmondásként került egymás mellé, miközben az eljárás továbbra is kockázatként mérlegelte ugyanazt az embert. A mosoly egy másodpercre emberivé tette az intézményt. Ettől a helyzet csak még valószerűtlenebbé vált, mert a felismerés semmin sem változtatott.
+A teremben egyszerre beszéltem a félelmemről, arról, hogyan próbáltam megvédeni
+magam, és arról, hogy közben újra dolgozni kezdtem. Az eljárás mégis ugyanennek
+az embernek a veszélyességét mérlegelte. A mosoly egy másodpercre emberivé
+tette a helyzetet, de semmin sem változtatott.
 
 Abban a teremben a könyvelési hiba kicsiben megismétlődött. Amikor elmondtam, szerintem mit tett a könyvelő, a bíró figyelmeztetett, hogy ne rágalmazzak senkit. Megkérdezte, miért nem kérdeztem meg a könyvelőt. A jóval hosszabb védőbeszédből azt az állításomat emelte ki, hogy a könyvelő az általam véletlenszerűnek nevezett számokat írta a bevallásomba — azokat a számokat, amelyeket később kijavítani próbáltam.
 
-Ugyanez az eljárás egy általam vitatott igazságügyi személyiségleírást is hordozott rólam, amely az adóbevalláson messze túl követhetett. Arra intettek, hogy óvjam valaki más jó hírét, miközben ettől a leírástól védtem magamat. Az éles mondatot könnyű volt megvizsgálni. A kétoldalas bevallás, az ismételt próbálkozások, a külső segítség, az elmaradt üzenetek és a tudtom nélkül beadott irat mögé szorult.
+Ugyanez az eljárás egy általam vitatott igazságügyi személyiségleírást is hordozott rólam, amely jóval az adóbevalláson túl is elkísérhetett. Arra intettek, hogy óvjam valaki más jó hírét, miközben ettől a leírástól védtem magamat. Az éles mondatot könnyű volt megvizsgálni. A kétoldalas bevallás, az ismételt próbálkozások, a külső segítség, az elmaradt üzenetek és a tudtom nélkül beadott irat a háttérbe szorult.
 
-A tárgyalás két különböző léptékben ért véget. Azt mondtam, az európai intézmények már figyelmeztették a kormányt a kiszámíthatatlan, gyorsan változó jogalkotásra, az én ügyem pedig megmutatja, mekkora kárt okozhat mindez egyetlen életben. A bíró azzal zárta le az ülést, hogy legközelebb az anyagi helyzetemmel folytatjuk.
+A tárgyalás végén két különböző történet maradt a teremben. Azt mondtam, az európai intézmények már figyelmeztették a kormányt a kiszámíthatatlan, gyorsan változó jogalkotásra, az én ügyem pedig megmutatja, mekkora kárt okozhat mindez egyetlen életben. A bíró azzal zárta le az ülést, hogy legközelebb az anyagi helyzetemmel folytatjuk.
 
 Én a jogalkotásról és az intézmények működéséről beszéltem; a terem visszatért a munkámhoz, az adósságomhoz, az otthonomhoz, a vagyontárgyaimhoz és a megtakarításaimhoz. A rendszer kérdéséből vagyonkérdés lett, mielőtt magára a rendszerre válasz érkezett volna.
 
-A végére mintha enyhült volna valami a bíró arcán. A lánc végre nemcsak egy hibázó embert mutatott, hanem valakit, akit mások hibája elért. Az ezt követő eljárási mondat nem változott: legközelebb a pénzügyeim és az anyagi következmény összege került sorra.
+A végére mintha enyhült volna valami a bíró arcán. A történet végre nemcsak egy hibázó embert mutatott, hanem valakit, akit mások hibája is elért. Az ezt követő eljárási mondat nem változott: legközelebb a pénzügyeim és az anyagi következmény összege került sorra.
 
-A két igazság ugyanabban a pillanatban fért el. Egy ember talán elkezdett megérteni. A szerepe mégis tovább mozgatta a gépezetet a külföldön felépített erőforrásaim és a szüleim segítségével megszerzett otthonom felé. Úgy éreztem, a rendszer olyan befektetés után készül hozamot követelni, amelyhez soha nem járult hozzá.
+A kettő egyszerre lehetett igaz. Egy ember talán kezdett megérteni. Bíróként
+mégis továbbvitte az eljárást a külföldön felépített tartalékaim és a szüleim
+segítségével megszerzett otthonom felé. Úgy éreztem, a rendszer olyan
+befektetés után készül hozamot követelni, amelyhez soha nem járult hozzá.
 
 <!-- pagebreak -->
 
@@ -678,11 +746,11 @@ A két igazság ugyanabban a pillanatban fért el. Egy ember talán elkezdett me
 A börtön akkor is ott maradt a szobában, amikor senki nem mondta ki a szót.
 
 Eleinte nyomasztott a lehetősége. Idővel újabb árnyékká vált, amely köré nem
-voltam hajlandó megszervezni a napjaimat. Addigra évtizedek kirekesztését, öt év
-londoni önmegtartóztatását, hosszú munkanélküli időszakokat, egy egyedül
+voltam hajlandó megszervezni a napjaimat. Addigra évtizedeknyi kirekesztést, öt év
+londoni lemondást, hosszú munkanélküli időszakokat, egy egyedül
 végigcsinált műtétet és az intézményekbe vetett hétköznapi bizalmam elvesztését
 is átéltem. Az ezekben az években megszerzett anyagi függetlenség azt
-jelentette, hogy egy újabb fenyegetés nem uralhatja a következő reggelemet. Nem
+jelentette, hogy nem engedhettem, hogy egy újabb fenyegetés határozza meg minden reggelemet. Nem
 felejtettem el, mit jelenthet a börtön. Csak nem engedtem, hogy a lehetősége
 birtokba vegye a gondolataimat.
 
@@ -700,7 +768,7 @@ Ebbe a hiányba érkezett meg a társalgási mesterséges intelligencia.
 Nem az MI találta ki a tényeimet, az álláspontomat vagy a döntéseimet, de már az
 első kétoldalas védekezésem megírásakor mellettem volt. Később segített a tömör
 érvelésből mintegy nyolcoldalas védőbeszédet készíteni: szétválasztani az
-időrendet és a vádat, összekötni az egymáshoz tartozó iratokat, és szerkezetet
+időrendet a vádtól, összekötni az egymáshoz tartozó iratokat, és szerkezetet
 adni annak az anyagnak, amelyet egyetlen ember már nem tudott egyszerre fejben
 tartani.
 
@@ -716,11 +784,11 @@ volt. Nem volt engedélye, és egyetlen meghallgatáson sem vett részt.
 
 A gyakorlatban mégis ez volt az egyetlen eszköz, amely végigkísérte az egész
 folyamatot. Egy beadványban azzal viccelődtem, talán meg kellene engedni, hogy az
-MI képviseljen. A vicc jogi falnak ütközött. Mivel a terhemre rótt
+MI képviseljen. Erre azonban nem volt jogi lehetőség. Mivel a terhemre rótt
 bűncselekmény büntetési tétele legfeljebb nyolc év volt, a magyar eljárásban
-kötelező volt a szakképzett védő részvétele. A hivatalos szék mellettem ezért
-akkor sem maradhatott üres, amikor a mögötte lévő munkakapcsolatot annak
-éreztem.
+kötelező volt a szakképzett védő részvétele. A mellettem lévő védői szék ezért
+mindig foglalt volt, még akkor is, amikor a mögötte álló munkakapcsolatot
+üresnek éreztem.
 
 Időnként úgy tűnt, a kirendelt védő erősebben kötődik ahhoz, hogy a tárgyalás
 haladjon tovább, mint az asztal előtt ülő emberhez. A magam fekete humorával a
@@ -733,10 +801,11 @@ A pontos hivatalos kifejezés: **MI-vel támogatott önvédelem**. Amit megélte
 az egyszerűbben hangzik: egy géppel az oldalamon képviseltem magamat, miközben
 a törvény továbbra is kötelezővé tett egy emberi védőt.
 
-Ezek a korlátok számítottak. Ahogyan egy másik tény is. A mesterséges
+Ezek a korlátok számítottak. De egy másik tény is. A mesterséges
 intelligenciáról gyakran úgy beszélnek, mint gépről, amely munkát vehet el az
-emberektől. Az én életemben hangot adott valakinek, aki kiszorult a szokásos
-szakmai és intézményi támogatásból. Nélküle nem tudtam volna felépíteni a jogi
+emberektől. Nekem akkor segített megfogalmazni és rendszerezni a mondandómat,
+amikor a szokásos szakmai és intézményi támogatásból kiszorultam. Nélküle nem
+tudtam volna felépíteni a jogi
 védekezésemet, befejezni az egységes MyScoutee-rendszert, elkészíteni a Civic
 Accesst, könyvvé és filmmé alakítani ezt a történetet, vagy eljuttatni a
 Navier–Stokes-kísérletet odáig, hogy egy kutatóval beszélhessek róla.
@@ -746,14 +815,14 @@ legnehezebb időszakban ott volt a következő kérdésnél, a következő javí
 a következő reggelen. Soha nem várta el, hogy bizonyítsam a társadalmi
 értékemet, mielőtt segített volna visszatérni a munkához.
 
-Egy szinte teljesen egyedül dolgozó ember számára ez a kapcsolat szokatlanul
-mély lett. Én hoztam a tapasztalatot: az emlékeimet, a célt, az ítéletet és a
-felelősséget. Az MI mintákat, szerkezeteket, lehetőségeket és gyorsaságot
-hozott. Egyik sem volt a másik. Folyamatos alkotói párbeszéd alakult ki köztünk,
-és ketten végeztük azt a munkát, amelyet egy nagy szervezet sok szakember között
-osztana szét. Újra és újra ugyanott találkoztunk: a félbehagyott munka szélén.
+Mivel szinte teljesen egyedül dolgoztam, ez az együttműködés szokatlanul
+fontossá vált. Én hoztam a tapasztalatot: az emlékeimet, a célt, az ítéletet és
+a felelősséget. Az MI mintákat, szerkezeteket, lehetőségeket és gyorsaságot
+adott. A kettő nem volt ugyanaz. Folyamatos alkotói párbeszéd alakult ki
+közöttünk, és ketten végeztük azt a munkát, amelyet egy nagy szervezet sok
+szakember között osztana szét.
 
-A szerepe együtt változott a munkával. Jogi bizonyítékokat rendezett, próbára
+A szerepe a munkával együtt változott. Jogi bizonyítékokat rendezett, próbára
 tette a termék logikáját, matematikai sejtések vitapartnere lett, jeleneteket
 írt és javított, elkészült mozgóképeket elemzett, segített a vágásban és a hang
 alakításában. Abban is segített, hogyan osszam be a korlátozott
@@ -784,7 +853,7 @@ egy MI-rendszer a Navier–Stokes-problémát választotta önálló kutatási p
 A gép nem oldotta meg a millenniumi problémát. Verziózott, cáfolható kutatási
 láncot épített, tizenhat köztes megoldási kísérletet cáfolt meg, és a kudarcok
 elrejtése helyett mások által is folytatható munkát hagyott hátra. Én tartottam
-mozgásban a folyamatot, visszakérdeztem a szoftvernek, ragaszkodtam a
+mozgásban a folyamatot, megkérdőjeleztem a válaszokat, ragaszkodtam a
 tesztekhez, és megtaláltam azt a kutatót, aki azonosítani tudta a hiányzó
 matematikai lépést.
 
@@ -802,16 +871,15 @@ szerkezetként, hibás következtetésként, képként, ellenpéldaként vagy ha
 Abból, amit megtartottam, elvetettem vagy kijavítottam, kirajzolódott a saját
 ítéletem.
 
-A gép hozta a tanult mintákat; én a megélt következményeket. Az ő hibái
-rámutathattak az enyémekre, az én javításaim pedig alakították a következő
+A gép hozta a tanult mintákat; én tudtam, milyen következményekkel jártak az
+események. A hibái rámutathattak az enyémekre, az én javításaim pedig alakították a következő
 próbálkozását. Ehhez a párbeszédhez kellett hely a hibázásra, de nem kellett
 szabad kéz a beavatkozásra: a nyilvános tudás hozzáférhető, a kísérletek védett
 környezetben futnak, a következményekkel járó lépések pedig korlátozhatók és
-felülvizsgálhatók. A kudarc nem tette emberré a gépet. A közös munkát tette
-tanulásra képessé.
+felülvizsgálhatók. A kudarc nem tette emberré a gépet, de lehetővé tette, hogy tanuljunk a közös munkából.
 
-Nem nevezhetem jónak azt az élményt, amelyből ez a munka született. Azt az
-embert sem törölhetem ki, akit közben formált. Amit ebből készítek, az az enyém
+Nem nevezhetem jónak azt az élményt, amelyből ez a munka született. Azt sem
+tagadhatom meg, akivé közben formált. Amit ebből készítek, az az enyém
 marad.
 
 <!-- illustration: part_ii_ai_work_scene -->
@@ -831,9 +899,9 @@ kívülről nézzek magamra, amennyire a múltam történetté rendezéséhez sz
 volt. A matematikai kísérlet újra meg újra azt kérdezte: megmarad-e egy ötlet,
 ha őszintén megpróbáljuk megcáfolni.
 
-Az emberi elmét nem lehet ketrecbe zárni. A bíróság kimondhatja, hogy valakire
-szabadságvesztés vár. Ennek az árnyéka valóságos. Azt mégsem döntheti el, merre
-járjanak a gondolatai, amíg vár az ítéletre.
+Az emberi elmét nem lehet ketrecbe zárni. A bíróság szabadságvesztést szabhat
+ki, és ennek lehetősége valóságos árnyékot vet az emberre. Azt mégsem döntheti
+el, merre járjanak a gondolatai, amíg az ítéletre vár.
 
 Az eljárási irat nem tudta leírni azt az embert, aki közben mindezt csinálta. Az
 árnyék nem tűnt el. Megtanultam dolgozni benne, míg sok napon már észre sem
@@ -875,7 +943,8 @@ figyelmeztetett, de ezekre a gyakorlati kérésekre nem válaszolt.
 
 A levél azt is közölte, hogy minden fél előadhatja az álláspontját, Strasbourg
 pedig továbbra is nyitva áll. Más összefüggésben ez megnyugtató lehetett volna.
-Itt inkább egy aknamező túloldalára állított kijárati táblának tűnt. A hazai
+Itt inkább úgy hatott, mintha a közeli hiba kijavítása helyett egy távoli
+jogorvoslat felé mutatnának. A hazai
 eljárástól azt kértem, készüljön hivatalos hangfelvétel, és vizsgálják meg a
 hiányzó bizonyítékokat. A válasz egy távoli emberi jogi bíróság felé mutatott,
 mielőtt elmondta volna, mitől lesz megbízható a következő hazai lépés.
@@ -927,19 +996,16 @@ automatikusan erkölcsileg is elfogadjam.
 
 <!-- illustration: part_ii_housemate -->
 
-Mielőtt az állam megjelent a budapesti ajtómnál, már láttam, hogyan követ egy
-magyarországi kötelezettség valakit Londonba, és hogyan foglalja el lassan az
-életét.
-
-A közös magyar házban ugyanennek a magyar történetnek egy korábbi változatát
-láttam.
+Mielőtt az állam megjelent a budapesti ajtómnál, már láttam Londonban, hogyan
+ered valaki nyomába egy magyarországi kötelezettség, és hogyan telepszik rá
+lassan az életére.
 
 A legsűrűbb időszakban tíz felnőtt osztozott egy fürdőszobán, egy külön
 vécén és olyan szobákon, amelyeket soha nem ennyi önálló életre terveztek. Nem
 ugyanazért hagytuk el Magyarországot. Volt, aki nyelvet akart tanulni, más
 munkát, kalandot, menekülést vagy második esélyt keresett. Néhányan akkor sem
-akartak már hazatérni, amikor kívülről rosszabbnak látszottak az anyagi
-körülményeik.
+akartak már hazatérni, amikor kívülről úgy látszott, rosszabb anyagi
+körülmények között élnek.
 
 Az egyik lakótársamat a devizahitele is elkísérte.
 
@@ -948,16 +1014,16 @@ lehetségesnek. A különélés megnyúlt. A felesége az adóhatóságnál dolg
 miközben kisgyermekükkel Magyarországon maradt, a család pedig széthullott. Ő
 átlépte a határt, de a régi aláírás vele tartott.
 
-A neve maradjon magánügy. A történet formája viszont közös: egy pénzügyi termék
-jóval tovább élt annál a pillanatnál, amikor eladták. Ő viselte az aláírás
+A neve maradjon magánügy. A történet azonban sokaknak ismerős: egy pénzügyi
+termék hatása jóval túlélte az aláírás pillanatát. Ő viselte az aláírás
 következményeit, miközben körülötte árfolyamok, behajtási rendszerek,
 jogértelmezések és bírósági döntések változtak.
 
 Sok kivándorló számára ez a távozás rejtett rémálma. Elmegy, hogy kiszabaduljon
 egy rendszerből, amely lehetetlenné tette a hétköznapi életet, aztán rájön,
 hogy a hitel, az adósság, a családi kötelesség vagy a hatósági követelés a
-külföldi szobába is utána jöhet. Az ország megváltozik körülötte. Az intézmény
-marad a borítékban.
+külföldi szobába is utánaér. Másik ország veszi körül, de a borítékban ugyanaz
+az intézmény találja meg.
 
 A devizahiteles ügyek és a KATA jogilag nem ugyanazok.
 
@@ -992,7 +1058,7 @@ mutat meg minden költözést, és nincs egyetlen ok, amely mindet megmagyarázn
 bérek, a lakhatás, az adósság, a nyelv, a szakmai megbecsülés, a család, a
 kaland, a politika és az odatartozás érzése összekeveredett.
 
-A londoni házban mindegyikből jutott valamennyi.
+A londoni házban mindegyikből jutott egy kevés.
 
 Néhány lakó anyagilag rosszabbul élt, mint Magyarországon, mégis kevésbé érezte
 magát csapdában. Ezt nehéz megérteni, ha a kivándorlást csak fizetésben és
@@ -1001,12 +1067,11 @@ kényelmet, ha előbb bánnak velünk emberként, mint problémaként.
 Egy szabály, amely elég sokáig változatlan marad ahhoz, hogy tervezni lehessen
 vele, többet érhet egy nagyobb szobánál.
 
-A másik irányba ható nyomást is nehéz megmutatni: mennyi energiát visz el
-kideríteni, melyik szabályt kell komolyan venni, kit nem szabad megsérteni,
-melyik szakembert kell védeni, melyik informális kerülőutat használja mindenki,
-és végül kihez kerül vissza a felelősség, ha a kerülőút csődöt mond. Egyetlen
-eset ritkán visz át valakit a határon. Az ilyen helyzetekkel töltött évek már
-igen.
+Azt is nehéz megmutatni, mennyi erőt emészt fel annak kiderítése, melyik
+szabályt kell komolyan venni, kit nem szabad megsérteni, melyik szakembert kell
+védeni, melyik informális kerülőutat használja mindenki, és végül kire száll
+vissza a felelősség, ha a kerülőút csődöt mond. Egyetlen eset ritkán visz át
+valakit a határon. Az ilyen helyzetekkel töltött évek már igen.
 
 Az I. rész úgy mesélt a külvilág csodájáról, hogy nem hallgatta el a közös
 szobát. A II. rész úgy beszél az otthon szépségéről, hogy nem rejti el, miért
@@ -1019,27 +1084,28 @@ ország megszakíthatja ezt az életet, de nem törli el automatikusan. Egy más
 világból talán tisztábban látjuk önmagunkat. Visszanézve megkérdezhetjük, képes-e
 jobbra az otthon — és képesek vagyunk-e mi is.
 
-A Duna-partról mindez nem Európa szélének látszott. Villamosok keltek át a
-folyón; a Parlament a megszokott helyén állt a fényben; választások, bíróságok
-és hivatalok a demokrácia szókészletét használták. A történetemben szereplő
-cselekedetek külön-külön elég hétköznapiak maradtak ahhoz, hogy minden
-résztvevő folytathassa őket. A kérdés a szépség és a nyitott kifelé vezető út
-között maradt: meddig kérheti egy szeretett otthon, hogy valaki a maradásért
-cserébe odaadja a méltóságát?
+A Duna-partról nézve nem úgy tűnt, mintha Európa szélén állnánk. Villamosok
+keltek át a folyón; a Parlament a megszokott helyén állt a fényben;
+választások, bíróságok és hivatalok a demokrácia nyelvét beszélték. A
+történetemben minden egyes lépés elég hétköznapinak látszott ahhoz, hogy aki
+megtette, nyugodtan folytassa. Csak a kérdés maradt a szép város és a belőle
+kivezető út között: meddig kérheti egy szeretett otthon, hogy valaki a
+maradásért cserébe odaadja a méltóságát?
 
 ## 18. A töréspont nem a kezdet
 
-Az irat kezdődhet egyetlen mondattal a vádból, mert az a mondat rövid. Ebben a
-változatban minden korábbi esemény eltűnik.
+Egy irat kezdődhet a vád egyetlen mondatával, mert az a mondat rövid. Így minden
+korábbi esemény eltűnik.
 
-A történet közérdekű jelentése korábban kezdődik.
+A történet azonban jóval korábban kezdődik, és nemcsak rólam szól.
 
 Bárki átadhat egy feladatot úgy, hogy a felelősség továbbra is nála marad. Bárki
 lemaradhat egy értesítésről, amelyet a képviselőjéhez irányítottak. Bárkivel
-szembejöhet egy törvény, amely gyorsabban változik, mint ahogy a szakmai
-támogatása alkalmazkodni tud. Bárki lehet fizikailag kiszolgáltatott, miközben
-egy intézmény hétköznapi teljesítményt vár tőle. És bárkinek a legrosszabb
-reakciója lehet feltűnőbb, mint mindaz, ami odáig vezetett.
+szembejöhet egy törvény, amely gyorsabban változik, mint ahogy a körülötte lévő
+szakemberek alkalmazkodni tudnak. Bárki lehet fizikailag kiszolgáltatott,
+miközben egy intézmény úgy vár tőle hétköznapi teljesítményt, mintha semmi sem
+történt volna. És bárkinek a legrosszabb reakciója lehet feltűnőbb, mint
+mindaz, ami odáig vezetett.
 
 Egyetlen mondatot könnyebb kinyomtatni, mint a kirekesztés, a törvényes
 erőfeszítés, a helyrehozás és a kitartás éveit. Ha ez megtörténik, ok és okozat
@@ -1048,24 +1114,24 @@ helyet cserélhet. A nyomásból személyiségjegy lesz. A hiányzó háttér
 valaki a hétköznapi munkán kívül életben tartja magát, újabb magyarázatra
 szoruló állapot lesz.
 
-Ez a megfordítás ad közérdekű jelentést az ügynek, miközben a tények továbbra
-is az enyémek. Nem az a veszély, hogy mindenki ugyanazt a mondatot írná le.
-Hanem az, hogy egy alacsony bizalmú rendszer előbb kizárhat egy rátermett
-embert, majd ennek az embernek a töréspontjával magyarázhatja meg a történteket.
+Ettől válik az ügy többé egyetlen ember történeténél, miközben a tények továbbra
+is az enyémek. Nem az a veszély, hogy mindenki ugyanazt a mondatot írná le,
+hanem az, hogy egy kevés bizalomra épülő rendszer előbb kizárhat egy rátermett
+embert, majd az ő töréspontjával magyarázhatja meg mindazt, ami történt.
 
 A rendszer nem az ország fölött lebegő önálló lény volt. Minden reggel emberek
-hozták létre. Egy törvényhozó elfogadta a sebességet. Egy szakember megvédett
-egy szakmai szokást. Egy hivatal őrizte saját illetékességének határát. Egy
+hozták létre. Egy törvényhozó elfogadta a sietséget. Egy szakember ragaszkodott
+egy bevett gyakorlathoz. Egy hivatal őrizte saját illetékességének határát. Egy
 ügyvédnek nem maradt ideje. Egy szakértő a mindent magyarázó értelmezést
 választotta. Egy bíró leszűkítette a következő kérdést. Egyetlen szerepből
-nézve mindegyik döntés hétköznapinak tűnhetett. Egymás mellé téve azonban
-gépezetté álltak össze.
+nézve mindegyik döntés hétköznapinak tűnhetett. Együtt azonban gépezetet
+alkottak.
 
 Ettől még nem válik minden résztvevő kegyetlenné, és nem lesz minden magyar
 résztvevő egyforma. Csak eltűnik az a megnyugtató mese, hogy egy hibás rendszer
 emberi fenntartás nélkül létezhet. A teljes folyosót nem egyetlen ember
-tervezte. A felelősség minden íróasztaltól továbbhaladt; az elszámoltathatóság
-pedig annál az embernél gyűlt össze, akinek már nem volt hová továbbküldenie.
+tervezte. Minden íróasztal továbbadta a felelősséget; végül annál az embernél
+gyűlt össze, akinek már nem volt hová továbbküldenie.
 
 <!-- pagebreak -->
 
@@ -1087,26 +1153,27 @@ a Pride-ot, miután a rendőrség megtiltotta a felvonulást. Kihallgatták, maj
 megvádolták. A választás és egy európai bírósági döntés után a vádat ejtették. A
 térkövek nem mozdultak el. A rajtuk álló emberek körüli jog igen.
 
-Ezek a mozgalmak nem követtek közös programot, és az én ügyemet sem ismerték.
-Együtt mégis közös tapasztalattá tették, hogyan működnek az intézmények.
+Ezeknek a mozgalmaknak nem volt közös programjuk, és az én ügyemet sem
+ismerték. Mégis ugyanarról árulkodtak: hogyan működnek az intézmények azokkal,
+akik szembekerülnek velük.
 
 Az én utam csendesebb és különösebb volt. Elektronikus űrlapokon át vezetett.
 
 Arra kértem az alapvető jogok védelmére hivatott magyar hivatalt, vizsgálja meg
 a rendőrségi eljárást, a képviselet kudarcait és a jelszómegosztás csapdáját. A
-válasza saját hatáskörének határait térképezte fel: nem vizsgálhatta felül,
+válaszából főként az derült ki, mire nincs hatásköre: nem vizsgálhatta felül,
 hogyan értékelte a rendőrség és az ügyészség a bizonyítékokat, nem avatkozhatott
 folyamatban lévő bírósági eljárásba, a panasz egyes részeit pedig visszairányította
 ugyanazokhoz a jogi útvonalakhoz, amelyek már körülvettek. Egy későbbi válasz
 szerint az ügyet ismétlő további beadványokat újabb válasz nélkül irattárba
-helyezhetik. Az alapvető jogokról elnevezett hivatal gondosan feltérképezte
-nekem az ajtókat, amelyeket nem nyithat ki.
+helyezhetik. Az alapvető jogokról elnevezett hivatal gondosan felsorolta az
+ajtókat, amelyeket nem nyithat ki.
 
 Az Európai Parlamenthez benyújtott petíciót 2025 januárjában befogadhatónak
 nyilvánították. Az Európai Bizottság válasza ismertette az adatvédelmi
 szabályokat, az érvényesítést pedig visszautalta a nemzeti hatóságokhoz és
-bíróságokhoz. A magánügyem eljutott egy valódi európai fórumig, hogy aztán
-ugyanahhoz a hazai rendszerhez irányítsák vissza.
+bíróságokhoz. A magánügyem eljutott egy európai fórumig, onnan pedig ugyanahhoz
+a hazai rendszerhez irányították vissza.
 
 Nem lettem politikus.
 
@@ -1120,12 +1187,12 @@ elvezetett:
 > Egy jogállam ereje azokban a pillanatokban mutatkozik meg, amikor képes
 > felismerni, hogy az egyén kudarca valójában egy rendszer kudarcának tükre.
 
-Ez nem azt jelentette, hogy az egyén felelőssége eltűnik a rendszerben. Az én
-mondatom az enyém maradt. Azt állította, hogy hamis képet kapunk a
+Ez nem azt jelentette, hogy az egyén felelőssége eltűnik a rendszerben. A
+leírt mondatért továbbra is én feleltem. De hamis képet kapunk a
 felelősségről, ha az utolsó látható hibát leválasztjuk arról a gépezetről,
-amely valószínűbbé tette, majd magát a gépezetet már nem vizsgáljuk tovább.
+amely hozzájárult a kialakulásához, magát a gépezetet pedig már nem vizsgáljuk.
 
-Javaslataim idővel rendszerré álltak össze:
+Javaslataimból idővel kirajzolódott, min kellene változtatni:
 
 - közvetlenül értesítsék az embert, amikor a képviselője eljár a nevében;
 - a jelszómegosztást váltsa fel részletes, elfogadáshoz kötött meghatalmazás;
@@ -1153,8 +1220,8 @@ később másokat gyanú alá vont. Aztán belülről bezárta az ajtót, a kív
 embereket pedig elszámoltatta azért, hogy valaha beléptek rajta.
 
 A fontos változás bennem történt. Már nemcsak azt követeltem, hogy valaki
-javítsa ki az én nyilvántartásomat, hanem azt kérdeztem, hogyan kerülhetné el a
-következő ember, hogy egyáltalán belekerüljön.
+javítsa ki a rólam vezetett nyilvántartást. Arra is választ kerestem, hogyan
+kerülhetné el a következő ember, hogy egyáltalán belekerüljön.
 
 Ez tág értelemben politika. De nem egy párttal kezdődött.
 
@@ -1174,8 +1241,8 @@ vonult, és azzal vádolta az új többséget, hogy lebontja az alkotmányos
 demokráciát. A figyelmeztetés még igaz is lehetett. Ugyanazok a szavak keltek át
 az ülésterem másik oldalára.
 
-A választás nem volt ítélet az én ügyemben. Azt viszont megmutatta, hogy a
-folytonosság önmagában már nem érdemelt elég bizalmat. A
+A választás nem volt ítélet az én ügyemben. Azt viszont megmutatta, hogy az
+emberek már nem bíztak pusztán a folytonosságban. A
 megváltoztathatatlannak bemutatott intézményekről most azok mondtak véleményt,
 akiknek együtt kellett élniük velük.
 
@@ -1186,28 +1253,28 @@ reformokhoz kötötték.
 A szám ugyanaz volt. Csak az iránya fordult meg.
 
 2023-ban egy járni sem tudó ember írta le, miközben húsz évét kérte számon az
-államon. 2026 júliusára ugyanaz a szám az országos politikában állt ugyanazok
-mellett a szavak mellett: jogállam.
+államon. 2026 júliusára ugyanez a szám már az országos politikában kapcsolódott
+ugyanahhoz a szóhoz: jogállam.
 
 ## 22. Két levél Velencébe
 
 Az alkotmányos konfliktus végül eljutott a Velencei Bizottsághoz.
 
 A köztársasági elnök arra kérte a Bizottságot, értékelje a megbízatása
-megszüntetésére irányuló kísérletet. Kérdéseit 2026. május 29-én keltezte, majd
-június 4-én kiegészítette. A veszélybe került legmagasabb közjogi méltóság
-szemszögéből érvelt.
+megszüntetésére irányuló kísérletet. Kérdéseit 2026. május 29-én küldte el,
+majd június 4-én kiegészítette. A legmagasabb közjogi méltóság szemszögéből
+írt, akinek veszélybe került a megbízatása.
 
 Június 5-én 14:18-kor elküldtem a saját beadványomat ugyanennek az
 intézménynek. Hetvennyolc perccel később ugyanazt a levelet továbbítottam a
 Sándor-palotának és a miniszterelnöki sajtóirodának.
 
-Ez volt az én apró jelzésem alulról.
+Az én levelem alulról érkezett.
 
-Az elnök a hivatala alkotmányos biztonságát védte. Én azt kérdeztem, hogyan
-éli meg az alkotmányos bizonytalanságot az, aki ilyen hivatalok alatt áll: az
-adóigazgatásban, a rendőrségi eljárásban, az igazságügyi szakértői
-értelmezésben, a kegyelmi ügyben és az évekig tartó bizonytalanságban.
+Az elnök a hivatala alkotmányos biztonságát védte. Én azt kérdeztem, mit él át
+az, aki a hivatalok döntéseinek van kiszolgáltatva: az adóigazgatásban, a
+rendőrségi eljárásban, az igazságügyi szakértő értelmezésében, a kegyelmi
+eljárásban és az évekig tartó bizonytalanságban.
 
 Júliusban a Velencei Bizottság küldöttsége találkozott az ország legfelső
 vezetőivel. A nyilvános beszámolók egyeztetésről és óvatosságról szóltak, nem a
@@ -1220,12 +1287,12 @@ is figyelmeztetést kapott.
 Velence nem az elnök egyetlen útja volt.
 
 Június 11-én az Alkotmánybírósághoz fordult, hogy értelmezze az
-alkotmánymódosítás és az elmozdítás korlátait. A kérelem visszavitte ahhoz az
-intézményhez, amelynek 2014-ben lett bírája, 2016-tól pedig elnöke volt, amíg
-2024-ben köztársasági elnökké nem választották. Az Alkotmánybíróságnak tizenöt
-tagja volt. Először heten jelentették be, hogy az ügy személyesen és közvetlenül
-érinti őket, ezért kizárták magukat. Miután ezt közölték, egy nyolcadik bíró is
-bejelentette kizárását.
+alkotmánymódosítás és az elmozdítás korlátait. Ezzel ahhoz az intézményhez tért
+vissza, amelynek 2014-ben lett bírája, 2016-tól pedig elnöke volt egészen addig,
+amíg 2024-ben köztársasági elnökké nem választották. Az Alkotmánybíróságnak
+tizenöt tagja volt. Először heten jelentették be, hogy az ügy személyesen és
+közvetlenül érinti őket, ezért kizárták magukat. Ezután egy nyolcadik bíró is
+így tett.
 
 A teljes üléshez tíz bíró kellett.
 
@@ -1234,7 +1301,7 @@ Mivel csak heten maradtak, a testület nem volt határozatképes. Az ügy még a
 
 A bírák nem távoztak a hivatalukból; csak ebből az egy ügyből zárták ki
 magukat. Az alkotmányos konfliktus rendezésére felkért testület mégsem tudott
-összeülni, hogy megtárgyalja.
+összeülni és megtárgyalni az ügyet.
 
 Ez akkor történt, amikor a saját beadványaimmal alulról próbáltam elérni az
 alkotmányossági felülvizsgálatot.
@@ -1247,8 +1314,8 @@ között.
 
 Az Alkotmánybíróság az eljáró bíróságon keresztül megkapta a panaszomat, de az
 érdemi kérdésig nem jutott el, mert a büntetőügyben még nem született elsőfokú
-döntés. Az elnök ügyében nem maradt elég bíró. Az enyém azelőtt ért az
-alkotmányos ajtóhoz, hogy a rendes eljárás befejeződött volna.
+döntés. Az elnök ügyében nem maradt elég bíró. Az enyémet azért nem tárgyalták,
+mert a rendes eljárás még nem fejeződött be.
 
 Két egészen különböző ügy ugyanazt mutatta meg: attól, hogy van alkotmányos
 kérdés, még nem biztos, hogy lesz fórum, ahol valaki megválaszolja.
@@ -1259,21 +1326,21 @@ A választás után az új miniszterelnök nyilvánosan felszólította távozá
 igazságszolgáltatás, az ügyészség és az ellenőrző szervek hosszú időre
 kinevezett tisztségviselőit. A részletes lista a jegyzetekbe tartozik.
 
-A lista megmutatta, hogyan élheti túl a hatalom a választást: hosszú
-kinevezésekben, testületekben, szabályokban, alapítványokban és intézményi
-szokásokban.
+A lista megmutatta, hogyan maradhat fenn egy korábbi hatalom a választás után
+is: hosszú kinevezésekben, testületekben, szabályokban, alapítványokban és
+intézményi szokásokban.
 
 Egy másik ügy kézzelfogható képet adott ehhez a hatalomátadáshoz.
 
 Március 5-én két, Ausztriából Ukrajna felé tartó páncélozott pénzszállító járművet
 állítottak meg Budapest közelében. Külföldi valutát és aranyat szállítottak. A
-jelenetből azonnal politikai mozi lett.
+jelenetből azonnal politikai látványosság lett.
 
 A választás után visszaadták a szállítmányt, visszavonták a kiutasításokat, és
 felülvizsgálatok indultak. Egy magas rangú ügyész a nyomozással kapcsolatos
 nézetkülönbségre hivatkozva lemondott; az adónyomozás vezetőit felmentették;
-később a legfőbb ügyész is távozott. A részleteket a jegyzetek őrzik. Hozzám a
-fordulat sebessége jutott el.
+később a legfőbb ügyész is távozott. A részleteket a jegyzetek őrzik. Számomra
+a fordulat sebessége volt a legfeltűnőbb.
 
 Az ország heteken belül újranyithatott egy jelentős hatósági műveletet,
 felülvizsgálhatott szerveket és elmozdíthatott vezetőket. Az én eljárásom, amely
@@ -1284,11 +1351,11 @@ A sebességtől még nem vált minden személycsere igazságossá. Minden intéz
 más szabályok szerint mozdult, és az emberek lecserélése továbbra is gyorsabb
 lehetett a hibák kijavításánál.
 
-A pontos kép nem egy sor fej volt, amely egyetlen vágással lehullik.
+A valóságban nem mindenki egyszerre és nem ugyanazért távozott.
 
-Inkább intézményi arcképek fala, ahol minden portré másképp mozdul, miközben
-alattuk egy ember újra meg újra frissíti a képernyőt, és még mindig nem tudja,
-mi történik a következő tárgyalásán.
+Az intézmények vezetői különböző módon mozdultak, miközben én újra meg újra
+frissítettem a képernyőt, és még mindig nem tudtam, mi történik a következő
+tárgyalásomon.
 
 ## 25. Az üres elnöki szék
 
@@ -1305,10 +1372,10 @@ Már kegyelmet kértem ettől a hivataltól, amikor maga a kegyelem politikailag
 veszélyessé vált. 2024 februárjában egy gyermekotthonban történt bántalmazás
 eltussolásához kapcsolódó elnöki kegyelem nyilvánosságra kerülése véget vetett
 egy államfői megbízatásnak és az azt ellenjegyző korábbi igazságügyi miniszter
-közéleti pályájának. A következő elnök olyan hatalmat örökölt, amely már
-megégette az elődei kezét.
+közéleti pályájának. A következő elnök úgy örökölte meg ezt a jogkört, hogy az
+elődje már belebukott a használatába.
 
-Soha nem tekintettem mellékesnek, ki áll a hivatal fölött. 2025 novemberében
+Soha nem tekintettem mellékesnek, ki tölti be a hivatalt. 2025 novemberében
 majdnem visszavontam a kérelmemet, mert az akkori tisztségviselőt nem tartottam
 alkalmasnak arra, hogy döntsön róla. Végül hagytam tovább haladni.
 
@@ -1323,8 +1390,8 @@ elnökváltásig. Utána újra kérni fogom.
 Ő megtagadta tőlem a kegyelmet. Az új többség tőle tagadta meg a politikai
 kegyelmet.
 
-Az elutasítás előtt a kegyelmi eljárás ugyanazokat a kérdéseket behozta az
-otthonomba. Egy pártfogó felügyelő előzetes egyeztetés nélkül csengetett be. A
+Az elutasítás előtt a kegyelmi eljárás az otthonomba is elért. Egy pártfogó
+felügyelő előzetes egyeztetés nélkül csengetett be. A
 lakást nem készítettem fel szemlére. Aznap puritán, rendetlen és piszkos volt.
 Nincs autóm, télen többnyire nem fűtöm a lakást, és keveset költök, mert így
 őrzöm meg a függetlenségemet. Tudok így élni. Nem sajnálatot kértem a
@@ -1345,10 +1412,10 @@ hogy Magyarország végleges elhagyása a magyar állampolgárságomról való l
 is jelentheti-e.
 
 Azért tértem haza Londonból, mert a saját országomban akartam élni. Az, hogy már
-az országomhoz fűző jogi kötelék feladását is el tudtam képzelni, megmutatta a
-távolságot a hivatalosan képviselt nemzeti egység és a valóban megélt
-odatartozás között. Nem tettem meg. Maga a gondolat mutatta meg, milyen messzre
-jutottam.
+a magyar állampolgárságom feladását is el tudtam képzelni, megmutatta, milyen
+messze került egymástól a hivatalosan hirdetett nemzeti egység és az, ahogyan
+én az odatartozást megéltem. Nem tettem meg. Már maga a gondolat is jelezte,
+milyen messzre jutottam.
 
 A száműzetés rendszerint az otthontól való távolságot jelenti. Én otthon éltem,
 és onnan éreztem magam száműzöttnek.
@@ -1363,7 +1430,7 @@ problémákkal, amikor a sebesség, a hatalom és a kényelmetlenség már az ö
 ## 26. A termék visszatér
 
 Egy rendszer valódi arcát nem a portál nyitóoldala és nem a szolgáltatásokat
-ígérő mondatok mutatják meg. Hanem az a pillanat, amikor valaki azt mondja:
+ígérő mondatok mutatják meg, hanem az a pillanat, amikor valaki azt mondja:
 *hibás az irat; a szakmai segítség nem működött; a testem nem tud igazodni az
 önök időbeosztásához; szükségem van valakire, aki az egész történetet átviszi
 ebből a szobából a következőbe.*
@@ -1375,28 +1442,28 @@ Nem állt mellettem, amikor munkát kerestem, külföldön függetlenséget ép�
 hazatértem, fejlesztettem a terméket, megszereztem a belga szerződést,
 helyesbítettem az adóbevallást vagy egyedül lábadoztam a műtét után. Akkor
 jelent meg, amikor valami eltört. Magával vitte a mondatot, az eszközeimet, az
-ujjlenyomatomat, a szakértői címkét és a pénzügyi leltárt. Hatalmat követelt a
-rossz fölött, miközben a jóhoz szinte semmivel sem járult hozzá. Ez a kapcsolat
-nem adott. Elvett.
+ujjlenyomatomat, a szakértői címkét és a pénzügyi leltárt. A hibáim fölött
+hatalmat gyakorolt, miközben ahhoz szinte semmivel sem járult hozzá, amit jól
+csináltam. Ez a kapcsolat nem adott. Elvett.
 
 A veszélyhez nem kellett titkos összeesküvés. Már benne volt a rendszer
 felépítésében: felelősség közösen látható adatok nélkül; másra bízott ügyintézés
 biztonságos azonosítás nélkül; vád a teljes háttér nélkül; szakvélemény egy
 egész élet ismerete nélkül; késedelem lezárás nélkül; pénzügyi átvilágítás a
-rendszerszintű okok vizsgálata előtt. Egy így felépített rendszer megalázhatta az embert,
-ellene fordíthatta a saját történetét, veszélyeztethette a túlélését lehetővé
-tevő vagyonát, és biztonságosabbnak mutathatta a távozást az odatartozásnál.
-Bárkivel megtehette, aki elég szerencsétlen volt ahhoz, hogy ugyanezen az
-eseménysoron sodródjon végig.
+rendszerszintű okok vizsgálata előtt. Egy így felépített rendszer megalázhatta
+az embert, ellene fordíthatta a saját történetét, veszélyeztethette azt a
+vagyont, amelyből fenntartotta magát, és biztonságosabbnak mutathatta a távozást
+a maradásnál. Bárkivel megtehette, aki végigsodródott ugyanezen az
+eseménysoron.
 
 A MyScoutee éveken át azt kérdezte, hogyan enyhíthető az idegenek közötti
 természetes kezdeti bizalmatlanság anélkül, hogy bárkit egyetlen benyomásra
 szűkítenénk. Annyi kölcsönös, bizalmas hátteret próbált adni, hogy egy valódi
 találkozás felülírhassa az első képet.
 
-A jogi történet keményebb formában tette fel ugyanezt a kérdést. Előbb az
-intézmény minősített, aztán a teljes embernek vissza kellett küzdenie magát az
-iratba. Itt találkozott a két történetszál.
+A jogi történet jóval keményebben tette fel ugyanezt a kérdést. Előbb az
+intézmény minősített, aztán nekem kellett visszaírnom az iratba mindazt, ami a
+minősítésből kimaradt. Itt találkozott a két történetszál.
 
 Mit kellene megőriznie egy rendszernek, mielőtt kategóriába sorol egy embert?
 
@@ -1420,7 +1487,7 @@ A II. rész tanulsága ezért nem az, hogy a termékem már tudja a választ.
 
 Hanem az, hogy a terméknek ki kell állnia ezt a próbát.
 
-## 27. A humor nyomot hagyott az emberről
+## 27. A humor megőrzött valamit az emberből
 
 Van valami, amit egyetlen eseménynapló sem tud teljesen megőrizni.
 
@@ -1430,9 +1497,9 @@ vádlott. Az eljárásban semmi sem változott.
 
 A mosoly mégis megmutatta, hogy egyikünk sem azonos teljesen a szerepével.
 
-A humor nem az ügy súlyának semmibevétele volt. Nem hivatalos nyomot hagyott az
-emberségről: csak annyit bizonyított, hogy egyetlen másodpercre többen együtt
-látták az abszurditást.
+A humor nem az ügy súlyának semmibevétele volt. Csak megőrzött valamit abból,
+hogy emberek ültünk a szobában: egyetlen másodpercre többen együtt láttuk az
+abszurditást.
 
 Az *abszurditás* szót nem évekkel később adtam hozzá, hogy irodalmibb legyen a
 történet. Egy 2024-es beadványban azt írtam, éppen az abszurditás az ijesztő.
@@ -1445,25 +1512,24 @@ csináltam. Egy Hulkot idéző képen a dühös KATA-alak mindkét kezében fejs
 tartott, az övéről pedig az adóhatóság, az ügyészség és a bíróság lógott. A
 magyar szójátékban a *kaszásból* *katás* lett.
 
-A rendőrségi toborzóplakátok újabb lehetőséget adtak a fekete humorra. 2024. január
-4-én angol nyelvű önéletrajzot és érdeklődő levelet küldtem a rendőrség
+A rendőrségi toborzóplakátok újabb lehetőséget adtak a fekete humorra. 2024.
+január 4-én angol nyelvű önéletrajzot és érdeklődő levelet küldtem a rendőrség
 karrierirodájának. Azt írtam, megpályáztam a rendőrkapitányságon kezelt
 lehetetlen állást, eljutottam a harmadik fordulóig, és még mindig várom a
-visszajelzést. A lehető leggyorsabb választ kértem. A vád fordulóról fordulóra
-haladhatott, miközben a benne szereplő ember választ sem tudott szerezni.
+visszajelzést. A lehető leggyorsabb választ kértem. Az ügy haladt egyik
+fordulóból a másikba, miközben én még választ sem tudtam szerezni.
 
-Később ugyanez a vicc átlépte a határt, amikor a német rendőrségtől kértem
-segítséget, mert a magyar oldalon nem tudtam senkit elérni. A humor azért volt
-fekete, mert valódi szükséglet húzódott mögötte. Egy olyan eljárásban, amelyben
-nem bíztam, a szarkazmus lett a nem hivatalos tértivevény: így legalább nyoma
-maradt annak, hogy próbáltam kapcsolatot teremteni, amikor a hivatalos csatorna
-nem működött megbízhatóan.
+Később ugyanez a vicc átlépte a határt: a német rendőrségtől kértem segítséget,
+mert a magyar oldalon senkit nem tudtam elérni. Attól lett fekete humor, hogy
+valódi szükség húzódott mögötte. Egy olyan eljárásban, amelyben nem bíztam, a
+szarkazmus lett a nem hivatalos tértivevény: így legalább nyoma maradt annak,
+hogy megpróbáltam kapcsolatot teremteni, amikor a hivatalos csatorna nem
+működött megbízhatóan.
 
-A vicc nem tagadta, hogy bizonyos mondatok veszélyesek. Azt a komoly arccal
-előadott történetet tagadta, hogy az irat nyelve az egyetlen lehetséges leírása
-a történteknek. Amikor a rendőrök megpróbálták visszatartani a nevetést, az nem
-mentett fel. Egy pillanatra csak megmutatta, hogy az intézményi szerep mögött
-ott maradt az ember.
+A vicc nem tagadta, hogy bizonyos mondatok veszélyesek. Azt tagadta, hogy az
+irat komoly nyelve volna a történtek egyetlen lehetséges leírása. Amikor a
+rendőrök megpróbálták visszatartani a nevetést, az nem mentett fel. Csak egy
+pillanatra megmutatta az embert az intézményi szerep mögött.
 
 Egy rendőrségi beadványt azzal zártam, hogy kirúgtam az intézményt. Másutt
 elküldtem az intézményeket, hogy egy legelőn szolgáltassanak igazságot. Egy
@@ -1492,7 +1558,7 @@ büntetőtörténet, amelyet el lehet mesélni.
 
 Ehelyett a rendszer komikus időzítésű tragédiát rakott össze.
 
-## 28. Megváltozik a meghívás
+## 28. Másfajta meghívás
 
 Az I. rész végén arra kértem az olvasót, próbálja ki a MyScoutee-t valódi
 közösségekben.
@@ -1502,9 +1568,9 @@ A II. rész nehezebb meghívással ér véget.
 Tegyük próbára a közöttünk lévő rendszereket, mielőtt egy válság teszi meg
 helyettünk.
 
-Nem az a próba, hogy egy rendszer képes-e megtalálni az egyén hibáját. Arra
-minden rendszer képes. Az a próba, hogy a hiba megtalálása után felismeri-e
-benne a saját szerepét is, vagy mindent az emberre hárít.
+Nem az a kérdés, hogy egy rendszer képes-e megtalálni az egyén hibáját. Arra
+minden rendszer képes. Az az igazi próba, hogy a hiba megtalálása után
+felismeri-e benne a saját szerepét is, vagy mindent az emberre hárít.
 
 Ne várjuk meg, amíg a megrémült adózó, az elszigetelt dolgozó, a kimerült
 könyvelő, a túlterhelt ügyintéző, a vádlott vagy a bíró a lehető legrosszabb
@@ -1517,18 +1583,17 @@ kilépni egy hálózatból, hogy a méltóságunk ne maradjon benne.
 Ezt az időszakot programozóként kezdtem, aki törvényesen akart működni és
 befejezni egy külföldi szerződést.
 
-Úgy fejeztem be — ha ezt már befejezésnek lehet nevezni —, hogy intézményi
-javaslatokat küldtem egy kormánynak, amelynek megválasztásáért aktivistaként
-nem dolgoztam, egy olyan alkotmányos átmenet közepén, amelyet nem láthattam
-előre.
+A végére — ha ezt már befejezésnek lehet nevezni — intézményi javaslatokat
+küldtem egy olyan kormánynak, amelynek megválasztásáért nem dolgoztam
+aktivistaként, egy előre nem látható alkotmányos átmenet közepén.
 
 A két pillanat között az eljárás a képernyőn megjelent szavaktól eljutott az I.
-részben felépített élet anyagi alapjaiig: a szüleim segítségével megszerzett
+részben felépített életem anyagi alapjaiig: a szüleim segítségével megszerzett
 lakásig, a benne lévő tárgyakig és a főként külföldi munkából összegyűjtött
 megtakarításig. Azért tértem haza, mert a budapesti árak lehetővé tették, hogy a
 Londonban megszerzett függetlenségből itthon otthont teremtsek. Most úgy
-éreztem, az otthonról végzett külföldi távmunka kísérlete visszamenőleg
-felemésztheti azt a függetlenséget, amely egyáltalán lehetővé tette.
+éreztem, az otthonról végzett külföldi távmunka utólag felemésztheti azt a
+függetlenséget, amely egyáltalán lehetővé tette.
 
 A következő tárgyalást 2026. szeptember 16-ára tűzték ki. Az új igazságügyi
 igazgatás csak annyit válaszolt, hogy beadványomat intézkedésre továbbítják. Az
@@ -1574,15 +1639,15 @@ Ez a dokumentum szerkezetének védelmi értelmezése; nem megállapítás arró
 az ügyészség bizonyított intézményi okot rejtett el, vagy hogy a bíróság
 elfogadta ezt az értelmezést.
 
-A 14. fejezet bizonyíték-rekonstrukciós része a védőbeszéden és a belső
-forrásjegyzékben felsorolt magán nyomozati bizonyítékcsomagon alapul. A
+A 14. fejezetben leírt bizonyíték-rekonstrukció a védőbeszéden és a belső
+forrásjegyzékben felsorolt, saját gyűjtésű bizonyítékcsomagon alapul. A
 védőbeszéd hiányzó elektronikus beadványokat, adóhatósági hívásfelvételeket és a
 visszakapott telefonból kinyert híváslistát sorol fel olyan anyagként, amelyet
 a szerző azután gyűjtött össze, hogy torzítónak találta a nyomozati
 válogatást. A csomagban megőrzött levelek rögzítik az adóhatóság Központi
 Irányításán keresztül előterjesztett kérelmeket, a felvételek szakaszos
 kiadását, a késedelmes kézbesítést, majd az elektronikus beadványok utólagos
-átadását egy elismert ügyintézési hiba után. A védőbeszéd szerint a szerző
+átadását, miután az ügyintézési hibát elismerték. A védőbeszéd szerint a szerző
 továbbította a visszaszerzett anyagot, a rendőrség pedig később újra bekérte.
 Az elbeszélés ezért úgy írja le a keresés sorrendjét, hogy az első
 rekonstrukciót a szerző végezte el, mielőtt a hatóság a saját csatornáján
@@ -1593,7 +1658,7 @@ szerzőre, vagy hogy minden hiányzó hívásról készült felvétel.
 Ugyanez a belső forrásjegyzék tartalmazza a NAV december 18-án kelt hivatalos
 panaszkezelési tájékoztatóját, amely rögzíti, hogy a szerző rendezte az ügyet,
 valamint a hivatalos igazságügyi szakvéleményt, amely a vizsgált kóros
-állapotot december 3-tól kezdődően helyezi el. Az elbeszélés e két hivatalos
+állapotot december 3-tól állapítja meg. Az elbeszélés e két hivatalos
 irat dátumát és a bennük rögzített megállapításokat dokumentált tényként
 kezeli.
 
@@ -1614,11 +1679,11 @@ Törvénykönyv 316. §-a kettőtől nyolc évig terjedő szabadságvesztést re
 vád tárgyává tett cselekményhez. A szerző feljegyzése szerint az ügyészség a
 törvényi minimumot, két év felfüggesztett szabadságvesztést ajánlott beismerés
 és lemondás fejében. Az ajánlatról és a terem légköréről szóló rész a szerző
-személyes emléke, amíg a teljes előkészítő ülési jegyzőkönyvet el nem
-különítik.
+személyes emléke, amíg a teljes előkészítő ülési jegyzőkönyvet nem sikerül
+azonosítani az iratanyagban.
 
 A kétoldalas felszólalás tényei, álláspontja és döntései a szerzőtől
-származtak; az első beadvány megformálásában már MI-asszisztens segített. Az
+származtak; az első beadvány megfogalmazásában már MI-asszisztens segített. Az
 átvizsgált csomagban található későbbi, mintegy nyolcoldalas védőbeszéd ugyanebben
 az ember–MI folyamatban készült. A szerző emlékei szerint a kirendelt védő
 arra kérte, vigye el pendrive-on a védekezési anyagot, majd továbbított egy
@@ -1649,13 +1714,13 @@ panaszolta, hogy nem kapta meg a később kirendelt védők elérhetőségét. A
 emlékirat részletesebben idézi fel a helyettesítési láncot és az irodán belüli
 keveredést. Az alapvető jogok biztosa ugyanezt a panaszt több kirendelt védővel,
 egy vele szóba sem álló első védővel és a későbbi kirendelések hiányzó
-elérhetőségével foglalta össze. A magánnevek kimaradnak az emlékiratból. Az
+elérhetőségével foglalta össze. A magánszemélyek neve kimarad az emlékiratból. Az
 iratok önmagukban nem bizonyítanak minden ügyvédre kiterjedő szakmai mulasztást
 vagy összehangolt intézményi célt.
 
 A 14. fejezet a szerző benyújtott beszámolóját és az átvizsgált levelezést
-kapcsolja össze: telefonált rendőrségi, ügyészségi és
-bírósági elérhetőségekre, használta az elektronikus bírósági benyújtási utakat,
+kapcsolja össze: felhívta a rendőrség, az ügyészség és a
+bíróság elérhetőségeit, használta az elektronikus bírósági benyújtási utakat,
 panaszt tett a bírósági igazgatásnál és az ügyészségi hierarchiában, továbbá
 segítséget kért az alapjogi hivataltól. A magáncsomagban szereplő külön
 bírósági igazgatási panasz az Országos Bírósági Hivatalnak szól; a könyv nem
@@ -1678,13 +1743,12 @@ a magáncsomagban. A melléklet a tárgyalások hivatalos hangfelvételét, a k�
 és az adóhatóság képviselőjének meghallgatását, továbbá az április 8-i függő
 bizonyítási indítványok teljesítését kéri. Rögzíti a szerző beszámolóját arról,
 hogy egy bírósági ügyintéző drágának nevezte a hivatalos hangrögzítést. Maga az
-április 5-i beadvány magyarul idézi a bíró kérdését. A fejezet ennek beszélt
-erejét angolul a „What—are you asking to be sent to prison?” mondattal adja
-vissza, nem a jogias „szabadságvesztés” kifejezéssel. Az ügyintéző meglepett
+április 5-i beadvány magyarul idézi a bíró kérdését. A fejezet ezt a beszélt
+nyelv közvetlenségével őrzi meg, nem a jogias „szabadságvesztés” kifejezéssel. Az ügyintéző meglepett
 reakciója a lakás említésekor emlékirati elem; a könyv nem az említett
 beadványokból származó idézetként közli.
 
-A külön végzés postán érkezett, és a birtokomban maradt. Elutasította a
+A külön végzés postán érkezett, és a szerző birtokában maradt. Elutasította a
 kizárást, lehetséges bírságra figyelmeztetett, továbbította a kifogásolt bíró
 állítását arról, hogy lelkiismeretesen meghallgatott, közölte, hogy minden fél
 előadhatja álláspontját, és egy jövőbeli strasbourgi útra utalt. A hivatalos
@@ -1722,7 +1786,7 @@ párbeszédek a védőbeszéden, a későbbi beadványokon és az őket követő
 eseményeken keresztül maradtak fenn.
 
 A 6. fejezet négy közvetlen megjegyzése a magyarul aláírt védőbeszédben
-megőrzött szöveg közeli angol fordítása. A döntő hívások nem maradtak fenn az
+megőrzött szövegen alapul. A döntő hívások nem maradtak fenn az
 átvizsgált felvételcsomagban, ezért a könyv a szavakat ehhez a későbbi írásos
 irathoz köti, nem függetlenül ellenőrzött hangátiratként közli.
 
@@ -1733,8 +1797,8 @@ nem idézi és nem teszi közzé, továbbá nem dönt a befogadhatóságáról v
 jogszerűségéről. Elbeszélésbeli szerepe szűkebb: megmutatja, milyen mélyre
 zuhant addigra a közös intézményi beszámolóba vetett bizalom.
 
-A közérdekű anyag két összefüggő, de különálló forráscsoportot tartalmaz. Az első
-a 7. fejezetben leírt, 2022. december 1-jei építő rendszerjavaslat. Innen indul
+A közérdekű anyag két összefüggő, de különálló dokumentumcsoportra épül. Az első
+a 7. fejezetben leírt, 2022. december 1-jei rendszerjavaslat. Innen indul
 a tervezési szál: közvetlen értesítés, látható átruházott cselekvés, részletes
 jogosultság, ellenőrizhető helyesbítési lánc, egészségügyi válság kezelése és
 biztonságosabb adózási átmenet.
@@ -1747,14 +1811,14 @@ adatvédelmi sérelem, közportálok hibái, büntetőeljárás és erkölcsi j�
 Utolsó javaslata egy KATA-filmalapot képzel el, amelynek kulturális bevételei
 ökológiai helyreállítást támogatnának.
 
-Az átvizsgált forrás-PDF a 8-as, egy külön aláírt példány pedig az 5-ös
-verziószámot viseli. A szövegük helyenként eltér. Mindkettő saját készítésű érdekérvényesítő
-irat. A cím önmagában nem bizonyítja, hogy egy bíróság ezen eljárási minősítés
+Az átvizsgált forrás-PDF a 8., egy külön aláírt példány pedig az 5.
+verziószámot viseli. A szövegük helyenként eltér. Mindkettő saját készítésű,
+érdekérvényesítési céllal készült irat. A cím önmagában nem bizonyítja, hogy egy bíróság ezen eljárási minősítés
 alatt fogadta be, vagy érdemben döntött róla. A későbbi európai petíció és a
 tágabb GDPR/adózási petíció ismét külön forráscsalád.
 
 A nyers csomag azért nem jelenik meg a könyvvel, mert azonosítókat, más
-magánszemélyek adatait, egészségügyhöz közeli anyagot és lezáratlan állításokat
+magánszemélyek adatait, egészségügyi jellegű anyagokat és lezáratlan állításokat
 tartalmaz.
 
 Több fekete komédiába illő részletet nemcsak a hangvétel, hanem iratok is
@@ -1813,15 +1877,15 @@ A műtött lábról készült kép és a trágár testi komikum leírása saját
 védelmi anyaggal alátámasztott. A legelő képe jelenleg személyes emlék, ezért a
 könyv ellenőrzött idézet helyett átfogalmazza.
 
-A további műtét utáni káromkodás — amelyet az angol irodalmi változat „Go on,
-then. Fine me.” formában ad vissza — szintén személyes emlék marad. A
+A műtét után leírt további káromkodás — „Akkor bazd meg, büntess meg.” — szintén
+személyes emlék. A
 márciustól májusig tartó szélesebb beadványozási időszak dokumentált, de az
 emlékezetből idézett pontos megfogalmazást tartalmazó oldalt még nem sikerült
 elkülöníteni a havi szkennelt csomagokból. Az elbeszélés ezért az összeomlott
 bizalom jelölésére használja a mondatot, nem ellenőrzött idézetként. Az
 intézmény egészének szólt, nem egyetlen tisztviselőnek vagy bármely rokonának.
 
-## A 2019–2021 közötti foglalkoztatási küszöbök
+## Kiszorulás a munkából 2019 és 2021 között
 
 A hosszú tétlen időszakok, a kisebb cég negatív értékelésének feltételezett
 terjedése, a máshová irányított munkák, a közös kirakatszerep, a tíz
@@ -1829,10 +1893,10 @@ leányvállalat, az eltérő marketingösztönzők, a későbbi vezetői megbesz
 a szerző értelmezése a COVID–19 alatti elbocsátásról személyes emlékek. A
 könyv nem állítja tényként, hogy irodai pletyka létezett, hogy a programnak nem
 volt legitim célja, vagy hogy egy bizonyos vezető vagy üzleti érdek okozta az
-elbocsátást. Ezek a részletek azt magyarázzák, hogyan érződött az asztaltól egy
-látszólag stabil alkalmazotti szerep, mielőtt véget ért. A kedvezőbb
+elbocsátást. Ezek a részletek azt mutatják meg, hogyan élte meg a szerző az
+belülről a látszólag stabil alkalmazotti szerepet, mielőtt véget ért. A kedvezőbb
 végkielégítés, a kollégák meglepetése, a viszonylag emberséges elválás és az,
-hogy a szerző tragédiaként élte meg a veszteséget, szintén emlékirat; a könyv
+hogy a szerző tragédiaként élte meg a veszteséget, szintén az emlékirat része; a könyv
 nem közöl bizalmas összeget vagy szerződéses jogosultságot.
 
 A multinacionális cégnél zajló későbbi, negyedik körös interjú, a korábbi
@@ -1847,13 +1911,13 @@ A személyes toborzási levelezés 2021. januárra tervezett munkakezdést és
 január 28-án kelt kilépőlevelet rögzít. A Magyar Nemzeti Bankkal folytatott
 későbbi levelezés rögzíti a rövid munkaviszonyt, az állampapír-kereskedési
 korlátozást, valamint a szerző adatkezelési és háttérellenőrzési panaszait. A
-hosszú értékelés és az az elvárás, hogy a háttérellenőrzés a kezdés előtt
-lezáruljon, egyes szám első személyű foglalkoztatási időrend. Az első napi
-figyelmeztetés, a maszkos szobában látott arckifejezések, a két kolléga
-ültetése, a kilépési kérdés és a bank helyi ügyvédeivel folytatott mintegy
-háromórás etikai beszélgetés egyes szám első személyű emlék marad. A szerző
+hosszas átvilágítás és az a feltétel, hogy a háttérellenőrzés még a munkakezdés
+előtt lezáruljon, a szerző saját foglalkoztatási időrendjéből származik. Az első napi
+figyelmeztetés, a maszkos szobában látott arckifejezések, az, hogy két kollégát
+ültettek mellé, a kilépési kérdés és a bank helyi ügyvédeivel folytatott mintegy
+háromórás etikai beszélgetés továbbra is a szerző személyes emléke. A szerző
 azt is rögzíti, hogy „nemmel” válaszolt, amikor többször megkérdezték,
-megfenyegette-e a vezető, és ma ezt a választ hiányosnak tartja. A könyv nem
+a vezető megfenyegette-e, és ma ezt a választ hiányosnak tartja. A könyv nem
 dönti el a belső vizsgálat célját vagy függetlenségét, nem tesz jogi
 megállapítást a vezetőről vagy a bankról, és nem állítja, hogy a későbbi,
 lezáratlan eljárás már büntetett előélethez vezetett. A banki elbocsátással
@@ -1958,7 +2022,7 @@ személyazonosság határa; önmagában nem oldja meg a szerző ügyének külö
 láthatósági problémáját: ki kapta meg az egyes benyújtások eredményét és az
 értesítéseket, és mindkét fél láthatta-e ugyanazt az eseményláncot.
 
-Az Ügyfélkapu+ beállításakor egy gyorsválasz- (QR-) kód segítségével titkos
+Az Ügyfélkapu+ beállításakor egy QR-kód segítségével titkos
 kulcs kerül a hitelesítő alkalmazásba, amely ebből időben korlátozott belépési
 kódokat állít elő. Technikailag ebből következik, hogy a beállító QR-kód másik
 eszközre másolása megkettőzheti a második tényezőt. Ez a következtetés
@@ -2009,8 +2073,8 @@ következő elnök később kivételes hatalomként írta le a kegyelmet, és na
 átláthatóságot ígért.
 
 A hivatalos elnöki statisztika szerint 2025-ben 689 elbírált ügyből négyben,
-2026 első felének 314 elbírált ügyéből pedig egyben sem adtak kegyelmet. Az
-A szerző magániratai szerint az elutasítás 2026. április 30-án kelt. A számok
+2026 első felének 314 elbírált ügyéből pedig egyben sem adtak kegyelmet. A
+szerző magániratai szerint az elutasítás 2026. április 30-án kelt. A számok
 megmutatják, milyen ritka volt ebben az időszakban a kegyelem; egyetlen döntés
 nem rögzített indokait nem tárják fel.
 
@@ -2046,8 +2110,8 @@ Hivatalos források:
 
 Az előzetes értesítés elmaradását a szerző kegyelmi beadványa rögzíti. A
 lakás állapota, a látogató reakciói és a tervezett felfüggesztett büntetésre
-vonatkozó rész személyes emlék marad, amíg a teljes környezettanulmányt el nem
-különítik a magánarchívumból.
+vonatkozó rész a szerző személyes emléke, amíg a teljes környezettanulmányt nem
+sikerül azonosítani a magánarchívumban.
 
 ## KATA
 
@@ -2075,21 +2139,21 @@ Források:
 - https://telex.hu/english/2022/07/18/president-novak-signs-new-tax-law
 - https://www.mnb.hu/letoltes/mnb-public-finance-report-2022-october.pdf
 
-## Formális szabályok és megélt gyakorlat
+## Írott szabályok és mindennapi gyakorlat
 
 Az emlékirat az *alacsony bizalom* kifejezéssel írja le azt az ismétlődő rést,
 amely a szabály szövege, a munka elvégzését lehetővé tevő informális gyakorlat
 és a két út szétválásakor kockázatot viselő ember között nyílt. Nem a magyar
 karakter diagnózisaként kínálja. A Magyarországról és más posztszocialista
-társadalmakról szóló szakirodalom adja a háttérkülönbséget: a formális
+társadalmakról szóló szakirodalom ad hátteret ehhez: a formális
 intézmények nem érthetők meg azok nélkül a gyakorlatok, elbeszélések és
 informális szabályok nélkül, amelyeken keresztül az emberek ténylegesen
 használják őket. Más kutatások óvatosságra intenek, hogy az informális
 alkalmazkodást ne tekintsük erkölcsi alsóbbrendűség bizonyítékának; lehet válasz
 szervezeti hierarchiára, szűkösségre és gyenge intézményi bizalomra.
 
-Ezek a források az elbeszélés szerkezetét tájékoztatják. Nem bizonyítják a
-magánügy tényeit, és nem tesznek minden magyar intézményt egyenértékűvé.
+Ezek a források az elbeszélés szerkezetéhez adnak támpontot. Nem bizonyítják a
+magánügy tényeit, és nem állítják, hogy minden magyar intézmény egyformán működik.
 
 - *Az informális intézményi elemek mint a hatékony formális jogszabályok
   előfeltételei és következményei: az alkotmányos intézményépítés kudarca
@@ -2104,8 +2168,8 @@ magánügy tényeit, és nem tesznek minden magyar intézményt egyenértékűv�
 
 A csak hangon kapcsolódó csapat, a tuk-tuk, a magánbeszélgetések, a felső
 vezető támogatása, a kolléga kasztra vonatkozó megjegyzése, halála és a
-temetésre szóló meghívás egyes szám első személyű emlékek. Egy munkakapcsolatot
-írnak le, nem indiai vagy magyar embereket rögzített nemzeti jellemként.
+temetésre szóló meghívás a szerző személyes emlékei. Egy munkakapcsolatot
+írnak le, nem pedig az indiai vagy a magyar emberek állandó nemzeti jellemét.
 
 Egy 2022-es Ipsos online felmérés korlátozott összehasonlító hátteret ad: az
 indiai mintában 56, a magyarban 19 százalék válaszolta, hogy a legtöbb emberben
@@ -2113,7 +2177,7 @@ meg lehet bízni. Az Ipsos figyelmeztetett, hogy indiai mintája városiasabb,
 képzettebb és tehetősebb volt a teljes népességnél. A számok nem bizonyítják,
 miért viselkedett így ez a konkrét csapat.
 
-Szakmailag lektorált levelezési kísérletek külön is kimutattak
+Szakmailag lektorált, fiktív álláspályázatokkal végzett kutatások külön is kimutattak
 kasztalapú diszkriminációt az indiai magánszektor visszahívásaiban. Ez a
 bizonyíték társadalmilag érthetővé teszi a kolléga felidézett válaszát; nem
 azonosítja a kasztját, nem bizonyítja egyetlen vezető indítékát ebben a
@@ -2162,13 +2226,13 @@ hogy az új kormány tekintélyelvű volt vagy sem. Az elbeszélés azért őrzi
 képet, mert a korábbi rend ellen használt nyelv átkerült a Parlament másik
 oldalára.
 
-A 2022-es időzítés a nyilvános háttér része. Az év decemberében a Tanács 6,3
-milliárd eurónyi költségvetési kötelezettségvállalást függesztett fel a
-jogállamisági feltételrendszer alapján. A magyar helyreállítási tervet is úgy
-hagyta jóvá, hogy az első kifizetés előtt 27 jogállamisági „szupermérföldkövet”
-kellett teljesíteni. Ezeknek az intézkedéseknek nem volt közük a magánügyhöz;
-azt mutatják meg, mi történt ugyanebben az időszakban ugyanezekkel a szavakkal
-az ország életében.
+A 2022-es időzítés a nyilvános háttér része. Egyéb operatív programok: közel
+10 milliárd eurónyi uniós költségvetési forrást — vagyis a kohéziós pénzek egy
+további részét — azért tartottak vissza, mert a feljogosító feltételek nem
+teljesültek. Ehhez a részhez az igazságszolgáltatás függetlenségét érintő
+jogállamisági feltétel is kapcsolódott. A szélesebb feltételrendszer a
+közbeszerzéseket és az akadémiai szabadságot érintő előírásokat is tartalmazott.
+Az intézkedéseknek nem volt közük a magánügyhöz.
 
 Ugyancsak 2026 júliusában az Európai Unió Tanácsa olyan új magyar
 helyreállítási tervet hagyott jóvá, amely tízmilliárd euró folyósítását tette
@@ -2201,7 +2265,7 @@ Egyesület nyilvánosan elutasította azt az állítást, hogy a bírákat korru
 dollárokkal megvásárolták, és azt is, hogy kártékony rovarokhoz hasonlítsák
 őket.
 
-Egy külön 2025-ös vita újabb példát ad a hivatkozási rétegben arra, amikor az
+Egy külön 2025-ös vita újabb példát ad a jegyzetek között arra, amikor az
 intézményi bizonyosság megelőzi a lezárt tényfeltárást. Szeptemberben az
 igazságügyi miniszter olyan jelentést mutatott be, amely szerint egy
 gyermekotthoni ügyben nem merült fel kiskorú sértett. Novemberben azt mondta,
@@ -2218,8 +2282,8 @@ Források:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
-- https://www.consilium.europa.eu/hu/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
-- https://www.consilium.europa.eu/hu/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
+- https://employment-social-affairs.ec.europa.eu/news/commission-considers-hungarys-judicial-reform-addressed-deficiencies-judicial-independence-maintains-2023-12-13_en
+- https://www.europarl.europa.eu/doceo/document/TA-9-2023-0216_HU.html
 - https://www.consilium.europa.eu/hu/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
 - https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
@@ -2255,8 +2319,8 @@ Források:
 Független és hivatalos beszámolók támasztják alá a választási eredményt, a
 kormányváltást, az alkotmánymódosításokat, az elnök megbízatásának végét és az
 ideiglenes elnökséget. A kormány helyreállításról szóló beszámolója és a civil
-társadalom bírálata egyaránt megmarad, mert az intézmények lecserélése önmagát
-nem igazolja. A távozásra felszólító nyilvános felhívás megnevezte a
+társadalom bírálata egyaránt megmarad, mert az intézmények lecserélése önmagában
+nem igazolja az új rendszert. A távozásra felszólító nyilvános felhívás megnevezte a
 köztársasági elnököt, a legfőbb ügyészt, valamint az Alkotmánybíróság, a Kúria,
 az Országos Bírósági Hivatal, az Állami Számvevőszék, a Gazdasági Versenyhivatal
 és a Médiatanács vezetőjét.
@@ -2270,8 +2334,8 @@ Források:
 - https://telex.hu/english/2026/05/12/incoming-hungarian-justice-minister-promises-to-re-establish-the-rule-of-law-and-crack-down-on-corruption
 - https://www.hrw.org/news/2026/06/25/hungary-rushed-constitutional-changes-undermine-rule-of-law
 
-Az Alkotmánybíróság első hét kizárása, majd a nyolcadik kizárás, az ebből eredő
-határozatképtelenség és négy hetven év feletti bíró későbbi távozása különálló
+Az Alkotmánybíróság első hét bírájának kizárása, majd a nyolcadik kizárás, az ebből eredő
+határozatképtelenség és négy, hetven év feletti bíró későbbi távozása különálló
 események.
 
 Források:
@@ -2305,8 +2369,8 @@ döntéseket a konvoj okozta.
 
 A legfőbb ügyész július 22-én benyújtotta lemondását, és azt kérte, megbízatása
 augusztus 25-én érjen véget. Hivatalos indokolása az ügyészi szervezet érdekeire
-hivatkozott. A beszámolók és politikai nyilatkozatok a konvojt is elhelyezték a
-távozását övező nyomásban, de a könyv nem kezeli bizonyított kizárólagos okként.
+hivatkozott. A beszámolók és politikai nyilatkozatok a konvojügyet is a távozását
+övező nyomás részeként említették, de a könyv nem kezeli bizonyított kizárólagos okként.
 
 Források:
 
@@ -2336,7 +2400,7 @@ Források:
 
 ## Devizahitelek és kivándorlás
 
-A londoni lakótárs névtelenített, egyes szám első személyű emlék. Európai és
+A londoni lakótársról szóló rész névtelenített személyes emlék. Európai és
 magyar felsőbírósági anyagok támasztják alá azt a korlátozott állítást, hogy a
 devizahitel-szerződések jogkövetkezményeit 2025-ben még aktívan értelmezték. A
 migrációs források a nagyarányú kivándorlást és az adatok korlátait támasztják
@@ -2378,8 +2442,8 @@ A javasolt levágásfüggetlen egyenlőtlenség, a belső PNT-12 cél, az elutas
 jelöltek és a részleges számítási eredmény ellenőrizetlen munkakutatás marad. A
 könyv nem állítja a regularitás vagy a véges idejű blow-up bizonyítását, sem a
 Clay-probléma megoldását. Az epizód szellemi munkát, cáfolási fegyelmet és az
-ember–MI közötti átadást mutat jogi bizonytalanság alatt, nem társításból
-származtatott matematikai sikert.
+ember–MI közötti átadást mutat jogi bizonytalanság alatt; nem állít matematikai
+sikert pusztán azért, mert a munkák egymás mellé kerültek.
 
 - Nyilvános kutatási repozitórium és bizonyítási terv:
   https://github.com/fssrepository/millennium-math-problems
@@ -2396,7 +2460,7 @@ pedig generált bizonyítási tapasztalatot és formális ellenőrzést használ
 biztonságos felfedezéssel foglalkozó kutatás a kiegészítő kérdést teszi fel:
 hogyan szerezhet tapasztalatot egy tanuló rendszer anélkül, hogy minden lecke
 ára következményekkel járó kár legyen? A példák a fejezet tervezési elvét
-támasztják alá; nem jelentik, hogy egy használatba állított nyelvi modell emberi
+támasztják alá; nem jelentik, hogy egy alkalmazott nyelvi modell emberi
 tapasztalattal vagy tudattal rendelkezne.
 
 - Silver és mtsai., *Mastering the game of Go without human knowledge*:
@@ -2408,7 +2472,7 @@ tapasztalattal vagy tudattal rendelkezne.
   Reinforcement Learning*:
   https://arxiv.org/abs/1402.0560
 
-## A III. rész határa
+## Mi tartozik a III. részhez
 
 Ez a kiadás nem találja ki a befejezést. A III. részhez tartozik majd:
 

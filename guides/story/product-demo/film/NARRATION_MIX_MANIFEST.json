@@ -1,0 +1,84 @@
+{
+  "status": "review-render",
+  "updatedOn": "2026-08-14",
+  "picture": {
+    "rawSourceDurationSeconds": 56.0,
+    "expectedPictureLockDurationSeconds": 54.25,
+    "frameCount": 1302,
+    "frameRate": 24,
+    "dimensions": "720x1280",
+    "path": "/home/raxim/Downloads/MyScoutee_The_Product_Picture_Lock_v02.mp4",
+    "sha256": "7394b92d97964d89a2af28e3d8d821aba1148a57e693325fac8cb4531781e2b5",
+    "videoHandlingDuringNarrationMix": "stream-copy"
+  },
+  "narration": {
+    "voice": "Jon — Warm & Grounded Storyteller",
+    "voiceId": null,
+    "model": "Eleven Multilingual v2",
+    "modelId": "eleven_multilingual_v2",
+    "modelVersion": null,
+    "settings": {
+      "speed": 0.98,
+      "stability": 58,
+      "similarity": 60,
+      "style": 10,
+      "speakerBoost": false
+    },
+    "settingsRationale": "Product-specific single-read lock: direct and conversational, lower style exaggeration than the story edition, modestly higher similarity for consistent Jon timbre, speaker boost off.",
+    "preferredGeneration": {
+      "mode": "single-continuous-read",
+      "file": "/home/raxim/Downloads/The_Product.mp3",
+      "format": "mono 44.1 kHz MP3, 128 kbit/s",
+      "durationSeconds": 48.06525,
+      "measuredIntegratedLufs": -20.8,
+      "measuredTruePeakDbtp": -1.1,
+      "targetPictureDurationSeconds": 54.25,
+      "sha256": "6d5bfaafaf2d223733215557ded5a0701d5d08f690ad6c57c382bff9d76a8ae9",
+      "alignment": {
+        "processing": "no time stretch; split only inside natural paragraph silences",
+        "sourceSplitSeconds": [13.01, 27.317, 41.145],
+        "pictureStartSeconds": [0.25, 15.416667, 30.833333, 46.25]
+      }
+    },
+    "fallbackBlocks": [
+      {"file": "PR_JON_01.wav", "startSeconds": 0.0, "targetEndSeconds": 15.416667, "sha256": null},
+      {"file": "PR_JON_02.wav", "startSeconds": 15.416667, "targetEndSeconds": 30.833333, "sha256": null},
+      {"file": "PR_JON_03.wav", "startSeconds": 30.833333, "targetEndSeconds": 46.25, "sha256": null},
+      {"file": "PR_JON_04.wav", "startSeconds": 46.25, "targetEndSeconds": 54.25, "sha256": null}
+    ]
+  },
+  "mix": {
+    "sourceSoundtrack": "preserve accepted Flow music, ambience and effects from all seven logical shots",
+    "boundaryTreatment": "already present in the accepted picture-lock soundtrack",
+    "ducking": {
+      "filter": "sidechaincompress",
+      "threshold": 0.03,
+      "ratio": 3,
+      "attackMilliseconds": 20,
+      "releaseMilliseconds": 300,
+      "knee": 2.828
+    },
+    "narrationGainDb": 2,
+    "premasterLimiter": {
+      "limit": 0.891,
+      "attackMilliseconds": 5,
+      "releaseMilliseconds": 100
+    },
+    "mastering": {
+      "integratedTargetLufs": -14,
+      "truePeakTargetDbtp": -1.3,
+      "loudnessRangeTargetLu": 11
+    }
+  },
+  "delivery": {
+    "path": "/home/raxim/Downloads/video/the_product.mp4",
+    "sha256": "5622443986b292e35bb69f6dd58f76ca277109da0ed78d7b86472416a64d48ab",
+    "durationSeconds": 54.25,
+    "frameCount": 1302,
+    "audio": "AAC stereo 48 kHz 320 kbit/s",
+    "measuredIntegratedLufs": -14.1,
+    "measuredTruePeakDbtp": -1.2,
+    "videoPacketSha256": "bcb1e49279618d4dd2c19a3eece74af60bb35949c005ac329ce3b48da51404cc",
+    "videoPacketSha256MatchesPictureLock": true
+  }
+}

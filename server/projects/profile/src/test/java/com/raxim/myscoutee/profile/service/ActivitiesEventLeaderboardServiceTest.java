@@ -516,7 +516,12 @@ class ActivitiesEventLeaderboardServiceTest {
                 "",
                 null,
                 null,
-                List.of());
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 
     private EventLeaderboardEntry scoreEntry(String id, String memberId, int value) {

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Hungarian-inspired symmetrical floral divider</title>
+  <desc id="desc">A restrained red, green, gold and indigo folk ornament built around a central tulip and mirrored leaves.</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 75H262M458 75H666" stroke="#d9cdbb" stroke-width="3"/>
+    <path d="M102 75c27-27 54-27 81 0-27 27-54 27-81 0zm435 0c27-27 54-27 81 0-27 27-54 27-81 0z" fill="#2d7650" stroke="#1f5b3c" stroke-width="3"/>
+    <path d="M183 75c22-20 42-24 61-13-7 22-27 33-61 13zm354 0c-22-20-42-24-61-13 7 22 27 33 61 13z" fill="#f1b544" stroke="#a06d20" stroke-width="3"/>
+    <path d="M265 76c18-31 39-43 62-36-1 30-20 48-62 36zm190 0c-18-31-39-43-62-36 1 30 20 48 62 36z" fill="#6d4fd3" stroke="#433492" stroke-width="3"/>
+    <path d="M360 112c-30-19-58-38-58-68 0-26 35-32 58-4 23-28 58-22 58 4 0 30-28 49-58 68z" fill="#b52d3b" stroke="#7f1f2b" stroke-width="4"/>
+    <path d="M360 112V54m-18 31 18 15 18-15" stroke="#f8d77d" stroke-width="5"/>
+    <circle cx="360" cy="29" r="9" fill="#f1b544" stroke="#a06d20" stroke-width="3"/>
+  </g>
+</svg>

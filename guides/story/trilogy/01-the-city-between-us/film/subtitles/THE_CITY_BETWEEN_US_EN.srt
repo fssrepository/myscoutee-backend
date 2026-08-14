@@ -32,7 +32,7 @@ In London, I found software work
 within two weeks.
 
 8
-00:00:20,650 --> 00:00:22,282
+00:00:20,650 --> 00:00:26,000
 My English barely reached
 the lunch table.
 
@@ -52,7 +52,7 @@ Home was a shared Hungarian flat:
 12
 00:00:40,250 --> 00:00:43,700
 up to ten different lives,
-one bath, one toilet,
+one bath, one toilet
 
 13
 00:00:43,700 --> 00:00:45,450
@@ -68,8 +68,8 @@ and no longer wanted to go home.
 The cheap room made travel possible,
 
 16
-00:00:52,100 --> 00:00:54,892
-but private housing in London would drain
+00:00:52,100 --> 00:00:58,000
+but private London housing would erase
 my savings. Budapest would not.
 
 17
@@ -97,8 +97,8 @@ I came home to find a partner.
 
 22
 00:01:14,550 --> 00:01:18,800
-For almost two years,
-the same photo brought no Tinder match.
+For almost two years, the same photograph
+brought no Tinder match.
 
 23
 00:01:18,800 --> 00:01:22,650
@@ -146,7 +146,7 @@ and beautiful tables
 turned first dates into performances.
 
 33
-00:01:52,100 --> 00:01:54,051
+00:01:52,100 --> 00:01:58,000
 The problem was not people.
 It was how we were meeting.
 

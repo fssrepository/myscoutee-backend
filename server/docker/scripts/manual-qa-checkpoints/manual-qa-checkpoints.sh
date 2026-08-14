@@ -39,6 +39,7 @@ Usage:
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
+  bash manual-qa-checkpoints.sh prepare-invitation-admin-approval-retest event-domain EVENT-INV-004
   bash manual-qa-checkpoints.sh hold-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh prepare-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh capture-auto-inviter-baseline event-domain EVENT-EDITOR-003
@@ -49,9 +50,29 @@ Usage:
   bash manual-qa-checkpoints.sh prepare-ticket-invite-candidate event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-invitee-response-retest event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-admin-approval-retest event-domain EVENT-TICKET-007
+  bash manual-qa-checkpoints.sh prepare-visibility-save-retest event-domain EVENT-VISIBILITY-001
+  bash manual-qa-checkpoints.sh prepare-visibility-publish-window event-domain EVENT-VISIBILITY-001
   bash manual-qa-checkpoints.sh verify-ticket-poll-resume event-domain EVENT-TICKET-POLL-001
   bash manual-qa-checkpoints.sh verify-ticket-isolation-unpublish event-domain EVENT-TICKET-008
   bash manual-qa-checkpoints.sh verify-ticket-isolation-republish event-domain EVENT-TICKET-008
+  bash manual-qa-checkpoints.sh verify-ticket-attendance-first-scan event-domain EVENT-TICKET-011
+  bash manual-qa-checkpoints.sh verify-ticket-attendance-replay event-domain EVENT-TICKET-011
+  bash manual-qa-checkpoints.sh repair-lifecycle-counter-baseline event-domain EVENT-LIFE-002
+  bash manual-qa-checkpoints.sh repair-lifecycle-occupancy-baseline event-domain EVENT-LIFE-002
+  bash manual-qa-checkpoints.sh capture-lifecycle-action-baseline event-domain EVENT-LIFE-002
+  bash manual-qa-checkpoints.sh verify-lifecycle-trash event-domain EVENT-LIFE-002
+  bash manual-qa-checkpoints.sh capture-lifecycle-restore-baseline event-domain EVENT-LIFE-003
+  bash manual-qa-checkpoints.sh verify-lifecycle-restore event-domain EVENT-LIFE-003
+  bash manual-qa-checkpoints.sh capture-participant-lifecycle-baseline event-domain EVENT-LIFE-004
+  bash manual-qa-checkpoints.sh capture-participant-leave-state event-domain EVENT-LIFE-004
+  bash manual-qa-checkpoints.sh verify-participant-restore event-domain EVENT-LIFE-004
+  bash manual-qa-checkpoints.sh verify-participant-leave event-domain EVENT-LIFE-004
+  bash manual-qa-checkpoints.sh capture-bucket-read-baseline event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh verify-bucket-readonly event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh diagnose-bucket-read-changes event-domain EVENT-LIFE-005
+  bash manual-qa-checkpoints.sh capture-invitation-action-baseline event-domain EVENT-INV-001
+  bash manual-qa-checkpoints.sh verify-invitation-created event-domain EVENT-INV-001
+  bash manual-qa-checkpoints.sh diagnose-invitation-chat-counter event-domain EVENT-INV-001
   bash manual-qa-checkpoints.sh next event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh reset event-domain <checkpoint-id>
@@ -63,6 +84,30 @@ Usage:
   bash manual-qa-checkpoints.sh next operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh status operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh reset operator-domain OPERATOR-FIREBASE-001
+  bash manual-qa-checkpoints.sh stage entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh status entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh verify entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh reset entry-domain ENTRY-DEMO-REG-001
+  bash manual-qa-checkpoints.sh stage entry-consent ENTRY-CONSENT-001
+  bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-001
+  bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-001
+  bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-001
+  bash manual-qa-checkpoints.sh stage entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh activate-newer entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh preview-v5 entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh stage entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh repair-stage entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
+  bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
+  bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
+  bash manual-qa-checkpoints.sh arm-blocked-replay auth-session AUTH-SESSION-001
+  bash manual-qa-checkpoints.sh reset auth-session AUTH-SESSION-001
 
 The default schedule delay is 30 seconds; accepted values are 10..120.
 Only demo_db and e2e_db are accepted. This tool never starts or restarts Mongo,
@@ -118,6 +163,17 @@ run_scenario() {
     event-domain) scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js" ;;
     asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
+    auth-session) scenario_script="${SCRIPT_DIR}/scenarios/auth-session-checkpoints.js" ;;
+    entry-domain) scenario_script="${SCRIPT_DIR}/scenarios/entry-domain-checkpoints.js" ;;
+    entry-consent)
+      if [ "${checkpoint_id}" = "ENTRY-CONSENT-002" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-revision-checkpoints.js"
+      elif [ "${checkpoint_id}" = "ENTRY-CONSENT-003" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-inheritance-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-checkpoints.js"
+      fi
+      ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
@@ -221,9 +277,15 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  entry-domain:stage|entry-domain:status|entry-domain:verify|entry-domain:reset|\
+  auth-session:stage|auth-session:status|auth-session:capture-reload|auth-session:arm-blocked-replay|auth-session:reset|\
+  entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:repair-stage|entry-consent:verify|entry-consent:preview-v5|entry-consent:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

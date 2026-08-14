@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -45,9 +46,11 @@ public class FirebaseService {
                 : "";
         boolean explicitOperator = isStoredOperator(user)
                 || (StringUtils.hasText(storedEmail) && config.isOperatorUser(storedEmail));
-        String email = explicitOperator && StringUtils.hasText(storedEmail)
+        String email = StringUtils.hasText(storedEmail)
                 ? storedEmail
-                : memberEmail;
+                : explicitOperator
+                        ? memberEmail
+                        : developmentMemberEmail(normalizedProfileId, memberEmail);
         return new FirebasePrincipal(normalizedProfileId, email, resolveAuthorities(email, user), user);
     }
 
@@ -114,13 +117,18 @@ public class FirebaseService {
     public UserDetails loadUserByCredential(FirebaseCredential credential, String xLink, String currentPage) {
         String normalizedEmail = normalizeCredentialEmail(credential);
         boolean configuredAdmin = isAdminEmail(normalizedEmail);
-        Users user = configuredAdmin ? findUser(normalizedEmail) : null;
-        if (user == null) {
-            user = findUserByEmail(normalizedEmail);
+        Users configuredAdminUser = configuredAdmin ? findUser(normalizedEmail) : null;
+        Users emailUser = configuredAdminUser != null
+                ? configuredAdminUser
+                : findUserByEmail(normalizedEmail);
+        Users providerUser = findUserByProvider(credential);
+        if (emailUser != null
+                && providerUser != null
+                && !normalizeId(emailUser.getId()).equals(normalizeId(providerUser.getId()))) {
+            throw new FirebaseTokenInvalidException(
+                    "The verified email and provider identity belong to different users.");
         }
-        if (user == null) {
-            user = findUserByProvider(credential);
-        }
+        Users user = providerUser != null ? providerUser : emailUser;
         if (user == null) {
             user = findUser(stableUserId(normalizedEmail));
         }
@@ -341,8 +349,12 @@ public class FirebaseService {
         String beforeFirebaseUid = normalizeProviderId(user.getFirebaseUid());
         String beforeGoogleId = normalizeProviderId(user.getGoogleId());
         String beforeFacebookId = normalizeProviderId(user.getFacebookId());
+        String beforeEmail = normalizeEmail(user.getEmail());
+        String credentialEmail = normalizeCredentialEmail(credential);
+        user.setEmail(credentialEmail);
         applyFirebaseIdentity(user, credential);
-        boolean changed = !beforeFirebaseUid.equals(normalizeProviderId(user.getFirebaseUid()))
+        boolean changed = !beforeEmail.equals(credentialEmail)
+                || !beforeFirebaseUid.equals(normalizeProviderId(user.getFirebaseUid()))
                 || !beforeGoogleId.equals(normalizeProviderId(user.getGoogleId()))
                 || !beforeFacebookId.equals(normalizeProviderId(user.getFacebookId()));
         return changed ? usersRepository.save(user) : user;
@@ -374,11 +386,19 @@ public class FirebaseService {
     private String normalizeEmail(String username) {
         if (username == null || username.isBlank()) {
             if (config.getMemberUser() != null && !config.getMemberUser().isBlank()) {
-                return config.getMemberUser().trim();
+                return config.getMemberUser().trim().toLowerCase(Locale.ROOT);
             }
             return "dev@myscoutee.local";
         }
         return username.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String developmentMemberEmail(String profileId, String fallbackEmail) {
+        String normalizedProfileId = normalizeId(profileId);
+        if (!StringUtils.hasText(normalizedProfileId)) {
+            return fallbackEmail;
+        }
+        return DevelopmentIdentityEmail.forProfile(normalizedProfileId);
     }
 
     private String normalizeProviderId(String value) {

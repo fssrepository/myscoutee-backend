@@ -52,6 +52,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationCon
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutAssetSelectionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutOptionalSubEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
@@ -61,6 +62,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
+import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -824,23 +826,29 @@ public class ActivitiesEventsService {
         }
         String filter = normalizeActivityListFilter(request == null ? null : request.filter());
         String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        EventListPageDto page;
         if ("trash".equals(filter)) {
             EventQueryContext context = buildUserListCardQueryContext(
                     viewer,
                     needsActivitiesAffinityEdges(request),
                     true,
                     false);
-            return withEventQueryContext(context, () ->
+            page = withEventQueryContext(context, () ->
+                    pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        } else if (usesDirectOwnerListFilter(filter)) {
+            page = withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
+                    pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
+        } else {
+            EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request));
+            page = withEventQueryContext(context, () ->
                     pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
         }
-        if (usesDirectOwnerListFilter(filter)) {
-            return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
-                    pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
-        }
-
-        EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request));
-        return withEventQueryContext(context, () ->
-                pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        return new EventListPageDto(
+                page.records(),
+                page.total(),
+                page.nextCursor(),
+                page.items(),
+                userActivityCountersService.readStoredEventCounters(viewer.userId()));
     }
 
     public EventDetailDto loadEventDetailById(String requestedUserId, String eventId) {
@@ -850,7 +858,7 @@ public class ActivitiesEventsService {
             return null;
         }
         ActivityEvent preferred = findPreferredEventDetailRecord(sourceId);
-        return preferred == null
+        return preferred == null || !canViewerLoadEventDetail(preferred, viewer.userId())
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
@@ -2580,7 +2588,14 @@ public class ActivitiesEventsService {
                 boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
                 if (joinedSlot) {
                     markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
-                    recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
+                    recordJoinPayment(
+                            request,
+                            viewer.userId(),
+                            sourceId,
+                            slotSourceId,
+                            slotRecord.getStartAtIso(),
+                            slotRecord.getEndAtIso(),
+                            preferred);
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
@@ -2615,7 +2630,14 @@ public class ActivitiesEventsService {
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
         if (joined) {
             markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
-            recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
+            recordJoinPayment(
+                    request,
+                    viewer.userId(),
+                    sourceId,
+                    null,
+                    preferred.getStartAtIso(),
+                    preferred.getEndAtIso(),
+                    preferred);
         } else if (checkoutBasketUpdateRequested) {
             enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
         }
@@ -2689,6 +2711,42 @@ public class ActivitiesEventsService {
         }
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
         EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
+        if (session != null
+                && "gateway".equals(safeText(session.mode()))
+                && !Set.of("authorized", "captured", "approved").contains(safeText(session.status()))) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "pay",
+                    "pending",
+                    null,
+                    session.id()));
+            EventParticipationActionResultDto pending = toParticipationActionResult(
+                    request.sourceId(),
+                    slotSourceId,
+                    "payment_pending",
+                    null,
+                    paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                    acceptedBeforePaymentSnapshot,
+                    null);
+            return new EventParticipationActionResultDto(
+                    pending.sourceId(),
+                    pending.slotSourceId(),
+                    pending.action(),
+                    pending.membershipStatus(),
+                    pending.pendingReason(),
+                    pending.acceptedMembers(),
+                    pending.pendingMembers(),
+                    pending.capacityTotal(),
+                    pending.full(),
+                    session.id(),
+                    false,
+                    "payment_authorization_pending",
+                    null,
+                    session.status(),
+                    session.paymentUrl());
+        }
         EventActionRequestDto joinRequest = new EventActionRequestDto(
                 request.userId(),
                 request.sourceId(),
@@ -2756,6 +2814,37 @@ public class ActivitiesEventsService {
                     session == null ? null : session.id()));
             throw exception;
         }
+    }
+
+    public EventParticipationActionResultDto finalizeAuthorizedPayment(Payment payment) {
+        if (payment == null || !StringUtils.hasText(payment.getCheckoutSessionId())) {
+            return null;
+        }
+        List<EventCheckoutAssetSelectionDto> assetSelections = payment.getBasketItems() == null
+                ? List.of()
+                : payment.getBasketItems().stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> StringUtils.hasText(item.subEventId()) && StringUtils.hasText(item.resourceType()))
+                        .map(item -> new EventCheckoutAssetSelectionDto(item.subEventId(), item.resourceType()))
+                        .distinct()
+                        .toList();
+        return requestJoin(new EventActionRequestDto(
+                payment.getUserId(),
+                payment.getSourceId(),
+                payment.getSlotSourceId(),
+                payment.getOptionalSubEventIds(),
+                assetSelections,
+                payment.getAcceptedPolicyIds(),
+                payment.getCheckoutSessionId(),
+                Boolean.TRUE,
+                null,
+                "pay",
+                payment.getBasketItems(),
+                payment.getPricingSummaryRows(),
+                payment.getLineItems(),
+                payment.getAmount(),
+                payment.getCurrency(),
+                payment.getAppliedPromoCodes()));
     }
 
     private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {
@@ -2949,7 +3038,7 @@ public class ActivitiesEventsService {
                 Math.max(acceptedMembers, capacityTotal),
                 resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(request == null ? null : request.paymentSessionId()),
-                true,
+                resolvedSnapshot != null && resolvedSnapshot.mutationApplied(),
                 null);
     }
 
@@ -3955,6 +4044,7 @@ public class ActivitiesEventsService {
             String sourceId,
             String slotSourceId,
             String bookingStartAtIso,
+            String bookingEndAtIso,
             ActivityEvent preferred) {
         String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
         if (!StringUtils.hasText(paymentSessionId)) {
@@ -3966,6 +4056,7 @@ public class ActivitiesEventsService {
                 sourceId,
                 slotSourceId,
                 bookingStartAtIso,
+                bookingEndAtIso,
                 preferred == null || preferred.getPricing() == null ? null : preferred.getPricing().cancellationPolicy());
     }
 
@@ -4097,12 +4188,16 @@ public class ActivitiesEventsService {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
                     ? request.nextSlot().startAtIso()
                     : request.startAtIso();
+            String bookingEndAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().endAtIso())
+                    ? request.nextSlot().endAtIso()
+                    : request.endAtIso();
             paymentService.recordEventJoin(
                     paymentSessionId,
                     null,
                     sourceId,
                     request.nextSlot() == null ? null : normalizeId(request.nextSlot().id()),
                     bookingStartAtIso,
+                    bookingEndAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
         return toEventDto(selectSyncedResponseRecord(sourceId, savedDocuments, List.of(), baseRecord), actor);
@@ -4143,7 +4238,9 @@ public class ActivitiesEventsService {
         if (!Objects.equals(safeText(previous.getStartAtIso()), safeText(next.getStartAtIso()))
                 || !Objects.equals(safeText(previous.getEndAtIso()), safeText(next.getEndAtIso()))
                 || !Objects.equals(safeText(previous.getTimeframe()), safeText(next.getTimeframe()))
-                || !Objects.equals(safeText(previous.getFrequency()), safeText(next.getFrequency()))) {
+                || !Objects.equals(
+                        normalizeEventFrequency(previous.getFrequency()),
+                        normalizeEventFrequency(next.getFrequency()))) {
             reasons.add("schedule");
         }
         if (!Objects.equals(definitionSignature(previous), definitionSignature(next))) {
@@ -4180,11 +4277,12 @@ public class ActivitiesEventsService {
             return "";
         }
         Map<String, Object> signature = new LinkedHashMap<>();
-        signature.put("subEventsEnabled", event.getSubEventsEnabled());
+        signature.put("subEventsEnabled", event.getSubEventsEnabled() == null
+                || Boolean.TRUE.equals(event.getSubEventsEnabled()));
         signature.put("subEventDefinitions", event.getSubEventDefinitions() == null ? List.of() : event.getSubEventDefinitions());
-        signature.put("slotsEnabled", event.getSlotsEnabled());
+        signature.put("slotsEnabled", Boolean.TRUE.equals(event.getSlotsEnabled()));
         signature.put("slotTemplates", event.getSlotTemplates() == null ? List.of() : event.getSlotTemplates());
-        signature.put("mode", safeText(event.getMode()));
+        signature.put("mode", normalizeEventMode(event.getMode()));
         try {
             return OBJECT_MAPPER.writeValueAsString(signature);
         } catch (Exception ignored) {
@@ -5137,6 +5235,23 @@ public class ActivitiesEventsService {
             return false;
         }
         if (hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
+            return false;
+        }
+        return isVisibleToUntrackedViewer(record, activeUserId);
+    }
+
+    private boolean canViewerLoadEventDetail(ActivityEvent record, String viewerUserId) {
+        if (record == null || !StringUtils.hasText(viewerUserId)) {
+            return false;
+        }
+        if (isViewerAdmin(record, viewerUserId) || hasTrackedUserParticipation(record, viewerUserId)) {
+            return true;
+        }
+        return isVisibleToUntrackedViewer(record, viewerUserId);
+    }
+
+    private boolean isVisibleToUntrackedViewer(ActivityEvent record, String activeUserId) {
+        if (!StringUtils.hasText(activeUserId) || !isCanonicalExploreRecord(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());

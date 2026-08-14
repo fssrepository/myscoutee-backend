@@ -139,7 +139,7 @@ class FirebaseServiceTest {
     }
 
     @Test
-    void devLookupKeepsLegacyIdentityAndMemberAuthorityForOrdinaryStoredUser() {
+    void devLookupKeepsStoredUniqueEmailAndMemberAuthorityForOrdinaryStoredUser() {
         ConfigProperties configProperties = new ConfigProperties();
         configProperties.setMemberUser("member@myscoutee.local");
         UsersRepository usersRepository = mock(UsersRepository.class);
@@ -156,8 +156,34 @@ class FirebaseServiceTest {
                 appSettingsService)
                 .loadUserById("ordinary");
 
-        assertThat(principal.getEmail()).isEqualTo("member@myscoutee.local");
+        assertThat(principal.getEmail()).isEqualTo("stored.admin-looking@example.com");
         assertThat(principal.getAuthorities()).extracting(Object::toString)
+                .containsExactly("U");
+    }
+
+    @Test
+    void devLookupCreatesStableUniqueEmailForFreshDemoProfile() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setMemberUser("member1@myscoutee.local");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        String userId = "demo-profile-11111111-2222-3333-4444-555555555555";
+        when(usersRepository.findByUserId(userId)).thenReturn(Optional.empty());
+        when(usersRepository.findById(userId)).thenReturn(Optional.empty());
+
+        FirebaseService service = new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService);
+        FirebasePrincipal first = (FirebasePrincipal) service.loadUserById(userId);
+        FirebasePrincipal second = (FirebasePrincipal) service.loadUserById(userId);
+
+        assertThat(first.getEmail())
+                .startsWith("member+")
+                .endsWith("@myscoutee.local")
+                .isEqualTo(second.getEmail())
+                .isNotEqualTo("member1@myscoutee.local");
+        assertThat(first.getAuthorities()).extracting(Object::toString)
                 .containsExactly("U");
     }
 

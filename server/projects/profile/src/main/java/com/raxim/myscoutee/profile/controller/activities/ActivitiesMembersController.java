@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
@@ -41,18 +45,23 @@ public class ActivitiesMembersController {
         return activitiesMembersService.querySummaries(request);
     }
 
+    @PostMapping("/sync")
+    public ActivityMembersSyncResponseDto syncMembers(@RequestBody ActivityMembersSyncRequestDto request) {
+        return activitiesMembersService.syncMembers(request);
+    }
+
     @PostMapping("/replace")
     public void replace(@RequestBody ActivityMembersReplaceRequestDto request) {
         activitiesMembersService.replace(request);
     }
 
     @PostMapping("/invite")
-    public List<ActivityMemberEntryDto> invite(@RequestBody ActivityMembersInviteRequestDto request) {
+    public ActivityMembersInviteResponseDto invite(@RequestBody ActivityMembersInviteRequestDto request) {
         return activitiesMembersService.inviteEventMembers(request);
     }
 
     @PostMapping("/action")
-    public List<ActivityMemberEntryDto> applyAction(@RequestBody ActivityMemberActionRequestDto request) {
-        return activitiesMembersService.applyAction(request);
+    public ActivityMemberActionResponseDto applyAction(@RequestBody ActivityMemberActionRequestDto request) {
+        return activitiesMembersService.applyActionWithContext(request);
     }
 }

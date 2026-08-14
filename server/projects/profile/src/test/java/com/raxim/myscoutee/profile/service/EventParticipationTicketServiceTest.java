@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.EventTicket;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
@@ -51,9 +52,9 @@ class EventParticipationTicketServiceTest {
         ActivityEvent canonical = ticketEvent(CREATOR_ID);
         ActivityEvent adminRecord = ticketEvent(ADMIN_ID);
         ActivityEvent participantRecord = ticketEvent(PARTICIPANT_ID);
-        when(eventTicketService.findActiveEventIdsForHolder(CREATOR_ID)).thenReturn(Set.of(EVENT_ID));
-        when(eventTicketService.findActiveEventIdsForHolder(ADMIN_ID)).thenReturn(Set.of(EVENT_ID));
-        when(eventTicketService.findActiveEventIdsForHolder(PARTICIPANT_ID)).thenReturn(Set.of(EVENT_ID));
+        when(eventTicketService.findActiveForHolder(CREATOR_ID)).thenReturn(List.of(ticket(CREATOR_ID)));
+        when(eventTicketService.findActiveForHolder(ADMIN_ID)).thenReturn(List.of(ticket(ADMIN_ID)));
+        when(eventTicketService.findActiveForHolder(PARTICIPANT_ID)).thenReturn(List.of(ticket(PARTICIPANT_ID)));
         when(activityEventsRepository.findDirectOwnerEvents(CREATOR_ID)).thenReturn(List.of(canonical));
         when(activityEventsRepository.findDirectOwnerEvents(ADMIN_ID)).thenReturn(List.of(adminRecord));
         when(activityEventsRepository.findDirectOwnerEvents(PARTICIPANT_ID)).thenReturn(List.of(participantRecord));
@@ -61,6 +62,12 @@ class EventParticipationTicketServiceTest {
         assertThat(service.queryTicketRecordsForUser(CREATOR_ID)).isEmpty();
         assertThat(service.queryTicketRecordsForUser(ADMIN_ID)).isEmpty();
         assertThat(service.queryTicketRecordsForUser(PARTICIPANT_ID)).containsExactly(participantRecord);
+        assertThat(service.queryTicketSnapshotRecordsForUser(PARTICIPANT_ID))
+                .singleElement()
+                .satisfies(snapshot -> {
+                    assertThat(snapshot.event()).isSameAs(participantRecord);
+                    assertThat(snapshot.credential().getHolderUserId()).isEqualTo(PARTICIPANT_ID);
+                });
     }
 
     @Test
@@ -118,6 +125,15 @@ class EventParticipationTicketServiceTest {
 
     private ActivityMember acceptedMember(String userId) {
         return member(userId, "accepted");
+    }
+
+    private EventTicket ticket(String holderUserId) {
+        EventTicket ticket = new EventTicket();
+        ticket.setEventId(EVENT_ID);
+        ticket.setHolderUserId(holderUserId);
+        ticket.setCode("TKT-" + holderUserId);
+        ticket.setStatus(EventTicket.STATUS_ACTIVE);
+        return ticket;
     }
 
     private ActivityMember member(String userId, String status) {
