@@ -4,9 +4,16 @@ import { readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-const checkpointId = `${process.argv[2] ?? ''}`.trim();
+const argumentsList = process.argv.slice(2);
+const checkpointId = `${argumentsList[0] ?? ''}`.trim();
+const actorOptionIndex = argumentsList.indexOf('--actor');
+const requestedActor = actorOptionIndex >= 0
+  ? `${argumentsList[actorOptionIndex + 1] ?? ''}`.trim().toLowerCase()
+  : '';
 if (!checkpointId) {
-  throw new Error('Usage: read-landing-eligibility-browser-state.mjs CHECKPOINT_ID');
+  throw new Error(
+    'Usage: read-landing-eligibility-browser-state.mjs CHECKPOINT_ID [--actor NAME]'
+  );
 }
 
 const safeCheckpointId = checkpointId.replace(/[^A-Za-z0-9_.-]+/g, '-');
@@ -18,7 +25,14 @@ const manifestPath = path.join(
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const sessions = [];
 
-for (const session of manifest.sessions ?? []) {
+const selectedSessions = (manifest.sessions ?? []).filter(session =>
+  !requestedActor || `${session.actor ?? ''}`.trim().toLowerCase() === requestedActor
+);
+if (requestedActor && selectedSessions.length !== 1) {
+  throw new Error(`Expected one '${requestedActor}' session, found ${selectedSessions.length}.`);
+}
+
+for (const session of selectedSessions) {
   const port = Number(session.devToolsPort);
   const targets = await jsonRequest(`http://127.0.0.1:${port}/json/list`);
   const page = targets.find(target =>

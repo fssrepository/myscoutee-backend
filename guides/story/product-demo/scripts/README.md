@@ -1,8 +1,9 @@
 # Reproducible tools
 
-- `build_brand_frames.py`: normalizes all eight product-demo-owned checkpoint
-  checkpoints and builds deterministic branded first/last PNG references using
-  the untouched repository logo.
+- `build_brand_frames.py`: builds deterministic transparent brand layers and
+  branded first/last PNG references from the approved checkpoints. It only
+  replaces checkpoint PNGs when called explicitly with
+  `--rebuild-checkpoints`.
 - `build_mini_book.py`: converts the canonical English Markdown and controlled
   Hungarian translation to illustrated HTML/PDF editions, then writes each
   checksum and publication record.
@@ -13,6 +14,8 @@
 - `mix_the_product_narration.sh`: aligns one continuous Jon read at natural
   paragraph gaps, ducks the preserved Flow soundtrack, loudness-normalizes the
   result and stream-copies the accepted picture lock.
+- `brand_the_product.sh`: fades the deterministic opening and closing brand
+  layers over the moving narrated master while stream-copying its final audio.
 
 Run from the repository root:
 
@@ -33,4 +36,11 @@ After exporting the complete ElevenLabs read:
 ```bash
 guides/story/product-demo/scripts/mix_the_product_narration.sh \
   PICTURE_LOCK.mp4 JON_NARRATION.mp3 OUTPUT.mp4
+```
+
+Apply the final brand overlays only after the narration mix is accepted:
+
+```bash
+guides/story/product-demo/scripts/brand_the_product.sh \
+  NARRATED_MASTER.mp4 BRANDED_MASTER.mp4
 ```

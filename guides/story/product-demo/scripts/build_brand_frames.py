@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Build seven local 720x1280 checkpoints and branded review frames."""
+"""Build deterministic brand layers and optionally rebuild source checkpoints."""
 
+import argparse
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
@@ -26,8 +27,7 @@ def cover(image: Image.Image) -> Image.Image:
     return resized.crop((left, top, left + SIZE[0], top + SIZE[1]))
 
 
-def gradient_overlay(image: Image.Image, top_height: int, bottom_height: int) -> Image.Image:
-    result = image.convert("RGBA")
+def gradient_layer(top_height: int, bottom_height: int) -> Image.Image:
     shade = Image.new("RGBA", SIZE, (0, 0, 0, 0))
     px = shade.load()
     for y in range(top_height):
@@ -38,7 +38,13 @@ def gradient_overlay(image: Image.Image, top_height: int, bottom_height: int) ->
         alpha = round(225 * ((y - (SIZE[1] - bottom_height)) / bottom_height))
         for x in range(SIZE[0]):
             px[x, y] = (4, 13, 26, alpha)
-    return Image.alpha_composite(result, shade)
+    return shade
+
+
+def gradient_overlay(image: Image.Image, top_height: int, bottom_height: int) -> Image.Image:
+    return Image.alpha_composite(
+        image.convert("RGBA"), gradient_layer(top_height, bottom_height)
+    )
 
 
 def brand(draw_target: Image.Image, y: int) -> None:
@@ -64,9 +70,26 @@ def centered_text(image: Image.Image, text: str, y: int, size: int) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--rebuild-checkpoints",
+        action="store_true",
+        help="explicitly replace approved frame PNGs from their source images",
+    )
+    args = parser.parse_args()
+
     FRAMES.mkdir(parents=True, exist_ok=True)
-    for name, source in SOURCES.items():
-        cover(Image.open(source)).save(FRAMES / f"{name}.png", optimize=True)
+    if args.rebuild_checkpoints:
+        for name, source in SOURCES.items():
+            cover(Image.open(source)).save(FRAMES / f"{name}.png", optimize=True)
+    else:
+        missing = [FRAMES / f"{name}.png" for name in SOURCES if not (FRAMES / f"{name}.png").is_file()]
+        if missing:
+            joined = ", ".join(str(path) for path in missing)
+            raise RuntimeError(
+                f"Approved checkpoints are missing: {joined}. "
+                "Use --rebuild-checkpoints only when replacement is intentional."
+            )
 
     clean = Image.open(FRAMES / "PR_CP01.png")
 
@@ -75,14 +98,29 @@ def main() -> None:
     centered_text(opening, "MATCH ≠ MEETING", 1165, 42)
     opening.convert("RGB").save(FRAMES / "PR_OPENING_BRANDED.png", optimize=True)
 
+    opening_overlay = gradient_layer(180, 170)
+    brand(opening_overlay, 42)
+    centered_text(opening_overlay, "MATCH ≠ MEETING", 1165, 42)
+    opening_overlay.save(FRAMES / "PR_OPENING_OVERLAY.png", optimize=True)
+
     clean_ending = Image.open(FRAMES / "PR_CP08.png")
     closing = gradient_overlay(clean_ending, 180, 205)
     brand(closing, 42)
     centered_text(closing, "DESIGNED FOR THE MEETING.", 1138, 34)
     closing.convert("RGB").save(FRAMES / "PR_CLOSING_BRANDED.png", optimize=True)
 
+    closing_overlay = gradient_layer(180, 205)
+    brand(closing_overlay, 42)
+    centered_text(closing_overlay, "DESIGNED FOR THE MEETING.", 1138, 34)
+    closing_overlay.save(FRAMES / "PR_CLOSING_OVERLAY.png", optimize=True)
+
     paths = [FRAMES / f"{name}.png" for name in SOURCES]
-    paths.extend((FRAMES / "PR_OPENING_BRANDED.png", FRAMES / "PR_CLOSING_BRANDED.png"))
+    paths.extend((
+        FRAMES / "PR_OPENING_OVERLAY.png",
+        FRAMES / "PR_CLOSING_OVERLAY.png",
+        FRAMES / "PR_OPENING_BRANDED.png",
+        FRAMES / "PR_CLOSING_BRANDED.png",
+    ))
     for path in paths:
         with Image.open(path) as image:
             if image.size != SIZE:

@@ -59,10 +59,15 @@ try {
     readyAtIso: new Date().toISOString()
   }, null, 2)}\n`);
 
+  // Node's built-in WebSocket alone is not guaranteed to retain an active
+  // event-loop reference. Keep this deliberately tiny holder alive until the
+  // launcher closes the managed Chrome or sends SIGTERM.
+  const lifecycleGuard = setInterval(() => undefined, 60000);
   process.on('SIGTERM', close);
   process.on('SIGINT', close);
 
   function close() {
+    clearInterval(lifecycleGuard);
     pageConnection.close();
     browserConnection.close();
   }
