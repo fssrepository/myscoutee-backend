@@ -1,8 +1,12 @@
 # Google Flow / Veo 3.1 Lite prompt pack
 
-For each shot paste [continuity-prefix.txt](continuity-prefix.txt), one blank
-line, then the matching file under `flow/`. Use Video → Frames, exact first and
-last images, Veo 3.1 Lite, 8 seconds, 9:16, one result.
+Each file under `flow/` is a complete standalone copy/paste prompt. Paste only
+the matching `Sxx.txt` into Flow. Do not prepend another file. Use Video →
+Frames, exact first and last images, Veo 3.1 Lite, 8 seconds, 9:16, one result.
+
+[continuity-prefix.txt](continuity-prefix.txt) remains the internal shared
+continuity reference used while maintaining the standalone prompts; it is not a
+second block for the operator to paste.
 
 The seven original checkpoint-image briefs and their shared visual lock are in
 [FRAME_GENERATION.md](FRAME_GENERATION.md).
