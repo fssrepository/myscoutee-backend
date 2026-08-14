@@ -268,10 +268,19 @@ public class UserActivityCountersService {
 
     private EventCounters resolveEventCounters(String userId) {
         Set<String> sourceIds = new LinkedHashSet<>();
-        Set<String> deletedMembershipSourceIds = activityMembersRepository
-                .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
+        List<ActivityMember> storedMemberships = activityMembersRepository
+                .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId);
+        List<ActivityMember> memberships = storedMemberships == null ? List.of() : storedMemberships;
+        Set<String> legacyDeletedMembershipSourceIds = memberships.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> isDeletedMembershipStatus(member.getStatus()))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> suppressedMembershipSourceIds = memberships.stream()
+                .filter(Objects::nonNull)
+                .filter(this::isRestorableSuppressedMembership)
                 .map(ActivityMember::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -281,8 +290,16 @@ public class UserActivityCountersService {
         collectSourceIds(sourceIds, activityEventsRepository.findAcceptedMembershipEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findActiveInvitationEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findPendingRequestEvents(userId));
-        sourceIds.addAll(deletedMembershipSourceIds);
-        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(activityEventsRepository.findBySourceIdIn(sourceIds), userId);
+        sourceIds.addAll(legacyDeletedMembershipSourceIds);
+        sourceIds.addAll(suppressedMembershipSourceIds);
+        List<ActivityEvent> eventDocuments = activityEventsRepository.findBySourceIdIn(sourceIds);
+        Set<String> personalTrashSourceIds = new LinkedHashSet<>(legacyDeletedMembershipSourceIds);
+        for (String sourceId : suppressedMembershipSourceIds) {
+            if (hasRestorablePersonalTrashProjection(eventDocuments, sourceId, userId)) {
+                personalTrashSourceIds.add(sourceId);
+            }
+        }
+        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(eventDocuments, userId);
 
         int active = 0;
         int pending = 0;
@@ -296,7 +313,7 @@ public class UserActivityCountersService {
             if (!countedSources.add(sourceId)) {
                 continue;
             }
-            if (deletedMembershipSourceIds.contains(sourceId)) {
+            if (personalTrashSourceIds.contains(sourceId)) {
                 trash += 1;
                 continue;
             }
@@ -816,6 +833,41 @@ public class UserActivityCountersService {
         String normalized = safeText(status);
         return "deleted".equalsIgnoreCase(normalized)
                 || ActivityEvent.STATUS_DELETED.equalsIgnoreCase(normalized);
+    }
+
+    private boolean isRestorableSuppressedMembership(ActivityMember member) {
+        if (member == null || !"suppressed".equalsIgnoreCase(safeText(member.getStatus()))) {
+            return false;
+        }
+        String ownerId = normalizeId(member.getOwnerId());
+        return StringUtils.hasText(ownerId)
+                && ownerId.equals(normalizeId(member.getSuppressionRootOwnerId()))
+                && StringUtils.hasText(safeText(member.getStatusBeforeSuppression()));
+    }
+
+    private boolean hasRestorablePersonalTrashProjection(
+            Collection<ActivityEvent> events,
+            String sourceId,
+            String userId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        String normalizedUserId = normalizeId(userId);
+        boolean activeCanonicalExists = false;
+        boolean personalTrashOverlayExists = false;
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            if (event == null || !normalizedSourceId.equals(normalizeId(event.getSourceId()))) {
+                continue;
+            }
+            String ownerUserId = normalizeId(event.getOwnerUserId());
+            if (!isTrashScopeStatus(event) && isHostingRecordForUser(event, ownerUserId)) {
+                activeCanonicalExists = true;
+            }
+            if (normalizedUserId.equals(ownerUserId)
+                    && isTrashScopeStatus(event)
+                    && StringUtils.hasText(safeText(event.getStatusBeforeSuppression()))) {
+                personalTrashOverlayExists = true;
+            }
+        }
+        return activeCanonicalExists && personalTrashOverlayExists;
     }
 
     private boolean isSuppressedAssetStatus(String status) {

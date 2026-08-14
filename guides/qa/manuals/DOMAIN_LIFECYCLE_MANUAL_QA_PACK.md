@@ -992,16 +992,75 @@ Baseline evidence on 2026-08-13:
 
 ### `EVENT-LIFE-004` — participant leave/restore is not organizer trash
 
-- From an accepted participant session, leave one event without organizer
-  authority.
-- Verify only that viewer's participation tree becomes suppressed and the
-  event remains active for the organizer and other participants. The canonical
-  event must not enter the global Trash bucket.
-- Restore the viewer participation through its documented UI and verify the
-  membership state and personal Attending/Trash projections without changing
-  the organizer lifecycle.
-- Record the member mutation and its conditional recompute/counter effects
-  separately from organizer lifecycle effects.
+- Branch A — participant Leave:
+  - From Nova's accepted participant session, leave the retained event without
+    organizer authority. Casey remains an untouched organizer control.
+  - In place, Nova loses Active/All and gains exactly one personal Trash card;
+    the canonical Casey event remains active and never enters global Trash.
+  - Persisted state must contain the active Casey canonical record with Casey
+    occupancy `1 / 8`, the same Nova-owned `T` overlay with
+    `statusBeforeSuppression=A`, and Nova's same root membership as
+    `suppressed/statusBeforeSuppression=accepted`. Casey remains Hosting/All/
+    Trash `1/1/0`; Nova is Active/All/Trash `0/0/1`.
+  - The retained main-event chat removes only Nova and appends exactly one
+    `member-left` system message. Resource, basket, payment, ticket, lifecycle
+    notification/outbox/task collections remain unchanged; one coalesced
+    `EVENT_MEMBERS_CHANGED` recompute is conditional.
+- Branch B — participant Restore:
+  - Restore through Nova's documented personal Trash UI. The same overlay and
+    membership identities return to active/accepted with all suppression
+    fields cleared; Casey remains the canonical organizer and occupancy returns
+    to `2 / 8`.
+  - Casey remains Hosting/All/Trash `1/1/0`; Nova returns to Active/All/Trash
+    `1/1/0`. The same chat adds Nova back and appends exactly one
+    `member-joined` system message, without organizer lifecycle artifacts.
+- After a write-side repair, replay only Branch B → Branch A → fresh Nova read
+  → Branch B. Do not repeat organizer Delete/Restore checkpoints.
+
+Execution evidence in progress on 2026-08-14:
+
+- Baseline captured at `2026-08-14T11:27:35.272Z`: one active public retained
+  source, Casey accepted Admin + Nova accepted Member `2 / 8`, Casey counters
+  `1/1/0`, Nova counters `1/1/0`, and no resource/ticket/lifecycle/recompute
+  artifacts after advance.
+- Original Branch A UI PASS at `11:30:37.368Z`: Nova disappeared from
+  Active/All and appeared once in personal Trash without reload; Casey was
+  untouched. Canonical/member/chat/recompute identity behavior also matched.
+- FAIL retained as exact transaction evidence at `11:40:21.600Z`: Java stored
+  Nova Active/All/Trash as `0/0/0`. The UI's Trash1 came only from the immediate
+  response delta. After the backend hot-restart/poll, Nova's Trash `+1` did in
+  fact disappear, independently proving that the result was not reload-safe;
+  the unbadged Trash query is checked separately before Restore.
+- Root cause: the stored counter projector recognized only legacy `deleted`
+  membership, not the current restorable suppressed-membership + personal
+  Trash-overlay invariant. The backend projector and focused regressions were
+  updated without changing SmartList or query behavior; hot-deploy compile and
+  same-process restart passed. Corrected Branch A/B replay remains required
+  before this row can close.
+- First corrected Branch B PASS: Nova restored once at
+  `2026-08-14T11:46:51.871Z`; the verifier passed at `11:48:20.510Z`. Both
+  retained event records returned to `A`, Nova's membership returned to
+  accepted with suppression fields cleared, occupancy was `2 / 8`, Casey
+  remained `Hosting/All/Trash=1/1/0`, Nova persisted
+  `Active/All/Trash=1/1/0`, and exactly one `member-joined` system message was
+  appended. Casey and Nova received per-user projections of the same logical
+  main-event `chatId`; no lifecycle artifact was created. This exact active
+  result is the saved boundary for one corrected Leave replay.
+- Corrected Branch A write and poll PASS: Nova left once at
+  `2026-08-14T11:49:59.492Z`; the persisted verifier passed at
+  `11:50:43.614Z`. Casey remained active/Hosting with occupancy `1 / 8`; the
+  same Nova overlay/member identities became restorable Trash/suppressed;
+  Nova stored `Active/All/Trash=0/0/1`; exactly one additional `member-left`
+  message was appended and no organizer lifecycle artifact appeared.
+  `/activities/events/filter` and realtime polls continued repeatedly after
+  the action. A read-only Nova DOM observation at `11:51:56.515Z`, after
+  several of those polls, still showed Trash badge `1` and the single retained
+  card. The earlier poll-to-zero defect is fixed.
+- Corrected Branch A fresh-read PASS: after Nova reloaded, read-only DOM at
+  `2026-08-14T11:57:00.024Z` still showed Trash badge `1` and exactly one
+  `QA EVENT-LIFE-003` card. Java identity/counters were unchanged. The one
+  coalesced `EVENT_MEMBERS_CHANGED` task completed at
+  `11:55:18.567932813Z` with no error. Only final Restore verification remains.
 
 ### `EVENT-LIFE-005` — bucket reads and no-op navigation
 

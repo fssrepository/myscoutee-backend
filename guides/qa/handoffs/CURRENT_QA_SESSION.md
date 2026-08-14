@@ -35,14 +35,14 @@ checkpoint: EVENT-LIFE-004
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-004--participant-leaverestore-is-not-organizer-trash
 scenario: event-domain
 ledger_status: NOT RUN
-state: EVENT-LIFE-003 organizer Restore is PASS/CLOSED and must not be replayed. Its in-place Nova poll, Casey/Nova fresh-bundle reads, write-side identity/cardinality/counters and one terminal EVENT_CHANGED recompute passed. The retained identity advanced exactly once into EVENT-LIFE-004 at 2026-08-14T11:25:24.480Z. A dedicated participant lifecycle baseline was captured at 11:27:35.272Z: one active public event, Casey Admin + Nova Member 2/8, Casey My Events/All/Trash 1/1/0, Nova Active/All/Trash 1/1/0, zero resource/ticket/lifecycle/recompute artifacts after the advance. No participant Leave producer has run. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Run status event-domain EVENT-LIFE-004 and require the saved active Casey/Nova 2/8 pre-Leave boundary. Do not replay EVENT-LIFE-002 Delete or EVENT-LIFE-003 Restore. If intact, Nova opens Active Events, leaves the single retained QA EVENT-LIFE-003 card exactly once and observes the immediate personal Trash transition while Casey remains untouched; capture the persisted leave boundary before giving the personal Restore action
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003 retained physical identity; active A/public/ticketing off, Casey owner/Admin and Nova accepted Member 2/8
+state: EVENT-LIFE-003 organizer Restore is PASS/CLOSED and must not be replayed. EVENT-LIFE-004 original Leave retained the persisted Nova Trash=0 defect and its later badge loss. The backend projector fix is hot-deployed. First Restore passed and saved the corrected active replay boundary. Nova then performed exactly one corrected Leave at 2026-08-14T11:49:59.492Z; the full persisted verifier passed at 11:50:43.614Z: Casey canonical stayed A/Hosting1 with Casey occupancy 1/8, Nova's same overlay became T/statusBeforeSuppression=A, the same membership became suppressed/statusBeforeSuppression=accepted, Nova stored Active/All/Trash 0/0/1, one member-left message was appended, Nova's chat projection was removed and no lifecycle artifact appeared. Normal polls retained Trash1. Nova then performed the required fresh reload; read-only DOM at 11:57:00.024Z still showed Trash badge1 and exactly one QA EVENT-LIFE-003 card. Java identity/counters were unchanged and the coalesced EVENT_MEMBERS_CHANGED task finished done at 11:55:18.567Z with no error. Poll and fresh-read stability are PASS. Only the final Restore and its verifier remain. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Run status event-domain EVENT-LIFE-004 and require the saved corrected Leave boundary with Nova persisted Trash1 and terminal recompute. Do not stage/reset/relaunch, do not Leave again and do not replay EVENT-LIFE-002/003. Nova Restores exactly once from the currently open Trash card; run verify-participant-restore, then execute the final fresh Casey/Nova read before closing the row
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003 retained source identity; Casey canonical A with Casey Admin 1/8, Nova overlay T/statusBeforeSuppression=A, Nova membership suppressed, Nova persisted Trash1
 actors:
   active: Casey and Nova in two managed EVENT-LIFE-003 browser windows; keep both and do not relaunch because EVENT-LIFE-004 uses the same two actors
   controls: Casey remains the untouched organizer control during Nova Leave; no third browser is needed
-next_actor: User performs Nova participant Leave exactly once from Active Events and reports the immediate Active/Trash behavior; Casey does not interact
-stop_phrase: user reports the immediate Nova Leave result; no participant Restore producer yet
+next_actor: Nova chooses Restore exactly once on the currently open single Trash card; Casey remains untouched
+stop_phrase: user reports the final Restore result; do not mutate again before verify-participant-restore
 ```
 
 ### Efficient resume gate
@@ -235,10 +235,14 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   correcting fixture data in place is useful replay evidence only after the
   persisted projection itself has been repaired.
 - Global organizer Trash and personal participant Trash are different
-  projections. A globally trashed event belongs in the organizer/admin Trash
-  counter and list only; an ordinary participant enters personal Trash only
-  through an explicitly deleted membership. Keep the stored counter projector
-  and list query aligned on that distinction.
+  projections. A globally trashed canonical event belongs in the
+  organizer/admin Trash counter and list only. The current participant Leave
+  write persists a restorable suppressed root membership plus a viewer-owned
+  `T` overlay while the canonical event remains active; that complete invariant
+  belongs in the participant's personal Trash. Legacy explicit `deleted`
+  memberships remain supported. Never classify a bare suppressed member or a
+  global organizer Trash as personal Trash. Keep the stored counter projector
+  and list query aligned on the same persisted invariant.
 - When a foreground popup bucket poll returns a persisted full counter snapshot,
   apply that snapshot atomically to every related menu and nested bucket counter.
   Updating only the selected bucket can leave inclusive or sibling counters stale

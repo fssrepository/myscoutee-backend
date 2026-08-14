@@ -2080,6 +2080,9 @@
         userId: Q.text(member.userId),
         role: Q.text(member.role),
         status: Q.text(member.status),
+        statusBeforeSuppression: Q.text(member.statusBeforeSuppression),
+        suppressionRootOwnerId: Q.text(member.suppressionRootOwnerId),
+        suppressedAtIso: Q.text(member.suppressedAtIso),
         attendanceStatus: Q.text(member.attendanceStatus),
         checkedInAtIso: Q.text(member.checkedInAtIso),
         checkedInByUserId: Q.text(member.checkedInByUserId),
@@ -5566,6 +5569,299 @@
     });
   }
 
+  function participantCounters(current) {
+    const byUserId = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.user && item.user.userId), item.current || {}]));
+    return {
+      host: byUserId.get(hostUserId) || {},
+      participant: byUserId.get(participantUserId) || {}
+    };
+  }
+
+  function assertParticipantLifecycleSideCollectionsUnchanged(current, baseline, phase) {
+    if (!sameJson(lifecycleResourceSnapshot(), baseline.resources || [])
+        || !sameJson(current.checkoutBasketItems || [], baseline.checkoutBasketItems || [])
+        || !sameJson(current.payments || [], baseline.payments || [])
+        || !sameJson(current.tickets || [], baseline.tickets || [])
+        || !sameJson(current.eventLifecycleTasks || [], baseline.eventLifecycleTasks || [])
+        || !sameJson(current.eventLifecycleOutbox || [], baseline.eventLifecycleOutbox || [])
+        || !sameJson(current.eventLifecycleNotifications || [], baseline.eventLifecycleNotifications || [])
+        || !sameJson(current.eventChatNotificationOutbox || [], baseline.eventChatNotificationOutbox || [])
+        || !sameJson(current.eventChatNotifications || [], baseline.eventChatNotifications || [])) {
+      Q.fail(`${phase} changed a resource, basket, payment, ticket, lifecycle or chat-notification collection.`);
+    }
+  }
+
+  function participantLifecycleSnapshot(current, capturedAtIso) {
+    return {
+      capturedAtIso,
+      events: current.events || [],
+      members: current.members || [],
+      resources: lifecycleResourceSnapshot(),
+      checkoutBasketItems: current.checkoutBasketItems || [],
+      payments: current.payments || [],
+      tickets: current.tickets || [],
+      eventChats: current.eventChats || [],
+      eventChatMessages: current.eventChatMessages || [],
+      eventChatNotificationOutbox: current.eventChatNotificationOutbox || [],
+      eventChatNotifications: current.eventChatNotifications || [],
+      eventLifecycleTasks: current.eventLifecycleTasks || [],
+      eventLifecycleOutbox: current.eventLifecycleOutbox || [],
+      eventLifecycleNotifications: current.eventLifecycleNotifications || [],
+      eventRecomputeTasks: current.eventRecomputeTasks || []
+    };
+  }
+
+  function captureParticipantLeaveState() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-004") {
+      Q.fail("capture-participant-leave-state currently supports only EVENT-LIFE-004.");
+    }
+    const state = requireMatchingState();
+    if (state.participantObservedLeaveState && state.participantObservedLeaveState.capturedAtIso) {
+      Q.fail("EVENT-LIFE-004 already captured the original Leave state.");
+    }
+    const current = oracle(state);
+    const canonical = (current.events || []).find(event => event.ownerUserId === hostUserId);
+    const overlay = (current.events || []).find(event => event.ownerUserId === participantUserId);
+    const hostMember = (current.members || []).find(member => member.userId === hostUserId);
+    const participantMember = (current.members || []).find(member => member.userId === participantUserId);
+    if ((current.events || []).length !== 2
+        || !canonical || canonical.status !== "A" || canonical.isTrashed
+        || canonical.acceptedMembers !== 1
+        || !sameIds(canonical.acceptedMemberUserIds, [hostUserId])
+        || !overlay || overlay.status !== "T" || overlay.statusBeforeSuppression !== "A"
+        || !overlay.trashedAtIso
+        || !hostMember || hostMember.status !== "accepted" || hostMember.role !== "Admin"
+        || !participantMember || participantMember.status !== "suppressed"
+        || participantMember.statusBeforeSuppression !== "accepted"
+        || participantMember.suppressionRootOwnerId !== EVENT_ID
+        || !participantMember.suppressedAtIso) {
+      Q.fail("EVENT-LIFE-004 is not at the exact persisted participant Leave identity state.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const snapshot = participantLifecycleSnapshot(current, capturedAtIso);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { participantObservedLeaveState: snapshot }
+    });
+    const counters = participantCounters(current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "participant-original-leave-state-captured",
+      capturedAtIso,
+      canonical,
+      overlay,
+      participantMember,
+      counters,
+      knownDefectEvidence: Number((counters.participant.event || {}).trash || 0) === 0
+        ? "Original Leave persisted Nova Trash=0 although the UI action delta showed Trash=1."
+        : "Original Leave already persisted Nova Trash=1.",
+      next: "After the backend fix is hot-deployed, Nova restores the event once from Trash."
+    });
+  }
+
+  function assertParticipantActiveState(current, phase) {
+    const canonical = (current.events || []).find(event => event.ownerUserId === hostUserId);
+    const overlay = (current.events || []).find(event => event.ownerUserId === participantUserId);
+    const hostMember = (current.members || []).find(member => member.userId === hostUserId);
+    const participantMember = (current.members || []).find(member => member.userId === participantUserId);
+    if ((current.events || []).length !== 2
+        || !canonical || canonical.status !== "A" || canonical.isTrashed
+        || canonical.acceptedMembers !== 2
+        || !sameIds(canonical.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || !overlay || overlay.status !== "A" || overlay.isTrashed
+        || overlay.statusBeforeSuppression || overlay.trashedAtIso
+        || !hostMember || hostMember.status !== "accepted" || hostMember.role !== "Admin"
+        || !participantMember || participantMember.status !== "accepted" || participantMember.role !== "Member"
+        || participantMember.statusBeforeSuppression
+        || participantMember.suppressionRootOwnerId
+        || participantMember.suppressedAtIso) {
+      Q.fail(`${phase} did not return the same canonical/overlay/member identities to the exact active state.`);
+    }
+    const counters = participantCounters(current);
+    const hostEvent = counters.host.event || {};
+    const participantEvent = counters.participant.event || {};
+    if (Number(counters.host.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(counters.participant.events || 0) !== 1
+        || Number(participantEvent.all || 0) !== 1
+        || Number(participantEvent.active || 0) !== 1
+        || Number(participantEvent.trash || 0) !== 0) {
+      Q.fail(`${phase} did not persist the exact Casey Hosting and Nova Active counter state.`);
+    }
+    return { canonical, overlay, hostMember, participantMember, counters };
+  }
+
+  function assertOneParticipantSystemMessage(current, baseline, clientId, textValue, phase) {
+    const beforeIds = new Set((baseline.eventChatMessages || []).map(message => Q.text(message.messageId)));
+    const delta = (current.eventChatMessages || []).filter(message => !beforeIds.has(Q.text(message.messageId)));
+    if (delta.length !== 1
+        || delta[0].clientId !== clientId
+        || delta[0].sender !== "System"
+        || delta[0].text !== textValue
+        || delta[0].sentAtIso <= baseline.capturedAtIso) {
+      Q.fail(`${phase} must append exactly one '${clientId}' system chat message.`);
+    }
+    return delta[0];
+  }
+
+  function assertParticipantChat(current, baseline, expectedMemberUserIds, phase) {
+    const chats = current.eventChats || [];
+    const beforeChats = baseline.eventChats || [];
+    const expectedOwners = expectedMemberUserIds;
+    if (chats.length !== expectedOwners.length
+        || !sameIds(chats.map(chat => chat.ownerUserId), expectedOwners)
+        || !chats.every(chat => chat.chatId === EVENT_ID
+          && chat.eventId === EVENT_ID
+          && chat.channelType === "mainEvent"
+          && sameIds(chat.memberUserIds, expectedMemberUserIds))) {
+      Q.fail(`${phase} did not retain exactly the expected per-user projections of the same main-event chat identity.`);
+    }
+    const hostChat = chats.find(chat => chat.ownerUserId === hostUserId);
+    const beforeHostChat = beforeChats.find(chat => chat.ownerUserId === hostUserId);
+    if (!hostChat || !beforeHostChat
+        || Number(hostChat.unread || 0) !== Number(beforeHostChat.unread || 0) + 1) {
+      Q.fail(`${phase} did not append exactly one unread system message to Casey's retained chat projection.`);
+    }
+    const participantChat = chats.find(chat => chat.ownerUserId === participantUserId);
+    const beforeParticipantChat = beforeChats.find(chat => chat.ownerUserId === participantUserId);
+    if (expectedOwners.includes(participantUserId)
+        && (!participantChat
+          || Number(participantChat.unread || 0) !== Number(beforeParticipantChat && beforeParticipantChat.unread || 0) + 1)) {
+      Q.fail(`${phase} did not restore Nova's chat projection with exactly the new system message unread.`);
+    }
+    return chats;
+  }
+
+  function updatedParticipantRecompute(current, baseline, phase) {
+    const beforeById = new Map((baseline.eventRecomputeTasks || [])
+      .map(task => [Q.text(task.id), task]));
+    const delta = (current.eventRecomputeTasks || []).filter(task => {
+      const before = beforeById.get(Q.text(task.id));
+      return !before || Q.text(task.updatedDate) > Q.text(before.updatedDate);
+    });
+    if (delta.length !== 1
+        || !delta[0].reasons.includes("EVENT_MEMBERS_CHANGED")
+        || !["pending", "running", "in_progress", "done"].includes(Q.text(delta[0].status).toLowerCase())
+        || delta[0].updatedDate <= baseline.capturedAtIso) {
+      Q.fail(`${phase} must produce one coalesced EVENT_MEMBERS_CHANGED recompute delta.`);
+    }
+    return delta[0];
+  }
+
+  function verifyParticipantRestore() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-004") {
+      Q.fail("verify-participant-restore currently supports only EVENT-LIFE-004.");
+    }
+    const state = requireMatchingState();
+    const finalRestore = Boolean(state.participantVerifiedLeaveState);
+    const baseline = finalRestore ? state.participantVerifiedLeaveState : state.participantObservedLeaveState;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-004 requires a captured Leave state before Restore verification.");
+    }
+    const current = oracle(state);
+    const active = assertParticipantActiveState(current, finalRestore ? "Final Restore" : "Restore");
+    assertParticipantLifecycleSideCollectionsUnchanged(current, baseline, finalRestore ? "Final Restore" : "Restore");
+    const message = assertOneParticipantSystemMessage(
+      current, baseline, "member-joined", "Nova Social joined the event.", finalRestore ? "Final Restore" : "Restore");
+    const chat = assertParticipantChat(current, baseline, [hostUserId, participantUserId], finalRestore ? "Final Restore" : "Restore");
+    const recompute = updatedParticipantRecompute(current, baseline, finalRestore ? "Final Restore" : "Restore");
+    const verifiedAtIso = Q.nowIso();
+    const snapshot = participantLifecycleSnapshot(current, verifiedAtIso);
+    const update = finalRestore
+      ? { participantFinalRestoreState: snapshot, participantFinalRestoreVerifiedAtIso: verifiedAtIso }
+      : { participantReplayBaseline: snapshot, participantFirstRestoreVerifiedAtIso: verifiedAtIso };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: update });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: finalRestore ? "participant-final-restore-verified" : "participant-first-restore-verified",
+      verifiedAtIso,
+      active,
+      chat,
+      message,
+      recompute,
+      next: finalRestore
+        ? "Run the final fresh read-only Casey/Nova UI reconstruction; do not mutate the event again."
+        : "Capture boundary is saved. Nova now leaves the same event once more to replay only the corrected write path."
+    });
+  }
+
+  function verifyParticipantLeave() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-004") {
+      Q.fail("verify-participant-leave currently supports only EVENT-LIFE-004.");
+    }
+    const state = requireMatchingState();
+    const baseline = state.participantReplayBaseline;
+    if (!baseline || !baseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-004 requires its saved post-Restore replay baseline before Leave verification.");
+    }
+    if (state.participantVerifiedLeaveState) {
+      Q.fail("EVENT-LIFE-004 corrected Leave was already verified; do not replay it again.");
+    }
+    const current = oracle(state);
+    const canonical = (current.events || []).find(event => event.ownerUserId === hostUserId);
+    const overlay = (current.events || []).find(event => event.ownerUserId === participantUserId);
+    const hostMember = (current.members || []).find(member => member.userId === hostUserId);
+    const participantMember = (current.members || []).find(member => member.userId === participantUserId);
+    if ((current.events || []).length !== 2
+        || !canonical || canonical.status !== "A" || canonical.isTrashed
+        || canonical.acceptedMembers !== 1
+        || !sameIds(canonical.acceptedMemberUserIds, [hostUserId])
+        || !overlay || overlay.status !== "T" || overlay.statusBeforeSuppression !== "A"
+        || !overlay.trashedAtIso || overlay.trashedAtIso <= baseline.capturedAtIso
+        || !hostMember || hostMember.status !== "accepted" || hostMember.role !== "Admin"
+        || !participantMember || participantMember.status !== "suppressed"
+        || participantMember.statusBeforeSuppression !== "accepted"
+        || participantMember.suppressionRootOwnerId !== EVENT_ID
+        || !participantMember.suppressedAtIso
+        || participantMember.suppressedAtIso <= baseline.capturedAtIso) {
+      Q.fail("Corrected Leave did not preserve the canonical event while suppressing only Nova's retained identities.");
+    }
+    const counters = participantCounters(current);
+    const hostEvent = counters.host.event || {};
+    const participantEvent = counters.participant.event || {};
+    if (Number(counters.host.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(counters.participant.events || 0) !== 0
+        || Number(participantEvent.all || 0) !== 0
+        || Number(participantEvent.active || 0) !== 0
+        || Number(participantEvent.trash || 0) !== 1) {
+      Q.fail("Corrected Leave must persist Casey Hosting=1 and Nova Active/All=0, personal Trash=1.");
+    }
+    assertParticipantLifecycleSideCollectionsUnchanged(current, baseline, "Corrected Leave");
+    const message = assertOneParticipantSystemMessage(
+      current, baseline, "member-left", "Nova Social left the event.", "Corrected Leave");
+    const chat = assertParticipantChat(current, baseline, [hostUserId], "Corrected Leave");
+    const recompute = updatedParticipantRecompute(current, baseline, "Corrected Leave");
+    const verifiedAtIso = Q.nowIso();
+    const snapshot = participantLifecycleSnapshot(current, verifiedAtIso);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { participantVerifiedLeaveState: snapshot, participantLeaveVerifiedAtIso: verifiedAtIso }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "participant-corrected-leave-verified",
+      verifiedAtIso,
+      canonical,
+      overlay,
+      participantMember,
+      counters,
+      chat,
+      message,
+      recompute,
+      next: "Reload Nova's page and reconstruct Events > Trash. It must still show exactly this one personal Trash item; then Restore once for the final branch."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5664,6 +5960,9 @@
     case "capture-lifecycle-restore-baseline": captureLifecycleRestoreBaseline(); break;
     case "verify-lifecycle-restore": verifyLifecycleRestore(); break;
     case "capture-participant-lifecycle-baseline": captureParticipantLifecycleBaseline(); break;
+    case "capture-participant-leave-state": captureParticipantLeaveState(); break;
+    case "verify-participant-restore": verifyParticipantRestore(); break;
+    case "verify-participant-leave": verifyParticipantLeave(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

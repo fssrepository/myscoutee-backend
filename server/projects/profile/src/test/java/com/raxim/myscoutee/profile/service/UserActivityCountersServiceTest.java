@@ -192,6 +192,69 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void refreshEventCountersPersistsRestorableParticipantTrashBesideActiveCanonicalEvent() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent canonical = event("event-left", "host", "A");
+        canonical.setOwnerUserId("host");
+        canonical.setAdmins(List.of("host"));
+        canonical.setAcceptedMemberUserIds(List.of("host"));
+        ActivityEvent personalTrash = event("event-left", "host", "T");
+        personalTrash.setOwnerUserId("viewer");
+        personalTrash.setStatusBeforeSuppression("A");
+        ActivityMember suppressedMembership = new ActivityMember();
+        suppressedMembership.setOwnerType("event");
+        suppressedMembership.setOwnerId("event-left");
+        suppressedMembership.setUserId("viewer");
+        suppressedMembership.setStatus("suppressed");
+        suppressedMembership.setStatusBeforeSuppression("accepted");
+        suppressedMembership.setSuppressionRootOwnerId("event-left");
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "viewer"))
+                .thenReturn(List.of(suppressedMembership));
+        when(activityEventsRepository.findDirectOwnerEvents("viewer"))
+                .thenReturn(List.of(personalTrash));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical, personalTrash));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.hosting")).isZero();
+    }
+
+    @Test
+    void refreshEventCountersDoesNotTreatSuppressedMembershipAsTrashWithoutPersonalOverlay() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent canonical = event("event-suppressed", "host", "A");
+        canonical.setOwnerUserId("host");
+        canonical.setAdmins(List.of("host"));
+        ActivityMember suppressedMembership = new ActivityMember();
+        suppressedMembership.setOwnerType("event");
+        suppressedMembership.setOwnerId("event-suppressed");
+        suppressedMembership.setUserId("viewer");
+        suppressedMembership.setStatus("suppressed");
+        suppressedMembership.setStatusBeforeSuppression("accepted");
+        suppressedMembership.setSuppressionRootOwnerId("event-suppressed");
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "viewer"))
+                .thenReturn(List.of(suppressedMembership));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isZero();
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+    }
+
+    @Test
     void applyFeedbackStateTransitionMovesStoredMenuAndPopupBuckets() {
         ActivityEvent event = event("event-feedback", "host", "A");
         event.setOwnerUserId("host");
