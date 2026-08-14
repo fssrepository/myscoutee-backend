@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberStatusDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
@@ -1179,6 +1180,14 @@ public class ActivitiesMembersService {
         }
 
         return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+    }
+
+    public ActivityMemberActionResponseDto applyActionWithContext(ActivityMemberActionRequestDto request) {
+        List<ActivityMemberEntryDto> members = applyAction(request);
+        String actorUserId = resolveActorUserId(request == null ? null : request.actorUserId());
+        return new ActivityMemberActionResponseDto(
+                members,
+                homeUserProfileService.queryMenuCounters(actorUserId));
     }
 
     private void persistScopedAssetAction(

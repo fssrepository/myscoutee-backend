@@ -35,14 +35,14 @@ checkpoint: EVENT-INV-004
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-004--ordinary-member-invitation-approval-chain
 scenario: event-domain
 ledger_status: IN PROGRESS
-state: EVENT-INV-001 is PASS/CLOSED and reset-complete; never repeat its Invite+Save. EVENT-INV-004 was staged independently at 2026-08-14T13:04:52.610Z. Riley's untouched Invitations baseline passed, then Riley accepted exactly once at 13:24:05.641Z. The same membership remains pending with requestKind=approval and pendingSource=member; accepted/pending stays 2/1, Riley Invitations/Pending changed 1/0 to 0/1, and no duplicate exists. No chat, message or chat notification exists; every flat/nested chat counter remains zero. Casey received exactly one unread event-admin-join-request and no approval artifact exists. In-place DOM at 13:25:28Z shows Casey My Events card 2/8 pending1 and notification 3->4, Nova Events1/Chats0, Riley Invitations0/Chats0. Casey Members DOM at 13:28:29.242Z shows 2 members + 1 pending, Riley once Waiting For Admin Approval, Casey once Admin and Nova once accepted Member; the repeated read oracle is unchanged. Admin approval has not run
-required_resume: Run only status event-domain EVENT-INV-004 and require Riley pending approval, accepted/pending2/1, exact one Casey unread join-request and zero chat/approval artifacts. Do not reset/restage/relaunch or repeat Riley Accept. Keep all three sessions; the next and only action is Casey Approve on Riley's row
+state: EVENT-INV-001 is PASS/CLOSED and reset-complete; never repeat its Invite+Save. EVENT-INV-004 Riley Accept remains proven exact-once at 13:24:05.641Z and must not be repeated. Casey first approved at 13:31:14.869Z; the Java write/read oracle passed at accepted/pending3/0 with one three-owner mainEvent chat, one member-joined row, chats1 for every actor and one Riley approval notification/outbox. The user then proved the terminal Members list through its normal poll, close/reopen and refreshed read. A product defect remained only in Casey's action-owning document: while Members suppressed the side-menu domain poll, Casey Chats stayed0 because the action response returned only members. The repaired Java action response now includes the canonical full actor counter snapshot, the base frontend applies it atomically with a revision token, and the frontend-local route persists matching event/chat/counter state and rebases later local polls. Existing dev watchers compiled and deployed both sides. A guarded replay at 2026-08-14T13:56:35.748Z removed only approval-owned terminal artifacts and restored Riley pending approval, accepted/pending2/1, chats0, zero approval artifacts and the retained exact-one Casey join-request. Casey's still-open Members DOM already converged to 2 members + 1 pending, Riley once Waiting For Admin Approval, and Chats0. A read-only incidental check proved Riley's briefly observed Impressions badge/statistics were not attendance evidence: only the current pending membership exists, with no check-in/feedback and empty event-derived Impressions metrics; the visible personality percentages have zero evidence
+required_resume: Do not reset/restage/relaunch and do not repeat Riley Accept. Run only status event-domain EVENT-INV-004 if continuity is uncertain; require the guarded 2/1 pending-approval baseline, exact-one Casey join-request, chats0 and zero approval artifacts. Keep all three sessions. The next and only producer is Casey Approve once; the decisive UI oracle is Casey Chats0->1 immediately while Members remains open, followed by the existing Members poll/reopen read checks without another approval
 event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-004; Casey-owned active Open Event, capacity8, Casey Admin accepted, Nova Member accepted, Riley Member pending invite from Nova
 actors:
   active: Casey port33251, Nova port40387 and Riley port44173 are the only three QA Chrome sessions; all were launched after stage and must be retained
   controls: Casey is the later Admin approver; Nova is the accepted ordinary inviter and must stay accepted; Riley is the pending target. No fourth browser is allowed
-next_actor: In Casey's already-open Members popup, open only Riley Outside's row action menu and choose Approve exactly once. Do not use Casey's notification and do not touch Nova or Riley
-stop_phrase: user reports the one Casey Approve result; then verify accepted3/pending0, chat exact-one projection for all accepted actors, resolved counters and target-only approval notification
+next_actor: In Casey's already-open Members popup, open only Riley Outside's row action menu and choose Approve exactly once. Keep Members open after confirmation; do not use Casey's notification and do not touch Nova or Riley
+stop_phrase: user reports whether Casey Chats changed from no badge to 1 immediately while Members stayed open; then verify accepted3/pending0, chat exact-one projection for all accepted actors, resolved counters and target-only approval notification
 ```
 
 ### Efficient resume gate
@@ -107,26 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
-`ENTRY-CONSENT-*` checkpoints are PASS/CLOSED and their retained evidence must
-not be replayed or deleted. `EVENT-LIFE-002` is PASS/CLOSED. Its single Delete
-producer, terminal persisted verifier, organizer/participant ownership reads,
-unread deletion notification and final fresh-bundle Activity Events counter
-verification must not be replayed. The user explicitly closed the deletion and
-counter branch as fully executed; do not carry a pending replay or NOT EXECUTED
-marker into the next session. Tomorrow run only the read-only closed-boundary
-gate, then advance the retained trashed identity once into `EVENT-LIFE-003`,
-capture a new Restore baseline and start that independent transaction. On
-2026-08-14 a deliberate full dev-stack seed reset removed that retained
-transaction, so the guarded stale state was discarded and `EVENT-LIFE-003` was
-staged directly at its documented Trash boundary; the closed Delete was not
-replayed. The corrected Restore baseline is active and awaiting Casey's first
-UI observation.
-`ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
-`PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
-explicitly switches away from Core-first execution. Never replay a closed
-ticket, invitation, chat or registration checkpoint merely to reach this
-independent consent case.
+Continue only `EVENT-INV-004` from the guarded Admin-approval replay boundary
+described above. Riley's ordinary-member invitation response is retained
+evidence and is not a producer to repeat. After Casey approves once, first
+capture the action-owning Casey Chats counter while Members remains open, then
+run the terminal persisted oracle and the already-required short poll/reopen
+read checks. Close the row only when all of those branches agree.
 
 ## QA working method
 
@@ -263,6 +249,15 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   SmartList to repair a transport omission. HTTP and frontend-local routes must
   expose the same snapshot contract; local parity is checked when the affected
   flow can run in local mode.
+- When a mutation changes a counter outside the foreground popup's own list
+  domain, its response must carry the actor's canonical full counter snapshot
+  from the completed write. Apply it atomically with a pre-request revision
+  token. This is required when popup ownership intentionally suppresses the
+  side-menu domain poll: never guess `+1`, reopen the popup to conceal the
+  omission, enable a competing poll, or add a SmartList exception. The
+  frontend-local write must persist the equivalent projections, and a later
+  local realtime poll must rebase from that stored state instead of restoring
+  its pre-action snapshot.
 - If read/setup activity creates a completed task after staging but before the
   producer, retain it as evidence and capture a versioned action baseline only
   after it is terminal. Attribute the producer by exact post-minus-action

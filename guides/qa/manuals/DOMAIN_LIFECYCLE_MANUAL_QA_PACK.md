@@ -1419,6 +1419,44 @@ Execution evidence in progress on 2026-08-14:
   For Admin Approval`, Casey exactly once as Admin and Nova exactly once as an
   accepted Member. A repeated read-only status retained the same membership,
   zero-chat and exact-one join-request boundary; opening Members wrote nothing.
+- First Admin Approve executed once at `13:31:14.869Z`. The terminal Java
+  write/read oracle PASSed at accepted/pending `3/0`: Riley became accepted
+  exactly once, one owner projection of the same `mainEvent` chat exists for
+  Casey, Nova and Riley, one `member-joined` system row exists, every actor has
+  flat/nested Chats `1`, and Riley alone received one unread
+  `event-member-approved` notification plus one outbox row. No system-derived
+  chat notification exists.
+- Terminal Members read branches PASS: the user observed the accepted member
+  state through the normal Members poll, after close/reopen and after the
+  refreshed read. The Admin action-owning document nevertheless retained
+  Casey Chats `0` while Members stayed open. This is a focused UI FAIL: popup
+  ownership correctly suppressed the side-menu domain poll, while the action
+  response returned only the member list and omitted the already-persisted
+  canonical actor counters.
+- Repair deployed through the existing dev watchers: the Java member-action
+  response now returns the completed actor counter snapshot; the base frontend
+  applies it atomically with a pre-request revision token. The HTTP adapter
+  tolerates the old array during hot-deploy overlap. Frontend-local parity now
+  synchronizes the event member projection, event chat/system message and
+  stored user counters, and rebases later local realtime reads from that stored
+  state.
+- Focused replay prepared at `2026-08-14T13:56:35.748Z` by a guarded versioned
+  command. It removed only approval-owned chat/message, approval notification,
+  approval outbox and recompute artifacts, restored the same Riley row to
+  pending `requestKind=approval`, and retained Riley's earlier Accept evidence
+  and Casey's exact-one join-request. The proven replay baseline is
+  accepted/pending `2/1`, every Chats counter `0`, zero approval artifacts and
+  no chat. Casey's already-open Members surface converged by its own poll to
+  `2 members · 1 pending` with Riley once Waiting For Admin Approval.
+- Incidental Riley Impressions observation was separated from event attendance
+  evidence before the approval replay continued. The read oracle found only
+  Riley's current pending `EVENT-INV-004` membership, no check-in, no feedback
+  state and no feedback answer. Realtime attendance metrics were all empty
+  (`totalEvents`, `peopleMet` and average rating), while the visible statistics
+  were profile-derived personality percentages with `evidenceCount=0`. Riley's
+  briefly observed red Impressions change badge therefore does **not** prove a
+  prior attended event and is not attributed to this checkpoint transaction.
+  After opening the surface the current realtime change flags were both false.
 
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 

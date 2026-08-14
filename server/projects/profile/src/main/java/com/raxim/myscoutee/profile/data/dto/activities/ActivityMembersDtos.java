@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 
@@ -75,5 +76,10 @@ public final class ActivityMembersDtos {
                 String reason) {
             this(owner, actorUserId, targetUserId, action, reason, null, null);
         }
+    }
+
+    public record ActivityMemberActionResponseDto(
+            List<ActivityMemberEntryDto> members,
+            UserMenuCountersDto counterOverrides) {
     }
 }

@@ -348,6 +348,12 @@ public class HomeUserProfileService {
                 menuCounters);
     }
 
+    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
+        String resolvedUserId = resolveSelectedUserId(requestedUserId);
+        Users user = findUser(resolvedUserId);
+        return user == null ? emptyMenuCounters() : buildMenuCounters(user);
+    }
+
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
         UserByIdResponseDto response = queryUserById(requestedUserId);
         if (response == null) {

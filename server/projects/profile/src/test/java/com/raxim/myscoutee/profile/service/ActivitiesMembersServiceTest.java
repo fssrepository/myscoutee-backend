@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,6 +38,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -237,6 +239,33 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::status)
                 .isEqualTo("accepted");
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void actionContextReturnsCanonicalCountersForTheResolvedActor() {
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
+        UserMenuCountersDto counters = mock(UserMenuCountersDto.class);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(false);
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(List.of(member));
+        when(homeUserProfileService.queryMenuCounters("admin")).thenReturn(counters);
+
+        var result = service.applyActionWithContext(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "disqualify",
+                null));
+
+        assertThat(result.members())
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        assertThat(result.counterOverrides()).isSameAs(counters);
+        verify(homeUserProfileService).queryMenuCounters("admin");
     }
 
     @Test

@@ -3592,6 +3592,214 @@
     });
   }
 
+  function prepareInvitationAdminApprovalRetest() {
+    if (checkpointId !== "EVENT-INV-004") {
+      Q.fail("prepare-invitation-admin-approval-retest is restricted to EVENT-INV-004.");
+    }
+    const state = requireMatchingState();
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    if (eventDocuments.length !== 1
+        || eventDocuments.some(event =>
+          Q.text(event.status) !== "A"
+          || Number(event.acceptedMembers || 0) !== 3
+          || Number(event.pendingMembers || 0) !== 0
+          || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+          || !sameIds(event.pendingMemberUserIds, [])
+          || !sameIds(event.invitedMemberUserIds, [])
+          || !sameIds(event.pendingRequestMemberUserIds, []))) {
+      Q.fail("EVENT-INV-004 is not at the exact post-Admin-approval event boundary; preserve the evidence and do not re-arm it.");
+    }
+
+    const controlledMembers = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      userId: { $in: [hostUserId, participantUserId, thirdUserId] }
+    }).toArray();
+    const memberByUserId = new Map(controlledMembers.map(member => [Q.text(member.userId), member]));
+    const hostMember = memberByUserId.get(hostUserId);
+    const participantMember = memberByUserId.get(participantUserId);
+    const inviteeMember = memberByUserId.get(thirdUserId);
+    if (controlledMembers.length !== 3
+        || Q.text(hostMember && hostMember.status) !== "accepted"
+        || Q.text(hostMember && hostMember.role) !== "Admin"
+        || Q.text(participantMember && participantMember.status) !== "accepted"
+        || Q.text(participantMember && participantMember.role) !== "Member"
+        || Q.text(inviteeMember && inviteeMember.status) !== "accepted"
+        || Q.text(inviteeMember && inviteeMember.role) !== "Member") {
+      Q.fail("EVENT-INV-004 membership rows are not at the exact post-approval boundary; preserve the evidence and do not re-arm it.");
+    }
+    if (Q.collection("eventTickets").countDocuments({ eventId }) !== 0
+        || Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: eventId }) !== 0
+        || Q.collection("payments").countDocuments({ sourceId: eventId }) !== 0) {
+      Q.fail("EVENT-INV-004 gained ticket or payment artifacts; preserve the evidence and do not re-arm it.");
+    }
+
+    const joinRequestNotificationSelector = {
+      recipientUserId: hostUserId,
+      kind: "event-admin-join-request",
+      "payload.memberUserId": thirdUserId,
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    };
+    if (Q.collection("userNotifications").countDocuments(joinRequestNotificationSelector) !== 1) {
+      Q.fail("Riley's response-owned Casey join-request notification is not exact-once; preserve the evidence and do not re-arm approval.");
+    }
+    const approvalOutboxSelector = {
+      notificationType: "event-member-approved",
+      "payload.memberUserId": thirdUserId,
+      $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+    };
+    const approvalNotificationSelector = {
+      recipientUserId: thirdUserId,
+      kind: "event-member-approved",
+      "payload.memberUserId": thirdUserId,
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    };
+    const approvalOutbox = Q.collection("notificationOutbox").find(approvalOutboxSelector).toArray();
+    const approvalNotifications = Q.collection("userNotifications").find(approvalNotificationSelector).toArray();
+    if (approvalOutbox.length !== 1 || approvalNotifications.length !== 1) {
+      Q.fail("EVENT-INV-004 approval notification artifacts are not exact-once; preserve the evidence and do not re-arm it.");
+    }
+
+    const eventChatSelector = { $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }] };
+    const eventChats = Q.collection("chats").find(eventChatSelector).toArray();
+    const eventChatMessages = Q.collection("chatMessages").find({ chatId: eventId }).toArray();
+    if (eventChats.length !== 3
+        || eventChats.some(chat =>
+          Q.text(chat.channelType) !== "mainEvent"
+          || Number(chat.unread || 0) !== 1
+          || !sameIds(chat.memberIds || [], [hostUserId, participantUserId, thirdUserId]))
+        || eventChatMessages.length !== 1
+        || Q.text(eventChatMessages[0].clientId) !== "member-joined"
+        || Q.text(eventChatMessages[0].text) !== `${Q.user(thirdUserId).name} joined the event.`
+        || Q.collection("notificationOutbox").countDocuments({
+          notificationType: "chat-message",
+          $or: [{ entityId: eventId }, { "payload.chatId": eventId }]
+        }) !== 0
+        || Q.collection("userNotifications").countDocuments({
+          kind: "chat-message",
+          $or: [{ sourceId: eventId }, { "payload.chatId": eventId }]
+        }) !== 0) {
+      Q.fail("EVENT-INV-004 approval-owned chat state is not the exact three-projection/one-system-message boundary; preserve the evidence and do not re-arm it.");
+    }
+
+    const savedActivitiesByUserId = new Map([hostUserId, participantUserId, thirdUserId].map(userId => {
+      const saved = savedUserActivity(state, userId);
+      if (!saved || !saved.activities || !saved.activities.present) {
+        Q.fail(`EVENT-INV-004 has no saved pre-stage activity baseline for '${userId}'.`);
+      }
+      return [userId, saved.activities.value || {}];
+    }));
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const user = Q.collection("users").findOne({ $or: [{ _id: userId }, { userId }] });
+      const baseline = savedActivitiesByUserId.get(userId);
+      if (!user
+          || nestedNumber(user, "activities.chats") !== nestedNumber(baseline, "chats") + 1
+          || nestedNumber(user, "activities.chat.all") !== nestedNumber(baseline, "chat.all") + 1
+          || nestedNumber(user, "activities.chat.event") !== nestedNumber(baseline, "chat.event") + 1) {
+        Q.fail(`EVENT-INV-004 user '${userId}' is not at the exact post-approval chat-counter boundary.`);
+      }
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateOne({ _id: eventDocuments[0]._id }, { $set: {
+      acceptedMembers: 2,
+      pendingMembers: 1,
+      acceptedMemberUserIds: [hostUserId, participantUserId],
+      pendingMemberUserIds: [thirdUserId],
+      invitedMemberUserIds: [],
+      pendingRequestMemberUserIds: [thirdUserId],
+      updatedDate: preparedAtIso,
+      updatedUser: Q.ACTOR
+    } });
+    const memberUpdate = Q.collection("activityMembers").updateOne({ _id: inviteeMember._id }, {
+      $set: {
+        status: "pending",
+        role: "Member",
+        pendingSource: "member",
+        requestKind: "approval",
+        actionAtIso: preparedAtIso,
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      },
+      $unset: { invitedByUserId: "" }
+    });
+    const messageRemoval = Q.collection("chatMessages").deleteOne({ _id: eventChatMessages[0]._id });
+    const chatRemoval = Q.collection("chats").deleteMany(eventChatSelector);
+    const approvalOutboxRemoval = Q.collection("notificationOutbox").deleteOne({ _id: approvalOutbox[0]._id });
+    const approvalNotificationRemoval = Q.collection("userNotifications").deleteOne({ _id: approvalNotifications[0]._id });
+    if (eventUpdate.matchedCount !== 1
+        || memberUpdate.matchedCount !== 1
+        || messageRemoval.deletedCount !== 1
+        || chatRemoval.deletedCount !== 3
+        || approvalOutboxRemoval.deletedCount !== 1
+        || approvalNotificationRemoval.deletedCount !== 1) {
+      Q.fail("EVENT-INV-004 terminal artifacts changed during the guarded approval replay preparation.");
+    }
+    const recomputeTaskRemoval = Q.collection("affinityRecomputeTasks").deleteMany({
+      targetId: eventId,
+      updatedDate: { $gt: state.stagedAtIso }
+    });
+
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const baseline = savedActivitiesByUserId.get(userId);
+      const update = {
+        "activities.chats": nestedNumber(baseline, "chats"),
+        "activities.chat": baseline.chat || {}
+      };
+      if (userId === thirdUserId) {
+        update["activities.events"] = nestedNumber(baseline, "events");
+        update["activities.event.all"] = nestedNumber(baseline, "event.all") + 1;
+        update["activities.event.active"] = nestedNumber(baseline, "event.active");
+        update["activities.event.pending"] = nestedNumber(baseline, "event.pending") + 1;
+        update["activities.event.invitations"] = nestedNumber(baseline, "event.invitations");
+      }
+      const userUpdate = Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: update }
+      );
+      if (userUpdate.matchedCount !== 1) {
+        Q.fail(`user '${userId}' disappeared while approval-owned counters were restored.`);
+      }
+    }
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: { "activities.notifications": unreadNotifications } }
+      );
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { "context.actualEventSourceId": eventId },
+      $push: {
+        invitationAdminApprovalRetests: {
+          preparedAtIso,
+          eventId,
+          eventAdminUserId: hostUserId,
+          inviteeUserId: thirdUserId,
+          removedApprovalOutboxId: Q.text(approvalOutbox[0]._id),
+          removedApprovalNotificationId: Q.text(approvalNotifications[0]._id),
+          removedRecomputeTaskCount: recomputeTaskRemoval.deletedCount
+        }
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "invitation-admin-approval-retest-ready",
+      preparedAtIso,
+      eventId,
+      eventAdmin: Q.user(hostUserId),
+      invitee: Q.user(thirdUserId),
+      baseline: oracle(refreshedState),
+      next: "Keep Casey's Members popup open, expose Riley's pending row through its normal member poll, and Approve Riley exactly once. The action response must change Casey Chats 0->1 immediately while the popup remains open; then retain the popup for a later member poll and close/reopen read check."
+    });
+  }
+
   function prepareVisibilitySaveRetest() {
     if (checkpointId !== "EVENT-VISIBILITY-001") {
       Q.fail("prepare-visibility-save-retest is restricted to EVENT-VISIBILITY-001.");
@@ -6445,6 +6653,7 @@
     case "switch": switchCheckpoint(); break;
     case "advance": advance(); break;
     case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
+    case "prepare-invitation-admin-approval-retest": prepareInvitationAdminApprovalRetest(); break;
     case "hold-auto-inviter": holdAutoInviter(); break;
     case "prepare-auto-inviter": prepareAutoInviter(); break;
     case "capture-auto-inviter-baseline": captureAutoInviterBaseline(); break;
