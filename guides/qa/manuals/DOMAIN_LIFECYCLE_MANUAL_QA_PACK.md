@@ -1484,6 +1484,12 @@ Execution evidence in progress on 2026-08-14:
   The intended simple rule is deliberately shared: the join system event is
   unread for all current channel members, including the joining member; no
   actor exception or special WebSocket/channel/aside-poll branch is required.
+- Terminal worker PASS: the single `EVENT_MEMBERS_CHANGED` recompute became
+  eligible at `15:18:47Z` and the normal worker completed it at
+  `15:19:45.623Z` on attempt `1`, with empty `lastError`. The post-worker read
+  retained accepted/pending `3/0`, all three unread owner copies, the exact-one
+  join row and the target-only approval notification. `EVENT-INV-004` is
+  **PASS / CLOSED; FIX VERIFIED**. Do not repeat Riley Accept or Admin Approve.
 
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 

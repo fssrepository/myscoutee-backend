@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-INV-004
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-004--ordinary-member-invitation-approval-chain
+checkpoint: EVENT-INV-005 / branch A — recipient rejection
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-005--reject-cancel-capacity-and-idempotence
 scenario: event-domain
 ledger_status: IN PROGRESS
-state: EVENT-INV-001 is PASS/CLOSED and reset-complete; never repeat its Invite+Save. EVENT-INV-004 Riley Accept remains proven exact-once at 13:24:05.641Z and must not be repeated. Casey first approved at 13:31:14.869Z; the Java write/read oracle passed at accepted/pending3/0 with one three-owner mainEvent chat, one member-joined row, chats1 for every actor and one Riley approval notification/outbox. The user then proved the terminal Members list through its normal poll, close/reopen and refreshed read. A product defect remained only in Casey's action-owning document: while Members suppressed the side-menu domain poll, Casey Chats stayed0 because the action response returned only members. The repaired Java action response now includes the canonical full actor counter snapshot, the base frontend applies it atomically with a revision token, and the frontend-local route persists matching event/chat/counter state and rebases later local polls. Existing dev watchers compiled and deployed both sides. A guarded replay at 2026-08-14T13:56:35.748Z removed only approval-owned terminal artifacts and restored Riley pending approval, accepted/pending2/1, chats0, zero approval artifacts and the retained exact-one Casey join-request. Casey's still-open Members DOM already converged to 2 members + 1 pending, Riley once Waiting For Admin Approval, and Chats0. A read-only incidental check proved Riley's briefly observed Impressions badge/statistics were not attendance evidence: only the current pending membership exists, with no check-in/feedback and empty event-derived Impressions metrics; the visible personality percentages have zero evidence
-required_resume: Do not reset/restage/relaunch and do not repeat Riley Accept. Run only status event-domain EVENT-INV-004 if continuity is uncertain; require the guarded 2/1 pending-approval baseline, exact-one Casey join-request, chats0 and zero approval artifacts. Keep all three sessions. The next and only producer is Casey Approve once; the decisive UI oracle is Casey Chats0->1 immediately while Members remains open, followed by the existing Members poll/reopen read checks without another approval
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-004; Casey-owned active Open Event, capacity8, Casey Admin accepted, Nova Member accepted, Riley Member pending invite from Nova
+state: EVENT-INV-004 is PASS/CLOSED, terminal-oracle and normal-worker verified, reset-complete; never repeat Riley Accept or Casey Approve. EVENT-INV-005 was staged at 2026-08-14T15:21:49.789Z and its status oracle passed: one active published Open Event, capacity1, Casey Admin plus Nova Member accepted, Riley pending admin invitation, accepted/pending2/1, zero chats/chat counters and zero invitation-resolution artifacts. This checkpoint is deliberately split into short independently reset branches; branch A is recipient rejection only.
+required_resume: Do not stage again while this boundary exists. If continuity is uncertain, run only status event-domain EVENT-INV-005 and require accepted/pending2/1, Riley pending requestKind=invite from Casey, capacity1, chats0 and no resolution artifacts. Reload only the same three managed documents because they predate this stage, verify identities and the shared zero-chat baseline, then let Riley reject the single QA EVENT-INV-005 invitation exactly once. Do not accept it and do not mutate Casey or Nova.
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-005; Casey-owned active Open Event, capacity1, Casey Admin accepted, Nova Member accepted, Riley Member pending admin invite
 actors:
-  active: Casey port33251, Nova port40387 and Riley port44173 are the only three QA Chrome sessions; all were launched after stage and must be retained
-  controls: Casey is the later Admin approver; Nova is the accepted ordinary inviter and must stay accepted; Riley is the pending target. No fourth browser is allowed
-next_actor: In Casey's already-open Members popup, open only Riley Outside's row action menu and choose Approve exactly once. Keep Members open after confirmation; do not use Casey's notification and do not touch Nova or Riley
-stop_phrase: user reports whether Casey Chats changed from no badge to 1 immediately while Members stayed open; then verify accepted3/pending0, chat exact-one projection for all accepted actors, resolved counters and target-only approval notification
+  active: Casey port33251, Nova port40387 and Riley port44173 remain the only three QA Chrome sessions; reload these exact documents after the new stage, never open a fourth account
+  controls: Casey and Nova remain accepted unchanged controls; Riley is the sole pending recipient and the only branch-A actor
+next_actor: In Riley's reloaded session open Activities -> Events -> Invitations, locate only QA EVENT-INV-005, open its action surface and choose Reject exactly once. Do not choose Accept and do not touch Casey or Nova.
+stop_phrase: user reports the invitation disappeared in place and Riley Invitations lost exactly one; then verify pending removal, accepted2 unchanged, no chat/access/counter and no duplicate notification/outbox/task effects before any reload reconstruction
 ```
 
 ### Efficient resume gate
@@ -107,12 +107,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Continue only `EVENT-INV-004` from the guarded Admin-approval replay boundary
-described above. Riley's ordinary-member invitation response is retained
-evidence and is not a producer to repeat. After Casey approves once, first
-capture the action-owning Casey Chats counter while Members remains open, then
-run the terminal persisted oracle and the already-required short poll/reopen
-read checks. Close the row only when all of those branches agree.
+Continue `EVENT-INV-005 / branch A — recipient rejection` from the staged
+boundary above. Reload only the three existing managed documents, capture the
+shared baseline and then have Riley reject the single controlled invitation
+once. Verify its in-place removal and counters before the independent persisted
+oracle and reload reconstruction. Reset before starting the inviter-cancel,
+capacity-block or repeat/no-op branch; never concatenate those producers into
+one long manual stop.
 
 ## QA working method
 
