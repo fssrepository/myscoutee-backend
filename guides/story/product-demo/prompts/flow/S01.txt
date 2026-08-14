@@ -2,7 +2,7 @@ Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
 Veo 3.1 Lite. Use PR_CP01.png as the exact first frame and PR_CP02.png as the
 exact last frame.
 
-Begin on the same Founder at the same wooden desk in a familiar moment just
+Begin on the same fictional male product creator at the same wooden desk in a familiar moment just
 after an online signal. He holds his phone and looks at two tactile sepia adult
 portrait cards with one muted reject symbol and one muted accept symbol. He is
 not unhappy and nobody has failed; his thoughtful expression recognizes only
@@ -14,20 +14,20 @@ naturally. The two simple choice symbols fade from the physical cards without
 becoming readable UI. A handmade private-list demonstration unfolds above him
 as exactly six fixed portrait windows in a two-column by three-row grid. Keep
 the exact CP02 endpoint layout: five friendly sample adults aged 30–55 plus the
-Founder's own portrait in the lower-left window. Amber marker rows, one aqua
+creator's own portrait in the lower-left window. Amber marker rows, one aqua
 marker per row and five colored dotted paths grow as physical paper, wood and
 light objects toward the small central round table. These marks show private,
-editable ordering, never a public score. The five sample identities belong only
-to this demonstration and do not become the later group. The Founder moves only
+editable ordering, never a public score. The five sample characters belong only
+to this demonstration and do not become the later group. The creator moves only
 once and remains thoughtful, not defeated.
 
-End exactly on PR_CP02.png. Preserve the exact Founder face, apparent age,
+End exactly on PR_CP02.png. Preserve the endpoint fictional character design, apparent age,
 clothing, scarf, hands, desk, lamp, six portrait windows, marker rows, dotted
 paths, central table, warm room and painterly 2.5D style. No logo or readable
 text: the exact MyScoutee opening mark is composited later in post.
 
 No cut, swipe-app imitation, floating UI, giant number, public score, generated
-word, brand, face morph, duplicate hand, extra finger, sexual framing or
+word, brand, character transformation, duplicate hand, extra finger, sexual framing or
 exaggerated sadness. Generate one result only, exact 8 seconds, Veo 3.1 Lite,
 first and last frames, 9:16. Retain the generated instrumental music, room
 ambience and physical foley; no speech, vocalization or singing.

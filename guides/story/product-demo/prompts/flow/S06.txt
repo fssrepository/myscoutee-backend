@@ -5,9 +5,9 @@ last frame.
 Begin with the exact same six CP03–CP06 users at the same used activity table:
 South Asian gray-bearded man with round glasses, bearded man in a dark knit cap,
 chestnut-haired woman with rust scarf, Black woman with short natural curls,
-East Asian woman with black bob and the dark curly-haired man. Founder John and
-the elderly silver-haired woman are not present. Keep every face, garment and
-screen side recognizable and separate.
+East Asian woman with black bob and the dark curly-haired man. Only these six
+original fictional adults appear; no character from CP01–CP02 returns. Keep
+every character design, garment and screen side recognizable and separate.
 
 Seconds 0–2: the shared activity winds down through restrained looks and small
 finishing hand movements; nobody resets or repeats a gesture. The
@@ -23,8 +23,8 @@ different reactions. Converge precisely on PR_CP07.png.
 The visual meaning is: these people are no longer cold profiles, and a future
 invitation can begin with shared real context. Do not imply guaranteed romance,
 friendship or attendance. No server, administrator, operator, technical room,
-business diagram, abstract wipe, logo, generated text, interface, face morph,
-identity replacement, duplicate, seventh person or visible speech. Generate one
+business diagram, abstract wipe, logo, generated text, interface, character
+transformation, character replacement, duplicate, seventh person or visible speech. Generate one
 result only, exact 8 seconds, Veo 3.1 Lite, first and last frames, 9:16. Retain
 the generated instrumental music, warm venue/street ambience and physical foley;
 no speech, vocalization or singing.
