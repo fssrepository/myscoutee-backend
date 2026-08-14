@@ -1497,6 +1497,22 @@ Execution evidence in progress on 2026-08-14:
   reserved by an existing invitation, a full event and repeated accept/save.
 - No branch may create duplicate memberships, overbook capacity, leave a live
   invitation bell after resolution or grant chat access after reject/cancel.
+- Branch A — recipient rejection is a separate short lineage. Stage Casey and
+  Nova as the two accepted occupants and Riley as the one pending invitation
+  that reserves the third and final seat (`2 accepted + 1 reserved / 3`). Riley
+  rejects once. In place, Riley's invitation card and `Invitations` counter
+  disappear while `Chats` stays zero. The persisted oracle must retain Casey
+  and Nova accepted, suppress only Riley's invitation, clear every live
+  pending/invited projection and resolve the invitation notification without
+  creating chat, acceptance/approval notification or duplicate work.
+- The first 2026-08-14 branch-A attempt is **NOT EXECUTED — fixture defect**.
+  The old fixture incorrectly staged capacity `1` while Casey and Nova were
+  already accepted and Riley held another reserved invitation. Reject itself
+  removed Riley in place and kept chats/artifacts at zero, but the first normal
+  embedded-member refresh necessarily normalized the impossible `1` to the two
+  accepted occupants. This was not accepted as product evidence. The fixture
+  now stages the coherent full/reserved boundary at capacity `3`; replay only
+  Riley Reject after reset, not any earlier checkpoint producer.
 
 ### `EVENT-INV-006` — acceptance notification visibility boundary
 

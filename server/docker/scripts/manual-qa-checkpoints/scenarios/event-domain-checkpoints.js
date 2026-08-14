@@ -1736,8 +1736,12 @@
         pendingUserIds: [thirdUserId],
         invitedUserIds: [thirdUserId]
       });
-      event.capacityMax = 1;
-      event.capacityTotal = 1;
+      // Casey and Nova already occupy two seats; Riley's pending invitation
+      // reserves the third. This is the full boundary without staging an
+      // impossible over-capacity document that the first normal member sync
+      // would have to repair.
+      event.capacityMax = 3;
+      event.capacityTotal = 3;
       Q.collection("events").insertOne(event);
       Q.collection("activityMembers").insertMany([
         memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
