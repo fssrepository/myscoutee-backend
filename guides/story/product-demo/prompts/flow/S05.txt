@@ -1,24 +1,70 @@
-Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use PR_CP05.png as the exact first frame and PR_CP06.png as the
-exact last frame.
+Create one continuous 8-second portrait 9:16 Frames-to-Video clip with Veo 3.1
+Lite. Use PR_CP05.png as the exact first frame and PR_CP06.png as the exact last
+frame.
 
-Begin on the same six people in their fixed CP05 sectors around the four-part
-event plan. The portrait borders and colored planning paths recede while every
-fictional character and body stays on its original side. Move through the miniature open
-venue door in one continuous 35 mm camera motion as the separate paper-and-wood
-spaces join into the real warm public activity room.
+All characters are original fictional designs created for this project.
 
-By second 2, make the real meeting unmistakable. The South Asian man remains
-upper-left, knit-cap man upper-right, chestnut-haired woman middle-left, Black
-woman middle-right, East Asian woman lower-left and curly-haired man lower-right.
-They now share one round table, moving sketch paper, workshop materials, simple
-pieces and cups with restrained natural gestures. The supply crate is in use,
-the venue is real and the same minibus remains visible outside. No pair receives
-special focus.
+Use a premium cinematic 2.5D storybook style with expressive hand-drawn
+character linework, dimensional paper and miniature sets, painted wood, wool
+and graphite textures, realistic warm lamplight, deep navy shadows and
+restrained natural facial acting.
 
-Reach the exact PR_CP06.png composition by second 7 and let the meeting breathe.
-Preserve every fictional character design, garment and endpoint object. No position crossing, cut,
-reset, character transformation, duplicate, gender change, extra participant, readable text, logo
-or visible speech. Generate one result only, exact 8 seconds, Veo 3.1 Lite,
-first and last frames, 9:16. Retain the generated instrumental music, ambience
-and physical foley; no speech, vocalization or singing.
+Begin with the exact six fictional users shown in PR_CP05.png. Keep every person
+in the same fixed two-column by three-row screen position for the entire clip:
+
+- upper-left: gray-bearded man with round glasses and olive jacket;
+- upper-right: bearded man in a dark knit cap and navy shirt;
+- middle-left: chestnut-haired woman with rust scarf;
+- middle-right: Black woman with short natural curls and rust cardigan;
+- lower-left: East Asian woman with black bob and teal shirt;
+- lower-right: dark curly-haired man in a dark jacket.
+
+Begin with the six colored dotted paths connected to the six participant
+markers on the central round wooden table. The group has already been revealed
+from reciprocal private priorities. The marker rows belong to the previous
+private-list stage and must not become public scores.
+
+Use one gentle, stable camera movement toward the central table. During seconds
+0–2, the aqua markers and amber rows softly dim and lower into their carved
+frames. The six colored paths remain visible as practical connections to the
+shared plan. No person moves to another screen position.
+
+During seconds 2–7, the central round table expands as a physical paper-and-wood
+mechanism into exactly four practical event-resource areas:
+
+1. exactly six wooden participant figures together on one round base;
+2. exactly one small amber minibus with one route cord;
+3. exactly one welcoming venue model with an open door and one key;
+4. exactly one wooden supply crate containing ordinary activity materials.
+
+Keep exactly one small blank shared-activity card at the center. No readable
+writing appears on it.
+
+As the four resource areas unfold, the six users begin restrained practical
+actions leading naturally into the exact final frame: the gray-bearded man and
+the chestnut-haired woman review blank cards; the knit-cap man handles the route
+cord; the Black woman arranges the six participant figures; the East Asian
+woman handles the venue key; the curly-haired man sketches one part of the
+plan. Give each person one small hand movement and one subtle attentive facial
+reaction. Nobody visibly speaks.
+
+Preserve the same screen order throughout: upper-left remains upper-left,
+upper-right remains upper-right, middle-left remains middle-left, middle-right
+remains middle-right, lower-left remains lower-left and lower-right remains
+lower-right.
+
+Reach the exact PR_CP06.png composition by second 7 and hold it through the
+end. Preserve all six fictional character designs, clothing, colored paths,
+central blank card, four resource areas, room lighting and warm painterly
+palette.
+
+No cut, character transformation, position swap, readable text, logo, number,
+public score, duplicate person, merged character, seventh participant, extra
+wooden figure, second vehicle, second venue, duplicate supply crate, fifth
+resource area, extra hand or exaggerated emotion. Keep all movement restrained
+and physically coherent.
+
+Generate restrained original instrumental music continuing the previous clips:
+warm felt-piano fragments, low bowed texture, soft hand percussion, natural
+room ambience and tactile wooden planning sounds. No dialogue, narration,
+singing, vocalization or visible lip-sync.

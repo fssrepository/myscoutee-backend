@@ -4,6 +4,12 @@ These full-resolution image-generation outputs preserve the explored variants
 before a production checkpoint is selected. They are references, not Flow
 inputs.
 
+- `PR_CP02_SHORT_RENDER_ENDPOINT.png`: recovered `720×1280` endpoint used by
+  the first eight seconds of the earlier 24-second render; confirmed against
+  that video's final frame at `00:07.958`. This is the selected candidate for
+  the newly inserted CP02.
+- `PR_CP02_SHORT_RENDER_ENDPOINT_SOURCE.png`: recovered original `941×1672`
+  image-generation source for the same endpoint.
 - `PR_PRIORITY_ALT01_CARD_SCALES.png`: the preserved CP02 composition reference
   with horizontal priority controls, colored paths and the central table.
 - `PR_CP02_DISTINCT_CAST_ALT01_FIVE_CARDS.png`: rejected five-card cast update;

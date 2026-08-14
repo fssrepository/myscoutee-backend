@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-INV-005 / branch A — recipient rejection
+checkpoint: EVENT-INV-005 / branch B — inviter cancellation
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-005--reject-cancel-capacity-and-idempotence
 scenario: event-domain
 ledger_status: IN PROGRESS
-state: EVENT-INV-004 is PASS/CLOSED, terminal-oracle and normal-worker verified, reset-complete; never repeat Riley Accept or Casey Approve. EVENT-INV-005 branch A first attempt is NOT EXECUTED because its fixture staged an impossible capacity1 around Casey+Nova accepted and Riley reserved. The fixture is repaired and was restaged at 2026-08-14T15:34:04.292Z: capacity3, accepted/pending2/1, Casey+Nova accepted, Riley pending admin invite reserving the final seat, chats0 and zero resolution artifacts. The same three documents were reloaded after stage and identities/counters match this baseline.
-required_resume: Do not reset or stage again. If continuity is uncertain, run only status event-domain EVENT-INV-005 and require capacity3, accepted/pending2/1, Riley pending requestKind=invite from Casey, chats0 and no resolution artifacts. Keep the same three fresh managed documents. The next and only producer is Riley Reject once; do not accept the invitation and do not mutate Casey or Nova.
+state: EVENT-INV-005 branch A is PASS/CLOSED; never repeat Riley Reject. Branch B Java repair is terminal PASS: the 16:06:13.505868724Z cancellation created exactly one EVENT_MEMBERS_CHANGED task, completed at 16:12:08.607775317Z attempt1/error-empty, with capacity3 accepted/pending2/0 and all chat/notification controls zero. That replay exposed a frontend FAIL: the underlying event-card pending badge ignored the membership signal while Event Editor was open and only a later poll repaired it. The common Activities consumer now always applies the absolute/idempotent membership sync; no Smart List/poll or action-specific branch changed, and frontend-sync built successfully. The 16:13:41.562Z frontend replay lineage is NOT EXECUTED because the user required a proven reload boundary before acting; no Delete occurred. It was reset. The current clean final replay baseline was staged at 2026-08-14T16:18:50.026Z and a later read-only status still matches capacity3 accepted/pending2/1, Riley pending invite from Casey, chats0 and zero tasks/artifacts. The same three managed documents were hard reloaded with cache and service-worker bypass; their new time origins are Casey 16:19:57.407Z, Nova 16:19:55.167Z and Riley 16:19:53.108Z. Casey shows My Events1/Chats0, Nova Events1/Chats0 and Riley Invitations1/Chats0.
+required_resume: Do not reset, stage or relaunch. If continuity is uncertain, run only status event-domain EVENT-INV-005 and require the 16:18:50.026Z capacity3 accepted/pending2/1 baseline with Riley requestKind=invite from Casey, chats0 and zero tasks/artifacts. Keep the same three hard-reloaded managed documents. Replay only Casey Delete invitation once and observe the underlying card pending badge before poll; Branch A and all earlier branch-B lineages stay closed.
 event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-005; repaired baseline is Casey-owned active Open Event, capacity3, Casey Admin accepted, Nova Member accepted, Riley Member pending admin invite reserving the final seat
 actors:
   active: Casey port33251, Nova port40387 and Riley port44173 remain the only three QA Chrome sessions; reload these exact documents after the new stage, never open a fourth account
-  controls: Casey and Nova remain accepted unchanged controls; Riley is the sole pending recipient and the only branch-A actor
-next_actor: In Riley's reloaded session open Activities -> Events -> Invitations, locate only QA EVENT-INV-005, open its action surface and choose Reject exactly once. Do not choose Accept and do not touch Casey or Nova.
-stop_phrase: user reports the invitation disappeared in place and Riley Invitations lost exactly one; then verify pending removal, accepted2 unchanged, no chat/access/counter and no duplicate notification/outbox/task effects before any reload reconstruction
+  controls: Nova remains an accepted unchanged control; Riley is the pending recipient and must perform no action; Casey is the sole branch-B actor
+next_actor: In Casey's session open Activities -> Events -> My Events, locate QA EVENT-INV-005, open Members, then open only Riley Outside's pending row menu and choose Delete invitation exactly once. Keep Members open afterward; do not touch Nova or Riley.
+stop_phrase: user reports whether Casey's Members surface changed to 2 members and the underlying event-card pending badge disappeared immediately from the same action signal, before poll; then verify Riley Invitations1->0 and the independent persisted oracle
 ```
 
 ### Efficient resume gate
@@ -107,13 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Continue `EVENT-INV-005 / branch A — recipient rejection` from the staged
-boundary above. Reload only the three existing managed documents, capture the
-shared baseline and then have Riley reject the single controlled invitation
-once. Verify its in-place removal and counters before the independent persisted
-oracle and reload reconstruction. Reset before starting the inviter-cancel,
-capacity-block or repeat/no-op branch; never concatenate those producers into
-one long manual stop.
+Continue `EVENT-INV-005 / branch B — final frontend badge repair replay` from
+the fresh staged boundary above. Casey deletes Riley's single pending
+invitation from Members once; Riley performs no response. Capture both the
+Members removal and underlying event-card badge before poll, then verify
+Riley's live Invitations removal and the retained Java oracle. Reset before
+the capacity/idempotence branch; never concatenate producers.
 
 ## QA working method
 

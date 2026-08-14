@@ -1513,6 +1513,93 @@ Execution evidence in progress on 2026-08-14:
   accepted occupants. This was not accepted as product evidence. The fixture
   now stages the coherent full/reserved boundary at capacity `3`; replay only
   Riley Reject after reset, not any earlier checkpoint producer.
+- Repaired branch-A replay, manual/UI and immediate persisted boundary
+  **PASS** at `2026-08-14T15:40:50.696Z`: the user confirmed the predeclared
+  in-place Invitations `1 -> 0` removal with Chats still `0`. The independent
+  oracle retained capacity `3`, accepted/pending `2/0`, exact Casey Admin and
+  Nova Member accepted identities, and one Riley membership suppressed from
+  `pending` under the same event root. Every live pending/invited list is empty;
+  chat/message and invitation/acceptance/approval notification/outbox counts
+  are all zero. Riley's later fresh document reconstructed Invitations `0`,
+  Chats `0` and exactly one personal Trash card for the rejected event. The
+  normal `EVENT_MEMBERS_CHANGED` affinity task is intentionally still pending
+  until its `15:45:50Z` availability boundary; branch A remains open only for
+  that worker exact-once oracle.
+- Branch A terminal worker **PASS/CLOSED**: the one retained recompute completed
+  at `2026-08-14T15:45:57.345Z`, attempt `1`, with empty `lastError`; the normal
+  rule reports `pendingCount=0`. The post-worker oracle remained capacity `3`,
+  accepted/pending `2/0`, Casey+Nova accepted and Riley suppressed, with every
+  chat/message and invitation/acceptance/approval notification/outbox control
+  still zero. Never repeat Riley Reject. Reset before branch B, where Casey
+  independently cancels the still-pending invitation from a fresh baseline.
+- Branch B — inviter cancellation is a separate fresh lineage with the same
+  coherent `2 accepted + 1 reserved / 3` baseline. Casey opens the event's
+  Members list and deletes Riley's pending invitation exactly once; Riley does
+  not respond. Casey's Members header/card must change `2 members · 1 pending`
+  to `2 members` in place, while Riley's `Invitations` card/counter disappears
+  through its normal live route. Capacity stays `3`; Casey and Nova remain the
+  only accepted members; Riley has no chat access. Persisted invitation
+  resolution may update the existing invite signal but must create no join,
+  chat, acceptance/approval notification, duplicate membership or overbooking.
+- First branch-B execution is **FAIL / REPAIR REPLAY REQUIRED**. Casey confirmed
+  Delete invitation once at `2026-08-14T15:51:50.195674866Z`; the still-open
+  Members surface changed in place from `2 members · 1 pending` to `2 members`,
+  Riley disappeared once, Riley Invitations changed `1 -> 0` through the normal
+  live route and Nova remained unchanged. The persisted write retained
+  capacity `3`, Casey+Nova accepted, Riley `deleted`, cleared every live
+  pending/invited projection and left chat/message plus invitation/acceptance/
+  approval notification/outbox artifacts at zero.
+- The same persisted oracle exposed the write-side defect: the cancellation
+  produced zero `EVENT_MEMBERS_CHANGED` tasks. The pending invitation had
+  reserved the final seat, so cancelling it must run the normal released-seat
+  path even though it must not create a ticket or chat. The old Java branch
+  explicitly used `refreshEmbeddedEventMembers(..., false)` and skipped the
+  waitlist. It was corrected to promote the oldest waitlist member first and,
+  when no promotion exists, still refresh the dependent event/slot read model
+  and enqueue the recompute. Regression coverage now asserts both no-waitlist
+  projection and waitlist promotion; the existing dev watcher compiled the
+  main change successfully at `15:57:51Z`. Because swap was effectively full,
+  no second Gradle/test process was started. Replay only Casey's branch-B
+  Delete invitation from a fresh fixture; branch A remains closed.
+- Repair replay baseline **READY** at `2026-08-14T16:01:33.676Z`: reset
+  completed first, stage and the required second read-only status both prove
+  capacity `3`, accepted/pending `2/1`, Casey+Nova accepted, Riley's final-seat
+  invite from Casey, Chats `0` and zero task/artifact controls. The same three
+  managed documents were reloaded rather than relaunched; Casey shows My
+  Events `1`/Chats `0`, Nova Events `1`/Chats `0`, and Riley Invitations
+  `1`/Chats `0`. Replay only Casey Delete invitation once.
+- First repair replay at `2026-08-14T16:06:13.505868724Z` proves the Java
+  repair **PASS**: capacity stayed `3`, accepted/pending became `2/0`, only
+  Riley became `deleted`, all live pending/invited lists cleared, and chats,
+  messages plus invitation/acceptance/approval notification/outbox controls
+  stayed zero. Exactly one `EVENT_MEMBERS_CHANGED` task was created; the normal
+  worker completed it at `16:12:08.607775317Z`, attempt `1`, with empty
+  `lastError` and `pendingCount=0`.
+- The same replay remains **UI FAIL / FRONTEND REPLAY REQUIRED** because the
+  user observed that the underlying event-card pending badge did not change
+  from the membership action signal; a later poll repaired it. The common
+  Activities membership-sync consumer was discarding every sync while the
+  Event Editor state was open, even though the payload is an absolute,
+  idempotent member summary. The gate was removed so stacked Editor/Members
+  surfaces update the underlying card immediately. No Delete-specific branch
+  and no Smart List/poll modification was added. The existing `frontend-sync`
+  watcher rebuilt successfully in `7.612s` at `16:11:29Z`. Reset and replay
+  only Casey Delete invitation once more to prove the badge before any poll.
+- The `2026-08-14T16:13:41.562Z` frontend replay lineage is **NOT EXECUTED —
+  reload boundary not yet proven**. The user requested a clean restart before
+  performing Delete invitation, so no product transition from that lineage is
+  evidence. It was reset rather than continued.
+- Current final frontend replay baseline **READY** at
+  `2026-08-14T16:18:50.026Z`: stage, the required second status and another
+  later read-only status all prove capacity `3`, accepted/pending `2/1`,
+  Riley's pending admin invitation from Casey, Chats `0` and zero tasks or
+  chat/notification artifacts. The same three managed documents were hard
+  reloaded with browser cache and service-worker bypass; their new document
+  origins are Casey `16:19:57.407Z`, Nova `16:19:55.167Z` and Riley
+  `16:19:53.108Z`. The reconstructed counters are Casey My Events `1`/Chats
+  `0`, Nova Events `1`/Chats `0` and Riley Invitations `1`/Chats `0`. Replay
+  only Casey Delete invitation once and observe the event-card pending badge
+  from the same response before any periodic poll.
 
 ### `EVENT-INV-006` — acceptance notification visibility boundary
 

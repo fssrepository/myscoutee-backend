@@ -1472,7 +1472,7 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
-    void eventMemberCanCancelInvitationTheySentWithoutMemberModerationPermission() {
+    void eventMemberCanCancelInvitationTheySentAndRefreshDependentModelsWithoutTickets() {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
         invitation.setPendingSource("admin");
@@ -1508,8 +1508,8 @@ class ActivitiesMembersServiceTest {
         verify(accessControlService, never()).canRemoveEventMember("event-1", "member-inviter", "target");
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
-        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
-        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(eventSlotReadModelService).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService).enqueueEventMembersChanged("event-1", "system");
         verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
         InOrder cancellationOrder = inOrder(
                 userActivityCountersService,
@@ -1518,6 +1518,82 @@ class ActivitiesMembersServiceTest {
                 .refreshEventCountersForUsers(List.of("target"));
         cancellationOrder.verify(eventInviteNotificationService)
                 .markInvitationResolved("event-1", "target");
+    }
+
+    @Test
+    void cancellingPendingEventInvitationPromotesTheOldestWaitlistMemberIntoTheReleasedSeat() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        event.setCapacityTotal(3);
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember accepted = member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("owner");
+        ActivityMember waiting = waitlistMember("wait-sync", "waiting-user");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(owner, accepted, invitation, waiting));
+
+        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("owner");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "target"))
+                .thenAnswer(invocation -> storedMembers.get().stream()
+                        .filter(member -> "target".equals(member.getUserId()))
+                        .findFirst());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "owner",
+                "target",
+                "remove",
+                null));
+
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "target".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "waiting-user".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("admin");
+                    assertThat(member.getRequestKind()).isEqualTo("waitlist-invite");
+                    assertThat(member.getInvitedByUserId()).isEqualTo("owner");
+                });
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("waiting-user"),
+                "owner");
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("waiting-user"));
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
     }
 
     @Test

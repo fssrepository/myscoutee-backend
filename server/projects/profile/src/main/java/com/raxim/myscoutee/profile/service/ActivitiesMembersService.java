@@ -1132,7 +1132,13 @@ public class ActivitiesMembersService {
 
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             if (removingPendingEventMembership) {
-                refreshEmbeddedEventMembers(ownerId, false);
+                int promotedWaitlistMembers = processEventWaitlist(
+                        ownerId,
+                        findPreferredEventRecord(ownerId),
+                        true);
+                if (promotedWaitlistMembers == 0) {
+                    refreshEmbeddedEventMembers(ownerId);
+                }
                 userActivityCountersService.refreshEventCountersForUsers(List.of(targetUserId));
                 if (cancellingEventInvitation) {
                     eventInviteNotificationService.markInvitationResolved(
