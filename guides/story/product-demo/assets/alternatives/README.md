@@ -4,13 +4,23 @@ These full-resolution image-generation outputs preserve the explored variants
 before a production checkpoint is selected. They are references, not Flow
 inputs.
 
-- `PR_PRIORITY_ALT01_CARD_SCALES.png`: six portrait cards with individual
-  horizontal priority controls; retained as the preferred conceptual direction.
-- `PR_PRIORITY_ALT02_SINGLE_LADDER.png`: John with one vertical priority rack;
-  rejected because the ladder metaphor reads as a hierarchy of people.
-- `PR_PRIORITY_ALT03_SIX_LADDERS.png`: six people with vertical priority racks;
-  rejected for the same reason.
-- `PR_GROUPING_ALT01_PRIORITY_PATHS.png`: six private lists converging into a
-  candidate group; retained as a grouping-stage alternative.
+- `PR_PRIORITY_ALT01_CARD_SCALES.png`: the preserved CP02 composition reference
+  with horizontal priority controls, colored paths and the central table.
+- `PR_CP02_DISTINCT_CAST_ALT01_FIVE_CARDS.png`: rejected five-card cast update;
+  retained because it documents why the fixed six-card layout was restored.
+- `PR_CP02_DISTINCT_CAST_FINAL_CANDIDATE.png`: selected CP02 cast update with
+  John plus five distinct 30–55 sample people.
+- `PR_CP03_MONTAGE_ALT01_GLOW_SELECTION.png` and
+  `PR_CP03_MONTAGE_ALT02_EQUAL_CARDS.png`: montage explorations; the equal-card
+  direction supplies the selected CP03 source.
+- `PR_CP03_ALT01_REPLACED_JOHN.png`: an earlier grouping intermediate.
+- `PR_CP04_ALIGNED_CAST_CANDIDATE.png`: selected fixed-sector reciprocal-group
+  composition.
+- `PR_CP05_ORGANIZING_CANDIDATE.png` and `PR_CP05_ALIGNED_CAST_ALT01.png`:
+  rejected planning variants with resource/count defects.
+- `PR_CP05_ALIGNED_CAST_FINAL_CANDIDATE.png`: selected practical-planning frame.
+- `PR_CP06_ALIGNED_CAST_ALT01.png`: selected real-meeting cast alignment.
+- `PR_CP07_ALIGNED_CAST_FINAL_CANDIDATE.png`: selected post-meeting cast
+  alignment and next-invitation frame.
 
 Only normalized files under `../frames/` are production Flow inputs.

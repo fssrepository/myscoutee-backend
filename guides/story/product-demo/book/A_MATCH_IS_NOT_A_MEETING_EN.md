@@ -71,23 +71,28 @@ handoffs.
 
 MyScoutee begins with a different kind of intention.
 
-Instead of only yes or no, you can give a private, editable priority from one to
-ten. It is not a public score and it does not measure anyone's worth. It tells
-the system how much room this possibility has in your life now. You can change
-it later because lives and relationships change.
+Instead of only yes or no, you build your own private, editable priority list.
+Each possibility can carry a priority from one to ten, but the order belongs
+only to you. It is not a public score, and it does not measure anyone's worth.
+It tells the system how much room each possibility has in your life now. You can
+reorder the list later because lives and relationships change.
 
-Your signal remains yours. The other person's signal remains theirs. Mutual
-interest, shared context and practical distance can then reveal more than one
-possible connection without declaring that an algorithm has found “the one.”
+Every other person maintains their own list independently. Nobody sees where
+somebody else placed them. Your priorities remain yours; theirs remain theirs.
+Mutual priorities, shared context and practical distance can then reveal more
+than one possible connection without declaring that an algorithm has found “the
+one.”
 
 ## 6. Not a pair under a spotlight
 
 The next screen does not have to place two strangers under the full pressure of
 a first date.
 
-A balanced candidate group can form around a shared activity. Every person sees
-the proposal and independently accepts or declines. No one person's enthusiasm
-speaks for another. The group proceeds only with the people who choose it.
+When several private lists point back toward one another, a balanced candidate
+group can form around a shared activity. No single person's ordering controls
+the group and no list becomes public. Every person still sees the proposal and
+independently accepts or declines. The group proceeds only with the people who
+choose it.
 
 Now one evening can contain several conversations. Romance may be possible, but
 it does not have to prove itself in the first minute. A good exchange, an
@@ -98,8 +103,8 @@ less all-or-nothing pressure.
 
 ## 7. “Sometime” becomes a plan
 
-The people who accept enter one contextual group chat. They are not starting
-six cold conversations from zero. They are choosing the same activity.
+The people who choose to join enter one contextual group chat. They are not
+starting six cold conversations from zero. They are choosing the same activity.
 
 The vague parts become visible:
 
@@ -136,8 +141,8 @@ The match did not become a promise. It became context.
 MyScoutee keeps the useful parts of online discovery, but changes what the
 workflow is trying to complete:
 
-- private, editable intention;
-- reciprocal and practical context;
+- each user's private, editable priority list;
+- reciprocal priorities and practical context;
 - a group every participant accepts for themselves;
 - one shared activity and plan;
 - a real meeting;

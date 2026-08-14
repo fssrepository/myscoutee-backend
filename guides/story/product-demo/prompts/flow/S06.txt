@@ -2,18 +2,23 @@ Create exactly one continuous 8-second 9:16 Frames-to-Video clip using Veo 3.1
 Lite. Use PR_CP06.png as the exact first frame and PR_CP07.png as the exact
 last frame.
 
-Begin with the exact same six mature adults at the same used activity table:
-the Founder, Black woman, East Asian woman, curly-haired man, silver-haired
-woman and bearded man in a knit cap. Keep each recognizable and separate.
+Begin with the exact same six CP03–CP06 users at the same used activity table:
+South Asian gray-bearded man with round glasses, bearded man in a dark knit cap,
+chestnut-haired woman with rust scarf, Black woman with short natural curls,
+East Asian woman with black bob and the dark curly-haired man. Founder John and
+the elderly silver-haired woman are not present. Keep every face, garment and
+screen side recognizable and separate.
 
-Seconds 0–2: the shared activity winds down through one restrained exchange of
-looks and a friendly wave; nobody resets or repeats a gesture. Seconds 2–5: use
-one slow 35 mm backward movement as the adults stand naturally and travel
-through the real wood-and-glass doorway into the same evening street. The warm venue and
-used table remain visible behind them. Seconds 5–8: the same adults form several
-open, overlapping conversations without forced couples. The Founder offers one
-small blank tactile invitation card for a future shared activity. Others smile,
-wave or continue listening. Converge precisely on PR_CP07.png.
+Seconds 0–2: the shared activity winds down through restrained looks and small
+finishing hand movements; nobody resets or repeats a gesture. The
+chestnut-haired woman at middle-left picks up one small blank future-activity
+card. Seconds 2–5: use one slow 35 mm backward movement as the six adults stand
+naturally and move through the real wood-and-glass doorway into the same evening
+street without crossing screen sides. The warm venue and used table remain
+visible behind them. Seconds 5–8: the same adults continue several open,
+overlapping conversations without forced couples. The chestnut-haired woman
+offers the blank card to the whole group; the others notice it with subtle,
+different reactions. Converge precisely on PR_CP07.png.
 
 The visual meaning is: these people are no longer cold profiles, and a future
 invitation can begin with shared real context. Do not imply guaranteed romance,

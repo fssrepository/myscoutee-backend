@@ -14,11 +14,14 @@
 ## Review each clip
 
 - [ ] First and last composition match the supplied endpoints.
-- [ ] Founder and the same six-person cast retain
-  face, age, clothing and body.
+- [ ] Founder John stays in CP01–CP02 only; CP02's five sample identities do not
+  morph into or recur in the later group.
+- [ ] The same six-person CP03–CP07 cast retains face, age, clothing, body and
+  screen-side continuity.
 - [ ] No duplicate/merged person, bad hand, camera jump, generated text or logo.
 - [ ] One clear action and one restrained camera move.
-- [ ] Accept/decline remains voluntary; the group is not forced or guaranteed.
+- [ ] Private priorities never become public human scores; the resulting group
+  is possible rather than forced or guaranteed.
 - [ ] Record the charged credits and one concrete defect before any retry.
 
 ## Picture and brand lock

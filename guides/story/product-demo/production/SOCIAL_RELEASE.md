@@ -16,14 +16,14 @@ Flow shot continues underneath.
 English primary:
 
 > A match is not a meeting. MyScoutee is designed around the missing path:
-> private intent, a group everyone accepts, one shared plan, and a real meeting.
+> private priority lists, a reciprocal group, one shared plan, and a real meeting.
 > The software exists. Now the meeting-first workflow needs testing with real
 > users.
 
 Hungarian translation:
 
 > A match nem találkozás. A MyScoutee a hiányzó útra épül: privát szándék,
-> mindenki által elfogadott csoport, közös terv és valódi találkozás. A szoftver
+> kölcsönös prioritásokból összeálló csoport, közös terv és valódi találkozás. A szoftver
 > elkészült. A találkozásközpontú folyamatot most valódi felhasználókkal kell
 > tesztelni.
 

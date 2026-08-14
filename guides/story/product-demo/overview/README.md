@@ -10,8 +10,8 @@ The hook is intentionally product-first: many dating routes are good at
 discovery, profiles, matching or a first brief encounter, but the handoff to a
 concrete, mutually accepted real meeting remains long and fragile. MyScoutee is
 designed around that handoff: private editable priorities, reciprocal/contextual
-group formation, individual acceptance, one contextual chat, event resources,
-the meeting itself, and a later invitation that is no longer cold.
+group formation, one contextual chat, event resources, the meeting itself, and
+a later invitation that is no longer cold.
 
 The public story stays experiential and user-facing. Internal research keeps
 claims precise; the reel and book let the familiar friction and the product

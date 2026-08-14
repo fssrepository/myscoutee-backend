@@ -36,8 +36,8 @@ in Studio rather than encoded in the generic filename. See
 <https://support.google.com/youtube/answer/2734796?hl=en>.
 
 English automatic captions may be used as a first pass, but compare every word
-against the committed transcript—especially `MyScoutee`, `one-to-ten`, and
-`shared context`. Automatic captions are not the Hungarian translation.
+against the committed transcript—especially `MyScoutee`, `priority list`, and
+`mutual priorities`. Automatic captions are not the Hungarian translation.
 
 ## Timing status
 

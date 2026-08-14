@@ -70,23 +70,29 @@ sok volt a gazdátlan átadás a folyamatban.
 
 A MyScoutee másfajta szándékból indul ki.
 
-A puszta igen vagy nem helyett egy privát, módosítható, egytől tízig terjedő
-prioritást adhatsz. Ez nem nyilvános pontszám, és nem méri senki emberi értékét.
-Azt jelzi a rendszernek, mennyi helye van most ennek a lehetőségnek az életedben.
-Később változtathatsz rajta, mert az élet és a kapcsolatok is változnak.
+A puszta igen vagy nem helyett saját, privát és módosítható prioritási listát
+állítasz össze. Minden lehetőség egytől tízig terjedő prioritást kaphat, de a
+sorrend csak a tiéd. Ez nem nyilvános pontszám, és nem méri senki emberi
+értékét. Azt jelzi a rendszernek, mennyi helye van most az egyes
+lehetőségeknek az életedben. Később átrendezheted a listát, mert az élet és a
+kapcsolatok is változnak.
 
-A te jeled a tiéd marad. A másik emberé az övé. A kölcsönös érdeklődés, a közös
-háttér és a gyakorlati távolság ezután több lehetséges kapcsolatot is
-megmutathat anélkül, hogy egy algoritmus kijelentené: megtalálta „az igazit”.
+Mindenki más is önállóan vezeti a saját listáját. Senki sem látja, hová tette őt
+a másik. A te prioritásaid a tieid maradnak, a másikéi az övéi. A kölcsönös
+prioritások, a közös háttér és a gyakorlati távolság ezután több lehetséges
+kapcsolatot is megmutathatnak anélkül, hogy egy algoritmus kijelentené:
+megtalálta „az igazit”.
 
 ## 6. Nem egy pár a reflektorfényben
 
 A következő képernyőnek nem kell két idegenre helyeznie egy első randi teljes
 nyomását.
 
-Egy közös program körül kiegyensúlyozott csoportjelölt formálódhat. Mindenki
-látja a javaslatot, és külön elfogadja vagy elutasítja. Egy ember lelkesedése
-nem dönt más helyett. A csoport azokkal halad tovább, akik maguk választják.
+Ha több privát lista kölcsönösen egymás felé mutat, egy közös program körül
+kiegyensúlyozott csoportjelölt formálódhat. Egyetlen ember sorrendje sem irányítja
+a csoportot, és egyik lista sem válik nyilvánossá. Mindenki látja a javaslatot,
+és külön elfogadja vagy elutasítja. A csoport azokkal halad tovább, akik maguk
+választják.
 
 Így egy este több beszélgetést is elbír. A romantika lehetőség marad, de nem kell
 az első percben bizonyítania magát. Egy jó beszélgetés, ismeretség, barátság vagy
@@ -97,7 +103,7 @@ vagy semmit nyomással.
 
 ## 7. A „majd egyszer” tervvé válik
 
-Az elfogadók egy közös, kontextusba helyezett chatbe lépnek. Nem hat hideg
+Akik csatlakoznak, egy közös, kontextusba helyezett chatbe lépnek. Nem hat hideg
 beszélgetést kezdenek nulláról. Ugyanazt a programot választják.
 
 A homályos részek láthatóvá válnak:
@@ -134,8 +140,8 @@ A match nem ígéretté vált. Közös háttérré.
 A MyScoutee megtartja az online felfedezés hasznos részeit, de megváltoztatja,
 mit próbál befejezni a folyamat:
 
-- privát, módosítható szándék;
-- kölcsönös és gyakorlati háttér;
+- minden felhasználó saját, privát és módosítható prioritási listája;
+- kölcsönös prioritások és gyakorlati háttér;
 - minden résztvevő által külön elfogadott csoport;
 - közös program és terv;
 - valódi találkozás;
