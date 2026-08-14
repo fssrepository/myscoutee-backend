@@ -414,6 +414,13 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   finish it without reload when a safe manual correction exists, then replace
   only the checkpoint-managed browser and replay the shortest failing branch
   against the fresh bundle. The watcher build alone is not behavioral proof.
+- Before a post-fix replay, compare every participating document's
+  `performance.timeOrigin` with the frontend bundle sync time, not only the
+  producer's document. If any control still carries terminal counters from a
+  prior replay, reload that same managed document and recapture the shared
+  pre-action baseline. Mixed client generations are **NOT EXECUTED**, and a
+  later poll correcting one stale badge is not evidence for the action-owning
+  in-place branch.
 - Do not turn obvious navigation or opening an unambiguous card menu into its
   own manual stop. A stop must either produce evidence or protect against a
   real destructive ambiguity. When stable titles/IDs already distinguish the

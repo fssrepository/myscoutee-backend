@@ -1457,6 +1457,33 @@ Execution evidence in progress on 2026-08-14:
   briefly observed red Impressions change badge therefore does **not** prove a
   prior attended event and is not attributed to this checkpoint transaction.
   After opening the surface the current realtime change flags were both false.
+- The first repair replay attempts were not valid evidence against the new
+  frontend: Casey's document had loaded `main.js` at `13:06:33Z`, before the
+  repair bundle was generated at `13:53Z`. The Java action endpoint itself was
+  diagnosed without a write and returned the new object shape with three
+  members plus canonical Casey `Chats/All/Event = 1/1/1`. A later screenshot
+  also exposed Nova's retained terminal `Chats 1` after the database had been
+  re-armed to zero. These were stale client generations, not a new product
+  failure. Casey was reloaded at `14:40:35Z`; Nova and Riley were reloaded at
+  `14:57:00Z`. The shared pre-approval UI baseline then proved `Chats 0` in all
+  three documents and the persisted oracle still proved accepted/pending
+  `2/1`, no chat and no approval artifacts.
+- Fixed terminal replay PASS at `2026-08-14T15:13:47Z`: Casey approved Riley
+  exactly once from the freshly loaded document while Members remained open.
+  The same document changed from no Chats badge to `Chats 1` through the action
+  response and showed `3 members`, Riley once accepted and no remaining
+  Approve control. The user's `17:14` screenshot independently shows the same
+  `3 members` list plus Nova and Riley both at `Chats 1`, with Riley's approval
+  notification badge present.
+- Terminal persisted oracle PASS: accepted/pending is `3/0`; Casey, Nova and
+  Riley own the same `mainEvent` channel with the same three member IDs and
+  `unread=1`; exactly one `Riley Outside joined the event.` system row exists.
+  All three stored flat/nested Chats counters are `1/1/1`. Riley alone has one
+  unread `event-member-approved` notification and one matching outbox intent;
+  the system row creates no `chat-message` notification or outbox artifact.
+  The intended simple rule is deliberately shared: the join system event is
+  unread for all current channel members, including the joining member; no
+  actor exception or special WebSocket/channel/aside-poll branch is required.
 
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 
