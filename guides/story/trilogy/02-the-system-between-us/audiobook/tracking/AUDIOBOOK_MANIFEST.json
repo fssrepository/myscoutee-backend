@@ -34,14 +34,19 @@
     "speakerBoost": false
   },
   "generation": {
+    "productionPriority": 1,
     "interface": "ElevenLabs Speech Synthesis website",
     "maximumCharactersPerWebsiteGeneration": 5000,
     "packageMaximumCharactersPerChunk": 4950,
-    "chunkCount": 34,
-    "generationCharacters": 159939,
-    "estimatedCreditsAtOneTimesVoiceRate": 159939,
+    "chunkCount": 35,
+    "generationCharacters": 159937,
+    "estimatedCreditsAtOneTimesVoiceRate": 159937,
     "words": 25472,
     "estimatedMinutesAt150Wpm": 169.81,
-    "audioFilenamePattern": "TSBU_EN_NNN.mp3"
+    "audioFilenamePattern": "TSBU_EN_NNN.mp3",
+    "initialGenerationBudgetCharacters": 30607,
+    "initialBudgetChunkCount": 7,
+    "initialBudgetUsedCharacters": 30565,
+    "initialBudgetRemainingCharacters": 42
   }
 }

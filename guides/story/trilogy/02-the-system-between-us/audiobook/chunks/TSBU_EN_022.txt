@@ -1,75 +1,35 @@
-I had not become a politician.
+Sometimes the border is only the visible part of an escape. We also run from the person we became while adapting to a place: the hunger we hid, the fear we normalized, the silence that kept a room workable. A new country can interrupt that version of us, but it cannot automatically remove it. In another world we may recognize ourselves more clearly. Looking back, we can ask whether home—and we ourselves—can do better.
 
-I had become impossible to keep entirely private.
+From the Danube embankment, none of this looked like the edge of Europe. Trams crossed the river; Parliament held its familiar place in the light; elections, courts and offices carried the vocabulary of democracy. The acts inside my story remained ordinary enough for each participant to continue. The question was left between the beauty and the open route out: how long can a beloved home ask a person to trade dignity for staying?
 
-20. The Programme Hidden Inside the Complaint.
+18. The Breaking Point Is Not the Beginning.
 
-The clemency request contained the sentence toward which all the other pages had been moving:
+The file can be made to begin with one charged line because that line is short. It is also the version that makes everything before it disappear.
 
-The strength of a state governed by law is revealed in the moments when it can recognize that an individual's failure is, in fact, a reflection of a system failure.
+The public meaning begins earlier.
 
-It did not say that the individual disappears into the system. My sentence remained mine. It said that responsibility becomes dishonest when the last visible error is detached from the machinery that made it likely and then used to absolve that machinery from examination.
+Anyone can delegate a task and remain responsible for it. Anyone can miss a notice routed to a representative. Anyone can encounter a law that changes faster than their professional support can adapt. Anyone can be physically vulnerable when an institution expects ordinary performance. Anyone can have their worst response become more legible than the path that produced it.
 
-Over time, my proposals acquired a structure:
+One line is easier to print than years of exclusion, lawful effort, repair and endurance. Once that happens, cause and effect can change places. Pressure becomes personality. The attempt to recover missing context becomes evidence of obsession. Survival outside ordinary work becomes another condition to explain.
 
-notify the person directly when a representative acts;
+That reversal is what makes the case public in meaning even while it remains mine in fact. The danger is not that everyone would write my sentence. The danger is that a low-trust system can first exclude a capable person, then use his breaking point to explain away the system that excluded him.
 
-replace password sharing with granular authorization and acceptance;
+The system was not an independent creature hovering above the country. People made it each morning. A legislator accepted speed. A professional protected a professional habit. An office defended the edge of its competence. A lawyer ran out of time. An expert preferred a total explanation. A judge narrowed the next question. Each choice could look ordinary from inside one role. Placed in sequence, the ordinary choices became the machine.
 
-make every filing, rejection and correction visible as one event chain;
+That does not make every participant cruel, or every Hungarian participant the same. It removes the comforting fiction that a broken system exists without human maintenance. No single person designed the entire corridor. Responsibility moved away from every desk; accountability moved toward the person with nowhere further to send it.
 
-record important outbound calls;
+Part Six — A Private Case Enters Public Time.
 
-create a health-crisis pause without erasing obligations;
+19. The Streets Begin to Speak.
 
-simplify tax categories around invoice data where possible;
+I did not join the KATA protest in 2022. Other citizens were already teaching the city a different language: teachers, students and parents formed chains; the presidential-pardon scandal filled public spaces; judges and court employees later rallied for judicial independence and the freedom to speak.
 
-let the administration prepare a proposed return rather than force every small worker to reconstruct data the administration already holds;
+By then emergency had become an ordinary political grammar. During COVID-19, a curfew decided when a person could cross his own street. As the pandemic order receded, the war next door supplied another state of danger. In 2025, the capital's mayor announced Pride as a city event after the police had prohibited the march. He was questioned, then charged. After the election and a European court judgment, the charge was dropped. The paving stones had not moved. The law around the people on them had.
 
-strengthen worker protection so that a nominal enterprise route is not the price of employment;
+These movements did not share one programme or know my case. Their cumulative effect was to make institutional operation a public experience.
 
-introduce new tax systems in parallel, test them, then retire the old path;
+My own path was quieter and stranger. I moved through electronic forms.
 
-use AI to categorize and explain, not to hide responsibility behind another opaque decision.
+I asked the Hungarian office charged with protecting fundamental rights to look at the police process, the failures of representation and the password-sharing trap. Its answer mapped the limits of its own jurisdiction: it could not review how police and prosecutors weighed the evidence, could not intervene in a pending court process, and directed parts of the complaint back toward the same legal routes already surrounding me. A later answer said that further submissions repeating the issue could be placed in the archive without another reply. An office named for fundamental rights had given me a careful map of the doors it could not open.
 
-Later, I remembered a public sentence about KATA-contracted software teams, even inside the tax authority. For a moment, the state and the people it had placed under suspicion appeared to have been buying labour through the same door. Then the door was closed from inside, and the people outside were asked to account for having used it.
-
-The important change was personal. I had moved from demanding that somebody repair my account to asking how the next person could avoid entering the account in the first place.
-
-That is political in the broad sense, but it did not begin with a party.
-
-21. Four Years Later.
-
-On 12 April 2026, Hungary voted for a change of government.
-
-The new majority could alter institutions that had appeared fixed. It promised rule of law, judicial independence, anti-corruption and restored public trust; critics warned that rapid constitutional change could reproduce the weakness it claimed to repair. Trust cannot be restored merely by changing who controls the speed.
-
-In July, the former governing party marched under the words Stop Autocracy and accused the new majority of dismantling constitutional democracy. The warning might still be right. The same words had crossed the chamber.
-
-The election was not a verdict in my case. It did show that continuity no longer commanded enough trust. Institutions presented as fixed were now being judged by the public beneath them.
-
-In July, the Council of the European Union approved a €10 billion recovery plan for Hungary. Access to the money was publicly tied to rule-of-law and anti-corruption reforms.
-
-The number was the same. Its direction had reversed.
-
-In 2023, a man who could not walk had written it while asking the state to account for twenty years. By July 2026 it stood in national policy beside the same words: rule of law.
-
-22. Two Letters to Venice.
-
-The constitutional conflict eventually reached the Venice Commission.
-
-The President of the Republic asked the Commission to assess the attempt to end his mandate. His questions were dated 29 May and supplemented on 4 June 2026. He argued from the position of the highest office at risk.
-
-At 14:18 on 5 June, I sent my own submission to the same institution. Seventy-eight minutes later, I forwarded the same letter to the Presidential Palace and the Prime Minister's press office.
-
-It was one small push from below.
-
-The President defended the constitutional security of his office. I asked what constitutional insecurity felt like beneath such offices: tax administration, police procedure, forensic interpretation, clemency and years of uncertainty.
-
-In July, a Venice Commission delegation met the country's senior leadership. Public reporting showed consultation and caution, not a final opinion before Parliament acted. The institution had received warnings from above and below while Hungary's constitutional order stood visibly between states.
-
-23. When an Eighth Judge Steps Aside.
-
-Venice was not the President's only route.
-
-On 11 June, he turned to the Constitutional Court for an interpretation of the limits around constitutional amendment and removal. The request returned him to the institution he had joined as a judge in 2014 and led from 2016 until he became President in 2024. The Court had fifteen members. Seven initially declared that they were personally and directly affected and excluded themselves from the matter. After that was communicated, an eighth judge also declared exclusion.
+A petition to the European Parliament was declared admissible in January 2025. The European Commission response described the data-protection framework and pointed enforcement back toward national authorities and courts. The private file had entered a legitimate public channel, only to be routed back toward the same national architecture.

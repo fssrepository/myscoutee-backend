@@ -1,53 +1,75 @@
-The full sitting needed ten.
+I had not become a politician.
 
-With only seven available, the Court could not form the quorum required to hear the matter, and it disappeared from the agenda before a substantive decision.
+I had become impossible to keep entirely private.
 
-The judges had not left office; a majority had stepped out of one case. Yet the body asked to resolve a constitutional conflict could not assemble inside it.
+20. The Programme Hidden Inside the Complaint.
 
-This occurred while my own writings were trying to reach constitutional review from below.
+The clemency request contained the sentence toward which all the other pages had been moving:
 
-At one scale stood a President and a Court unable to assemble. At the other stood one citizen, a laptop and an AI assistant translating lived chaos into a legal route. Their authority was radically different; both images contained the distance between a constitutional question and an answer.
+The strength of a state governed by law is revealed in the moments when it can recognize that an individual's failure is, in fact, a reflection of a system failure.
 
-The Constitutional Court had received my complaint through the trial court, then stopped before the substance because the criminal case had not produced a first-instance decision. The President's case lacked judges. Mine had reached the constitutional door before ordinary procedure had finished with me.
+It did not say that the individual disappears into the system. My sentence remained mine. It said that responsibility becomes dishonest when the last visible error is detached from the machinery that made it likely and then used to absolve that machinery from examination.
 
-Different cases had reached the same architectural fact: having a constitutional question does not guarantee a room in which anyone will answer it.
+Over time, my proposals acquired a structure:
 
-24. The Convoy and the List of Offices.
+notify the person directly when a representative acts;
 
-After the election, the new Prime Minister publicly called for the departure of officials appointed to long terms across the judiciary, prosecution and oversight bodies. The detailed list belongs in the notes.
+replace password sharing with granular authorization and acceptance;
 
-The list showed how power can survive an election through long appointments, boards, rules, foundations and institutional habits.
+make every filing, rejection and correction visible as one event chain;
 
-One affair gave that transfer of power a physical image.
+record important outbound calls;
 
-On 5 March, two armoured cash-in-transit vehicles travelling from Austria toward Ukraine were stopped near Budapest carrying foreign currency and gold. The scene made instant political cinema.
+create a health-crisis pause without erasing obligations;
 
-After the election, the shipment was returned, expulsions were withdrawn and reviews began. A senior prosecutor resigned citing disagreement over the investigation; tax-investigation leaders lost their appointments; the Prosecutor General later resigned. The notes preserve the distinctions. What reached my room was the speed of reversal.
+simplify tax categories around invoice data where possible;
 
-The country could reopen a major enforcement operation, review agencies and move senior offices in weeks. My own proceeding, built around one line and a repaired tax return, had not reached a first judgment in years.
+let the administration prepare a proposed return rather than force every small worker to reconstruct data the administration already holds;
 
-Speed did not make every replacement just. The institutions moved through different legal hinges, and personnel change could still outrun repair.
+strengthen worker protection so that a nominal enterprise route is not the price of employment;
 
-The correct image is not a row of heads falling in one cut.
+introduce new tax systems in parallel, test them, then retire the old path;
 
-It is a wall of institutional portraits, each moving on a different hinge while one person below them refreshes a screen and still does not know what will happen at his next hearing.
+use AI to categorize and explain, not to hide responsibility behind another opaque decision.
 
-25. The Empty Presidential Chair.
+Later, I remembered a public sentence about KATA-contracted software teams, even inside the tax authority. For a moment, the state and the people it had placed under suspicion appeared to have been buying labour through the same door. Then the door was closed from inside, and the people outside were asked to account for having used it.
 
-On 18 July 2026, the President signed the constitutional amendment that ended his own mandate on 20 July.
+The important change was personal. I had moved from demanding that somebody repair my account to asking how the next person could avoid entering the account in the first place.
 
-The parliamentary Speaker became interim President. As this edition closed on 8 August 2026, a new President had not yet been elected.
+That is political in the broad sense, but it did not begin with a party.
 
-The empty chair was not a verdict in my case. It belonged to a country that had decided continuity was no longer enough. It also carried a private irony.
+21. Four Years Later.
 
-I had already asked that office for mercy when mercy itself had become politically dangerous. In February 2024, the disclosure of a presidential pardon connected to the concealment of abuse in a children's home ended one presidency and the public career of the former justice minister who had countersigned it. The next President inherited a power that had burned the hands of the people who used it before him.
+On 12 April 2026, Hungary voted for a change of government.
 
-I had never treated the person above that office as incidental. In November 2025, I came close to withdrawing my request because I did not consider its occupant fit to decide it. I let the request continue.
+The new majority could alter institutions that had appeared fixed. It promised rule of law, judicial independence, anti-corruption and restored public trust; critics warned that rapid constitutional change could reproduce the weakness it claimed to repair. Trust cannot be restored merely by changing who controls the speed.
 
-The figures made caution almost absolute. In 2025, four of 689 decided applications received clemency. In the first half of 2026, all 314 decisions were refusals. Mine was dated 30 April.
+In July, the former governing party marched under the words Stop Autocracy and accused the new majority of dismantling constitutional democracy. The warning might still be right. The same words had crossed the chamber.
 
-On 19 May, while the same President still held office, I submitted revised papers and asked that they be left with the incoming Justice Minister until the presidency changed. Then I would ask again.
+The election was not a verdict in my case. It did show that continuity no longer commanded enough trust. Institutions presented as fixed were now being judged by the public beneath them.
 
-He had refused my clemency. The new majority refused him political mercy.
+In July, the Council of the European Union approved a €10 billion recovery plan for Hungary. Access to the money was publicly tied to rule-of-law and anti-corruption reforms.
 
-Before that refusal, the clemency process carried the same questions into my home. A probation officer rang the bell without an appointment. The flat had not been staged for inspection. It was puritan, untidy and unclean that day. I own no car, usually do not heat the flat in winter, and spend little because that is how I preserve independence. I can live that way. I was not asking the visitor to pity me.
+The number was the same. Its direction had reversed.
+
+In 2023, a man who could not walk had written it while asking the state to account for twenty years. By July 2026 it stood in national policy beside the same words: rule of law.
+
+22. Two Letters to Venice.
+
+The constitutional conflict eventually reached the Venice Commission.
+
+The President of the Republic asked the Commission to assess the attempt to end his mandate. His questions were dated 29 May and supplemented on 4 June 2026. He argued from the position of the highest office at risk.
+
+At 14:18 on 5 June, I sent my own submission to the same institution. Seventy-eight minutes later, I forwarded the same letter to the Presidential Palace and the Prime Minister's press office.
+
+It was one small push from below.
+
+The President defended the constitutional security of his office. I asked what constitutional insecurity felt like beneath such offices: tax administration, police procedure, forensic interpretation, clemency and years of uncertainty.
+
+In July, a Venice Commission delegation met the country's senior leadership. Public reporting showed consultation and caution, not a final opinion before Parliament acted. The institution had received warnings from above and below while Hungary's constitutional order stood visibly between states.
+
+23. When an Eighth Judge Steps Aside.
+
+Venice was not the President's only route.
+
+On 11 June, he turned to the Constitutional Court for an interpretation of the limits around constitutional amendment and removal. The request returned him to the institution he had joined as a judge in 2014 and led from 2016 until he became President in 2024. The Court had fifteen members. Seven initially declared that they were personally and directly affected and excluded themselves from the matter. After that was communicated, an eighth judge also declared exclusion.

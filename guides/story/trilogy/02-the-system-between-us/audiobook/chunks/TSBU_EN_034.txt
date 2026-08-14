@@ -1,61 +1,41 @@
-The head of the Central Investigative Chief Prosecutor's Office submitted his resignation on 8 June and expressly cited professional disagreements over the convoy case. The Prime Minister later ordered reviews of the authorities and services involved. The tax authority confirmed that two senior investigative leaders lost their appointments on 14 July, while declining to state that the convoy caused those personnel decisions.
+The 2022 timing forms part of the public background. Other operational programmes accounted for nearly €10 billion in EU budget funding—another part of the cohesion funds—that was withheld because the enabling conditions had not been met. The rule-of-law condition attached to this part included judicial independence. The wider framework also contained requirements concerning public procurement and academic freedom. The measures had no connection to the private case.
 
-The Prosecutor General submitted his resignation on 22 July and requested that his mandate end on 25 August. His formal explanation invoked the interests of the prosecution service. Reporting and political statements placed the convoy inside the pressure surrounding his departure, but that context is not treated as a proved exclusive cause.
+Also in July 2026, the Council of the European Union approved a new Hungarian recovery plan expected to allow €10 billion to be disbursed. Public reporting described access to the money as dependent on rule-of-law and anti-corruption conditions. The memoir uses the number only as an ironic echo of the 2023 postoperative line. It does not claim that the private sentence anticipated, influenced or caused the public decision.
+
+A February 2025 interview records the justice minister saying that judicial independence was not in danger. Asked in a separate Index interview whether he had tried to persuade the National Judicial Council, Justice Minister Bence Tuzson said:
+
+“This is not a Western. We do not operate on the basis of whose arguments hit harder.”
+
+Later that month, judges and court employees rallied for judicial independence and the freedom to speak.
+
+On 15 March 2025 (the anniversary of the Hungarian Revolution and War of Independence of 1848–49), Prime Minister Viktor Orbán said:
+
+“After today's ceremony comes the Easter clean-up. The bugs survived the winter.”
+
+The next sentence began, “We will dismantle the financial machine,” then named politicians, judges, journalists, bogus NGOs and political activists. The passage continued: “We will dismantle the entire shadow army.” Two days later, the National Judicial Council and the Association of Hungarian Judges publicly rejected both the suggestion that judges had been bought with corrupt dollars and the comparison of judges to harmful insects.
+
+A separate 2025 controversy provides another reference-layer example of institutional certainty preceding completed fact-finding. In September, the justice minister presented a report saying that no minor victim had emerged in a children's-home case. In November, he said it still had to be clarified whether a minor had been involved; later proceedings continued to develop the record. This sequence is not part of the Founder's case and is not used to allege a deliberate lie. It is retained only as context for the period's conflict between definitive official language and unfinished facts.
 
 Source links are listed in the accompanying print edition.
 
-The Venice Commission.
+Long-term work exclusion.
 
-The Presidential Palace publication supports the President's questions. The Founder's 5 June email survives in the private source package. Its Gmail export records the 14:18 message to the Commission and the 15:36 forwarding of the same text to the Presidential Palace and the Prime Minister's press office. The Commission's official notice supports the 2 July meetings. No reviewed source proves that the Founder's email caused the Commission's later public posture.
-
-Source links are listed in the accompanying print edition.
-
-Foreign-currency loans and migration.
-
-The London housemate is an anonymized first-person memory. European and Hungarian high-court material supports the bounded point that legal consequences of foreign-currency-loan contracts remained under active interpretation in 2025. Migration sources support large outward movement and data limitations, not one universal cause.
+Eurostat defines long-term unemployment at twelve months and very long-term unemployment at twenty-four months. Its definition also distinguishes active unemployment from being outside the labour force. The Founder's approximate “nine of eleven years” therefore remains memoir language for time outside conventional employment, not a claim of nine continuous years in Eurostat's unemployment category. Longitudinal research is used only as population-level context for scarring, health and re-employment; it is not used to diagnose the Founder.
 
 Source links are listed in the accompanying print edition.
 
-AI-assisted work and the Navier–Stokes exchange.
+The 2026 transition.
 
-The closing phrase strive, and trust is a concise English rendering of the final imperative in Imre Madách's nineteenth-century dramatic poem The Tragedy of Man. The narrative applies it to continued effort and the right to try again, not to unquestioning trust in an institution.
+Independent and official reporting supports the election result, government change, constitutional amendments, end of the President's mandate and interim presidency. The government's restoration account and civil-society criticism are both retained because institutional replacement is not self-validating. The public call for departures named the President, Prosecutor General and the heads of the Constitutional Court, Curia, National Office for the Judiciary, State Audit Office, Competition Authority and Media Authority.
 
-The public repositories show the constructive work discussed in the chapter; they are evidence of scope and method, not proof of any legal or clinical claim.
+Source links are listed in the accompanying print edition.
 
-MyScoutee product and production repository.
+The Constitutional Court's seven initial recusals followed by an eighth, the resulting lack of quorum and the separate future departure of four over-seventy judges are distinct events.
 
-Civic Access public-service prototype.
+Source links are listed in the accompanying print edition.
 
-The creative-work chapter is supported by the versioned research repository, the experiment note and the 6 August 2026 email in which a professor working in this field said he had read two supplied documents and the proof plan, found the ideas intriguing and asked which exact mathematical statements were being tested. The Founder's reply made the bridge explicit: published variational searches for extreme-flow states and tests of inequality sharpness inspired an AI-maintained laboratory that attacks proposed lemmas with counterexample searches before promoting them into human proof obligations.
+The Ukrainian cash-in-transit affair and institutional departures.
 
-The proposed cutoff-uniform inequality, the internally labelled PNT-12 target, rejected candidates and partial computational result remain unverified working research. The book does not claim a proof of regularity, finite-time blow-up or a solution of the Clay problem. The episode demonstrates intellectual work, falsification discipline and human–AI handoff under legal uncertainty, not mathematical success by association.
+The convoy sequence joins a pre-election enforcement operation to later institutional review, but the public record does not support one undifferentiated claim that every departure had the same cause.
 
-Public research repository and proof plan.
-
-Research on extreme vortex states and enstrophy growth.
-
-Research on numerical tests of inequality sharpness.
-
-Official Clay Navier–Stokes problem description.
-
-The broader distinction between useful trial-and-error and unbounded risk is also visible in AI research. AlphaGo Zero learned through self-play, while AlphaProof used generated proof experience and formal verification. Research on safe exploration asks the complementary question: how can a learning system gain experience without making consequential harm the price of every lesson? These examples support the chapter's design principle; they do not imply that a deployed language model possesses human experience or consciousness.
-
-Silver et al., Mastering the game of Go without human knowledge.
-
-Hubert et al., Olympiad-level formal mathematical reasoning with reinforcement learning.
-
-García and Fernández, Safe Exploration of State and Action Spaces in Reinforcement Learning.
-
-Part III boundary.
-
-This edition does not invent the ending. Part III will own:
-
-the final procedural result and any remedy or consequence;
-
-the completed presidential and institutional transition;
-
-the verified meaning of the new justice-administration correspondence;
-
-the long-term effect on the Founder's work, home, citizenship and health;
-
-whether MyScoutee reaches real communities and what those communities teach the product.
+The tax authority's 6 March statement records the two vehicles, seven Ukrainian citizens, forty million dollars, thirty-five million euros and nine kilograms of gold. It also records that substantially larger aggregate quantities had already crossed Hungary in 2026. On 9 July, the authority said its domestic inquiry had found no indication of a crime and was suspended pending an Austrian response; an internal legality and procedure review remained in progress.

@@ -41,11 +41,19 @@ try {
     }
   });
 
-  await browserConnection.send('Browser.setPermission', {
-    origin,
-    permission: { name: 'geolocation' },
-    setting: permission
-  });
+  if (permission === 'prompt') {
+    // A synthetic `setPermission: prompt` can report the requested state while
+    // still short-circuiting the browser's native permission UI. Reset the
+    // isolated QA profile instead so the next user-initiated Geolocation API
+    // call exercises Chrome's real prompt and persists the user's choice.
+    await browserConnection.send('Browser.resetPermissions');
+  } else {
+    await browserConnection.send('Browser.setPermission', {
+      origin,
+      permission: { name: 'geolocation' },
+      setting: permission
+    });
+  }
   await pageConnection.send('Page.enable');
   await pageConnection.send('Emulation.setGeolocationOverride', geolocation);
   await pageConnection.send('Page.navigate', { url: targetUrl });
@@ -55,6 +63,7 @@ try {
     port,
     targetUrl,
     permission,
+    permissionMode: permission === 'prompt' ? 'browser-reset' : 'cdp-override',
     geolocation,
     readyAtIso: new Date().toISOString()
   }, null, 2)}\n`);

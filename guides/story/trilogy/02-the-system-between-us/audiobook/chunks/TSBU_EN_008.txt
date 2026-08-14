@@ -1,49 +1,29 @@
-On 23 November, an ordinary newspaper article about a fresh update to the NAV system happened to cross my screen. It was not a notice and it was not about me. One detail caught against what I believed had already been closed. I opened the tax portal for a closer look.
+I began to ask questions that sounded technical but were really constitutional in miniature:
 
-What should have been a quick check spread across the desk. I opened my own account history and placed the accountant's submissions beside it. Actions performed through my login appeared in one trail. Her submissions and returned error messages continued in another. One trail stopped where the other began. The critical warning sat on the side I could not see.
+Who can act in my name?
 
-Then the version numbers surfaced. NAV had updated the filing system while the accountant's software was still preparing the older format. A newer return existed among her files but had not crossed that technical boundary into the system. When I opened it, its calculation was wrong as well. A failure of transmission had been hiding a failure inside the form.
+What exact permission did I grant?
 
-On 23 and 24 November, I moved between the two histories and the telephone. The administration's screen began where the accountant's trail stopped. Her files continued where my inbox ended. The same return was absent in one place, rejected in another, replaced in a third and still wrong when I calculated it. Everyone had a document that made the next sentence seem reasonable. No two documents belonged to the same moment.
+Which action requires my confirmation?
 
-She had entered my account for selected tasks, then left it again. The password had crossed the desk. The warning had not.
+Who receives the error?
 
-The surviving 13:08 call holds the sound of that hour. The filing problem had not created all the years behind it. But the official's clipped replies, which I heard as dry and cynical, landed as if the system were taking the remaining possibility of family with everything else. My voice is panicked and spent. In the middle of codes, forms and missing notices, I say, “I can no longer have a child.” It is not an argument. It is shock becoming surrender in one sentence.
+Who sees that the error was corrected?
 
-Within roughly a week, I reconstructed the calculation, understood the status and reached the corrected result. The accountant had had months, three attempts and direct help from the administration. Even afterward, our exchange showed that she still did not understand the instruction in the same way I had come to understand it. I revoked the representation because the communication triangle had to be stopped before it produced another version.
+How does the responsible person know what the system now believes?
 
-The accountant was also inside a transition forced through at speed, with clients and rules moving beneath her. The reversal remained: I performed the repair for which I had retained a professional, while the legal responsibility had never left me. Pressure travelled through every participant. The final consequence did not.
+These are ordinary software questions. They are also questions about dignity.
 
-Some calls from the period survive, but not the decisive exchanges behind the remarks I later recorded in my defence speech. Their shape can be inferred only indirectly—from the later writing, the surrounding calls and the steps that followed. In that later account, the remarks return one by one.
+A proper delegated route would have let the accountant act under her own identity while showing us both every submission, rejection, correction and notice. I cannot claim that such a route would have prevented every later event. It could have stopped this particular confusion before it became the circle that followed.
 
-Accountants do not usually cause problems.
+In a functioning system, the distinction is almost too obvious to explain. The accountant acts under the accountant's identity. The client grants a visible mandate. Both can see what was filed, what failed and what changed. The person who remains legally responsible receives the warning before the warning becomes a penalty. Helping another person does not require becoming that person.
 
-Why did you give her your government-portal password? Surely you can find an accountant who can keep the books without being given it.
+The formal representation route before me separated action from visibility. The practical custom of password sharing reunited them by collapsing two identities into one. I was therefore asked to choose between an incomplete lawful relationship and a more workable unsafe one. The system did not carry that contradiction. It waited for an individual to absorb it.
 
-Entrepreneurs are not usually interested in what their accountant does in their name.
+6. Three Attempts at a Subtraction.
 
-You do not know even this? Do the figures match? Was there an advance invoice?
+The closing return should not have been a philosophical problem. At its centre was arithmetic.
 
-By the fourth sentence, each role had been stripped of a little dignity. The accountant could not be the problem. Entrepreneurs did not care. The client who cared should have been the accountant. The password was both the expected shortcut and my fault for surrendering it.
+The closing return was due by 30 September. The accountant therefore had months, not days, after the July change. By 23 November, it became clear to me that she did not know how to complete the short return she had been hired to handle. The same filing error had appeared in both my 2021 and 2022 KATA returns. She had criticized my reading of it; the correction eventually showed that my reading had been right. The documentary package shows three failed attempts, help from tax-office staff, unresolved processing errors and versions submitted without my knowledge. A return submitted on 30 November named me as the contact even though I did not know it had been filed.
 
-I had reached the institution because the delegated route had failed without my knowledge. Its questions returned responsibility to the person whom that route had kept outside the decisive information.
-
-The circle was complete.
-
-7. The First Public-Interest Proposal.
-
-On 1 December, I did something different from merely complaining.
-
-I described changes.
-
-Send direct notice to the taxpayer when a representative files. Show the error in plain language. Let the responsible person accept or challenge the result. Do not require identity-sharing where granular permission would suffice. Record important outbound calls. Pause ordinary enforcement when a serious health event makes response temporarily impossible. Test new tax routes in parallel before abolishing the old route.
-
-Those proposals would become more elaborate later. At the time, they were an attempt to turn pressure into design.
-
-The proposal asked the system to preserve context. Two days later, it received one sentence from me and preserved almost nothing else as efficiently.
-
-Part Three — The Sentence and the Body.
-
-8. Saturday Before Dawn.
-
-It was early on a Saturday, just after my birthday.
+The files did not arrive as one failure. They arrived as versions. One changed a figure. Another omitted one. A returned error remained in the accountant's channel without changing the next attempt. Tax-office staff helped from their screen, the accountant answered from hers, and I still did not know that the sequence existed.

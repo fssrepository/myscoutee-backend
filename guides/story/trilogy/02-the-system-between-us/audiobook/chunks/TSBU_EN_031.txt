@@ -1,49 +1,57 @@
-Official guidance for accountants describes using another person's Citizen Portal identity instead of acting as an authorized representative as a bad, legally problematic practice. It points to registered authorization and the Hungarian tax administration's (NAV's) representation form as the lawful alternative. That is an identity boundary; it does not, by itself, resolve the separate visibility problem in the Founder's record: who received each submission result and notice, and whether both sides could see the same chain.
+Private recruitment correspondence records an intended January 2021 start and an exit email dated 28 January. Later correspondence with the Hungarian central bank records the short employment, the government-bond trading restriction and the Founder's data-handling and background-screening complaints. The long assessment and requirement that screening clear before the start are first-person employment chronology. The exact first-day warning, masked-room expressions, seating of two colleagues, exit question and roughly three-hour ethics conversation with the bank's local lawyers remain first-person memory. The Founder also records that he answered “no” when repeatedly asked whether the manager had threatened him, and now regards that answer as incomplete. The book does not determine the purpose or independence of the internal review, make a legal finding about the manager or bank, or claim that a later unresolved proceeding has already produced a criminal-record outcome. His indifference to the bank dismissal describes his burned-out internal state, not the objective seriousness of the employment decision.
 
-Citizen Portal Plus installs a secret into an authenticator through a setup quick-response (QR) code and then generates time-limited login codes from that secret. It follows technically that copying the setup QR to another device can duplicate the second factor. That inference explains why photographing a setup code may be used as a workaround, but it is neither secure delegation nor an officially endorsed accounting practice. Two-factor authentication protects a login; it does not turn shared identity into granular authorization.
+The official issuance terms for the retail Hungarian government bond described domestic and foreign natural persons as eligible subscribers and the public as its target market. This explains the Founder's household-savings perspective; it does not decide whether the bank's employee-trading policy was lawful, proportionate or required. In January 2021, Hungary's public rules included a 20:00–05:00 curfew, a ban on gatherings, early shop closure and broad mask requirements. The particular masked dismissal room remains memoir.
 
-Official sources:
+Hungarian retail government-bond issuance terms.
 
-Hungarian government English-language description of the Citizen Portal and the 16 January 2025 transition.
+Government Decree 484/2020 on the protective rules then in force.
 
-Digital Citizenship Programme guidance for accountants and tax advisers, including the distinction between shared identity and authorized representation.
+Legal reference map.
 
-National Cyber Security Institute explanation of the authenticator secret, setup QR and time-based codes.
+The tax transition and the low-trust triangle.
 
-The functioning-system counterfactual in Chapter 5 is not a ranking of countries. It is supported by official examples of delegation that keep the agent's identity separate from the taxpayer's login. British guidance expressly tells agents not to use a client's credentials and provides client authorization routes. Finland offers tax-specific electronic mandates, and Estonia provides identifiable access permissions for representatives. The details differ, and none guarantees competent service. They demonstrate that representation need not require shared identity.
+Act CXLVII of 2012 on the former KATA and small-business tax regime.
 
-The United Kingdom's tax authority, HM Revenue & Customs, authorizing an agent through a business tax account.
+Act XIII of 2022 on the new itemized tax for small taxpayers.
 
-Finnish Tax Administration, Suomi.fi authorizations for tax matters.
+Official explanatory memorandum to Act XIII of 2022.
 
-Estonian Tax and Customs Board, granting and terminating access through its e-MTA online tax service.
+Constitutional Court Decision 29/2022 (XII. 6.) on challenges to the KATA change.
 
-Clemency social inquiry.
+Act CL of 2017 on the Rules of Taxation.
 
-The Founder's application reached a clemency institution already transformed by the 2024 presidential-pardon scandal. The President resigned after the pardon became public. The former justice minister whose countersignature had made the decision effective withdrew from public life. The next President subsequently described clemency as an exceptional power and promised greater transparency.
+Act CLI of 2017 on Tax Administration Procedure.
 
-Official presidential statistics record four grants among 689 decided cases in 2025 and no grants among 314 decided cases in the first half of 2026. The Founder's private record dates his refusal to 30 April 2026. The figures establish the rarity of clemency in this period; they do not establish the unrecorded reasoning behind an individual decision.
+These texts frame the tax status, transition, taxpayer responsibility, representation, communication and administrative principles around which the documentary dispute developed. The exact notice path and filing history still have to be reconstructed from the account-specific record; the statutes alone do not answer who saw which message when.
 
-A signed private filing dated 19 May 2026 records that the Founder had nearly withdrawn the application in November 2025 because he did not consider the incumbent President suitable to decide it. The same filing asks that revised papers be held by the incoming Justice Minister until the presidency changed, after which the Founder intended to submit the request again. The public narrative leaves the minister unnamed; the filing supplies the role and date.
+Procedure, defence and expert evidence.
 
-Hungarian procedural rules identify the person preparing a social inquiry for an ordinary procedural-clemency request as a probation officer. The inquiry may describe personal, family, health, housing, employment, income and property circumstances. It is evidence assembled for the clemency file; the probation officer does not decide the request or sentence.
+Act C of 2012, the Hungarian Criminal Code.
 
-Official sources:
+Act XC of 2017 on Criminal Procedure.
 
-Presidential Palace, presidential interview on the clemency practice and the constitutional role of expressing national unity.
+Act XXIX of 2016 on Forensic Experts.
 
-Presidential Palace, clemency statistics for 2025.
+Act CLI of 2011 on the Constitutional Court, including the routes discussed in sections 25–27.
 
-Presidential Palace, clemency statistics for the first half of 2026.
+The Fundamental Law of Hungary, especially the rule-of-law, privacy, fair-administration, fair-trial and remedy provisions that appear in the submissions.
 
-Euronews, contemporary account of the Novák resignation and Varga countersignature.
+The exact offence, statutory range, defence route and requested remedy must be read from the charge and filed papers. This book does not infer them from the headline name of an offence.
 
-National Legislation Database, explanatory material for Decree 12/2022.
+Data, identity and European guarantees.
 
-National Legislation Database, probation-service rules.
+Regulation (EU) 2016/679, the General Data Protection Regulation (GDPR), particularly the principles of processing, transparency, access, security and remedies.
 
-The absence of prior notice is recorded in the Founder's clemency submission. The condition of the flat, the visitor's reactions and the remembered reference to a proposed suspended sentence remain attributed memoir unless the completed social inquiry is isolated from the private archive.
+Act CXII of 2011 on Informational Self-Determination and Freedom of Information.
 
-KATA.
+Charter of Fundamental Rights of the European Union, including dignity, private life, personal data, good administration, an effective remedy and fair-trial guarantees, subject to the Charter's scope.
 
-Public reporting supports the exceptional speed of the July 2022 legislative change, the 1 September transition and the protests. The Founder did not attend the protest and does not claim that all KATA use was identical.
+European Convention on Human Rights, particularly Articles 6 and 8.
+
+European Commission 2025 Rule of Law Report and country material.
+
+These instruments explain why identity-sharing, delegated action, accessible records, personal data, home, reputation, defence and effective remedies can become more than software-design questions. They do not by themselves prove a breach in this case.
+
+The government account and the later two-factor change.
+
+The “government account” in the narrative was Hungary's Citizen Portal identification service. In 2022, the relevant login was based on a username and password. From 16 January 2025, access to the same public-service surfaces required either the two-factor Citizen Portal Plus method or the Digital Citizenship application. This later security change does not rewrite the 2022 scene.

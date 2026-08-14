@@ -38,6 +38,7 @@ BOOKS = (
         "cover": "cover/MyScoutee_The_Story_Part_I_The_City_Between_Us_Audiobook_Cover.png",
         "master": "MyScoutee_The_Story_Part_I_The_City_Between_Us_Audiobook_Master_EN.txt",
         "prefix": "TCBU_EN",
+        "productionPriority": 2,
     },
     {
         "part": "II",
@@ -48,6 +49,8 @@ BOOKS = (
         "cover": "cover/MyScoutee_The_Story_Part_II_The_System_Between_Us_Audiobook_Cover.png",
         "master": "MyScoutee_The_Story_Part_II_The_System_Between_Us_Audiobook_Master_EN.txt",
         "prefix": "TSBU_EN",
+        "productionPriority": 1,
+        "initialGenerationBudgetCharacters": 30_607,
     },
 )
 
@@ -273,6 +276,41 @@ def make_chunks(blocks: list[SpokenBlock]) -> list[Chunk]:
     return chunks
 
 
+def split_at_initial_budget(chunks: list[Chunk], budget: int | None) -> list[Chunk]:
+    if not budget:
+        return chunks
+
+    result: list[Chunk] = []
+    used = 0
+    split_done = False
+    for chunk in chunks:
+        if split_done or used + len(chunk.text) <= budget:
+            result.append(chunk)
+            if not split_done:
+                used += len(chunk.text)
+            continue
+
+        remaining_budget = budget - used
+        paragraphs = chunk.text.split("\n\n")
+        prefix: list[str] = []
+        for paragraph in paragraphs:
+            candidate = "\n\n".join(prefix + [paragraph])
+            if len(candidate) > remaining_budget:
+                break
+            prefix.append(paragraph)
+
+        if not prefix or len(prefix) == len(paragraphs):
+            result.append(chunk)
+            split_done = True
+            continue
+
+        result.append(Chunk(text="\n\n".join(prefix), section=chunk.section))
+        result.append(Chunk(text="\n\n".join(paragraphs[len(prefix):]), section=chunk.section))
+        split_done = True
+
+    return result
+
+
 def write_package(book: dict[str, str]) -> dict[str, object]:
     part_root = REPO_ROOT / "guides/story/trilogy" / book["slug"]
     source_path = part_root / book["source"]
@@ -290,7 +328,10 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
     master_path = source_dir / book["master"]
     master_path.write_text(master_text, encoding="utf-8")
 
-    chunks = make_chunks(blocks)
+    chunks = split_at_initial_budget(
+        make_chunks(blocks),
+        book.get("initialGenerationBudgetCharacters"),
+    )
     for old_chunk in chunks_dir.glob(f"{book['prefix']}_*.txt"):
         old_chunk.unlink()
 
@@ -351,6 +392,7 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
         },
         "voice": VOICE_SETTINGS,
         "generation": {
+            "productionPriority": book["productionPriority"],
             "interface": "ElevenLabs Speech Synthesis website",
             "maximumCharactersPerWebsiteGeneration": 5_000,
             "packageMaximumCharactersPerChunk": MAX_CHUNK_CHARACTERS,
@@ -362,6 +404,19 @@ def write_package(book: dict[str, str]) -> dict[str, object]:
             "audioFilenamePattern": f"{book['prefix']}_NNN.mp3",
         },
     }
+    initial_budget = book.get("initialGenerationBudgetCharacters")
+    if initial_budget:
+        running_characters = 0
+        included_chunks = 0
+        for chunk in chunks:
+            if running_characters + len(chunk.text) > initial_budget:
+                break
+            running_characters += len(chunk.text)
+            included_chunks += 1
+        manifest["generation"]["initialGenerationBudgetCharacters"] = initial_budget
+        manifest["generation"]["initialBudgetChunkCount"] = included_chunks
+        manifest["generation"]["initialBudgetUsedCharacters"] = running_characters
+        manifest["generation"]["initialBudgetRemainingCharacters"] = initial_budget - running_characters
     json_path = tracking_dir / "AUDIOBOOK_MANIFEST.json"
     json_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return manifest

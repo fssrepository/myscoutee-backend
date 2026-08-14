@@ -1,43 +1,49 @@
-The Hungarian National Bank's October 2022 public-finance report described roughly 450,000 KATA taxpayers before the change, with only 100,000–150,000 expected to remain eligible.
+Official guidance for accountants describes using another person's Citizen Portal identity instead of acting as an authorized representative as a bad, legally problematic practice. It points to registered authorization and the Hungarian tax administration's (NAV's) representation form as the lawful alternative. That is an identity boundary; it does not, by itself, resolve the separate visibility problem in the Founder's record: who received each submission result and notice, and whether both sides could see the same chain.
 
-A private email dated 8 August 2026 records the Founder's recollection of a public remark about KATA-contracted software teams, including teams inside the tax authority. The underlying public recording has not yet been isolated. The book therefore uses it as a remembered public sentence, not as a verified quotation or independent proof of the authority's staffing arrangements. Its narrative function is narrower: the state could use the same distorted labour route whose users later carried the burden of its abrupt closure.
+Citizen Portal Plus installs a secret into an authenticator through a setup quick-response (QR) code and then generates time-limited login codes from that secret. It follows technically that copying the setup QR to another device can duplicate the second factor. That inference explains why photographing a setup code may be used as a workaround, but it is neither secure delegation nor an officially endorsed accounting practice. Two-factor authentication protects a login; it does not turn shared identity into granular authorization.
 
-Source links are listed in the accompanying print edition.
+Official sources:
 
-Formal rules and lived practice.
+Hungarian government English-language description of the Citizen Portal and the 16 January 2025 transition.
 
-The memoir uses low trust to describe the repeated gap between what the rule said, what people informally did to make work possible and who carried the risk when the two routes separated. It is not offered as a diagnosis of Hungarian character. Scholarship on Hungary and other post-socialist societies provides the background distinction: formal institutions cannot be understood without the practices, narratives and informal rules through which people actually use them. Other research cautions against treating informal adaptation as evidence of moral inferiority; it can be a response to organizational hierarchy, scarcity and weak institutional trust.
+Digital Citizenship Programme guidance for accountants and tax advisers, including the distinction between shared identity and authorized representation.
 
-These sources inform the narrative architecture. They do not prove the facts of the private case or make every Hungarian institution equivalent.
+National Cyber Security Institute explanation of the authenticator secret, setup QR and time-based codes.
 
-Informal Institutional Elements as Both Preconditions and Consequences of Effective Formal Legal Rules: The Failure of Constitutional Institution Building in Hungary.
+The functioning-system counterfactual in Chapter 5 is not a ranking of countries. It is supported by official examples of delegation that keep the agent's identity separate from the taxpayer's login. British guidance expressly tells agents not to use a client's credentials and provides client authorization routes. Finland offers tax-specific electronic mandates, and Estonia provides identifiable access permissions for representatives. The details differ, and none guarantees competent service. They demonstrate that representation need not require shared identity.
 
-Trust and the Politics of Postcommunism.
+The United Kingdom's tax authority, HM Revenue & Customs, authorizing an agent through a business tax account.
 
-Imperatives in Informal Organizational Resource Exchange in Central Europe.
+Finnish Tax Administration, Suomi.fi authorizations for tax matters.
 
-Interpersonal trust, hierarchy and the remote team.
+Estonian Tax and Customs Board, granting and terminating access through its e-MTA online tax service.
 
-The audio-only team, tuk-tuk, private conversations, senior-manager support, colleague's caste remark, death and funeral invitation are first-person memories. They describe one working relationship, not Indian or Hungarian people as fixed national characters.
+Clemency social inquiry.
 
-A 2022 Ipsos online survey supplies limited comparative context: 56 percent of its Indian sample and 19 percent of its Hungarian sample answered that most people could be trusted. Ipsos cautions that its Indian sample was more urban, educated and affluent than the general population. The figures do not prove why this particular team behaved as it did.
+The Founder's application reached a clemency institution already transformed by the 2024 presidential-pardon scandal. The President resigned after the pardon became public. The former justice minister whose countersignature had made the decision effective withdrew from public life. The next President subsequently described clemency as an exceptional power and promised greater transparency.
 
-Peer-reviewed correspondence research has separately found caste-based discrimination in Indian private-sector callbacks. That evidence makes the colleague's remembered answer socially legible; it does not identify his caste, prove the motive of any manager in this project or turn the team into a case study of India.
+Official presidential statistics record four grants among 689 decided cases in 2025 and no grants among 314 decided cases in the first half of 2026. The Founder's private record dates his refusal to 30 April 2026. The figures establish the rarity of clemency in this period; they do not establish the unrecorded reasoning behind an individual decision.
 
-Ipsos, Interpersonal Trust Across the World (March 2022).
+A signed private filing dated 19 May 2026 records that the Founder had nearly withdrawn the application in November 2025 because he did not consider the incumbent President suitable to decide it. The same filing asks that revised papers be held by the incoming Justice Minister until the presidency changed, after which the Founder intended to submit the request again. The public narrative leaves the minister unnamed; the filing supplies the role and date.
 
-Zahra Siddique, Evidence on Caste Based Discrimination, Labour Economics 18 (2011).
+Hungarian procedural rules identify the person preparing a social inquiry for an ordinary procedural-clemency request as a probation officer. The inquiry may describe personal, family, health, housing, employment, income and property circumstances. It is evidence assembled for the clemency file; the probation officer does not decide the request or sentence.
 
-Civic and judicial context.
+Official sources:
 
-The education protests, presidential-pardon demonstrations, judges' rally and other civil-liberties protests are independent public events. They supply the period's institutional atmosphere; they do not prove a direct relationship to the Founder's case.
+Presidential Palace, presidential interview on the clemency practice and the constitutional role of expressing national unity.
 
-Source links are listed in the accompanying print edition.
+Presidential Palace, clemency statistics for 2025.
 
-Emergency powers and public reversals.
+Presidential Palace, clemency statistics for the first half of 2026.
 
-The book joins several public moments to show a political atmosphere, not one continuous legal regime. A COVID-19-era decree imposed a night curfew and broad limits on assembly. A later state of danger was justified through the war in neighbouring Ukraine. These were distinct legal phases; the narrative does not claim that one automatically caused the other.
+Euronews, contemporary account of the Novák resignation and Varga countersignature.
 
-In 2025, after police prohibited Budapest Pride, the capital's mayor announced it as a municipal event and was later questioned and charged. Reporting in June 2026 records that the prosecution dropped the charge after a Court of Justice of the European Union judgment. The book uses the sequence as a public reversal, not as evidence about the Founder's criminal case.
+National Legislation Database, explanatory material for Decree 12/2022.
 
-In July 2026, the former governing party organized a Stop Autocracy protest and accused the new majority of dismantling constitutional democracy. That was a political allegation, not a finding that the new government was or was not authoritarian. The narrative retains the image because language once used against the old order had moved to the other side of Parliament.
+National Legislation Database, probation-service rules.
+
+The absence of prior notice is recorded in the Founder's clemency submission. The condition of the flat, the visitor's reactions and the remembered reference to a proposed suspended sentence remain attributed memoir unless the completed social inquiry is isolated from the private archive.
+
+KATA.
+
+Public reporting supports the exceptional speed of the July 2022 legislative change, the 1 September transition and the protests. The Founder did not attend the protest and does not claim that all KATA use was identical.

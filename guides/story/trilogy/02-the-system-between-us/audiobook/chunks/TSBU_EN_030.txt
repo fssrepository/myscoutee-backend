@@ -1,57 +1,17 @@
-Private recruitment correspondence records an intended January 2021 start and an exit email dated 28 January. Later correspondence with the Hungarian central bank records the short employment, the government-bond trading restriction and the Founder's data-handling and background-screening complaints. The long assessment and requirement that screening clear before the start are first-person employment chronology. The exact first-day warning, masked-room expressions, seating of two colleagues, exit question and roughly three-hour ethics conversation with the bank's local lawyers remain first-person memory. The Founder also records that he answered “no” when repeatedly asked whether the manager had threatened him, and now regards that answer as incomplete. The book does not determine the purpose or independence of the internal review, make a legal finding about the manager or bank, or claim that a later unresolved proceeding has already produced a criminal-record outcome. His indifference to the bank dismissal describes his burned-out internal state, not the objective seriousness of the employment decision.
+The reviewed submissions document questions about income and financial position, refer to the apartment and record the Founder's reliance on London savings and Hungarian government-bond returns. In the hearing, the apartment did not end the inquiry: the questions continued through the belongings inside it, the bond account, the savings and what else he owned. No confiscation or final financial penalty had been ordered at the time of publication.
 
-The official issuance terms for the retail Hungarian government bond described domestic and foreign natural persons as eligible subscribers and the public as its target market. This explains the Founder's household-savings perspective; it does not decide whether the bank's employee-trading policy was lawful, proportionate or required. In January 2021, Hungary's public rules included a 20:00–05:00 curfew, a ban on gatherings, early shop closure and broad mask requirements. The particular masked dismissal room remains memoir.
+The constitutional complaint carried two arguments developed in the defence: the conflict between routine password sharing and European data protection, including the GDPR, and the absence of adequate preparation time after the rapid KATA transition. A two-page Constitutional Court letter dated 21 October 2025 records that the complaint had arrived through the trial court on 18 October while the criminal case was still pending. It treated the section 27 route as premature. The exceptional direct route under section 26(2) had also run into the 180-day limit in section 30. Neither underlying question received a merits answer.
 
-Hungarian retail government-bond issuance terms.
+The first assigned judge left after reported illness. The April 2026 exclusion filing concerned the next assigned judge. A separate judge rejected the request as unfounded and warned of a possible procedural fine. The paper ruling remains in the Founder's possession.
 
-Government Decree 484/2020 on the protective rules then in force.
+The signed defence speech explicitly records the password paradox. Its account of a tax-administration callback includes both a challenge to the Founder for sharing his government-account password and an assurance that another accountant could work without it. The same speech later argues that, within the system then actually used, the immediate chaos could have been avoided only if the accountant had not merely received the password but had consistently used that same account for the work, allowing the critical notices to reach the Founder. An earlier ombudsman submission describes three theoretical working arrangements and the visibility gap that remained when representation and the Founder's own inbox were separated. These are the Founder's documented account and system argument, not a finding by the court.
 
-Legal reference map.
+The post-operative-leg image and the vulgar physical-comedy description are supported by authored defence material. The pasture image is presently a memoir-layer recollection and is paraphrased rather than presented as a verified quotation.
 
-The tax transition and the low-trust triangle.
+The further post-operative profanity—rendered in literary English as “Go on, then. Fine me.”—is also kept at memoir layer. The wider March–May submission period is documented, but the exact page containing that remembered wording has not yet been isolated from the scanned monthly bundles. The narrative therefore uses the line to mark collapsed trust rather than presenting it as a verified quotation. It was addressed to the institution as a whole, not to an individual official or any relative.
 
-Act CXLVII of 2012 on the former KATA and small-business tax regime.
+The 2019–2021 employment thresholds.
 
-Act XIII of 2022 on the new itemized tax for small taxpayers.
+The long idle periods, suspected circulation of the smaller company's negative assessment, work repeatedly routed elsewhere, shared-storefront role, ten subsidiaries, different marketing incentives, later senior-office conversations and the Founder's interpretation of the COVID-19 dismissal are memoir. The book does not claim that office gossip existed as fact, that the programme had no legitimate purpose, or that a particular manager or business interest caused the dismissal. Those details explain how an apparently stable salaried role felt from the desk before it ended. The stronger severance payment, colleagues' surprise, relatively humane separation and the Founder's experience of the loss as tragedy are also memoir; no confidential amount or contractual entitlement is asserted.
 
-Official explanatory memorandum to Act XIII of 2022.
-
-Constitutional Court Decision 29/2022 (XII. 6.) on challenges to the KATA change.
-
-Act CL of 2017 on the Rules of Taxation.
-
-Act CLI of 2017 on Tax Administration Procedure.
-
-These texts frame the tax status, transition, taxpayer responsibility, representation, communication and administrative principles around which the documentary dispute developed. The exact notice path and filing history still have to be reconstructed from the account-specific record; the statutes alone do not answer who saw which message when.
-
-Procedure, defence and expert evidence.
-
-Act C of 2012, the Hungarian Criminal Code.
-
-Act XC of 2017 on Criminal Procedure.
-
-Act XXIX of 2016 on Forensic Experts.
-
-Act CLI of 2011 on the Constitutional Court, including the routes discussed in sections 25–27.
-
-The Fundamental Law of Hungary, especially the rule-of-law, privacy, fair-administration, fair-trial and remedy provisions that appear in the submissions.
-
-The exact offence, statutory range, defence route and requested remedy must be read from the charge and filed papers. This book does not infer them from the headline name of an offence.
-
-Data, identity and European guarantees.
-
-Regulation (EU) 2016/679, the General Data Protection Regulation (GDPR), particularly the principles of processing, transparency, access, security and remedies.
-
-Act CXII of 2011 on Informational Self-Determination and Freedom of Information.
-
-Charter of Fundamental Rights of the European Union, including dignity, private life, personal data, good administration, an effective remedy and fair-trial guarantees, subject to the Charter's scope.
-
-European Convention on Human Rights, particularly Articles 6 and 8.
-
-European Commission 2025 Rule of Law Report and country material.
-
-These instruments explain why identity-sharing, delegated action, accessible records, personal data, home, reputation, defence and effective remedies can become more than software-design questions. They do not by themselves prove a breach in this case.
-
-The government account and the later two-factor change.
-
-The “government account” in the narrative was Hungary's Citizen Portal identification service. In 2022, the relevant login was based on a username and password. From 16 January 2025, access to the same public-service surfaces required either the two-factor Citizen Portal Plus method or the Digital Citizenship application. This later security change does not rewrite the 2022 scene.
+The later fourth-round multinational interview, former supervisor's personal connection with one leader and his intervention are also memoir. The Founder believes that intervention contributed to the rejection, but has no decision record proving motive or causation. The company remains unnamed. This passage therefore shows another gate closing in a COVID-19-constricted search; it does not make an employment-discrimination or improper-influence finding.

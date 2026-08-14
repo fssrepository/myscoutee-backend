@@ -1,41 +1,43 @@
-The 2022 timing forms part of the public background. Other operational programmes accounted for nearly €10 billion in EU budget funding—another part of the cohesion funds—that was withheld because the enabling conditions had not been met. The rule-of-law condition attached to this part included judicial independence. The wider framework also contained requirements concerning public procurement and academic freedom. The measures had no connection to the private case.
+The Hungarian National Bank's October 2022 public-finance report described roughly 450,000 KATA taxpayers before the change, with only 100,000–150,000 expected to remain eligible.
 
-Also in July 2026, the Council of the European Union approved a new Hungarian recovery plan expected to allow €10 billion to be disbursed. Public reporting described access to the money as dependent on rule-of-law and anti-corruption conditions. The memoir uses the number only as an ironic echo of the 2023 postoperative line. It does not claim that the private sentence anticipated, influenced or caused the public decision.
-
-A February 2025 interview records the justice minister saying that judicial independence was not in danger. Asked in a separate Index interview whether he had tried to persuade the National Judicial Council, Justice Minister Bence Tuzson said:
-
-“This is not a Western. We do not operate on the basis of whose arguments hit harder.”
-
-Later that month, judges and court employees rallied for judicial independence and the freedom to speak.
-
-On 15 March 2025 (the anniversary of the Hungarian Revolution and War of Independence of 1848–49), Prime Minister Viktor Orbán said:
-
-“After today's ceremony comes the Easter clean-up. The bugs survived the winter.”
-
-The next sentence began, “We will dismantle the financial machine,” then named politicians, judges, journalists, bogus NGOs and political activists. The passage continued: “We will dismantle the entire shadow army.” Two days later, the National Judicial Council and the Association of Hungarian Judges publicly rejected both the suggestion that judges had been bought with corrupt dollars and the comparison of judges to harmful insects.
-
-A separate 2025 controversy provides another reference-layer example of institutional certainty preceding completed fact-finding. In September, the justice minister presented a report saying that no minor victim had emerged in a children's-home case. In November, he said it still had to be clarified whether a minor had been involved; later proceedings continued to develop the record. This sequence is not part of the Founder's case and is not used to allege a deliberate lie. It is retained only as context for the period's conflict between definitive official language and unfinished facts.
+A private email dated 8 August 2026 records the Founder's recollection of a public remark about KATA-contracted software teams, including teams inside the tax authority. The underlying public recording has not yet been isolated. The book therefore uses it as a remembered public sentence, not as a verified quotation or independent proof of the authority's staffing arrangements. Its narrative function is narrower: the state could use the same distorted labour route whose users later carried the burden of its abrupt closure.
 
 Source links are listed in the accompanying print edition.
 
-Long-term work exclusion.
+Formal rules and lived practice.
 
-Eurostat defines long-term unemployment at twelve months and very long-term unemployment at twenty-four months. Its definition also distinguishes active unemployment from being outside the labour force. The Founder's approximate “nine of eleven years” therefore remains memoir language for time outside conventional employment, not a claim of nine continuous years in Eurostat's unemployment category. Longitudinal research is used only as population-level context for scarring, health and re-employment; it is not used to diagnose the Founder.
+The memoir uses low trust to describe the repeated gap between what the rule said, what people informally did to make work possible and who carried the risk when the two routes separated. It is not offered as a diagnosis of Hungarian character. Scholarship on Hungary and other post-socialist societies provides the background distinction: formal institutions cannot be understood without the practices, narratives and informal rules through which people actually use them. Other research cautions against treating informal adaptation as evidence of moral inferiority; it can be a response to organizational hierarchy, scarcity and weak institutional trust.
+
+These sources inform the narrative architecture. They do not prove the facts of the private case or make every Hungarian institution equivalent.
+
+Informal Institutional Elements as Both Preconditions and Consequences of Effective Formal Legal Rules: The Failure of Constitutional Institution Building in Hungary.
+
+Trust and the Politics of Postcommunism.
+
+Imperatives in Informal Organizational Resource Exchange in Central Europe.
+
+Interpersonal trust, hierarchy and the remote team.
+
+The audio-only team, tuk-tuk, private conversations, senior-manager support, colleague's caste remark, death and funeral invitation are first-person memories. They describe one working relationship, not Indian or Hungarian people as fixed national characters.
+
+A 2022 Ipsos online survey supplies limited comparative context: 56 percent of its Indian sample and 19 percent of its Hungarian sample answered that most people could be trusted. Ipsos cautions that its Indian sample was more urban, educated and affluent than the general population. The figures do not prove why this particular team behaved as it did.
+
+Peer-reviewed correspondence research has separately found caste-based discrimination in Indian private-sector callbacks. That evidence makes the colleague's remembered answer socially legible; it does not identify his caste, prove the motive of any manager in this project or turn the team into a case study of India.
+
+Ipsos, Interpersonal Trust Across the World (March 2022).
+
+Zahra Siddique, Evidence on Caste Based Discrimination, Labour Economics 18 (2011).
+
+Civic and judicial context.
+
+The education protests, presidential-pardon demonstrations, judges' rally and other civil-liberties protests are independent public events. They supply the period's institutional atmosphere; they do not prove a direct relationship to the Founder's case.
 
 Source links are listed in the accompanying print edition.
 
-The 2026 transition.
+Emergency powers and public reversals.
 
-Independent and official reporting supports the election result, government change, constitutional amendments, end of the President's mandate and interim presidency. The government's restoration account and civil-society criticism are both retained because institutional replacement is not self-validating. The public call for departures named the President, Prosecutor General and the heads of the Constitutional Court, Curia, National Office for the Judiciary, State Audit Office, Competition Authority and Media Authority.
+The book joins several public moments to show a political atmosphere, not one continuous legal regime. A COVID-19-era decree imposed a night curfew and broad limits on assembly. A later state of danger was justified through the war in neighbouring Ukraine. These were distinct legal phases; the narrative does not claim that one automatically caused the other.
 
-Source links are listed in the accompanying print edition.
+In 2025, after police prohibited Budapest Pride, the capital's mayor announced it as a municipal event and was later questioned and charged. Reporting in June 2026 records that the prosecution dropped the charge after a Court of Justice of the European Union judgment. The book uses the sequence as a public reversal, not as evidence about the Founder's criminal case.
 
-The Constitutional Court's seven initial recusals followed by an eighth, the resulting lack of quorum and the separate future departure of four over-seventy judges are distinct events.
-
-Source links are listed in the accompanying print edition.
-
-The Ukrainian cash-in-transit affair and institutional departures.
-
-The convoy sequence joins a pre-election enforcement operation to later institutional review, but the public record does not support one undifferentiated claim that every departure had the same cause.
-
-The tax authority's 6 March statement records the two vehicles, seven Ukrainian citizens, forty million dollars, thirty-five million euros and nine kilograms of gold. It also records that substantially larger aggregate quantities had already crossed Hungary in 2026. On 9 July, the authority said its domestic inquiry had found no indication of a crime and was suspended pending an Austrian response; an internal legality and procedure review remained in progress.
+In July 2026, the former governing party organized a Stop Autocracy protest and accused the new majority of dismantling constitutional democracy. That was a political allegation, not a finding that the new government was or was not authoritarian. The narrative retains the image because language once used against the old order had moved to the other side of Parliament.

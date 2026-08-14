@@ -54,6 +54,7 @@ for (const session of selectedSessions) {
       const entryElement = document.querySelector('app-entry-page');
       const entry = entryElement ? globalThis.ng?.getComponent?.(entryElement) : null;
       const authButton = document.querySelector('.entry-auth-btn');
+      const dialogPanel = document.querySelector('.dialog-panel');
       let permission = null;
       try {
         permission = (await navigator.permissions.query({ name: 'geolocation' })).state;
@@ -84,6 +85,17 @@ for (const session of selectedSessions) {
           disabled: authButton?.matches(':disabled') === true,
           className: authButton?.className ?? null
         },
+        dialog: dialogPanel ? {
+          title: text(dialogPanel.querySelector('h3')?.textContent),
+          message: text(dialogPanel.querySelector('p:not(.dialog-error):not(.dialog-warning)')?.textContent),
+          error: text(dialogPanel.querySelector('.dialog-error')?.textContent),
+          actions: [...dialogPanel.querySelectorAll('button, [role=button]')]
+            .map(action => ({
+              text: text(action.textContent),
+              ariaLabel: text(action.getAttribute('aria-label')),
+              disabled: action.matches(':disabled')
+            }))
+        } : null,
         eligibilityRequests: performance.getEntriesByType('resource')
           .map(resource => resource.name)
           .filter(name => name.includes('/auth/eligibility')),
