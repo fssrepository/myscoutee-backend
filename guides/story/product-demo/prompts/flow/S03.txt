@@ -1,21 +1,21 @@
 Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
-Veo 3.1 Lite. Use M1_CP18.png as the exact first frame and M1_CP19.png as the
+Veo 3.1 Lite. Use PR_CP16.png as the exact first frame and PR_CP24.png as the
 exact last frame.
 
-Begin on the six separate mature adult portrait panels. A single balanced
-six-person activity proposal appears as one blank tactile card beside each
-portrait. Each adult considers it independently and makes one restrained
-acceptance gesture; a neutral decline path remains equally available without
-penalty. The candidate group proceeds only after the sixth independent
+Begin on the six separate mature adults: five tactile portrait windows around
+the Founder at his desk. A single balanced six-person activity proposal appears
+as one blank tactile card for each person. Each adult considers it independently
+and places one aqua token on their own card; a neutral decline path remains
+available without penalty. The group proceeds only after the sixth independent
 acceptance.
 
-Push slowly toward the illustrated empty round table. Paper texture becomes
-real wood while the camera lowers in one restrained 35 mm move. The exact same
-six adults arrive separately, take equal places and exchange small nonverbal
-greetings. Attention travels around the whole group; no pair dominates.
+Push slowly toward the illustrated empty round activity model. The six windows
+rearrange into a balanced circle and the six dotted paths reach the model one by
+one. Keep every adult physically separate: this is the accepted proposal, not
+the real meeting. No pair dominates.
 
-End exactly on M1_CP19.png with blank folded cards, the Founder's cognac
-notebook, cups and sketchbook visible. Preserve all six faces, ages, clothes and
+End exactly on PR_CP24.png with six blank cards, six aqua tokens and one central
+shared-activity model visible. Preserve all six faces, ages, clothes and
 objects. No seventh or missing participant, forced acceptance, romantic
 spotlight, generated label, logo, guarantee, face morph or visible speech.
 Generate one result only, exact 8 seconds, Veo 3.1 Lite, first and last frames,

@@ -44,7 +44,8 @@ fake testimonials, lonely loser imagery or romantic guarantee.
 
 ## Visual language
 
-Inherit the approved Part I painterly 2.5D Founder and six-person group. Start on
+Continue the story-edition painterly 2.5D visual family with a newly generated,
+product-demo-owned six-person cast, including the Founder. Start on
 an all-or-nothing binary phone choice, turn it into private graded intent, then
 let separate people become a voluntarily accepted group, a shared activity, a
 real table and a warmer next invitation. Amber is private intent, aqua is

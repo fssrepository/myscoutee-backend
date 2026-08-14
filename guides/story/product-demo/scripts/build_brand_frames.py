@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Build deterministic 720x1280 opening and closing review frames."""
+"""Build seven local 720x1280 checkpoints and branded review frames."""
 
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[4]
 PACKAGE = ROOT / "guides/story/product-demo"
-SOURCE = PACKAGE / "assets/source/PR_CP00_imagegen_source.png"
 FRAMES = PACKAGE / "assets/frames"
 LOGO = ROOT / "frontend/src/assets/logo/heart.png"
-ENDING = PACKAGE / "assets/source/PR_CP22_USER_imagegen_source.png"
+SOURCES = {
+    name: PACKAGE / f"assets/source/{name}_imagegen_source.png"
+    for name in ("PR_CP00", "PR_CP08", "PR_CP16", "PR_CP24", "PR_CP32", "PR_CP40", "PR_CP48")
+}
 FONT_REGULAR = Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf")
 FONT_BOLD = Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")
 SIZE = (720, 1280)
@@ -63,23 +65,25 @@ def centered_text(image: Image.Image, text: str, y: int, size: int) -> None:
 
 def main() -> None:
     FRAMES.mkdir(parents=True, exist_ok=True)
-    clean = cover(Image.open(SOURCE))
-    clean.save(FRAMES / "PR_CP00.png", optimize=True)
+    for name, source in SOURCES.items():
+        cover(Image.open(source)).save(FRAMES / f"{name}.png", optimize=True)
+
+    clean = Image.open(FRAMES / "PR_CP00.png")
 
     opening = gradient_overlay(clean, 180, 170)
     brand(opening, 42)
     centered_text(opening, "MATCH ≠ MEETING", 1165, 42)
     opening.convert("RGB").save(FRAMES / "PR_P00.png", optimize=True)
 
-    clean_ending = cover(Image.open(ENDING))
-    clean_ending.save(FRAMES / "PR_CP22_USER.png", optimize=True)
+    clean_ending = Image.open(FRAMES / "PR_CP48.png")
     closing = gradient_overlay(clean_ending, 180, 205)
     brand(closing, 42)
     centered_text(closing, "DESIGNED FOR THE MEETING.", 1138, 34)
     closing.convert("RGB").save(FRAMES / "PR_F48.png", optimize=True)
 
-    for path in (FRAMES / "PR_CP00.png", FRAMES / "PR_CP22_USER.png",
-                 FRAMES / "PR_P00.png", FRAMES / "PR_F48.png"):
+    paths = [FRAMES / f"{name}.png" for name in SOURCES]
+    paths.extend((FRAMES / "PR_P00.png", FRAMES / "PR_F48.png"))
+    for path in paths:
         with Image.open(path) as image:
             if image.size != SIZE:
                 raise RuntimeError(f"Unexpected frame size: {path} {image.size}")

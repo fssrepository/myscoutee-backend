@@ -31,6 +31,9 @@ workflow become clear through the same user's journey.
 - final MP4: deliberately outside Git; prompts, sources, frames, captions and
   the PDF are versioned here.
 
+All seven Flow checkpoints are newly generated and owned inside this package;
+the production chain has no frame or character dependency on a trilogy part.
+
 The opening brand and `MATCH ≠ MEETING` hook are post overlays on S01. The
 closing brand and `DESIGNED FOR THE MEETING.` line are post overlays on S06's
 human, post-meeting street image—never on a server or operator scene.

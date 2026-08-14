@@ -1,8 +1,8 @@
 # Reproducible tools
 
-- `build_brand_frames.py`: normalizes the approved generated opening plate and
-  builds deterministic branded first/last PNG references using the untouched
-  repository logo.
+- `build_brand_frames.py`: normalizes all seven product-demo-owned generated
+  checkpoints and builds deterministic branded first/last PNG references using
+  the untouched repository logo.
 - `build_mini_book.py`: converts the canonical English Markdown and controlled
   Hungarian translation to illustrated HTML/PDF editions, then writes each
   checksum and publication record.

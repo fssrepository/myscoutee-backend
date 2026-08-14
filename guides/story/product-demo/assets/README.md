@@ -1,15 +1,14 @@
 # Product-reel assets
 
-- `source/PR_CP00_imagegen_source.png`: approved AI-generated binary-choice
-  source plate; preserve the original generated file elsewhere as required by
-  the image-generation workflow.
-- `source/PR_CP22_USER_imagegen_source.png`: approved human post-meeting closing
-  source; preserve the original generated file in the image-generation output.
-- `frames/PR_CP00.png`: normalized clean S01 Flow input, `720×1280`.
-- `frames/PR_CP22_USER.png`: normalized clean S06 Flow endpoint, `720×1280`.
+- `source/PR_CP00_imagegen_source.png` through
+  `source/PR_CP48_imagegen_source.png`: seven independently generated,
+  product-demo-owned source checkpoints at eight-second boundaries.
+- `frames/PR_CP00.png` through `frames/PR_CP48.png`: the seven normalized local
+  Flow endpoints, each `720×1280`.
 - `frames/PR_P00.png`: deterministic first-frame review composite.
 - `frames/PR_F48.png`: deterministic final-frame review composite.
-- `frames/README.md`: exact external endpoint and logo map.
+- `frames/README.md`: exact endpoint and logo map.
 
-The Part I checkpoint chain is referenced rather than duplicated. Do not edit
-those assets through this package.
+The product demo has no frame, character or prompt dependency on a trilogy
+package. Preserve the original image-generation outputs outside the repository
+as required by the image-generation workflow.

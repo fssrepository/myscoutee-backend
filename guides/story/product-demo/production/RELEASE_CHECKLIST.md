@@ -5,8 +5,8 @@
 - [ ] Flow still shows **Veo 3.1 Lite**, Frames, exact first+last, `8 s`, `9:16`.
 - [ ] The live credit charge is confirmed before S01; six accepted first passes
   are budgeted, retries only repair a named defect.
-- [ ] `PR_CP00.png`, `PR_CP22_USER.png` and the referenced `M1_CP17`–`M1_CP21`
-  files are the exact uploaded frames.
+- [ ] All seven local `PR_CP00.png`–`PR_CP48.png` checkpoints are the exact
+  uploaded first/last frames in manifest order.
 - [ ] The continuity prefix and one matching Sxx prompt are pasted together.
 - [ ] One result is requested; Flow audio is retained unless it contains speech,
   singing or a concrete defect.
@@ -14,7 +14,7 @@
 ## Review each clip
 
 - [ ] First and last composition match the supplied endpoints.
-- [ ] Founder, six candidates, provider and later meeting participants retain
+- [ ] Founder and the same six-person cast retain
   face, age, clothing and body.
 - [ ] No duplicate/merged person, bad hand, camera jump, generated text or logo.
 - [ ] One clear action and one restrained camera move.
@@ -30,7 +30,7 @@
 - [ ] S06 contains only users, shared context and the next invitation; no
   operator, administrator, server or deployment explanation.
 - [ ] Actual meeting is visible by 00:33–00:34 and remains legible at 00:37.
-- [ ] No Part I/II/III or “The Story” wording appears.
+- [ ] No trilogy part number or “The Story” wording appears.
 
 ## Audio, captions and claims
 

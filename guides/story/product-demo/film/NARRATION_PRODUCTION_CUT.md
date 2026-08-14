@@ -10,7 +10,7 @@ Similarity: `55`
 Style exaggeration: `20`
 Speaker boost: `Off`
 
-These are the same approved Part I values. Before paid generation, record the
+These are the approved story-edition values. Before paid generation, record the
 live ElevenLabs voice ID and exact model version in
 `NARRATION_MIX_MANIFEST.json`; the display name alone is not a reproducible
 identifier.
