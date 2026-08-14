@@ -38,6 +38,7 @@ EDITIONS = [
         "published": "Published 20 August 2026",
         "holiday": "(Hungary’s State Foundation Day)",
         "contents": "Contents",
+        "toc_section": "The product journey",
     },
     {
         "lang": "hu",
@@ -54,6 +55,7 @@ EDITIONS = [
         "published": "Megjelent 2026. augusztus 20.",
         "holiday": "(Magyarország államalapításának ünnepe)",
         "contents": "Tartalom",
+        "toc_section": "A termék útja",
     },
 ]
 
@@ -200,9 +202,12 @@ def build_html(edition: dict) -> str:
     source_text = edition["source"].read_text(encoding="utf-8")
     chapters = chapter_entries(source_text)
     body = markdown_blocks(source_text, registry)
-    toc = "\n".join(
-        f"<li><a href='#chapter-{number:02d}'>{inline(title)}</a></li>"
+    toc = (
+        f"<li class='level-1'>{html.escape(edition['toc_section'])}</li>\n"
+        + "\n".join(
+        f"<li class='level-2'><a href='#chapter-{number:02d}'>{inline(title)}</a></li>"
         for number, title, _ in chapters
+        )
     )
     divider_url = data_url(DIVIDER_ORNAMENT)
     initial_url = data_url(INITIAL_ORNAMENT)
@@ -224,7 +229,6 @@ def build_html(edition: dict) -> str:
 </section>"""
     contents = f"""
 <nav class='toc'>
-  <div class='toc-kicker'>{edition['eyebrow']}</div>
   <h1>{edition['contents']}</h1>
   <ol>{toc}</ol>
   <img class='folk-divider toc-divider' src='{divider_url}' alt=''/>
@@ -236,14 +240,19 @@ def build_html(edition: dict) -> str:
 <title>{html.escape(metadata['title'])}</title>
 <style>
 :root {{ --ink:#172336; --muted:#617086; --paper:#fbf7ef; --night:#101d33;
-  --gold:#f1b544; --violet:#6d4fd3; --coral:#e36c57; }}
+  --blue:#245bc9; --gold:#f1b544; --violet:#6d4fd3; --coral:#e36c57; }}
 * {{ box-sizing:border-box; }}
 html {{ background:#d9dde4; }}
 body {{ margin:0; background:var(--paper); color:var(--ink);
-  font:10.4pt/1.5 Arial,sans-serif; hyphens:auto; }}
-@page {{ size:6in 9in; margin:.68in .62in .7in; }}
+  font:10.4pt/1.53 Georgia,"Times New Roman",serif; hyphens:auto;
+  text-rendering:optimizeLegibility; }}
+@page {{ size:6in 9in; margin:.68in .62in .7in;
+  @bottom-center {{ content:counter(page); color:#7a8492;
+    font:8pt Arial,sans-serif; }} }}
+@page cover {{ size:6in 9in; margin:.68in .62in .7in;
+  @bottom-center {{ content:none; }} }}
 .cover {{ width:4.76in; height:7.62in; margin:0; padding:.38in .46in .34in;
-  page-break-after:always; overflow:hidden; position:relative; text-align:center;
+  page:cover; page-break-after:always; overflow:hidden; position:relative; text-align:center;
   color:#fff; display:flex; flex-direction:column; align-items:center;
   background:radial-gradient(circle at 78% 17%,rgba(241,181,68,.3),transparent 18%),
   radial-gradient(circle at 20% 86%,rgba(109,79,211,.48),transparent 25%),
@@ -272,28 +281,26 @@ body {{ margin:0; background:var(--paper); color:var(--ink);
 .edition span,.edition small {{ display:block; }} .edition small {{ font-size:.88em; }}
 .toc {{ height:7.62in; page-break-after:always; display:flex; flex-direction:column;
   position:relative; }}
-.toc-kicker {{ margin-top:.14in; color:#9b6a1e; font:700 7.5pt/1.2 Arial,sans-serif;
-  letter-spacing:.16em; text-transform:uppercase; }}
-.toc h1 {{ margin:.14in 0 .28in; color:#103451; font:500 25pt/1.1 Georgia,serif; }}
-.toc ol {{ list-style:none; margin:0; padding:0; counter-reset:toc; }}
-.toc li {{ counter-increment:toc; margin:0 0 .12in; break-inside:avoid; }}
-.toc a {{ display:grid; grid-template-columns:.34in 1fr; gap:.08in; color:var(--ink);
-  text-decoration:none; font:10pt/1.22 Arial,sans-serif; }}
-.toc a::before {{ content:counter(toc, decimal-leading-zero); color:#a06d20;
-  font:700 8pt/1.45 Arial,sans-serif; letter-spacing:.06em; }}
+.toc h1 {{ margin:.2in 0 .28in; font-size:24pt; font-weight:500; }}
+.toc ol {{ list-style:none; margin:0; padding:0; columns:2; column-gap:.34in; }}
+.toc li {{ break-inside:avoid; margin:0 0 .07in; line-height:1.2; }}
+.toc .level-1 {{ column-span:all; margin-top:.16in;
+  color:var(--blue); font:700 8pt/1.2 Arial,sans-serif;
+  letter-spacing:.1em; text-transform:uppercase; }}
+.toc .level-2 {{ padding-left:.08in; font-size:8.6pt; }}
+.toc a {{ color:inherit; text-decoration:none; }}
 .chapter {{ margin:.38in 0 0; position:relative; }}
 .chapter:first-child {{ margin-top:.12in; }}
 .chapter-lead {{ break-inside:avoid; page-break-inside:avoid; }}
-h2 {{ color:#103451; font:500 19pt/1.1 Georgia,serif; margin:0 0 .18in;
+h2 {{ color:var(--night); font:500 19pt/1.12 Georgia,serif; margin:0 0 .18in;
   break-after:avoid; page-break-after:avoid; }}
 h2::after {{ content:''; display:block; width:100%; height:2px; margin-top:.1in;
   background:linear-gradient(90deg,var(--gold),var(--coral) 46%,rgba(109,79,211,.12)); }}
 p {{ margin:0 0 .14in; orphans:3; widows:3; }} strong {{ color:#132d49; }}
-.chapter-opening {{ min-height:.52in; }}
-.drop-cap {{ float:left; width:.54in; height:.54in; margin:.01in .08in 0 0;
-  padding-top:.055in; color:#172336; text-align:center;
-  background:url('{initial_url}') center/contain no-repeat;
-  font:500 28pt/.42in Georgia,serif;
+.drop-cap {{ display:inline-block; width:.48in; height:.47in; margin:0 .055in 0 0;
+  color:#172336; text-align:center; vertical-align:baseline;
+  background:url('{initial_url}') center 88%/.5in auto no-repeat;
+  font:500 31pt/.47in Georgia,serif;
   text-shadow:-1px -1px 0 rgba(255,255,255,.92),1px 1px 0 rgba(255,255,255,.92); }}
 ol,ul {{ margin:0 0 .2in .22in; padding-left:.2in; }} li {{ margin-bottom:.08in; }}
 code {{ font-family:monospace; background:#eef2f5; padding:.1em .25em; }}

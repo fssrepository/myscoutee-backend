@@ -1,8 +1,10 @@
 # MyScoutee product reel — start here
 
-This package owns one standalone **48-second, 9:16 product reel** and the short
-English-first companion book **A Match Is Not a Meeting**, with a controlled
-Hungarian translation. It is not a trilogy part.
+This package owns one **48-second, 9:16 product reel** and the short English-first
+companion book **A Match Is Not a Meeting**, with a controlled Hungarian
+translation. It is the marketing continuation of the MyScoutee story
+publications and deliberately shares their visual and editorial family. The
+product explanation stands on its own; it is not the biographical Part III.
 
 The hook is intentionally product-first: many dating routes are good at
 discovery, profiles, matching or a first brief encounter, but the handoff to a

@@ -7,6 +7,11 @@ dating manual. The canonical editable source is
 translation. Read [TRANSLATION_LOCK.md](TRANSLATION_LOCK.md) before changing the
 Hungarian text.
 
+The book continues the story publications as a marketing artifact: its cover,
+type system, page colour, contents hierarchy, initials and ornament rhythm stay
+in the same publication family, while the subject pivots to a standalone product
+experience rather than a new biographical chapter.
+
 Run `../scripts/build_mini_book.py` to rebuild both HTML editions, both draft and
 published PDFs, checksums and publication records.
 

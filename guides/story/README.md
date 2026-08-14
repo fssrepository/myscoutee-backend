@@ -67,9 +67,11 @@ without invention.
 
 ## Standalone product reel
 
-[`product-demo/`](product-demo/overview/README.md) is a separate, 48-second
-product-first reel and short English-first companion book with a Hungarian
-translation. It is not Part III and
-does not continue or retell the trilogy. It uses the same ten-directory package
-contract as Parts I and II, the same exact MyScoutee mark, and the same locked
-Google Flow / Veo 3.1 Lite eight-second production route.
+[`product-demo/`](product-demo/overview/README.md) is the user-facing marketing
+continuation of the story publications: a 48-second product-first reel and short
+English-first companion book with a Hungarian translation. It carries the same
+editorial and visual identity forward, then pivots from story to product. It is
+not Part III and does not advance the trilogy's biographical narrative. It uses
+the same ten-directory package contract as Parts I and II, the same exact
+MyScoutee mark, and the same locked Google Flow / Veo 3.1 Lite eight-second
+production route.
