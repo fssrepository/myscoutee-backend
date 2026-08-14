@@ -14,7 +14,8 @@ manuscript.
 - `tracking/AUDIOBOOK_MANIFEST.json`: source hashes, voice lock and totals;
 - `tracking/CHUNK_MANIFEST.csv`: generation order, expected MP3 names and
   progress status;
-- `cover/`: the first page of the locked public PDF, rasterized for the final
+- `cover/`: the first page of the locked public PDF, plus the reusable
+  `AUDIOBOOK EDITION` badge and the derived badged artwork used by the MP3 and
   static-cover video.
 
 All generated MP3, WAV and MP4 files stay under `~/Downloads/audiobook/` and
