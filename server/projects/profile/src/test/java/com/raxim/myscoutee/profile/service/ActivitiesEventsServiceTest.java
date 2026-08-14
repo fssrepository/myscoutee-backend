@@ -854,7 +854,8 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         List.of(),
                         Set.of(),
-                        10);
+                        10,
+                        true);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
@@ -880,6 +881,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.membershipStatus()).isEqualTo("accepted");
+        assertThat(result.changed()).isTrue();
         verify(activitiesMembersService).requestJoin(
                 anyString(),
                 any(Users.class),
@@ -887,6 +889,55 @@ class ActivitiesEventsServiceTest {
                 anyBoolean(),
                 anyBoolean(),
                 anyBoolean());
+        verify(affinityRecomputeTaskService, never())
+                .enqueueEventMembersChanged(anyString(), anyString());
+    }
+
+    @Test
+    void repeatedAcceptedJoinReportsNoMutation() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot acceptedSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "viewer"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(acceptedSnapshot);
+        when(activitiesMembersService.requestJoin(
+                anyString(),
+                any(Users.class),
+                any(ActivityEvent.class),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean())).thenReturn(acceptedSnapshot);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("accepted");
+        assertThat(result.changed()).isFalse();
+        assertThat(result.counterDelta()).isNull();
         verify(affinityRecomputeTaskService, never())
                 .enqueueEventMembersChanged(anyString(), anyString());
     }

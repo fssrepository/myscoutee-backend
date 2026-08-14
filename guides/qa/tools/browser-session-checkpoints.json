@@ -324,6 +324,30 @@
         }
       ]
     },
+    "AUTH-SESSION-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Client A",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client A for Nova Social"
+        },
+        {
+          "actor": "Client B",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client B for Nova Social"
+        },
+        {
+          "actor": "Client C",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client C for Nova Social"
+        }
+      ]
+    },
     "EVENT-PUBLISH-CHAT-001": {
       "layout": {
         "columns": 3

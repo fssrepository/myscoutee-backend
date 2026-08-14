@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSyncRequestDto;
@@ -55,7 +56,7 @@ public class ActivitiesMembersController {
     }
 
     @PostMapping("/invite")
-    public List<ActivityMemberEntryDto> invite(@RequestBody ActivityMembersInviteRequestDto request) {
+    public ActivityMembersInviteResponseDto invite(@RequestBody ActivityMembersInviteRequestDto request) {
         return activitiesMembersService.inviteEventMembers(request);
     }
 

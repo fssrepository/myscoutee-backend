@@ -464,6 +464,20 @@ public final class AuthDtos {
             String userId) {
     }
 
+    public record UserSessionLoginRequestDto(
+            @NotBlank @Size(max = 128) String attemptId,
+            @Size(max = 32) String provider) {
+    }
+
+    public record UserSessionLoginResponseDto(
+            boolean accepted,
+            boolean existingSession,
+            String outcome,
+            Integer activeSessionCount,
+            Integer maxActiveSessions,
+            String message) {
+    }
+
     public record UserDeleteRequestDto(
             String userId) {
     }

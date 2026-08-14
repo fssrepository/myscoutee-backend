@@ -244,8 +244,9 @@ def build_html(edition: dict) -> str:
 * {{ box-sizing:border-box; }}
 html {{ background:#d9dde4; }}
 body {{ margin:0; background:var(--paper); color:var(--ink);
-  font:10.4pt/1.53 Georgia,"Times New Roman",serif; hyphens:auto;
+  font:10.4pt/1.48 Georgia,"Times New Roman",serif; hyphens:auto;
   text-rendering:optimizeLegibility; }}
+html[lang='hu'] body {{ font-size:10.25pt; line-height:1.45; }}
 @page {{ size:6in 9in; margin:.68in .62in .7in;
   @bottom-center {{ content:counter(page); color:#7a8492;
     font:8pt Arial,sans-serif; }} }}
@@ -289,14 +290,14 @@ body {{ margin:0; background:var(--paper); color:var(--ink);
   letter-spacing:.1em; text-transform:uppercase; }}
 .toc .level-2 {{ padding-left:.08in; font-size:8.6pt; }}
 .toc a {{ color:inherit; text-decoration:none; }}
-.chapter {{ margin:.38in 0 0; position:relative; }}
+.chapter {{ margin:.34in 0 0; position:relative; }}
 .chapter:first-child {{ margin-top:.12in; }}
 .chapter-lead {{ break-inside:avoid; page-break-inside:avoid; }}
 h2 {{ color:var(--night); font:500 19pt/1.12 Georgia,serif; margin:0 0 .18in;
   break-after:avoid; page-break-after:avoid; }}
 h2::after {{ content:''; display:block; width:100%; height:2px; margin-top:.1in;
   background:linear-gradient(90deg,var(--gold),var(--coral) 46%,rgba(109,79,211,.12)); }}
-p {{ margin:0 0 .14in; orphans:3; widows:3; }} strong {{ color:#132d49; }}
+p {{ margin:0 0 .12in; orphans:3; widows:3; }} strong {{ color:#132d49; }}
 .drop-cap {{ display:inline-block; width:.48in; height:.47in; margin:0 .055in 0 0;
   color:#172336; text-align:center; vertical-align:baseline;
   background:url('{initial_url}') center 88%/.5in auto no-repeat;
@@ -312,7 +313,7 @@ code {{ font-family:monospace; background:#eef2f5; padding:.1em .25em; }}
 .folk-divider {{ display:block; width:3.55in; height:auto; margin-left:auto;
   margin-right:auto; break-inside:avoid; page-break-inside:avoid; }}
 .toc-divider {{ margin-top:auto; margin-bottom:.1in; }}
-.final-divider {{ margin-top:.3in; margin-bottom:.08in; }}
+.final-divider {{ width:1.45in; margin-top:.08in; margin-bottom:0; }}
 @media print {{ html,body {{ background:var(--paper); }} }}
 </style></head><body>{cover}{contents}<main>{body}
 <img class='folk-divider final-divider' src='{divider_url}' alt=''/>

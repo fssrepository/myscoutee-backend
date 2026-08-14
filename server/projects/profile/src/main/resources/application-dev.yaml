@@ -34,6 +34,10 @@ admin:
 affinity:
   recompute:
     enabled: ${AFFINITY_RECOMPUTE_ENABLED:true}
+    # Manual dev/QA mutations exercise the real worker on an observable short
+    # delay. Production keeps the five-minute AffinityRecomputeProperties
+    # default in application-prod.yaml.
+    event-members-changed-debounce: ${AFFINITY_RECOMPUTE_EVENT_MEMBERS_CHANGED_DEBOUNCE:15s}
     change-stream-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:false}
     change-stream-fallback-poll-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:true}
     change-stream-wakeup-coalesce: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_WAKEUP_COALESCE:250ms}

@@ -1,0 +1,31 @@
+Create one continuous 8-second portrait 9:16 Frames-to-Video clip with Veo 3.1
+Lite. Use PR_CP02.png as the exact first frame and PR_CP03.png as the exact last
+frame.
+
+All people are original fictional characters created for this project.
+
+Make one simple, smooth transition between the supplied frames. Do not invent
+an intermediate composition. John slides the existing aqua counter once. Use
+only one slow, even camera pullback to reach the wider final view.
+
+John and the wooden desk remain continuously visible. Preserve his identity,
+clothing, hands and every desk object without distortion or replacement.
+
+During the pullback, the five portrait cards and the small priority board appear
+together directly in their exact final PR_CP03 positions. Do not build or
+animate the board separately. It remains card-sized in the lower-right sixth
+position for its entire appearance. It never appears in the center, never
+grows larger and never covers John or another card.
+
+Let the supplied final frame determine every portrait, counter, path, board
+detail and position. Reach PR_CP03 exactly by second 7 and hold it through the
+end.
+
+No cut, extra layout, full-screen board, readable text, logo, public score,
+card flip, face morph, duplicate person, disappearing John or disappearing
+desk. Keep movement restrained and physically coherent.
+
+Generate restrained original instrumental music continuing the previous
+clip's mood: warm felt-piano fragments, low bowed texture, soft hand percussion,
+natural room ambience and physical card and wooden-counter sounds. No dialogue,
+narration, singing, vocalization or visible lip-sync.

@@ -60,6 +60,17 @@ public final class ActivityMembersDtos {
             String actorUserId) {
     }
 
+    public record ActivityMemberInviteRejectionDto(
+            String userId,
+            String reason) {
+    }
+
+    public record ActivityMembersInviteResponseDto(
+            List<ActivityMemberEntryDto> members,
+            List<String> invitedUserIds,
+            List<ActivityMemberInviteRejectionDto> rejections) {
+    }
+
     public record ActivityMemberActionRequestDto(
             ActivityMemberOwnerRefDto owner,
             String actorUserId,

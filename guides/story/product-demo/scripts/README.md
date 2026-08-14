@@ -1,15 +1,26 @@
 # Reproducible tools
 
-- `build_brand_frames.py`: normalizes all seven product-demo-owned generated
+- `build_brand_frames.py`: normalizes all eight product-demo-owned checkpoint
   checkpoints and builds deterministic branded first/last PNG references using
   the untouched repository logo.
 - `build_mini_book.py`: converts the canonical English Markdown and controlled
   Hungarian translation to illustrated HTML/PDF editions, then writes each
   checksum and publication record.
+- `assemble_the_product.sh`: assembles the accepted S01 source, standalone S02
+  and S03 renders, and S04–S07 from the accepted 48-second source; removes the
+  repeated seven-frame seams and preserves the Flow audio with short boundary
+  fades.
 
 Run from the repository root:
 
 ```bash
 python3 guides/story/product-demo/scripts/build_brand_frames.py
 python3 guides/story/product-demo/scripts/build_mini_book.py
+```
+
+After the replacement S02 and S03 renders are accepted:
+
+```bash
+guides/story/product-demo/scripts/assemble_the_product.sh \
+  SHORT_24S.mp4 S02.mp4 S03.mp4 LONG_48S.mp4 OUTPUT.mp4
 ```

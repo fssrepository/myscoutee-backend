@@ -1,9 +1,10 @@
 # Product-reel assets
 
 - `source/PR_CP01_imagegen_source.png` through
-  `source/PR_CP07_imagegen_source.png`: seven independently generated,
+  `source/PR_CP08_imagegen_source.png`: eight independently generated or
+  recovered,
   product-demo-owned source checkpoints in sequence.
-- `frames/PR_CP01.png` through `frames/PR_CP07.png`: the seven normalized local
+- `frames/PR_CP01.png` through `frames/PR_CP08.png`: the eight normalized local
   Flow endpoints, each `720×1280`.
 - `frames/PR_OPENING_BRANDED.png`: deterministic first-frame review composite.
 - `frames/PR_CLOSING_BRANDED.png`: deterministic final-frame review composite.

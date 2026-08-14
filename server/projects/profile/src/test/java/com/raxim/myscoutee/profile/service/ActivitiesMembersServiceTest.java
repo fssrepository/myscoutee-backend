@@ -2535,10 +2535,18 @@ class ActivitiesMembersServiceTest {
                 .thenReturn(List.of(existingInvite));
         when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+        var result = service.inviteEventMembers(new ActivityMembersInviteRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
                 List.of("existing", "new-user"),
                 "admin"));
+
+        assertThat(result.invitedUserIds()).containsExactly("new-user");
+        assertThat(result.rejections())
+                .singleElement()
+                .satisfies(rejection -> {
+                    assertThat(rejection.userId()).isEqualTo("existing");
+                    assertThat(rejection.reason()).isEqualTo("already-member");
+                });
 
         verify(eventInviteNotificationService).notifyInvitees(
                 event,
@@ -2555,6 +2563,41 @@ class ActivitiesMembersServiceTest {
                 event,
                 List.of("new-user"),
                 "admin");
+    }
+
+    @Test
+    void inviteEventMembersReportsReservedCapacityRejectionWithoutWriteArtifacts() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setCapacityTotal(2);
+        ActivityMember accepted = member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reservedInvite = member("reserved-sync", "event-1", "reserved-user", "Member", "pending");
+        reservedInvite.setPendingSource("admin");
+        reservedInvite.setRequestKind("invite");
+        List<ActivityMember> existing = List.of(accepted, reservedInvite);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(existing);
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(existing);
+
+        var result = service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of("new-user"),
+                "admin"));
+
+        assertThat(result.invitedUserIds()).isEmpty();
+        assertThat(result.rejections())
+                .singleElement()
+                .satisfies(rejection -> {
+                    assertThat(rejection.userId()).isEqualTo("new-user");
+                    assertThat(rejection.reason()).isEqualTo("capacity-full");
+                });
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(userActivityCountersService, never()).refreshEventCountersForUsers(anyList());
+        verify(eventInviteNotificationService).notifyInvitees(event, List.of(), "admin");
     }
 
     @Test

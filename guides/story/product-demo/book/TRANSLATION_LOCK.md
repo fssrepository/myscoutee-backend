@@ -19,8 +19,9 @@ Terminology:
 | --- | --- |
 | match | match / kölcsönös jel, according to sentence |
 | each user's private, editable priority list | minden felhasználó saját, privát és módosítható prioritási listája |
-| one-to-ten priority within the private list | egytől tízig terjedő prioritás a privát listán belül |
-| mutual priorities | kölcsönös prioritások |
+| priorities matter together with context | a prioritások a kontextussal együtt számítanak |
+| mutual interest | kölcsönös érdeklődés |
+| profile fit | profililleszkedés / a profilok illeszkedése |
 | balanced candidate group | kiegyensúlyozott csoportjelölt |
 | accepts or declines | elfogad vagy elutasít |
 | contextual group chat | közös, kontextusba helyezett beszélgetés |

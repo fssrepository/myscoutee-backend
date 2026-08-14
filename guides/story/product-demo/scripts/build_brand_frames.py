@@ -10,7 +10,7 @@ FRAMES = PACKAGE / "assets/frames"
 LOGO = ROOT / "frontend/src/assets/logo/heart.png"
 SOURCES = {
     name: PACKAGE / f"assets/source/{name}_imagegen_source.png"
-    for name in ("PR_CP01", "PR_CP02", "PR_CP03", "PR_CP04", "PR_CP05", "PR_CP06", "PR_CP07")
+    for name in ("PR_CP01", "PR_CP02", "PR_CP03", "PR_CP04", "PR_CP05", "PR_CP06", "PR_CP07", "PR_CP08")
 }
 FONT_REGULAR = Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf")
 FONT_BOLD = Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")
@@ -75,7 +75,7 @@ def main() -> None:
     centered_text(opening, "MATCH ≠ MEETING", 1165, 42)
     opening.convert("RGB").save(FRAMES / "PR_OPENING_BRANDED.png", optimize=True)
 
-    clean_ending = Image.open(FRAMES / "PR_CP07.png")
+    clean_ending = Image.open(FRAMES / "PR_CP08.png")
     closing = gradient_overlay(clean_ending, 180, 205)
     brand(closing, 42)
     centered_text(closing, "DESIGNED FOR THE MEETING.", 1138, 34)

@@ -1600,6 +1600,216 @@ Execution evidence in progress on 2026-08-14:
   `0`, Nova Events `1`/Chats `0` and Riley Invitations `1`/Chats `0`. Replay
   only Casey Delete invitation once and observe the event-card pending badge
   from the same response before any periodic poll.
+- Hard-reloaded frontend replay at `2026-08-14T16:54:18.515456561Z` is
+  **UI FAIL / REPAIR REPLAY REQUIRED**. The write and Members surface were
+  correct, but the user captured the underlying card still showing pending
+  badge `1` about ten seconds after Delete. The independent terminal oracle is
+  otherwise PASS: capacity `3`, accepted/pending `2/0`, only Riley `deleted`,
+  all chat/notification controls zero, and exactly one
+  `EVENT_MEMBERS_CHANGED` task completed at `16:59:28.940091047Z`, attempt
+  `1`, with empty error.
+- Live Angular inspection isolated the remaining frontend cause without
+  projecting a query: the shared membership signal already contained
+  `pendingMembers: 0`, but the Activities consumer rebuilt the card only from
+  `EventsService.peekKnownItemById(...)`. That cache legitimately had no DTO
+  for this server-backed Smart List row, while the Smart List's own source
+  snapshot retained the complete event (`capacityTotal/capacityMax: 3`). The
+  consumer therefore returned the old row unchanged and a later poll repaired
+  it. The common resolver now uses the Smart List source before the optional
+  EventsService cache, patches and re-caches the converted row immediately,
+  preserves the known capacity, and has a direct InfoCard fallback when no DTO
+  exists. No Delete-specific branch and no poll/query behavior changed. The
+  existing frontend watcher built and synced the repair successfully at
+  `17:06:56Z`; focused source-resolution/capacity regression tests were
+  authored but not run in a second process because swap remains full.
+- Source-fallback repair replay baseline **READY** at
+  `2026-08-14T17:09:30.775Z`: reset completed, stage and the required second
+  status both prove capacity `3`, accepted/pending `2/1`, Riley's pending
+  admin invitation from Casey, Chats `0` and zero tasks/artifacts. The same
+  three existing documents were hard reloaded with the repaired bundle; new
+  time origins are Casey `17:10:01.546Z`, Nova `17:10:01.160Z` and Riley
+  `17:10:01.022Z`. Reconstructed controls are Casey My Events `1`, Nova Events
+  `1`, Riley Invitations `1`, all Chats `0`. Replay only Casey Delete once and
+  capture the event-card pending badge from the action signal before poll.
+- Final source-fallback replay immediate boundary **PASS** at
+  `2026-08-14T17:17:47.400237969Z`. Casey's document was created at
+  `17:17:39.954Z`, before the action, and was not reloaded afterward. The live
+  membership signal timestamp matches the action and carries pending `0`; the
+  Activities row and its re-cached Smart List source both hold pending `0`,
+  capacity `3`, and the card DOM shows `2 / 3` with no red pending number.
+  Riley's unchanged document reconstructed Invitations `0`; Nova's unchanged
+  document retained Events `1`. The independent write oracle is capacity `3`,
+  accepted/pending `2/0`, only Riley `deleted`, no chats/messages or invitation/
+  acceptance/approval artifacts, and exactly one `EVENT_MEMBERS_CHANGED` task.
+  The task remains normally pending until `17:22:47.432117404Z`; perform no
+  further UI action and close Branch B only after its terminal exact-once read.
+- Branch B terminal worker **PASS/CLOSED**: its single
+  `EVENT_MEMBERS_CHANGED` task completed at
+  `2026-08-14T17:23:40.030663919Z`, attempt `1`, with empty `lastError`; the
+  worker reports `pendingCount=0`. Capacity `3`, accepted/pending `2/0`, exact
+  Casey+Nova accepted identities, Riley deleted, and all chat/message plus
+  invitation/acceptance/approval notification/outbox controls remained
+  unchanged. Never repeat Casey Delete invitation. Reset before the independent
+  capacity-block branch; keep repeated/no-op acceptance in another lineage.
+- Branch C reserved-seat capacity baseline **READY**: Branch B was reset and
+  `EVENT-INV-005` was independently staged at `2026-08-14T17:27:14.493Z`.
+  Post-stage hard-reload origins are Casey `17:27:43.532Z`, Nova
+  `17:27:41.743Z` and Riley `17:27:39.456Z`. A later read-only oracle remains
+  capacity `3`, accepted/pending `2/1`, with exact Casey+Nova accepted and
+  Riley's admin invitation reserving the final seat; chats, notifications,
+  outbox and recompute tasks are all zero. Casey's authenticated read-only
+  candidate query returned multiple selectable non-members and a repeated
+  oracle proved that query created no write. The actual Invite members UI then
+  showed Riley selected as the existing pending reservation and Farkas Anna as
+  the visible selectable non-member. Casey must next attempt exactly one
+  Farkas Anna invite. The decisive result is unchanged accepted/pending `2/1`,
+  no Farkas Anna membership and zero new task, notification or outbox; do not
+  combine the later repeat-acceptance branch.
+- Branch C first write at `2026-08-14T19:48:43+02:00` is **SERVER/WRITE PASS,
+  UX FAIL — REPAIR REPLAY REQUIRED**. The endpoint returned `200`, capacity
+  stayed `3`, accepted/pending stayed `2/1` with exact Casey+Nova accepted and
+  Riley reserving the final seat, Farkas Anna was not persisted, and task,
+  chat, notification plus outbox controls all stayed zero. The picker closed
+  without explaining that the invitation was rejected. The common invite
+  result must expose the capacity rejection to both HTTP and frontend-local
+  flows, and the existing confirmation dialog must support an actionless
+  information presentation with matching versioned English/Hungarian local
+  assets and Mongo seed messages. Reset and replay only this one Farkas Anna
+  attempt after the repaired bundle is loaded; branches A/B remain closed.
+- Branch C UX repair is **HOT-DEPLOYED / REPLAY REQUIRED**. The Java endpoint
+  now returns the committed member list, exact invited identities and typed
+  `capacity-full`/`already-member` rejections; notifications remain restricted
+  to actual new invitations. The shared frontend path consumes that outcome,
+  and frontend-local applies the same reserved-seat capacity partition before
+  persisting. The existing confirmation dialog gained an actionless notice
+  mode, so no parallel popup system or confirmation buttons were introduced.
+  Local assets and all Mongo seed databases contain matching English/Hungarian
+  capacity plus generic failure messages at bundle version `.55`. The existing
+  backend watcher compiled/restarted successfully; the frontend watcher built
+  at `20:05:23+02:00` and synced at `20:05:26`; the live API returned both
+  `2026.08.14.en.55` and `2026.08.14.hu.55` with the expected keys. Focused Java
+  and frontend regression tests are authored, but no duplicate build/test
+  process was started because the dev watchers own compilation and swap is
+  full. Reset/stage and replay only the Farkas Anna attempt next.
+- Branch C repair replay baseline is **READY** at
+  `2026-08-14T18:11:43.640Z`. Reset completed first and reported
+  `not-staged`; one new stage plus repeated status reads all proved capacity
+  `3`, accepted/pending `2/1`, exact Casey+Nova accepted identities, Riley's
+  pending admin invitation reserving the final place and zero chat/task/
+  notification/outbox artifacts. After the repaired frontend and Mongo bundle
+  sync, the same documents were hard-reloaded with cache/service-worker bypass
+  at Casey `18:13:10.693Z`, Nova `18:13:13.525Z` and Riley
+  `18:13:16.460Z`. Their initial visible counters agree: Casey My Events `1`
+  and Chats `0`, Nova Events `1` and Chats `0`, Riley Invitations `1` and
+  Chats `0`. Casey must attempt exactly one Farkas Anna invite and leave the
+  resulting notice open for DOM plus persisted-oracle verification.
+- Branch C first repaired display is **CONTENT/WRITE PASS, CLOSE CONTROL FAIL**.
+  The screenshot showed the correct `No available places` title and reserved-
+  capacity explanation without confirmation actions; a post-action oracle
+  retained capacity `3`, accepted/pending `2/1`, exact Casey+Nova accepted and
+  Riley pending, with zero chats/messages/invite notifications/outbox/tasks.
+  The notice incorrectly omitted the standard top-right popup close control.
+  The shared dialog now reuses the existing `.popup-close` button/icon only in
+  actionless notice mode; there is no custom footer button and ordinary
+  confirmations are unchanged. The watcher built at `20:21:31+02:00`, synced
+  at `20:21:33`, and Casey alone was hard-reloaded at
+  `18:22:14.622Z` with My Events `1` and Chats `0`. Since the attempt wrote
+  nothing, retain this lineage and replay only the notice display; do not reset
+  or repeat other branches.
+- Branch C standard-close replay remains **WRITE PASS / VISUAL PROOF PENDING**.
+  The post-action oracle again retained capacity `3`, accepted/pending `2/1`,
+  exact Casey+Nova accepted and Riley pending, with every chat/message/task/
+  notification/outbox control at zero. At the CDP inspection boundary the
+  dialog was already closed and Casey's document origin was
+  `18:23:40.879Z`; therefore the new top-right close must not be inferred.
+  Accept an explicit user report that the visible X was used, or repeat only
+  this no-write notice display and leave it open. Do not reset/restage.
+- Branch C terminal **PASS/CLOSED**. The user explicitly confirmed that the
+  corrected notice displayed its standard top-right X and that clicking it
+  closed the popup. Combined with the earlier screenshot proving the exact
+  capacity title/message and absent footer actions, and the post-replay oracle
+  proving unchanged capacity `3`, accepted/pending `2/1` and every artifact
+  control `0`, this closes both UX and write sides. Never repeat Branch C.
+- Branch D — repeated acceptance idempotence is a separate short lineage.
+  Reset/stage the same coherent full baseline, then Riley accepts the pending
+  admin invitation once through the real Invitations UI. First snapshot the
+  terminal accepted membership and exact chat/system-message, recompute task,
+  acceptance notification and outbox effects. Next, replay the identical
+  authenticated `/activities/events/join` request exactly once from Riley's
+  existing managed document. The repeated response must report `changed=false`;
+  capacity stays `3`, Riley has exactly one accepted membership, and every
+  first-write task/chat/system-message/notification/outbox count remains
+  unchanged. This API replay is the server no-op boundary after the only manual
+  accept; it does not open a fourth browser or duplicate the broader
+  Open/Blind visibility assertions owned by `EVENT-INV-006`.
+- Branch D baseline is **READY** at `2026-08-14T18:31:33.042Z`. Reset first
+  reached `not-staged`; one stage and two consecutive status reads prove
+  capacity `3`, exact Casey+Nova accepted plus Riley's pending admin invite on
+  the final seat, and zero chats/messages/tasks/acceptance notifications/
+  outbox/payments. The same documents were hard-reloaded at Casey
+  `18:32:11.813Z`, Nova `18:32:15.329Z` and Riley `18:32:19.418Z`. Initial UI
+  agrees: Casey My Events `1`/Chats `0`, Nova Events `1`/Chats `0`, Riley
+  Invitations `1`/Chats `0`. Riley performs exactly one UI Accept next; do not
+  issue the repeated server request until the complete first-write oracle is
+  captured.
+- Branch D first UI Accept is **FIRST-WRITE PASS** at
+  `2026-08-14T18:35:47.091901466Z`. The user loaded the Invitations list,
+  accepted once and observed `3 / 3`. Persisted membership is exactly
+  Casey+Nova+Riley accepted with pending/invited empty; Riley UI has Events `1`
+  and Chats `1`, while Casey and Nova's original documents each converged to
+  Chats `1` without reload and retained My Events/Events `1`. The comparison
+  fingerprint is three event-chat member projections, one `member-joined`
+  system message, one pending recompute task
+  `6a7f6003ae56910e99a48529` available at
+  `18:40:47.213748207Z`, two acceptance notifications for Casey/Nova, one
+  pending acceptance outbox and zero payments/checkout basket. Replay the
+  identical authenticated join exactly once next; no further manual click.
+- Branch D raw replay at `2026-08-14T18:38:34.950Z` is **NOT AN IDEMPOTENCE
+  EXECUTION — ORCHESTRATION ERROR**. The direct browser `fetch` copied the body
+  but omitted Angular's `X-App-Session-Kind: demo` and actor-specific
+  `X-Demo-User-Id` headers. The non-Firebase dev fallback therefore
+  authenticated configured default member `bf057de7c586eede7e84bdc7`, not
+  Riley, and correctly added that different actor as a pending waitlist member.
+  This contaminates only the post-first-write lineage; it does not invalidate
+  the preceding manual UI/fingerprint PASS and is not a product idempotence
+  FAIL. Do not ad hoc delete the row. Reset/stage fresh, then perform the server
+  pair with Riley's exact demo headers: first request recreates the known
+  fingerprint, second request must be `changed=false` with all counts unchanged.
+  No repeated user action is required.
+- Branch D clean server pair exposed **DATA IDEMPOTENCE PASS / RESPONSE CONTRACT
+  FAIL**. After reset/stage at `18:42:18.724Z`, a read-only `/auth/me` request
+  with the exact demo headers resolved Riley `650000000000000000000063`.
+  The first join at `18:43:38.889Z` returned accepted/`changed=true` and
+  recreated the manual fingerprint. The identical second at
+  `18:44:10.885Z` changed no persisted field: Riley's membership timestamps,
+  accepted/pending `3/0`, chat projections `3`, system messages `1`, task `1`
+  with id `6a7f61daae56910e99a48530` and the same
+  `18:48:38.821670247Z` availability, acceptance notifications/outbox `2/1`
+  and payments/basket `0/0` all remained exact. Its response nevertheless
+  returned `changed=true` with `counterDelta=null`. Java's common participation
+  mapper had hard-coded `true`; it now derives the flag from
+  `OwnerMembersSnapshot.mutationApplied`. Positive and accepted-no-op
+  regressions are authored. The existing watcher built successfully and the
+  app restarted at `20:45:47.587+02:00`; replay only this no-op response without
+  reset, then retain the original task for its terminal exact-once oracle.
+- Branch D post-fix no-op response replay is **RESPONSE/DATA PASS** at
+  `2026-08-14T18:47:37.568Z`: HTTP `200`, membership `accepted`,
+  `changed=false` and `counterDelta=null`. The following oracle retained the
+  same accepted `3`/pending `0`, Riley membership/action timestamp
+  `18:43:38.772815972Z`, chat projections `3`, system messages `1`, task `1`
+  with id `6a7f61daae56910e99a48530` and unchanged
+  `18:48:38.821670247Z` availability, acceptance notifications/outbox `2/1`
+  and payments/basket `0/0`. Never send another join. Close Branch D only after
+  that original task completes exactly once with empty error and every domain
+  fingerprint remains unchanged.
+- Branch D terminal worker **PASS/CLOSED**. Task
+  `6a7f61daae56910e99a48530` completed at
+  `2026-08-14T18:49:15.677199764Z`, attempt `1`, with empty `lastError`; the
+  affinity rule reports `pendingCount=0`. Final membership timestamps and
+  accepted/pending `3/0`, chat projections/system messages `3/1`, acceptance
+  notifications/outbox `2/1`, payments/basket `0/0` all remained exact.
+  Together with branches A-C, `EVENT-INV-005` is **PASS/CLOSED**. Never repeat
+  any producer or replay from this checkpoint.
 
 ### `EVENT-INV-006` — acceptance notification visibility boundary
 
@@ -1628,6 +1838,73 @@ Execution evidence in progress on 2026-08-14:
 
   The oracle prints `blindMode` on each event and `eventId` on every acceptance
   outbox/notification row so the Open and Blind results cannot be conflated.
+
+- Execution 2026-08-14 — PASS / CLOSED:
+  - `EVENT-INV-005` was reset and proved not staged before this independent
+    checkpoint was staged once at `2026-08-14T18:51:06Z`.
+  - Two consecutive read-only oracles agreed. Open event
+    `manual-qa-checkpoint:v1:event-domain:event` and Blind event
+    `manual-qa-checkpoint:v1:event-domain:feedback-locked` each have capacity
+    `8`, Casey accepted, and Nova plus Riley pending through admin invitations:
+    `accepted=1`, `pending=2`.
+  - Baseline artifact counts are chat `0`, system-message `0`, acceptance
+    notification `0`, acceptance outbox `0` and recompute task `0`. Riley's
+    current menu exposes exactly the two staged invitations.
+  - A subsequently reported `3/3` was identified as an observation from the
+    already-closed `EVENT-INV-005`; the persisted `EVENT-INV-006` baseline did
+    not change. The next transition is Riley accepting only the Open event.
+    Capture its complete recipient and chat oracle before touching Blind.
+  - Open transition executed once at `2026-08-14T19:04:11.943737458Z`:
+    Riley became accepted while Nova remained pending (`accepted=2`,
+    `pending=1`, capacity `8`); Blind remained unchanged at `1/2/8`.
+    The Open event has exactly one `member-joined` system message and zero
+    chat-message notification/outbox rows. One acceptance outbox targets only
+    Casey and Nova, and the two materialized notification rows name Riley and
+    `QA EVENT-INV-006 OPEN`; Riley has no acceptance notification.
+  - The three live clients converged without reload: Casey's bell is `4` after
+    one new row, Nova's bell is exactly `1`, and Riley's bell remains `0`.
+    Riley simultaneously shows Open `2/8`, Invitations `1` and Active Events
+    `1`. The user then opened both Notification Centers and visually confirmed
+    the same Riley accepted `QA EVENT-INV-006 OPEN` row for Casey and Nova.
+    Together with Riley's zero bell and zero persisted recipient row, the Open
+    visibility branch is PASS.
+  - The transition created the one expected `EVENT_MEMBERS_CHANGED` follow-up
+    task `6a7f66abae56910e99a48536`, initially pending for
+    `2026-08-14T19:09:12.048281308Z`; verify its terminal state without
+    replaying the already-proven Open mutation.
+  - Open follow-up task `6a7f66abae56910e99a48536` completed exactly once at
+    `2026-08-14T19:09:24.118478178Z`, `attemptCount=1`, with empty error and an
+    unchanged Open fingerprint.
+  - Blind transition was executed at `2026-08-14T19:09:18.685469928Z` from
+    Nova's browser rather than Riley's. Nova therefore became the actor and
+    Riley remained the ordinary hidden pending control. Both identities had
+    the same staged Member role and public profile status, so this is a valid
+    role-equivalent substitution for the visibility rule; do not replay the
+    producer merely to restore the originally named person.
+  - Blind now has Casey/Nova accepted and Riley pending (`accepted=2`,
+    `pending=1`, capacity `8`). Exactly one acceptance outbox and notification
+    target Casey. Casey's rendered Notification Center shows “Nova Social
+    accepted the invitation to QA EVENT-INV-006 BLIND”; Nova's existing Open
+    unread count did not increase and Riley remains at zero. Blind contains
+    exactly one `Nova Social joined the event.` system row and zero
+    chat-message notification/outbox artifacts. The immediate Blind privacy
+    boundary is PASS.
+  - Blind's one normal follow-up task is
+    `6a7f67deae56910e99a4853a`, available at
+    `2026-08-14T19:14:18.753678136Z`. Close the checkpoint only after it is
+    terminal once with empty error and the final fingerprint remains stable.
+  - Final terminal proof: Blind task `6a7f67deae56910e99a4853a` completed once
+    at `2026-08-14T19:14:26.173185876Z`, `attemptCount=1`, with empty error.
+    The final fingerprint remained Open and Blind `accepted=2/pending=1`, three
+    visibility-authorized acceptance notifications total, two event-scoped
+    `member-joined` messages, zero chat-message notifications, and zero
+    payment/basket artifacts. Both branches are PASS and the checkpoint is
+    CLOSED; do not replay either acceptance.
+  - QA efficiency repair after closure: the dev profile now binds
+    `affinity.recompute.event-members-changed-debounce` to
+    `${AFFINITY_RECOMPUTE_EVENT_MEMBERS_CHANGED_DEBOUNCE:15s}`. This retains an
+    observable real worker path while removing the five-minute manual wait.
+    Production continues to use the five-minute property default.
 
 ## Chat authorization case
 

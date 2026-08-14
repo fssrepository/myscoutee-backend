@@ -3038,7 +3038,7 @@ public class ActivitiesEventsService {
                 Math.max(acceptedMembers, capacityTotal),
                 resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(request == null ? null : request.paymentSessionId()),
-                true,
+                resolvedSnapshot != null && resolvedSnapshot.mutationApplied(),
                 null);
     }
 

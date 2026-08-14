@@ -72,25 +72,24 @@ handoffs.
 MyScoutee begins with a different kind of intention.
 
 Instead of only yes or no, you build your own private, editable priority list.
-Each possibility can carry a priority from one to ten, but the order belongs
-only to you. It is not a public score, and it does not measure anyone's worth.
-It tells the system how much room each possibility has in your life now. You can
+It records whom you would most like to meet now, but the order belongs only to
+you. It is not a public score, and it does not measure anyone's worth. You can
 reorder the list later because lives and relationships change.
 
 Every other person maintains their own list independently. Nobody sees where
 somebody else placed them. Your priorities remain yours; theirs remain theirs.
-Mutual priorities, shared context and practical distance can then reveal more
-than one possible connection without declaring that an algorithm has found “the
-one.”
+Those priorities matter, together with mutual interest, profile fit, shared
+context and practical distance. The result can reveal more than one possible
+connection without declaring that an algorithm has found “the one.”
 
 ## 6. Not a pair under a spotlight
 
 The next screen does not have to place two strangers under the full pressure of
 a first date.
 
-When several private lists point back toward one another, a balanced candidate
-group can form around a shared activity. No single person's ordering controls
-the group and no list becomes public. Every person still sees the proposal and
+When those signals point toward a viable group, a balanced candidate group can
+form around a shared activity. No single person's ordering controls the group
+and no list becomes public. Every person still sees the proposal and
 independently accepts or declines. The group proceeds only with the people who
 choose it.
 
@@ -100,6 +99,10 @@ acquaintance, friendship or a later invitation can remain valuable too.
 
 The group is not a detour around meeting. It is a way to reach the meeting with
 less all-or-nothing pressure.
+
+At the table, several people receive the same evening and the same chance to
+become more than a card. You do not need to meet every possible person. One
+shared evening can be enough to open the right next door.
 
 ## 7. “Sometime” becomes a plan
 
@@ -118,6 +121,9 @@ needs a place and a decision about what people will bring. The plan can stay
 small. What matters is that it has owners, resources and a door people can
 actually walk through.
 
+On Thursday afternoon, one person cancels. Someone else takes the open place.
+By evening, the chairs are still filled and the plan still has a door.
+
 ## 8. After the door opens
 
 Then the profiles acquire voices.
@@ -134,6 +140,14 @@ line to a stranger.
 
 The match did not become a promise. It became context.
 
+The evening travels beyond the table. Someone remembers who made them laugh.
+Someone brings a friend next time. A stranger is less unknown because people
+you know have already shared a room with them.
+
+Human relationships have always grown through overlapping circles of trust,
+not by everyone meeting everyone. MyScoutee brings that familiar path into
+online discovery.
+
 <!-- illustration: after_door_opens -->
 
 ## 9. Designed for the meeting
@@ -142,7 +156,7 @@ MyScoutee keeps the useful parts of online discovery, but changes what the
 workflow is trying to complete:
 
 - each user's private, editable priority list;
-- reciprocal priorities and practical context;
+- private priorities, profile fit and practical context;
 - a group every participant accepts for themselves;
 - one shared activity and plan;
 - a real meeting;

@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-INV-005 / branch B — inviter cancellation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-inv-005--reject-cancel-capacity-and-idempotence
-scenario: event-domain
-ledger_status: IN PROGRESS
-state: EVENT-INV-005 branch A is PASS/CLOSED; never repeat Riley Reject. Branch B Java repair is terminal PASS: the 16:06:13.505868724Z cancellation created exactly one EVENT_MEMBERS_CHANGED task, completed at 16:12:08.607775317Z attempt1/error-empty, with capacity3 accepted/pending2/0 and all chat/notification controls zero. That replay exposed a frontend FAIL: the underlying event-card pending badge ignored the membership signal while Event Editor was open and only a later poll repaired it. The common Activities consumer now always applies the absolute/idempotent membership sync; no Smart List/poll or action-specific branch changed, and frontend-sync built successfully. The 16:13:41.562Z frontend replay lineage is NOT EXECUTED because the user required a proven reload boundary before acting; no Delete occurred. It was reset. The current clean final replay baseline was staged at 2026-08-14T16:18:50.026Z and a later read-only status still matches capacity3 accepted/pending2/1, Riley pending invite from Casey, chats0 and zero tasks/artifacts. The same three managed documents were hard reloaded with cache and service-worker bypass; their new time origins are Casey 16:19:57.407Z, Nova 16:19:55.167Z and Riley 16:19:53.108Z. Casey shows My Events1/Chats0, Nova Events1/Chats0 and Riley Invitations1/Chats0.
-required_resume: Do not reset, stage or relaunch. If continuity is uncertain, run only status event-domain EVENT-INV-005 and require the 16:18:50.026Z capacity3 accepted/pending2/1 baseline with Riley requestKind=invite from Casey, chats0 and zero tasks/artifacts. Keep the same three hard-reloaded managed documents. Replay only Casey Delete invitation once and observe the underlying card pending badge before poll; Branch A and all earlier branch-B lineages stay closed.
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-INV-005; repaired baseline is Casey-owned active Open Event, capacity3, Casey Admin accepted, Nova Member accepted, Riley Member pending admin invite reserving the final seat
+checkpoint: AUTH-SESSION-001 — two-session limit, new-login warning and audit
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#auth-session-001--two-session-limit-new-login-warning-and-audit
+scenario: auth-session (fixture route not yet implemented)
+ledger_status: DESIGN CAPTURED / NOT RUN
+state: EVENT-INV-006 is PASS/CLOSED in pack/CSV/XLSX and reset/not-staged at 2026-08-14T19:18:45.473Z; never replay either acceptance. Open and Blind each ended accepted2/pending1 with the expected role-scoped recipients, one join row per event, zero chat-message notifications, and both recompute tasks terminal once/empty error. The dev profile now uses a 15s event-members-changed debounce through AFFINITY_RECOMPUTE_EVENT_MEMBERS_CHANGED_DEBOUNCE while production retains 5m; this keeps the real worker observable without a five-minute manual wait. The next unclosed core ledger row is AUTH-SESSION-001. Its definition exists, but the manual checkpoint fixture/oracle route has not yet been implemented and the role-isolation windows cannot be reused as evidence.
+required_resume: Do not stage event-domain or reopen the closed INV-006 producers. Audit the server-authoritative active-session/login-audit implementation and existing authentication tests first. Add a guarded AUTH-SESSION-001 fixture/oracle route if missing, with exact A/B/C session identities and cleanup; then replace the three role-isolation browsers with exactly three fresh isolated profiles for one controlled account. Prove a clean zero-session/audit/warning baseline before issuing login A.
+event: EVENT-INV-006 reset and not staged; AUTH-SESSION-001 has no staged state yet
 actors:
-  active: Casey port33251, Nova port40387 and Riley port44173 remain the only three QA Chrome sessions; reload these exact documents after the new stage, never open a fourth account
-  controls: Nova remains an accepted unchanged control; Riley is the pending recipient and must perform no action; Casey is the sole branch-B actor
-next_actor: In Casey's session open Activities -> Events -> My Events, locate QA EVENT-INV-005, open Members, then open only Riley Outside's pending row menu and choose Delete invitation exactly once. Keep Members open afterward; do not touch Nova or Riley.
-stop_phrase: user reports whether Casey's Members surface changed to 2 members and the underlying event-card pending badge disappeared immediately from the same action signal, before poll; then verify Riley Invitations1->0 and the independent persisted oracle
+  active: Casey port33251, Nova port40387 and Riley port44173 are stale role-isolation documents after the closed fixture reset; keep the three-window maximum but do not use these documents as AUTH evidence
+  controls: AUTH will use three fresh isolated client identities A/B/C authenticated as the same controlled user; exact ports/pages are assigned only after fixture readiness
+next_actor: Codex audits AUTH-SESSION-001 implementation and creates/proves its guarded fixture/oracle before replacing the existing three managed documents; no user action now.
+stop_phrase: AUTH clean baseline and exact A/B/C browser identities proven before login A
 ```
 
 ### Efficient resume gate
@@ -107,12 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Continue `EVENT-INV-005 / branch B — final frontend badge repair replay` from
-the fresh staged boundary above. Casey deletes Riley's single pending
-invitation from Members once; Riley performs no response. Capture both the
-Members removal and underlying event-card badge before poll, then verify
-Riley's live Invitations removal and the retained Java oracle. Reset before
-the capacity/idempotence branch; never concatenate producers.
+Prepare `AUTH-SESSION-001 — two-session limit, new-login warning and audit`.
+Audit the server-authoritative session implementation and add the missing
+guarded fixture/oracle route before changing browsers. Then replace, rather
+than add to, the three stale role-isolation documents with exactly three fresh
+clients A/B/C for one controlled account. Do not ask for login A until the
+zero-session/audit/warning baseline is proven.
 
 ## QA working method
 
@@ -409,6 +409,17 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   Never call Playwright/CDP `browser.close()` or a browser-level close command
   against a managed QA Chrome merely to detach an inspector; that terminates
   the user's checkpoint window and discards in-memory evidence.
+- A synthetic browser API replay must reproduce the application's identity
+  transport, not merely its JSON body or cookies. In demo mode every API call
+  that stands in for Angular `HttpClient` must include
+  `X-App-Session-Kind: demo` and the actor-specific `X-Demo-User-Id`; Firebase
+  mode must use the current bearer token. Validate the effective actor through
+  a read-only identity boundary before the first synthetic mutation. A raw
+  `fetch(..., credentials: 'include')` without these headers is not an
+  authenticated replay: the non-Firebase dev fallback may select its configured
+  default member. If that creates a foreign write, classify it as an
+  orchestration error, retain the product evidence that predates it, reset the
+  contaminated checkpoint and never hide it with an ad hoc delete.
 - A successful static frontend hot-deploy does not replace JavaScript already
   loaded in an open page. Preserve an uncontaminated in-flight transaction and
   finish it without reload when a safe manual correction exists, then replace
@@ -678,6 +689,15 @@ verify its startup plus hot-deploy log; do not launch a replacement beside it.
 Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
 process or a standalone build/test compilation. A healthy watcher build and the
 checkpoint replay are the active-session verification path.
+
+Do not wait through production debounce windows merely because a manual QA
+fixture runs against the dev stack. When the delay itself is not the contract
+under test, expose a dev-only configuration override and keep the real worker
+path: the current event-member recompute default is `15s` in `application-dev`
+and remains `5m` in production. Record the override in the checkpoint, verify
+the existing watcher reload, and never patch an individual task ad hoc. Cases
+whose purpose is timing/debounce must override this explicitly and retain their
+own controlled boundary.
 
 For the profile backend, Gradle continuous `classes` may temporarily remove
 compiled outputs before recreating them. Spring DevTools must therefore use a

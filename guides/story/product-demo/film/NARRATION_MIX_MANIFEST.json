@@ -1,7 +1,9 @@
 {
   "status": "production-template",
   "picture": {
-    "durationSeconds": 48.0,
+    "rawSourceDurationSeconds": 56.0,
+    "expectedPictureLockDurationSeconds": 54.25,
+    "frameCount": 1302,
     "frameRate": 24,
     "dimensions": "720x1280",
     "path": null,
@@ -20,13 +22,14 @@
       "speakerBoost": false
     },
     "blocks": [
-      {"file": "PR_JON_01.wav", "startSeconds": 0.0, "targetEndSeconds": 16.0, "sha256": null},
-      {"file": "PR_JON_02.wav", "startSeconds": 16.0, "targetEndSeconds": 32.0, "sha256": null},
-      {"file": "PR_JON_03.wav", "startSeconds": 32.0, "targetEndSeconds": 48.0, "sha256": null}
+      {"file": "PR_JON_01.wav", "startSeconds": 0.0, "targetEndSeconds": 15.416667, "sha256": null},
+      {"file": "PR_JON_02.wav", "startSeconds": 15.416667, "targetEndSeconds": 30.833333, "sha256": null},
+      {"file": "PR_JON_03.wav", "startSeconds": 30.833333, "targetEndSeconds": 46.25, "sha256": null},
+      {"file": "PR_JON_04.wav", "startSeconds": 46.25, "targetEndSeconds": 54.25, "sha256": null}
     ]
   },
   "mix": {
-    "sourceSoundtrack": "preserve accepted Flow music, ambience and effects from all six clips",
+    "sourceSoundtrack": "preserve accepted Flow music, ambience and effects from all seven logical shots",
     "boundaryTreatment": "short equal-power crossfade only where a hard audio seam is audible",
     "ducking": {
       "method": "sidechain compression or hand automation",

@@ -9,23 +9,26 @@ character linework, dimensional paper and miniature sets, painted wood, wool
 and graphite textures, realistic warm lamplight, deep navy shadows and
 restrained natural facial acting.
 
-Begin on the expanded private priority-list demonstration shown in the first frame. The
-fictional man at the desk makes one small, deliberate adjustment to an amber
-marker. A gentle pulse travels along the colored dotted paths toward the small
-central table. His expression shows quiet recognition: the list can be
-privately rearranged.
+Begin on the exact expanded private priority-list demonstration shown in
+PR_CP03.png. Preserve the five portrait cards in their exact positions and the
+one-card-sized priority board in the lower-right sixth position. Preserve
+exactly one colored circular counter in each portrait row, matching its own
+dotted path, and exactly one counter on each of the board's five rows. Hold the
+complete first-frame composition briefly without moving or multiplying any
+counter.
 
-The six framed portraits above him are demonstration cards only. They must not
-transform directly into the people shown in the final frame.
+The five framed portraits and the single board above the Founder are one
+demonstration layout. They must not transform directly into the people shown in
+the final frame.
 
-During seconds 1–3, all six portrait cards rotate edge-on until their
-illustrated fronts are completely hidden. Their plain physical card backs slide
-toward the central table. Only after every portrait is hidden does the scene
-begin revealing the next group.
+During seconds 1–3, the complete demonstration layout recedes together into the
+dark background without any card flip, board transformation or face morph.
+Only after the five portraits and board have receded does the scene begin
+revealing the next group.
 
-Use one gentle upward 40 mm camera movement. The desk and demonstration board
-lower naturally out of view while a two-column by three-row montage opens from
-the dark background.
+Use one gentle upward camera movement. The Founder, desk and complete
+demonstration layout lower naturally out of view together while a two-column by
+three-row montage opens from the dark background.
 
 During seconds 3–7, reveal the exact six fictional users shown in PR_CP04.png,
 each in a separate room and in the final fixed screen position:

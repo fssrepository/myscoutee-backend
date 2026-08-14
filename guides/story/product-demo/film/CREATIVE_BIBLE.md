@@ -3,8 +3,8 @@
 ## One sentence
 
 A familiar online signal still needs a path to a real room. MyScoutee makes that
-path visible: private priority lists, a group revealed by reciprocal priorities,
-one practical plan, the meeting and a warmer next invitation.
+path visible: private priority lists considered with context, one possible
+group, one practical plan, the meeting and a warmer next invitation.
 
 ## Audience and retention rule
 
@@ -14,9 +14,10 @@ away at approximately 00:37, so the film follows these locks:
 
 - brand and problem are visible in frame one;
 - the first product difference starts at 00:08;
-- individual private lists and reciprocal group formation are clear by 00:24;
-- planning is clear by 00:32;
-- people physically meet from 00:32, before the observed drop;
+- one private list is explicit by 00:16;
+- individual private lists and contextual group formation are clear by 00:32;
+- practical planning is visible across the observed 00:37 drop point;
+- people physically meet in S06;
 - the final 8 seconds remain entirely with the people after the meeting; no
   operator, administrator, server or deployment explanation enters this reel.
 
@@ -28,9 +29,9 @@ stays with one experience the viewer can recognize:
 
 | Moment | Felt experience | MyScoutee step |
 | --- | --- | --- |
-| a mutual signal appears | hopeful, but nothing is scheduled | Founder demonstrates a private editable list |
+| a mutual signal appears | hopeful, but nothing is scheduled | one private priority becomes an editable list |
 | several possibilities exist | everybody has their own priorities | each user privately arranges their own list |
-| reciprocal priorities align | nobody is publicly scored | a balanced activity group can emerge |
+| priorities, fit and context align | nobody is publicly scored | a balanced activity group can emerge |
 | people want to go | “sometime” needs owners and resources | one contextual chat and plan |
 | the door opens | profiles become people with voices | real shared activity |
 | the evening ends | a next message no longer starts cold | later invitation with common context |
@@ -45,10 +46,11 @@ fake testimonials, lonely loser imagery or romantic guarantee.
 ## Visual language
 
 Continue the story-edition painterly 2.5D visual family. Founder John appears
-only in CP01–CP02 to move from an all-or-nothing phone choice to a private-list
-demonstration with five distinct sample people. CP03 introduces a different,
-product-demo-owned six-user cast that stays unchanged through CP07. Their own
-private lists reveal a reciprocal group, then become a shared plan, a real
+only in CP01–CP03 to move from an all-or-nothing phone choice to one private
+priority and then a list demonstration with five distinct sample people. CP04
+introduces a different, product-demo-owned six-user cast that stays unchanged
+through CP08. Their own
+private lists help reveal a contextual group, then become a shared plan, a real
 table and a warmer next invitation. Amber is private intent, aqua is
 reciprocal/contextual evidence, coral is the possible group.
 

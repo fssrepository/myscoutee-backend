@@ -1,6 +1,8 @@
 # Social release notes
 
-The creative is one 48-second vertical master, not separate platform stories.
+The creative is one sub-minute vertical master built from a 56-second source
+timeline, not separate platform stories. Repeated seam-frame removal gives an
+expected `00:54.250` picture lock.
 The user's own result—Facebook Reel attention falling away around 00:37—is the
 editing constraint, not a universal algorithm claim.
 
@@ -16,16 +18,17 @@ Flow shot continues underneath.
 English primary:
 
 > A match is not a meeting. MyScoutee is designed around the missing path:
-> private priority lists, a reciprocal group, one shared plan, and a real meeting.
+> private priority lists considered with context, one possible group, one shared
+> plan, and a real meeting.
 > The software exists. Now the meeting-first workflow needs testing with real
 > users.
 
 Hungarian translation:
 
 > A match nem találkozás. A MyScoutee a hiányzó útra épül: privát szándék,
-> kölcsönös prioritásokból összeálló csoport, közös terv és valódi találkozás. A szoftver
-> elkészült. A találkozásközpontú folyamatot most valódi felhasználókkal kell
-> tesztelni.
+> kontextussal együtt figyelembe vett prioritások, egy lehetséges csoport,
+> közös terv és valódi találkozás. A szoftver elkészült. A
+> találkozásközpontú folyamatot most valódi felhasználókkal kell tesztelni.
 
 Suggested tags: `#MyScoutee #OnlineDating #CommunityBuilding #RealWorldConnection`
 
@@ -33,7 +36,7 @@ Suggested tags: `#MyScoutee #OnlineDating #CommunityBuilding #RealWorldConnectio
 
 - YouTube: English spoken language, English auto-caption corrected from the
   transcript, Hungarian manual track uploaded separately.
-- Facebook: upload `MyScoutee_Product_Reel.hu_HU.srt` for Hungarian; never rename
+- Facebook: upload `MyScoutee_The_Product.hu_HU.srt` for Hungarian; never rename
   it to `en_US`.
 - LinkedIn: upload the same clean master; if sidecar captions are unavailable in
   the chosen post flow, create a separate burned-Hungarian-caption derivative,

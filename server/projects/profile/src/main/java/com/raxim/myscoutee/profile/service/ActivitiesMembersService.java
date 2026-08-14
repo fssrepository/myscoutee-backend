@@ -34,8 +34,10 @@ import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberInviteRejectionDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberStatusDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberSyncKnownItemDto;
@@ -2162,7 +2164,7 @@ public class ActivitiesMembersService {
         return REQUEST_KIND_JOIN;
     }
 
-    public List<ActivityMemberEntryDto> inviteEventMembers(ActivityMembersInviteRequestDto request) {
+    public ActivityMembersInviteResponseDto inviteEventMembers(ActivityMembersInviteRequestDto request) {
         String ownerType = normalizeOwnerType(request == null || request.owner() == null
                 ? null
                 : request.owner().ownerType());
@@ -2181,16 +2183,19 @@ public class ActivitiesMembersService {
         }
 
         ActivityEvent eventRecord = findPreferredEventRecord(eventId);
-        List<String> newlyInvitedUserIds = persistEventInvites(
+        EventInvitePersistenceResult result = persistEventInvites(
                 eventId,
                 actorUserId,
                 request == null ? List.of() : request.userIds(),
                 eventRecord);
         eventInviteNotificationService.notifyInvitees(
                 eventRecord,
-                newlyInvitedUserIds,
+                result.invitedUserIds(),
                 actorUserId);
-        return queryMembers(OWNER_TYPE_EVENT, eventId, false, null, null);
+        return new ActivityMembersInviteResponseDto(
+                queryMembers(OWNER_TYPE_EVENT, eventId, false, null, null),
+                result.invitedUserIds(),
+                result.rejections());
     }
 
     public List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
@@ -2210,10 +2215,11 @@ public class ActivitiesMembersService {
                 normalizedEventId,
                 actorUserId,
                 invitedUserIds,
-                eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord);
+                eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord)
+                .invitedUserIds();
     }
 
-    private List<String> persistEventInvites(
+    private EventInvitePersistenceResult persistEventInvites(
             String eventId,
             String actorUserId,
             List<String> invitedUserIds,
@@ -2227,7 +2233,7 @@ public class ActivitiesMembersService {
         }
     }
 
-    private List<String> persistEventInvitesLocked(
+    private EventInvitePersistenceResult persistEventInvitesLocked(
             String eventId,
             String actorUserId,
             List<String> invitedUserIds,
@@ -2245,14 +2251,17 @@ public class ActivitiesMembersService {
 
         List<ActivityMember> membersToSave = new ArrayList<>();
         List<String> newlyInvitedUserIds = new ArrayList<>();
+        List<ActivityMemberInviteRejectionDto> rejections = new ArrayList<>();
         for (String userId : normalizeUserIds(invitedUserIds)) {
             ActivityMember current = existingByUserId.get(userId);
             if (current != null && !STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                rejections.add(new ActivityMemberInviteRejectionDto(userId, "already-member"));
                 continue;
             }
             List<ActivityMember> occupancy = new ArrayList<>(existing);
             occupancy.addAll(membersToSave);
             if (isCapacityFullForJoin(eventRecord, occupancy, userId)) {
+                rejections.add(new ActivityMemberInviteRejectionDto(userId, "capacity-full"));
                 continue;
             }
 
@@ -2286,7 +2295,14 @@ public class ActivitiesMembersService {
             refreshEmbeddedEventMembers(eventId, false);
             userActivityCountersService.refreshEventCountersForUsers(newlyInvitedUserIds);
         }
-        return newlyInvitedUserIds;
+        return new EventInvitePersistenceResult(
+                List.copyOf(newlyInvitedUserIds),
+                List.copyOf(rejections));
+    }
+
+    private record EventInvitePersistenceResult(
+            List<String> invitedUserIds,
+            List<ActivityMemberInviteRejectionDto> rejections) {
     }
 
     public int sweepEventWaitlists() {
