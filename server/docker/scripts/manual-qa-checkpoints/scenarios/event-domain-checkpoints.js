@@ -5478,6 +5478,94 @@
     });
   }
 
+  function captureParticipantLifecycleBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-004") {
+      Q.fail("capture-participant-lifecycle-baseline currently supports only EVENT-LIFE-004.");
+    }
+    const state = requireMatchingState();
+    if (state.participantLifecycleBaseline && state.participantLifecycleBaseline.capturedAtIso) {
+      Q.fail("EVENT-LIFE-004 already has a saved participant lifecycle baseline.");
+    }
+    const current = oracle(state);
+    const event = (current.events || []).find(item => item.eventId === EVENT_ID);
+    const acceptedMembers = (current.members || [])
+      .filter(member => member.eventId === EVENT_ID && member.status === "accepted");
+    const countersByUserId = new Map((current.userActivityCounters || [])
+      .map(item => [Q.text(item.user && item.user.userId), item.current || {}]));
+    const hostCounters = countersByUserId.get(hostUserId) || {};
+    const participantCounters = countersByUserId.get(participantUserId) || {};
+    const hostEvent = hostCounters.event || {};
+    const participantEvent = participantCounters.event || {};
+    if ((current.events || []).length !== 1
+        || !event
+        || event.status !== "A"
+        || event.isTrashed !== false
+        || event.statusBeforeSuppression
+        || event.trashedAtIso
+        || event.acceptedMembers !== 2
+        || event.capacityTotal !== 8
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || acceptedMembers.length !== 2
+        || !acceptedMembers.some(member => member.userId === hostUserId && member.role === "Admin")
+        || !acceptedMembers.some(member => member.userId === participantUserId && member.role === "Member")
+        || Number(hostCounters.hosting || 0) !== 1
+        || Number(hostEvent.all || 0) !== 1
+        || Number(hostEvent.hosting || 0) !== 1
+        || Number(hostEvent.trash || 0) !== 0
+        || Number(participantCounters.events || 0) !== 1
+        || Number(participantEvent.all || 0) !== 1
+        || Number(participantEvent.active || 0) !== 1
+        || Number(participantEvent.trash || 0) !== 0
+        || (current.eventLifecycleTasks || []).length !== 0
+        || (current.eventLifecycleOutbox || []).length !== 0
+        || (current.eventLifecycleNotifications || []).length !== 0
+        || (current.eventRecomputeTasks || []).length !== 0) {
+      Q.fail("EVENT-LIFE-004 is not at the exact clean active Casey/Nova 2 / 8 baseline.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const participantLifecycleBaseline = {
+      capturedAtIso,
+      events: current.events,
+      members: current.members,
+      resources: lifecycleResourceSnapshot(),
+      checkoutBasketItems: current.checkoutBasketItems,
+      payments: current.payments,
+      tickets: current.tickets,
+      eventChats: current.eventChats,
+      eventLifecycleTasks: current.eventLifecycleTasks,
+      eventLifecycleOutbox: current.eventLifecycleOutbox,
+      eventLifecycleNotifications: current.eventLifecycleNotifications,
+      eventRecomputeTasks: current.eventRecomputeTasks
+    };
+    const lifecycleActionBaselineUserActivitySnapshots = [hostUserId, participantUserId]
+      .map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { participantLifecycleBaseline, lifecycleActionBaselineUserActivitySnapshots }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "participant-lifecycle-baseline-captured",
+      capturedAtIso,
+      event: {
+        eventId: event.eventId,
+        status: event.status,
+        acceptedMembers: event.acceptedMembers,
+        acceptedMemberUserIds: event.acceptedMemberUserIds,
+        capacityTotal: event.capacityTotal
+      },
+      counters: { host: hostCounters, participant: participantCounters },
+      cardinality: {
+        events: current.events.length,
+        members: current.members.length,
+        resources: participantLifecycleBaseline.resources.length,
+        tickets: current.tickets.length
+      },
+      next: "Nova leaves the retained active event exactly once; Casey does not interact."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5575,6 +5663,7 @@
     case "verify-lifecycle-trash": verifyLifecycleTrash(); break;
     case "capture-lifecycle-restore-baseline": captureLifecycleRestoreBaseline(); break;
     case "verify-lifecycle-restore": verifyLifecycleRestore(); break;
+    case "capture-participant-lifecycle-baseline": captureParticipantLifecycleBaseline(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

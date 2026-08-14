@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-LIFE-003
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-003--organizer-restore-returns-to-the-preserved-bucket
+checkpoint: EVENT-LIFE-004
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-004--participant-leaverestore-is-not-organizer-trash
 scenario: event-domain
 ledger_status: NOT RUN
-state: EVENT-LIFE-002 remains PASS/CLOSED. A deliberate full dev-stack seed reset removed its retained transactional documents; this is expected reset semantics, not a mongodb-sync defect and does not reopen the closed Delete/counter checks. The guarded stale EVENT-LIFE-002 state was discarded and EVENT-LIFE-003 was staged directly at 2026-08-14T11:07:46.026Z. Its first baseline exposed and then fixed a harness-only participant Trash-counter error; the corrected baseline is canonical T/statusBeforeSuppression=A/trashedAtIso, Casey Admin + Nova Member 2/8, Casey Trash=1 and Nova Active/All/Trash=0, with no lifecycle/recompute artifacts. No Restore producer has run. Casey is now being asked to confirm the single Trash card before Restore. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Do not replay EVENT-LIFE-002 Delete. Run status event-domain EVENT-LIFE-003; require the corrected direct Trash baseline with Casey Trash=1, Nova Active/All/Trash=0 and no lifecycle/recompute artifacts. If intact, continue the current Casey UI baseline observation and then execute Restore exactly once. If a deliberate full dev-stack reset has removed the transaction again, use guarded discard-stale plus direct EVENT-LIFE-003 stage; do not reinterpret the reset as a server defect and do not replay the closed Delete checkpoint
-event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-14T11:07:46.088Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
+state: EVENT-LIFE-003 organizer Restore is PASS/CLOSED and must not be replayed. Its in-place Nova poll, Casey/Nova fresh-bundle reads, write-side identity/cardinality/counters and one terminal EVENT_CHANGED recompute passed. The retained identity advanced exactly once into EVENT-LIFE-004 at 2026-08-14T11:25:24.480Z. A dedicated participant lifecycle baseline was captured at 11:27:35.272Z: one active public event, Casey Admin + Nova Member 2/8, Casey My Events/All/Trash 1/1/0, Nova Active/All/Trash 1/1/0, zero resource/ticket/lifecycle/recompute artifacts after the advance. No participant Leave producer has run. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Run status event-domain EVENT-LIFE-004 and require the saved active Casey/Nova 2/8 pre-Leave boundary. Do not replay EVENT-LIFE-002 Delete or EVENT-LIFE-003 Restore. If intact, Nova opens Active Events, leaves the single retained QA EVENT-LIFE-003 card exactly once and observes the immediate personal Trash transition while Casey remains untouched; capture the persisted leave boundary before giving the personal Restore action
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-003 retained physical identity; active A/public/ticketing off, Casey owner/Admin and Nova accepted Member 2/8
 actors:
-  active: Casey and Nova in two managed browser windows; Casey is the current actor and Nova remains closed/untouched until the post-Restore control read
-  controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: User confirms Casey Events > Trash counter 1 and one QA EVENT-LIFE-003 card without pressing Restore; Codex then gives the single Restore producer instruction
-stop_phrase: megvan after the corrected Casey Trash baseline is visible; no Restore producer yet
+  active: Casey and Nova in two managed EVENT-LIFE-003 browser windows; keep both and do not relaunch because EVENT-LIFE-004 uses the same two actors
+  controls: Casey remains the untouched organizer control during Nova Leave; no third browser is needed
+next_actor: User performs Nova participant Leave exactly once from Active Events and reports the immediate Active/Trash behavior; Casey does not interact
+stop_phrase: user reports the immediate Nova Leave result; no participant Restore producer yet
 ```
 
 ### Efficient resume gate

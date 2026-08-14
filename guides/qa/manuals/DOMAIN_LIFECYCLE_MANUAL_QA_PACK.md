@@ -976,6 +976,19 @@ Baseline evidence on 2026-08-13:
   attachment or ticket credential may be created.
 - Require one event recompute signal. Refreshing after the completed restore is
   a read-only `X` checkpoint.
+- Executed **PASS/CLOSED** on 2026-08-14. Casey saw Trash `1` and the single
+  staged card, then restored it exactly once. The card/counter disappeared
+  in-place and Nova's normal foreground poll exposed the restored event without
+  reload. The persisted oracle retained exactly one event identity and the
+  exact Casey Admin + Nova Member `2 / 8`; status returned to `A`, published was
+  true, suppression fields cleared, and member/resource/basket/payment/ticket/
+  chat/lifecycle-notification cardinality stayed unchanged (`1/2/0/0/0/0/0`).
+  Casey counters changed Hosting/My Events `+1`, Trash `-1`; Nova changed
+  Events/Active/All `+1` with Trash unchanged at `0`. Fresh reloads reproduced
+  the same single card for Casey My Events and Nova Active/All without creating
+  another task. The guarded terminal verifier passed at
+  `2026-08-14T11:23:42.462Z` with one completed coalesced recompute record
+  containing `EVENT_CHANGED`. Organizer Restore must not be replayed.
 
 ### `EVENT-LIFE-004` — participant leave/restore is not organizer trash
 
