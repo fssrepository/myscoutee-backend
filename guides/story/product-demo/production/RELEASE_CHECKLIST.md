@@ -21,6 +21,10 @@
   screen-side continuity.
 - [ ] No duplicate/merged person, bad hand, camera jump, generated text or logo.
 - [ ] One clear action and one restrained camera move.
+- [ ] In S02 the priority board stays card-sized in its lower-right final slot
+  on every intermediate frame; it never grows in the center.
+- [ ] S02 preserves one black desk lamp, one warm fabric lampshade and closed
+  books; no duplicate lamp or manuscript appears.
 - [ ] Private priorities never become public human scores; the resulting group
   is possible rather than forced or guaranteed.
 - [ ] Record the charged credits and one concrete defect before any retry.

@@ -44,9 +44,12 @@ and the counters do not form a straight diagonal. Each portrait has an amber
 marker row with exactly one colored circular position counter matching its
 dotted path: golden yellow, turquoise, coral red, leaf green and violet. Five
 colored dotted paths reach a small central round table. John remains visible
-only as the live Founder below the demonstration. The objects show private
-editable ordering, never public human worth. None of the five sample identities
-returns in CP04–CP08.
+only as the live Founder below the demonstration. His wooden desk and its
+closed books remain visible; one black desk lamp and one small warm fabric
+lampshade preserve the CP02 room continuity. A quiet low bookcase and plant sit
+in the background. There is no manuscript, loose paper or second black lamp.
+The objects show private editable ordering, never public human worth. None of
+the five sample identities returns in CP04–CP08.
 
 ## `PR_CP04` — six people arrange their own lists
 

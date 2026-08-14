@@ -1,29 +1,51 @@
 Create one continuous 8-second portrait 9:16 Frames-to-Video clip with Veo 3.1
 Lite. Use PR_CP02.png as the exact first frame and PR_CP03.png as the exact last
-frame.
+frame. Every person shown is an original fictional character created for this
+project.
 
-All people are original fictional characters created for this project.
+Begin on the exact PR_CP02 composition. During seconds 0–1.5, the fictional
+Founder makes one deliberate action: he slides the existing aqua counter once
+into his row of ten amber position markers, then his hand settles. No card flip
+and no second action.
 
-Make one simple, smooth transition between the supplied frames. Do not invent
-an intermediate composition. John slides the existing aqua counter once. Use
-only one slow, even camera pullback to reach the wider final view.
+From seconds 1.5–7, use one smooth, slow camera pullback with a very slight
+lift. No cut. The Founder and wooden desk remain continuously visible; the
+camera move naturally carries them toward their exact smaller, lower PR_CP03
+position. Preserve his identity, face, clothes, scarf, hands and restrained
+expression.
 
-John and the wooden desk remain continuously visible. Preserve his identity,
-clothing, hands and every desk object without distortion or replacement.
+The wider room is the same physical place. Preserve exactly one large black
+desk lamp, one small warm fabric lampshade, the phone, cup, portrait card, blank
+card, ten amber markers, aqua counter and closed leather-bound books. The quiet
+bookcase and plant are revealed only as background scenery. No duplicate lamp,
+manuscript, loose paper, open book or new desk object.
 
-During the pullback, the five portrait cards and the small priority board appear
-together directly in their exact final PR_CP03 positions. Do not build or
-animate the board separately. It remains card-sized in the lower-right sixth
-position for its entire appearance. It never appears in the center, never
-grows larger and never covers John or another card.
+As the camera widens, reveal the complete private-priority demonstration in
+the exact PR_CP03 geometry. The five portrait cards and the one equal
+card-sized priority board are already arranged in depth at their six final
+positions; they become visible together through gradual lamplight and focus.
+They do not fly in, unfold, flip, swap, assemble or travel across the frame.
 
-Let the supplied final frame determine every portrait, counter, path, board
-detail and position. Reach PR_CP03 exactly by second 7 and hold it through the
-end.
+The priority board is locked to the lower-right sixth-card position from its
+first visible moment and remains the same card size on every intermediate
+frame. Never place it in the center, above the Founder, on the desk or
+full-screen. Do not animate, enlarge, shrink, rotate or relocate the board as a
+separate object.
 
-No cut, extra layout, full-screen board, readable text, logo, public score,
-card flip, face morph, duplicate person, disappearing John or disappearing
-desk. Keep movement restrained and physically coherent.
+Preserve the supplied portrait order and exactly one selected counter per
+amber row: yellow upper-left, turquoise upper-right, coral-red middle-left,
+leaf-green middle-right and violet lower-left. The board has exactly five
+horizontal tracks and one matching counter per track at the supplied private
+positions 9, 7, 7, 4, 2 from top to bottom; the two 7 counters are horizontally
+aligned. Show no digits, labels, interface text or public human score.
+
+The five matching dotted paths may illuminate gently in place and converge on
+the single small round wooden meeting table already shown in PR_CP03. Keep the
+table fixed and separate from the Founder.
+
+Reach the exact PR_CP03 endpoint by second 7 and hold it unchanged for the last
+second. No intermediate layout, face morph, duplicate person, extra hand,
+disappearing Founder or disappearing desk.
 
 Generate restrained original instrumental music continuing the previous
 clip's mood: warm felt-piano fragments, low bowed texture, soft hand percussion,

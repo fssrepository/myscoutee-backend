@@ -57,7 +57,13 @@
       : [];
   }
 
-  function assertCurrentInvariants(values) {
+  function expectedOutcomes(checkpointState) {
+    return checkpointState && checkpointState.blockedReplayRequired
+      ? ["ACCEPTED", "ACCEPTED", "BLOCKED_LIMIT", "BLOCKED_LIMIT", "ACCEPTED"]
+      : ["ACCEPTED", "ACCEPTED", "BLOCKED_LIMIT", "ACCEPTED"];
+  }
+
+  function assertCurrentInvariants(values, checkpointState) {
     const sessions = activeSessions(values.state);
     if (sessions.length > 2) Q.fail(`found ${sessions.length} active sessions; maximum is 2.`);
     const sessionIds = sessions.map(item => Q.text(item.sessionId));
@@ -69,7 +75,7 @@
       Q.fail("login audit attempt identifiers are blank or duplicated.");
     }
     const outcomes = values.audits.map(item => Q.text(item.outcome));
-    const expectedPrefix = ["ACCEPTED", "ACCEPTED", "BLOCKED_LIMIT", "ACCEPTED"];
+    const expectedPrefix = expectedOutcomes(checkpointState);
     outcomes.forEach((value, index) => {
       if (value !== expectedPrefix[index]) {
         Q.fail(`audit ${index + 1} has outcome '${value}', expected '${expectedPrefix[index]}'.`);
@@ -112,14 +118,18 @@
     return { sessions, expectedWarnings };
   }
 
-  function nextInstruction(auditCount, sessionCount, reloadAProven) {
+  function nextInstruction(auditCount, sessionCount, reloadAProven, blockedReplayRequired) {
     if (auditCount === 0) return "In client A choose Member and sign in as Nova Social once.";
     if (auditCount === 1 && !reloadAProven) return "Reload client A once, prove it stays usable, then run capture-reload before signing in B.";
     if (auditCount === 1) return "In client B choose Member and sign in as Nova Social once; A must receive one normalized security warning.";
     if (auditCount === 2) return "In client C choose Member and attempt Nova Social once; it must remain on Entry with the two-session warning.";
+    if (auditCount === 3 && sessionCount === 2 && blockedReplayRequired) return "Reload client C onto the repaired frontend and repeat the blocked Nova Social attempt once.";
     if (auditCount === 3 && sessionCount === 2) return "Explicitly log out client A once, then run status before retrying C.";
     if (auditCount === 3 && sessionCount === 1) return "Retry Nova Social once in client C; it must now enter as the second active session.";
+    if (auditCount === 4 && sessionCount === 2 && blockedReplayRequired) return "Explicitly log out client A once, then run status before retrying C.";
+    if (auditCount === 4 && sessionCount === 1 && blockedReplayRequired) return "Retry Nova Social once in client C; it must now enter as the second active session.";
     if (auditCount === 4 && sessionCount === 2) return "Capture A/B/C UI evidence and record AUTH-SESSION-001 PASS/CLOSED.";
+    if (auditCount === 5 && sessionCount === 2 && blockedReplayRequired) return "Capture A/B/C UI evidence and record AUTH-SESSION-001 PASS/CLOSED with the preserved blocked UI repair replay.";
     return "Stop: the persisted session boundary does not match an expected AUTH-SESSION-001 phase.";
   }
 
@@ -167,7 +177,7 @@
     config();
     const checkpointState = requireState();
     const values = documents();
-    const checked = assertCurrentInvariants(values);
+    const checked = assertCurrentInvariants(values, checkpointState);
     if (values.audits.length !== 1 || checked.sessions.length !== 1
         || values.notifications.length !== 0 || values.outbox.length !== 0) {
       Q.fail("client A reload proof requires exactly one audit, one active session and no security warning.");
@@ -186,6 +196,30 @@
       auditCount: 1,
       securityNotificationCount: 0,
       next: "In client B choose Member and sign in as Nova Social once."
+    });
+  }
+
+  function armBlockedReplay() {
+    config();
+    const checkpointState = requireState();
+    const values = documents();
+    const checked = assertCurrentInvariants(values, checkpointState);
+    if (values.audits.length !== 3 || checked.sessions.length !== 2
+        || values.notifications.length !== 2 || values.outbox.length !== 2) {
+      Q.fail("blocked UI replay can be armed only after the first exact BLOCKED_LIMIT boundary.");
+    }
+    const armedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: checkpointState._id },
+      { $set: { blockedReplayRequired: true, blockedReplayArmedAtIso: armedAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "blocked-ui-replay-armed",
+      armedAtIso,
+      preservedAuditCount: 3,
+      next: "Reload client C onto the repaired frontend and repeat the blocked Nova Social attempt once."
     });
   }
 
@@ -209,13 +243,16 @@
       return;
     }
     const values = documents();
-    const checked = assertCurrentInvariants(values);
+    const checked = assertCurrentInvariants(values, state);
+    const terminalAuditCount = state.blockedReplayRequired ? 5 : 4;
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
-      phase: values.audits.length === 4 && checked.sessions.length === 2 ? "complete" : "active",
+      phase: values.audits.length === terminalAuditCount && checked.sessions.length === 2 ? "complete" : "active",
       stagedAtIso: state.stagedAtIso,
       reloadAProvenAtIso: state.reloadAProvenAtIso || null,
+      blockedReplayRequired: Boolean(state.blockedReplayRequired),
+      blockedReplayArmedAtIso: state.blockedReplayArmedAtIso || null,
       activeSessionCount: checked.sessions.length,
       activeSessions: checked.sessions.map(item => ({
         sessionId: Q.text(item.sessionId),
@@ -236,9 +273,22 @@
         userAgentHash: Q.text(item.userAgentHash)
       })),
       securityNotificationCount: values.notifications.length,
+      securityNotifications: values.notifications.map(item => ({
+        notificationId: Q.text(item.notificationId || item._id),
+        readAtIso: item.readAtIso || null,
+        titleKey: Q.text(item.payload && item.payload.notification_title_key),
+        messageKey: Q.text(item.payload && item.payload.notification_message_key),
+        clientLabel: Q.text(item.payload && item.payload.clientLabel),
+        loginOutcome: Q.text(item.payload && item.payload.loginOutcome)
+      })),
       securityOutboxCount: values.outbox.length,
       expectedWarningCount: checked.expectedWarnings,
-      next: nextInstruction(values.audits.length, checked.sessions.length, Boolean(state.reloadAProvenAtIso))
+      next: nextInstruction(
+        values.audits.length,
+        checked.sessions.length,
+        Boolean(state.reloadAProvenAtIso),
+        Boolean(state.blockedReplayRequired)
+      )
     });
   }
 
@@ -267,6 +317,7 @@
     case "stage": stage(); break;
     case "status": status(); break;
     case "capture-reload": captureReload(); break;
+    case "arm-blocked-replay": armBlockedReplay(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

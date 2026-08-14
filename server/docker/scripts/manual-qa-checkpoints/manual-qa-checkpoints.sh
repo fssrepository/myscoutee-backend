@@ -106,6 +106,7 @@ Usage:
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
+  bash manual-qa-checkpoints.sh arm-blocked-replay auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh reset auth-session AUTH-SESSION-001
 
 The default schedule delay is 30 seconds; accepted values are 10..120.
@@ -283,7 +284,7 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   entry-domain:stage|entry-domain:status|entry-domain:verify|entry-domain:reset|\
-  auth-session:stage|auth-session:status|auth-session:capture-reload|auth-session:reset|\
+  auth-session:stage|auth-session:status|auth-session:capture-reload|auth-session:arm-blocked-replay|auth-session:reset|\
   entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:repair-stage|entry-consent:verify|entry-consent:preview-v5|entry-consent:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"

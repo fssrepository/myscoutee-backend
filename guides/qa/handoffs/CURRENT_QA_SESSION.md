@@ -33,16 +33,16 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: AUTH-SESSION-001 — two-session limit, new-login warning and audit
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#auth-session-001--two-session-limit-new-login-warning-and-audit
-scenario: auth-session (fixture route not yet implemented)
+scenario: auth-session
 ledger_status: DESIGN CAPTURED / NOT RUN
-state: EVENT-INV-006 is PASS/CLOSED in pack/CSV/XLSX and reset/not-staged at 2026-08-14T19:18:45.473Z; never replay either acceptance. Open and Blind each ended accepted2/pending1 with the expected role-scoped recipients, one join row per event, zero chat-message notifications, and both recompute tasks terminal once/empty error. The dev profile now uses a 15s event-members-changed debounce through AFFINITY_RECOMPUTE_EVENT_MEMBERS_CHANGED_DEBOUNCE while production retains 5m; this keeps the real worker observable without a five-minute manual wait. The next unclosed core ledger row is AUTH-SESSION-001. Its definition exists, but the manual checkpoint fixture/oracle route has not yet been implemented and the role-isolation windows cannot be reused as evidence.
-required_resume: Do not stage event-domain or reopen the closed INV-006 producers. Audit the server-authoritative active-session/login-audit implementation and existing authentication tests first. Add a guarded AUTH-SESSION-001 fixture/oracle route if missing, with exact A/B/C session identities and cleanup; then replace the three role-isolation browsers with exactly three fresh isolated profiles for one controlled account. Prove a clean zero-session/audit/warning baseline before issuing login A.
-event: EVENT-INV-006 reset and not staged; AUTH-SESSION-001 has no staged state yet
+state: EVENT-INV-006 is PASS/CLOSED and reset/not-staged; never replay either acceptance. AUTH-SESSION-001 is active. Branch A login/reload and Branch B second login are proven. First C BLOCKED_LIMIT attempt exposed a generic selector error; the repaired C replay at 2026-08-14T20:09:16.631777810Z preserved the first immutable attempt and produced the exact ordered ACCEPTED/ACCEPTED/BLOCKED_LIMIT/BLOCKED_LIMIT audit sequence. Two active sessions remained, and three normalized unread security notification/outbox rows exist. C stayed on Entry and rendered “Two sessions are already active. Sign out from one of them, then try again.” with no raw key. A and B both converged in-place to notification counter 3. The got.it/demo-bundle race and selector error-propagation fixes remain queued for final accepted-C replay evidence.
+required_resume: Explicitly log out Client A once through the ordinary visible Logout action. Do not close the window and do not touch B or C. Then run status auth-session AUTH-SESSION-001 and require activeSessionCount=1 with B retained, auditCount=4 unchanged, and security notification/outbox counts still 3. Only after that oracle may C retry.
+event: AUTH-SESSION-001 blocked-UI repair replay PASS; activeSessionCount=2, auditCount=4, securityNotificationCount=3, securityOutboxCount=3; A/B visible counters both 3
 actors:
-  active: Casey port33251, Nova port40387 and Riley port44173 are stale role-isolation documents after the closed fixture reset; keep the three-window maximum but do not use these documents as AUTH evidence
-  controls: AUTH will use three fresh isolated client identities A/B/C authenticated as the same controlled user; exact ports/pages are assigned only after fixture readiness
-next_actor: Codex audits AUTH-SESSION-001 implementation and creates/proves its guarded fixture/oracle before replacing the existing three managed documents; no user action now.
-stop_phrase: AUTH clean baseline and exact A/B/C browser identities proven before login A
+  active: Client A port41963, Client B port36767 and Client C port44279 are fresh isolated anonymous Entry documents opened at 2026-08-14T19:44:19.539Z
+  controls: all three will authenticate as the same controlled Nova Social account; B and C must remain untouched during Branch A
+next_actor: User explicitly logs out only Client A through the visible UI; Codex proves the server slot was released before C retries.
+stop_phrase: megvan
 ```
 
 ### Efficient resume gate
@@ -107,12 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Prepare `AUTH-SESSION-001 — two-session limit, new-login warning and audit`.
-Audit the server-authoritative session implementation and add the missing
-guarded fixture/oracle route before changing browsers. Then replace, rather
-than add to, the three stale role-isolation documents with exactly three fresh
-clients A/B/C for one controlled account. Do not ask for login A until the
-zero-session/audit/warning baseline is proven.
+`AUTH-SESSION-001 — two-session limit, new-login warning and audit`, Branch A.
+The guarded clean baseline and the three exact isolated A/B/C clients are
+ready. Sign in only Client A as Nova Social; leave B and C untouched. The next
+machine oracle must show one accepted audit, one active session and zero
+security warnings before the reload branch.
 
 ## QA working method
 
