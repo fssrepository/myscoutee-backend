@@ -1,0 +1,10 @@
+{
+  "kind": "standalone-product-mini-book",
+  "status": "public-package",
+  "version": "1.0.0",
+  "locked": false,
+  "updated": "2026-08-14",
+  "published": "2026-08-20",
+  "language": "en-first",
+  "translations": ["hu"]
+}

@@ -1,0 +1,25 @@
+{
+  "file": "MyScoutee_A_Match_Nem_Talalkozas_v1.0.0_HU.pdf",
+  "sha256": "e3f8f2431b568110b90e04785f0ed6e06f6d45c01caed20bd3e7df73307b4b5c",
+  "kind": "standalone-product-mini-book",
+  "edition_version": "1.0.0",
+  "published": "2026-08-20",
+  "sourceLanguage": "en",
+  "translationOf": "MyScoutee_A_Match_Is_Not_A_Meeting_v1.0.0_EN.pdf",
+  "metadata": {
+    "title": "A match nem találkozás",
+    "subtitle": "A profiltól egy valódi közös találkozásig",
+    "author": "MyScoutee",
+    "subject": "Rövid termékkönyv a profil és a kölcsönösen vállalt valós találkozás közötti útról",
+    "keywords": [
+      "MyScoutee",
+      "társkeresés",
+      "találkozás",
+      "csoport",
+      "közösség"
+    ],
+    "creator": "MyScoutee mini-book builder",
+    "language": "hu",
+    "copyright": "© 2026 MyScoutee. Minden jog fenntartva."
+  }
+}

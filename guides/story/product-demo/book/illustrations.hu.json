@@ -1,0 +1,14 @@
+{
+  "missing_middle": {
+    "file": "assets/illustrations/missing-middle.jpg",
+    "placement": "full",
+    "alt": "Az Alapító az online jelzéstől a közös program és a valódi találkozóhely felé vezető utat rendezi",
+    "caption": "A match valós. Az időpontnak, a helynek és a közös tervnek még utat kell építeni."
+  },
+  "after_door_opens": {
+    "file": "assets/illustrations/after-door-opens.jpg",
+    "placement": "full",
+    "alt": "Ugyanazok a felnőttek együtt távoznak a közös programról, miközben megszületik egy későbbi meghívás",
+    "caption": "A találkozás után a következő meghívás már közös élményből indulhat."
+  }
+}

@@ -1,0 +1,22 @@
+Create exactly one continuous 8-second 9:16 Frames-to-Video clip using
+Veo 3.1 Lite. Use M1_CP19.png as the exact first frame and M1_CP20.png as the
+exact last frame. Attach M1_LOCAL_PROVIDER.png as the identity reference for the
+only local provider.
+
+Begin with the same six adults around the same table. Move gently toward the
+tabletop during seconds 0–2. During seconds 2–6, small continuous hand movements
+turn blank planning cards into exactly four large handmade pictograms in a
+two-by-two grid: six adult figures, one bus and route, one building with open
+door and key, and one crate of ordinary supplies. Keep one small blank check-in
+card and one separate blank feedback card below them. No readable words.
+
+During seconds 6–8, pull back smoothly and reveal the single exact provider
+already crossing the doorway with the crate. He appears once and bends naturally
+into the exact final pose. End exactly on M1_CP20.png.
+
+Lock all six seated identities and the provider's referenced face, dark beard,
+black knit cap, charcoal hooded shirt, apron, age and body. No second provider,
+identity swap, repeated entrance, fifth resource, logo, caption, child, forced
+couple or visible speech. Generate one result only, exact 8 seconds, Veo 3.1
+Lite, first and last frames, 9:16. Retain the generated instrumental music,
+ambience and physical foley; no speech, vocalization or singing.
