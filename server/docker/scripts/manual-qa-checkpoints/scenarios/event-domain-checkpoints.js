@@ -3731,7 +3731,7 @@
       recipientUserId: Q.text(item.recipientUserId),
       title: Q.text(item.title),
       body: Q.text(item.body || item.message),
-      actorUserId: Q.text(item.actorUserId),
+      actorUserId: Q.text(item.actorUserId || item.createdUser || item.updatedUser),
       senderUserId: Q.text(item.senderUserId),
       readAtIso: Q.text(item.readAtIso),
       createdDate: Q.text(item.createdDate),
@@ -3923,6 +3923,9 @@
     if (!lifecycle || !lifecycle.preparedAtIso) {
       Q.fail("TOURNAMENT-004 has no guarded T003 carry-forward baseline.");
     }
+    if (!lifecycle.startWindowPreparedAtIso) {
+      Q.fail("TOURNAMENT-004 Final Start has no guarded startable fixture window.");
+    }
     if (lifecycle.startVerifiedAtIso) {
       Q.fail("TOURNAMENT-004 Final Start is already verified; do not replay it.");
     }
@@ -3945,6 +3948,7 @@
       .filter(entry => entry.subEventId === qualifierId);
     const qualifierLeaderboardNow = (domain.leaderboard || [])
       .filter(entry => entry.subEventId === qualifierId);
+    const retestDomain = lifecycle.startRecipientRetestDomainBaseline;
     if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
         || !qualifierRuntime || Q.text(qualifierRuntime.stageStatus).toUpperCase() !== "F"
         || !sameJson(qualifierLeaderboardNow, qualifierLeaderboardBefore)
@@ -3957,6 +3961,14 @@
         || actualFinalUsers.includes(participantUserId)
         || domain.planMarkers.length !== 1) {
       Q.fail("Final Start did not preserve Qualifiers while activating exactly the Casey+Riley Final boundary.");
+    }
+    if (retestDomain
+        && (!sameJson(domain.finalRooms, retestDomain.finalRooms)
+          || !sameJson(domain.finalGroups, retestDomain.finalGroups)
+          || !sameJson(domain.finalGroupMembers, retestDomain.finalGroupMembers)
+          || !sameJson(domain.chats, retestDomain.chats)
+          || !sameJson(domain.planMarkers, retestDomain.planMarkers))) {
+      Q.fail("the focused Final Start notification replay duplicated or changed its already-proven room boundary.");
     }
     const finalRoomMemberUserIds = sortedUnique(domain.finalRooms
       .flatMap(room => room.acceptedMemberUserIds || []));
@@ -4014,6 +4026,282 @@
       next: deliveredStart.length > 0
         ? "Compare the three live notification lists: Riley has one new Final started row; Casey and Nova have none."
         : "Wait for the existing notification-outbox worker, then rerun this verifier before comparing the three live lists."
+    });
+  }
+
+  function repairTournamentFinalStartWindow() {
+    config();
+    if (checkpointId !== "TOURNAMENT-004") {
+      Q.fail("repair-tournament-final-start-window is restricted to TOURNAMENT-004.");
+    }
+    const state = requireMatchingState();
+    const lifecycle = state.tournamentFinalLifecycle;
+    if (!lifecycle || !lifecycle.preparedAtIso) {
+      Q.fail("TOURNAMENT-004 has no guarded T003 carry-forward baseline.");
+    }
+    if (lifecycle.startVerifiedAtIso) {
+      Q.fail("TOURNAMENT-004 Final Start is already verified; its fixture window must not be changed.");
+    }
+    if (lifecycle.startWindowPreparedAtIso) {
+      Q.fail("TOURNAMENT-004 Final Start fixture window is already prepared; do not replay the repair.");
+    }
+    if (!sameJson(tournamentFinalizeNotificationSnapshot(), lifecycle.priorNotificationBaseline)
+        || !sameJson(tournamentFinalLifecycleNotificationSnapshot(), lifecycle.lifecycleNotificationBaseline)) {
+      Q.fail("the closed TOURNAMENT-003 notification boundary changed before the Final window repair.");
+    }
+
+    const domainBefore = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const finalId = `${EVENT_ID}:stage:final`;
+    const qualifier = domainBefore.stages.find(stage => stage.id === qualifierId);
+    const finalStage = domainBefore.stages.find(stage => stage.id === finalId);
+    const qualifierRuntime = domainBefore.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    const finalRuntime = domainBefore.stageRuntime.find(stage => stage.subEventId === finalId);
+    const expectedFinalUsers = sortedUnique(lifecycle.expectedFinalUserIds || []);
+    const actualFinalUsers = sortedUnique(domainBefore.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !qualifierRuntime || Q.text(qualifierRuntime.stageStatus).toUpperCase() !== "F"
+        || !finalStage || Q.text(finalStage.stageStatus).toUpperCase() !== "RS"
+        || finalStage.stageStatusReason !== "awaiting-prior-stage"
+        || finalRuntime
+        || domainBefore.finalGroups.length !== 1
+        || !sameJson(actualFinalUsers, expectedFinalUsers)
+        || actualFinalUsers.includes(participantUserId)
+        || domainBefore.finalRooms.length !== 0
+        || domainBefore.chats.length !== 0) {
+      Q.fail("the tournament is not at the exact no-op Final Start repair boundary.");
+    }
+
+    const events = Q.collection("events").find(manualEventSelector()).toArray();
+    if (events.length !== 1) {
+      Q.fail(`expected one retained tournament event for Final window repair, found ${events.length}.`);
+    }
+    const event = events[0];
+    const subEvents = (event.subEvents || []).map(stage => ({ ...stage }));
+    const finalIndex = subEvents.findIndex(stage => Q.text(stage.id) === finalId);
+    if (finalIndex < 0) {
+      Q.fail("the retained tournament has no materialized Final stage.");
+    }
+    const originalStartAt = Q.text(subEvents[finalIndex].startAt);
+    const originalEndAt = Q.text(subEvents[finalIndex].endAt);
+    const originalStartMs = Date.parse(originalStartAt);
+    const originalEndMs = Date.parse(originalEndAt);
+    const nowMs = Date.now();
+    if (!Number.isFinite(originalStartMs) || !Number.isFinite(originalEndMs)
+        || originalStartMs <= nowMs) {
+      Q.fail("the rejected Final Start is not explained by a future materialized start instant.");
+    }
+
+    const startAt = new Date(nowMs - 2 * 60 * 1000).toISOString();
+    const endAt = new Date(nowMs + 120 * 60 * 1000).toISOString();
+    subEvents[finalIndex] = { ...subEvents[finalIndex], startAt, endAt };
+    const updated = Q.collection("events").updateOne(
+      { _id: event._id, sourceId: EVENT_ID },
+      { $set: { subEvents } }
+    );
+    if (updated.matchedCount !== 1 || updated.modifiedCount !== 1) {
+      Q.fail("the guarded Final startable-window repair was not applied exactly once.");
+    }
+
+    const repaired = Q.collection("events").findOne({ _id: event._id });
+    const repairedFinal = (repaired && repaired.subEvents || [])
+      .find(stage => Q.text(stage.id) === finalId);
+    if (!repairedFinal
+        || Q.text(repairedFinal.stageStatus).toUpperCase() !== "RS"
+        || repairedFinal.stageStatusReason !== "awaiting-prior-stage"
+        || Q.text(repairedFinal.startAt) !== startAt
+        || Q.text(repairedFinal.endAt) !== endAt
+        || Date.parse(repairedFinal.startAt) >= Date.now()
+        || Date.parse(repairedFinal.endAt) <= Date.now()) {
+      Q.fail("the repaired Final stage is not at a startable RS boundary.");
+    }
+    const domainAfter = tournamentReviewStableSnapshot();
+    if (!sameJson(domainAfter, domainBefore)
+        || !sameJson(tournamentFinalizeNotificationSnapshot(), lifecycle.priorNotificationBaseline)
+        || !sameJson(tournamentFinalLifecycleNotificationSnapshot(), lifecycle.lifecycleNotificationBaseline)) {
+      Q.fail("the Final startable-window repair changed closed domain or notification evidence.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentFinalLifecycle.startWindowPreparedAtIso": preparedAtIso,
+        "tournamentFinalLifecycle.startWindowOriginalStartAt": originalStartAt,
+        "tournamentFinalLifecycle.startWindowOriginalEndAt": originalEndAt,
+        "tournamentFinalLifecycle.startWindowStartAt": startAt,
+        "tournamentFinalLifecycle.startWindowEndAt": endAt
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-final-start-window-repaired",
+      preparedAtIso,
+      originalStartAt,
+      originalEndAt,
+      startAt,
+      endAt,
+      finalStatus: repairedFinal.stageStatus,
+      finalMemberUserIds: actualFinalUsers,
+      next: "Close the unchanged failure dialog, reopen Final -> Start Stage and perform Start once."
+    });
+  }
+
+  function prepareTournamentFinalStartRecipientRetest() {
+    config();
+    if (checkpointId !== "TOURNAMENT-004") {
+      Q.fail("prepare-tournament-final-start-recipient-retest is restricted to TOURNAMENT-004.");
+    }
+    const state = requireMatchingState();
+    const lifecycle = state.tournamentFinalLifecycle;
+    if (!lifecycle || !lifecycle.startWindowPreparedAtIso) {
+      Q.fail("TOURNAMENT-004 has no guarded startable Final window.");
+    }
+    if (lifecycle.startVerifiedAtIso) {
+      Q.fail("TOURNAMENT-004 Final Start is already verified; do not prepare a recipient replay.");
+    }
+    if (lifecycle.startRecipientRetestPreparedAtIso) {
+      Q.fail("TOURNAMENT-004 Final Start recipient replay is already prepared; do not repeat it.");
+    }
+    if (!sameJson(tournamentFinalizeNotificationSnapshot(), lifecycle.priorNotificationBaseline)) {
+      Q.fail("the closed TOURNAMENT-003 notification boundary changed before the Final Start recipient replay.");
+    }
+
+    const domain = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const finalId = `${EVENT_ID}:stage:final`;
+    const qualifier = domain.stages.find(stage => stage.id === qualifierId);
+    const finalStage = domain.stages.find(stage => stage.id === finalId);
+    const qualifierRuntime = domain.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    const finalRuntime = domain.stageRuntime.find(stage => stage.subEventId === finalId);
+    const expectedFinalUsers = sortedUnique(lifecycle.expectedFinalUserIds || []);
+    const actualFinalUsers = sortedUnique(domain.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    const finalRoomMemberUserIds = sortedUnique(domain.finalRooms
+      .flatMap(room => room.acceptedMemberUserIds || []));
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !qualifierRuntime || Q.text(qualifierRuntime.stageStatus).toUpperCase() !== "F"
+        || !finalStage || Q.text(finalStage.stageStatus).toUpperCase() !== "A"
+        || finalStage.stageStatusReason !== "tournament-started"
+        || !finalRuntime || Q.text(finalRuntime.stageStatus).toUpperCase() !== "A"
+        || finalRuntime.stageStatusReason !== "tournament-started"
+        || domain.finalGroups.length !== 1
+        || !sameJson(actualFinalUsers, expectedFinalUsers)
+        || actualFinalUsers.includes(participantUserId)
+        || finalRoomMemberUserIds.some(userId => !expectedFinalUsers.includes(userId))
+        || domain.planMarkers.length !== 1) {
+      Q.fail("the failed recipient transaction is not at the exact successful-domain Final Start boundary.");
+    }
+
+    const notifications = tournamentFinalLifecycleNotificationSnapshot();
+    const startedOutbox = notifications.outbox.filter(item => item.type === "event-tournament-started");
+    const startedNotifications = notifications.notifications
+      .filter(item => item.type === "event-tournament-started");
+    if (startedOutbox.length !== 1
+        || !sameJson(startedOutbox[0].recipientUserIds, [participantUserId, thirdUserId].sort())
+        || startedOutbox[0].actorUserId !== hostUserId
+        || startedNotifications.length !== 2
+        || !sameJson(startedNotifications.map(item => item.recipientUserId).sort(), [participantUserId, thirdUserId].sort())
+        || startedNotifications.some(item => item.senderUserId !== hostUserId)
+        || notifications.outbox.some(item => item.type === "event-tournament-finalized")
+        || notifications.notifications.some(item => item.type === "event-tournament-finalized")) {
+      Q.fail("the failed Final Start recipient evidence is not the exact Nova+Riley over-broadcast boundary.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateOne(
+      manualEventSelector(),
+      {
+        $set: {
+          "subEvents.$[final].stageStatus": "RS",
+          "subEvents.$[final].stageStatusReason": "awaiting-prior-stage",
+          "subEvents.$[final].stageStatusUpdatedAt": null,
+          "subEvents.$[final].stageFinalizedAt": null,
+          "subEvents.$[final].stageFinalizedByUserId": null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      },
+      { arrayFilters: [{ "final.id": finalId }] }
+    );
+    const runtimeUpdate = Q.collection("activitySubEventStageRuntime").updateOne(
+      { ownerId: EVENT_ID, subEventId: finalId },
+      {
+        $set: {
+          stageStatus: "RS",
+          stageStatusReason: "awaiting-prior-stage",
+          stageStatusUpdatedAt: null,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    if (eventUpdate.matchedCount !== 1 || eventUpdate.modifiedCount !== 1
+        || runtimeUpdate.matchedCount !== 1 || runtimeUpdate.modifiedCount !== 1) {
+      Q.fail("the Final event/runtime state could not be rewound exactly once for the focused recipient replay.");
+    }
+
+    const outboxRemoval = Q.collection("notificationOutbox").deleteMany({
+      notificationType: "event-tournament-started",
+      $or: [{ entityId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const notificationRemoval = Q.collection("userNotifications").deleteMany({
+      kind: "event-tournament-started",
+      $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    if (outboxRemoval.deletedCount !== 1 || notificationRemoval.deletedCount !== 2) {
+      Q.fail("the defective Final Start notification artifacts changed during replay preparation.");
+    }
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      const counterUpdate = Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: { "activities.notifications": unreadNotifications } }
+      );
+      if (counterUpdate.matchedCount !== 1) {
+        Q.fail(`notification counter target '${userId}' disappeared during Final Start replay preparation.`);
+      }
+    }
+
+    const preparedDomain = tournamentReviewStableSnapshot();
+    const preparedFinal = preparedDomain.stages.find(stage => stage.id === finalId);
+    const preparedRuntime = preparedDomain.stageRuntime.find(stage => stage.subEventId === finalId);
+    if (!preparedFinal || Q.text(preparedFinal.stageStatus).toUpperCase() !== "RS"
+        || !preparedRuntime || Q.text(preparedRuntime.stageStatus).toUpperCase() !== "RS"
+        || !sameJson(preparedDomain.finalRooms, domain.finalRooms)
+        || !sameJson(preparedDomain.finalGroups, domain.finalGroups)
+        || !sameJson(preparedDomain.finalGroupMembers, domain.finalGroupMembers)
+        || !sameJson(preparedDomain.chats, domain.chats)
+        || !sameJson(preparedDomain.planMarkers, domain.planMarkers)
+        || tournamentFinalLifecycleNotificationSnapshot().outbox.length !== 0
+        || tournamentFinalLifecycleNotificationSnapshot().notifications.length !== 0) {
+      Q.fail("the focused Final Start recipient replay did not preserve the proven room/domain boundary.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentFinalLifecycle.startRecipientRetestPreparedAtIso": preparedAtIso,
+        "tournamentFinalLifecycle.startRecipientRetestDomainBaseline": domain,
+        "tournamentFinalLifecycle.startRecipientRetestFailedNotifications": notifications
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-final-start-recipient-retest-prepared",
+      preparedAtIso,
+      finalStatus: preparedFinal.stageStatus,
+      retainedFinalRoomIds: preparedDomain.finalRooms.map(room => room.eventId),
+      retainedFinalMemberUserIds: actualFinalUsers,
+      removedRecipientUserIds: [participantUserId, thirdUserId].sort(),
+      next: "Reload Casey once, verify Final is Blocked because its RS start instant has passed and Start Stage is available, then perform Final Start exactly once."
     });
   }
 
@@ -8913,6 +9201,8 @@
     case "verify-tournament-advancement-sequence": verifyTournamentAdvancementSequence(); break;
     case "verify-tournament-advancement-sequence-noop": verifyTournamentAdvancementSequenceNoop(); break;
     case "prepare-tournament-final-carry-forward": prepareTournamentFinalCarryForward(); break;
+    case "repair-tournament-final-start-window": repairTournamentFinalStartWindow(); break;
+    case "prepare-tournament-final-start-recipient-retest": prepareTournamentFinalStartRecipientRetest(); break;
     case "verify-tournament-final-start": verifyTournamentFinalStart(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;

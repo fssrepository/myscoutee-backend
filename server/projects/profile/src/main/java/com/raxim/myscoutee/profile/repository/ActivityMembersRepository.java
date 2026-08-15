@@ -24,6 +24,9 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
     @Query(value = "{ 'ownerType': ?0, 'ownerId': { '$regex': ?1 }, 'status': ?2 }", count = true)
     long countByOwnerPatternAndStatus(String ownerType, String ownerIdPattern, String status);
 
+    @Query("{ 'ownerType': ?0, 'ownerId': { '$regex': ?1 }, 'status': ?2 }")
+    List<ActivityMember> findByOwnerPatternAndStatus(String ownerType, String ownerIdPattern, String status);
+
     List<ActivityMember> findByOwnerTypeAndOwnerIdAndStatusOrderByActionAtIsoDescUserIdAsc(
             String ownerType,
             String ownerId,

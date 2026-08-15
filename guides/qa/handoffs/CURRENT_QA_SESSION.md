@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 20:03 CEST
+Updated: 2026-08-15 20:11 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -37,14 +37,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-004 — Final Start and whole-tournament completion
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-004--final-start-and-whole-tournament-completion
 scenario: event-domain (carry the proven TOURNAMENT-003 Final membership forward; no reset)
-ledger_status: NOT RUN / GUARDED CARRY-FORWARD PREPARED
-state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. The guarded `prepare-tournament-final-carry-forward` action passed at `2026-08-15T18:02:10.035Z` without reset: Qualifiers is still `F / stage-finalized`, Final is `RS / awaiting-prior-stage`, the one Final group contains exactly Casey+Riley, Nova is excluded, the closed T003 domain/notification baselines remain byte-identical, and no Final Start or terminal Finalize intent exists. The active persisted checkpoint id is now TOURNAMENT-004 while the retained event title remains `QA TOURNAMENT-003`.
-required_resume: Do not stage, reset, replay Qualifiers Finalize or run tournament review. Continue directly with Casey's one visible Final Start transaction, then run `verify-tournament-final-start event-domain TOURNAMENT-004` before any Final close/finalize preparation.
+ledger_status: NOT RUN / FINAL START RECIPIENT FIX REPLAY PREPARED
+state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. The first T004 Final Start attempt was a proven complete no-op because the retained materialized Final `startAt` was later than the request; the guarded window repair changed only Final's interval. The next Start persisted the correct domain (`Final A / tournament-started`, exact Casey+Riley, Nova excluded) but FAILed its recipient oracle because it sent the manual Start acknowledgement to Nova+Riley instead of Riley only. The Java producer now derives later-stage recipients from accepted group membership and excludes the manual actor; frontend-local has the same rule and the existing initial-stage fallback remains unchanged. Both live watchers completed successfully. At `2026-08-15T18:22:44.221Z`, the guarded recipient-retest action rewound only Final event/runtime to `RS / awaiting-prior-stage`, removed exactly the one defective outbox and two defective inbox rows, and preserved Qualifiers, the exact Casey+Riley Final group and all prior T003 evidence. Casey then reloaded and Final correctly rendered `Blocked`: its `RS` start instant has passed, which is precisely the boundary that exposes the manual `Start Stage` recovery action. The active event remains `QA TOURNAMENT-003` under checkpoint TOURNAMENT-004; no Final Start or terminal Finalize intent now exists.
+required_resume: Do not stage, reset, replay Qualifiers Finalize, rerun either repair or run tournament review. Casey performs Final -> Start Stage -> Start exactly once from the currently verified Blocked recovery boundary; then run `verify-tournament-final-start event-domain TOURNAMENT-004` before any Final close/finalize preparation.
 event: QA TOURNAMENT-003 (retained carry-forward event for TOURNAMENT-004)
 actors:
   active: Casey Final-stage starter/finalizer; Riley Final participant; Nova eliminated control; three launcher-owned demo browsers on /game
   controls: preserve the exact Casey+Riley Final group and all three closed TOURNAMENT-003 notification lists
-next_actor: Casey opens the retained tournament, verifies that Final offers Start Stage, then performs that one Start only when instructed.
+next_actor: Casey opens the Final action menu from the verified Blocked card and performs Start Stage exactly once when instructed.
 stop_phrase: megvan
 ```
 
@@ -110,17 +110,23 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-004 — Final Start`: the guarded T003->T004 carry-forward is already
-prepared and must not be repeated. Casey first opens the retained event and
-confirms that the advanced **Final** stage exposes **Start Stage** while
-Qualifiers remains finalized. Casey then performs **Final -> Start Stage ->
-Start** exactly once. The immediate persisted oracle must keep the closed T003
+`TOURNAMENT-004 — Final Start`: the guarded T003->T004 carry-forward, the
+startable-window repair and the focused recipient-retest preparation are
+already complete and must not be repeated. Casey's reload already proved the
+correct **Blocked** recovery badge: Final is still `RS`, but its start instant
+has passed, so the manual Start action is now valid. Perform **Final -> Start
+Stage -> Start** exactly once. The immediate persisted oracle must keep the closed T003
 domain and notification baseline intact, change Final from `RS` to `A`, retain
 exactly Casey+Riley in Final, exclude Nova and write one translated,
 Final-colored `Final started / Final has started. Groups are ready.` intent for
 Riley only. Casey is excluded as the manual actor; Nova is excluded as the
 non-advancer. Do not close or finalize Final until this transaction and its
 three-window visual comparison are complete.
+
+When a guarded fixture repair changes time or state behind an already-open
+browser, its old projection is not valid visual evidence. Require one explicit
+reload at that boundary, record why it is required, and do not misclassify the
+stale view as a backend state or silently reload during an in-place assertion.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is

@@ -4694,6 +4694,46 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   plus terminal Finalize both had zero outbox/inbox rows. The harness changed
   only the active checkpoint metadata from T003 to T004 and retained the same
   event identity/title; no fixture reset or lifecycle repair ran.
+- **First Final Start attempt FAIL / complete no-op**: Casey's confirmation
+  returned the unchanged `RS` result and the UI correctly showed **Stage action
+  was not applied.** The Java Start path and its earlier targeted-read/batched
+  write optimization were still present. The persisted fixture was wrong: at
+  `2026-08-15T18:08:57.268Z` the materialized Final `startAt` was
+  `2026-08-15T20:31:24.087Z`, so the backend's real start guard correctly
+  refused the early transaction. No Final runtime, room, chat, outbox or inbox
+  write occurred. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 20-04-41.png`.
+- The versioned `repair-tournament-final-start-window` action then guarded the
+  exact closed T003/T004 boundary and changed only Final's materialized
+  interval to `2026-08-15T18:09:03.807Z`–`2026-08-15T20:11:03.807Z`. Its
+  post-write oracle retained Qualifiers `F`, Final `RS`, exact Casey+Riley
+  Final membership, Nova exclusion and byte-identical prior notification and
+  domain evidence. Replay only the single Final Start click; do not reset or
+  replay Qualifiers.
+- **Second Final Start domain PASS / recipient FAIL**: after the repaired
+  window, Casey's Start persisted Final `A / tournament-started`, kept
+  Qualifiers `F`, retained exactly Casey+Riley in Final and kept Nova excluded.
+  The notification producer nevertheless over-broadcast one translated
+  `Final started` intent and inbox row to both Nova and Riley. Casey was
+  correctly excluded. This was a write-side audience defect, not a Smart List
+  projection or polling race.
+- The repaired Java producer now resolves a later stage's accepted audience
+  from its materialized group memberships and then excludes the manual actor.
+  If an initial stage has no group membership rows yet, it keeps the previously
+  proven parent-event audience fallback. Frontend-local now applies the same
+  rule and stage avatar payload. Existing Start targeted-read, batched-write
+  and scheduler-scope optimizations were retained unchanged. Backend and
+  frontend live watchers both completed successfully.
+- **Focused recipient replay prepared at
+  `2026-08-15T18:22:44.221Z`**: the versioned harness guarded the exact
+  successful-domain/failed-recipient boundary, rewound only Final event/runtime
+  to `RS / awaiting-prior-stage`, and removed exactly one defective Nova+Riley
+  outbox plus two delivered inbox rows. It preserved the closed Qualifiers,
+  exact Casey+Riley Final group, Nova exclusion, plan marker and all prior T003
+  evidence. Because the earlier time repair happened behind an already-open
+  browser, Casey had to reload exactly once. The resulting **Blocked** badge is
+  the correct recovery boundary: Final remains `RS`, its start instant has
+  passed, and only then may the manual **Start Stage** action be applied.
 - Starting Final is a new transaction after advancement. Its system
   notification title and body must both identify **Final**, and its left
   stage-icon must use the same shared accent hue as the Final stage card. The

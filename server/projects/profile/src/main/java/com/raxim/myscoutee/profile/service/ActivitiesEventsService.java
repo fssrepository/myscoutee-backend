@@ -3730,7 +3730,7 @@ public class ActivitiesEventsService {
                 "event-tournament-started",
                 event,
                 "event-participants",
-                eventAudienceUserIdsExcludingActor(event, actorUserId),
+                tournamentStageAudienceUserIdsExcludingActor(event, stage, actorUserId),
                 stageTitle + " started",
                 stageTitle + " has started. Groups are ready.",
                 STAGE_ACTION_START,
@@ -3762,6 +3762,29 @@ public class ActivitiesEventsService {
             ActivityEvent event,
             String actorUserId) {
         LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(eventAudienceUserIds(event));
+        recipientUserIds.remove(normalizeId(actorUserId));
+        return List.copyOf(recipientUserIds);
+    }
+
+    private List<String> tournamentStageAudienceUserIdsExcludingActor(
+            ActivityEvent event,
+            SubEventItem stage,
+            String actorUserId) {
+        String stageId = normalizeId(stage == null ? null : stage.id());
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>();
+        if (StringUtils.hasText(stageId)) {
+            String ownerPattern = "^" + Pattern.quote(stageId) + ":group:";
+            activityMembersRepository
+                    .findByOwnerPatternAndStatus(OWNER_TYPE_GROUP, ownerPattern, MEMBER_STATUS_ACCEPTED)
+                    .stream()
+                    .map(ActivityMember::getUserId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipientUserIds::add);
+        }
+        if (recipientUserIds.isEmpty()) {
+            recipientUserIds.addAll(eventAudienceUserIds(event));
+        }
         recipientUserIds.remove(normalizeId(actorUserId));
         return List.copyOf(recipientUserIds);
     }

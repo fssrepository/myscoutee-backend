@@ -1162,6 +1162,55 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void manualLaterStageStartNotifiesOnlyAcceptedStageGroupMembers() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(
+                stage("qualifiers", "F"),
+                stage("final", "RS")));
+        ActivityMember hostFinalMember = acceptedGroupMember("final:group:1", "host");
+        ActivityMember rileyFinalMember = acceptedGroupMember("final:group:1", "riley");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(parent), List.of());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerPatternAndStatus(
+                "group", "^\\Qfinal\\E:group:", "accepted"))
+                .thenReturn(List.of(hostFinalMember, rileyFinalMember));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "final"))
+                .thenReturn(Optional.empty());
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+        when(eventScheduler.generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class)))
+                .thenAnswer(invocation -> {
+                    Runnable beforeRoomNotifications = invocation.getArgument(1);
+                    beforeRoomNotifications.run();
+                    return List.of();
+                });
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "final",
+                        1,
+                        "start-tournament",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("A");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        assertThat(notificationCaptor.getValue().recipientUserIds()).containsExactly("riley");
+        assertThat(notificationCaptor.getValue().recipientUserIds()).doesNotContain("host", "nova");
+    }
+
+    @Test
     void generatedSlotStartBuildsRandomPlansForSlotParticipantsNotParentTemplate() {
         Users host = new Users();
         host.setId("host");
@@ -1913,6 +1962,15 @@ class ActivitiesEventsServiceTest {
                 null,
                 null,
                 List.of());
+    }
+
+    private ActivityMember acceptedGroupMember(String ownerId, String userId) {
+        ActivityMember member = new ActivityMember();
+        member.setOwnerType("group");
+        member.setOwnerId(ownerId);
+        member.setUserId(userId);
+        member.setStatus("accepted");
+        return member;
     }
 
     private EventDetailDto eventPayload(

@@ -55,6 +55,8 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence event-domain TOURNAMENT-003
   bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence-noop event-domain TOURNAMENT-003
   bash manual-qa-checkpoints.sh prepare-tournament-final-carry-forward event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh repair-tournament-final-start-window event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh prepare-tournament-final-start-recipient-retest event-domain TOURNAMENT-004
   bash manual-qa-checkpoints.sh verify-tournament-final-start event-domain TOURNAMENT-004
   bash manual-qa-checkpoints.sh repair-ticket-payment-fixture event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh repair-tournament-room-presentation event-domain TOURNAMENT-002
@@ -295,6 +297,8 @@ case "${scenario}:${command}" in
   event-domain:verify-tournament-advancement-sequence|\
   event-domain:verify-tournament-advancement-sequence-noop|\
   event-domain:prepare-tournament-final-carry-forward|\
+  event-domain:repair-tournament-final-start-window|\
+  event-domain:prepare-tournament-final-start-recipient-retest|\
   event-domain:verify-tournament-final-start)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
