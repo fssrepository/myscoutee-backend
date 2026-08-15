@@ -4687,6 +4687,13 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 
 - Continue only from the exact Casey+Riley Final membership proved by
   `TOURNAMENT-003`; Nova remains the non-advancing control.
+- Guarded carry-forward evidence at `2026-08-15T18:02:10.035Z`: the saved T003
+  domain and notification no-op baselines were byte-identical; Qualifiers was
+  still `F / stage-finalized`, Final was `RS / awaiting-prior-stage`, the one
+  Final group contained exactly Casey+Riley, Nova was absent, and Final Start
+  plus terminal Finalize both had zero outbox/inbox rows. The harness changed
+  only the active checkpoint metadata from T003 to T004 and retained the same
+  event identity/title; no fixture reset or lifecycle repair ran.
 - Starting Final is a new transaction after advancement. Its system
   notification title and body must both identify **Final**, and its left
   stage-icon must use the same shared accent hue as the Final stage card. The

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 18:43 CEST
+Updated: 2026-08-15 20:03 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -37,14 +37,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-004 — Final Start and whole-tournament completion
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-004--final-start-and-whole-tournament-completion
 scenario: event-domain (carry the proven TOURNAMENT-003 Final membership forward; no reset)
-ledger_status: NOT RUN / CARRY-FORWARD READY
-state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 closed with exact Casey+Riley Final membership, Nova excluded, separate manual and automatic notification producers, and byte-exact count-0 worker replay. Screenshot `2026-08-15 19-50-31` visually proved all three unread views: Casey has only automatic `Advanced to Final`; Nova has Casey's human `Qualifiers finalized` plus automatic `Did not advance from Qualifiers`; Riley has Casey's human Finalize plus automatic advancement. Stage-colored automatic avatars, human Casey avatar, text and counts all agree. Preserve this live state for TOURNAMENT-004.
-required_resume: Do not stage or reset. First add/read a guarded TOURNAMENT-004 carry-forward oracle around the current Casey+Riley Final group, Final `RS / awaiting-prior-stage`, and the closed TOURNAMENT-003 notification boundary. Then test actual Final Start as a new transaction; do not replay Qualifiers Finalize or tournament review.
+ledger_status: NOT RUN / GUARDED CARRY-FORWARD PREPARED
+state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. The guarded `prepare-tournament-final-carry-forward` action passed at `2026-08-15T18:02:10.035Z` without reset: Qualifiers is still `F / stage-finalized`, Final is `RS / awaiting-prior-stage`, the one Final group contains exactly Casey+Riley, Nova is excluded, the closed T003 domain/notification baselines remain byte-identical, and no Final Start or terminal Finalize intent exists. The active persisted checkpoint id is now TOURNAMENT-004 while the retained event title remains `QA TOURNAMENT-003`.
+required_resume: Do not stage, reset, replay Qualifiers Finalize or run tournament review. Continue directly with Casey's one visible Final Start transaction, then run `verify-tournament-final-start event-domain TOURNAMENT-004` before any Final close/finalize preparation.
 event: QA TOURNAMENT-003 (retained carry-forward event for TOURNAMENT-004)
 actors:
   active: Casey Final-stage starter/finalizer; Riley Final participant; Nova eliminated control; three launcher-owned demo browsers on /game
   controls: preserve the exact Casey+Riley Final group and all three closed TOURNAMENT-003 notification lists
-next_actor: Casey performs only the future visible Final Start after the guarded TOURNAMENT-004 carry-forward oracle is implemented and recorded.
+next_actor: Casey opens the retained tournament, verifies that Final offers Start Stage, then performs that one Start only when instructed.
 stop_phrase: megvan
 ```
 
@@ -110,22 +110,17 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-003 — ordered Finalize -> advancement notification replay`: the
-guarded prepare action has already passed and must not be repeated. Casey reloads only the event detail and
-uses **Qualifiers -> Finalize Stage -> Finalize** exactly once. The immediate
-oracle must prove a translated generic Finalize intent for Nova+Riley, no Casey
-recipient, no Final membership yet and no advancement intent. Only then may the
-real review worker run: it must write Casey+Riley membership into the
-already-existing Final group and subsequently write one translated,
-trophy-branded advancement intent for Casey+Riley. A second unchanged worker
-run must write neither membership nor notification. The final visual oracle is
-Casey trophy only, Nova generic Finalize only, Riley both; keep every row unread.
-This replay deliberately stops before Final starts. Starting Final is a third,
-later producer boundary and reuses the already-proven tournament Start
-contract: a separate `Final started / Final has started. Groups are
-ready.` notification is written only when that stage actually starts. A manual
-starter is excluded from that acknowledgement; an automatic start has no
-manual actor to exclude.
+`TOURNAMENT-004 — Final Start`: the guarded T003->T004 carry-forward is already
+prepared and must not be repeated. Casey first opens the retained event and
+confirms that the advanced **Final** stage exposes **Start Stage** while
+Qualifiers remains finalized. Casey then performs **Final -> Start Stage ->
+Start** exactly once. The immediate persisted oracle must keep the closed T003
+domain and notification baseline intact, change Final from `RS` to `A`, retain
+exactly Casey+Riley in Final, exclude Nova and write one translated,
+Final-colored `Final started / Final has started. Groups are ready.` intent for
+Riley only. Casey is excluded as the manual actor; Nova is excluded as the
+non-advancer. Do not close or finalize Final until this transaction and its
+three-window visual comparison are complete.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is
