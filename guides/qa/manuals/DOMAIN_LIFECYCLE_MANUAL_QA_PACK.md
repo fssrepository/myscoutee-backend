@@ -4263,6 +4263,24 @@ Execution evidence (2026-08-15, first identity-complete Start replay):
   query semantics remain unchanged. Replay only Start to measure and prove the
   same identity/counter result.
 
+Execution evidence (2026-08-15, write-roundtrip performance replay):
+
+- **Persisted identity/counter contract PASS again** with the same two rooms,
+  Casey+Nova and Riley exact partition, three accepted membership records, two
+  chat identities/three owner copies, two welcome messages, `A/groupsCount=2`,
+  three outbox records, one recompute task and exact `+1` Event/Chat deltas for
+  every actor.
+- The comparable request fell from about `494 ms` to `284 ms`, a reduction of
+  roughly `43%`; the user's UI observation also found it somewhat faster.
+- The terminal request trace still showed one independent generic parent-event
+  counter refresh after the exact room deltas. A stage status transition does
+  not move the parent event between Activities buckets, so this refresh only
+  reread each actor's complete membership/event/ticket inventory and rewrote
+  the same values. It has been removed from parent and generated-slot stage
+  actions; Random Room membership and chat writes remain the owners of their
+  exact counter deltas. Run one final Start-only timing/oracle replay before UI
+  group/member/chat inspection; do not repeat any earlier checkpoint steps.
+
 ### `TOURNAMENT-003` — review and advancement
 
 - Finalize one stage with deterministic winners/losers, then let the real

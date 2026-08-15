@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 14:11 CEST
+Updated: 2026-08-15 14:16 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -33,9 +33,9 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
-scenario: event-domain (clean Start performance-replay baseline staged at 2026-08-15T12:10:31.346Z)
-ledger_status: IN PROGRESS / IDENTITY PASS / WRITE-ROUNDTRIP OPTIMIZATION HOT-DEPLOYED / PERFORMANCE REPLAY READY
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002's fixture no-op and false-success Start are documented. The first corrected replay then proved the full persisted identity contract: Qualifiers A/groupsCount=2, two Random Rooms partitioning Casey+Nova and Riley exactly once, three room memberships, two chat identities/three owner documents, two welcome messages, exact +1 event/chat counters, three outbox records and one recompute task. Its valid write took about 494 ms and still felt only marginally faster. The owning Start write has therefore been tightened without changing SmartList/read behavior: targeted event reads, strict exact participant coverage, batch-loaded room memberships, one room save, atomic bulk Active/All counter deltas and no immediate chat read-after-write. The guarded clean replay event is now QA TOURNAMENT-002, A/published=true Tournament, 3/8 with Casey/Nova/Riley accepted; both stages are RS; runtime rooms/members/chats/leaderboard and action outbox/recompute deltas are zero; Casey has All/Hosting=1 and Nova/Riley All/Active=1. Three fresh launcher-owned browsers created after this fixture are open.
+scenario: event-domain (clean final Start performance-replay baseline staged at 2026-08-15T12:15:59.525Z)
+ledger_status: IN PROGRESS / IDENTITY PASS TWICE / FINAL WRITE-ROUNDTRIP OPTIMIZATION HOT-DEPLOYED / REPLAY READY
+state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002's fixture no-op and false-success Start are documented. Two corrected replays proved the full persisted identity/counter contract. The comparable materializing request fell from about 494 ms to 284 ms (~43%) and the user found it somewhat faster. Its terminal trace still exposed a generic parent-event counter refresh although stage status does not change the parent Activities bucket; that redundant full three-actor event/ticket reprojection is now removed for parent and generated-slot stage actions. The owning Start path retains targeted reads, strict exact participant coverage, batch-loaded room memberships, one room save, atomic bulk Active/All counter deltas and no immediate chat read-after-write; SmartList/read behavior is unchanged. The guarded clean final replay event is QA TOURNAMENT-002, A/published=true Tournament, 3/8 with Casey/Nova/Riley accepted; both stages are RS; runtime rooms/members/chats/leaderboard and action outbox/recompute deltas are zero; Casey has All/Hosting=1 and Nova/Riley All/Active=1. Three fresh launcher-owned browsers created after this fixture are open.
 required_resume: In Casey only, open Activities -> Events -> My Events -> QA TOURNAMENT-002 -> View. On Qualifiers use its overflow menu, select Start Stage and confirm Start exactly once. Keep the stage list open and do not touch Nova/Riley until Codex has checked the persisted grouping identities.
 event: QA TOURNAMENT-002
 actors:

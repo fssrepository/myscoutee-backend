@@ -2320,7 +2320,6 @@ public class ActivitiesEventsService {
                 "action", actionTarget.action(),
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(stageId, Integer.toString(preferredStageIndex))));
-        userActivityCountersService.refreshEventCountersForDocuments(saved);
         return toStageActionResult(
                 sourceId,
                 savedStage,
@@ -2386,9 +2385,6 @@ public class ActivitiesEventsService {
                 "action", actionTarget.action(),
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(normalizeId(savedStage.id()), Integer.toString(stageIndex))));
-        if (!savedParentDocuments.isEmpty()) {
-            userActivityCountersService.refreshEventCountersForDocuments(savedParentDocuments);
-        }
         return toStageActionResult(
                 slotSourceId,
                 savedStage,

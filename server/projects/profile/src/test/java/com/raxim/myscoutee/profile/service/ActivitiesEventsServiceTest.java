@@ -1059,6 +1059,7 @@ class ActivitiesEventsServiceTest {
         assertThat(result.sourceId()).isEqualTo("slot-1");
         assertThat(result.stageStatus()).isEqualTo("F");
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
@@ -1095,6 +1096,7 @@ class ActivitiesEventsServiceTest {
         assertThat(result.stageStatus()).isEqualTo("A");
         verify(eventScheduler).generateTournamentStagePlansForEvents(List.of("slot-1"));
         verify(eventScheduler, never()).generateTournamentStagePlansForEvents(List.of("event-1"));
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
