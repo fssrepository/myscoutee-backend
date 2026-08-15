@@ -26,6 +26,7 @@
   const PENDING_EVENT_ID = `${PREFIX}:feedback-pending`;
   const EVENT_IDS = [EVENT_ID, ISOLATION_EVENT_ID, LOCKED_EVENT_ID, TRASHED_EVENT_ID, PENDING_EVENT_ID];
   const AUTO_INVITER_RULE = "event-auto-inviter";
+  const TOURNAMENT_REVIEW_RULE = "event-tournament-review";
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
@@ -1416,6 +1417,9 @@
       { collection: "scheduledMessageTasks", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: EVENT_IDS } } },
       { collection: "schedulerPlanMarkers", selector: { ownerId: { $in: EVENT_IDS } } },
+      ...(checkpointId === "TOURNAMENT-003"
+        ? [{ collection: "notificationRuleConfigs", selector: { ruleKey: TOURNAMENT_REVIEW_RULE } }]
+        : []),
       ...(checkpointId === "EVENT-TICKET-007"
         ? [{ collection: "userRates", selector: ticketInviteCandidateRateSelector() }]
         : [])
@@ -1508,7 +1512,154 @@
 
   function clearFixture() {
     clearDynamicEventEffects(currentEventIds());
-    for (const spec of selectors()) Q.collection(spec.collection).deleteMany(spec.selector);
+    for (const spec of selectors()) {
+      // Global scheduler configuration is snapshotted for exact reset, but it
+      // must remain present so TOURNAMENT-003 can hold/arm the real rule.
+      if (spec.collection === "notificationRuleConfigs") continue;
+      Q.collection(spec.collection).deleteMany(spec.selector);
+    }
+  }
+
+  function insertTournamentReviewBaseline(stagedAtIso) {
+    const stageTimes = materializeTournamentStageTimes(tournamentStages(), dateIso(-90));
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const finalId = `${EVENT_ID}:stage:final`;
+    const qualifierGroupA = `${qualifierId}:group:1`;
+    const qualifierGroupB = `${qualifierId}:group:2`;
+    const nowIso = Q.nowIso();
+    const stages = stageTimes.map((stage, index) => index === 0
+      ? {
+          ...stage,
+          stageStatus: "SR",
+          stageStatusReason: "stage-ended",
+          stageStatusUpdatedAt: stagedAtIso,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          membersAccepted: 3,
+          membersPending: 0,
+          groupsCount: 2,
+          groupsPending: 0
+        }
+      : {
+          ...stage,
+          startAt: dateIso(180),
+          endAt: dateIso(300),
+          stageStatus: "RS",
+          stageStatusReason: "awaiting-prior-stage",
+          stageStatusUpdatedAt: null,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          membersAccepted: 0,
+          membersPending: 0,
+          groupsCount: 0,
+          groupsPending: 0
+        });
+    const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
+      acceptedUserIds: [participantUserId, thirdUserId],
+      startAtIso: dateIso(-90),
+      endAtIso: dateIso(300),
+      subEventsEnabled: true,
+      subEventDefinitions: stages,
+      subEvents: stages,
+      mode: "Tournament"
+    });
+    Q.collection("events").insertOne(event);
+    Q.collection("activityMembers").insertMany([
+      memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+      memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
+      memberDocument(EVENT_ID, thirdUserId, "Member", "accepted"),
+      { ...memberDocument(qualifierGroupA, hostUserId, "Member", "accepted"), ownerType: "group" },
+      { ...memberDocument(qualifierGroupA, participantUserId, "Member", "accepted"), ownerType: "group" },
+      { ...memberDocument(qualifierGroupB, thirdUserId, "Member", "accepted"), ownerType: "group" }
+    ]);
+    Q.collection("activitySubEventStageRuntime").insertOne({
+      _id: `${PREFIX}:stage-runtime:tournament-review-qualifiers`,
+      syncKey: `${PREFIX}:stage-runtime:tournament-review-qualifiers`,
+      recordId: `${EVENT_ID}:${qualifierId}`,
+      status: "A",
+      ownerId: EVENT_ID,
+      subEventId: qualifierId,
+      stageStatus: "SR",
+      stageStatusReason: "stage-ended",
+      stageStatusUpdatedAt: stagedAtIso,
+      stageFinalizedAt: null,
+      stageFinalizedByUserId: null,
+      groupsCount: 2,
+      groupResourceMetricsByAssetOwnerId: {},
+      createdDate: nowIso,
+      createdUser: Q.ACTOR,
+      updatedDate: nowIso,
+      updatedUser: Q.ACTOR
+    });
+    Q.collection("eventLeaderboardEntries").insertMany([
+      {
+        _id: `${PREFIX}:tournament-review:score:casey`,
+        syncKey: `${PREFIX}:tournament-review:score:casey`,
+        eventId: EVENT_ID,
+        subEventId: qualifierId,
+        groupId: qualifierGroupA,
+        entryType: "score",
+        memberId: hostUserId,
+        scoreValue: 9,
+        note: "Manual QA deterministic winner",
+        createdAtIso: nowIso,
+        createdUser: hostUserId,
+        updatedDate: nowIso,
+        updatedUser: hostUserId
+      },
+      {
+        _id: `${PREFIX}:tournament-review:score:nova`,
+        syncKey: `${PREFIX}:tournament-review:score:nova`,
+        eventId: EVENT_ID,
+        subEventId: qualifierId,
+        groupId: qualifierGroupA,
+        entryType: "score",
+        memberId: participantUserId,
+        scoreValue: 4,
+        note: "Manual QA deterministic non-advancer",
+        createdAtIso: nowIso,
+        createdUser: hostUserId,
+        updatedDate: nowIso,
+        updatedUser: hostUserId
+      },
+      {
+        _id: `${PREFIX}:tournament-review:score:riley`,
+        syncKey: `${PREFIX}:tournament-review:score:riley`,
+        eventId: EVENT_ID,
+        subEventId: qualifierId,
+        groupId: qualifierGroupB,
+        entryType: "score",
+        memberId: thirdUserId,
+        scoreValue: 7,
+        note: "Manual QA deterministic winner",
+        createdAtIso: nowIso,
+        createdUser: hostUserId,
+        updatedDate: nowIso,
+        updatedUser: hostUserId
+      }
+    ]);
+    const heldUntilIso = dateIso(60);
+    const held = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": heldUntilIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Held by TOURNAMENT-003 until the manual Finalize is persisted.",
+          updatedDate: nowIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (held.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' was not found for TOURNAMENT-003.`);
+    }
   }
 
   function stageData(stageKind, stagedAtIso, context = {}) {
@@ -1698,6 +1849,10 @@
           updatedUser: hostUserId
         }
       ]);
+      return;
+    }
+    if (checkpointId === "TOURNAMENT-003") {
+      insertTournamentReviewBaseline(stagedAtIso);
       return;
     }
     if (stageKind === "active-no-auto" || stageKind === "invitation-empty") {
@@ -2225,7 +2380,11 @@
       updatedDate: { $gt: state.stagedAtIso }
     }).sort({ updatedDate: 1, _id: 1 }).toArray();
     const workerRules = Q.collection("notificationRuleConfigs").find({
-      ruleKey: { $in: ["notification-outbox", "affinity-recompute"] }
+      ruleKey: { $in: [
+        "notification-outbox",
+        "affinity-recompute",
+        ...(checkpointId === "TOURNAMENT-003" ? [TOURNAMENT_REVIEW_RULE] : [])
+      ] }
     }).sort({ ruleKey: 1 }).toArray();
     const feedbackNotificationOutbox = Q.collection("notificationOutbox").find({
       notificationType: "event-feedback-submitted",
@@ -2265,8 +2424,64 @@
       targetId: { $in: [...dynamicEventIds, hostUserId, participantUserId] },
       updatedDate: { $gt: state.stagedAtIso }
     });
+    const tournamentReview = checkpointId === "TOURNAMENT-003"
+      ? (() => {
+          const qualifierStageId = `${EVENT_ID}:stage:qualifiers`;
+          const finalStageId = `${EVENT_ID}:stage:final`;
+          const qualifierGroupIds = sortedUnique(leaderboard
+            .filter(entry => Q.text(entry.subEventId) === qualifierStageId)
+            .map(entry => entry.groupId));
+          const qualifierGroups = qualifierGroupIds.map(groupId => {
+            const scores = leaderboard
+              .filter(entry => Q.text(entry.subEventId) === qualifierStageId
+                && Q.text(entry.groupId) === groupId)
+              .map(entry => ({
+                userId: Q.text(entry.memberId),
+                user: Q.user(Q.text(entry.memberId)),
+                score: Number(entry.scoreValue || 0)
+              }))
+              .sort((left, right) => right.score - left.score
+                || left.userId.localeCompare(right.userId));
+            return {
+              groupId,
+              acceptedMemberUserIds: sortedUnique(members
+                .filter(member => Q.text(member.ownerType) === "group"
+                  && Q.text(member.ownerId) === groupId
+                  && Q.text(member.status).toLowerCase() === "accepted")
+                .map(member => member.userId)),
+              scores,
+              advancingUserIds: scores.slice(0, 1).map(entry => entry.userId)
+            };
+          });
+          const reviewRule = workerRules.find(item => Q.text(item.ruleKey) === TOURNAMENT_REVIEW_RULE) || {};
+          return {
+            qualifierStageId,
+            finalStageId,
+            advancePerGroup: 1,
+            qualifierGroups,
+            expectedFinalMemberUserIds: sortedUnique(
+              qualifierGroups.flatMap(group => group.advancingUserIds)
+            ),
+            finalRoomEventIds: generatedRoomEvents
+              .filter(room => Q.text(room.parentSubEventId) === finalStageId)
+              .map(room => Q.text(room.sourceId || room._id))
+              .filter(Boolean),
+            armCount: Number(state.tournamentReviewArmCount || 0),
+            reviewRule: {
+              ruleKey: Q.text(reviewRule.ruleKey),
+              enabled: reviewRule.enabled === true,
+              intervalSeconds: Number(reviewRule.timing && reviewRule.timing.intervalSeconds || 0),
+              currentStatus: Q.text(reviewRule.runState && reviewRule.runState.currentStatus),
+              lastRunAtIso: Q.text(reviewRule.runState && reviewRule.runState.lastRunAtIso),
+              lastRunCount: Number(reviewRule.runState && reviewRule.runState.lastRunCount || 0),
+              progressDetail: Q.text(reviewRule.runState && reviewRule.runState.progressDetail)
+            }
+          };
+        })()
+      : null;
     return {
       events: eventSummary(),
+      tournamentReview,
       generatedRoomEvents: generatedRoomEvents.map(room => {
         const identity = generatedTournamentGroupIdentity(room, event);
         return {
@@ -3058,6 +3273,235 @@
     };
     visit(before, after, "");
     return differences;
+  }
+
+  function tournamentReviewRule() {
+    return Q.collection("notificationRuleConfigs").findOne({ ruleKey: TOURNAMENT_REVIEW_RULE });
+  }
+
+  function tournamentReviewStableSnapshot() {
+    const event = Q.collection("events").findOne(manualEventSelector()) || {};
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const finalId = `${EVENT_ID}:stage:final`;
+    const rooms = Q.collection("events")
+      .find(generatedRandomRoomSelector())
+      .sort({ sourceId: 1, _id: 1 })
+      .toArray()
+      .filter(item => Q.text(item.parentSubEventId) === finalId);
+    const roomIds = rooms.map(item => Q.text(item.sourceId || item._id)).filter(Boolean);
+    const counters = [hostUserId, participantUserId, thirdUserId].map(userId => {
+      const saved = userActivitiesSnapshot(userId);
+      const activities = saved.activities && saved.activities.present
+        ? saved.activities.value || {}
+        : {};
+      return {
+        userId,
+        events: activities.events || 0,
+        hosting: activities.hosting || 0,
+        chats: activities.chats || 0,
+        event: activities.event || {},
+        chat: activities.chat || {}
+      };
+    });
+    return {
+      stages: (event.subEvents || []).map(stage => ({
+        id: Q.text(stage.id),
+        stageStatus: Q.text(stage.stageStatus),
+        stageStatusReason: Q.text(stage.stageStatusReason),
+        stageFinalizedAt: Q.text(stage.stageFinalizedAt),
+        stageFinalizedByUserId: Q.text(stage.stageFinalizedByUserId),
+        groupsCount: Number(stage.groupsCount || 0)
+      })),
+      finalRooms: rooms.map(room => ({
+        eventId: Q.text(room.sourceId || room._id),
+        parentEventId: Q.text(room.parentEventId),
+        parentSubEventId: Q.text(room.parentSubEventId),
+        groupId: Q.text(room.groupId),
+        title: Q.text(room.title),
+        status: Q.text(room.status),
+        acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
+        acceptedMembers: Number(room.acceptedMembers || 0)
+      })),
+      finalMembers: Q.collection("activityMembers")
+        .find({ ownerType: "event", ownerId: { $in: roomIds } })
+        .sort({ ownerId: 1, userId: 1, _id: 1 })
+        .toArray()
+        .map(member => ({
+          ownerId: Q.text(member.ownerId),
+          userId: Q.text(member.userId),
+          role: Q.text(member.role),
+          status: Q.text(member.status)
+        })),
+      stageRuntime: Q.collection("activitySubEventStageRuntime")
+        .find({ ownerId: EVENT_ID })
+        .sort({ subEventId: 1, _id: 1 })
+        .toArray()
+        .map(runtime => ({
+          subEventId: Q.text(runtime.subEventId),
+          stageStatus: Q.text(runtime.stageStatus),
+          stageStatusReason: Q.text(runtime.stageStatusReason),
+          stageFinalizedAt: Q.text(runtime.stageFinalizedAt),
+          stageFinalizedByUserId: Q.text(runtime.stageFinalizedByUserId),
+          groupsCount: Number(runtime.groupsCount || 0)
+        })),
+      leaderboard: Q.collection("eventLeaderboardEntries")
+        .find({ eventId: EVENT_ID })
+        .sort({ subEventId: 1, groupId: 1, memberId: 1, _id: 1 })
+        .toArray()
+        .map(entry => ({
+          subEventId: Q.text(entry.subEventId),
+          groupId: Q.text(entry.groupId),
+          memberId: Q.text(entry.memberId),
+          scoreValue: Number(entry.scoreValue || 0)
+        })),
+      chats: Q.collection("chats")
+        .find({ $or: [{ eventId: { $in: roomIds } }, { ownerId: { $in: roomIds } }] })
+        .sort({ eventId: 1, ownerUserId: 1, _id: 1 })
+        .toArray()
+        .map(chat => ({
+          chatId: Q.text(chat.chatId || chat.id || chat._id),
+          eventId: Q.text(chat.eventId),
+          ownerUserId: Q.text(chat.ownerUserId),
+          memberUserIds: sortedUnique(chat.memberUserIds || chat.memberIds || []),
+          title: Q.text(chat.title),
+          unread: Number(chat.unread || 0)
+        })),
+      planMarkers: Q.collection("schedulerPlanMarkers")
+        .find({ ownerId: EVENT_ID })
+        .sort({ actionType: 1, scopeId: 1, _id: 1 })
+        .toArray()
+        .map(marker => ({
+          actionType: Q.text(marker.actionType),
+          ownerId: Q.text(marker.ownerId),
+          scopeId: Q.text(marker.scopeId),
+          fingerprint: Q.text(marker.fingerprint),
+          userIds: sortedUnique(marker.userIds || [])
+        })),
+      outboxIntents: Q.collection("notificationOutbox")
+        .find({ $or: [
+          { entityId: { $in: [EVENT_ID, ...roomIds] } },
+          { "payload.eventId": { $in: [EVENT_ID, ...roomIds] } }
+        ] })
+        .sort({ notificationType: 1, entityId: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          notificationType: Q.text(item.notificationType),
+          entityId: Q.text(item.entityId),
+          recipientUserIds: sortedUnique(item.recipientUserIds || []),
+          title: Q.text(item.title),
+          body: Q.text(item.body)
+        })),
+      counters
+    };
+  }
+
+  function armTournamentReview() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("arm-tournament-review is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const event = Q.collection("events").findOne(manualEventSelector());
+    const stages = event && Array.isArray(event.subEvents) ? event.subEvents : [];
+    const qualifier = stages.find(stage => Q.text(stage.id) === `${EVENT_ID}:stage:qualifiers`);
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F") {
+      Q.fail("Qualifiers is not finalized; run the visible Finalize Stage action once before arming tournament review.");
+    }
+    const armCount = Number(state.tournamentReviewArmCount || 0);
+    if (armCount >= 2) {
+      Q.fail("TOURNAMENT-003 tournament review has already been armed twice; run the no-op verifier.");
+    }
+    const rule = tournamentReviewRule();
+    if (!rule) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' is missing.`);
+    }
+    const stateUpdate = {
+      tournamentReviewArmCount: armCount + 1,
+      tournamentReviewArmedAtIso: Q.nowIso()
+    };
+    if (armCount === 1) {
+      const firstPass = tournamentReviewStableSnapshot();
+      const expectedWinners = [hostUserId, thirdUserId].sort();
+      const actualWinners = sortedUnique(firstPass.finalMembers.map(member => member.userId));
+      const runState = rule.runState || {};
+      if (firstPass.finalRooms.length !== 1
+          || !sameJson(actualWinners, expectedWinners)
+          || Q.text(runState.currentStatus) !== "completed"
+          || Number(runState.lastRunCount) !== 1) {
+        Q.fail("the first real tournament-review run is not at the exact one-room Casey+Riley advancement boundary.");
+      }
+      stateUpdate.tournamentReviewNoopBaseline = firstPass;
+      stateUpdate.tournamentReviewHistoryLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    }
+    const armedAtIso = dateIso(-31);
+    const nowIso = Q.nowIso();
+    const updated = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": armedAtIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": armCount === 0
+            ? "Armed by TOURNAMENT-003 after manual Finalize."
+            : "Armed by TOURNAMENT-003 for the unchanged no-op replay.",
+          updatedDate: nowIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (updated.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' disappeared while it was armed.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      { $set: stateUpdate }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: armCount === 0 ? "tournament-review-armed" : "tournament-review-noop-armed",
+      armNumber: armCount + 1,
+      armedLastRunAtIso: armedAtIso,
+      next: armCount === 0
+        ? "Wait for the real event-tournament-review scheduler, then run status."
+        : "Wait for the second real scheduler pass, then run verify-tournament-review-noop."
+    });
+  }
+
+  function verifyTournamentReviewNoop() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("verify-tournament-review-noop is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    if (Number(state.tournamentReviewArmCount || 0) !== 2 || !state.tournamentReviewNoopBaseline) {
+      Q.fail("the second tournament-review pass has not been armed from a verified first-pass boundary.");
+    }
+    const rule = tournamentReviewRule();
+    const runState = rule && rule.runState ? rule.runState : {};
+    const historyLength = rule && Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    if (Q.text(runState.currentStatus) !== "completed"
+        || Number(runState.lastRunCount) !== 0
+        || historyLength !== Number(state.tournamentReviewHistoryLength || 0) + 1) {
+      Q.fail("the second real tournament-review run has not completed exactly once with affected count 0.");
+    }
+    const current = tournamentReviewStableSnapshot();
+    if (!sameJson(current, state.tournamentReviewNoopBaseline)) {
+      Q.fail(`the unchanged second tournament-review run changed domain state: ${JSON.stringify(jsonDifferences(state.tournamentReviewNoopBaseline, current))}`);
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-review-noop-verified",
+      affectedCount: Number(runState.lastRunCount),
+      domain: current,
+      next: "Complete the remaining UI comparison and record TOURNAMENT-003 PASS/CLOSED."
+    });
   }
 
   function verifyTicketAttendanceFirstScan() {
@@ -7255,6 +7699,8 @@
     case "prepare-periodic-auto-inviter": preparePeriodicAutoInviter(); break;
     case "schedule-auto-inviter": scheduleAutoInviter(); break;
     case "arm-ticket-expiry": armTicketExpiry(); break;
+    case "arm-tournament-review": armTournamentReview(); break;
+    case "verify-tournament-review-noop": verifyTournamentReviewNoop(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;
     case "repair-tournament-room-notifications": repairTournamentRoomNotifications(); break;

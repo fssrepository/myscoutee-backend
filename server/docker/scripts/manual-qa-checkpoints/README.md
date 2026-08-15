@@ -266,8 +266,29 @@ member/capacity badge. The publish-time initial batch must add the controlled
 event for Nova only. Keep Riley open without a controlled-event delta until
 Riley is introduced as the distinct later periodic candidate.
 
-`TOURNAMENT-003` continues through the named real tournament-review scheduler
-workflow. The immediate runner does not impersonate either worker.
+`TOURNAMENT-003` stages a completed, deterministic qualifier baseline: Casey
+beats Nova `9-4` in Group A, while Riley wins the singleton Group B with `7`;
+one member advances per group. The normal 30-minute
+`event-tournament-review` rule is held until Casey performs the visible
+Finalize action. After that write, arm the real worker without shortening its
+configured interval:
+
+```bash
+bash manual-qa-checkpoints.sh arm-tournament-review event-domain TOURNAMENT-003
+bash manual-qa-checkpoints.sh status event-domain TOURNAMENT-003
+```
+
+After the first real run has advanced Casey and Riley exactly once, the same
+arm command captures that stable boundary and makes one unchanged real-worker
+pass due. Verify that pass as an exact domain no-op:
+
+```bash
+bash manual-qa-checkpoints.sh arm-tournament-review event-domain TOURNAMENT-003
+bash manual-qa-checkpoints.sh verify-tournament-review-noop event-domain TOURNAMENT-003
+```
+
+The immediate runner never impersonates the scheduler; both passes are owned
+by the already-running development worker.
 
 ## Asset-domain checkpoint runner
 

@@ -159,6 +159,33 @@
         }
       ]
     },
+    "TOURNAMENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · stage finalizer"
+        },
+        {
+          "actor": "Nova tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · qualifier non-advancer"
+        },
+        {
+          "actor": "Riley tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · qualifier advancer"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2

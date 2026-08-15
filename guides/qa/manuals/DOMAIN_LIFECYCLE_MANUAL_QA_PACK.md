@@ -4459,15 +4459,73 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   notifications and counters; the one recompute completed exactly once without
   error. The visible `Leave event` action was not selected. It belongs to the
   new independent `TOURNAMENT-ROOM-LIFE-001` checkpoint.
-- Remaining TOURNAMENT-002 UI replays: Casey's unread tournament notification
-  title/trophy/body without marking it read, the R1 initial chat content, then
-  Nova and Riley's exact group/chat/notification projections.
-- Remaining bounded UI replays: after that clean Start replay, prove Casey
-  Active Events counter `1` and visible R1 with large trophy plus
-  small Casey avatar, then click only the avatar to open Casey's profile; then
-  close/reopen Notifications -> New and prove the repaired R1 row without
-  marking it read; finally open the R1 chat and compare its initial tournament
-  welcome. Nova and Riley remain untouched until requested.
+- **Exceptional manual-recovery notification write/order PASS**: the normal
+  automatic stage-start path remains unchanged. From a clean deliberately
+  overdue `RS` fixture, Casey invoked manual **Start Stage** once. The repaired
+  path first materialized the two rooms and exact three memberships, then
+  persisted `Tournament started` exactly once for Nova and Riley only at
+  `14:32:05.163Z`, followed by the personal R1/R2 ready rows at
+  `14:32:05.192Z` or later for Casey/Nova/Riley. The independent oracle proves
+  Casey is excluded only from the redundant started acknowledgement, remains
+  included in R1 ready, all recipient sets are exact and there are no
+  duplicates. Room, chat and Activity counter invariants also remain exact.
+- Remaining TOURNAMENT-002 UI replay: Casey must see no unread `Tournament
+  started` row and exactly one unread R1-ready row; Nova must see one started
+  row followed causally by one R1-ready row; Riley must see one started row
+  followed causally by one R2-ready row. Since New is newest-first, each
+  participant's ready row must render above its started row. Do not open rows
+  or action menus during this comparison. Earlier list/card/profile/member and
+  persisted Start evidence is retained and must not be repeated.
+- **Manual-recovery initiating-actor notification UI PASS**: Casey's New list
+  contained no `Tournament started` row and exactly one unread `Tournament
+  Group R1 is ready` row with the tournament trophy and expected body. The row
+  and its action menu remained unopened. Nova and Riley recipient ordering is
+  still pending.
+- **Manual-recovery R1 recipient notification UI PASS**: Nova's New list
+  contained exactly one unread `Tournament Group R1 is ready` row above
+  exactly one unread `Tournament started` row. The trophy and both expected
+  bodies agreed with the persisted oracle, and neither row was opened. Both
+  rows visibly carry the same minute (`16:32`) because the UI displays minute
+  precision; the persisted timestamps prove started at `.163` and ready at
+  `.192+`, so both were produced immediately by the one manual Start and their
+  causal order does not depend on a later periodic task. Riley's R2 recipient
+  ordering remains pending.
+- **Riley R2 participant projection PASS**: Riley saw the generated R2 card at
+  `1 / 2`, and its Members view contained exactly one member. This agrees with
+  the persisted singleton R2 membership; Riley's unread notification ordering
+  remains a separate pending observation.
+- **Manual-recovery R2 recipient notification UI PASS**: Riley's New list
+  contained exactly one unread `Tournament Group R2 is ready` row above
+  exactly one unread `Tournament started` row, with the expected trophy and
+  bodies. The rows remained unopened. A final read-only oracle re-proved the
+  exact started audience Nova+Riley, ready audience Casey+Nova+Riley, strict
+  persisted order and empty `readAtIso` for all five rows. The notification UI
+  branch is complete without mutation.
+- Remaining bounded TOURNAMENT-002 proof is Nova's R1 card/member/chat and
+  Riley's R2 chat. Nova's R1 chat observation covers the shared R1 initial
+  welcome, so Casey's already-proven R1 row need not be reopened. Start,
+  notification lists and earlier Casey projections must not be replayed.
+- **Nova R1 participant membership UI PASS**: Nova saw `Tournament Group R1`
+  at `2 / 2`; its Members view contained exactly Casey Bridge and Nova Social.
+  No member action was selected. Only Nova's R1 chat content and Riley's R2
+  chat remain.
+- **Nova R1 participant chat UI PASS**: Nova's Chats -> All contained the
+  single `Tournament Group R1` chat. Opening it showed the exact initial
+  MyScoutee System tournament welcome stored by the oracle. Nova sent no
+  message. Only Riley's R2 chat projection remains before checkpoint closure.
+- **Riley R2 participant chat UI PASS**: Riley's Chats -> All contained the
+  single `Tournament Group R2` chat. Opening it showed the exact same
+  tournament-specific MyScoutee System welcome for the correct R2 identity.
+  Riley sent no message.
+- **Final read oracle PASS / checkpoint CLOSED**: the two generated rooms,
+  exact Casey+Nova/Riley partition, stage `A/groupsCount=2`, three chat owner
+  copies, welcome content and notification recipient/order contract remained
+  unchanged. Opening the chats performed only the expected owner-scoped read
+  transition: Nova R1 and Riley R2 became `unread=0` with Chat counters `0`,
+  while untouched Casey R1 remained `unread=1` with Chat counter `1`. All five
+  inspected notification rows remained unread. `TOURNAMENT-002` is
+  **PASS/CLOSED**; none of its Start, list, member, notification or chat steps
+  need replay before `TOURNAMENT-003`.
 
 ### `TOURNAMENT-003` — review and advancement
 
@@ -4476,6 +4534,37 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - Verify next-stage group membership, removed stale losers, stage status,
   score/advancement UI and notification exactly once.
 - A second unchanged review must be a domain and UI no-op.
+- **Baseline ready — 2026-08-15**: the replayable fixture holds Qualifiers in
+  `SR / stage-ended` with two exact groups. Group A contains Casey `9` and Nova
+  `4`; Group B contains Riley `7`; `tournamentAdvancePerGroup=1`, so the
+  independently derived expected Final membership is Casey+Riley. Final is
+  still `RS / awaiting-prior-stage` with no room/member/chat materialization.
+  Casey has Hosting/All `1`; Nova and Riley each have Active/All `1`; all Chat
+  counters are `0`. The real `event-tournament-review` rule remains enabled at
+  its production `1800s` interval but is held idle beyond the manual boundary.
+  Final now has a stable three-to-five-hour window so the manual Finalize, the
+  first exact-once worker pass and the unchanged no-op pass cannot be consumed
+  by fixture expiry.
+- **Ordered execution**: first prove the deterministic qualifier standings in
+  Casey's UI and use the visible Finalize Stage action once. Only after its
+  persisted `F` oracle may the harness arm the already-running real review
+  worker. After Casey+Riley advance exactly once, capture that stable state,
+  re-arm the same real rule once and require `lastRunCount=0` plus a byte-exact
+  domain snapshot before closing.
+- **Qualifier history UI FAIL / repair pending replay — 2026-08-15**: screenshot
+  `17-11-48` showed the selected Casey score history as a three-line card
+  (`+9`, note and date) below the existing Standings/History tabs. This was a
+  presentation defect, not a missing-Nova write: clicking Casey had correctly
+  selected Casey's History tab, while the persisted qualifier oracle still
+  retained Casey `9`, Nova `4` and Riley `7`. The shared tournament-groups
+  component now renders score history as `Score | Note | Date` and FIFA history
+  as `Match | Result | Date`, without another back/detail arrow because the
+  existing tabs own navigation. The History table has no forced desktop/mobile
+  minimum width: fixed compact value/date columns and a single-line ellipsized
+  middle column keep each record on one row without horizontal overflow on a
+  narrow viewport. The running frontend watcher compiled and synced the first
+  repair at `17:13:50`; only Casey is reloaded for focused visual replay before
+  Finalize.
 
 ### `TOURNAMENT-ROOM-LIFE-001` — generated-room member leave isolation
 

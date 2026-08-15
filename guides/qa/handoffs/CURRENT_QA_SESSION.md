@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 16:07 CEST
+Updated: 2026-08-15 17:17 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,17 +34,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-002 — automatic group membership projection
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
-scenario: event-domain (live post-Start transaction; do not reset or replay Start)
-ledger_status: IN PROGRESS / CLEAN START+CASEY LIST/CARD PASS / NOTIFICATION UI REPLAY READY
-state: TOURNAMENT-001 is PASS/CLOSED. Earlier TOURNAMENT-002 grouping/member/chat/presentation evidence remains retained. The one-time migration route was removed as non-replayable. At 13:58Z Codex reset/staged only this checkpoint and proved the exact pre-Start baseline, then replaced exactly three managed browsers. Casey ran Start Stage once at 14:01Z; the independent oracle passed fresh corrected R1/R2 organizer shape, exact membership/chat/notification/counter deltas and one recompute. Casey then proved Active Events in place without reload: counter 1, visible Tournament Group R1, trophy card image and small Casey avatar. Clicking that avatar opened the standard profile menu. A subsequent reload retained the same row/image/avatar, and the group Members view still showed the correct members. The follow-up read-only oracle proves all reads were side-effect-free and the single recompute completed once without error. The visible room menu also offered Leave event to Casey; it was not selected and is recorded as new separate Core case TOURNAMENT-ROOM-LIFE-001 rather than being mixed into this presentation checkpoint. Nova/Riley remain untouched. Next is the fresh tournament notification row UI replay.
-required_resume: Casey only: close the profile/menu if still open, open Notifications -> New, and locate the unread Tournament Group R1 is ready row. Verify tournament trophy icon and the body Your tournament group for QA TOURNAMENT-002 is ready. Do not open the row or its action menu, so it remains unread. Nova/Riley remain untouched.
-event: QA TOURNAMENT-002
+checkpoint: TOURNAMENT-003 — review and advancement
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-003--review-and-advancement
+scenario: event-domain (clean scored qualifier baseline; no producer action executed)
+ledger_status: IN PROGRESS / HISTORY UI RETEST
+state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 was cleanly staged at 15:06:05Z with a stable multi-hour Final window. Qualifiers is SR/stage-ended with exact Group A Casey=9 and Nova=4 plus Group B Riley=7; expected Final is Casey+Riley. Final is RS/awaiting-prior-stage with zero generated rooms, members and chats. The real review rule remains held at 1800 seconds; no Finalize or review occurred. Casey's first History observation exposed only a presentation FAIL: one score update was split into a three-line card even though the top Standings/History tabs already own navigation. The shared Score and FIFA histories were converted to compact tables without a redundant arrow. Their mobile layout removes the forced minimum width, keeps value/date columns compact and ellipsizes the middle cell on one line. The final watcher output synced at 17:15:59 and Casey alone reloaded it at 17:16; Nova and Riley remain untouched.
+required_resume: Casey only: repeat Activities -> My Events -> QA TOURNAMENT-003 -> card overflow -> View -> Qualifiers overflow -> Groups. Expand Group A and click Casey's standings row. History must be one compact Score | Note | Date table with one +9 / Manual QA deterministic winner / date row, no card-style line breaks and no extra back/detail arrow. Do not Finalize yet.
+event: QA TOURNAMENT-003
 actors:
-  active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
-  controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Casey proves the fresh unread Tournament Group R1 notification title, trophy and tournament body without opening or marking it read; Nova/Riley remain untouched.
+  active: Casey tournament stage finalizer; Nova qualifier non-advancer; Riley qualifier advancer; three fresh launcher-owned demo browsers on /game
+  controls: Nova and Riley remain untouched through the qualifier-standings observation and Casey's later Finalize write
+next_actor: Casey replays the repaired score-History presentation before the one-time Finalize producer.
 stop_phrase: megvan
 ```
 
@@ -110,13 +110,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-002 — automatic group membership projection`, notification UI
-replay: clean Start, Casey Active Events in-place/reload, trophy, standard
-avatar/profile action and Members recheck are PASS; their follow-up oracle is
-side-effect-free. Casey closes the profile/menu, opens Notifications -> **New**
-and finds the unread `Tournament Group R1 is ready` row. Verify the trophy icon
-and `Your tournament group for QA TOURNAMENT-002 is ready.` body without
-opening the row or its action menu. Nova/Riley remain untouched.
+`TOURNAMENT-003 — review and advancement`, focused History-layout replay:
+Casey repeats Activities -> My Events -> `QA TOURNAMENT-003` -> card overflow
+**View** -> Qualifiers overflow -> **Groups**, expands Group A and clicks
+Casey's standings row. History must render one compact `Score | Note | Date`
+table with the `+9 / Manual QA deterministic winner / date` row, without the
+old card-style line breaks or an extra back/detail arrow. Do not Finalize yet;
+Nova and Riley remain untouched.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is
@@ -509,6 +509,14 @@ make the user replay an already-PASS producer only to reconstruct reset data.
 - Treat Notifications as persisted evidence by default, not as a domain action
   surface. A notification menu owns a business transition only when its actual
   converter/menu implementation exposes that action.
+- For a manual recovery action that substitutes for a normally automatic
+  producer, preserve the normal scheduler path and test the recovery path
+  separately. Persist the recovered domain objects before emitting success
+  notifications; order the shared transition notification before derived
+  per-object notifications; exclude the initiating actor only from a
+  redundant action acknowledgement, not from a derived notification that is
+  also relevant to that actor. Prove recipient sets, exact cardinality and
+  persisted timestamps before comparing the unread UI ordering.
 - For an unread/New notification assertion, stop and inspect New before any
   later action that intentionally resolves or marks that row read. A later
   read row in All can prove persistence and resolution, but it is not evidence
@@ -866,7 +874,8 @@ ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
 -> LANDING-ELIGIBILITY-001 (functional branches complete;
    real Firebase-login retention deferred)
 -> TOURNAMENT-001 (closed)
--> TOURNAMENT-002 (active; first fixture-shape FAIL documented, clean replay baseline proven)
+-> TOURNAMENT-002 (closed)
+-> TOURNAMENT-003 (active; deterministic scored qualifier baseline ready)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase

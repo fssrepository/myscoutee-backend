@@ -25,12 +25,14 @@ The current qualification ledger is available as an
 
 As of 2026-08-15:
 
-- **Core:** 54 passed, 80 remaining (134 total)
+- **Core:** 55 passed, 79 remaining (134 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 190 cases. The active core checkpoint is
-`TOURNAMENT-002`; its corrected Start and Casey list/card replays pass, with
-notification, chat and the remaining participant projections still in progress.
+The complete matrix contains 190 cases. `TOURNAMENT-002` is PASS/CLOSED after
+the corrected recovery Start, exact group/member/chat projections and ordered
+three-actor notification replay. `TOURNAMENT-003` is active at its deterministic
+scored-qualifier baseline; the manual Finalize and real review-worker replay are
+next.
 
 ### Official manuals
 
