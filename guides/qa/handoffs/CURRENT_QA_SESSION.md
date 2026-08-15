@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 15:14 CEST
+Updated: 2026-08-15 15:15 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,14 +34,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
 scenario: event-domain (live post-Start transaction; do not reset or replay Start)
-ledger_status: IN PROGRESS / START+GROUP+MEMBERS PASS / TOURNAMENT CHAT PRESENTATION RETEST READY
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. Casey's first Chats/All read exposed a semantic FAIL: the tournament group reused Random Room title, affinity/leave welcome and sparkle avatar. Java/frontend presentation is repaired without changing the stable assignment IDs; a guarded checkpoint repair changed only the two room/chat/message presentations. The post-repair oracle retains 3 memberships, 3 chat copies, unread total 3 and all activity counters. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. Three launcher-owned browsers remain open.
-required_resume: In Casey only, reload once for the repaired frontend bundle, then open Activities -> Chats -> All. Verify exactly one Tournament Group R1 row appears with the trophy avatar and tournament-specific preview. Do not open the chat yet and do not touch Nova/Riley.
+ledger_status: IN PROGRESS / START+GROUP+MEMBERS PASS / TOURNAMENT CHAT ROW PASS / CHAT CONTENT RETEST READY
+state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. Casey's first Chats/All read exposed a semantic FAIL: the tournament group reused Random Room title, affinity/leave welcome and sparkle avatar. Java/frontend presentation is repaired without changing the stable assignment IDs; a guarded checkpoint repair changed only the two room/chat/message presentations. The post-repair oracle retains 3 memberships, 3 chat copies, unread total 3 and all activity counters. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. After one frontend reload, Casey proved the single Tournament Group R1 list row, trophy avatar and tournament-specific preview. The chat-content replay remains. Three launcher-owned browsers remain open.
+required_resume: In Casey's open Activities -> Chats -> All list, open the single Tournament Group R1 row once. Verify the chat header/title and trophy image identify the tournament group, and the initial system message says this is the tournament group for QA TOURNAMENT-002 and tells members to coordinate/follow stage updates. Do not send a message and do not touch Nova/Riley.
 event: QA TOURNAMENT-002
 actors:
   active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
   controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Casey reloads once, opens Activities -> Chats -> All and reports the single Tournament Group R1 row, trophy avatar and tournament-specific preview; Nova/Riley remain untouched.
+next_actor: Casey opens the single Tournament Group R1 chat once and reports its title/image and initial tournament-specific system message; no message is sent and Nova/Riley remain untouched.
 stop_phrase: megvan
 ```
 
@@ -108,10 +108,12 @@ the checkpoint says otherwise.
 ### Next manual action
 
 `TOURNAMENT-002 — automatic group membership projection`, tournament-chat
-presentation replay: in Casey only, reload once, then open Activities ->
-Chats -> **All**. Exactly one **Tournament Group R1** row must be present with
-the trophy avatar and the tournament-specific preview. Do not open the chat
-yet and do not touch Nova or Riley. Report the visible row with `megvan`.
+content replay: in Casey's open Activities -> Chats -> **All** list, open the
+single **Tournament Group R1** row once. Verify that the chat header/title and
+trophy image identify the tournament group, and that the initial system
+message says this is the tournament group for `QA TOURNAMENT-002` and tells
+members to coordinate and follow stage updates. Do not send a message and do
+not touch Nova or Riley. Report the visible content with `megvan`.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is

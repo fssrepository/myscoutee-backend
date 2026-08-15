@@ -4369,10 +4369,14 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   `2/1`, three unchanged memberships, three chat copies, two
   `system:tournament-room-welcome` messages, unread total `3`, unchanged actor
   Activity counters and the same single completed parent recompute task.
-- Remaining bounded UI replay: Casey reloads once, opens Chats -> All, and
-  proves the single Tournament Group R1 row has the trophy avatar and
-  tournament-specific preview. Only after that PASS open the chat and compare
-  the persisted welcome; Nova and Riley remain untouched until requested.
+- **Tournament chat row presentation replay PASS**: after one frontend reload,
+  Casey's Chats -> All list contained exactly one `Tournament Group R1` row
+  with the trophy avatar and tournament-specific preview. The repaired bundle
+  therefore consumes the repaired backend presentation without a second
+  Start, poll wait or projection workaround.
+- Remaining bounded UI replay: Casey opens that one chat and compares its
+  title/image and initial tournament welcome with the already-proven persisted
+  record. No message is sent; Nova and Riley remain untouched until requested.
 
 ### `TOURNAMENT-003` — review and advancement
 
