@@ -768,6 +768,33 @@ resume pointer; never reconstruct or reapply already-backed-up changes merely
 because the worktree became clean. Treat a backup as incorrect or reverted
 only when the user explicitly says so.
 
+### 5.2 Release qualification during a QA pause
+
+A production-package or deployment qualification performed while the manual
+QA campaign is paused is a separate runtime boundary. Do not advance, reset or
+rewrite the active QA checkpoint merely because a Debian package was built or
+installed on an isolated VM. On return, use the saved read-only resume gate
+against the development stack and continue only from the persisted checkpoint
+oracle; never infer that the VM's state replaced the QA fixture.
+
+The packaged Explore database is deliberately disposable. Every successful
+install or reinstall must rebuild exactly `demo_db` from the current packaged
+seed and refresh only the package-owned `images/demo-assets`,
+`images/demo-events` and `images/demo-profiles` MinIO prefixes. This is needed
+even on a same-version reinstall: otherwise old demo records can keep external
+or obsolete media URLs while the package already contains a newer generated
+image set. Guard the destructive path to the literal demo database, reject it
+when the configured production database has the same name, and retain a retry
+marker until Mongo import, MinIO seed and the demo oracle all succeed.
+
+Production data is the opposite contract: package install/reinstall preserves
+the production database and operator/user uploads byte-for-byte except for an
+explicit, versioned migration or narrowly allow-listed system-seed sync. A
+release replay must capture a read-only production control snapshot before the
+install and prove it unchanged afterward, independently from the clean demo
+oracle. Do not generalize the demo reset helper into a caller-selected database
+drop command, and do not clear the complete MinIO volume to refresh demo media.
+
 ### 6. Recording and communication
 
 After every transactional boundary, including a partial PASS inside a larger
