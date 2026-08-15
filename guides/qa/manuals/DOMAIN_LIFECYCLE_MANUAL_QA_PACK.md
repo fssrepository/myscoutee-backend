@@ -4237,6 +4237,32 @@ Execution evidence (2026-08-15, second Start attempt):
   artifacts during a clean reset. Replay this single Start boundary; do not
   repeat `TOURNAMENT-001` or the earlier definition checks.
 
+Execution evidence (2026-08-15, first identity-complete Start replay):
+
+- **Persisted identity contract PASS**: Qualifiers became `A/groupsCount=2`;
+  two canonical Random Room events partitioned Casey+Nova and Riley exactly
+  once; three accepted room memberships, two physical chat identities (three
+  owner-scoped read documents), two welcome messages, three action outbox
+  records and one recompute task agreed. Each actor received exactly `+1`
+  Active/All event and `+1` event-chat counter while the parent counters stayed
+  stable.
+- The correct materializing request took about `494 ms` from its first event
+  read through the parent counter write. The earlier roughly `250 ms` response
+  is not a valid speed baseline because that false-success path created no
+  rooms, memberships, chats or notifications. The user still found the real
+  action only marginally faster, so the checkpoint remains open for one
+  performance replay before the group/member/chat UI inspection.
+- Write-path inspection found avoidable work after the grouping algorithm:
+  each fresh room was saved twice, its already batch-loaded memberships were
+  queried again, each affected user's complete event inventory/tickets were
+  reprojected, and chat persistence was reread immediately after `saveAll`.
+  The Start-owned path now consumes the batch membership snapshot, saves each
+  room once with its embedded accepted projection, applies one atomic bulk
+  Active/All membership delta, and trusts acknowledged chat writes without a
+  read-after-write query. This is a write-side optimization; SmartList and read
+  query semantics remain unchanged. Replay only Start to measure and prove the
+  same identity/counter result.
+
 ### `TOURNAMENT-003` — review and advancement
 
 - Finalize one stage with deterministic winners/losers, then let the real

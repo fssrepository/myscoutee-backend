@@ -296,14 +296,6 @@ public class ChatService {
         evictChatOwnerReadCaches(documentsToSave);
         evictChatOwnerReadCaches(staleDocuments);
 
-        Set<String> persistedOwnerUserIds = chatsRepository.findByChatId(chatId).stream()
-                .map(Chat::getOwnerUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        if (!persistedOwnerUserIds.equals(new LinkedHashSet<>(memberUserIds))) {
-            throw new IllegalStateException("Unable to materialize the main event chat for " + eventId + ".");
-        }
         return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
     }
 

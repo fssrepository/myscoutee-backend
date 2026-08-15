@@ -433,10 +433,22 @@ class EventSchedulerTest {
                 org.mockito.ArgumentMatchers.eq("event-1"),
                 org.mockito.ArgumentMatchers.eq("sub-1"),
                 anyList());
-        verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> room1Id.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u1", "u2"),
+                anyList());
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> room2Id.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u3", "u4"),
+                anyList());
         ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
-        verify(activityEventsRepository, times(2)).save(roomCaptor.capture());
+        verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
+                roomCaptor.capture(),
+                eq("scheduler"),
+                anyList(),
+                anyList());
         assertThat(roomCaptor.getAllValues()).satisfiesExactly(room1 -> {
             assertThat(room1.getSourceId()).isEqualTo(room1Id);
             assertThat(room1.getTitle()).isEqualTo("Random Room R1");
@@ -449,16 +461,22 @@ class EventSchedulerTest {
             assertThat(room2.getEventType()).isEqualTo("random-room");
         });
         InOrder creationOrder = inOrder(activityEventsRepository, chatService, activitiesMembersService, notificationOutboxService);
-        creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
+        creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> room1Id.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u1", "u2"),
+                anyList());
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
-        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room1Id),
                 eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
                 eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
-        creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
+        creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> room2Id.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u3", "u4"),
+                anyList());
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
-        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room2Id),
                 eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
@@ -536,10 +554,11 @@ class EventSchedulerTest {
             assertThat(plan.memberUserIds()).containsExactlyInAnyOrder("public-1", "public-2");
             assertThat(plan.memberUserIds()).doesNotContain("private-user");
         });
-        verify(activitiesMembersService).syncSystemEventMembers(
-                anyString(),
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                any(ActivityEvent.class),
                 eq("scheduler"),
-                argThat(userIds -> userIds.size() == 2 && !userIds.contains("private-user")));
+                argThat(userIds -> userIds.size() == 2 && !userIds.contains("private-user")),
+                anyList());
     }
 
     @Test
@@ -594,9 +613,10 @@ class EventSchedulerTest {
         assertThat(plans).allSatisfy(plan -> assertThat(plan.memberUserIds()).hasSizeBetween(1, 2));
         verify(usersRepository, never()).findByUserIdIn(anyCollection());
         verify(activityEventsRepository, never()).findAll();
-        verify(activitiesMembersService, times(2)).syncSystemEventMembers(
-                anyString(),
+        verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
+                any(ActivityEvent.class),
                 eq("scheduler"),
+                anyList(),
                 anyList());
     }
 
@@ -624,8 +644,8 @@ class EventSchedulerTest {
         assertThat(plans).isEmpty();
         verify(activitiesMembersService).buildBatchEventSnapshots(argThat(Map::isEmpty));
         verify(activityEventsRepository, never()).save(any(ActivityEvent.class));
-        verify(activitiesMembersService, never()).syncSystemEventMembers(
-                anyString(), anyString(), anyList());
+        verify(activitiesMembersService, never()).syncMaterializedSystemEventMembers(
+                any(ActivityEvent.class), anyString(), anyList(), anyList());
     }
 
     @Test
@@ -684,13 +704,15 @@ class EventSchedulerTest {
         assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
                 .containsExactlyInAnyOrder("a1", "a2", "b1", "b2")
                 .doesNotContain("outside");
-        verify(activitiesMembersService, times(2)).syncSystemEventMembers(
-                anyString(),
+        verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
+                any(ActivityEvent.class),
                 eq("scheduler"),
+                anyList(),
                 anyList());
-        verify(activitiesMembersService, never()).syncSystemEventMembers(
-                eq(room3Id),
+        verify(activitiesMembersService, never()).syncMaterializedSystemEventMembers(
+                argThat(room -> room3Id.equals(room.getSourceId())),
                 anyString(),
+                anyList(),
                 anyList());
         verify(activityTournamentGroupCounterService, never()).syncParent("event-partial", "stage-partial");
     }
@@ -801,8 +823,16 @@ class EventSchedulerTest {
         assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly(roomAId, roomBId);
         assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
                 .containsExactly(List.of("u1", "u2"), List.of("u3", "u4"));
-        verify(activitiesMembersService).syncSystemEventMembers(roomAId, "scheduler", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncSystemEventMembers(roomBId, "scheduler", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> roomAId.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u1", "u2"),
+                anyList());
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> roomBId.equals(room.getSourceId())),
+                "scheduler",
+                List.of("u3", "u4"),
+                anyList());
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -1484,10 +1514,11 @@ class EventSchedulerTest {
             assertThat(plan.seedId()).isEqualTo("random-room:event-advancement:final:final-group");
             assertThat(plan.memberUserIds()).containsExactly("u1", "u2");
         });
-        verify(activitiesMembersService).syncSystemEventMembers(
-                "random-room:event-advancement:final:final-group",
+        verify(activitiesMembersService).syncMaterializedSystemEventMembers(
+                argThat(room -> "random-room:event-advancement:final:final-group".equals(room.getSourceId())),
                 "scheduler",
-                List.of("u1", "u2"));
+                List.of("u1", "u2"),
+                anyList());
     }
 
     @Test
@@ -1627,9 +1658,10 @@ class EventSchedulerTest {
         lenient().when(activityEventsRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         lenient().when(activityEventsRepository.save(any(ActivityEvent.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        lenient().when(activitiesMembersService.syncSystemEventMembers(
-                        anyString(),
+        lenient().when(activitiesMembersService.syncMaterializedSystemEventMembers(
+                        any(ActivityEvent.class),
                         eq("scheduler"),
+                        anyList(),
                         anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -103,6 +104,34 @@ public class UserActivityCountersService {
                 }
             });
         }
+    }
+
+    public void applyActiveEventMembershipDeltas(
+            Collection<String> addedUserIds,
+            Collection<String> removedUserIds) {
+        Map<String, Integer> deltasByUserId = new LinkedHashMap<>();
+        for (String userId : normalizeIds(addedUserIds)) {
+            deltasByUserId.merge(userId, 1, Integer::sum);
+        }
+        for (String userId : normalizeIds(removedUserIds)) {
+            deltasByUserId.merge(userId, -1, Integer::sum);
+        }
+        deltasByUserId.entrySet().removeIf(entry -> entry.getValue() == 0);
+        if (deltasByUserId.isEmpty()) {
+            return;
+        }
+
+        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class);
+        for (Map.Entry<String, Integer> entry : deltasByUserId.entrySet()) {
+            int delta = entry.getValue();
+            bulk.updateOne(
+                    Query.query(Criteria.where("userId").is(entry.getKey())),
+                    new Update()
+                            .inc("activities.events", delta)
+                            .inc("activities.event.all", delta)
+                            .inc("activities.event.active", delta));
+        }
+        bulk.execute();
     }
 
     public UserEventCountersDto readStoredEventCounters(String userId) {

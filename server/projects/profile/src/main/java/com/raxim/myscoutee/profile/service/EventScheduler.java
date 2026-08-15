@@ -1824,18 +1824,18 @@ public class EventScheduler {
                     normalizeId(plannedGroup.seedId()));
             GroupAssignmentTarget assignmentTarget = targetByGroupId.get(normalizeId(plannedGroup.seedId()));
             ActivityEvent randomRoom = null;
-            String randomRoomChatId = "";
             if (randomRoomAssignment) {
                 if (assignmentTarget == null) {
                     throw new IllegalStateException(
                             "Missing random-room target for " + normalizeId(plannedGroup.seedId()) + ".");
                 }
                 randomRoom = materializeRandomRoomEvent(event, assignmentTarget);
-                randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
             }
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
                 if (randomRoomAssignment) {
+                    activityEventsRepository.save(randomRoom);
+                    String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                     chatService.ensureInitialSystemMessage(
                             randomRoomChatId,
                             ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
@@ -1850,10 +1850,11 @@ public class EventScheduler {
                 continue;
             }
             List<String> syncedUserIds = randomRoomAssignment
-                    ? activitiesMembersService.syncSystemEventMembers(
-                            memberOwnerId,
+                    ? activitiesMembersService.syncMaterializedSystemEventMembers(
+                            randomRoom,
                             MARKER_UPDATED_BY,
-                            normalizedPlannedUserIds)
+                            normalizedPlannedUserIds,
+                            groupSnapshot == null ? List.of() : groupSnapshot.members())
                     : activitiesMembersService.syncGroupMembers(
                             memberOwnerId,
                             resolveInviterUserId(event),
@@ -1873,6 +1874,7 @@ public class EventScheduler {
                                 + " but persisted " + normalizedSyncedUserIds + ".");
             }
             if (randomRoomAssignment) {
+                String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                 chatService.ensureInitialSystemMessage(
                         randomRoomChatId,
                         ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
@@ -2093,7 +2095,7 @@ public class EventScheduler {
                 : firstNonBlank(existing.getCreatedUser(), MARKER_UPDATED_BY));
         room.setUpdatedDate(nowIso);
         room.setUpdatedUser(MARKER_UPDATED_BY);
-        return activityEventsRepository.save(room);
+        return room;
     }
 
     private void notifyChangedRandomRoomAssignments(
