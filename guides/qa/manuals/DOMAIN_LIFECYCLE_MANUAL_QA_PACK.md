@@ -4130,6 +4130,37 @@ Execution 2026-08-13 (in progress):
   tournament definition.
 - Verify parent event, stages, capacities, sequence, status and zero/initial
   group counts in Event Editor, stage list and tournament group popup.
+- Published event details are intentionally locked. Therefore this read-only
+  checkpoint uses two explicit fixture phases: an unpublished/draft identity
+  for the editable Event Editor surface and an equivalent published identity
+  for the runtime stage list/group popup. Do not ask the tester to Unpublish as
+  a workaround just to reach the editor; that would turn a read checkpoint into
+  an unrelated lifecycle mutation.
+
+Execution evidence (2026-08-15, runtime branch):
+
+- The guarded fixture contains one active/published Tournament event with
+  Casey, Nova and Riley accepted (`3/8`), Qualifiers capacity `2..4` with group
+  capacity `1..2` and advance `1`, and Final capacity `1..2` with group
+  capacity `1..2` and advance `0`. Runtime groups, leaderboard, lifecycle
+  tasks, outbox and recompute records are all zero.
+- Initial runtime inspection **FAIL**: Qualifiers projected four groups and
+  Final projected two because the duplicated group-count calculation used the
+  incoming parent capacity without capping it by the current stage capacity.
+  The standalone `Group capacity 1 - 2` label was also ambiguous.
+- The calculation is now one shared policy on the Java paths and one matching
+  frontend-local policy: effective incoming capacity is capped by the stage
+  maximum before deriving its group count. The obsolete fixture-only
+  `tournamentGroupCount` field was removed. The runtime card uses the compact
+  localized form `Groups: 2 × 1–2 members` / `Csoportok: 2 × 1–2 fő`.
+- Repair replay **PASS**: Qualifiers showed `Groups: 2 × 1–2 members` and only
+  groups A–B; Final showed `Groups: 1 × 1–2 members` and only group A. The
+  post-view read oracle still showed expected counts `2/1`, the same three
+  accepted identities and zero runtime group/leaderboard/task/outbox writes.
+- The Event Editor read-only definition surface remains to be inspected before
+  this checkpoint can be closed. The fixture was corrected to stage this final
+  branch explicitly as a draft while retaining the already-proven published
+  runtime evidence.
 
 ### `TOURNAMENT-002` — automatic group membership projection
 

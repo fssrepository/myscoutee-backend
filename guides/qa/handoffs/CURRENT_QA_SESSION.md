@@ -33,15 +33,15 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-001 — manual definition and initial UI
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-001--manual-definition-and-initial-ui
-scenario: event-domain (baseline staged at 2026-08-14T23:09:25.629Z)
-ledger_status: EXECUTING / BASELINE PROVEN
-state: LANDING-ELIGIBILITY-001 functional branches are complete and reset; its real Firebase-login retention substep remains deferred. TOURNAMENT-001 now has one guarded canonical event QA TOURNAMENT-001 in Tournament mode, active/published, capacity 3/8 with Casey Admin plus Nova/Riley accepted. Qualifiers is stage 1 with two groups, group capacity 1..2 and advance 1; Final is stage 2 with one group, capacity 1..2 and advance 0. Runtime groups, leaderboard, event tasks, outbox and recompute are all zero. One launcher-owned Casey host browser is open from after stage; the three terminal LANDING windows were replaced.
-required_resume: Continue only in the existing Casey TOURNAMENT-001 browser. First verify the published event's Manage Event editor shows Tournament mode and the two exact stage definitions without saving. Then inspect the runtime Sub Events list and each stage's Groups dashboard without starting a stage. Codex checks the persisted oracle after every read-only surface; no worker or mutation is allowed.
+scenario: event-domain (explicit editor draft staged at 2026-08-15T11:15:02.957Z)
+ledger_status: IN PROGRESS / PUBLISHED RUNTIME UI PASS / DRAFT EDITOR UI ACTIVE
+state: The published TOURNAMENT-001 runtime branch already passed after repair: Qualifiers derived two groups with A–B and Final one group with A, while the oracle retained 3/8 identities and zero runtime writes. The checkpoint assumption that Manage Event was directly reachable from a published card was incorrect because published details are locked. The active guarded fixture is now the separate editor phase: QA TOURNAMENT-001 is DR/published=false, Tournament mode, 3/8 with Casey Admin plus Nova/Riley accepted, the same two stage definitions, expected group counts 2/1 and zero runtime/task/outbox state. One fresh launcher-owned Casey browser is open.
+required_resume: Continue only in the existing Casey TOURNAMENT-001 browser. Open Activities -> Events -> Drafts, use Edit Event on QA TOURNAMENT-001 and inspect Tournament mode plus both exact stage definitions without saving or publishing. Do not repeat the already-passed runtime list/groups branch and do not Unpublish anything. Codex then checks the unchanged draft oracle and closes the checkpoint.
 event: QA TOURNAMENT-001
 actors:
   active: Casey tournament host, one launcher-owned demo browser on /game
   controls: Nova and Riley are persisted accepted-member controls only; no browser windows are required for this read-only checkpoint
-next_actor: Casey opens Activities -> Events -> My Events -> QA TOURNAMENT-001 -> Manage Event and inspects Tournament plus both stage-definition cards without saving.
+next_actor: Casey opens Activities -> Events -> Drafts -> QA TOURNAMENT-001 -> Edit Event and inspects Tournament plus both stage-definition cards without saving.
 stop_phrase: megvan
 ```
 
@@ -107,11 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-001 — manual definition and initial UI`, editor branch: in the
-existing Casey window open Activities -> Events -> My Events, choose **Manage
+`TOURNAMENT-001 — manual definition and initial UI`, final editor branch: in
+the existing Casey window open Activities -> Events -> Drafts, choose **Edit
 Event** on `QA TOURNAMENT-001`, and inspect Tournament mode plus the Qualifiers
-and Final stage cards without saving. Then write `megvan`; Codex checks the
-read-only persisted oracle before the runtime-list branch.
+and Final stage cards without saving or publishing. Then write `megvan`; Codex
+checks the unchanged draft oracle and closes the checkpoint. Do not repeat the
+already-passed runtime list/groups branch and do not Unpublish anything.
 
 ## QA working method
 
@@ -844,7 +845,7 @@ ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
 -> EVENT-INV-001 through EVENT-INV-006 (closed)
 -> LANDING-ELIGIBILITY-001 (functional branches complete;
    real Firebase-login retention deferred)
--> TOURNAMENT-001 (next, not staged)
+-> TOURNAMENT-001 (runtime UI passed; editor UI active)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase

@@ -618,10 +618,10 @@
       worker: "Chat write has normal realtime/counter consumers; authorization reads MUST NOT RUN a scheduler."
     },
     "TOURNAMENT-001": {
-      stage: "tournament",
+      stage: "tournament-definition-draft",
       why: "Verify the persisted tournament definition and zero/initial runtime projection before grouping.",
-      action: "As host, open the staged tournament in Event Editor, stage list and tournament group popup without starting it.",
-      expected: "Parent, two stages, capacities, sequence, status and initial group counts agree on every surface.",
+      action: "Open the explicit draft baseline in Event Editor without saving. Compare it with the separately captured published runtime list/group-popup baseline; never Unpublish merely to reach the editor for this read-only checkpoint.",
+      expected: "The draft editor definition and the equivalent published runtime projection agree on parent capacity, two stages, sequence and derived initial group counts.",
       worker: "MUST NOT RUN: this is a read-only definition checkpoint."
     },
     "TOURNAMENT-002": {
@@ -1750,10 +1750,11 @@
       ]);
       return;
     }
-    if (stageKind === "tournament") {
+    if (["tournament", "tournament-definition-draft"].includes(stageKind)) {
       const definitions = tournamentStages();
       const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
         ...future,
+        status: stageKind === "tournament-definition-draft" ? "DR" : "A",
         acceptedUserIds: [participantUserId, thirdUserId],
         mode: "Tournament",
         subEventsEnabled: true,
@@ -2880,7 +2881,7 @@
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
-    if (["invitation-ordinary", "invitation-full", "invitation-visibility", "tournament", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
+    if (["invitation-ordinary", "invitation-full", "invitation-visibility", "tournament", "tournament-definition-draft", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
         || checkpointId === "EVENT-INV-003"
         || checkpointId === "EVENT-FEEDBACK-002"
         || hasTicketPendingControl()
@@ -2919,7 +2920,7 @@
         ...runtimeContext
       },
       snapshots: Q.snapshotSpecs(selectors()),
-      userActivitySnapshots: ["publish-chat-draft", "chat-authorized"].includes(selected.stage)
+      userActivitySnapshots: ["publish-chat-draft", "chat-authorized", "tournament-definition-draft"].includes(selected.stage)
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
         : isTicketingStage(selected.stage)
           ? ((hasTicketPendingControl() || checkpointId === "EVENT-TICKET-007")
@@ -2941,6 +2942,9 @@
       stageData(selected.stage, stagedAtIso, runtimeContext);
       if (selected.stage.startsWith("invitation-")) {
         synchronizeEventActivityCounters(invitationFixtureUserIds(selected.stage));
+      }
+      if (selected.stage === "tournament-definition-draft") {
+        synchronizeEventActivityCounters([hostUserId, participantUserId, thirdUserId]);
       }
       if (checkpointId.startsWith("EVENT-LIFE-")) {
         synchronizeEventActivityCounters([hostUserId, participantUserId]);
