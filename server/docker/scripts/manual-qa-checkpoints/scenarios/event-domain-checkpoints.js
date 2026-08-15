@@ -1161,6 +1161,31 @@
     ];
   }
 
+  function isTournamentFixtureStage(stageKind) {
+    return ["tournament", "tournament-definition-draft"].includes(stageKind);
+  }
+
+  function materializeTournamentStageTimes(definitions, parentStartAtIso) {
+    const parentStartMs = new Date(parentStartAtIso).getTime();
+    if (!Number.isFinite(parentStartMs)) {
+      Q.fail("tournament fixture parent start time is invalid.");
+    }
+    let priorEndMs = parentStartMs;
+    return (definitions || []).map(stage => {
+      const offsetMs = Math.max(0, Number(stage.offsetMinutes || 0)) * 60000;
+      const durationMs = Math.max(1, Number(stage.durationMinutes || 0)) * 60000;
+      const startsAfterPrior = Q.text(stage.timing).toLowerCase() === "after";
+      const startMs = (startsAfterPrior ? priorEndMs : parentStartMs) + offsetMs;
+      const endMs = startMs + durationMs;
+      priorEndMs = endMs;
+      return {
+        ...stage,
+        startAt: new Date(startMs).toISOString(),
+        endAt: new Date(endMs).toISOString()
+      };
+    });
+  }
+
   function casualSlotDefinitions() {
     return [
       {
@@ -1750,16 +1775,23 @@
       ]);
       return;
     }
-    if (["tournament", "tournament-definition-draft"].includes(stageKind)) {
+    if (isTournamentFixtureStage(stageKind)) {
       const definitions = tournamentStages();
+      const tournamentTiming = checkpointId === "TOURNAMENT-002"
+        ? { startAtIso: dateIso(-5), endAtIso: dateIso(115) }
+        : future;
+      const materializedDefinitions = materializeTournamentStageTimes(
+        definitions,
+        tournamentTiming.startAtIso
+      );
       const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
-        ...future,
+        ...tournamentTiming,
         status: stageKind === "tournament-definition-draft" ? "DR" : "A",
         acceptedUserIds: [participantUserId, thirdUserId],
         mode: "Tournament",
         subEventsEnabled: true,
-        subEventDefinitions: definitions,
-        subEvents: definitions.map(item => ({ ...item, membersAccepted: 0, membersPending: 0 }))
+        subEventDefinitions: materializedDefinitions,
+        subEvents: materializedDefinitions.map(item => ({ ...item, membersAccepted: 0, membersPending: 0 }))
       });
       Q.collection("events").insertOne(event);
       Q.collection("activityMembers").insertMany([
@@ -1915,15 +1947,31 @@
         closed: item.closed === true,
         overrideDate: item.overrideDate
       })),
-      subEventDefinitions: (event.subEventDefinitions || []).map((item, index) => ({
-        id: Q.text(item.id),
-        name: Q.text(item.name),
-        stageStatus: Q.text(item.stageStatus),
-        expectedGeneratedGroupsCount: expectedTournamentGroupCount(event, index),
-        tournamentGroupCapacityMin: item.tournamentGroupCapacityMin,
-        tournamentGroupCapacityMax: item.tournamentGroupCapacityMax,
-        tournamentAdvancePerGroup: item.tournamentAdvancePerGroup
-      })),
+      subEventDefinitions: (event.subEventDefinitions || []).map((item, index) => {
+        const editorEstimate = tournamentEditorGroupCountEstimate(item);
+        return {
+          id: Q.text(item.id),
+          name: Q.text(item.name),
+          description: Q.text(item.description),
+          timing: Q.text(item.timing),
+          offsetMinutes: Number(item.offsetMinutes || 0),
+          durationMinutes: Number(item.durationMinutes || 0),
+          startAt: item.startAt,
+          endAt: item.endAt,
+          optional: item.optional === true,
+          capacityMin: Number(item.capacityMin || 0),
+          capacityMax: Number(item.capacityMax || 0),
+          stageStatus: Q.text(item.stageStatus),
+          editorEstimatedGroupsMin: editorEstimate.min,
+          editorEstimatedGroupsMax: editorEstimate.max,
+          editorEstimatedGroupsLabel: `${editorEstimate.min} - ${editorEstimate.max}`,
+          expectedGeneratedGroupsCount: expectedTournamentGroupCount(event, index),
+          tournamentGroupCapacityMin: item.tournamentGroupCapacityMin,
+          tournamentGroupCapacityMax: item.tournamentGroupCapacityMax,
+          tournamentLeaderboardType: Q.text(item.tournamentLeaderboardType),
+          tournamentAdvancePerGroup: item.tournamentAdvancePerGroup
+        };
+      }),
       startAtIso: event.startAtIso,
       endAtIso: event.endAtIso
     }));
@@ -1957,6 +2005,20 @@
         : 0;
     }
     return 0;
+  }
+
+  function tournamentEditorGroupCountEstimate(stage) {
+    const positiveInteger = value => {
+      const parsed = Math.trunc(Number(value));
+      return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+    };
+    const groupMin = Math.max(1, positiveInteger(stage.tournamentGroupCapacityMin) || 1);
+    const groupMax = Math.max(groupMin, positiveInteger(stage.tournamentGroupCapacityMax));
+    const stageMin = positiveInteger(stage.capacityMin);
+    const stageMax = Math.max(stageMin, positiveInteger(stage.capacityMax));
+    const min = Math.max(1, Math.ceil(stageMin / groupMax));
+    const max = Math.max(min, Math.ceil(stageMax / groupMin));
+    return { min, max };
   }
 
   function oracle(state) {
@@ -2206,7 +2268,37 @@
         title: Q.text(item.title),
         message: Q.text(item.message)
       })),
-      userActivityCounters: checkpointId === "EVENT-PUBLISH-CHAT-001"
+      userActivityCounters: checkpointId.startsWith("TOURNAMENT-")
+        ? [hostUserId, participantUserId, thirdUserId].map(userId => {
+            const current = userActivitiesSnapshot(userId);
+            const baseline = (state.actionBaselineUserActivitySnapshots || [])
+              .find(saved => saved.userId === userId);
+            const currentActivities = current.activities.value || {};
+            const baselineActivities = baseline && baseline.activities.value || {};
+            const delta = path => nestedNumber(currentActivities, path) - nestedNumber(baselineActivities, path);
+            return {
+              user: Q.user(userId),
+              current: {
+                chats: nestedNumber(currentActivities, "chats"),
+                chat: currentActivities.chat || {},
+                events: nestedNumber(currentActivities, "events"),
+                hosting: nestedNumber(currentActivities, "hosting"),
+                event: currentActivities.event || {}
+              },
+              actionDelta: {
+                chats: delta("chats"),
+                chatAll: delta("chat.all"),
+                chatEvent: delta("chat.event"),
+                events: delta("events"),
+                hosting: delta("hosting"),
+                eventAll: delta("event.all"),
+                eventActive: delta("event.active"),
+                eventHosting: delta("event.hosting"),
+                eventDrafts: delta("event.drafts")
+              }
+            };
+          })
+        : checkpointId === "EVENT-PUBLISH-CHAT-001"
         ? [hostUserId, participantUserId, thirdUserId].map(userId => {
             const current = userActivitiesSnapshot(userId);
             const baseline = (state.actionBaselineUserActivitySnapshots || [])
@@ -2920,7 +3012,8 @@
         ...runtimeContext
       },
       snapshots: Q.snapshotSpecs(selectors()),
-      userActivitySnapshots: ["publish-chat-draft", "chat-authorized", "tournament-definition-draft"].includes(selected.stage)
+      userActivitySnapshots: (["publish-chat-draft", "chat-authorized"].includes(selected.stage)
+          || isTournamentFixtureStage(selected.stage))
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
         : isTicketingStage(selected.stage)
           ? ((hasTicketPendingControl() || checkpointId === "EVENT-TICKET-007")
@@ -2943,8 +3036,14 @@
       if (selected.stage.startsWith("invitation-")) {
         synchronizeEventActivityCounters(invitationFixtureUserIds(selected.stage));
       }
-      if (selected.stage === "tournament-definition-draft") {
+      if (isTournamentFixtureStage(selected.stage)) {
         synchronizeEventActivityCounters([hostUserId, participantUserId, thirdUserId]);
+        state.actionBaselineUserActivitySnapshots = [hostUserId, participantUserId, thirdUserId]
+          .map(userActivitiesSnapshot);
+        Q.collection(Q.STATE_COLLECTION).updateOne(
+          { _id: state._id },
+          { $set: { actionBaselineUserActivitySnapshots: state.actionBaselineUserActivitySnapshots } }
+        );
       }
       if (checkpointId.startsWith("EVENT-LIFE-")) {
         synchronizeEventActivityCounters([hostUserId, participantUserId]);

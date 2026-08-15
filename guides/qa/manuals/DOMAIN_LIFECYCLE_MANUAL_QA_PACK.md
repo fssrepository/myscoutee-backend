@@ -4157,19 +4157,61 @@ Execution evidence (2026-08-15, runtime branch):
   groups A–B; Final showed `Groups: 1 × 1–2 members` and only group A. The
   post-view read oracle still showed expected counts `2/1`, the same three
   accepted identities and zero runtime group/leaderboard/task/outbox writes.
-- The Event Editor read-only definition surface remains to be inspected before
-  this checkpoint can be closed. The fixture was corrected to stage this final
-  branch explicitly as a draft while retaining the already-proven published
-  runtime evidence.
+- The fixture was corrected to stage the final editor branch explicitly as a
+  draft while retaining the already-proven published runtime evidence. Editor
+  screenshots
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-22.png`,
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-05.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-10.png`
+  prove Tournament mode, parent capacity `1..8`, Qualifiers duration/offset
+  `60/0`, group capacity `1..2`, Score, advance `1`, and Final duration/offset
+  `45/0`, group capacity `1..2`, Score, advance `0` without Save or Publish.
+- The editor's **Estimated Group Count** is deliberately a feasible range from
+  stage capacity and per-group min/max: Qualifiers `1 - 4`, Final `1 - 2`.
+  This is distinct from the published runtime's concrete generated counts
+  `2/1`. The checkpoint oracle now names and checks both concepts separately.
+- Final draft read oracle **PASS**: status remained `DR/published=false`, the
+  exact three accepted identities and every definition field stayed unchanged,
+  and runtime groups, leaderboard, tasks, outbox and recompute stayed zero.
+  `TOURNAMENT-001` is **PASS/CLOSED**.
 
 ### `TOURNAMENT-002` — automatic group membership projection
 
 - Provide accepted parent participants and run the real grouping path.
+- Stage the first round in `RS` with its start instant a few minutes in the
+  past and its end still in the future. This makes the real **Start Stage**
+  action immediately available without waiting, changing the workstation clock
+  or using a database write outside the versioned fixture.
+- Before opening browsers, synchronize and snapshot the three actors' normal
+  Activities event counters. Casey must have `All=1` and `My Events=1`; Nova
+  and Riley must each have `All=1` and `Active Events=1`. The matching red
+  counters must already be visible after initial page load, not only after a
+  SmartList query or popup open.
 - Verify every selected user is represented exactly once in the correct group,
   Event Members remains parent-scoped, the tournament group member screen is
   group-scoped, and group chat access matches group membership.
 - Pending invitation rows must not be counted as accepted group members unless
   the documented transition explicitly promotes them.
+
+Execution evidence (2026-08-15, first Start attempt):
+
+- Baseline UI found two fixture defects before/at the first write. The initial
+  actor activity counters were not synchronized, so the event card existed at
+  `3/8` but the top Events/My Events red counters were absent. The fixture now
+  snapshots and writes Casey `All/Hosting=1` and Nova/Riley `All/Active=1`
+  before browser launch, and the oracle exposes the three exact counter maps.
+- **Start Stage FAIL**: Casey's Qualifiers confirmation returned `200` but the
+  response retained `RS`, so the frontend correctly showed **Stage action was
+  not applied.** Screenshot
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-25-05.png`.
+  The post-action oracle proved a complete no-op: no runtime group, group
+  membership, chat, leaderboard, task or outbox document was written.
+- Root cause was fixture shape, not a relaxed backend guard: the runtime DTO
+  derived visible stage times from the parent, while the persisted fixture's
+  `subEvents[]` omitted physical `startAt/endAt`. The backend Start guard checks
+  the saved stage instant. The fixture now materializes both stage instants in
+  the same production save shape before staging; replay is required.
 
 ### `TOURNAMENT-003` — review and advancement
 

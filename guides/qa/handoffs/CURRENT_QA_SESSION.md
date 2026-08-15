@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-001 — manual definition and initial UI
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-001--manual-definition-and-initial-ui
-scenario: event-domain (explicit editor draft staged at 2026-08-15T11:15:02.957Z)
-ledger_status: IN PROGRESS / PUBLISHED RUNTIME UI PASS / DRAFT EDITOR UI ACTIVE
-state: The published TOURNAMENT-001 runtime branch already passed after repair: Qualifiers derived two groups with A–B and Final one group with A, while the oracle retained 3/8 identities and zero runtime writes. The checkpoint assumption that Manage Event was directly reachable from a published card was incorrect because published details are locked. The active guarded fixture is now the separate editor phase: QA TOURNAMENT-001 is DR/published=false, Tournament mode, 3/8 with Casey Admin plus Nova/Riley accepted, the same two stage definitions, expected group counts 2/1 and zero runtime/task/outbox state. One fresh launcher-owned Casey browser is open.
-required_resume: Continue only in the existing Casey TOURNAMENT-001 browser. Open Activities -> Events -> Drafts, use Edit Event on QA TOURNAMENT-001 and inspect Tournament mode plus both exact stage definitions without saving or publishing. Do not repeat the already-passed runtime list/groups branch and do not Unpublish anything. Codex then checks the unchanged draft oracle and closes the checkpoint.
-event: QA TOURNAMENT-001
+checkpoint: TOURNAMENT-002 — automatic group membership projection
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
+scenario: event-domain (clean grouping replay baseline staged at 2026-08-15T11:28:09.180Z)
+ledger_status: IN PROGRESS / FAIL DOCUMENTED / CLEAN REPLAY BASELINE PROVEN
+state: TOURNAMENT-001 is PASS/CLOSED in the QA pack and CSV/XLSX ledger. TOURNAMENT-002's first Start correctly remained a complete no-op because the fixture had omitted the persisted stage start/end instants; that FAIL and screenshot are recorded in the authoritative QA pack/ledger. The versioned fixture now saves production-shaped startAt/endAt values and synchronizes the normal Activities counters. The clean guarded replay event is QA TOURNAMENT-002, A/published=true Tournament, 3/8 with Casey Admin plus Nova/Riley accepted. Qualifiers is RS, starts at 2026-08-15T11:23:09.281Z and ends at 2026-08-15T12:23:09.281Z; Final is RS from 2026-08-15T12:23:09.281Z to 2026-08-15T13:08:09.281Z. Casey has All/Hosting=1 and Nova/Riley each have All/Active=1. Runtime groups, group chats and leaderboard are zero. Three launcher-owned Casey/Nova/Riley browsers created after this fixture are open.
+required_resume: In Casey only, open Activities -> Events -> My Events -> QA TOURNAMENT-002 -> View. On Qualifiers use its overflow menu, select Start Stage and confirm Start exactly once. Keep the stage list open and do not touch Nova/Riley until Codex has checked the persisted grouping identities.
+event: QA TOURNAMENT-002
 actors:
-  active: Casey tournament host, one launcher-owned demo browser on /game
-  controls: Nova and Riley are persisted accepted-member controls only; no browser windows are required for this read-only checkpoint
-next_actor: Casey opens Activities -> Events -> Drafts -> QA TOURNAMENT-001 -> Edit Event and inspects Tournament plus both stage-definition cards without saving.
+  active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
+  controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
+next_actor: Casey opens QA TOURNAMENT-002 -> View, starts Qualifiers once from its overflow menu and leaves the stage list open.
 stop_phrase: megvan
 ```
 
@@ -107,12 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-001 — manual definition and initial UI`, final editor branch: in
-the existing Casey window open Activities -> Events -> Drafts, choose **Edit
-Event** on `QA TOURNAMENT-001`, and inspect Tournament mode plus the Qualifiers
-and Final stage cards without saving or publishing. Then write `megvan`; Codex
-checks the unchanged draft oracle and closes the checkpoint. Do not repeat the
-already-passed runtime list/groups branch and do not Unpublish anything.
+`TOURNAMENT-002 — automatic group membership projection`, Start boundary: in
+Casey only open Activities -> Events -> My Events -> `QA TOURNAMENT-002` ->
+**View**. On Qualifiers use the overflow menu, choose **Start Stage**, and
+confirm **Start** exactly once. Leave the stage list open and write `megvan`;
+do not touch Nova or Riley until Codex checks the persisted grouping identities.
 
 ## QA working method
 
@@ -845,7 +844,8 @@ ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
 -> EVENT-INV-001 through EVENT-INV-006 (closed)
 -> LANDING-ELIGIBILITY-001 (functional branches complete;
    real Firebase-login retention deferred)
--> TOURNAMENT-001 (runtime UI passed; editor UI active)
+-> TOURNAMENT-001 (closed)
+-> TOURNAMENT-002 (active; first fixture-shape FAIL documented, clean replay baseline proven)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
