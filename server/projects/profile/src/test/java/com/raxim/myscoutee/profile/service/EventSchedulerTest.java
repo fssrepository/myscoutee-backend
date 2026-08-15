@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -606,13 +608,25 @@ class EventSchedulerTest {
                         group("stage-start:group:1", "Group A"),
                         group("stage-start:group:2", "Group B")));
 
+        List<String> notificationOrder = new ArrayList<>();
+        doAnswer(invocation -> {
+            NotificationIntent intent = invocation.getArgument(0);
+            notificationOrder.add(intent.title());
+            return Optional.empty();
+        }).when(notificationOutboxService).enqueue(any(NotificationIntent.class));
+
         List<GeneratedEventPlan> plans = scheduler.generateTournamentStagePlansForEvents(
-                List.of("event-stage-start"));
+                List.of("event-stage-start"),
+                () -> notificationOrder.add("Tournament started"));
 
         assertThat(plans).hasSize(2);
         assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
                 .containsExactlyInAnyOrder("casey", "nova", "riley");
         assertThat(plans).allSatisfy(plan -> assertThat(plan.memberUserIds()).hasSizeBetween(1, 2));
+        assertThat(notificationOrder).hasSize(3);
+        assertThat(notificationOrder.get(0)).isEqualTo("Tournament started");
+        assertThat(notificationOrder.subList(1, notificationOrder.size()))
+                .allSatisfy(title -> assertThat(title).matches("Tournament Group R[12] is ready"));
         verify(usersRepository, never()).findByUserIdIn(anyCollection());
         verify(activityEventsRepository, never()).findAll();
         ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);

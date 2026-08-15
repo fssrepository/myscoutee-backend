@@ -2290,10 +2290,26 @@ public class ActivitiesEventsService {
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(saved, viewer.userId());
+        boolean startNotificationEnqueuedBeforeRoomNotifications = false;
         if (STAGE_ACTION_START.equals(actionTarget.action())) {
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateTournamentStagePlansForEvents(List.of(sourceId));
+                ActivityEvent notificationEvent = computePreferredEventRecords(saved).stream()
+                        .findFirst()
+                        .orElse(saved.get(0));
+                List<SubEventItem> notificationStages = cloneSubEvents(notificationEvent.getSubEvents());
+                int notificationStageIndex = resolveStageIndex(notificationStages, stageId, preferredStageIndex);
+                SubEventItem notificationStage = notificationStageIndex >= 0
+                        && notificationStageIndex < notificationStages.size()
+                        ? notificationStages.get(notificationStageIndex)
+                        : preferredStage;
+                scheduler.generateTournamentStagePlansForEvents(
+                        List.of(sourceId),
+                        () -> enqueueTournamentStartedNotification(
+                                notificationEvent,
+                                notificationStage,
+                                viewer.userId()));
+                startNotificationEnqueuedBeforeRoomNotifications = true;
             }
             List<ActivityEvent> refreshed = activityEventsRepository.findBySourceId(sourceId).stream()
                     .filter(Objects::nonNull)
@@ -2314,7 +2330,9 @@ public class ActivitiesEventsService {
         boolean finalStage = savedStageIndex >= 0 && savedStageIndex == savedSubEvents.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferred, savedStage, finalStage);
         saveSubEventStageRuntime(sourceId, savedPreferred, savedStage, viewer.userId());
-        enqueueStageStatusNotifications(savedPreferred, savedStage, actionTarget.action(), actionTarget.nextStatus(), viewer.userId(), finalStage, resultSummary);
+        if (!startNotificationEnqueuedBeforeRoomNotifications) {
+            enqueueStageStatusNotifications(savedPreferred, savedStage, actionTarget.action(), actionTarget.nextStatus(), viewer.userId(), finalStage, resultSummary);
+        }
         postStageChatMessage(savedPreferred, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
         adminTelemetryService.record("event.stage.action", "events", sourceId, viewer.userId(), 1L, Map.of(
                 "action", actionTarget.action(),
@@ -2351,6 +2369,7 @@ public class ActivitiesEventsService {
 
         List<ActivityEvent> savedParentDocuments = parentDocuments == null ? List.of() : parentDocuments;
         ActivityEvent savedPreferredParent = preferredParent;
+        boolean startNotificationEnqueuedBeforeRoomNotifications = false;
         if (STAGE_ACTION_START.equals(actionTarget.action())) {
             List<ActivityEvent> updatedParents = new ArrayList<>();
             for (ActivityEvent document : savedParentDocuments) {
@@ -2371,7 +2390,14 @@ public class ActivitiesEventsService {
             }
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateTournamentStagePlansForEvents(List.of(slotSourceId));
+                ActivityEvent notificationEvent = savedPreferredParent;
+                scheduler.generateTournamentStagePlansForEvents(
+                        List.of(slotSourceId),
+                        () -> enqueueTournamentStartedNotification(
+                                notificationEvent,
+                                savedStage,
+                                actorUserId));
+                startNotificationEnqueuedBeforeRoomNotifications = true;
             }
         }
 
@@ -2379,7 +2405,9 @@ public class ActivitiesEventsService {
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
         saveSubEventStageRuntime(slotSourceId, savedPreferredParent, savedStage, actorUserId);
         affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
-        enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
+        if (!startNotificationEnqueuedBeforeRoomNotifications) {
+            enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
+        }
         postStageChatMessage(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
         adminTelemetryService.record("event.stage.action", "events", parentEventId, actorUserId, 1L, Map.of(
                 "action", actionTarget.action(),
@@ -3609,16 +3637,7 @@ public class ActivitiesEventsService {
         List<String> adminUserIds = resolveAdminUserIds(eventId, event.getCreatorUserId());
         List<String> audienceUserIds = eventAudienceUserIds(event);
         if (STAGE_ACTION_START.equals(action)) {
-            enqueueEventNotification(
-                    "event-tournament-started",
-                    event,
-                    "event-participants",
-                    audienceUserIds,
-                    "Tournament started",
-                    stageTitle + " has started. Groups are ready.",
-                    action,
-                    stageTitle,
-                    actorUserId);
+            enqueueTournamentStartedNotification(event, stage, actorUserId);
             return;
         }
         if (STAGE_STATUS_SCORE_REVIEW.equals(nextStatus)) {
@@ -3671,6 +3690,27 @@ public class ActivitiesEventsService {
                     stageTitle,
                     actorUserId);
         }
+    }
+
+    private void enqueueTournamentStartedNotification(
+            ActivityEvent event,
+            SubEventItem stage,
+            String actorUserId) {
+        if (notificationOutboxService == null || event == null || stage == null) {
+            return;
+        }
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(eventAudienceUserIds(event));
+        recipientUserIds.remove(normalizeId(actorUserId));
+        enqueueEventNotification(
+                "event-tournament-started",
+                event,
+                "event-participants",
+                List.copyOf(recipientUserIds),
+                "Tournament started",
+                stageTitle(stage) + " has started. Groups are ready.",
+                STAGE_ACTION_START,
+                stageTitle(stage),
+                actorUserId);
     }
 
     private TournamentResultSummary resolveTournamentResultSummary(

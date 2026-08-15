@@ -4450,6 +4450,18 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Casey remains R1 Member with Active Events `1` and My Events `1`. The normal
   recompute may still be pending; it is not required for the list read. Next is
   the Casey in-place Active Events counter/list/card observation before reload.
+- **Casey Active Events/card PASS in-place and after reload**: without reload,
+  Casey saw counter `1`, exactly `Tournament Group R1`, the tournament trophy
+  and Casey's small profile avatar. Clicking only the avatar opened the
+  standard profile menu. Reload retained the same presentation, and the group
+  Members view still contained the expected members. The follow-up persisted
+  oracle was byte-for-identity stable across rooms, memberships, chats,
+  notifications and counters; the one recompute completed exactly once without
+  error. The visible `Leave event` action was not selected. It belongs to the
+  new independent `TOURNAMENT-ROOM-LIFE-001` checkpoint.
+- Remaining TOURNAMENT-002 UI replays: Casey's unread tournament notification
+  title/trophy/body without marking it read, the R1 initial chat content, then
+  Nova and Riley's exact group/chat/notification projections.
 - Remaining bounded UI replays: after that clean Start replay, prove Casey
   Active Events counter `1` and visible R1 with large trophy plus
   small Casey avatar, then click only the avatar to open Casey's profile; then
@@ -4464,6 +4476,21 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - Verify next-stage group membership, removed stale losers, stage status,
   score/advancement UI and notification exactly once.
 - A second unchanged review must be a domain and UI no-op.
+
+### `TOURNAMENT-ROOM-LIFE-001` — generated-room member leave isolation
+
+- From a freshly materialized tournament group, let one accepted room member
+  select **Leave event** exactly once on the generated tournament-room card.
+- The generated-room membership/card/chat and the member's related Activity
+  counters must follow the normal participant-leave contract exactly once.
+  The parent tournament membership and role, parent event, other group members,
+  other generated room, stage status and unrelated counters must remain intact.
+- Group capacity/member UI and the persisted tournament runtime must agree on
+  the withdrawal. Leaving a room must not silently leave the user displayed in
+  standings/chat, promote another member, replay grouping or advance/finalize
+  the stage.
+- This is a separate lifecycle producer test discovered during TOURNAMENT-002;
+  merely displaying the menu is not execution evidence.
 
 ## Asset cases
 

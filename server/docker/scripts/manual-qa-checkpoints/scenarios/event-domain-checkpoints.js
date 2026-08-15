@@ -1477,6 +1477,27 @@
       { "payload.eventId": { $in: eventIds } },
       { "payload.chatId": { $in: chatIds } }
     ] });
+    if (checkpointId.startsWith("TOURNAMENT-")) {
+      const reminderMessage = `${EXPECTED_TITLE} is coming up. Open the event before the stage starts.`;
+      const reminderRuleKey = `event-stage-reminder:${EVENT_ID}:${EVENT_ID}:stage:final`;
+      Q.collection("notificationOutbox").deleteMany({
+        notificationType: "scheduled-template",
+        entityType: "notification-template",
+        entityId: "event-stage-reminder-v1",
+        recipientUserIds: { $in: [hostUserId, participantUserId, thirdUserId] },
+        title: "Final starts soon",
+        body: reminderMessage,
+        "payload.ruleKey": reminderRuleKey
+      });
+      Q.collection("userNotifications").deleteMany({
+        kind: "scheduled-template",
+        sourceId: "event-stage-reminder-v1",
+        recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
+        title: "Final starts soon",
+        message: reminderMessage,
+        "payload.ruleKey": reminderRuleKey
+      });
+    }
     Q.collection("scheduledMessageTasks").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("affinityRecomputeTasks").deleteMany({ targetId: { $in: eventIds } });
     Q.collection("schedulerPlanMarkers").deleteMany({ ownerId: { $in: eventIds } });
@@ -2152,6 +2173,12 @@
           $or: [{ sourceId: { $in: eventChatArtifactIds } }, { "payload.eventId": { $in: eventChatArtifactIds } }]
         }).sort({ sourceId: 1, recipientUserId: 1, _id: 1 }).toArray()
       : [];
+    const tournamentReminderNotifications = checkpointId.startsWith("TOURNAMENT-")
+      ? Q.collection("userNotifications").find({
+          recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
+          title: { $in: ["Tournament started", "Final starts soon"] }
+        }).sort({ createdDate: 1, recipientUserId: 1, _id: 1 }).toArray()
+      : [];
     const invitationAcceptanceOutbox = Q.collection("notificationOutbox").find({
       notificationType: "event-invitation-accepted",
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
@@ -2393,12 +2420,48 @@
         id: Q.text(item._id),
         eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
         recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
         title: Q.text(item.title),
         message: Q.text(item.message),
         eventScope: Q.text(item.payload && item.payload.eventScope),
         eventTitle: Q.text(item.payload && item.payload.eventTitle),
         iconUrl: Q.text(item.payload && item.payload.icon),
-        readAtIso: Q.text(item.readAtIso)
+        readAtIso: Q.text(item.readAtIso),
+        createdDate: Q.text(item.createdDate)
+      })),
+      tournamentNotificationCausality: checkpointId.startsWith("TOURNAMENT-")
+        ? (() => {
+            const started = tournamentReminderNotifications
+              .filter(item => Q.text(item.kind) === "event-tournament-started");
+            const roomReady = generatedRoomNotifications;
+            const startedRecipients = sortedUnique(started.map(item => item.recipientUserId));
+            const roomReadyRecipients = sortedUnique(roomReady.map(item => item.recipientUserId));
+            const latestStartedAt = started.map(item => Q.text(item.createdDate)).filter(Boolean).sort().pop() || "";
+            const earliestRoomReadyAt = roomReady.map(item => Q.text(item.createdDate)).filter(Boolean).sort()[0] || "";
+            return {
+              startedRecipients,
+              expectedStartedRecipients: sortedUnique([participantUserId, thirdUserId]),
+              actorExcluded: !startedRecipients.includes(hostUserId),
+              roomReadyRecipients,
+              expectedRoomReadyRecipients: sortedUnique([hostUserId, participantUserId, thirdUserId]),
+              latestStartedAt,
+              earliestRoomReadyAt,
+              startedBeforeEveryRoomReady: Boolean(latestStartedAt)
+                && Boolean(earliestRoomReadyAt)
+                && latestStartedAt < earliestRoomReadyAt
+            };
+          })()
+        : null,
+      tournamentReminderNotifications: tournamentReminderNotifications.map(item => ({
+        id: Q.text(item._id),
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        subEventId: Q.text(item.payload && item.payload.subEventId),
+        title: Q.text(item.title),
+        message: Q.text(item.message),
+        readAtIso: Q.text(item.readAtIso),
+        createdDate: Q.text(item.createdDate)
       })),
       userActivityCounters: checkpointId.startsWith("TOURNAMENT-")
         ? [hostUserId, participantUserId, thirdUserId].map(userId => {

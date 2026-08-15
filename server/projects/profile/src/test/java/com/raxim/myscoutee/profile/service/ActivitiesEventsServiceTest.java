@@ -65,6 +65,7 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventsServiceTest {
@@ -1063,6 +1064,54 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void manualParentStageStartNotifiesOtherParticipantsBeforeRoomNotifications() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(stage("stage-1", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(parent), List.of());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "stage-1"))
+                .thenReturn(Optional.empty());
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+        when(eventScheduler.generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class)))
+                .thenAnswer(invocation -> {
+                    Runnable beforeRoomNotifications = invocation.getArgument(1);
+                    beforeRoomNotifications.run();
+                    return List.of();
+                });
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "stage-1",
+                        0,
+                        "start-tournament",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("A");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-tournament-started");
+        assertThat(notification.recipientUserIds()).containsExactly("nova", "riley");
+        assertThat(notification.recipientUserIds()).doesNotContain("host");
+        verify(eventScheduler).generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(anyCollection());
+    }
+
+    @Test
     void generatedSlotStartBuildsRandomPlansForSlotParticipantsNotParentTemplate() {
         Users host = new Users();
         host.setId("host");
@@ -1094,8 +1143,13 @@ class ActivitiesEventsServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.sourceId()).isEqualTo("slot-1");
         assertThat(result.stageStatus()).isEqualTo("A");
-        verify(eventScheduler).generateTournamentStagePlansForEvents(List.of("slot-1"));
-        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(List.of("event-1"));
+        verify(eventScheduler).generateTournamentStagePlansForEvents(
+                eq(List.of("slot-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(anyCollection());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 

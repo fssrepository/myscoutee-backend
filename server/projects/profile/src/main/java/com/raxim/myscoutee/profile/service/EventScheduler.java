@@ -685,6 +685,22 @@ public class EventScheduler {
         return generateRandomPlans(null, sourceIds, true, true);
     }
 
+    public List<GeneratedEventPlan> generateTournamentStagePlansForEvents(
+            Collection<String> sourceIds,
+            Runnable beforeRoomNotifications) {
+        Runnable notificationBarrier = runOnce(beforeRoomNotifications);
+        List<GeneratedEventPlan> plans = generateRandomPlans(
+                null,
+                sourceIds,
+                true,
+                true,
+                notificationBarrier);
+        if (notificationBarrier != null) {
+            notificationBarrier.run();
+        }
+        return plans;
+    }
+
     private List<String> configuredRandomRoomSourceEventIds() {
         NotificationRuleConfig rule = notificationRuleRegistryService
                 .findRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)
@@ -716,6 +732,20 @@ public class EventScheduler {
             Collection<String> sourceIds,
             boolean includeAllAcceptedMembers,
             boolean requireExactTargetCoverage) {
+        return generateRandomPlans(
+                progressConsumer,
+                sourceIds,
+                includeAllAcceptedMembers,
+                requireExactTargetCoverage,
+                null);
+    }
+
+    private List<GeneratedEventPlan> generateRandomPlans(
+            Consumer<RandomPlanProgress> progressConsumer,
+            Collection<String> sourceIds,
+            boolean includeAllAcceptedMembers,
+            boolean requireExactTargetCoverage,
+            Runnable beforeRoomNotifications) {
         Set<String> sourceIdFilter = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> eventRecords = sourceIdFilter.isEmpty()
                 ? activityEventsRepository.findAll()
@@ -889,7 +919,8 @@ public class EventScheduler {
                         "random:" + eventId + ":" + subEventId,
                         observedQueries,
                         requireExactTargetCoverage,
-                        includeAllAcceptedMembers && requireExactTargetCoverage);
+                        includeAllAcceptedMembers && requireExactTargetCoverage,
+                        beforeRoomNotifications);
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -1220,11 +1251,12 @@ public class EventScheduler {
                 if (nextTargets.isEmpty()) continue;
 
                 List<GeneratedEventPlan> changedGroups = assignMembersToTargets(
-                        event, eventGraph, advancingUserIds, nextTargets, "score", 
+                        event, eventGraph, advancingUserIds, nextTargets, "score",
                         "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
                         null,
                         true,
-                        false);
+                        false,
+                        null);
                 if (!changedGroups.isEmpty()) {
                     activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
                 }
@@ -1634,7 +1666,7 @@ public class EventScheduler {
             List<GroupAssignmentTarget> targets,
             String wrapperType,
             String context) {
-        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false, false);
+        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false, false, null);
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1654,7 +1686,8 @@ public class EventScheduler {
                 context,
                 observedQueries,
                 false,
-                false);
+                false,
+                null);
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1666,7 +1699,8 @@ public class EventScheduler {
             String context,
             AtomicInteger observedQueries,
             boolean reconcileAllTargets,
-            boolean tournamentRoomPresentation) {
+            boolean tournamentRoomPresentation,
+            Runnable beforeRoomNotifications) {
         Set<String> normalizedPoolUserIds = new LinkedHashSet<>(normalizeUserIds(poolUserIds));
         if (graph != null) {
             normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
@@ -1899,8 +1933,38 @@ public class EventScheduler {
                 changedRandomRooms.add(new RandomRoomAssignment(randomRoom, expectedSyncedUserIds));
             }
         }
+        if (!changedRandomRooms.isEmpty() && beforeRoomNotifications != null) {
+            beforeRoomNotifications.run();
+        }
         notifyChangedRandomRoomAssignments(event, context, changedRandomRooms);
         return syncedGroups;
+    }
+
+    private Runnable runOnce(Runnable delegate) {
+        if (delegate == null) {
+            return null;
+        }
+        return new Runnable() {
+            private boolean completed;
+            private RuntimeException failure;
+
+            @Override
+            public synchronized void run() {
+                if (failure != null) {
+                    throw failure;
+                }
+                if (completed) {
+                    return;
+                }
+                try {
+                    delegate.run();
+                    completed = true;
+                } catch (RuntimeException exception) {
+                    failure = exception;
+                    throw exception;
+                }
+            }
+        };
     }
 
     private boolean hasExactTargetCoverage(
