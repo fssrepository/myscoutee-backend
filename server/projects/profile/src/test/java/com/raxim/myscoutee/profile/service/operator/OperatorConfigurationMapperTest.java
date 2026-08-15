@@ -75,7 +75,7 @@ class OperatorConfigurationMapperTest {
                     .isEqualTo(DeploymentConfiguration.SCHEMA_VERSION);
             assertThat(singleton.path("version").asLong()).isZero();
             assertThat(singleton.path("branding").path("themePreset").asText())
-                    .isEqualTo(DeploymentThemePreset.AURORA.name());
+                    .isEqualTo(DeploymentThemePreset.VIOLET.name());
             assertThat(singleton.path("branding")
                             .has("logoCharacterIndex"))
                     .isTrue();
