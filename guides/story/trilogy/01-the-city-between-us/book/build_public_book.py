@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the English MyScoutee public edition as HTML and PDF."""
+"""Build the MyScoutee Part I public edition as HTML, PDF, or EPUB."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import base64
 import hashlib
 import html
+import importlib.util
 import json
 import re
 import subprocess
@@ -36,6 +37,7 @@ COVER_EMBLEM = BOOK_DIR / "assets" / "cover-emblem-v1.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 BOOK_VERSION = BOOK_DIR / "version.json"
 BOOK_METADATA = BOOK_DIR / "metadata.json"
+EPUB_BUILDER_PATH = BOOK_DIR / "epub_builder.py"
 ENDING_MOTIF_DIR = BOOK_DIR / "assets" / "ending-motifs"
 ENDING_MOTIFS = (
     (ENDING_MOTIF_DIR / "01-roots-and-open-horizon.svg", "Roots and the open horizon"),
@@ -67,6 +69,15 @@ OPENER_WATERMARKS = (
 # an otherwise empty page.
 COMPACT_ENDING_MOTIF_INDEXES = frozenset({1, 4})
 SHORT_CHAPTER_WORD_LIMIT = 250
+
+
+epub_spec = importlib.util.spec_from_file_location(
+    "myscoutee_epub_builder", EPUB_BUILDER_PATH
+)
+if epub_spec is None or epub_spec.loader is None:
+    raise RuntimeError(f"Could not load the EPUB builder: {EPUB_BUILDER_PATH}")
+epub = importlib.util.module_from_spec(epub_spec)
+epub_spec.loader.exec_module(epub)
 
 
 def slugify(value: str) -> str:
@@ -299,6 +310,36 @@ def default_pdf_path(version: dict[str, object]) -> Path:
 
 def draft_pdf_path(version: dict[str, object]) -> Path:
     return BOOK_DRAFT_DIR / versioned_pdf_name(version)
+
+
+def language_variant_name(filename: str, language: str) -> str:
+    language_token = language.upper()
+    if language_token not in {"EN", "HU"}:
+        raise ValueError(f"Unsupported book language: {language}")
+    localized, replacements = re.subn(
+        r"_EN(?=(?:_REVIEW)?\.[^.]+$)",
+        f"_{language_token}",
+        filename,
+        count=1,
+    )
+    if replacements != 1:
+        raise ValueError(f"Could not localize versioned artifact name: {filename}")
+    return localized
+
+
+def published_pdf_path(version: dict[str, object], language: str) -> Path:
+    return PUBLISHED_DIR / language_variant_name(versioned_pdf_name(version), language)
+
+
+def versioned_epub_name(version: dict[str, object], language: str) -> str:
+    pdf_name = language_variant_name(versioned_pdf_name(version), language)
+    if not pdf_name.endswith(".pdf"):
+        raise ValueError(f"Versioned PDF name has an unexpected suffix: {pdf_name}")
+    return f"{pdf_name[:-4]}.epub"
+
+
+def default_epub_path(version: dict[str, object], language: str) -> Path:
+    return PUBLISHED_DIR / versioned_epub_name(version, language)
 
 
 def display_date(value: object) -> str:
@@ -1361,6 +1402,67 @@ def write_publication_integrity_files(
     print(f"Wrote publication manifest {manifest_path}")
 
 
+def project_relative_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(PROJECT_DIR.resolve()))
+    except ValueError:
+        return str(resolved)
+
+
+def write_epub_integrity_files(
+    epub_path: Path,
+    source: Path,
+    version: dict[str, object],
+    metadata: dict[str, object],
+    build_stats: dict[str, object],
+) -> None:
+    digest = sha256_file(epub_path)
+    checksum_path = Path(f"{epub_path}.sha256")
+    manifest_path = Path(f"{epub_path}.publication.json")
+    checksum_path.write_text(f"{digest}  {epub_path.name}\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "file": epub_path.name,
+                "sha256": digest,
+                "format": "EPUB 3 reflowable",
+                "drm_embedded": False,
+                "part": version["trilogy_part"],
+                "part_roman": version["trilogy_roman"],
+                "edition_version": version["version"],
+                "published": version["published"],
+                "source": {
+                    "file": project_relative_path(source),
+                    "sha256": build_stats["source_sha256"],
+                },
+                "cover_source": {
+                    "file": project_relative_path(Path(build_stats["cover_pdf"])),
+                    "sha256": build_stats["cover_pdf_sha256"],
+                },
+                "asset_count": build_stats["asset_count"],
+                "toc_entries": build_stats["toc_entries"],
+                "archive_entries": build_stats["archive_entries"],
+                "validation": [
+                    "EPUB mimetype and container",
+                    "well-formed package, navigation, NCX and XHTML",
+                    "manifest, spine, cover and image targets",
+                    "navigation anchors",
+                    "reflowable text without split drop-cap words",
+                    "readable source-link labels instead of visible raw URLs",
+                ],
+                "metadata": metadata,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote EPUB checksum {checksum_path}")
+    print(f"Wrote EPUB manifest {manifest_path}")
+
+
 def main() -> None:
     global BOOK_METADATA, ILLUSTRATIONS
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1370,13 +1472,58 @@ def main() -> None:
     parser.add_argument("--chrome", default="google-chrome")
     parser.add_argument("--inkscape", default="inkscape")
     parser.add_argument("--html-only", action="store_true")
+    parser.add_argument("--epub", type=Path)
+    parser.add_argument("--cover-pdf", type=Path)
+    parser.add_argument("--epub-only", action="store_true")
     args = parser.parse_args()
+
+    if args.epub is not None and not args.epub_only:
+        parser.error("--epub requires --epub-only")
+    if args.epub_only and (args.html_only or args.pdf is not None):
+        parser.error("--epub-only cannot be combined with --html-only or --pdf")
 
     if args.source.name.endswith("_HU.md"):
         BOOK_METADATA = BOOK_DIR / "metadata.hu.json"
         ILLUSTRATIONS = BOOK_DIR / "illustrations.hu.json"
 
     version = load_book_version()
+    if args.epub_only:
+        if version["status"] != "public" or not version["locked"]:
+            raise ValueError("A default EPUB release requires a locked public edition")
+        source = args.source.resolve()
+        metadata = load_book_metadata()
+        language = str(metadata["language"])
+        output_path = args.epub or default_epub_path(version, language)
+        is_default_epub = args.epub is None
+        if is_default_epub and output_path.exists():
+            raise FileExistsError(
+                "Published EPUB versions are immutable: increment version.json "
+                f"before replacing {output_path}"
+            )
+        cover_pdf = args.cover_pdf or published_pdf_path(version, language)
+        source_lines = source.read_text(encoding="utf-8").splitlines()
+        front, body_lines = extract_front(source_lines)
+        build_stats = epub.build_epub(
+            source=source,
+            cover_pdf=cover_pdf,
+            output_path=output_path,
+            version=version,
+            metadata=metadata,
+            document=build_document(source),
+            toc_items=collect_toc(body_lines),
+            subtitle=front["subtitle"],
+        )
+        print(
+            f"Wrote {output_path} "
+            f"({build_stats['toc_entries']} TOC entries, "
+            f"{build_stats['asset_count']} images)"
+        )
+        if is_default_epub:
+            write_epub_integrity_files(
+                output_path, source, version, metadata, build_stats
+            )
+        return
+
     default_pdf = default_pdf_path(version)
     pdf_path = args.pdf or default_pdf
     is_default_output = args.pdf is None
