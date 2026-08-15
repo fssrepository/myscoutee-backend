@@ -2293,7 +2293,7 @@ public class ActivitiesEventsService {
         if (STAGE_ACTION_START.equals(actionTarget.action())) {
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateRandomPlansForEvents(List.of(sourceId));
+                scheduler.generateTournamentStagePlansForEvents(List.of(sourceId));
             }
             List<ActivityEvent> refreshed = activityEventsRepository.findBySourceId(sourceId).stream()
                     .filter(Objects::nonNull)
@@ -2372,7 +2372,7 @@ public class ActivitiesEventsService {
             }
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateRandomPlansForEvents(List.of(slotSourceId));
+                scheduler.generateTournamentStagePlansForEvents(List.of(slotSourceId));
             }
         }
 

@@ -675,7 +675,11 @@ public class EventScheduler {
     }
 
     public List<GeneratedEventPlan> generateRandomPlansForEvents(Collection<String> sourceIds) {
-        return generateRandomPlans(null, sourceIds);
+        return generateRandomPlans(null, sourceIds, false, false);
+    }
+
+    public List<GeneratedEventPlan> generateTournamentStagePlansForEvents(Collection<String> sourceIds) {
+        return generateRandomPlans(null, sourceIds, true, true);
     }
 
     private List<String> configuredRandomRoomSourceEventIds() {
@@ -698,9 +702,21 @@ public class EventScheduler {
                 .toList();
     }
 
-    private List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer, Collection<String> sourceIds) {
+    private List<GeneratedEventPlan> generateRandomPlans(
+            Consumer<RandomPlanProgress> progressConsumer,
+            Collection<String> sourceIds) {
+        return generateRandomPlans(progressConsumer, sourceIds, false, false);
+    }
+
+    private List<GeneratedEventPlan> generateRandomPlans(
+            Consumer<RandomPlanProgress> progressConsumer,
+            Collection<String> sourceIds,
+            boolean includeAllAcceptedMembers,
+            boolean requireExactTargetCoverage) {
         Set<String> sourceIdFilter = new LinkedHashSet<>(normalizeUserIds(sourceIds));
-        List<ActivityEvent> eventRecords = activityEventsRepository.findAll();
+        List<ActivityEvent> eventRecords = sourceIdFilter.isEmpty()
+                ? activityEventsRepository.findAll()
+                : activityEventsRepository.findBySourceIdIn(sourceIdFilter);
         List<ActivityEvent> events = resolveCanonicalEvents(eventRecords);
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
@@ -749,9 +765,14 @@ public class EventScheduler {
             publishRandomProgress(progressConsumer, 10, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                     "Queried " + queryCount + " backend lookup(s); found " + requiredUserIds.size() + " candidate user(s).");
         }
-        Set<String> publicUserIds = resolvePublicUserIds(requiredUserIds);
-        incrementObservedQueries(observedQueries);
-        requiredUserIds.retainAll(publicUserIds);
+        Set<String> eligibleUserIds;
+        if (includeAllAcceptedMembers) {
+            eligibleUserIds = new LinkedHashSet<>(requiredUserIds);
+        } else {
+            eligibleUserIds = resolvePublicUserIds(requiredUserIds);
+            incrementObservedQueries(observedQueries);
+            requiredUserIds.retainAll(eligibleUserIds);
+        }
         publishRandomProgress(progressConsumer, 20, 0, snapshotsByEventId.size(), requiredUserIds.size(), observedQueries.get(), "Loaded eligible random events.");
         int totalSubEvents = Math.max(1, events.stream()
                 .filter(event -> event != null && Boolean.TRUE.equals(event.getPublished()))
@@ -789,7 +810,7 @@ public class EventScheduler {
             if (snapshot == null) return;
 
             Set<String> acceptedUserIds = new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
-            acceptedUserIds.retainAll(publicUserIds);
+            acceptedUserIds.retainAll(eligibleUserIds);
             if (acceptedUserIds.size() < 2) {
                 return;
             }
@@ -857,7 +878,14 @@ public class EventScheduler {
                 }
                 
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
-                        event, stageGraph, stageEligibleUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
+                        event,
+                        stageGraph,
+                        stageEligibleUserIds,
+                        targets,
+                        "random",
+                        "random:" + eventId + ":" + subEventId,
+                        observedQueries,
+                        requireExactTargetCoverage);
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -944,7 +972,10 @@ public class EventScheduler {
 
     public List<InviteBatchPlan> generatePriorityPlansForEvents(Collection<String> sourceIds) {
         Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
-        List<ActivityEvent> events = resolveCanonicalEvents(activityEventsRepository.findByAutoInviterTrue());
+        List<ActivityEvent> records = requestedSourceIds.isEmpty()
+                ? activityEventsRepository.findByAutoInviterTrue()
+                : activityEventsRepository.findBySourceIdIn(requestedSourceIds);
+        List<ActivityEvent> events = resolveCanonicalEvents(records);
         if (!requestedSourceIds.isEmpty()) {
             events = events.stream()
                     .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
@@ -1069,7 +1100,9 @@ public class EventScheduler {
         List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger changedGroupCount = new AtomicInteger(0);
         Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
-        List<ActivityEvent> events = resolveCanonicalEvents();
+        List<ActivityEvent> events = requestedSourceIds.isEmpty()
+                ? resolveCanonicalEvents()
+                : resolveCanonicalEvents(activityEventsRepository.findBySourceIdIn(requestedSourceIds));
         if (!requestedSourceIds.isEmpty()) {
             events = events.stream()
                     .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))

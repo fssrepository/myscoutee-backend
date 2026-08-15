@@ -1093,8 +1093,8 @@ class ActivitiesEventsServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.sourceId()).isEqualTo("slot-1");
         assertThat(result.stageStatus()).isEqualTo("A");
-        verify(eventScheduler).generateRandomPlansForEvents(List.of("slot-1"));
-        verify(eventScheduler, never()).generateRandomPlansForEvents(List.of("event-1"));
+        verify(eventScheduler).generateTournamentStagePlansForEvents(List.of("slot-1"));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(List.of("event-1"));
     }
 
     @Test

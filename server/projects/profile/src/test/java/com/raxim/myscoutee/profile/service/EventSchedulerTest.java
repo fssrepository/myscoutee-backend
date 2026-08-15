@@ -212,7 +212,9 @@ class EventSchedulerTest {
         event.setCreatorUserId("creator-1");
         event.setTitle("Initial auto-invite test");
 
-        when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
+        when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
+                sourceIds.size() == 1 && sourceIds.contains("event-empty"))))
+                .thenReturn(List.of(event));
         when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("candidate-1")));
@@ -251,6 +253,24 @@ class EventSchedulerTest {
                 event,
                 List.of("candidate-1"),
                 "creator-1");
+        verify(activityEventsRepository, never()).findByAutoInviterTrue();
+        verify(activityEventsRepository, never()).findAll();
+    }
+
+    @Test
+    void targetedRandomTournamentAndScoreRunsLoadOnlyRequestedEventDocuments() {
+        EventScheduler scheduler = createScheduler();
+        when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
+                sourceIds.size() == 1 && sourceIds.contains("event-target"))))
+                .thenReturn(List.of());
+
+        assertThat(scheduler.generateRandomPlansForEvents(List.of("event-target"))).isEmpty();
+        assertThat(scheduler.generateTournamentStagePlansForEvents(List.of("event-target"))).isEmpty();
+        assertThat(scheduler.generateScorePlansForEvents(List.of("event-target"))).isEmpty();
+
+        verify(activityEventsRepository, times(3)).findBySourceIdIn(argThat(sourceIds ->
+                sourceIds.size() == 1 && sourceIds.contains("event-target")));
+        verify(activityEventsRepository, never()).findAll();
     }
 
     @Test
@@ -520,6 +540,64 @@ class EventSchedulerTest {
                 anyString(),
                 eq("scheduler"),
                 argThat(userIds -> userIds.size() == 2 && !userIds.contains("private-user")));
+    }
+
+    @Test
+    void tournamentStageStartAssignsEveryAcceptedMemberAcrossAllConfiguredGroups() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-stage-start");
+        event.setStatus("A");
+        event.setCreatorUserId("casey");
+        event.setTitle("Tournament stage start");
+        event.setSubEvents(List.of(subEvent("stage-start", 2, 1, 2)));
+
+        Users nonPublicAcceptedUser = user("casey");
+        nonPublicAcceptedUser.setProfileStatus("friends only");
+        when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
+                sourceIds.size() == 1 && sourceIds.contains("event-stage-start"))))
+                .thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                nonPublicAcceptedUser,
+                user("nova"),
+                user("riley")));
+        when(activitiesMembersService.buildBatchEventSnapshots(any()))
+                .thenReturn(Map.of("event-stage-start", new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-stage-start",
+                        List.of(),
+                        List.of("casey", "nova", "riley"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("casey"),
+                        3)));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(eq("event"), anyCollection()))
+                .thenReturn(Map.of());
+        when(chatService.ensureMainEventChat(any(ActivityEvent.class), anyCollection()))
+                .thenAnswer(invocation -> ((ActivityEvent) invocation.getArgument(0)).getSourceId());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                eq("event-stage-start"),
+                eq("stage-start"),
+                anyList()))
+                .thenReturn(List.of(
+                        group("stage-start:group:1", "Group A"),
+                        group("stage-start:group:2", "Group B")));
+
+        List<GeneratedEventPlan> plans = scheduler.generateTournamentStagePlansForEvents(
+                List.of("event-stage-start"));
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder("casey", "nova", "riley");
+        assertThat(plans).allSatisfy(plan -> assertThat(plan.memberUserIds()).hasSizeBetween(1, 2));
+        verify(usersRepository, never()).findByUserIdIn(anyCollection());
+        verify(activityEventsRepository, never()).findAll();
+        verify(activitiesMembersService, times(2)).syncSystemEventMembers(
+                anyString(),
+                eq("scheduler"),
+                anyList());
     }
 
     @Test

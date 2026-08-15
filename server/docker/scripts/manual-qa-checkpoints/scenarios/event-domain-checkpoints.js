@@ -964,6 +964,27 @@
     };
   }
 
+  function escapeRegex(value) {
+    return Q.text(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function generatedRandomRoomSelector() {
+    const actualEventSourceId = activeEventSourceId();
+    const parentIds = [...new Set([
+      ...EVENT_IDS,
+      ...(actualEventSourceId ? [actualEventSourceId] : [])
+    ])];
+    return {
+      $or: parentIds.flatMap(parentId => {
+        const prefix = `^random-room:${escapeRegex(parentId)}:`;
+        return [
+          { _id: { $regex: prefix } },
+          { sourceId: { $regex: prefix } }
+        ];
+      })
+    };
+  }
+
   function ticketInviteCandidateRateSelector() {
     return {
       mode: "single",
@@ -1402,7 +1423,10 @@
   }
 
   function currentEventIds() {
-    const values = Q.collection("events").find(manualEventSelector()).toArray();
+    const values = [
+      ...Q.collection("events").find(manualEventSelector()).toArray(),
+      ...Q.collection("events").find(generatedRandomRoomSelector()).toArray()
+    ];
     const ids = [...EVENT_IDS];
     for (const value of values) {
       const sourceId = Q.text(value.sourceId);
@@ -1462,6 +1486,7 @@
   }
 
   function clearFixture() {
+    clearDynamicEventEffects(currentEventIds());
     for (const spec of selectors()) Q.collection(spec.collection).deleteMany(spec.selector);
   }
 
@@ -2024,6 +2049,10 @@
   function oracle(state) {
     const dynamicEventIds = currentEventIds();
     const event = Q.collection("events").findOne(manualEventSelector()) || {};
+    const generatedRoomEvents = Q.collection("events")
+      .find(generatedRandomRoomSelector())
+      .sort({ sourceId: 1, _id: 1 })
+      .toArray();
     const members = Q.collection("activityMembers").find({ $or: [
       { ownerType: "event", ownerId: { $in: dynamicEventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
@@ -2173,6 +2202,21 @@
     });
     return {
       events: eventSummary(),
+      generatedRoomEvents: generatedRoomEvents.map(room => ({
+        recordId: Q.text(room._id),
+        eventId: Q.text(room.sourceId),
+        parentEventId: Q.text(room.parentEventId),
+        parentSubEventId: Q.text(room.parentSubEventId),
+        groupId: Q.text(room.generatedGroupId),
+        title: Q.text(room.title),
+        status: Q.text(room.status),
+        generated: room.generated === true,
+        eventType: Q.text(room.eventType),
+        acceptedMembers: Number(room.acceptedMembers || 0),
+        acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
+        capacityMin: Number(room.capacityMin || 0),
+        capacityMax: Number(room.capacityMax || 0)
+      })),
       primaryEvent: {
         status: Q.text(event.status),
         isTrashed: Q.text(event.status) === "T" || event.isTrashed === true,

@@ -4213,6 +4213,30 @@ Execution evidence (2026-08-15, first Start attempt):
   the saved stage instant. The fixture now materializes both stage instants in
   the same production save shape before staging; replay is required.
 
+Execution evidence (2026-08-15, second Start attempt):
+
+- **Start Stage FAIL / false success**: the repaired fixture allowed the real
+  action and the saved Qualifiers stage became `A` with runtime
+  `groupsCount=2`, but the independent oracle found zero generated room event,
+  zero room membership and zero group chat. The parent membership stayed at
+  the exact three accepted users and its counters stayed stable, so this was
+  not a read-side counter projection defect.
+- Request tracing found a separate performance boundary in the same write
+  path: targeted Start called an unbounded `ActivityEvent find {}` and filtered
+  the requested source ID in memory. The targeted random, priority and score
+  entry points now query only their requested event documents.
+- The grouping failure came from treating the normal scheduled random-room
+  generator's partial result as a successful explicit tournament Start. The
+  Start-specific path now requires exact configured-group coverage, falls back
+  deterministically when the affinity graph cannot populate disconnected
+  targets, and includes every explicitly accepted event participant regardless
+  of public discovery-profile visibility. The scheduled global random-room
+  behavior and its public discovery pool remain unchanged.
+- The versioned oracle now discovers generated `random-room:<parent>:...`
+  events before reading their membership/chat identities and removes those
+  artifacts during a clean reset. Replay this single Start boundary; do not
+  repeat `TOURNAMENT-001` or the earlier definition checks.
+
 ### `TOURNAMENT-003` — review and advancement
 
 - Finalize one stage with deterministic winners/losers, then let the real
