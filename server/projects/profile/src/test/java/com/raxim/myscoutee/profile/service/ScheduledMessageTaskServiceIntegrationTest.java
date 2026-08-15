@@ -193,6 +193,29 @@ class ScheduledMessageTaskServiceIntegrationTest {
         assertThat(republished.getStatus()).isEqualTo("scheduled");
     }
 
+    @Test
+    void completedStageReminderIsNotRescheduledForTheSameOccurrence() {
+        Instant stageStartAt = Instant.now().plusSeconds(60);
+        ActivityEvent event = publishedStageEvent("event-stage-completed", stageStartAt);
+        String taskKey = "event-stage-reminder:event-stage-completed:stage-one";
+
+        scheduledMessageTaskService.scheduleEventStageReminders(event, "admin-user");
+        ScheduledMessageTask completed = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseThrow();
+        completed.setStatus("completed");
+        completed.setLastRunStatus("completed");
+        completed.setLastRunCount(1);
+        completed.setLastRunAtIso(Instant.now().toString());
+        scheduledMessageTasksRepository.save(completed);
+
+        scheduledMessageTaskService.scheduleEventStageReminders(event, "admin-user");
+
+        ScheduledMessageTask retained = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseThrow();
+        assertThat(retained.getStatus()).isEqualTo("completed");
+        assertThat(retained.getLastRunStatus()).isEqualTo("completed");
+        assertThat(retained.getLastRunCount()).isEqualTo(1);
+        assertThat(retained.getPayload()).containsEntry("stageStartAtIso", stageStartAt.toString());
+    }
+
     private Users activeUser(String userId) {
         Users user = new Users();
         user.setMongoId(new ObjectId().toHexString());

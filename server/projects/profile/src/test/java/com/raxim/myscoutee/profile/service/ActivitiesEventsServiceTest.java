@@ -1100,10 +1100,9 @@ class ActivitiesEventsServiceTest {
         assertThat(notification.payload())
                 .containsEntry("notification_title_key", "notification.event.stage.finalized.title")
                 .containsEntry("notification_message_key", "notification.event.stage.finalized.message")
-                .containsEntry("notification_avatar_tone", "stage")
-                .containsEntry("notification_avatar_icon", "emoji_events")
                 .containsEntry("stageIndex", "1")
-                .containsEntry("stageTotal", "2");
+                .containsEntry("stageTotal", "2")
+                .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
     }
 
     @Test
@@ -1152,10 +1151,9 @@ class ActivitiesEventsServiceTest {
         assertThat(notification.payload())
                 .containsEntry("notification_title_key", "notification.event.stage.started.title")
                 .containsEntry("notification_message_key", "notification.event.stage.started.message")
-                .containsEntry("notification_avatar_tone", "stage")
-                .containsEntry("notification_avatar_icon", "emoji_events")
                 .containsEntry("stageIndex", "1")
-                .containsEntry("stageTotal", "1");
+                .containsEntry("stageTotal", "1")
+                .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
         verify(eventScheduler).generateTournamentStagePlansForEvents(
                 eq(List.of("event-1")),
                 any(Runnable.class));

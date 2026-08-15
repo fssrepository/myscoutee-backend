@@ -339,6 +339,10 @@ public class ScheduledMessageTaskService {
             activeTaskKeys.add(taskKey);
 
             ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
+            if (isCompletedStageReminderOccurrence(task, stageStartAt)) {
+                savedTasks.add(task);
+                continue;
+            }
             if (!StringUtils.hasText(task.getId())) {
                 task.setId(new ObjectId().toHexString());
             }
@@ -374,6 +378,19 @@ public class ScheduledMessageTaskService {
             savedTasks.add(suspendTask(existing, updatedBy, nowIso));
         }
         return savedTasks;
+    }
+
+    private boolean isCompletedStageReminderOccurrence(
+            ScheduledMessageTask task,
+            Instant stageStartAt) {
+        if (task == null
+                || stageStartAt == null
+                || !STATUS_COMPLETED.equals(safeText(task.getStatus()))) {
+            return false;
+        }
+        Map<String, String> payload = task.getPayload();
+        return payload != null
+                && stageStartAt.toString().equals(safeText(payload.get("stageStartAtIso")));
     }
 
     public List<ScheduledMessageTask> suspendEventStageReminders(String eventId, String actorUserId) {

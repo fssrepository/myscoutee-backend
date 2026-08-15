@@ -3751,8 +3751,6 @@ public class ActivitiesEventsService {
             }
         }
         Map<String, String> payload = new LinkedHashMap<>();
-        payload.put("notification_avatar_tone", "stage");
-        payload.put("notification_avatar_icon", "emoji_events");
         payload.put("stageIndex", Integer.toString(Math.max(1, stageIndex)));
         payload.put("stageTotal", Integer.toString(Math.max(1, tournamentStages.size())));
         return payload;
