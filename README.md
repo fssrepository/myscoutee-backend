@@ -11,6 +11,13 @@ match or a message.
 
 ## Downloads
 
+### Prerelease installer
+
+A QA prerelease Debian installer, client tools, and their SHA-256 checksum
+files are available from [GitHub Releases](https://github.com/fssrepository/myscoutee-backend/releases).
+These builds are intended for installation and integration testing while the
+remaining qualification work is completed.
+
 ### Official manuals
 
 | Manual | Document version | Applies to | PDF |
