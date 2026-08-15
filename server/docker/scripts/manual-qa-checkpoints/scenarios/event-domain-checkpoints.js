@@ -3489,100 +3489,6 @@
     });
   }
 
-  function repairTournamentRoomCardOwner() {
-    if (checkpointId !== "TOURNAMENT-002") {
-      Q.fail("repair-tournament-room-card-owner is restricted to TOURNAMENT-002.");
-    }
-    const state = requireMatchingState();
-    if (!state.fixtureRepairs || !state.fixtureRepairs.tournamentRoomNotifications) {
-      Q.fail("repair the TOURNAMENT-002 tournament-room notifications before its card owner.");
-    }
-    if (state.fixtureRepairs.tournamentRoomCardOrganizer) {
-      Q.fail("the TOURNAMENT-002 tournament-room card organizer has already been repaired.");
-    }
-
-    const parentEvent = Q.collection("events").findOne(manualEventSelector());
-    const rooms = Q.collection("events")
-      .find(generatedRandomRoomSelector())
-      .sort({ sourceId: 1, _id: 1 })
-      .toArray();
-    const creatorUserId = Q.text(parentEvent && parentEvent.creatorUserId);
-    if (!parentEvent
-        || Q.text(parentEvent.title) !== "QA TOURNAMENT-002"
-        || creatorUserId !== hostUserId
-        || rooms.length !== 2) {
-      Q.fail("TOURNAMENT-002 requires its exact parent owner and two generated rooms before card-owner repair.");
-    }
-    if (!state.fixtureRepairs.tournamentRoomCardOwner
-        || !rooms.every((room, index) => (
-      Q.text(room.title) === `Tournament Group R${index + 1}`
-      && Q.text(room.eventType) === "tournament-room"
-      && Q.text(room.creatorUserId) === creatorUserId
-      && !Q.text(room.organizerUserId)
-      && Q.text(room.creatorName) === Q.text(state.fixtureRepairs.tournamentRoomCardOwner.creatorName)
-      && !Q.text(room.ownerUserId)
-    ))) {
-      Q.fail("the tournament-room card-owner state no longer matches the exact organizer-migration boundary.");
-    }
-
-    const repairedAtIso = Q.nowIso();
-    const host = Q.user(hostUserId);
-    const creatorName = Q.text(parentEvent.creatorName) || Q.text(host && host.name);
-    const creatorInitials = Q.text(parentEvent.creatorInitials);
-    const creatorGender = Q.text(parentEvent.creatorGender);
-    const creatorCity = Q.text(parentEvent.creatorCity) || Q.text(host && host.city);
-    const roomIds = [];
-    rooms.forEach(room => {
-      const update = Q.collection("events").updateOne({ _id: room._id }, {
-        $set: {
-          organizerUserId: creatorUserId,
-          creatorName,
-          creatorInitials,
-          creatorGender,
-          creatorCity,
-          updatedDate: repairedAtIso,
-          updatedUser: Q.ACTOR
-        },
-        $unset: { creatorUserId: "" }
-      });
-      if (update.matchedCount !== 1) {
-        Q.fail(`TOURNAMENT-002 card-owner repair was incomplete for '${Q.text(room.sourceId)}'.`);
-      }
-      roomIds.push(Q.text(room.sourceId || room._id));
-    });
-
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
-      "fixtureRepairs.tournamentRoomCardOrganizer": {
-        repairedAtIso,
-        organizerUserId: creatorUserId,
-        creatorName,
-        retainedRoomIds: roomIds,
-        retainedOwnerUserId: ""
-      }
-    } });
-    Q.printObject({
-      scenario: SCENARIO,
-      checkpointId,
-      phase: "tournament-room-card-organizer-repaired",
-      repairedAtIso,
-      organizer: {
-        userId: creatorUserId,
-        name: creatorName,
-        initials: creatorInitials,
-        city: creatorCity
-      },
-      retainedTransaction: {
-        roomIds,
-        domainOwnerUserIds: rooms.map(room => Q.text(room.ownerUserId)),
-        roomImageUrl: "/media/public?key=images/system/tournament-room/v1/large.webp",
-        membershipsChanged: false,
-        activityCountersChanged: false,
-        startReplayed: false
-      },
-      next: "Reload Casey once, reopen Activities -> Events -> Active Events, and verify Casey remains a member while the clickable organizer avatar overlays the unchanged tournament trophy card image."
-    });
-  }
-
   function repairTicketPaymentFixture() {
     if (checkpointId !== "EVENT-TICKET-007") {
       Q.fail("repair-ticket-payment-fixture is restricted to EVENT-TICKET-007.");
@@ -7289,7 +7195,6 @@
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;
     case "repair-tournament-room-notifications": repairTournamentRoomNotifications(); break;
-    case "repair-tournament-room-card-owner": repairTournamentRoomCardOwner(); break;
     case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
     case "prepare-ticket-invitee-response-retest": prepareTicketInviteeResponseRetest(); break;
     case "prepare-ticket-admin-approval-retest": prepareTicketAdminApprovalRetest(); break;

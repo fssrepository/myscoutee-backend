@@ -30,7 +30,7 @@ As of 2026-08-15:
 
 The complete matrix contains 189 cases. The active core checkpoint is
 `TOURNAMENT-002`; its saved transaction is intact while the generated-room
-Active Events list repair awaits its guarded data migration and UI replay.
+Active Events fix awaits one replay from the corrected fixture baseline.
 
 ### Official manuals
 

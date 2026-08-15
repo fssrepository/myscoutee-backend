@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 15:53 CEST
+Updated: 2026-08-15 16:02 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -37,14 +37,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
 scenario: event-domain (live post-Start transaction; do not reset or replay Start)
-ledger_status: IN PROGRESS / START+GROUP+MEMBERS+CHAT/EVENT PRESENTATION PASS / ACTIVE LIST FAIL / ORGANIZER MIGRATION AWAITING APPROVAL
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. The first presentation replay exposed Random Room semantics in the generated event/chat/notification; those write paths and exact live records are repaired, with notification UI replay still pending. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. The first card-avatar repair overloaded creatorUserId with Casey solely to drive the normal profile avatar. Casey's reload then proved a counter/list mismatch: persisted Active Events=1, but the Active Events query returned no row because creatorUserId also carries room ownership/admin semantics and excludes the creator from the member list. This is a write-shape defect, not a counter projection defect. Java and frontend-local now use a separate optional organizerUserId for standard profile-avatar configuration while generated tournament rooms retain empty creatorUserId/ownerUserId and Casey's accepted Member row. Both running watchers compiled successfully. The read-only oracle proves the old live creator field is still present and all memberships/roles, 3 chat copies, unread total 3, notifications, counters and the original recompute remain intact. A guarded two-record organizer migration is prepared but was not run because the approval gate rejected repeating the earlier repair without new explicit approval. No ad-hoc write or Start replay occurred. Three launcher-owned browsers remain open.
-required_resume: Obtain explicit approval for the guarded TOURNAMENT-002 organizer migration, run it once, then read-only verify creatorUserId empty and organizerUserId Casey on R1/R2 with all transaction controls unchanged. In Casey only, reload once and open Activities -> Events -> Active Events. Verify the counter is 1 and Tournament Group R1 is now present with the large trophy and small clickable Casey avatar; click only the avatar and verify Casey Bridge's profile. Do not use the card menu and do not touch Nova/Riley.
+ledger_status: IN PROGRESS / CLEAN START WRITE ORACLE PASS / CASEY ACTIVE LIST IN-PLACE REPLAY READY
+state: TOURNAMENT-001 is PASS/CLOSED. Earlier TOURNAMENT-002 grouping/member/chat/presentation evidence remains retained. The one-time migration route was removed as non-replayable. At 13:58Z Codex reset/staged only this checkpoint and proved the exact pre-Start baseline, then replaced exactly three managed browsers. Casey ran Start Stage once at 14:01Z. The independent persisted oracle now passes the corrected production write without any repair: R1/R2 have empty creatorUserId and domain ownerUserId, organizerUserId Casey, tournament titles/trophy, exact Casey+Nova/Riley partition, three accepted room Member rows, two physical chats/three owner copies, two welcome messages, two tournament outbox records/three unread inbox records, A/groupsCount=2, three action-outbox records, one recompute task, and exact +1 Active/All plus +1 Chat deltas for every actor. Casey is still Member in R1 and has Active Events=1/My Events=1. The recompute task may remain pending until its normal worker window; it is not an owner of this list result. No earlier checkpoint was replayed and no database repair marker exists. The next branch is Casey's in-place Active Events read before any reload.
+required_resume: Casey only, without reload: close the tournament detail, open Activities -> Events -> Active Events. Verify the red counter is 1 and exactly Tournament Group R1 appears with the large trophy plus Casey's small top-left profile photo. Do not click the avatar yet and do not touch Nova/Riley. Report whether both counter and row/avatar are present.
 event: QA TOURNAMENT-002
 actors:
   active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
   controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Codex runs the explicitly approved guarded organizer migration and oracle; then Casey reloads once and proves the repaired Active Events row plus standard owner-avatar profile action. Nova/Riley remain untouched.
+next_actor: Casey closes the tournament detail and opens Active Events without reload to prove the immediate counter/list/card presentation; Nova and Riley remain untouched.
 stop_phrase: megvan
 ```
 
@@ -110,14 +110,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-002 — automatic group membership projection`, generated-room
-organizer migration: after explicit approval, run the guarded two-record
-migration and its read-only oracle. Then in Casey only reload once and open
-Activities -> Events -> **Active Events**. Its persisted counter must remain
-`1`, and the list must now contain `Tournament Group R1` with the large trophy
-and small Casey profile photo. Click only that small avatar and verify the Casey
-Bridge profile opens through the standard card action. Do not use the card menu
-and do not touch Nova or Riley. Report both checks with `megvan`.
+`TOURNAMENT-002 — automatic group membership projection`, Casey Active Events
+in-place replay: the clean Start write oracle is PASS. Without reload, Casey
+closes the tournament detail and opens Activities -> Events -> **Active
+Events**. Its red counter must be `1`, and exactly `Tournament Group R1` must
+appear with the large trophy plus Casey's small top-left profile photo. Do not
+click the avatar yet and do not touch Nova/Riley. Report both observations.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is

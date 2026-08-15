@@ -4420,16 +4420,38 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   that organizer presentation does not promote an accepted host to room admin
   or remove the room from Active Events. Both existing dev watchers compiled
   successfully; no parallel build or test process was started.
-- The guarded live migration is prepared for exactly the two retained R1/R2
-  documents and refuses any drift from the already-repaired boundary. It moves
-  Casey from `creatorUserId` to `organizerUserId` without replaying Start or
-  touching memberships, chats, notifications, counters or tasks. Its first
-  invocation was rejected by the approval gate because the earlier card-owner
-  repair was already recorded; no workaround or ad-hoc database write was
-  attempted. Explicit approval and post-migration read oracle are required
-  before the UI replay.
-- Remaining bounded UI replays: after that guarded migration, reload Casey
-  once, prove Active Events counter `1` and visible R1 with large trophy plus
+- The initially prepared two-record migration was rejected and then removed.
+  A one-time database edit would make only the current transaction look right;
+  it would not prove that reset -> stage -> real Start reproduces the fixed
+  shape. The authoritative repair is therefore the production Start writer,
+  the Java/local read contract and the versioned pre-Start fixture/oracle.
+- Replay only this checkpoint from a clean harness reset and stage. After Casey
+  runs Start once, the independent oracle must prove fresh R1/R2 with empty
+  `creatorUserId/ownerUserId`, `organizerUserId=Casey`, the same exact
+  membership/chat/notification/counter contract, and no retained repair marker.
+  Earlier tournament-definition/group-read work is not repeated.
+- **Clean replay baseline PASS / Start pending**: the versioned harness reset
+  only TOURNAMENT-002, proved `phase=not-staged`, then staged and read back a
+  fresh pre-Start fixture. The parent is active/published, Qualifiers is `RS`
+  with persisted start/end, Casey/Nova/Riley are the exact accepted parent
+  members, initial actor counters match the card buckets, and rooms, chats,
+  messages, notifications, tasks, recomputes and action deltas are all zero.
+  Exactly three managed browser sessions were replaced after this oracle. The
+  next producer is one Casey **Start Stage** action; no earlier checkpoint is
+  replayed.
+- **Clean Start write-path replay PASS**: Casey ran Start once and the
+  independent oracle proved the fixed record shape without any live repair.
+  Fresh R1/R2 have empty `creatorUserId/ownerUserId`,
+  `organizerUserId=Casey`, tournament titles/trophy, exact Casey+Nova/Riley
+  partition and three accepted room `Member` rows. Two physical chats/three
+  owner copies, two tournament welcome messages, two outbox/three unread inbox
+  notifications, `A/groupsCount=2`, three action-outbox records, one recompute
+  task and each actor's exact `+1` Active/All and `+1` Chat deltas all agree.
+  Casey remains R1 Member with Active Events `1` and My Events `1`. The normal
+  recompute may still be pending; it is not required for the list read. Next is
+  the Casey in-place Active Events counter/list/card observation before reload.
+- Remaining bounded UI replays: after that clean Start replay, prove Casey
+  Active Events counter `1` and visible R1 with large trophy plus
   small Casey avatar, then click only the avatar to open Casey's profile; then
   close/reopen Notifications -> New and prove the repaired R1 row without
   marking it read; finally open the R1 chat and compare its initial tournament
