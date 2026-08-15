@@ -1,0 +1,44 @@
+{
+  "file": "MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.epub",
+  "sha256": "a35087ebc2f4034b5799eb646fb288028b91516b2a10626ee67fe2ca4188062a",
+  "format": "EPUB 3 reflowable",
+  "drm_embedded": false,
+  "part": 1,
+  "part_roman": "I",
+  "edition_version": "1.0.0",
+  "published": "2026-08-20",
+  "source": {
+    "file": "guides/story/trilogy/01-the-city-between-us/book/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md",
+    "sha256": "c097f0de44261b8ae791629677bd2694d2216767fdf6265f25483827741ded30"
+  },
+  "cover_source": {
+    "file": "guides/story/trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf",
+    "sha256": "4ed002dc45141a211f08cdbdb4f00541209e9e26796ecdf772f2fa2f6792be98"
+  },
+  "asset_count": 30,
+  "toc_entries": 46,
+  "archive_entries": 38,
+  "validation": [
+    "EPUB mimetype and container",
+    "well-formed package, navigation, NCX and XHTML",
+    "manifest, spine, cover and image targets",
+    "navigation anchors",
+    "reflowable text without split drop-cap words",
+    "readable source-link labels instead of visible raw URLs"
+  ],
+  "metadata": {
+    "title": "MyScoutee - The Story · Part I · The City Between Us",
+    "author": "MyScoutee",
+    "subject": "A founder's memoir and the origin story of MyScoutee",
+    "keywords": [
+      "MyScoutee",
+      "memoir",
+      "community",
+      "social connection",
+      "product origin"
+    ],
+    "creator": "MyScoutee book builder",
+    "language": "en",
+    "copyright": "Copyright 2026 MyScoutee. All rights reserved."
+  }
+}

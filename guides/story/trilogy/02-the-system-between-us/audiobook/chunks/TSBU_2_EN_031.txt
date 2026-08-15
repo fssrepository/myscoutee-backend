@@ -1,0 +1,57 @@
+Private recruitment correspondence records an intended January 2021 start and an exit email dated 28 January. Later correspondence with the Hungarian central bank records the short employment, the government-bond trading restriction and the Founder's data-handling and background-screening complaints. The long assessment and requirement that screening clear before the start are first-person employment chronology. The exact first-day warning, masked-room expressions, seating of two colleagues, exit question and roughly three-hour ethics conversation with the bank's local lawyers remain first-person memory. The Founder also records that he answered “no” when repeatedly asked whether the manager had threatened him, and now regards that answer as incomplete. The book does not determine the purpose or independence of the internal review, make a legal finding about the manager or bank, or claim that a later unresolved proceeding has already produced a criminal-record outcome. His indifference to the bank dismissal describes his burned-out internal state, not the objective seriousness of the employment decision.
+
+The official issuance terms for the retail Hungarian government bond described domestic and foreign natural persons as eligible subscribers and the public as its target market. This explains the Founder's household-savings perspective; it does not decide whether the bank's employee-trading policy was lawful, proportionate or required. In January 2021, Hungary's public rules included a 20:00–05:00 curfew, a ban on gatherings, early shop closure and broad mask requirements. The particular masked dismissal room remains memoir.
+
+Hungarian retail government-bond issuance terms.
+
+Government Decree 484/2020 on the protective rules then in force.
+
+Legal reference map.
+
+The tax transition and the low-trust triangle.
+
+Act CXLVII of 2012 on the former KATA and small-business tax regime.
+
+Act XIII of 2022 on the new itemized tax for small taxpayers.
+
+Official explanatory memorandum to Act XIII of 2022.
+
+Constitutional Court Decision 29/2022 (XII. 6.) on challenges to the KATA change.
+
+Act CL of 2017 on the Rules of Taxation.
+
+Act CLI of 2017 on Tax Administration Procedure.
+
+These texts frame the tax status, transition, taxpayer responsibility, representation, communication and administrative principles around which the documentary dispute developed. The exact notice path and filing history still have to be reconstructed from the account-specific record; the statutes alone do not answer who saw which message when.
+
+Procedure, defence and expert evidence.
+
+Act C of 2012, the Hungarian Criminal Code.
+
+Act XC of 2017 on Criminal Procedure.
+
+Act XXIX of 2016 on Forensic Experts.
+
+Act CLI of 2011 on the Constitutional Court, including the routes discussed in sections 25–27.
+
+The Fundamental Law of Hungary, especially the rule-of-law, privacy, fair-administration, fair-trial and remedy provisions that appear in the submissions.
+
+The exact offence, statutory range, defence route and requested remedy must be read from the charge and filed papers. This book does not infer them from the headline name of an offence.
+
+Data, identity and European guarantees.
+
+Regulation (EU) 2016/679, the General Data Protection Regulation (GDPR), particularly the principles of processing, transparency, access, security and remedies.
+
+Act CXII of 2011 on Informational Self-Determination and Freedom of Information.
+
+Charter of Fundamental Rights of the European Union, including dignity, private life, personal data, good administration, an effective remedy and fair-trial guarantees, subject to the Charter's scope.
+
+European Convention on Human Rights, particularly Articles 6 and 8.
+
+European Commission 2025 Rule of Law Report and country material.
+
+These instruments explain why identity-sharing, delegated action, accessible records, personal data, home, reputation, defence and effective remedies can become more than software-design questions. They do not by themselves prove a breach in this case.
+
+The government account and the later two-factor change.
+
+The “government account” in the narrative was Hungary's Citizen Portal identification service. In 2022, the relevant login was based on a username and password. From 16 January 2025, access to the same public-service surfaces required either the two-factor Citizen Portal Plus method or the Digital Citizenship application. This later security change does not rewrite the 2022 scene.

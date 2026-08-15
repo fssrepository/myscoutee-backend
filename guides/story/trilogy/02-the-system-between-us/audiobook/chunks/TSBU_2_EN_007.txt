@@ -1,0 +1,17 @@
+Until 23 November, I did not know that the closing return had still not been successfully resolved. When I discovered the repeated error notices, the problem was already months old. From that point, information bounced among three people: the accountant, the administration and the person whose name and liability remained on every result.
+
+The later flood of communication did not create that structure. It was what happened after the structure failed.
+
+The defining movement was not ordinary human error. It was referral. The accountant relied on the administration, the administration referred me back to the accountant and both could point to duties legally assigned to me. Even after the corrected result was becoming clear, the accountant continued to dispute the route and did not appear to understand what officials had told her. The only person who could not pass the consequence onward was the taxpayer.
+
+5. The Password That Was Not a Relationship.
+
+The deepest design problem appeared before the final return.
+
+The formal route let a representative act without my password, but submissions, processing errors and notices did not remain visible to both of us as one continuous chain. In practice, the only route that appeared to keep action and notice together was the unsafe one: give the accountant my password and let her work through my own government account. Assistance became indistinguishable from identity.
+
+At one point, the accountant called me unexpectedly for a reason I no longer remember and asked whether she should file a further return for the 1 September transition. I had wanted to avoid exactly that. The return was simple enough for me to file at home through the personal online tax interface without handing over my government-account password again. The question reopened the same unsafe choice and put me back on edge for no useful reason.
+
+If I refused to share access, I could be told that I had prevented the accountant from doing the work. If I shared it, I could be asked why I had given away a personal password. If a representative acted, I remained responsible. If a notice reached only the representative, the system could still behave as if I knew.
+
+This was not consent in any meaningful product sense. It was an improvised custom holding together a formal process.

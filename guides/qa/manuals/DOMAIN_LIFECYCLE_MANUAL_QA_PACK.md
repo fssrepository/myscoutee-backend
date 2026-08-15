@@ -4073,7 +4073,8 @@ Execution 2026-08-13 (in progress):
   gate alone prevents deliberate geolocation spoofing. If eligibility is a
   security boundary, a separately specified server-trusted corroborating
   signal is required.
-- Execution evidence, 2026-08-14 (checkpoint remains in progress):
+- Execution evidence, 2026-08-14/15 (functional branches PASS; real Firebase
+  authentication retention remains pending):
   - Guarded stage recorded a write-free baseline of 56 users, zero user
     sessions and zero login audits with OSM `country:hu` and `country:gb`
     present and `country:fr` absent.
@@ -4089,10 +4090,37 @@ Execution 2026-08-13 (in progress):
     key, and displayed disabled **Unavailable in your country**. Screenshot
     `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-14 23-05-56.png`
     captures Budapest/Login, London/Login and Paris/Unavailable together.
-  - The target-scoped permission-denied state is machine-proven as
-    `permission=denied`, no eligibility request, explicit **Allow location**,
-    no session and unchanged database counts; its final visual observation
-    remains before the row can close.
+  - Permission-denied branch **PASS**: only the Paris target was restarted with
+    its isolated profile at browser permission `prompt`; before the explicit
+    action it had no eligibility request, no session and showed **Allow
+    location**. Chrome's native permission grant then changed the effective
+    permission from `prompt` to `granted`, issued exactly one Paris eligibility
+    request and returned to **Unavailable in your country** with no session.
+    Screenshot
+    `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 00-44-26.png`
+    captures the resulting unavailable-country dialog.
+  - Public/demo control **PASS after repair**: unavailable-country status does
+    not disable **Start exploring**. A demo selection entered `/game` without
+    trying to persist the browser coordinates into the seeded demo member. The
+    ordinary Logout path revoked the exact tracked backend demo session and
+    returned to `/entry`; the replay left the selected user's active-session
+    array empty.
+  - Two defects found by this branch were repaired and replayed against the
+    watcher-owned fresh bundle: silent location resolution no longer opens the
+    native browser prompt, and demo sessions no longer queue profile-coordinate
+    persistence. Logout now revokes the current tracked demo/Firebase backend
+    session before completing local sign-out.
+  - The versioned `cleanup-demo-control` oracle proved ownership and removed
+    only the checkpoint's 2 session-state documents, 3 accepted demo audits, 1
+    security outbox and 1 materialized notification. It also reversed the
+    exact Nova unread delta and notification-outbox pending delta (`31 -> 30`).
+    Final `status -> verify -> reset -> status` proved the original `56/0/0`
+    domain baseline, unchanged HU/GB partitions and `phase=not-staged`.
+  - Completing a real Firebase login and proving that its resolved country
+    partition survives the ordinary authentication/profile path is **PENDING**
+    until a verified deployment Firebase client configuration is active. This
+    substep is not simulated with demo authentication and prevents the matrix
+    row from being marked fully Done.
 
 ## Tournament cases
 

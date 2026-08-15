@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the English Part II review edition with the Part I book system."""
+"""Build the MyScoutee Part II editions with the shared Part I book system."""
 
 from __future__ import annotations
 
@@ -247,7 +247,7 @@ def build_document(source: Path) -> str:
         '<div class="chapter-lead">', 0, chapter_15_heading
     )
     chapter_16_id = (
-        "16-a-h-z-mint-emberi-arch-vum"
+        "16-a-h-z-eml-kezete"
         if is_hungarian
         else "16-the-house-as-a-human-archive"
     )

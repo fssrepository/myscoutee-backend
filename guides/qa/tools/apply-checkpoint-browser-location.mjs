@@ -116,6 +116,9 @@ async function stopExistingHolder(activeSession, activePort) {
   if (!Number.isInteger(holderPid) || holderPid <= 1) {
     return;
   }
+  if (!processExists(holderPid)) {
+    return;
+  }
   const commandLine = await readFile(`/proc/${holderPid}/cmdline`, 'utf8').catch(() => '');
   if (!commandLine.includes(holderPath) || !commandLine.includes(`${activePort}`)) {
     throw new Error(`Refusing to stop unowned geolocation holder PID ${holderPid}.`);

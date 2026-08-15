@@ -1,0 +1,61 @@
+The head of the Central Investigative Chief Prosecutor's Office submitted his resignation on 8 June and expressly cited professional disagreements over the convoy case. The Prime Minister later ordered reviews of the authorities and services involved. The tax authority confirmed that two senior investigative leaders lost their appointments on 14 July, while declining to state that the convoy caused those personnel decisions.
+
+The Prosecutor General submitted his resignation on 22 July and requested that his mandate end on 25 August. His formal explanation invoked the interests of the prosecution service. Reporting and political statements placed the convoy inside the pressure surrounding his departure, but that context is not treated as a proved exclusive cause.
+
+Source links are listed in the accompanying print edition.
+
+The Venice Commission.
+
+The Presidential Palace publication supports the President's questions. The Founder's 5 June email survives in the private source package. Its Gmail export records the 14:18 message to the Commission and the 15:36 forwarding of the same text to the Presidential Palace and the Prime Minister's press office. The Commission's official notice supports the 2 July meetings. No reviewed source proves that the Founder's email caused the Commission's later public posture.
+
+Source links are listed in the accompanying print edition.
+
+Foreign-currency loans and migration.
+
+The London housemate is an anonymized first-person memory. European and Hungarian high-court material supports the bounded point that legal consequences of foreign-currency-loan contracts remained under active interpretation in 2025. Migration sources support large outward movement and data limitations, not one universal cause.
+
+Source links are listed in the accompanying print edition.
+
+AI-assisted work and the Navier–Stokes exchange.
+
+The closing phrase strive, and trust is a concise English rendering of the final imperative in Imre Madách's nineteenth-century dramatic poem The Tragedy of Man. The narrative applies it to continued effort and the right to try again, not to unquestioning trust in an institution.
+
+The public repositories show the constructive work discussed in the chapter; they are evidence of scope and method, not proof of any legal or clinical claim.
+
+MyScoutee product and production repository.
+
+Civic Access public-service prototype.
+
+The creative-work chapter is supported by the versioned research repository, the experiment note and the 6 August 2026 email in which a professor working in this field said he had read two supplied documents and the proof plan, found the ideas intriguing and asked which exact mathematical statements were being tested. The Founder's reply made the bridge explicit: published variational searches for extreme-flow states and tests of inequality sharpness inspired an AI-maintained laboratory that attacks proposed lemmas with counterexample searches before promoting them into human proof obligations.
+
+The proposed cutoff-uniform inequality, the internally labelled PNT-12 target, rejected candidates and partial computational result remain unverified working research. The book does not claim a proof of regularity, finite-time blow-up or a solution of the Clay problem. The episode demonstrates intellectual work, falsification discipline and human–AI handoff under legal uncertainty, not mathematical success by association.
+
+Public research repository and proof plan.
+
+Research on extreme vortex states and enstrophy growth.
+
+Research on numerical tests of inequality sharpness.
+
+Official Clay Navier–Stokes problem description.
+
+The broader distinction between useful trial-and-error and unbounded risk is also visible in AI research. AlphaGo Zero learned through self-play, while AlphaProof used generated proof experience and formal verification. Research on safe exploration asks the complementary question: how can a learning system gain experience without making consequential harm the price of every lesson? These examples support the chapter's design principle; they do not imply that a deployed language model possesses human experience or consciousness.
+
+Silver et al., Mastering the game of Go without human knowledge.
+
+Hubert et al., Olympiad-level formal mathematical reasoning with reinforcement learning.
+
+García and Fernández, Safe Exploration of State and Action Spaces in Reinforcement Learning.
+
+Part III boundary.
+
+This edition does not invent the ending. Part III will own:
+
+the final procedural result and any remedy or consequence;
+
+the completed presidential and institutional transition;
+
+the verified meaning of the new justice-administration correspondence;
+
+the long-term effect on the Founder's work, home, citizenship and health;
+
+whether MyScoutee reaches real communities and what those communities teach the product.

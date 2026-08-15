@@ -67,6 +67,22 @@ is expressed once in the derived tags (`1.0.0-base`, `1.0.0-dev`, and
 
 MongoDB is pinned to `mongo:8.0.4` for the packaged and dev stacks. Run `smoke-mongo-compatibility.sh` against a running stack to confirm the configured image, running Mongo version, feature compatibility version, backend health, landing content query, and a temporary app-user CRUD round trip all work on Mongo 8.0.
 
+Every package configure marks the disposable Explore state for a clean rebuild.
+On the next service start, `reset-demo-state.sh` accepts only the literal
+`demo_db` target, rejects a production database with the same name, rebuilds
+the database from the package's current demo seed and refreshes only the
+package-owned `images/demo-assets`, `images/demo-events` and
+`images/demo-profiles` MinIO prefixes. The retry marker is removed only after
+the Mongo import, MinIO seed and demo oracle succeed. This applies to fresh
+install, upgrade and same-version reinstall, so an older Explore database
+cannot retain obsolete or external media URLs.
+
+Production is deliberately excluded from that lifecycle. Package installation
+preserves the production database, operator state and user uploads; only an
+explicit versioned migration or a documented allow-listed system-seed sync may
+change them. The demo reset helper is not a general database-drop command and
+never clears the complete MinIO volume.
+
 Install the local deb with `apt`, not `dpkg`, so Docker Engine and Docker Compose dependencies are installed before MyScoutee is configured:
 
 ```bash

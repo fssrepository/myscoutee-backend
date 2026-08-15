@@ -41,11 +41,19 @@ try {
     }
   });
 
-  await browserConnection.send('Browser.setPermission', {
-    origin,
-    permission: { name: 'geolocation' },
-    setting: permission
-  });
+  if (permission === 'prompt') {
+    // A synthetic `setPermission: prompt` can report the requested state while
+    // still short-circuiting the browser's native permission UI. Reset the
+    // isolated QA profile instead so the next user-initiated Geolocation API
+    // call exercises Chrome's real prompt and persists the user's choice.
+    await browserConnection.send('Browser.resetPermissions');
+  } else {
+    await browserConnection.send('Browser.setPermission', {
+      origin,
+      permission: { name: 'geolocation' },
+      setting: permission
+    });
+  }
   await pageConnection.send('Page.enable');
   await pageConnection.send('Emulation.setGeolocationOverride', geolocation);
   await pageConnection.send('Page.navigate', { url: targetUrl });
@@ -55,14 +63,20 @@ try {
     port,
     targetUrl,
     permission,
+    permissionMode: permission === 'prompt' ? 'browser-reset' : 'cdp-override',
     geolocation,
     readyAtIso: new Date().toISOString()
   }, null, 2)}\n`);
 
+  // Node's built-in WebSocket alone is not guaranteed to retain an active
+  // event-loop reference. Keep this deliberately tiny holder alive until the
+  // launcher closes the managed Chrome or sends SIGTERM.
+  const lifecycleGuard = setInterval(() => undefined, 60000);
   process.on('SIGTERM', close);
   process.on('SIGINT', close);
 
   function close() {
+    clearInterval(lifecycleGuard);
     pageConnection.close();
     browserConnection.close();
   }

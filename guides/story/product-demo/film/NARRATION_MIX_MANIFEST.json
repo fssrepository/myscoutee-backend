@@ -1,5 +1,5 @@
 {
-  "status": "review-render",
+  "status": "branded-review-render",
   "updatedOn": "2026-08-14",
   "picture": {
     "rawSourceDurationSeconds": 56.0,
@@ -70,15 +70,30 @@
       "loudnessRangeTargetLu": 11
     }
   },
+  "branding": {
+    "inputNarratedMaster": "/home/raxim/Downloads/video/the_product.mp4",
+    "inputNarratedMasterSha256": "5622443986b292e35bb69f6dd58f76ca277109da0ed78d7b86472416a64d48ab",
+    "openingOverlay": "assets/frames/PR_OPENING_OVERLAY.png",
+    "openingFullOpacityUntilSeconds": 1.4,
+    "openingFadeEndsSeconds": 2,
+    "closingOverlay": "assets/frames/PR_CLOSING_OVERLAY.png",
+    "closingFadeStartsSeconds": 51.75,
+    "closingFullOpacityFromSeconds": 52.75,
+    "videoHandling": "single re-encode at the narrated master bitrate target",
+    "audioHandling": "stream-copy"
+  },
   "delivery": {
-    "path": "/home/raxim/Downloads/video/the_product.mp4",
-    "sha256": "5622443986b292e35bb69f6dd58f76ca277109da0ed78d7b86472416a64d48ab",
+    "path": "/home/raxim/Downloads/video/the_product_branded.mp4",
+    "sha256": "c8e8168fe70acee0e62d52751e066b811cc8b6386b156f5592c34c766b4ae315",
     "durationSeconds": 54.25,
     "frameCount": 1302,
+    "video": "H.264 High 3.2, 720x1280, 24 fps",
+    "videoBitrate": 7918589,
     "audio": "AAC stereo 48 kHz 320 kbit/s",
     "measuredIntegratedLufs": -14.1,
     "measuredTruePeakDbtp": -1.2,
-    "videoPacketSha256": "bcb1e49279618d4dd2c19a3eece74af60bb35949c005ac329ce3b48da51404cc",
-    "videoPacketSha256MatchesPictureLock": true
+    "videoPacketSha256": "eef111f3b4b2f4324d9d2b6bfd36bd34cd8170a7d53e41f69ebcac2af2bf9c9d",
+    "audioPacketSha256": "4deb91ebb66e498df978937c26c410f651d9ff5c43d1596698bca2aa73c6a79f",
+    "audioPacketSha256MatchesNarratedMaster": true
   }
 }

@@ -36,6 +36,8 @@ done
 
 bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
+bash "${SCRIPT_DIR}/demo-reset-test.sh" >/dev/null \
+  || fail "demo reset lifecycle or production boundary regression"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
   || fail "production i18n runtime seed synchronization regression"
 bash "${REPO_ROOT}/server/docker/images/mongodb-sync/dev/mongodb-seed-sync-test.sh" >/dev/null \
@@ -85,6 +87,7 @@ assert_admin_job_seed_defaults() {
       "event-checkout-basket-purge",
       "notification-outbox",
       "affinity-recompute",
+      "affinity-graph-layout",
       "scheduled-messages",
       "account-purge"
     ] as $expected
@@ -312,9 +315,16 @@ jq -e \
 PACKAGED_MONGO="${EXTRACTED}/opt/myscoutee/server/docker/conf/mongodb"
 PACKAGED_PRODUCTION_SEED="${PACKAGED_MONGO}/myscoutee_db"
 PACKAGED_DEMO_SEED="${PACKAGED_MONGO}/demo_db"
+PACKAGED_DEMO_RESET="${EXTRACTED}/opt/myscoutee/packaging/scripts/reset-demo-state.sh"
 PACKAGED_I18N_SYNC="${EXTRACTED}/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh"
+[[ -x "${PACKAGED_DEMO_RESET}" && ! -L "${PACKAGED_DEMO_RESET}" ]] \
+  || fail "packaged demo reset helper is missing or not executable"
 [[ -x "${PACKAGED_I18N_SYNC}" && ! -L "${PACKAGED_I18N_SYNC}" ]] \
   || fail "production i18n runtime seed synchronizer is missing or not executable"
+grep -Fxq \
+  'ExecStartPre=/opt/myscoutee/packaging/scripts/reset-demo-state.sh' \
+  "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
+  || fail "systemd does not reset disposable Explore state before start"
 grep -Fxq \
   'ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
   "${EXTRACTED}/lib/systemd/system/myscoutee.service" \

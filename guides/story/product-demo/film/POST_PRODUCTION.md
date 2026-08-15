@@ -15,12 +15,12 @@ script reads the accepted 48-second master render's delivered video and audio
 bitrates and uses those exact values as its output targets; it must not replace
 them with a lower CRF-based encode.
 
-At 00:00 composite `assets/frames/PR_OPENING_BRANDED.png` as the exact first
-appearance, or rebuild its deterministic layers over S01: unmodified
-`heart.png`, editable `yScoutee`, and `MATCH ≠ MEETING`. Fade the overlay only;
-do not ask Flow to animate the logo. At approximately 00:51.75 fade in the same
-mark and `DESIGNED FOR THE MEETING.` over S07, converging on
-`PR_CLOSING_BRANDED.png` at 00:54.250.
+At 00:00 composite `assets/frames/PR_OPENING_OVERLAY.png` over the moving S01:
+unmodified `heart.png`, editable `yScoutee`, and `MATCH ≠ MEETING`. Hold through
+00:01.400 and fade only the overlay by 00:02.000; do not ask Flow to animate the
+logo. At 00:51.750 fade in `PR_CLOSING_OVERLAY.png` over the moving S07, reaching
+the same mark and `DESIGNED FOR THE MEETING.` at 00:52.750 and holding through
+00:54.250. The branded reference PNGs document the two full-opacity endpoints.
 
 Keep text inside the central mobile-safe area. The platform UI can cover the
 right edge and lower portion of a 9:16 video, so captions should sit above the
@@ -43,11 +43,10 @@ closing slogan and never cover faces or event-resource icons.
 
 ## Caption timing
 
-The committed SRT/VTT files target the expected `00:54.250` picture lock. After
-the final voice recording, micro-retime them against the waveform, keep at most two lines, and
-preserve the correctly named Facebook copies. Do not burn captions into the
-clean master; create a burned-caption social derivative only if a platform test
-shows it is necessary.
+The committed SRT files target the final `00:54.250` narrated master. One
+correctly named file per language is shared by Facebook and YouTube. Keep at
+most two lines and do not burn captions into the clean master; create a
+burned-caption social derivative only if a platform test shows it is necessary.
 
 ## Git boundary
 

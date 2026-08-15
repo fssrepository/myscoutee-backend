@@ -12,6 +12,8 @@
 | people, transport, place, supplies | `PR_CP06.png` | yes, S05 last / S06 first |
 | real shared meeting | `PR_CP07.png` | yes, S06 last / S07 first |
 | warmer next invitation | `PR_CP08.png` | yes, S07 last |
+| transparent opening brand layer | `PR_OPENING_OVERLAY.png` | no, post composite |
+| transparent closing brand layer | `PR_CLOSING_OVERLAY.png` | no, post composite |
 | branded first-frame reference | `PR_OPENING_BRANDED.png` | no, post composite |
 | branded last-frame reference | `PR_CLOSING_BRANDED.png` | no, post composite |
 
@@ -21,3 +23,7 @@ The exact brand source is
 `PR_OPENING_BRANDED` and `PR_CLOSING_BRANDED` use the untouched heart asset with
 editable rasterized `yScoutee`; they document the first/last appearance but
 never enter Flow.
+
+The matching transparent `PR_OPENING_OVERLAY` and `PR_CLOSING_OVERLAY` layers
+carry only the deterministic gradient, mark and text. They are composited over
+the moving accepted footage by `scripts/brand_the_product.sh`.

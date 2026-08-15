@@ -530,6 +530,14 @@ fi
 verify_packaged_image_manifest
 ensure_service_images
 
+# Every package configuration invalidates the disposable Explore dataset. The
+# next service start consumes this marker and cleanly rebuilds demo_db plus the
+# package-owned demo MinIO prefixes. Production data and user uploads are never
+# reset by this lifecycle.
+printf '%s\n' "$(sed -n '1p' /opt/myscoutee/packaging/VERSION)" \
+  > /var/lib/myscoutee/demo-reset-required
+chmod 0600 /var/lib/myscoutee/demo-reset-required
+
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload || true
   if systemctl is-active --quiet myscoutee.service; then

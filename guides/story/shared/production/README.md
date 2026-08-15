@@ -9,6 +9,9 @@
 - [`audio/NARRATION_AND_SCORE_LOCK.md`](audio/NARRATION_AND_SCORE_LOCK.md):
   approved Jon reference, credit-safe speech workflow, continuous score and
   caption rules for both films.
+- [`audio/AUDIOBOOK_PRODUCTION.md`](audio/AUDIOBOOK_PRODUCTION.md): complete
+  Parts I–II spoken-text packages, audiobook-specific Jon lock, credit plan and
+  static-cover MP4 assembly boundary.
 
 Shot manifests and detailed checklists stay inside the owning part. The shared
 handoff owns only the cross-part phase boundary and routes back to those files.

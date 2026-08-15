@@ -33,11 +33,12 @@ class FirebaseFilterOperatorTest {
         FirebaseService firebaseService = mock(FirebaseService.class);
         ConfigProperties properties = new ConfigProperties();
         properties.setFirebaseEnabled(true);
+        UserLoginSessionService sessionService = mock(UserLoginSessionService.class);
         FirebaseFilter filter = new FirebaseFilter(
                 firebaseService,
                 properties,
                 mock(FirebaseTokenVerifier.class),
-                mock(UserLoginSessionService.class));
+                sessionService);
         MockHttpServletRequest request = demoOperatorRequest();
         FilterChain chain = mock(FilterChain.class);
 
@@ -45,9 +46,38 @@ class FirebaseFilterOperatorTest {
 
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(firebaseService, never()).loadDemoOperatorById(org.mockito.ArgumentMatchers.any());
+        verify(sessionService, never()).isCurrentUserEnrolled();
         verify(chain).doFilter(
                 org.mockito.ArgumentMatchers.eq(request),
                 org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void anonymousPublicHealthRequestDoesNotRequireAnApplicationSession()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(true);
+        UserLoginSessionService sessionService = mock(UserLoginSessionService.class);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                mock(FirebaseTokenVerifier.class),
+                sessionService);
+        MockHttpServletRequest request =
+                new MockHttpServletRequest("GET", "/health");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        FilterChain chain = mock(FilterChain.class);
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(SecurityContextHolder.getContext().getAuthentication())
+                .isNull();
+        verify(sessionService, never()).isCurrentUserEnrolled();
+        verify(sessionService, never()).isCurrentSessionActive(
+                org.mockito.ArgumentMatchers.any());
+        verify(chain).doFilter(request, response);
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
+import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
@@ -167,7 +168,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws IOException, ServletException {
-        if (isSessionLoginRequest(request)
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof FirebasePrincipal)
+                || isSessionLoginRequest(request)
                 || userLoginSessionService == null
                 || !userLoginSessionService.isCurrentUserEnrolled()) {
             filterChain.doFilter(request, response);
