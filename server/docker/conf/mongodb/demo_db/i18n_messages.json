@@ -12306,6 +12306,12 @@
     "value": "Maximum capacity"
   },
   {
+    "_id": "i18n-message-en-event-subevents-stage-groups-capacity-summary",
+    "key": "event.subevents.stage.groups.capacity.summary",
+    "lang": "en",
+    "value": "Groups: {groups} × {min}–{max} members"
+  },
+  {
     "_id": "i18n-message-en-event-checkout-payment-summary",
     "key": "event.checkout.payment.summary",
     "lang": "en",
@@ -30808,6 +30814,12 @@
     "key": "event.subevents.group.capacity.max",
     "lang": "hu",
     "value": "Maximum létszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-stage-groups-capacity-summary",
+    "key": "event.subevents.stage.groups.capacity.summary",
+    "lang": "hu",
+    "value": "Csoportok: {groups} × {min}–{max} fő"
   },
   {
     "_id": "i18n-message-hu-event-checkout-payment-summary",

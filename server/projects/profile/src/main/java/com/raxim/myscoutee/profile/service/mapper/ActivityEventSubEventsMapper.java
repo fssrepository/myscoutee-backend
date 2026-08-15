@@ -32,6 +32,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinition
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
+import com.raxim.myscoutee.profile.service.TournamentGroupCountPolicy;
 
 @Component
 public class ActivityEventSubEventsMapper {
@@ -1256,20 +1257,11 @@ public class ActivityEventSubEventsMapper {
         if (item == null) {
             return 0;
         }
-        int groupMin = nonNegativeInteger(item.tournamentGroupCapacityMin());
-        int groupMax = Math.max(groupMin, nonNegativeInteger(item.tournamentGroupCapacityMax()));
-        if (groupMin > 0 || groupMax > 0) {
-            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-            int capacityMax = incomingCapacityMax > 0 ? incomingCapacityMax : nonNegativeInteger(item.capacityMax());
-            int groupsNeededForMaximum = capacityMax > 0
-                    ? (int) Math.ceil((double) capacityMax / divisor)
-                    : 0;
-            int groupsAllowedByMinimum = groupMin > 0
-                    ? Math.max(1, capacityMax / groupMin)
-                    : groupsNeededForMaximum;
-            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
-        }
-        return 0;
+        return TournamentGroupCountPolicy.countForIncoming(
+                item.tournamentGroupCapacityMin(),
+                item.tournamentGroupCapacityMax(),
+                incomingCapacityMax,
+                item.capacityMax());
     }
 
     private ResourceMetric resourceMetric(

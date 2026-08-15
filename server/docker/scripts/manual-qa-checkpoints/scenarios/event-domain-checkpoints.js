@@ -1130,7 +1130,6 @@
         optional: false,
         capacityMin: 2,
         capacityMax: 4,
-        tournamentGroupCount: 2,
         tournamentGroupCapacityMin: 1,
         tournamentGroupCapacityMax: 2,
         tournamentLeaderboardType: "Score",
@@ -1150,7 +1149,6 @@
         optional: false,
         capacityMin: 1,
         capacityMax: 2,
-        tournamentGroupCount: 1,
         tournamentGroupCapacityMin: 1,
         tournamentGroupCapacityMax: 2,
         tournamentLeaderboardType: "Score",
@@ -1916,11 +1914,11 @@
         closed: item.closed === true,
         overrideDate: item.overrideDate
       })),
-      subEventDefinitions: (event.subEventDefinitions || []).map(item => ({
+      subEventDefinitions: (event.subEventDefinitions || []).map((item, index) => ({
         id: Q.text(item.id),
         name: Q.text(item.name),
         stageStatus: Q.text(item.stageStatus),
-        tournamentGroupCount: item.tournamentGroupCount,
+        expectedGeneratedGroupsCount: expectedTournamentGroupCount(event, index),
         tournamentGroupCapacityMin: item.tournamentGroupCapacityMin,
         tournamentGroupCapacityMax: item.tournamentGroupCapacityMax,
         tournamentAdvancePerGroup: item.tournamentAdvancePerGroup
@@ -1928,6 +1926,36 @@
       startAtIso: event.startAtIso,
       endAtIso: event.endAtIso
     }));
+  }
+
+  function expectedTournamentGroupCount(event, targetIndex) {
+    const definitions = event.subEventDefinitions || [];
+    let incomingCapacityMax = Math.max(0, Number(event.capacityMax || event.capacityTotal || 0));
+    for (let index = 0; index < definitions.length && index <= targetIndex; index += 1) {
+      const stage = definitions[index] || {};
+      const groupCapacityMin = Math.max(0, Number(stage.tournamentGroupCapacityMin || 0));
+      const groupCapacityMax = Math.max(groupCapacityMin, Number(stage.tournamentGroupCapacityMax || groupCapacityMin));
+      const stageCapacityMax = Math.max(0, Number(stage.capacityMax || 0));
+      const effectiveCapacityMax = incomingCapacityMax > 0 && stageCapacityMax > 0
+        ? Math.min(incomingCapacityMax, stageCapacityMax)
+        : Math.max(incomingCapacityMax, stageCapacityMax);
+      const divisor = Math.max(1, groupCapacityMax > 0 ? groupCapacityMax : groupCapacityMin);
+      const groupsNeededForMaximum = effectiveCapacityMax > 0
+        ? Math.ceil(effectiveCapacityMax / divisor)
+        : 0;
+      const groupsAllowedByMinimum = groupCapacityMin > 0
+        ? Math.max(1, Math.floor(effectiveCapacityMax / groupCapacityMin))
+        : groupsNeededForMaximum;
+      const groupCount = groupCapacityMin > 0 || groupCapacityMax > 0
+        ? Math.min(groupsNeededForMaximum, groupsAllowedByMinimum)
+        : 0;
+      if (index === targetIndex) return groupCount;
+      const advancePerGroup = Math.max(0, Number(stage.tournamentAdvancePerGroup || 0));
+      incomingCapacityMax = groupCount > 0 && advancePerGroup > 0
+        ? groupCount * advancePerGroup
+        : 0;
+    }
+    return 0;
   }
 
   function oracle(state) {

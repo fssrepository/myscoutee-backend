@@ -962,7 +962,7 @@ public class ActivitiesEventLeaderboardService {
         if (stages.isEmpty()) {
             stages = List.of(targetStage);
         }
-        int incomingCapacityMax = Math.max(safeCount(event == null ? null : event.getCapacityMax()), safeCount(targetStage.capacityMax()));
+        int incomingCapacityMax = safeCount(event == null ? null : event.getCapacityMax());
         for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
             if (stage == null) {
                 continue;
@@ -983,20 +983,11 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return 0;
         }
-        int groupMin = Math.max(0, subEvent.tournamentGroupCapacityMin() == null ? 0 : subEvent.tournamentGroupCapacityMin());
-        int groupMax = Math.max(groupMin, subEvent.tournamentGroupCapacityMax() == null ? groupMin : subEvent.tournamentGroupCapacityMax());
-        if (groupMin > 0 || groupMax > 0) {
-            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-            int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(subEvent.capacityMax()));
-            int groupsNeededForMaximum = capacityMax > 0
-                    ? (int) Math.ceil((double) capacityMax / divisor)
-                    : 0;
-            int groupsAllowedByMinimum = groupMin > 0
-                    ? Math.max(1, capacityMax / groupMin)
-                    : groupsNeededForMaximum;
-            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
-        }
-        return 0;
+        return TournamentGroupCountPolicy.countForIncoming(
+                subEvent.tournamentGroupCapacityMin(),
+                subEvent.tournamentGroupCapacityMax(),
+                incomingCapacityMax,
+                subEvent.capacityMax());
     }
 
     private boolean hasTournamentGroupCapacityRule(SubEventItem subEvent) {
