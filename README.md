@@ -18,6 +18,20 @@ files are available from [GitHub Releases](https://github.com/fssrepository/mysc
 These builds are intended for installation and integration testing while the
 remaining qualification work is completed.
 
+## Manual QA status
+
+The current qualification ledger is available as an
+[XLSX QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx).
+
+As of 2026-08-15:
+
+- **Core:** 54 passed, 79 remaining (133 total)
+- **External integrations:** 0 passed, 56 remaining (56 total)
+
+The complete matrix contains 189 cases. The active core checkpoint is
+`TOURNAMENT-002`; its saved transaction is intact while the generated-room
+Active Events list repair awaits its guarded data migration and UI replay.
+
 ### Official manuals
 
 | Manual | Document version | Applies to | PDF |

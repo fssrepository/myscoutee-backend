@@ -453,6 +453,7 @@ class EventSchedulerTest {
             assertThat(room1.getSourceId()).isEqualTo(room1Id);
             assertThat(room1.getTitle()).isEqualTo("Random Room R1");
             assertThat(room1.getEventType()).isEqualTo("random-room");
+            assertThat(room1.getCreatorUserId()).isNull();
             assertThat(room1.getCreatorName()).isEqualTo("MyScoutee System");
             assertThat(room1.getImageUrl()).isEqualTo("/media/public?key=images/system/random-room-default.png");
         }, room2 -> {
@@ -625,6 +626,9 @@ class EventSchedulerTest {
             assertThat(room.getSubtitle()).isEqualTo("Tournament group for Tournament stage start.");
             assertThat(room.getEventType()).isEqualTo("tournament-room");
             assertThat(room.getMode()).isEqualTo("Tournament");
+            assertThat(room.getOwnerUserId()).isNull();
+            assertThat(room.getCreatorUserId()).isNull();
+            assertThat(room.getOrganizerUserId()).isEqualTo("casey");
             assertThat(room.getAvatar())
                     .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
             assertThat(room.getImageUrl())
@@ -635,6 +639,17 @@ class EventSchedulerTest {
                 eq("Welcome to your tournament group for Tournament stage start. "
                         + "Use this chat to coordinate with your group and follow stage updates."),
                 eq(ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE));
+        ArgumentCaptor<NotificationIntent> tournamentIntentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(2)).enqueue(tournamentIntentCaptor.capture());
+        assertThat(tournamentIntentCaptor.getAllValues()).allSatisfy(intent -> {
+            assertThat(intent.type()).isEqualTo(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+            assertThat(intent.title()).matches("Tournament Group R[12] is ready");
+            assertThat(intent.body()).isEqualTo("Your tournament group for Tournament stage start is ready.");
+            assertThat(intent.iconUrl())
+                    .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
+            assertThat(intent.payload()).containsEntry("eventScope", "tournament-room");
+            assertThat(intent.payload().get("eventTitle")).startsWith("Tournament Group R");
+        });
     }
 
     @Test

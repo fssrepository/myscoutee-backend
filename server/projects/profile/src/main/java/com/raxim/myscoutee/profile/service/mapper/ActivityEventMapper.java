@@ -70,6 +70,7 @@ public class ActivityEventMapper {
                 safeText(record.getCreatorInitials()),
                 resolveCreatorAvatarUrl(record, context),
                 safeText(record.getCreatorCity()),
+                resolveOrganizerUserId(record),
                 safeText(record.getVisibility()),
                 StringUtils.hasText(record.getStartAtIso()) ? record.getStartAtIso().trim() : null,
                 StringUtils.hasText(record.getEndAtIso()) ? record.getEndAtIso().trim() : null,
@@ -130,11 +131,18 @@ public class ActivityEventMapper {
         if (record == null || context == null) {
             return "";
         }
-        String creatorUserId = normalizeId(record.getCreatorUserId());
-        if (!StringUtils.hasText(creatorUserId)) {
+        String organizerUserId = resolveOrganizerUserId(record);
+        if (!StringUtils.hasText(organizerUserId)) {
             return "";
         }
-        return safeText(context.creatorAvatarUrlsByUserId().get(creatorUserId));
+        return safeText(context.creatorAvatarUrlsByUserId().get(organizerUserId));
+    }
+
+    private String resolveOrganizerUserId(ActivityEvent record) {
+        String organizerUserId = normalizeId(record == null ? null : record.getOrganizerUserId());
+        return StringUtils.hasText(organizerUserId)
+                ? organizerUserId
+                : normalizeId(record == null ? null : record.getCreatorUserId());
     }
 
     private int aggregateRuntimeActivity(ActivityEvent record) {

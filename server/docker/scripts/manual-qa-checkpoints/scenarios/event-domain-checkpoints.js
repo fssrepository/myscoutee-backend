@@ -2140,6 +2140,18 @@
           $or: [{ sourceId: { $in: eventChatArtifactIds } }, { "payload.chatId": { $in: eventChatArtifactIds } }]
         }).toArray()
       : [];
+    const generatedRoomNotificationOutbox = eventChatArtifactIds.length > 0
+      ? Q.collection("notificationOutbox").find({
+          notificationType: "event-random-groups",
+          $or: [{ entityId: { $in: eventChatArtifactIds } }, { "payload.eventId": { $in: eventChatArtifactIds } }]
+        }).sort({ entityId: 1, _id: 1 }).toArray()
+      : [];
+    const generatedRoomNotifications = eventChatArtifactIds.length > 0
+      ? Q.collection("userNotifications").find({
+          kind: "event-random-groups",
+          $or: [{ sourceId: { $in: eventChatArtifactIds } }, { "payload.eventId": { $in: eventChatArtifactIds } }]
+        }).sort({ sourceId: 1, recipientUserId: 1, _id: 1 }).toArray()
+      : [];
     const invitationAcceptanceOutbox = Q.collection("notificationOutbox").find({
       notificationType: "event-invitation-accepted",
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
@@ -2239,6 +2251,10 @@
           identitySource: "stable-random-room-id",
           title: Q.text(room.title),
           subtitle: Q.text(room.subtitle),
+          creatorUserId: Q.text(room.creatorUserId),
+          organizerUserId: Q.text(room.organizerUserId),
+          creatorName: Q.text(room.creatorName),
+          creatorInitials: Q.text(room.creatorInitials),
           avatar: Q.text(room.avatar),
           imageUrl: Q.text(room.imageUrl),
           status: Q.text(room.status),
@@ -2361,6 +2377,28 @@
         messageId: Q.text(item.payload && item.payload.messageId),
         title: Q.text(item.title),
         message: Q.text(item.message)
+      })),
+      generatedRoomNotificationOutbox: generatedRoomNotificationOutbox.map(item => ({
+        id: Q.text(item._id),
+        eventId: Q.text(item.entityId || item.payload && item.payload.eventId),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        title: Q.text(item.title),
+        body: Q.text(item.body),
+        eventScope: Q.text(item.payload && item.payload.eventScope),
+        eventTitle: Q.text(item.payload && item.payload.eventTitle),
+        iconUrl: Q.text(item.iconUrl || item.payload && item.payload.icon),
+        status: Q.text(item.status)
+      })),
+      generatedRoomNotifications: generatedRoomNotifications.map(item => ({
+        id: Q.text(item._id),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        recipientUserId: Q.text(item.recipientUserId),
+        title: Q.text(item.title),
+        message: Q.text(item.message),
+        eventScope: Q.text(item.payload && item.payload.eventScope),
+        eventTitle: Q.text(item.payload && item.payload.eventTitle),
+        iconUrl: Q.text(item.payload && item.payload.icon),
+        readAtIso: Q.text(item.readAtIso)
       })),
       userActivityCounters: checkpointId.startsWith("TOURNAMENT-")
         ? [hostUserId, participantUserId, thirdUserId].map(userId => {
@@ -3296,6 +3334,252 @@
         startReplayed: false
       },
       next: "Reload Casey once, reopen Activities -> Chats -> All, and verify Tournament Group R1 with the trophy avatar and tournament-specific welcome text."
+    });
+  }
+
+  function repairTournamentRoomNotifications() {
+    if (checkpointId !== "TOURNAMENT-002") {
+      Q.fail("repair-tournament-room-notifications is restricted to TOURNAMENT-002.");
+    }
+    const state = requireMatchingState();
+    if (!state.fixtureRepairs || !state.fixtureRepairs.tournamentRoomPresentation) {
+      Q.fail("repair the TOURNAMENT-002 tournament-room presentation before its notifications.");
+    }
+    if (state.fixtureRepairs.tournamentRoomNotifications) {
+      Q.fail("the TOURNAMENT-002 tournament-room notifications have already been repaired.");
+    }
+
+    const parentEvent = Q.collection("events").findOne(manualEventSelector());
+    const rooms = Q.collection("events")
+      .find(generatedRandomRoomSelector())
+      .sort({ sourceId: 1, _id: 1 })
+      .toArray();
+    if (!parentEvent || Q.text(parentEvent.title) !== "QA TOURNAMENT-002" || rooms.length !== 2) {
+      Q.fail("TOURNAMENT-002 requires its exact parent and two generated rooms before notification repair.");
+    }
+    if (!rooms.every((room, index) => (
+      Q.text(room.title) === `Tournament Group R${index + 1}`
+      && Q.text(room.eventType) === "tournament-room"
+      && Number(room.acceptedMembers || 0) === (index === 0 ? 2 : 1)
+    ))) {
+      Q.fail("the repaired tournament rooms no longer match the proven TOURNAMENT-002 boundary.");
+    }
+
+    const roomIds = rooms.map(room => Q.text(room.sourceId || room._id));
+    const expectedRecipients = [
+      sortedUnique([hostUserId, participantUserId]),
+      sortedUnique([thirdUserId])
+    ];
+    const outbox = Q.collection("notificationOutbox").find({
+      notificationType: "event-random-groups",
+      entityId: { $in: roomIds }
+    }).sort({ entityId: 1, _id: 1 }).toArray();
+    const notifications = Q.collection("userNotifications").find({
+      kind: "event-random-groups",
+      sourceId: { $in: roomIds }
+    }).sort({ sourceId: 1, recipientUserId: 1, _id: 1 }).toArray();
+    if (outbox.length !== 2 || notifications.length !== 3) {
+      Q.fail("TOURNAMENT-002 requires exactly two room outbox records and three inbox notifications.");
+    }
+
+    rooms.forEach((room, index) => {
+      const roomId = roomIds[index];
+      const oldTitle = `Random Room R${index + 1} is ready`;
+      const oldEventTitle = `Random Room R${index + 1}`;
+      const oldBody = "Your system-generated room for QA TOURNAMENT-002 is ready.";
+      const matchingOutbox = outbox.filter(item => Q.text(item.entityId) === roomId);
+      const matchingNotifications = notifications.filter(item => Q.text(item.sourceId) === roomId);
+      if (matchingOutbox.length !== 1
+          || !sameJson(sortedUnique(matchingOutbox[0].recipientUserIds || []), expectedRecipients[index])
+          || Q.text(matchingOutbox[0].status) !== "pending"
+          || Q.text(matchingOutbox[0].title) !== oldTitle
+          || Q.text(matchingOutbox[0].body) !== oldBody
+          || Q.text(matchingOutbox[0].payload && matchingOutbox[0].payload.eventScope) !== "random-room"
+          || Q.text(matchingOutbox[0].payload && matchingOutbox[0].payload.eventTitle) !== oldEventTitle
+          || Q.text(matchingOutbox[0].iconUrl) !== "/media/public?key=images/system/random-room-default.png"
+          || matchingNotifications.length !== expectedRecipients[index].length
+          || !sameJson(sortedUnique(matchingNotifications.map(item => item.recipientUserId)), expectedRecipients[index])
+          || !matchingNotifications.every(item => (
+            Q.text(item.title) === oldTitle
+            && Q.text(item.message) === oldBody
+            && Q.text(item.payload && item.payload.eventScope) === "random-room"
+            && Q.text(item.payload && item.payload.eventTitle) === oldEventTitle
+            && Q.text(item.payload && item.payload.icon) === "/media/public?key=images/system/random-room-default.png"
+          ))) {
+        Q.fail(`TOURNAMENT-002 notification state for '${roomId}' no longer matches the exact repair boundary.`);
+      }
+    });
+
+    const repairedAtIso = Q.nowIso();
+    const imageUrl = "/media/public?key=images/system/tournament-room/v1/large.webp";
+    const repaired = [];
+    rooms.forEach((room, index) => {
+      const roomId = roomIds[index];
+      const title = `Tournament Group R${index + 1} is ready`;
+      const eventTitle = `Tournament Group R${index + 1}`;
+      const body = "Your tournament group for QA TOURNAMENT-002 is ready.";
+      const fields = {
+        title,
+        body,
+        iconUrl: imageUrl,
+        "payload.title": title,
+        "payload.body": body,
+        "payload.eventScope": "tournament-room",
+        "payload.eventTitle": eventTitle,
+        "payload.icon": imageUrl,
+        updatedDate: repairedAtIso,
+        updatedUser: Q.ACTOR
+      };
+      const outboxUpdate = Q.collection("notificationOutbox").updateOne({
+        notificationType: "event-random-groups",
+        entityId: roomId,
+        status: "pending"
+      }, { $set: fields });
+      const notificationUpdate = Q.collection("userNotifications").updateMany({
+        kind: "event-random-groups",
+        sourceId: roomId
+      }, { $set: {
+        title,
+        message: body,
+        "payload.title": title,
+        "payload.body": body,
+        "payload.eventScope": "tournament-room",
+        "payload.eventTitle": eventTitle,
+        "payload.icon": imageUrl
+      } });
+      if (outboxUpdate.matchedCount !== 1
+          || notificationUpdate.matchedCount !== expectedRecipients[index].length) {
+        Q.fail(`TOURNAMENT-002 notification repair was incomplete for '${roomId}'.`);
+      }
+      repaired.push({
+        roomId,
+        title,
+        outboxRecords: outboxUpdate.modifiedCount,
+        inboxRecords: notificationUpdate.modifiedCount,
+        retainedRecipients: expectedRecipients[index]
+      });
+    });
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      "fixtureRepairs.tournamentRoomNotifications": {
+        repairedAtIso,
+        imageUrl,
+        retainedRoomIds: roomIds,
+        retainedOutboxCount: 2,
+        retainedInboxCount: 3
+      }
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-notifications-repaired",
+      repairedAtIso,
+      imageUrl,
+      repaired,
+      retainedTransaction: {
+        roomIds,
+        outboxRecords: 2,
+        inboxRecords: 3,
+        recipients: 3,
+        unreadStateChanged: false,
+        activityCountersChanged: false,
+        startReplayed: false
+      },
+      next: "Close and reopen Notifications > New in Casey, then verify Tournament Group R1 is ready with the trophy icon and tournament-group body."
+    });
+  }
+
+  function repairTournamentRoomCardOwner() {
+    if (checkpointId !== "TOURNAMENT-002") {
+      Q.fail("repair-tournament-room-card-owner is restricted to TOURNAMENT-002.");
+    }
+    const state = requireMatchingState();
+    if (!state.fixtureRepairs || !state.fixtureRepairs.tournamentRoomNotifications) {
+      Q.fail("repair the TOURNAMENT-002 tournament-room notifications before its card owner.");
+    }
+    if (state.fixtureRepairs.tournamentRoomCardOrganizer) {
+      Q.fail("the TOURNAMENT-002 tournament-room card organizer has already been repaired.");
+    }
+
+    const parentEvent = Q.collection("events").findOne(manualEventSelector());
+    const rooms = Q.collection("events")
+      .find(generatedRandomRoomSelector())
+      .sort({ sourceId: 1, _id: 1 })
+      .toArray();
+    const creatorUserId = Q.text(parentEvent && parentEvent.creatorUserId);
+    if (!parentEvent
+        || Q.text(parentEvent.title) !== "QA TOURNAMENT-002"
+        || creatorUserId !== hostUserId
+        || rooms.length !== 2) {
+      Q.fail("TOURNAMENT-002 requires its exact parent owner and two generated rooms before card-owner repair.");
+    }
+    if (!state.fixtureRepairs.tournamentRoomCardOwner
+        || !rooms.every((room, index) => (
+      Q.text(room.title) === `Tournament Group R${index + 1}`
+      && Q.text(room.eventType) === "tournament-room"
+      && Q.text(room.creatorUserId) === creatorUserId
+      && !Q.text(room.organizerUserId)
+      && Q.text(room.creatorName) === Q.text(state.fixtureRepairs.tournamentRoomCardOwner.creatorName)
+      && !Q.text(room.ownerUserId)
+    ))) {
+      Q.fail("the tournament-room card-owner state no longer matches the exact organizer-migration boundary.");
+    }
+
+    const repairedAtIso = Q.nowIso();
+    const host = Q.user(hostUserId);
+    const creatorName = Q.text(parentEvent.creatorName) || Q.text(host && host.name);
+    const creatorInitials = Q.text(parentEvent.creatorInitials);
+    const creatorGender = Q.text(parentEvent.creatorGender);
+    const creatorCity = Q.text(parentEvent.creatorCity) || Q.text(host && host.city);
+    const roomIds = [];
+    rooms.forEach(room => {
+      const update = Q.collection("events").updateOne({ _id: room._id }, {
+        $set: {
+          organizerUserId: creatorUserId,
+          creatorName,
+          creatorInitials,
+          creatorGender,
+          creatorCity,
+          updatedDate: repairedAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: { creatorUserId: "" }
+      });
+      if (update.matchedCount !== 1) {
+        Q.fail(`TOURNAMENT-002 card-owner repair was incomplete for '${Q.text(room.sourceId)}'.`);
+      }
+      roomIds.push(Q.text(room.sourceId || room._id));
+    });
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      "fixtureRepairs.tournamentRoomCardOrganizer": {
+        repairedAtIso,
+        organizerUserId: creatorUserId,
+        creatorName,
+        retainedRoomIds: roomIds,
+        retainedOwnerUserId: ""
+      }
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-card-organizer-repaired",
+      repairedAtIso,
+      organizer: {
+        userId: creatorUserId,
+        name: creatorName,
+        initials: creatorInitials,
+        city: creatorCity
+      },
+      retainedTransaction: {
+        roomIds,
+        domainOwnerUserIds: rooms.map(room => Q.text(room.ownerUserId)),
+        roomImageUrl: "/media/public?key=images/system/tournament-room/v1/large.webp",
+        membershipsChanged: false,
+        activityCountersChanged: false,
+        startReplayed: false
+      },
+      next: "Reload Casey once, reopen Activities -> Events -> Active Events, and verify Casey remains a member while the clickable organizer avatar overlays the unchanged tournament trophy card image."
     });
   }
 
@@ -7004,6 +7288,8 @@
     case "arm-ticket-expiry": armTicketExpiry(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;
+    case "repair-tournament-room-notifications": repairTournamentRoomNotifications(); break;
+    case "repair-tournament-room-card-owner": repairTournamentRoomCardOwner(); break;
     case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
     case "prepare-ticket-invitee-response-retest": prepareTicketInviteeResponseRetest(); break;
     case "prepare-ticket-admin-approval-retest": prepareTicketAdminApprovalRetest(); break;

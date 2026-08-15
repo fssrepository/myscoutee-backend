@@ -4373,10 +4373,67 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Casey's Chats -> All list contained exactly one `Tournament Group R1` row
   with the trophy avatar and tournament-specific preview. The repaired bundle
   therefore consumes the repaired backend presentation without a second
-  Start, poll wait or projection workaround.
-- Remaining bounded UI replay: Casey opens that one chat and compares its
-  title/image and initial tournament welcome with the already-proven persisted
-  record. No message is sent; Nova and Riley remain untouched until requested.
+  Start, poll wait or projection workaround. The generated Active Events card
+  also shows `Tournament Group R1`, the tournament subtitle and trophy image.
+  Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-51.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-38.png`.
+- **Generated-room notification semantic FAIL, then guarded repair ready**:
+  Casey's notification list still showed `Random Room R1 is ready`, the
+  system-generated-room body and sparkle icon. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-34.png`.
+  This was a separately persisted outbox/inbox presentation boundary, not a
+  frontend projection issue. The production write path already emits the
+  tournament title/body, `eventScope=tournament-room` and trophy image for new
+  Starts; a dedicated versioned checkpoint repair updated only the current two
+  pending outbox and three materialized inbox records.
+- The expanded post-repair oracle proves exact R1 recipients Casey+Nova and R2
+  recipient Riley, two pending outbox and three unread inbox records with
+  tournament titles/body/scope/trophy. It also re-proves the unchanged three
+  memberships, three chat copies, chat unread total `3`, Activity counters and
+  the original single completed recompute. No Start, notification creation,
+  counter delta or read transition was replayed.
+- **Tournament card owner-avatar first implementation exposed an ownership
+  conflict**: the large card image
+  remains the managed tournament trophy, but the small overlay now uses the
+  card's existing creator-avatar configuration and standard clickable profile
+  action. No tournament-specific avatar component or custom click path was
+  added. The production materialization copies the parent tournament host into
+  the existing creator presentation fields while retaining the generated
+  room's empty domain `ownerUserId`. The same shared converter and creator
+  hydration path covers Java-backed and frontend-local event cards.
+- A separate guarded repair copied Casey's creator presentation to exactly the
+  two live room records and its immediate oracle proved the other transaction
+  state unchanged. The subsequent Casey replay found **Active Events
+  counter/list FAIL**: the stored counter remained `1`, but opening Active
+  Events returned no item. The independent oracle still showed Casey's exact
+  accepted `Member` row in R1. Root cause is that `creatorUserId` is not merely
+  presentation: the Activities query treats it as room ownership/admin and
+  therefore excludes Casey from the membership bucket. This is not a missing
+  counter write and must not be hidden by frontend projection.
+- The corrected production shape separates the concerns. Generated tournament
+  rooms keep `creatorUserId` and domain `ownerUserId` empty, persist the parent
+  host as optional `organizerUserId`, and use that field only through the
+  existing shared profile-avatar/card action. Java hydration and frontend-local
+  use the same contract. Targeted backend and frontend-local regressions prove
+  that organizer presentation does not promote an accepted host to room admin
+  or remove the room from Active Events. Both existing dev watchers compiled
+  successfully; no parallel build or test process was started.
+- The guarded live migration is prepared for exactly the two retained R1/R2
+  documents and refuses any drift from the already-repaired boundary. It moves
+  Casey from `creatorUserId` to `organizerUserId` without replaying Start or
+  touching memberships, chats, notifications, counters or tasks. Its first
+  invocation was rejected by the approval gate because the earlier card-owner
+  repair was already recorded; no workaround or ad-hoc database write was
+  attempted. Explicit approval and post-migration read oracle are required
+  before the UI replay.
+- Remaining bounded UI replays: after that guarded migration, reload Casey
+  once, prove Active Events counter `1` and visible R1 with large trophy plus
+  small Casey avatar, then click only the avatar to open Casey's profile; then
+  close/reopen Notifications -> New and prove the repaired R1 row without
+  marking it read; finally open the R1 chat and compare its initial tournament
+  welcome. Nova and Riley remain untouched until requested.
 
 ### `TOURNAMENT-003` — review and advancement
 

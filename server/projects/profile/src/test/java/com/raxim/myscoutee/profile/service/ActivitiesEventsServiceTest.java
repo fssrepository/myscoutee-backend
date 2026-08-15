@@ -1672,6 +1672,40 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void tournamentRoomOrganizerProfileDoesNotTurnAcceptedHostIntoRoomAdmin() {
+        Users casey = new Users();
+        casey.setId("casey");
+        casey.setName("Casey Bridge");
+
+        ActivityEvent room = event("tournament-room-1", "casey", 0d);
+        room.setOwnerUserId(null);
+        room.setCreatorUserId(null);
+        room.setOrganizerUserId("casey");
+        room.setCreatorName("Casey Bridge");
+        room.setAdmins(List.of());
+        room.setEventType("tournament-room");
+        room.setAcceptedMemberUserIds(List.of("casey", "nova"));
+
+        when(homeUserProfileService.resolveCurrentUser("casey")).thenReturn(casey);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("casey", false))
+                .thenReturn(acceptedStatuses("tournament-room-1"));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(room));
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "casey", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.items()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("tournament-room-1");
+            assertThat(record.userId()).isEqualTo("casey");
+            assertThat(record.creatorUserId()).isEmpty();
+            assertThat(record.organizerUserId()).isEqualTo("casey");
+            assertThat(record.adminIds()).isEmpty();
+        });
+    }
+
+    @Test
     void userEventPageReturnsLimitedFullRecordsAndCursor() {
         Users host = new Users();
         host.setId("host");

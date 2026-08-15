@@ -2046,11 +2046,26 @@ public class EventScheduler {
         room.setUnread(existing == null ? 0 : safeCount(existing.getUnread()));
         room.setActivity(existing == null ? 0 : safeCount(existing.getActivity()));
         room.setIsExpired(false);
+        // Organizer presentation/navigation must not make a generated group
+        // membership an organizer-owned event.
         room.setCreatorUserId(null);
-        room.setCreatorName(RANDOM_ROOM_SYSTEM_NAME);
-        room.setCreatorInitials("SY");
-        room.setCreatorGender(null);
-        room.setCreatorCity(null);
+        room.setOrganizerUserId(tournamentRoomPresentation
+                ? normalizeId(sourceEvent == null ? null : sourceEvent.getCreatorUserId())
+                : null);
+        room.setCreatorName(tournamentRoomPresentation
+                ? firstNonBlank(
+                        sourceEvent == null ? null : sourceEvent.getCreatorName(),
+                        RANDOM_ROOM_SYSTEM_NAME)
+                : RANDOM_ROOM_SYSTEM_NAME);
+        room.setCreatorInitials(tournamentRoomPresentation
+                ? safeText(sourceEvent == null ? null : sourceEvent.getCreatorInitials())
+                : "SY");
+        room.setCreatorGender(tournamentRoomPresentation
+                ? safeText(sourceEvent == null ? null : sourceEvent.getCreatorGender())
+                : null);
+        room.setCreatorCity(tournamentRoomPresentation
+                ? safeText(sourceEvent == null ? null : sourceEvent.getCreatorCity())
+                : null);
         room.setVisibility("Invitation only");
         room.setBlindMode("Open Event");
         room.setStartAtIso(firstNonBlank(

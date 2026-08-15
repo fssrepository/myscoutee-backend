@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 15:15 CEST
+Updated: 2026-08-15 15:53 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -15,6 +15,9 @@ file first, then open only the linked active checkpoint section.
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+- Public repository QA pointer and concise current totals; synchronize it after
+  every CSV/XLSX status change:
+  [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
@@ -34,14 +37,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
 scenario: event-domain (live post-Start transaction; do not reset or replay Start)
-ledger_status: IN PROGRESS / START+GROUP+MEMBERS PASS / TOURNAMENT CHAT ROW PASS / CHAT CONTENT RETEST READY
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. Casey's first Chats/All read exposed a semantic FAIL: the tournament group reused Random Room title, affinity/leave welcome and sparkle avatar. Java/frontend presentation is repaired without changing the stable assignment IDs; a guarded checkpoint repair changed only the two room/chat/message presentations. The post-repair oracle retains 3 memberships, 3 chat copies, unread total 3 and all activity counters. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. After one frontend reload, Casey proved the single Tournament Group R1 list row, trophy avatar and tournament-specific preview. The chat-content replay remains. Three launcher-owned browsers remain open.
-required_resume: In Casey's open Activities -> Chats -> All list, open the single Tournament Group R1 row once. Verify the chat header/title and trophy image identify the tournament group, and the initial system message says this is the tournament group for QA TOURNAMENT-002 and tells members to coordinate/follow stage updates. Do not send a message and do not touch Nova/Riley.
+ledger_status: IN PROGRESS / START+GROUP+MEMBERS+CHAT/EVENT PRESENTATION PASS / ACTIVE LIST FAIL / ORGANIZER MIGRATION AWAITING APPROVAL
+state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. The first presentation replay exposed Random Room semantics in the generated event/chat/notification; those write paths and exact live records are repaired, with notification UI replay still pending. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. The first card-avatar repair overloaded creatorUserId with Casey solely to drive the normal profile avatar. Casey's reload then proved a counter/list mismatch: persisted Active Events=1, but the Active Events query returned no row because creatorUserId also carries room ownership/admin semantics and excludes the creator from the member list. This is a write-shape defect, not a counter projection defect. Java and frontend-local now use a separate optional organizerUserId for standard profile-avatar configuration while generated tournament rooms retain empty creatorUserId/ownerUserId and Casey's accepted Member row. Both running watchers compiled successfully. The read-only oracle proves the old live creator field is still present and all memberships/roles, 3 chat copies, unread total 3, notifications, counters and the original recompute remain intact. A guarded two-record organizer migration is prepared but was not run because the approval gate rejected repeating the earlier repair without new explicit approval. No ad-hoc write or Start replay occurred. Three launcher-owned browsers remain open.
+required_resume: Obtain explicit approval for the guarded TOURNAMENT-002 organizer migration, run it once, then read-only verify creatorUserId empty and organizerUserId Casey on R1/R2 with all transaction controls unchanged. In Casey only, reload once and open Activities -> Events -> Active Events. Verify the counter is 1 and Tournament Group R1 is now present with the large trophy and small clickable Casey avatar; click only the avatar and verify Casey Bridge's profile. Do not use the card menu and do not touch Nova/Riley.
 event: QA TOURNAMENT-002
 actors:
   active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
   controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Casey opens the single Tournament Group R1 chat once and reports its title/image and initial tournament-specific system message; no message is sent and Nova/Riley remain untouched.
+next_actor: Codex runs the explicitly approved guarded organizer migration and oracle; then Casey reloads once and proves the repaired Active Events row plus standard owner-avatar profile action. Nova/Riley remain untouched.
 stop_phrase: megvan
 ```
 
@@ -107,13 +110,14 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-002 — automatic group membership projection`, tournament-chat
-content replay: in Casey's open Activities -> Chats -> **All** list, open the
-single **Tournament Group R1** row once. Verify that the chat header/title and
-trophy image identify the tournament group, and that the initial system
-message says this is the tournament group for `QA TOURNAMENT-002` and tells
-members to coordinate and follow stage updates. Do not send a message and do
-not touch Nova or Riley. Report the visible content with `megvan`.
+`TOURNAMENT-002 — automatic group membership projection`, generated-room
+organizer migration: after explicit approval, run the guarded two-record
+migration and its read-only oracle. Then in Casey only reload once and open
+Activities -> Events -> **Active Events**. Its persisted counter must remain
+`1`, and the list must now contain `Tournament Group R1` with the large trophy
+and small Casey profile photo. Click only that small avatar and verify the Casey
+Bridge profile opens through the standard card action. Do not use the card menu
+and do not touch Nova or Riley. Report both checks with `megvan`.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is
@@ -184,6 +188,13 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
+- After every CSV/XLSX status change, also update the root README's **Manual QA
+  status** block. Keep that public summary deliberately compact: show only
+  passed and remaining counts separately for Core and External, plus the total
+  case count. Derive those values from the same classifiers as the generated
+  workbook, and keep its active-checkpoint sentence aligned with this handoff's
+  sole resume pointer. Detailed Pending/Not started/Failed counts belong only
+  in the QA matrix. Treat a stale README summary as an incomplete ledger update.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
 - One producer action or a short causally continuous sequence may stay in one

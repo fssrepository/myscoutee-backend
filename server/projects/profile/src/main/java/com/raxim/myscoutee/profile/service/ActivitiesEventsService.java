@@ -4762,7 +4762,7 @@ public class ActivitiesEventsService {
     private Map<String, String> creatorAvatarUrlsByUserId(Collection<ActivityEvent> records) {
         List<String> creatorUserIds = (records == null ? List.<ActivityEvent>of() : records).stream()
                 .filter(Objects::nonNull)
-                .map(ActivityEvent::getCreatorUserId)
+                .map(record -> firstNonBlank(record.getOrganizerUserId(), record.getCreatorUserId()))
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -6356,6 +6356,7 @@ public class ActivitiesEventsService {
                 .include("creatorName")
                 .include("creatorInitials")
                 .include("creatorCity")
+                .include("organizerUserId")
                 .include("visibility")
                 .include("startAtIso")
                 .include("endAtIso")

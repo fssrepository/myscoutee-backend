@@ -78,6 +78,7 @@ public class ActivityEvent {
     private String creatorInitials;
     private String creatorGender;
     private String creatorCity;
+    private String organizerUserId;
     private String visibility;
     private String blindMode;
     private String startAtIso;
@@ -205,6 +206,8 @@ public class ActivityEvent {
     public void setCreatorGender(String creatorGender) { this.creatorGender = creatorGender; }
     public String getCreatorCity() { return creatorCity; }
     public void setCreatorCity(String creatorCity) { this.creatorCity = creatorCity; }
+    public String getOrganizerUserId() { return organizerUserId; }
+    public void setOrganizerUserId(String organizerUserId) { this.organizerUserId = organizerUserId; }
     public String getVisibility() { return visibility; }
     public void setVisibility(String visibility) { this.visibility = visibility; }
     public String getBlindMode() { return blindMode; }
