@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 14:16 CEST
+Updated: 2026-08-15 14:44 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -33,15 +33,15 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
-scenario: event-domain (clean final Start performance-replay baseline staged at 2026-08-15T12:15:59.525Z)
-ledger_status: IN PROGRESS / IDENTITY PASS TWICE / FINAL WRITE-ROUNDTRIP OPTIMIZATION HOT-DEPLOYED / REPLAY READY
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002's fixture no-op and false-success Start are documented. Two corrected replays proved the full persisted identity/counter contract. The comparable materializing request fell from about 494 ms to 284 ms (~43%) and the user found it somewhat faster. Its terminal trace still exposed a generic parent-event counter refresh although stage status does not change the parent Activities bucket; that redundant full three-actor event/ticket reprojection is now removed for parent and generated-slot stage actions. The owning Start path retains targeted reads, strict exact participant coverage, batch-loaded room memberships, one room save, atomic bulk Active/All counter deltas and no immediate chat read-after-write; SmartList/read behavior is unchanged. The guarded clean final replay event is QA TOURNAMENT-002, A/published=true Tournament, 3/8 with Casey/Nova/Riley accepted; both stages are RS; runtime rooms/members/chats/leaderboard and action outbox/recompute deltas are zero; Casey has All/Hosting=1 and Nova/Riley All/Active=1. Three fresh launcher-owned browsers created after this fixture are open.
-required_resume: In Casey only, open Activities -> Events -> My Events -> QA TOURNAMENT-002 -> View. On Qualifiers use its overflow menu, select Start Stage and confirm Start exactly once. Keep the stage list open and do not touch Nova/Riley until Codex has checked the persisted grouping identities.
+scenario: event-domain (live post-Start transaction; do not reset or replay Start)
+ledger_status: IN PROGRESS / START PERSISTENCE PASS / GROUP READ+UI PASS / MEMBERS IDENTITY PASS / MEMBER ACTION MENU+CHAT REMAIN
+state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Start must not run again. The repaired explicit memberOwnerType/memberOwnerId path has server and UI proof. Casey visually proved Group A 2 / 1–2 with Casey+Nova and Group B 1 / 1–2 with Riley, then Group A Members opened Random Room R1 with exactly Casey and Nova, 2 members and no Invite action. Pending only is a read filter. The card overflow remains because view-only still permits non-mutating Participation/Report; mutation actions must be absent. Three launcher-owned browsers remain open; Casey's Random Room R1 Members popup is open, Nova/Riley remain untouched.
+required_resume: In Casey's open Random Room R1 Members popup, open Nova Social's card overflow once. Confirm that Remove member/Delete invitation, Promote, Leave, Disqualify and other membership mutations are absent; Participation and Report user are allowed. Do not select an action, then close only the menu and report what is visible.
 event: QA TOURNAMENT-002
 actors:
   active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
   controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Casey opens QA TOURNAMENT-002 -> View, starts Qualifiers once from its overflow menu and leaves the stage list open.
+next_actor: Casey opens Nova's member-card overflow once and verifies only non-mutating actions are exposed; no action is selected.
 stop_phrase: megvan
 ```
 
@@ -107,11 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-002 — automatic group membership projection`, Start boundary: in
-Casey only open Activities -> Events -> My Events -> `QA TOURNAMENT-002` ->
-**View**. On Qualifiers use the overflow menu, choose **Start Stage**, and
-confirm **Start** exactly once. Leave the stage list open and write `megvan`;
-do not touch Nova or Riley until Codex checks the persisted grouping identities.
+`TOURNAMENT-002 — automatic group membership projection`, view-only member
+action boundary: in Casey's open `Random Room R1` Members popup, open Nova
+Social's card overflow once. Participation and Report user are allowed;
+Remove/Delete invitation, Promote, Leave, Disqualify and every other membership
+mutation must be absent. Do not select an action. Close only the menu and
+report the visible items; do not touch Group B, Nova or Riley yet.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is

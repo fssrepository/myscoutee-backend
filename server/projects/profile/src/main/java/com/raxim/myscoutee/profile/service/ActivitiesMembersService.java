@@ -56,6 +56,7 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService {
+    private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
     private static final String OWNER_TYPE_GROUP = "group";
@@ -176,7 +177,7 @@ public class ActivitiesMembersService {
             return List.of();
         }
         if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)
-                && !accessControlService.canCurrentActorViewEventMembers(normalizedOwnerId)) {
+                && !canViewEventOwnerMembers(normalizedOwnerId, eventId, subEventId)) {
             return List.of();
         }
 
@@ -211,6 +212,31 @@ public class ActivitiesMembersService {
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .toList();
+    }
+
+    private boolean canViewEventOwnerMembers(String ownerId, String parentEventId, String subEventId) {
+        if (accessControlService.canCurrentActorViewEventMembers(ownerId)) {
+            return true;
+        }
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedParentEventId = normalizeId(parentEventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedParentEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !normalizedOwnerId.startsWith(
+                        RANDOM_ROOM_EVENT_TYPE
+                                + ":"
+                                + normalizedParentEventId
+                                + ":"
+                                + normalizedSubEventId
+                                + ":")) {
+            return false;
+        }
+        ActivityEvent room = findPreferredEventRecord(normalizedOwnerId);
+        return room != null
+                && RANDOM_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()))
+                && accessControlService.canCurrentActorViewEventMembers(normalizedParentEventId);
     }
 
     public ActivityMembersSyncResponseDto syncMembers(ActivityMembersSyncRequestDto request) {

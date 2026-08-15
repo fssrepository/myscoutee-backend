@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.Test;
@@ -131,9 +132,19 @@ class ActivitiesEventLeaderboardServiceTest {
         ActivityEvent record = eventRecord("event-1", "canonical");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
         String groupOwnerId = "event-1:sub-1:sub-1:group:1";
-        when(activitiesMembersService.queryMembers("group", groupOwnerId)).thenReturn(List.of(
-                activityMember("accepted-member", "accepted"),
-                activityMember("pending-member", "pending")));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                "group",
+                List.of(groupOwnerId, "event-1:sub-1:sub-1:group:2")))
+                .thenReturn(Map.of(groupOwnerId, new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "group",
+                        groupOwnerId,
+                        List.of(),
+                        List.of("accepted-member"),
+                        List.of("pending-member"),
+                        List.of(),
+                        List.of(),
+                        Set.of(),
+                        4)));
 
         var groups = service.queryTournamentStageGroups("event-1", null, "sub-1");
 
@@ -141,8 +152,45 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(groups.getFirst()).satisfies(group -> {
             assertThat(group.membersAccepted()).isEqualTo(1);
             assertThat(group.membersPending()).isEqualTo(1);
+            assertThat(group.memberOwnerType()).isEqualTo("group");
+            assertThat(group.memberOwnerId()).isEqualTo(groupOwnerId);
         });
-        verify(activitiesMembersService).queryMembers("group", groupOwnerId);
+    }
+
+    @Test
+    void tournamentStageGroupsExposeMaterializedRandomRoomMembershipScope() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        String roomOwnerId = "random-room:event-1:sub-1:sub-1:group:1";
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                "event",
+                List.of(roomOwnerId, "random-room:event-1:sub-1:sub-1:group:2")))
+                .thenReturn(Map.of(roomOwnerId, new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        roomOwnerId,
+                        List.of(),
+                        List.of("member-a", "member-b"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of(),
+                        2)));
+
+        var groups = service.queryTournamentStageGroups("event-1", null, "sub-1");
+
+        assertThat(groups.getFirst()).satisfies(group -> {
+            assertThat(group.membersAccepted()).isEqualTo(2);
+            assertThat(group.membersPending()).isZero();
+            assertThat(group.memberOwnerType()).isEqualTo("event");
+            assertThat(group.memberOwnerId()).isEqualTo(roomOwnerId);
+        });
     }
 
     @Test

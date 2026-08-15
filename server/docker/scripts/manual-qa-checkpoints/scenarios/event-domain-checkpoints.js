@@ -2046,6 +2046,32 @@
     return { min, max };
   }
 
+  function generatedTournamentGroupIdentity(room, event) {
+    const roomEventId = Q.text(room && (room.sourceId || room._id));
+    const parentCandidates = [...new Set([
+      Q.text(event && (event.sourceId || event._id)),
+      ...EVENT_IDS,
+      activeEventSourceId()
+    ].filter(Boolean))]
+      .sort((left, right) => right.length - left.length);
+    const parentEventId = parentCandidates.find(candidate => (
+      roomEventId.startsWith(`random-room:${candidate}:`)
+    )) || "";
+    const suffix = parentEventId
+      ? roomEventId.slice(`random-room:${parentEventId}:`.length)
+      : "";
+    const stageCandidates = [
+      ...((event && event.subEventDefinitions) || []),
+      ...((event && event.subEvents) || [])
+    ]
+      .map(stage => Q.text(stage && stage.id))
+      .filter(Boolean)
+      .sort((left, right) => right.length - left.length);
+    const stageId = stageCandidates.find(candidate => suffix.startsWith(`${candidate}:`)) || "";
+    const groupId = stageId ? suffix.slice(`${stageId}:`.length) : suffix;
+    return { roomEventId, parentEventId, stageId, groupId };
+  }
+
   function oracle(state) {
     const dynamicEventIds = currentEventIds();
     const event = Q.collection("events").findOne(manualEventSelector()) || {};
@@ -2202,21 +2228,39 @@
     });
     return {
       events: eventSummary(),
-      generatedRoomEvents: generatedRoomEvents.map(room => ({
-        recordId: Q.text(room._id),
-        eventId: Q.text(room.sourceId),
-        parentEventId: Q.text(room.parentEventId),
-        parentSubEventId: Q.text(room.parentSubEventId),
-        groupId: Q.text(room.generatedGroupId),
-        title: Q.text(room.title),
-        status: Q.text(room.status),
-        generated: room.generated === true,
-        eventType: Q.text(room.eventType),
-        acceptedMembers: Number(room.acceptedMembers || 0),
-        acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
-        capacityMin: Number(room.capacityMin || 0),
-        capacityMax: Number(room.capacityMax || 0)
-      })),
+      generatedRoomEvents: generatedRoomEvents.map(room => {
+        const identity = generatedTournamentGroupIdentity(room, event);
+        return {
+          recordId: Q.text(room._id),
+          eventId: identity.roomEventId,
+          parentEventId: identity.parentEventId,
+          parentSubEventId: identity.stageId,
+          groupId: identity.groupId,
+          identitySource: "stable-random-room-id",
+          title: Q.text(room.title),
+          status: Q.text(room.status),
+          generated: room.generated === true,
+          eventType: Q.text(room.eventType),
+          acceptedMembers: Number(room.acceptedMembers || 0),
+          acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
+          capacityMin: Number(room.capacityMin || 0),
+          capacityMax: Number(room.capacityMax || 0)
+        };
+      }),
+      generatedTournamentGroups: generatedRoomEvents.map(room => {
+        const identity = generatedTournamentGroupIdentity(room, event);
+        return {
+          parentEventId: identity.parentEventId,
+          subEventId: identity.stageId,
+          groupId: identity.groupId,
+          membershipOwnerType: "event",
+          membershipOwnerId: identity.roomEventId,
+          acceptedMembers: Number(room.acceptedMembers || 0),
+          acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
+          capacityMin: Number(room.capacityMin || 0),
+          capacityMax: Number(room.capacityMax || 0)
+        };
+      }),
       primaryEvent: {
         status: Q.text(event.status),
         isTrashed: Q.text(event.status) === "T" || event.isTrashed === true,
@@ -2752,7 +2796,7 @@
         stageFinalizedAt: item.stageFinalizedAt,
         groupsCount: item.groupsCount
       })),
-      tournamentGroups: groups.map(item => ({
+      manualTournamentGroups: groups.map(item => ({
         ownerId: Q.text(item.ownerId),
         groupId: Q.text(item.groupId),
         name: Q.text(item.name),
@@ -6385,7 +6429,8 @@
       feedbackStates: current.feedbackStates || [],
       feedbackAnswers: current.feedbackAnswers || [],
       stageRuntime: current.stageRuntime || [],
-      tournamentGroups: current.tournamentGroups || [],
+      manualTournamentGroups: current.manualTournamentGroups || [],
+      generatedTournamentGroups: current.generatedTournamentGroups || [],
       leaderboard: current.leaderboard || [],
       userActivityCounters: (current.userActivityCounters || []).map(item => ({
         userId: Q.text(item.user && item.user.userId),

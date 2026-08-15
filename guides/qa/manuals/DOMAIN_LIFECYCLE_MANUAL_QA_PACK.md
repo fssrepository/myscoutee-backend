@@ -4278,8 +4278,60 @@ Execution evidence (2026-08-15, write-roundtrip performance replay):
   reread each actor's complete membership/event/ticket inventory and rewrote
   the same values. It has been removed from parent and generated-slot stage
   actions; Random Room membership and chat writes remain the owners of their
-  exact counter deltas. Run one final Start-only timing/oracle replay before UI
-  group/member/chat inspection; do not repeat any earlier checkpoint steps.
+  exact counter deltas.
+
+Execution evidence (2026-08-15, final Start performance replay and group-read repair):
+
+- **Final Start replay PASS**: the persisted result stayed identical: two
+  generated rooms, exact Casey+Nova/Riley partition, three accepted room
+  memberships, two physical chats/three owner copies, two welcome messages,
+  `A/groupsCount=2`, three action-outbox records, one recompute and exact `+1`
+  Event/Chat deltas for all three actors. The request took about `435 ms`; the
+  variance from `284 ms` was in the remaining writes. Trace showed zero full
+  user event reprojections and zero unbounded event reads. The Start producer
+  is therefore accepted and must not be replayed again.
+- The first post-Start group GET exposed a separate **read-model FAIL**: the
+  persisted room memberships were correct, but Group A and Group B were shown
+  as `0/0`. The group DTO and Members action addressed the definition group's
+  normal `ownerType=group` identity, while Start deliberately materializes
+  membership under the generated Random Room event identity
+  `ownerType=event`, `random-room:<parent>:<stage>:<group>`.
+- The proper repair keeps the Start write model intact. The backend now
+  batch-loads both membership scopes, returns the selected `memberOwnerType`
+  and `memberOwnerId` with each group, and authorizes the parent event manager
+  to read only a real matching `eventType=random-room`. The frontend and its
+  local repository consume the explicit owner identity; materialized room
+  membership remains view-only rather than routing normal group mutations to
+  an event owner.
+- Post-hot-deploy read-only proof **PASS**: the same running transaction now
+  returns Group A `2` accepted with Casey Bridge and Nova Social, and Group B
+  `1` accepted with Riley Outside. No fixture, Start action or persisted state
+  was changed. The versioned oracle now reports manual definition-group rows
+  separately from derived generated tournament groups so an empty manual
+  collection cannot be mistaken for absent runtime grouping.
+- Remaining bounded UI proof: after one Casey reload for the new frontend
+  bundle, verify the Groups list shows `2 / 1–2` and `1 / 1–2`, then inspect
+  the two exact member lists and the group-scoped chats. Nova and Riley remain
+  untouched until their group/chat projections are requested.
+- **Generated-group UI and embedded standings PASS**: after the required Casey
+  reload, Qualifiers showed Group A `2 / 1–2` with Casey Bridge and Nova Social
+  exactly once, and Group B `1 / 1–2` with Riley Outside exactly once. This
+  matches both the persisted oracle and the repaired GET response. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-40-56.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-40-59.png`.
+  Remaining proof is the explicit Group Members navigation/view-only boundary
+  and then each actor's group-scoped chat projection; no Start replay is
+  required.
+- **Explicit Group Members identity PASS**: Group A -> Members opened
+  `Random Room R1`, showed `2 members`, and contained only Casey Bridge and
+  Nova Social. The header has no Invite action. The remaining `Pending only`
+  control is a read filter, not a mutation. Member-card overflow may remain for
+  non-mutating Participation/Report actions; the view-only route must suppress
+  Approve, Remove/Delete, Promote, Step down, Leave, Disqualify and Reinstate.
+  Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-43-12.png`.
+  One bounded overflow inspection remains before moving to group chat.
 
 ### `TOURNAMENT-003` — review and advancement
 
