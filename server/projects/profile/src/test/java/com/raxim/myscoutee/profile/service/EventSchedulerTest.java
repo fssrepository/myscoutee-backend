@@ -42,6 +42,7 @@ import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardMemberDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
@@ -783,7 +784,9 @@ class EventSchedulerTest {
                         2,
                         1,
                         List.of("u1"),
-                        List.of(),
+                        List.of(
+                                new EventLeaderboardMemberDto("u1", "u1"),
+                                new EventLeaderboardMemberDto("u3", "u3")),
                         List.of(),
                         List.of(),
                         List.of(),
@@ -913,10 +916,10 @@ class EventSchedulerTest {
                         new EventLeaderboardGroupDto(
                                 "group-b",
                                 "Group B",
-                                2,
-                                1,
-                                List.of("u2"),
-                                List.of(),
+                        2,
+                        1,
+                        List.of("u2"),
+                        List.of(new EventLeaderboardMemberDto("u2", "u2")),
                                 List.of(),
                                 List.of(),
                                 List.of(),
@@ -973,8 +976,8 @@ class EventSchedulerTest {
         verify(activityTournamentGroupCounterService).syncParent("event-3", "sub-2");
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
-        assertThat(notificationCaptor.getValue()).satisfies(notification -> {
+        verify(notificationOutboxService, times(2)).enqueue(notificationCaptor.capture());
+        assertThat(notificationCaptor.getAllValues().get(0)).satisfies(notification -> {
             assertThat(notification.type()).isEqualTo("event-stage-advanced");
             assertThat(notification.recipientUserIds()).containsExactly("u1", "u2");
             assertThat(notification.createdUser()).isEqualTo("scheduler");
@@ -988,6 +991,21 @@ class EventSchedulerTest {
                     .containsEntry("stageIndex", "2")
                     .containsEntry("stageTotal", "2")
                     .containsEntry("notification_tone", "success");
+        });
+        assertThat(notificationCaptor.getAllValues().get(1)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-stage-not-advanced");
+            assertThat(notification.recipientUserIds()).containsExactly("u3");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.stage.not-advanced.title")
+                    .containsEntry("notification_message_key", "notification.event.stage.not-advanced.message")
+                    .containsEntry("stageTitle", "sub-1")
+                    .containsEntry("nextStageTitle", "sub-2")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events")
+                    .containsEntry("stageIndex", "1")
+                    .containsEntry("stageTotal", "2")
+                    .containsEntry("notification_tone", "warning");
         });
     }
 

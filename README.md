@@ -30,9 +30,10 @@ As of 2026-08-15:
 
 The complete matrix contains 191 cases. `TOURNAMENT-002` is PASS/CLOSED after
 the corrected recovery Start, exact group/member/chat projections and ordered
-three-actor notification replay. `TOURNAMENT-003` is active at its prepared
-ordered Finalize-to-advancement notification replay; `TOURNAMENT-004` retains
-the separate Final Start and whole-tournament completion continuation.
+three-actor notification replay. `TOURNAMENT-003` has passed its persisted
+manual-Finalize, separate automatic advanced/not-advanced outcomes and exact
+worker no-op replay; its three-browser visual comparison remains. `TOURNAMENT-004`
+retains the separate Final Start and whole-tournament completion continuation.
 
 ### Official manuals
 

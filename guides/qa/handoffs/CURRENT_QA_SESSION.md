@@ -36,15 +36,15 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-003 — review and advancement
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-003--review-and-advancement
-scenario: event-domain (ordered Finalize -> persisted advancement notification replay prepared)
-ledger_status: IN PROGRESS / ORDERED NOTIFICATION REPLAY NEXT
-state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 has responsive History PASS, exact first real review advancement, byte-exact second-pass no-op and Casey Final Groups UI PASS. The repaired manual Finalize recipient boundary also passed: its one generic finalized intent and two unread deliveries target Nova+Riley only, while Casey is excluded. The final visual comparison exposed a separate semantic gap, not a recipient regression: stage closure and actual advancement need two causally ordered messages. The shared backend now writes translated generic Finalize keys at the manual producer, then the real review worker writes a separate translated trophy-branded advancement intent only after it has persisted Casey+Riley membership in the already-existing Final group. Frontend-local mirrors the same contract. EN/HU keys exist in frontend-local and all Mongo seed sets. The guarded sequence replay is PREPARED: Qualifiers is SR with exact 9/4/7 scores, the existing Final group has no members, its old plan marker is removed, and the review worker remains held idle. Do not run prepare again.
-required_resume: Reload only Casey's current event detail so it uses the repaired frontend, then manually Finalize Qualifiers exactly once. Do not touch Nova/Riley and do not arm the worker before the immediate finalize verifier.
+scenario: event-domain (manual Finalize -> automatic participant outcomes persisted; visual comparison next)
+ledger_status: IN PROGRESS / VISUAL OUTCOME SPLIT NEXT
+state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 now has the exact persisted two-producer contract. Casey's manual Finalize remains one separate human-sender `event-stage-finalized` intent for Nova+Riley only. The real tournament-review worker then persisted Casey+Riley in the existing Final group, one separate automatic `event-stage-advanced` intent for Casey+Riley, and one separate automatic `event-stage-not-advanced` intent for Nova. Both automatic outcomes name Qualifiers and Final; advancing uses the Final stage badge context and non-advancing uses the Qualifiers badge context. The first real worker pass completed with count 1; the second unchanged pass completed with count 0 and byte-exact domain plus notification state. Backend/frontend-local and frontend/Mongo EN/HU keys are synchronized. Only the three-browser visual sender/avatar/text comparison remains.
+required_resume: In Nova's already-open browser reload once, open Notifications -> New, and compare the two TOURNAMENT-003 rows: Casey human `Qualifiers finalized`, then system trophy `Did not advance from Qualifiers`. Do not mark either read. After Nova passes, compare Casey and Riley without replaying Finalize or either worker.
 event: QA TOURNAMENT-003
 actors:
   active: Casey tournament stage finalizer; Nova qualifier non-advancer; Riley qualifier advancer; three fresh launcher-owned demo browsers on /game
   controls: Nova and Riley remain untouched through the qualifier-standings observation and Casey's later Finalize write
-next_actor: Casey performs one visible Qualifiers Finalize. Nova and Riley remain untouched until both persisted producer phases and the worker no-op have passed.
+next_actor: Nova performs only the visual unread notification comparison; Casey and Riley remain untouched until their own visual comparison.
 stop_phrase: megvan
 ```
 

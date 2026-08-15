@@ -14460,6 +14460,18 @@
     "value": "You advanced from {stageTitle} to {nextStageTitle}."
   },
   {
+    "_id": "i18n-message-en-notification-event-stage-not-advanced-title",
+    "key": "notification.event.stage.not-advanced.title",
+    "lang": "en",
+    "value": "Did not advance from {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-not-advanced-message",
+    "key": "notification.event.stage.not-advanced.message",
+    "lang": "en",
+    "value": "You did not advance from {stageTitle} to {nextStageTitle}."
+  },
+  {
     "_id": "i18n-message-en-notification-event-tournament-finalized-title",
     "key": "notification.event.tournament.finalized.title",
     "lang": "en",
@@ -33028,6 +33040,18 @@
     "key": "notification.event.stage.advanced.message",
     "lang": "hu",
     "value": "Továbbjutottál a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-not-advanced-title",
+    "key": "notification.event.stage.not-advanced.title",
+    "lang": "hu",
+    "value": "Nem jutottál tovább: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-not-advanced-message",
+    "key": "notification.event.stage.not-advanced.message",
+    "lang": "hu",
+    "value": "Nem jutottál tovább a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba."
   },
   {
     "_id": "i18n-message-hu-notification-event-tournament-finalized-title",

@@ -1259,10 +1259,12 @@ public class EventScheduler {
                         null);
                 if (!changedGroups.isEmpty()) {
                     activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
-                    notifyTournamentAdvancers(
+                    notifyTournamentStageOutcomes(
                             event,
                             subEvent,
                             nextSubEvent,
+                            state,
+                            acceptedUserIds,
                             advancingUserIds);
                 }
                 changedGroupCount.addAndGet(changedGroups.size());
@@ -1272,10 +1274,12 @@ public class EventScheduler {
         return new ScorePlanRunResult(List.copyOf(states), changedGroupCount.get());
     }
 
-    private void notifyTournamentAdvancers(
+    private void notifyTournamentStageOutcomes(
             ActivityEvent event,
             SubEventItem completedStage,
             SubEventItem nextStage,
+            EventLeaderboardStateDto completedStageState,
+            Collection<String> acceptedUserIds,
             Collection<String> advancingUserIds) {
         if (notificationOutboxService == null) {
             return;
@@ -1315,6 +1319,55 @@ public class EventScheduler {
                 "event-stage-advanced-" + eventId + "-" + normalizeId(completedStage == null ? null : completedStage.id()),
                 payload,
                 MARKER_UPDATED_BY));
+
+        Set<String> notAdvancingUserIds = resolveStageParticipantUserIds(completedStageState);
+        notAdvancingUserIds.retainAll(normalizeUserIds(acceptedUserIds));
+        notAdvancingUserIds.removeAll(recipients);
+        if (notAdvancingUserIds.isEmpty()) {
+            return;
+        }
+        Map<String, String> notAdvancedPayload = new LinkedHashMap<>();
+        notAdvancedPayload.put("eventId", eventId);
+        notAdvancedPayload.put("eventTitle", eventTitle);
+        notAdvancedPayload.put("eventScope", "tournament-advancement");
+        notAdvancedPayload.put("stageTitle", stageTitle);
+        notAdvancedPayload.put("nextStageTitle", nextStageTitle);
+        notAdvancedPayload.put("senderName", RANDOM_ROOM_SYSTEM_NAME);
+        notAdvancedPayload.put("notification_title_key", "notification.event.stage.not-advanced.title");
+        notAdvancedPayload.put("notification_message_key", "notification.event.stage.not-advanced.message");
+        notAdvancedPayload.put("notification_tone", "warning");
+        notAdvancedPayload.put("notification_avatar_tone", "stage");
+        notAdvancedPayload.put("notification_avatar_icon", "emoji_events");
+        putTournamentStagePosition(notAdvancedPayload, event, completedStage);
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-stage-not-advanced",
+                OWNER_TYPE_EVENT,
+                eventId,
+                "event-stage-non-advancers",
+                List.copyOf(notAdvancingUserIds),
+                "Did not advance from " + stageTitle,
+                "You did not advance from " + stageTitle + " to " + nextStageTitle + ".",
+                DEFAULT_CLICK_URL,
+                TOURNAMENT_ROOM_IMAGE_URL,
+                APP_BADGE_URL,
+                "event-stage-not-advanced-" + eventId + "-" + normalizeId(completedStage == null ? null : completedStage.id()),
+                notAdvancedPayload,
+                MARKER_UPDATED_BY));
+    }
+
+    private Set<String> resolveStageParticipantUserIds(EventLeaderboardStateDto state) {
+        Set<String> participantUserIds = new LinkedHashSet<>();
+        if (state == null || state.groups() == null) {
+            return participantUserIds;
+        }
+        state.groups().stream()
+                .filter(Objects::nonNull)
+                .flatMap(group -> group.members() == null ? java.util.stream.Stream.empty() : group.members().stream())
+                .filter(Objects::nonNull)
+                .map(member -> normalizeId(member.memberId()))
+                .filter(StringUtils::hasText)
+                .forEach(participantUserIds::add);
+        return participantUserIds;
     }
 
     private void putTournamentStagePosition(

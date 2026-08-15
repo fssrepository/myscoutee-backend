@@ -3454,7 +3454,32 @@
           || Number(runState.lastRunCount) !== 1) {
         Q.fail("the first real tournament-review run is not at the exact one-group Casey+Riley advancement boundary.");
       }
+      const notifications = tournamentFinalizeNotificationSnapshot();
+      const finalizedRecipients = [participantUserId, thirdUserId].sort();
+      if (notifications.outbox.length !== 1
+          || !sameJson(notifications.outbox[0].recipientUserIds, finalizedRecipients)
+          || notifications.outbox[0].notificationAvatarTone !== ""
+          || notifications.outbox[0].notificationAvatarIcon !== ""
+          || notifications.advancementOutbox.length !== 1
+          || !sameJson(notifications.advancementOutbox[0].recipientUserIds, expectedWinners)
+          || notifications.advancementOutbox[0].notificationTitleKey !== "notification.event.stage.advanced.title"
+          || notifications.advancementOutbox[0].notificationMessageKey !== "notification.event.stage.advanced.message"
+          || notifications.advancementOutbox[0].stageTitle !== "Qualifiers"
+          || notifications.advancementOutbox[0].nextStageTitle !== "Final"
+          || notifications.advancementOutbox[0].stageIndex !== "2"
+          || notifications.notAdvancingOutbox.length !== 1
+          || !sameJson(notifications.notAdvancingOutbox[0].recipientUserIds, [participantUserId])
+          || notifications.notAdvancingOutbox[0].notificationTitleKey !== "notification.event.stage.not-advanced.title"
+          || notifications.notAdvancingOutbox[0].notificationMessageKey !== "notification.event.stage.not-advanced.message"
+          || notifications.notAdvancingOutbox[0].stageTitle !== "Qualifiers"
+          || notifications.notAdvancingOutbox[0].nextStageTitle !== "Final"
+          || notifications.notAdvancingOutbox[0].stageIndex !== "1"
+          || notifications.outbox[0].createdDate >= notifications.advancementOutbox[0].createdDate
+          || notifications.outbox[0].createdDate >= notifications.notAdvancingOutbox[0].createdDate) {
+        Q.fail("the first real tournament-review run did not preserve Casey's manual notification before the two separate automatic outcome notifications.");
+      }
       stateUpdate.tournamentReviewNoopBaseline = firstPass;
+      stateUpdate.tournamentReviewNotificationNoopBaseline = notifications;
       stateUpdate.tournamentReviewHistoryLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
     }
     const armedAtIso = dateIso(-31);
@@ -3515,8 +3540,12 @@
       Q.fail("the second real tournament-review run has not completed exactly once with affected count 0.");
     }
     const current = tournamentReviewStableSnapshot();
+    const notifications = tournamentFinalizeNotificationSnapshot();
     if (!sameJson(current, state.tournamentReviewNoopBaseline)) {
       Q.fail(`the unchanged second tournament-review run changed domain state: ${JSON.stringify(jsonDifferences(state.tournamentReviewNoopBaseline, current))}`);
+    }
+    if (!sameJson(notifications, state.tournamentReviewNotificationNoopBaseline)) {
+      Q.fail("the unchanged second tournament-review run duplicated or changed tournament notifications.");
     }
     Q.printObject({
       scenario: SCENARIO,
@@ -3606,6 +3635,53 @@
       advancementNotifications: Q.collection("userNotifications")
         .find({
           kind: "event-stage-advanced",
+          $or: [
+            { sourceId: EVENT_ID },
+            { "payload.eventId": EVENT_ID }
+          ]
+        })
+        .sort({ recipientUserId: 1, createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserId: Q.text(item.recipientUserId),
+          title: Q.text(item.title),
+          message: Q.text(item.message),
+          readAtIso: Q.text(item.readAtIso),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        })),
+      notAdvancingOutbox: Q.collection("notificationOutbox")
+        .find({ notificationType: "event-stage-not-advanced", ...eventSelector })
+        .sort({ createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserIds: sortedUnique(item.recipientUserIds || []),
+          title: Q.text(item.title),
+          body: Q.text(item.body),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        })),
+      notAdvancingNotifications: Q.collection("userNotifications")
+        .find({
+          kind: "event-stage-not-advanced",
           $or: [
             { sourceId: EVENT_ID },
             { "payload.eventId": EVENT_ID }
@@ -3875,6 +3951,8 @@
       "en:notification.event.stage.finalized.message": "{stageTitle} has been finalized.",
       "en:notification.event.stage.advanced.title": "Advanced to {nextStageTitle}",
       "en:notification.event.stage.advanced.message": "You advanced from {stageTitle} to {nextStageTitle}.",
+      "en:notification.event.stage.not-advanced.title": "Did not advance from {stageTitle}",
+      "en:notification.event.stage.not-advanced.message": "You did not advance from {stageTitle} to {nextStageTitle}.",
       "en:notification.event.tournament.finalized.title": "Tournament finalized",
       "en:notification.event.tournament.finalized.message": "{stageTitle} is complete. The tournament has been finalized. Open the event results to review the standings.",
       "en:notification.event.tournament.finalized.message.winner": "{stageTitle} is complete. The tournament has been finalized. Winner: {winnerNames}.",
@@ -3885,6 +3963,8 @@
       "hu:notification.event.stage.finalized.message": "A(z) {stageTitle} szakasz lezárult.",
       "hu:notification.event.stage.advanced.title": "Továbbjutottál: {nextStageTitle}",
       "hu:notification.event.stage.advanced.message": "Továbbjutottál a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba.",
+      "hu:notification.event.stage.not-advanced.title": "Nem jutottál tovább: {stageTitle}",
+      "hu:notification.event.stage.not-advanced.message": "Nem jutottál tovább a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba.",
       "hu:notification.event.tournament.finalized.title": "A verseny lezárult",
       "hu:notification.event.tournament.finalized.message": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Nyisd meg az eredményeket a helyezések megtekintéséhez.",
       "hu:notification.event.tournament.finalized.message.winner": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztes: {winnerNames}.",
@@ -3923,7 +4003,8 @@
         || current.planMarkers.length !== 1
         || notificationBefore.outbox.length !== 1
         || !sameJson(notificationBefore.outbox[0].recipientUserIds, [participantUserId, thirdUserId].sort())
-        || notificationBefore.advancementOutbox.length !== 0) {
+        || notificationBefore.advancementOutbox.length !== 0
+        || notificationBefore.notAdvancingOutbox.length !== 0) {
       Q.fail("TOURNAMENT-003 is not at the proven Finalize/group boundary required for the ordered notification replay.");
     }
 
@@ -3978,6 +4059,14 @@
       kind: "event-stage-advanced",
       $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
     });
+    const notAdvancingOutboxRemoval = Q.collection("notificationOutbox").deleteMany({
+      notificationType: "event-stage-not-advanced",
+      $or: [{ entityId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const notAdvancingNotificationRemoval = Q.collection("userNotifications").deleteMany({
+      kind: "event-stage-not-advanced",
+      $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
     const finalMemberRemoval = Q.collection("activityMembers").deleteMany({
       ownerType: "group",
       ownerId: finalGroupOwnerId,
@@ -3992,6 +4081,8 @@
         || finalizedNotificationRemoval.deletedCount !== notificationBefore.notifications.length
         || advancementOutboxRemoval.deletedCount !== 0
         || advancementNotificationRemoval.deletedCount !== 0
+        || notAdvancingOutboxRemoval.deletedCount !== 0
+        || notAdvancingNotificationRemoval.deletedCount !== 0
         || finalMemberRemoval.deletedCount !== 2
         || markerRemoval.deletedCount !== 1) {
       Q.fail("the ordered replay artifacts changed while the fixture boundary was being rewound.");
@@ -4090,12 +4181,13 @@
         || !sameJson(notifications.outbox[0].recipientUserIds, finalizedRecipients)
         || notifications.outbox[0].notificationTitleKey !== "notification.event.stage.finalized.title"
         || notifications.outbox[0].notificationMessageKey !== "notification.event.stage.finalized.message"
-        || notifications.outbox[0].notificationAvatarTone !== "stage"
-        || notifications.outbox[0].notificationAvatarIcon !== "emoji_events"
+        || notifications.outbox[0].notificationAvatarTone !== ""
+        || notifications.outbox[0].notificationAvatarIcon !== ""
         || notifications.outbox[0].stageIndex !== "1"
         || notifications.outbox[0].stageTotal !== "2"
         || notifications.outbox[0].stageTitle !== "Qualifiers"
-        || notifications.advancementOutbox.length !== 0) {
+        || notifications.advancementOutbox.length !== 0
+        || notifications.notAdvancingOutbox.length !== 0) {
       Q.fail("manual Finalize did not write the translated Nova+Riley stage-finalized intent before advancement.");
     }
     const deliveredRecipients = notifications.notifications.map(item => item.recipientUserId).sort();
@@ -4193,8 +4285,20 @@
         || notifications.advancementOutbox[0].stageTotal !== "2"
         || notifications.advancementOutbox[0].stageTitle !== "Qualifiers"
         || notifications.advancementOutbox[0].nextStageTitle !== "Final"
-        || notifications.outbox[0].createdDate >= notifications.advancementOutbox[0].createdDate) {
-      Q.fail("the ordered Finalize then advancement notification contract is not persisted exactly.");
+        || notifications.notAdvancingOutbox.length !== 1
+        || !sameJson(notifications.notAdvancingOutbox[0].recipientUserIds, [participantUserId])
+        || notifications.notAdvancingOutbox[0].notificationTitleKey !== "notification.event.stage.not-advanced.title"
+        || notifications.notAdvancingOutbox[0].notificationMessageKey !== "notification.event.stage.not-advanced.message"
+        || notifications.notAdvancingOutbox[0].notificationTone !== "warning"
+        || notifications.notAdvancingOutbox[0].notificationAvatarTone !== "stage"
+        || notifications.notAdvancingOutbox[0].notificationAvatarIcon !== "emoji_events"
+        || notifications.notAdvancingOutbox[0].stageIndex !== "1"
+        || notifications.notAdvancingOutbox[0].stageTotal !== "2"
+        || notifications.notAdvancingOutbox[0].stageTitle !== "Qualifiers"
+        || notifications.notAdvancingOutbox[0].nextStageTitle !== "Final"
+        || notifications.outbox[0].createdDate >= notifications.advancementOutbox[0].createdDate
+        || notifications.outbox[0].createdDate >= notifications.notAdvancingOutbox[0].createdDate) {
+      Q.fail("the ordered Casey Finalize then automatic participant outcome contract is not persisted exactly.");
     }
     const deliveredAdvancers = notifications.advancementNotifications
       .map(item => item.recipientUserId)
@@ -4202,6 +4306,13 @@
     if (notifications.advancementNotifications.length > 0
         && !sameJson(deliveredAdvancers, expectedWinners)) {
       Q.fail("advancement deliveries do not target exactly Casey and Riley.");
+    }
+    const deliveredNonAdvancers = notifications.notAdvancingNotifications
+      .map(item => item.recipientUserId)
+      .sort();
+    if (notifications.notAdvancingNotifications.length > 0
+        && !sameJson(deliveredNonAdvancers, [participantUserId])) {
+      Q.fail("non-advancement deliveries do not target exactly Nova.");
     }
 
     const armedAtIso = dateIso(-31);
@@ -4243,6 +4354,7 @@
       phase: "tournament-advancement-sequence-verified",
       finalizedRecipients,
       advancementRecipients: expectedWinners,
+      notAdvancingRecipients: [participantUserId],
       next: "Wait for the real unchanged tournament worker pass, then run verify-tournament-advancement-sequence-noop."
     });
   }
@@ -4282,7 +4394,7 @@
       checkpointId,
       phase: "tournament-advancement-sequence-noop-verified",
       affectedCount: Number(runState.lastRunCount),
-      next: "Compare Casey/Nova/Riley live counters and lists: Nova has Finalize only; Casey has advancement only; Riley has both."
+      next: "Compare Casey/Nova/Riley live counters and lists: Casey has the automatic advancement result; Nova and Riley each have Casey's Finalize plus their own automatic outcome."
     });
   }
 

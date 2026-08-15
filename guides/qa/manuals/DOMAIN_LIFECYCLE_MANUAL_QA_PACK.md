@@ -4625,6 +4625,20 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Final group, removed its single review plan marker and held the real worker
   idle. It did not recreate or delete the Final group. Run Casey's one visible
   Qualifiers Finalize next; do not run prepare again.
+- **Separated automatic outcomes and unchanged replay PASS — 2026-08-15**:
+  after Casey's already-persisted manual Finalize, the real review worker ran
+  once with affected count `1`. It retained Casey's human-sender
+  `event-stage-finalized` intent for Nova+Riley, then persisted one independent
+  automatic `event-stage-advanced` intent for Casey+Riley and one independent
+  automatic `event-stage-not-advanced` intent for Nova. Both automatic rows
+  carry source `Qualifiers` and destination `Final`; the advancing avatar uses
+  Final's stage position `2/2`, while the non-advancing avatar uses Qualifiers
+  position `1/2`. Final membership is exactly Casey+Riley. A second real worker
+  pass completed with affected count `0`, and the saved domain plus all three
+  notification intents remained byte-identical. The frontend-local path and
+  EN/HU frontend plus all three Mongo seed sets mirror the same contract. The
+  only open branch is the unread three-browser rendering comparison; no
+  Finalize or worker replay remains.
 - **Later Start boundary remains independent**: assignment to Final does not
   mean Final has started. When Final actually starts, the existing tournament
   Start path writes a new `Final started / Final has started. Groups are

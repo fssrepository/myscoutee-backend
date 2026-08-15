@@ -3722,6 +3722,8 @@ public class ActivitiesEventsService {
         }
         String stageTitle = stageTitle(stage);
         Map<String, String> payload = new LinkedHashMap<>(tournamentStageNotificationPayload(event, stage));
+        payload.put("notification_avatar_tone", "stage");
+        payload.put("notification_avatar_icon", "emoji_events");
         payload.put("notification_title_key", "notification.event.stage.started.title");
         payload.put("notification_message_key", "notification.event.stage.started.message");
         enqueueEventNotification(
