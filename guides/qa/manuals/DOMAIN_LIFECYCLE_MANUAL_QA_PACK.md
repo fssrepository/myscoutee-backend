@@ -4639,6 +4639,16 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   EN/HU frontend plus all three Mongo seed sets mirror the same contract. The
   only open branch is the unread three-browser rendering comparison; no
   Finalize or worker replay remains.
+- **Three-browser notification rendering PASS / CLOSED — 2026-08-15**:
+  screenshot `2026-08-15 19-50-31` proved the final split without another
+  write. Casey showed one automatic `Advanced to Final` row. Nova showed
+  Casey's separate human-avatar `Qualifiers finalized` row plus one automatic
+  `Did not advance from Qualifiers` row. Riley showed Casey's separate
+  Finalize row plus one automatic advancement row. The two advancing users are
+  Casey (Group A) and Riley (Group B); Nova is the sole non-advancer. Counts,
+  source/destination stage names, Casey avatar and stage-colored trophy avatars
+  agree with the persisted oracle. `TOURNAMENT-003` is PASS/CLOSED; retain its
+  exact Final group as the `TOURNAMENT-004` starting boundary.
 - **Later Start boundary remains independent**: assignment to Final does not
   mean Final has started. When Final actually starts, the existing tournament
   Start path writes a new `Final started / Final has started. Groups are

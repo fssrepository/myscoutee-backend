@@ -25,15 +25,14 @@ The current qualification ledger is available as an
 
 As of 2026-08-15:
 
-- **Core:** 55 passed, 80 remaining (135 total)
+- **Core:** 56 passed, 79 remaining (135 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 191 cases. `TOURNAMENT-002` is PASS/CLOSED after
-the corrected recovery Start, exact group/member/chat projections and ordered
-three-actor notification replay. `TOURNAMENT-003` has passed its persisted
-manual-Finalize, separate automatic advanced/not-advanced outcomes and exact
-worker no-op replay; its three-browser visual comparison remains. `TOURNAMENT-004`
-retains the separate Final Start and whole-tournament completion continuation.
+The complete matrix contains 191 cases. `TOURNAMENT-002` and `TOURNAMENT-003`
+are PASS/CLOSED after exact grouping, manual Finalize, separate automatic
+advanced/not-advanced outcomes, unchanged worker replay and three-browser
+notification comparison. `TOURNAMENT-004` retains the exact Casey+Riley Final
+membership for the separate Final Start and whole-tournament completion.
 
 ### Official manuals
 

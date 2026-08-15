@@ -34,17 +34,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-003 — review and advancement
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-003--review-and-advancement
-scenario: event-domain (manual Finalize -> automatic participant outcomes persisted; visual comparison next)
-ledger_status: IN PROGRESS / VISUAL OUTCOME SPLIT NEXT
-state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 now has the exact persisted two-producer contract. Casey's manual Finalize remains one separate human-sender `event-stage-finalized` intent for Nova+Riley only. The real tournament-review worker then persisted Casey+Riley in the existing Final group, one separate automatic `event-stage-advanced` intent for Casey+Riley, and one separate automatic `event-stage-not-advanced` intent for Nova. Both automatic outcomes name Qualifiers and Final; advancing uses the Final stage badge context and non-advancing uses the Qualifiers badge context. The first real worker pass completed with count 1; the second unchanged pass completed with count 0 and byte-exact domain plus notification state. Backend/frontend-local and frontend/Mongo EN/HU keys are synchronized. Only the three-browser visual sender/avatar/text comparison remains.
-required_resume: In Nova's already-open browser reload once, open Notifications -> New, and compare the two TOURNAMENT-003 rows: Casey human `Qualifiers finalized`, then system trophy `Did not advance from Qualifiers`. Do not mark either read. After Nova passes, compare Casey and Riley without replaying Finalize or either worker.
-event: QA TOURNAMENT-003
+checkpoint: TOURNAMENT-004 — Final Start and whole-tournament completion
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-004--final-start-and-whole-tournament-completion
+scenario: event-domain (carry the proven TOURNAMENT-003 Final membership forward; no reset)
+ledger_status: NOT RUN / CARRY-FORWARD READY
+state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 closed with exact Casey+Riley Final membership, Nova excluded, separate manual and automatic notification producers, and byte-exact count-0 worker replay. Screenshot `2026-08-15 19-50-31` visually proved all three unread views: Casey has only automatic `Advanced to Final`; Nova has Casey's human `Qualifiers finalized` plus automatic `Did not advance from Qualifiers`; Riley has Casey's human Finalize plus automatic advancement. Stage-colored automatic avatars, human Casey avatar, text and counts all agree. Preserve this live state for TOURNAMENT-004.
+required_resume: Do not stage or reset. First add/read a guarded TOURNAMENT-004 carry-forward oracle around the current Casey+Riley Final group, Final `RS / awaiting-prior-stage`, and the closed TOURNAMENT-003 notification boundary. Then test actual Final Start as a new transaction; do not replay Qualifiers Finalize or tournament review.
+event: QA TOURNAMENT-003 (retained carry-forward event for TOURNAMENT-004)
 actors:
-  active: Casey tournament stage finalizer; Nova qualifier non-advancer; Riley qualifier advancer; three fresh launcher-owned demo browsers on /game
-  controls: Nova and Riley remain untouched through the qualifier-standings observation and Casey's later Finalize write
-next_actor: Nova performs only the visual unread notification comparison; Casey and Riley remain untouched until their own visual comparison.
+  active: Casey Final-stage starter/finalizer; Riley Final participant; Nova eliminated control; three launcher-owned demo browsers on /game
+  controls: preserve the exact Casey+Riley Final group and all three closed TOURNAMENT-003 notification lists
+next_actor: Casey performs only the future visible Final Start after the guarded TOURNAMENT-004 carry-forward oracle is implemented and recorded.
 stop_phrase: megvan
 ```
 
