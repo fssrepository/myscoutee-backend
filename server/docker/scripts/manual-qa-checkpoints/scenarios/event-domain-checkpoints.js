@@ -2238,6 +2238,9 @@
           groupId: identity.groupId,
           identitySource: "stable-random-room-id",
           title: Q.text(room.title),
+          subtitle: Q.text(room.subtitle),
+          avatar: Q.text(room.avatar),
+          imageUrl: Q.text(room.imageUrl),
           status: Q.text(room.status),
           generated: room.generated === true,
           eventType: Q.text(room.eventType),
@@ -2329,6 +2332,9 @@
         ownerUserId: Q.text(chat.ownerUserId),
         memberUserIds: sortedUnique(chat.memberIds || []),
         channelType: Q.text(chat.channelType),
+        title: Q.text(chat.title),
+        avatar: Q.text(chat.avatar),
+        lastMessage: Q.text(chat.lastMessage),
         unread: Number(chat.unread || 0)
       })),
       eventChatMessages: eventChatMessages.map(message => ({
@@ -3179,6 +3185,118 @@
       Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
     }
     return state;
+  }
+
+  function repairTournamentRoomPresentation() {
+    if (checkpointId !== "TOURNAMENT-002") {
+      Q.fail("repair-tournament-room-presentation is restricted to TOURNAMENT-002.");
+    }
+    const state = requireMatchingState();
+    if (state.fixtureRepairs && state.fixtureRepairs.tournamentRoomPresentation) {
+      Q.fail("the TOURNAMENT-002 tournament-room presentation has already been repaired.");
+    }
+
+    const parentEvent = Q.collection("events").findOne(manualEventSelector());
+    const rooms = Q.collection("events")
+      .find(generatedRandomRoomSelector())
+      .sort({ sourceId: 1, _id: 1 })
+      .toArray();
+    if (!parentEvent || Q.text(parentEvent.title) !== "QA TOURNAMENT-002" || rooms.length !== 2) {
+      Q.fail("TOURNAMENT-002 requires its exact parent event and two generated rooms before presentation repair.");
+    }
+    if (!rooms.every((room, index) => (
+      Q.text(room.title) === `Random Room R${index + 1}`
+      && Q.text(room.eventType) === "random-room"
+      && Number(room.acceptedMembers || 0) === (index === 0 ? 2 : 1)
+    ))) {
+      Q.fail("generated room identity, order, type or accepted occupancy no longer matches the proven TOURNAMENT-002 boundary.");
+    }
+
+    const roomIds = rooms.map(room => Q.text(room.sourceId || room._id));
+    const chats = Q.collection("chats").find({ id: { $in: roomIds } }).toArray();
+    const messages = Q.collection("chatMessages").find({ chatId: { $in: roomIds } }).toArray();
+    if (chats.length !== 3
+        || chats.reduce((total, chat) => total + Number(chat.unread || 0), 0) !== 3
+        || messages.length !== 2
+        || !messages.every(message => (
+          Q.text(message.id) === "system:random-room-welcome"
+          && Q.text(message.clientId) === "random-room-welcome"
+        ))) {
+      Q.fail("TOURNAMENT-002 chat copies, unread counters or welcome messages no longer match the proven transaction.");
+    }
+
+    const repairedAtIso = Q.nowIso();
+    const imageUrl = "/media/public?key=images/system/tournament-room/v1/large.webp";
+    const welcome = "Welcome to your tournament group for QA TOURNAMENT-002. "
+      + "Use this chat to coordinate with your group and follow stage updates.";
+    const repairedRooms = [];
+    rooms.forEach((room, index) => {
+      const roomId = roomIds[index];
+      const title = `Tournament Group R${index + 1}`;
+      const roomUpdate = Q.collection("events").updateOne({ _id: room._id }, { $set: {
+        title,
+        subtitle: "Tournament group for QA TOURNAMENT-002.",
+        avatar: imageUrl,
+        imageUrl,
+        eventType: "tournament-room",
+        topics: ["#Tournament", "#Competition"],
+        mode: "Tournament",
+        updatedDate: repairedAtIso,
+        updatedUser: Q.ACTOR
+      } });
+      const chatUpdate = Q.collection("chats").updateMany({ id: roomId }, { $set: {
+        title,
+        avatar: imageUrl,
+        lastMessage: welcome,
+        revision: Date.now()
+      } });
+      const messageUpdate = Q.collection("chatMessages").updateOne({
+        chatId: roomId,
+        id: "system:random-room-welcome"
+      }, { $set: {
+        id: "system:tournament-room-welcome",
+        clientId: "tournament-room-welcome",
+        text: welcome
+      } });
+      if (roomUpdate.matchedCount !== 1
+          || chatUpdate.matchedCount !== Number(room.acceptedMembers || 0)
+          || messageUpdate.matchedCount !== 1) {
+        Q.fail(`TOURNAMENT-002 presentation repair was incomplete for '${roomId}'.`);
+      }
+      repairedRooms.push({
+        roomId,
+        title,
+        chatCopies: chatUpdate.modifiedCount,
+        welcomeMessages: messageUpdate.modifiedCount
+      });
+    });
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      "fixtureRepairs.tournamentRoomPresentation": {
+        repairedAtIso,
+        imageUrl,
+        retainedRoomIds: roomIds,
+        retainedMembershipCount: 3,
+        retainedChatCopyCount: 3,
+        retainedUnreadTotal: 3
+      }
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-presentation-repaired",
+      repairedAtIso,
+      imageUrl,
+      repairedRooms,
+      retainedTransaction: {
+        roomIds,
+        memberships: 3,
+        chatCopies: 3,
+        unreadTotal: 3,
+        startReplayed: false
+      },
+      next: "Reload Casey once, reopen Activities -> Chats -> All, and verify Tournament Group R1 with the trophy avatar and tournament-specific welcome text."
+    });
   }
 
   function repairTicketPaymentFixture() {
@@ -6885,6 +7003,7 @@
     case "schedule-auto-inviter": scheduleAutoInviter(); break;
     case "arm-ticket-expiry": armTicketExpiry(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
+    case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;
     case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
     case "prepare-ticket-invitee-response-retest": prepareTicketInviteeResponseRetest(); break;
     case "prepare-ticket-admin-approval-retest": prepareTicketAdminApprovalRetest(); break;

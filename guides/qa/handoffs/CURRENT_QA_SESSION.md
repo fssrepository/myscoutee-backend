@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 14:44 CEST
+Updated: 2026-08-15 15:14 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,14 +34,14 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-002 — automatic group membership projection
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-002--automatic-group-membership-projection
 scenario: event-domain (live post-Start transaction; do not reset or replay Start)
-ledger_status: IN PROGRESS / START PERSISTENCE PASS / GROUP READ+UI PASS / MEMBERS IDENTITY PASS / MEMBER ACTION MENU+CHAT REMAIN
-state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Start must not run again. The repaired explicit memberOwnerType/memberOwnerId path has server and UI proof. Casey visually proved Group A 2 / 1–2 with Casey+Nova and Group B 1 / 1–2 with Riley, then Group A Members opened Random Room R1 with exactly Casey and Nova, 2 members and no Invite action. Pending only is a read filter. The card overflow remains because view-only still permits non-mutating Participation/Report; mutation actions must be absent. Three launcher-owned browsers remain open; Casey's Random Room R1 Members popup is open, Nova/Riley remain untouched.
-required_resume: In Casey's open Random Room R1 Members popup, open Nova Social's card overflow once. Confirm that Remove member/Delete invitation, Promote, Leave, Disqualify and other membership mutations are absent; Participation and Report user are allowed. Do not select an action, then close only the menu and report what is visible.
+ledger_status: IN PROGRESS / START+GROUP+MEMBERS PASS / TOURNAMENT CHAT PRESENTATION RETEST READY
+state: TOURNAMENT-001 is PASS/CLOSED. TOURNAMENT-002 Start is final and must not run again: two generated rooms partition Casey+Nova and Riley exactly once, with three accepted room memberships, two physical chats/three owner copies, two welcome messages, A/groupsCount=2, three action-outbox records, one recompute and exact +1 Event/Chat deltas. Group standings, Group A Members and the view-only Nova menu passed. Casey's first Chats/All read exposed a semantic FAIL: the tournament group reused Random Room title, affinity/leave welcome and sparkle avatar. Java/frontend presentation is repaired without changing the stable assignment IDs; a guarded checkpoint repair changed only the two room/chat/message presentations. The post-repair oracle retains 3 memberships, 3 chat copies, unread total 3 and all activity counters. Trophy assets small/medium/large are seeded and HTTP-verified in MinIO. Three launcher-owned browsers remain open.
+required_resume: In Casey only, reload once for the repaired frontend bundle, then open Activities -> Chats -> All. Verify exactly one Tournament Group R1 row appears with the trophy avatar and tournament-specific preview. Do not open the chat yet and do not touch Nova/Riley.
 event: QA TOURNAMENT-002
 actors:
   active: Casey tournament host/grouping actor, Nova accepted participant, Riley accepted participant; three launcher-owned demo browsers on /game
   controls: Nova and Riley stay untouched during the Start write, then prove their exact group and group-chat projections
-next_actor: Casey opens Nova's member-card overflow once and verifies only non-mutating actions are exposed; no action is selected.
+next_actor: Casey reloads once, opens Activities -> Chats -> All and reports the single Tournament Group R1 row, trophy avatar and tournament-specific preview; Nova/Riley remain untouched.
 stop_phrase: megvan
 ```
 
@@ -107,12 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-002 — automatic group membership projection`, view-only member
-action boundary: in Casey's open `Random Room R1` Members popup, open Nova
-Social's card overflow once. Participation and Report user are allowed;
-Remove/Delete invitation, Promote, Leave, Disqualify and every other membership
-mutation must be absent. Do not select an action. Close only the menu and
-report the visible items; do not touch Group B, Nova or Riley yet.
+`TOURNAMENT-002 — automatic group membership projection`, tournament-chat
+presentation replay: in Casey only, reload once, then open Activities ->
+Chats -> **All**. Exactly one **Tournament Group R1** row must be present with
+the trophy avatar and the tournament-specific preview. Do not open the chat
+yet and do not touch Nova or Riley. Report the visible row with `megvan`.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is

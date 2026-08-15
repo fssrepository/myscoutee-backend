@@ -105,6 +105,7 @@ public class ChatService {
     public static final String RANDOM_ROOM_WELCOME_MESSAGE =
             "Welcome! We matched you here by affinity and past interactions. Leave anytime. "
                     + "Set visibility to non-public in Global Settings to stop future Random Rooms.";
+    public static final String TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE = "tournament-room-welcome";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
@@ -258,7 +259,7 @@ public class ChatService {
                     : current.getMongoId());
             document.setChatId(chatId);
             document.setOwnerUserId(memberUserId);
-            document.setAvatar("SY");
+            document.setAvatar(firstNonBlank(event.getAvatar(), "SY"));
             document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
             document.setLastMessage(current == null ? "" : safeText(current.getLastMessage()));
             document.setLastSenderId(current == null ? null : current.getLastSenderId());

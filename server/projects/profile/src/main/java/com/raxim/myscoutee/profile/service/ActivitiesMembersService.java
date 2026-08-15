@@ -57,6 +57,7 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 @Service
 public class ActivitiesMembersService {
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
+    private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
     private static final String OWNER_TYPE_GROUP = "group";
@@ -235,7 +236,8 @@ public class ActivitiesMembersService {
         }
         ActivityEvent room = findPreferredEventRecord(normalizedOwnerId);
         return room != null
-                && RANDOM_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()))
+                && (RANDOM_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()))
+                        || TOURNAMENT_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType())))
                 && accessControlService.canCurrentActorViewEventMembers(normalizedParentEventId);
     }
 

@@ -178,6 +178,27 @@ class ChatServiceTest {
     }
 
     @Test
+    void ensureTournamentRoomChatUsesTheManagedTournamentImageAsItsAvatar() {
+        ActivityEvent room = new ActivityEvent();
+        room.setSourceId("random-room:event-1:stage-1:room-1");
+        room.setTitle("Tournament Group R1");
+        room.setAvatar("/media/public?key=images/system/tournament-room/v1/large.webp");
+        when(chatsRepository.findByChatId(room.getSourceId())).thenReturn(List.of());
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.ensureMainEventChat(room, List.of("user-1"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Chat>> chatsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository).saveAll(chatsCaptor.capture());
+        assertThat(chatsCaptor.getValue()).singleElement().satisfies(chat -> {
+            assertThat(chat.getTitle()).isEqualTo("Tournament Group R1");
+            assertThat(chat.getAvatar())
+                    .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
+        });
+    }
+
+    @Test
     void publishedMainEventChatCreatesAnEmptyChannelWithoutChangingAttentionCounters() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");

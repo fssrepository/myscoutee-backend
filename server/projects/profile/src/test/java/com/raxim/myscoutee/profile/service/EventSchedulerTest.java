@@ -570,6 +570,7 @@ class EventSchedulerTest {
         event.setStatus("A");
         event.setCreatorUserId("casey");
         event.setTitle("Tournament stage start");
+        event.setMode("Tournament");
         event.setSubEvents(List.of(subEvent("stage-start", 2, 1, 2)));
 
         Users nonPublicAcceptedUser = user("casey");
@@ -613,11 +614,27 @@ class EventSchedulerTest {
         assertThat(plans).allSatisfy(plan -> assertThat(plan.memberUserIds()).hasSizeBetween(1, 2));
         verify(usersRepository, never()).findByUserIdIn(anyCollection());
         verify(activityEventsRepository, never()).findAll();
+        ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
         verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
-                any(ActivityEvent.class),
+                roomCaptor.capture(),
                 eq("scheduler"),
                 anyList(),
                 anyList());
+        assertThat(roomCaptor.getAllValues()).allSatisfy(room -> {
+            assertThat(room.getTitle()).startsWith("Tournament Group R");
+            assertThat(room.getSubtitle()).isEqualTo("Tournament group for Tournament stage start.");
+            assertThat(room.getEventType()).isEqualTo("tournament-room");
+            assertThat(room.getMode()).isEqualTo("Tournament");
+            assertThat(room.getAvatar())
+                    .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
+            assertThat(room.getImageUrl())
+                    .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
+        });
+        verify(chatService, times(2)).ensureInitialSystemMessage(
+                anyString(),
+                eq("Welcome to your tournament group for Tournament stage start. "
+                        + "Use this chat to coordinate with your group and follow stage updates."),
+                eq(ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE));
     }
 
     @Test

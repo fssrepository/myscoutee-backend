@@ -71,10 +71,13 @@ public class EventScheduler {
     private static final String MARKER_ACTION_INVITE_BATCH = "invite-batch";
     private static final String MARKER_UPDATED_BY = "scheduler";
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
+    private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
     private static final String RANDOM_ROOM_SYSTEM_NAME = "MyScoutee System";
     private static final String PUBLIC_PROFILE_STATUS = "public";
     private static final String RANDOM_ROOM_IMAGE_URL =
             "/media/public?key=images/system/random-room-default.png";
+    private static final String TOURNAMENT_ROOM_IMAGE_URL =
+            "/media/public?key=images/system/tournament-room/v1/large.webp";
     private static final String RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER =
             "jobs.process.randomGroups.sourceEventIds";
     private static final String STAGE_STATUS_ACTIVE = "A";
@@ -885,7 +888,8 @@ public class EventScheduler {
                         "random",
                         "random:" + eventId + ":" + subEventId,
                         observedQueries,
-                        requireExactTargetCoverage);
+                        requireExactTargetCoverage,
+                        includeAllAcceptedMembers && requireExactTargetCoverage);
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -1219,7 +1223,8 @@ public class EventScheduler {
                         event, eventGraph, advancingUserIds, nextTargets, "score", 
                         "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
                         null,
-                        true);
+                        true,
+                        false);
                 if (!changedGroups.isEmpty()) {
                     activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
                 }
@@ -1629,7 +1634,7 @@ public class EventScheduler {
             List<GroupAssignmentTarget> targets,
             String wrapperType,
             String context) {
-        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false);
+        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false, false);
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1648,6 +1653,7 @@ public class EventScheduler {
                 wrapperType,
                 context,
                 observedQueries,
+                false,
                 false);
     }
 
@@ -1659,7 +1665,8 @@ public class EventScheduler {
             String wrapperType,
             String context,
             AtomicInteger observedQueries,
-            boolean reconcileAllTargets) {
+            boolean reconcileAllTargets,
+            boolean tournamentRoomPresentation) {
         Set<String> normalizedPoolUserIds = new LinkedHashSet<>(normalizeUserIds(poolUserIds));
         if (graph != null) {
             normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
@@ -1829,7 +1836,7 @@ public class EventScheduler {
                     throw new IllegalStateException(
                             "Missing random-room target for " + normalizeId(plannedGroup.seedId()) + ".");
                 }
-                randomRoom = materializeRandomRoomEvent(event, assignmentTarget);
+                randomRoom = materializeRandomRoomEvent(event, assignmentTarget, tournamentRoomPresentation);
             }
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
@@ -1838,8 +1845,8 @@ public class EventScheduler {
                     String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                     chatService.ensureInitialSystemMessage(
                             randomRoomChatId,
-                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
-                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                            roomWelcomeMessage(event, tournamentRoomPresentation),
+                            roomWelcomeMessageType(tournamentRoomPresentation));
                 }
                 rememberPlanMarkerIfMissing(
                         wrapperType,
@@ -1877,8 +1884,8 @@ public class EventScheduler {
                 String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                 chatService.ensureInitialSystemMessage(
                         randomRoomChatId,
-                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
-                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                        roomWelcomeMessage(event, tournamentRoomPresentation),
+                        roomWelcomeMessageType(tournamentRoomPresentation));
             }
             recordPlanMarker(
                     wrapperType,
@@ -1999,17 +2006,21 @@ public class EventScheduler {
 
     private ActivityEvent materializeRandomRoomEvent(
             ActivityEvent sourceEvent,
-            GroupAssignmentTarget assignmentTarget) {
+            GroupAssignmentTarget assignmentTarget,
+            boolean tournamentRoomPresentation) {
         String roomEventId = normalizeId(assignmentTarget == null ? null : assignmentTarget.memberOwnerId());
         if (!StringUtils.hasText(roomEventId)) {
             throw new IllegalStateException("A generated random room requires a stable event id.");
         }
+        // Keep the legacy scheduler identity stable: it is an internal assignment key,
+        // not the room's user-facing semantic type.
         String syncKey = "scheduler:" + RANDOM_ROOM_EVENT_TYPE + ":" + roomEventId;
         ActivityEvent existing = activityEventsRepository.findBySyncKey(syncKey).orElse(null);
         ActivityEvent room = existing == null ? new ActivityEvent() : existing;
         String nowIso = Instant.now().toString();
         int roomOrdinal = Math.max(1, assignmentTarget.roomOrdinal());
-        String roomTitle = "Random Room R" + roomOrdinal;
+        String roomTitle = (tournamentRoomPresentation ? "Tournament Group R" : "Random Room R")
+                + roomOrdinal;
         int capacityMin = assignmentTarget.range() == null
                 ? 0
                 : Math.max(0, assignmentTarget.range().getMin());
@@ -2023,9 +2034,13 @@ public class EventScheduler {
         room.setOwnerUserId(null);
         room.setStatus(ActivityEvent.STATUS_ACTIVE);
         room.setAdmins(List.of());
-        room.setAvatar("SY");
+        room.setAvatar(tournamentRoomPresentation ? TOURNAMENT_ROOM_IMAGE_URL : "SY");
         room.setTitle(roomTitle);
-        room.setSubtitle("System-generated affinity room.");
+        room.setSubtitle(tournamentRoomPresentation
+                ? "Tournament group for " + firstNonBlank(
+                        sourceEvent == null ? null : sourceEvent.getTitle(),
+                        "the parent event") + "."
+                : "System-generated affinity room.");
         room.setTimeframe(safeText(sourceEvent == null ? null : sourceEvent.getTimeframe()));
         room.setInviter(null);
         room.setUnread(existing == null ? 0 : safeCount(existing.getUnread()));
@@ -2045,7 +2060,9 @@ public class EventScheduler {
                 sourceEvent == null ? null : sourceEvent.getEndAtIso(),
                 room.getStartAtIso()));
         room.setDistanceKm(sourceEvent == null ? null : sourceEvent.getDistanceKm());
-        room.setImageUrl(RANDOM_ROOM_IMAGE_URL);
+        room.setImageUrl(tournamentRoomPresentation
+                ? TOURNAMENT_ROOM_IMAGE_URL
+                : RANDOM_ROOM_IMAGE_URL);
         room.setSourceLink(null);
         room.setLocation(safeText(sourceEvent == null ? null : sourceEvent.getLocation()));
         room.setLocationCoordinates(sourceEvent == null ? null : sourceEvent.getLocationCoordinates());
@@ -2071,7 +2088,9 @@ public class EventScheduler {
         room.setParentEventId(null);
         room.setSlotTemplateId(null);
         room.setGenerated(false);
-        room.setEventType(RANDOM_ROOM_EVENT_TYPE);
+        room.setEventType(tournamentRoomPresentation
+                ? TOURNAMENT_ROOM_EVENT_TYPE
+                : RANDOM_ROOM_EVENT_TYPE);
         room.setUpcomingSlots(List.of());
         room.setAcceptedMembers(existing == null ? 0 : safeCount(existing.getAcceptedMembers()));
         room.setPendingMembers(existing == null ? 0 : safeCount(existing.getPendingMembers()));
@@ -2079,11 +2098,13 @@ public class EventScheduler {
         room.setPendingMemberUserIds(existing == null ? List.of() : existing.getPendingMemberUserIds());
         room.setInvitedMemberUserIds(List.of());
         room.setPendingRequestMemberUserIds(List.of());
-        room.setTopics(List.of("#RandomRoom", "#System"));
+        room.setTopics(tournamentRoomPresentation
+                ? List.of("#Tournament", "#Competition")
+                : List.of("#RandomRoom", "#System"));
         room.setSubEventsEnabled(false);
         room.setSubEventDefinitions(List.of());
         room.setSubEvents(List.of());
-        room.setMode("Casual");
+        room.setMode(tournamentRoomPresentation ? "Tournament" : "Casual");
         room.setRating(existing == null ? 0d : existing.getRating());
         room.setBoost(existing == null ? 0d : existing.getBoost());
         room.setAffinity(existing == null ? 0d : existing.getAffinity());
@@ -2119,11 +2140,16 @@ public class EventScheduler {
             if (!StringUtils.hasText(roomEventId) || recipientUserIds.isEmpty()) {
                 continue;
             }
-            String roomTitle = firstNonBlank(room.getTitle(), "Random Room");
+            boolean tournamentRoom = TOURNAMENT_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()));
+            String roomTitle = firstNonBlank(
+                    room.getTitle(),
+                    tournamentRoom ? "Tournament Group" : "Random Room");
             Map<String, String> payload = new LinkedHashMap<>();
             payload.put("eventId", roomEventId);
             payload.put("eventTitle", roomTitle);
-            payload.put("eventScope", RANDOM_ROOM_EVENT_TYPE);
+            payload.put("eventScope", tournamentRoom
+                    ? TOURNAMENT_ROOM_EVENT_TYPE
+                    : RANDOM_ROOM_EVENT_TYPE);
             payload.put("parentEventId", parentEventId);
             payload.put("parentEventTitle", parentEventTitle);
             payload.put("assignmentScope", safeText(assignmentScope));
@@ -2137,14 +2163,35 @@ public class EventScheduler {
                     "random-room-participants",
                     recipientUserIds,
                     roomTitle + " is ready",
-                    "Your system-generated room for " + parentEventTitle + " is ready.",
+                    tournamentRoom
+                            ? "Your tournament group for " + parentEventTitle + " is ready."
+                            : "Your system-generated room for " + parentEventTitle + " is ready.",
                     DEFAULT_CLICK_URL,
-                    firstNonBlank(room.getImageUrl(), RANDOM_ROOM_IMAGE_URL),
+                    firstNonBlank(
+                            room.getImageUrl(),
+                            tournamentRoom ? TOURNAMENT_ROOM_IMAGE_URL : RANDOM_ROOM_IMAGE_URL),
                     APP_BADGE_URL,
                     "event-random-room-" + roomEventId,
                     payload,
                     MARKER_UPDATED_BY));
         }
+    }
+
+    private String roomWelcomeMessage(ActivityEvent sourceEvent, boolean tournamentRoomPresentation) {
+        if (!tournamentRoomPresentation) {
+            return ChatService.RANDOM_ROOM_WELCOME_MESSAGE;
+        }
+        String eventTitle = firstNonBlank(
+                sourceEvent == null ? null : sourceEvent.getTitle(),
+                "your tournament");
+        return "Welcome to your tournament group for " + eventTitle
+                + ". Use this chat to coordinate with your group and follow stage updates.";
+    }
+
+    private String roomWelcomeMessageType(boolean tournamentRoomPresentation) {
+        return tournamentRoomPresentation
+                ? ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE
+                : ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
     }
 
     private int incrementObservedQueries(AtomicInteger observedQueries) {

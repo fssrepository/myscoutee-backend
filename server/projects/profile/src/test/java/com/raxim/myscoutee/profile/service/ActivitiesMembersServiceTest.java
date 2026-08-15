@@ -582,7 +582,7 @@ class ActivitiesMembersServiceTest {
         String subEventId = "stage-1";
         String roomId = "random-room:event-1:stage-1:stage-1:group:1";
         ActivityEvent room = event(roomId, "system", "system");
-        room.setEventType("random-room");
+        room.setEventType("tournament-room");
         ActivityMember roomMember = member("room-member-sync", roomId, "member-1", "Member", "accepted");
         when(accessControlService.canCurrentActorViewEventMembers(roomId)).thenReturn(false);
         when(accessControlService.canCurrentActorViewEventMembers(parentEventId)).thenReturn(true);

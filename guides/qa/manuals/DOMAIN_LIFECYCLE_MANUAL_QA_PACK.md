@@ -4331,7 +4331,48 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Approve, Remove/Delete, Promote, Step down, Leave, Disqualify and Reinstate.
   Evidence:
   `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-43-12.png`.
-  One bounded overflow inspection remains before moving to group chat.
+- **View-only member action boundary PASS**: Casey opened Nova's card overflow
+  and confirmed the membership mutations were absent. The remaining actions
+  are the permitted non-mutating Participation/Report controls. No action was
+  selected and no member state changed. The remaining checkpoint branch is
+  the three actors' exact group-chat projection.
+- **Tournament chat presentation FAIL, then guarded repair ready**: Casey's
+  first Chats -> All inspection found the correct single physical group chat,
+  but it was visibly rendered as `Random Room R1` with a sparkle avatar and
+  the affinity/leave/visibility welcome intended only for the standalone
+  random matcher. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-47-46.png`.
+  The persisted room membership and chat identity were correct; this was a
+  semantic write/presentation defect, not a read projection or missing chat.
+- The production path now distinguishes an explicit tournament Start from the
+  scheduled random matcher. Tournament materialization writes
+  `eventType=tournament-room`, `Tournament Group R<n>`, a parent-event
+  subtitle, tournament topics/mode, tournament notification copy and a
+  tournament-specific initial chat message. The stable internal
+  `random-room:<parent>:<stage>:<group>` assignment identity is deliberately
+  retained so proven memberships and chat authorization are not migrated or
+  duplicated. The frontend consumes the backend welcome text and renders the
+  managed trophy avatar; ordinary random rooms retain their existing copy and
+  sparkle treatment.
+- A generated trophy asset is versioned under
+  `server/docker/conf/minio/media/images/system/tournament-room/v1/` as
+  `small.webp` (`128x72`), `medium.webp` (`640x360`) and `large.webp`
+  (`1280x720`). All three were seeded into the running `myscoutee-media`
+  MinIO bucket and returned HTTP `200 image/webp`. The normal managed-image
+  pipeline resolves the stored large URL to medium for event cards and small
+  for avatars.
+- The versioned `repair-tournament-room-presentation` checkpoint action
+  guarded the exact live boundary and updated only two room documents, three
+  owner-scoped chat copies and two initial system messages. It did not replay
+  Start, change a membership, alter unread counts or create a task/outbox row.
+  The post-repair read oracle proves Tournament Group R1/R2 at accepted
+  `2/1`, three unchanged memberships, three chat copies, two
+  `system:tournament-room-welcome` messages, unread total `3`, unchanged actor
+  Activity counters and the same single completed parent recompute task.
+- Remaining bounded UI replay: Casey reloads once, opens Chats -> All, and
+  proves the single Tournament Group R1 row has the trophy avatar and
+  tournament-specific preview. Only after that PASS open the chat and compare
+  the persisted welcome; Nova and Riley remain untouched until requested.
 
 ### `TOURNAMENT-003` — review and advancement
 
