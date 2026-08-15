@@ -2454,6 +2454,10 @@
             };
           });
           const reviewRule = workerRules.find(item => Q.text(item.ruleKey) === TOURNAMENT_REVIEW_RULE) || {};
+          const finalGroupMembers = members
+            .filter(member => Q.text(member.ownerType) === "group"
+              && Q.text(member.ownerId).startsWith(`${finalStageId}:group:`)
+              && Q.text(member.status).toLowerCase() === "accepted");
           return {
             qualifierStageId,
             finalStageId,
@@ -2462,6 +2466,8 @@
             expectedFinalMemberUserIds: sortedUnique(
               qualifierGroups.flatMap(group => group.advancingUserIds)
             ),
+            finalGroupOwnerIds: sortedUnique(finalGroupMembers.map(member => member.ownerId)),
+            finalMemberUserIds: sortedUnique(finalGroupMembers.map(member => member.userId)),
             finalRoomEventIds: generatedRoomEvents
               .filter(room => Q.text(room.parentSubEventId) === finalStageId)
               .map(room => Q.text(room.sourceId || room._id))
@@ -3289,6 +3295,14 @@
       .toArray()
       .filter(item => Q.text(item.parentSubEventId) === finalId);
     const roomIds = rooms.map(item => Q.text(item.sourceId || item._id)).filter(Boolean);
+    const finalGroupMembers = Q.collection("activityMembers")
+      .find({
+        ownerType: "group",
+        ownerId: { $regex: `^${finalId}:group:` }
+      })
+      .sort({ ownerId: 1, userId: 1, _id: 1 })
+      .toArray();
+    const finalGroupOwnerIds = sortedUnique(finalGroupMembers.map(member => member.ownerId));
     const counters = [hostUserId, participantUserId, thirdUserId].map(userId => {
       const saved = userActivitiesSnapshot(userId);
       const activities = saved.activities && saved.activities.present
@@ -3322,11 +3336,14 @@
         acceptedMemberUserIds: sortedUnique(room.acceptedMemberUserIds || []),
         acceptedMembers: Number(room.acceptedMembers || 0)
       })),
-      finalMembers: Q.collection("activityMembers")
-        .find({ ownerType: "event", ownerId: { $in: roomIds } })
-        .sort({ ownerId: 1, userId: 1, _id: 1 })
-        .toArray()
-        .map(member => ({
+      finalGroups: finalGroupOwnerIds.map(ownerId => ({
+        ownerId,
+        acceptedMemberUserIds: sortedUnique(finalGroupMembers
+          .filter(member => Q.text(member.ownerId) === ownerId
+            && Q.text(member.status).toLowerCase() === "accepted")
+          .map(member => member.userId))
+      })),
+      finalGroupMembers: finalGroupMembers.map(member => ({
           ownerId: Q.text(member.ownerId),
           userId: Q.text(member.userId),
           role: Q.text(member.role),
@@ -3367,7 +3384,11 @@
           unread: Number(chat.unread || 0)
         })),
       planMarkers: Q.collection("schedulerPlanMarkers")
-        .find({ ownerId: EVENT_ID })
+        .find({
+          wrapperType: "score",
+          actionType: "group-members",
+          ownerId: { $regex: `^${finalId}:group:` }
+        })
         .sort({ actionType: 1, scopeId: 1, _id: 1 })
         .toArray()
         .map(marker => ({
@@ -3422,13 +3443,16 @@
     if (armCount === 1) {
       const firstPass = tournamentReviewStableSnapshot();
       const expectedWinners = [hostUserId, thirdUserId].sort();
-      const actualWinners = sortedUnique(firstPass.finalMembers.map(member => member.userId));
+      const actualWinners = sortedUnique(firstPass.finalGroupMembers
+        .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+        .map(member => member.userId));
       const runState = rule.runState || {};
-      if (firstPass.finalRooms.length !== 1
+      if (firstPass.finalGroups.length !== 1
           || !sameJson(actualWinners, expectedWinners)
+          || firstPass.planMarkers.length !== 1
           || Q.text(runState.currentStatus) !== "completed"
           || Number(runState.lastRunCount) !== 1) {
-        Q.fail("the first real tournament-review run is not at the exact one-room Casey+Riley advancement boundary.");
+        Q.fail("the first real tournament-review run is not at the exact one-group Casey+Riley advancement boundary.");
       }
       stateUpdate.tournamentReviewNoopBaseline = firstPass;
       stateUpdate.tournamentReviewHistoryLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
@@ -3501,6 +3525,764 @@
       affectedCount: Number(runState.lastRunCount),
       domain: current,
       next: "Complete the remaining UI comparison and record TOURNAMENT-003 PASS/CLOSED."
+    });
+  }
+
+  function tournamentFinalizeNotificationSnapshot() {
+    const eventSelector = {
+      $or: [
+        { entityId: EVENT_ID },
+        { "payload.eventId": EVENT_ID }
+      ]
+    };
+    return {
+      outbox: Q.collection("notificationOutbox")
+        .find({ notificationType: "event-stage-finalized", ...eventSelector })
+        .sort({ createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserIds: sortedUnique(item.recipientUserIds || []),
+          title: Q.text(item.title),
+          body: Q.text(item.body),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        })),
+      notifications: Q.collection("userNotifications")
+        .find({
+          kind: "event-stage-finalized",
+          $or: [
+            { sourceId: EVENT_ID },
+            { "payload.eventId": EVENT_ID }
+          ]
+        })
+        .sort({ recipientUserId: 1, createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserId: Q.text(item.recipientUserId),
+          title: Q.text(item.title),
+          message: Q.text(item.message),
+          readAtIso: Q.text(item.readAtIso),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        })),
+      advancementOutbox: Q.collection("notificationOutbox")
+        .find({ notificationType: "event-stage-advanced", ...eventSelector })
+        .sort({ createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserIds: sortedUnique(item.recipientUserIds || []),
+          title: Q.text(item.title),
+          body: Q.text(item.body),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        })),
+      advancementNotifications: Q.collection("userNotifications")
+        .find({
+          kind: "event-stage-advanced",
+          $or: [
+            { sourceId: EVENT_ID },
+            { "payload.eventId": EVENT_ID }
+          ]
+        })
+        .sort({ recipientUserId: 1, createdDate: 1, _id: 1 })
+        .toArray()
+        .map(item => ({
+          id: Q.text(item._id),
+          recipientUserId: Q.text(item.recipientUserId),
+          title: Q.text(item.title),
+          message: Q.text(item.message),
+          readAtIso: Q.text(item.readAtIso),
+          createdDate: Q.text(item.createdDate),
+          notificationTitleKey: Q.text(item.payload && item.payload.notification_title_key),
+          notificationMessageKey: Q.text(item.payload && item.payload.notification_message_key),
+          notificationTone: Q.text(item.payload && item.payload.notification_tone),
+          notificationAvatarTone: Q.text(item.payload && item.payload.notification_avatar_tone),
+          notificationAvatarIcon: Q.text(item.payload && item.payload.notification_avatar_icon),
+          stageIndex: Q.text(item.payload && item.payload.stageIndex),
+          stageTotal: Q.text(item.payload && item.payload.stageTotal),
+          stageTitle: Q.text(item.payload && item.payload.stageTitle),
+          nextStageTitle: Q.text(item.payload && item.payload.nextStageTitle)
+        }))
+    };
+  }
+
+  function prepareTournamentFinalizeNotificationRetest() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("prepare-tournament-finalize-notification-retest is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    if (Number(state.tournamentReviewArmCount || 0) !== 2
+        || !state.tournamentReviewNoopBaseline) {
+      Q.fail("the exact first-pass advancement and second-pass no-op must be proven before the focused notification replay.");
+    }
+    if (state.tournamentFinalizeNotificationRetest
+        && !state.tournamentFinalizeNotificationRetest.verifiedAtIso) {
+      Q.fail("the focused Finalize notification replay is already prepared; do not rewind it again.");
+    }
+
+    const current = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const qualifier = current.stages.find(stage => stage.id === qualifierId);
+    const runtime = current.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    const expectedWinners = [hostUserId, thirdUserId].sort();
+    const actualWinners = sortedUnique(current.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !runtime || Q.text(runtime.stageStatus).toUpperCase() !== "F"
+        || current.finalGroups.length !== 1
+        || !sameJson(actualWinners, expectedWinners)
+        || current.planMarkers.length !== 1) {
+      Q.fail("TOURNAMENT-003 is not at the proven finalized/no-op boundary required for the focused notification replay.");
+    }
+
+    const notificationBefore = tournamentFinalizeNotificationSnapshot();
+    if (notificationBefore.outbox.length !== 1
+        || !sameJson(
+          notificationBefore.outbox[0].recipientUserIds,
+          [hostUserId, participantUserId, thirdUserId].sort())) {
+      Q.fail("the original defective Finalize outbox is not the exact three-recipient evidence expected before repair replay.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateOne(
+      manualEventSelector(),
+      {
+        $set: {
+          "subEvents.$[qualifier].stageStatus": "SR",
+          "subEvents.$[qualifier].stageStatusReason": "stage-ended",
+          "subEvents.$[qualifier].stageStatusUpdatedAt": preparedAtIso,
+          "subEvents.$[qualifier].stageFinalizedAt": null,
+          "subEvents.$[qualifier].stageFinalizedByUserId": null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      },
+      { arrayFilters: [{ "qualifier.id": qualifierId }] }
+    );
+    const runtimeUpdate = Q.collection("activitySubEventStageRuntime").updateOne(
+      { ownerId: EVENT_ID, subEventId: qualifierId },
+      {
+        $set: {
+          stageStatus: "SR",
+          stageStatusReason: "stage-ended",
+          stageStatusUpdatedAt: preparedAtIso,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    if (eventUpdate.matchedCount !== 1 || eventUpdate.modifiedCount !== 1
+        || runtimeUpdate.matchedCount !== 1 || runtimeUpdate.modifiedCount !== 1) {
+      Q.fail("the Qualifiers event/runtime projection could not be rewound exactly once.");
+    }
+
+    const outboxRemoval = Q.collection("notificationOutbox").deleteMany({
+      notificationType: "event-stage-finalized",
+      $or: [{ entityId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const notificationRemoval = Q.collection("userNotifications").deleteMany({
+      kind: "event-stage-finalized",
+      $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    if (outboxRemoval.deletedCount !== 1
+        || notificationRemoval.deletedCount !== notificationBefore.notifications.length) {
+      Q.fail("the original Finalize notification artifacts changed while the focused replay was being prepared.");
+    }
+
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      const counterUpdate = Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: { "activities.notifications": unreadNotifications } }
+      );
+      if (counterUpdate.matchedCount !== 1) {
+        Q.fail(`notification counter target '${userId}' disappeared during the focused replay preparation.`);
+      }
+    }
+
+    const reviewRule = tournamentReviewRule();
+    const heldUntilIso = dateIso(60);
+    const held = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": heldUntilIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Held during TOURNAMENT-003 focused Finalize notification replay.",
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (!reviewRule || held.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' disappeared while the focused replay was prepared.`);
+    }
+
+    const preserved = tournamentReviewStableSnapshot();
+    const preservedWinners = sortedUnique(preserved.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    if (!sameJson(preservedWinners, expectedWinners)
+        || preserved.finalGroups.length !== 1
+        || preserved.planMarkers.length !== 1
+        || preserved.leaderboard.length !== current.leaderboard.length) {
+      Q.fail("the focused notification replay preparation changed previously proven advancement or score evidence.");
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        tournamentFinalizeNotificationRetest: {
+          preparedAtIso,
+          heldUntilIso,
+          originalNotification: notificationBefore,
+          preservedFinalGroupOwnerIds: preserved.finalGroups.map(group => group.ownerId),
+          preservedFinalMemberUserIds: preservedWinners
+        }
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-finalize-notification-retest-prepared",
+      qualifierStageStatus: "SR",
+      preservedFinalMemberUserIds: preservedWinners,
+      removedOutboxCount: outboxRemoval.deletedCount,
+      removedNotificationCount: notificationRemoval.deletedCount,
+      next: "Reload only Casey's event detail, manually Finalize Qualifiers once, then run verify-tournament-finalize-notification. Do not rerun tournament review."
+    });
+  }
+
+  function verifyTournamentFinalizeNotification() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("verify-tournament-finalize-notification is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const replay = state.tournamentFinalizeNotificationRetest;
+    if (!replay || !replay.preparedAtIso) {
+      Q.fail("the focused Finalize notification replay has not been prepared.");
+    }
+    if (replay.verifiedAtIso) {
+      Q.fail("the focused Finalize notification replay is already verified; do not execute it again.");
+    }
+
+    const current = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const qualifier = current.stages.find(stage => stage.id === qualifierId);
+    const runtime = current.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    const expectedWinners = [hostUserId, thirdUserId].sort();
+    const actualWinners = sortedUnique(current.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !runtime || Q.text(runtime.stageStatus).toUpperCase() !== "F"
+        || current.finalGroups.length !== 1
+        || !sameJson(actualWinners, expectedWinners)
+        || current.planMarkers.length !== 1) {
+      Q.fail("the focused manual Finalize did not preserve the proven stage/group boundary.");
+    }
+
+    const notification = tournamentFinalizeNotificationSnapshot();
+    const expectedRecipients = [participantUserId, thirdUserId].sort();
+    if (notification.outbox.length !== 1
+        || !sameJson(notification.outbox[0].recipientUserIds, expectedRecipients)) {
+      Q.fail("manual Finalize did not persist exactly one Nova+Riley outbox with Casey excluded.");
+    }
+    const actualNotificationRecipients = notification.notifications
+      .map(item => item.recipientUserId)
+      .sort();
+    if (notification.notifications.length > 0
+        && !sameJson(actualNotificationRecipients, expectedRecipients)) {
+      Q.fail("delivered Finalize notifications do not target exactly Nova and Riley with Casey excluded.");
+    }
+
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentFinalizeNotificationRetest.verifiedAtIso": verifiedAtIso,
+        "tournamentFinalizeNotificationRetest.verifiedNotification": notification
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-finalize-notification-verified",
+      actorUserId: hostUserId,
+      recipientUserIds: expectedRecipients,
+      outbox: notification.outbox,
+      notifications: notification.notifications,
+      next: notification.notifications.length === 2
+        ? "Compare Casey/Nova/Riley live notification counters and lists, then close TOURNAMENT-003."
+        : "Wait for the existing notification-outbox worker, run status, then compare the three live notification counters and lists."
+    });
+  }
+
+  function prepareTournamentNotificationSequenceRetest() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("prepare-tournament-notification-sequence-retest is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const previousReplay = state.tournamentFinalizeNotificationRetest;
+    if (!previousReplay || !previousReplay.verifiedAtIso) {
+      Q.fail("the actor-exclusion Finalize replay must be verified before the ordered notification sequence replay.");
+    }
+    if (state.tournamentNotificationSequenceRetest
+        && !state.tournamentNotificationSequenceRetest.verifiedAtIso) {
+      Q.fail("the ordered tournament notification sequence replay is already active.");
+    }
+    const expectedTranslations = {
+      "en:notification.event.stage.started.title": "{stageTitle} started",
+      "en:notification.event.stage.started.message": "{stageTitle} has started. Groups are ready.",
+      "en:notification.event.stage.finalized.title": "{stageTitle} finalized",
+      "en:notification.event.stage.finalized.message": "{stageTitle} has been finalized.",
+      "en:notification.event.stage.advanced.title": "Advanced to {nextStageTitle}",
+      "en:notification.event.stage.advanced.message": "You advanced from {stageTitle} to {nextStageTitle}.",
+      "en:notification.event.tournament.finalized.title": "Tournament finalized",
+      "en:notification.event.tournament.finalized.message": "{stageTitle} is complete. The tournament has been finalized. Open the event results to review the standings.",
+      "en:notification.event.tournament.finalized.message.winner": "{stageTitle} is complete. The tournament has been finalized. Winner: {winnerNames}.",
+      "en:notification.event.tournament.finalized.message.winners": "{stageTitle} is complete. The tournament has been finalized. Winners: {winnerNames}.",
+      "hu:notification.event.stage.started.title": "Elindult: {stageTitle}",
+      "hu:notification.event.stage.started.message": "A(z) {stageTitle} szakasz elindult. A csoportok elkészültek.",
+      "hu:notification.event.stage.finalized.title": "Lezárult: {stageTitle}",
+      "hu:notification.event.stage.finalized.message": "A(z) {stageTitle} szakasz lezárult.",
+      "hu:notification.event.stage.advanced.title": "Továbbjutottál: {nextStageTitle}",
+      "hu:notification.event.stage.advanced.message": "Továbbjutottál a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba.",
+      "hu:notification.event.tournament.finalized.title": "A verseny lezárult",
+      "hu:notification.event.tournament.finalized.message": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Nyisd meg az eredményeket a helyezések megtekintéséhez.",
+      "hu:notification.event.tournament.finalized.message.winner": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztes: {winnerNames}.",
+      "hu:notification.event.tournament.finalized.message.winners": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztesek: {winnerNames}."
+    };
+    const translationKeys = [...new Set(Object.keys(expectedTranslations)
+      .map(item => item.substring(item.indexOf(":") + 1)))];
+    const liveTranslations = Q.collection("i18n_messages").find({
+      lang: { $in: ["en", "hu"] },
+      key: { $in: translationKeys }
+    }).toArray();
+    const actualTranslations = Object.fromEntries(liveTranslations.map(item => [
+      `${Q.text(item.lang)}:${Q.text(item.key)}`,
+      Q.text(item.value)
+    ]));
+    if (liveTranslations.length !== Object.keys(expectedTranslations).length
+        || Object.entries(expectedTranslations)
+          .some(([key, value]) => actualTranslations[key] !== value)) {
+      Q.fail("the live Mongo EN/HU tournament notification translations do not match the replay contract.");
+    }
+
+    const current = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const finalGroupOwnerId = `${EVENT_ID}:stage:final:group:1`;
+    const qualifier = current.stages.find(stage => stage.id === qualifierId);
+    const runtime = current.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    const expectedWinners = [hostUserId, thirdUserId].sort();
+    const actualWinners = sortedUnique(current.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    const notificationBefore = tournamentFinalizeNotificationSnapshot();
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !runtime || Q.text(runtime.stageStatus).toUpperCase() !== "F"
+        || current.finalGroups.length !== 1
+        || !sameJson(actualWinners, expectedWinners)
+        || current.planMarkers.length !== 1
+        || notificationBefore.outbox.length !== 1
+        || !sameJson(notificationBefore.outbox[0].recipientUserIds, [participantUserId, thirdUserId].sort())
+        || notificationBefore.advancementOutbox.length !== 0) {
+      Q.fail("TOURNAMENT-003 is not at the proven Finalize/group boundary required for the ordered notification replay.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateOne(
+      manualEventSelector(),
+      {
+        $set: {
+          "subEvents.$[qualifier].stageStatus": "SR",
+          "subEvents.$[qualifier].stageStatusReason": "stage-ended",
+          "subEvents.$[qualifier].stageStatusUpdatedAt": preparedAtIso,
+          "subEvents.$[qualifier].stageFinalizedAt": null,
+          "subEvents.$[qualifier].stageFinalizedByUserId": null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      },
+      { arrayFilters: [{ "qualifier.id": qualifierId }] }
+    );
+    const runtimeUpdate = Q.collection("activitySubEventStageRuntime").updateOne(
+      { ownerId: EVENT_ID, subEventId: qualifierId },
+      {
+        $set: {
+          stageStatus: "SR",
+          stageStatusReason: "stage-ended",
+          stageStatusUpdatedAt: preparedAtIso,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    if (eventUpdate.matchedCount !== 1 || eventUpdate.modifiedCount !== 1
+        || runtimeUpdate.matchedCount !== 1 || runtimeUpdate.modifiedCount !== 1) {
+      Q.fail("the ordered replay could not rewind the Qualifiers event/runtime pair exactly once.");
+    }
+
+    const finalizedOutboxRemoval = Q.collection("notificationOutbox").deleteMany({
+      notificationType: "event-stage-finalized",
+      $or: [{ entityId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const finalizedNotificationRemoval = Q.collection("userNotifications").deleteMany({
+      kind: "event-stage-finalized",
+      $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const advancementOutboxRemoval = Q.collection("notificationOutbox").deleteMany({
+      notificationType: "event-stage-advanced",
+      $or: [{ entityId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const advancementNotificationRemoval = Q.collection("userNotifications").deleteMany({
+      kind: "event-stage-advanced",
+      $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+    });
+    const finalMemberRemoval = Q.collection("activityMembers").deleteMany({
+      ownerType: "group",
+      ownerId: finalGroupOwnerId,
+      userId: { $in: expectedWinners }
+    });
+    const markerRemoval = Q.collection("schedulerPlanMarkers").deleteMany({
+      wrapperType: "score",
+      actionType: "group-members",
+      ownerId: finalGroupOwnerId
+    });
+    if (finalizedOutboxRemoval.deletedCount !== 1
+        || finalizedNotificationRemoval.deletedCount !== notificationBefore.notifications.length
+        || advancementOutboxRemoval.deletedCount !== 0
+        || advancementNotificationRemoval.deletedCount !== 0
+        || finalMemberRemoval.deletedCount !== 2
+        || markerRemoval.deletedCount !== 1) {
+      Q.fail("the ordered replay artifacts changed while the fixture boundary was being rewound.");
+    }
+
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      const counterUpdate = Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: { "activities.notifications": unreadNotifications } }
+      );
+      if (counterUpdate.matchedCount !== 1) {
+        Q.fail(`notification counter target '${userId}' disappeared during ordered replay preparation.`);
+      }
+    }
+
+    const heldUntilIso = dateIso(60);
+    const reviewRule = tournamentReviewRule();
+    const held = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": heldUntilIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Held during TOURNAMENT-003 ordered notification replay.",
+          updatedDate: preparedAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (!reviewRule || held.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' disappeared while the ordered replay was prepared.`);
+    }
+
+    const prepared = tournamentReviewStableSnapshot();
+    if (prepared.finalGroupMembers.length !== 0
+        || prepared.planMarkers.length !== 0
+        || prepared.leaderboard.length !== current.leaderboard.length) {
+      Q.fail("the ordered replay did not preserve scores while clearing only the reproducible advancement write.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        tournamentNotificationSequenceRetest: {
+          preparedAtIso,
+          heldUntilIso,
+          baselineNotification: notificationBefore,
+          expectedWinnerUserIds: expectedWinners,
+          expectedFinalGroupOwnerId: finalGroupOwnerId,
+          leaderboardBaseline: current.leaderboard
+        }
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-notification-sequence-retest-prepared",
+      qualifierStageStatus: "SR",
+      removedFinalMemberUserIds: expectedWinners,
+      removedPlanMarkerCount: markerRemoval.deletedCount,
+      next: "Reload only Casey's event detail and manually Finalize Qualifiers once. Do not run the tournament worker manually."
+    });
+  }
+
+  function verifyTournamentFinalizeSequence() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("verify-tournament-finalize-sequence is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const replay = state.tournamentNotificationSequenceRetest;
+    if (!replay || !replay.preparedAtIso || replay.finalizeVerifiedAtIso) {
+      Q.fail("the ordered replay is not prepared or its Finalize phase is already verified.");
+    }
+    const current = tournamentReviewStableSnapshot();
+    const qualifierId = `${EVENT_ID}:stage:qualifiers`;
+    const qualifier = current.stages.find(stage => stage.id === qualifierId);
+    const runtime = current.stageRuntime.find(stage => stage.subEventId === qualifierId);
+    if (!qualifier || Q.text(qualifier.stageStatus).toUpperCase() !== "F"
+        || !runtime || Q.text(runtime.stageStatus).toUpperCase() !== "F"
+        || current.finalGroupMembers.length !== 0
+        || current.planMarkers.length !== 0
+        || !sameJson(current.leaderboard, replay.leaderboardBaseline)) {
+      Q.fail("manual Finalize did not preserve the staged pre-advancement boundary.");
+    }
+    const notifications = tournamentFinalizeNotificationSnapshot();
+    const finalizedRecipients = [participantUserId, thirdUserId].sort();
+    if (notifications.outbox.length !== 1
+        || !sameJson(notifications.outbox[0].recipientUserIds, finalizedRecipients)
+        || notifications.outbox[0].notificationTitleKey !== "notification.event.stage.finalized.title"
+        || notifications.outbox[0].notificationMessageKey !== "notification.event.stage.finalized.message"
+        || notifications.outbox[0].notificationAvatarTone !== "stage"
+        || notifications.outbox[0].notificationAvatarIcon !== "emoji_events"
+        || notifications.outbox[0].stageIndex !== "1"
+        || notifications.outbox[0].stageTotal !== "2"
+        || notifications.outbox[0].stageTitle !== "Qualifiers"
+        || notifications.advancementOutbox.length !== 0) {
+      Q.fail("manual Finalize did not write the translated Nova+Riley stage-finalized intent before advancement.");
+    }
+    const deliveredRecipients = notifications.notifications.map(item => item.recipientUserId).sort();
+    if (notifications.notifications.length > 0
+        && !sameJson(deliveredRecipients, finalizedRecipients)) {
+      Q.fail("manual Finalize deliveries do not target exactly Nova and Riley before advancement.");
+    }
+
+    const rule = tournamentReviewRule();
+    if (!rule) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' is missing.`);
+    }
+    const armedAtIso = dateIso(-31);
+    const armedIso = Q.nowIso();
+    const historyLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    const armed = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": armedAtIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Armed for TOURNAMENT-003 advancement notification sequence replay.",
+          updatedDate: armedIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (armed.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' disappeared while advancement was armed.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentNotificationSequenceRetest.finalizeVerifiedAtIso": armedIso,
+        "tournamentNotificationSequenceRetest.finalizeNotification": notifications,
+        "tournamentNotificationSequenceRetest.workerArmedAtIso": armedIso,
+        "tournamentNotificationSequenceRetest.workerHistoryLength": historyLength
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-finalize-sequence-verified",
+      finalizedRecipients,
+      workerArmedLastRunAtIso: armedAtIso,
+      next: "Wait for the real event-tournament-review worker, then run verify-tournament-advancement-sequence."
+    });
+  }
+
+  function verifyTournamentAdvancementSequence() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("verify-tournament-advancement-sequence is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const replay = state.tournamentNotificationSequenceRetest;
+    if (!replay || !replay.workerArmedAtIso || replay.advancementVerifiedAtIso) {
+      Q.fail("the advancement worker replay is not armed or is already verified.");
+    }
+    const rule = tournamentReviewRule();
+    const runState = rule && rule.runState ? rule.runState : {};
+    const historyLength = rule && Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    if (Q.text(runState.currentStatus) !== "completed"
+        || Number(runState.lastRunCount) !== 1
+        || historyLength !== Number(replay.workerHistoryLength || 0) + 1) {
+      Q.fail("the real tournament worker has not completed exactly once with one changed group.");
+    }
+    const current = tournamentReviewStableSnapshot();
+    const expectedWinners = sortedUnique(replay.expectedWinnerUserIds || []);
+    const actualWinners = sortedUnique(current.finalGroupMembers
+      .filter(member => Q.text(member.status).toLowerCase() === "accepted")
+      .map(member => member.userId));
+    if (current.finalGroups.length !== 1
+        || !sameJson(actualWinners, expectedWinners)
+        || current.planMarkers.length !== 1
+        || !sameJson(current.leaderboard, replay.leaderboardBaseline)) {
+      Q.fail("the real tournament worker did not write the exact proven memberships into the existing Final group.");
+    }
+    const notifications = tournamentFinalizeNotificationSnapshot();
+    const finalizedRecipients = [participantUserId, thirdUserId].sort();
+    if (notifications.outbox.length !== 1
+        || !sameJson(notifications.outbox[0].recipientUserIds, finalizedRecipients)
+        || notifications.advancementOutbox.length !== 1
+        || !sameJson(notifications.advancementOutbox[0].recipientUserIds, expectedWinners)
+        || notifications.advancementOutbox[0].notificationTitleKey !== "notification.event.stage.advanced.title"
+        || notifications.advancementOutbox[0].notificationMessageKey !== "notification.event.stage.advanced.message"
+        || notifications.advancementOutbox[0].notificationTone !== "success"
+        || notifications.advancementOutbox[0].notificationAvatarTone !== "stage"
+        || notifications.advancementOutbox[0].notificationAvatarIcon !== "emoji_events"
+        || notifications.advancementOutbox[0].stageIndex !== "2"
+        || notifications.advancementOutbox[0].stageTotal !== "2"
+        || notifications.advancementOutbox[0].stageTitle !== "Qualifiers"
+        || notifications.advancementOutbox[0].nextStageTitle !== "Final"
+        || notifications.outbox[0].createdDate >= notifications.advancementOutbox[0].createdDate) {
+      Q.fail("the ordered Finalize then advancement notification contract is not persisted exactly.");
+    }
+    const deliveredAdvancers = notifications.advancementNotifications
+      .map(item => item.recipientUserId)
+      .sort();
+    if (notifications.advancementNotifications.length > 0
+        && !sameJson(deliveredAdvancers, expectedWinners)) {
+      Q.fail("advancement deliveries do not target exactly Casey and Riley.");
+    }
+
+    const armedAtIso = dateIso(-31);
+    const verifiedAtIso = Q.nowIso();
+    const noOpHistoryLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    const armed = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: TOURNAMENT_REVIEW_RULE },
+      {
+        $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": armedAtIso,
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Armed for TOURNAMENT-003 advancement-notification no-op replay.",
+          updatedDate: verifiedAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": ""
+        }
+      }
+    );
+    if (armed.matchedCount !== 1) {
+      Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' disappeared while the advancement no-op was armed.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentNotificationSequenceRetest.advancementVerifiedAtIso": verifiedAtIso,
+        "tournamentNotificationSequenceRetest.verifiedNotificationSequence": notifications,
+        "tournamentNotificationSequenceRetest.noOpArmedAtIso": verifiedAtIso,
+        "tournamentNotificationSequenceRetest.noOpHistoryLength": noOpHistoryLength,
+        "tournamentNotificationSequenceRetest.noOpDomainBaseline": current
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-advancement-sequence-verified",
+      finalizedRecipients,
+      advancementRecipients: expectedWinners,
+      next: "Wait for the real unchanged tournament worker pass, then run verify-tournament-advancement-sequence-noop."
+    });
+  }
+
+  function verifyTournamentAdvancementSequenceNoop() {
+    if (checkpointId !== "TOURNAMENT-003") {
+      Q.fail("verify-tournament-advancement-sequence-noop is restricted to TOURNAMENT-003.");
+    }
+    const state = requireMatchingState();
+    const replay = state.tournamentNotificationSequenceRetest;
+    if (!replay || !replay.noOpArmedAtIso || replay.verifiedAtIso) {
+      Q.fail("the advancement no-op replay is not armed or is already verified.");
+    }
+    const rule = tournamentReviewRule();
+    const runState = rule && rule.runState ? rule.runState : {};
+    const historyLength = rule && Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    if (Q.text(runState.currentStatus) !== "completed"
+        || Number(runState.lastRunCount) !== 0
+        || historyLength !== Number(replay.noOpHistoryLength || 0) + 1) {
+      Q.fail("the unchanged tournament worker has not completed exactly once with affected count 0.");
+    }
+    const current = tournamentReviewStableSnapshot();
+    const notifications = tournamentFinalizeNotificationSnapshot();
+    if (!sameJson(current, replay.noOpDomainBaseline)
+        || !sameJson(notifications, replay.verifiedNotificationSequence)) {
+      Q.fail("the unchanged worker pass altered domain or notification state.");
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "tournamentNotificationSequenceRetest.verifiedAtIso": verifiedAtIso,
+        "tournamentNotificationSequenceRetest.noOpVerifiedAtIso": verifiedAtIso
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-advancement-sequence-noop-verified",
+      affectedCount: Number(runState.lastRunCount),
+      next: "Compare Casey/Nova/Riley live counters and lists: Nova has Finalize only; Casey has advancement only; Riley has both."
     });
   }
 
@@ -7701,6 +8483,12 @@
     case "arm-ticket-expiry": armTicketExpiry(); break;
     case "arm-tournament-review": armTournamentReview(); break;
     case "verify-tournament-review-noop": verifyTournamentReviewNoop(); break;
+    case "prepare-tournament-finalize-notification-retest": prepareTournamentFinalizeNotificationRetest(); break;
+    case "verify-tournament-finalize-notification": verifyTournamentFinalizeNotification(); break;
+    case "prepare-tournament-notification-sequence-retest": prepareTournamentNotificationSequenceRetest(); break;
+    case "verify-tournament-finalize-sequence": verifyTournamentFinalizeSequence(); break;
+    case "verify-tournament-advancement-sequence": verifyTournamentAdvancementSequence(); break;
+    case "verify-tournament-advancement-sequence-noop": verifyTournamentAdvancementSequenceNoop(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "repair-tournament-room-presentation": repairTournamentRoomPresentation(); break;
     case "repair-tournament-room-notifications": repairTournamentRoomNotifications(); break;

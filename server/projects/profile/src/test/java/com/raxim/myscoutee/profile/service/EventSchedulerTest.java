@@ -972,6 +972,23 @@ class EventSchedulerTest {
         verify(activitiesMembersService).syncGroupMembers("event-3:sub-2:next-group", "creator-1", List.of("u1", "u2"));
         verify(activityTournamentGroupCounterService).syncParent("event-3", "sub-2");
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        assertThat(notificationCaptor.getValue()).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-stage-advanced");
+            assertThat(notification.recipientUserIds()).containsExactly("u1", "u2");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.stage.advanced.title")
+                    .containsEntry("notification_message_key", "notification.event.stage.advanced.message")
+                    .containsEntry("stageTitle", "sub-1")
+                    .containsEntry("nextStageTitle", "sub-2")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events")
+                    .containsEntry("stageIndex", "2")
+                    .containsEntry("stageTotal", "2")
+                    .containsEntry("notification_tone", "success");
+        });
     }
 
     @Test

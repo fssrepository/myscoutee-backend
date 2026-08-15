@@ -290,6 +290,41 @@ bash manual-qa-checkpoints.sh verify-tournament-review-noop event-domain TOURNAM
 The immediate runner never impersonates the scheduler; both passes are owned
 by the already-running development worker.
 
+If the manual Finalize notification contract needs a focused repair replay
+after those two scheduler passes are already proven, preserve the score and
+advancement evidence and rewind only the Finalize producer boundary:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-tournament-finalize-notification-retest event-domain TOURNAMENT-003
+# Casey manually finalizes Qualifiers exactly once.
+bash manual-qa-checkpoints.sh verify-tournament-finalize-notification event-domain TOURNAMENT-003
+```
+
+The rearm removes only the old `event-stage-finalized` outbox/delivery rows,
+rewinds Qualifiers from `F` to `SR`, and holds the review worker. It retains the
+Casey+Riley Final group, deterministic scores, plan marker and both real-worker
+run proofs. The verifier requires one Nova+Riley outbox and excludes the Casey
+actor, matching manual tournament Start semantics.
+
+For the ordered notification contract, replay both real producer boundaries:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-tournament-notification-sequence-retest event-domain TOURNAMENT-003
+# Casey manually finalizes Qualifiers exactly once.
+bash manual-qa-checkpoints.sh verify-tournament-finalize-sequence event-domain TOURNAMENT-003
+# Wait for the real event-tournament-review worker.
+bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence event-domain TOURNAMENT-003
+# Wait for the automatically armed unchanged worker replay.
+bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence-noop event-domain TOURNAMENT-003
+```
+
+The first write produces one translated stage-finalized intent for Nova and
+Riley with Casey excluded. The already-existing Final group remains in place;
+the real advancement worker then writes Casey and Riley's missing Final-group
+memberships and produces a later translated, trophy-branded
+advancement intent for Casey and Riley. The final unchanged worker pass must
+write neither membership nor another notification.
+
 ## Asset-domain checkpoint runner
 
 The asset runner supports `ASSET-MEMBER-001`, `ASSET-MEMBER-002` and

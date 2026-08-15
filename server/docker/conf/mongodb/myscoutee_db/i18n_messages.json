@@ -14424,6 +14424,66 @@
     "value": "Camera on"
   },
   {
+    "_id": "i18n-message-en-notification-event-stage-started-title",
+    "key": "notification.event.stage.started.title",
+    "lang": "en",
+    "value": "{stageTitle} started"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-started-message",
+    "key": "notification.event.stage.started.message",
+    "lang": "en",
+    "value": "{stageTitle} has started. Groups are ready."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-finalized-title",
+    "key": "notification.event.stage.finalized.title",
+    "lang": "en",
+    "value": "{stageTitle} finalized"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-finalized-message",
+    "key": "notification.event.stage.finalized.message",
+    "lang": "en",
+    "value": "{stageTitle} has been finalized."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-advanced-title",
+    "key": "notification.event.stage.advanced.title",
+    "lang": "en",
+    "value": "Advanced to {nextStageTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-advanced-message",
+    "key": "notification.event.stage.advanced.message",
+    "lang": "en",
+    "value": "You advanced from {stageTitle} to {nextStageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-finalized-title",
+    "key": "notification.event.tournament.finalized.title",
+    "lang": "en",
+    "value": "Tournament finalized"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-finalized-message",
+    "key": "notification.event.tournament.finalized.message",
+    "lang": "en",
+    "value": "{stageTitle} is complete. The tournament has been finalized. Open the event results to review the standings."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-finalized-message-winner",
+    "key": "notification.event.tournament.finalized.message.winner",
+    "lang": "en",
+    "value": "{stageTitle} is complete. The tournament has been finalized. Winner: {winnerNames}."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-finalized-message-winners",
+    "key": "notification.event.tournament.finalized.message.winners",
+    "lang": "en",
+    "value": "{stageTitle} is complete. The tournament has been finalized. Winners: {winnerNames}."
+  },
+  {
     "_id": "i18n-message-en-notification-event-available-again-message",
     "key": "notification.event.available.again.message",
     "lang": "en",
@@ -32932,6 +32992,66 @@
     "key": "asset.ticket.scan.camera.on",
     "lang": "hu",
     "value": "Kamera be"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-started-title",
+    "key": "notification.event.stage.started.title",
+    "lang": "hu",
+    "value": "Elindult: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-started-message",
+    "key": "notification.event.stage.started.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz elindult. A csoportok elkészültek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-finalized-title",
+    "key": "notification.event.stage.finalized.title",
+    "lang": "hu",
+    "value": "Lezárult: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-finalized-message",
+    "key": "notification.event.stage.finalized.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz lezárult."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-advanced-title",
+    "key": "notification.event.stage.advanced.title",
+    "lang": "hu",
+    "value": "Továbbjutottál: {nextStageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-advanced-message",
+    "key": "notification.event.stage.advanced.message",
+    "lang": "hu",
+    "value": "Továbbjutottál a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-finalized-title",
+    "key": "notification.event.tournament.finalized.title",
+    "lang": "hu",
+    "value": "A verseny lezárult"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-finalized-message",
+    "key": "notification.event.tournament.finalized.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Nyisd meg az eredményeket a helyezések megtekintéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-finalized-message-winner",
+    "key": "notification.event.tournament.finalized.message.winner",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztes: {winnerNames}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-finalized-message-winners",
+    "key": "notification.event.tournament.finalized.message.winners",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztesek: {winnerNames}."
   },
   {
     "_id": "i18n-message-hu-notification-event-available-again-message",

@@ -43,7 +43,7 @@ the same prerequisite without depending on an earlier human action.
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
-| Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-003`, `JOB-TOURNAMENT` |
+| Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-004`, `JOB-TOURNAMENT` |
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
@@ -718,7 +718,7 @@ Execution evidence on 2026-08-04:
 - Verify runtime group counts and stage rows correspond to the saved
   definition before any automatic grouping occurs.
 - Start the visible tournament action or arm only the documented persisted job
-  schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-003`.
+  schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
 ### `EVENT-EDITOR-005` — edit an active downstream definition
 
@@ -4551,7 +4551,95 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   worker. After Casey+Riley advance exactly once, capture that stable state,
   re-arm the same real rule once and require `lastRunCount=0` plus a byte-exact
   domain snapshot before closing.
-- **Qualifier history UI FAIL / repair pending replay — 2026-08-15**: screenshot
+- **Manual Finalize PASS — 2026-08-15**: Casey verified the remaining Group B
+  Riley score `7` and used **Finalize Stage -> Finalize** exactly once. The
+  immediate persisted oracle recorded Qualifiers `F / stage-finalized` at
+  `2026-08-15T15:29:07.835364258Z`, retained both qualifier groups and all
+  three exact scores, and still had zero Final rooms. The real review rule was
+  still idle with `armCount=0` and `lastRunCount=0`, proving that the manual
+  Finalize write did not project or prematurely execute advancement.
+- **Real review advancement and unchanged replay PASS — 2026-08-15**: the
+  existing `event-tournament-review` scheduler consumed the first explicit arm
+  at `15:31:02.524Z` with `lastRunCount=1`. It persisted one Final stage-group
+  with exactly Casey+Riley accepted, excluded Nova, wrote one matching
+  `score / group-members` plan marker and retained all qualifier scores. No
+  separate tournament-room event or chat is expected from score review; those
+  artifacts belong to the random/start grouping path. The first oracle version
+  incorrectly required such a room, and was corrected to inspect the owning
+  group membership and plan marker instead of changing the valid backend
+  write. The unchanged second real scheduler pass completed at
+  `15:38:02.969Z` with `lastRunCount=0`; the strict saved domain snapshot was
+  identical, including stage state, Final membership, leaderboard, marker,
+  outbox and all three users' counters.
+- **Manual Finalize notification recipient FAIL / repair replay pending —
+  2026-08-15**: the first Finalize persisted one outbox for Casey, Nova and
+  Riley, and all three untouched browser DOMs converged to counter `1`. This is
+  not valid delivery evidence: Casey manually performed Finalize and must be
+  excluded from the recipient set, matching the already-proven manual Start
+  contract. The shared backend stage-notification write path now excludes the
+  actor for both non-final and final-stage Finalize, with a regression that
+  requires only Nova+Riley. The existing watcher compiled successfully and the
+  backend restarted healthy. The guarded
+  `prepare-tournament-finalize-notification-retest` action rewinds only
+  Qualifiers `F -> SR`, removes only the old Finalize outbox/deliveries and
+  holds review; it preserves the deterministic scores, one Casey+Riley Final
+  group, plan marker and both real-worker proofs. Replay only Casey's one
+  Finalize action, then require one Nova+Riley outbox and no Casey delivery.
+- **Focused notification replay baseline READY — 2026-08-15 17:54 CEST**:
+  the guarded rearm removed exactly one old three-recipient outbox and three
+  delivered notification rows, then persisted Qualifiers `SR / stage-ended`.
+  Its immediate read oracle retained Casey `9`, Nova `4`, Riley `7`, one Final
+  group with exactly Casey+Riley, Nova absent, `armCount=2`, the prior
+  `lastRunCount=0` no-op and zero Finalize outbox. The real review rule is held
+  idle. Do not execute the rearm again; reload only Casey's event detail and
+  replay the visible Finalize once.
+- **Focused corrected Finalize write and in-place counter PASS — 2026-08-15**:
+  Casey replayed the visible Finalize exactly once. The immediate verifier
+  found one `event-stage-finalized` outbox with only Nova+Riley, no Casey, and
+  exactly one unread delivered row for each recipient. Both rows persist
+  `Tournament stage finalized / Qualifiers has been finalized.` The preserved
+  stage/group oracle retained the one Casey+Riley Final group and excluded
+  Nova. Without touching or reloading Nova/Riley, read-only CDP observed no
+  Casey notification badge and badge `1` for both Nova and Riley. The backend
+  recipient repair and in-place delivery counters are PASS; only the visible
+  New-list content comparison remains before closing the checkpoint.
+- **Notification meaning/causality FAIL found; ordered repair replay staged —
+  2026-08-15**: the recipient repair was correct, but a single generic
+  `Tournament stage finalized` row cannot also communicate who actually
+  advanced. Finalize and advancement are different producer boundaries. The
+  manual Finalize write must first persist one translated generic notification
+  for Nova+Riley and exclude Casey as the actor. The existing Final group stays
+  in place. Only after the real tournament-review worker has written Casey and
+  Riley's missing memberships into that group may it persist a later,
+  trophy-branded `Advanced to Final` notification for Casey+Riley. Thus the
+  final visible split is Casey advancement only, Nova finalized only and Riley
+  both. Automatic execution uses the same ordering, but has no manual actor to
+  exclude from the finalized audience. Backend, frontend-local, frontend EN/HU
+  and all Mongo EN/HU seed paths now share these keys. The guarded sequence
+  replay independently proves the immediate Finalize boundary, changed worker
+  boundary, notification timestamps/recipients, and a final unchanged-worker
+  no-op before visual closure.
+- **Ordered notification replay PREPARED — 2026-08-15 18:34 CEST**: the guarded
+  prepare action retained Qualifiers `SR` with exact Casey `9`, Nova `4` and
+  Riley `7`, removed only Casey/Riley memberships from the already-existing
+  Final group, removed its single review plan marker and held the real worker
+  idle. It did not recreate or delete the Final group. Run Casey's one visible
+  Qualifiers Finalize next; do not run prepare again.
+- **Later Start boundary remains independent**: assignment to Final does not
+  mean Final has started. When Final actually starts, the existing tournament
+  Start path writes a new `Final started / Final has started. Groups are
+  ready.` row. Manual Start excludes the initiating actor from that redundant
+  acknowledgement, as already proven in `TOURNAMENT-002`; an automatic Start
+  has no manual actor to exclude. The ordered Finalize/advancement replay stops
+  before this later transaction so closure, assignment and Start cannot be
+  mistaken for one write.
+- **Final group UI PASS — 2026-08-15**: without reload, Casey opened Final ->
+  Groups and observed exactly one group with `2 members`, Casey Bridge and
+  Riley Outside; Nova Social was absent. The immediate independent oracle
+  retained the same two accepted Final group members and the second review
+  result remained `lastRunCount=0`. This closes the advancement presentation;
+  only the focused corrected notification comparison remains.
+- **Qualifier history UI PASS after repair — 2026-08-15**: screenshot
   `17-11-48` showed the selected Casey score history as a three-line card
   (`+9`, note and date) below the existing Standings/History tabs. This was a
   presentation defect, not a missing-Nova write: clicking Casey had correctly
@@ -4563,8 +4651,41 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   minimum width: fixed compact value/date columns and a single-line ellipsized
   middle column keep each record on one row without horizontal overflow on a
   narrow viewport. The running frontend watcher compiled and synced the first
-  repair at `17:13:50`; only Casey is reloaded for focused visual replay before
-  Finalize.
+  repair at `17:13:50` and the final responsive repair at `17:15:59`. Casey
+  reloaded that bundle and passed the focused narrow-window replay: the `+9`
+  update remained one compact `Score | Note | Date` row, the note stayed on one
+  ellipsized line, there was no redundant back/detail arrow and no horizontal
+  overflow. A read-only post-replay oracle retained Qualifiers `SR`, exact
+  Casey `9` / Nova `4` / Riley `7`, zero Final rooms and review `armCount=0`;
+  opening History therefore caused no domain write or premature worker run.
+
+### `TOURNAMENT-004` — Final Start and whole-tournament completion
+
+- Continue only from the exact Casey+Riley Final membership proved by
+  `TOURNAMENT-003`; Nova remains the non-advancing control.
+- Starting Final is a new transaction after advancement. Its system
+  notification title and body must both identify **Final**, and its left
+  stage-icon must use the same shared accent hue as the Final stage card. The
+  notification row background remains owned by the normal notification-tone
+  rules. Manual Start excludes the initiating actor only from the redundant
+  Start acknowledgement; an automatic Start has no manual actor to exclude.
+- The same context rule applies to every automatic tournament lifecycle
+  notification, not only Start: closure/finalization names the completed stage,
+  advancement names both source and destination stages, and terminal
+  finalization states that the whole tournament ended. Manual and automatic
+  producers use the same message/i18n payload; only manual actor exclusion
+  differs.
+- Finalize only through its valid ended/review boundary. The terminal write
+  must produce **Tournament finalized**, include the Final stage context and
+  localized result/winner wording, and set the persisted whole-tournament
+  completion context. It must not look like another intermediate
+  `{stageTitle} finalized` row.
+- Compare EN/HU rendering against both frontend-local bundles and live Mongo
+  keys. A second unchanged Start/Finalize attempt or worker pass must not add
+  membership, result, outbox, inbox or counter deltas.
+- Keep this checkpoint separate from `TOURNAMENT-003`: Qualifiers closure,
+  Final assignment, Final Start and whole-tournament completion are four
+  causally ordered producer boundaries, not one projected UI transition.
 
 ### `TOURNAMENT-ROOM-LIFE-001` — generated-room member leave isolation
 

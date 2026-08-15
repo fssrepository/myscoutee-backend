@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 17:17 CEST
+Updated: 2026-08-15 18:43 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -36,15 +36,15 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-003 — review and advancement
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-003--review-and-advancement
-scenario: event-domain (clean scored qualifier baseline; no producer action executed)
-ledger_status: IN PROGRESS / HISTORY UI RETEST
-state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 was cleanly staged at 15:06:05Z with a stable multi-hour Final window. Qualifiers is SR/stage-ended with exact Group A Casey=9 and Nova=4 plus Group B Riley=7; expected Final is Casey+Riley. Final is RS/awaiting-prior-stage with zero generated rooms, members and chats. The real review rule remains held at 1800 seconds; no Finalize or review occurred. Casey's first History observation exposed only a presentation FAIL: one score update was split into a three-line card even though the top Standings/History tabs already own navigation. The shared Score and FIFA histories were converted to compact tables without a redundant arrow. Their mobile layout removes the forced minimum width, keeps value/date columns compact and ellipsizes the middle cell on one line. The final watcher output synced at 17:15:59 and Casey alone reloaded it at 17:16; Nova and Riley remain untouched.
-required_resume: Casey only: repeat Activities -> My Events -> QA TOURNAMENT-003 -> card overflow -> View -> Qualifiers overflow -> Groups. Expand Group A and click Casey's standings row. History must be one compact Score | Note | Date table with one +9 / Manual QA deterministic winner / date row, no card-style line breaks and no extra back/detail arrow. Do not Finalize yet.
+scenario: event-domain (ordered Finalize -> persisted advancement notification replay prepared)
+ledger_status: IN PROGRESS / ORDERED NOTIFICATION REPLAY NEXT
+state: TOURNAMENT-001 and TOURNAMENT-002 are PASS/CLOSED and must not be replayed. TOURNAMENT-003 has responsive History PASS, exact first real review advancement, byte-exact second-pass no-op and Casey Final Groups UI PASS. The repaired manual Finalize recipient boundary also passed: its one generic finalized intent and two unread deliveries target Nova+Riley only, while Casey is excluded. The final visual comparison exposed a separate semantic gap, not a recipient regression: stage closure and actual advancement need two causally ordered messages. The shared backend now writes translated generic Finalize keys at the manual producer, then the real review worker writes a separate translated trophy-branded advancement intent only after it has persisted Casey+Riley membership in the already-existing Final group. Frontend-local mirrors the same contract. EN/HU keys exist in frontend-local and all Mongo seed sets. The guarded sequence replay is PREPARED: Qualifiers is SR with exact 9/4/7 scores, the existing Final group has no members, its old plan marker is removed, and the review worker remains held idle. Do not run prepare again.
+required_resume: Reload only Casey's current event detail so it uses the repaired frontend, then manually Finalize Qualifiers exactly once. Do not touch Nova/Riley and do not arm the worker before the immediate finalize verifier.
 event: QA TOURNAMENT-003
 actors:
   active: Casey tournament stage finalizer; Nova qualifier non-advancer; Riley qualifier advancer; three fresh launcher-owned demo browsers on /game
   controls: Nova and Riley remain untouched through the qualifier-standings observation and Casey's later Finalize write
-next_actor: Casey replays the repaired score-History presentation before the one-time Finalize producer.
+next_actor: Casey performs one visible Qualifiers Finalize. Nova and Riley remain untouched until both persisted producer phases and the worker no-op have passed.
 stop_phrase: megvan
 ```
 
@@ -110,13 +110,22 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-003 — review and advancement`, focused History-layout replay:
-Casey repeats Activities -> My Events -> `QA TOURNAMENT-003` -> card overflow
-**View** -> Qualifiers overflow -> **Groups**, expands Group A and clicks
-Casey's standings row. History must render one compact `Score | Note | Date`
-table with the `+9 / Manual QA deterministic winner / date` row, without the
-old card-style line breaks or an extra back/detail arrow. Do not Finalize yet;
-Nova and Riley remain untouched.
+`TOURNAMENT-003 — ordered Finalize -> advancement notification replay`: the
+guarded prepare action has already passed and must not be repeated. Casey reloads only the event detail and
+uses **Qualifiers -> Finalize Stage -> Finalize** exactly once. The immediate
+oracle must prove a translated generic Finalize intent for Nova+Riley, no Casey
+recipient, no Final membership yet and no advancement intent. Only then may the
+real review worker run: it must write Casey+Riley membership into the
+already-existing Final group and subsequently write one translated,
+trophy-branded advancement intent for Casey+Riley. A second unchanged worker
+run must write neither membership nor notification. The final visual oracle is
+Casey trophy only, Nova generic Finalize only, Riley both; keep every row unread.
+This replay deliberately stops before Final starts. Starting Final is a third,
+later producer boundary and reuses the already-proven tournament Start
+contract: a separate `Final started / Final has started. Groups are
+ready.` notification is written only when that stage actually starts. A manual
+starter is excluded from that acknowledgement; an automatic start has no
+manual actor to exclude.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is
@@ -136,6 +145,23 @@ records: before state, manual action, immediate state, worker expectation,
 delayed projection, unchanged controls and independent persisted oracle. A
 checkpoint row may contain a short causally continuous sequence of these
 boundaries under the granularity rules below. UI evidence alone is not a PASS.
+
+For tournament lifecycle notifications, manual and automatic producers share
+one semantic contract. Every Start/close/finalize message identifies the stage;
+advancement identifies both the completed and destination stages; terminal
+finalization explicitly says that the whole tournament ended and carries the
+result context. Manual producers alone exclude their actor from redundant
+acknowledgements. Persist the stage index/total and use the shared stage-card
+accent only on the notification avatar; normal notification rules continue to
+own the row background. Verify frontend-local and persisted EN/HU keys together.
+
+Before declaring a worker FAIL, resolve the original production write contract
+and its existing regression coverage. Tournament score review, for example,
+synchronizes advancing users into next-stage `group` memberships; a separate
+tournament-room event/chat belongs to the random/start grouping path. The
+checkpoint oracle must inspect the owning records and plan marker for the path
+under test, rather than requiring an artifact produced by a neighbouring
+workflow.
 
 This campaign is a developer-AI collaborative repair session, not a two-person
 QA handoff. Codex owns the complete machine-side loop: fixture staging,
@@ -333,6 +359,14 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   setup. After the producer action, never reload before capturing the in-place
   result; otherwise the immediate and reload/read branches become
   indistinguishable.
+- For notifications caused by a manual action, derive the recipient set from
+  the owning producer and explicitly compare it with analogous manual actions
+  before asking the user to inspect delivery. The actor normally must not
+  receive a self-notification; for tournament stage actions, manual Finalize
+  follows the already-proven manual Start exclusion rule. Persist and inspect
+  the outbox recipients first, then use browser counters/content as delivery
+  evidence. A three-client counter convergence is not PASS if the actor should
+  have been excluded.
 - Before a one-time credential action whose success state intentionally hides
   the original code, explicitly retain the complete QR in a controlled QA
   screenshot/tab before issuing the producer instruction. This is required
@@ -517,6 +551,14 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   redundant action acknowledgement, not from a derived notification that is
   also relevant to that actor. Prove recipient sets, exact cardinality and
   persisted timestamps before comparing the unread UI ordering.
+- Tournament lifecycle notifications must identify their exact semantic
+  boundary in persisted payload and visible copy: `{stageTitle} started`,
+  `{stageTitle} finalized`, `Advanced to {nextStageTitle}`, or the distinct
+  whole-`Tournament finalized` terminal state. Carry stage index/total with
+  every system stage row. Render only the left system avatar/icon from the
+  shared stage accent-hue calculation; keep the notification row background
+  under the independent notification-tone rules. Verify frontend-local and
+  live Mongo EN/HU keys together so a fallback-only English row cannot pass.
 - For an unread/New notification assertion, stop and inspect New before any
   later action that intentionally resolves or marks that row read. A later
   read row in All can prove persistence and resolution, but it is not evidence
@@ -875,7 +917,8 @@ ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
    real Firebase-login retention deferred)
 -> TOURNAMENT-001 (closed)
 -> TOURNAMENT-002 (closed)
--> TOURNAMENT-003 (active; deterministic scored qualifier baseline ready)
+-> TOURNAMENT-003 (active; ordered notification replay prepared)
+-> TOURNAMENT-004 (next; Final Start and whole-tournament completion)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase

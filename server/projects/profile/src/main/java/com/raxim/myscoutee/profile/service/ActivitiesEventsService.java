@@ -3634,6 +3634,7 @@ public class ActivitiesEventsService {
             return;
         }
         String stageTitle = stageTitle(stage);
+        Map<String, String> stageNotificationPayload = tournamentStageNotificationPayload(event, stage);
         List<String> adminUserIds = resolveAdminUserIds(eventId, event.getCreatorUserId());
         List<String> audienceUserIds = eventAudienceUserIds(event);
         if (STAGE_ACTION_START.equals(action)) {
@@ -3664,18 +3665,38 @@ public class ActivitiesEventsService {
             return;
         }
         if (STAGE_STATUS_FINALIZED.equals(nextStatus)) {
+            Map<String, String> finalizedPayload = new LinkedHashMap<>(stageNotificationPayload);
+            finalizedPayload.put(
+                    "notification_title_key",
+                    finalStage
+                            ? "notification.event.tournament.finalized.title"
+                            : "notification.event.stage.finalized.title");
+            finalizedPayload.put(
+                    "notification_message_key",
+                    finalStage
+                            ? tournamentFinalizedMessageKey(resultSummary)
+                            : "notification.event.stage.finalized.message");
+            finalizedPayload.put("notification_tone", finalStage ? "success" : "info");
+            if (finalStage) {
+                String winnerNames = resultSummary == null ? "" : resultSummary.winnerNamesLabel();
+                if (StringUtils.hasText(winnerNames)) {
+                    finalizedPayload.put("winnerNames", winnerNames);
+                }
+                finalizedPayload.put("tournamentComplete", "true");
+            }
             enqueueEventNotification(
                     finalStage ? "event-tournament-finalized" : "event-stage-finalized",
                     event,
                     "event-participants",
-                    audienceUserIds,
-                    finalStage ? "Tournament finalized" : "Tournament stage finalized",
+                    eventAudienceUserIdsExcludingActor(event, actorUserId),
+                    finalStage ? "Tournament finalized" : stageTitle + " finalized",
                     finalStage
-                            ? tournamentFinalizedBody(resultSummary)
+                            ? tournamentFinalizedBody(stageTitle, resultSummary)
                             : stageTitle + " has been finalized.",
                     action,
                     stageTitle,
-                    actorUserId);
+                    actorUserId,
+                    finalizedPayload);
             return;
         }
         if (STAGE_STATUS_SUSPENDED.equals(nextStatus)) {
@@ -3699,18 +3720,50 @@ public class ActivitiesEventsService {
         if (notificationOutboxService == null || event == null || stage == null) {
             return;
         }
-        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(eventAudienceUserIds(event));
-        recipientUserIds.remove(normalizeId(actorUserId));
+        String stageTitle = stageTitle(stage);
+        Map<String, String> payload = new LinkedHashMap<>(tournamentStageNotificationPayload(event, stage));
+        payload.put("notification_title_key", "notification.event.stage.started.title");
+        payload.put("notification_message_key", "notification.event.stage.started.message");
         enqueueEventNotification(
                 "event-tournament-started",
                 event,
                 "event-participants",
-                List.copyOf(recipientUserIds),
-                "Tournament started",
-                stageTitle(stage) + " has started. Groups are ready.",
+                eventAudienceUserIdsExcludingActor(event, actorUserId),
+                stageTitle + " started",
+                stageTitle + " has started. Groups are ready.",
                 STAGE_ACTION_START,
-                stageTitle(stage),
-                actorUserId);
+                stageTitle,
+                actorUserId,
+                payload);
+    }
+
+    private Map<String, String> tournamentStageNotificationPayload(
+            ActivityEvent event,
+            SubEventItem stage) {
+        List<SubEventItem> tournamentStages = runtimeStageSequence(event).stream()
+                .filter(this::isTournamentStage)
+                .toList();
+        int stageIndex = 0;
+        for (int index = 0; index < tournamentStages.size(); index += 1) {
+            if (sameStage(tournamentStages.get(index), stage)) {
+                stageIndex = index + 1;
+                break;
+            }
+        }
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("notification_avatar_tone", "stage");
+        payload.put("notification_avatar_icon", "emoji_events");
+        payload.put("stageIndex", Integer.toString(Math.max(1, stageIndex)));
+        payload.put("stageTotal", Integer.toString(Math.max(1, tournamentStages.size())));
+        return payload;
+    }
+
+    private List<String> eventAudienceUserIdsExcludingActor(
+            ActivityEvent event,
+            String actorUserId) {
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(eventAudienceUserIds(event));
+        recipientUserIds.remove(normalizeId(actorUserId));
+        return List.copyOf(recipientUserIds);
     }
 
     private TournamentResultSummary resolveTournamentResultSummary(
@@ -3739,17 +3792,33 @@ public class ActivitiesEventsService {
             return List.of();
         }
         LinkedHashMap<String, String> namesByMemberId = new LinkedHashMap<>();
-        LinkedHashSet<String> winnerIds = new LinkedHashSet<>();
         for (EventLeaderboardGroupDto group : state.groups()) {
             if (group == null) {
                 continue;
             }
             collectMemberNames(namesByMemberId, group);
+        }
+        return resolveAdvancingMemberIds(state).stream()
+                .map(memberId -> firstNonBlank(namesByMemberId.get(memberId), memberId))
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private LinkedHashSet<String> resolveAdvancingMemberIds(EventLeaderboardStateDto state) {
+        LinkedHashSet<String> advancingMemberIds = new LinkedHashSet<>();
+        if (state == null || state.groups() == null) {
+            return advancingMemberIds;
+        }
+        for (EventLeaderboardGroupDto group : state.groups()) {
+            if (group == null) {
+                continue;
+            }
             if (group.advancingMemberIds() != null && !group.advancingMemberIds().isEmpty()) {
                 group.advancingMemberIds().stream()
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
-                        .forEach(winnerIds::add);
+                        .forEach(advancingMemberIds::add);
                 continue;
             }
             int winnerCount = Math.max(1, group.advancePerGroup() == null ? 0 : group.advancePerGroup());
@@ -3760,7 +3829,7 @@ public class ActivitiesEventsService {
                         .map(EventLeaderboardFifaStandingRowDto::memberId)
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
-                        .forEach(winnerIds::add);
+                        .forEach(advancingMemberIds::add);
             } else if (group.scoreRows() != null && !group.scoreRows().isEmpty()) {
                 group.scoreRows().stream()
                         .filter(Objects::nonNull)
@@ -3768,14 +3837,10 @@ public class ActivitiesEventsService {
                         .map(EventLeaderboardScoreStandingRowDto::memberId)
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
-                        .forEach(winnerIds::add);
+                        .forEach(advancingMemberIds::add);
             }
         }
-        return winnerIds.stream()
-                .map(memberId -> firstNonBlank(namesByMemberId.get(memberId), memberId))
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
+        return advancingMemberIds;
     }
 
     private void collectMemberNames(Map<String, String> namesByMemberId, EventLeaderboardGroupDto group) {
@@ -3817,12 +3882,26 @@ public class ActivitiesEventsService {
         }
     }
 
-    private String tournamentFinalizedBody(TournamentResultSummary summary) {
+    private String tournamentFinalizedBody(String stageTitle, TournamentResultSummary summary) {
+        String normalizedStageTitle = firstNonBlank(stageTitle, "Final");
         String winnerSummary = summary == null ? "" : summary.shortWinnerSummary();
         if (!StringUtils.hasText(winnerSummary)) {
-            return "The final stage is complete. Open the event results to review the standings.";
+            return normalizedStageTitle
+                    + " is complete. The tournament has been finalized. Open the event results to review the standings.";
         }
-        return "The final stage is complete. Results are ready. " + winnerSummary + ".";
+        return normalizedStageTitle
+                + " is complete. The tournament has been finalized. " + winnerSummary + ".";
+    }
+
+    private String tournamentFinalizedMessageKey(TournamentResultSummary summary) {
+        int winnerCount = summary == null ? 0 : summary.winnerCount();
+        if (winnerCount == 1) {
+            return "notification.event.tournament.finalized.message.winner";
+        }
+        if (winnerCount > 1) {
+            return "notification.event.tournament.finalized.message.winners";
+        }
+        return "notification.event.tournament.finalized.message";
     }
 
     private String tournamentFinalizedChatText(TournamentResultSummary summary) {
@@ -3843,6 +3922,30 @@ public class ActivitiesEventsService {
             String action,
             String stageTitle,
             String actorUserId) {
+        enqueueEventNotification(
+                type,
+                event,
+                recipientScope,
+                recipientUserIds,
+                title,
+                body,
+                action,
+                stageTitle,
+                actorUserId,
+                Map.of());
+    }
+
+    private void enqueueEventNotification(
+            String type,
+            ActivityEvent event,
+            String recipientScope,
+            List<String> recipientUserIds,
+            String title,
+            String body,
+            String action,
+            String stageTitle,
+            String actorUserId,
+            Map<String, String> additionalPayload) {
         List<String> recipients = normalizeIds(recipientUserIds);
         if (recipients.isEmpty()) {
             return;
@@ -3853,6 +3956,13 @@ public class ActivitiesEventsService {
         payload.put("eventTitle", safeText(event.getTitle()));
         payload.put("stageTitle", safeText(stageTitle));
         payload.put("stageAction", safeText(action));
+        if (additionalPayload != null) {
+            additionalPayload.forEach((key, value) -> {
+                if (StringUtils.hasText(safeText(key)) && StringUtils.hasText(safeText(value))) {
+                    payload.put(key, value);
+                }
+            });
+        }
         notificationOutboxService.enqueue(new NotificationIntent(
                 type,
                 "event",
@@ -7459,13 +7569,7 @@ public class ActivitiesEventsService {
         }
 
         private String shortWinnerSummary() {
-            List<String> names = winnerNames == null
-                    ? List.of()
-                    : winnerNames.stream()
-                            .map(value -> value == null ? "" : value.trim())
-                            .filter(StringUtils::hasText)
-                            .distinct()
-                            .toList();
+            List<String> names = normalizedWinnerNames();
             if (names.isEmpty()) {
                 return "";
             }
@@ -7474,6 +7578,24 @@ public class ActivitiesEventsService {
                 return prefix + String.join(", ", names);
             }
             return prefix + String.join(", ", names.subList(0, 3)) + " and " + (names.size() - 3) + " more";
+        }
+
+        private int winnerCount() {
+            return normalizedWinnerNames().size();
+        }
+
+        private String winnerNamesLabel() {
+            return String.join(", ", normalizedWinnerNames());
+        }
+
+        private List<String> normalizedWinnerNames() {
+            return winnerNames == null
+                    ? List.of()
+                    : winnerNames.stream()
+                            .map(value -> value == null ? "" : value.trim())
+                            .filter(StringUtils::hasText)
+                            .distinct()
+                            .toList();
         }
     }
 

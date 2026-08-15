@@ -1259,12 +1259,84 @@ public class EventScheduler {
                         null);
                 if (!changedGroups.isEmpty()) {
                     activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
+                    notifyTournamentAdvancers(
+                            event,
+                            subEvent,
+                            nextSubEvent,
+                            advancingUserIds);
                 }
                 changedGroupCount.addAndGet(changedGroups.size());
             }
         })); // End of parallel stream
 
         return new ScorePlanRunResult(List.copyOf(states), changedGroupCount.get());
+    }
+
+    private void notifyTournamentAdvancers(
+            ActivityEvent event,
+            SubEventItem completedStage,
+            SubEventItem nextStage,
+            Collection<String> advancingUserIds) {
+        if (notificationOutboxService == null) {
+            return;
+        }
+        List<String> recipients = normalizeUserIds(advancingUserIds);
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(eventId) || recipients.isEmpty()) {
+            return;
+        }
+        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "your tournament");
+        String stageTitle = firstNonBlank(completedStage == null ? null : completedStage.name(), "Tournament stage");
+        String nextStageTitle = firstNonBlank(nextStage == null ? null : nextStage.name(), "the next stage");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "tournament-advancement");
+        payload.put("stageTitle", stageTitle);
+        payload.put("nextStageTitle", nextStageTitle);
+        payload.put("senderName", RANDOM_ROOM_SYSTEM_NAME);
+        payload.put("notification_title_key", "notification.event.stage.advanced.title");
+        payload.put("notification_message_key", "notification.event.stage.advanced.message");
+        payload.put("notification_tone", "success");
+        payload.put("notification_avatar_tone", "stage");
+        payload.put("notification_avatar_icon", "emoji_events");
+        putTournamentStagePosition(payload, event, nextStage);
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-stage-advanced",
+                OWNER_TYPE_EVENT,
+                eventId,
+                "event-stage-advancers",
+                recipients,
+                "Advanced to " + nextStageTitle,
+                "You advanced from " + stageTitle + " to " + nextStageTitle + ".",
+                DEFAULT_CLICK_URL,
+                TOURNAMENT_ROOM_IMAGE_URL,
+                APP_BADGE_URL,
+                "event-stage-advanced-" + eventId + "-" + normalizeId(completedStage == null ? null : completedStage.id()),
+                payload,
+                MARKER_UPDATED_BY));
+    }
+
+    private void putTournamentStagePosition(
+            Map<String, String> payload,
+            ActivityEvent event,
+            SubEventItem stage) {
+        if (payload == null) {
+            return;
+        }
+        List<SubEventItem> tournamentStages = safeSubEvents(event).stream()
+                .filter(this::isTournamentStage)
+                .toList();
+        String stageId = normalizeId(stage == null ? null : stage.id());
+        int stageIndex = 0;
+        for (int index = 0; index < tournamentStages.size(); index += 1) {
+            if (stageId.equals(normalizeId(tournamentStages.get(index).id()))) {
+                stageIndex = index + 1;
+                break;
+            }
+        }
+        payload.put("stageIndex", Integer.toString(Math.max(1, stageIndex)));
+        payload.put("stageTotal", Integer.toString(Math.max(1, tournamentStages.size())));
     }
 
     private boolean isNextStageMembershipMutable(SubEventItem stage) {
