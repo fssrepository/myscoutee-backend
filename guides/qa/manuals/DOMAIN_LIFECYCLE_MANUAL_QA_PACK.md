@@ -4918,10 +4918,12 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   byte-identical. Correcting an already-used result requires a separate
   explicit rollback/correction workflow; it must not silently rewrite a live
   downstream bracket.
-- The present implementation has no result-revision identity and its
-  `canReopenScores` guard accepts any valid finalized stage index. Treat this
-  as an implementation gap to close before executing either score-reopen case,
-  not as permission to alter the closed tournament notification producers.
+- The implementation now persists a result-revision identity through Java,
+  HTTP and frontend-local state. Its lifecycle guard permits Reopen only while
+  every later tournament stage is still waiting or pristine/unstarted. The
+  running dev watchers compile this foundation; the two score-reopen cases
+  remain NOT RUN until their isolated fixtures prove revision-specific
+  notifications, no-op replay and atomic late rejection.
 
 ### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
 

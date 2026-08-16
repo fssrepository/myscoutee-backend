@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 17:18 CEST
+Updated: 2026-08-16 18:18 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -60,12 +60,13 @@ zero.
 
 Separate captured score-correction follow-ups:
 `TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
-corrected Finalize` as a new immutable result revision with new exact-once
+corrected Finalize` as a new durable result revision with new exact-once
 participant outcomes, while `TOURNAMENT-SCORE-REOPEN-002` owns the guard that
-forbids an ordinary correction after a dependent stage has started. The code
-currently has the status transitions but no explicit result-revision identity,
-and its Reopen guard is too broad. Do not fold either case into the active card
-checkpoint or replay closed Start/Finalize notification evidence to explore it.
+forbids an ordinary correction after a dependent stage has started. Java,
+HTTP and frontend-local now carry the revision and the Reopen guards are
+tightened; both dev watchers compile, but the isolated manual replays remain
+NOT RUN. Do not fold either case into the active card checkpoint or replay
+closed Start/Finalize notification evidence to explore it.
 
 ### Efficient resume gate
 
@@ -154,6 +155,28 @@ removing an in-request readback must never remove the separate QA read oracle.
 
 ### 1. One checkpoint, one transition
 
+The physical CSV/XLSX row order is the manual execution order, not merely a
+visual grouping. The main testcase table has one normalized, domain-colored
+`QA domain` column; its other cells retain the existing status/scope colors.
+The workbook's separate `QA domain | Priority | Progress` table is generated
+from the same rows, begins at row 8 as three side-by-side columns above the
+main table, orders whole domains by numeric `Priority DESC`, and shows `passed
+/ total (percentage)` per domain. The generator owns compact A-Q widths: all
+17 primary columns remain visible without a default horizontal scroll, long
+content shows as much as the compact cell and its existing line breaks allow,
+and only the two formula-helper columns remain hidden. Keep every domain in one contiguous
+block, place Core product-flow domains before the lower-priority
+admin/role/monitoring/job domains, and keep EXT domains at the end. Preserve
+the intentional checkpoint order inside each block. Once execution enters a
+domain, finish that block before selecting another. After the currently active
+domain closes, choose the highest-priority Core domain whose Progress is below
+100%, then close its Pending/Not started rows in physical order. Status colors
+never select the next test. Newly discovered foreign-domain coverage may be
+recorded beside its own rows, but must not become the live checkpoint, trigger
+fixture/browser setup, or load that foreign-domain pack. The resume pointer
+records the current row; it must not hard-code a domain-specific methodology
+rule.
+
 Each transactional boundary has one controlled producer action and explicitly
 records: before state, manual action, immediate state, worker expectation,
 delayed projection, unchanged controls and independent persisted oracle. A
@@ -212,15 +235,19 @@ record has been removed.
   rewrite those rows merely to make the new plan look more uniform. Count
   logical CSV records rather than physical lines because quoted multiline
   cells span several file lines; ignore `LEGEND-*` records when quoting the
-  testcase total. Capture a canonical serialized hash of every pre-existing
-  logical row before appending, then prove the same prefix and hash after CSV
-  and XLSX synchronization. New coverage is appended after that prefix with
-  new stable IDs and ordered checkpoint groups. The target count is an audit
-  result, not a quota: record all materially distinct bounded contracts, but
-  never manufacture row splits only to reach an estimate.
+  testcase total. Capture a canonical serialized hash keyed by every
+  pre-existing testcase ID and prove the same ID/content hashes after CSV and
+  XLSX synchronization. Insert new Core coverage beside its owning domain
+  rows and before the `LEGEND-EXT`/external block; do not append a Core row
+  after EXT merely because it was discovered later. Preserve the relative
+  order and contents of all existing testcase rows while doing so. New rows
+  receive stable IDs and ordered checkpoint groups. The target count is an
+  audit result, not a quota: record all materially distinct bounded contracts,
+  but never manufacture row splits only to reach an estimate.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
-  workbook totals. Verify the CSV has 16 columns per logical record, unique
+  workbook totals. Verify the CSV has 17 columns per logical record, including
+  the normalized `QA domain`, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
   per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
@@ -948,20 +975,20 @@ repair-and-clean-replay loop deterministic.
 
 The completed ticket, visibility, invitation, chat, demo-registration,
 consent, lifecycle and functional landing checkpoints retain their evidence.
-The active Core expansion continuation is:
+The current Tournament block order is:
 
 ```text
-ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
--> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
--> EVENT-LIFE-002 through EVENT-LIFE-005 (closed)
--> EVENT-INV-001 through EVENT-INV-006 (closed)
--> LANDING-ELIGIBILITY-001 (functional branches complete;
-   real Firebase-login retention deferred)
--> TOURNAMENT-001 (closed)
--> TOURNAMENT-002 (closed)
--> TOURNAMENT-003 (active; ordered notification replay prepared)
--> TOURNAMENT-004 (next; Final Start and whole-tournament completion)
+TOURNAMENT-001 through TOURNAMENT-004 (closed)
+-> TOURNAMENT-ROOM-LIFE-001 (closed)
+-> TOURNAMENT-CARD-001 (active)
+-> TOURNAMENT-ADMISSION-001 (not run)
+-> TOURNAMENT-SCORE-REOPEN-001 (not run)
+-> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```
+
+When this block is closed, select the next domain from the generated priority
+table (`Priority DESC`, Core, Progress below 100%) rather than extending this
+handoff with another hard-coded cross-domain chain.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The EXT payment/operator/registry/deployment sequence

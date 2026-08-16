@@ -66,6 +66,7 @@ public final class SubEventItemMapper {
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
                 item.stageFinalizedByUserId(),
+                item.stageResultRevision(),
                 item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 
@@ -124,6 +125,7 @@ public final class SubEventItemMapper {
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
                 item.stageFinalizedByUserId(),
+                item.stageResultRevision(),
                 item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 }

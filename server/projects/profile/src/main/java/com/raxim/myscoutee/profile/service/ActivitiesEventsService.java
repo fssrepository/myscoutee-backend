@@ -2496,7 +2496,10 @@ public class ActivitiesEventsService {
                     firstNonBlank(runtime.stageStatusReason(), stage.stageStatusReason()),
                     firstNonBlank(runtime.stageStatusUpdatedAt(), stage.stageStatusUpdatedAt()),
                     firstNonBlank(runtime.stageFinalizedAt(), stage.stageFinalizedAt()),
-                    firstNonBlank(runtime.stageFinalizedByUserId(), stage.stageFinalizedByUserId())));
+                    firstNonBlank(runtime.stageFinalizedByUserId(), stage.stageFinalizedByUserId()),
+                    runtime.stageResultRevision() == null
+                            ? stage.stageResultRevision()
+                            : runtime.stageResultRevision()));
         }
         return updated;
     }
@@ -2538,6 +2541,7 @@ public class ActivitiesEventsService {
                         stage.stageStatusUpdatedAt(),
                         stage.stageFinalizedAt(),
                         stage.stageFinalizedByUserId(),
+                        stage.stageResultRevision(),
                         autoGroupsCount),
                 existing,
                 actorUserId);
@@ -3474,7 +3478,23 @@ public class ActivitiesEventsService {
     }
 
     private boolean canReopenScores(List<SubEventItem> stages, int stageIndex) {
-        return stages != null && stageIndex >= 0 && stageIndex < stages.size();
+        if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
+            return false;
+        }
+        for (int index = stageIndex + 1; index < stages.size(); index += 1) {
+            SubEventItem laterStage = stages.get(index);
+            if (!isTournamentStage(laterStage)) {
+                continue;
+            }
+            String laterStatus = normalizeStageStatus(laterStage.stageStatus());
+            boolean pristineActive = STAGE_STATUS_ACTIVE.equals(laterStatus)
+                    && !StringUtils.hasText(safeText(laterStage.stageStatusUpdatedAt()))
+                    && !StringUtils.hasText(safeText(laterStage.stageFinalizedAt()));
+            if (!STAGE_STATUS_START_REVIEW.equals(laterStatus) && !pristineActive) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isStageInScheduleWindow(SubEventItem stage) {
@@ -3508,6 +3528,7 @@ public class ActivitiesEventsService {
                 safeText(stage.stageStatusUpdatedAt()),
                 safeText(stage.stageFinalizedAt()),
                 safeText(stage.stageFinalizedByUserId()),
+                stage.stageResultRevision(),
                 autoInviter);
     }
 
@@ -3560,6 +3581,33 @@ public class ActivitiesEventsService {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
+        int resultRevision = safeCount(subEvent.stageResultRevision());
+        if (resultRevision == 0
+                && STAGE_STATUS_FINALIZED.equals(normalizeStageStatus(subEvent.stageStatus()))) {
+            resultRevision = 1;
+        }
+        if (STAGE_STATUS_FINALIZED.equals(normalizeStageStatus(stageStatus))
+                && !STAGE_STATUS_FINALIZED.equals(normalizeStageStatus(subEvent.stageStatus()))) {
+            resultRevision += 1;
+        }
+        return copySubEventWithStageStatus(
+                subEvent,
+                stageStatus,
+                stageStatusReason,
+                stageStatusUpdatedAt,
+                stageFinalizedAt,
+                stageFinalizedByUserId,
+                resultRevision);
+    }
+
+    private SubEventItem copySubEventWithStageStatus(
+            SubEventItem subEvent,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            Integer stageResultRevision) {
         return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
@@ -3578,6 +3626,7 @@ public class ActivitiesEventsService {
                 subEvent.capacityMax(),
                 subEvent.membersAccepted(),
                 subEvent.membersPending(),
+                subEvent.groupsPending(),
                 subEvent.carsPending(),
                 subEvent.accommodationPending(),
                 subEvent.suppliesPending(),
@@ -3596,7 +3645,9 @@ public class ActivitiesEventsService {
                 stageStatusReason,
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
-                stageFinalizedByUserId);
+                stageFinalizedByUserId,
+                stageResultRevision,
+                subEvent.groups());
     }
 
     private void runInitialAutoInviteBatch(List<ActivityEvent> updated) {
@@ -3745,6 +3796,10 @@ public class ActivitiesEventsService {
         Map<String, String> payload = new LinkedHashMap<>();
         payload.put("stageIndex", Integer.toString(Math.max(1, stageIndex)));
         payload.put("stageTotal", Integer.toString(Math.max(1, tournamentStages.size())));
+        int resultRevision = Math.max(0, safeCount(stage.stageResultRevision()));
+        if (resultRevision > 1) {
+            payload.put("stageResultRevision", Integer.toString(resultRevision));
+        }
         return payload;
     }
 
@@ -4013,6 +4068,7 @@ public class ActivitiesEventsService {
                 }
             });
         }
+        String resultRevision = safeText(payload.get("stageResultRevision"));
         notificationOutboxService.enqueue(new NotificationIntent(
                 type,
                 "event",
@@ -4024,7 +4080,8 @@ public class ActivitiesEventsService {
                 "/game",
                 firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
-                type + "-" + eventId,
+                type + "-" + eventId
+                        + (StringUtils.hasText(resultRevision) ? "-r" + resultRevision : ""),
                 payload,
                 actorUserId));
     }

@@ -358,10 +358,16 @@ public class EventScheduler {
                         "Synchronized advancing members in {} tournament group(s).",
                         scorePlanRun.changedGroupCount());
             }
+            if (scorePlanRun.processedResultRevisionCount() > 0) {
+                LOGGER.info(
+                        "Published participant outcomes for {} tournament result revision(s).",
+                        scorePlanRun.processedResultRevisionCount());
+            }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
                         NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
-                        startReviewCount + reviewCount + scorePlanRun.changedGroupCount(),
+                        startReviewCount + reviewCount + scorePlanRun.changedGroupCount()
+                                + scorePlanRun.processedResultRevisionCount(),
                         "completed",
                         "Reviewed scheduled tournament stages and synchronized advancing members.",
                         MARKER_UPDATED_BY,
@@ -605,6 +611,24 @@ public class EventScheduler {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
+        return copySubEventWithStageStatus(
+                subEvent,
+                stageStatus,
+                stageStatusReason,
+                stageStatusUpdatedAt,
+                stageFinalizedAt,
+                stageFinalizedByUserId,
+                subEvent.stageResultRevision());
+    }
+
+    private SubEventItem copySubEventWithStageStatus(
+            SubEventItem subEvent,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            Integer stageResultRevision) {
         return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
@@ -623,6 +647,7 @@ public class EventScheduler {
                 subEvent.capacityMax(),
                 subEvent.membersAccepted(),
                 subEvent.membersPending(),
+                subEvent.groupsPending(),
                 subEvent.carsPending(),
                 subEvent.accommodationPending(),
                 subEvent.suppliesPending(),
@@ -641,7 +666,9 @@ public class EventScheduler {
                 stageStatusReason,
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
-                stageFinalizedByUserId);
+                stageFinalizedByUserId,
+                stageResultRevision,
+                subEvent.groups());
     }
 
     private SubEventItem copySubEventWithStageError(
@@ -1136,6 +1163,7 @@ public class EventScheduler {
         // THREAD SAFETY: We must use a synchronized list because multiple CPU threads will add to this simultaneously
         List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger changedGroupCount = new AtomicInteger(0);
+        AtomicInteger processedResultRevisionCount = new AtomicInteger(0);
         Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> events = requestedSourceIds.isEmpty()
                 ? resolveCanonicalEvents()
@@ -1249,18 +1277,39 @@ public class EventScheduler {
 
                 List<GroupAssignmentTarget> nextTargets = resolveGroupAssignmentTargets(
                         eventId, nextSubEventId, nextSubEvent, advancingUserIds, false, "score");
-                
-                if (nextTargets.isEmpty()) continue;
+                if (nextTargets.isEmpty() && !advancingUserIds.isEmpty()) continue;
 
-                List<GeneratedEventPlan> changedGroups = assignMembersToTargets(
-                        event, eventGraph, advancingUserIds, nextTargets, "score",
-                        "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
-                        null,
-                        true,
-                        false,
-                        null);
+                List<GeneratedEventPlan> changedGroups = nextTargets.isEmpty()
+                        ? List.of()
+                        : assignMembersToTargets(
+                                event, eventGraph, advancingUserIds, nextTargets, "score",
+                                "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
+                                null,
+                                true,
+                                false,
+                                null);
                 if (!changedGroups.isEmpty()) {
                     activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
+                }
+
+                Set<String> outcomeUserIds = resolveStageParticipantUserIds(state);
+                outcomeUserIds.retainAll(acceptedUserIds);
+                int resultRevision = safeCount(subEvent.stageResultRevision());
+                if (resultRevision <= 0) {
+                    changedGroupCount.addAndGet(changedGroups.size());
+                    continue;
+                }
+                String resultRevisionScope = subEventId + ":result-revision:" + resultRevision;
+                String resultFingerprint = fingerprintUserIds(outcomeUserIds);
+                boolean unpublishedResultRevision = notificationOutboxService != null
+                        && !outcomeUserIds.isEmpty()
+                        && !hasPlanMarker(
+                                "score",
+                                "score-outcome",
+                                eventId,
+                                resultRevisionScope,
+                                resultFingerprint);
+                if (unpublishedResultRevision) {
                     notifyTournamentStageOutcomes(
                             event,
                             subEvent,
@@ -1268,12 +1317,22 @@ public class EventScheduler {
                             state,
                             acceptedUserIds,
                             advancingUserIds);
+                    recordPlanMarker(
+                            "score",
+                            "score-outcome",
+                            eventId,
+                            resultRevisionScope,
+                            outcomeUserIds);
+                    processedResultRevisionCount.incrementAndGet();
                 }
                 changedGroupCount.addAndGet(changedGroups.size());
             }
         })); // End of parallel stream
 
-        return new ScorePlanRunResult(List.copyOf(states), changedGroupCount.get());
+        return new ScorePlanRunResult(
+                List.copyOf(states),
+                changedGroupCount.get(),
+                processedResultRevisionCount.get());
     }
 
     private void notifyTournamentStageOutcomes(
@@ -1288,7 +1347,7 @@ public class EventScheduler {
         }
         List<String> recipients = normalizeUserIds(advancingUserIds);
         String eventId = normalizeId(event == null ? null : event.getSourceId());
-        if (!StringUtils.hasText(eventId) || recipients.isEmpty()) {
+        if (!StringUtils.hasText(eventId)) {
             return;
         }
         String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "your tournament");
@@ -1306,21 +1365,29 @@ public class EventScheduler {
         payload.put("notification_tone", "success");
         payload.put("notification_avatar_tone", "stage");
         payload.put("notification_avatar_icon", "emoji_events");
+        int resultRevision = Math.max(1, safeCount(completedStage == null ? null : completedStage.stageResultRevision()));
+        if (resultRevision > 1) {
+            payload.put("stageResultRevision", Integer.toString(resultRevision));
+        }
         putTournamentStagePosition(payload, event, nextStage);
-        notificationOutboxService.enqueue(new NotificationIntent(
-                "event-stage-advanced",
-                OWNER_TYPE_EVENT,
-                eventId,
-                "event-stage-advancers",
-                recipients,
-                "Advanced to " + nextStageTitle,
-                "You advanced from " + stageTitle + " to " + nextStageTitle + ".",
-                DEFAULT_CLICK_URL,
-                TOURNAMENT_ROOM_IMAGE_URL,
-                APP_BADGE_URL,
-                "event-stage-advanced-" + eventId + "-" + normalizeId(completedStage == null ? null : completedStage.id()),
-                payload,
-                MARKER_UPDATED_BY));
+        if (!recipients.isEmpty()) {
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-stage-advanced",
+                    OWNER_TYPE_EVENT,
+                    eventId,
+                    "event-stage-advancers",
+                    recipients,
+                    "Advanced to " + nextStageTitle,
+                    "You advanced from " + stageTitle + " to " + nextStageTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    TOURNAMENT_ROOM_IMAGE_URL,
+                    APP_BADGE_URL,
+                    "event-stage-advanced-" + eventId + "-"
+                            + normalizeId(completedStage == null ? null : completedStage.id())
+                            + (resultRevision > 1 ? "-r" + resultRevision : ""),
+                    payload,
+                    MARKER_UPDATED_BY));
+        }
 
         Set<String> notAdvancingUserIds = resolveStageParticipantUserIds(completedStageState);
         notAdvancingUserIds.retainAll(normalizeUserIds(acceptedUserIds));
@@ -1340,6 +1407,9 @@ public class EventScheduler {
         notAdvancedPayload.put("notification_tone", "warning");
         notAdvancedPayload.put("notification_avatar_tone", "stage");
         notAdvancedPayload.put("notification_avatar_icon", "emoji_events");
+        if (resultRevision > 1) {
+            notAdvancedPayload.put("stageResultRevision", Integer.toString(resultRevision));
+        }
         putTournamentStagePosition(notAdvancedPayload, event, completedStage);
         notificationOutboxService.enqueue(new NotificationIntent(
                 "event-stage-not-advanced",
@@ -1352,7 +1422,9 @@ public class EventScheduler {
                 DEFAULT_CLICK_URL,
                 TOURNAMENT_ROOM_IMAGE_URL,
                 APP_BADGE_URL,
-                "event-stage-not-advanced-" + eventId + "-" + normalizeId(completedStage == null ? null : completedStage.id()),
+                "event-stage-not-advanced-" + eventId + "-"
+                        + normalizeId(completedStage == null ? null : completedStage.id())
+                        + (resultRevision > 1 ? "-r" + resultRevision : ""),
                 notAdvancedPayload,
                 MARKER_UPDATED_BY));
     }
@@ -1460,7 +1532,10 @@ public class EventScheduler {
                                 firstNonBlank(runtime.getStageFinalizedAt(), stage.stageFinalizedAt()),
                                 firstNonBlank(
                                         runtime.getStageFinalizedByUserId(),
-                                        stage.stageFinalizedByUserId())));
+                                        stage.stageFinalizedByUserId()),
+                                runtime.getStageResultRevision() == null
+                                        ? stage.stageResultRevision()
+                                        : runtime.getStageResultRevision()));
             }
             event.setSubEvents(effectiveStages);
         }
@@ -2685,6 +2760,7 @@ public class EventScheduler {
 
     private record ScorePlanRunResult(
             List<EventLeaderboardStateDto> states,
-            int changedGroupCount) {
+            int changedGroupCount,
+            int processedResultRevisionCount) {
     }
 }

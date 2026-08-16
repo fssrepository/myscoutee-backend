@@ -30,6 +30,7 @@ public class ActivitySubEventStageRuntimeMapper {
                 safeText(record.getStageStatusUpdatedAt()),
                 safeText(record.getStageFinalizedAt()),
                 safeText(record.getStageFinalizedByUserId()),
+                normalizeCount(record.getStageResultRevision()),
                 normalizeCount(record.getGroupsCount()));
     }
 
@@ -58,6 +59,9 @@ public class ActivitySubEventStageRuntimeMapper {
         next.setStageStatusUpdatedAt(safeText(state.stageStatusUpdatedAt()));
         next.setStageFinalizedAt(safeText(state.stageFinalizedAt()));
         next.setStageFinalizedByUserId(safeText(state.stageFinalizedByUserId()));
+        next.setStageResultRevision(state.stageResultRevision() == null
+                ? existing == null ? null : normalizeCount(existing.getStageResultRevision())
+                : normalizeCount(state.stageResultRevision()));
         next.setGroupsCount(state.groupsCount() == null
                 ? existing == null ? null : normalizeCount(existing.getGroupsCount())
                 : normalizeCount(state.groupsCount()));
@@ -89,6 +93,7 @@ public class ActivitySubEventStageRuntimeMapper {
         clone.setStageStatusUpdatedAt(source.getStageStatusUpdatedAt());
         clone.setStageFinalizedAt(source.getStageFinalizedAt());
         clone.setStageFinalizedByUserId(source.getStageFinalizedByUserId());
+        clone.setStageResultRevision(source.getStageResultRevision());
         clone.setGroupsCount(source.getGroupsCount());
         clone.setGroupResourceMetricsByAssetOwnerId(cloneGroupResourceMetrics(
                 source.getGroupResourceMetricsByAssetOwnerId()));

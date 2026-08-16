@@ -330,6 +330,7 @@ public final class EventsDtos {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId,
+            Integer stageResultRevision,
             Boolean autoInviter) {
     }
 

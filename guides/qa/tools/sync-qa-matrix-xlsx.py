@@ -38,6 +38,60 @@ LEGEND_SECTION_FILL_COLOR = "FF44546A"
 TEST_SECTION_FILL_COLOR = "FF4472C4"
 EFFECT_MARKERS_TITLE = "EFFECT / SCOPE MARKERS"
 QA_TEST_CASES_TITLE = "QA TEST CASES"
+DOMAIN_PRIORITY_TITLE = "DOMAIN PRIORITY"
+DOMAIN_COLUMN = "QA domain"
+DOMAIN_PRIORITY_BLOCK_COUNT = 3
+DOMAIN_PRIORITY_BLOCK_WIDTH = 5
+DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5, 10)
+DOMAIN_PRIORITY_VALUE_OFFSETS = (0, 2, 3)
+COMPACT_VISIBLE_COLUMN_WIDTHS = (
+    14.0, 18.0, 14.0, 14.0, 16.0,
+    12.0, 16.0, 10.0, 14.0, 16.0,
+    14.0, 12.0, 14.0, 14.0, 10.0,
+    18.0, 12.0,
+)
+
+# This is the execution order of whole QA domains. The canonical CSV carries
+# the normalized domain on every testcase row; the workbook shows the mapping
+# in a separate priority table and uses it to keep domains contiguous.
+DOMAIN_METADATA = (
+    ("QA safety", 26, "FFE7E6E6", "CLEANUP"),
+    ("Entry", 25, "FFE4DFEC", "ENTRY"),
+    ("Authentication", 24, "FFD9EAF7", "AUTH"),
+    ("Landing", 23, "FFE2F0D9", "LANDING"),
+    ("Event", 22, "FFFCE4D6", "EVENT"),
+    ("Tournament", 21, "FFF4CCCC", "TOURNAMENT"),
+    ("Chat", 20, "FFDDEBF7", "CHAT"),
+    ("Asset", 19, "FFFFE5CC", "ASSET"),
+    ("Media", 18, "FFDDE8CB", "MEDIA"),
+    ("Article", 17, "FFFFF2CC", "ARTICLE"),
+    ("Mobile", 16, "FFD9E1F2", "MOBILE"),
+    ("Admin", 15, "FFEAD1DC", "ADMIN"),
+    ("Role", 14, "FFD9D2E9", "ROLE"),
+    ("Admin baseline", 13, "FFCFE2F3", "BASE"),
+    ("Statistics", 12, "FFB6D7A8", "STAT"),
+    ("Monitoring", 11, "FFA2C4C9", "MON"),
+    ("Affinity graph", 10, "FFB4A7D6", "GRAPH"),
+    ("Parameters", 9, "FFC9DAF8", "PARAM"),
+    ("Admin jobs", 8, "FFD5A6BD", "JOB"),
+    ("Bell", 7, "FFF9CB9C", "BELL"),
+    ("UI performance", 6, "FFCFE2F3", "UI"),
+    ("Static smoke", 5, "FFE7E6E6", "STATIC"),
+    ("QA harness", 4, "FFFFD966", "QA"),
+    ("Operator", 3, "FF7FC8C8", "OPERATOR"),
+    ("Payment", 2, "FF76A5AF", "PAYMENT"),
+    ("Deployment", 1, "FF45818E", "DEPLOY"),
+)
+DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
+DOMAIN_PREFIX = {prefix: domain for domain, _, _, prefix in DOMAIN_METADATA}
+DOMAIN_STYLE_KEY = {
+    domain: f"domain-{priority}"
+    for domain, priority, _, _ in DOMAIN_METADATA
+}
+ROW_FILL_COLORS.update({
+    DOMAIN_STYLE_KEY[domain]: color
+    for domain, _, color, _ in DOMAIN_METADATA
+})
 
 ET.register_namespace("", NS)
 ET.register_namespace("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
@@ -55,6 +109,26 @@ def cell_column(index: int) -> str:
     return result
 
 
+def expected_domain(identifier: str) -> str:
+    normalized = identifier.strip().upper()
+    for prefix, domain in DOMAIN_PREFIX.items():
+        if normalized == prefix or normalized.startswith(f"{prefix}-"):
+            return domain
+    raise RuntimeError(f"QA testcase has no configured domain: {identifier}")
+
+
+def domain_sort_key(row: list[str], headers: list[str], source_index: int) -> tuple[int, int]:
+    item = dict(zip(headers, row))
+    domain = item.get(DOMAIN_COLUMN, "").strip()
+    identifier = item.get("ID", "").strip()
+    configured_domain = expected_domain(identifier)
+    if domain != configured_domain:
+        raise RuntimeError(
+            f"QA domain mismatch for {identifier}: expected {configured_domain!r}, got {domain!r}."
+        )
+    return -DOMAIN_PRIORITY[domain], source_index
+
+
 def load_rows() -> list[list[str]]:
     with CSV_PATH.open("r", encoding="utf-8", newline="") as source:
         rows = list(csv.reader(source))
@@ -63,6 +137,8 @@ def load_rows() -> list[list[str]]:
     column_count = len(rows[0])
     if column_count == 0 or any(len(row) != column_count for row in rows):
         raise RuntimeError("QA matrix CSV has inconsistent column counts.")
+    if DOMAIN_COLUMN not in rows[0]:
+        raise RuntimeError(f"QA matrix CSV is missing the {DOMAIN_COLUMN!r} column.")
     return rows
 
 
@@ -70,6 +146,18 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
     headers = source_rows[0]
     legend_source_rows = [row for row in source_rows[1:] if row[0].startswith("LEGEND-")]
     test_rows = [row for row in source_rows[1:] if not row[0].startswith("LEGEND-")]
+    indexed_test_rows = list(enumerate(test_rows))
+    ordered_test_rows = [
+        row
+        for source_index, row in sorted(
+            indexed_test_rows,
+            key=lambda indexed: domain_sort_key(indexed[1], headers, indexed[0]),
+        )
+    ]
+    if test_rows != ordered_test_rows:
+        raise RuntimeError(
+            "QA matrix CSV domain blocks are not in configured execution-priority order."
+        )
 
     def compact_row(*values: str) -> list[str]:
         return [*values, *("" for _ in range(len(headers) - len(values)))]
@@ -103,6 +191,26 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         ("External", str(scope_counts["external"])),
         ("Total", str(len(test_rows))),
     ]
+    domain_totals = {domain: 0 for domain in DOMAIN_PRIORITY}
+    domain_done = {domain: 0 for domain in DOMAIN_PRIORITY}
+    for row in test_rows:
+        item = dict(zip(headers, row))
+        domain = item[DOMAIN_COLUMN]
+        domain_totals[domain] += 1
+        if qa_status_bucket(item) == "done":
+            domain_done[domain] += 1
+    domain_priority_items = []
+    for domain, priority, _, _ in DOMAIN_METADATA:
+        done = domain_done[domain]
+        total = domain_totals[domain]
+        percentage = (done / total) if total else 0
+        domain_priority_items.append(
+            (
+                domain,
+                str(priority),
+                f"{done} passed / {total} total ({percentage:.0%})",
+            )
+        )
     overview_rows = [compact_row(
         EFFECT_MARKERS_TITLE,
         "",
@@ -111,7 +219,37 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         status_items[0][1],
     )]
     remaining_status_items = status_items[1:]
-    for row_index in range(max(len(legend_items), len(remaining_status_items))):
+    domain_priority_block_size = (
+        len(domain_priority_items) + DOMAIN_PRIORITY_BLOCK_COUNT - 1
+    ) // DOMAIN_PRIORITY_BLOCK_COUNT
+    domain_priority_blocks = [
+        domain_priority_items[
+            block_index * domain_priority_block_size:
+            (block_index + 1) * domain_priority_block_size
+        ]
+        for block_index in range(DOMAIN_PRIORITY_BLOCK_COUNT)
+    ]
+    domain_priority_rows = []
+    for priority_row_index in range(domain_priority_block_size + 1):
+        priority_row = ["" for _ in headers]
+        for block_index, block in enumerate(domain_priority_blocks):
+            if priority_row_index == 0:
+                priority_values = (DOMAIN_COLUMN, "Priority", "Progress")
+            elif priority_row_index <= len(block):
+                priority_values = block[priority_row_index - 1]
+            else:
+                priority_values = ("", "", "")
+            block_start = DOMAIN_PRIORITY_BLOCK_STARTS[block_index]
+            for value_offset, priority_value in zip(
+                DOMAIN_PRIORITY_VALUE_OFFSETS,
+                priority_values,
+            ):
+                priority_row[block_start + value_offset] = priority_value
+        domain_priority_rows.append(priority_row)
+    for row_index in range(max(
+        len(legend_items),
+        len(remaining_status_items),
+    )):
         marker, marker_explanation = (
             legend_items[row_index] if row_index < len(legend_items) else ("", "")
         )
@@ -121,11 +259,19 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
             else ("", "")
         )
         overview_rows.append(
-            compact_row(marker, marker_explanation, "", status, count)
+            compact_row(
+                marker,
+                marker_explanation,
+                "",
+                status,
+                count,
+            )
         )
 
     return [
         *overview_rows,
+        compact_row(DOMAIN_PRIORITY_TITLE),
+        *domain_priority_rows,
         compact_row(QA_TEST_CASES_TITLE),
         headers,
         *test_rows,
@@ -459,6 +605,7 @@ def build_sheet(
     manual_column = cell_column(headers.index("Manual status"))
     result_column = cell_column(headers.index("Result"))
     id_column = cell_column(headers.index("ID"))
+    domain_column_index = headers.index(DOMAIN_COLUMN)
     dimension.set("ref", f"A1:{scope_helper_column}{len(rows)}")
     sheet_data.clear()
 
@@ -470,41 +617,31 @@ def build_sheet(
         for row_index, values in enumerate(rows, start=1)
         if values[0] == QA_TEST_CASES_TITLE
     )
-    overview_widths = {
-        1: float(max(len(row[0]) for row in rows[:overview_last_row]) + 1),
-        2: float(max(len(row[1]) for row in rows[:overview_last_row]) + 1),
-        3: 2.5,
-        4: float(max(len(row[3]) for row in rows[:overview_last_row]) + 1),
-        5: float(max(len(row[4]) for row in rows[:overview_last_row]) + 1),
-    }
-    for column in columns.findall(f"{{{NS}}}col"):
-        minimum = int(column.get("min", "0"))
-        maximum = int(column.get("max", "0"))
-        if minimum == maximum and minimum in overview_widths:
-            column.set("width", str(overview_widths[minimum]))
-            column.set("customWidth", "true")
-    for helper_column_index in (status_helper_column_index, scope_helper_column_index):
-        helper_definition = next(
-            (
-                column
-                for column in columns.findall(f"{{{NS}}}col")
-                if int(column.get("min", "0")) <= helper_column_index + 1
-                <= int(column.get("max", "0"))
-            ),
-            None,
+    columns.clear()
+    for column_number, width in enumerate(COMPACT_VISIBLE_COLUMN_WIDTHS, start=1):
+        ET.SubElement(
+            columns,
+            f"{{{NS}}}col",
+            {
+                "min": str(column_number),
+                "max": str(column_number),
+                "width": f"{width:g}",
+                "hidden": "false",
+                "customWidth": "true",
+            },
         )
-        if helper_definition is None:
-            helper_definition = ET.SubElement(
-                columns,
-                f"{{{NS}}}col",
-                {
-                    "min": str(helper_column_index + 1),
-                    "max": str(helper_column_index + 1),
-                },
-            )
-        helper_definition.set("hidden", "true")
-        helper_definition.set("width", "0.1")
-        helper_definition.set("customWidth", "true")
+    for helper_column_index in (status_helper_column_index, scope_helper_column_index):
+        ET.SubElement(
+            columns,
+            f"{{{NS}}}col",
+            {
+                "min": str(helper_column_index + 1),
+                "max": str(helper_column_index + 1),
+                "width": "0.1",
+                "hidden": "true",
+                "customWidth": "true",
+            },
+        )
 
     existing_merges = root.find(f"{{{NS}}}mergeCells")
     if existing_merges is not None:
@@ -514,6 +651,28 @@ def build_sheet(
     effect_markers_last_row = 1 + len([
         row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP", "EXT"}
     ])
+    status_last_row = 1 + len({
+        "Pending", "Not started", "Failed", "Core", "External", "Total"
+    })
+    domain_priority_title_row = next(
+        row_index
+        for row_index, values in enumerate(rows, start=1)
+        if values[0] == DOMAIN_PRIORITY_TITLE
+    )
+    domain_priority_header_row = domain_priority_title_row + 1
+    domain_priority_block_size = (
+        len(DOMAIN_METADATA) + DOMAIN_PRIORITY_BLOCK_COUNT - 1
+    ) // DOMAIN_PRIORITY_BLOCK_COUNT
+    domain_priority_last_row = domain_priority_header_row + domain_priority_block_size
+    domain_priority_column_indexes = tuple(
+        column_index
+        for start in DOMAIN_PRIORITY_BLOCK_STARTS
+        for column_index in range(start, start + DOMAIN_PRIORITY_BLOCK_WIDTH)
+    )
+    domain_priority_block_ends = tuple(
+        start + DOMAIN_PRIORITY_BLOCK_WIDTH - 1
+        for start in DOMAIN_PRIORITY_BLOCK_STARTS
+    )
 
     marker_styles = {
         "X": "legend-x",
@@ -566,16 +725,31 @@ def build_sheet(
     for row_index, values in enumerate(rows, start=1):
         style_key = row_style(values, headers)
         is_overview_title = values[0] == EFFECT_MARKERS_TITLE
+        is_domain_priority_title = values[0] == DOMAIN_PRIORITY_TITLE
         is_test_section = values[0] == QA_TEST_CASES_TITLE
         explicit_line_count = max(value.count("\n") + 1 for value in values)
         is_multiline = explicit_line_count > 1
         row_height = (
             20.0
-            if is_overview_title or is_test_section
+            if is_overview_title or is_domain_priority_title or is_test_section
             else min(180.0, max(12.8, explicit_line_count * 15.0))
         )
         if is_overview_title:
             merged_ranges.append(f"A{row_index}:B{row_index}")
+        elif is_domain_priority_title:
+            merged_ranges.append(f"A{row_index}:{last_visible_column}{row_index}")
+        elif domain_priority_header_row <= row_index <= domain_priority_last_row:
+            for block_start in DOMAIN_PRIORITY_BLOCK_STARTS:
+                domain_start = cell_column(block_start)
+                domain_end = cell_column(block_start + 1)
+                progress_start = cell_column(block_start + 3)
+                progress_end = cell_column(block_start + 4)
+                merged_ranges.append(
+                    f"{domain_start}{row_index}:{domain_end}{row_index}"
+                )
+                merged_ranges.append(
+                    f"{progress_start}{row_index}:{progress_end}{row_index}"
+                )
         elif is_test_section:
             merged_ranges.append(f"A{row_index}:{last_visible_column}{row_index}")
         row = ET.SubElement(sheet_data, f"{{{NS}}}row", {
@@ -583,7 +757,7 @@ def build_sheet(
             "customFormat": "false",
             "ht": f"{row_height:g}",
             "hidden": "false",
-            "customHeight": "true" if is_overview_title or is_test_section or is_multiline else "false",
+            "customHeight": "true" if is_overview_title or is_domain_priority_title or is_test_section or is_multiline else "false",
             "outlineLevel": "0",
             "collapsed": "false",
         })
@@ -596,6 +770,8 @@ def build_sheet(
                     cell_style_key = status_styles[values[3]]
                 else:
                     cell_style_key = "default"
+            elif is_domain_priority_title:
+                cell_style_key = "test-section"
             elif is_test_section:
                 cell_style_key = "test-section"
             elif values[3] in status_styles:
@@ -605,6 +781,29 @@ def build_sheet(
                     cell_style_key = status_styles[values[3]]
                 else:
                     cell_style_key = "default"
+            if (
+                row_index == domain_priority_header_row
+                and column_index in domain_priority_column_indexes
+            ):
+                cell_style_key = "header"
+            elif (
+                domain_priority_header_row < row_index <= domain_priority_last_row
+                and column_index in domain_priority_column_indexes
+            ):
+                block_start = max(
+                    start
+                    for start in DOMAIN_PRIORITY_BLOCK_STARTS
+                    if start <= column_index
+                )
+                domain_name = values[block_start]
+                if domain_name in DOMAIN_STYLE_KEY:
+                    cell_style_key = DOMAIN_STYLE_KEY[domain_name]
+            if (
+                first_test_row <= row_index <= last_test_row
+                and column_index == domain_column_index
+            ):
+                domain_name = values[domain_column_index]
+                cell_style_key = DOMAIN_STYLE_KEY[domain_name]
             if row_index <= effect_markers_last_row and column_index in (0, 1):
                 border_parts = []
                 if row_index == 1:
@@ -617,15 +816,30 @@ def build_sheet(
                     border_parts.append("right")
                 if border_parts:
                     cell_style_key = f"{cell_style_key}-{'-'.join(border_parts)}"
-            elif row_index <= overview_last_row and column_index in (3, 4):
+            elif row_index <= status_last_row and column_index in (3, 4):
                 border_parts = []
                 if row_index == 1:
                     border_parts.append("top")
-                elif row_index == overview_last_row:
+                elif row_index == status_last_row:
                     border_parts.append("bottom")
                 if column_index == 3:
                     border_parts.append("left")
                 elif column_index == 4:
+                    border_parts.append("right")
+                if border_parts:
+                    cell_style_key = f"{cell_style_key}-{'-'.join(border_parts)}"
+            elif (
+                domain_priority_header_row <= row_index <= domain_priority_last_row
+                and column_index in domain_priority_column_indexes
+            ):
+                border_parts = []
+                if row_index == domain_priority_header_row:
+                    border_parts.append("top")
+                elif row_index == domain_priority_last_row:
+                    border_parts.append("bottom")
+                if column_index in DOMAIN_PRIORITY_BLOCK_STARTS:
+                    border_parts.append("left")
+                elif column_index in domain_priority_block_ends:
                     border_parts.append("right")
                 if border_parts:
                     cell_style_key = f"{cell_style_key}-{'-'.join(border_parts)}"

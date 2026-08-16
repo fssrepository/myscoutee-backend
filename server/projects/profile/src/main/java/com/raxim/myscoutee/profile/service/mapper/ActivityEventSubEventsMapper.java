@@ -166,6 +166,7 @@ public class ActivityEventSubEventsMapper {
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
                 item.stageFinalizedByUserId(),
+                item.stageResultRevision(),
                 item.groups());
     }
 
@@ -1133,12 +1134,14 @@ public class ActivityEventSubEventsMapper {
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
                 item.groupsCount(),
+                item.groupsPending(),
                 item.stageStatus(),
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId())
-                .withGroupsPending(item.groupsPending());
+                item.stageFinalizedByUserId(),
+                item.stageResultRevision(),
+                item.groups());
     }
 
     private SubEventItemDto withStageRuntime(SubEventItemDto item, ActivitySubEventStageRuntimeStateDto stageRuntime) {
@@ -1184,6 +1187,9 @@ public class ActivityEventSubEventsMapper {
                 firstNonBlank(stageRuntime.stageStatusUpdatedAt(), item.stageStatusUpdatedAt()),
                 firstNonBlank(stageRuntime.stageFinalizedAt(), item.stageFinalizedAt()),
                 firstNonBlank(stageRuntime.stageFinalizedByUserId(), item.stageFinalizedByUserId()),
+                stageRuntime.stageResultRevision() == null
+                        ? item.stageResultRevision()
+                        : stageRuntime.stageResultRevision(),
                 item.groups());
     }
 
