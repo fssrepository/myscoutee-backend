@@ -32,6 +32,11 @@ ROW_FILL_COLORS = {
     "legend-delta": "FF5B9BD5",
     "legend-indirect": "FFB4A7D6",
     "legend-gap": "FFFF7C80",
+    "progress-complete": "FF92D050",
+    "progress-high": "FFC6E0B4",
+    "progress-medium": "FFFFC000",
+    "progress-low": "FFF4B183",
+    "progress-zero": "FFB4C6E7",
 }
 HEADER_FILL_COLOR = "FF1F4E78"
 LEGEND_SECTION_FILL_COLOR = "FF44546A"
@@ -307,6 +312,22 @@ def qa_scope_bucket(item: dict[str, str]) -> str:
     return "external" if identifier.startswith(("OPERATOR-", "PAYMENT-", "DEPLOY-")) else "core"
 
 
+def progress_style_key(progress: str) -> str:
+    try:
+        percentage = int(progress.rsplit("(", 1)[1].split("%", 1)[0])
+    except (IndexError, ValueError):
+        return "default"
+    if percentage >= 100:
+        return "progress-complete"
+    if percentage >= 75:
+        return "progress-high"
+    if percentage >= 50:
+        return "progress-medium"
+    if percentage > 0:
+        return "progress-low"
+    return "progress-zero"
+
+
 def qa_status_formula(row_index: int, manual_column: str, result_column: str) -> str:
     combined = f'{manual_column}{row_index}&" "&{result_column}{row_index}'
 
@@ -448,6 +469,7 @@ def ensure_cell_style(
     fill_id: int,
     font_id: int = 0,
     border_id: int = 0,
+    horizontal: str | None = None,
 ) -> int:
     for index, style in enumerate(cell_xfs.findall(f"{{{NS}}}xf")):
         alignment = style.find(f"{{{NS}}}alignment")
@@ -460,6 +482,7 @@ def ensure_cell_style(
             and alignment is not None
             and alignment.get("wrapText") == "1"
             and alignment.get("vertical") == "top"
+            and alignment.get("horizontal") == horizontal
         ):
             return index
 
@@ -475,10 +498,13 @@ def ensure_cell_style(
         "applyAlignment": "true",
         "applyProtection": "false",
     })
-    ET.SubElement(style, f"{{{NS}}}alignment", {
+    alignment_attributes = {
         "vertical": "top",
         "wrapText": "1",
-    })
+    }
+    if horizontal is not None:
+        alignment_attributes["horizontal"] = horizontal
+    ET.SubElement(style, f"{{{NS}}}alignment", alignment_attributes)
     cell_xfs.set("count", str(len(cell_xfs.findall(f"{{{NS}}}xf"))))
     return len(cell_xfs.findall(f"{{{NS}}}xf")) - 1
 
@@ -514,6 +540,17 @@ def build_styles(existing: bytes) -> tuple[bytes, dict[str, int]]:
     )
     styles["default"] = ensure_cell_style(cell_xfs, 0)
 
+    for base_key in (
+        "pass", "partial", "fail", "not-run", "test-section", "external"
+    ):
+        base_style = cell_xfs.findall(f"{{{NS}}}xf")[styles[base_key]]
+        styles[f"{base_key}-align-right"] = ensure_cell_style(
+            cell_xfs,
+            int(base_style.get("fillId", "0")),
+            int(base_style.get("fontId", "0")),
+            horizontal="right",
+        )
+
     border_variants = {
         "top-left": ("top", "left"),
         "top": ("top",),
@@ -528,12 +565,17 @@ def build_styles(existing: bytes) -> tuple[bytes, dict[str, int]]:
         base_style = cell_xfs.findall(f"{{{NS}}}xf")[styles[base_key]]
         fill_id = int(base_style.get("fillId", "0"))
         font_id = int(base_style.get("fontId", "0"))
+        base_alignment = base_style.find(f"{{{NS}}}alignment")
+        horizontal = (
+            None if base_alignment is None else base_alignment.get("horizontal")
+        )
         for suffix, side_names in border_variants.items():
             styles[f"{base_key}-{suffix}"] = ensure_cell_style(
                 cell_xfs,
                 fill_id,
                 font_id,
                 ensure_thick_border(borders, side_names),
+                horizontal,
             )
     return ET.tostring(root, encoding="utf-8", xml_declaration=True), styles
 
@@ -766,8 +808,10 @@ def build_sheet(
             if is_overview_title:
                 if column_index in (0, 1):
                     cell_style_key = "legend-section"
-                elif column_index in (3, 4):
+                elif column_index == 3:
                     cell_style_key = status_styles[values[3]]
+                elif column_index == 4:
+                    cell_style_key = f"{status_styles[values[3]]}-align-right"
                 else:
                     cell_style_key = "default"
             elif is_domain_priority_title:
@@ -777,8 +821,10 @@ def build_sheet(
             elif values[3] in status_styles:
                 if column_index in (0, 1) and values[0] in marker_styles:
                     cell_style_key = marker_styles[values[0]]
-                elif column_index in (3, 4):
+                elif column_index == 3:
                     cell_style_key = status_styles[values[3]]
+                elif column_index == 4:
+                    cell_style_key = f"{status_styles[values[3]]}-align-right"
                 else:
                     cell_style_key = "default"
             if (
@@ -796,7 +842,9 @@ def build_sheet(
                     if start <= column_index
                 )
                 domain_name = values[block_start]
-                if domain_name in DOMAIN_STYLE_KEY:
+                if column_index in (block_start + 3, block_start + 4):
+                    cell_style_key = progress_style_key(values[block_start + 3])
+                elif domain_name in DOMAIN_STYLE_KEY:
                     cell_style_key = DOMAIN_STYLE_KEY[domain_name]
             if (
                 first_test_row <= row_index <= last_test_row

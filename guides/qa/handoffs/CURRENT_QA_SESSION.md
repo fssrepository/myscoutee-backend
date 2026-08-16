@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 18:22 CEST
+Updated: 2026-08-16 18:31 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -164,7 +164,10 @@ main table, orders whole domains by numeric `Priority DESC`, and shows `passed
 / total (percentage)` per domain. The generator owns compact A-Q widths: all
 17 primary columns remain visible without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
-and only the two formula-helper columns remain hidden. Keep every domain in one contiguous
+and only the two formula-helper columns remain hidden. Summary count cells are
+right-aligned. Priority-table Progress cells use completion bands independently
+from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
+75–99% light green and 100% green. Keep every domain in one contiguous
 block, place Core product-flow domains before the lower-priority
 admin/role/monitoring/job domains, and keep EXT domains at the end. Preserve
 the intentional checkpoint order inside each block. Once execution enters a
