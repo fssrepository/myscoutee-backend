@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 18:18 CEST
+Updated: 2026-08-16 18:22 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -171,7 +171,10 @@ the intentional checkpoint order inside each block. Once execution enters a
 domain, finish that block before selecting another. After the currently active
 domain closes, choose the highest-priority Core domain whose Progress is below
 100%, then close its Pending/Not started rows in physical order. Status colors
-never select the next test. Newly discovered foreign-domain coverage may be
+never select the next test. More generally, whenever fixture dependencies and
+the active transactional checkpoint allow a choice, execute the higher numeric
+priority first; choosing a lower-priority open case requires an explicit
+dependency reason or user reprioritization. Newly discovered foreign-domain coverage may be
 recorded beside its own rows, but must not become the live checkpoint, trigger
 fixture/browser setup, or load that foreign-domain pack. The resume pointer
 records the current row; it must not hard-code a domain-specific methodology
