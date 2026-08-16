@@ -4887,6 +4887,42 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   prove scheduler reruns remain idempotent. This checkpoint is separate from
   the already-passed Start notifications and must not rewrite or replay them.
 
+### `TOURNAMENT-SCORE-REOPEN-001` — corrected scores and result revision
+
+- Let the normal time boundary close one active stage into `Score review`;
+  this automatic closure ends scoring time but does **not** approve the result.
+  The Event Admin then finalizes the reviewed scores once and the independent
+  tournament-review worker produces the stage advancement or terminal result.
+- From that stable finalized boundary, choose **Reopen scores**, change one
+  deterministic score so that at least one participant outcome changes, and
+  finalize again. Preserve the first finalized result and its notifications as
+  immutable audit evidence; the correction is a new result revision, not an
+  overwrite of the earlier notification.
+- Require exactly one new human Finalize audit (excluding its actor) and then
+  exactly one new automatic result per affected participant. The new automatic
+  rows must use the corrected winner/advancer split and explicitly belong to
+  the later result revision. An unchanged worker replay and a repeated action
+  against the already-finalized revision must remain no-ops.
+- Verify the same persisted result revision, recipients, ordering and localized
+  rendering through Java and frontend-local. Keep this case separate from the
+  already-closed Start and initial Finalize/advancement checkpoints.
+
+### `TOURNAMENT-SCORE-REOPEN-002` — correction safety after progression
+
+- From a finalized earlier stage, compare Reopen availability before and after
+  the next stage starts. Reopening is allowed while downstream play has not
+  begun; once a dependent next stage is active or closed, the ordinary Reopen
+  action must be unavailable or rejected atomically.
+- A rejected late correction must leave stage statuses, scores, group
+  membership, current-stage summary, chats, outbox/inbox rows and counters
+  byte-identical. Correcting an already-used result requires a separate
+  explicit rollback/correction workflow; it must not silently rewrite a live
+  downstream bracket.
+- The present implementation has no result-revision identity and its
+  `canReopenScores` guard accepts any valid finalized stage index. Treat this
+  as an implementation gap to close before executing either score-reopen case,
+  not as permission to alter the closed tournament notification producers.
+
 ### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
 
 - Materialize a compact current-stage wire value on the parent tournament

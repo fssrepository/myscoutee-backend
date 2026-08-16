@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 16:55 CEST
+Updated: 2026-08-16 17:18 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -57,6 +57,15 @@ that choice is made. In both variants parent admission stays outside the
 nested `Groups` counter, which owns only genuinely group-scoped pending
 member/resource work; event-owner materialized rooms keep member-pending at
 zero.
+
+Separate captured score-correction follow-ups:
+`TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
+corrected Finalize` as a new immutable result revision with new exact-once
+participant outcomes, while `TOURNAMENT-SCORE-REOPEN-002` owns the guard that
+forbids an ordinary correction after a dependent stage has started. The code
+currently has the status transitions but no explicit result-revision identity,
+and its Reopen guard is too broad. Do not fold either case into the active card
+checkpoint or replay closed Start/Finalize notification evidence to explore it.
 
 ### Efficient resume gate
 
@@ -123,7 +132,9 @@ the checkpoint says otherwise.
 `TOURNAMENT-CARD-001` is staged at the persisted Qualifiers `1/2` baseline.
 First verify that separate row on Casey's root parent card. Do not Finalize yet;
 the next controlled stop owns the in-place Qualifiers -> Final assertion. Late
-admission policy remains separate under `TOURNAMENT-ADMISSION-001`.
+admission policy remains separate under `TOURNAMENT-ADMISSION-001`; score
+correction and late-correction safety remain separate under
+`TOURNAMENT-SCORE-REOPEN-001/002`.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit

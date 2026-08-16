@@ -25,17 +25,18 @@ The current qualification ledger is available as an
 
 As of 2026-08-16:
 
-- **Core:** 58 passed, 79 remaining (137 total)
+- **Core:** 58 passed, 81 remaining (139 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 193 cases. `TOURNAMENT-002` through
+The complete matrix contains 195 cases. `TOURNAMENT-002` through
 `TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
 advancement, separate Final Start/room readiness, whole-tournament completion,
 personal winner/non-winner results and three-browser recipient verification.
 The nested tournament-room visibility checkpoint is PASS/CLOSED.
 `TOURNAMENT-CARD-001` is IN PROGRESS on its isolated persisted Qualifiers
 baseline; the separately captured admission-lock checkpoint covers late parent
-joins.
+joins, and two separate score-correction checkpoints cover result revisions and
+the downstream-stage Reopen guard.
 
 ### Official manuals
 
