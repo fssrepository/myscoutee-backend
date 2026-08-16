@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 15:56 CEST
+Updated: 2026-08-16 16:55 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,25 +34,29 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-ROOM-LIFE-001 — nested tournament pending aggregation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-room-life-001--nested-tournament-pending-aggregation
-scenario: event-domain (`phase=tournament-room-life-baseline-verified`)
-ledger_status: NOT RUN
-state: TOURNAMENT-001 through TOURNAMENT-004 remain PASS/CLOSED and were not replayed. The invalid first TOURNAMENT-ROOM-LIFE-001 fixture was reset without a modifying UI action. The corrected fixture staged at `2026-08-16T13:53:23.200Z`; independent status plus `verify-tournament-room-life-baseline` proved parent activity=1, Qualifiers groupsPending=1, Group A event-owner pending=1, generated rooms parent-linked, accepted-only room chats, zero notifications/outbox/recompute and unchanged controls. The backend and frontend-local hot-deploy completed; no resolution action has occurred.
-required_resume: Launch or replace exactly the three configured browsers. First verify that no Tournament Group room appears as a root Activities event card. In Casey's My Events, find only the parent `QA TOURNAMENT-ROOM-LIFE-001`, then follow its counter without mutating: parent card three-dot counter → View Event counter → Qualifiers stage three-dot/Groups counters → Group A three-dot/Members counters → Farkas Anna pending row. Stop before Delete invitation. Do not mutate or replay TOURNAMENT-004.
-event: parent `QA TOURNAMENT-ROOM-LIFE-001`; nested generated rooms `Tournament Group R1` and `Tournament Group R2`
+checkpoint: TOURNAMENT-CARD-001 — persisted current-stage parent-card row
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-card-001--persisted-current-stage-summary-on-the-parent-card
+scenario: event-domain (isolated fixture staged)
+ledger_status: IN PROGRESS
+state: The isolated fixture was staged and baseline-verified at `2026-08-16T14:52:56.420Z`. Mongo and the server list oracle agree on persisted `currentStage={qualifiers, Qualifiers, 1/2, SR}`; the list response contains `currentStage` and omits `subEvents`. The existing dev watchers compiled the backend and frontend changes successfully. Exactly three managed Casey/Nova/Riley windows are open. Closed TOURNAMENT-001 through TOURNAMENT-004 and TOURNAMENT-ROOM-LIFE-001 evidence remains untouched. TOURNAMENT-ADMISSION-001 remains a separate unimplemented follow-up.
+required_resume: In Casey My Events verify the root `QA TOURNAMENT-CARD-001` card shows the separate `Current stage: Qualifiers · 1/2` row. Keep that list underneath View Event, open Qualifiers, then use its action menu to Finalize once. After closing the stacked view, require the parent card to show `Final · 2/2` immediately without waiting for a poll. Do not inspect or change closed notification producers.
+event: `manual-qa-checkpoint:v1:event-domain:tournament-card:event` / `QA TOURNAMENT-CARD-001`
 actors:
-  active: Casey `650000000000000000000061` parent Admin and Group A resolver; Nova `650000000000000000000062` accepted Group A control; Riley `650000000000000000000063` accepted Group B control
-  pending_target: Farkas Anna `bf057de7c586eede7e84bdc7` (no fourth browser)
-  controls: accepted parent/group membership, both room chats, Group B, standings and active Qualifiers runtime
-next_actor: Codex launches the three managed browsers; the user performs only the nested visual read and no Delete invitation yet.
+  planned: Casey `650000000000000000000061` parent Admin; Nova `650000000000000000000062` accepted participant; Riley `650000000000000000000063` accepted participant
+  controls: generated rooms remain nested; accepted group membership and closed tournament notification evidence remain unchanged
+next_actor: User verifies the staged Qualifiers row in Casey My Events; do not Finalize until Codex issues the exact action path.
 stop_phrase: megvan
 ```
 
-Separate captured follow-up: `TOURNAMENT-CARD-001` will persist the current
-stage summary on the parent event wire model and render it on a compact second
-card row. It is not part of the active pending-counter checkpoint and must not
-cause a replay of already-closed tournament lifecycle/notification branches.
+Separate captured follow-up: `TOURNAMENT-ADMISSION-001` owns the unresolved
+first-stage admission boundary without changing the already-passed Start
+notification producers. The simple candidate is a strict lock at first Start,
+but the later product discussion explicitly left open a bounded first-stage
+grace for newly accepted parent members. Do not implement either policy until
+that choice is made. In both variants parent admission stays outside the
+nested `Groups` counter, which owns only genuinely group-scoped pending
+member/resource work; event-owner materialized rooms keep member-pending at
+zero.
 
 ### Efficient resume gate
 
@@ -116,11 +120,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-ROOM-LIFE-001 — nested tournament pending aggregation`: corrected
-fixture and strict persisted baseline PASS; no manual resolution action yet.
-First prove the root-list and complete parent → stage → group visual counter
-chain. The later single action is Casey deleting Farkas Anna's Group A pending
-invitation only after that chain is observed.
+`TOURNAMENT-CARD-001` is staged at the persisted Qualifiers `1/2` baseline.
+First verify that separate row on Casey's root parent card. Do not Finalize yet;
+the next controlled stop owns the in-place Qualifiers -> Final assertion. Late
+admission policy remains separate under `TOURNAMENT-ADMISSION-001`.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -653,6 +656,14 @@ child itself stays hidden from root event lists. If the first visual read
 reveals the wrong hierarchy, classify it as **NOT EXECUTED / invalid fixture**,
 reset it guard-first and redesign that same checkpoint; do not convert the
 accidental UI into a new workflow test.
+
+Hierarchy alone is insufficient: fixture membership status must also be
+reachable from the canonical producer. If a scheduler materializes accepted
+members directly and clears pending fields, do not inject a pending child
+membership merely to exercise an existing counter. Trace the producer's exact
+status transition and UI mutability before staging; an unreachable synthetic
+status is **NOT EXECUTED / invalid fixture**, even when its counters render
+correctly.
 
 Use the canonical harness against the already-running `mongodb` container:
 

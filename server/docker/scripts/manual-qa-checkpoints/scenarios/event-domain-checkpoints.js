@@ -37,7 +37,12 @@
   const TOURNAMENT_ROOM_LIFE_GROUP_B = "qualifiers:group:2";
   const TOURNAMENT_ROOM_LIFE_ROOM_A = `random-room:${TOURNAMENT_ROOM_LIFE_EVENT_ID}:${TOURNAMENT_ROOM_LIFE_QUALIFIER_ID}:${TOURNAMENT_ROOM_LIFE_GROUP_A}`;
   const TOURNAMENT_ROOM_LIFE_ROOM_B = `random-room:${TOURNAMENT_ROOM_LIFE_EVENT_ID}:${TOURNAMENT_ROOM_LIFE_QUALIFIER_ID}:${TOURNAMENT_ROOM_LIFE_GROUP_B}`;
-  const TOURNAMENT_ROOM_LIFE_PENDING_USER_ID = "bf057de7c586eede7e84bdc7";
+  const TOURNAMENT_CARD_CHECKPOINT = "TOURNAMENT-CARD-001";
+  const TOURNAMENT_CARD_PREFIX = `${PREFIX}:tournament-card`;
+  const TOURNAMENT_CARD_STATE_ID = `${TOURNAMENT_CARD_PREFIX}:state`;
+  const TOURNAMENT_CARD_EVENT_ID = `${TOURNAMENT_CARD_PREFIX}:event`;
+  const TOURNAMENT_CARD_QUALIFIER_ID = "qualifiers";
+  const TOURNAMENT_CARD_FINAL_ID = "final";
   const TOURNAMENT_ROOM_IMAGE_URL = "/media/public?key=images/system/tournament-room/v1/large.webp";
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
@@ -657,6 +662,13 @@
       action: "Carry the closed TOURNAMENT-003 state forward without reset. As Casey, Start Final exactly once; later Finalize it only after the valid ended/review boundary.",
       expected: "Only Casey and Riley remain in Final. Actual Final Start writes one Final-named stage notification for Riley, excludes Casey as the manual actor and excludes eliminated Nova. Terminal Finalize later writes one whole-tournament result without changing the earlier Qualifiers evidence.",
       worker: "Final Start uses the visible direct stage action and its normal grouping path. Assignment to Final alone MUST NOT impersonate Start; unchanged replay MUST NOT add another lifecycle notification."
+    },
+    "TOURNAMENT-CARD-001": {
+      stage: "tournament-card-isolated",
+      why: "Prove that the root tournament card reads a persisted current-stage wire value and follows a real lifecycle action without a nested event projection.",
+      action: "Keep Casey's My Events list open under View Event. Finalize the staged Qualifiers once, then compare the parent-card row before the next poll and after one explicit reload.",
+      expected: "The parent card changes from Qualifiers 1/2 to Final 2/2 in place and survives reload; generated tournament rooms remain nested and are never emitted as root cards.",
+      worker: "The real Finalize action may run its existing tournament consumers. The event-list read projects currentStage only and MUST NOT load nested subEvents to reconstruct the row."
     },
     "EVENT-LIFE-001": {
       stage: "active",
@@ -6369,6 +6381,7 @@
       subEventsEnabled: options.subEventsEnabled === true,
       subEventDefinitions: options.subEventDefinitions || [],
       subEvents: options.subEvents || [],
+      currentStage: options.currentStage || null,
       mode: "Tournament",
       rating: 0,
       boost: 0,
@@ -6554,14 +6567,14 @@
     const roomB = snapshot.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B);
     if (parent.length !== 1 || parent[0].ownerUserId !== hostUserId
         || parent[0].status !== "A"
-        || parent[0].activity !== 1
+        || parent[0].activity !== 0
         || !parent[0].stagePending.some(item => (
-          item.id === TOURNAMENT_ROOM_LIFE_QUALIFIER_ID && item.groupsPending === 1))
+          item.id === TOURNAMENT_ROOM_LIFE_QUALIFIER_ID && item.groupsPending === 0))
         || !sameIds(parent[0].acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
         || roomA.length !== 1 || roomA[0].ownerUserId || roomA[0].status !== "A"
         || !sameIds(roomA[0].acceptedMemberUserIds, [hostUserId, participantUserId])
-        || roomA[0].acceptedMembers !== 2 || roomA[0].pendingMembers !== 1
-        || !sameIds(roomA[0].pendingMemberUserIds, [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID])
+        || roomA[0].acceptedMembers !== 2 || roomA[0].pendingMembers !== 0
+        || roomA[0].pendingMemberUserIds.length !== 0
         || roomA[0].capacityMin !== 1 || roomA[0].capacityMax !== 3
         || roomB.length !== 1 || roomB[0].ownerUserId || roomB[0].status !== "A"
         || !sameIds(roomB[0].acceptedMemberUserIds, [thirdUserId])
@@ -6580,8 +6593,6 @@
       [TOURNAMENT_ROOM_LIFE_ROOM_A, participantUserId, "Member"],
       [TOURNAMENT_ROOM_LIFE_ROOM_B, thirdUserId, "Member"]
     ].map(([ownerId, userId, role]) => `${ownerId}|${userId}|${role}|accepted`).sort();
-    expectedMembers.push(`${TOURNAMENT_ROOM_LIFE_ROOM_A}|${TOURNAMENT_ROOM_LIFE_PENDING_USER_ID}|Member|pending`);
-    expectedMembers.sort();
     const actualMembers = snapshot.members.map(item => (
       `${item.ownerId}|${item.userId}|${item.role}|${item.status}`)).sort();
     const expectedChats = [
@@ -6613,6 +6624,421 @@
     return state;
   }
 
+  function tournamentCardSelectors() {
+    const relatedId = { $regex: TOURNAMENT_CARD_EVENT_ID };
+    return [
+      { collection: "events", selector: { $or: [
+        { sourceId: TOURNAMENT_CARD_EVENT_ID },
+        { parentEventId: TOURNAMENT_CARD_EVENT_ID },
+        { sourceId: relatedId }
+      ] } },
+      { collection: "activityMembers", selector: { ownerId: relatedId } },
+      { collection: "activitySubEventStageRuntime", selector: { ownerId: relatedId } },
+      { collection: "activitySubEventGroups", selector: { ownerId: relatedId } },
+      { collection: "eventLeaderboardEntries", selector: { eventId: TOURNAMENT_CARD_EVENT_ID } },
+      { collection: "chats", selector: { $or: [
+        { eventId: relatedId }, { ownerId: relatedId }, { id: relatedId }, { chatId: relatedId }
+      ] } },
+      { collection: "chatMessages", selector: { chatId: relatedId } },
+      { collection: "userNotifications", selector: { $or: [
+        { sourceId: relatedId },
+        { "payload.eventId": TOURNAMENT_CARD_EVENT_ID },
+        { "payload.parentEventId": TOURNAMENT_CARD_EVENT_ID }
+      ] } },
+      { collection: "notificationOutbox", selector: { $or: [
+        { entityId: relatedId },
+        { "payload.eventId": TOURNAMENT_CARD_EVENT_ID },
+        { "payload.parentEventId": TOURNAMENT_CARD_EVENT_ID }
+      ] } },
+      { collection: "affinityRecomputeTasks", selector: { targetId: relatedId } },
+      { collection: "scheduledMessageTasks", selector: { eventId: relatedId } },
+      { collection: "schedulerPlanMarkers", selector: { ownerId: relatedId } },
+      { collection: "notificationRuleConfigs", selector: { ruleKey: TOURNAMENT_REVIEW_RULE } }
+    ];
+  }
+
+  function tournamentCardSnapshot() {
+    const parent = Q.collection("events").findOne({ sourceId: TOURNAMENT_CARD_EVENT_ID });
+    const stages = parent && Array.isArray(parent.subEvents) ? parent.subEvents : [];
+    return {
+      parent: parent ? {
+        sourceId: Q.text(parent.sourceId),
+        title: Q.text(parent.title),
+        status: Q.text(parent.status),
+        mode: Q.text(parent.mode),
+        currentStage: parent.currentStage ? {
+          id: Q.text(parent.currentStage.id),
+          name: Q.text(parent.currentStage.name),
+          stageNumber: Number(parent.currentStage.stageNumber || 0),
+          totalStages: Number(parent.currentStage.totalStages || 0),
+          status: Q.text(parent.currentStage.status)
+        } : null,
+        stages: stages.map(stage => ({
+          id: Q.text(stage.id),
+          name: Q.text(stage.name),
+          stageStatus: Q.text(stage.stageStatus),
+          groupsCount: Number(stage.groupsCount || 0)
+        })),
+        acceptedMemberUserIds: sortedUnique(parent.acceptedMemberUserIds || [])
+      } : null,
+      rootRecords: Q.collection("events").countDocuments({ sourceId: TOURNAMENT_CARD_EVENT_ID }),
+      generatedRooms: Q.collection("events").countDocuments({
+        parentEventId: TOURNAMENT_CARD_EVENT_ID,
+        generated: true
+      }),
+      parentMembers: Q.collection("activityMembers").countDocuments({
+        ownerId: TOURNAMENT_CARD_EVENT_ID,
+        status: "accepted"
+      }),
+      runtime: Q.collection("activitySubEventStageRuntime")
+        .find({ ownerId: TOURNAMENT_CARD_EVENT_ID })
+        .sort({ subEventId: 1 }).toArray().map(item => ({
+          subEventId: Q.text(item.subEventId),
+          stageStatus: Q.text(item.stageStatus),
+          groupsCount: Number(item.groupsCount || 0)
+        }))
+    };
+  }
+
+  function assertTournamentCardBaseline(snapshot) {
+    const parent = snapshot.parent;
+    if (!parent || snapshot.rootRecords !== 1 || snapshot.generatedRooms !== 0
+        || snapshot.parentMembers !== 3 || parent.status !== "A" || parent.mode !== "Tournament"
+        || !sameIds(parent.acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+        || !parent.currentStage
+        || parent.currentStage.id !== TOURNAMENT_CARD_QUALIFIER_ID
+        || parent.currentStage.name !== "Qualifiers"
+        || parent.currentStage.stageNumber !== 1 || parent.currentStage.totalStages !== 2
+        || parent.currentStage.status !== "SR"
+        || parent.stages.length !== 2
+        || parent.stages[0].id !== TOURNAMENT_CARD_QUALIFIER_ID
+        || parent.stages[0].stageStatus !== "SR"
+        || parent.stages[1].id !== TOURNAMENT_CARD_FINAL_ID
+        || parent.stages[1].stageStatus !== "RS"
+        || snapshot.runtime.length !== 1
+        || snapshot.runtime[0].subEventId !== TOURNAMENT_CARD_QUALIFIER_ID
+        || snapshot.runtime[0].stageStatus !== "SR") {
+      Q.fail("TOURNAMENT-CARD-001 persisted Qualifiers baseline is not exact.");
+    }
+  }
+
+  function assertTournamentCardTransition(snapshot) {
+    const parent = snapshot.parent;
+    if (!parent || snapshot.rootRecords !== 1 || !parent.currentStage
+        || parent.currentStage.id !== TOURNAMENT_CARD_FINAL_ID
+        || parent.currentStage.name !== "Final"
+        || parent.currentStage.stageNumber !== 2 || parent.currentStage.totalStages !== 2
+        || parent.currentStage.status !== "RS"
+        || parent.stages.length !== 2
+        || parent.stages[0].stageStatus !== "F"
+        || parent.stages[1].stageStatus !== "RS") {
+      Q.fail("TOURNAMENT-CARD-001 persisted Final transition is not exact.");
+    }
+  }
+
+  function stageTournamentCard() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== TOURNAMENT_CARD_CHECKPOINT) {
+      Q.fail("the isolated tournament-card stage is restricted to TOURNAMENT-CARD-001.");
+    }
+    if (Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_CARD_STATE_ID })) {
+      Q.fail("TOURNAMENT-CARD-001 is already staged; use status or reset.");
+    }
+    const retainedTournamentState = Q.activeState(SCENARIO, false);
+    if (retainedTournamentState && (
+      Q.text(retainedTournamentState.checkpointId).toUpperCase() !== "TOURNAMENT-004"
+      || !Q.text(retainedTournamentState.tournamentFinalLifecycle
+        && retainedTournamentState.tournamentFinalLifecycle.completionVerifiedAtIso))) {
+      Q.fail("an unclosed event-domain checkpoint is active; the card fixture may coexist only with closed TOURNAMENT-004 evidence.");
+    }
+    const otherState = Q.collection(Q.STATE_COLLECTION).findOne({
+      _id: { $nin: [Q.stateId(SCENARIO), TOURNAMENT_ROOM_LIFE_STATE_ID, TOURNAMENT_CARD_STATE_ID] }
+    });
+    if (otherState) {
+      Q.fail(`another manual scenario '${Q.text(otherState.scenario)}' is staged.`);
+    }
+    if (Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_ROOM_LIFE_STATE_ID })) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 is still staged; reset it before staging the isolated card fixture.");
+    }
+    [hostUserId, participantUserId, thirdUserId]
+      .forEach((userId, index) => Q.ensureUser(userId, ["Casey", "Nova", "Riley"][index]));
+    for (const spec of tournamentCardSelectors().filter(spec => spec.collection !== "notificationRuleConfigs")) {
+      if (Q.collection(spec.collection).countDocuments(spec.selector) !== 0) {
+        Q.fail(`stale tournament-card data exists in '${spec.collection}'; do not overwrite it.`);
+      }
+    }
+
+    const stagedAtIso = Q.nowIso();
+    const originalCounters = [hostUserId, participantUserId, thirdUserId]
+      .map(tournamentRoomLifeCounterSummary);
+    const expectedCounters = [
+      tournamentRoomLifeCounterWithDelta(originalCounters[0], {
+        events: 1, hosting: 1, eventAll: 1, eventHosting: 1
+      }),
+      tournamentRoomLifeCounterWithDelta(originalCounters[1], {
+        events: 1, eventAll: 1, eventActive: 1
+      }),
+      tournamentRoomLifeCounterWithDelta(originalCounters[2], {
+        events: 1, eventAll: 1, eventActive: 1
+      })
+    ];
+    const state = {
+      _id: TOURNAMENT_CARD_STATE_ID,
+      scenario: SCENARIO,
+      checkpointId,
+      stagedAtIso,
+      snapshots: Q.snapshotSpecs(tournamentCardSelectors()),
+      originalCounters,
+      expectedCounters,
+      context: {
+        eventId: TOURNAMENT_CARD_EVENT_ID,
+        qualifierStageId: TOURNAMENT_CARD_QUALIFIER_ID,
+        finalStageId: TOURNAMENT_CARD_FINAL_ID
+      }
+    };
+    Q.collection(Q.STATE_COLLECTION).insertOne(state);
+    try {
+      const qualifierStartAtIso = dateIso(-120);
+      const qualifierEndAtIso = dateIso(-30);
+      const finalStartAtIso = dateIso(30);
+      const finalEndAtIso = dateIso(90);
+      const parentEndAtIso = dateIso(150);
+      const qualifiers = {
+        id: TOURNAMENT_CARD_QUALIFIER_ID,
+        name: "Qualifiers",
+        description: "Manual QA persisted current-stage baseline",
+        timing: "During",
+        offsetMinutes: 0,
+        durationMinutes: 90,
+        startAt: qualifierStartAtIso,
+        endAt: qualifierEndAtIso,
+        optional: false,
+        capacityMin: 2,
+        capacityMax: 6,
+        tournamentGroupCapacityMin: 1,
+        tournamentGroupCapacityMax: 3,
+        tournamentLeaderboardType: "Score",
+        tournamentAdvancePerGroup: 1,
+        stageStatus: "SR",
+        stageStatusReason: "stage-ended",
+        stageStatusUpdatedAt: stagedAtIso,
+        membersAccepted: 3,
+        membersPending: 0,
+        groupsCount: 2,
+        groupsPending: 0
+      };
+      const finalStage = {
+        id: TOURNAMENT_CARD_FINAL_ID,
+        name: "Final",
+        description: "Manual QA persisted current-stage transition target",
+        timing: "After",
+        offsetMinutes: 0,
+        durationMinutes: 60,
+        startAt: finalStartAtIso,
+        endAt: finalEndAtIso,
+        optional: false,
+        capacityMin: 1,
+        capacityMax: 2,
+        tournamentGroupCapacityMin: 1,
+        tournamentGroupCapacityMax: 2,
+        tournamentLeaderboardType: "Score",
+        tournamentAdvancePerGroup: 0,
+        stageStatus: "RS",
+        stageStatusReason: "awaiting-prior-stage",
+        membersAccepted: 0,
+        membersPending: 0,
+        groupsCount: 0,
+        groupsPending: 0
+      };
+      const parent = tournamentRoomLifeEventDocument(
+        TOURNAMENT_CARD_EVENT_ID,
+        "QA TOURNAMENT-CARD-001",
+        [hostUserId, participantUserId, thirdUserId],
+        stagedAtIso,
+        {
+          ownerUserId: hostUserId,
+          creatorUserId: hostUserId,
+          organizerUserId: hostUserId,
+          admins: [hostUserId],
+          creatorName: "Casey Bridge",
+          creatorInitials: "CB",
+          visibility: "public",
+          startAtIso: qualifierStartAtIso,
+          endAtIso: parentEndAtIso,
+          capacityMin: 1,
+          capacityMax: 8,
+          subEventsEnabled: true,
+          subEventDefinitions: [qualifiers, finalStage],
+          subEvents: [qualifiers, finalStage],
+          currentStage: {
+            id: TOURNAMENT_CARD_QUALIFIER_ID,
+            name: "Qualifiers",
+            stageNumber: 1,
+            totalStages: 2,
+            status: "SR"
+          }
+        });
+      Q.collection("events").insertOne(parent);
+      const qualifierGroupA = `${TOURNAMENT_CARD_QUALIFIER_ID}:group:1`;
+      const qualifierGroupB = `${TOURNAMENT_CARD_QUALIFIER_ID}:group:2`;
+      const parentMembers = [
+        [TOURNAMENT_CARD_EVENT_ID, hostUserId, "Admin", "parent-casey"],
+        [TOURNAMENT_CARD_EVENT_ID, participantUserId, "Member", "parent-nova"],
+        [TOURNAMENT_CARD_EVENT_ID, thirdUserId, "Member", "parent-riley"],
+        [qualifierGroupA, hostUserId, "Member", "group-a-casey"],
+        [qualifierGroupA, participantUserId, "Member", "group-a-nova"],
+        [qualifierGroupB, thirdUserId, "Member", "group-b-riley"]
+      ].map(([ownerId, userId, role, key]) => ({
+        _id: `${TOURNAMENT_CARD_PREFIX}:member:${key}`,
+        syncKey: `${TOURNAMENT_CARD_PREFIX}:member:${ownerId}:${userId}`,
+        ownerType: ownerId === TOURNAMENT_CARD_EVENT_ID ? "event" : "group",
+        ownerId,
+        userId,
+        role,
+        status: "accepted",
+        actionAtIso: stagedAtIso,
+        createdDate: stagedAtIso,
+        createdUser: Q.ACTOR,
+        updatedDate: stagedAtIso,
+        updatedUser: Q.ACTOR
+      }));
+      Q.collection("activityMembers").insertMany(parentMembers);
+      Q.collection("activitySubEventStageRuntime").insertOne({
+        _id: `${TOURNAMENT_CARD_PREFIX}:stage-runtime:qualifiers`,
+        syncKey: `${TOURNAMENT_CARD_PREFIX}:stage-runtime:qualifiers`,
+        recordId: `${TOURNAMENT_CARD_EVENT_ID}:${TOURNAMENT_CARD_QUALIFIER_ID}`,
+        status: "A",
+        ownerId: TOURNAMENT_CARD_EVENT_ID,
+        subEventId: TOURNAMENT_CARD_QUALIFIER_ID,
+        stageStatus: "SR",
+        stageStatusReason: "stage-ended",
+        stageStatusUpdatedAt: stagedAtIso,
+        groupsCount: 2,
+        groupResourceMetricsByAssetOwnerId: {},
+        createdDate: stagedAtIso,
+        createdUser: Q.ACTOR,
+        updatedDate: stagedAtIso,
+        updatedUser: Q.ACTOR
+      });
+      Q.collection("eventLeaderboardEntries").insertMany([
+        ["casey", hostUserId, qualifierGroupA, 9],
+        ["nova", participantUserId, qualifierGroupA, 4],
+        ["riley", thirdUserId, qualifierGroupB, 7]
+      ].map(([key, memberId, groupId, scoreValue]) => ({
+        _id: `${TOURNAMENT_CARD_PREFIX}:score:${key}`,
+        syncKey: `${TOURNAMENT_CARD_PREFIX}:score:${key}`,
+        eventId: TOURNAMENT_CARD_EVENT_ID,
+        subEventId: TOURNAMENT_CARD_QUALIFIER_ID,
+        groupId,
+        entryType: "score",
+        memberId,
+        scoreValue,
+        note: "TOURNAMENT-CARD-001 deterministic score",
+        createdAtIso: stagedAtIso,
+        createdUser: hostUserId,
+        updatedDate: stagedAtIso,
+        updatedUser: hostUserId
+      })));
+      const held = Q.collection("notificationRuleConfigs").updateOne(
+        { ruleKey: TOURNAMENT_REVIEW_RULE },
+        { $set: {
+          enabled: true,
+          "runState.currentStatus": "idle",
+          "runState.lastRunAtIso": dateIso(60),
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Held by TOURNAMENT-CARD-001 until the persisted card transition is observed.",
+          updatedDate: stagedAtIso,
+          updatedUser: Q.ACTOR
+        } }
+      );
+      if (held.matchedCount !== 1) {
+        Q.fail(`notification rule '${TOURNAMENT_REVIEW_RULE}' was not found for TOURNAMENT-CARD-001.`);
+      }
+      persistTournamentRoomLifeCounters(expectedCounters);
+      const baseline = tournamentCardSnapshot();
+      assertTournamentCardBaseline(baseline);
+      Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+        $set: { baseline, baselineVerifiedAtIso: Q.nowIso() }
+      });
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "tournament-card-baseline-verified",
+        stagedAtIso,
+        context: state.context,
+        baseline,
+        next: "Open Casey My Events, keep the root card underneath View Event, and verify Current stage: Qualifiers 1/2 before Finalize."
+      });
+    } catch (error) {
+      Q.fail(`isolated tournament-card stage failed after snapshot: ${Q.text(error && error.message)}. Run reset event-domain ${checkpointId}.`);
+    }
+  }
+
+  function statusTournamentCard() {
+    Q.assertDeploymentSafety();
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_CARD_STATE_ID });
+    if (!state) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "not-staged",
+        next: `Run stage event-domain ${TOURNAMENT_CARD_CHECKPOINT}.`
+      });
+      return;
+    }
+    const oracle = tournamentCardSnapshot();
+    const phase = oracle.parent && oracle.parent.currentStage
+      && oracle.parent.currentStage.id === TOURNAMENT_CARD_FINAL_ID
+      ? "tournament-card-final-active"
+      : "tournament-card-qualifiers-active";
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase,
+      stagedAtIso: state.stagedAtIso,
+      baselineVerifiedAtIso: state.baselineVerifiedAtIso,
+      context: state.context,
+      oracle,
+      next: phase === "tournament-card-final-active"
+        ? "Verify the Final 2/2 row after reload, then run verify-tournament-card-transition."
+        : "Verify the Qualifiers 1/2 row, then Finalize Qualifiers once."
+    });
+  }
+
+  function verifyTournamentCardTransition() {
+    Q.assertDeploymentSafety();
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_CARD_STATE_ID });
+    if (!state) Q.fail("TOURNAMENT-CARD-001 is not staged.");
+    const oracle = tournamentCardSnapshot();
+    assertTournamentCardTransition(oracle);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { transitionVerifiedAtIso: Q.nowIso(), transitionOracle: oracle }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-card-transition-verified",
+      oracle,
+      next: "Close only after the Final 2/2 parent-card row has also survived an explicit browser reload."
+    });
+  }
+
+  function resetTournamentCard() {
+    Q.assertDeploymentSafety();
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_CARD_STATE_ID });
+    if (!state) Q.fail("TOURNAMENT-CARD-001 is not staged.");
+    Q.restoreSnapshots(state.snapshots || []);
+    persistTournamentRoomLifeCounters(state.originalCounters || []);
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-card-reset-complete",
+      preservedClosedTournament004: true,
+      restoredAtIso: Q.nowIso()
+    });
+  }
+
   function stageTournamentRoomLife() {
     Q.assertDeploymentSafety();
     if (checkpointId !== TOURNAMENT_ROOM_LIFE_CHECKPOINT) {
@@ -6634,9 +7060,9 @@
     if (otherState) {
       Q.fail(`another manual scenario '${Q.text(otherState.scenario)}' is staged.`);
     }
-    [hostUserId, participantUserId, thirdUserId, TOURNAMENT_ROOM_LIFE_PENDING_USER_ID]
+    [hostUserId, participantUserId, thirdUserId]
       .forEach((userId, index) => (
-        Q.ensureUser(userId, ["Casey", "Nova", "Riley", "Farkas Anna"][index])));
+        Q.ensureUser(userId, ["Casey", "Nova", "Riley"][index])));
     for (const spec of tournamentRoomLifeSelectors()) {
       if (Q.collection(spec.collection).countDocuments(spec.selector) !== 0) {
         Q.fail(`stale isolated room-life data exists in '${spec.collection}'; do not overwrite it.`);
@@ -6672,7 +7098,6 @@
         qualifierStageId: TOURNAMENT_ROOM_LIFE_QUALIFIER_ID,
         retainedRoomId: TOURNAMENT_ROOM_LIFE_ROOM_A,
         controlRoomId: TOURNAMENT_ROOM_LIFE_ROOM_B,
-        pendingUserId: TOURNAMENT_ROOM_LIFE_PENDING_USER_ID,
         retainedMemberUserId: hostUserId,
         controlMemberUserId: thirdUserId
       }
@@ -6686,7 +7111,7 @@
       const qualifiers = {
         id: TOURNAMENT_ROOM_LIFE_QUALIFIER_ID,
         name: "Qualifiers",
-        description: "Manual QA nested pending-counter qualifiers",
+        description: "Manual QA nested accepted-room qualifiers",
         timing: "During",
         offsetMinutes: 0,
         durationMinutes: 90,
@@ -6705,7 +7130,7 @@
         membersAccepted: 3,
         membersPending: 0,
         groupsCount: 2,
-        groupsPending: 1
+        groupsPending: 0
       };
       const finalStage = {
         id: TOURNAMENT_ROOM_LIFE_FINAL_ID,
@@ -6747,7 +7172,7 @@
           endAtIso: parentEndAtIso,
           capacityMin: 1,
           capacityMax: 8,
-          activity: 1,
+          activity: 0,
           eventType: "event",
           subEventsEnabled: true,
           subEventDefinitions: [qualifiers, finalStage],
@@ -6770,8 +7195,6 @@
           eventType: "tournament-room",
           parentEventId: TOURNAMENT_ROOM_LIFE_EVENT_ID,
           generated: true,
-          pendingUserIds: [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID],
-          invitedUserIds: [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID],
           avatar: TOURNAMENT_ROOM_IMAGE_URL,
           imageUrl: TOURNAMENT_ROOM_IMAGE_URL,
           subtitle: "Tournament group for QA TOURNAMENT-ROOM-LIFE-001."
@@ -6804,17 +7227,6 @@
         tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_EVENT_ID, thirdUserId, "Member", stagedAtIso),
         tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_A, hostUserId, "Member", stagedAtIso),
         tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_A, participantUserId, "Member", stagedAtIso),
-        tournamentRoomLifeMember(
-          TOURNAMENT_ROOM_LIFE_ROOM_A,
-          TOURNAMENT_ROOM_LIFE_PENDING_USER_ID,
-          "Member",
-          stagedAtIso,
-          {
-            status: "pending",
-            pendingSource: "admin",
-            requestKind: "invite",
-            invitedByUserId: hostUserId
-          }),
         tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_B, thirdUserId, "Member", stagedAtIso)
       ]);
       Q.collection("activitySubEventStageRuntime").insertOne({
@@ -6858,7 +7270,7 @@
         stagedAtIso,
         context: state.context,
         baseline,
-        next: "Launch the configured three demo sessions and verify the nested parent/stage/group pending-counter chain before resolving the invitation."
+        next: "Launch the configured three demo sessions and verify that generated rooms stay nested, accepted group membership is exact and every pending counter is zero."
       });
     } catch (error) {
       Q.fail(`isolated room-life stage failed after snapshot: ${Q.text(error && error.message)}. Run reset event-domain ${checkpointId}.`);
@@ -6881,17 +7293,12 @@
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
-      phase: state.resolutionVerifiedAtIso
-        ? "tournament-room-life-resolution-verified"
-        : "tournament-room-life-baseline-active",
+      phase: "tournament-room-life-baseline-active",
       stagedAtIso: state.stagedAtIso,
       baselineVerifiedAtIso: state.baselineVerifiedAtIso,
-      resolutionVerifiedAtIso: state.resolutionVerifiedAtIso,
       context: state.context,
       oracle: current,
-      next: state.resolutionVerifiedAtIso
-        ? "Record UI observations and close the checkpoint."
-        : "Verify the root room cards are absent and follow the tournament parent/stage/group pending-counter chain."
+      next: "Verify that root room cards are absent and the parent stage/group views show accepted-only room membership with zero pending counters."
     });
   }
 
@@ -6905,64 +7312,7 @@
       checkpointId,
       phase: "tournament-room-life-baseline-verified",
       oracle: current,
-      next: "In Casey's parent tournament, follow View Event -> Qualifiers -> Groups -> Group A -> Members, then delete Farkas Anna's pending invitation exactly once."
-    });
-  }
-
-  function verifyTournamentRoomLifeResolution() {
-    Q.assertDeploymentSafety();
-    const state = requireTournamentRoomLifeState();
-    if (state.resolutionVerifiedAtIso) {
-      Q.fail("TOURNAMENT-ROOM-LIFE-001 resolution is already verified; do not replay it.");
-    }
-    const current = tournamentRoomLifeSnapshot();
-    const baseline = state.baseline;
-    const parentEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_EVENT_ID);
-    const roomAEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_A);
-    const canonicalRoomA = roomAEvents.find(item => !item.ownerUserId);
-    const roomBEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B);
-    const resolvedRoomMember = current.members.find(item => (
-      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
-        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
-    const stableMembers = current.members.filter(item => !(
-      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
-        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
-    const baselineStableMembers = baseline.members.filter(item => !(
-      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
-        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
-    if (parentEvents.length !== 1 || parentEvents[0].status !== "A"
-        || parentEvents[0].activity !== 0
-        || !parentEvents[0].stagePending.some(item => (
-          item.id === TOURNAMENT_ROOM_LIFE_QUALIFIER_ID && item.groupsPending === 0))
-        || !sameIds(parentEvents[0].acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
-        || roomAEvents.length !== 1 || !canonicalRoomA
-        || canonicalRoomA.status !== "A" || canonicalRoomA.acceptedMembers !== 2
-        || canonicalRoomA.pendingMembers !== 0
-        || canonicalRoomA.pendingMemberUserIds.length !== 0
-        || !sameIds(canonicalRoomA.acceptedMemberUserIds, [hostUserId, participantUserId])
-        || !sameJson(roomBEvents, baseline.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B))
-        || !resolvedRoomMember || resolvedRoomMember.status !== "deleted"
-        || !sameJson(stableMembers, baselineStableMembers)
-        || !sameJson(current.chats, baseline.chats)
-        || !sameJson(current.messages, baseline.messages)
-        || !sameJson(current.stageRuntime, baseline.stageRuntime)
-        || current.manualGroups !== 0 || current.leaderboard !== 0 || current.planMarkers !== 0
-        || current.notifications !== 0 || current.outbox !== 0
-        || !sameJson(current.counters, state.expectedCounters)
-        || current.recomputeTasks.length !== 0) {
-      Q.fail("TOURNAMENT-ROOM-LIFE-001 did not collapse the nested pending counter while preserving room chat and unrelated state.");
-    }
-    const verifiedAtIso = Q.nowIso();
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
-      $set: { resolutionVerifiedAtIso: verifiedAtIso, resolutionOracle: current }
-    });
-    Q.printObject({
-      scenario: SCENARIO,
-      checkpointId,
-      phase: "tournament-room-life-resolution-verified",
-      verifiedAtIso,
-      oracle: current,
-      next: "Confirm in-place that the parent, stage, Groups, Group A and Members pending counters all collapsed to zero while room chats and R2 remained unchanged."
+      next: "In Casey's parent tournament, follow View Event -> Qualifiers -> Groups and verify exact accepted-only Group A/Group B membership with zero pending counters."
     });
   }
 
@@ -11071,7 +11421,9 @@
   switch (command) {
     case "stage": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
       ? stageTournamentRoomLife()
-      : stage(); break;
+      : checkpointId === TOURNAMENT_CARD_CHECKPOINT
+        ? stageTournamentCard()
+        : stage(); break;
     case "restage": restage(); break;
     case "switch": switchCheckpoint(); break;
     case "advance": advance(); break;
@@ -11116,12 +11468,16 @@
     case "verify-ticket-attendance-replay": verifyTicketAttendanceReplay(); break;
     case "status": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
       ? statusTournamentRoomLife()
-      : status(); break;
+      : checkpointId === TOURNAMENT_CARD_CHECKPOINT
+        ? statusTournamentCard()
+        : status(); break;
     case "reset": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
       ? resetTournamentRoomLife()
-      : reset(); break;
+      : checkpointId === TOURNAMENT_CARD_CHECKPOINT
+        ? resetTournamentCard()
+        : reset(); break;
     case "verify-tournament-room-life-baseline": verifyTournamentRoomLifeBaseline(); break;
-    case "verify-tournament-room-life-resolution": verifyTournamentRoomLifeResolution(); break;
+    case "verify-tournament-card-transition": verifyTournamentCardTransition(); break;
     case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
     case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;
     case "capture-lifecycle-action-baseline": captureLifecycleActionBaseline(); break;

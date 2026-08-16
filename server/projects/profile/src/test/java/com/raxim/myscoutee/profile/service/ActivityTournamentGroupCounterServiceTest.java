@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -44,16 +43,10 @@ class ActivityTournamentGroupCounterServiceTest {
                 subEvent("stage-1", 0),
                 subEvent("stage-2", 4)));
 
-        when(activityMembersRepository.findByOwnerPatternAndStatus(
+        when(activityMembersRepository.countByOwnerPatternAndStatus(
                 "group",
                 "^\\Qevent-1\\E:(?:\\Qstage-1\\E:|slot:.*:\\Qstage-1\\E:)",
-                "pending")).thenReturn(List.of(
-                        pendingMember("member-a"),
-                        pendingMember("member-b")));
-        when(activityMembersRepository.findByOwnerPatternAndStatus(
-                "event",
-                "^random-room:\\Qevent-1\\E:\\Qstage-1\\E:",
-                "pending")).thenReturn(List.of(pendingMember("member-b")));
+                "pending")).thenReturn(2L);
         when(activitySubEventStageRuntimeRepository.findByOwnerPatternAndSubEventIdAndStatusNot(
                 "^\\Qevent-1\\E(?:$|:slot:)",
                 "stage-1",
@@ -73,13 +66,6 @@ class ActivityTournamentGroupCounterServiceTest {
         assertThat(result.getSubEvents().get(0).groupsPending()).isEqualTo(5);
         assertThat(result.getSubEvents().get(1).groupsPending()).isEqualTo(4);
         assertThat(result.getActivity()).isEqualTo(9);
-    }
-
-    private ActivityMember pendingMember(String userId) {
-        ActivityMember member = new ActivityMember();
-        member.setUserId(userId);
-        member.setStatus("pending");
-        return member;
     }
 
     private SubEventItem subEvent(String id, int groupsPending) {

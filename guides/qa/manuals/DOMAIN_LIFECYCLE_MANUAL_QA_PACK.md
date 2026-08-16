@@ -4836,7 +4836,7 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Final assignment, Final Start and whole-tournament completion are four
   causally ordered producer boundaries, not one projected UI transition.
 
-### `TOURNAMENT-ROOM-LIFE-001` — nested tournament pending aggregation
+### `TOURNAMENT-ROOM-LIFE-001` — nested tournament-room visibility
 
 - **NOT RUN.** The first fixture staged at `2026-08-16T13:10:53.035Z` was
   invalid for this domain rule: it exposed materialized tournament rooms as
@@ -4844,32 +4844,48 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Leave test. No modifying UI action was executed. The guarded reset at
   `2026-08-16T13:31:51.209Z` removed only that fixture and preserved the closed
   `TOURNAMENT-004` evidence.
-- The corrected fixture staged at `2026-08-16T13:53:23.200Z`. Independent
-  `status` and `verify-tournament-room-life-baseline` reads proved the exact
-  pre-action boundary: parent `activity=1`, Qualifiers `groupsPending=1`, one
-  Group A event-owner pending invitation, two parent-linked generated rooms,
-  accepted-only room chats, zero notification/outbox/recompute side effects
-  and unchanged Group B/runtime controls. No manual resolution action has yet
-  occurred.
-- Stage one parent tournament with an active Qualifiers stage, two generated
-  groups/rooms and exactly one pending invitation in Group A. The generated
-  rooms remain persisted for their member-scoped chats and notifications, but
-  must not appear as standalone Activities event cards or independent Leave
-  targets.
-- Verify the same pending unit through the existing aggregation chain:
-  parent tournament card three-dot counter → **View Event** counter →
-  Qualifiers stage three-dot/**Groups** counters → Group A three-dot/**Members**
-  counters → the exact pending member row. Group B and all room chats are
-  unchanged controls.
-- Casey deletes the one Group A pending invitation exactly once. Without
-  reload, every counter in that chain must collapse from `1` to `0`; the
-  parent/stage persisted counters, room pending membership and Members result
-  must agree. Accepted parent/group membership, standings, chats,
-  notifications, Group B, stage status and unrelated counters remain intact.
-- This checkpoint verifies the existing nested counter model, not a new
-  counter projection. A nested lifecycle fixture must preserve the production
-  parent/stage/group shape instead of fabricating a root entity merely to make
-  one action easier to isolate.
+- The corrected hierarchy fixture staged at `2026-08-16T13:53:23.200Z`.
+  Independent reads proved one root parent plus two parent-linked/generated
+  rooms. Casey's root list contained only the parent; **View Event →
+  Qualifiers → Groups** exposed the two nested groups, while their accepted
+  room chats remained member scoped. This visibility/navigation branch is
+  **PASS/CLOSED**.
+- The fixture also injected a Group A event-owner pending invitation and its
+  aggregate counter. Code tracing proved that state is not produced by the
+  tournament flow: Start consumes only already-accepted parent members,
+  `syncMaterializedSystemEventMembers` persists them directly as accepted with
+  `pending=0`, and materialized event-owner groups are read-only in the Groups
+  UI. No pending-resolution action was executed. The synthetic branch was
+  classified **NOT EXECUTED / invalid fixture** and guard-reset at
+  `2026-08-16T14:07:44.250Z`, preserving `TOURNAMENT-004`.
+- Future replay stages accepted-only Group A/Group B membership and requires
+  zero pending counters. A tournament room remains a nested sub-event/group;
+  it never becomes a standalone Activity event or independent Leave target.
+  Chat and notification projections remain member scoped.
+
+### `TOURNAMENT-ADMISSION-001` — first-stage admission boundary
+
+- Resolve one product-policy choice before implementation. The simplest
+  default freezes the accepted parent-member snapshot at first Start and gives
+  still-pending requests one registration-closed outcome. A bounded alternative
+  may admit newly accepted parent members only while the first stage is still
+  running, then assign them deterministically to that stage. Do not silently
+  inherit the ordinary-event grace period and do not mix both policies.
+- Whichever policy is selected, exercise the backend—not only the UI—for late
+  join, invite and Admin approval. A rejected late acceptance must change no
+  group membership, capacity, chat, leaderboard or counter. A permitted
+  first-stage-grace acceptance must be one atomic accepted-parent-to-active-room
+  transaction, never a pending room membership or a second room-level approval.
+- Parent-event pending admission is not part of the nested `Groups` counter.
+  That counter aggregates only group-scoped pending member operations and
+  group resource requests. Materialized event-owner tournament groups are
+  read-only for member invitation and receive accepted members directly, so
+  their member-pending contribution remains zero; only a genuinely pending
+  group resource request may produce a counter there. The parent event may
+  still expose its own pending admission indicator separately.
+- Exercise HTTP and frontend-local with the same parent membership states and
+  prove scheduler reruns remain idempotent. This checkpoint is separate from
+  the already-passed Start notifications and must not rewrite or replay them.
 
 ### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
 
@@ -4889,6 +4905,22 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - This is a separate follow-up checkpoint. It must not modify or invalidate the
   `TOURNAMENT-ROOM-LIFE-001` pending-counter replay or the closed tournament
   lifecycle checkpoints.
+
+Execution evidence on 2026-08-16 (in progress):
+
+- Backend write boundaries now materialize `{id, name, stageNumber,
+  totalStages, status}` on the parent event; the event-list projection includes
+  only `currentStage`, not nested `subEvents`. Frontend-local persists the same
+  shape. The established backend and frontend dev watchers compiled the change
+  successfully; no parallel build/test process was started.
+- A separate guarded `TOURNAMENT-CARD-001` fixture staged one active parent
+  tournament with Qualifiers in `SR`, Final in `RS`, three accepted parent
+  members and zero generated root-room records. Its baseline oracle at
+  `2026-08-16T14:52:56.420Z` proved persisted `Qualifiers · 1/2`.
+- The Casey HTTP `My Events` oracle returned exactly that `currentStage` wire
+  value and no `subEvents` field. Browser verification remains open for the
+  separate card row, the in-place Qualifiers -> Final transition and reload
+  persistence.
 
 ## Asset cases
 
@@ -4967,7 +4999,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 ## Coverage-expansion checkpoints appended after the original 106-case spine
 
 The 106 testcases that existed at the start of the 2026-08-13 coverage audit
-remain the immutable workflow spine. The following 83 cases are new rows, not
+remain the immutable workflow spine. The following 84 cases are new rows, not
 splits or rewrites of that spine. They are deliberately grouped into resumable
 checkpoint sequences, while every row still owns one bounded producer action
 and one decisive persisted oracle. Runtime execution must use at most three

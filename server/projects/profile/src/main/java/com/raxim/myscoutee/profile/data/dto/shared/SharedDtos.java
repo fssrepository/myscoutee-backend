@@ -170,6 +170,15 @@ public final class SharedDtos {
             String source) {
     }
 
+    public record TournamentCurrentStageDto(
+            @Field("id")
+            String id,
+            String name,
+            Integer stageNumber,
+            Integer totalStages,
+            String status) {
+    }
+
     public record SubEventDefinitionDto(
             @Field("id")
             String id,

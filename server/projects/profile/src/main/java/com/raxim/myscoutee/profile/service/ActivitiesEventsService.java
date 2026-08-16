@@ -1989,6 +1989,7 @@ public class ActivitiesEventsService {
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_ACTIVE);
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
+            current.refreshTournamentCurrentStage();
         });
         List<ActivityEvent> publishedDocuments = ensurePublishedEventDocuments(updated, request == null ? null : request.userId());
         boolean eventChatAdded = false;
@@ -2261,6 +2262,7 @@ public class ActivitiesEventsService {
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? viewer.userId() : null));
             next.setSubEvents(nextSubEvents);
+            next.refreshTournamentCurrentStage();
             if (STAGE_ACTION_START.equals(actionTarget.action())) {
                 next.setAutoInviter(false);
             }
@@ -6574,6 +6576,7 @@ public class ActivitiesEventsService {
                 .include("slotTemplateId")
                 .include("generated")
                 .include("eventType")
+                .include("currentStage")
                 .include("acceptedMembers")
                 .include("pendingMembers")
                 .include("acceptedMemberUserIds")

@@ -12312,6 +12312,12 @@
     "value": "Groups: {groups} × {min}–{max} members"
   },
   {
+    "_id": "i18n-message-en-event-tournament-current-stage",
+    "key": "event.tournament.current.stage",
+    "lang": "en",
+    "value": "Current stage: {stage} · {current}/{total}"
+  },
+  {
     "_id": "i18n-message-en-event-checkout-payment-summary",
     "key": "event.checkout.payment.summary",
     "lang": "en",
@@ -30916,6 +30922,12 @@
     "key": "event.subevents.stage.groups.capacity.summary",
     "lang": "hu",
     "value": "Csoportok: {groups} × {min}–{max} fő"
+  },
+  {
+    "_id": "i18n-message-hu-event-tournament-current-stage",
+    "key": "event.tournament.current.stage",
+    "lang": "hu",
+    "value": "Aktuális szakasz: {stage} · {current}/{total}"
   },
   {
     "_id": "i18n-message-hu-event-checkout-payment-summary",

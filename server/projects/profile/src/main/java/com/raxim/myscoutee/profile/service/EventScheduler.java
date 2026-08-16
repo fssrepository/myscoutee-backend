@@ -451,6 +451,7 @@ public class EventScheduler {
             }
             if (changed) {
                 event.setSubEvents(updatedSubEvents);
+                event.refreshTournamentCurrentStage();
                 event.setUpdatedDate(nowIso);
                 event.setUpdatedUser(MARKER_UPDATED_BY);
                 changedRecords.add(event);
@@ -505,6 +506,7 @@ public class EventScheduler {
             }
             if (changed) {
                 event.setSubEvents(updatedSubEvents);
+                event.refreshTournamentCurrentStage();
                 event.setUpdatedDate(nowIso);
                 event.setUpdatedUser(MARKER_UPDATED_BY);
                 changedRecords.add(event);

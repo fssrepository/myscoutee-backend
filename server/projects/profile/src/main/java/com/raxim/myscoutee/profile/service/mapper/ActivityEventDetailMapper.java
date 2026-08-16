@@ -93,6 +93,7 @@ public class ActivityEventDetailMapper {
                 cloneSubEventDefinitions(record.getSubEventDefinitions()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getMode()),
+                record.getCurrentStage(),
                 safeDouble(record.getRating()),
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),

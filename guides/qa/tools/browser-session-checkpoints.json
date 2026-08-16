@@ -221,10 +221,10 @@
       },
       "sessions": [
         {
-          "actor": "Casey nested counter resolver",
+          "actor": "Casey nested tournament reader",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · parent Admin and Group A resolver"
+          "expectedName": "Casey Bridge · parent Admin and accepted-group reader"
         },
         {
           "actor": "Nova Group A accepted control",
@@ -237,6 +237,33 @@
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
           "expectedName": "Riley Outside · unchanged R2 control"
+        }
+      ]
+    },
+    "TOURNAMENT-CARD-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament-card Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Qualifiers Finalize actor"
+        },
+        {
+          "actor": "Nova tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · parent-card transition observer"
+        },
+        {
+          "actor": "Riley tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · reload persistence observer"
         }
       ]
     },

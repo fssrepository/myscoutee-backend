@@ -85,6 +85,7 @@ public class ActivityEventMapper {
                 resolveEventFull(record, acceptedMembers, capacityTotal),
                 resolveEventType(record),
                 normalizeMode(record.getMode()),
+                record.getCurrentStage(),
                 acceptedMembers,
                 pendingMembers,
                 acceptedMemberUserIds,

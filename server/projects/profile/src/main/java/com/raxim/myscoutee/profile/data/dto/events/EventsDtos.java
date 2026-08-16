@@ -14,6 +14,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDt
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.TournamentCurrentStageDto;
 
 public final class EventsDtos {
     private EventsDtos() {
@@ -526,6 +527,7 @@ public final class EventsDtos {
             Boolean full,
             String eventType,
             String mode,
+            TournamentCurrentStageDto currentStage,
             Integer acceptedMembers,
             Integer pendingMembers,
             List<String> acceptedMemberUserIds,
@@ -622,6 +624,7 @@ public final class EventsDtos {
             List<SubEventDefinitionDto> subEventDefinitions,
             List<SubEventItemDto> subEvents,
             String mode,
+            TournamentCurrentStageDto currentStage,
             Double rating,
             Double boost,
             Double affinity,
