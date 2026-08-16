@@ -25,7 +25,7 @@ The current qualification ledger is available as an
 
 As of 2026-08-16:
 
-- **Core:** 58 passed, 100 remaining (158 total)
+- **Core:** 59 passed, 99 remaining (158 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
 The complete matrix contains 214 cases across 13 functional domains. The Chat
@@ -34,10 +34,11 @@ authorization checkpoint as the complete chat workflow. `TOURNAMENT-002` through
 `TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
 advancement, separate Final Start/room readiness, whole-tournament completion,
 personal winner/non-winner results and three-browser recipient verification.
-The nested tournament-room visibility checkpoint is PASS/CLOSED.
-`TOURNAMENT-CARD-001` is IN PROGRESS on its isolated persisted Qualifiers
-baseline; the separately captured admission-lock checkpoint covers late parent
-joins, and two separate score-correction checkpoints cover result revisions and
+The nested tournament-room visibility and persisted parent current-stage card
+checkpoints are PASS/CLOSED, including the in-place Qualifiers `1/2` to Final
+`2/2` transition and reload persistence. The separately captured admission
+checkpoint covers late parent joins, and two separate score-correction
+checkpoints cover result revisions and
 the downstream-stage Reopen guard.
 
 ### Official manuals

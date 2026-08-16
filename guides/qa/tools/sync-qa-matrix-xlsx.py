@@ -379,6 +379,29 @@ def qa_scope_formula(row_index: int, id_column: str) -> str:
     )
 
 
+def domain_progress_formula(
+    domain_reference: str,
+    domain_column: str,
+    status_helper_column: str,
+    first_test_row: int,
+    last_test_row: int,
+) -> str:
+    domain_range = f"${domain_column}${first_test_row}:${domain_column}${last_test_row}"
+    status_range = (
+        f"${status_helper_column}${first_test_row}:"
+        f"${status_helper_column}${last_test_row}"
+    )
+    total = f"COUNTIF({domain_range},{domain_reference})"
+    done = (
+        f'COUNTIFS({domain_range},{domain_reference},'
+        f'{status_range},"Done")'
+    )
+    return (
+        f'{done}&" passed / "&{total}&" total ("&'
+        f'IF({total}=0,"0%",TEXT({done}/{total},"0%"))&")"'
+    )
+
+
 def request_full_workbook_recalculation(existing: bytes) -> bytes:
     root = ET.fromstring(existing)
     calculation = root.find(f"{{{NS}}}calcPr")
@@ -659,6 +682,7 @@ def build_sheet(
     result_column = cell_column(headers.index("Result"))
     id_column = cell_column(headers.index("ID"))
     domain_column_index = headers.index(DOMAIN_COLUMN)
+    domain_column = cell_column(domain_column_index)
     dimension.set("ref", f"A1:{scope_helper_column}{len(rows)}")
     sheet_data.clear()
 
@@ -914,6 +938,33 @@ def build_sheet(
                 ET.SubElement(cell, f"{{{NS}}}f").text = summary_formulas[values[3]]
                 ET.SubElement(cell, f"{{{NS}}}v").text = value
                 continue
+            if (
+                domain_priority_header_row < row_index <= domain_priority_last_row
+                and column_index in tuple(
+                    start + DOMAIN_PRIORITY_VALUE_OFFSETS[2]
+                    for start in DOMAIN_PRIORITY_BLOCK_STARTS
+                )
+            ):
+                block_start = max(
+                    start
+                    for start in DOMAIN_PRIORITY_BLOCK_STARTS
+                    if start <= column_index
+                )
+                if values[block_start]:
+                    cell = ET.SubElement(row, f"{{{NS}}}c", {
+                        "r": reference,
+                        "s": str(style_indexes[cell_style_key]),
+                        "t": "str",
+                    })
+                    ET.SubElement(cell, f"{{{NS}}}f").text = domain_progress_formula(
+                        f"{cell_column(block_start)}{row_index}",
+                        domain_column,
+                        status_helper_column,
+                        first_test_row,
+                        last_test_row,
+                    )
+                    ET.SubElement(cell, f"{{{NS}}}v").text = value
+                    continue
             cell = ET.SubElement(row, f"{{{NS}}}c", {
                 "r": reference,
                 "s": str(style_indexes[cell_style_key]),

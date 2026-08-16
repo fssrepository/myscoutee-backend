@@ -5031,7 +5031,7 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   `TOURNAMENT-ROOM-LIFE-001` pending-counter replay or the closed tournament
   lifecycle checkpoints.
 
-Execution evidence on 2026-08-16 (in progress):
+Execution evidence on 2026-08-16 (PASS / CLOSED):
 
 - Backend write boundaries now materialize `{id, name, stageNumber,
   totalStages, status}` on the parent event; the event-list projection includes
@@ -5043,9 +5043,17 @@ Execution evidence on 2026-08-16 (in progress):
   members and zero generated root-room records. Its baseline oracle at
   `2026-08-16T14:52:56.420Z` proved persisted `Qualifiers · 1/2`.
 - The Casey HTTP `My Events` oracle returned exactly that `currentStage` wire
-  value and no `subEvents` field. Browser verification remains open for the
-  separate card row, the in-place Qualifiers -> Final transition and reload
-  persistence.
+  value and no `subEvents` field. Casey then verified the separate
+  `Current stage: Qualifiers · 1/2` row on the root parent card.
+- Finalizing Qualifiers changed that same row immediately, without waiting for
+  a poll, to `Current stage: Final · 2/2`; one explicit browser reload retained
+  the exact value and still showed no generated room card in the root list.
+- The terminal transition oracle proved persisted
+  `{final, Final, 2/2, RS}`, finalized Qualifiers, three accepted parent
+  members, two authoritative Qualifiers runtime groups and zero generated root
+  records. The shell harness dispatch omission discovered by this terminal
+  check was fixed so its documented verifier now reaches the existing guarded
+  JavaScript oracle.
 
 ## Asset cases
 

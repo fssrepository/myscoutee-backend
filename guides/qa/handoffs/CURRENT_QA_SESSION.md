@@ -34,18 +34,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-CARD-001 — persisted current-stage parent-card row
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-card-001--persisted-current-stage-summary-on-the-parent-card
-scenario: event-domain (isolated fixture staged)
-ledger_status: IN PROGRESS
-state: The isolated fixture was staged and baseline-verified at `2026-08-16T14:52:56.420Z`. Mongo and the server list oracle agree on persisted `currentStage={qualifiers, Qualifiers, 1/2, SR}`; the list response contains `currentStage` and omits `subEvents`. The existing dev watchers compiled the backend and frontend changes successfully. Exactly three managed Casey/Nova/Riley windows are open. Closed TOURNAMENT-001 through TOURNAMENT-004 and TOURNAMENT-ROOM-LIFE-001 evidence remains untouched. TOURNAMENT-ADMISSION-001 remains a separate unimplemented follow-up.
-required_resume: In Casey My Events verify the root `QA TOURNAMENT-CARD-001` card shows the separate `Current stage: Qualifiers · 1/2` row. Keep that list underneath View Event, open Qualifiers, then use its action menu to Finalize once. After closing the stacked view, require the parent card to show `Final · 2/2` immediately without waiting for a poll. Do not inspect or change closed notification producers.
-event: `manual-qa-checkpoint:v1:event-domain:tournament-card:event` / `QA TOURNAMENT-CARD-001`
+checkpoint: TOURNAMENT-ADMISSION-001 — first-stage admission policy gate
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-admission-001--first-stage-admission-boundary
+scenario: event-domain (no admission fixture staged)
+ledger_status: DESIGN CAPTURED / NOT RUN
+state: TOURNAMENT-CARD-001 is PASS/CLOSED after its in-place and reload card transition plus terminal persisted oracle. Its isolated verified fixture remains retained only as the completed boundary; no TOURNAMENT-ADMISSION-001 fixture has been staged. Closed TOURNAMENT-001 through TOURNAMENT-004 and TOURNAMENT-ROOM-LIFE-001 evidence remains untouched.
+required_resume: Resolve exactly one parent-admission policy before implementation or fixture mutation: strict registration lock at first tournament-stage Start, or an explicit bounded first-stage grace that atomically assigns every newly accepted parent member to a live first-stage group. Do not infer ordinary-event grace and do not change the already-passed Start notification producers.
+event: none until the admission policy is chosen and a guarded fixture is implemented
 actors:
   planned: Casey `650000000000000000000061` parent Admin; Nova `650000000000000000000062` accepted participant; Riley `650000000000000000000063` accepted participant
-  controls: generated rooms remain nested; accepted group membership and closed tournament notification evidence remain unchanged
-next_actor: User verifies the staged Qualifiers row in Casey My Events; do not Finalize until Codex issues the exact action path.
-stop_phrase: megvan
+  controls: parent pending indicators remain separate from nested Groups; room pending membership remains zero; closed Start notifications remain unchanged
+next_actor: User chooses strict first-Start lock or bounded first-stage grace; Codex then implements the owning contract and guarded replay fixture before issuing browser steps.
+stop_phrase: strict lock / bounded grace
 ```
 
 Separate captured follow-up: `TOURNAMENT-ADMISSION-001` owns the unresolved
@@ -130,11 +130,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-CARD-001` is staged at the persisted Qualifiers `1/2` baseline.
-First verify that separate row on Casey's root parent card. Do not Finalize yet;
-the next controlled stop owns the in-place Qualifiers -> Final assertion. Late
-admission policy remains separate under `TOURNAMENT-ADMISSION-001`; score
-correction and late-correction safety remain separate under
+`TOURNAMENT-CARD-001` is PASS/CLOSED. Before staging
+`TOURNAMENT-ADMISSION-001`, choose strict registration lock at first stage
+Start or a bounded first-stage grace with atomic live-group assignment. Do not
+guess this policy from ordinary-event behavior. Score correction and
+late-correction safety remain separate under
 `TOURNAMENT-SCORE-REOPEN-001/002`.
 
 When a guarded fixture repair changes time or state behind an already-open
@@ -976,7 +976,10 @@ checkpoint:
 4. Update the canonical matrix CSV with the current date, evidence and next
    oracle. Keep the row `IN PROGRESS` until the checkpoint's full chain passes.
 5. Run `python3 guides/qa/tools/sync-qa-matrix-xlsx.py`; the generated XLSX owns
-   status coloring and aggregate counts.
+   status coloring and aggregate counts. Its top summary and every domain
+   `passed / total (%)` value must remain worksheet formulas over the hidden
+   status/scope helpers with full recalculation on open; never hand-count or
+   hard-code those aggregate values during a checkpoint close.
 6. Update only the YAML resume pointer and next manual action in this file. Do
    not copy the detailed evidence or ledger row here.
 7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
@@ -1009,8 +1012,8 @@ The current Tournament block order is:
 ```text
 TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
--> TOURNAMENT-CARD-001 (active)
--> TOURNAMENT-ADMISSION-001 (not run)
+-> TOURNAMENT-CARD-001 (closed)
+-> TOURNAMENT-ADMISSION-001 (active design gate; not run)
 -> TOURNAMENT-SCORE-REOPEN-001 (not run)
 -> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```
