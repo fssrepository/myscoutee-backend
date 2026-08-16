@@ -34,10 +34,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardMemberDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
@@ -1103,6 +1107,98 @@ class ActivitiesEventsServiceTest {
                 .containsEntry("stageIndex", "1")
                 .containsEntry("stageTotal", "2")
                 .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
+    }
+
+    @Test
+    void manualFinalStageFinalizeKeepsHumanAuditSeparateFromSystemResults() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(stage("final", "SR")));
+        ActivityMember hostFinalMember = acceptedGroupMember("final:group:1", "host");
+        ActivityMember rileyFinalMember = acceptedGroupMember("final:group:1", "riley");
+        EventLeaderboardStateDto finalState = new EventLeaderboardStateDto(
+                "event-1",
+                "final",
+                "Final",
+                "Score",
+                List.of(new EventLeaderboardGroupDto(
+                        "final:group:1",
+                        "Final Group",
+                        2,
+                        1,
+                        List.of("riley"),
+                        List.of(
+                                new EventLeaderboardMemberDto("host", "Casey Bridge"),
+                                new EventLeaderboardMemberDto("riley", "Riley Outside")),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of())));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerPatternAndStatus(
+                "group", "^\\Qfinal\\E:group:", "accepted"))
+                .thenReturn(List.of(hostFinalMember, rileyFinalMember));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "final"))
+                .thenReturn(Optional.empty());
+        when(activitiesEventLeaderboardService.queryState("event-1", "final")).thenReturn(finalState);
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "final",
+                        0,
+                        "finalize-stage",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("F");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(3)).enqueue(notificationCaptor.capture());
+        List<NotificationIntent> notifications = notificationCaptor.getAllValues();
+        assertThat(notifications.get(0)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-stage-finalized");
+            assertThat(notification.title()).isEqualTo("final finalized");
+            assertThat(notification.recipientUserIds()).containsExactly("riley");
+            assertThat(notification.createdUser()).isEqualTo("host");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.stage.finalized.title")
+                    .containsEntry("notification_message_key", "notification.event.stage.finalized.message")
+                    .doesNotContainKeys("senderName", "notification_avatar_tone", "notification_avatar_icon");
+        });
+        assertThat(notifications.get(1)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-tournament-won");
+            assertThat(notification.recipientUserIds()).containsExactly("riley");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("senderName", "MyScoutee System")
+                    .containsEntry("notification_title_key", "notification.event.tournament.won.title")
+                    .containsEntry("notification_message_key", "notification.event.tournament.won.message")
+                    .containsEntry("notification_tone", "success")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events")
+                    .containsEntry("stageIndex", "1")
+                    .containsEntry("stageTotal", "1");
+        });
+        assertThat(notifications.get(2)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-tournament-not-won");
+            assertThat(notification.recipientUserIds()).containsExactly("host");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.tournament.not-won.title")
+                    .containsEntry("notification_message_key", "notification.event.tournament.not-won.message")
+                    .containsEntry("notification_tone", "warning")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events");
+        });
+        assertThat(notifications)
+                .noneMatch(notification -> "event-tournament-finalized".equals(notification.type()));
     }
 
     @Test

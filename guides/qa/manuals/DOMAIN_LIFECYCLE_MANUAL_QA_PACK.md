@@ -4724,6 +4724,80 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   rule and stage avatar payload. Existing Start targeted-read, batched-write
   and scheduler-scope optimizations were retained unchanged. Backend and
   frontend live watchers both completed successfully.
+- **Clean Final Start replay PASS / CLOSED at
+  `2026-08-16T11:42:24.876Z`**: Casey applied Start exactly once at
+  `2026-08-16T11:40:07Z`. Final became `A / tournament-started`, Qualifiers
+  stayed `F`, the Final group remained exactly Casey+Riley and Nova remained
+  excluded. Exactly one Final room, two owner chat copies and one welcome
+  message were persisted. Casey's human `Final started / Final has started.
+  Groups are ready.` intent targeted Riley only; 31 ms later the independent
+  system `Tournament Group R1 is ready` intent targeted Casey+Riley. The two
+  records keep their own actor, type, recipients and avatar semantics and must
+  never be merged, relabelled or deduplicated into one another. Riley's live
+  list showed room-ready above Final-start, Casey's showed room-ready only and
+  Nova's showed neither. This Start branch is PASS and must not be replayed
+  while preparing terminal Final completion.
+- **Terminal boundary prepared at `2026-08-16T11:54:16.529Z`**: the guarded
+  fixture preserved the byte-identical PASS Start/room/chat/membership/counter
+  and room-ready evidence, moved only Final to `SR / stage-ended` with its end
+  instant one minute in the past, and added deterministic Final scores Casey
+  `9` / Riley `7`. The tournament-review worker is held during this terminal
+  action.
+- Casey visually confirmed the prepared Final standings as Casey `9` / Riley
+  `7`, then applied Finalize exactly once. The resulting notification UI is a
+  **terminal product FAIL**: one Casey-authored `Tournament finalized` record
+  also carried the automatic winner result (`Final is complete... Winner:
+  Casey Bridge`). The write therefore merged two different producers and
+  meanings. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-16 13-57-31.png`.
+- Required correction and terminal-only replay contract: the manual action
+  keeps a separate Casey-authored `Final finalized` audit for the other Final
+  participant. After it, MyScoutee System sends one short personal result to
+  each finalist using the already-PASS advancement presentation (stage accent
+  plus trophy avatar): Casey receives the non-winner result and Riley the
+  winner result. Nova receives neither terminal row because she was eliminated
+  before Final. The replay fixture reverses only the Final scores to Casey `7`
+  / Riley `9`; it must not replay or rewrite the PASS Final Start transaction.
+- **Corrected terminal replay machine PASS / UI oracle pending**: the guarded
+  terminal-only replay at `2026-08-16T12:19:47.518Z` changed only Final to
+  `SR / stage-ended`, set Casey `7` / Riley `9`, removed only the failed merged
+  terminal transaction and preserved the PASS Final Start and room-ready
+  snapshots byte-identically. After one Casey Finalize, the persisted verifier
+  passed at `2026-08-16T12:23:48.589Z`. It proved three separate records in
+  causal order: Riley received Casey's human `Final finalized` audit, then
+  Riley received the MyScoutee System `Won the tournament` result, and Casey
+  received the MyScoutee System `Did not win the tournament` result. Nova
+  received none. The two system outcomes use short Final-stage trophy payloads
+  and never inherit Casey's actor identity. Keep the ledger row open until the
+  same separation and presentation pass in Riley, Casey and Nova UI lists.
+- **Casey/Riley terminal UI recipient PASS at 2026-08-16 14:31 CEST**:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-16 14-31-26.png`
+  shows Casey with only the system `Did not win the tournament` terminal row,
+  while Riley has the system `Won the tournament` row plus Casey's separate
+  `Final finalized` audit. Producer avatars and short messages are not merged.
+  A presentation follow-up adds a stage-coloured glow only to positive
+  `advanced`/`won` trophy avatars and a diagonal strike only to negative
+  `not-advanced`/`not-won` trophy avatars. The running frontend watcher built
+  and synced that narrow CSS/converter change successfully at 14:33 CEST; one
+  reload of the existing Casey/Riley lists is required to qualify the new
+  bundle. Nova exclusion remains the final recipient UI check.
+- **Winner-avatar presentation PASS at 2026-08-16 14:37 CEST**: after exactly
+  one Riley reload, the system `Won the tournament` trophy showed its
+  stage-coloured glow and Casey's separate `Final finalized` portrait remained
+  unchanged. No lifecycle producer was repeated.
+- **Non-winner-avatar presentation PASS at 2026-08-16 14:43 CEST**: Casey's
+  already-persisted `Did not win the tournament` row showed the diagonal trophy
+  strike after the required reload loaded the new frontend bundle. No
+  lifecycle producer was repeated. Nova's terminal exclusion remains the only
+  open UI assertion.
+- **Nova exclusion PASS / checkpoint CLOSED at 2026-08-16 14:43 CEST**: after
+  one Nova reload, her New list contained none of `Final finalized`, `Won the
+  tournament` or `Did not win the tournament`. Together with the persisted
+  oracle and Casey/Riley UI evidence, this closes `TOURNAMENT-004` as PASS.
+  Final Start, room-ready, human Finalize audit, system winner/non-winner
+  outcomes, EN/HU keys and positive/negative stage-avatar presentation are all
+  qualified. Do not replay this checkpoint when preparing the independent
+  generated-room leave test.
 - **Focused recipient replay prepared at
   `2026-08-15T18:22:44.221Z`**: the versioned harness guarded the exact
   successful-domain/failed-recipient boundary, rewound only Final event/runtime
@@ -4740,17 +4814,21 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   notification row background remains owned by the normal notification-tone
   rules. Manual Start excludes the initiating actor only from the redundant
   Start acknowledgement; an automatic Start has no manual actor to exclude.
-- The same context rule applies to every automatic tournament lifecycle
-  notification, not only Start: closure/finalization names the completed stage,
-  advancement names both source and destination stages, and terminal
-  finalization states that the whole tournament ended. Manual and automatic
-  producers use the same message/i18n payload; only manual actor exclusion
-  differs.
-- Finalize only through its valid ended/review boundary. The terminal write
-  must produce **Tournament finalized**, include the Final stage context and
-  localized result/winner wording, and set the persisted whole-tournament
-  completion context. It must not look like another intermediate
-  `{stageTitle} finalized` row.
+- The same stage-context rule applies to every tournament lifecycle
+  notification, but producer identity remains separate. A manual action keeps
+  Casey as its human actor and excludes only Casey from that acknowledgement;
+  a subsequent automatic room/advancement/result record stays a distinct
+  MyScoutee System record with its own recipients and message. Closure names
+  the completed stage, advancement names both source and destination stages,
+  and terminal finalization states that the whole tournament ended. Never
+  merge a Casey record with an automatic record or replace one with the other.
+- Finalize only through its valid ended/review boundary. A manual terminal
+  action first produces the ordinary human `{stageTitle} finalized` audit,
+  excluding only its actor. The system then produces separate, short
+  winner/non-winner outcomes for the exact Final participants. Those system
+  outcomes reuse the advancement trophy/avatar styling and Final stage context;
+  they never inherit Casey's sender identity or merge the human audit text into
+  their result text.
 - Compare EN/HU rendering against both frontend-local bundles and live Mongo
   keys. A second unchanged Start/Finalize attempt or worker pass must not add
   membership, result, outbox, inbox or counter deltas.

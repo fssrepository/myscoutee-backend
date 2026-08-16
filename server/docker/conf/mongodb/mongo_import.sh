@@ -197,14 +197,89 @@ deploymentConfigurations.updateOne(
 " >/dev/null
 }
 
+migrate_deployment_configuration_v4() {
+  local target_db="$1"
+
+  mongosh \
+    --host "${mongo_host}" \
+    --port "${mongo_port}" \
+    --username "${mongo_username}" \
+    --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" \
+    --quiet \
+    "${target_db}" \
+    --eval "
+const deploymentConfigurations =
+    db.getCollection('deploymentConfigurations');
+const legacyUntouchedBranding = {
+  \$and: [
+    { \$eq: ['\$branding.productName', 'MyScoutee'] },
+    { \$in: ['\$branding.logoCharacterIndex', [null, 0]] },
+    { \$eq: ['\$branding.homeLabel', 'Your preferences come first'] },
+    { \$eq: ['\$branding.logoUrl', 'assets/logo/heart.webp'] },
+    { \$eq: ['\$branding.themePreset', 'AURORA'] },
+    { \$eq: ['\$branding.revision', 0] }
+  ]
+};
+deploymentConfigurations.updateOne(
+  {
+    _id: 'deployment-configuration',
+    schemaVersion: 3
+  },
+  [
+    {
+      \$set: {
+        'branding.themePreset': {
+          \$cond: [
+            legacyUntouchedBranding,
+            'VIOLET',
+            '\$branding.themePreset'
+          ]
+        },
+        schemaVersion: 4,
+        version: {
+          \$add: [
+            { \$ifNull: ['\$version', 0] },
+            1
+          ]
+        }
+      }
+    }
+  ]
+);
+deploymentConfigurations.updateOne(
+  {
+    _id: 'deployment-configuration',
+    schemaVersion: 4,
+    'branding.productName': 'MyScoutee',
+    'branding.logoCharacterIndex': { \$in: [null, 0] },
+    'branding.homeLabel': 'Your preferences come first',
+    'branding.logoUrl': 'assets/logo/heart.webp',
+    'branding.themePreset': 'AURORA',
+    'branding.revision': 0
+  },
+  {
+    \$set: {
+      'branding.themePreset': 'VIOLET'
+    },
+    \$inc: {
+      version: 1
+    }
+  }
+);
+" >/dev/null
+}
+
 import_deployment_configuration_seed() {
   local target_db="$1"
   local jsonfile="$2"
 
-  # Deployment configuration is mutable operator state. The only in-place
-  # seed migration adds the v3 field when absent and then advances the schema;
-  # an existing privacy contact is never replaced.
+  # Deployment configuration is mutable operator state. In-place seed
+  # migrations advance its schema without replacing operator-owned fields.
+  # V4 only changes the legacy Aurora theme when branding is demonstrably the
+  # untouched historical default; every operator-saved theme is preserved.
   migrate_deployment_configuration_v3 "${target_db}"
+  migrate_deployment_configuration_v4 "${target_db}"
 
   if deployment_configuration_exists "${target_db}"; then
     echo "Preserving existing ${target_db}.deploymentConfigurations singleton."

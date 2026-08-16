@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15 20:11 CEST
+Updated: 2026-08-16 14:43 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,17 +34,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-004 — Final Start and whole-tournament completion
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-004--final-start-and-whole-tournament-completion
-scenario: event-domain (carry the proven TOURNAMENT-003 Final membership forward; no reset)
-ledger_status: NOT RUN / FINAL START RECIPIENT FIX REPLAY PREPARED
-state: TOURNAMENT-001, TOURNAMENT-002 and TOURNAMENT-003 are PASS/CLOSED and must not be replayed. The first T004 Final Start attempt was a proven complete no-op because the retained materialized Final `startAt` was later than the request; the guarded window repair changed only Final's interval. The next Start persisted the correct domain (`Final A / tournament-started`, exact Casey+Riley, Nova excluded) but FAILed its recipient oracle because it sent the manual Start acknowledgement to Nova+Riley instead of Riley only. The Java producer now derives later-stage recipients from accepted group membership and excludes the manual actor; frontend-local has the same rule and the existing initial-stage fallback remains unchanged. Both live watchers completed successfully. At `2026-08-15T18:22:44.221Z`, the guarded recipient-retest action rewound only Final event/runtime to `RS / awaiting-prior-stage`, removed exactly the one defective outbox and two defective inbox rows, and preserved Qualifiers, the exact Casey+Riley Final group and all prior T003 evidence. Casey then reloaded and Final correctly rendered `Blocked`: its `RS` start instant has passed, which is precisely the boundary that exposes the manual `Start Stage` recovery action. The active event remains `QA TOURNAMENT-003` under checkpoint TOURNAMENT-004; no Final Start or terminal Finalize intent now exists.
-required_resume: Do not stage, reset, replay Qualifiers Finalize, rerun either repair or run tournament review. Casey performs Final -> Start Stage -> Start exactly once from the currently verified Blocked recovery boundary; then run `verify-tournament-final-start event-domain TOURNAMENT-004` before any Final close/finalize preparation.
-event: QA TOURNAMENT-003 (retained carry-forward event for TOURNAMENT-004)
+checkpoint: TOURNAMENT-ROOM-LIFE-001 — generated-room member leave isolation
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-room-life-001--generated-room-member-leave-isolation
+scenario: event-domain (independent fresh generated-room fixture not yet staged)
+ledger_status: NOT RUN
+state: TOURNAMENT-001 through TOURNAMENT-004 are PASS/CLOSED and must not be replayed. TOURNAMENT-004 closed at `2026-08-16 14:43 CEST` after its persisted terminal oracle, Casey/Riley outcome split, winner/non-winner avatar presentation and Nova exclusion all passed. Its terminal transaction is evidence only and is not the baseline for the generated-room leave test.
+required_resume: Inspect the normal participant-leave write contract and existing generated tournament-room fixture support. Add or select one guarded, replayable fresh-room baseline with exact parent membership, stage/group/standings/chat/counters and unchanged controls. Run its independent pre-action oracle before giving the user any Leave instruction. Do not mutate or replay TOURNAMENT-004.
+event: not staged
 actors:
-  active: Casey Final-stage starter/finalizer; Riley Final participant; Nova eliminated control; three launcher-owned demo browsers on /game
-  controls: preserve the exact Casey+Riley Final group and all three closed TOURNAMENT-003 notification lists
-next_actor: Casey opens the Final action menu from the verified Blocked card and performs Start Stage exactly once when instructed.
+  active: to be selected by the guarded fixture; maximum three launcher-owned demo browsers on /game
+  controls: one generated-room leaver, one retained room member, parent tournament and unrelated room/stage controls
+next_actor: Codex prepares and verifies the independent fresh-room pre-action fixture; the user performs no action yet.
 stop_phrase: megvan
 ```
 
@@ -110,18 +110,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-004 — Final Start`: the guarded T003->T004 carry-forward, the
-startable-window repair and the focused recipient-retest preparation are
-already complete and must not be repeated. Casey's reload already proved the
-correct **Blocked** recovery badge: Final is still `RS`, but its start instant
-has passed, so the manual Start action is now valid. Perform **Final -> Start
-Stage -> Start** exactly once. The immediate persisted oracle must keep the closed T003
-domain and notification baseline intact, change Final from `RS` to `A`, retain
-exactly Casey+Riley in Final, exclude Nova and write one translated,
-Final-colored `Final started / Final has started. Groups are ready.` intent for
-Riley only. Casey is excluded as the manual actor; Nova is excluded as the
-non-advancer. Do not close or finalize Final until this transaction and its
-three-window visual comparison are complete.
+`TOURNAMENT-ROOM-LIFE-001 — generated-room member leave isolation`: no manual
+action is issued yet. Codex must first prepare and independently verify a fresh,
+replayable generated-room baseline. The later single Leave must remove only the
+selected generated-room membership/card/chat and related member counters while
+preserving parent tournament membership, the other room member, stage/group
+state, standings and unrelated counters.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -182,6 +176,15 @@ read-only resume gate, preserve already-closed ledger evidence, discard only a
 guarded stale zero-snapshot checkpoint, and stage the next independent
 checkpoint directly when its definition provides the required state. Never
 make the user replay an already-PASS producer only to reconstruct reset data.
+
+Historical checkpoint evidence and a live replay fixture are different data
+classes. Keep closed-branch notifications in the saved oracle; do not reinsert
+them into the live inbox/outbox when a later checkpoint uses a new time window.
+Clean generated-child cleanup must also discover orphaned artifacts through
+their persisted parent identity (for example `payload.parentEventId` plus
+`eventScope`), not only through a child event that may already have disappeared.
+Otherwise polling can resurrect stale notifications after the visible child
+record has been removed.
 
 ### 1.1 Checkpoint granularity and new rows
 

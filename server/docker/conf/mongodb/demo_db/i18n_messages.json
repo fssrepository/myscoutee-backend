@@ -14496,6 +14496,30 @@
     "value": "{stageTitle} is complete. The tournament has been finalized. Winners: {winnerNames}."
   },
   {
+    "_id": "i18n-message-en-notification-event-tournament-won-title",
+    "key": "notification.event.tournament.won.title",
+    "lang": "en",
+    "value": "Won the tournament"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-won-message",
+    "key": "notification.event.tournament.won.message",
+    "lang": "en",
+    "value": "You won in {stageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-not-won-title",
+    "key": "notification.event.tournament.not-won.title",
+    "lang": "en",
+    "value": "Did not win the tournament"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-tournament-not-won-message",
+    "key": "notification.event.tournament.not-won.message",
+    "lang": "en",
+    "value": "You did not win in {stageTitle}."
+  },
+  {
     "_id": "i18n-message-en-notification-event-available-again-message",
     "key": "notification.event.available.again.message",
     "lang": "en",
@@ -33076,6 +33100,30 @@
     "key": "notification.event.tournament.finalized.message.winners",
     "lang": "hu",
     "value": "A(z) {stageTitle} szakasz lezárult. A teljes verseny véget ért. Győztesek: {winnerNames}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-won-title",
+    "key": "notification.event.tournament.won.title",
+    "lang": "hu",
+    "value": "Megnyerted a versenyt"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-won-message",
+    "key": "notification.event.tournament.won.message",
+    "lang": "hu",
+    "value": "Megnyerted a versenyt a(z) {stageTitle} szakaszban."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-not-won-title",
+    "key": "notification.event.tournament.not-won.title",
+    "lang": "hu",
+    "value": "Nem nyerted meg a versenyt"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-tournament-not-won-message",
+    "key": "notification.event.tournament.not-won.message",
+    "lang": "hu",
+    "value": "Nem nyerted meg a versenyt a(z) {stageTitle} szakaszban."
   },
   {
     "_id": "i18n-message-hu-notification-event-available-again-message",

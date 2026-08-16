@@ -139,6 +139,8 @@ public class ActivitiesEventsService {
     private static final String STAGE_ACTION_REOPEN = "reopen-scores";
     private static final String STAGE_ACTION_SUSPEND = "suspend-tournament";
     private static final String STAGE_ACTION_RESUME = "resume-tournament";
+    private static final String TOURNAMENT_SYSTEM_USER_ID = "scheduler";
+    private static final String TOURNAMENT_SYSTEM_NAME = "MyScoutee System";
     private static final String RUNTIME_STATUS_DELETED = "D";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
@@ -3666,37 +3668,23 @@ public class ActivitiesEventsService {
         }
         if (STAGE_STATUS_FINALIZED.equals(nextStatus)) {
             Map<String, String> finalizedPayload = new LinkedHashMap<>(stageNotificationPayload);
-            finalizedPayload.put(
-                    "notification_title_key",
-                    finalStage
-                            ? "notification.event.tournament.finalized.title"
-                            : "notification.event.stage.finalized.title");
-            finalizedPayload.put(
-                    "notification_message_key",
-                    finalStage
-                            ? tournamentFinalizedMessageKey(resultSummary)
-                            : "notification.event.stage.finalized.message");
-            finalizedPayload.put("notification_tone", finalStage ? "success" : "info");
-            if (finalStage) {
-                String winnerNames = resultSummary == null ? "" : resultSummary.winnerNamesLabel();
-                if (StringUtils.hasText(winnerNames)) {
-                    finalizedPayload.put("winnerNames", winnerNames);
-                }
-                finalizedPayload.put("tournamentComplete", "true");
-            }
+            finalizedPayload.put("notification_title_key", "notification.event.stage.finalized.title");
+            finalizedPayload.put("notification_message_key", "notification.event.stage.finalized.message");
+            finalizedPayload.put("notification_tone", "info");
             enqueueEventNotification(
-                    finalStage ? "event-tournament-finalized" : "event-stage-finalized",
+                    "event-stage-finalized",
                     event,
-                    "event-participants",
-                    eventAudienceUserIdsExcludingActor(event, actorUserId),
-                    finalStage ? "Tournament finalized" : stageTitle + " finalized",
-                    finalStage
-                            ? tournamentFinalizedBody(stageTitle, resultSummary)
-                            : stageTitle + " has been finalized.",
+                    "event-stage-participants",
+                    tournamentStageAudienceUserIdsExcludingActor(event, stage, actorUserId),
+                    stageTitle + " finalized",
+                    stageTitle + " has been finalized.",
                     action,
                     stageTitle,
                     actorUserId,
                     finalizedPayload);
+            if (finalStage) {
+                enqueueTournamentFinalOutcomeNotifications(event, stage, action, resultSummary);
+            }
             return;
         }
         if (STAGE_STATUS_SUSPENDED.equals(nextStatus)) {
@@ -3758,18 +3746,18 @@ public class ActivitiesEventsService {
         return payload;
     }
 
-    private List<String> eventAudienceUserIdsExcludingActor(
-            ActivityEvent event,
-            String actorUserId) {
-        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(eventAudienceUserIds(event));
-        recipientUserIds.remove(normalizeId(actorUserId));
-        return List.copyOf(recipientUserIds);
-    }
-
     private List<String> tournamentStageAudienceUserIdsExcludingActor(
             ActivityEvent event,
             SubEventItem stage,
             String actorUserId) {
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(tournamentStageAudienceUserIds(event, stage));
+        recipientUserIds.remove(normalizeId(actorUserId));
+        return List.copyOf(recipientUserIds);
+    }
+
+    private List<String> tournamentStageAudienceUserIds(
+            ActivityEvent event,
+            SubEventItem stage) {
         String stageId = normalizeId(stage == null ? null : stage.id());
         LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>();
         if (StringUtils.hasText(stageId)) {
@@ -3785,8 +3773,62 @@ public class ActivitiesEventsService {
         if (recipientUserIds.isEmpty()) {
             recipientUserIds.addAll(eventAudienceUserIds(event));
         }
-        recipientUserIds.remove(normalizeId(actorUserId));
         return List.copyOf(recipientUserIds);
+    }
+
+    private void enqueueTournamentFinalOutcomeNotifications(
+            ActivityEvent event,
+            SubEventItem stage,
+            String action,
+            TournamentResultSummary resultSummary) {
+        LinkedHashSet<String> finalistUserIds = new LinkedHashSet<>(tournamentStageAudienceUserIds(event, stage));
+        LinkedHashSet<String> winnerUserIds = new LinkedHashSet<>(
+                resultSummary == null ? List.of() : resultSummary.normalizedWinnerUserIds());
+        winnerUserIds.retainAll(finalistUserIds);
+        if (winnerUserIds.isEmpty()) {
+            return;
+        }
+        LinkedHashSet<String> nonWinnerUserIds = new LinkedHashSet<>(finalistUserIds);
+        nonWinnerUserIds.removeAll(winnerUserIds);
+        String stageTitle = stageTitle(stage);
+        Map<String, String> commonPayload = new LinkedHashMap<>(tournamentStageNotificationPayload(event, stage));
+        commonPayload.put("eventScope", "tournament-outcome");
+        commonPayload.put("senderName", TOURNAMENT_SYSTEM_NAME);
+        commonPayload.put("notification_avatar_tone", "stage");
+        commonPayload.put("notification_avatar_icon", "emoji_events");
+        commonPayload.put("tournamentComplete", "true");
+
+        Map<String, String> winnerPayload = new LinkedHashMap<>(commonPayload);
+        winnerPayload.put("notification_title_key", "notification.event.tournament.won.title");
+        winnerPayload.put("notification_message_key", "notification.event.tournament.won.message");
+        winnerPayload.put("notification_tone", "success");
+        enqueueEventNotification(
+                "event-tournament-won",
+                event,
+                "event-tournament-winners",
+                List.copyOf(winnerUserIds),
+                "Won the tournament",
+                "You won in " + stageTitle + ".",
+                action,
+                stageTitle,
+                TOURNAMENT_SYSTEM_USER_ID,
+                winnerPayload);
+
+        Map<String, String> nonWinnerPayload = new LinkedHashMap<>(commonPayload);
+        nonWinnerPayload.put("notification_title_key", "notification.event.tournament.not-won.title");
+        nonWinnerPayload.put("notification_message_key", "notification.event.tournament.not-won.message");
+        nonWinnerPayload.put("notification_tone", "warning");
+        enqueueEventNotification(
+                "event-tournament-not-won",
+                event,
+                "event-tournament-non-winners",
+                List.copyOf(nonWinnerUserIds),
+                "Did not win the tournament",
+                "You did not win in " + stageTitle + ".",
+                action,
+                stageTitle,
+                TOURNAMENT_SYSTEM_USER_ID,
+                nonWinnerPayload);
     }
 
     private TournamentResultSummary resolveTournamentResultSummary(
@@ -3803,14 +3845,19 @@ public class ActivitiesEventsService {
         }
         try {
             EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, stageId);
-            return new TournamentResultSummary(resolveWinnerNames(state));
+            LinkedHashSet<String> winnerUserIds = resolveAdvancingMemberIds(state);
+            return new TournamentResultSummary(
+                    List.copyOf(winnerUserIds),
+                    resolveWinnerNames(state, winnerUserIds));
         } catch (RuntimeException exception) {
             LOGGER.debug("Unable to resolve final tournament result summary for event {} stage {}.", eventId, stageId, exception);
             return TournamentResultSummary.empty();
         }
     }
 
-    private List<String> resolveWinnerNames(EventLeaderboardStateDto state) {
+    private List<String> resolveWinnerNames(
+            EventLeaderboardStateDto state,
+            Collection<String> winnerUserIds) {
         if (state == null || state.groups() == null || state.groups().isEmpty()) {
             return List.of();
         }
@@ -3821,7 +3868,7 @@ public class ActivitiesEventsService {
             }
             collectMemberNames(namesByMemberId, group);
         }
-        return resolveAdvancingMemberIds(state).stream()
+        return normalizeIds(winnerUserIds).stream()
                 .map(memberId -> firstNonBlank(namesByMemberId.get(memberId), memberId))
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -3903,28 +3950,6 @@ public class ActivitiesEventsService {
                 }
             }
         }
-    }
-
-    private String tournamentFinalizedBody(String stageTitle, TournamentResultSummary summary) {
-        String normalizedStageTitle = firstNonBlank(stageTitle, "Final");
-        String winnerSummary = summary == null ? "" : summary.shortWinnerSummary();
-        if (!StringUtils.hasText(winnerSummary)) {
-            return normalizedStageTitle
-                    + " is complete. The tournament has been finalized. Open the event results to review the standings.";
-        }
-        return normalizedStageTitle
-                + " is complete. The tournament has been finalized. " + winnerSummary + ".";
-    }
-
-    private String tournamentFinalizedMessageKey(TournamentResultSummary summary) {
-        int winnerCount = summary == null ? 0 : summary.winnerCount();
-        if (winnerCount == 1) {
-            return "notification.event.tournament.finalized.message.winner";
-        }
-        if (winnerCount > 1) {
-            return "notification.event.tournament.finalized.message.winners";
-        }
-        return "notification.event.tournament.finalized.message";
     }
 
     private String tournamentFinalizedChatText(TournamentResultSummary summary) {
@@ -7586,9 +7611,19 @@ public class ActivitiesEventsService {
             String reason) {
     }
 
-    private record TournamentResultSummary(List<String> winnerNames) {
+    private record TournamentResultSummary(List<String> winnerUserIds, List<String> winnerNames) {
         private static TournamentResultSummary empty() {
-            return new TournamentResultSummary(List.of());
+            return new TournamentResultSummary(List.of(), List.of());
+        }
+
+        private List<String> normalizedWinnerUserIds() {
+            return winnerUserIds == null
+                    ? List.of()
+                    : winnerUserIds.stream()
+                            .map(value -> value == null ? "" : value.trim())
+                            .filter(StringUtils::hasText)
+                            .distinct()
+                            .toList();
         }
 
         private String shortWinnerSummary() {
@@ -7601,14 +7636,6 @@ public class ActivitiesEventsService {
                 return prefix + String.join(", ", names);
             }
             return prefix + String.join(", ", names.subList(0, 3)) + " and " + (names.size() - 3) + " more";
-        }
-
-        private int winnerCount() {
-            return normalizedWinnerNames().size();
-        }
-
-        private String winnerNamesLabel() {
-            return String.join(", ", normalizedWinnerNames());
         }
 
         private List<String> normalizedWinnerNames() {

@@ -23,16 +23,16 @@ remaining qualification work is completed.
 The current qualification ledger is available as an
 [XLSX QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx).
 
-As of 2026-08-15:
+As of 2026-08-16:
 
-- **Core:** 56 passed, 79 remaining (135 total)
+- **Core:** 57 passed, 78 remaining (135 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 191 cases. `TOURNAMENT-002` and `TOURNAMENT-003`
-are PASS/CLOSED after exact grouping, manual Finalize, separate automatic
-advanced/not-advanced outcomes, unchanged worker replay and three-browser
-notification comparison. `TOURNAMENT-004` retains the exact Casey+Riley Final
-membership for the separate Final Start and whole-tournament completion.
+The complete matrix contains 191 cases. `TOURNAMENT-002` through
+`TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
+advancement, separate Final Start/room readiness, whole-tournament completion,
+personal winner/non-winner results and three-browser recipient verification.
+The next Core checkpoint is the independent generated-room leave lifecycle.
 
 ### Official manuals
 

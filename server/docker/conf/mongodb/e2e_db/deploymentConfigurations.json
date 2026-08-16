@@ -2,7 +2,7 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": 0,
