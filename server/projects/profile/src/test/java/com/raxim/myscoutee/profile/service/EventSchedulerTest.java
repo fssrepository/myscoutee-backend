@@ -644,6 +644,8 @@ class EventSchedulerTest {
             assertThat(room.getOwnerUserId()).isNull();
             assertThat(room.getCreatorUserId()).isNull();
             assertThat(room.getOrganizerUserId()).isEqualTo("casey");
+            assertThat(room.getParentEventId()).isEqualTo("event-stage-start");
+            assertThat(room.getGenerated()).isTrue();
             assertThat(room.getAvatar())
                     .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
             assertThat(room.getImageUrl())

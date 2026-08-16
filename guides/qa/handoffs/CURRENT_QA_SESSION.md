@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 14:43 CEST
+Updated: 2026-08-16 15:56 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -34,19 +34,25 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-ROOM-LIFE-001 — generated-room member leave isolation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-room-life-001--generated-room-member-leave-isolation
-scenario: event-domain (independent fresh generated-room fixture not yet staged)
+checkpoint: TOURNAMENT-ROOM-LIFE-001 — nested tournament pending aggregation
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-room-life-001--nested-tournament-pending-aggregation
+scenario: event-domain (`phase=tournament-room-life-baseline-verified`)
 ledger_status: NOT RUN
-state: TOURNAMENT-001 through TOURNAMENT-004 are PASS/CLOSED and must not be replayed. TOURNAMENT-004 closed at `2026-08-16 14:43 CEST` after its persisted terminal oracle, Casey/Riley outcome split, winner/non-winner avatar presentation and Nova exclusion all passed. Its terminal transaction is evidence only and is not the baseline for the generated-room leave test.
-required_resume: Inspect the normal participant-leave write contract and existing generated tournament-room fixture support. Add or select one guarded, replayable fresh-room baseline with exact parent membership, stage/group/standings/chat/counters and unchanged controls. Run its independent pre-action oracle before giving the user any Leave instruction. Do not mutate or replay TOURNAMENT-004.
-event: not staged
+state: TOURNAMENT-001 through TOURNAMENT-004 remain PASS/CLOSED and were not replayed. The invalid first TOURNAMENT-ROOM-LIFE-001 fixture was reset without a modifying UI action. The corrected fixture staged at `2026-08-16T13:53:23.200Z`; independent status plus `verify-tournament-room-life-baseline` proved parent activity=1, Qualifiers groupsPending=1, Group A event-owner pending=1, generated rooms parent-linked, accepted-only room chats, zero notifications/outbox/recompute and unchanged controls. The backend and frontend-local hot-deploy completed; no resolution action has occurred.
+required_resume: Launch or replace exactly the three configured browsers. First verify that no Tournament Group room appears as a root Activities event card. In Casey's My Events, find only the parent `QA TOURNAMENT-ROOM-LIFE-001`, then follow its counter without mutating: parent card three-dot counter → View Event counter → Qualifiers stage three-dot/Groups counters → Group A three-dot/Members counters → Farkas Anna pending row. Stop before Delete invitation. Do not mutate or replay TOURNAMENT-004.
+event: parent `QA TOURNAMENT-ROOM-LIFE-001`; nested generated rooms `Tournament Group R1` and `Tournament Group R2`
 actors:
-  active: to be selected by the guarded fixture; maximum three launcher-owned demo browsers on /game
-  controls: one generated-room leaver, one retained room member, parent tournament and unrelated room/stage controls
-next_actor: Codex prepares and verifies the independent fresh-room pre-action fixture; the user performs no action yet.
+  active: Casey `650000000000000000000061` parent Admin and Group A resolver; Nova `650000000000000000000062` accepted Group A control; Riley `650000000000000000000063` accepted Group B control
+  pending_target: Farkas Anna `bf057de7c586eede7e84bdc7` (no fourth browser)
+  controls: accepted parent/group membership, both room chats, Group B, standings and active Qualifiers runtime
+next_actor: Codex launches the three managed browsers; the user performs only the nested visual read and no Delete invitation yet.
 stop_phrase: megvan
 ```
+
+Separate captured follow-up: `TOURNAMENT-CARD-001` will persist the current
+stage summary on the parent event wire model and render it on a compact second
+card row. It is not part of the active pending-counter checkpoint and must not
+cause a replay of already-closed tournament lifecycle/notification branches.
 
 ### Efficient resume gate
 
@@ -110,12 +116,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-ROOM-LIFE-001 — generated-room member leave isolation`: no manual
-action is issued yet. Codex must first prepare and independently verify a fresh,
-replayable generated-room baseline. The later single Leave must remove only the
-selected generated-room membership/card/chat and related member counters while
-preserving parent tournament membership, the other room member, stage/group
-state, standings and unrelated counters.
+`TOURNAMENT-ROOM-LIFE-001 — nested tournament pending aggregation`: corrected
+fixture and strict persisted baseline PASS; no manual resolution action yet.
+First prove the root-list and complete parent → stage → group visual counter
+chain. The later single action is Casey deleting Farkas Anna's Group A pending
+invitation only after that chain is observed.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -637,6 +642,17 @@ or projection. Add the missed collection to the fixture selectors, reset
 cleanup and status oracle. For an already-active legacy state, use one guarded,
 versioned repair action that proves the untouched boundary and records a reset
 snapshot; never issue an ad-hoc Mongo update or silently restage over it.
+
+A fixture must preserve the production entity hierarchy and the causal UI
+route being tested. Do not turn a nested stage, tournament group/room or slot
+into a root Activity entity merely to isolate a later action. Before staging,
+trace the existing aggregation from the parent counter through every nested
+menu to the terminal row, and seed one pending unit at its real write owner.
+Member-scoped child chat/notification records may remain independent while the
+child itself stays hidden from root event lists. If the first visual read
+reveals the wrong hierarchy, classify it as **NOT EXECUTED / invalid fixture**,
+reset it guard-first and redesign that same checkpoint; do not convert the
+accidental UI into a new workflow test.
 
 Use the canonical harness against the already-running `mongodb` container:
 

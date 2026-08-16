@@ -2286,12 +2286,13 @@ public class EventScheduler {
         room.setPolicies(List.of());
         room.setSlotsEnabled(false);
         room.setSlotTemplates(List.of());
-        // A random room is a canonical top-level event. Its scheduler origin is
-        // retained in the sync key and notification payload; parentEventId would
-        // make read models classify it as a generated slot occurrence.
-        room.setParentEventId(null);
+        // Affinity rooms are standalone events. Tournament rooms are generated
+        // children of the tournament and must stay inside its stage/group UI.
+        room.setParentEventId(tournamentRoomPresentation
+                ? normalizeId(sourceEvent == null ? null : sourceEvent.getSourceId())
+                : null);
         room.setSlotTemplateId(null);
-        room.setGenerated(false);
+        room.setGenerated(tournamentRoomPresentation);
         room.setEventType(tournamentRoomPresentation
                 ? TOURNAMENT_ROOM_EVENT_TYPE
                 : RANDOM_ROOM_EVENT_TYPE);

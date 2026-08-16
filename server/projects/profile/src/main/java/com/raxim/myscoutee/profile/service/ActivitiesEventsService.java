@@ -4851,7 +4851,9 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> queryUserRecords(ViewerContext viewer) {
-        List<ActivityEvent> allRecords = allEventDocuments(viewer);
+        List<ActivityEvent> allRecords = allEventDocuments(viewer).stream()
+                .filter(this::isRootActivityRecord)
+                .toList();
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : computePreferredEventRecords(allRecords)) {
             preferredBySourceId.put(normalizeId(record.getSourceId()), record);
@@ -5459,7 +5461,7 @@ public class ActivitiesEventsService {
         if (record == null) {
             return false;
         }
-        if (isGeneratedSlotRecord(record)) {
+        if (!isRootActivityRecord(record)) {
             return false;
         }
         if (Boolean.TRUE.equals(record.getIsTrashed())) {
@@ -7312,6 +7314,12 @@ public class ActivitiesEventsService {
                 && (Boolean.TRUE.equals(record.getGenerated())
                         || "slot".equalsIgnoreCase(safeText(record.getEventType()))
                         || StringUtils.hasText(normalizeId(record.getParentEventId())));
+    }
+
+    private boolean isRootActivityRecord(ActivityEvent record) {
+        return record != null
+                && !isGeneratedSlotRecord(record)
+                && !"tournament-room".equalsIgnoreCase(safeText(record.getEventType()));
     }
 
     private boolean isSlotParentRecord(ActivityEvent record) {

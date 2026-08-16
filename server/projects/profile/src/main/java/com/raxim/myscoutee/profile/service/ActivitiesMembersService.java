@@ -1175,6 +1175,7 @@ public class ActivitiesMembersService {
                             ownerId,
                             targetUserId);
                 }
+                syncTournamentRoomParentCounter(ownerId);
                 return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             if (ACTION_REMOVE.equals(action)) {
@@ -1204,6 +1205,7 @@ public class ActivitiesMembersService {
                 postMemberActionChatMessage(ownerId, action, next);
             }
             userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
+            syncTournamentRoomParentCounter(ownerId);
         } else if (OWNER_TYPE_SUB_EVENT.equals(ownerType)) {
             SubEventCounterScope scope = subEventCounterScope(ownerId);
             if (scope != null) {
@@ -1216,6 +1218,11 @@ public class ActivitiesMembersService {
         }
 
         return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+    }
+
+    private void syncTournamentRoomParentCounter(String roomEventId) {
+        tournamentGroupCounterService.syncParentForTournamentRoom(
+                findPreferredEventRecord(roomEventId));
     }
 
     public ActivityMemberActionResponseDto applyActionWithContext(ActivityMemberActionRequestDto request) {

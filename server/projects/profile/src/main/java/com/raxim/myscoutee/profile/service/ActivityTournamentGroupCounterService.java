@@ -1,15 +1,18 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -20,8 +23,10 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeReposi
 @Service
 public class ActivityTournamentGroupCounterService {
     private static final String OWNER_TYPE_GROUP = "group";
+    private static final String OWNER_TYPE_EVENT = "event";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "D";
+    private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
 
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
@@ -48,11 +53,20 @@ public class ActivityTournamentGroupCounterService {
         String quotedSubEventId = Pattern.quote(normalizedSubEventId);
         String groupOwnerPattern = "^" + quotedParentEventId
                 + ":(?:" + quotedSubEventId + ":|slot:.*:" + quotedSubEventId + ":)";
-        int membersPending = Math.toIntExact(activityMembersRepository
-                .countByOwnerPatternAndStatus(
+        String tournamentRoomOwnerPattern = "^random-room:"
+                + quotedParentEventId + ":" + quotedSubEventId + ":";
+        Set<String> pendingMemberUserIds = new LinkedHashSet<>();
+        collectPendingUserIds(pendingMemberUserIds, activityMembersRepository
+                .findByOwnerPatternAndStatus(
                         OWNER_TYPE_GROUP,
                         groupOwnerPattern,
                         MEMBER_STATUS_PENDING));
+        collectPendingUserIds(pendingMemberUserIds, activityMembersRepository
+                .findByOwnerPatternAndStatus(
+                        OWNER_TYPE_EVENT,
+                        tournamentRoomOwnerPattern,
+                        MEMBER_STATUS_PENDING));
+        int membersPending = pendingMemberUserIds.size();
         String runtimeOwnerPattern = "^" + quotedParentEventId + "(?:$|:slot:)";
         int resourcesPending = activitySubEventStageRuntimeRepository
                 .findByOwnerPatternAndSubEventIdAndStatusNot(
@@ -92,6 +106,41 @@ public class ActivityTournamentGroupCounterService {
         }
         if (!changed.isEmpty()) {
             activityEventsRepository.saveAll(changed);
+        }
+    }
+
+    public void syncParentForTournamentRoom(ActivityEvent room) {
+        if (room == null
+                || !TOURNAMENT_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()))
+                || !StringUtils.hasText(normalizeId(room.getParentEventId()))) {
+            return;
+        }
+        String parentEventId = parentEventId(normalizeId(room.getParentEventId()));
+        String roomSourceId = normalizeId(room.getSourceId());
+        if (!StringUtils.hasText(parentEventId) || !StringUtils.hasText(roomSourceId)) {
+            return;
+        }
+        String roomPrefix = "random-room:" + normalizeId(room.getParentEventId()) + ":";
+        activityEventsRepository.findBySourceId(parentEventId).stream()
+                .filter(Objects::nonNull)
+                .flatMap(event -> event.getSubEvents() == null
+                        ? List.<SubEventItem>of().stream()
+                        : event.getSubEvents().stream())
+                .filter(Objects::nonNull)
+                .map(SubEventItem::id)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(subEventId -> roomSourceId.startsWith(roomPrefix + subEventId + ":"))
+                .max((left, right) -> Integer.compare(left.length(), right.length()))
+                .ifPresent(subEventId -> syncParent(parentEventId, subEventId));
+    }
+
+    private void collectPendingUserIds(Set<String> target, List<ActivityMember> members) {
+        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                target.add(userId);
+            }
         }
     }
 

@@ -4836,20 +4836,59 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   Final assignment, Final Start and whole-tournament completion are four
   causally ordered producer boundaries, not one projected UI transition.
 
-### `TOURNAMENT-ROOM-LIFE-001` — generated-room member leave isolation
+### `TOURNAMENT-ROOM-LIFE-001` — nested tournament pending aggregation
 
-- From a freshly materialized tournament group, let one accepted room member
-  select **Leave event** exactly once on the generated tournament-room card.
-- The generated-room membership/card/chat and the member's related Activity
-  counters must follow the normal participant-leave contract exactly once.
-  The parent tournament membership and role, parent event, other group members,
-  other generated room, stage status and unrelated counters must remain intact.
-- Group capacity/member UI and the persisted tournament runtime must agree on
-  the withdrawal. Leaving a room must not silently leave the user displayed in
-  standings/chat, promote another member, replay grouping or advance/finalize
-  the stage.
-- This is a separate lifecycle producer test discovered during TOURNAMENT-002;
-  merely displaying the menu is not execution evidence.
+- **NOT RUN.** The first fixture staged at `2026-08-16T13:10:53.035Z` was
+  invalid for this domain rule: it exposed materialized tournament rooms as
+  independent root Activity event cards and therefore suggested an unrelated
+  Leave test. No modifying UI action was executed. The guarded reset at
+  `2026-08-16T13:31:51.209Z` removed only that fixture and preserved the closed
+  `TOURNAMENT-004` evidence.
+- The corrected fixture staged at `2026-08-16T13:53:23.200Z`. Independent
+  `status` and `verify-tournament-room-life-baseline` reads proved the exact
+  pre-action boundary: parent `activity=1`, Qualifiers `groupsPending=1`, one
+  Group A event-owner pending invitation, two parent-linked generated rooms,
+  accepted-only room chats, zero notification/outbox/recompute side effects
+  and unchanged Group B/runtime controls. No manual resolution action has yet
+  occurred.
+- Stage one parent tournament with an active Qualifiers stage, two generated
+  groups/rooms and exactly one pending invitation in Group A. The generated
+  rooms remain persisted for their member-scoped chats and notifications, but
+  must not appear as standalone Activities event cards or independent Leave
+  targets.
+- Verify the same pending unit through the existing aggregation chain:
+  parent tournament card three-dot counter → **View Event** counter →
+  Qualifiers stage three-dot/**Groups** counters → Group A three-dot/**Members**
+  counters → the exact pending member row. Group B and all room chats are
+  unchanged controls.
+- Casey deletes the one Group A pending invitation exactly once. Without
+  reload, every counter in that chain must collapse from `1` to `0`; the
+  parent/stage persisted counters, room pending membership and Members result
+  must agree. Accepted parent/group membership, standings, chats,
+  notifications, Group B, stage status and unrelated counters remain intact.
+- This checkpoint verifies the existing nested counter model, not a new
+  counter projection. A nested lifecycle fixture must preserve the production
+  parent/stage/group shape instead of fabricating a root entity merely to make
+  one action easier to isolate.
+
+### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
+
+- Materialize a compact current-stage wire value on the parent tournament
+  event whenever the lifecycle starts, advances or completes a stage. The
+  authoritative write must keep stage ID, localized/display name and lifecycle
+  state consistent with the stage runtime; the event-list query must not
+  reconstruct it from nested runtime records.
+- Render the wire value on the root parent event card as a separate compact
+  row below the event name, for example `Current stage: Qualifiers`. Do not
+  place generated tournament-room cards into the root list and do not perform
+  a nested read merely to paint this row. Frontend-local uses the same stored
+  parent-event shape.
+- Verify in-place lifecycle updates and reload persistence for Start, advance,
+  Final and tournament completion. Long event/stage names must remain readable
+  on mobile without turning the card header into an ambiguous combined title.
+- This is a separate follow-up checkpoint. It must not modify or invalidate the
+  `TOURNAMENT-ROOM-LIFE-001` pending-counter replay or the closed tournament
+  lifecycle checkpoints.
 
 ## Asset cases
 
@@ -4928,7 +4967,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 ## Coverage-expansion checkpoints appended after the original 106-case spine
 
 The 106 testcases that existed at the start of the 2026-08-13 coverage audit
-remain the immutable workflow spine. The following 82 cases are new rows, not
+remain the immutable workflow spine. The following 83 cases are new rows, not
 splits or rewrites of that spine. They are deliberately grouped into resumable
 checkpoint sequences, while every row still owns one bounded producer action
 and one decisive persisted oracle. Runtime execution must use at most three

@@ -27,6 +27,18 @@
   const EVENT_IDS = [EVENT_ID, ISOLATION_EVENT_ID, LOCKED_EVENT_ID, TRASHED_EVENT_ID, PENDING_EVENT_ID];
   const AUTO_INVITER_RULE = "event-auto-inviter";
   const TOURNAMENT_REVIEW_RULE = "event-tournament-review";
+  const TOURNAMENT_ROOM_LIFE_CHECKPOINT = "TOURNAMENT-ROOM-LIFE-001";
+  const TOURNAMENT_ROOM_LIFE_STATE_ID = `${PREFIX}:tournament-room-life:state`;
+  const TOURNAMENT_ROOM_LIFE_PREFIX = `${PREFIX}:tournament-room-life`;
+  const TOURNAMENT_ROOM_LIFE_EVENT_ID = `${TOURNAMENT_ROOM_LIFE_PREFIX}:event`;
+  const TOURNAMENT_ROOM_LIFE_QUALIFIER_ID = "qualifiers";
+  const TOURNAMENT_ROOM_LIFE_FINAL_ID = "final";
+  const TOURNAMENT_ROOM_LIFE_GROUP_A = "qualifiers:group:1";
+  const TOURNAMENT_ROOM_LIFE_GROUP_B = "qualifiers:group:2";
+  const TOURNAMENT_ROOM_LIFE_ROOM_A = `random-room:${TOURNAMENT_ROOM_LIFE_EVENT_ID}:${TOURNAMENT_ROOM_LIFE_QUALIFIER_ID}:${TOURNAMENT_ROOM_LIFE_GROUP_A}`;
+  const TOURNAMENT_ROOM_LIFE_ROOM_B = `random-room:${TOURNAMENT_ROOM_LIFE_EVENT_ID}:${TOURNAMENT_ROOM_LIFE_QUALIFIER_ID}:${TOURNAMENT_ROOM_LIFE_GROUP_B}`;
+  const TOURNAMENT_ROOM_LIFE_PENDING_USER_ID = "bf057de7c586eede7e84bdc7";
+  const TOURNAMENT_ROOM_IMAGE_URL = "/media/public?key=images/system/tournament-room/v1/large.webp";
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
@@ -6210,6 +6222,765 @@
     });
   }
 
+  function tournamentRoomLifeSelectors() {
+    const eventIds = [
+      TOURNAMENT_ROOM_LIFE_EVENT_ID,
+      TOURNAMENT_ROOM_LIFE_ROOM_A,
+      TOURNAMENT_ROOM_LIFE_ROOM_B
+    ];
+    return [
+      { collection: "events", selector: { $or: [
+        { _id: { $in: eventIds } },
+        { sourceId: { $in: eventIds } },
+        { syncKey: { $regex: `^${TOURNAMENT_ROOM_LIFE_PREFIX}` } }
+      ] } },
+      { collection: "activityMembers", selector: { ownerId: { $in: eventIds } } },
+      { collection: "activitySubEventStageRuntime", selector: { ownerId: TOURNAMENT_ROOM_LIFE_EVENT_ID } },
+      { collection: "activitySubEventGroups", selector: { ownerId: { $regex: `^${TOURNAMENT_ROOM_LIFE_PREFIX}` } } },
+      { collection: "eventLeaderboardEntries", selector: { eventId: TOURNAMENT_ROOM_LIFE_EVENT_ID } },
+      { collection: "chats", selector: { $or: [
+        { eventId: { $in: eventIds } },
+        { ownerId: { $in: eventIds } }
+      ] } },
+      { collection: "chatMessages", selector: { chatId: { $in: eventIds } } },
+      { collection: "notificationOutbox", selector: { $or: [
+        { entityId: { $in: eventIds } },
+        { "payload.eventId": { $in: eventIds } },
+        { "payload.chatId": { $in: eventIds } },
+        { "payload.parentEventId": TOURNAMENT_ROOM_LIFE_EVENT_ID }
+      ] } },
+      { collection: "userNotifications", selector: { $or: [
+        { sourceId: { $in: eventIds } },
+        { "payload.eventId": { $in: eventIds } },
+        { "payload.chatId": { $in: eventIds } },
+        { "payload.parentEventId": TOURNAMENT_ROOM_LIFE_EVENT_ID }
+      ] } },
+      { collection: "affinityRecomputeTasks", selector: { targetId: { $in: eventIds } } },
+      { collection: "scheduledMessageTasks", selector: { eventId: { $in: eventIds } } },
+      { collection: "schedulerPlanMarkers", selector: { ownerId: { $regex: `^${TOURNAMENT_ROOM_LIFE_PREFIX}` } } }
+    ];
+  }
+
+  function tournamentRoomLifeCounterSummary(userId) {
+    const user = Q.ensureUser(userId, "tournament-room-life counter user");
+    return {
+      userId,
+      chats: nestedNumber(user, "activities.chats"),
+      chatAll: nestedNumber(user, "activities.chat.all"),
+      chatEvent: nestedNumber(user, "activities.chat.event"),
+      events: nestedNumber(user, "activities.events"),
+      hosting: nestedNumber(user, "activities.hosting"),
+      eventAll: nestedNumber(user, "activities.event.all"),
+      eventActive: nestedNumber(user, "activities.event.active"),
+      eventPending: nestedNumber(user, "activities.event.pending"),
+      eventInvitations: nestedNumber(user, "activities.event.invitations"),
+      eventHosting: nestedNumber(user, "activities.event.hosting"),
+      eventDrafts: nestedNumber(user, "activities.event.drafts"),
+      eventTrash: nestedNumber(user, "activities.event.trash")
+    };
+  }
+
+  function tournamentRoomLifeCounterWithDelta(baseline, delta) {
+    const result = { ...baseline };
+    for (const [key, value] of Object.entries(delta || {})) {
+      result[key] = Math.max(0, Number(result[key] || 0) + Number(value || 0));
+    }
+    return result;
+  }
+
+  function persistTournamentRoomLifeCounters(expected) {
+    for (const summary of expected) {
+      const result = Q.collection("users").updateOne({
+        $or: [{ _id: summary.userId }, { userId: summary.userId }]
+      }, { $set: {
+        "activities.chats": summary.chats,
+        "activities.chat.all": summary.chatAll,
+        "activities.chat.event": summary.chatEvent,
+        "activities.events": summary.events,
+        "activities.hosting": summary.hosting,
+        "activities.event.all": summary.eventAll,
+        "activities.event.active": summary.eventActive,
+        "activities.event.pending": summary.eventPending,
+        "activities.event.invitations": summary.eventInvitations,
+        "activities.event.hosting": summary.eventHosting,
+        "activities.event.drafts": summary.eventDrafts,
+        "activities.event.trash": summary.eventTrash
+      } });
+      if (result.matchedCount !== 1) {
+        Q.fail(`tournament-room-life counter user '${summary.userId}' disappeared.`);
+      }
+    }
+  }
+
+  function tournamentRoomLifeEventDocument(id, title, acceptedUserIds, stagedAtIso, options = {}) {
+    return {
+      _id: id,
+      sourceId: id,
+      syncKey: options.syncKey || id,
+      ownerUserId: options.ownerUserId == null ? null : options.ownerUserId,
+      status: "A",
+      published: true,
+      admins: options.admins || [],
+      avatar: options.avatar || "",
+      title,
+      subtitle: options.subtitle || "Manual tournament-room lifecycle QA checkpoint",
+      timeframe: "",
+      inviter: null,
+      unread: 0,
+      activity: Number(options.activity || 0),
+      isExpired: false,
+      creatorUserId: options.creatorUserId == null ? null : options.creatorUserId,
+      organizerUserId: options.organizerUserId == null ? null : options.organizerUserId,
+      creatorName: options.creatorName || "",
+      creatorInitials: options.creatorInitials || "",
+      creatorGender: options.creatorGender || "",
+      creatorCity: options.creatorCity || "Austin",
+      visibility: options.visibility || "public",
+      blindMode: "Open Event",
+      startAtIso: options.startAtIso,
+      endAtIso: options.endAtIso,
+      distanceKm: 0,
+      imageUrl: options.imageUrl || "",
+      location: "",
+      capacityMin: options.capacityMin || 1,
+      capacityMax: options.capacityMax || 8,
+      capacityTotal: options.capacityMax || 8,
+      full: false,
+      autoInviter: false,
+      frequency: "One-time",
+      ticketing: false,
+      approvalRequired: false,
+      policiesEnabled: false,
+      policies: [],
+      slotsEnabled: false,
+      slotTemplates: [],
+      parentEventId: options.parentEventId || null,
+      slotTemplateId: null,
+      generated: options.generated === true,
+      eventType: options.eventType || "event",
+      upcomingSlots: [],
+      acceptedMembers: acceptedUserIds.length,
+      pendingMembers: (options.pendingUserIds || []).length,
+      acceptedMemberUserIds: [...acceptedUserIds],
+      pendingMemberUserIds: [...(options.pendingUserIds || [])],
+      invitedMemberUserIds: [...(options.invitedUserIds || [])],
+      pendingRequestMemberUserIds: [],
+      topics: options.topics || ["#Tournament", "#Competition"],
+      subEventsEnabled: options.subEventsEnabled === true,
+      subEventDefinitions: options.subEventDefinitions || [],
+      subEvents: options.subEvents || [],
+      mode: "Tournament",
+      rating: 0,
+      boost: 0,
+      affinity: 0,
+      createdDate: stagedAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: stagedAtIso,
+      updatedUser: Q.ACTOR
+    };
+  }
+
+  function tournamentRoomLifeMember(ownerId, userId, role, stagedAtIso, options = {}) {
+    return {
+      _id: `${TOURNAMENT_ROOM_LIFE_PREFIX}:member:${ownerId === TOURNAMENT_ROOM_LIFE_EVENT_ID ? "parent" : ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A ? "room-a" : "room-b"}:${userId}`,
+      syncKey: `${TOURNAMENT_ROOM_LIFE_PREFIX}:member:${ownerId}:${userId}`,
+      ownerType: "event",
+      ownerId,
+      userId,
+      role,
+      status: options.status || "accepted",
+      pendingSource: options.pendingSource || null,
+      requestKind: options.requestKind || null,
+      invitedByUserId: options.invitedByUserId || null,
+      actionAtIso: stagedAtIso,
+      createdDate: stagedAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: stagedAtIso,
+      updatedUser: Q.ACTOR
+    };
+  }
+
+  function tournamentRoomLifeChat(roomId, title, memberIds, ownerUserId, welcome, stagedAtIso) {
+    return {
+      _id: `${TOURNAMENT_ROOM_LIFE_PREFIX}:chat:${roomId === TOURNAMENT_ROOM_LIFE_ROOM_A ? "room-a" : "room-b"}:${ownerUserId}`,
+      id: roomId,
+      ownerUserId,
+      avatar: TOURNAMENT_ROOM_IMAGE_URL,
+      title,
+      lastMessage: welcome,
+      lastSenderId: null,
+      memberIds: [...memberIds].sort(),
+      unread: 1,
+      dateIso: stagedAtIso,
+      channelType: "mainEvent",
+      ownerId: roomId,
+      eventId: roomId,
+      ownerStatus: "A",
+      revision: 1,
+      subEventId: null,
+      groupId: null
+    };
+  }
+
+  function tournamentRoomLifeWelcome(roomId, text, stagedAtIso) {
+    return {
+      _id: `chat-message:${roomId}:system:tournament-room-welcome`,
+      chatId: roomId,
+      id: "system:tournament-room-welcome",
+      clientId: "tournament-room-welcome",
+      sender: "MyScoutee System",
+      senderAvatar: { id: "", initials: "MS", gender: "system" },
+      text,
+      time: "",
+      sentAtIso: stagedAtIso,
+      mine: false,
+      readBy: [],
+      replyTo: null,
+      reactions: [],
+      attachments: [],
+      messageSenderUserIds: [],
+      messageReadByUserIds: [],
+      messageReactionUserIds: [],
+      messageAttachmentKeys: [],
+      pollVoterUserIds: []
+    };
+  }
+
+  function tournamentRoomLifeSnapshot() {
+    const eventIds = [
+      TOURNAMENT_ROOM_LIFE_EVENT_ID,
+      TOURNAMENT_ROOM_LIFE_ROOM_A,
+      TOURNAMENT_ROOM_LIFE_ROOM_B
+    ];
+    const events = Q.collection("events").find({ sourceId: { $in: eventIds } })
+      .sort({ sourceId: 1, ownerUserId: 1, _id: 1 }).toArray();
+    const members = Q.collection("activityMembers").find({ ownerId: { $in: eventIds } })
+      .sort({ ownerId: 1, userId: 1 }).toArray();
+    const chats = Q.collection("chats").find({ eventId: { $in: eventIds } })
+      .sort({ eventId: 1, ownerUserId: 1 }).toArray();
+    const messages = Q.collection("chatMessages").find({ chatId: { $in: eventIds } })
+      .sort({ chatId: 1, sentAtIso: 1, id: 1 }).toArray();
+    return {
+      events: events.map(item => ({
+        recordId: Q.text(item._id),
+        sourceId: Q.text(item.sourceId),
+        ownerUserId: Q.text(item.ownerUserId),
+        status: Q.text(item.status),
+        statusBeforeSuppression: Q.text(item.statusBeforeSuppression),
+        trashedAtIso: Q.text(item.trashedAtIso),
+        title: Q.text(item.title),
+        organizerUserId: Q.text(item.organizerUserId),
+        creatorUserId: Q.text(item.creatorUserId),
+        parentEventId: Q.text(item.parentEventId),
+        generated: item.generated === true,
+        activity: Number(item.activity || 0),
+        acceptedMembers: Number(item.acceptedMembers || 0),
+        acceptedMemberUserIds: sortedUnique(item.acceptedMemberUserIds || []),
+        pendingMembers: Number(item.pendingMembers || 0),
+        pendingMemberUserIds: sortedUnique(item.pendingMemberUserIds || []),
+        capacityMin: Number(item.capacityMin || 0),
+        capacityMax: Number(item.capacityMax || 0),
+        eventType: Q.text(item.eventType),
+        imageUrl: Q.text(item.imageUrl),
+        stagePending: (item.subEvents || []).map(subEvent => ({
+          id: Q.text(subEvent.id),
+          groupsPending: Number(subEvent.groupsPending || 0)
+        }))
+      })),
+      members: members.map(item => ({
+        ownerType: Q.text(item.ownerType),
+        ownerId: Q.text(item.ownerId),
+        userId: Q.text(item.userId),
+        role: Q.text(item.role),
+        status: Q.text(item.status),
+        statusBeforeSuppression: Q.text(item.statusBeforeSuppression),
+        suppressionRootOwnerId: Q.text(item.suppressionRootOwnerId),
+        suppressedAtIso: Q.text(item.suppressedAtIso)
+      })),
+      chats: chats.map(item => ({
+        chatId: Q.text(item.id || item.chatId),
+        ownerUserId: Q.text(item.ownerUserId),
+        memberIds: sortedUnique(item.memberIds || []),
+        title: Q.text(item.title),
+        avatar: Q.text(item.avatar),
+        lastMessage: Q.text(item.lastMessage),
+        unread: Number(item.unread || 0)
+      })),
+      messages: messages.map(item => ({
+        chatId: Q.text(item.chatId),
+        id: Q.text(item.id),
+        clientId: Q.text(item.clientId),
+        sender: Q.text(item.sender),
+        text: Q.text(item.text)
+      })),
+      stageRuntime: Q.collection("activitySubEventStageRuntime")
+        .find({ ownerId: TOURNAMENT_ROOM_LIFE_EVENT_ID })
+        .sort({ subEventId: 1 }).toArray().map(item => ({
+          ownerId: Q.text(item.ownerId),
+          subEventId: Q.text(item.subEventId),
+          stageStatus: Q.text(item.stageStatus),
+          stageStatusReason: Q.text(item.stageStatusReason),
+          groupsCount: Number(item.groupsCount || 0)
+        })),
+      manualGroups: Q.collection("activitySubEventGroups")
+        .find({ ownerId: { $regex: `^${TOURNAMENT_ROOM_LIFE_PREFIX}` } }).count(),
+      leaderboard: Q.collection("eventLeaderboardEntries")
+        .find({ eventId: TOURNAMENT_ROOM_LIFE_EVENT_ID }).count(),
+      planMarkers: Q.collection("schedulerPlanMarkers")
+        .find({ ownerId: { $regex: `^${TOURNAMENT_ROOM_LIFE_PREFIX}` } }).count(),
+      notifications: Q.collection("userNotifications").find({ $or: [
+        { sourceId: { $in: eventIds } },
+        { "payload.eventId": { $in: eventIds } },
+        { "payload.parentEventId": TOURNAMENT_ROOM_LIFE_EVENT_ID }
+      ] }).count(),
+      outbox: Q.collection("notificationOutbox").find({ $or: [
+        { entityId: { $in: eventIds } },
+        { "payload.eventId": { $in: eventIds } },
+        { "payload.parentEventId": TOURNAMENT_ROOM_LIFE_EVENT_ID }
+      ] }).count(),
+      recomputeTasks: Q.collection("affinityRecomputeTasks").find({ targetId: { $in: eventIds } })
+        .sort({ updatedDate: 1 }).toArray().map(item => ({
+          targetId: Q.text(item.targetId),
+          reasons: sortedUnique(item.reasons || []),
+          status: Q.text(item.status)
+        })),
+      counters: [hostUserId, participantUserId, thirdUserId].map(tournamentRoomLifeCounterSummary)
+    };
+  }
+
+  function assertTournamentRoomLifeBaseline(snapshot, expectedCounters) {
+    const parent = snapshot.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_EVENT_ID);
+    const roomA = snapshot.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_A);
+    const roomB = snapshot.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B);
+    if (parent.length !== 1 || parent[0].ownerUserId !== hostUserId
+        || parent[0].status !== "A"
+        || parent[0].activity !== 1
+        || !parent[0].stagePending.some(item => (
+          item.id === TOURNAMENT_ROOM_LIFE_QUALIFIER_ID && item.groupsPending === 1))
+        || !sameIds(parent[0].acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+        || roomA.length !== 1 || roomA[0].ownerUserId || roomA[0].status !== "A"
+        || !sameIds(roomA[0].acceptedMemberUserIds, [hostUserId, participantUserId])
+        || roomA[0].acceptedMembers !== 2 || roomA[0].pendingMembers !== 1
+        || !sameIds(roomA[0].pendingMemberUserIds, [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID])
+        || roomA[0].capacityMin !== 1 || roomA[0].capacityMax !== 3
+        || roomB.length !== 1 || roomB[0].ownerUserId || roomB[0].status !== "A"
+        || !sameIds(roomB[0].acceptedMemberUserIds, [thirdUserId])
+        || roomB[0].acceptedMembers !== 1 || roomB[0].capacityMin !== 1 || roomB[0].capacityMax !== 2
+        || ![roomA[0], roomB[0]].every(room => room.eventType === "tournament-room"
+          && room.generated && room.parentEventId === TOURNAMENT_ROOM_LIFE_EVENT_ID
+          && room.organizerUserId === hostUserId && !room.creatorUserId
+          && room.imageUrl === TOURNAMENT_ROOM_IMAGE_URL)) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 parent/room event baseline is not exact.");
+    }
+    const expectedMembers = [
+      [TOURNAMENT_ROOM_LIFE_EVENT_ID, hostUserId, "Admin"],
+      [TOURNAMENT_ROOM_LIFE_EVENT_ID, participantUserId, "Member"],
+      [TOURNAMENT_ROOM_LIFE_EVENT_ID, thirdUserId, "Member"],
+      [TOURNAMENT_ROOM_LIFE_ROOM_A, hostUserId, "Member"],
+      [TOURNAMENT_ROOM_LIFE_ROOM_A, participantUserId, "Member"],
+      [TOURNAMENT_ROOM_LIFE_ROOM_B, thirdUserId, "Member"]
+    ].map(([ownerId, userId, role]) => `${ownerId}|${userId}|${role}|accepted`).sort();
+    expectedMembers.push(`${TOURNAMENT_ROOM_LIFE_ROOM_A}|${TOURNAMENT_ROOM_LIFE_PENDING_USER_ID}|Member|pending`);
+    expectedMembers.sort();
+    const actualMembers = snapshot.members.map(item => (
+      `${item.ownerId}|${item.userId}|${item.role}|${item.status}`)).sort();
+    const expectedChats = [
+      `${TOURNAMENT_ROOM_LIFE_ROOM_A}|${hostUserId}|${[hostUserId, participantUserId].sort().join(",")}|1`,
+      `${TOURNAMENT_ROOM_LIFE_ROOM_A}|${participantUserId}|${[hostUserId, participantUserId].sort().join(",")}|1`,
+      `${TOURNAMENT_ROOM_LIFE_ROOM_B}|${thirdUserId}|${thirdUserId}|1`
+    ].sort();
+    const actualChats = snapshot.chats.map(item => (
+      `${item.chatId}|${item.ownerUserId}|${item.memberIds.join(",")}|${item.unread}`)).sort();
+    if (!sameJson(actualMembers, expectedMembers)
+        || !sameJson(actualChats, expectedChats)
+        || snapshot.messages.length !== 2
+        || !snapshot.messages.every(item => item.id === "system:tournament-room-welcome")
+        || snapshot.stageRuntime.length !== 1
+        || snapshot.stageRuntime[0].subEventId !== TOURNAMENT_ROOM_LIFE_QUALIFIER_ID
+        || snapshot.stageRuntime[0].stageStatus !== "A"
+        || snapshot.stageRuntime[0].groupsCount !== 2
+        || snapshot.manualGroups !== 0 || snapshot.leaderboard !== 0 || snapshot.planMarkers !== 0
+        || snapshot.notifications !== 0 || snapshot.outbox !== 0
+        || snapshot.recomputeTasks.length !== 0
+        || !sameJson(snapshot.counters, expectedCounters)) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 membership/chat/runtime/counter baseline is not exact.");
+    }
+  }
+
+  function requireTournamentRoomLifeState() {
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_ROOM_LIFE_STATE_ID });
+    if (!state) Q.fail(`${TOURNAMENT_ROOM_LIFE_CHECKPOINT} is not staged.`);
+    return state;
+  }
+
+  function stageTournamentRoomLife() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== TOURNAMENT_ROOM_LIFE_CHECKPOINT) {
+      Q.fail("the isolated room-life stage is restricted to TOURNAMENT-ROOM-LIFE-001.");
+    }
+    if (Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_ROOM_LIFE_STATE_ID })) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 is already staged; use status or reset.");
+    }
+    const retainedTournamentState = Q.activeState(SCENARIO, false);
+    if (retainedTournamentState && (
+      Q.text(retainedTournamentState.checkpointId).toUpperCase() !== "TOURNAMENT-004"
+      || !Q.text(retainedTournamentState.tournamentFinalLifecycle
+        && retainedTournamentState.tournamentFinalLifecycle.completionVerifiedAtIso))) {
+      Q.fail("an unclosed event-domain checkpoint is active; the isolated room-life fixture may coexist only with closed TOURNAMENT-004 evidence.");
+    }
+    const otherState = Q.collection(Q.STATE_COLLECTION).findOne({
+      _id: { $nin: [Q.stateId(SCENARIO), TOURNAMENT_ROOM_LIFE_STATE_ID] }
+    });
+    if (otherState) {
+      Q.fail(`another manual scenario '${Q.text(otherState.scenario)}' is staged.`);
+    }
+    [hostUserId, participantUserId, thirdUserId, TOURNAMENT_ROOM_LIFE_PENDING_USER_ID]
+      .forEach((userId, index) => (
+        Q.ensureUser(userId, ["Casey", "Nova", "Riley", "Farkas Anna"][index])));
+    for (const spec of tournamentRoomLifeSelectors()) {
+      if (Q.collection(spec.collection).countDocuments(spec.selector) !== 0) {
+        Q.fail(`stale isolated room-life data exists in '${spec.collection}'; do not overwrite it.`);
+      }
+    }
+    const stagedAtIso = Q.nowIso();
+    const originalCounters = [hostUserId, participantUserId, thirdUserId]
+      .map(tournamentRoomLifeCounterSummary);
+    const expectedCounters = [
+      tournamentRoomLifeCounterWithDelta(originalCounters[0], {
+        chats: 1, chatAll: 1, chatEvent: 1,
+        events: 1, hosting: 1, eventAll: 1, eventHosting: 1
+      }),
+      tournamentRoomLifeCounterWithDelta(originalCounters[1], {
+        chats: 1, chatAll: 1, chatEvent: 1,
+        events: 1, eventAll: 1, eventActive: 1
+      }),
+      tournamentRoomLifeCounterWithDelta(originalCounters[2], {
+        chats: 1, chatAll: 1, chatEvent: 1,
+        events: 1, eventAll: 1, eventActive: 1
+      })
+    ];
+    const state = {
+      _id: TOURNAMENT_ROOM_LIFE_STATE_ID,
+      scenario: SCENARIO,
+      checkpointId,
+      stagedAtIso,
+      snapshots: Q.snapshotSpecs(tournamentRoomLifeSelectors()),
+      originalCounters,
+      expectedCounters,
+      context: {
+        parentEventId: TOURNAMENT_ROOM_LIFE_EVENT_ID,
+        qualifierStageId: TOURNAMENT_ROOM_LIFE_QUALIFIER_ID,
+        retainedRoomId: TOURNAMENT_ROOM_LIFE_ROOM_A,
+        controlRoomId: TOURNAMENT_ROOM_LIFE_ROOM_B,
+        pendingUserId: TOURNAMENT_ROOM_LIFE_PENDING_USER_ID,
+        retainedMemberUserId: hostUserId,
+        controlMemberUserId: thirdUserId
+      }
+    };
+    Q.collection(Q.STATE_COLLECTION).insertOne(state);
+    try {
+      const startAtIso = dateIso(-30);
+      const qualifierEndAtIso = dateIso(60);
+      const finalEndAtIso = dateIso(105);
+      const parentEndAtIso = dateIso(180);
+      const qualifiers = {
+        id: TOURNAMENT_ROOM_LIFE_QUALIFIER_ID,
+        name: "Qualifiers",
+        description: "Manual QA nested pending-counter qualifiers",
+        timing: "During",
+        offsetMinutes: 0,
+        durationMinutes: 90,
+        startAt: startAtIso,
+        endAt: qualifierEndAtIso,
+        optional: false,
+        capacityMin: 2,
+        capacityMax: 6,
+        tournamentGroupCapacityMin: 1,
+        tournamentGroupCapacityMax: 3,
+        tournamentLeaderboardType: "Score",
+        tournamentAdvancePerGroup: 1,
+        stageStatus: "A",
+        stageStatusReason: "stage-started",
+        stageStatusUpdatedAt: stagedAtIso,
+        membersAccepted: 3,
+        membersPending: 0,
+        groupsCount: 2,
+        groupsPending: 1
+      };
+      const finalStage = {
+        id: TOURNAMENT_ROOM_LIFE_FINAL_ID,
+        name: "Final",
+        description: "Manual QA room-leave control final",
+        timing: "After",
+        offsetMinutes: 0,
+        durationMinutes: 45,
+        startAt: qualifierEndAtIso,
+        endAt: finalEndAtIso,
+        optional: false,
+        capacityMin: 1,
+        capacityMax: 2,
+        tournamentGroupCapacityMin: 1,
+        tournamentGroupCapacityMax: 2,
+        tournamentLeaderboardType: "Score",
+        tournamentAdvancePerGroup: 0,
+        stageStatus: "RS",
+        stageStatusReason: "awaiting-prior-stage",
+        membersAccepted: 0,
+        membersPending: 0,
+        groupsCount: 0,
+        groupsPending: 0
+      };
+      const parent = tournamentRoomLifeEventDocument(
+        TOURNAMENT_ROOM_LIFE_EVENT_ID,
+        "QA TOURNAMENT-ROOM-LIFE-001",
+        [hostUserId, participantUserId, thirdUserId],
+        stagedAtIso,
+        {
+          ownerUserId: hostUserId,
+          creatorUserId: hostUserId,
+          organizerUserId: hostUserId,
+          admins: [hostUserId],
+          creatorName: "Casey Bridge",
+          creatorInitials: "CB",
+          visibility: "public",
+          startAtIso,
+          endAtIso: parentEndAtIso,
+          capacityMin: 1,
+          capacityMax: 8,
+          activity: 1,
+          eventType: "event",
+          subEventsEnabled: true,
+          subEventDefinitions: [qualifiers, finalStage],
+          subEvents: [qualifiers, finalStage]
+        });
+      const roomA = tournamentRoomLifeEventDocument(
+        TOURNAMENT_ROOM_LIFE_ROOM_A,
+        "Tournament Group R1",
+        [hostUserId, participantUserId],
+        stagedAtIso,
+        {
+          syncKey: `scheduler:random-room:${TOURNAMENT_ROOM_LIFE_ROOM_A}`,
+          organizerUserId: hostUserId,
+          creatorName: "MyScoutee System",
+          visibility: "Invitation only",
+          startAtIso,
+          endAtIso: parentEndAtIso,
+          capacityMin: 1,
+          capacityMax: 3,
+          eventType: "tournament-room",
+          parentEventId: TOURNAMENT_ROOM_LIFE_EVENT_ID,
+          generated: true,
+          pendingUserIds: [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID],
+          invitedUserIds: [TOURNAMENT_ROOM_LIFE_PENDING_USER_ID],
+          avatar: TOURNAMENT_ROOM_IMAGE_URL,
+          imageUrl: TOURNAMENT_ROOM_IMAGE_URL,
+          subtitle: "Tournament group for QA TOURNAMENT-ROOM-LIFE-001."
+        });
+      const roomB = tournamentRoomLifeEventDocument(
+        TOURNAMENT_ROOM_LIFE_ROOM_B,
+        "Tournament Group R2",
+        [thirdUserId],
+        stagedAtIso,
+        {
+          syncKey: `scheduler:random-room:${TOURNAMENT_ROOM_LIFE_ROOM_B}`,
+          organizerUserId: hostUserId,
+          creatorName: "MyScoutee System",
+          visibility: "Invitation only",
+          startAtIso,
+          endAtIso: parentEndAtIso,
+          capacityMin: 1,
+          capacityMax: 2,
+          eventType: "tournament-room",
+          parentEventId: TOURNAMENT_ROOM_LIFE_EVENT_ID,
+          generated: true,
+          avatar: TOURNAMENT_ROOM_IMAGE_URL,
+          imageUrl: TOURNAMENT_ROOM_IMAGE_URL,
+          subtitle: "Tournament group for QA TOURNAMENT-ROOM-LIFE-001."
+        });
+      Q.collection("events").insertMany([parent, roomA, roomB]);
+      Q.collection("activityMembers").insertMany([
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_EVENT_ID, hostUserId, "Admin", stagedAtIso),
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_EVENT_ID, participantUserId, "Member", stagedAtIso),
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_EVENT_ID, thirdUserId, "Member", stagedAtIso),
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_A, hostUserId, "Member", stagedAtIso),
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_A, participantUserId, "Member", stagedAtIso),
+        tournamentRoomLifeMember(
+          TOURNAMENT_ROOM_LIFE_ROOM_A,
+          TOURNAMENT_ROOM_LIFE_PENDING_USER_ID,
+          "Member",
+          stagedAtIso,
+          {
+            status: "pending",
+            pendingSource: "admin",
+            requestKind: "invite",
+            invitedByUserId: hostUserId
+          }),
+        tournamentRoomLifeMember(TOURNAMENT_ROOM_LIFE_ROOM_B, thirdUserId, "Member", stagedAtIso)
+      ]);
+      Q.collection("activitySubEventStageRuntime").insertOne({
+        _id: `${TOURNAMENT_ROOM_LIFE_PREFIX}:stage-runtime:qualifiers`,
+        syncKey: `${TOURNAMENT_ROOM_LIFE_PREFIX}:stage-runtime:qualifiers`,
+        recordId: `${TOURNAMENT_ROOM_LIFE_EVENT_ID}:${TOURNAMENT_ROOM_LIFE_QUALIFIER_ID}`,
+        status: "A",
+        ownerId: TOURNAMENT_ROOM_LIFE_EVENT_ID,
+        subEventId: TOURNAMENT_ROOM_LIFE_QUALIFIER_ID,
+        stageStatus: "A",
+        stageStatusReason: "stage-started",
+        stageStatusUpdatedAt: stagedAtIso,
+        groupsCount: 2,
+        groupResourceMetricsByAssetOwnerId: {},
+        createdDate: stagedAtIso,
+        createdUser: Q.ACTOR,
+        updatedDate: stagedAtIso,
+        updatedUser: Q.ACTOR
+      });
+      const roomAWelcome = "Welcome to your tournament group for QA TOURNAMENT-ROOM-LIFE-001. Use this chat to coordinate with your group and follow stage updates.";
+      const roomBWelcome = roomAWelcome;
+      Q.collection("chats").insertMany([
+        tournamentRoomLifeChat(TOURNAMENT_ROOM_LIFE_ROOM_A, "Tournament Group R1", [hostUserId, participantUserId], hostUserId, roomAWelcome, stagedAtIso),
+        tournamentRoomLifeChat(TOURNAMENT_ROOM_LIFE_ROOM_A, "Tournament Group R1", [hostUserId, participantUserId], participantUserId, roomAWelcome, stagedAtIso),
+        tournamentRoomLifeChat(TOURNAMENT_ROOM_LIFE_ROOM_B, "Tournament Group R2", [thirdUserId], thirdUserId, roomBWelcome, stagedAtIso)
+      ]);
+      Q.collection("chatMessages").insertMany([
+        tournamentRoomLifeWelcome(TOURNAMENT_ROOM_LIFE_ROOM_A, roomAWelcome, stagedAtIso),
+        tournamentRoomLifeWelcome(TOURNAMENT_ROOM_LIFE_ROOM_B, roomBWelcome, stagedAtIso)
+      ]);
+      persistTournamentRoomLifeCounters(expectedCounters);
+      const baseline = tournamentRoomLifeSnapshot();
+      assertTournamentRoomLifeBaseline(baseline, expectedCounters);
+      Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+        $set: { baseline, baselineVerifiedAtIso: Q.nowIso() }
+      });
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "tournament-room-life-baseline-verified",
+        stagedAtIso,
+        context: state.context,
+        baseline,
+        next: "Launch the configured three demo sessions and verify the nested parent/stage/group pending-counter chain before resolving the invitation."
+      });
+    } catch (error) {
+      Q.fail(`isolated room-life stage failed after snapshot: ${Q.text(error && error.message)}. Run reset event-domain ${checkpointId}.`);
+    }
+  }
+
+  function statusTournamentRoomLife() {
+    Q.assertDeploymentSafety();
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_ROOM_LIFE_STATE_ID });
+    if (!state) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "not-staged",
+        next: `Run stage event-domain ${TOURNAMENT_ROOM_LIFE_CHECKPOINT}.`
+      });
+      return;
+    }
+    const current = tournamentRoomLifeSnapshot();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: state.resolutionVerifiedAtIso
+        ? "tournament-room-life-resolution-verified"
+        : "tournament-room-life-baseline-active",
+      stagedAtIso: state.stagedAtIso,
+      baselineVerifiedAtIso: state.baselineVerifiedAtIso,
+      resolutionVerifiedAtIso: state.resolutionVerifiedAtIso,
+      context: state.context,
+      oracle: current,
+      next: state.resolutionVerifiedAtIso
+        ? "Record UI observations and close the checkpoint."
+        : "Verify the root room cards are absent and follow the tournament parent/stage/group pending-counter chain."
+    });
+  }
+
+  function verifyTournamentRoomLifeBaseline() {
+    Q.assertDeploymentSafety();
+    const state = requireTournamentRoomLifeState();
+    const current = tournamentRoomLifeSnapshot();
+    assertTournamentRoomLifeBaseline(current, state.expectedCounters || []);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-life-baseline-verified",
+      oracle: current,
+      next: "In Casey's parent tournament, follow View Event -> Qualifiers -> Groups -> Group A -> Members, then delete Farkas Anna's pending invitation exactly once."
+    });
+  }
+
+  function verifyTournamentRoomLifeResolution() {
+    Q.assertDeploymentSafety();
+    const state = requireTournamentRoomLifeState();
+    if (state.resolutionVerifiedAtIso) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 resolution is already verified; do not replay it.");
+    }
+    const current = tournamentRoomLifeSnapshot();
+    const baseline = state.baseline;
+    const parentEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_EVENT_ID);
+    const roomAEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_A);
+    const canonicalRoomA = roomAEvents.find(item => !item.ownerUserId);
+    const roomBEvents = current.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B);
+    const resolvedRoomMember = current.members.find(item => (
+      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
+        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
+    const stableMembers = current.members.filter(item => !(
+      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
+        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
+    const baselineStableMembers = baseline.members.filter(item => !(
+      item.ownerId === TOURNAMENT_ROOM_LIFE_ROOM_A
+        && item.userId === TOURNAMENT_ROOM_LIFE_PENDING_USER_ID));
+    if (parentEvents.length !== 1 || parentEvents[0].status !== "A"
+        || parentEvents[0].activity !== 0
+        || !parentEvents[0].stagePending.some(item => (
+          item.id === TOURNAMENT_ROOM_LIFE_QUALIFIER_ID && item.groupsPending === 0))
+        || !sameIds(parentEvents[0].acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+        || roomAEvents.length !== 1 || !canonicalRoomA
+        || canonicalRoomA.status !== "A" || canonicalRoomA.acceptedMembers !== 2
+        || canonicalRoomA.pendingMembers !== 0
+        || canonicalRoomA.pendingMemberUserIds.length !== 0
+        || !sameIds(canonicalRoomA.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || !sameJson(roomBEvents, baseline.events.filter(item => item.sourceId === TOURNAMENT_ROOM_LIFE_ROOM_B))
+        || !resolvedRoomMember || resolvedRoomMember.status !== "deleted"
+        || !sameJson(stableMembers, baselineStableMembers)
+        || !sameJson(current.chats, baseline.chats)
+        || !sameJson(current.messages, baseline.messages)
+        || !sameJson(current.stageRuntime, baseline.stageRuntime)
+        || current.manualGroups !== 0 || current.leaderboard !== 0 || current.planMarkers !== 0
+        || current.notifications !== 0 || current.outbox !== 0
+        || !sameJson(current.counters, state.expectedCounters)
+        || current.recomputeTasks.length !== 0) {
+      Q.fail("TOURNAMENT-ROOM-LIFE-001 did not collapse the nested pending counter while preserving room chat and unrelated state.");
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { resolutionVerifiedAtIso: verifiedAtIso, resolutionOracle: current }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-life-resolution-verified",
+      verifiedAtIso,
+      oracle: current,
+      next: "Confirm in-place that the parent, stage, Groups, Group A and Members pending counters all collapsed to zero while room chats and R2 remained unchanged."
+    });
+  }
+
+  function resetTournamentRoomLife() {
+    Q.assertDeploymentSafety();
+    const state = requireTournamentRoomLifeState();
+    Q.restoreSnapshots(state.snapshots || []);
+    persistTournamentRoomLifeCounters(state.originalCounters || []);
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-room-life-reset-complete",
+      preservedClosedTournament004: true,
+      restoredAtIso: Q.nowIso()
+    });
+  }
+
   function stage() {
     const selected = config();
     if (checkpointId === "TOURNAMENT-004") {
@@ -10298,7 +11069,9 @@
 
   Q.assertDeploymentSafety();
   switch (command) {
-    case "stage": stage(); break;
+    case "stage": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
+      ? stageTournamentRoomLife()
+      : stage(); break;
     case "restage": restage(); break;
     case "switch": switchCheckpoint(); break;
     case "advance": advance(); break;
@@ -10341,8 +11114,14 @@
     case "verify-ticket-isolation-republish": verifyTicketIsolation("republished"); break;
     case "verify-ticket-attendance-first-scan": verifyTicketAttendanceFirstScan(); break;
     case "verify-ticket-attendance-replay": verifyTicketAttendanceReplay(); break;
-    case "status": status(); break;
-    case "reset": reset(); break;
+    case "status": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
+      ? statusTournamentRoomLife()
+      : status(); break;
+    case "reset": checkpointId === TOURNAMENT_ROOM_LIFE_CHECKPOINT
+      ? resetTournamentRoomLife()
+      : reset(); break;
+    case "verify-tournament-room-life-baseline": verifyTournamentRoomLifeBaseline(); break;
+    case "verify-tournament-room-life-resolution": verifyTournamentRoomLifeResolution(); break;
     case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
     case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;
     case "capture-lifecycle-action-baseline": captureLifecycleActionBaseline(); break;
