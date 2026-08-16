@@ -25,10 +25,12 @@ The current qualification ledger is available as an
 
 As of 2026-08-16:
 
-- **Core:** 58 passed, 81 remaining (139 total)
+- **Core:** 58 passed, 100 remaining (158 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 195 cases. `TOURNAMENT-002` through
+The complete matrix contains 214 cases across 13 functional domains. The Chat
+coverage audit now contains 20 bounded cases instead of treating the single
+authorization checkpoint as the complete chat workflow. `TOURNAMENT-002` through
 `TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
 advancement, separate Final Start/room readiness, whole-tournament completion,
 personal winner/non-winner results and three-browser recipient verification.

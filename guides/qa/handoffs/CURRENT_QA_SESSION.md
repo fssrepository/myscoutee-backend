@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 18:31 CEST
+Updated: 2026-08-16 18:46 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -167,21 +167,33 @@ content shows as much as the compact cell and its existing line breaks allow,
 and only the two formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
-75–99% light green and 100% green. Keep every domain in one contiguous
-block, place Core product-flow domains before the lower-priority
-admin/role/monitoring/job domains, and keep EXT domains at the end. Preserve
-the intentional checkpoint order inside each block. Once execution enters a
-domain, finish that block before selecting another. After the currently active
-domain closes, choose the highest-priority Core domain whose Progress is below
-100%, then close its Pending/Not started rows in physical order. Status colors
-never select the next test. More generally, whenever fixture dependencies and
-the active transactional checkpoint allow a choice, execute the higher numeric
-priority first; choosing a lower-priority open case requires an explicit
-dependency reason or user reprioritization. Newly discovered foreign-domain coverage may be
-recorded beside its own rows, but must not become the live checkpoint, trigger
-fixture/browser setup, or load that foreign-domain pack. The resume pointer
-records the current row; it must not hard-code a domain-specific methodology
-rule.
+75–99% light green and 100% green. Keep every domain in one contiguous block
+and keep EXT domains at the end. The top-level taxonomy is intentionally
+coarse: 10 Core capability/operations domains plus Operator, Payment and
+Deployment EXT boundaries, prioritized continuously from `13` down to `1`.
+A generated priority overview places the first five Core domains in its first
+hasáb, the remaining five Core domains in its second hasáb, and reserves the
+third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
+hasáb must therefore always sum to the separate External count (currently 56)
+rather than being mixed into the Core execution queue.
+A browser surface, device type, test technique or one-off checkpoint name is
+not a domain. Put details such as registration, public landing eligibility,
+mobile WebView, Statistics, Monitoring and background jobs in the owning
+domain's `Area` instead of manufacturing singleton domains. Create a new
+top-level domain only for an independently executable capability with a
+material workflow set; otherwise classify the row under its real owner.
+Preserve the intentional checkpoint order inside each block. Once execution
+enters a domain, finish that block before selecting another. After the
+currently active domain closes, choose the highest-priority Core domain whose
+Progress is below 100%, then close its Pending/Not started rows in physical
+order. Status colors never select the next test. More generally, whenever
+fixture dependencies and the active transactional checkpoint allow a choice,
+execute the higher numeric priority first; choosing a lower-priority open case
+requires an explicit dependency reason or user reprioritization. Newly
+discovered foreign-domain coverage may be recorded beside its own rows, but
+must not become the live checkpoint, trigger fixture/browser setup, or load
+that foreign-domain pack. The resume pointer records the current row; it must
+not hard-code a domain-specific methodology rule.
 
 Each transactional boundary has one controlled producer action and explicitly
 records: before state, manual action, immediate state, worker expectation,
@@ -238,7 +250,10 @@ record has been removed.
 
 - Treat the already-versioned testcase set as an immutable workflow spine
   during a coverage-expansion audit. Do not split, merge, rename, renumber or
-  rewrite those rows merely to make the new plan look more uniform. Count
+  rewrite its IDs or test contracts merely to make the new plan look more
+  uniform. The `QA domain` classification may be normalized only as an
+  explicit taxonomy migration while all other existing cells remain
+  unchanged. Count
   logical CSV records rather than physical lines because quoted multiline
   cells span several file lines; ignore `LEGEND-*` records when quoting the
   testcase total. Capture a canonical serialized hash keyed by every
@@ -250,6 +265,14 @@ record has been removed.
   receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
   but never manufacture row splits only to reach an estimate.
+- A feature-rich domain must not be represented by one umbrella row. Audit its
+  actual visible and persisted contracts, then create short, causally
+  continuous cases. The 2026-08-16 Chat audit is the reference:
+  `CHAT-AUTH-001` remains the authorization boundary, while list/history,
+  realtime delivery, unread/read, message mutations, reactions/pins,
+  attachments, members/reporting and push delivery are separate rows. This
+  produced 20 real Chat cases without changing the active Tournament resume
+  pointer.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
   workbook totals. Verify the CSV has 17 columns per logical record, including

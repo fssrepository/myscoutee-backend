@@ -1932,6 +1932,93 @@ Execution evidence in progress on 2026-08-14:
   check. Treat any readable history outside accepted membership as a P0 privacy
   failure.
 
+## Chat functional coverage
+
+The authorization checkpoint above is only the membership/privacy boundary;
+it is not a substitute for the chat product surface. The following CP13 cases
+are deliberately short and sequential. Each case owns one visible transition
+and one persisted oracle. Reuse one controlled accepted-member chat where
+possible, but reset only the rows owned by the next case. These cases are
+captured for the later Chat domain block and do not replace the currently
+active Tournament checkpoint.
+
+### List, history and transport
+
+- `CHAT-LIST-001`: load one known main-event, group, service and support chat,
+  switch the available contexts and sort once. Exact row IDs, context totals,
+  date order and compact header/status must survive close/reopen with no write.
+- `CHAT-HISTORY-001`: open one thread containing 18 controlled messages. The
+  latest window and one older page must merge in reverse-thread order without
+  a gap or duplicate; day markers and exact IDs must survive reopen.
+- `CHAT-SEND-001`: send one unique text while another accepted participant
+  keeps the thread open. The sender gets one immediate pending/confirmed row,
+  the recipient gets the same persisted message once, and client/server echo
+  reconciliation must not duplicate it.
+- `CHAT-RECONNECT-001`: disconnect only the recipient transport, send one
+  message, then restore that connection. Catch-up must deliver the persisted
+  ID once and reconcile unread state without a browser reload.
+- `CHAT-TYPING-001`: produce one brief typing signal, stop it, then also prove
+  the remote TTL fallback. Only other accepted participants may see it; no
+  message, notification or counter may be written.
+
+### Unread and read acknowledgement
+
+- `CHAT-COUNTER-001`: send one message while the recipient Chat surface is
+  closed, then open only the list. Stored Chats/All/context counters, menu
+  badges and the row badge must all be `+1`; the sender remains unchanged and
+  list loading alone does not clear the value.
+- `CHAT-READ-001`: open the one-unread thread. Recipient counters change
+  exactly `1 -> 0`, one persisted reader identity appears, and the sender sees
+  one matching reader avatar without a new notification or duplicate after
+  reopen.
+
+### Message lifecycle and interaction
+
+- `CHAT-REPLY-001`: reply once to a controlled older message. Both clients
+  retain the immutable source ID/preview, and selecting the preview locates
+  the source even when the older history page first has to load.
+- `CHAT-EDIT-001`: edit one own text message and try the same mutation as a
+  different participant. The same ID gains one edit timestamp and live Edited
+  presentation; the non-owner is denied and no new message/unread is created.
+- `CHAT-DELETE-001`: unsend one own message and try as a non-owner. The same ID
+  becomes one tombstone, its payload/reply/reactions/readers/pin clear on every
+  client and reload, and surrounding history remains intact.
+- `CHAT-REACTION-001`: add a reaction from two users, change one and remove
+  one. There is at most one reaction per user, summary/detail identities agree
+  live and after reopen, and unread/notification counters do not change.
+- `CHAT-PIN-001`: pin one message, open Pinned, select its source and unpin.
+  One pinned ID/actor is persisted, navigation focuses the source, and the
+  terminal pinned list is empty without unrelated deltas.
+
+### Attachments and shared cards
+
+- `CHAT-IMAGE-001`: send one controlled image and open its preview. Both
+  clients use one canonical attachment identity/URL, the preview is readable,
+  and reload does not upload or render a duplicate.
+- `CHAT-VOICE-001`: record a few-second clip, review, send and play it once as
+  the recipient. One canonical clip survives reopen; cancel or denied recorder
+  permission creates neither a message nor orphan media.
+- `CHAT-POLL-001`: create one two-option poll, vote as two users and change one
+  vote. Totals progress `0 -> 1 -> 2` and remain `2` after the move; bars,
+  voter identities and persisted attachment state agree.
+- `CHAT-CARD-001`: send one event card and one asset or link card, then open
+  each. Canonical target IDs navigate through the shared target flow, while a
+  removed or denied target becomes unavailable without exposing its data.
+
+### Membership, moderation intake and device delivery
+
+- `CHAT-MEMBERS-001`: open the chat Member list and load one extra page only
+  when needed. IDs, roles and avatars equal canonical accepted membership;
+  pending/left users are absent, server-denied and no read causes a write.
+- `CHAT-REPORT-001`: report one participant message once and submit the same
+  report again. Exactly one Admin review identity contains the reporter,
+  chat/message context and no unrelated history; Admin resolution remains an
+  Administration-domain case.
+- `CHAT-PUSH-001`: background or close one accepted recipient app, send one
+  participant message and tap the push. Exactly one recipient push opens the
+  exact chat/message and reconciles in-app unread state; sender and system
+  messages are explicit no-push controls.
+
 ## Event feedback and Impressions checkpoints
 
 ### `EVENT-FEEDBACK-001` — eligibility unlock and closed-event boundary

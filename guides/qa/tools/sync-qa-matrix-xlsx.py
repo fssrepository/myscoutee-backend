@@ -60,35 +60,21 @@ COMPACT_VISIBLE_COLUMN_WIDTHS = (
 # the normalized domain on every testcase row; the workbook shows the mapping
 # in a separate priority table and uses it to keep domains contiguous.
 DOMAIN_METADATA = (
-    ("QA safety", 26, "FFE7E6E6", "CLEANUP"),
-    ("Entry", 25, "FFE4DFEC", "ENTRY"),
-    ("Authentication", 24, "FFD9EAF7", "AUTH"),
-    ("Landing", 23, "FFE2F0D9", "LANDING"),
-    ("Event", 22, "FFFCE4D6", "EVENT"),
-    ("Tournament", 21, "FFF4CCCC", "TOURNAMENT"),
-    ("Chat", 20, "FFDDEBF7", "CHAT"),
-    ("Asset", 19, "FFFFE5CC", "ASSET"),
-    ("Media", 18, "FFDDE8CB", "MEDIA"),
-    ("Article", 17, "FFFFF2CC", "ARTICLE"),
-    ("Mobile", 16, "FFD9E1F2", "MOBILE"),
-    ("Admin", 15, "FFEAD1DC", "ADMIN"),
-    ("Role", 14, "FFD9D2E9", "ROLE"),
-    ("Admin baseline", 13, "FFCFE2F3", "BASE"),
-    ("Statistics", 12, "FFB6D7A8", "STAT"),
-    ("Monitoring", 11, "FFA2C4C9", "MON"),
-    ("Affinity graph", 10, "FFB4A7D6", "GRAPH"),
-    ("Parameters", 9, "FFC9DAF8", "PARAM"),
-    ("Admin jobs", 8, "FFD5A6BD", "JOB"),
-    ("Bell", 7, "FFF9CB9C", "BELL"),
-    ("UI performance", 6, "FFCFE2F3", "UI"),
-    ("Static smoke", 5, "FFE7E6E6", "STATIC"),
-    ("QA harness", 4, "FFFFD966", "QA"),
+    ("QA infrastructure", 13, "FFE7E6E6", "CLEANUP"),
+    ("Identity & access", 12, "FFE4DFEC", "ENTRY"),
+    ("Event", 11, "FFFCE4D6", "EVENT"),
+    ("Tournament", 10, "FFF4CCCC", "TOURNAMENT"),
+    ("Chat", 9, "FFDDEBF7", "CHAT"),
+    ("Asset", 8, "FFFFE5CC", "ASSET"),
+    ("Content", 7, "FFFFF2CC", "ARTICLE"),
+    ("Notifications", 6, "FFE2F0D9", "BELL"),
+    ("Client platform", 5, "FFD9E1F2", "MOBILE"),
+    ("Administration", 4, "FFEAD1DC", "ADMIN"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
     ("Payment", 2, "FF76A5AF", "PAYMENT"),
     ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
 DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
-DOMAIN_PREFIX = {prefix: domain for domain, _, _, prefix in DOMAIN_METADATA}
 DOMAIN_STYLE_KEY = {
     domain: f"domain-{priority}"
     for domain, priority, _, _ in DOMAIN_METADATA
@@ -116,8 +102,30 @@ def cell_column(index: int) -> str:
 
 def expected_domain(identifier: str) -> str:
     normalized = identifier.strip().upper()
-    for prefix, domain in DOMAIN_PREFIX.items():
-        if normalized == prefix or normalized.startswith(f"{prefix}-"):
+    domain_prefixes = (
+        ("QA infrastructure", ("CLEANUP", "QA-RESET")),
+        ("Identity & access", ("ENTRY", "AUTH", "ROLE", "LANDING-ELIGIBILITY")),
+        ("Event", ("EVENT", "MEDIA")),
+        ("Tournament", ("TOURNAMENT",)),
+        ("Chat", ("CHAT",)),
+        ("Asset", ("ASSET",)),
+        ("Content", ("ARTICLE", "LANDING-ARTICLE")),
+        ("Notifications", ("BELL", "MOBILE-PUSH")),
+        ("Client platform", ("MOBILE-WEBVIEW", "MOBILE-ADB", "UI-")),
+        (
+            "Administration",
+            ("ADMIN", "BASE", "STAT", "MON", "GRAPH", "PARAM", "JOB", "STATIC"),
+        ),
+        ("Operator", ("OPERATOR",)),
+        ("Payment", ("PAYMENT",)),
+        ("Deployment", ("DEPLOY",)),
+    )
+    for domain, prefixes in domain_prefixes:
+        if any(
+            normalized == prefix.rstrip("-")
+            or normalized.startswith(prefix if prefix.endswith("-") else f"{prefix}-")
+            for prefix in prefixes
+        ):
             return domain
     raise RuntimeError(f"QA testcase has no configured domain: {identifier}")
 
@@ -224,22 +232,25 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         status_items[0][1],
     )]
     remaining_status_items = status_items[1:]
-    domain_priority_block_size = (
-        len(domain_priority_items) + DOMAIN_PRIORITY_BLOCK_COUNT - 1
-    ) // DOMAIN_PRIORITY_BLOCK_COUNT
+    core_priority_items = [item for item in domain_priority_items if int(item[1]) > 3]
+    external_priority_items = [item for item in domain_priority_items if int(item[1]) <= 3]
+    core_block_size = (len(core_priority_items) + 1) // 2
     domain_priority_blocks = [
-        domain_priority_items[
-            block_index * domain_priority_block_size:
-            (block_index + 1) * domain_priority_block_size
-        ]
-        for block_index in range(DOMAIN_PRIORITY_BLOCK_COUNT)
+        core_priority_items[:core_block_size],
+        core_priority_items[core_block_size:],
+        external_priority_items,
     ]
+    domain_priority_block_size = max(len(block) for block in domain_priority_blocks)
     domain_priority_rows = []
     for priority_row_index in range(domain_priority_block_size + 1):
         priority_row = ["" for _ in headers]
         for block_index, block in enumerate(domain_priority_blocks):
             if priority_row_index == 0:
-                priority_values = (DOMAIN_COLUMN, "Priority", "Progress")
+                priority_values = (
+                    f"{DOMAIN_COLUMN} (EXT / optional)" if block_index == 2 else DOMAIN_COLUMN,
+                    "Priority",
+                    "Progress",
+                )
             elif priority_row_index <= len(block):
                 priority_values = block[priority_row_index - 1]
             else:
