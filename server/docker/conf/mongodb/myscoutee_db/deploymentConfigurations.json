@@ -2,13 +2,13 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": 0,
       "homeLabel": "Your preferences come first",
       "logoUrl": "assets/logo/heart.webp",
-      "themePreset": "AURORA",
+      "themePreset": "VIOLET",
       "revision": 0
     },
     "socialLinks": [],

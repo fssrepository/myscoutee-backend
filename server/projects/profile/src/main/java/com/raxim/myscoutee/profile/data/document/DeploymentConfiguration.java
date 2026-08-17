@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "deploymentConfigurations")
 public class DeploymentConfiguration {
     public static final String SINGLETON_ID = "deployment-configuration";
-    public static final int SCHEMA_VERSION = 3;
+    public static final int SCHEMA_VERSION = 4;
 
     @Id
     private String id;

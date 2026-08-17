@@ -327,7 +327,10 @@ public class ScheduledMessageTaskService {
             String subEventId = stageReminderSubEventId(subEvent, index);
             Instant stageStartAt = resolveStageStartAt(event, subEvent);
             index++;
-            if (!StringUtils.hasText(subEventId) || stageStartAt == null || !stageStartAt.isAfter(now)) {
+            if (isTournamentStage(subEvent)
+                    || !StringUtils.hasText(subEventId)
+                    || stageStartAt == null
+                    || !stageStartAt.isAfter(now)) {
                 continue;
             }
 
@@ -339,6 +342,10 @@ public class ScheduledMessageTaskService {
             activeTaskKeys.add(taskKey);
 
             ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
+            if (isCompletedStageReminderOccurrence(task, stageStartAt)) {
+                savedTasks.add(task);
+                continue;
+            }
             if (!StringUtils.hasText(task.getId())) {
                 task.setId(new ObjectId().toHexString());
             }
@@ -374,6 +381,19 @@ public class ScheduledMessageTaskService {
             savedTasks.add(suspendTask(existing, updatedBy, nowIso));
         }
         return savedTasks;
+    }
+
+    private boolean isCompletedStageReminderOccurrence(
+            ScheduledMessageTask task,
+            Instant stageStartAt) {
+        if (task == null
+                || stageStartAt == null
+                || !STATUS_COMPLETED.equals(safeText(task.getStatus()))) {
+            return false;
+        }
+        Map<String, String> payload = task.getPayload();
+        return payload != null
+                && stageStartAt.toString().equals(safeText(payload.get("stageStartAtIso")));
     }
 
     public List<ScheduledMessageTask> suspendEventStageReminders(String eventId, String actorUserId) {
@@ -1041,6 +1061,20 @@ public class ScheduledMessageTaskService {
             return List.of();
         }
         return event.getSubEvents();
+    }
+
+    private boolean isTournamentStage(SubEventItem subEvent) {
+        if (subEvent == null || Boolean.TRUE.equals(subEvent.optional())) {
+            return false;
+        }
+        return positive(subEvent.tournamentGroupCapacityMin())
+                || positive(subEvent.tournamentGroupCapacityMax())
+                || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
+                || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()));
+    }
+
+    private boolean positive(Integer value) {
+        return value != null && value > 0;
     }
 
     private String stageReminderSubEventId(SubEventItem subEvent, int index) {

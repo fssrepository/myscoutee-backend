@@ -32,6 +32,9 @@ Usage:
   bash manual-qa-checkpoints.sh status stat-012
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
+  bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
+  bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
+  bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh switch event-domain <current-checkpoint-id> <next-checkpoint-id>
@@ -46,7 +49,44 @@ Usage:
   bash manual-qa-checkpoints.sh prepare-periodic-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh schedule-auto-inviter event-domain EVENT-EDITOR-003 [delay-seconds]
   bash manual-qa-checkpoints.sh arm-ticket-expiry event-domain EVENT-TICKET-006
+  bash manual-qa-checkpoints.sh arm-tournament-review event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh verify-tournament-review-noop event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh prepare-tournament-finalize-notification-retest event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh verify-tournament-finalize-notification event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh prepare-tournament-notification-sequence-retest event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh verify-tournament-finalize-sequence event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence-noop event-domain TOURNAMENT-003
+  bash manual-qa-checkpoints.sh prepare-tournament-final-carry-forward event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh repair-tournament-final-start-window event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh prepare-tournament-final-start-recipient-retest event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh recover-tournament-final-start-recipient-retest-after-seed-reset event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh verify-tournament-final-start event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh prepare-tournament-final-completion-boundary event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh prepare-tournament-final-completion-retest event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh verify-tournament-final-completion event-domain TOURNAMENT-004
+  bash manual-qa-checkpoints.sh verify-tournament-room-life-baseline event-domain TOURNAMENT-ROOM-LIFE-001
+  bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
+  bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh verify-tournament-admission-rejection event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh verify-score-reopen event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh rearm-score-reopen event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh verify-score-correction event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh clean-score-reopen-reminders event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh arm-score-reopen-review event-domain TOURNAMENT-SCORE-REOPEN-001 [delay-seconds]
+  bash manual-qa-checkpoints.sh verify-score-reopen-result event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh arm-score-reopen-noop event-domain TOURNAMENT-SCORE-REOPEN-001 [delay-seconds]
+  bash manual-qa-checkpoints.sh verify-score-reopen-noop event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh prepare-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+  bash manual-qa-checkpoints.sh verify-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+  bash manual-qa-checkpoints.sh repair-tournament-admission-oracle event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-visibility event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-invitation-projection event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-root-projection event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh repair-ticket-payment-fixture event-domain EVENT-TICKET-007
+  bash manual-qa-checkpoints.sh repair-tournament-room-presentation event-domain TOURNAMENT-002
+  bash manual-qa-checkpoints.sh repair-tournament-room-notifications event-domain TOURNAMENT-002
   bash manual-qa-checkpoints.sh prepare-ticket-invite-candidate event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-invitee-response-retest event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-admin-approval-retest event-domain EVENT-TICKET-007
@@ -161,7 +201,16 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
-    event-domain) scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js" ;;
+    chat-domain) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
+    event-domain)
+      if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-001" ] || [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-002" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-score-reopen-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js"
+      fi
+      ;;
     asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     auth-session) scenario_script="${SCRIPT_DIR}/scenarios/auth-session-checkpoints.js" ;;
@@ -274,11 +323,66 @@ case "${scenario}:${command}" in
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;
+  chat-domain:stage|chat-domain:status|chat-domain:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "CHAT-LIST-001" ] || fail "${command} is restricted to CHAT-LIST-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
+  event-domain:prepare-tournament-notification-sequence-retest|\
+  event-domain:verify-tournament-finalize-sequence|\
+  event-domain:verify-tournament-advancement-sequence|\
+  event-domain:verify-tournament-advancement-sequence-noop|\
+  event-domain:prepare-tournament-final-carry-forward|\
+  event-domain:repair-tournament-final-start-window|\
+  event-domain:prepare-tournament-final-start-recipient-retest|\
+  event-domain:recover-tournament-final-start-recipient-retest-after-seed-reset|\
+  event-domain:verify-tournament-final-start|\
+  event-domain:prepare-tournament-final-completion-boundary|\
+  event-domain:prepare-tournament-final-completion-retest|\
+  event-domain:verify-tournament-final-completion)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-card-transition)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:prepare-tournament-admission-invitation|\
+  event-domain:prepare-tournament-admission-approval|\
+  event-domain:verify-tournament-admission-rejection|\
+  event-domain:repair-tournament-admission-oracle|\
+  event-domain:repair-tournament-admission-visibility|\
+  event-domain:repair-tournament-admission-invitation-projection|\
+  event-domain:repair-tournament-admission-root-projection)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-ADMISSION-001" ] || fail "${command} is restricted to TOURNAMENT-ADMISSION-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:rearm-score-reopen|\
+  event-domain:verify-score-reopen|\
+  event-domain:verify-score-correction|\
+  event-domain:clean-score-reopen-reminders|\
+  event-domain:verify-score-reopen-result|\
+  event-domain:verify-score-reopen-noop)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-SCORE-REOPEN-001" ] || fail "${command} is restricted to TOURNAMENT-SCORE-REOPEN-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:arm-score-reopen-review|event-domain:arm-score-reopen-noop)
+    [ "$#" -ge 3 ] && [ "$#" -le 4 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-SCORE-REOPEN-001" ] || fail "${command} is restricted to TOURNAMENT-SCORE-REOPEN-001."
+    run_scenario "${command}" "${scenario}" "${4:-15}" "$3"
+    ;;
+  event-domain:prepare-score-reopen-late-guard|event-domain:verify-score-reopen-late-guard)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-SCORE-REOPEN-002" ] || fail "${command} is restricted to TOURNAMENT-SCORE-REOPEN-002."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

@@ -56,6 +56,8 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService {
+    private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
+    private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
     private static final String OWNER_TYPE_GROUP = "group";
@@ -67,6 +69,10 @@ public class ActivitiesMembersService {
     private static final String STATUS_SUPPRESSED = "suppressed";
     private static final String RESOURCE_STATUS_DELETED = "D";
     private static final String STATUS_DISQUALIFIED = "disqualified";
+    private static final String STAGE_STATUS_ACTIVE = "A";
+    private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
+    private static final String STAGE_STATUS_FINALIZED = "F";
+    private static final String STAGE_STATUS_SUSPENDED = "S";
     private static final String ACTION_ACCEPT = "accept";
     private static final String ACTION_REMOVE = "remove";
     private static final String ACTION_DISQUALIFY = "disqualify";
@@ -176,7 +182,7 @@ public class ActivitiesMembersService {
             return List.of();
         }
         if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)
-                && !accessControlService.canCurrentActorViewEventMembers(normalizedOwnerId)) {
+                && !canViewEventOwnerMembers(normalizedOwnerId, eventId, subEventId)) {
             return List.of();
         }
 
@@ -211,6 +217,32 @@ public class ActivitiesMembersService {
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .toList();
+    }
+
+    private boolean canViewEventOwnerMembers(String ownerId, String parentEventId, String subEventId) {
+        if (accessControlService.canCurrentActorViewEventMembers(ownerId)) {
+            return true;
+        }
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedParentEventId = normalizeId(parentEventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedParentEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !normalizedOwnerId.startsWith(
+                        RANDOM_ROOM_EVENT_TYPE
+                                + ":"
+                                + normalizedParentEventId
+                                + ":"
+                                + normalizedSubEventId
+                                + ":")) {
+            return false;
+        }
+        ActivityEvent room = findPreferredEventRecord(normalizedOwnerId);
+        return room != null
+                && (RANDOM_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()))
+                        || TOURNAMENT_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType())))
+                && accessControlService.canCurrentActorViewEventMembers(normalizedParentEventId);
     }
 
     public ActivityMembersSyncResponseDto syncMembers(ActivityMembersSyncRequestDto request) {
@@ -1018,6 +1050,11 @@ public class ActivitiesMembersService {
                 && ACTION_ACCEPT.equals(action)
                 && STATUS_PENDING.equals(currentStatus)
                 && isAdminApprovalMembership(current);
+        if (approvingEventJoinRequest && isTournamentAdmissionLocked(findPreferredEventRecord(ownerId))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "tournament-registration-closed");
+        }
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !canManageOwnerMembers(
@@ -1287,6 +1324,11 @@ public class ActivitiesMembersService {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+        if (isTournamentAdmissionLocked(eventRecord == null
+                ? findPreferredEventRecord(normalizedEventId)
+                : eventRecord)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         boolean mutationApplied = false;
@@ -2107,6 +2149,34 @@ public class ActivitiesMembersService {
         return eventJoinLocks.computeIfAbsent(eventId, ignored -> new Object());
     }
 
+    public boolean isTournamentAdmissionLocked(ActivityEvent eventRecord) {
+        if (eventRecord == null || eventRecord.getSubEvents() == null) {
+            return false;
+        }
+        SubEventItem firstTournamentStage = eventRecord.getSubEvents().stream()
+                .filter(Objects::nonNull)
+                .filter(this::isTournamentStage)
+                .findFirst()
+                .orElse(null);
+        if (firstTournamentStage == null) {
+            return false;
+        }
+        String status = safeText(firstTournamentStage.stageStatus()).toUpperCase(Locale.US);
+        return STAGE_STATUS_ACTIVE.equals(status)
+                || STAGE_STATUS_SCORE_REVIEW.equals(status)
+                || STAGE_STATUS_FINALIZED.equals(status)
+                || STAGE_STATUS_SUSPENDED.equals(status);
+    }
+
+    private boolean isTournamentStage(SubEventItem stage) {
+        return stage != null
+                && !Boolean.TRUE.equals(stage.optional())
+                && ((stage.tournamentGroupCapacityMin() != null && stage.tournamentGroupCapacityMin() > 0)
+                    || (stage.tournamentGroupCapacityMax() != null && stage.tournamentGroupCapacityMax() > 0)
+                    || "Score".equalsIgnoreCase(safeText(stage.tournamentLeaderboardType()))
+                    || "Fifa".equalsIgnoreCase(safeText(stage.tournamentLeaderboardType())));
+    }
+
     private boolean isCapacityFullForJoin(ActivityEvent eventRecord, List<ActivityMember> existing, String joiningUserId) {
         int capacityTotal = Math.max(0, eventRecord == null || eventRecord.getCapacityTotal() == null ? 0 : eventRecord.getCapacityTotal());
         if (capacityTotal <= 0) {
@@ -2333,23 +2403,88 @@ public class ActivitiesMembersService {
 
     public List<String> syncSystemEventMembers(String eventId, String actorUserId, List<String> memberUserIds) {
         String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return List.of();
+        }
+        List<ActivityMember> existingMembers = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
         List<String> syncedUserIds = syncAcceptedOwnerMembers(
                 OWNER_TYPE_EVENT,
                 normalizedEventId,
                 actorUserId,
-                memberUserIds);
+                memberUserIds,
+                existingMembers);
         if (!StringUtils.hasText(normalizedEventId)) {
             return syncedUserIds;
         }
         refreshEmbeddedEventMembers(normalizedEventId, false);
         LinkedHashSet<String> affectedUserIds = new LinkedHashSet<>(normalizeUserIds(memberUserIds));
-        loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
+        existingMembers.stream()
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .forEach(affectedUserIds::add);
         userActivityCountersService.refreshEventCountersForUsers(new ArrayList<>(affectedUserIds));
         return syncedUserIds;
+    }
+
+    public List<String> syncMaterializedSystemEventMembers(
+            ActivityEvent materializedEvent,
+            String actorUserId,
+            List<String> memberUserIds) {
+        String eventId = normalizeId(materializedEvent == null ? null : materializedEvent.getSourceId());
+        return syncMaterializedSystemEventMembers(
+                materializedEvent,
+                actorUserId,
+                memberUserIds,
+                StringUtils.hasText(eventId)
+                        ? loadOwnerDocuments(OWNER_TYPE_EVENT, eventId)
+                        : List.of());
+    }
+
+    public List<String> syncMaterializedSystemEventMembers(
+            ActivityEvent materializedEvent,
+            String actorUserId,
+            List<String> memberUserIds,
+            List<ActivityMember> existingMembers) {
+        String eventId = normalizeId(materializedEvent == null ? null : materializedEvent.getSourceId());
+        if (!StringUtils.hasText(eventId)) {
+            return List.of();
+        }
+        List<ActivityMember> normalizedExistingMembers = existingMembers == null
+                ? List.of()
+                : existingMembers.stream().filter(Objects::nonNull).toList();
+        LinkedHashSet<String> previousAcceptedUserIds = normalizedExistingMembers.stream()
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        List<String> syncedUserIds = syncAcceptedOwnerMembers(
+                OWNER_TYPE_EVENT,
+                eventId,
+                actorUserId,
+                memberUserIds,
+                normalizedExistingMembers);
+        List<String> normalizedSyncedUserIds = normalizeUserIds(syncedUserIds);
+        materializedEvent.setAcceptedMembers(normalizedSyncedUserIds.size());
+        materializedEvent.setPendingMembers(0);
+        materializedEvent.setAcceptedMemberUserIds(normalizedSyncedUserIds);
+        materializedEvent.setPendingMemberUserIds(List.of());
+        materializedEvent.setInvitedMemberUserIds(List.of());
+        materializedEvent.setPendingRequestMemberUserIds(List.of());
+        materializedEvent.setAdmins(List.of());
+        materializedEvent.setCapacityTotal(Math.max(
+                normalizedSyncedUserIds.size(),
+                materializedEvent.getCapacityTotal() == null ? 0 : materializedEvent.getCapacityTotal()));
+        materializedEvent.setFull(resolveDirectEventFull(materializedEvent));
+        activityEventsRepository.save(materializedEvent);
+        LinkedHashSet<String> addedUserIds = new LinkedHashSet<>(normalizedSyncedUserIds);
+        addedUserIds.removeAll(previousAcceptedUserIds);
+        previousAcceptedUserIds.removeAll(new LinkedHashSet<>(normalizedSyncedUserIds));
+        userActivityCountersService.applyActiveEventMembershipDeltas(
+                addedUserIds,
+                previousAcceptedUserIds);
+        return normalizedSyncedUserIds;
     }
 
     private List<String> syncAcceptedOwnerMembers(
@@ -2362,10 +2497,31 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
             return List.of();
         }
+        return syncAcceptedOwnerMembers(
+                normalizedOwnerType,
+                normalizedOwnerId,
+                actorUserId,
+                memberUserIds,
+                loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId));
+    }
+
+    private List<String> syncAcceptedOwnerMembers(
+            String ownerType,
+            String ownerId,
+            String actorUserId,
+            List<String> memberUserIds,
+            List<ActivityMember> existingMembers) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
+            return List.of();
+        }
 
         String normalizedActorUserId = resolveActorUserId(actorUserId);
         String nowIso = Instant.now().toString();
-        List<ActivityMember> existing = loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId);
+        List<ActivityMember> existing = existingMembers == null
+                ? List.of()
+                : existingMembers.stream().filter(Objects::nonNull).toList();
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
             if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {

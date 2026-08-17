@@ -170,6 +170,15 @@ public final class SharedDtos {
             String source) {
     }
 
+    public record TournamentCurrentStageDto(
+            @Field("id")
+            String id,
+            String name,
+            Integer stageNumber,
+            Integer totalStages,
+            String status) {
+    }
+
     public record SubEventDefinitionDto(
             @Field("id")
             String id,
@@ -230,7 +239,63 @@ public final class SharedDtos {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId,
+            Integer stageResultRevision,
             List<SubEventGroupItemDto> groups) {
+
+        public SubEventItemDto(
+                String id,
+                String name,
+                String description,
+                String startAt,
+                String endAt,
+                String location,
+                String createdByUserId,
+                Integer tournamentGroupCapacityMin,
+                Integer tournamentGroupCapacityMax,
+                String tournamentLeaderboardType,
+                Integer tournamentAdvancePerGroup,
+                Boolean optional,
+                PricingConfigDto pricing,
+                Integer capacityMin,
+                Integer capacityMax,
+                Integer membersAccepted,
+                Integer membersPending,
+                Integer carsPending,
+                Integer accommodationPending,
+                Integer suppliesPending,
+                Integer carsAccepted,
+                Integer accommodationAccepted,
+                Integer suppliesAccepted,
+                Integer carsCapacityMin,
+                Integer carsCapacityMax,
+                Integer accommodationCapacityMin,
+                Integer accommodationCapacityMax,
+                Integer suppliesCapacityMin,
+                Integer suppliesCapacityMax,
+                Integer slotStartOffsetMinutes,
+                Integer slotDurationMinutes,
+                Integer groupsCount,
+                Integer groupsPending,
+                String stageStatus,
+                String stageStatusReason,
+                String stageStatusUpdatedAt,
+                String stageFinalizedAt,
+                String stageFinalizedByUserId,
+                List<SubEventGroupItemDto> groups) {
+            this(
+                    id, name, description, startAt, endAt, location, createdByUserId,
+                    tournamentGroupCapacityMin, tournamentGroupCapacityMax,
+                    tournamentLeaderboardType, tournamentAdvancePerGroup, optional, pricing,
+                    capacityMin, capacityMax, membersAccepted, membersPending,
+                    carsPending, accommodationPending, suppliesPending,
+                    carsAccepted, accommodationAccepted, suppliesAccepted,
+                    carsCapacityMin, carsCapacityMax,
+                    accommodationCapacityMin, accommodationCapacityMax,
+                    suppliesCapacityMin, suppliesCapacityMax,
+                    slotStartOffsetMinutes, slotDurationMinutes, groupsCount, groupsPending,
+                    stageStatus, stageStatusReason, stageStatusUpdatedAt,
+                    stageFinalizedAt, stageFinalizedByUserId, null, groups);
+        }
 
         public SubEventItemDto(
                 String id,
@@ -282,7 +347,7 @@ public final class SharedDtos {
                     suppliesCapacityMin, suppliesCapacityMax,
                     slotStartOffsetMinutes, slotDurationMinutes, groupsCount, null,
                     stageStatus, stageStatusReason, stageStatusUpdatedAt,
-                    stageFinalizedAt, stageFinalizedByUserId, List.of());
+                    stageFinalizedAt, stageFinalizedByUserId, null, List.of());
         }
 
         public SubEventItemDto(
@@ -356,6 +421,7 @@ public final class SharedDtos {
                     null,
                     null,
                     null,
+                    null,
                     List.of());
         }
 
@@ -399,6 +465,7 @@ public final class SharedDtos {
                     stageStatusUpdatedAt,
                     stageFinalizedAt,
                     stageFinalizedByUserId,
+                    stageResultRevision,
                     groups);
         }
 
@@ -442,6 +509,7 @@ public final class SharedDtos {
                     stageStatusUpdatedAt,
                     stageFinalizedAt,
                     stageFinalizedByUserId,
+                    stageResultRevision,
                     groups);
         }
     }
@@ -601,6 +669,7 @@ public final class SharedDtos {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId,
+            Integer stageResultRevision,
             Integer groupsCount) {
     }
 

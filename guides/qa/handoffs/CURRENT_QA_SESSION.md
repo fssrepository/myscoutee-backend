@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-15
+Updated: 2026-08-17 20:16 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -15,8 +15,15 @@ file first, then open only the linked active checkpoint section.
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+- Public repository QA pointer and concise current totals; synchronize it after
+  every CSV/XLSX status change:
+  [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+- Isolated first-stage admission fixture:
+  [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
+- Isolated corrected-score revision fixture:
+  [`tournament-score-reopen-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-score-reopen-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -31,19 +38,37 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-001 — manual definition and initial UI
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-001--manual-definition-and-initial-ui
-scenario: event-domain (baseline staged at 2026-08-14T23:09:25.629Z)
-ledger_status: EXECUTING / BASELINE PROVEN
-state: LANDING-ELIGIBILITY-001 functional branches are complete and reset; its real Firebase-login retention substep remains deferred. TOURNAMENT-001 now has one guarded canonical event QA TOURNAMENT-001 in Tournament mode, active/published, capacity 3/8 with Casey Admin plus Nova/Riley accepted. Qualifiers is stage 1 with two groups, group capacity 1..2 and advance 1; Final is stage 2 with one group, capacity 1..2 and advance 0. Runtime groups, leaderboard, event tasks, outbox and recompute are all zero. One launcher-owned Casey host browser is open from after stage; the three terminal LANDING windows were replaced.
-required_resume: Continue only in the existing Casey TOURNAMENT-001 browser. First verify the published event's Manage Event editor shows Tournament mode and the two exact stage definitions without saving. Then inspect the runtime Sub Events list and each stage's Groups dashboard without starting a stage. Codex checks the persisted oracle after every read-only surface; no worker or mutation is allowed.
-event: QA TOURNAMENT-001
+checkpoint: CHAT-LIST-001 — chat list and contexts
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
+scenario: Tournament reopened at 9/13 by four newly captured member/DQ/resource gaps; CHAT-LIST-001 remains the already-staged live boundary
+ledger_status: PENDING / MANUAL EXECUTION PAUSED
+state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser was opened from the CHAT-LIST-001 manifest. No further manual case is executed on 2026-08-17. The ledger now also contains TOURNAMENT-MEMBER-001/002, TOURNAMENT-DQ-001 and TOURNAMENT-RESOURCE-001 plus six new Asset rows; none is executed.
+required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, finish the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread. After CHAT-LIST-001 is fully closed/reset, return to the higher-priority reopened Tournament block at TOURNAMENT-MEMBER-001; do not discard this already-staged Chat boundary merely to reorder domains.
+event: manual-qa-checkpoint:v1:chat-list:event (identity only; no Event document is required by this list fixture)
 actors:
-  active: Casey tournament host, one launcher-owned demo browser on /game
-  controls: Nova and Riley are persisted accepted-member controls only; no browser windows are required for this read-only checkpoint
-next_actor: Casey opens Activities -> Events -> My Events -> QA TOURNAMENT-001 -> Manage Event and inspects Tournament plus both stage-definition cards without saving.
+  Casey: sole controlled Chat-list reader
+next_actor: Casey opens Activities -> Chats and checks the All list before switching context
 stop_phrase: megvan
 ```
+
+Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
+registration lock at first-stage Start. Rejected post-Start Join, invitation
+acceptance and Admin approval are three branches of this checkpoint and must
+leave parent membership, nested Groups, capacity, chat, leaderboard, counters,
+checkout and notifications unchanged. Parent admission remains outside the
+nested `Groups` counter; event-owner materialized rooms keep member-pending at
+zero. Never alter the already-passed Start notification producers for this
+checkpoint.
+
+Separate captured score-correction follow-ups:
+`TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
+corrected Finalize` as a new durable result revision with new exact-once
+participant outcomes, while `TOURNAMENT-SCORE-REOPEN-002` owns the guard that
+forbids an ordinary correction after a dependent stage has started. Java,
+HTTP and frontend-local carry the revision and Reopen guards. Both
+score-correction checkpoints are PASS/CLOSED; the late guard was exercised
+through the real Java route and its retained fixture was reset. Do not replay
+their closed Start/Finalize/result producers when preparing another domain.
 
 ### Efficient resume gate
 
@@ -107,21 +132,108 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-001 — manual definition and initial UI`, editor branch: in the
-existing Casey window open Activities -> Events -> My Events, choose **Manage
-Event** on `QA TOURNAMENT-001`, and inspect Tournament mode plus the Qualifiers
-and Final stage cards without saving. Then write `megvan`; Codex checks the
-read-only persisted oracle before the runtime-list branch.
+The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
+both score-reopen checkpoints, and its retained fixture is reset. Coverage
+audit added four unexecuted Tournament-specific cases: pre-Start terminal
+membership cutoff, active participant removal, DQ/Reinstate and generated-
+group resource aggregation. Therefore the domain is now 9/13, without
+invalidating any closed Start/Finalize evidence. Machine setup for the already-
+active `CHAT-LIST-001` boundary is complete: four known context rows, exact
+totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
+manual branch is now due: open Activities -> Chats, inspect All, switch through
+Event, Group, Service and App Support, then close/reopen and confirm All is
+unchanged. Do not open a thread. Closed Tournament and `CHAT-AUTH-001`
+producers remain untouched. Once this staged Chat row closes, generated domain
+priority returns to Tournament before continuing the remaining Chat rows.
+
+When a guarded fixture repair changes time or state behind an already-open
+browser, its old projection is not valid visual evidence. Require one explicit
+reload at that boundary, record why it is required, and do not misclassify the
+stale view as a backend state or silently reload during an in-place assertion.
+
+For a lifecycle transition that closes discovery or admission, first reuse an
+existing main-record write-side state whose normal read path already enforces
+the desired visibility. Do not add a tournament-only read projection or make
+Explore walk stage state. In the current tournament contract, first-stage Start
+changes the main event visibility to `Invitation only`; Explore therefore omits
+the event, while the direct Java/local admission guards remain defense in depth
+for stale links, invitations and Admin approval.
+
+Performance comparison rule for transactional QA: compare only two executions
+that persisted the same complete domain result. A fast false-success/no-op is
+not a valid latency baseline. Trace the request from its first owning read to
+its last owning write, count the materialized records, and optimize redundant
+write-path round trips (already batch-loaded reads, duplicate saves, immediate
+read-after-acknowledged-write, or full counter reprojection when the mutation
+has an exact idempotent delta). Keep the independent post-request oracle strict;
+removing an in-request readback must never remove the separate QA read oracle.
 
 ## QA working method
 
 ### 1. One checkpoint, one transition
+
+The physical CSV/XLSX row order is the manual execution order, not merely a
+visual grouping. The main testcase table has one normalized, domain-colored
+`QA domain` column; its other cells retain the existing status/scope colors.
+The workbook's separate `QA domain | Priority | Progress` table is generated
+from the same rows, begins at row 8 as three side-by-side columns above the
+main table, orders whole domains by numeric `Priority DESC`, and shows `passed
+/ total (percentage)` per domain. The generator owns compact A-Q widths: all
+17 primary columns remain visible without a default horizontal scroll, long
+content shows as much as the compact cell and its existing line breaks allow,
+and only the two formula-helper columns remain hidden. Summary count cells are
+right-aligned. Priority-table Progress cells use completion bands independently
+from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
+75–99% light green and 100% green. Keep every domain in one contiguous block
+and keep EXT domains at the end. The top-level taxonomy is intentionally
+coarse: 10 Core capability/operations domains plus Operator, Payment and
+Deployment EXT boundaries, prioritized continuously from `13` down to `1`.
+A generated priority overview places the first five Core domains in its first
+hasáb, the remaining five Core domains in its second hasáb, and reserves the
+third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
+hasáb must therefore always sum to the separate External count (currently 56)
+rather than being mixed into the Core execution queue.
+A browser surface, device type, test technique or one-off checkpoint name is
+not a domain. Put details such as registration, public landing eligibility,
+mobile WebView, Statistics, Monitoring and background jobs in the owning
+domain's `Area` instead of manufacturing singleton domains. Create a new
+top-level domain only for an independently executable capability with a
+material workflow set; otherwise classify the row under its real owner.
+Preserve the intentional checkpoint order inside each block. Once execution
+enters a domain, finish that block before selecting another. After the
+currently active domain closes, choose the highest-priority Core domain whose
+Progress is below 100%, then close its Pending/Not started rows in physical
+order. Status colors never select the next test. More generally, whenever
+fixture dependencies and the active transactional checkpoint allow a choice,
+execute the higher numeric priority first; choosing a lower-priority open case
+requires an explicit dependency reason or user reprioritization. Newly
+discovered foreign-domain coverage may be recorded beside its own rows, but
+must not become the live checkpoint, trigger fixture/browser setup, or load
+that foreign-domain pack. The resume pointer records the current row; it must
+not hard-code a domain-specific methodology rule.
 
 Each transactional boundary has one controlled producer action and explicitly
 records: before state, manual action, immediate state, worker expectation,
 delayed projection, unchanged controls and independent persisted oracle. A
 checkpoint row may contain a short causally continuous sequence of these
 boundaries under the granularity rules below. UI evidence alone is not a PASS.
+
+For tournament lifecycle notifications, manual and automatic producers share
+one semantic contract. Every Start/close/finalize message identifies the stage;
+advancement identifies both the completed and destination stages; terminal
+finalization explicitly says that the whole tournament ended and carries the
+result context. Manual producers alone exclude their actor from redundant
+acknowledgements. Persist the stage index/total and use the shared stage-card
+accent only on the notification avatar; normal notification rules continue to
+own the row background. Verify frontend-local and persisted EN/HU keys together.
+
+Before declaring a worker FAIL, resolve the original production write contract
+and its existing regression coverage. Tournament score review, for example,
+synchronizes advancing users into next-stage `group` memberships; a separate
+tournament-room event/chat belongs to the random/start grouping path. The
+checkpoint oracle must inspect the owning records and plan marker for the path
+under test, rather than requiring an artifact produced by a neighbouring
+workflow.
 
 This campaign is a developer-AI collaborative repair session, not a two-person
 QA handoff. Codex owns the complete machine-side loop: fixture staging,
@@ -142,22 +254,46 @@ guarded stale zero-snapshot checkpoint, and stage the next independent
 checkpoint directly when its definition provides the required state. Never
 make the user replay an already-PASS producer only to reconstruct reset data.
 
+Historical checkpoint evidence and a live replay fixture are different data
+classes. Keep closed-branch notifications in the saved oracle; do not reinsert
+them into the live inbox/outbox when a later checkpoint uses a new time window.
+Clean generated-child cleanup must also discover orphaned artifacts through
+their persisted parent identity (for example `payload.parentEventId` plus
+`eventScope`), not only through a child event that may already have disappeared.
+Otherwise polling can resurrect stale notifications after the visible child
+record has been removed.
+
 ### 1.1 Checkpoint granularity and new rows
 
 - Treat the already-versioned testcase set as an immutable workflow spine
   during a coverage-expansion audit. Do not split, merge, rename, renumber or
-  rewrite those rows merely to make the new plan look more uniform. Count
+  rewrite its IDs or test contracts merely to make the new plan look more
+  uniform. The `QA domain` classification may be normalized only as an
+  explicit taxonomy migration while all other existing cells remain
+  unchanged. Count
   logical CSV records rather than physical lines because quoted multiline
   cells span several file lines; ignore `LEGEND-*` records when quoting the
-  testcase total. Capture a canonical serialized hash of every pre-existing
-  logical row before appending, then prove the same prefix and hash after CSV
-  and XLSX synchronization. New coverage is appended after that prefix with
-  new stable IDs and ordered checkpoint groups. The target count is an audit
-  result, not a quota: record all materially distinct bounded contracts, but
-  never manufacture row splits only to reach an estimate.
+  testcase total. Capture a canonical serialized hash keyed by every
+  pre-existing testcase ID and prove the same ID/content hashes after CSV and
+  XLSX synchronization. Insert new Core coverage beside its owning domain
+  rows and before the `LEGEND-EXT`/external block; do not append a Core row
+  after EXT merely because it was discovered later. Preserve the relative
+  order and contents of all existing testcase rows while doing so. New rows
+  receive stable IDs and ordered checkpoint groups. The target count is an
+  audit result, not a quota: record all materially distinct bounded contracts,
+  but never manufacture row splits only to reach an estimate.
+- A feature-rich domain must not be represented by one umbrella row. Audit its
+  actual visible and persisted contracts, then create short, causally
+  continuous cases. The 2026-08-16 Chat audit is the reference:
+  `CHAT-AUTH-001` remains the authorization boundary, while list/history,
+  realtime delivery, unread/read, message mutations, reactions/pins,
+  attachments, members/reporting and push delivery are separate rows. This
+  produced 20 real Chat cases without changing the active Tournament resume
+  pointer.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
-  workbook totals. Verify the CSV has 16 columns per logical record, unique
+  workbook totals. Verify the CSV has 17 columns per logical record, including
+  the normalized `QA domain`, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
   per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
@@ -173,6 +309,13 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
+- After every CSV/XLSX status change, also update the root README's **Manual QA
+  status** block. Keep that public summary deliberately compact: show only
+  passed and remaining counts separately for Core and External, plus the total
+  case count. Derive those values from the same classifiers as the generated
+  workbook, and keep its active-checkpoint sentence aligned with this handoff's
+  sole resume pointer. Detailed Pending/Not started/Failed counts belong only
+  in the QA matrix. Treat a stale README summary as an incomplete ledger update.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
 - One producer action or a short causally continuous sequence may stay in one
@@ -312,6 +455,14 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   setup. After the producer action, never reload before capturing the in-place
   result; otherwise the immediate and reload/read branches become
   indistinguishable.
+- For notifications caused by a manual action, derive the recipient set from
+  the owning producer and explicitly compare it with analogous manual actions
+  before asking the user to inspect delivery. The actor normally must not
+  receive a self-notification; for tournament stage actions, manual Finalize
+  follows the already-proven manual Start exclusion rule. Persist and inspect
+  the outbox recipients first, then use browser counters/content as delivery
+  evidence. A three-client counter convergence is not PASS if the actor should
+  have been excluded.
 - Before a one-time credential action whose success state intentionally hides
   the original code, explicitly retain the complete QR in a controlled QA
   screenshot/tab before issuing the producer instruction. This is required
@@ -488,6 +639,22 @@ make the user replay an already-PASS producer only to reconstruct reset data.
 - Treat Notifications as persisted evidence by default, not as a domain action
   surface. A notification menu owns a business transition only when its actual
   converter/menu implementation exposes that action.
+- For a manual recovery action that substitutes for a normally automatic
+  producer, preserve the normal scheduler path and test the recovery path
+  separately. Persist the recovered domain objects before emitting success
+  notifications; order the shared transition notification before derived
+  per-object notifications; exclude the initiating actor only from a
+  redundant action acknowledgement, not from a derived notification that is
+  also relevant to that actor. Prove recipient sets, exact cardinality and
+  persisted timestamps before comparing the unread UI ordering.
+- Tournament lifecycle notifications must identify their exact semantic
+  boundary in persisted payload and visible copy: `{stageTitle} started`,
+  `{stageTitle} finalized`, `Advanced to {nextStageTitle}`, or the distinct
+  whole-`Tournament finalized` terminal state. Carry stage index/total with
+  every system stage row. Render only the left system avatar/icon from the
+  shared stage accent-hue calculation; keep the notification row background
+  under the independent notification-tone rules. Verify frontend-local and
+  live Mongo EN/HU keys together so a fallback-only English row cannot pass.
 - For an unread/New notification assertion, stop and inspect New before any
   later action that intentionally resolves or marks that row read. A later
   read row in All can prove persistence and resolution, but it is not evidence
@@ -528,6 +695,12 @@ make the user replay an already-PASS producer only to reconstruct reset data.
   setup, add the narrowest shared/local regression coverage available and
   record local runtime as **NOT EXECUTED**, with the exact reason. Never infer
   local PASS from an HTTP replay, or HTTP PASS from a local replay.
+- The ledger keeps this distinction in the adjacent `Dev` and `Local` columns
+  under the workbook's `ENVIRONMENTS` header. Put `X` only where that runtime
+  was actually executed, `-` where the session explicitly chose not to execute
+  it, and leave the cell empty while the environment decision is still open.
+  These markers describe execution coverage; they never change the testcase's
+  independent Result.
 - For an adapter-specific defect, repair its owning adapter and inspect the
   parallel adapter for the same invariant. Do not broaden the code change when
   the parallel contract is already correct, but run its focused check when the
@@ -562,6 +735,25 @@ or projection. Add the missed collection to the fixture selectors, reset
 cleanup and status oracle. For an already-active legacy state, use one guarded,
 versioned repair action that proves the untouched boundary and records a reset
 snapshot; never issue an ad-hoc Mongo update or silently restage over it.
+
+A fixture must preserve the production entity hierarchy and the causal UI
+route being tested. Do not turn a nested stage, tournament group/room or slot
+into a root Activity entity merely to isolate a later action. Before staging,
+trace the existing aggregation from the parent counter through every nested
+menu to the terminal row, and seed one pending unit at its real write owner.
+Member-scoped child chat/notification records may remain independent while the
+child itself stays hidden from root event lists. If the first visual read
+reveals the wrong hierarchy, classify it as **NOT EXECUTED / invalid fixture**,
+reset it guard-first and redesign that same checkpoint; do not convert the
+accidental UI into a new workflow test.
+
+Hierarchy alone is insufficient: fixture membership status must also be
+reachable from the canonical producer. If a scheduler materializes accepted
+members directly and clears pending fields, do not inject a pending child
+membership merely to exercise an existing counter. Trace the producer's exact
+status transition and UI mutability before staging; an unreachable synthetic
+status is **NOT EXECUTED / invalid fixture**, even when its counters render
+correctly.
 
 Use the canonical harness against the already-running `mongodb` container:
 
@@ -807,7 +999,10 @@ checkpoint:
 4. Update the canonical matrix CSV with the current date, evidence and next
    oracle. Keep the row `IN PROGRESS` until the checkpoint's full chain passes.
 5. Run `python3 guides/qa/tools/sync-qa-matrix-xlsx.py`; the generated XLSX owns
-   status coloring and aggregate counts.
+   status coloring and aggregate counts. Its top summary and every domain
+   `passed / total (%)` value must remain worksheet formulas over the hidden
+   status/scope helpers with full recalculation on open; never hand-count or
+   hard-code those aggregate values during a checkpoint close.
 6. Update only the YAML resume pointer and next manual action in this file. Do
    not copy the detailed evidence or ledger row here.
 7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
@@ -835,17 +1030,26 @@ repair-and-clean-replay loop deterministic.
 
 The completed ticket, visibility, invitation, chat, demo-registration,
 consent, lifecycle and functional landing checkpoints retain their evidence.
-The active Core expansion continuation is:
+The current Tournament block order is:
 
 ```text
-ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
--> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
--> EVENT-LIFE-002 through EVENT-LIFE-005 (closed)
--> EVENT-INV-001 through EVENT-INV-006 (closed)
--> LANDING-ELIGIBILITY-001 (functional branches complete;
-   real Firebase-login retention deferred)
--> TOURNAMENT-001 (next, not staged)
+TOURNAMENT-001 through TOURNAMENT-004 (closed)
+-> TOURNAMENT-ROOM-LIFE-001 (closed)
+-> TOURNAMENT-CARD-001 (closed)
+-> TOURNAMENT-ADMISSION-001 (closed; HTTP/Java PASS, frontend-local NOT EXECUTED)
+-> TOURNAMENT-SCORE-REOPEN-001 (closed)
+-> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
+-> TOURNAMENT-MEMBER-001 (not run)
+-> TOURNAMENT-MEMBER-002 (not run)
+-> TOURNAMENT-DQ-001 (not run)
+-> TOURNAMENT-RESOURCE-001 (not run)
 ```
+
+`CHAT-LIST-001` was already staged before these gaps were captured. Finish that
+single live checkpoint first so its fixture is not discarded. The generated
+priority table then selects the reopened Tournament domain (priority 21) ahead
+of the remaining Chat domain (priority 20). Run the four new Tournament rows in
+their physical ledger order, then resume Chat. EXT remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The EXT payment/operator/registry/deployment sequence

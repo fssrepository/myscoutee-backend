@@ -31,6 +31,7 @@ public class ActivitySubEventStageRuntime {
     private String stageStatusUpdatedAt;
     private String stageFinalizedAt;
     private String stageFinalizedByUserId;
+    private Integer stageResultRevision;
     private Integer groupsCount;
     private Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupResourceMetricsByAssetOwnerId = new LinkedHashMap<>();
     private String createdDate;
@@ -60,6 +61,8 @@ public class ActivitySubEventStageRuntime {
     public void setStageFinalizedAt(String stageFinalizedAt) { this.stageFinalizedAt = stageFinalizedAt; }
     public String getStageFinalizedByUserId() { return stageFinalizedByUserId; }
     public void setStageFinalizedByUserId(String stageFinalizedByUserId) { this.stageFinalizedByUserId = stageFinalizedByUserId; }
+    public Integer getStageResultRevision() { return stageResultRevision; }
+    public void setStageResultRevision(Integer stageResultRevision) { this.stageResultRevision = stageResultRevision; }
     public Integer getGroupsCount() { return groupsCount; }
     public void setGroupsCount(Integer groupsCount) { this.groupsCount = groupsCount; }
     public Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> getGroupResourceMetricsByAssetOwnerId() { return groupResourceMetricsByAssetOwnerId; }

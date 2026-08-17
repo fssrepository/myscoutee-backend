@@ -19,6 +19,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinate
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.TournamentCurrentStageDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 
 @Document(collection = "events")
@@ -78,6 +79,7 @@ public class ActivityEvent {
     private String creatorInitials;
     private String creatorGender;
     private String creatorCity;
+    private String organizerUserId;
     private String visibility;
     private String blindMode;
     private String startAtIso;
@@ -117,6 +119,7 @@ public class ActivityEvent {
     private Boolean subEventsEnabled = true;
     private List<SubEventDefinitionDto> subEventDefinitions = new ArrayList<>();
     private List<SubEventItem> subEvents = new ArrayList<>();
+    private TournamentCurrentStageDto currentStage;
     private String mode = "Casual";
     private Double rating;
     private Double boost;
@@ -205,6 +208,8 @@ public class ActivityEvent {
     public void setCreatorGender(String creatorGender) { this.creatorGender = creatorGender; }
     public String getCreatorCity() { return creatorCity; }
     public void setCreatorCity(String creatorCity) { this.creatorCity = creatorCity; }
+    public String getOrganizerUserId() { return organizerUserId; }
+    public void setOrganizerUserId(String organizerUserId) { this.organizerUserId = organizerUserId; }
     public String getVisibility() { return visibility; }
     public void setVisibility(String visibility) { this.visibility = visibility; }
     public String getBlindMode() { return blindMode; }
@@ -297,6 +302,8 @@ public class ActivityEvent {
     }
     public List<SubEventItem> getSubEvents() { return subEvents; }
     public void setSubEvents(List<SubEventItem> subEvents) { this.subEvents = subEvents; }
+    public TournamentCurrentStageDto getCurrentStage() { return currentStage; }
+    public void setCurrentStage(TournamentCurrentStageDto currentStage) { this.currentStage = currentStage; }
     public String getMode() { return normalizeMode(mode); }
     public void setMode(String mode) { this.mode = normalizeMode(mode); }
     public Double getRating() { return rating; }
@@ -318,6 +325,28 @@ public class ActivityEvent {
         status = getStatus();
     }
 
+    public void refreshTournamentCurrentStage() {
+        List<SubEventItem> stages = (subEvents == null ? List.<SubEventItem>of() : subEvents).stream()
+                .filter(ActivityEvent::isTournamentStage)
+                .toList();
+        if (stages.isEmpty()) {
+            currentStage = null;
+            return;
+        }
+        int currentIndex = 0;
+        while (currentIndex + 1 < stages.size()
+                && "F".equals(normalizeTournamentStageStatus(stages.get(currentIndex).stageStatus()))) {
+            currentIndex += 1;
+        }
+        SubEventItem stage = stages.get(currentIndex);
+        currentStage = new TournamentCurrentStageDto(
+                normalizeText(stage.id()),
+                normalizeText(stage.name()),
+                currentIndex + 1,
+                stages.size(),
+                normalizeTournamentStageStatus(stage.stageStatus()));
+    }
+
     private String deriveStatusFromLegacy() {
         return STATUS_ACTIVE;
     }
@@ -337,6 +366,30 @@ public class ActivityEvent {
 
     private static String normalizeMode(String value) {
         return hasText(value) && "Tournament".equalsIgnoreCase(value.trim()) ? "Tournament" : "Casual";
+    }
+
+    private static boolean isTournamentStage(SubEventItem stage) {
+        if (stage == null || Boolean.TRUE.equals(stage.optional())) {
+            return false;
+        }
+        int groupMin = Math.max(0, stage.tournamentGroupCapacityMin() == null ? 0 : stage.tournamentGroupCapacityMin());
+        int groupMax = Math.max(0, stage.tournamentGroupCapacityMax() == null ? 0 : stage.tournamentGroupCapacityMax());
+        String leaderboardType = normalizeText(stage.tournamentLeaderboardType());
+        return groupMin > 0 || groupMax > 0
+                || "Score".equalsIgnoreCase(leaderboardType)
+                || "Fifa".equalsIgnoreCase(leaderboardType);
+    }
+
+    private static String normalizeTournamentStageStatus(String value) {
+        String normalized = normalizeText(value).toUpperCase();
+        return switch (normalized) {
+            case "RS", "SR", "F", "S", "E" -> normalized;
+            default -> "A";
+        };
+    }
+
+    private static String normalizeText(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private List<String> normalizeAdminIds(List<String> values) {

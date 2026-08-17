@@ -43,13 +43,14 @@ the same prerequisite without depending on an earlier human action.
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
-| Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-003`, `JOB-TOURNAMENT` |
+| Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-004`, `JOB-TOURNAMENT` |
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Tournament grouping | Parent/stage/group membership and group runtime state | Tournament groups and member panels | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-003` |
+| Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
-| Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
+| Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
+| Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
@@ -93,13 +94,20 @@ The principal checkpoint chains are:
   join approval, Past bucketing, two-step invitation acceptance and finally
   the same event's Friends Only discovery boundary.
 - `EVENT-EDITOR-004` -> `TOURNAMENT-001` -> `TOURNAMENT-002` ->
-  `TOURNAMENT-003`: tournament definition, grouping and advancement.
+  `TOURNAMENT-MEMBER-001` -> `TOURNAMENT-MEMBER-002` ->
+  `TOURNAMENT-DQ-001` -> `TOURNAMENT-RESOURCE-001` -> `TOURNAMENT-003`:
+  tournament definition, grouping, participant-state boundaries, generated-
+  group resources and advancement. Each new row uses an isolated fixture and
+  retains the already-closed Start/Finalize producers as immutable controls.
 - `EVENT-SLOT-001` -> `EVENT-SLOT-002`: one saved recurring template becomes
   multiple future slot sections with role/time-gated actions.
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
-- `ASSET-MEMBER-001` -> `ASSET-MEMBER-002` and `ASSET-ASSIGN-001`: asset
-  invitation and event/sub-event assignment are separate branches.
+- `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
+  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` -> `ASSET-AVAIL-001` ->
+  `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
+  asset lifecycle, discovery, manager membership, borrowing, availability and
+  normal sub-event assignment/cleanup are separate bounded branches.
 - `OPERATOR-PAYMENT-001` and `OPERATOR-PAYMENT-IP-001` are separate future
   operator-security branches: first prove secret lifecycle, then enforce a
   trusted resolved-client-IP allowlist without relying on frontend hiding.
@@ -718,7 +726,7 @@ Execution evidence on 2026-08-04:
 - Verify runtime group counts and stage rows correspond to the saved
   definition before any automatic grouping occurs.
 - Start the visible tournament action or arm only the documented persisted job
-  schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-003`.
+  schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
 ### `EVENT-EDITOR-005` — edit an active downstream definition
 
@@ -1931,6 +1939,108 @@ Execution evidence in progress on 2026-08-14:
 - After leave, disqualification or restored pending state, repeat the negative
   check. Treat any readable history outside accepted membership as a P0 privacy
   failure.
+
+## Chat functional coverage
+
+The authorization checkpoint above is only the membership/privacy boundary;
+it is not a substitute for the chat product surface. The following CP13 cases
+are deliberately short and sequential. Each case owns one visible transition
+and one persisted oracle. Reuse one controlled accepted-member chat where
+possible, but reset only the rows owned by the next case. The original
+Tournament lifecycle evidence remains closed at 9/9, but its coverage audit
+added four unexecuted member/DQ/resource rows and therefore reopened the domain
+at 9/13. `CHAT-LIST-001` remains the already-staged live boundary; after that
+single row closes, generated priority returns to Tournament before the rest of
+Chat.
+
+### List, history and transport
+
+- `CHAT-LIST-001`: load one known main-event, group, service and support chat,
+  switch the available contexts and sort once. Exact row IDs, context totals,
+  date order and compact header/status must survive close/reopen with no write.
+  - Prepared on `2026-08-17` for Casey with four isolated rows and unread
+    counters `All=4`, `Event=1`, `Sub-event=0`, `Group=1`, `Service=1`,
+    `App Support=1`.
+  - The authenticated Java page oracle already passed exact descending and
+    ascending IDs, exact per-context totals, one unread per row and stable
+    `ownerStatus=A`/revision 1. The post-read Mongo oracle is byte-identical;
+    an apparent first failure was an oracle-only BSON wrapper normalization
+    defect, while direct EJSON section comparison proved no product write.
+  - Remaining manual branch: open Chats, verify All plus each populated
+    context, close/reopen the popup and confirm the same All order/counters.
+    Do not open a thread, because read acknowledgement belongs to
+    `CHAT-READ-001`.
+- `CHAT-HISTORY-001`: open one thread containing 18 controlled messages. The
+  latest window and one older page must merge in reverse-thread order without
+  a gap or duplicate; day markers and exact IDs must survive reopen.
+- `CHAT-SEND-001`: send one unique text while another accepted participant
+  keeps the thread open. The sender gets one immediate pending/confirmed row,
+  the recipient gets the same persisted message once, and client/server echo
+  reconciliation must not duplicate it.
+- `CHAT-RECONNECT-001`: disconnect only the recipient transport, send one
+  message, then restore that connection. Catch-up must deliver the persisted
+  ID once and reconcile unread state without a browser reload.
+- `CHAT-TYPING-001`: produce one brief typing signal, stop it, then also prove
+  the remote TTL fallback. Only other accepted participants may see it; no
+  message, notification or counter may be written.
+
+### Unread and read acknowledgement
+
+- `CHAT-COUNTER-001`: send one message while the recipient Chat surface is
+  closed, then open only the list. Stored Chats/All/context counters, menu
+  badges and the row badge must all be `+1`; the sender remains unchanged and
+  list loading alone does not clear the value.
+- `CHAT-READ-001`: open the one-unread thread. Recipient counters change
+  exactly `1 -> 0`, one persisted reader identity appears, and the sender sees
+  one matching reader avatar without a new notification or duplicate after
+  reopen.
+
+### Message lifecycle and interaction
+
+- `CHAT-REPLY-001`: reply once to a controlled older message. Both clients
+  retain the immutable source ID/preview, and selecting the preview locates
+  the source even when the older history page first has to load.
+- `CHAT-EDIT-001`: edit one own text message and try the same mutation as a
+  different participant. The same ID gains one edit timestamp and live Edited
+  presentation; the non-owner is denied and no new message/unread is created.
+- `CHAT-DELETE-001`: unsend one own message and try as a non-owner. The same ID
+  becomes one tombstone, its payload/reply/reactions/readers/pin clear on every
+  client and reload, and surrounding history remains intact.
+- `CHAT-REACTION-001`: add a reaction from two users, change one and remove
+  one. There is at most one reaction per user, summary/detail identities agree
+  live and after reopen, and unread/notification counters do not change.
+- `CHAT-PIN-001`: pin one message, open Pinned, select its source and unpin.
+  One pinned ID/actor is persisted, navigation focuses the source, and the
+  terminal pinned list is empty without unrelated deltas.
+
+### Attachments and shared cards
+
+- `CHAT-IMAGE-001`: send one controlled image and open its preview. Both
+  clients use one canonical attachment identity/URL, the preview is readable,
+  and reload does not upload or render a duplicate.
+- `CHAT-VOICE-001`: record a few-second clip, review, send and play it once as
+  the recipient. One canonical clip survives reopen; cancel or denied recorder
+  permission creates neither a message nor orphan media.
+- `CHAT-POLL-001`: create one two-option poll, vote as two users and change one
+  vote. Totals progress `0 -> 1 -> 2` and remain `2` after the move; bars,
+  voter identities and persisted attachment state agree.
+- `CHAT-CARD-001`: send one event card and one asset or link card, then open
+  each. Canonical target IDs navigate through the shared target flow, while a
+  removed or denied target becomes unavailable without exposing its data.
+
+### Membership, moderation intake and device delivery
+
+- `CHAT-MEMBERS-001`: open the chat Member list and load one extra page only
+  when needed. IDs, roles and avatars equal canonical accepted membership;
+  pending/left users are absent, server-denied and no read causes a write.
+- `CHAT-REPORT-001`: report one participant message once and submit the same
+  report again. Exactly one Admin review identity contains the reporter,
+  chat/message context and no unrelated history; Admin resolution remains an
+  Administration-domain case.
+- `CHAT-PUSH-001`: background or close one accepted recipient app, send one
+  participant message and tap the push. Exactly one recipient push opens the
+  exact chat/message and reconciles in-app unread state; sender and system
+  messages are explicit no-push controls.
 
 ## Event feedback and Impressions checkpoints
 
@@ -4130,15 +4240,402 @@ Execution 2026-08-13 (in progress):
   tournament definition.
 - Verify parent event, stages, capacities, sequence, status and zero/initial
   group counts in Event Editor, stage list and tournament group popup.
+- Published event details are intentionally locked. Therefore this read-only
+  checkpoint uses two explicit fixture phases: an unpublished/draft identity
+  for the editable Event Editor surface and an equivalent published identity
+  for the runtime stage list/group popup. Do not ask the tester to Unpublish as
+  a workaround just to reach the editor; that would turn a read checkpoint into
+  an unrelated lifecycle mutation.
+
+Execution evidence (2026-08-15, runtime branch):
+
+- The guarded fixture contains one active/published Tournament event with
+  Casey, Nova and Riley accepted (`3/8`), Qualifiers capacity `2..4` with group
+  capacity `1..2` and advance `1`, and Final capacity `1..2` with group
+  capacity `1..2` and advance `0`. Runtime groups, leaderboard, lifecycle
+  tasks, outbox and recompute records are all zero.
+- Initial runtime inspection **FAIL**: Qualifiers projected four groups and
+  Final projected two because the duplicated group-count calculation used the
+  incoming parent capacity without capping it by the current stage capacity.
+  The standalone `Group capacity 1 - 2` label was also ambiguous.
+- The calculation is now one shared policy on the Java paths and one matching
+  frontend-local policy: effective incoming capacity is capped by the stage
+  maximum before deriving its group count. The obsolete fixture-only
+  `tournamentGroupCount` field was removed. The runtime card uses the compact
+  localized form `Groups: 2 × 1–2 members` / `Csoportok: 2 × 1–2 fő`.
+- Repair replay **PASS**: Qualifiers showed `Groups: 2 × 1–2 members` and only
+  groups A–B; Final showed `Groups: 1 × 1–2 members` and only group A. The
+  post-view read oracle still showed expected counts `2/1`, the same three
+  accepted identities and zero runtime group/leaderboard/task/outbox writes.
+- The fixture was corrected to stage the final editor branch explicitly as a
+  draft while retaining the already-proven published runtime evidence. Editor
+  screenshots
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-22.png`,
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-05.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-16-10.png`
+  prove Tournament mode, parent capacity `1..8`, Qualifiers duration/offset
+  `60/0`, group capacity `1..2`, Score, advance `1`, and Final duration/offset
+  `45/0`, group capacity `1..2`, Score, advance `0` without Save or Publish.
+- The editor's **Estimated Group Count** is deliberately a feasible range from
+  stage capacity and per-group min/max: Qualifiers `1 - 4`, Final `1 - 2`.
+  This is distinct from the published runtime's concrete generated counts
+  `2/1`. The checkpoint oracle now names and checks both concepts separately.
+- Final draft read oracle **PASS**: status remained `DR/published=false`, the
+  exact three accepted identities and every definition field stayed unchanged,
+  and runtime groups, leaderboard, tasks, outbox and recompute stayed zero.
+  `TOURNAMENT-001` is **PASS/CLOSED**.
 
 ### `TOURNAMENT-002` — automatic group membership projection
 
 - Provide accepted parent participants and run the real grouping path.
+- Stage the first round in `RS` with its start instant a few minutes in the
+  past and its end still in the future. This makes the real **Start Stage**
+  action immediately available without waiting, changing the workstation clock
+  or using a database write outside the versioned fixture.
+- Before opening browsers, synchronize and snapshot the three actors' normal
+  Activities event counters. Casey must have `All=1` and `My Events=1`; Nova
+  and Riley must each have `All=1` and `Active Events=1`. The matching red
+  counters must already be visible after initial page load, not only after a
+  SmartList query or popup open.
 - Verify every selected user is represented exactly once in the correct group,
   Event Members remains parent-scoped, the tournament group member screen is
   group-scoped, and group chat access matches group membership.
 - Pending invitation rows must not be counted as accepted group members unless
   the documented transition explicitly promotes them.
+
+Execution evidence (2026-08-15, first Start attempt):
+
+- Baseline UI found two fixture defects before/at the first write. The initial
+  actor activity counters were not synchronized, so the event card existed at
+  `3/8` but the top Events/My Events red counters were absent. The fixture now
+  snapshots and writes Casey `All/Hosting=1` and Nova/Riley `All/Active=1`
+  before browser launch, and the oracle exposes the three exact counter maps.
+- **Start Stage FAIL**: Casey's Qualifiers confirmation returned `200` but the
+  response retained `RS`, so the frontend correctly showed **Stage action was
+  not applied.** Screenshot
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 13-25-05.png`.
+  The post-action oracle proved a complete no-op: no runtime group, group
+  membership, chat, leaderboard, task or outbox document was written.
+- Root cause was fixture shape, not a relaxed backend guard: the runtime DTO
+  derived visible stage times from the parent, while the persisted fixture's
+  `subEvents[]` omitted physical `startAt/endAt`. The backend Start guard checks
+  the saved stage instant. The fixture now materializes both stage instants in
+  the same production save shape before staging; replay is required.
+
+Execution evidence (2026-08-15, second Start attempt):
+
+- **Start Stage FAIL / false success**: the repaired fixture allowed the real
+  action and the saved Qualifiers stage became `A` with runtime
+  `groupsCount=2`, but the independent oracle found zero generated room event,
+  zero room membership and zero group chat. The parent membership stayed at
+  the exact three accepted users and its counters stayed stable, so this was
+  not a read-side counter projection defect.
+- Request tracing found a separate performance boundary in the same write
+  path: targeted Start called an unbounded `ActivityEvent find {}` and filtered
+  the requested source ID in memory. The targeted random, priority and score
+  entry points now query only their requested event documents.
+- The grouping failure came from treating the normal scheduled random-room
+  generator's partial result as a successful explicit tournament Start. The
+  Start-specific path now requires exact configured-group coverage, falls back
+  deterministically when the affinity graph cannot populate disconnected
+  targets, and includes every explicitly accepted event participant regardless
+  of public discovery-profile visibility. The scheduled global random-room
+  behavior and its public discovery pool remain unchanged.
+- The versioned oracle now discovers generated `random-room:<parent>:...`
+  events before reading their membership/chat identities and removes those
+  artifacts during a clean reset. Replay this single Start boundary; do not
+  repeat `TOURNAMENT-001` or the earlier definition checks.
+
+Execution evidence (2026-08-15, first identity-complete Start replay):
+
+- **Persisted identity contract PASS**: Qualifiers became `A/groupsCount=2`;
+  two canonical Random Room events partitioned Casey+Nova and Riley exactly
+  once; three accepted room memberships, two physical chat identities (three
+  owner-scoped read documents), two welcome messages, three action outbox
+  records and one recompute task agreed. Each actor received exactly `+1`
+  Active/All event and `+1` event-chat counter while the parent counters stayed
+  stable.
+- The correct materializing request took about `494 ms` from its first event
+  read through the parent counter write. The earlier roughly `250 ms` response
+  is not a valid speed baseline because that false-success path created no
+  rooms, memberships, chats or notifications. The user still found the real
+  action only marginally faster, so the checkpoint remains open for one
+  performance replay before the group/member/chat UI inspection.
+- Write-path inspection found avoidable work after the grouping algorithm:
+  each fresh room was saved twice, its already batch-loaded memberships were
+  queried again, each affected user's complete event inventory/tickets were
+  reprojected, and chat persistence was reread immediately after `saveAll`.
+  The Start-owned path now consumes the batch membership snapshot, saves each
+  room once with its embedded accepted projection, applies one atomic bulk
+  Active/All membership delta, and trusts acknowledged chat writes without a
+  read-after-write query. This is a write-side optimization; SmartList and read
+  query semantics remain unchanged. Replay only Start to measure and prove the
+  same identity/counter result.
+
+Execution evidence (2026-08-15, write-roundtrip performance replay):
+
+- **Persisted identity/counter contract PASS again** with the same two rooms,
+  Casey+Nova and Riley exact partition, three accepted membership records, two
+  chat identities/three owner copies, two welcome messages, `A/groupsCount=2`,
+  three outbox records, one recompute task and exact `+1` Event/Chat deltas for
+  every actor.
+- The comparable request fell from about `494 ms` to `284 ms`, a reduction of
+  roughly `43%`; the user's UI observation also found it somewhat faster.
+- The terminal request trace still showed one independent generic parent-event
+  counter refresh after the exact room deltas. A stage status transition does
+  not move the parent event between Activities buckets, so this refresh only
+  reread each actor's complete membership/event/ticket inventory and rewrote
+  the same values. It has been removed from parent and generated-slot stage
+  actions; Random Room membership and chat writes remain the owners of their
+  exact counter deltas.
+
+Execution evidence (2026-08-15, final Start performance replay and group-read repair):
+
+- **Final Start replay PASS**: the persisted result stayed identical: two
+  generated rooms, exact Casey+Nova/Riley partition, three accepted room
+  memberships, two physical chats/three owner copies, two welcome messages,
+  `A/groupsCount=2`, three action-outbox records, one recompute and exact `+1`
+  Event/Chat deltas for all three actors. The request took about `435 ms`; the
+  variance from `284 ms` was in the remaining writes. Trace showed zero full
+  user event reprojections and zero unbounded event reads. The Start producer
+  is therefore accepted and must not be replayed again.
+- The first post-Start group GET exposed a separate **read-model FAIL**: the
+  persisted room memberships were correct, but Group A and Group B were shown
+  as `0/0`. The group DTO and Members action addressed the definition group's
+  normal `ownerType=group` identity, while Start deliberately materializes
+  membership under the generated Random Room event identity
+  `ownerType=event`, `random-room:<parent>:<stage>:<group>`.
+- The proper repair keeps the Start write model intact. The backend now
+  batch-loads both membership scopes, returns the selected `memberOwnerType`
+  and `memberOwnerId` with each group, and authorizes the parent event manager
+  to read only a real matching `eventType=random-room`. The frontend and its
+  local repository consume the explicit owner identity; materialized room
+  membership remains view-only rather than routing normal group mutations to
+  an event owner.
+- Post-hot-deploy read-only proof **PASS**: the same running transaction now
+  returns Group A `2` accepted with Casey Bridge and Nova Social, and Group B
+  `1` accepted with Riley Outside. No fixture, Start action or persisted state
+  was changed. The versioned oracle now reports manual definition-group rows
+  separately from derived generated tournament groups so an empty manual
+  collection cannot be mistaken for absent runtime grouping.
+- Remaining bounded UI proof: after one Casey reload for the new frontend
+  bundle, verify the Groups list shows `2 / 1–2` and `1 / 1–2`, then inspect
+  the two exact member lists and the group-scoped chats. Nova and Riley remain
+  untouched until their group/chat projections are requested.
+- **Generated-group UI and embedded standings PASS**: after the required Casey
+  reload, Qualifiers showed Group A `2 / 1–2` with Casey Bridge and Nova Social
+  exactly once, and Group B `1 / 1–2` with Riley Outside exactly once. This
+  matches both the persisted oracle and the repaired GET response. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-40-56.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-40-59.png`.
+  Remaining proof is the explicit Group Members navigation/view-only boundary
+  and then each actor's group-scoped chat projection; no Start replay is
+  required.
+- **Explicit Group Members identity PASS**: Group A -> Members opened
+  `Random Room R1`, showed `2 members`, and contained only Casey Bridge and
+  Nova Social. The header has no Invite action. The remaining `Pending only`
+  control is a read filter, not a mutation. Member-card overflow may remain for
+  non-mutating Participation/Report actions; the view-only route must suppress
+  Approve, Remove/Delete, Promote, Step down, Leave, Disqualify and Reinstate.
+  Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-43-12.png`.
+- **View-only member action boundary PASS**: Casey opened Nova's card overflow
+  and confirmed the membership mutations were absent. The remaining actions
+  are the permitted non-mutating Participation/Report controls. No action was
+  selected and no member state changed. The remaining checkpoint branch is
+  the three actors' exact group-chat projection.
+- **Tournament chat presentation FAIL, then guarded repair ready**: Casey's
+  first Chats -> All inspection found the correct single physical group chat,
+  but it was visibly rendered as `Random Room R1` with a sparkle avatar and
+  the affinity/leave/visibility welcome intended only for the standalone
+  random matcher. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 14-47-46.png`.
+  The persisted room membership and chat identity were correct; this was a
+  semantic write/presentation defect, not a read projection or missing chat.
+- The production path now distinguishes an explicit tournament Start from the
+  scheduled random matcher. Tournament materialization writes
+  `eventType=tournament-room`, `Tournament Group R<n>`, a parent-event
+  subtitle, tournament topics/mode, tournament notification copy and a
+  tournament-specific initial chat message. The stable internal
+  `random-room:<parent>:<stage>:<group>` assignment identity is deliberately
+  retained so proven memberships and chat authorization are not migrated or
+  duplicated. The frontend consumes the backend welcome text and renders the
+  managed trophy avatar; ordinary random rooms retain their existing copy and
+  sparkle treatment.
+- A generated trophy asset is versioned under
+  `server/docker/conf/minio/media/images/system/tournament-room/v1/` as
+  `small.webp` (`128x72`), `medium.webp` (`640x360`) and `large.webp`
+  (`1280x720`). All three were seeded into the running `myscoutee-media`
+  MinIO bucket and returned HTTP `200 image/webp`. The normal managed-image
+  pipeline resolves the stored large URL to medium for event cards and small
+  for avatars.
+- The versioned `repair-tournament-room-presentation` checkpoint action
+  guarded the exact live boundary and updated only two room documents, three
+  owner-scoped chat copies and two initial system messages. It did not replay
+  Start, change a membership, alter unread counts or create a task/outbox row.
+  The post-repair read oracle proves Tournament Group R1/R2 at accepted
+  `2/1`, three unchanged memberships, three chat copies, two
+  `system:tournament-room-welcome` messages, unread total `3`, unchanged actor
+  Activity counters and the same single completed parent recompute task.
+- **Tournament chat row presentation replay PASS**: after one frontend reload,
+  Casey's Chats -> All list contained exactly one `Tournament Group R1` row
+  with the trophy avatar and tournament-specific preview. The repaired bundle
+  therefore consumes the repaired backend presentation without a second
+  Start, poll wait or projection workaround. The generated Active Events card
+  also shows `Tournament Group R1`, the tournament subtitle and trophy image.
+  Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-51.png`
+  and
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-38.png`.
+- **Generated-room notification semantic FAIL, then guarded repair ready**:
+  Casey's notification list still showed `Random Room R1 is ready`, the
+  system-generated-room body and sparkle icon. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 15-17-34.png`.
+  This was a separately persisted outbox/inbox presentation boundary, not a
+  frontend projection issue. The production write path already emits the
+  tournament title/body, `eventScope=tournament-room` and trophy image for new
+  Starts; a dedicated versioned checkpoint repair updated only the current two
+  pending outbox and three materialized inbox records.
+- The expanded post-repair oracle proves exact R1 recipients Casey+Nova and R2
+  recipient Riley, two pending outbox and three unread inbox records with
+  tournament titles/body/scope/trophy. It also re-proves the unchanged three
+  memberships, three chat copies, chat unread total `3`, Activity counters and
+  the original single completed recompute. No Start, notification creation,
+  counter delta or read transition was replayed.
+- **Tournament card owner-avatar first implementation exposed an ownership
+  conflict**: the large card image
+  remains the managed tournament trophy, but the small overlay now uses the
+  card's existing creator-avatar configuration and standard clickable profile
+  action. No tournament-specific avatar component or custom click path was
+  added. The production materialization copies the parent tournament host into
+  the existing creator presentation fields while retaining the generated
+  room's empty domain `ownerUserId`. The same shared converter and creator
+  hydration path covers Java-backed and frontend-local event cards.
+- A separate guarded repair copied Casey's creator presentation to exactly the
+  two live room records and its immediate oracle proved the other transaction
+  state unchanged. The subsequent Casey replay found **Active Events
+  counter/list FAIL**: the stored counter remained `1`, but opening Active
+  Events returned no item. The independent oracle still showed Casey's exact
+  accepted `Member` row in R1. Root cause is that `creatorUserId` is not merely
+  presentation: the Activities query treats it as room ownership/admin and
+  therefore excludes Casey from the membership bucket. This is not a missing
+  counter write and must not be hidden by frontend projection.
+- The corrected production shape separates the concerns. Generated tournament
+  rooms keep `creatorUserId` and domain `ownerUserId` empty, persist the parent
+  host as optional `organizerUserId`, and use that field only through the
+  existing shared profile-avatar/card action. Java hydration and frontend-local
+  use the same contract. Targeted backend and frontend-local regressions prove
+  that organizer presentation does not promote an accepted host to room admin
+  or remove the room from Active Events. Both existing dev watchers compiled
+  successfully; no parallel build or test process was started.
+- The initially prepared two-record migration was rejected and then removed.
+  A one-time database edit would make only the current transaction look right;
+  it would not prove that reset -> stage -> real Start reproduces the fixed
+  shape. The authoritative repair is therefore the production Start writer,
+  the Java/local read contract and the versioned pre-Start fixture/oracle.
+- Replay only this checkpoint from a clean harness reset and stage. After Casey
+  runs Start once, the independent oracle must prove fresh R1/R2 with empty
+  `creatorUserId/ownerUserId`, `organizerUserId=Casey`, the same exact
+  membership/chat/notification/counter contract, and no retained repair marker.
+  Earlier tournament-definition/group-read work is not repeated.
+- **Clean replay baseline PASS / Start pending**: the versioned harness reset
+  only TOURNAMENT-002, proved `phase=not-staged`, then staged and read back a
+  fresh pre-Start fixture. The parent is active/published, Qualifiers is `RS`
+  with persisted start/end, Casey/Nova/Riley are the exact accepted parent
+  members, initial actor counters match the card buckets, and rooms, chats,
+  messages, notifications, tasks, recomputes and action deltas are all zero.
+  Exactly three managed browser sessions were replaced after this oracle. The
+  next producer is one Casey **Start Stage** action; no earlier checkpoint is
+  replayed.
+- **Clean Start write-path replay PASS**: Casey ran Start once and the
+  independent oracle proved the fixed record shape without any live repair.
+  Fresh R1/R2 have empty `creatorUserId/ownerUserId`,
+  `organizerUserId=Casey`, tournament titles/trophy, exact Casey+Nova/Riley
+  partition and three accepted room `Member` rows. Two physical chats/three
+  owner copies, two tournament welcome messages, two outbox/three unread inbox
+  notifications, `A/groupsCount=2`, three action-outbox records, one recompute
+  task and each actor's exact `+1` Active/All and `+1` Chat deltas all agree.
+  Casey remains R1 Member with Active Events `1` and My Events `1`. The normal
+  recompute may still be pending; it is not required for the list read. Next is
+  the Casey in-place Active Events counter/list/card observation before reload.
+- **Casey Active Events/card PASS in-place and after reload**: without reload,
+  Casey saw counter `1`, exactly `Tournament Group R1`, the tournament trophy
+  and Casey's small profile avatar. Clicking only the avatar opened the
+  standard profile menu. Reload retained the same presentation, and the group
+  Members view still contained the expected members. The follow-up persisted
+  oracle was byte-for-identity stable across rooms, memberships, chats,
+  notifications and counters; the one recompute completed exactly once without
+  error. The visible `Leave event` action was not selected. It belongs to the
+  new independent `TOURNAMENT-ROOM-LIFE-001` checkpoint.
+- **Exceptional manual-recovery notification write/order PASS**: the normal
+  automatic stage-start path remains unchanged. From a clean deliberately
+  overdue `RS` fixture, Casey invoked manual **Start Stage** once. The repaired
+  path first materialized the two rooms and exact three memberships, then
+  persisted `Tournament started` exactly once for Nova and Riley only at
+  `14:32:05.163Z`, followed by the personal R1/R2 ready rows at
+  `14:32:05.192Z` or later for Casey/Nova/Riley. The independent oracle proves
+  Casey is excluded only from the redundant started acknowledgement, remains
+  included in R1 ready, all recipient sets are exact and there are no
+  duplicates. Room, chat and Activity counter invariants also remain exact.
+- Remaining TOURNAMENT-002 UI replay: Casey must see no unread `Tournament
+  started` row and exactly one unread R1-ready row; Nova must see one started
+  row followed causally by one R1-ready row; Riley must see one started row
+  followed causally by one R2-ready row. Since New is newest-first, each
+  participant's ready row must render above its started row. Do not open rows
+  or action menus during this comparison. Earlier list/card/profile/member and
+  persisted Start evidence is retained and must not be repeated.
+- **Manual-recovery initiating-actor notification UI PASS**: Casey's New list
+  contained no `Tournament started` row and exactly one unread `Tournament
+  Group R1 is ready` row with the tournament trophy and expected body. The row
+  and its action menu remained unopened. Nova and Riley recipient ordering is
+  still pending.
+- **Manual-recovery R1 recipient notification UI PASS**: Nova's New list
+  contained exactly one unread `Tournament Group R1 is ready` row above
+  exactly one unread `Tournament started` row. The trophy and both expected
+  bodies agreed with the persisted oracle, and neither row was opened. Both
+  rows visibly carry the same minute (`16:32`) because the UI displays minute
+  precision; the persisted timestamps prove started at `.163` and ready at
+  `.192+`, so both were produced immediately by the one manual Start and their
+  causal order does not depend on a later periodic task. Riley's R2 recipient
+  ordering remains pending.
+- **Riley R2 participant projection PASS**: Riley saw the generated R2 card at
+  `1 / 2`, and its Members view contained exactly one member. This agrees with
+  the persisted singleton R2 membership; Riley's unread notification ordering
+  remains a separate pending observation.
+- **Manual-recovery R2 recipient notification UI PASS**: Riley's New list
+  contained exactly one unread `Tournament Group R2 is ready` row above
+  exactly one unread `Tournament started` row, with the expected trophy and
+  bodies. The rows remained unopened. A final read-only oracle re-proved the
+  exact started audience Nova+Riley, ready audience Casey+Nova+Riley, strict
+  persisted order and empty `readAtIso` for all five rows. The notification UI
+  branch is complete without mutation.
+- Remaining bounded TOURNAMENT-002 proof is Nova's R1 card/member/chat and
+  Riley's R2 chat. Nova's R1 chat observation covers the shared R1 initial
+  welcome, so Casey's already-proven R1 row need not be reopened. Start,
+  notification lists and earlier Casey projections must not be replayed.
+- **Nova R1 participant membership UI PASS**: Nova saw `Tournament Group R1`
+  at `2 / 2`; its Members view contained exactly Casey Bridge and Nova Social.
+  No member action was selected. Only Nova's R1 chat content and Riley's R2
+  chat remain.
+- **Nova R1 participant chat UI PASS**: Nova's Chats -> All contained the
+  single `Tournament Group R1` chat. Opening it showed the exact initial
+  MyScoutee System tournament welcome stored by the oracle. Nova sent no
+  message. Only Riley's R2 chat projection remains before checkpoint closure.
+- **Riley R2 participant chat UI PASS**: Riley's Chats -> All contained the
+  single `Tournament Group R2` chat. Opening it showed the exact same
+  tournament-specific MyScoutee System welcome for the correct R2 identity.
+  Riley sent no message.
+- **Final read oracle PASS / checkpoint CLOSED**: the two generated rooms,
+  exact Casey+Nova/Riley partition, stage `A/groupsCount=2`, three chat owner
+  copies, welcome content and notification recipient/order contract remained
+  unchanged. Opening the chats performed only the expected owner-scoped read
+  transition: Nova R1 and Riley R2 became `unread=0` with Chat counters `0`,
+  while untouched Casey R1 remained `unread=1` with Chat counter `1`. All five
+  inspected notification rows remained unread. `TOURNAMENT-002` is
+  **PASS/CLOSED**; none of its Start, list, member, notification or chat steps
+  need replay before `TOURNAMENT-003`.
 
 ### `TOURNAMENT-003` — review and advancement
 
@@ -4147,8 +4644,612 @@ Execution 2026-08-13 (in progress):
 - Verify next-stage group membership, removed stale losers, stage status,
   score/advancement UI and notification exactly once.
 - A second unchanged review must be a domain and UI no-op.
+- **Baseline ready — 2026-08-15**: the replayable fixture holds Qualifiers in
+  `SR / stage-ended` with two exact groups. Group A contains Casey `9` and Nova
+  `4`; Group B contains Riley `7`; `tournamentAdvancePerGroup=1`, so the
+  independently derived expected Final membership is Casey+Riley. Final is
+  still `RS / awaiting-prior-stage` with no room/member/chat materialization.
+  Casey has Hosting/All `1`; Nova and Riley each have Active/All `1`; all Chat
+  counters are `0`. The real `event-tournament-review` rule remains enabled at
+  its production `1800s` interval but is held idle beyond the manual boundary.
+  Final now has a stable three-to-five-hour window so the manual Finalize, the
+  first exact-once worker pass and the unchanged no-op pass cannot be consumed
+  by fixture expiry.
+- **Ordered execution**: first prove the deterministic qualifier standings in
+  Casey's UI and use the visible Finalize Stage action once. Only after its
+  persisted `F` oracle may the harness arm the already-running real review
+  worker. After Casey+Riley advance exactly once, capture that stable state,
+  re-arm the same real rule once and require `lastRunCount=0` plus a byte-exact
+  domain snapshot before closing.
+- **Manual Finalize PASS — 2026-08-15**: Casey verified the remaining Group B
+  Riley score `7` and used **Finalize Stage -> Finalize** exactly once. The
+  immediate persisted oracle recorded Qualifiers `F / stage-finalized` at
+  `2026-08-15T15:29:07.835364258Z`, retained both qualifier groups and all
+  three exact scores, and still had zero Final rooms. The real review rule was
+  still idle with `armCount=0` and `lastRunCount=0`, proving that the manual
+  Finalize write did not project or prematurely execute advancement.
+- **Real review advancement and unchanged replay PASS — 2026-08-15**: the
+  existing `event-tournament-review` scheduler consumed the first explicit arm
+  at `15:31:02.524Z` with `lastRunCount=1`. It persisted one Final stage-group
+  with exactly Casey+Riley accepted, excluded Nova, wrote one matching
+  `score / group-members` plan marker and retained all qualifier scores. No
+  separate tournament-room event or chat is expected from score review; those
+  artifacts belong to the random/start grouping path. The first oracle version
+  incorrectly required such a room, and was corrected to inspect the owning
+  group membership and plan marker instead of changing the valid backend
+  write. The unchanged second real scheduler pass completed at
+  `15:38:02.969Z` with `lastRunCount=0`; the strict saved domain snapshot was
+  identical, including stage state, Final membership, leaderboard, marker,
+  outbox and all three users' counters.
+- **Manual Finalize notification recipient FAIL / repair replay pending —
+  2026-08-15**: the first Finalize persisted one outbox for Casey, Nova and
+  Riley, and all three untouched browser DOMs converged to counter `1`. This is
+  not valid delivery evidence: Casey manually performed Finalize and must be
+  excluded from the recipient set, matching the already-proven manual Start
+  contract. The shared backend stage-notification write path now excludes the
+  actor for both non-final and final-stage Finalize, with a regression that
+  requires only Nova+Riley. The existing watcher compiled successfully and the
+  backend restarted healthy. The guarded
+  `prepare-tournament-finalize-notification-retest` action rewinds only
+  Qualifiers `F -> SR`, removes only the old Finalize outbox/deliveries and
+  holds review; it preserves the deterministic scores, one Casey+Riley Final
+  group, plan marker and both real-worker proofs. Replay only Casey's one
+  Finalize action, then require one Nova+Riley outbox and no Casey delivery.
+- **Focused notification replay baseline READY — 2026-08-15 17:54 CEST**:
+  the guarded rearm removed exactly one old three-recipient outbox and three
+  delivered notification rows, then persisted Qualifiers `SR / stage-ended`.
+  Its immediate read oracle retained Casey `9`, Nova `4`, Riley `7`, one Final
+  group with exactly Casey+Riley, Nova absent, `armCount=2`, the prior
+  `lastRunCount=0` no-op and zero Finalize outbox. The real review rule is held
+  idle. Do not execute the rearm again; reload only Casey's event detail and
+  replay the visible Finalize once.
+- **Focused corrected Finalize write and in-place counter PASS — 2026-08-15**:
+  Casey replayed the visible Finalize exactly once. The immediate verifier
+  found one `event-stage-finalized` outbox with only Nova+Riley, no Casey, and
+  exactly one unread delivered row for each recipient. Both rows persist
+  `Tournament stage finalized / Qualifiers has been finalized.` The preserved
+  stage/group oracle retained the one Casey+Riley Final group and excluded
+  Nova. Without touching or reloading Nova/Riley, read-only CDP observed no
+  Casey notification badge and badge `1` for both Nova and Riley. The backend
+  recipient repair and in-place delivery counters are PASS; only the visible
+  New-list content comparison remains before closing the checkpoint.
+- **Notification meaning/causality FAIL found; ordered repair replay staged —
+  2026-08-15**: the recipient repair was correct, but a single generic
+  `Tournament stage finalized` row cannot also communicate who actually
+  advanced. Finalize and advancement are different producer boundaries. The
+  manual Finalize write must first persist one translated generic notification
+  for Nova+Riley and exclude Casey as the actor. The existing Final group stays
+  in place. Only after the real tournament-review worker has written Casey and
+  Riley's missing memberships into that group may it persist a later,
+  trophy-branded `Advanced to Final` notification for Casey+Riley. Thus the
+  final visible split is Casey advancement only, Nova finalized only and Riley
+  both. Automatic execution uses the same ordering, but has no manual actor to
+  exclude from the finalized audience. Backend, frontend-local, frontend EN/HU
+  and all Mongo EN/HU seed paths now share these keys. The guarded sequence
+  replay independently proves the immediate Finalize boundary, changed worker
+  boundary, notification timestamps/recipients, and a final unchanged-worker
+  no-op before visual closure.
+- **Ordered notification replay PREPARED — 2026-08-15 18:34 CEST**: the guarded
+  prepare action retained Qualifiers `SR` with exact Casey `9`, Nova `4` and
+  Riley `7`, removed only Casey/Riley memberships from the already-existing
+  Final group, removed its single review plan marker and held the real worker
+  idle. It did not recreate or delete the Final group. Run Casey's one visible
+  Qualifiers Finalize next; do not run prepare again.
+- **Separated automatic outcomes and unchanged replay PASS — 2026-08-15**:
+  after Casey's already-persisted manual Finalize, the real review worker ran
+  once with affected count `1`. It retained Casey's human-sender
+  `event-stage-finalized` intent for Nova+Riley, then persisted one independent
+  automatic `event-stage-advanced` intent for Casey+Riley and one independent
+  automatic `event-stage-not-advanced` intent for Nova. Both automatic rows
+  carry source `Qualifiers` and destination `Final`; the advancing avatar uses
+  Final's stage position `2/2`, while the non-advancing avatar uses Qualifiers
+  position `1/2`. Final membership is exactly Casey+Riley. A second real worker
+  pass completed with affected count `0`, and the saved domain plus all three
+  notification intents remained byte-identical. The frontend-local path and
+  EN/HU frontend plus all three Mongo seed sets mirror the same contract. The
+  only open branch is the unread three-browser rendering comparison; no
+  Finalize or worker replay remains.
+- **Three-browser notification rendering PASS / CLOSED — 2026-08-15**:
+  screenshot `2026-08-15 19-50-31` proved the final split without another
+  write. Casey showed one automatic `Advanced to Final` row. Nova showed
+  Casey's separate human-avatar `Qualifiers finalized` row plus one automatic
+  `Did not advance from Qualifiers` row. Riley showed Casey's separate
+  Finalize row plus one automatic advancement row. The two advancing users are
+  Casey (Group A) and Riley (Group B); Nova is the sole non-advancer. Counts,
+  source/destination stage names, Casey avatar and stage-colored trophy avatars
+  agree with the persisted oracle. `TOURNAMENT-003` is PASS/CLOSED; retain its
+  exact Final group as the `TOURNAMENT-004` starting boundary.
+- **Later Start boundary remains independent**: assignment to Final does not
+  mean Final has started. When Final actually starts, the existing tournament
+  Start path writes a new `Final started / Final has started. Groups are
+  ready.` row. Manual Start excludes the initiating actor from that redundant
+  acknowledgement, as already proven in `TOURNAMENT-002`; an automatic Start
+  has no manual actor to exclude. The ordered Finalize/advancement replay stops
+  before this later transaction so closure, assignment and Start cannot be
+  mistaken for one write.
+- **Final group UI PASS — 2026-08-15**: without reload, Casey opened Final ->
+  Groups and observed exactly one group with `2 members`, Casey Bridge and
+  Riley Outside; Nova Social was absent. The immediate independent oracle
+  retained the same two accepted Final group members and the second review
+  result remained `lastRunCount=0`. This closes the advancement presentation;
+  only the focused corrected notification comparison remains.
+- **Qualifier history UI PASS after repair — 2026-08-15**: screenshot
+  `17-11-48` showed the selected Casey score history as a three-line card
+  (`+9`, note and date) below the existing Standings/History tabs. This was a
+  presentation defect, not a missing-Nova write: clicking Casey had correctly
+  selected Casey's History tab, while the persisted qualifier oracle still
+  retained Casey `9`, Nova `4` and Riley `7`. The shared tournament-groups
+  component now renders score history as `Score | Note | Date` and FIFA history
+  as `Match | Result | Date`, without another back/detail arrow because the
+  existing tabs own navigation. The History table has no forced desktop/mobile
+  minimum width: fixed compact value/date columns and a single-line ellipsized
+  middle column keep each record on one row without horizontal overflow on a
+  narrow viewport. The running frontend watcher compiled and synced the first
+  repair at `17:13:50` and the final responsive repair at `17:15:59`. Casey
+  reloaded that bundle and passed the focused narrow-window replay: the `+9`
+  update remained one compact `Score | Note | Date` row, the note stayed on one
+  ellipsized line, there was no redundant back/detail arrow and no horizontal
+  overflow. A read-only post-replay oracle retained Qualifiers `SR`, exact
+  Casey `9` / Nova `4` / Riley `7`, zero Final rooms and review `armCount=0`;
+  opening History therefore caused no domain write or premature worker run.
+
+### `TOURNAMENT-004` — Final Start and whole-tournament completion
+
+- Continue only from the exact Casey+Riley Final membership proved by
+  `TOURNAMENT-003`; Nova remains the non-advancing control.
+- Guarded carry-forward evidence at `2026-08-15T18:02:10.035Z`: the saved T003
+  domain and notification no-op baselines were byte-identical; Qualifiers was
+  still `F / stage-finalized`, Final was `RS / awaiting-prior-stage`, the one
+  Final group contained exactly Casey+Riley, Nova was absent, and Final Start
+  plus terminal Finalize both had zero outbox/inbox rows. The harness changed
+  only the active checkpoint metadata from T003 to T004 and retained the same
+  event identity/title; no fixture reset or lifecycle repair ran.
+- **First Final Start attempt FAIL / complete no-op**: Casey's confirmation
+  returned the unchanged `RS` result and the UI correctly showed **Stage action
+  was not applied.** The Java Start path and its earlier targeted-read/batched
+  write optimization were still present. The persisted fixture was wrong: at
+  `2026-08-15T18:08:57.268Z` the materialized Final `startAt` was
+  `2026-08-15T20:31:24.087Z`, so the backend's real start guard correctly
+  refused the early transaction. No Final runtime, room, chat, outbox or inbox
+  write occurred. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-15 20-04-41.png`.
+- The versioned `repair-tournament-final-start-window` action then guarded the
+  exact closed T003/T004 boundary and changed only Final's materialized
+  interval to `2026-08-15T18:09:03.807Z`–`2026-08-15T20:11:03.807Z`. Its
+  post-write oracle retained Qualifiers `F`, Final `RS`, exact Casey+Riley
+  Final membership, Nova exclusion and byte-identical prior notification and
+  domain evidence. Replay only the single Final Start click; do not reset or
+  replay Qualifiers.
+- **Second Final Start domain PASS / recipient FAIL**: after the repaired
+  window, Casey's Start persisted Final `A / tournament-started`, kept
+  Qualifiers `F`, retained exactly Casey+Riley in Final and kept Nova excluded.
+  The notification producer nevertheless over-broadcast one translated
+  `Final started` intent and inbox row to both Nova and Riley. Casey was
+  correctly excluded. This was a write-side audience defect, not a Smart List
+  projection or polling race.
+- The repaired Java producer now resolves a later stage's accepted audience
+  from its materialized group memberships and then excludes the manual actor.
+  If an initial stage has no group membership rows yet, it keeps the previously
+  proven parent-event audience fallback. Frontend-local now applies the same
+  rule and stage avatar payload. Existing Start targeted-read, batched-write
+  and scheduler-scope optimizations were retained unchanged. Backend and
+  frontend live watchers both completed successfully.
+- **Clean Final Start replay PASS / CLOSED at
+  `2026-08-16T11:42:24.876Z`**: Casey applied Start exactly once at
+  `2026-08-16T11:40:07Z`. Final became `A / tournament-started`, Qualifiers
+  stayed `F`, the Final group remained exactly Casey+Riley and Nova remained
+  excluded. Exactly one Final room, two owner chat copies and one welcome
+  message were persisted. Casey's human `Final started / Final has started.
+  Groups are ready.` intent targeted Riley only; 31 ms later the independent
+  system `Tournament Group R1 is ready` intent targeted Casey+Riley. The two
+  records keep their own actor, type, recipients and avatar semantics and must
+  never be merged, relabelled or deduplicated into one another. Riley's live
+  list showed room-ready above Final-start, Casey's showed room-ready only and
+  Nova's showed neither. This Start branch is PASS and must not be replayed
+  while preparing terminal Final completion.
+- **Terminal boundary prepared at `2026-08-16T11:54:16.529Z`**: the guarded
+  fixture preserved the byte-identical PASS Start/room/chat/membership/counter
+  and room-ready evidence, moved only Final to `SR / stage-ended` with its end
+  instant one minute in the past, and added deterministic Final scores Casey
+  `9` / Riley `7`. The tournament-review worker is held during this terminal
+  action.
+- Casey visually confirmed the prepared Final standings as Casey `9` / Riley
+  `7`, then applied Finalize exactly once. The resulting notification UI is a
+  **terminal product FAIL**: one Casey-authored `Tournament finalized` record
+  also carried the automatic winner result (`Final is complete... Winner:
+  Casey Bridge`). The write therefore merged two different producers and
+  meanings. Evidence:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-16 13-57-31.png`.
+- Required correction and terminal-only replay contract: the manual action
+  keeps a separate Casey-authored `Final finalized` audit for the other Final
+  participant. After it, MyScoutee System sends one short personal result to
+  each finalist using the already-PASS advancement presentation (stage accent
+  plus trophy avatar): Casey receives the non-winner result and Riley the
+  winner result. Nova receives neither terminal row because she was eliminated
+  before Final. The replay fixture reverses only the Final scores to Casey `7`
+  / Riley `9`; it must not replay or rewrite the PASS Final Start transaction.
+- **Corrected terminal replay machine PASS / UI oracle pending**: the guarded
+  terminal-only replay at `2026-08-16T12:19:47.518Z` changed only Final to
+  `SR / stage-ended`, set Casey `7` / Riley `9`, removed only the failed merged
+  terminal transaction and preserved the PASS Final Start and room-ready
+  snapshots byte-identically. After one Casey Finalize, the persisted verifier
+  passed at `2026-08-16T12:23:48.589Z`. It proved three separate records in
+  causal order: Riley received Casey's human `Final finalized` audit, then
+  Riley received the MyScoutee System `Won the tournament` result, and Casey
+  received the MyScoutee System `Did not win the tournament` result. Nova
+  received none. The two system outcomes use short Final-stage trophy payloads
+  and never inherit Casey's actor identity. Keep the ledger row open until the
+  same separation and presentation pass in Riley, Casey and Nova UI lists.
+- **Casey/Riley terminal UI recipient PASS at 2026-08-16 14:31 CEST**:
+  `/home/raxim/Pictures/Screenshots/Screenshot from 2026-08-16 14-31-26.png`
+  shows Casey with only the system `Did not win the tournament` terminal row,
+  while Riley has the system `Won the tournament` row plus Casey's separate
+  `Final finalized` audit. Producer avatars and short messages are not merged.
+  A presentation follow-up adds a stage-coloured glow only to positive
+  `advanced`/`won` trophy avatars and a diagonal strike only to negative
+  `not-advanced`/`not-won` trophy avatars. The running frontend watcher built
+  and synced that narrow CSS/converter change successfully at 14:33 CEST; one
+  reload of the existing Casey/Riley lists is required to qualify the new
+  bundle. Nova exclusion remains the final recipient UI check.
+- **Winner-avatar presentation PASS at 2026-08-16 14:37 CEST**: after exactly
+  one Riley reload, the system `Won the tournament` trophy showed its
+  stage-coloured glow and Casey's separate `Final finalized` portrait remained
+  unchanged. No lifecycle producer was repeated.
+- **Non-winner-avatar presentation PASS at 2026-08-16 14:43 CEST**: Casey's
+  already-persisted `Did not win the tournament` row showed the diagonal trophy
+  strike after the required reload loaded the new frontend bundle. No
+  lifecycle producer was repeated. Nova's terminal exclusion remains the only
+  open UI assertion.
+- **Nova exclusion PASS / checkpoint CLOSED at 2026-08-16 14:43 CEST**: after
+  one Nova reload, her New list contained none of `Final finalized`, `Won the
+  tournament` or `Did not win the tournament`. Together with the persisted
+  oracle and Casey/Riley UI evidence, this closes `TOURNAMENT-004` as PASS.
+  Final Start, room-ready, human Finalize audit, system winner/non-winner
+  outcomes, EN/HU keys and positive/negative stage-avatar presentation are all
+  qualified. Do not replay this checkpoint when preparing the independent
+  generated-room leave test.
+- **Focused recipient replay prepared at
+  `2026-08-15T18:22:44.221Z`**: the versioned harness guarded the exact
+  successful-domain/failed-recipient boundary, rewound only Final event/runtime
+  to `RS / awaiting-prior-stage`, and removed exactly one defective Nova+Riley
+  outbox plus two delivered inbox rows. It preserved the closed Qualifiers,
+  exact Casey+Riley Final group, Nova exclusion, plan marker and all prior T003
+  evidence. Because the earlier time repair happened behind an already-open
+  browser, Casey had to reload exactly once. The resulting **Blocked** badge is
+  the correct recovery boundary: Final remains `RS`, its start instant has
+  passed, and only then may the manual **Start Stage** action be applied.
+- Starting Final is a new transaction after advancement. Its system
+  notification title and body must both identify **Final**, and its left
+  stage-icon must use the same shared accent hue as the Final stage card. The
+  notification row background remains owned by the normal notification-tone
+  rules. Manual Start excludes the initiating actor only from the redundant
+  Start acknowledgement; an automatic Start has no manual actor to exclude.
+- The same stage-context rule applies to every tournament lifecycle
+  notification, but producer identity remains separate. A manual action keeps
+  Casey as its human actor and excludes only Casey from that acknowledgement;
+  a subsequent automatic room/advancement/result record stays a distinct
+  MyScoutee System record with its own recipients and message. Closure names
+  the completed stage, advancement names both source and destination stages,
+  and terminal finalization states that the whole tournament ended. Never
+  merge a Casey record with an automatic record or replace one with the other.
+- Finalize only through its valid ended/review boundary. A manual terminal
+  action first produces the ordinary human `{stageTitle} finalized` audit,
+  excluding only its actor. The system then produces separate, short
+  winner/non-winner outcomes for the exact Final participants. Those system
+  outcomes reuse the advancement trophy/avatar styling and Final stage context;
+  they never inherit Casey's sender identity or merge the human audit text into
+  their result text.
+- Compare EN/HU rendering against both frontend-local bundles and live Mongo
+  keys. A second unchanged Start/Finalize attempt or worker pass must not add
+  membership, result, outbox, inbox or counter deltas.
+- Keep this checkpoint separate from `TOURNAMENT-003`: Qualifiers closure,
+  Final assignment, Final Start and whole-tournament completion are four
+  causally ordered producer boundaries, not one projected UI transition.
+
+### `TOURNAMENT-ROOM-LIFE-001` — nested tournament-room visibility
+
+- **NOT RUN.** The first fixture staged at `2026-08-16T13:10:53.035Z` was
+  invalid for this domain rule: it exposed materialized tournament rooms as
+  independent root Activity event cards and therefore suggested an unrelated
+  Leave test. No modifying UI action was executed. The guarded reset at
+  `2026-08-16T13:31:51.209Z` removed only that fixture and preserved the closed
+  `TOURNAMENT-004` evidence.
+- The corrected hierarchy fixture staged at `2026-08-16T13:53:23.200Z`.
+  Independent reads proved one root parent plus two parent-linked/generated
+  rooms. Casey's root list contained only the parent; **View Event →
+  Qualifiers → Groups** exposed the two nested groups, while their accepted
+  room chats remained member scoped. This visibility/navigation branch is
+  **PASS/CLOSED**.
+- The fixture also injected a Group A event-owner pending invitation and its
+  aggregate counter. Code tracing proved that state is not produced by the
+  tournament flow: Start consumes only already-accepted parent members,
+  `syncMaterializedSystemEventMembers` persists them directly as accepted with
+  `pending=0`, and materialized event-owner groups are read-only in the Groups
+  UI. No pending-resolution action was executed. The synthetic branch was
+  classified **NOT EXECUTED / invalid fixture** and guard-reset at
+  `2026-08-16T14:07:44.250Z`, preserving `TOURNAMENT-004`.
+- Future replay stages accepted-only Group A/Group B membership and requires
+  zero pending counters. A tournament room remains a nested sub-event/group;
+  it never becomes a standalone Activity event or independent Leave target.
+  Chat and notification projections remain member scoped.
+
+### `TOURNAMENT-ADMISSION-001` — first-stage admission boundary
+
+- The selected product contract is a strict lock at the first tournament-stage
+  Start. That write freezes the accepted parent-member snapshot, disables the
+  auto inviter and changes the existing main-event visibility to `Invitation
+  only`. The ordinary Explore read therefore omits the closed tournament
+  without reconstructing stage state, adding a tournament-only projection or
+  presenting a waitlist. Accepted participants and Admins retain their normal
+  tracked-event views.
+- Exercise the backend—not only the UI—for late join, existing-invitation
+  acceptance and Admin approval. Explore absence is the primary new-Join UI
+  result; the direct Java and frontend-local guards remain defense in depth for
+  stale links and already-existing pending rows. Every rejected late acceptance
+  must change no parent/group membership, capacity, chat, leaderboard, counter,
+  checkout, ticket, payment or notification record.
+- Parent-event pending admission is not part of the nested `Groups` counter.
+  That counter aggregates only group-scoped pending member operations and
+  group resource requests. Materialized event-owner tournament groups are
+  read-only for member invitation and receive accepted members directly, so
+  their member-pending contribution remains zero; only a genuinely pending
+  group resource request may produce a counter there. The parent event may
+  still expose its own pending admission indicator separately.
+- Exercise HTTP and frontend-local with the same parent membership states and
+  prove scheduler reruns remain idempotent. This checkpoint is separate from
+  the already-passed Start notifications and must not rewrite or replay them.
+- Join branch PASS on `2026-08-17`: the first replay exposed a visible closed
+  tournament in Explore. The corrected first-stage Start write reuses the
+  existing `visibility=Invitation only` state; after one required browser
+  reload Riley no longer saw the event. The independent rejection oracle
+  verified events, membership/runtime, leaderboard, chats/messages, checkout,
+  payments, tickets, notification/outbox, tasks and user counters unchanged.
+- The next isolated branch retains the same closed parent and exactly one
+  pre-existing Riley Admin invitation (`pendingSource=admin`,
+  `requestKind=invite`). Its one Accept attempt must be rejected while that
+  invitation remains pending and every downstream oracle section remains
+  unchanged.
+- The first invitation baseline visual check exposed a fixture-only omission
+  before Accept: the pending list item existed but its Invitations counter and
+  event-invite notification had not been materialized. The guarded repair
+  preserved the event/member baseline and added exactly one Invitations
+  counter delta, one unread notification delta, one terminal outbox audit row
+  and one unread inbox row. Require a fresh Riley document to show both red
+  counters and the single invite row before executing the rejection branch.
+- Invitation acceptance PASS on `2026-08-17`: Riley saw the corrected red
+  Invitations and notification counters, then one Accept attempt was blocked.
+  The independent oracle retained the exact pending Admin invitation, one
+  outbox/inbox pair and zero chat, checkout, payment, ticket or worker effects.
+- The following Admin-approval baseline uses a separate pre-existing pending
+  request (`pendingSource=member`, `requestKind=approval`), Riley Pending
+  counters and exactly one unread Casey join-request notification. Verify this
+  baseline visually before Casey attempts Approve once.
+- Its first visual check exposed a second fixture-only omission: Casey and Nova
+  were present in their lists but the root hosted/active activity counters were
+  zero. The guarded write-side repair materialized Casey My Events `1` and
+  Nova Active Events `1`, retained Riley Pending `1`, and made these counters
+  part of the branch oracle without executing approval.
+- Admin approval PASS on `2026-08-17`: after the corrected reload-owned
+  baseline, Casey attempted Approve exactly once and saw the registration-closed
+  result. The independent oracle retained `Qualifiers` in active status `A`,
+  Casey+Nova accepted, Riley as the same single pending member approval, one
+  join-request outbox/inbox pair and zero chat, checkout, payment, ticket or
+  worker effects. All fourteen persisted oracle sections were unchanged.
+- Checkpoint PASS/CLOSED on `2026-08-17` for the executed HTTP/Java contract.
+  Frontend-local runtime is **NOT EXECUTED** by explicit user decision and is
+  not counted as PASS evidence. Static inspection confirms that the local
+  repository derives the lock from first-stage status and places guards before
+  all three mutations. The ledger records `Dev = X` and `Local = -`. Preserve
+  the completed HTTP evidence and do not replay its producers.
+
+### `TOURNAMENT-SCORE-REOPEN-001` — corrected scores and result revision
+
+- Let the normal time boundary close one active stage into `Score review`;
+  this automatic closure ends scoring time but does **not** approve the result.
+  The Event Admin then finalizes the reviewed scores once and the independent
+  tournament-review worker produces the stage advancement or terminal result.
+- From that stable finalized boundary, choose **Reopen scores**, change one
+  deterministic score so that at least one participant outcome changes, and
+  finalize again. Preserve the first finalized result and its notifications as
+  immutable audit evidence; the correction is a new result revision, not an
+  overwrite of the earlier notification.
+- Require exactly one new human Finalize audit (excluding its actor) and then
+  exactly one new automatic result per affected participant. The new automatic
+  rows must use the corrected winner/advancer split and explicitly belong to
+  the later result revision. An unchanged worker replay and a repeated action
+  against the already-finalized revision must remain no-ops.
+- Verify the same persisted result revision, recipients, ordering and localized
+  rendering through Java and frontend-local. Keep this case separate from the
+  already-closed Start and initial Finalize/advancement checkpoints.
+- The dedicated versioned fixture staged the already-finalized revision 1
+  boundary directly, including the immutable human Finalize audit, automatic
+  participant outcomes, result marker and initial Final group membership. The
+  guarded Reopen replay is **PASS**: Qualifiers moved from `F` to `SR` while
+  revision 1, scores `9/4/7`, Final membership `Casey + Riley` and all earlier
+  evidence remained unchanged. Exactly one under-review outbox produced two
+  inbox rows for Nova and Riley; Casey remained the human sender and was
+  excluded as a recipient. The exact score correction is also **PASS** at
+  `Casey=9, Nova=14, Riley=7`, with the stage still in `SR`/revision 1 and all
+  earlier evidence unchanged. Corrected Finalize and the real revision-2
+  worker result are also **PASS** at `Casey=9, Nova=14, Riley=7`: the human
+  Finalize audit remained separate, the Final membership changed from the
+  immutable revision-1 `Casey + Riley` result to revision-2 `Nova + Riley`,
+  revision 2 produced three outcome outbox and three inbox rows, and all
+  revision-1 evidence remained unchanged. The three-actor notification UI
+  inspection is **PASS**: Casey showed old advance/new reject, Nova old
+  reject/new advance, and Riley two separate advance results; both human
+  Finalize audits remained separate and no `Final starts soon` row returned.
+  The unchanged-worker replay is also **PASS** with `lastRunCount=0`, identical
+  membership, scores, markers and revision-specific notification evidence.
+  The final no-second-Finalize UI guard is **PASS**: finalized Qualifiers no
+  longer exposed `Finalize Stage` (while the separate Reopen action remained
+  untouched). The checkpoint is **PASS / CLOSED**. No Start or initial Finalize
+  producer was replayed.
+- During the correction boundary, the generic scheduled stage-reminder exposed
+  a separate FAIL: the waiting tournament Final emitted redundant `Final starts
+  soon` rows twice. Tournament stages now bypass that generic reminder and use
+  only their dedicated lifecycle notifications; non-tournament stage reminders
+  remain unchanged. The existing backend watcher compiled and restarted the
+  change. A guarded cleanup removed the exact defect shape (one task, two runs,
+  six deliveries, six outbox and six inbox rows) without changing revision 1,
+  the corrected `9/14/7` scores or Final membership. The corrected Finalize
+  gate proved that the producer did not return: task, run, delivery, outbox and
+  inbox counts for that generic reminder all remained zero.
+- The no-op replay also corrected two fixture-only oracle defects without
+  changing product state: capped `runHistory` length cannot prove that a zero-
+  work run completed, so completion now uses a later `lastRunAtIso` plus
+  `lastRunCount=0`; BSON document field order is normalized before snapshot
+  equality, while array order and every leaf value remain strict.
+
+### `TOURNAMENT-SCORE-REOPEN-002` — correction safety after progression
+
+- From a finalized earlier stage, compare Reopen availability before and after
+  the next stage starts. Reopening is allowed while downstream play has not
+  begun; once a dependent next stage is active or closed, the ordinary Reopen
+  action must be unavailable or rejected atomically.
+- A rejected late correction must leave stage statuses, scores, group
+  membership, current-stage summary, chats, outbox/inbox rows and counters
+  byte-identical. Correcting an already-used result requires a separate
+  explicit rollback/correction workflow; it must not silently rewrite a live
+  downstream bracket.
+- The implementation now persists a result-revision identity through Java,
+  HTTP and frontend-local state. Its lifecycle guard permits Reopen only while
+  every later tournament stage is still waiting or pristine/unstarted. The
+  running dev watchers compiled this foundation. `TOURNAMENT-SCORE-REOPEN-001`
+  is PASS/CLOSED with revision-specific notifications and an exact no-op replay.
+- The guarded `TOURNAMENT-SCORE-REOPEN-002` continuation is prepared from that
+  immutable predecessor without replaying Start, Finalize or result producers:
+  Qualifiers remains `F`/revision 2 with exact `9/14/7` scores, Final membership
+  remains Nova+Riley, while the dependent Final event/runtime/current-stage
+  state is now active with one persisted start boundary. A normalized snapshot
+  of every related event, member, runtime, leaderboard, group, chat, message,
+  notification, marker, task and user-counter record is retained for the
+  rejected-action oracle.
+- Execution on `2026-08-17` is **PASS / CLOSED**. After the required reload,
+  Casey's Qualifiers action menu omitted `Reopen Scores`. One deliberately
+  forbidden request then used Casey's existing authenticated browser session
+  against the real Java `/activities/events/stage-action` route. The response
+  remained `F`/revision 2 with the original Finalize identity. The strict
+  post-request oracle retained exact `9/14/7` scores, Nova+Riley Final
+  membership, active dependent Final/current-stage state and byte-identical
+  event, member, runtime, leaderboard, group, chat, message, notification,
+  marker, task and user-counter records. No lifecycle producer was replayed.
+  Frontend-local runtime is recorded as `-`/not executed; its guard remains
+  statically aligned with Java and UI.
+
+### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
+
+- Materialize a compact current-stage wire value on the parent tournament
+  event whenever the lifecycle starts, advances or completes a stage. The
+  authoritative write must keep stage ID, localized/display name and lifecycle
+  state consistent with the stage runtime; the event-list query must not
+  reconstruct it from nested runtime records.
+- Render the wire value on the root parent event card as a separate compact
+  row below the event name, for example `Current stage: Qualifiers`. Do not
+  place generated tournament-room cards into the root list and do not perform
+  a nested read merely to paint this row. Frontend-local uses the same stored
+  parent-event shape.
+- Verify in-place lifecycle updates and reload persistence for Start, advance,
+  Final and tournament completion. Long event/stage names must remain readable
+  on mobile without turning the card header into an ambiguous combined title.
+- This is a separate follow-up checkpoint. It must not modify or invalidate the
+  `TOURNAMENT-ROOM-LIFE-001` pending-counter replay or the closed tournament
+  lifecycle checkpoints.
+
+Execution evidence on 2026-08-16 (PASS / CLOSED):
+
+- Backend write boundaries now materialize `{id, name, stageNumber,
+  totalStages, status}` on the parent event; the event-list projection includes
+  only `currentStage`, not nested `subEvents`. Frontend-local persists the same
+  shape. The established backend and frontend dev watchers compiled the change
+  successfully; no parallel build/test process was started.
+- A separate guarded `TOURNAMENT-CARD-001` fixture staged one active parent
+  tournament with Qualifiers in `SR`, Final in `RS`, three accepted parent
+  members and zero generated root-room records. Its baseline oracle at
+  `2026-08-16T14:52:56.420Z` proved persisted `Qualifiers · 1/2`.
+- The Casey HTTP `My Events` oracle returned exactly that `currentStage` wire
+  value and no `subEvents` field. Casey then verified the separate
+  `Current stage: Qualifiers · 1/2` row on the root parent card.
+- Finalizing Qualifiers changed that same row immediately, without waiting for
+  a poll, to `Current stage: Final · 2/2`; one explicit browser reload retained
+  the exact value and still showed no generated room card in the root list.
+- The terminal transition oracle proved persisted
+  `{final, Final, 2/2, RS}`, finalized Qualifiers, three accepted parent
+  members, two authoritative Qualifiers runtime groups and zero generated root
+  records. The shell harness dispatch omission discovered by this terminal
+  check was fixed so its documented verifier now reaches the existing guarded
+  JavaScript oracle.
+
+### `TOURNAMENT-MEMBER-001` — pre-Start membership cutoff
+
+- Use the real parent-event invitation path to make one controlled invitation
+  terminally accepted before first-stage Start while a second controlled
+  invitation remains pending.
+- Start the first stage exactly once. The newly accepted identity must appear
+  exactly once in one generated room, its leaderboard and group chat. The
+  pending identity remains parent-scoped and must not enter any generated
+  room, standings row or chat.
+- Reuse the generic invitation UI evidence from `EVENT-INV-*`; this checkpoint
+  owns only the Tournament-specific cutoff between terminal parent membership
+  and the participant set materialized by Start.
+
+### `TOURNAMENT-MEMBER-002` — active participant removal
+
+- From an isolated active tournament with generated rooms and one retained
+  score row, Remove one accepted participant from the parent event.
+- Verify parent and generated-room active membership, room-chat authorization
+  and exact actor counters are revoked once. Any retained historical score
+  identity remains auditable and cannot become a live participant again by a
+  read or poll.
+- Remove is a membership exit, not DQ and not an event-level Block state. The
+  remaining room membership and every unrelated resource owner/type are
+  unchanged in place and after reload.
+
+### `TOURNAMENT-DQ-001` — disqualification and reinstatement
+
+- Disqualify one already-scored accepted participant without deleting its
+  event membership. Members and standings must show a distinct DQ state; the
+  score/history stays visible, the row sorts behind eligible participants and
+  the DQ identity cannot advance.
+- Run the review boundary once and verify eligible next-stage membership plus
+  the same short system outcome style already proven by Tournament
+  advancement. DQ does not create a Block state or silently perform Remove.
+- In a separately reset pre-Finalize branch, Reinstate the same identity and
+  prove eligibility returns without a duplicate membership or score row.
+  Finalize/review replay must be exact-once in both branches.
+
+### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
+
+- From one already materialized Tournament group, assign controlled Transport,
+  Accommodation and Supplies using the existing Event Resource flows. Keep
+  generic asset ownership and borrow eligibility pre-staged; those contracts
+  remain in the Asset domain.
+- Verify exact `ownerId`, `subEventId`, generated `groupId`, asset-owner and
+  per-type settings/contributions. Persisted group-runtime metrics must agree
+  with the group three-dot badge, Groups counter, stage/View Event navigation
+  and root event action badge.
+- The exact delta must appear in place and survive reload. No generated room
+  card may leak into the root Activities list, and no asset action may change
+  an event role or create another membership.
 
 ## Asset cases
+
+### `ASSET-LIFE-001` — shared type schemas and lifecycle
+
+- Create one Transport, one Accommodation and one Supplies asset with their
+  type-specific required fields and managed media. Edit one shared field on the
+  Transport, then delete and restore that same identity.
+- Verify exact IDs, type fields, active/Trash counters and reload persistence.
+  Accommodation and Supplies remain unchanged controls. This is one bounded
+  shared-form lifecycle, not three duplicate end-to-end afternoons.
+
+### `ASSET-VIS-001` — discovery visibility
+
+- Stage one Public, Friends only and Invitation only asset and compare the
+  exact Explore and owned/managed ID sets as owner, friend and unrelated user.
+- A direct denied detail read must expose no hidden asset data. Every list and
+  detail read is side-effect free; borrow and assignment writes are outside
+  this checkpoint.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
@@ -4164,13 +5265,55 @@ Execution 2026-08-13 (in progress):
   cleanup. Asset Manager must not silently promote the user to Event Admin or
   change an existing event membership role.
 
+### `ASSET-BORROW-001` — scoped borrow lifecycle
+
+- Request one controlled asset for an exact event/sub-event timeframe and
+  accept it. In two independent reset branches, reject and cancel controlled
+  requests.
+- Requester and owner must see the same request identity/status. Only an owned
+  asset or a pending/accepted borrow for the exact booking scope becomes
+  assignment-eligible. Availability, notification and optional payment intent
+  effects occur exactly once.
+- Borrow permission is not Asset Manager membership and never changes an Event
+  role.
+
+### `ASSET-AVAIL-001` — overlap and finite capacity
+
+- Stage two overlapping booking requests against one finite-capacity asset,
+  then move one request outside the overlap without waiting for wall-clock
+  time.
+- Verify half-open timeframe boundaries, pending/accepted quantities,
+  available capacity and Explore order. Moving one request restores exactly
+  its released capacity in place and after reload.
+
 ### `ASSET-ASSIGN-001` — event/sub-event asset assignment
 
-- Assign an eligible accepted user's asset to one event sub-event.
-- Verify event ID, sub-event ID, asset owner, asset ID, capacity/settings and
-  Event Resources UI agree.
+- Assign an eligible accepted user's Transport to one normal event sub-event.
+- Verify event ID, sub-event ID, asset owner, asset ID, route,
+  capacity/settings and Event Resources UI agree.
 - Verify assignment visibility and availability/capacity effects without
   changing the user's event role or creating a second asset membership.
+
+### `ASSET-ASSIGN-002` — multi-type and multi-owner aggregation
+
+- Assign Transport and Accommodation from one eligible owner plus Supplies
+  contributions from two accepted users to the same normal sub-event.
+- Compare every per-owner record with aggregate accepted/pending/capacity
+  min/max values in Event Resources, the sub-event badges and parent
+  navigation, both in place and after reload.
+- The unrelated sub-event and all membership roles remain unchanged. Generated
+  Tournament-group aggregation belongs to `TOURNAMENT-RESOURCE-001`.
+
+### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
+
+- Edit the capacity of one already assigned asset and require the saved asset
+  write to refresh every referenced sub-event projection. Do not reconstruct
+  the answer in the list query.
+- Unassign it, then in an independent branch Remove one separate asset manager
+  from the event. Only settings/contributions owned by that removed manager are
+  cleaned up; unrelated owners and resource types remain intact.
+- Verify materialized counters, roles and assignment records after each write,
+  after reload and after an idempotent terminal replay.
 
 ## Operator configuration and security cases
 
@@ -4225,7 +5368,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 ## Coverage-expansion checkpoints appended after the original 106-case spine
 
 The 106 testcases that existed at the start of the 2026-08-13 coverage audit
-remain the immutable workflow spine. The following 82 cases are new rows, not
+remain the immutable workflow spine. The following 84 cases are new rows, not
 splits or rewrites of that spine. They are deliberately grouped into resumable
 checkpoint sequences, while every row still owns one bounded producer action
 and one decisive persisted oracle. Runtime execution must use at most three

@@ -34,10 +34,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardMemberDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
@@ -65,6 +69,7 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventsServiceTest {
@@ -1059,6 +1064,292 @@ class ActivitiesEventsServiceTest {
         assertThat(result.sourceId()).isEqualTo("slot-1");
         assertThat(result.stageStatus()).isEqualTo("F");
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
+    }
+
+    @Test
+    void manualParentStageFinalizeNotifiesOtherParticipantsOnly() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(
+                stage("stage-1", "SR"),
+                stage("stage-2", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "stage-1"))
+                .thenReturn(Optional.empty());
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "stage-1",
+                        0,
+                        "finalize-stage",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("F");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-stage-finalized");
+        assertThat(notification.title()).isEqualTo("stage-1 finalized");
+        assertThat(notification.recipientUserIds()).containsExactly("nova", "riley");
+        assertThat(notification.recipientUserIds()).doesNotContain("host");
+        assertThat(notification.payload())
+                .containsEntry("notification_title_key", "notification.event.stage.finalized.title")
+                .containsEntry("notification_message_key", "notification.event.stage.finalized.message")
+                .containsEntry("stageIndex", "1")
+                .containsEntry("stageTotal", "2")
+                .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
+    }
+
+    @Test
+    void reopenScoresNotifiesOtherStageParticipantsThatScoresAreUnderReview() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(
+                stage("qualifiers", "F"),
+                stage("final", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "qualifiers"))
+                .thenReturn(Optional.empty());
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "qualifiers",
+                        0,
+                        "reopen-scores",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("SR");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-stage-scores-under-review");
+        assertThat(notification.title()).isEqualTo("qualifiers scores under review");
+        assertThat(notification.body()).isEqualTo("qualifiers scores were reopened and are under review.");
+        assertThat(notification.recipientUserIds()).containsExactly("nova", "riley");
+        assertThat(notification.recipientUserIds()).doesNotContain("host");
+        assertThat(notification.createdUser()).isEqualTo("host");
+        assertThat(notification.payload())
+                .containsEntry("notification_title_key", "notification.event.stage.scores-under-review.title")
+                .containsEntry("notification_message_key", "notification.event.stage.scores-under-review.message")
+                .containsEntry("notification_tone", "info")
+                .containsEntry("stageIndex", "1")
+                .containsEntry("stageTotal", "2")
+                .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
+    }
+
+    @Test
+    void manualFinalStageFinalizeKeepsHumanAuditSeparateFromSystemResults() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(stage("final", "SR")));
+        ActivityMember hostFinalMember = acceptedGroupMember("final:group:1", "host");
+        ActivityMember rileyFinalMember = acceptedGroupMember("final:group:1", "riley");
+        EventLeaderboardStateDto finalState = new EventLeaderboardStateDto(
+                "event-1",
+                "final",
+                "Final",
+                "Score",
+                List.of(new EventLeaderboardGroupDto(
+                        "final:group:1",
+                        "Final Group",
+                        2,
+                        1,
+                        List.of("riley"),
+                        List.of(
+                                new EventLeaderboardMemberDto("host", "Casey Bridge"),
+                                new EventLeaderboardMemberDto("riley", "Riley Outside")),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of())));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerPatternAndStatus(
+                "group", "^\\Qfinal\\E:group:", "accepted"))
+                .thenReturn(List.of(hostFinalMember, rileyFinalMember));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "final"))
+                .thenReturn(Optional.empty());
+        when(activitiesEventLeaderboardService.queryState("event-1", "final")).thenReturn(finalState);
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "final",
+                        0,
+                        "finalize-stage",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("F");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(3)).enqueue(notificationCaptor.capture());
+        List<NotificationIntent> notifications = notificationCaptor.getAllValues();
+        assertThat(notifications.get(0)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-stage-finalized");
+            assertThat(notification.title()).isEqualTo("final finalized");
+            assertThat(notification.recipientUserIds()).containsExactly("riley");
+            assertThat(notification.createdUser()).isEqualTo("host");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.stage.finalized.title")
+                    .containsEntry("notification_message_key", "notification.event.stage.finalized.message")
+                    .doesNotContainKeys("senderName", "notification_avatar_tone", "notification_avatar_icon");
+        });
+        assertThat(notifications.get(1)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-tournament-won");
+            assertThat(notification.recipientUserIds()).containsExactly("riley");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("senderName", "MyScoutee System")
+                    .containsEntry("notification_title_key", "notification.event.tournament.won.title")
+                    .containsEntry("notification_message_key", "notification.event.tournament.won.message")
+                    .containsEntry("notification_tone", "success")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events")
+                    .containsEntry("stageIndex", "1")
+                    .containsEntry("stageTotal", "1");
+        });
+        assertThat(notifications.get(2)).satisfies(notification -> {
+            assertThat(notification.type()).isEqualTo("event-tournament-not-won");
+            assertThat(notification.recipientUserIds()).containsExactly("host");
+            assertThat(notification.createdUser()).isEqualTo("scheduler");
+            assertThat(notification.payload())
+                    .containsEntry("notification_title_key", "notification.event.tournament.not-won.title")
+                    .containsEntry("notification_message_key", "notification.event.tournament.not-won.message")
+                    .containsEntry("notification_tone", "warning")
+                    .containsEntry("notification_avatar_tone", "stage")
+                    .containsEntry("notification_avatar_icon", "emoji_events");
+        });
+        assertThat(notifications)
+                .noneMatch(notification -> "event-tournament-finalized".equals(notification.type()));
+    }
+
+    @Test
+    void manualParentStageStartNotifiesOtherParticipantsBeforeRoomNotifications() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(stage("stage-1", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(parent), List.of());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "stage-1"))
+                .thenReturn(Optional.empty());
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+        when(eventScheduler.generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class)))
+                .thenAnswer(invocation -> {
+                    Runnable beforeRoomNotifications = invocation.getArgument(1);
+                    beforeRoomNotifications.run();
+                    return List.of();
+                });
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "stage-1",
+                        0,
+                        "start-tournament",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("A");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-tournament-started");
+        assertThat(notification.title()).isEqualTo("stage-1 started");
+        assertThat(notification.recipientUserIds()).containsExactly("nova", "riley");
+        assertThat(notification.recipientUserIds()).doesNotContain("host");
+        assertThat(notification.payload())
+                .containsEntry("notification_title_key", "notification.event.stage.started.title")
+                .containsEntry("notification_message_key", "notification.event.stage.started.message")
+                .containsEntry("notification_avatar_tone", "stage")
+                .containsEntry("notification_avatar_icon", "emoji_events")
+                .containsEntry("stageIndex", "1")
+                .containsEntry("stageTotal", "1");
+        verify(eventScheduler).generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(anyCollection());
+    }
+
+    @Test
+    void manualLaterStageStartNotifiesOnlyAcceptedStageGroupMembers() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(
+                stage("qualifiers", "F"),
+                stage("final", "RS")));
+        ActivityMember hostFinalMember = acceptedGroupMember("final:group:1", "host");
+        ActivityMember rileyFinalMember = acceptedGroupMember("final:group:1", "riley");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(parent), List.of());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerPatternAndStatus(
+                "group", "^\\Qfinal\\E:group:", "accepted"))
+                .thenReturn(List.of(hostFinalMember, rileyFinalMember));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "final"))
+                .thenReturn(Optional.empty());
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+        when(eventScheduler.generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class)))
+                .thenAnswer(invocation -> {
+                    Runnable beforeRoomNotifications = invocation.getArgument(1);
+                    beforeRoomNotifications.run();
+                    return List.of();
+                });
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "final",
+                        1,
+                        "start-tournament",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("A");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        assertThat(notificationCaptor.getValue().recipientUserIds()).containsExactly("riley");
+        assertThat(notificationCaptor.getValue().recipientUserIds()).doesNotContain("host", "nova");
     }
 
     @Test
@@ -1093,8 +1384,14 @@ class ActivitiesEventsServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.sourceId()).isEqualTo("slot-1");
         assertThat(result.stageStatus()).isEqualTo("A");
-        verify(eventScheduler).generateRandomPlansForEvents(List.of("slot-1"));
-        verify(eventScheduler, never()).generateRandomPlansForEvents(List.of("event-1"));
+        verify(eventScheduler).generateTournamentStagePlansForEvents(
+                eq(List.of("slot-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(
+                eq(List.of("event-1")),
+                any(Runnable.class));
+        verify(eventScheduler, never()).generateTournamentStagePlansForEvents(anyCollection());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
@@ -1670,6 +1967,40 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void tournamentRoomOrganizerProfileDoesNotTurnAcceptedHostIntoRoomAdmin() {
+        Users casey = new Users();
+        casey.setId("casey");
+        casey.setName("Casey Bridge");
+
+        ActivityEvent room = event("tournament-room-1", "casey", 0d);
+        room.setOwnerUserId(null);
+        room.setCreatorUserId(null);
+        room.setOrganizerUserId("casey");
+        room.setCreatorName("Casey Bridge");
+        room.setAdmins(List.of());
+        room.setEventType("tournament-room");
+        room.setAcceptedMemberUserIds(List.of("casey", "nova"));
+
+        when(homeUserProfileService.resolveCurrentUser("casey")).thenReturn(casey);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("casey", false))
+                .thenReturn(acceptedStatuses("tournament-room-1"));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(room));
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "casey", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.items()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("tournament-room-1");
+            assertThat(record.userId()).isEqualTo("casey");
+            assertThat(record.creatorUserId()).isEmpty();
+            assertThat(record.organizerUserId()).isEqualTo("casey");
+            assertThat(record.adminIds()).isEmpty();
+        });
+    }
+
+    @Test
     void userEventPageReturnsLimitedFullRecordsAndCursor() {
         Users host = new Users();
         host.setId("host");
@@ -1775,6 +2106,15 @@ class ActivitiesEventsServiceTest {
                 List.of());
     }
 
+    private ActivityMember acceptedGroupMember(String ownerId, String userId) {
+        ActivityMember member = new ActivityMember();
+        member.setOwnerType("group");
+        member.setOwnerId(ownerId);
+        member.setUserId(userId);
+        member.setStatus("accepted");
+        return member;
+    }
+
     private EventDetailDto eventPayload(
             String syncKey,
             String id,
@@ -1861,6 +2201,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 List.of(),
                 "",
+                null,
                 0d,
                 0d,
                 0d,

@@ -37,6 +37,7 @@ trigger another stack or database process.
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
+| `chat-domain` | Stages one selected Chat checkpoint with exact row, context, ordering and zero-write oracles | No scheduler; the selected checkpoint uses the normal paged Chat read/write paths |
 | `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
 | `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
 | `operator-domain` | Snapshots the exact deployment configuration and prints a credentials-safe Firebase capability oracle | No scheduler; QA supplies disposable provider configuration through the Operator UI |
@@ -266,8 +267,78 @@ member/capacity badge. The publish-time initial batch must add the controlled
 event for Nova only. Keep Riley open without a controlled-event delta until
 Riley is introduced as the distinct later periodic candidate.
 
-`TOURNAMENT-003` continues through the named real tournament-review scheduler
-workflow. The immediate runner does not impersonate either worker.
+`TOURNAMENT-003` stages a completed, deterministic qualifier baseline: Casey
+beats Nova `9-4` in Group A, while Riley wins the singleton Group B with `7`;
+one member advances per group. The normal 30-minute
+`event-tournament-review` rule is held until Casey performs the visible
+Finalize action. After that write, arm the real worker without shortening its
+configured interval:
+
+```bash
+bash manual-qa-checkpoints.sh arm-tournament-review event-domain TOURNAMENT-003
+bash manual-qa-checkpoints.sh status event-domain TOURNAMENT-003
+```
+
+After the first real run has advanced Casey and Riley exactly once, the same
+arm command captures that stable boundary and makes one unchanged real-worker
+pass due. Verify that pass as an exact domain no-op:
+
+```bash
+bash manual-qa-checkpoints.sh arm-tournament-review event-domain TOURNAMENT-003
+bash manual-qa-checkpoints.sh verify-tournament-review-noop event-domain TOURNAMENT-003
+```
+
+The immediate runner never impersonates the scheduler; both passes are owned
+by the already-running development worker.
+
+If the manual Finalize notification contract needs a focused repair replay
+after those two scheduler passes are already proven, preserve the score and
+advancement evidence and rewind only the Finalize producer boundary:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-tournament-finalize-notification-retest event-domain TOURNAMENT-003
+# Casey manually finalizes Qualifiers exactly once.
+bash manual-qa-checkpoints.sh verify-tournament-finalize-notification event-domain TOURNAMENT-003
+```
+
+The rearm removes only the old `event-stage-finalized` outbox/delivery rows,
+rewinds Qualifiers from `F` to `SR`, and holds the review worker. It retains the
+Casey+Riley Final group, deterministic scores, plan marker and both real-worker
+run proofs. The verifier requires one Nova+Riley outbox and excludes the Casey
+actor, matching manual tournament Start semantics.
+
+For the ordered notification contract, replay both real producer boundaries:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-tournament-notification-sequence-retest event-domain TOURNAMENT-003
+# Casey manually finalizes Qualifiers exactly once.
+bash manual-qa-checkpoints.sh verify-tournament-finalize-sequence event-domain TOURNAMENT-003
+# Wait for the real event-tournament-review worker.
+bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence event-domain TOURNAMENT-003
+# Wait for the automatically armed unchanged worker replay.
+bash manual-qa-checkpoints.sh verify-tournament-advancement-sequence-noop event-domain TOURNAMENT-003
+```
+
+The first write produces one translated stage-finalized intent for Nova and
+Riley with Casey excluded. The already-existing Final group remains in place;
+the real advancement worker then writes Casey and Riley's missing Final-group
+memberships and produces a later translated, trophy-branded
+advancement intent for Casey and Riley. The final unchanged worker pass must
+write neither membership nor another notification.
+
+For the corrected-score continuation, preserve the closed revision evidence
+and prepare only the dependent-stage guard boundary:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+# Inspect the Qualifiers menu, then send one forbidden late Reopen through Casey's existing session.
+bash manual-qa-checkpoints.sh verify-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+```
+
+The preparation activates the dependent Final event/runtime/current-stage
+state directly without replaying any lifecycle producer, then retains a strict
+snapshot of the related records and user counters. The verifier accepts only a
+byte-identical rejected-action boundary.
 
 ## Asset-domain checkpoint runner
 
@@ -375,6 +446,23 @@ The machine oracle requires a new materialized `layoutVersion`, a completed
 scheduled run, and exact agreement between layout totals and its stored node,
 edge and forest collections. The default product interval is one day in both
 `demo_db` and `myscoutee_db`.
+
+`CHAT-LIST-001` replaces only the selected Casey actor's Chat rows for the
+short fixture window and snapshots the exact originals for reset. It stages
+one main-event, group, service and App Support row, one unread item in each
+context and no messages. The authenticated browser oracle must prove date
+ascending/descending order and all context totals through the real Java page
+route; `status` then proves that every staged chat and activity counter stayed
+byte-identical after those reads.
+
+```bash
+bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
+node ../../../../guides/qa/tools/verify-chat-list-read-oracle.mjs \
+  --manifest /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json \
+  --actor-user-id 650000000000000000000061
+bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
+bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
+```
 
 `stat-011` prints the exact unique text a QA must send once in **Host Circle
 Ops**. Stage itself does not insert a message:

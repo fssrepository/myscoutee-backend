@@ -117,6 +117,21 @@
         }
       ]
     },
+    "CHAT-LIST-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey controlled chat-list reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · four controlled Chat contexts"
+        }
+      ]
+    },
     "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
@@ -129,6 +144,222 @@
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
           "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "TOURNAMENT-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · grouping actor"
+        },
+        {
+          "actor": "Nova tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · accepted participant"
+        },
+        {
+          "actor": "Riley tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · accepted participant"
+        }
+      ]
+    },
+    "TOURNAMENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · stage finalizer"
+        },
+        {
+          "actor": "Nova tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · qualifier non-advancer"
+        },
+        {
+          "actor": "Riley tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · qualifier advancer"
+        }
+      ]
+    },
+    "TOURNAMENT-004": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Final start actor"
+        },
+        {
+          "actor": "Nova tournament control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · excluded participant control"
+        },
+        {
+          "actor": "Riley tournament finalist",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · Final participant"
+        }
+      ]
+    },
+    "TOURNAMENT-SCORE-REOPEN-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey corrected-score reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · score correction actor"
+        },
+        {
+          "actor": "Nova corrected advancer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · revision 1 non-advancer, revision 2 advancer"
+        },
+        {
+          "actor": "Riley stable advancer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · unchanged advancer control"
+        }
+      ]
+    },
+    "TOURNAMENT-SCORE-REOPEN-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey late-correction guard reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · late Reopen guard actor"
+        },
+        {
+          "actor": "Nova corrected advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · corrected Final member control"
+        },
+        {
+          "actor": "Riley stable advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · stable Final member control"
+        }
+      ]
+    },
+    "TOURNAMENT-ROOM-LIFE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey nested tournament reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · parent Admin and accepted-group reader"
+        },
+        {
+          "actor": "Nova Group A accepted control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · unchanged Group A member/chat control"
+        },
+        {
+          "actor": "Riley Group B control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · unchanged R2 control"
+        }
+      ]
+    },
+    "TOURNAMENT-CARD-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament-card Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Qualifiers Finalize actor"
+        },
+        {
+          "actor": "Nova tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · parent-card transition observer"
+        },
+        {
+          "actor": "Riley tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · reload persistence observer"
+        }
+      ]
+    },
+    "TOURNAMENT-ADMISSION-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey admission Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · unchanged tournament Admin control"
+        },
+        {
+          "actor": "Nova admitted participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · accepted before first-stage Start"
+        },
+        {
+          "actor": "Riley late admission actor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · post-Start join/invitation/approval actor"
         }
       ]
     },

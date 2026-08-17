@@ -577,6 +577,30 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void parentEventViewerCanReadMaterializedTournamentRoomMembers() {
+        String parentEventId = "event-1";
+        String subEventId = "stage-1";
+        String roomId = "random-room:event-1:stage-1:stage-1:group:1";
+        ActivityEvent room = event(roomId, "system", "system");
+        room.setEventType("tournament-room");
+        ActivityMember roomMember = member("room-member-sync", roomId, "member-1", "Member", "accepted");
+        when(accessControlService.canCurrentActorViewEventMembers(roomId)).thenReturn(false);
+        when(accessControlService.canCurrentActorViewEventMembers(parentEventId)).thenReturn(true);
+        when(activityEventsRepository.findBySourceId(roomId)).thenReturn(List.of(room));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", roomId))
+                .thenReturn(List.of(roomMember));
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "event",
+                roomId,
+                false,
+                parentEventId,
+                subEventId);
+
+        assertThat(result).extracting(ActivityMemberEntryDto::userId).containsExactly("member-1");
+    }
+
+    @Test
     void memberQueriesAndSnapshotsHideSuppressedParticipationRows() {
         ActivityMember visible = member("visible-sync", "event-1", "visible", "Member", "accepted");
         ActivityMember suppressed = suppressedMember(

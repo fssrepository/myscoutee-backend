@@ -46,7 +46,62 @@ public record SubEventItem(
         String stageStatusUpdatedAt,
         String stageFinalizedAt,
         String stageFinalizedByUserId,
+        Integer stageResultRevision,
         List<SubEventGroupItemDto> groups) {
+
+    public SubEventItem(
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            String location,
+            String createdByUserId,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer membersAccepted,
+            Integer membersPending,
+            Integer groupsPending,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending,
+            Integer carsAccepted,
+            Integer accommodationAccepted,
+            Integer suppliesAccepted,
+            Integer carsCapacityMin,
+            Integer carsCapacityMax,
+            Integer accommodationCapacityMin,
+            Integer accommodationCapacityMax,
+            Integer suppliesCapacityMin,
+            Integer suppliesCapacityMax,
+            Integer slotStartOffsetMinutes,
+            Integer slotDurationMinutes,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            List<SubEventGroupItemDto> groups) {
+        this(
+                id, name, description, startAt, endAt, location, createdByUserId,
+                tournamentGroupCapacityMin, tournamentGroupCapacityMax,
+                tournamentLeaderboardType, tournamentAdvancePerGroup, optional, pricing,
+                capacityMin, capacityMax, membersAccepted, membersPending, groupsPending,
+                carsPending, accommodationPending, suppliesPending,
+                carsAccepted, accommodationAccepted, suppliesAccepted,
+                carsCapacityMin, carsCapacityMax,
+                accommodationCapacityMin, accommodationCapacityMax,
+                suppliesCapacityMin, suppliesCapacityMax,
+                slotStartOffsetMinutes, slotDurationMinutes,
+                stageStatus, stageStatusReason, stageStatusUpdatedAt,
+                stageFinalizedAt, stageFinalizedByUserId, null, groups);
+    }
 
     public SubEventItem(
             String id,
@@ -98,7 +153,7 @@ public record SubEventItem(
                 suppliesCapacityMin, suppliesCapacityMax,
                 slotStartOffsetMinutes, slotDurationMinutes,
                 stageStatus, stageStatusReason, stageStatusUpdatedAt,
-                stageFinalizedAt, stageFinalizedByUserId, groups);
+                stageFinalizedAt, stageFinalizedByUserId, null, groups);
     }
 
     public SubEventItem(
@@ -150,7 +205,7 @@ public record SubEventItem(
                 suppliesCapacityMin, suppliesCapacityMax,
                 slotStartOffsetMinutes, slotDurationMinutes,
                 stageStatus, stageStatusReason, stageStatusUpdatedAt,
-                stageFinalizedAt, stageFinalizedByUserId, List.of());
+                stageFinalizedAt, stageFinalizedByUserId, null, List.of());
     }
 
     public SubEventItem(
@@ -223,6 +278,7 @@ public record SubEventItem(
                 null,
                 null,
                 null,
+                null,
                 List.of());
     }
 
@@ -265,6 +321,7 @@ public record SubEventItem(
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
                 stageFinalizedByUserId,
+                stageResultRevision,
                 groups);
     }
 
@@ -319,6 +376,7 @@ public record SubEventItem(
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
                 stageFinalizedByUserId,
+                stageResultRevision,
                 groups);
     }
 
@@ -361,6 +419,7 @@ public record SubEventItem(
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
                 stageFinalizedByUserId,
+                stageResultRevision,
                 groups);
     }
 }

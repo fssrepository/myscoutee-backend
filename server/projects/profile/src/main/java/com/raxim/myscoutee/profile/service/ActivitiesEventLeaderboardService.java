@@ -53,7 +53,8 @@ public class ActivitiesEventLeaderboardService {
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_DELETED = "D";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
-    private static final String MEMBER_STATUS_PENDING = "pending";
+    private static final String MEMBER_OWNER_TYPE_EVENT = "event";
+    private static final String MEMBER_OWNER_TYPE_GROUP = "group";
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
@@ -421,6 +422,21 @@ public class ActivitiesEventLeaderboardService {
 
     private List<EventTournamentGroupDto> tournamentGroups(String ownerId, ActivityEvent event, SubEventItem subEvent) {
         List<SubEventGroupItemDto> groups = resolveGroups(ownerId, event, subEvent);
+        String normalizedSubEventId = normalizeId(subEvent == null ? null : subEvent.id());
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> randomRoomSnapshots =
+                activitiesMembersService.buildBatchOwnerSnapshots(
+                        MEMBER_OWNER_TYPE_EVENT,
+                        groups.stream()
+                                .map(group -> randomRoomMemberOwnerId(ownerId, normalizedSubEventId, normalizeId(group == null ? null : group.id())))
+                                .filter(StringUtils::hasText)
+                                .toList());
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> groupSnapshots =
+                activitiesMembersService.buildBatchOwnerSnapshots(
+                        MEMBER_OWNER_TYPE_GROUP,
+                        groups.stream()
+                                .map(group -> groupMemberOwnerId(ownerId, normalizedSubEventId, normalizeId(group == null ? null : group.id())))
+                                .filter(StringUtils::hasText)
+                                .toList());
         ActivitySubEventStageRuntime stageRuntime = subEvent == null
                 ? null
                 : activitySubEventStageRuntimeRepository
@@ -438,21 +454,62 @@ public class ActivitiesEventLeaderboardService {
             }
             int capacityMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
             int capacityMax = Math.max(capacityMin, group.capacityMax() == null ? capacityMin : group.capacityMax());
-            GroupMemberCounts memberCounts = resolveGroupMemberCounts(
+            GroupMembershipScope membership = resolveGroupMembershipScope(
                     ownerId,
-                    normalizeId(subEvent.id()),
-                    groupId);
+                    normalizedSubEventId,
+                    groupId,
+                    randomRoomSnapshots,
+                    groupSnapshots);
             result.add(new EventTournamentGroupDto(
                     groupId,
                     safeText(group.name()),
                     safeText(group.source()).isBlank() ? "manual" : safeText(group.source()),
                     capacityMin,
                     capacityMax,
-                    memberCounts.accepted(),
-                    memberCounts.pending(),
+                    membership.accepted(),
+                    membership.pending(),
+                    membership.ownerType(),
+                    membership.ownerId(),
                     groupResourceMetrics(stageRuntime, groupId)));
         }
         return result;
+    }
+
+    private GroupMembershipScope resolveGroupMembershipScope(
+            String eventId,
+            String subEventId,
+            String groupId,
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> randomRoomSnapshots,
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> groupSnapshots) {
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, groupId);
+        ActivitiesMembersService.OwnerMembersSnapshot randomRoomSnapshot =
+                randomRoomSnapshots == null ? null : randomRoomSnapshots.get(randomRoomOwnerId);
+        if (hasMaterializedMembership(randomRoomSnapshot)) {
+            return membershipScope(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId, randomRoomSnapshot);
+        }
+        String groupOwnerId = groupMemberOwnerId(eventId, subEventId, groupId);
+        ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot =
+                groupSnapshots == null ? null : groupSnapshots.get(groupOwnerId);
+        return membershipScope(MEMBER_OWNER_TYPE_GROUP, groupOwnerId, groupSnapshot);
+    }
+
+    private boolean hasMaterializedMembership(ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot != null && (
+                !snapshot.acceptedMemberUserIds().isEmpty()
+                        || !snapshot.pendingMemberUserIds().isEmpty()
+                        || !snapshot.invitedMemberUserIds().isEmpty()
+                        || !snapshot.pendingRequestMemberUserIds().isEmpty());
+    }
+
+    private GroupMembershipScope membershipScope(
+            String ownerType,
+            String ownerId,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return new GroupMembershipScope(
+                ownerType,
+                ownerId,
+                snapshot == null ? 0 : snapshot.acceptedMemberUserIds().size(),
+                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size());
     }
 
     private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
@@ -690,38 +747,35 @@ public class ActivitiesEventLeaderboardService {
                 .toList();
     }
 
-    private GroupMemberCounts resolveGroupMemberCounts(String eventId, String subEventId, String groupId) {
-        int accepted = 0;
-        int pending = 0;
-        for (ActivityMemberEntryDto entry : resolveGroupMemberEntries(eventId, subEventId, groupId)) {
-            String status = safeText(entry == null ? null : entry.status());
-            if (MEMBER_STATUS_ACCEPTED.equalsIgnoreCase(status)) {
-                accepted += 1;
-            } else if (MEMBER_STATUS_PENDING.equalsIgnoreCase(status)) {
-                pending += 1;
-            }
-        }
-        return new GroupMemberCounts(accepted, pending);
-    }
-
     private List<ActivityMemberEntryDto> resolveGroupMemberEntries(
             String eventId,
             String subEventId,
             String groupId) {
         String normalizedGroupId = normalizeId(groupId);
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, normalizedGroupId);
+        List<ActivityMemberEntryDto> randomRoomMembers = activitiesMembersService.queryMembers(
+                MEMBER_OWNER_TYPE_EVENT,
+                randomRoomOwnerId,
+                false,
+                eventId,
+                subEventId);
+        if ((randomRoomMembers != null && !randomRoomMembers.isEmpty())
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId)) {
+            return randomRoomMembers == null ? List.of() : randomRoomMembers;
+        }
         String memberOwnerId = groupMemberOwnerId(eventId, subEventId, normalizedGroupId);
         if (!StringUtils.hasText(memberOwnerId)) {
             return List.of();
         }
         List<ActivityMemberEntryDto> canonicalMembers =
-                activitiesMembersService.queryMembers("group", memberOwnerId);
+                activitiesMembersService.queryMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
         if ((canonicalMembers != null && !canonicalMembers.isEmpty())
-                || activitiesMembersService.hasStoredOwnerMembers("group", memberOwnerId)
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId)
                 || memberOwnerId.equals(normalizedGroupId)) {
             return canonicalMembers == null ? List.of() : canonicalMembers;
         }
         List<ActivityMemberEntryDto> legacyMembers =
-                activitiesMembersService.queryMembers("group", normalizedGroupId);
+                activitiesMembersService.queryMembers(MEMBER_OWNER_TYPE_GROUP, normalizedGroupId);
         return legacyMembers == null ? List.of() : legacyMembers;
     }
 
@@ -748,7 +802,24 @@ public class ActivitiesEventLeaderboardService {
         return normalizedEventId + ":" + normalizedSubEventId + ":" + normalizedGroupId;
     }
 
-    private record GroupMemberCounts(int accepted, int pending) {
+    private String randomRoomMemberOwnerId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedGroupId)) {
+            return "";
+        }
+        return "random-room:"
+                + normalizedEventId
+                + ":"
+                + normalizedSubEventId
+                + ":"
+                + normalizedGroupId;
+    }
+
+    private record GroupMembershipScope(String ownerType, String ownerId, int accepted, int pending) {
     }
 
     private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {
@@ -962,7 +1033,7 @@ public class ActivitiesEventLeaderboardService {
         if (stages.isEmpty()) {
             stages = List.of(targetStage);
         }
-        int incomingCapacityMax = Math.max(safeCount(event == null ? null : event.getCapacityMax()), safeCount(targetStage.capacityMax()));
+        int incomingCapacityMax = safeCount(event == null ? null : event.getCapacityMax());
         for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
             if (stage == null) {
                 continue;
@@ -983,20 +1054,11 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return 0;
         }
-        int groupMin = Math.max(0, subEvent.tournamentGroupCapacityMin() == null ? 0 : subEvent.tournamentGroupCapacityMin());
-        int groupMax = Math.max(groupMin, subEvent.tournamentGroupCapacityMax() == null ? groupMin : subEvent.tournamentGroupCapacityMax());
-        if (groupMin > 0 || groupMax > 0) {
-            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-            int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(subEvent.capacityMax()));
-            int groupsNeededForMaximum = capacityMax > 0
-                    ? (int) Math.ceil((double) capacityMax / divisor)
-                    : 0;
-            int groupsAllowedByMinimum = groupMin > 0
-                    ? Math.max(1, capacityMax / groupMin)
-                    : groupsNeededForMaximum;
-            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
-        }
-        return 0;
+        return TournamentGroupCountPolicy.countForIncoming(
+                subEvent.tournamentGroupCapacityMin(),
+                subEvent.tournamentGroupCapacityMax(),
+                incomingCapacityMax,
+                subEvent.capacityMax());
     }
 
     private boolean hasTournamentGroupCapacityRule(SubEventItem subEvent) {
