@@ -3732,6 +3732,24 @@ public class ActivitiesEventsService {
             enqueueTournamentStartedNotification(event, stage, actorUserId);
             return;
         }
+        if (STAGE_ACTION_REOPEN.equals(action)) {
+            Map<String, String> reviewPayload = new LinkedHashMap<>(stageNotificationPayload);
+            reviewPayload.put("notification_title_key", "notification.event.stage.scores-under-review.title");
+            reviewPayload.put("notification_message_key", "notification.event.stage.scores-under-review.message");
+            reviewPayload.put("notification_tone", "info");
+            enqueueEventNotification(
+                    "event-stage-scores-under-review",
+                    event,
+                    "event-stage-participants",
+                    tournamentStageAudienceUserIdsExcludingActor(event, stage, actorUserId),
+                    stageTitle + " scores under review",
+                    stageTitle + " scores were reopened and are under review.",
+                    action,
+                    stageTitle,
+                    actorUserId,
+                    reviewPayload);
+            return;
+        }
         if (STAGE_STATUS_SCORE_REVIEW.equals(nextStatus)) {
             enqueueEventNotification(
                     "event-stage-review",

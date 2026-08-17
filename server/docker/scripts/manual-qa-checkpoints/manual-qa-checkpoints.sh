@@ -68,6 +68,7 @@ Usage:
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh verify-tournament-admission-rejection event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh verify-score-reopen event-domain TOURNAMENT-SCORE-REOPEN-001
+  bash manual-qa-checkpoints.sh rearm-score-reopen event-domain TOURNAMENT-SCORE-REOPEN-001
   bash manual-qa-checkpoints.sh verify-score-correction event-domain TOURNAMENT-SCORE-REOPEN-001
   bash manual-qa-checkpoints.sh arm-score-reopen-review event-domain TOURNAMENT-SCORE-REOPEN-001 [delay-seconds]
   bash manual-qa-checkpoints.sh verify-score-reopen-result event-domain TOURNAMENT-SCORE-REOPEN-001
@@ -349,6 +350,7 @@ case "${scenario}:${command}" in
     [ "$3" = "TOURNAMENT-ADMISSION-001" ] || fail "${command} is restricted to TOURNAMENT-ADMISSION-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
+  event-domain:rearm-score-reopen|\
   event-domain:verify-score-reopen|\
   event-domain:verify-score-correction|\
   event-domain:verify-score-reopen-result|\

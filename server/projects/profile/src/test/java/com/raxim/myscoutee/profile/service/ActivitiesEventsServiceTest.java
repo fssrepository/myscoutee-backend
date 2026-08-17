@@ -1110,6 +1110,52 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void reopenScoresNotifiesOtherStageParticipantsThatScoresAreUnderReview() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setAcceptedMemberUserIds(List.of("host", "nova", "riley"));
+        parent.setSubEvents(List.of(
+                stage("qualifiers", "F"),
+                stage("final", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "qualifiers"))
+                .thenReturn(Optional.empty());
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        null,
+                        "qualifiers",
+                        0,
+                        "reopen-scores",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.stageStatus()).isEqualTo("SR");
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-stage-scores-under-review");
+        assertThat(notification.title()).isEqualTo("qualifiers scores under review");
+        assertThat(notification.body()).isEqualTo("qualifiers scores were reopened and are under review.");
+        assertThat(notification.recipientUserIds()).containsExactly("nova", "riley");
+        assertThat(notification.recipientUserIds()).doesNotContain("host");
+        assertThat(notification.createdUser()).isEqualTo("host");
+        assertThat(notification.payload())
+                .containsEntry("notification_title_key", "notification.event.stage.scores-under-review.title")
+                .containsEntry("notification_message_key", "notification.event.stage.scores-under-review.message")
+                .containsEntry("notification_tone", "info")
+                .containsEntry("stageIndex", "1")
+                .containsEntry("stageTotal", "2")
+                .doesNotContainKeys("notification_avatar_tone", "notification_avatar_icon");
+    }
+
+    @Test
     void manualFinalStageFinalizeKeepsHumanAuditSeparateFromSystemResults() {
         Users host = new Users();
         host.setId("host");

@@ -14466,6 +14466,18 @@
     "value": "{stageTitle} has been finalized."
   },
   {
+    "_id": "i18n-message-en-notification-event-stage-scores-under-review-title",
+    "key": "notification.event.stage.scores-under-review.title",
+    "lang": "en",
+    "value": "{stageTitle} scores under review"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-stage-scores-under-review-message",
+    "key": "notification.event.stage.scores-under-review.message",
+    "lang": "en",
+    "value": "{stageTitle} scores were reopened and are under review."
+  },
+  {
     "_id": "i18n-message-en-notification-event-stage-advanced-title",
     "key": "notification.event.stage.advanced.title",
     "lang": "en",
@@ -33088,6 +33100,18 @@
     "key": "notification.event.stage.finalized.message",
     "lang": "hu",
     "value": "A(z) {stageTitle} szakasz lezárult."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-scores-under-review-title",
+    "key": "notification.event.stage.scores-under-review.title",
+    "lang": "hu",
+    "value": "Pontok felülvizsgálata: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-stage-scores-under-review-message",
+    "key": "notification.event.stage.scores-under-review.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz pontozását újranyitották, az eredmény felülvizsgálat alatt áll."
   },
   {
     "_id": "i18n-message-hu-notification-event-stage-advanced-title",

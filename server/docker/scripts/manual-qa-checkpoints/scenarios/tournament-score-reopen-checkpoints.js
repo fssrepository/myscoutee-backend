@@ -344,6 +344,61 @@
     };
   }
 
+  function oldEvidenceUnchanged(saved, current = oldEvidence()) {
+    return Q.sameJson(saved.outbox, current.outbox)
+      && Q.sameJson(saved.inbox, current.inbox)
+      && Q.sameJson(saved.resultMarker, current.resultMarker);
+  }
+
+  function reopenEvidence() {
+    const selector = {
+      "payload.eventId": EVENT_ID,
+      "payload.stageAction": "reopen-scores"
+    };
+    return {
+      outbox: canonical("notificationOutbox", selector),
+      inbox: canonical("userNotifications", selector)
+    };
+  }
+
+  function assertReopenEvidence() {
+    const evidence = reopenEvidence();
+    if (evidence.outbox.length !== 1) {
+      Q.fail(`${CHECKPOINT} expected exactly one Reopen scores notification outbox record.`);
+    }
+    const outbox = evidence.outbox[0];
+    const payload = outbox.payload || {};
+    if (Q.text(outbox.notificationType) !== "event-stage-scores-under-review"
+        || !Q.sameJson(sorted(outbox.recipientUserIds), [NOVA_ID, RILEY_ID].sort())
+        || Q.text(outbox.createdUser) !== HOST_ID
+        || Q.text(outbox.title) !== "Qualifiers scores under review"
+        || Q.text(outbox.body) !== "Qualifiers scores were reopened and are under review."
+        || Q.text(payload.notification_title_key) !== "notification.event.stage.scores-under-review.title"
+        || Q.text(payload.notification_message_key) !== "notification.event.stage.scores-under-review.message"
+        || Q.text(payload.notification_tone) !== "info"
+        || Q.text(payload.stageIndex) !== "1"
+        || Q.text(payload.stageTotal) !== "2"
+        || Q.text(payload.notification_avatar_tone)
+        || Q.text(payload.notification_avatar_icon)) {
+      Q.fail(`${CHECKPOINT} Reopen scores outbox does not match the separate Casey-authored under-review contract.`);
+    }
+    if (evidence.inbox.length !== 2
+        || !Q.sameJson(sorted(evidence.inbox.map(item => item.recipientUserId)), [NOVA_ID, RILEY_ID].sort())
+        || evidence.inbox.some(item => Q.text(item.recipientUserId) === HOST_ID
+          || Q.text(item.kind) !== "event-stage-scores-under-review"
+          || Q.text(item.senderUserId) !== HOST_ID
+          || Q.text(item.title) !== outbox.title
+          || Q.text(item.message) !== outbox.body
+          || Q.text((item.payload || {}).notification_title_key) !== payload.notification_title_key
+          || Q.text((item.payload || {}).notification_message_key) !== payload.notification_message_key
+          || Q.text((item.payload || {}).notification_tone) !== "info"
+          || Q.text((item.payload || {}).notification_avatar_tone)
+          || Q.text((item.payload || {}).notification_avatar_icon))) {
+      Q.fail(`${CHECKPOINT} Reopen scores inbox is not exactly Nova+Riley with Casey as the human sender.`);
+    }
+    return evidence;
+  }
+
   function resultSnapshot() {
     return {
       qualifier: stageById(QUALIFIER_ID),
@@ -376,7 +431,7 @@
   }
 
   function assertOldEvidence(currentState) {
-    if (!Q.sameJson(currentState.oldEvidence, oldEvidence())) {
+    if (!oldEvidenceUnchanged(currentState.oldEvidence)) {
       Q.fail(`${CHECKPOINT} revision 1 audit/outcome evidence was changed or overwritten.`);
     }
   }
@@ -481,6 +536,7 @@
     }
     assertInitialFinalGroup();
     assertOldEvidence(currentState);
+    const evidence = assertReopenEvidence();
     const verifiedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "reopened", reopenVerifiedAtIso: verifiedAtIso
@@ -489,8 +545,127 @@
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "reopened",
       qualifierStatus: "SR", qualifierRevision: 1,
       unchangedScores: scores, unchangedFinalGroup: acceptedGroupUsers(FINAL_GROUP),
+      underReviewNotification: {
+        outbox: evidence.outbox.length,
+        inbox: evidence.inbox.length,
+        recipients: [NOVA_ID, RILEY_ID].sort(),
+        actorExcluded: true
+      },
       oldRevisionEvidenceUnchanged: true,
       next: "In Qualifiers > Group A, add exactly +10 score to Nova once; do not finalize yet."
+    });
+  }
+
+  function rearmReopen() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    if (currentState.phase !== "staged") {
+      Q.fail(`${CHECKPOINT} Reopen rearm is restricted to the unverified staged boundary.`);
+    }
+    const qualifier = stageById(QUALIFIER_ID);
+    if (Q.text(qualifier && qualifier.stageStatus).toUpperCase() !== "SR"
+        || Q.number(qualifier && qualifier.stageResultRevision) !== 1
+        || !Q.sameJson(scoreTotals(), currentState.baseline.scores)) {
+      Q.fail(`${CHECKPOINT} Reopen rearm requires the unchanged Score review revision 1 boundary.`);
+    }
+    assertInitialFinalGroup();
+    assertOldEvidence(currentState);
+
+    const legacyEvidence = reopenEvidence();
+    const legacyOutboxTypes = sorted(legacyEvidence.outbox.map(item => item.notificationType));
+    const legacyInboxTypes = sorted(legacyEvidence.inbox.map(item => item.kind));
+    if (legacyEvidence.outbox.length !== 2
+        || legacyEvidence.inbox.length !== 4
+        || !Q.sameJson(legacyOutboxTypes, ["event-stage-closed", "event-stage-review"])
+        || !Q.sameJson(legacyInboxTypes, ["event-stage-closed", "event-stage-review"])) {
+      Q.fail(`${CHECKPOINT} refuses to rearm because the obsolete Reopen evidence is not the exact known 2-outbox/4-inbox shape.`);
+    }
+
+    const rearmedAtIso = Q.nowIso();
+    const baselineQualifier = {
+      ...currentState.baseline.qualifier,
+      startAt: dateIso(-150),
+      endAt: dateIso(-90)
+    };
+    const baselineFinal = {
+      ...currentState.baseline.final,
+      startAt: dateIso(120),
+      endAt: dateIso(165)
+    };
+    const eventUpdate = Q.collection("events").updateOne(
+      { sourceId: EVENT_ID },
+      { $set: {
+        subEvents: [baselineQualifier, baselineFinal],
+        currentStage: {
+          id: FINAL_ID,
+          name: "Final",
+          stageNumber: 2,
+          totalStages: 2,
+          status: "RS"
+        },
+        startAtIso: baselineQualifier.startAt,
+        endAtIso: baselineFinal.endAt,
+        updatedDate: rearmedAtIso,
+        updatedUser: Q.ACTOR
+      } }
+    );
+    if (eventUpdate.matchedCount !== 1) Q.fail(`${CHECKPOINT} event disappeared during Reopen rearm.`);
+    const runtimeUpdate = Q.collection("activitySubEventStageRuntime").updateOne(
+      { ownerId: EVENT_ID, subEventId: QUALIFIER_ID },
+      { $set: {
+        stageStatus: baselineQualifier.stageStatus,
+        stageStatusReason: baselineQualifier.stageStatusReason,
+        stageStatusUpdatedAt: baselineQualifier.stageStatusUpdatedAt,
+        stageFinalizedAt: baselineQualifier.stageFinalizedAt,
+        stageFinalizedByUserId: baselineQualifier.stageFinalizedByUserId,
+        stageResultRevision: baselineQualifier.stageResultRevision,
+        updatedDate: rearmedAtIso,
+        updatedUser: Q.ACTOR
+      } }
+    );
+    if (runtimeUpdate.matchedCount !== 1) Q.fail(`${CHECKPOINT} qualifier runtime disappeared during Reopen rearm.`);
+
+    Q.collection("notificationOutbox").deleteMany({
+      _id: { $in: legacyEvidence.outbox.map(item => item._id) }
+    });
+    Q.collection("userNotifications").deleteMany({
+      _id: { $in: legacyEvidence.inbox.map(item => item._id) }
+    });
+    const baselineNotificationIncrements = new Map([
+      [HOST_ID, 1],
+      [NOVA_ID, 2],
+      [RILEY_ID, 2]
+    ]);
+    for (const saved of currentState.savedUserActivities || []) {
+      const notificationCount = Q.number((saved.value || {}).notifications)
+        + (baselineNotificationIncrements.get(saved.userId) || 0);
+      Q.collection("users").updateOne(
+        { $or: [{ _id: saved.userId }, { userId: saved.userId }] },
+        { $set: { "activities.notifications": notificationCount } }
+      );
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "staged",
+      rearmedAtIso,
+      "baseline.qualifier": baselineQualifier,
+      "baseline.final": baselineFinal
+    } });
+    assertOldEvidence(currentState);
+    if (reopenEvidence().outbox.length !== 0 || reopenEvidence().inbox.length !== 0) {
+      Q.fail(`${CHECKPOINT} obsolete Reopen evidence survived the guarded rearm.`);
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "staged",
+      rearmedAtIso,
+      qualifierStatus: "F",
+      qualifierRevision: 1,
+      finalStatus: "RS",
+      finalStartAtIso: baselineFinal.startAt,
+      removedObsoleteReopenEvidence: { outbox: 2, inbox: 4 },
+      oldRevisionEvidenceUnchanged: true,
+      next: "Close and reopen only the current event view, then execute Reopen Scores once with the hot-deployed code."
     });
   }
 
@@ -683,6 +858,7 @@
     const qualifier = stageById(QUALIFIER_ID);
     const final = stageById(FINAL_ID);
     const rule = Q.requireRule(RULE_KEY);
+    const currentOldEvidence = oldEvidence();
     Q.printObject({
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: currentState.phase,
       eventId: EVENT_ID,
@@ -696,7 +872,12 @@
       },
       scores: scoreTotals(),
       finalAcceptedUserIds: acceptedGroupUsers(FINAL_GROUP),
-      oldRevisionEvidenceUnchanged: Q.sameJson(currentState.oldEvidence, oldEvidence()),
+      oldRevisionEvidenceUnchanged: oldEvidenceUnchanged(currentState.oldEvidence, currentOldEvidence),
+      oldRevisionEvidenceChecks: {
+        outbox: Q.sameJson(currentState.oldEvidence.outbox, currentOldEvidence.outbox),
+        inbox: Q.sameJson(currentState.oldEvidence.inbox, currentOldEvidence.inbox),
+        resultMarker: Q.sameJson(currentState.oldEvidence.resultMarker, currentOldEvidence.resultMarker)
+      },
       revisionTwo: {
         outbox: Q.collection("notificationOutbox").countDocuments({
           "payload.eventId": EVENT_ID, "payload.stageResultRevision": "2"
@@ -731,6 +912,7 @@
   switch (command) {
     case "stage": stage(); break;
     case "status": status(); break;
+    case "rearm-score-reopen": rearmReopen(); break;
     case "verify-score-reopen": verifyReopen(); break;
     case "verify-score-correction": verifyCorrection(); break;
     case "arm-score-reopen-review": armReview(); break;

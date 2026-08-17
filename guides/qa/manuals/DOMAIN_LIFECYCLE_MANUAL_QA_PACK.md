@@ -5038,14 +5038,18 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - Verify the same persisted result revision, recipients, ordering and localized
   rendering through Java and frontend-local. Keep this case separate from the
   already-closed Start and initial Finalize/advancement checkpoints.
-- A dedicated versioned fixture now stages the already-finalized revision 1
+- The dedicated versioned fixture staged the already-finalized revision 1
   boundary directly, including the immutable human Finalize audit, automatic
-  participant outcomes, result marker and initial Final group membership. It
-  owns separate Reopen, exact score-change, corrected Finalize, real worker and
-  unchanged-worker no-op oracles. Its script and harness routing are syntax
-  checked, but the transaction remains **NOT RUN** until the retained closed
-  admission fixture receives its explicit snapshot-reset approval and this
-  checkpoint is staged once. No Start or initial Finalize producer is replayed.
+  participant outcomes, result marker and initial Final group membership. The
+  guarded Reopen replay is **PASS**: Qualifiers moved from `F` to `SR` while
+  revision 1, scores `9/4/7`, Final membership `Casey + Riley` and all earlier
+  evidence remained unchanged. Exactly one under-review outbox produced two
+  inbox rows for Nova and Riley; Casey remained the human sender and was
+  excluded as a recipient. The exact score correction is also **PASS** at
+  `Casey=9, Nova=14, Riley=7`, with the stage still in `SR`/revision 1 and all
+  earlier evidence unchanged. Corrected Finalize, real worker and
+  unchanged-worker no-op checks remain pending. No Start or initial Finalize
+  producer was replayed.
 
 ### `TOURNAMENT-SCORE-REOPEN-002` — correction safety after progression
 
