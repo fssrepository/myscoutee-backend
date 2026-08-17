@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 16:48 CEST
+Updated: 2026-08-17 17:22 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -22,6 +22,8 @@ file first, then open only the linked active checkpoint section.
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
 - Isolated first-stage admission fixture:
   [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
+- Isolated corrected-score revision fixture:
+  [`tournament-score-reopen-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-score-reopen-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -38,16 +40,16 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-SCORE-REOPEN-001 — corrected scores and result revision
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-score-reopen-001--corrected-scores-and-result-revision
-scenario: dedicated versioned fixture pending; do not use ad-hoc Mongo state
-ledger_status: NOT STARTED / FIXTURE PREPARATION
-state: TOURNAMENT-ADMISSION-001 is PASS/CLOSED for the executed HTTP/Java contract: Join, existing-invitation acceptance and Admin approval were all rejected after first-stage Start, and all three independent persisted oracles were unchanged. Its environment cells are Dev X and Local -, because frontend-local was explicitly not run. The retained admission fixture still exists and must not be mistaken for the next testcase baseline. TOURNAMENT-SCORE-REOPEN-001 has implementation foundations but no versioned manual fixture or executed transaction yet.
-required_resume: Do not replay admission or alter its evidence. Before any browser instruction, implement the dedicated score-reopen fixture and oracle, then guarded-reset the retained admission fixture, stage the new checkpoint once and prove its baseline through status. The new fixture must preserve the first finalized result, support one controlled Reopen/change/Finalize revision and exclude every already-PASS Start producer from replay.
+scenario: dedicated versioned fixture implemented and syntax/routing checked; not staged
+ledger_status: NOT STARTED / FIXTURE READY, STAGE BLOCKED ON GUARDED RESET APPROVAL
+state: TOURNAMENT-ADMISSION-001 is PASS/CLOSED for the executed HTTP/Java contract: Join, existing-invitation acceptance and Admin approval were all rejected after first-stage Start, and all three independent persisted oracles were unchanged. Its environment cells are Dev X and Local -, because frontend-local was explicitly not run. The retained admission fixture still exists and must not be mistaken for the next testcase baseline. TOURNAMENT-SCORE-REOPEN-001 now has an isolated replay fixture, exact revision-1 audit/outcome oracle, controlled correction steps, revision-2 worker/no-op checks and a three-actor browser definition, but no transaction has been staged or executed.
+required_resume: Do not replay admission or alter its evidence. The score-reopen fixture is ready. Obtain explicit approval for the retained PASS fixture's own snapshot-based guarded reset; then run that reset once, stage TOURNAMENT-SCORE-REOPEN-001 once and prove the new baseline through status before any browser instruction. Never bypass the guarded reset or reproduce the already-PASS Start/initial Finalize producers in the UI.
 event: none staged for TOURNAMENT-SCORE-REOPEN-001
 actors:
   planned: Casey Event Admin producer; deterministic winner/advancer and non-winner controls selected by the fixture
   controls: original finalized result and notifications immutable; no dependent stage started; Start producers untouched
-next_actor: No manual action yet. Codex owns fixture/oracle preparation and must issue the first exact score-reopen instruction only after the staged baseline passes.
-stop_phrase: score-reopen baseline ready
+next_actor: No UI action yet. The next action is the explicitly approved guarded reset, followed by Codex-owned stage/status. Issue the first score-reopen UI instruction only after that baseline passes.
+stop_phrase: guarded reset approved
 ```
 
 Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
