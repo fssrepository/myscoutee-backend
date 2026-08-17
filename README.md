@@ -25,7 +25,7 @@ The current qualification ledger is available as an
 
 As of 2026-08-17:
 
-- **Core:** 61 passed, 97 remaining (158 total)
+- **Core:** 62 passed, 96 remaining (158 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
 The complete matrix contains 214 cases across 13 functional domains. The Chat
@@ -41,8 +41,11 @@ PASS/CLOSED after HTTP/Mongo verification of late Join, existing-invitation
 acceptance and Admin approval under the strict first-stage lock; frontend-local
 runtime was NOT EXECUTED. Corrected-score revision is PASS/CLOSED after the
 outcome-changing revision-2 replay, immutable revision-1 audit, three-browser
-old/new notification proof and an exact unchanged-worker no-op. The active
-Tournament checkpoint is now the downstream-stage Reopen guard.
+old/new notification proof and an exact unchanged-worker no-op. The downstream
+late-Reopen guard is also PASS/CLOSED: an active dependent Final hid the UI
+action, the real Java route rejected one authenticated request atomically, and
+the full related-record snapshot remained unchanged. The Tournament domain is
+now complete; the next priority block is Chat.
 
 ### Official manuals
 

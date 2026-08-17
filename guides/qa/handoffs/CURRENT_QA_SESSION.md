@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 19:16 CEST
+Updated: 2026-08-17 19:32 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -38,18 +38,16 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-SCORE-REOPEN-002 — correction safety after progression
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-score-reopen-002--correction-safety-after-progression
-scenario: TOURNAMENT-SCORE-REOPEN-001 PASS/CLOSED; downstream-stage Reopen guard baseline prepared
+checkpoint: CHAT-LIST-001 — chat list and contexts
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
+scenario: Tournament domain PASS/CLOSED (9/9); Chat selected next by generated Core priority order
 ledger_status: PENDING / MANUAL EXECUTION ACTIVE
-state: TOURNAMENT-SCORE-REOPEN-002 is at phase=late-guard-prepared. Qualifiers is F/revision 2 with exact 9/14/7 scores, the corrected Final membership is Nova+Riley, and the dependent Final event/runtime/current-stage state is A. A strict normalized snapshot of all related domain, notification and user-counter records is stored. No lifecycle producer was replayed. Do not reset, rearm, restage or replay Reopen, correction, Finalize or either worker pass.
-required_resume: Run the read-only score-reopen status only if session continuity is uncertain. If it reports phase=late-guard-prepared with Qualifiers F/revision 2, Final A, exact 9/14/7 scores, Final Nova+Riley and oldRevisionEvidenceUnchanged=true, continue with the Qualifiers action-menu absence check, then send exactly one rejected late Reopen through Casey's existing authenticated browser and run the strict oracle.
-event: manual-qa-checkpoint:v1:tournament-score-reopen:event — predecessor QA TOURNAMENT-SCORE-REOPEN-001
+state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser is open from the CHAT-LIST-001 manifest.
+required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, continue the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread.
+event: manual-qa-checkpoint:v1:chat-list:event (identity only; no Event document is required by this list fixture)
 actors:
-  Casey: score-correction actor and manual Reopen/Finalize producer
-  Nova: revision-1 non-advancer and revision-2 corrected advancer
-  Riley: unchanged advancer control
-next_actor: Casey reloads once because the fixture changed persisted stage state behind the open document, then inspects the Qualifiers action menu and confirms Reopen Scores is absent without choosing any action.
+  Casey: sole controlled Chat-list reader
+next_actor: Casey opens Activities -> Chats and checks the All list before switching context
 stop_phrase: megvan
 ```
 
@@ -67,10 +65,10 @@ Separate captured score-correction follow-ups:
 corrected Finalize` as a new durable result revision with new exact-once
 participant outcomes, while `TOURNAMENT-SCORE-REOPEN-002` owns the guard that
 forbids an ordinary correction after a dependent stage has started. Java,
-HTTP and frontend-local now carry the revision and the Reopen guards are
-tightened; both dev watchers compile, but the isolated manual replays remain
-NOT RUN. Do not fold either case into the active card checkpoint or replay
-closed Start/Finalize notification evidence to explore it.
+HTTP and frontend-local carry the revision and Reopen guards. Both
+score-correction checkpoints are PASS/CLOSED; the late guard was exercised
+through the real Java route and its retained fixture was reset. Do not replay
+their closed Start/Finalize/result producers when preparing another domain.
 
 ### Efficient resume gate
 
@@ -134,13 +132,14 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-ADMISSION-001` and `TOURNAMENT-SCORE-REOPEN-001` are PASS/CLOSED;
-do not replay any of their producers. `TOURNAMENT-SCORE-REOPEN-002` is prepared
-from the retained corrected result with the dependent Final active. Casey's
-next action is inspection only: after one required reload, open the event's
-Qualifiers action menu and confirm `Reopen Scores` is absent. The following
-machine-owned boundary sends one forbidden HTTP action through Casey's existing
-authenticated browser and compares the complete retained snapshot.
+The Tournament block is PASS/CLOSED at 9/9, including both score-reopen
+checkpoints, and its retained fixture is reset. The next active domain is Chat.
+Machine setup for `CHAT-LIST-001` is complete: four known context rows, exact
+totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
+manual branch is now due: open Activities -> Chats, inspect All, switch through
+Event, Group, Service and App Support, then close/reopen and confirm All is
+unchanged. Do not open a thread. Closed Tournament and `CHAT-AUTH-001`
+producers remain untouched.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -1033,13 +1032,14 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
 -> TOURNAMENT-CARD-001 (closed)
 -> TOURNAMENT-ADMISSION-001 (closed; HTTP/Java PASS, frontend-local NOT EXECUTED)
--> TOURNAMENT-SCORE-REOPEN-001 (active; fixture preparation, not run)
--> TOURNAMENT-SCORE-REOPEN-002 (not run)
+-> TOURNAMENT-SCORE-REOPEN-001 (closed)
+-> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
 ```
 
-When this block is closed, select the next domain from the generated priority
-table (`Priority DESC`, Core, Progress below 100%) rather than extending this
-handoff with another hard-coded cross-domain chain.
+The generated priority table now selects Chat as the next incomplete Core
+domain. Continue its rows in physical ledger order beginning with
+`CHAT-LIST-001`; do not jump to another domain until the Chat block is closed
+or a genuine dependency blocks it. EXT remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The EXT payment/operator/registry/deployment sequence

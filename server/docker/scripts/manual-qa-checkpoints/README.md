@@ -37,6 +37,7 @@ trigger another stack or database process.
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
+| `chat-domain` | Stages one selected Chat checkpoint with exact row, context, ordering and zero-write oracles | No scheduler; the selected checkpoint uses the normal paged Chat read/write paths |
 | `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
 | `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
 | `operator-domain` | Snapshots the exact deployment configuration and prints a credentials-safe Firebase capability oracle | No scheduler; QA supplies disposable provider configuration through the Operator UI |
@@ -445,6 +446,23 @@ The machine oracle requires a new materialized `layoutVersion`, a completed
 scheduled run, and exact agreement between layout totals and its stored node,
 edge and forest collections. The default product interval is one day in both
 `demo_db` and `myscoutee_db`.
+
+`CHAT-LIST-001` replaces only the selected Casey actor's Chat rows for the
+short fixture window and snapshots the exact originals for reset. It stages
+one main-event, group, service and App Support row, one unread item in each
+context and no messages. The authenticated browser oracle must prove date
+ascending/descending order and all context totals through the real Java page
+route; `status` then proves that every staged chat and activity counter stayed
+byte-identical after those reads.
+
+```bash
+bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
+node ../../../../guides/qa/tools/verify-chat-list-read-oracle.mjs \
+  --manifest /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json \
+  --actor-user-id 650000000000000000000061
+bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
+bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
+```
 
 `stat-011` prints the exact unique text a QA must send once in **Host Circle
 Ops**. Stage itself does not insert a message:

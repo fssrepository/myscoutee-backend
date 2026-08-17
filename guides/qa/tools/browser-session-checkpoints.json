@@ -117,6 +117,21 @@
         }
       ]
     },
+    "CHAT-LIST-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey controlled chat-list reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · four controlled Chat contexts"
+        }
+      ]
+    },
     "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

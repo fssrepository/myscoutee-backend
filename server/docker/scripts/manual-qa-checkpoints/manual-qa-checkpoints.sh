@@ -32,6 +32,9 @@ Usage:
   bash manual-qa-checkpoints.sh status stat-012
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
+  bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
+  bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
+  bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh switch event-domain <current-checkpoint-id> <next-checkpoint-id>
@@ -198,6 +201,7 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
+    chat-domain) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
     event-domain)
       if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
@@ -318,6 +322,11 @@ case "${scenario}:${command}" in
   stat-012:stage|stat-012:hold|stat-012:status|stat-012:reset)
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
+    ;;
+  chat-domain:stage|chat-domain:status|chat-domain:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "CHAT-LIST-001" ] || fail "${command} is restricted to CHAT-LIST-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)
     [ "$#" -le 3 ] || { usage >&2; exit 2; }

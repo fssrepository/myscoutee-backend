@@ -1938,15 +1938,26 @@ The authorization checkpoint above is only the membership/privacy boundary;
 it is not a substitute for the chat product surface. The following CP13 cases
 are deliberately short and sequential. Each case owns one visible transition
 and one persisted oracle. Reuse one controlled accepted-member chat where
-possible, but reset only the rows owned by the next case. These cases are
-captured for the later Chat domain block and do not replace the currently
-active Tournament checkpoint.
+possible, but reset only the rows owned by the next case. Tournament is now
+closed at 9/9 and this is the active Core domain block.
 
 ### List, history and transport
 
 - `CHAT-LIST-001`: load one known main-event, group, service and support chat,
   switch the available contexts and sort once. Exact row IDs, context totals,
   date order and compact header/status must survive close/reopen with no write.
+  - Prepared on `2026-08-17` for Casey with four isolated rows and unread
+    counters `All=4`, `Event=1`, `Sub-event=0`, `Group=1`, `Service=1`,
+    `App Support=1`.
+  - The authenticated Java page oracle already passed exact descending and
+    ascending IDs, exact per-context totals, one unread per row and stable
+    `ownerStatus=A`/revision 1. The post-read Mongo oracle is byte-identical;
+    an apparent first failure was an oracle-only BSON wrapper normalization
+    defect, while direct EJSON section comparison proved no product write.
+  - Remaining manual branch: open Chats, verify All plus each populated
+    context, close/reopen the popup and confirm the same All order/counters.
+    Do not open a thread, because read acknowledgement belongs to
+    `CHAT-READ-001`.
 - `CHAT-HISTORY-001`: open one thread containing 18 controlled messages. The
   latest window and one older page must merge in reverse-thread order without
   a gap or duplicate; day markers and exact IDs must survive reopen.
@@ -5101,8 +5112,18 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   state is now active with one persisted start boundary. A normalized snapshot
   of every related event, member, runtime, leaderboard, group, chat, message,
   notification, marker, task and user-counter record is retained for the
-  rejected-action oracle. UI absence and the real Java HTTP rejection remain
-  the two active manual boundaries.
+  rejected-action oracle.
+- Execution on `2026-08-17` is **PASS / CLOSED**. After the required reload,
+  Casey's Qualifiers action menu omitted `Reopen Scores`. One deliberately
+  forbidden request then used Casey's existing authenticated browser session
+  against the real Java `/activities/events/stage-action` route. The response
+  remained `F`/revision 2 with the original Finalize identity. The strict
+  post-request oracle retained exact `9/14/7` scores, Nova+Riley Final
+  membership, active dependent Final/current-stage state and byte-identical
+  event, member, runtime, leaderboard, group, chat, message, notification,
+  marker, task and user-counter records. No lifecycle producer was replayed.
+  Frontend-local runtime is recorded as `-`/not executed; its guard remains
+  statically aligned with Java and UI.
 
 ### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
 
