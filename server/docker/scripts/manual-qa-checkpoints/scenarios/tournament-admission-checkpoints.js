@@ -28,6 +28,7 @@
       userId,
       events: Q.number(activities.events),
       invitations: Q.number(activities.invitations),
+      notifications: Q.number(activities.notifications),
       hosting: Q.number(activities.hosting),
       event: {
         all: Q.number(event.all),
@@ -307,6 +308,152 @@
     const event = rootEvent(currentState.stagedAtIso);
     Q.collection("events").replaceOne({ sourceId: EVENT_ID }, event);
     Q.collection("activityMembers").deleteMany({ ownerType: "event", ownerId: EVENT_ID, userId: CANDIDATE_ID });
+    Q.collection("notificationOutbox").deleteMany({ _id: `${PREFIX}:outbox:invite-riley` });
+    Q.collection("userNotifications").deleteMany({ _id: `${PREFIX}:notification:invite-riley` });
+    const before = currentState.invitationProjectionBase;
+    if (before) {
+      Q.collection("users").updateOne({
+        $or: [{ _id: CANDIDATE_ID }, { userId: CANDIDATE_ID }]
+      }, { $set: {
+        "activities.invitations": Q.number(before.invitations),
+        "activities.notifications": Q.number(before.notifications),
+        "activities.event.all": Q.number(before.event && before.event.all),
+        "activities.event.invitations": Q.number(before.event && before.event.invitations)
+      } });
+    }
+  }
+
+  function inviteOutbox(preparedAtIso) {
+    const occurrenceId = `${PREFIX}:invitation-occurrence:riley`;
+    return {
+      _id: `${PREFIX}:outbox:invite-riley`,
+      syncKey: `${PREFIX}:outbox:invite-riley`,
+      notificationType: "event-invite",
+      entityType: "event",
+      entityId: EVENT_ID,
+      recipientScope: "invitees",
+      recipientUserIds: [CANDIDATE_ID],
+      deliveryStrategy: "direct",
+      title: "QA TOURNAMENT-ADMISSION-001",
+      body: "You were invited to QA TOURNAMENT-ADMISSION-001.",
+      clickUrl: "/game",
+      iconUrl: "/assets/logo/heart.webp",
+      badgeUrl: "/assets/logo/heart.webp",
+      tag: `event-invite-${EVENT_ID}`,
+      payload: {
+        eventId: EVENT_ID,
+        eventTitle: "QA TOURNAMENT-ADMISSION-001",
+        location: "",
+        startAtIso: Q.text((Q.collection("events").findOne({ sourceId: EVENT_ID }) || {}).startAtIso),
+        eventScope: "invitations",
+        invitationOccurrenceId: occurrenceId,
+        senderUserId: HOST_ID,
+        timestampMillis: String(new Date(preparedAtIso).getTime())
+      },
+      status: "sent",
+      pendingCounterTracked: false,
+      retryCount: 0,
+      sentDate: preparedAtIso,
+      createdDate: preparedAtIso,
+      createdUser: HOST_ID,
+      updatedDate: preparedAtIso,
+      updatedUser: HOST_ID
+    };
+  }
+
+  function inviteNotification(preparedAtIso) {
+    return {
+      _id: `${PREFIX}:notification:invite-riley`,
+      syncKey: `${PREFIX}:outbox:invite-riley:${CANDIDATE_ID}`,
+      outboxId: `${PREFIX}:outbox:invite-riley`,
+      recipientUserId: CANDIDATE_ID,
+      kind: "event-invite",
+      category: "event",
+      title: "QA TOURNAMENT-ADMISSION-001",
+      message: "You were invited to QA TOURNAMENT-ADMISSION-001.",
+      senderUserId: HOST_ID,
+      actionPath: "/game",
+      sourceType: "event",
+      sourceId: EVENT_ID,
+      payload: inviteOutbox(preparedAtIso).payload,
+      occurrenceCount: 1,
+      revision: NumberLong("1"),
+      readAtIso: null,
+      createdDate: preparedAtIso,
+      createdUser: HOST_ID,
+      updatedDate: preparedAtIso,
+      updatedUser: HOST_ID
+    };
+  }
+
+  function assertLegacyActivityBaseline(savedActivities, currentActivities) {
+    const currentByUserId = new Map((currentActivities || []).map(value => [value.userId, value]));
+    for (const saved of savedActivities || []) {
+      const current = currentByUserId.get(saved.userId);
+      if (!current) Q.fail(`${CHECKPOINT} user activity projection disappeared for ${saved.userId}.`);
+      const savedEvent = saved.event || {};
+      const currentEvent = current.event || {};
+      if (Q.number(saved.events) !== Q.number(current.events)
+          || Q.number(saved.invitations) !== Q.number(current.invitations)
+          || Q.number(saved.hosting) !== Q.number(current.hosting)
+          || Q.number(savedEvent.all) !== Q.number(currentEvent.all)
+          || Q.number(savedEvent.active) !== Q.number(currentEvent.active)
+          || Q.number(savedEvent.pending) !== Q.number(currentEvent.pending)
+          || Q.number(savedEvent.invitations) !== Q.number(currentEvent.invitations)
+          || Q.number(savedEvent.hosting) !== Q.number(currentEvent.hosting)
+          || Q.number(savedEvent.drafts) !== Q.number(currentEvent.drafts)
+          || Q.number(savedEvent.trash) !== Q.number(currentEvent.trash)) {
+        Q.fail(`${CHECKPOINT} stored activity counters changed before invitation projection repair.`);
+      }
+    }
+  }
+
+  function repairInvitationProjection() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    if (currentState.branch !== "invitation") {
+      Q.fail(`${CHECKPOINT} invitation projection repair requires the staged invitation branch.`);
+    }
+    const current = oracle();
+    const savedDomain = { ...currentState.baseline };
+    const currentDomain = { ...current };
+    delete savedDomain.userActivities;
+    delete currentDomain.userActivities;
+    if (!Q.sameJson(savedDomain, currentDomain)) {
+      Q.fail(`${CHECKPOINT} domain data changed; refusing invitation projection repair.`);
+    }
+    assertLegacyActivityBaseline(currentState.baseline.userActivities, current.userActivities);
+    if (Q.collection("notificationOutbox").countDocuments({ _id: `${PREFIX}:outbox:invite-riley` }) !== 0
+        || Q.collection("userNotifications").countDocuments({ _id: `${PREFIX}:notification:invite-riley` }) !== 0) {
+      Q.fail(`${CHECKPOINT} invitation notification artifacts already exist; refusing duplicate repair.`);
+    }
+    const candidateBefore = activitySnapshot(CANDIDATE_ID);
+    const repairedAtIso = Q.nowIso();
+    const activityUpdate = Q.collection("users").updateOne({
+      $or: [{ _id: CANDIDATE_ID }, { userId: CANDIDATE_ID }]
+    }, { $inc: {
+      "activities.invitations": 1,
+      "activities.notifications": 1,
+      "activities.event.all": 1,
+      "activities.event.invitations": 1
+    } });
+    if (activityUpdate.matchedCount !== 1) {
+      Q.fail(`${CHECKPOINT} Riley activity projection disappeared during invitation repair.`);
+    }
+    Q.collection("notificationOutbox").insertOne(inviteOutbox(repairedAtIso));
+    Q.collection("userNotifications").insertOne(inviteNotification(repairedAtIso));
+    const baseline = oracle();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      baseline,
+      invitationProjectionBase: candidateBefore,
+      invitationProjectionRepairedAtIso: repairedAtIso
+    } });
+    Q.printObject({
+      scenario: SCENARIO, checkpointId: CHECKPOINT,
+      phase: "invitation-projection-repaired", repairedAtIso,
+      oracle: conciseOracle(baseline),
+      next: "Reload Riley once; Invitations and Notifications must each show one new item before Accept is attempted."
+    });
   }
 
   function prepare(branch) {
@@ -475,6 +622,7 @@
     case "verify-tournament-admission-rejection": verify(); break;
     case "repair-tournament-admission-oracle": repairOracle(); break;
     case "repair-tournament-admission-visibility": repairVisibility(); break;
+    case "repair-tournament-admission-invitation-projection": repairInvitationProjection(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

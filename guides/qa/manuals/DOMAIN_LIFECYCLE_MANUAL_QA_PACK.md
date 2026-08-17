@@ -4975,6 +4975,24 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - Exercise HTTP and frontend-local with the same parent membership states and
   prove scheduler reruns remain idempotent. This checkpoint is separate from
   the already-passed Start notifications and must not rewrite or replay them.
+- Join branch PASS on `2026-08-17`: the first replay exposed a visible closed
+  tournament in Explore. The corrected first-stage Start write reuses the
+  existing `visibility=Invitation only` state; after one required browser
+  reload Riley no longer saw the event. The independent rejection oracle
+  verified events, membership/runtime, leaderboard, chats/messages, checkout,
+  payments, tickets, notification/outbox, tasks and user counters unchanged.
+- The next isolated branch retains the same closed parent and exactly one
+  pre-existing Riley Admin invitation (`pendingSource=admin`,
+  `requestKind=invite`). Its one Accept attempt must be rejected while that
+  invitation remains pending and every downstream oracle section remains
+  unchanged.
+- The first invitation baseline visual check exposed a fixture-only omission
+  before Accept: the pending list item existed but its Invitations counter and
+  event-invite notification had not been materialized. The guarded repair
+  preserved the event/member baseline and added exactly one Invitations
+  counter delta, one unread notification delta, one terminal outbox audit row
+  and one unread inbox row. Require a fresh Riley document to show both red
+  counters and the single invite row before executing the rejection branch.
 
 ### `TOURNAMENT-SCORE-REOPEN-001` — corrected scores and result revision
 

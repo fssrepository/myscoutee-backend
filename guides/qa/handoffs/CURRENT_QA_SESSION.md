@@ -39,15 +39,15 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-ADMISSION-001 — first-stage admission policy gate
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-admission-001--first-stage-admission-boundary
 scenario: event-domain-tournament-admission (isolated fixture; exposed through the event-domain harness route)
-ledger_status: IN PROGRESS / JOIN VISIBILITY REPLAY
-state: Strict registration lock at first tournament-stage Start is the selected contract. The first Join replay exposed that the backend guard worked but the closed tournament was still listed in Explore. The correction reuses the existing main-event visibility state: the Start write changes the event to `Invitation only`, so the existing Explore query excludes it without a new field, stage projection or waitlist. Java and frontend-local Start writes now agree; the existing watchers compiled successfully. The staged Join fixture was repaired through its guarded harness to this same state, and every persisted oracle section remains unchanged/green. Direct Java guards for Join/invitation acceptance/Admin approval remain before checkout or membership mutation. Closed TOURNAMENT-001 through TOURNAMENT-CARD-001 evidence and Start notification producers remain untouched.
-required_resume: Do not reset or restage. Keep the three launcher-owned Casey/Nova/Riley sessions. Close Riley's already-open Request join dialog if needed, reload Riley once because the fixture visibility changed behind the open browser, reopen Event Explore and verify that `QA TOURNAMENT-ADMISSION-001` is absent. Then run verify-tournament-admission-rejection. Continue with the fixture's invitation and approval branches only after this oracle passes.
-event: `QA TOURNAMENT-ADMISSION-001`; sourceId `manual-qa-checkpoint:v1:tournament-admission:event`; current stage `Qualifiers 1/1`, status `A`; accepted Casey+Nova, Riley absent in the current Join branch
+ledger_status: IN PROGRESS / INVITATION BASELINE VISUAL CHECK
+state: Strict registration lock at first tournament-stage Start is the selected contract. The corrected Join branch is PASS with all fourteen persisted sections unchanged. The initial invitation fixture exposed a fixture defect before Accept: it materialized the pending membership/list row but omitted the corresponding Invitations counters and event-invite notification. No product action was executed. The guarded fixture repair verified the event/member baseline unchanged, then added exactly one Riley Invitations delta, one unread notification delta, one terminal event-invite outbox audit row and one unread event-invite inbox row. The main event remains `Invitation only`; Casey+Nova remain accepted; Riley remains exactly one `pendingSource=admin`, `requestKind=invite` row. Direct Java guards remain before mutation.
+required_resume: Do not reset, restage, replay Join or press Accept yet. Keep the three launcher-owned Casey/Nova/Riley sessions. Because the fixture repair was written behind the open Riley browser, reload Riley once. Verify the Invitations tile has red counter 1, the notification bell has one new counter, and Notifications -> New contains exactly one `QA TOURNAMENT-ADMISSION-001` invitation. Casey and Nova remain untouched. Only after this baseline visual check passes, open the invitation and attempt Accept exactly once.
+event: `QA TOURNAMENT-ADMISSION-001`; sourceId `manual-qa-checkpoint:v1:tournament-admission:event`; current stage `Qualifiers 1/1`, status `A`; accepted Casey+Nova; Riley has one existing pending Admin invitation
 actors:
   active: Casey `650000000000000000000061` unchanged parent Admin; Nova `650000000000000000000062` accepted pre-Start control; Riley `650000000000000000000063` late-admission actor
   controls: parent pending indicators remain separate from nested Groups; room pending membership remains zero; closed Start notifications remain unchanged
-next_actor: Riley closes the stale dialog if it is open, reloads once, reopens Event Explore and reports whether `QA TOURNAMENT-ADMISSION-001` is absent. Casey and Nova remain untouched.
-stop_phrase: event absent / event still visible
+next_actor: Riley reloads once and checks Invitations counter 1 plus the single new event-invite notification; do not press Accept yet. Casey and Nova remain untouched.
+stop_phrase: counters and notification present / missing
 ```
 
 Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
@@ -132,9 +132,10 @@ the checkpoint says otherwise.
 ### Next manual action
 
 `TOURNAMENT-CARD-001` is PASS/CLOSED. `TOURNAMENT-ADMISSION-001` is active on
-the strict-lock contract. Replay the corrected Join visibility boundary first;
-do not move to its invitation/approval branches until its independent oracle
-passes. Score correction and late-correction safety remain separate under
+the strict-lock contract. Its corrected Join visibility branch and independent
+oracle are PASS; the invitation acceptance branch is staged next. Do not replay
+Join or move to Admin approval before the invitation oracle passes. Score
+correction and late-correction safety remain separate under
 `TOURNAMENT-SCORE-REOPEN-001/002`.
 
 When a guarded fixture repair changes time or state behind an already-open
@@ -1021,7 +1022,7 @@ The current Tournament block order is:
 TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
 -> TOURNAMENT-CARD-001 (closed)
--> TOURNAMENT-ADMISSION-001 (active; Join branch staged)
+-> TOURNAMENT-ADMISSION-001 (active; Join PASS, invitation branch staged)
 -> TOURNAMENT-SCORE-REOPEN-001 (not run)
 -> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```

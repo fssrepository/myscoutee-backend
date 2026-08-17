@@ -69,6 +69,7 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-admission-rejection event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh repair-tournament-admission-oracle event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh repair-tournament-admission-visibility event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-invitation-projection event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh repair-ticket-payment-fixture event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh repair-tournament-room-presentation event-domain TOURNAMENT-002
   bash manual-qa-checkpoints.sh repair-tournament-room-notifications event-domain TOURNAMENT-002
@@ -332,7 +333,8 @@ case "${scenario}:${command}" in
   event-domain:prepare-tournament-admission-approval|\
   event-domain:verify-tournament-admission-rejection|\
   event-domain:repair-tournament-admission-oracle|\
-  event-domain:repair-tournament-admission-visibility)
+  event-domain:repair-tournament-admission-visibility|\
+  event-domain:repair-tournament-admission-invitation-projection)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-ADMISSION-001" ] || fail "${command} is restricted to TOURNAMENT-ADMISSION-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
