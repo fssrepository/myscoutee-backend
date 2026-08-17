@@ -325,6 +325,20 @@ memberships and produces a later translated, trophy-branded
 advancement intent for Casey and Riley. The final unchanged worker pass must
 write neither membership nor another notification.
 
+For the corrected-score continuation, preserve the closed revision evidence
+and prepare only the dependent-stage guard boundary:
+
+```bash
+bash manual-qa-checkpoints.sh prepare-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+# Inspect the Qualifiers menu, then send one forbidden late Reopen through Casey's existing session.
+bash manual-qa-checkpoints.sh verify-score-reopen-late-guard event-domain TOURNAMENT-SCORE-REOPEN-002
+```
+
+The preparation activates the dependent Final event/runtime/current-stage
+state directly without replaying any lifecycle producer, then retains a strict
+snapshot of the related records and user counters. The verifier accepts only a
+byte-identical rejected-action boundary.
+
 ## Asset-domain checkpoint runner
 
 The asset runner supports `ASSET-MEMBER-001`, `ASSET-MEMBER-002` and

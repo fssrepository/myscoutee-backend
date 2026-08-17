@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 17:44 CEST
+Updated: 2026-08-17 19:16 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -38,18 +38,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-SCORE-REOPEN-001 — corrected scores and result revision
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-score-reopen-001--corrected-scores-and-result-revision
-scenario: Reopen and deterministic score correction PASS; corrected Finalize is next
+checkpoint: TOURNAMENT-SCORE-REOPEN-002 — correction safety after progression
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-score-reopen-002--correction-safety-after-progression
+scenario: TOURNAMENT-SCORE-REOPEN-001 PASS/CLOSED; downstream-stage Reopen guard baseline prepared
 ledger_status: PENDING / MANUAL EXECUTION ACTIVE
-state: TOURNAMENT-SCORE-REOPEN-001 is at phase=corrected. Qualifiers is SR/revision 1 with Casey=9, Nova=14 and Riley=7; Final still contains the immutable revision-1 Casey+Riley result. Reopen notification evidence is exact and revision-1 evidence remains unchanged. The UI correction included harmless intermediate score edits, but the persisted final totals passed the exact oracle before Finalize.
-required_resume: Run the read-only score-reopen status only if session continuity is uncertain. If it reports phase=corrected, Qualifiers SR/revision 1, the exact 9/14/7 scores, Final Casey+Riley and oldRevisionEvidenceUnchanged=true, continue with next_actor without reset, rearm, restage or browser relaunch.
-event: manual-qa-checkpoint:v1:tournament-score-reopen:event — QA TOURNAMENT-SCORE-REOPEN-001
+state: TOURNAMENT-SCORE-REOPEN-002 is at phase=late-guard-prepared. Qualifiers is F/revision 2 with exact 9/14/7 scores, the corrected Final membership is Nova+Riley, and the dependent Final event/runtime/current-stage state is A. A strict normalized snapshot of all related domain, notification and user-counter records is stored. No lifecycle producer was replayed. Do not reset, rearm, restage or replay Reopen, correction, Finalize or either worker pass.
+required_resume: Run the read-only score-reopen status only if session continuity is uncertain. If it reports phase=late-guard-prepared with Qualifiers F/revision 2, Final A, exact 9/14/7 scores, Final Nova+Riley and oldRevisionEvidenceUnchanged=true, continue with the Qualifiers action-menu absence check, then send exactly one rejected late Reopen through Casey's existing authenticated browser and run the strict oracle.
+event: manual-qa-checkpoint:v1:tournament-score-reopen:event — predecessor QA TOURNAMENT-SCORE-REOPEN-001
 actors:
   Casey: score-correction actor and manual Reopen/Finalize producer
   Nova: revision-1 non-advancer and revision-2 corrected advancer
   Riley: unchanged advancer control
-next_actor: Casey chooses Finalize Stage once for Qualifiers and stops; Codex verifies the write before arming the held tournament-review worker.
+next_actor: Casey reloads once because the fixture changed persisted stage state behind the open document, then inspects the Qualifiers action menu and confirms Reopen Scores is absent without choosing any action.
 stop_phrase: megvan
 ```
 
@@ -134,13 +134,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-ADMISSION-001` is PASS/CLOSED for its executed HTTP/Java contract;
-frontend-local is recorded as NOT EXECUTED by explicit user decision. Do not
-replay any admission branch. `TOURNAMENT-SCORE-REOPEN-001` is staged at its
-verified revision-1 baseline with three isolated actor windows. Casey's next
-action is inspection only: open the event's Qualifiers view and stop before
-`Reopen Scores`. Late-correction safety remains separate under
-`TOURNAMENT-SCORE-REOPEN-002`.
+`TOURNAMENT-ADMISSION-001` and `TOURNAMENT-SCORE-REOPEN-001` are PASS/CLOSED;
+do not replay any of their producers. `TOURNAMENT-SCORE-REOPEN-002` is prepared
+from the retained corrected result with the dependent Final active. Casey's
+next action is inspection only: after one required reload, open the event's
+Qualifiers action menu and confirm `Reopen Scores` is absent. The following
+machine-owned boundary sends one forbidden HTTP action through Casey's existing
+authenticated browser and compares the complete retained snapshot.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit

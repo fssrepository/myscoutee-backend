@@ -5047,9 +5047,36 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   inbox rows for Nova and Riley; Casey remained the human sender and was
   excluded as a recipient. The exact score correction is also **PASS** at
   `Casey=9, Nova=14, Riley=7`, with the stage still in `SR`/revision 1 and all
-  earlier evidence unchanged. Corrected Finalize, real worker and
-  unchanged-worker no-op checks remain pending. No Start or initial Finalize
+  earlier evidence unchanged. Corrected Finalize and the real revision-2
+  worker result are also **PASS** at `Casey=9, Nova=14, Riley=7`: the human
+  Finalize audit remained separate, the Final membership changed from the
+  immutable revision-1 `Casey + Riley` result to revision-2 `Nova + Riley`,
+  revision 2 produced three outcome outbox and three inbox rows, and all
+  revision-1 evidence remained unchanged. The three-actor notification UI
+  inspection is **PASS**: Casey showed old advance/new reject, Nova old
+  reject/new advance, and Riley two separate advance results; both human
+  Finalize audits remained separate and no `Final starts soon` row returned.
+  The unchanged-worker replay is also **PASS** with `lastRunCount=0`, identical
+  membership, scores, markers and revision-specific notification evidence.
+  The final no-second-Finalize UI guard is **PASS**: finalized Qualifiers no
+  longer exposed `Finalize Stage` (while the separate Reopen action remained
+  untouched). The checkpoint is **PASS / CLOSED**. No Start or initial Finalize
   producer was replayed.
+- During the correction boundary, the generic scheduled stage-reminder exposed
+  a separate FAIL: the waiting tournament Final emitted redundant `Final starts
+  soon` rows twice. Tournament stages now bypass that generic reminder and use
+  only their dedicated lifecycle notifications; non-tournament stage reminders
+  remain unchanged. The existing backend watcher compiled and restarted the
+  change. A guarded cleanup removed the exact defect shape (one task, two runs,
+  six deliveries, six outbox and six inbox rows) without changing revision 1,
+  the corrected `9/14/7` scores or Final membership. The corrected Finalize
+  gate proved that the producer did not return: task, run, delivery, outbox and
+  inbox counts for that generic reminder all remained zero.
+- The no-op replay also corrected two fixture-only oracle defects without
+  changing product state: capped `runHistory` length cannot prove that a zero-
+  work run completed, so completion now uses a later `lastRunAtIso` plus
+  `lastRunCount=0`; BSON document field order is normalized before snapshot
+  equality, while array order and every leaf value remain strict.
 
 ### `TOURNAMENT-SCORE-REOPEN-002` — correction safety after progression
 
@@ -5065,9 +5092,17 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 - The implementation now persists a result-revision identity through Java,
   HTTP and frontend-local state. Its lifecycle guard permits Reopen only while
   every later tournament stage is still waiting or pristine/unstarted. The
-  running dev watchers compile this foundation; the two score-reopen cases
-  remain NOT RUN until their isolated fixtures prove revision-specific
-  notifications, no-op replay and atomic late rejection.
+  running dev watchers compiled this foundation. `TOURNAMENT-SCORE-REOPEN-001`
+  is PASS/CLOSED with revision-specific notifications and an exact no-op replay.
+- The guarded `TOURNAMENT-SCORE-REOPEN-002` continuation is prepared from that
+  immutable predecessor without replaying Start, Finalize or result producers:
+  Qualifiers remains `F`/revision 2 with exact `9/14/7` scores, Final membership
+  remains Nova+Riley, while the dependent Final event/runtime/current-stage
+  state is now active with one persisted start boundary. A normalized snapshot
+  of every related event, member, runtime, leaderboard, group, chat, message,
+  notification, marker, task and user-counter record is retained for the
+  rejected-action oracle. UI absence and the real Java HTTP rejection remain
+  the two active manual boundaries.
 
 ### `TOURNAMENT-CARD-001` — persisted current-stage summary on the parent card
 

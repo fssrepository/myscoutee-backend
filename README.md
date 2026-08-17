@@ -25,7 +25,7 @@ The current qualification ledger is available as an
 
 As of 2026-08-17:
 
-- **Core:** 60 passed, 98 remaining (158 total)
+- **Core:** 61 passed, 97 remaining (158 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
 The complete matrix contains 214 cases across 13 functional domains. The Chat
@@ -39,8 +39,10 @@ checkpoints are PASS/CLOSED, including the in-place Qualifiers `1/2` to Final
 `2/2` transition and reload persistence. The admission checkpoint is
 PASS/CLOSED after HTTP/Mongo verification of late Join, existing-invitation
 acceptance and Admin approval under the strict first-stage lock; frontend-local
-runtime was NOT EXECUTED. Corrected-score revision is the active Tournament
-checkpoint, followed by the downstream-stage Reopen guard.
+runtime was NOT EXECUTED. Corrected-score revision is PASS/CLOSED after the
+outcome-changing revision-2 replay, immutable revision-1 audit, three-browser
+old/new notification proof and an exact unchanged-worker no-op. The active
+Tournament checkpoint is now the downstream-stage Reopen guard.
 
 ### Official manuals
 

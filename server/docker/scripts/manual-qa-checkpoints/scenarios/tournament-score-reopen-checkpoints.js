@@ -4,9 +4,11 @@
 
   const Q = ManualQa;
   const SCENARIO = "event-domain-tournament-score-reopen";
-  const CHECKPOINT = "TOURNAMENT-SCORE-REOPEN-001";
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
+  const BASE_CHECKPOINT = "TOURNAMENT-SCORE-REOPEN-001";
+  const LATE_GUARD_CHECKPOINT = "TOURNAMENT-SCORE-REOPEN-002";
+  const CHECKPOINT = checkpointId === LATE_GUARD_CHECKPOINT ? LATE_GUARD_CHECKPOINT : BASE_CHECKPOINT;
   const PREFIX = "manual-qa-checkpoint:v1:tournament-score-reopen";
   const STATE_ID = Q.stateId(SCENARIO);
   const EVENT_ID = `${PREFIX}:event`;
@@ -15,6 +17,7 @@
   const QUALIFIER_GROUP_A = `${QUALIFIER_ID}:group:1`;
   const QUALIFIER_GROUP_B = `${QUALIFIER_ID}:group:2`;
   const FINAL_GROUP = `${FINAL_ID}:group:1`;
+  const FINAL_REMINDER_RULE_KEY = `event-stage-reminder:${EVENT_ID}:${FINAL_ID}`;
   const RULE_KEY = "event-tournament-review";
   const HOST_ID = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID) || "650000000000000000000061";
   const NOVA_ID = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID) || "650000000000000000000062";
@@ -60,6 +63,8 @@
       { collection: "schedulerPlanMarkers", selector: related },
       { collection: "affinityRecomputeTasks", selector: related },
       { collection: "scheduledMessageTasks", selector: related },
+      { collection: "scheduledMessageRuns", selector: { ruleKey: FINAL_REMINDER_RULE_KEY } },
+      { collection: "scheduledMessageDeliveries", selector: { ruleKey: FINAL_REMINDER_RULE_KEY } },
       { collection: "notificationRuleConfigs", selector: { ruleKey: RULE_KEY } }
     ];
   }
@@ -430,6 +435,46 @@
     };
   }
 
+  function lateGuardSnapshot() {
+    const collections = {};
+    for (const spec of selectors().filter(item => item.collection !== "notificationRuleConfigs")) {
+      collections[spec.collection] = canonical(spec.collection, spec.selector);
+    }
+    return {
+      collections,
+      userActivities: ALL_USERS.map(userActivities)
+    };
+  }
+
+  function normalizeSnapshot(value) {
+    if (Array.isArray(value)) return value.map(normalizeSnapshot);
+    if (value instanceof Date) return value.toISOString();
+    if (value && typeof value === "object") {
+      return Object.fromEntries(Object.keys(value).sort().map(key => [key, normalizeSnapshot(value[key])]));
+    }
+    return value;
+  }
+
+  function differencePaths(left, right, path = "") {
+    if (Q.sameJson(left, right)) return [];
+    if (Array.isArray(left) || Array.isArray(right)) {
+      const leftArray = Array.isArray(left) ? left : [];
+      const rightArray = Array.isArray(right) ? right : [];
+      const result = [];
+      for (let index = 0; index < Math.max(leftArray.length, rightArray.length); index += 1) {
+        result.push(...differencePaths(leftArray[index], rightArray[index], `${path}[${index}]`));
+      }
+      return result;
+    }
+    if (left && right && typeof left === "object" && typeof right === "object") {
+      const keys = [...new Set([...Object.keys(left), ...Object.keys(right)])].sort();
+      if (keys.length > 0) {
+        return keys.flatMap(key => differencePaths(left[key], right[key], path ? `${path}.${key}` : key));
+      }
+    }
+    return [path || "<root>"];
+  }
+
   function assertOldEvidence(currentState) {
     if (!oldEvidenceUnchanged(currentState.oldEvidence)) {
       Q.fail(`${CHECKPOINT} revision 1 audit/outcome evidence was changed or overwritten.`);
@@ -444,7 +489,7 @@
 
   function stage() {
     Q.assertDeploymentSafety();
-    if (checkpointId !== CHECKPOINT) Q.fail(`stage is restricted to ${CHECKPOINT}.`);
+    if (checkpointId !== BASE_CHECKPOINT) Q.fail(`stage is restricted to ${BASE_CHECKPOINT}.`);
     if (state(false)) Q.fail(`${CHECKPOINT} is already staged; use status or reset.`);
     Q.assertNoOtherActiveScenario(SCENARIO);
     ALL_USERS.forEach((userId, index) => Q.ensureUser(userId, ["Casey", "Nova", "Riley"][index]));
@@ -695,6 +740,93 @@
     });
   }
 
+  function cleanTournamentStageReminders() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    if (currentState.phase !== "corrected") {
+      Q.fail(`${CHECKPOINT} tournament reminder cleanup requires the verified corrected-score boundary.`);
+    }
+    const qualifier = stageById(QUALIFIER_ID);
+    const scores = scoreTotals();
+    if (Q.text(qualifier && qualifier.stageStatus).toUpperCase() !== "SR"
+        || Q.number(qualifier && qualifier.stageResultRevision) !== 1
+        || Q.number(scores[NOVA_ID]) !== 14
+        || Q.number(scores[HOST_ID]) !== 9
+        || Q.number(scores[RILEY_ID]) !== 7) {
+      Q.fail(`${CHECKPOINT} tournament reminder cleanup refused a changed score-review boundary.`);
+    }
+    assertInitialFinalGroup();
+    assertOldEvidence(currentState);
+
+    const taskSelector = { taskKey: FINAL_REMINDER_RULE_KEY, eventId: EVENT_ID, subEventId: FINAL_ID };
+    const outboxSelector = {
+      notificationType: "scheduled-template",
+      entityId: "event-stage-reminder-v1",
+      title: "Final starts soon",
+      "payload.ruleKey": FINAL_REMINDER_RULE_KEY
+    };
+    const inboxSelector = {
+      kind: "scheduled-template",
+      sourceId: "event-stage-reminder-v1",
+      title: "Final starts soon",
+      "payload.ruleKey": FINAL_REMINDER_RULE_KEY
+    };
+    const taskRows = Q.collection("scheduledMessageTasks").find(taskSelector).toArray();
+    const runRows = Q.collection("scheduledMessageRuns").find({ ruleKey: FINAL_REMINDER_RULE_KEY }).toArray();
+    const deliveryRows = Q.collection("scheduledMessageDeliveries").find({ ruleKey: FINAL_REMINDER_RULE_KEY }).toArray();
+    const outboxRows = Q.collection("notificationOutbox").find(outboxSelector).toArray();
+    const inboxRows = Q.collection("userNotifications").find(inboxSelector).toArray();
+    const expectedRecipients = [HOST_ID, HOST_ID, NOVA_ID, NOVA_ID, RILEY_ID, RILEY_ID].sort();
+    if (taskRows.length !== 1
+        || runRows.length !== 2
+        || deliveryRows.length !== 6
+        || outboxRows.length !== 6
+        || inboxRows.length !== 6
+        || !Q.sameJson(sorted(deliveryRows.map(item => item.userId)), [HOST_ID, NOVA_ID, RILEY_ID].sort())
+        || !Q.sameJson(inboxRows.map(item => Q.text(item.recipientUserId)).sort(), expectedRecipients)
+        || outboxRows.some(item => Q.text(item.body) !== `QA ${CHECKPOINT} is coming up. Open the event before the stage starts.`)) {
+      Q.fail(`${CHECKPOINT} generic Final reminder evidence no longer matches the exact two-run defect shape.`);
+    }
+
+    for (const userId of ALL_USERS) {
+      const unreadWrongRows = inboxRows.filter(item => Q.text(item.recipientUserId) === userId && !Q.text(item.readAtIso)).length;
+      if (unreadWrongRows > 0) {
+        Q.collection("users").updateOne(
+          { $or: [{ _id: userId }, { userId }] },
+          { $inc: { "activities.notifications": -unreadWrongRows } }
+        );
+      }
+    }
+    Q.collection("notificationOutbox").deleteMany(outboxSelector);
+    Q.collection("userNotifications").deleteMany(inboxSelector);
+    Q.collection("scheduledMessageDeliveries").deleteMany({ ruleKey: FINAL_REMINDER_RULE_KEY });
+    Q.collection("scheduledMessageRuns").deleteMany({ ruleKey: FINAL_REMINDER_RULE_KEY });
+    Q.collection("scheduledMessageTasks").deleteMany(taskSelector);
+
+    if (Q.collection("scheduledMessageTasks").countDocuments(taskSelector) !== 0
+        || Q.collection("scheduledMessageRuns").countDocuments({ ruleKey: FINAL_REMINDER_RULE_KEY }) !== 0
+        || Q.collection("scheduledMessageDeliveries").countDocuments({ ruleKey: FINAL_REMINDER_RULE_KEY }) !== 0
+        || Q.collection("notificationOutbox").countDocuments(outboxSelector) !== 0
+        || Q.collection("userNotifications").countDocuments(inboxSelector) !== 0) {
+      Q.fail(`${CHECKPOINT} generic Final reminder cleanup was incomplete.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      genericTournamentReminderCleanedAtIso: Q.nowIso()
+    } });
+    assertOldEvidence(currentState);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "corrected",
+      removedGenericTournamentReminder: {
+        tasks: 1, runs: 2, deliveries: 6, outbox: 6, inbox: 6
+      },
+      correctedScores: scores,
+      oldRevisionEvidenceUnchanged: true,
+      next: "Casey chooses Finalize Stage once for Qualifiers."
+    });
+  }
+
   function armReview() {
     Q.assertDeploymentSafety();
     const currentState = state();
@@ -708,6 +840,17 @@
     }
     assertInitialFinalGroup();
     assertOldEvidence(currentState);
+    const reopenEvidenceRows = assertReopenEvidence();
+    const genericReminderCounts = {
+      tasks: Q.collection("scheduledMessageTasks").countDocuments({ taskKey: FINAL_REMINDER_RULE_KEY }),
+      runs: Q.collection("scheduledMessageRuns").countDocuments({ ruleKey: FINAL_REMINDER_RULE_KEY }),
+      deliveries: Q.collection("scheduledMessageDeliveries").countDocuments({ ruleKey: FINAL_REMINDER_RULE_KEY }),
+      outbox: Q.collection("notificationOutbox").countDocuments({ "payload.ruleKey": FINAL_REMINDER_RULE_KEY }),
+      inbox: Q.collection("userNotifications").countDocuments({ "payload.ruleKey": FINAL_REMINDER_RULE_KEY })
+    };
+    if (Object.values(genericReminderCounts).some(count => Q.number(count) !== 0)) {
+      Q.fail(`${CHECKPOINT} generic Final reminder evidence returned before corrected result processing.`);
+    }
     const finalizedRows = canonical("notificationOutbox", {
       notificationType: "event-stage-finalized", "payload.eventId": EVENT_ID
     });
@@ -729,6 +872,12 @@
     Q.printObject({
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "review-armed",
       qualifierRevision: 2, separateHumanFinalizeAudits: 2,
+      underReviewNotification: {
+        outbox: reopenEvidenceRows.outbox.length,
+        inbox: reopenEvidenceRows.inbox.length,
+        actorExcluded: true
+      },
+      genericTournamentReminderCounts: genericReminderCounts,
       oldFinalGroupBeforeWorker: acceptedGroupUsers(FINAL_GROUP),
       schedule,
       next: "Wait for the existing event-tournament-review worker, then run status."
@@ -786,7 +935,7 @@
       Q.fail(`${CHECKPOINT} tournament-review worker has not completed after the arm boundary.`);
     }
     assertCorrectedResult(currentState, true);
-    const snapshot = resultSnapshot();
+    const snapshot = normalizeSnapshot(resultSnapshot());
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "result-verified", resultVerifiedAtIso: Q.nowIso(),
       correctedResultSnapshot: snapshot,
@@ -809,10 +958,12 @@
     const currentState = state();
     if (currentState.phase !== "result-verified") Q.fail(`${CHECKPOINT} no-op arm requires the verified corrected result.`);
     assertCorrectedResult(currentState, true);
+    const ruleBefore = Q.requireRule(RULE_KEY);
     const delaySeconds = Q.number(process.env.MANUAL_QA_DELAY_SECONDS) || 15;
     const schedule = Q.scheduleRule(RULE_KEY, delaySeconds);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
-      phase: "noop-armed", noopArmedAtIso: Q.nowIso()
+      phase: "noop-armed", noopArmedAtIso: Q.nowIso(),
+      ruleLastRunAtBeforeNoop: Q.text(ruleBefore.runState && ruleBefore.runState.lastRunAtIso)
     } });
     Q.printObject({
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "noop-armed", schedule,
@@ -825,15 +976,21 @@
     const currentState = state();
     if (currentState.phase !== "noop-armed") Q.fail(`${CHECKPOINT} no-op verification requires the armed no-op boundary.`);
     const rule = Q.requireRule(RULE_KEY);
-    const historyLength = Array.isArray(rule.runHistory) ? rule.runHistory.length : 0;
+    const lastRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
+    const beforeIso = Q.text(currentState.ruleLastRunAtBeforeNoop || currentState.noopArmedAtIso);
     if (Q.text(rule.runState && rule.runState.currentStatus) !== "completed"
-        || historyLength <= Q.number(currentState.ruleHistoryLengthAfterReview)) {
+        || Q.number(rule.runState && rule.runState.lastRunCount) !== 0
+        || !lastRunAtIso
+        || !beforeIso
+        || new Date(lastRunAtIso).getTime() <= new Date(beforeIso).getTime()) {
       Q.fail(`${CHECKPOINT} unchanged tournament-review pass has not completed.`);
     }
     assertCorrectedResult(currentState, true);
-    const current = resultSnapshot();
-    if (!Q.sameJson(currentState.correctedResultSnapshot, current)) {
-      Q.fail(`${CHECKPOINT} unchanged worker replay changed membership, scores, markers or result notifications.`);
+    const saved = normalizeSnapshot(currentState.correctedResultSnapshot);
+    const current = normalizeSnapshot(resultSnapshot());
+    if (!Q.sameJson(saved, current)) {
+      const changedPaths = differencePaths(saved, current).slice(0, 30);
+      Q.fail(`${CHECKPOINT} unchanged worker replay changed snapshot paths: ${changedPaths.join(", ") || "unknown"}.`);
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "noop-verified", noopVerifiedAtIso: Q.nowIso()
@@ -844,6 +1001,192 @@
       exactOnce: true, correctedFinalGroup: current.finalGroup,
       oldRevisionEvidenceUnchanged: true,
       next: "Verify the already-finalized Qualifiers menu exposes no second Finalize action; then close the checkpoint."
+    });
+  }
+
+  function prepareLateReopenGuard() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== LATE_GUARD_CHECKPOINT) {
+      Q.fail(`late Reopen preparation is restricted to ${LATE_GUARD_CHECKPOINT}.`);
+    }
+    const currentState = state();
+    if (currentState.phase !== "noop-verified") {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} preparation requires the closed ${BASE_CHECKPOINT} noop-verified boundary.`);
+    }
+    assertCorrectedResult(currentState, true);
+    const savedResult = normalizeSnapshot(currentState.correctedResultSnapshot);
+    const currentResult = normalizeSnapshot(resultSnapshot());
+    if (!Q.sameJson(savedResult, currentResult)) {
+      const changedPaths = differencePaths(savedResult, currentResult).slice(0, 30);
+      Q.fail(`${LATE_GUARD_CHECKPOINT} predecessor evidence changed before preparation: ${changedPaths.join(", ") || "unknown"}.`);
+    }
+
+    const root = event();
+    const stages = (root && root.subEvents) || [];
+    const finalIndex = stages.findIndex(item => Q.text(item && item.id) === FINAL_ID);
+    const final = finalIndex >= 0 ? stages[finalIndex] : null;
+    const finalRuntime = Q.collection("activitySubEventStageRuntime").findOne({
+      ownerId: EVENT_ID,
+      subEventId: FINAL_ID
+    });
+    if (!root
+        || Q.collection("events").countDocuments({ sourceId: EVENT_ID }) !== 1
+        || finalIndex < 0
+        || Q.text(final && final.stageStatus).toUpperCase() !== "RS"
+        || Q.text(final && final.stageStatusUpdatedAt)
+        || Q.text(final && final.stageFinalizedAt)
+        || !finalRuntime
+        || Q.text(finalRuntime.stageStatus).toUpperCase() !== "RS"
+        || Q.text(finalRuntime.stageStatusUpdatedAt)
+        || Q.text(finalRuntime.stageFinalizedAt)) {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} requires one pristine waiting Final stage in both event and runtime records.`);
+    }
+
+    const activatedAtIso = Q.nowIso();
+    const activeFinal = {
+      ...final,
+      stageStatus: "A",
+      stageStatusReason: "tournament-started",
+      stageStatusUpdatedAt: activatedAtIso,
+      stageFinalizedAt: null,
+      stageFinalizedByUserId: null
+    };
+    const nextStages = [...stages];
+    nextStages[finalIndex] = activeFinal;
+    const eventUpdate = Q.collection("events").updateOne(
+      {
+        sourceId: EVENT_ID,
+        subEvents: {
+          $elemMatch: {
+            id: FINAL_ID,
+            stageStatus: "RS",
+            stageStatusUpdatedAt: null,
+            stageFinalizedAt: null
+          }
+        }
+      },
+      {
+        $set: {
+          subEvents: nextStages,
+          currentStage: {
+            id: FINAL_ID,
+            name: Q.text(activeFinal.name) || "Final",
+            stageNumber: 2,
+            totalStages: 2,
+            status: "A"
+          },
+          updatedDate: activatedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    if (eventUpdate.matchedCount !== 1 || eventUpdate.modifiedCount !== 1) {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} could not activate the dependent Final event state exactly once.`);
+    }
+    const runtimeUpdate = Q.collection("activitySubEventStageRuntime").updateOne(
+      {
+        ownerId: EVENT_ID,
+        subEventId: FINAL_ID,
+        stageStatus: "RS",
+        stageStatusUpdatedAt: null,
+        stageFinalizedAt: null
+      },
+      {
+        $set: {
+          stageStatus: "A",
+          stageStatusReason: "tournament-started",
+          stageStatusUpdatedAt: activatedAtIso,
+          stageFinalizedAt: null,
+          stageFinalizedByUserId: null,
+          updatedDate: activatedAtIso,
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    if (runtimeUpdate.matchedCount !== 1 || runtimeUpdate.modifiedCount !== 1) {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} could not activate the dependent Final runtime exactly once.`);
+    }
+
+    const preparedEvent = event();
+    const preparedFinal = stageById(FINAL_ID);
+    const preparedRuntime = Q.collection("activitySubEventStageRuntime").findOne({
+      ownerId: EVENT_ID,
+      subEventId: FINAL_ID
+    });
+    if (Q.text(preparedFinal && preparedFinal.stageStatus).toUpperCase() !== "A"
+        || Q.text(preparedFinal && preparedFinal.stageStatusUpdatedAt) !== activatedAtIso
+        || Q.text(preparedRuntime && preparedRuntime.stageStatus).toUpperCase() !== "A"
+        || Q.text(preparedRuntime && preparedRuntime.stageStatusUpdatedAt) !== activatedAtIso
+        || Q.text(preparedEvent && preparedEvent.currentStage && preparedEvent.currentStage.id) !== FINAL_ID
+        || Q.text(preparedEvent && preparedEvent.currentStage && preparedEvent.currentStage.status).toUpperCase() !== "A") {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} dependent Final activation did not converge across event, runtime and current-stage state.`);
+    }
+    assertCorrectedResult(currentState, true);
+    const snapshot = normalizeSnapshot(lateGuardSnapshot());
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "late-guard-prepared",
+      activeCheckpointId: LATE_GUARD_CHECKPOINT,
+      lateGuardPreparedAtIso: activatedAtIso,
+      lateGuardSnapshot: snapshot
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: LATE_GUARD_CHECKPOINT,
+      phase: "late-guard-prepared",
+      eventId: EVENT_ID,
+      qualifiers: { status: "F", revision: 2, scores: scoreTotals() },
+      dependentFinal: { status: "A", stageStatusUpdatedAt: activatedAtIso },
+      finalAcceptedUserIds: acceptedGroupUsers(FINAL_GROUP),
+      replayedLifecycleProducers: 0,
+      predecessorEvidenceUnchanged: true,
+      next: "Reload Casey once, open Qualifiers actions, and verify Reopen Scores is absent."
+    });
+  }
+
+  function verifyLateReopenGuard() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== LATE_GUARD_CHECKPOINT) {
+      Q.fail(`late Reopen verification is restricted to ${LATE_GUARD_CHECKPOINT}.`);
+    }
+    const currentState = state();
+    if (currentState.phase !== "late-guard-prepared") {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} verification requires the prepared dependent-stage boundary.`);
+    }
+    assertCorrectedResult(currentState, true);
+    const final = stageById(FINAL_ID);
+    const root = event();
+    const runtime = Q.collection("activitySubEventStageRuntime").findOne({
+      ownerId: EVENT_ID,
+      subEventId: FINAL_ID
+    });
+    if (Q.text(final && final.stageStatus).toUpperCase() !== "A"
+        || !Q.text(final && final.stageStatusUpdatedAt)
+        || Q.text(runtime && runtime.stageStatus).toUpperCase() !== "A"
+        || Q.text(runtime && runtime.stageStatusUpdatedAt) !== Q.text(final && final.stageStatusUpdatedAt)
+        || Q.text(root && root.currentStage && root.currentStage.id) !== FINAL_ID
+        || Q.text(root && root.currentStage && root.currentStage.status).toUpperCase() !== "A") {
+      Q.fail(`${LATE_GUARD_CHECKPOINT} lost its active dependent Final boundary.`);
+    }
+    const saved = normalizeSnapshot(currentState.lateGuardSnapshot);
+    const current = normalizeSnapshot(lateGuardSnapshot());
+    if (!Q.sameJson(saved, current)) {
+      const changedPaths = differencePaths(saved, current).slice(0, 40);
+      Q.fail(`${LATE_GUARD_CHECKPOINT} rejected late Reopen changed snapshot paths: ${changedPaths.join(", ") || "unknown"}.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "late-guard-verified",
+      lateGuardVerifiedAtIso: Q.nowIso()
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: LATE_GUARD_CHECKPOINT,
+      phase: "late-guard-verified",
+      rejectedLateReopenWasAtomic: true,
+      qualifiers: { status: "F", revision: 2, scores: scoreTotals() },
+      dependentFinalStatus: "A",
+      finalAcceptedUserIds: acceptedGroupUsers(FINAL_GROUP),
+      predecessorEvidenceUnchanged: true,
+      relatedCollectionsAndCountersByteIdentical: true
     });
   }
 
@@ -915,10 +1258,13 @@
     case "rearm-score-reopen": rearmReopen(); break;
     case "verify-score-reopen": verifyReopen(); break;
     case "verify-score-correction": verifyCorrection(); break;
+    case "clean-score-reopen-reminders": cleanTournamentStageReminders(); break;
     case "arm-score-reopen-review": armReview(); break;
     case "verify-score-reopen-result": verifyResult(); break;
     case "arm-score-reopen-noop": armNoop(); break;
     case "verify-score-reopen-noop": verifyNoop(); break;
+    case "prepare-score-reopen-late-guard": prepareLateReopenGuard(); break;
+    case "verify-score-reopen-late-guard": verifyLateReopenGuard(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

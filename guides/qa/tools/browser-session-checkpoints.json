@@ -240,6 +240,33 @@
         }
       ]
     },
+    "TOURNAMENT-SCORE-REOPEN-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey late-correction guard reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · late Reopen guard actor"
+        },
+        {
+          "actor": "Nova corrected advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · corrected Final member control"
+        },
+        {
+          "actor": "Riley stable advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · stable Final member control"
+        }
+      ]
+    },
     "TOURNAMENT-ROOM-LIFE-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

@@ -216,6 +216,25 @@ class ScheduledMessageTaskServiceIntegrationTest {
         assertThat(retained.getPayload()).containsEntry("stageStartAtIso", stageStartAt.toString());
     }
 
+    @Test
+    void tournamentStageUsesLifecycleNotificationsInsteadOfGenericStartSoonReminder() {
+        Instant stageStartAt = Instant.now().plus(150, ChronoUnit.MINUTES);
+        ActivityEvent event = publishedStageEvent("tournament-stage-no-reminder", stageStartAt.minus(120, ChronoUnit.MINUTES));
+        event.setSubEvents(List.of(stage(
+                "stage-one",
+                "Final",
+                stageStartAt,
+                1,
+                2,
+                "Score",
+                1)));
+
+        assertThat(scheduledMessageTaskService.scheduleEventStageReminders(event, "admin-user")).isEmpty();
+        assertThat(scheduledMessageTasksRepository.findByEventIdAndActionKey(
+                "tournament-stage-no-reminder",
+                ScheduledMessageTaskService.ACTION_EVENT_STAGE_REMINDER)).isEmpty();
+    }
+
     private Users activeUser(String userId) {
         Users user = new Users();
         user.setMongoId(new ObjectId().toHexString());
@@ -261,6 +280,17 @@ class ScheduledMessageTaskServiceIntegrationTest {
     }
 
     private SubEventItem stage(String id, String name, Instant startAt) {
+        return stage(id, name, startAt, null, null, "", null);
+    }
+
+    private SubEventItem stage(
+            String id,
+            String name,
+            Instant startAt,
+            Integer groupCapacityMin,
+            Integer groupCapacityMax,
+            String leaderboardType,
+            Integer advancePerGroup) {
         return new SubEventItem(
                 id,
                 name,
@@ -269,10 +299,10 @@ class ScheduledMessageTaskServiceIntegrationTest {
                 startAt.plusSeconds(3600).toString(),
                 "",
                 "",
-                null,
-                null,
-                "",
-                null,
+                groupCapacityMin,
+                groupCapacityMax,
+                leaderboardType,
+                advancePerGroup,
                 Boolean.FALSE,
                 null,
                 null,
