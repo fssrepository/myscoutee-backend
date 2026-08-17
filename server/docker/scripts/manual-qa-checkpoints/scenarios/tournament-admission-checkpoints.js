@@ -286,6 +286,7 @@
       updatedDate: stagedAtIso,
       updatedUser: HOST_ID
     })));
+    const rootProjectionBase = materializeRootProjection();
     const baseline = oracle();
     Q.collection(Q.STATE_COLLECTION).insertOne({
       _id: STATE_ID,
@@ -295,6 +296,7 @@
       stagedAtIso,
       snapshots,
       baseline,
+      rootProjectionBase,
       verifiedBranches: []
     });
     Q.printObject({
@@ -310,17 +312,73 @@
     Q.collection("activityMembers").deleteMany({ ownerType: "event", ownerId: EVENT_ID, userId: CANDIDATE_ID });
     Q.collection("notificationOutbox").deleteMany({ _id: `${PREFIX}:outbox:invite-riley` });
     Q.collection("userNotifications").deleteMany({ _id: `${PREFIX}:notification:invite-riley` });
-    const before = currentState.invitationProjectionBase;
-    if (before) {
+    Q.collection("notificationOutbox").deleteMany({ _id: `${PREFIX}:outbox:approval-riley` });
+    Q.collection("userNotifications").deleteMany({ _id: `${PREFIX}:notification:approval-riley` });
+    restoreProjectionCounters(currentState);
+  }
+
+  function restoreUserProjection(snapshot) {
+    if (!snapshot || !snapshot.userId) return;
+    Q.collection("users").updateOne({
+      $or: [{ _id: snapshot.userId }, { userId: snapshot.userId }]
+    }, { $set: {
+      "activities.invitations": Q.number(snapshot.invitations),
+      "activities.notifications": Q.number(snapshot.notifications),
+      "activities.event.all": Q.number(snapshot.event && snapshot.event.all),
+      "activities.event.pending": Q.number(snapshot.event && snapshot.event.pending),
+      "activities.event.invitations": Q.number(snapshot.event && snapshot.event.invitations)
+    } });
+  }
+
+  function restoreProjectionCounters(currentState) {
+    restoreUserProjection(currentState && currentState.invitationProjectionBase);
+    const approvalBase = currentState && currentState.approvalProjectionBase;
+    restoreUserProjection(approvalBase && approvalBase.host);
+    restoreUserProjection(approvalBase && approvalBase.candidate);
+  }
+
+  function restoreRootProjectionCounters(currentState) {
+    const rootBase = currentState && currentState.rootProjectionBase;
+    if (rootBase && rootBase.host) {
       Q.collection("users").updateOne({
-        $or: [{ _id: CANDIDATE_ID }, { userId: CANDIDATE_ID }]
+        $or: [{ _id: HOST_ID }, { userId: HOST_ID }]
       }, { $set: {
-        "activities.invitations": Q.number(before.invitations),
-        "activities.notifications": Q.number(before.notifications),
-        "activities.event.all": Q.number(before.event && before.event.all),
-        "activities.event.invitations": Q.number(before.event && before.event.invitations)
+        "activities.hosting": Q.number(rootBase.host.hosting),
+        "activities.event.all": Q.number(rootBase.host.event && rootBase.host.event.all),
+        "activities.event.hosting": Q.number(rootBase.host.event && rootBase.host.event.hosting)
       } });
     }
+    if (rootBase && rootBase.accepted) {
+      Q.collection("users").updateOne({
+        $or: [{ _id: ACCEPTED_ID }, { userId: ACCEPTED_ID }]
+      }, { $set: {
+        "activities.events": Q.number(rootBase.accepted.events),
+        "activities.event.all": Q.number(rootBase.accepted.event && rootBase.accepted.event.all),
+        "activities.event.active": Q.number(rootBase.accepted.event && rootBase.accepted.event.active)
+      } });
+    }
+  }
+
+  function materializeRootProjection() {
+    const rootBase = {
+      host: activitySnapshot(HOST_ID),
+      accepted: activitySnapshot(ACCEPTED_ID)
+    };
+    Q.collection("users").updateOne({
+      $or: [{ _id: HOST_ID }, { userId: HOST_ID }]
+    }, { $inc: {
+      "activities.hosting": 1,
+      "activities.event.all": 1,
+      "activities.event.hosting": 1
+    } });
+    Q.collection("users").updateOne({
+      $or: [{ _id: ACCEPTED_ID }, { userId: ACCEPTED_ID }]
+    }, { $inc: {
+      "activities.events": 1,
+      "activities.event.all": 1,
+      "activities.event.active": 1
+    } });
+    return rootBase;
   }
 
   function inviteOutbox(preparedAtIso) {
@@ -384,6 +442,107 @@
       updatedDate: preparedAtIso,
       updatedUser: HOST_ID
     };
+  }
+
+  function approvalOutbox(preparedAtIso) {
+    const occurrenceId = `${PREFIX}:join-request-occurrence:riley`;
+    return {
+      _id: `${PREFIX}:outbox:approval-riley`,
+      syncKey: `${PREFIX}:outbox:approval-riley`,
+      notificationType: "event-admin-join-request",
+      entityType: "event",
+      entityId: EVENT_ID,
+      recipientScope: "event-admins",
+      recipientUserIds: [HOST_ID],
+      deliveryStrategy: "direct",
+      title: "QA TOURNAMENT-ADMISSION-001",
+      body: "Join request received.",
+      clickUrl: "/game",
+      iconUrl: "/assets/logo/heart.webp",
+      badgeUrl: "/assets/logo/heart.webp",
+      tag: `event-admin-join-request-${EVENT_ID}-${CANDIDATE_ID}`,
+      payload: {
+        eventId: EVENT_ID,
+        eventTitle: "QA TOURNAMENT-ADMISSION-001",
+        eventScope: "members",
+        memberUserId: CANDIDATE_ID,
+        memberName: "Riley Outside",
+        membershipAction: "requested",
+        senderUserId: CANDIDATE_ID,
+        notification_tone: "accent",
+        notification_message_key: "notification.event.join.requested.message",
+        notification_status_badge_key: "notification.event.join.pending.badge",
+        notification_status_badge_fallback: "Pending",
+        notification_status_badge_tone: "accent",
+        joinRequestOccurrenceId: occurrenceId,
+        requestedAtIso: preparedAtIso
+      },
+      status: "sent",
+      pendingCounterTracked: false,
+      retryCount: 0,
+      sentDate: preparedAtIso,
+      createdDate: preparedAtIso,
+      createdUser: CANDIDATE_ID,
+      updatedDate: preparedAtIso,
+      updatedUser: CANDIDATE_ID
+    };
+  }
+
+  function approvalNotification(preparedAtIso) {
+    return {
+      _id: `${PREFIX}:notification:approval-riley`,
+      syncKey: `${PREFIX}:outbox:approval-riley:${HOST_ID}`,
+      outboxId: `${PREFIX}:outbox:approval-riley`,
+      recipientUserId: HOST_ID,
+      kind: "event-admin-join-request",
+      category: "event-admin",
+      title: "QA TOURNAMENT-ADMISSION-001",
+      message: "Join request received.",
+      senderUserId: CANDIDATE_ID,
+      actionPath: "/game",
+      sourceType: "event",
+      sourceId: EVENT_ID,
+      payload: approvalOutbox(preparedAtIso).payload,
+      occurrenceCount: 1,
+      revision: NumberLong("1"),
+      readAtIso: null,
+      createdDate: preparedAtIso,
+      createdUser: CANDIDATE_ID,
+      updatedDate: preparedAtIso,
+      updatedUser: CANDIDATE_ID
+    };
+  }
+
+  function materializeInvitationProjection(preparedAtIso) {
+    const candidateBase = activitySnapshot(CANDIDATE_ID);
+    Q.collection("users").updateOne({
+      $or: [{ _id: CANDIDATE_ID }, { userId: CANDIDATE_ID }]
+    }, { $inc: {
+      "activities.invitations": 1,
+      "activities.notifications": 1,
+      "activities.event.all": 1,
+      "activities.event.invitations": 1
+    } });
+    Q.collection("notificationOutbox").insertOne(inviteOutbox(preparedAtIso));
+    Q.collection("userNotifications").insertOne(inviteNotification(preparedAtIso));
+    return candidateBase;
+  }
+
+  function materializeApprovalProjection(preparedAtIso) {
+    const hostBase = activitySnapshot(HOST_ID);
+    const candidateBase = activitySnapshot(CANDIDATE_ID);
+    Q.collection("users").updateOne({
+      $or: [{ _id: CANDIDATE_ID }, { userId: CANDIDATE_ID }]
+    }, { $inc: {
+      "activities.event.all": 1,
+      "activities.event.pending": 1
+    } });
+    Q.collection("users").updateOne({
+      $or: [{ _id: HOST_ID }, { userId: HOST_ID }]
+    }, { $inc: { "activities.notifications": 1 } });
+    Q.collection("notificationOutbox").insertOne(approvalOutbox(preparedAtIso));
+    Q.collection("userNotifications").insertOne(approvalNotification(preparedAtIso));
+    return { host: hostBase, candidate: candidateBase };
   }
 
   function assertLegacyActivityBaseline(savedActivities, currentActivities) {
@@ -456,12 +615,63 @@
     });
   }
 
+  function repairRootProjection() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    assertUnchanged(currentState.baseline, oracle(), `${currentState.branch} branch`);
+    if (currentState.rootProjectionBase) {
+      Q.fail(`${CHECKPOINT} root activity projection is already materialized.`);
+    }
+    const rootProjectionBase = {
+      host: currentState.approvalProjectionBase && currentState.approvalProjectionBase.host
+        ? currentState.approvalProjectionBase.host
+        : activitySnapshot(HOST_ID),
+      accepted: activitySnapshot(ACCEPTED_ID)
+    };
+    Q.collection("users").updateOne({
+      $or: [{ _id: HOST_ID }, { userId: HOST_ID }]
+    }, { $inc: {
+      "activities.hosting": 1,
+      "activities.event.all": 1,
+      "activities.event.hosting": 1
+    } });
+    Q.collection("users").updateOne({
+      $or: [{ _id: ACCEPTED_ID }, { userId: ACCEPTED_ID }]
+    }, { $inc: {
+      "activities.events": 1,
+      "activities.event.all": 1,
+      "activities.event.active": 1
+    } });
+    const repairedApprovalBase = currentState.approvalProjectionBase
+      ? { ...currentState.approvalProjectionBase, host: {
+          ...activitySnapshot(HOST_ID),
+          notifications: Q.number(currentState.approvalProjectionBase.host.notifications)
+        } }
+      : null;
+    const baseline = oracle();
+    const repairedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      baseline,
+      rootProjectionBase,
+      rootProjectionRepairedAtIso: repairedAtIso,
+      ...(repairedApprovalBase ? { approvalProjectionBase: repairedApprovalBase } : {})
+    } });
+    Q.printObject({
+      scenario: SCENARIO, checkpointId: CHECKPOINT,
+      phase: "root-activity-projection-repaired", repairedAtIso,
+      oracle: conciseOracle(baseline),
+      next: "Reload Casey once; My Events must show red counter 1 before approval."
+    });
+  }
+
   function prepare(branch) {
     Q.assertDeploymentSafety();
     const currentState = state();
     assertUnchanged(currentState.baseline, oracle(), `${currentState.branch} branch`);
     restoreJoinBranch(currentState);
     const preparedAtIso = Q.nowIso();
+    let invitationProjectionBase = null;
+    let approvalProjectionBase = null;
     if (branch === "invitation") {
       Q.collection("events").updateOne({ sourceId: EVENT_ID }, { $set: {
         pendingMembers: 1,
@@ -475,6 +685,7 @@
         "parent-riley", "event", EVENT_ID, CANDIDATE_ID, "Member", "pending", preparedAtIso,
         { pendingSource: "admin", requestKind: "invite" }
       ));
+      invitationProjectionBase = materializeInvitationProjection(preparedAtIso);
     } else if (branch === "approval") {
       Q.collection("events").updateOne({ sourceId: EVENT_ID }, { $set: {
         pendingMembers: 1,
@@ -488,6 +699,7 @@
         "parent-riley", "event", EVENT_ID, CANDIDATE_ID, "Member", "pending", preparedAtIso,
         { pendingSource: "member", requestKind: "approval" }
       ));
+      approvalProjectionBase = materializeApprovalProjection(preparedAtIso);
     } else {
       Q.fail(`unsupported admission branch '${branch}'.`);
     }
@@ -495,8 +707,12 @@
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       branch,
       preparedAtIso,
-      baseline
-    } });
+      baseline,
+      ...(invitationProjectionBase ? { invitationProjectionBase } : {}),
+      ...(approvalProjectionBase ? { approvalProjectionBase } : {})
+    }, $unset: branch === "invitation"
+      ? { approvalProjectionBase: "" }
+      : { invitationProjectionBase: "" } });
     Q.printObject({
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: `${branch}-baseline`,
       preparedAtIso, oracle: conciseOracle(baseline),
@@ -608,6 +824,8 @@
   function reset() {
     Q.assertDeploymentSafety();
     const currentState = state();
+    restoreProjectionCounters(currentState);
+    restoreRootProjectionCounters(currentState);
     Q.restoreSnapshots(currentState.snapshots || []);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: STATE_ID });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "reset-complete", resetAtIso: Q.nowIso() });
@@ -623,6 +841,7 @@
     case "repair-tournament-admission-oracle": repairOracle(); break;
     case "repair-tournament-admission-visibility": repairVisibility(); break;
     case "repair-tournament-admission-invitation-projection": repairInvitationProjection(); break;
+    case "repair-tournament-admission-root-projection": repairRootProjection(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

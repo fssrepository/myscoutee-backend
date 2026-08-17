@@ -4993,6 +4993,19 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   counter delta, one unread notification delta, one terminal outbox audit row
   and one unread inbox row. Require a fresh Riley document to show both red
   counters and the single invite row before executing the rejection branch.
+- Invitation acceptance PASS on `2026-08-17`: Riley saw the corrected red
+  Invitations and notification counters, then one Accept attempt was blocked.
+  The independent oracle retained the exact pending Admin invitation, one
+  outbox/inbox pair and zero chat, checkout, payment, ticket or worker effects.
+- The following Admin-approval baseline uses a separate pre-existing pending
+  request (`pendingSource=member`, `requestKind=approval`), Riley Pending
+  counters and exactly one unread Casey join-request notification. Verify this
+  baseline visually before Casey attempts Approve once.
+- Its first visual check exposed a second fixture-only omission: Casey and Nova
+  were present in their lists but the root hosted/active activity counters were
+  zero. The guarded write-side repair materialized Casey My Events `1` and
+  Nova Active Events `1`, retained Riley Pending `1`, and made these counters
+  part of the branch oracle without executing approval.
 
 ### `TOURNAMENT-SCORE-REOPEN-001` — corrected scores and result revision
 
