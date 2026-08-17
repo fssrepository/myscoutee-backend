@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-16 18:46 CEST
+Updated: 2026-08-17 15:47 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -20,6 +20,8 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+- Isolated first-stage admission fixture:
+  [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -36,27 +38,26 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-ADMISSION-001 — first-stage admission policy gate
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-admission-001--first-stage-admission-boundary
-scenario: event-domain (no admission fixture staged)
-ledger_status: DESIGN CAPTURED / NOT RUN
-state: TOURNAMENT-CARD-001 is PASS/CLOSED after its in-place and reload card transition plus terminal persisted oracle. Its isolated verified fixture remains retained only as the completed boundary; no TOURNAMENT-ADMISSION-001 fixture has been staged. Closed TOURNAMENT-001 through TOURNAMENT-004 and TOURNAMENT-ROOM-LIFE-001 evidence remains untouched.
-required_resume: Resolve exactly one parent-admission policy before implementation or fixture mutation: strict registration lock at first tournament-stage Start, or an explicit bounded first-stage grace that atomically assigns every newly accepted parent member to a live first-stage group. Do not infer ordinary-event grace and do not change the already-passed Start notification producers.
-event: none until the admission policy is chosen and a guarded fixture is implemented
+scenario: event-domain-tournament-admission (isolated fixture; exposed through the event-domain harness route)
+ledger_status: IN PROGRESS / JOIN VISIBILITY REPLAY
+state: Strict registration lock at first tournament-stage Start is the selected contract. The first Join replay exposed that the backend guard worked but the closed tournament was still listed in Explore. The correction reuses the existing main-event visibility state: the Start write changes the event to `Invitation only`, so the existing Explore query excludes it without a new field, stage projection or waitlist. Java and frontend-local Start writes now agree; the existing watchers compiled successfully. The staged Join fixture was repaired through its guarded harness to this same state, and every persisted oracle section remains unchanged/green. Direct Java guards for Join/invitation acceptance/Admin approval remain before checkout or membership mutation. Closed TOURNAMENT-001 through TOURNAMENT-CARD-001 evidence and Start notification producers remain untouched.
+required_resume: Do not reset or restage. Keep the three launcher-owned Casey/Nova/Riley sessions. Close Riley's already-open Request join dialog if needed, reload Riley once because the fixture visibility changed behind the open browser, reopen Event Explore and verify that `QA TOURNAMENT-ADMISSION-001` is absent. Then run verify-tournament-admission-rejection. Continue with the fixture's invitation and approval branches only after this oracle passes.
+event: `QA TOURNAMENT-ADMISSION-001`; sourceId `manual-qa-checkpoint:v1:tournament-admission:event`; current stage `Qualifiers 1/1`, status `A`; accepted Casey+Nova, Riley absent in the current Join branch
 actors:
-  planned: Casey `650000000000000000000061` parent Admin; Nova `650000000000000000000062` accepted participant; Riley `650000000000000000000063` accepted participant
+  active: Casey `650000000000000000000061` unchanged parent Admin; Nova `650000000000000000000062` accepted pre-Start control; Riley `650000000000000000000063` late-admission actor
   controls: parent pending indicators remain separate from nested Groups; room pending membership remains zero; closed Start notifications remain unchanged
-next_actor: User chooses strict first-Start lock or bounded first-stage grace; Codex then implements the owning contract and guarded replay fixture before issuing browser steps.
-stop_phrase: strict lock / bounded grace
+next_actor: Riley closes the stale dialog if it is open, reloads once, reopens Event Explore and reports whether `QA TOURNAMENT-ADMISSION-001` is absent. Casey and Nova remain untouched.
+stop_phrase: event absent / event still visible
 ```
 
-Separate captured follow-up: `TOURNAMENT-ADMISSION-001` owns the unresolved
-first-stage admission boundary without changing the already-passed Start
-notification producers. The simple candidate is a strict lock at first Start,
-but the later product discussion explicitly left open a bounded first-stage
-grace for newly accepted parent members. Do not implement either policy until
-that choice is made. In both variants parent admission stays outside the
-nested `Groups` counter, which owns only genuinely group-scoped pending
-member/resource work; event-owner materialized rooms keep member-pending at
-zero.
+Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
+registration lock at first-stage Start. Rejected post-Start Join, invitation
+acceptance and Admin approval are three branches of this checkpoint and must
+leave parent membership, nested Groups, capacity, chat, leaderboard, counters,
+checkout and notifications unchanged. Parent admission remains outside the
+nested `Groups` counter; event-owner materialized rooms keep member-pending at
+zero. Never alter the already-passed Start notification producers for this
+checkpoint.
 
 Separate captured score-correction follow-ups:
 `TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
@@ -130,17 +131,24 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-CARD-001` is PASS/CLOSED. Before staging
-`TOURNAMENT-ADMISSION-001`, choose strict registration lock at first stage
-Start or a bounded first-stage grace with atomic live-group assignment. Do not
-guess this policy from ordinary-event behavior. Score correction and
-late-correction safety remain separate under
+`TOURNAMENT-CARD-001` is PASS/CLOSED. `TOURNAMENT-ADMISSION-001` is active on
+the strict-lock contract. Replay the corrected Join visibility boundary first;
+do not move to its invitation/approval branches until its independent oracle
+passes. Score correction and late-correction safety remain separate under
 `TOURNAMENT-SCORE-REOPEN-001/002`.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
 reload at that boundary, record why it is required, and do not misclassify the
 stale view as a backend state or silently reload during an in-place assertion.
+
+For a lifecycle transition that closes discovery or admission, first reuse an
+existing main-record write-side state whose normal read path already enforces
+the desired visibility. Do not add a tournament-only read projection or make
+Explore walk stage state. In the current tournament contract, first-stage Start
+changes the main event visibility to `Invitation only`; Explore therefore omits
+the event, while the direct Java/local admission guards remain defense in depth
+for stale links, invitations and Admin approval.
 
 Performance comparison rule for transactional QA: compare only two executions
 that persisted the same complete domain result. A fast false-success/no-op is
@@ -1013,7 +1021,7 @@ The current Tournament block order is:
 TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
 -> TOURNAMENT-CARD-001 (closed)
--> TOURNAMENT-ADMISSION-001 (active design gate; not run)
+-> TOURNAMENT-ADMISSION-001 (active; Join branch staged)
 -> TOURNAMENT-SCORE-REOPEN-001 (not run)
 -> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```

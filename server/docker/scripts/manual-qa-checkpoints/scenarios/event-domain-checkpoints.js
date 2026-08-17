@@ -7039,6 +7039,45 @@
     });
   }
 
+  function discardStaleTournamentCard() {
+    Q.assertDeploymentSafety();
+    const state = Q.collection(Q.STATE_COLLECTION).findOne({ _id: TOURNAMENT_CARD_STATE_ID });
+    if (!state) Q.fail("TOURNAMENT-CARD-001 is not staged.");
+    if (!Q.text(state.transitionVerifiedAtIso)) {
+      Q.fail("TOURNAMENT-CARD-001 has no terminal transition evidence; use the normal reset path.");
+    }
+    const reviewRule = Q.collection("notificationRuleConfigs")
+      .findOne({ ruleKey: TOURNAMENT_REVIEW_RULE });
+    if (Q.text(reviewRule && reviewRule.runState && reviewRule.runState.progressDetail)
+      .includes(TOURNAMENT_CARD_CHECKPOINT)) {
+      Q.fail("TOURNAMENT-CARD-001 still owns the tournament-review hold; use the normal reset path.");
+    }
+    const managedSnapshots = (state.snapshots || [])
+      .filter(snapshot => snapshot.collection !== "notificationRuleConfigs");
+    Q.restoreSnapshots(managedSnapshots);
+    const retained = tournamentCardSelectors()
+      .filter(spec => spec.collection !== "notificationRuleConfigs")
+      .map(spec => ({
+        collection: spec.collection,
+        count: Q.collection(spec.collection).countDocuments(spec.selector)
+      }))
+      .filter(item => item.count !== 0);
+    if (retained.length !== 0) {
+      Q.fail(`TOURNAMENT-CARD-001 managed fixture cleanup was incomplete: ${JSON.stringify(retained)}.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "stale-tournament-card-checkpoint-discarded",
+      discardedAtIso: Q.nowIso(),
+      preservedClosedTournament004: true,
+      restoredManagedSnapshots: managedSnapshots.length,
+      restoredCounters: false,
+      next: "Proceed with the next isolated Tournament checkpoint."
+    });
+  }
+
   function stageTournamentRoomLife() {
     Q.assertDeploymentSafety();
     if (checkpointId !== TOURNAMENT_ROOM_LIFE_CHECKPOINT) {
@@ -11494,7 +11533,9 @@
     case "capture-invitation-action-baseline": captureInvitationActionBaseline(); break;
     case "verify-invitation-created": verifyInvitationCreated(); break;
     case "diagnose-invitation-chat-counter": diagnoseInvitationChatCounter(); break;
-    case "discard-stale": discardStale(); break;
+    case "discard-stale": checkpointId === TOURNAMENT_CARD_CHECKPOINT
+      ? discardStaleTournamentCard()
+      : discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
 })();

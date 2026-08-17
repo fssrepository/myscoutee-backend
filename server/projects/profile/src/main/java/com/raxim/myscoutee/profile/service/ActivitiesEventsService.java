@@ -2265,6 +2265,9 @@ public class ActivitiesEventsService {
             next.refreshTournamentCurrentStage();
             if (STAGE_ACTION_START.equals(actionTarget.action())) {
                 next.setAutoInviter(false);
+                if (preferredStageIndex == 0) {
+                    next.setVisibility("Invitation only");
+                }
             }
             next.setUpdatedDate(nowIso);
             next.setUpdatedUser(viewer.userId());
@@ -2587,9 +2590,22 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot beforeSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
         UserEventActivityState beforeState = eventActivityState(preferred, beforeSnapshot, viewer.userId());
+        boolean alreadyAccepted = isAcceptedMember(beforeSnapshot, viewer.userId());
+        if (!alreadyAccepted && activitiesMembersService.isTournamentAdmissionLocked(preferred)) {
+            return withCounterDelta(
+                    toParticipationActionResult(
+                            sourceId,
+                            slotSourceId,
+                            "unchanged",
+                            null,
+                            preferred,
+                            beforeSnapshot,
+                            request,
+                            "tournament-registration-closed"),
+                    null);
+        }
         boolean checkoutBasketUpdateRequested = isPendingCheckoutBasketUpdateRequest(request, viewer.userId(), requestedSourceId);
         syncCheckoutBasketForJoin(request);
-        boolean alreadyAccepted = isAcceptedMember(beforeSnapshot, viewer.userId());
         boolean acceptingInvitation = activitiesMembersService.hasPendingInvitation(sourceId, viewer.userId());
         boolean approvalRequested = acceptingInvitation
                 ? activitiesMembersService.pendingInvitationRequiresAdminApproval(sourceId, viewer.userId())
@@ -3047,6 +3063,26 @@ public class ActivitiesEventsService {
             ActivityEvent record,
             ActivitiesMembersService.OwnerMembersSnapshot snapshot,
             EventActionRequestDto request) {
+        return toParticipationActionResult(
+                sourceId,
+                slotSourceId,
+                membershipStatus,
+                pendingReason,
+                record,
+                snapshot,
+                request,
+                null);
+    }
+
+    private EventParticipationActionResultDto toParticipationActionResult(
+            String sourceId,
+            String slotSourceId,
+            String membershipStatus,
+            String pendingReason,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            EventActionRequestDto request,
+            String reason) {
         ActivitiesMembersService.OwnerMembersSnapshot resolvedSnapshot = snapshot == null
                 ? resolveSnapshot(normalizeId(record == null ? sourceId : record.getSourceId()))
                 : snapshot;
@@ -3071,7 +3107,7 @@ public class ActivitiesEventsService {
                 resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(request == null ? null : request.paymentSessionId()),
                 resolvedSnapshot != null && resolvedSnapshot.mutationApplied(),
-                null);
+                reason);
     }
 
     private EventParticipationActionResultDto toParticipationLeaveResult(

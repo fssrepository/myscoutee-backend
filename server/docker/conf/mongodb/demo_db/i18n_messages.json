@@ -12528,6 +12528,18 @@
     "value": "The selected invitation could not be sent."
   },
   {
+    "_id": "i18n-message-en-event-tournament-registration-closed-title",
+    "key": "event.tournament.registration.closed.title",
+    "lang": "en",
+    "value": "Registration closed"
+  },
+  {
+    "_id": "i18n-message-en-event-tournament-registration-closed-message",
+    "key": "event.tournament.registration.closed.message",
+    "lang": "en",
+    "value": "Tournament registration closed when the first stage started."
+  },
+  {
     "_id": "i18n-message-en-event-editor-create",
     "key": "event.editor.create",
     "lang": "en",
@@ -31138,6 +31150,18 @@
     "key": "event.members.invite.not.sent.message",
     "lang": "hu",
     "value": "A kijelölt meghívást nem sikerült elküldeni."
+  },
+  {
+    "_id": "i18n-message-hu-event-tournament-registration-closed-title",
+    "key": "event.tournament.registration.closed.title",
+    "lang": "hu",
+    "value": "A jelentkezés lezárult"
+  },
+  {
+    "_id": "i18n-message-hu-event-tournament-registration-closed-message",
+    "key": "event.tournament.registration.closed.message",
+    "lang": "hu",
+    "value": "A versenyre való jelentkezés az első szakasz indulásakor lezárult."
   },
   {
     "_id": "i18n-message-hu-event-editor-create",

@@ -267,6 +267,33 @@
         }
       ]
     },
+    "TOURNAMENT-ADMISSION-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey admission Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · unchanged tournament Admin control"
+        },
+        {
+          "actor": "Nova admitted participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · accepted before first-stage Start"
+        },
+        {
+          "actor": "Riley late admission actor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · post-Start join/invitation/approval actor"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2

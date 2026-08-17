@@ -69,6 +69,10 @@ public class ActivitiesMembersService {
     private static final String STATUS_SUPPRESSED = "suppressed";
     private static final String RESOURCE_STATUS_DELETED = "D";
     private static final String STATUS_DISQUALIFIED = "disqualified";
+    private static final String STAGE_STATUS_ACTIVE = "A";
+    private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
+    private static final String STAGE_STATUS_FINALIZED = "F";
+    private static final String STAGE_STATUS_SUSPENDED = "S";
     private static final String ACTION_ACCEPT = "accept";
     private static final String ACTION_REMOVE = "remove";
     private static final String ACTION_DISQUALIFY = "disqualify";
@@ -1046,6 +1050,11 @@ public class ActivitiesMembersService {
                 && ACTION_ACCEPT.equals(action)
                 && STATUS_PENDING.equals(currentStatus)
                 && isAdminApprovalMembership(current);
+        if (approvingEventJoinRequest && isTournamentAdmissionLocked(findPreferredEventRecord(ownerId))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "tournament-registration-closed");
+        }
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !canManageOwnerMembers(
@@ -1315,6 +1324,11 @@ public class ActivitiesMembersService {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+        if (isTournamentAdmissionLocked(eventRecord == null
+                ? findPreferredEventRecord(normalizedEventId)
+                : eventRecord)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         boolean mutationApplied = false;
@@ -2133,6 +2147,34 @@ public class ActivitiesMembersService {
 
     private Object eventJoinLock(String eventId) {
         return eventJoinLocks.computeIfAbsent(eventId, ignored -> new Object());
+    }
+
+    public boolean isTournamentAdmissionLocked(ActivityEvent eventRecord) {
+        if (eventRecord == null || eventRecord.getSubEvents() == null) {
+            return false;
+        }
+        SubEventItem firstTournamentStage = eventRecord.getSubEvents().stream()
+                .filter(Objects::nonNull)
+                .filter(this::isTournamentStage)
+                .findFirst()
+                .orElse(null);
+        if (firstTournamentStage == null) {
+            return false;
+        }
+        String status = safeText(firstTournamentStage.stageStatus()).toUpperCase(Locale.US);
+        return STAGE_STATUS_ACTIVE.equals(status)
+                || STAGE_STATUS_SCORE_REVIEW.equals(status)
+                || STAGE_STATUS_FINALIZED.equals(status)
+                || STAGE_STATUS_SUSPENDED.equals(status);
+    }
+
+    private boolean isTournamentStage(SubEventItem stage) {
+        return stage != null
+                && !Boolean.TRUE.equals(stage.optional())
+                && ((stage.tournamentGroupCapacityMin() != null && stage.tournamentGroupCapacityMin() > 0)
+                    || (stage.tournamentGroupCapacityMax() != null && stage.tournamentGroupCapacityMax() > 0)
+                    || "Score".equalsIgnoreCase(safeText(stage.tournamentLeaderboardType()))
+                    || "Fifa".equalsIgnoreCase(safeText(stage.tournamentLeaderboardType())));
     }
 
     private boolean isCapacityFullForJoin(ActivityEvent eventRecord, List<ActivityMember> existing, String joiningUserId) {

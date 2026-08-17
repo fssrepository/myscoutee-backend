@@ -4952,17 +4952,19 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
 
 ### `TOURNAMENT-ADMISSION-001` — first-stage admission boundary
 
-- Resolve one product-policy choice before implementation. The simplest
-  default freezes the accepted parent-member snapshot at first Start and gives
-  still-pending requests one registration-closed outcome. A bounded alternative
-  may admit newly accepted parent members only while the first stage is still
-  running, then assign them deterministically to that stage. Do not silently
-  inherit the ordinary-event grace period and do not mix both policies.
-- Whichever policy is selected, exercise the backend—not only the UI—for late
-  join, invite and Admin approval. A rejected late acceptance must change no
-  group membership, capacity, chat, leaderboard or counter. A permitted
-  first-stage-grace acceptance must be one atomic accepted-parent-to-active-room
-  transaction, never a pending room membership or a second room-level approval.
+- The selected product contract is a strict lock at the first tournament-stage
+  Start. That write freezes the accepted parent-member snapshot, disables the
+  auto inviter and changes the existing main-event visibility to `Invitation
+  only`. The ordinary Explore read therefore omits the closed tournament
+  without reconstructing stage state, adding a tournament-only projection or
+  presenting a waitlist. Accepted participants and Admins retain their normal
+  tracked-event views.
+- Exercise the backend—not only the UI—for late join, existing-invitation
+  acceptance and Admin approval. Explore absence is the primary new-Join UI
+  result; the direct Java and frontend-local guards remain defense in depth for
+  stale links and already-existing pending rows. Every rejected late acceptance
+  must change no parent/group membership, capacity, chat, leaderboard, counter,
+  checkout, ticket, payment or notification record.
 - Parent-event pending admission is not part of the nested `Groups` counter.
   That counter aggregates only group-scoped pending member operations and
   group resource requests. Materialized event-owner tournament groups are

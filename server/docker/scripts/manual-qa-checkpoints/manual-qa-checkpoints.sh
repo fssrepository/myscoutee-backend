@@ -64,6 +64,11 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-final-completion event-domain TOURNAMENT-004
   bash manual-qa-checkpoints.sh verify-tournament-room-life-baseline event-domain TOURNAMENT-ROOM-LIFE-001
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
+  bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh verify-tournament-admission-rejection event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-oracle event-domain TOURNAMENT-ADMISSION-001
+  bash manual-qa-checkpoints.sh repair-tournament-admission-visibility event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh repair-ticket-payment-fixture event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh repair-tournament-room-presentation event-domain TOURNAMENT-002
   bash manual-qa-checkpoints.sh repair-tournament-room-notifications event-domain TOURNAMENT-002
@@ -181,7 +186,13 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
-    event-domain) scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js" ;;
+    event-domain)
+      if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js"
+      fi
+      ;;
     asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     auth-session) scenario_script="${SCRIPT_DIR}/scenarios/auth-session-checkpoints.js" ;;
@@ -315,6 +326,15 @@ case "${scenario}:${command}" in
     ;;
   event-domain:verify-tournament-card-transition)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:prepare-tournament-admission-invitation|\
+  event-domain:prepare-tournament-admission-approval|\
+  event-domain:verify-tournament-admission-rejection|\
+  event-domain:repair-tournament-admission-oracle|\
+  event-domain:repair-tournament-admission-visibility)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-ADMISSION-001" ] || fail "${command} is restricted to TOURNAMENT-ADMISSION-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
