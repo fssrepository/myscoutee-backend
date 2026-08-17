@@ -47,9 +47,10 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Tournament grouping | Parent/stage/group membership and group runtime state | Tournament groups and member panels | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-003` |
+| Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
-| Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
+| Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
+| Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
@@ -93,13 +94,20 @@ The principal checkpoint chains are:
   join approval, Past bucketing, two-step invitation acceptance and finally
   the same event's Friends Only discovery boundary.
 - `EVENT-EDITOR-004` -> `TOURNAMENT-001` -> `TOURNAMENT-002` ->
-  `TOURNAMENT-003`: tournament definition, grouping and advancement.
+  `TOURNAMENT-MEMBER-001` -> `TOURNAMENT-MEMBER-002` ->
+  `TOURNAMENT-DQ-001` -> `TOURNAMENT-RESOURCE-001` -> `TOURNAMENT-003`:
+  tournament definition, grouping, participant-state boundaries, generated-
+  group resources and advancement. Each new row uses an isolated fixture and
+  retains the already-closed Start/Finalize producers as immutable controls.
 - `EVENT-SLOT-001` -> `EVENT-SLOT-002`: one saved recurring template becomes
   multiple future slot sections with role/time-gated actions.
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
-- `ASSET-MEMBER-001` -> `ASSET-MEMBER-002` and `ASSET-ASSIGN-001`: asset
-  invitation and event/sub-event assignment are separate branches.
+- `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
+  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` -> `ASSET-AVAIL-001` ->
+  `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
+  asset lifecycle, discovery, manager membership, borrowing, availability and
+  normal sub-event assignment/cleanup are separate bounded branches.
 - `OPERATOR-PAYMENT-001` and `OPERATOR-PAYMENT-IP-001` are separate future
   operator-security branches: first prove secret lifecycle, then enforce a
   trusted resolved-client-IP allowlist without relying on frontend hiding.
@@ -1938,8 +1946,12 @@ The authorization checkpoint above is only the membership/privacy boundary;
 it is not a substitute for the chat product surface. The following CP13 cases
 are deliberately short and sequential. Each case owns one visible transition
 and one persisted oracle. Reuse one controlled accepted-member chat where
-possible, but reset only the rows owned by the next case. Tournament is now
-closed at 9/9 and this is the active Core domain block.
+possible, but reset only the rows owned by the next case. The original
+Tournament lifecycle evidence remains closed at 9/9, but its coverage audit
+added four unexecuted member/DQ/resource rows and therefore reopened the domain
+at 9/13. `CHAT-LIST-001` remains the already-staged live boundary; after that
+single row closes, generated priority returns to Tournament before the rest of
+Chat.
 
 ### List, history and transport
 
@@ -5168,7 +5180,76 @@ Execution evidence on 2026-08-16 (PASS / CLOSED):
   check was fixed so its documented verifier now reaches the existing guarded
   JavaScript oracle.
 
+### `TOURNAMENT-MEMBER-001` — pre-Start membership cutoff
+
+- Use the real parent-event invitation path to make one controlled invitation
+  terminally accepted before first-stage Start while a second controlled
+  invitation remains pending.
+- Start the first stage exactly once. The newly accepted identity must appear
+  exactly once in one generated room, its leaderboard and group chat. The
+  pending identity remains parent-scoped and must not enter any generated
+  room, standings row or chat.
+- Reuse the generic invitation UI evidence from `EVENT-INV-*`; this checkpoint
+  owns only the Tournament-specific cutoff between terminal parent membership
+  and the participant set materialized by Start.
+
+### `TOURNAMENT-MEMBER-002` — active participant removal
+
+- From an isolated active tournament with generated rooms and one retained
+  score row, Remove one accepted participant from the parent event.
+- Verify parent and generated-room active membership, room-chat authorization
+  and exact actor counters are revoked once. Any retained historical score
+  identity remains auditable and cannot become a live participant again by a
+  read or poll.
+- Remove is a membership exit, not DQ and not an event-level Block state. The
+  remaining room membership and every unrelated resource owner/type are
+  unchanged in place and after reload.
+
+### `TOURNAMENT-DQ-001` — disqualification and reinstatement
+
+- Disqualify one already-scored accepted participant without deleting its
+  event membership. Members and standings must show a distinct DQ state; the
+  score/history stays visible, the row sorts behind eligible participants and
+  the DQ identity cannot advance.
+- Run the review boundary once and verify eligible next-stage membership plus
+  the same short system outcome style already proven by Tournament
+  advancement. DQ does not create a Block state or silently perform Remove.
+- In a separately reset pre-Finalize branch, Reinstate the same identity and
+  prove eligibility returns without a duplicate membership or score row.
+  Finalize/review replay must be exact-once in both branches.
+
+### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
+
+- From one already materialized Tournament group, assign controlled Transport,
+  Accommodation and Supplies using the existing Event Resource flows. Keep
+  generic asset ownership and borrow eligibility pre-staged; those contracts
+  remain in the Asset domain.
+- Verify exact `ownerId`, `subEventId`, generated `groupId`, asset-owner and
+  per-type settings/contributions. Persisted group-runtime metrics must agree
+  with the group three-dot badge, Groups counter, stage/View Event navigation
+  and root event action badge.
+- The exact delta must appear in place and survive reload. No generated room
+  card may leak into the root Activities list, and no asset action may change
+  an event role or create another membership.
+
 ## Asset cases
+
+### `ASSET-LIFE-001` — shared type schemas and lifecycle
+
+- Create one Transport, one Accommodation and one Supplies asset with their
+  type-specific required fields and managed media. Edit one shared field on the
+  Transport, then delete and restore that same identity.
+- Verify exact IDs, type fields, active/Trash counters and reload persistence.
+  Accommodation and Supplies remain unchanged controls. This is one bounded
+  shared-form lifecycle, not three duplicate end-to-end afternoons.
+
+### `ASSET-VIS-001` — discovery visibility
+
+- Stage one Public, Friends only and Invitation only asset and compare the
+  exact Explore and owned/managed ID sets as owner, friend and unrelated user.
+- A direct denied detail read must expose no hidden asset data. Every list and
+  detail read is side-effect free; borrow and assignment writes are outside
+  this checkpoint.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
@@ -5184,13 +5265,55 @@ Execution evidence on 2026-08-16 (PASS / CLOSED):
   cleanup. Asset Manager must not silently promote the user to Event Admin or
   change an existing event membership role.
 
+### `ASSET-BORROW-001` — scoped borrow lifecycle
+
+- Request one controlled asset for an exact event/sub-event timeframe and
+  accept it. In two independent reset branches, reject and cancel controlled
+  requests.
+- Requester and owner must see the same request identity/status. Only an owned
+  asset or a pending/accepted borrow for the exact booking scope becomes
+  assignment-eligible. Availability, notification and optional payment intent
+  effects occur exactly once.
+- Borrow permission is not Asset Manager membership and never changes an Event
+  role.
+
+### `ASSET-AVAIL-001` — overlap and finite capacity
+
+- Stage two overlapping booking requests against one finite-capacity asset,
+  then move one request outside the overlap without waiting for wall-clock
+  time.
+- Verify half-open timeframe boundaries, pending/accepted quantities,
+  available capacity and Explore order. Moving one request restores exactly
+  its released capacity in place and after reload.
+
 ### `ASSET-ASSIGN-001` — event/sub-event asset assignment
 
-- Assign an eligible accepted user's asset to one event sub-event.
-- Verify event ID, sub-event ID, asset owner, asset ID, capacity/settings and
-  Event Resources UI agree.
+- Assign an eligible accepted user's Transport to one normal event sub-event.
+- Verify event ID, sub-event ID, asset owner, asset ID, route,
+  capacity/settings and Event Resources UI agree.
 - Verify assignment visibility and availability/capacity effects without
   changing the user's event role or creating a second asset membership.
+
+### `ASSET-ASSIGN-002` — multi-type and multi-owner aggregation
+
+- Assign Transport and Accommodation from one eligible owner plus Supplies
+  contributions from two accepted users to the same normal sub-event.
+- Compare every per-owner record with aggregate accepted/pending/capacity
+  min/max values in Event Resources, the sub-event badges and parent
+  navigation, both in place and after reload.
+- The unrelated sub-event and all membership roles remain unchanged. Generated
+  Tournament-group aggregation belongs to `TOURNAMENT-RESOURCE-001`.
+
+### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
+
+- Edit the capacity of one already assigned asset and require the saved asset
+  write to refresh every referenced sub-event projection. Do not reconstruct
+  the answer in the list query.
+- Unassign it, then in an independent branch Remove one separate asset manager
+  from the event. Only settings/contributions owned by that removed manager are
+  cleaned up; unrelated owners and resource types remain intact.
+- Verify materialized counters, roles and assignment records after each write,
+  after reload and after an idempotent terminal replay.
 
 ## Operator configuration and security cases
 

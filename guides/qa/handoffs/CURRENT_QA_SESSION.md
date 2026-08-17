@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 19:32 CEST
+Updated: 2026-08-17 20:16 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -40,10 +40,10 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: CHAT-LIST-001 — chat list and contexts
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
-scenario: Tournament domain PASS/CLOSED (9/9); Chat selected next by generated Core priority order
-ledger_status: PENDING / MANUAL EXECUTION ACTIVE
-state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser is open from the CHAT-LIST-001 manifest.
-required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, continue the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread.
+scenario: Tournament reopened at 9/13 by four newly captured member/DQ/resource gaps; CHAT-LIST-001 remains the already-staged live boundary
+ledger_status: PENDING / MANUAL EXECUTION PAUSED
+state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser was opened from the CHAT-LIST-001 manifest. No further manual case is executed on 2026-08-17. The ledger now also contains TOURNAMENT-MEMBER-001/002, TOURNAMENT-DQ-001 and TOURNAMENT-RESOURCE-001 plus six new Asset rows; none is executed.
+required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, finish the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread. After CHAT-LIST-001 is fully closed/reset, return to the higher-priority reopened Tournament block at TOURNAMENT-MEMBER-001; do not discard this already-staged Chat boundary merely to reorder domains.
 event: manual-qa-checkpoint:v1:chat-list:event (identity only; no Event document is required by this list fixture)
 actors:
   Casey: sole controlled Chat-list reader
@@ -132,14 +132,19 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The Tournament block is PASS/CLOSED at 9/9, including both score-reopen
-checkpoints, and its retained fixture is reset. The next active domain is Chat.
-Machine setup for `CHAT-LIST-001` is complete: four known context rows, exact
+The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
+both score-reopen checkpoints, and its retained fixture is reset. Coverage
+audit added four unexecuted Tournament-specific cases: pre-Start terminal
+membership cutoff, active participant removal, DQ/Reinstate and generated-
+group resource aggregation. Therefore the domain is now 9/13, without
+invalidating any closed Start/Finalize evidence. Machine setup for the already-
+active `CHAT-LIST-001` boundary is complete: four known context rows, exact
 totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
 manual branch is now due: open Activities -> Chats, inspect All, switch through
 Event, Group, Service and App Support, then close/reopen and confirm All is
 unchanged. Do not open a thread. Closed Tournament and `CHAT-AUTH-001`
-producers remain untouched.
+producers remain untouched. Once this staged Chat row closes, generated domain
+priority returns to Tournament before continuing the remaining Chat rows.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -1034,12 +1039,17 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ADMISSION-001 (closed; HTTP/Java PASS, frontend-local NOT EXECUTED)
 -> TOURNAMENT-SCORE-REOPEN-001 (closed)
 -> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
+-> TOURNAMENT-MEMBER-001 (not run)
+-> TOURNAMENT-MEMBER-002 (not run)
+-> TOURNAMENT-DQ-001 (not run)
+-> TOURNAMENT-RESOURCE-001 (not run)
 ```
 
-The generated priority table now selects Chat as the next incomplete Core
-domain. Continue its rows in physical ledger order beginning with
-`CHAT-LIST-001`; do not jump to another domain until the Chat block is closed
-or a genuine dependency blocks it. EXT remains deferred.
+`CHAT-LIST-001` was already staged before these gaps were captured. Finish that
+single live checkpoint first so its fixture is not discarded. The generated
+priority table then selects the reopened Tournament domain (priority 21) ahead
+of the remaining Chat domain (priority 20). Run the four new Tournament rows in
+their physical ledger order, then resume Chat. EXT remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The EXT payment/operator/registry/deployment sequence

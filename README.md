@@ -25,10 +25,10 @@ The current qualification ledger is available as an
 
 As of 2026-08-17:
 
-- **Core:** 62 passed, 96 remaining (158 total)
+- **Core:** 62 passed, 106 remaining (168 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
 
-The complete matrix contains 214 cases across 13 functional domains. The Chat
+The complete matrix contains 224 cases across 13 functional domains. The Chat
 coverage audit now contains 20 bounded cases instead of treating the single
 authorization checkpoint as the complete chat workflow. `TOURNAMENT-002` through
 `TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
@@ -45,7 +45,13 @@ old/new notification proof and an exact unchanged-worker no-op. The downstream
 late-Reopen guard is also PASS/CLOSED: an active dependent Final hid the UI
 action, the real Java route rejected one authenticated request atomically, and
 the full related-record snapshot remained unchanged. The Tournament domain is
-now complete; the next priority block is Chat.
+now 9/13: its closed lifecycle evidence remains intact, while separate pre-Start
+membership cutoff, active-member removal, DQ/Reinstate and generated-group
+resource aggregation checkpoints are not yet run. Asset coverage is 0/9 after
+adding bounded lifecycle, visibility, borrow, capacity, multi-type assignment
+and write-side cleanup cases. `CHAT-LIST-001` remains the currently staged
+manual boundary; after it closes, the generated priority order returns to the
+reopened Tournament block.
 
 ### Official manuals
 
