@@ -23,7 +23,7 @@ remaining qualification work is completed.
 The current qualification ledger is available as an
 [XLSX QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx).
 
-As of 2026-08-16:
+As of 2026-08-17:
 
 - **Core:** 59 passed, 99 remaining (158 total)
 - **External integrations:** 0 passed, 56 remaining (56 total)
@@ -36,10 +36,11 @@ advancement, separate Final Start/room readiness, whole-tournament completion,
 personal winner/non-winner results and three-browser recipient verification.
 The nested tournament-room visibility and persisted parent current-stage card
 checkpoints are PASS/CLOSED, including the in-place Qualifiers `1/2` to Final
-`2/2` transition and reload persistence. The separately captured admission
-checkpoint covers late parent joins, and two separate score-correction
-checkpoints cover result revisions and
-the downstream-stage Reopen guard.
+`2/2` transition and reload persistence. The active admission checkpoint has
+PASS HTTP/Mongo oracles for late Join, existing-invitation acceptance and Admin
+approval under the strict first-stage lock; its frontend-local runtime replay
+is still NOT EXECUTED. Two separate score-correction checkpoints cover result
+revisions and the downstream-stage Reopen guard.
 
 ### Official manuals
 

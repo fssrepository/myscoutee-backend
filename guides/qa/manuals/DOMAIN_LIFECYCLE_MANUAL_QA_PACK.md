@@ -5006,6 +5006,20 @@ Execution evidence (2026-08-15, final Start performance replay and group-read re
   zero. The guarded write-side repair materialized Casey My Events `1` and
   Nova Active Events `1`, retained Riley Pending `1`, and made these counters
   part of the branch oracle without executing approval.
+- Admin approval PASS on `2026-08-17`: after the corrected reload-owned
+  baseline, Casey attempted Approve exactly once and saw the registration-closed
+  result. The independent oracle retained `Qualifiers` in active status `A`,
+  Casey+Nova accepted, Riley as the same single pending member approval, one
+  join-request outbox/inbox pair and zero chat, checkout, payment, ticket or
+  worker effects. All fourteen persisted oracle sections were unchanged.
+- Frontend-local runtime is **NOT EXECUTED** at this boundary. The only running
+  frontend owner is the `dev`/HTTP watcher; changing it to local would replace
+  the active three-browser HTTP runtime, and the workstation already has
+  `1.8/2.0 GiB` swap in use. Static inspection confirms the local repository
+  derives the lock from first-stage status and places guards before Join,
+  invitation acceptance and Admin approval mutations, but that is contract
+  compatibility rather than runtime PASS. Do not replay the completed HTTP
+  producers to compensate for the unavailable local runtime.
 
 ### `TOURNAMENT-SCORE-REOPEN-001` — corrected scores and result revision
 

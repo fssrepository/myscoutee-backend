@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 15:47 CEST
+Updated: 2026-08-17 16:28 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -39,15 +39,15 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-ADMISSION-001 — first-stage admission policy gate
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-admission-001--first-stage-admission-boundary
 scenario: event-domain-tournament-admission (isolated fixture; exposed through the event-domain harness route)
-ledger_status: IN PROGRESS / ADMIN APPROVAL BASELINE VISUAL CHECK
-state: Strict registration lock at first tournament-stage Start is the selected contract. Join and existing-invitation acceptance are PASS with all persisted sections unchanged. The invitation branch also proved its corrected Invitations counter and single unread event-invite notification before the blocked Accept. The fixture advanced without reset to the Admin approval branch: Casey+Nova remain accepted; Riley has exactly one event-scoped `pendingSource=member`, `requestKind=approval` row; Riley's Pending counter and Casey's single unread join-request notification are materialized with one terminal outbox audit row and one inbox row. Its first visual check exposed one more fixture-only omission: accepted Casey/Nova list rows existed but their root activity counters had not been materialized. The guarded write-side repair added Casey My Events 1 and Nova Active Events 1, retained Riley Pending 1 and left the approval action untouched; the full oracle is green. Direct Java guards remain before mutation.
-required_resume: Do not reset, restage, replay Join/invitation or approve yet. Keep the three launcher-owned Casey/Nova/Riley sessions. Because the corrected root projection was written behind the open browsers, reload Casey once. Verify My Events red counter 1, the controlled event pending badge/request 1 and one new Riley join-request notification. Riley's Invitations counter and prior invite notification are gone; Riley is now Pending. Only after this baseline visual check passes, Casey attempts Approve exactly once. `Registration closed` must appear and Riley must remain pending.
+ledger_status: IN PROGRESS / HTTP THREE-BRANCH PASS; FRONTEND-LOCAL RUNTIME NOT EXECUTED
+state: Strict registration lock at first tournament-stage Start is the selected contract. The HTTP Join, existing-invitation acceptance and Admin approval branches are all PASS. Each branch showed the localized registration-closed result and its independent oracle retained the exact parent/group membership, capacity, chat, leaderboard, counter, checkout, ticket, payment, notification and worker boundary. The final approval oracle proves `Qualifiers` remains `A`, Casey+Nova remain accepted and Riley remains exactly one `pendingSource=member`, `requestKind=approval` row. The repaired replay fixture now materializes the same root counters and invitation/approval notification projections that the production write path would have created. The active frontend watcher is the `dev`/HTTP build; a frontend-local runtime replay would require replacing that owner configuration and the three live HTTP documents while swap is already 1.8/2.0 GiB, so local runtime is NOT EXECUTED rather than inferred from code inspection.
+required_resume: Do not reset or replay any HTTP branch. Preserve the three completed HTTP oracles. Before closing the row, use the existing frontend owner only when it can safely run the local configuration without a second build/server and without mixing the HTTP documents. Prepare one deterministic local equivalent of the same started-stage membership states and replay Join, invitation acceptance and Admin approval separately; otherwise retain the explicit frontend-local NOT EXECUTED classification and do not claim local PASS.
 event: `QA TOURNAMENT-ADMISSION-001`; sourceId `manual-qa-checkpoint:v1:tournament-admission:event`; current stage `Qualifiers 1/1`, status `A`; accepted Casey+Nova; Riley has one existing pending Admin-approval request
 actors:
   active: Casey `650000000000000000000061` unchanged parent Admin; Nova `650000000000000000000062` accepted pre-Start control; Riley `650000000000000000000063` late-admission actor
   controls: parent pending indicators remain separate from nested Groups; room pending membership remains zero; closed Start notifications remain unchanged
-next_actor: Casey reloads once and checks the event pending indicator plus the single new Riley join-request notification; do not Approve yet. Nova remains untouched.
-stop_phrase: approval baseline present / missing
+next_actor: No manual HTTP action. Codex first resolves a safe deterministic frontend-local runtime route; the user must not repeat Join, Accept or Approve.
+stop_phrase: frontend-local boundary ready / not executable
 ```
 
 Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
@@ -132,10 +132,12 @@ the checkpoint says otherwise.
 ### Next manual action
 
 `TOURNAMENT-CARD-001` is PASS/CLOSED. `TOURNAMENT-ADMISSION-001` is active on
-the strict-lock contract. Its corrected Join visibility branch and independent
-oracle are PASS; the invitation acceptance branch is staged next. Do not replay
-Join or move to Admin approval before the invitation oracle passes. Score
-correction and late-correction safety remain separate under
+the strict-lock contract. Its corrected HTTP Join, invitation acceptance and
+Admin approval branches and their independent persisted oracles are PASS. Do
+not replay those branches. Frontend-local runtime remains explicitly NOT
+EXECUTED because the running owner is the dev/HTTP build and replacing it now
+would contaminate the retained three-browser boundary under high swap pressure.
+Score correction and late-correction safety remain separate under
 `TOURNAMENT-SCORE-REOPEN-001/002`.
 
 When a guarded fixture repair changes time or state behind an already-open
@@ -1022,7 +1024,7 @@ The current Tournament block order is:
 TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
 -> TOURNAMENT-CARD-001 (closed)
--> TOURNAMENT-ADMISSION-001 (active; Join + invitation PASS, approval staged)
+-> TOURNAMENT-ADMISSION-001 (active; all three HTTP branches PASS, frontend-local runtime NOT EXECUTED)
 -> TOURNAMENT-SCORE-REOPEN-001 (not run)
 -> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```
