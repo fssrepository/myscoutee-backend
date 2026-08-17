@@ -44,16 +44,19 @@ TEST_SECTION_FILL_COLOR = "FF4472C4"
 EFFECT_MARKERS_TITLE = "EFFECT / SCOPE MARKERS"
 QA_TEST_CASES_TITLE = "QA TEST CASES"
 DOMAIN_PRIORITY_TITLE = "DOMAIN PRIORITY"
+ENVIRONMENTS_TITLE = "ENVIRONMENTS"
 DOMAIN_COLUMN = "QA domain"
+DEV_COLUMN = "Dev"
+LOCAL_COLUMN = "Local"
 DOMAIN_PRIORITY_BLOCK_COUNT = 3
 DOMAIN_PRIORITY_BLOCK_WIDTH = 5
 DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5, 10)
 DOMAIN_PRIORITY_VALUE_OFFSETS = (0, 2, 3)
 COMPACT_VISIBLE_COLUMN_WIDTHS = (
-    14.0, 18.0, 14.0, 14.0, 16.0,
-    12.0, 16.0, 10.0, 14.0, 16.0,
-    14.0, 12.0, 14.0, 14.0, 10.0,
-    18.0, 12.0,
+    14.0, 16.0, 12.0, 12.0, 14.0,
+    12.0, 14.0, 9.0, 12.0, 14.0,
+    12.0, 4.0, 4.0, 10.0, 12.0,
+    12.0, 8.0, 16.0, 10.0,
 )
 
 # This is the execution order of whole QA domains. The canonical CSV carries
@@ -152,6 +155,11 @@ def load_rows() -> list[list[str]]:
         raise RuntimeError("QA matrix CSV has inconsistent column counts.")
     if DOMAIN_COLUMN not in rows[0]:
         raise RuntimeError(f"QA matrix CSV is missing the {DOMAIN_COLUMN!r} column.")
+    for environment_column in (DEV_COLUMN, LOCAL_COLUMN):
+        if environment_column not in rows[0]:
+            raise RuntimeError(
+                f"QA matrix CSV is missing the {environment_column!r} column."
+            )
     return rows
 
 
@@ -284,11 +292,15 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
             )
         )
 
+    environment_header = ["" for _ in headers]
+    environment_header[headers.index(DEV_COLUMN)] = ENVIRONMENTS_TITLE
+
     return [
         *overview_rows,
         compact_row(DOMAIN_PRIORITY_TITLE),
         *domain_priority_rows,
         compact_row(QA_TEST_CASES_TITLE),
+        environment_header,
         headers,
         *test_rows,
     ]
@@ -683,6 +695,11 @@ def build_sheet(
     id_column = cell_column(headers.index("ID"))
     domain_column_index = headers.index(DOMAIN_COLUMN)
     domain_column = cell_column(domain_column_index)
+    dev_column_index = headers.index(DEV_COLUMN)
+    local_column_index = headers.index(LOCAL_COLUMN)
+    if local_column_index != dev_column_index + 1:
+        raise RuntimeError("Dev and Local columns must remain adjacent.")
+    environment_header_row_index = header_row_index - 1
     dimension.set("ref", f"A1:{scope_helper_column}{len(rows)}")
     sheet_data.clear()
 
@@ -804,11 +821,12 @@ def build_sheet(
         is_overview_title = values[0] == EFFECT_MARKERS_TITLE
         is_domain_priority_title = values[0] == DOMAIN_PRIORITY_TITLE
         is_test_section = values[0] == QA_TEST_CASES_TITLE
+        is_environment_header = row_index == environment_header_row_index
         explicit_line_count = max(value.count("\n") + 1 for value in values)
         is_multiline = explicit_line_count > 1
         row_height = (
             20.0
-            if is_overview_title or is_domain_priority_title or is_test_section
+            if is_overview_title or is_domain_priority_title or is_test_section or is_environment_header
             else min(180.0, max(12.8, explicit_line_count * 15.0))
         )
         if is_overview_title:
@@ -829,12 +847,17 @@ def build_sheet(
                 )
         elif is_test_section:
             merged_ranges.append(f"A{row_index}:{last_visible_column}{row_index}")
+        elif is_environment_header:
+            merged_ranges.append(
+                f"{cell_column(dev_column_index)}{row_index}:"
+                f"{cell_column(local_column_index)}{row_index}"
+            )
         row = ET.SubElement(sheet_data, f"{{{NS}}}row", {
             "r": str(row_index),
             "customFormat": "false",
             "ht": f"{row_height:g}",
             "hidden": "false",
-            "customHeight": "true" if is_overview_title or is_domain_priority_title or is_test_section or is_multiline else "false",
+            "customHeight": "true" if is_overview_title or is_domain_priority_title or is_test_section or is_environment_header or is_multiline else "false",
             "outlineLevel": "0",
             "collapsed": "false",
         })
@@ -853,6 +876,12 @@ def build_sheet(
                 cell_style_key = "test-section"
             elif is_test_section:
                 cell_style_key = "test-section"
+            elif is_environment_header:
+                cell_style_key = (
+                    "header"
+                    if column_index in (dev_column_index, local_column_index)
+                    else "default"
+                )
             elif values[3] in status_styles:
                 if column_index in (0, 1) and values[0] in marker_styles:
                     cell_style_key = marker_styles[values[0]]

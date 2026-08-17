@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 16:28 CEST
+Updated: 2026-08-17 16:48 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -36,18 +36,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-ADMISSION-001 — first-stage admission policy gate
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-admission-001--first-stage-admission-boundary
-scenario: event-domain-tournament-admission (isolated fixture; exposed through the event-domain harness route)
-ledger_status: IN PROGRESS / HTTP THREE-BRANCH PASS; FRONTEND-LOCAL RUNTIME NOT EXECUTED
-state: Strict registration lock at first tournament-stage Start is the selected contract. The HTTP Join, existing-invitation acceptance and Admin approval branches are all PASS. Each branch showed the localized registration-closed result and its independent oracle retained the exact parent/group membership, capacity, chat, leaderboard, counter, checkout, ticket, payment, notification and worker boundary. The final approval oracle proves `Qualifiers` remains `A`, Casey+Nova remain accepted and Riley remains exactly one `pendingSource=member`, `requestKind=approval` row. The repaired replay fixture now materializes the same root counters and invitation/approval notification projections that the production write path would have created. The active frontend watcher is the `dev`/HTTP build; a frontend-local runtime replay would require replacing that owner configuration and the three live HTTP documents while swap is already 1.8/2.0 GiB, so local runtime is NOT EXECUTED rather than inferred from code inspection.
-required_resume: Do not reset or replay any HTTP branch. Preserve the three completed HTTP oracles. Before closing the row, use the existing frontend owner only when it can safely run the local configuration without a second build/server and without mixing the HTTP documents. Prepare one deterministic local equivalent of the same started-stage membership states and replay Join, invitation acceptance and Admin approval separately; otherwise retain the explicit frontend-local NOT EXECUTED classification and do not claim local PASS.
-event: `QA TOURNAMENT-ADMISSION-001`; sourceId `manual-qa-checkpoint:v1:tournament-admission:event`; current stage `Qualifiers 1/1`, status `A`; accepted Casey+Nova; Riley has one existing pending Admin-approval request
+checkpoint: TOURNAMENT-SCORE-REOPEN-001 — corrected scores and result revision
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-score-reopen-001--corrected-scores-and-result-revision
+scenario: dedicated versioned fixture pending; do not use ad-hoc Mongo state
+ledger_status: NOT STARTED / FIXTURE PREPARATION
+state: TOURNAMENT-ADMISSION-001 is PASS/CLOSED for the executed HTTP/Java contract: Join, existing-invitation acceptance and Admin approval were all rejected after first-stage Start, and all three independent persisted oracles were unchanged. Its environment cells are Dev X and Local -, because frontend-local was explicitly not run. The retained admission fixture still exists and must not be mistaken for the next testcase baseline. TOURNAMENT-SCORE-REOPEN-001 has implementation foundations but no versioned manual fixture or executed transaction yet.
+required_resume: Do not replay admission or alter its evidence. Before any browser instruction, implement the dedicated score-reopen fixture and oracle, then guarded-reset the retained admission fixture, stage the new checkpoint once and prove its baseline through status. The new fixture must preserve the first finalized result, support one controlled Reopen/change/Finalize revision and exclude every already-PASS Start producer from replay.
+event: none staged for TOURNAMENT-SCORE-REOPEN-001
 actors:
-  active: Casey `650000000000000000000061` unchanged parent Admin; Nova `650000000000000000000062` accepted pre-Start control; Riley `650000000000000000000063` late-admission actor
-  controls: parent pending indicators remain separate from nested Groups; room pending membership remains zero; closed Start notifications remain unchanged
-next_actor: No manual HTTP action. Codex first resolves a safe deterministic frontend-local runtime route; the user must not repeat Join, Accept or Approve.
-stop_phrase: frontend-local boundary ready / not executable
+  planned: Casey Event Admin producer; deterministic winner/advancer and non-winner controls selected by the fixture
+  controls: original finalized result and notifications immutable; no dependent stage started; Start producers untouched
+next_actor: No manual action yet. Codex owns fixture/oracle preparation and must issue the first exact score-reopen instruction only after the staged baseline passes.
+stop_phrase: score-reopen baseline ready
 ```
 
 Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
@@ -131,14 +131,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`TOURNAMENT-CARD-001` is PASS/CLOSED. `TOURNAMENT-ADMISSION-001` is active on
-the strict-lock contract. Its corrected HTTP Join, invitation acceptance and
-Admin approval branches and their independent persisted oracles are PASS. Do
-not replay those branches. Frontend-local runtime remains explicitly NOT
-EXECUTED because the running owner is the dev/HTTP build and replacing it now
-would contaminate the retained three-browser boundary under high swap pressure.
-Score correction and late-correction safety remain separate under
-`TOURNAMENT-SCORE-REOPEN-001/002`.
+`TOURNAMENT-ADMISSION-001` is PASS/CLOSED for its executed HTTP/Java contract;
+frontend-local is recorded as NOT EXECUTED by explicit user decision. Do not
+replay any admission branch. `TOURNAMENT-SCORE-REOPEN-001` is now the active
+row, but no manual action may be issued until its dedicated fixture and oracle
+are implemented, staged and verified. Late-correction safety remains separate
+under `TOURNAMENT-SCORE-REOPEN-002`.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -689,6 +687,12 @@ record has been removed.
   setup, add the narrowest shared/local regression coverage available and
   record local runtime as **NOT EXECUTED**, with the exact reason. Never infer
   local PASS from an HTTP replay, or HTTP PASS from a local replay.
+- The ledger keeps this distinction in the adjacent `Dev` and `Local` columns
+  under the workbook's `ENVIRONMENTS` header. Put `X` only where that runtime
+  was actually executed, `-` where the session explicitly chose not to execute
+  it, and leave the cell empty while the environment decision is still open.
+  These markers describe execution coverage; they never change the testcase's
+  independent Result.
 - For an adapter-specific defect, repair its owning adapter and inspect the
   parallel adapter for the same invariant. Do not broaden the code change when
   the parallel contract is already correct, but run its focused check when the
@@ -1024,8 +1028,8 @@ The current Tournament block order is:
 TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ROOM-LIFE-001 (closed)
 -> TOURNAMENT-CARD-001 (closed)
--> TOURNAMENT-ADMISSION-001 (active; all three HTTP branches PASS, frontend-local runtime NOT EXECUTED)
--> TOURNAMENT-SCORE-REOPEN-001 (not run)
+-> TOURNAMENT-ADMISSION-001 (closed; HTTP/Java PASS, frontend-local NOT EXECUTED)
+-> TOURNAMENT-SCORE-REOPEN-001 (active; fixture preparation, not run)
 -> TOURNAMENT-SCORE-REOPEN-002 (not run)
 ```
 
