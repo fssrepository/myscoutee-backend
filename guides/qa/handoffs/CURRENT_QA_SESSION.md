@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-17 20:16 CEST
+Updated: 2026-08-18 14:47 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -40,7 +40,7 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: CHAT-LIST-001 — chat list and contexts
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
-scenario: Tournament reopened at 9/13 by four newly captured member/DQ/resource gaps; CHAT-LIST-001 remains the already-staged live boundary
+scenario: Tournament reopened at 9/14 by four newly captured member/DQ/resource gaps plus the existing partially verified Tournament worker row; CHAT-LIST-001 remains the already-staged live boundary
 ledger_status: PENDING / MANUAL EXECUTION PAUSED
 state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser was opened from the CHAT-LIST-001 manifest. No further manual case is executed on 2026-08-17. The ledger now also contains TOURNAMENT-MEMBER-001/002, TOURNAMENT-DQ-001 and TOURNAMENT-RESOURCE-001 plus six new Asset rows; none is executed.
 required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, finish the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread. After CHAT-LIST-001 is fully closed/reset, return to the higher-priority reopened Tournament block at TOURNAMENT-MEMBER-001; do not discard this already-staged Chat boundary merely to reorder domains.
@@ -136,8 +136,10 @@ The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
 both score-reopen checkpoints, and its retained fixture is reset. Coverage
 audit added four unexecuted Tournament-specific cases: pre-Start terminal
 membership cutoff, active participant removal, DQ/Reinstate and generated-
-group resource aggregation. Therefore the domain is now 9/13, without
-invalidating any closed Start/Finalize evidence. Machine setup for the already-
+group resource aggregation, plus the existing `JOB-TOURNAMENT` row whose
+primary lifecycle oracle passed but Monitoring/browser completion remains.
+Therefore the domain is now 9/14, without invalidating any closed
+Start/Finalize evidence. Machine setup for the already-
 active `CHAT-LIST-001` boundary is complete: four known context rows, exact
 totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
 manual branch is now due: open Activities -> Chats, inspect All, switch through
@@ -178,27 +180,41 @@ visual grouping. The main testcase table has one normalized, domain-colored
 The workbook's separate `QA domain | Priority | Progress` table is generated
 from the same rows, begins at row 8 as three side-by-side columns above the
 main table, orders whole domains by numeric `Priority DESC`, and shows `passed
-/ total (percentage)` per domain. The generator owns compact A-Q widths: all
-17 primary columns remain visible without a default horizontal scroll, long
+/ total (percentage)` per domain. The generator owns compact A-S widths: all
+19 primary columns remain visible without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
 and only the two formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
-and keep EXT domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus Operator, Payment and
-Deployment EXT boundaries, prioritized continuously from `13` down to `1`.
+and keep deferred domains at the end. The top-level taxonomy is intentionally
+coarse: 10 Core capability/operations domains plus Admin optional, Operator,
+Payment and Deployment deferred boundaries, prioritized continuously from
+`14` down to `1`.
 A generated priority overview places the first five Core domains in its first
 hasáb, the remaining five Core domains in its second hasáb, and reserves the
-third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
-hasáb must therefore always sum to the separate External count (currently 56)
-rather than being mixed into the Core execution queue.
+third `EXT / optional` hasáb for Admin optional, Operator, Payment and
+Deployment. The third hasáb must therefore always sum to the separate
+External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
 mobile WebView, Statistics, Monitoring and background jobs in the owning
 domain's `Area` instead of manufacturing singleton domains. Create a new
 top-level domain only for an independently executable capability with a
 material workflow set; otherwise classify the row under its real owner.
+The same ownership rule applies to the configurable Admin shell, but this
+capacity-limited release uses a separate launch gate. Ask whether a correctly
+seeded deployment still starts and remains usable by an average member when
+the Admin function is absent. Backend denial of unauthorized Admin access and
+workers that maintain real member state stay Core under their owning domain.
+Reports, moderation controls, notification-rule editing/manual run, content
+revision management, support controls, Statistics, Monitoring, Admin Graph
+layout/exploration, runtime parameter editors and generic Admin UI smoke are
+`Admin optional`: their defects remain valid defects, but default/static state
+lets the product launch without qualifying those controls first. Operator,
+Registry, payment and deployment cases remain deferred as before. Row-level
+Manual QA priority orders risk inside a scope; it does not promote an optional
+control into the Core launch gate.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
 currently active domain closes, choose the highest-priority Core domain whose
@@ -292,27 +308,29 @@ record has been removed.
   pointer.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
-  workbook totals. Verify the CSV has 17 columns per logical record, including
+  workbook totals. Verify the CSV has 19 columns per logical record, including
   the normalized `QA domain`, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
   per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
   formulas into the XLSX, with automatic recalculation on open. The overview
-  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`, `External`,
+  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`,
+  `External / optional`,
   `Total`. The four status rows and the Done percentage are filtered to Core
-  tests only, so they partition the displayed Core total instead of mixing EXT
-  scope into product progress. Stable IDs beginning `OPERATOR-`, `PAYMENT-` or
-  `DEPLOY-` remain teal `EXT` without rewriting testcase rows; `External` is a
-  separate count and `Total` is the final Core+External count. The generator
-  also adds `EXT` to the left overview legend. Scope is orthogonal to
+  tests only, so they partition the displayed Core total instead of mixing the
+  deferred scope into product progress. `Admin optional` rows and stable IDs
+  beginning `OPERATOR-`, `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional`
+  without renaming testcase IDs; that scope is a separate count and `Total` is
+  the final Core+deferred count. The generator also adds `EXT` to the left
+  overview legend. Scope is orthogonal to
   status. Read the generated formulas and cached totals back after
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
-  passed and remaining counts separately for Core and External, plus the total
-  case count. Derive those values from the same classifiers as the generated
+  passed and remaining counts separately for Core and External/optional, plus
+  the total case count. Derive those values from the same classifiers as the generated
   workbook, and keep its active-checkpoint sentence aligned with this handoff's
   sole resume pointer. Detailed Pending/Not started/Failed counts belong only
   in the QA matrix. Treat a stale README summary as an incomplete ledger update.
@@ -1043,14 +1061,16 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-MEMBER-002 (not run)
 -> TOURNAMENT-DQ-001 (not run)
 -> TOURNAMENT-RESOURCE-001 (not run)
+-> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)
 ```
 
 `CHAT-LIST-001` was already staged before these gaps were captured. Finish that
 single live checkpoint first so its fixture is not discarded. The generated
-priority table then selects the reopened Tournament domain (priority 21) ahead
-of the remaining Chat domain (priority 20). Run the four new Tournament rows in
-their physical ledger order, then resume Chat. EXT remains deferred.
+priority table then selects the reopened Tournament domain (priority 11) ahead
+of the remaining Chat domain (priority 10). Run the four new Tournament rows
+and then complete `JOB-TOURNAMENT` in their physical ledger order before
+resuming Chat. EXT/optional remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
-revision prerequisite. The EXT payment/operator/registry/deployment sequence
+revision prerequisite. The Admin-optional/operator/payment/deployment sequence
 remains deferred under Core-first execution.
