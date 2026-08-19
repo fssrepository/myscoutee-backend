@@ -18,7 +18,9 @@ files are available from [GitHub Releases](https://github.com/fssrepository/mysc
 These builds are intended for installation and integration testing while the
 remaining qualification work is completed.
 
-**QA status (2026-08-18):** 62/224 passed — core 59/127, external/optional 3/97; active checkpoint: `CHAT-LIST-001`.
+### Manual QA status
+
+**2026-08-18:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `CHAT-LIST-001`.
 
 ### Documentation PDFs
 
