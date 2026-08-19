@@ -54,13 +54,14 @@ and write-side cleanup cases. `CHAT-LIST-001` remains the currently staged
 manual boundary; after it closes, the generated priority order returns to the
 reopened Tournament block.
 
-### Official manuals
+### Documentation PDFs
 
-| Manual | Document version | Applies to | PDF |
+| Document | Document version | Applies to | PDF |
 |---|---:|---:|---|
 | Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
 | Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
+| Local VM QA Test Guide & Pair-QA Handover | 1.0.0 | MyScoutee 1.0.0 QA campaign | [PDF](guides/qa/manuals/MyScoutee_Local_VM_QA_Test_Guide_v1.0.0_EN.pdf) |
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).

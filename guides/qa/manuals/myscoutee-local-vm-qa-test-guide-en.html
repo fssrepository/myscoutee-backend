@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyScoutee local VM QA test guide and pair-QA handover">
+  <title>MyScoutee Local VM QA Test Guide · MSC-QA-001</title>
+  <link rel="stylesheet" href="../../manuals/manuals.css">
+  <style>
+    .snapshot-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, 1fr);
+      margin: 0.7em 0 1em;
+    }
+
+    .snapshot-card {
+      background: #f3f6f8;
+      border-top: 4px solid #176b87;
+      padding: 10px 12px;
+    }
+
+    .snapshot-card strong,
+    .snapshot-card span {
+      display: block;
+    }
+
+    .snapshot-card strong {
+      color: #17324d;
+      font-size: 15pt;
+    }
+
+    .snapshot-card span {
+      color: #586675;
+      font-size: 8.5pt;
+      margin-top: 2px;
+    }
+
+    .status-dot.snapshot {
+      background: #b78112;
+    }
+
+    .cover-cadence {
+      color: #1c2633;
+      font-size: 9.2pt;
+      line-height: 1.42;
+      margin-top: 5mm;
+      max-width: 155mm;
+    }
+
+    .compact td,
+    .compact th {
+      padding: 0.38em 0.48em;
+    }
+
+    .checklist li {
+      margin-bottom: 0.38em;
+    }
+
+    .two-column {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .two-column pre {
+      font-size: 7.2pt;
+    }
+
+    #start-here .callout {
+      margin: 0.4em 0 0.55em;
+      padding: 0.5em 0.7em;
+    }
+
+    #start-here .callout h3 {
+      margin: 0 0 0.25em;
+    }
+
+    #start-here .snapshot-grid,
+    #start-here table {
+      margin-bottom: 0.55em;
+    }
+
+    @media print {
+      .snapshot-grid,
+      .two-column {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+<article class="manual">
+  <section class="cover" aria-labelledby="document-title">
+    <div class="cover-brand">
+      <div class="cover-brand-name" aria-label="MyScoutee">
+        <img src="img/myscoutee-heart.png" alt="" aria-hidden="true">
+        <span>yScoutee</span>
+      </div>
+      <div class="cover-brand-subtitle">Quality Assurance Documentation</div>
+    </div>
+
+    <div class="cover-title-block">
+      <div class="cover-kicker">Local pair QA and immediate repair</div>
+      <h1 id="document-title">MyScoutee Local VM QA Test Guide</h1>
+      <p class="cover-lead">Codex Pro 20 operates the technical QA workflow and implements requested corrections in the same pair session. The human developer or reviewer checks real user flow and UX, catches typical bugs, and requests fixes without having to learn or execute the entire runbook.</p>
+      <p class="cover-cadence"><strong>Indicative cadence, not a delivery guarantee:</strong> week 1 targets the 30–35 hardest multi-model cases; week 2 completes the remaining core campaign (about two weeks total for core); week 3 covers external/optional QA; week 4 covers locally executable integrations that still require a provisioned external provider, merchant account, or domain.</p>
+    </div>
+
+    <div class="cover-meta" aria-label="Document metadata">
+      <div>
+        <strong>Document ID</strong>
+        <span>MSC-QA-001</span>
+      </div>
+      <div>
+        <strong>Document version</strong>
+        <span>1.0.0</span>
+      </div>
+      <div>
+        <strong>Applicable software version</strong>
+        <span>MyScoutee 1.0.0 QA campaign</span>
+      </div>
+      <div>
+        <strong>Status</strong>
+        <span class="cover-status"><span class="status-dot snapshot" aria-hidden="true"></span>Working pair-QA snapshot</span>
+      </div>
+      <div>
+        <strong>Snapshot date</strong>
+        <time datetime="2026-08-19">2026-08-19</time>
+      </div>
+      <div>
+        <strong>Language</strong>
+        <span>EN</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="start-here" aria-labelledby="start-here-title">
+    <h1 id="start-here-title">1. Start Here</h1>
+
+    <aside class="callout note">
+      <h3>More than delayed QA: pair review plus immediate repair</h3>
+      <p><strong>Codex Pro 20</strong> operates the replayable checkpoints, opens the managed browsers, and runs the oracles and evidence workflow. The human developer/reviewer inspects flow and UX, then accepts the result or immediately asks Codex to fix it. Codex uses the existing dev pipeline, replays the checkpoint, and reopens the browser. This same-session QA–repair–recheck loop avoids a delayed cross-team defect queue.</p>
+      <p><strong>Why human review remains essential:</strong> rapid development can outpace expectations, AI QA can hallucinate expected behavior, and E2E proves only encoded assertions. Human review grounds the result in the real product experience and catches typical bugs the automation did not model.</p>
+    </aside>
+
+    <aside class="callout warning">
+      <h3>Read the live pointer before touching state</h3>
+      <p>Codex starts from <code>CURRENT_QA_SESSION.md</code> and its linked checkpoint. The human waits for the managed browser and never prepares or repairs fixture state. The ledger owns status, the QA pack owns evidence, and the live pointer overrides this PDF.</p>
+    </aside>
+
+    <h2>Current campaign snapshot</h2>
+    <div class="snapshot-grid" aria-label="QA progress snapshot">
+      <div class="snapshot-card">
+        <strong>59 / 127</strong>
+        <span>Core passed · 68 remaining</span>
+      </div>
+      <div class="snapshot-card">
+        <strong>3 / 97</strong>
+        <span>External/optional passed · 94 remaining</span>
+      </div>
+      <div class="snapshot-card">
+        <strong>62 / 224</strong>
+        <span>Total passed · 162 remaining</span>
+      </div>
+    </div>
+
+    <table class="compact">
+      <tbody>
+        <tr>
+          <th scope="row">Active checkpoint</th>
+          <td><code>CHAT-LIST-001</code> — chat list and contexts</td>
+        </tr>
+        <tr>
+          <th scope="row">Saved boundary</th>
+          <td><code>phase=fixture-ready</code>; manual execution paused. Fixture readiness is not a PASS.</td>
+        </tr>
+        <tr>
+          <th scope="row">Prepared actor/state</th>
+          <td>Casey Bridge; four controlled rows: Event, Group, Service and App Support; unread one per row; All=4 and Sub-event=0.</td>
+        </tr>
+        <tr>
+          <th scope="row">Already proven</th>
+          <td>Authenticated Java ASC/DESC order, exact context totals, stable headers, and a byte-identical post-read Mongo snapshot.</td>
+        </tr>
+        <tr>
+          <th scope="row">Paired human overview still due</th>
+          <td>Inspect All and each populated context, sort once, close/reopen, and confirm the same order and counters. Do not open a thread.</td>
+        </tr>
+        <tr>
+          <th scope="row">After closure</th>
+          <td>Return to the reopened Tournament block at <code>TOURNAMENT-MEMBER-001</code>. Tournament is currently 9/14.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section id="vm-preparation" class="page-break" aria-labelledby="vm-preparation-title">
+    <h1 id="vm-preparation-title">2. Prepare the Ubuntu LTS VM</h1>
+
+    <h2>Download only from the official vendors</h2>
+    <ul>
+      <li>Download an <strong>amd64 Ubuntu LTS ISO</strong> from <a href="https://ubuntu.com/download">ubuntu.com/download</a>. Ubuntu Desktop LTS is the simplest all-in-one manual-QA workstation because it can display the managed Chrome windows. Ubuntu Server LTS is suitable when Chrome/CDP remains on the trusted host and reaches the VM through SSH forwarding.</li>
+      <li>Install <a href="https://blogs.vmware.com/cloud-foundation/2026/05/14/announcing-vmware-workstation-and-fusion-26h1/">VMware Workstation Pro</a>, currently offered free by VMware/Broadcom, or the <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox base package</a>. Confirm the current vendor licence and organizational policy before use.</li>
+      <li>VirtualBox's base package and Extension Pack have different licences. Basic QA does not require the Extension Pack. Android USB 2/3 pass-through may require it; the host-side ADB plus SSH-forward route below avoids that dependency.</li>
+      <li>Record the ISO filename and published SHA-256. Do not use an ARM image. “Latest LTS” is not automatically the release-qualified host; retain the exact LTS in the QA evidence.</li>
+    </ul>
+
+    <h2>VM baseline</h2>
+    <table class="compact">
+      <thead>
+        <tr><th>Resource</th><th>Minimum local smoke</th><th>Recommended full dev/manual QA</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>CPU</td><td>4 amd64 vCPU</td><td>8 amd64 vCPU</td></tr>
+        <tr><td>Memory</td><td>6 GiB</td><td>16 GiB with host headroom</td></tr>
+        <tr><td>Disk</td><td>40 GiB dynamically allocated</td><td>80 GiB dynamically allocated</td></tr>
+        <tr><td>Network</td><td>NAT</td><td>NAT plus a documented host-only/admin path if needed</td></tr>
+      </tbody>
+    </table>
+    <p>Enable hardware virtualization in firmware. Create an Ubuntu 64-bit VM, attach the ISO, use a named non-root administrative account, select OpenSSH during installation, and take a clean post-install snapshot before MyScoutee data exists. Do not clone a VM after MyScoutee deployment identity or provider credentials have been created.</p>
+
+    <h2>Guest preparation</h2>
+    <pre><code>sudo apt update
+sudo apt upgrade
+sudo apt install openssh-server git curl ca-certificates jq adb
+sudo sshd -t
+sudo systemctl enable --now ssh
+sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code></pre>
+    <p>Install Docker Engine and Docker Compose v2 from an approved Ubuntu/Docker package source. A packaged MyScoutee install resolves these dependencies through APT; a source dev stack needs them before its first Compose build.</p>
+  </section>
+
+  <section id="ssh" aria-labelledby="ssh-title">
+    <h1 id="ssh-title">3. SSH, Port Forwarding, and Network Boundary</h1>
+    <p>Prefer a private NAT/host-only route. Restrict guest TCP 22 to the physical host or approved administration network. If the hypervisor NAT cannot route directly to the guest, create one narrow rule such as host <code>127.0.0.1:2222</code> to guest TCP <code>22</code>.</p>
+
+    <ol>
+      <li>Read the guest SSH host-key fingerprint from the VM console.</li>
+      <li>Compare it on the physical host before accepting the first connection.</li>
+      <li>Use a dedicated key and a named non-root account with only the required <code>sudo</code> authority.</li>
+      <li>Never expose SSH to <code>0.0.0.0/0</code>; never expose MongoDB, Redis, MinIO, Java, or registry container ports.</li>
+    </ol>
+
+    <pre><code>ssh -i /absolute/path/to/id_ed25519 \
+  -p 2222 qa-admin@127.0.0.1</code></pre>
+
+    <p>For the repository client tools, copy <code>packaging/client-tools/install.env.example</code> to a gitignored <code>install.env</code>, set mode 0600, and use strict host-key checking after the fingerprint has been pinned:</p>
+    <pre><code>REMOTE_HOST=127.0.0.1
+REMOTE_USER=qa-admin
+REMOTE_PORT=2222
+REMOTE_KEY_FILE=/absolute/path/to/id_ed25519
+REMOTE_HOST_KEY_CHECKING=yes</code></pre>
+
+    <h2>Optional loopback-only application tunnel</h2>
+    <pre><code>LOCAL_FORWARD_PORTS_OVERRIDE=18080:80,18443:443 \
+  ./packaging/client-tools/forward-localhost.sh</code></pre>
+    <p>This creates host-loopback forwards to VM-loopback HTTP/HTTPS. The helper refuses non-loopback binds. For a managed QA browser that is hard-wired to <code>http://localhost</code>, either run it inside an Ubuntu Desktop VM or use the default local 80/443 mapping with <code>sudo -E ./forward-localhost.sh</code>. A tunnel is useful for isolation but does not prove public DNS, TLS, redirect, WebSocket, NAT, or Internet reachability.</p>
+  </section>
+
+  <section id="runtime" class="page-break" aria-labelledby="runtime-title">
+    <h1 id="runtime-title">4. Choose One Runtime Path</h1>
+
+    <div class="two-column">
+      <div>
+        <h2>A. Current manual-QA campaign</h2>
+        <p>Use the source development stack with hot deploy. Place the authorized <code>myscoutee-registry</code> checkout beside the backend checkout and initialize the frontend submodule.</p>
+        <pre><code>git clone --recurse-submodules \
+  https://github.com/fssrepository/myscoutee-backend.git
+# Place the authorized registry checkout at ../myscoutee-registry
+cp server/.env.secrets.example server/.env.secrets
+chmod 0600 server/.env.secrets
+# Replace every placeholder in server/.env.secrets
+cd server
+docker compose up --build</code></pre>
+        <p>The Compose build is a first-start action only. Once the dev stack and watchers exist, do not launch another Compose stack, Gradle/npm build, test runner, MongoDB, server, watcher, or Chrome profile set beside them.</p>
+      </div>
+      <div>
+        <h2>B. Package/deployment smoke</h2>
+        <p>Use an exact approved Debian package and matching client bundle. Authenticate the release signature, pinned full key fingerprint, size, SHA-256, package identity, and version before upload.</p>
+        <pre><code>./install.sh \
+  /approved/path/myscoutee_1.0.0_amd64.deb
+
+node verify-deployment/run.mjs \
+  --url https://deployment.example \
+  --expected-version 1.0.0</code></pre>
+        <p>The installer uploads through SSH, installs with APT, and invokes package-owned host qualification. The external verifier is a separate read-only client command. It never disables TLS verification. Package smoke does not replace the current source/manual-QA campaign.</p>
+      </div>
+    </div>
+
+    <aside class="callout danger">
+      <h3>Do not mix the paths</h3>
+      <p>A development Compose stack, source-production stack, and APT/systemd-installed package have different state, build, TLS, and lifecycle boundaries. Record which path is under test. Never interpret a source test as release qualification.</p>
+    </aside>
+
+    <h2>Running-stack preflight</h2>
+    <pre><code>cd server
+docker compose ps
+free -h
+docker stats --no-stream
+docker logs --since 5m myscoutee
+docker logs --since 5m frontend-sync
+docker logs --since 5m nginx</code></pre>
+    <p>If a watcher owns compilation, trigger only that existing owner and inspect its log. If it is stuck or owns a cache lock, identify and restart only that exact owner. Do not create another cache or temporary build path.</p>
+  </section>
+
+  <section id="resume" class="page-break" aria-labelledby="resume-title">
+    <h1 id="resume-title">5. Resume <code>CHAT-LIST-001</code></h1>
+    <p>The commands below define the reproducible operator path that <strong>Codex Pro 20 executes automatically</strong> from the backend repository root. They are included for auditability and exceptional takeover, not as a command list the paired human must learn. The Docker wrapper must reach the already-running <code>mongodb</code> container; it never starts or restarts the stack.</p>
+
+    <h2>Read-only continuity gate</h2>
+    <pre><code>bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status chat-domain CHAT-LIST-001</code></pre>
+
+    <table class="compact">
+      <thead><tr><th>Result</th><th>Pair-QA continuation</th></tr></thead>
+      <tbody>
+        <tr><td>Matching <code>phase=fixture-ready</code> and every validation true</td><td>Codex continues without staging again and reuses a live managed browser only when its manifest and process are still valid.</td></tr>
+        <tr><td><code>phase=not-staged</code></td><td>Codex replays the checkpoint by staging once, validating status again, and launching the managed checkpoint browser.</td></tr>
+        <tr><td>Partial, foreign, or unexpected state</td><td>Codex stops and records the exact mismatch; neither partner repairs state through ad-hoc Mongo writes or the UI.</td></tr>
+        <tr><td>Docker socket denied / “MongoDB is not running” ambiguity</td><td>Codex fixes Docker access and reruns the same status command without starting a second MongoDB or Compose stack.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Codex replay route — fresh/stale runtime only</h2>
+    <pre><code>bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage chat-domain CHAT-LIST-001
+
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status chat-domain CHAT-LIST-001
+
+guides/qa/tools/open-checkpoint-browser-sessions.sh CHAT-LIST-001</code></pre>
+    <p>Codex does not run <code>stage</code> when the first status already proves the saved boundary. When replay is required, Codex invokes the launcher, which opens the isolated Casey Chrome window and writes <code>/tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json</code>. The paired human does not launch or reconnect the browser manually.</p>
+
+    <h2>CDP preflight and read oracle</h2>
+    <pre><code>node guides/qa/tools/verify-chat-list-read-oracle.mjs \
+  --manifest /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json \
+  --actor-user-id 650000000000000000000061
+
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status chat-domain CHAT-LIST-001</code></pre>
+
+    <h2>Human flow/UX and typical-bug overview — the only manual step here</h2>
+    <ol class="checklist">
+      <li>Wait until Codex opens and hands over the managed Casey window; in that window, open <strong>Activities → Chats</strong>.</li>
+      <li>Confirm All contains exactly four controlled rows and unread is one per row.</li>
+      <li>Inspect Event, Group, Service and App Support: one matching row in each. Confirm Sub-event is zero.</li>
+      <li>Sort once and confirm the exact date order remains coherent.</li>
+      <li>Close and reopen Chats; confirm the same All order, headers and counters.</li>
+      <li><strong>Do not open a chat thread.</strong> Read acknowledgement belongs to <code>CHAT-READ-001</code>.</li>
+      <li>If anything differs or looks wrong, the human developer/reviewer asks Codex to fix it immediately. Do not compensate by repairing data or runtime state manually; review the replayed checkpoint again.</li>
+    </ol>
+  </section>
+
+  <section id="cdp-and-device" aria-labelledby="cdp-and-device-title">
+    <h1 id="cdp-and-device-title">6. CDP and Android USB Debugging</h1>
+
+    <h2>Chrome DevTools Protocol (CDP)</h2>
+    <p>The managed launcher assigns a loopback-only ephemeral DevTools port and records it in the checkpoint manifest. Codex Pro 20 uses CDP for read-only inspection and checkpoint-specific network/geolocation controls; CDP must not perform the paired human's manual overview action.</p>
+    <pre><code>QA_CDP_PORT=$(jq -r '.sessions[0].devToolsPort' \
+  /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json)
+
+node guides/qa/tools/chrome-target-network.mjs inspect \
+  --user-id 650000000000000000000061 \
+  --port "$QA_CDP_PORT"</code></pre>
+    <ul>
+      <li>Close only the temporary inspector WebSocket. Never call <code>browser.close()</code> or a browser-level close command against a managed QA Chrome.</li>
+      <li>Do not expose the CDP port beyond loopback.</li>
+      <li>Offline <code>--hold</code> and geolocation overrides are permitted only when the active checkpoint explicitly requires them; always restore online state in cleanup.</li>
+      <li>The local dev launcher may tolerate the local bootstrap certificate. The production deployment verifier never permits insecure TLS.</li>
+    </ul>
+
+    <h2>Android USB debugging and ADB reverse</h2>
+    <p>This is required only for a checkpoint that names a physical Android device, such as QR scanning, cold-start push routing, camera, or WebView behavior. It is not part of <code>CHAT-LIST-001</code>.</p>
+    <ol>
+      <li>Enable Android Developer options and USB debugging.</li>
+      <li>Connect the phone and accept the exact host/VM RSA authorization prompt.</li>
+      <li>Attach the USB device to the Ubuntu VM in VMware/VirtualBox, or keep ADB on the physical host and combine it with the SSH tunnel.</li>
+    </ol>
+
+    <div class="keep-together">
+      <h3>ADB runs inside the QA VM</h3>
+      <pre><code>adb devices -l
+adb reverse tcp:8080 tcp:80
+adb reverse --list
+# On the phone: http://localhost:8080</code></pre>
+    </div>
+
+    <div class="keep-together">
+      <h3>ADB stays on the physical host</h3>
+      <pre><code># First keep the SSH forward host 127.0.0.1:18080 -> VM 127.0.0.1:80 active.
+adb devices -l
+adb reverse tcp:8080 tcp:18080
+adb reverse --list
+# On the phone: http://localhost:8080</code></pre>
+    </div>
+    <p>The device must show state <code>device</code>, not <code>unauthorized</code>. Reapply the reverse after an ADB daemon restart, USB reconnect, phone restart, or VM USB reattachment. Remove only the exact mapping during cleanup with <code>adb reverse --remove tcp:8080</code>.</p>
+  </section>
+
+  <section id="closeout" aria-labelledby="closeout-title">
+    <h1 id="closeout-title">7. Evidence and Pair-QA Handover Closeout</h1>
+
+    <h2>Close the active checkpoint only after all evidence agrees</h2>
+    <ol class="checklist">
+      <li>The paired human accepts the visible result or requests an immediate correction.</li>
+      <li>For a correction, Codex uses the existing dev pipeline, replays the checkpoint, reopens the managed browser, and returns it for another human review.</li>
+      <li>After human acceptance, Codex reruns the CDP and Docker oracles and requires exact IDs/order/totals plus a zero-write snapshot. UI alone is not PASS.</li>
+      <li>Codex writes the QA-pack evidence, updates CSV/XLSX and README totals, and moves the live pointer in <code>CURRENT_QA_SESSION.md</code>.</li>
+      <li>Only then does Codex reset the fixture and advance to <code>TOURNAMENT-MEMBER-001</code>.</li>
+    </ol>
+
+    <aside class="callout note">
+      <h3>Minimum pair-QA handover</h3>
+      <p>Codex Pro 20 carries forward the checkpoint ID, phase, actor, environment/profile/database, last oracle, remaining manual overview, stop phrase, running processes, and next command. The human only needs the observable task, its PASS conditions, and the ability to request a correction; a new human is not expected to reconstruct the automation workflow.</p>
+    </aside>
+
+  </section>
+</article>
+</body>
+</html>
