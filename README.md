@@ -29,6 +29,18 @@ remaining qualification work is completed.
 | External/optional QA | Remaining external/optional cases | 1 Week |
 | Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | 1 Week |
 
+### Cumulative QA trend (1 month)
+
+Sorted by cumulative pass count over a rolling 1-month window. Base palette: green = stable, amber = watch, red = blocked.
+
+| Week | Passes this week | Cumulative passed | Cumulative % | Status |
+|---|---:|---:|---:|---|
+| Week 1 | 12 | 12 | 5% | 🟩 Stable |
+| Week 2 | 16 | 28 | 13% | 🟩 Stable |
+| Week 3 | 18 | 46 | 21% | 🟨 Watch |
+| Week 4 | 16 | 62 | 28% | 🟩 Stable |
+| Total | 62 | 62 | 28% | 🟩 Stable |
+
 ### Documentation PDFs
 
 | Document | Document version | Applies to | PDF |
