@@ -18,41 +18,7 @@ files are available from [GitHub Releases](https://github.com/fssrepository/mysc
 These builds are intended for installation and integration testing while the
 remaining qualification work is completed.
 
-## Manual QA status
-
-The current qualification ledger is available as an
-[XLSX QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx).
-
-As of 2026-08-18:
-
-- **Core:** 59 passed, 68 remaining (127 total)
-- **External / optional:** 3 passed, 94 remaining (97 total)
-
-The complete matrix contains 224 cases across 14 functional domains. The Chat
-coverage audit now contains 20 bounded cases instead of treating the single
-authorization checkpoint as the complete chat workflow. `TOURNAMENT-002` through
-`TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
-advancement, separate Final Start/room readiness, whole-tournament completion,
-personal winner/non-winner results and three-browser recipient verification.
-The nested tournament-room visibility and persisted parent current-stage card
-checkpoints are PASS/CLOSED, including the in-place Qualifiers `1/2` to Final
-`2/2` transition and reload persistence. The admission checkpoint is
-PASS/CLOSED after HTTP/Mongo verification of late Join, existing-invitation
-acceptance and Admin approval under the strict first-stage lock; frontend-local
-runtime was NOT EXECUTED. Corrected-score revision is PASS/CLOSED after the
-outcome-changing revision-2 replay, immutable revision-1 audit, three-browser
-old/new notification proof and an exact unchanged-worker no-op. The downstream
-late-Reopen guard is also PASS/CLOSED: an active dependent Final hid the UI
-action, the real Java route rejected one authenticated request atomically, and
-the full related-record snapshot remained unchanged. The Tournament domain is
-now 9/14: its closed lifecycle evidence remains intact, while separate pre-Start
-membership cutoff, active-member removal, DQ/Reinstate and generated-group
-resource aggregation checkpoints are not yet run and the existing scheduler
-row still needs its Monitoring/browser completion oracle. Asset coverage is 0/9 after
-adding bounded lifecycle, visibility, borrow, capacity, multi-type assignment
-and write-side cleanup cases. `CHAT-LIST-001` remains the currently staged
-manual boundary; after it closes, the generated priority order returns to the
-reopened Tournament block.
+**QA status (2026-08-18):** 62/224 passed — core 59/127, external/optional 3/97; active checkpoint: `CHAT-LIST-001`.
 
 ### Documentation PDFs
 
