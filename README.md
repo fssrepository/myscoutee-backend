@@ -22,12 +22,12 @@ remaining qualification work is completed.
 
 **2026-08-18:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `CHAT-LIST-001`.
 
-| Remaining phase | Scope | Estimate | Cumulative target |
+| Remaining phase | Scope | Estimate |
 |---|---|---:|---:|
 | Hard multi-model QA | Approximately 30–35 high-complexity cases | Week 1 |
 | Core completion | Remaining core cases | Week 2 |
 | External/optional QA | Remaining external/optional cases | Week 3 |
-| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | Week 4* |
+| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | Week 4 |
 
 ### Documentation PDFs
 
