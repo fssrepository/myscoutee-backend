@@ -28,6 +28,7 @@ remaining qualification work is completed.
 | Core completion | Remaining core cases | 1 Week |
 | External/optional QA | Remaining external/optional cases | 1 Week |
 | Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | 1 Week |
+| **Cumulative** | **All remaining QA phases** | 🟦 **1 Month** |
 
 ### Documentation PDFs
 
