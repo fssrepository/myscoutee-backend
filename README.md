@@ -24,10 +24,10 @@ remaining qualification work is completed.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
-| Hard multi-model QA | Approximately 30–35 high-complexity cases | Week 1 |
-| Core completion | Remaining core cases | Week 2 |
-| External/optional QA | Remaining external/optional cases | Week 3 |
-| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | Week 4 |
+| Hard multi-model QA | Approximately 30–35 high-complexity cases | 1 Week |
+| Core completion | Remaining core cases | 1 Week |
+| External/optional QA | Remaining external/optional cases | 1 Week |
+| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | 1 Week |
 
 ### Documentation PDFs
 
