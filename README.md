@@ -18,9 +18,16 @@ files are available from [GitHub Releases](https://github.com/fssrepository/mysc
 These builds are intended for installation and integration testing while the
 remaining qualification work is completed.
 
-### Manual QA status
+### Manual QA status and estimate
 
 **2026-08-18:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `CHAT-LIST-001`.
+
+| Remaining phase | Scope | Estimate | Cumulative target |
+|---|---|---:|---:|
+| Hard multi-model QA | Approximately 30–35 high-complexity cases | 1 week | Week 1 |
+| Core completion | Remaining core cases | +1 week | Week 2 |
+| External/optional QA | Remaining external/optional cases | +1 week | Week 3 |
+| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | +1 week* | Week 4* |
 
 ### Documentation PDFs
 
