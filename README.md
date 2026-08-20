@@ -18,48 +18,26 @@ files are available from [GitHub Releases](https://github.com/fssrepository/mysc
 These builds are intended for installation and integration testing while the
 remaining qualification work is completed.
 
-## Manual QA status
+### Manual QA status and estimate
 
-The current qualification ledger is available as an
-[XLSX QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx).
+**2026-08-18:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `CHAT-LIST-001`.
 
-As of 2026-08-17:
+| Remaining phase | Scope | Estimate |
+|---|---|---:|
+| Hard multi-model QA | Approximately 30–35 high-complexity cases | 1 Week |
+| Core completion | Remaining core cases | 1 Week |
+| External/optional QA | Remaining external/optional cases | 1 Week |
+| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | 1 Week |
+| **Cumulative** | **All remaining QA phases** | **1 Month** |
 
-- **Core:** 62 passed, 106 remaining (168 total)
-- **External integrations:** 0 passed, 56 remaining (56 total)
+### Documentation PDFs
 
-The complete matrix contains 224 cases across 13 functional domains. The Chat
-coverage audit now contains 20 bounded cases instead of treating the single
-authorization checkpoint as the complete chat workflow. `TOURNAMENT-002` through
-`TOURNAMENT-004` are PASS/CLOSED after exact grouping, ordered stage
-advancement, separate Final Start/room readiness, whole-tournament completion,
-personal winner/non-winner results and three-browser recipient verification.
-The nested tournament-room visibility and persisted parent current-stage card
-checkpoints are PASS/CLOSED, including the in-place Qualifiers `1/2` to Final
-`2/2` transition and reload persistence. The admission checkpoint is
-PASS/CLOSED after HTTP/Mongo verification of late Join, existing-invitation
-acceptance and Admin approval under the strict first-stage lock; frontend-local
-runtime was NOT EXECUTED. Corrected-score revision is PASS/CLOSED after the
-outcome-changing revision-2 replay, immutable revision-1 audit, three-browser
-old/new notification proof and an exact unchanged-worker no-op. The downstream
-late-Reopen guard is also PASS/CLOSED: an active dependent Final hid the UI
-action, the real Java route rejected one authenticated request atomically, and
-the full related-record snapshot remained unchanged. The Tournament domain is
-now 9/13: its closed lifecycle evidence remains intact, while separate pre-Start
-membership cutoff, active-member removal, DQ/Reinstate and generated-group
-resource aggregation checkpoints are not yet run. Asset coverage is 0/9 after
-adding bounded lifecycle, visibility, borrow, capacity, multi-type assignment
-and write-side cleanup cases. `CHAT-LIST-001` remains the currently staged
-manual boundary; after it closes, the generated priority order returns to the
-reopened Tournament block.
-
-### Official manuals
-
-| Manual | Document version | Applies to | PDF |
+| Document | Document version | Applies to | PDF |
 |---|---:|---:|---|
 | Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
 | Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
+| Local VM QA Test Guide & Pair-QA Handover | 1.0.0 | MyScoutee 1.0.0 QA campaign | [PDF](guides/qa/manuals/MyScoutee_Local_VM_QA_Test_Guide_v1.0.0_EN.pdf) |
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).

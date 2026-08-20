@@ -45,7 +45,12 @@ book.PROJECT_DIR = PROJECT_DIR
 book.DEFAULT_SOURCE = BOOK_DIR / "THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md"
 book.DEFAULT_HTML = BOOK_DIR / "MYSCOUTEE_THE_STORY_PART_II_PUBLIC_EDITION_EN.html"
 book.BOOK_DRAFT_DIR = BOOK_DIR / "draft"
-book.PUBLISHED_DIR = BOOK_DIR.parent / "published"
+book.PUBLISHED_DIR = BOOK_DIR.parent / "published" / "online"
+book.PAPERBACK_DIR = BOOK_DIR.parent / "published" / "paperback"
+book.PAPERBACK_COVER_TEMPLATE = (
+    ASSET_DIR / "paperback-cover-standard-color.svg.in"
+)
+book.PAPERBACK_SPINE_TITLE = "THE SYSTEM BETWEEN US  •  PETER SZABO"
 book.LOGO = PROJECT_DIR / "frontend/src/assets/logo/heart.png"
 book.COVER_EMBLEM = ASSET_DIR / "cover-emblem.svg"
 book.ILLUSTRATIONS = BOOK_DIR / "illustrations.json"

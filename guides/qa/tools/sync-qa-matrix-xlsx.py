@@ -63,20 +63,27 @@ COMPACT_VISIBLE_COLUMN_WIDTHS = (
 # the normalized domain on every testcase row; the workbook shows the mapping
 # in a separate priority table and uses it to keep domains contiguous.
 DOMAIN_METADATA = (
-    ("QA infrastructure", 13, "FFE7E6E6", "CLEANUP"),
-    ("Identity & access", 12, "FFE4DFEC", "ENTRY"),
-    ("Event", 11, "FFFCE4D6", "EVENT"),
-    ("Tournament", 10, "FFF4CCCC", "TOURNAMENT"),
-    ("Chat", 9, "FFDDEBF7", "CHAT"),
-    ("Asset", 8, "FFFFE5CC", "ASSET"),
-    ("Content", 7, "FFFFF2CC", "ARTICLE"),
-    ("Notifications", 6, "FFE2F0D9", "BELL"),
-    ("Client platform", 5, "FFD9E1F2", "MOBILE"),
-    ("Administration", 4, "FFEAD1DC", "ADMIN"),
+    ("QA infrastructure", 14, "FFE7E6E6", "CLEANUP"),
+    ("Identity & access", 13, "FFE4DFEC", "ENTRY"),
+    ("Event", 12, "FFFCE4D6", "EVENT"),
+    ("Tournament", 11, "FFF4CCCC", "TOURNAMENT"),
+    ("Chat", 10, "FFDDEBF7", "CHAT"),
+    ("Asset", 9, "FFFFE5CC", "ASSET"),
+    ("Content", 8, "FFFFF2CC", "ARTICLE"),
+    ("Notifications", 7, "FFE2F0D9", "BELL"),
+    ("Client platform", 6, "FFD9E1F2", "MOBILE"),
+    ("Administration", 5, "FFEAD1DC", "ADMIN"),
+    ("Admin optional", 4, "FFCBD7E7", "ADMIN-OPTIONAL"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
     ("Payment", 2, "FF76A5AF", "PAYMENT"),
     ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
+EXTERNAL_OPTIONAL_DOMAINS = frozenset({
+    "Admin optional",
+    "Operator",
+    "Payment",
+    "Deployment",
+})
 DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
 DOMAIN_STYLE_KEY = {
     domain: f"domain-{priority}"
@@ -86,6 +93,64 @@ ROW_FILL_COLORS.update({
     DOMAIN_STYLE_KEY[domain]: color
     for domain, _, color, _ in DOMAIN_METADATA
 })
+
+# Stable IDs stay unchanged while the QA domain answers two separate
+# questions: which capability owns the contract, and whether that contract is
+# needed for the minimum usable launch. Admin surfaces that only change a
+# seeded/default configuration are deliberately assigned to the deferred third
+# block; real user-state workers remain with their Core capability.
+EXACT_DOMAIN_OVERRIDES = {
+    "ADMIN-ACCESS-001": "Identity & access",
+    "JOB-RANDOM": "Event",
+    "JOB-AUTO": "Event",
+    "JOB-TOURNAMENT": "Tournament",
+    "JOB-COUNTER": "Event",
+    "JOB-BASKET": "Event",
+    "JOB-OUTBOX": "Notifications",
+    "JOB-MESSAGES": "Notifications",
+    "JOB-PURGE": "Identity & access",
+    "ADMIN-REPORT-001": "Admin optional",
+    "ADMIN-FEEDBACK-001": "Admin optional",
+    "ADMIN-USER-WARN-001": "Admin optional",
+    "ADMIN-USER-BLOCK-001": "Admin optional",
+    "ADMIN-NOTIFICATION-RULE-001": "Admin optional",
+    "ADMIN-NOTIFICATION-RUN-001": "Admin optional",
+    "ADMIN-CONTENT-REV-001": "Admin optional",
+    "ADMIN-CONTENT-REV-002": "Admin optional",
+    "ADMIN-CONTENT-REV-003": "Admin optional",
+    "ADMIN-IDEA-LIFECYCLE-001": "Admin optional",
+    "ADMIN-SUPPORT-SESSION-001": "Admin optional",
+    "BASE-STAT": "Admin optional",
+    "BASE-MON": "Admin optional",
+    "BASE-GRAPH": "Admin optional",
+    "STAT-010": "Admin optional",
+    "STAT-011": "Admin optional",
+    "STAT-012": "Admin optional",
+    "STAT-013": "Admin optional",
+    "STAT-014": "Admin optional",
+    "STAT-020": "Admin optional",
+    "MON-011": "Admin optional",
+    "MON-012": "Admin optional",
+    "MON-013": "Admin optional",
+    "MON-014": "Admin optional",
+    "GRAPH-002": "Admin optional",
+    "GRAPH-003": "Admin optional",
+    "GRAPH-004": "Admin optional",
+    "GRAPH-005": "Admin optional",
+    "GRAPH-006": "Admin optional",
+    "GRAPH-007": "Admin optional",
+    "PARAM-001": "Admin optional",
+    "PARAM-010": "Admin optional",
+    "PARAM-011": "Admin optional",
+    "PARAM-012": "Admin optional",
+    "PARAM-013": "Admin optional",
+    "PARAM-014": "Admin optional",
+    "PARAM-015": "Admin optional",
+    "PARAM-016": "Admin optional",
+    "PARAM-017": "Admin optional",
+    "JOB-GRAPH-LAYOUT": "Admin optional",
+    "STATIC-SMOKE": "Admin optional",
+}
 
 ET.register_namespace("", NS)
 ET.register_namespace("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
@@ -105,6 +170,11 @@ def cell_column(index: int) -> str:
 
 def expected_domain(identifier: str) -> str:
     normalized = identifier.strip().upper()
+    # A route/screen name is not the QA owner or the launch gate. Exact
+    # overrides preserve stable IDs while assigning either the real Core
+    # capability or the deferred Admin-optional block.
+    if normalized in EXACT_DOMAIN_OVERRIDES:
+        return EXACT_DOMAIN_OVERRIDES[normalized]
     domain_prefixes = (
         ("QA infrastructure", ("CLEANUP", "QA-RESET")),
         ("Identity & access", ("ENTRY", "AUTH", "ROLE", "LANDING-ELIGIBILITY")),
@@ -131,6 +201,50 @@ def expected_domain(identifier: str) -> str:
         ):
             return domain
     raise RuntimeError(f"QA testcase has no configured domain: {identifier}")
+
+
+def normalize_source_domains(source_rows: list[list[str]]) -> list[list[str]]:
+    headers = source_rows[0]
+    domain_index = headers.index(DOMAIN_COLUMN)
+    normalized_rows = [headers]
+    for source_row in source_rows[1:]:
+        row = list(source_row)
+        identifier = row[0].strip().upper()
+        if identifier in EXACT_DOMAIN_OVERRIDES:
+            row[domain_index] = EXACT_DOMAIN_OVERRIDES[identifier]
+        normalized_rows.append(row)
+    return normalized_rows
+
+
+def order_source_rows(source_rows: list[list[str]]) -> list[list[str]]:
+    headers = source_rows[0]
+    legend_rows = [row for row in source_rows[1:] if row[0].startswith("LEGEND-")]
+    test_rows = [row for row in source_rows[1:] if not row[0].startswith("LEGEND-")]
+    ordered_test_rows = [
+        row
+        for source_index, row in sorted(
+            enumerate(test_rows),
+            key=lambda indexed: domain_sort_key(indexed[1], headers, indexed[0]),
+        )
+    ]
+    return [headers, *legend_rows, *ordered_test_rows]
+
+
+def write_source_rows(source_rows: list[list[str]]) -> None:
+    file_descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{CSV_PATH.stem}.",
+        suffix=".csv",
+        dir=CSV_PATH.parent,
+    )
+    os.close(file_descriptor)
+    temporary_path = Path(temporary_name)
+    try:
+        with temporary_path.open("w", encoding="utf-8", newline="") as target:
+            writer = csv.writer(target, quoting=csv.QUOTE_ALL, lineterminator="\n")
+            writer.writerows(source_rows)
+        os.replace(temporary_path, CSV_PATH)
+    finally:
+        temporary_path.unlink(missing_ok=True)
 
 
 def domain_sort_key(row: list[str], headers: list[str], source_index: int) -> tuple[int, int]:
@@ -209,7 +323,7 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         ("Not started", str(core_counts["not-started"])),
         ("Failed", str(core_counts["failed"])),
         ("Core", str(scope_counts["core"])),
-        ("External", str(scope_counts["external"])),
+        ("External / optional", str(scope_counts["external"])),
         ("Total", str(len(test_rows))),
     ]
     domain_totals = {domain: 0 for domain in DOMAIN_PRIORITY}
@@ -240,8 +354,12 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         status_items[0][1],
     )]
     remaining_status_items = status_items[1:]
-    core_priority_items = [item for item in domain_priority_items if int(item[1]) > 3]
-    external_priority_items = [item for item in domain_priority_items if int(item[1]) <= 3]
+    core_priority_items = [
+        item for item in domain_priority_items if item[0] not in EXTERNAL_OPTIONAL_DOMAINS
+    ]
+    external_priority_items = [
+        item for item in domain_priority_items if item[0] in EXTERNAL_OPTIONAL_DOMAINS
+    ]
     core_block_size = (len(core_priority_items) + 1) // 2
     domain_priority_blocks = [
         core_priority_items[:core_block_size],
@@ -332,7 +450,11 @@ def qa_status_bucket(item: dict[str, str]) -> str:
 
 def qa_scope_bucket(item: dict[str, str]) -> str:
     identifier = item.get("ID", "").strip().upper()
-    return "external" if identifier.startswith(("OPERATOR-", "PAYMENT-", "DEPLOY-")) else "core"
+    domain = item.get(DOMAIN_COLUMN, "").strip()
+    return "external" if (
+        domain in EXTERNAL_OPTIONAL_DOMAINS
+        or identifier.startswith(("OPERATOR-", "PAYMENT-", "DEPLOY-"))
+    ) else "core"
 
 
 def progress_style_key(progress: str) -> str:
@@ -382,10 +504,12 @@ def qa_status_formula(row_index: int, manual_column: str, result_column: str) ->
     )
 
 
-def qa_scope_formula(row_index: int, id_column: str) -> str:
+def qa_scope_formula(row_index: int, id_column: str, domain_column: str) -> str:
     reference = f"{id_column}{row_index}"
+    domain_reference = f"{domain_column}{row_index}"
     return (
-        f'IF(OR(LEFT({reference},9)="OPERATOR-",'
+        f'IF(OR({domain_reference}="Admin optional",'
+        f'LEFT({reference},9)="OPERATOR-",'
         f'LEFT({reference},8)="PAYMENT-",'
         f'LEFT({reference},7)="DEPLOY-"),"External","Core")'
     )
@@ -1032,6 +1156,7 @@ def build_sheet(
             ET.SubElement(scope_cell, f"{{{NS}}}f").text = qa_scope_formula(
                 row_index,
                 id_column,
+                domain_column,
             )
             ET.SubElement(scope_cell, f"{{{NS}}}v").text = "External" if scope == "external" else "Core"
 
@@ -1047,7 +1172,10 @@ def build_sheet(
 
 
 def synchronize() -> None:
-    source_rows = load_rows()
+    loaded_source_rows = load_rows()
+    source_rows = order_source_rows(normalize_source_domains(loaded_source_rows))
+    if source_rows != loaded_source_rows:
+        write_source_rows(source_rows)
     rows = workbook_rows(source_rows)
     strings, indexes = shared_string_table(rows)
     with zipfile.ZipFile(XLSX_PATH, "r") as workbook:

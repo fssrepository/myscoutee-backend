@@ -1948,8 +1948,9 @@ are deliberately short and sequential. Each case owns one visible transition
 and one persisted oracle. Reuse one controlled accepted-member chat where
 possible, but reset only the rows owned by the next case. The original
 Tournament lifecycle evidence remains closed at 9/9, but its coverage audit
-added four unexecuted member/DQ/resource rows and therefore reopened the domain
-at 9/13. `CHAT-LIST-001` remains the already-staged live boundary; after that
+added four unexecuted member/DQ/resource rows, while the existing partially
+verified Tournament worker row still needs its Monitoring/browser oracle; the
+domain is therefore reopened at 9/14. `CHAT-LIST-001` remains the already-staged live boundary; after that
 single row closes, generated priority returns to Tournament before the rest of
 Chat.
 
@@ -5375,12 +5376,14 @@ and one decisive persisted oracle. Runtime execution must use at most three
 browser identities at once; mobile observations replace, rather than add to,
 one desktop phase when three desktop accounts are already active.
 
-The XLSX uses the teal `EXT` scope marker for cases whose stable ID starts with
-`OPERATOR-`, `PAYMENT-` or `DEPLOY-`. These cover operator control-plane,
-payment-provider, Registry/network and deployment boundaries outside the core
-application workflow. Scope and execution status remain independent: an `EXT`
-row is still counted by the normal Done/Pending/Not-started/Failed formulas,
-and the overview reports separate Core and External totals.
+The XLSX uses the teal `EXT / optional` scope marker for the `Admin optional`
+domain and for cases whose stable ID starts with `OPERATOR-`, `PAYMENT-` or
+`DEPLOY-`. The third block is the capacity-deferred qualification scope: it
+contains controls that are not required for a correctly seeded deployment to
+start and serve an average member, plus external operator/provider/deployment
+boundaries. Scope and execution status remain independent: a deferred row is
+still counted by the normal Done/Pending/Not-started/Failed formulas, and the
+overview reports separate Core and External/optional totals.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -5634,6 +5637,34 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `OPERATOR-REVENUE-003` | Open settlements around one capture and one release. | Settlement rows reconcile provider operation/payment/booking identities and amounts without combining different providers or currencies. |
 | `OPERATOR-MEASUREMENT-001` | Synchronize one controlled deployment measurement period. | Exact source period, counts and valuation inputs persist once; leaderboard reads consume it without rewriting the report. |
 | `OPERATOR-MEASUREMENT-002` | Fail and requeue one measurement report. | Attempt history remains ordered, duplicate work is prevented and the successful replacement leaves the failed record immutable. |
+
+### Administration ownership and launch-impact weighting
+
+The route that exposes a control does not define either its capability owner or
+its launch scope. For this capacity-limited qualification, `EXT / optional`
+means deferred from the minimum usable product launch, not only a third-party
+integration. The deciding oracle is a correctly seeded deployment: if an
+average member can still use the product from its static/default state without
+that Admin function, the function belongs in the third block.
+
+- `ADMIN-ACCESS-001` remains Core `Identity & access`, because missing backend
+  denial exposes protected data/actions to an ordinary user.
+- Event, Tournament, Notifications, identity/account-purge and affinity
+  workers that maintain real member state remain Core under their owning
+  capability. A broken worker changes the ordinary user's product truth.
+- Reports, feedback/report moderation, warn/block/support controls,
+  notification-rule editing/manual run, public-content revision management,
+  Statistics, Monitoring, Admin Graph exploration/layout, parameter editors
+  and generic Admin UI smoke are `Admin optional`. A missing Save may prevent
+  changing a default, and imperfect statistics may inconvenience operations,
+  but neither prevents the seeded product from starting or serving a member.
+- Operator, Registry/network, payment-provider and deployment-host cases remain
+  deferred external boundaries.
+
+Optional does not mean harmless: every existing testcase, status, evidence and
+priority remains authoritative. It means those rows do not consume the Core
+launch queue before higher-impact workflows. Stable IDs are preserved; only
+the normalized QA domain/scope and physical domain ordering change.
 
 ### `QA-EXPANSION-CP08` — admin access and moderation
 
