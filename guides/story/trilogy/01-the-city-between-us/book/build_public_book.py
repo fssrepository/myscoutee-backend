@@ -10,8 +10,10 @@ import html
 import importlib.util
 import json
 import re
+import shutil
 import subprocess
 import tempfile
+import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
 
@@ -31,7 +33,12 @@ PROJECT_DIR = find_project_dir(BOOK_DIR)
 DEFAULT_SOURCE = BOOK_DIR / "THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md"
 DEFAULT_HTML = BOOK_DIR / "MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html"
 BOOK_DRAFT_DIR = BOOK_DIR / "draft"
-PUBLISHED_DIR = BOOK_DIR.parent / "published"
+PUBLISHED_DIR = BOOK_DIR.parent / "published" / "online"
+PAPERBACK_DIR = BOOK_DIR.parent / "published" / "paperback"
+PAPERBACK_COVER_TEMPLATE = (
+    BOOK_DIR / "assets" / "paperback-cover-standard-color.svg.in"
+)
+PAPERBACK_SPINE_TITLE = "THE CITY BETWEEN US  •  PETER SZABO"
 LOGO = PROJECT_DIR / "frontend" / "src" / "assets" / "logo" / "heart.png"
 COVER_EMBLEM = BOOK_DIR / "assets" / "cover-emblem-v1.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
@@ -69,6 +76,12 @@ OPENER_WATERMARKS = (
 # an otherwise empty page.
 COMPACT_ENDING_MOTIF_INDEXES = frozenset({1, 4})
 SHORT_CHAPTER_WORD_LIMIT = 250
+PAPERBACK_TRIM_WIDTH_IN = 6.0
+PAPERBACK_TRIM_HEIGHT_IN = 9.0
+PAPERBACK_BLEED_IN = 0.125
+# KDP white-paper color spine factor used by the Standard Color paperback.
+PAPERBACK_COLOR_WHITE_PAPER_SPINE_IN_PER_PAGE = 0.002347
+PAPERBACK_SPINE_TEXT_MIN_PAGES = 80
 
 
 epub_spec = importlib.util.spec_from_file_location(
@@ -1091,7 +1104,12 @@ def chrome_print(html_path: Path, pdf_path: Path, chrome: str) -> None:
         )
 
 
-def full_bleed_document(document: str) -> tuple[str, list[str]]:
+def full_bleed_document(
+    document: str,
+    *,
+    include_cover: bool = True,
+    part_pages: list[int] | None = None,
+) -> tuple[str, list[str]]:
     cover_match = re.search(
         r'(<section class="cover".*?</section>)', document, flags=re.DOTALL
     )
@@ -1100,28 +1118,67 @@ def full_bleed_document(document: str) -> tuple[str, list[str]]:
         document,
         flags=re.DOTALL,
     )
-    if not cover_match or not part_fragments:
-        raise ValueError("Could not extract cover and part-opener pages")
+    if include_cover and not cover_match:
+        raise ValueError("Could not extract the cover page")
+    if not part_fragments:
+        raise ValueError("Could not extract part-opener pages")
 
     part_titles = [
         html.unescape(re.sub(r"<[^>]+>", "", fragment)).strip()
         for fragment in part_fragments
     ]
-    fragments = [cover_match.group(1), *part_fragments]
-    standalone_css = r"""
-      @page {
-        size: 6in 9in; margin: 0.68in 0.62in 0.7in;
-        @bottom-center { content: none; }
-      }
-      html, body { width: auto; margin: 0; padding: 0; background: #fff; }
-      .cover, .part-opener {
-        page: auto !important; width: 4.76in !important; height: 7.62in !important;
-        margin: 0 !important; break-before: auto !important;
-        page-break-before: auto !important; break-after: page !important;
-        page-break-after: always !important;
-      }
-      .part-opener:last-child { break-after: auto !important; page-break-after: auto !important; }
-    """
+    if part_pages is not None:
+        if include_cover:
+            raise ValueError("Part-page alignment is only used by paperback interiors")
+        if len(part_pages) != len(part_fragments):
+            raise ValueError(
+                "Part-page alignment does not match the extracted part openers"
+            )
+        part_fragments = [
+            fragment.replace(
+                'class="part-opener',
+                f'class="part-opener paperback-{"right" if page % 2 else "left"}',
+                1,
+            )
+            for fragment, page in zip(part_fragments, part_pages, strict=True)
+        ]
+    fragments = [cover_match.group(1), *part_fragments] if include_cover else part_fragments
+    if include_cover:
+        standalone_css = r"""
+          @page {
+            size: 6in 9in; margin: 0.68in 0.62in 0.7in;
+            @bottom-center { content: none; }
+          }
+          html, body { width: auto; margin: 0; padding: 0; background: #fff; }
+          .cover, .part-opener {
+            page: auto !important; width: 4.76in !important;
+            height: 7.62in !important; margin: 0 !important;
+            break-before: auto !important; page-break-before: auto !important;
+            break-after: page !important; page-break-after: always !important;
+          }
+          .part-opener:last-child {
+            break-after: auto !important; page-break-after: auto !important;
+          }
+        """
+    else:
+        standalone_css = r"""
+          @page {
+            size: 6in 9in; margin: 0;
+            @bottom-center { content: none; }
+          }
+          html, body { width: auto; margin: 0; padding: 0; background: #fff; }
+          .part-opener {
+            page: auto !important; width: 5.28in !important;
+            height: 7.84in !important; margin: .44in 0 0 !important;
+            break-before: auto !important; page-break-before: auto !important;
+            break-after: page !important; page-break-after: always !important;
+          }
+          .part-opener.paperback-right { margin-left: .42in !important; }
+          .part-opener.paperback-left { margin-left: .30in !important; }
+          .part-opener:last-child {
+            break-after: auto !important; page-break-after: auto !important;
+          }
+        """
     replacement_document = (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         f"<style>{stylesheet()}{standalone_css}</style></head><body>"
@@ -1224,10 +1281,17 @@ def stamp_ending_motifs(
         page_inputs[page_number] = stamped_pdf
 
 
-def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> None:
+def render_pdf(
+    html_path: Path,
+    pdf_path: Path,
+    chrome: str,
+    inkscape: str,
+    *,
+    include_cover: bool = True,
+) -> None:
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     document = html_path.read_text(encoding="utf-8")
-    replacement_document, part_titles = full_bleed_document(document)
+    _, part_titles = full_bleed_document(document, include_cover=include_cover)
     metadata = load_book_metadata()
 
     def pdfmark_string(value: object) -> str:
@@ -1265,13 +1329,17 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
         metadata_info = temp_dir / "metadata-info.txt"
         final_pdf = temp_dir / "final.pdf"
 
-        replacement_html.write_text(replacement_document, encoding="utf-8")
         chrome_print(html_path, base_pdf, chrome)
-        chrome_print(replacement_html, replacement_pdf, chrome)
-
         part_pages = locate_part_pages(base_pdf, part_titles)
         base_page_text = pdf_page_texts(base_pdf)
-        replacement_count = 1 + len(part_titles)
+        replacement_document, _ = full_bleed_document(
+            document,
+            include_cover=include_cover,
+            part_pages=part_pages if not include_cover else None,
+        )
+        replacement_html.write_text(replacement_document, encoding="utf-8")
+        chrome_print(replacement_html, replacement_pdf, chrome)
+        replacement_count = len(part_titles) + (1 if include_cover else 0)
 
         subprocess.run(
             ["pdfseparate", str(base_pdf), str(temp_dir / "base-%d.pdf")],
@@ -1286,11 +1354,13 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
             check=True,
         )
 
-        replacement_by_page = {1: 1}
+        replacement_by_page = {1: 1} if include_cover else {}
         replacement_by_page.update(
             {
                 base_page: replacement_index
-                for replacement_index, base_page in enumerate(part_pages, start=2)
+                for replacement_index, base_page in enumerate(
+                    part_pages, start=2 if include_cover else 1
+                )
             }
         )
         if len(replacement_by_page) != replacement_count:
@@ -1463,6 +1533,334 @@ def write_epub_integrity_files(
     print(f"Wrote EPUB manifest {manifest_path}")
 
 
+def paperback_document(
+    document: str, *, standard_color_layout: bool = False
+) -> str:
+    """Return a KDP interior document without changing the online edition."""
+    print_css = r"""
+  /* KDP 6 x 9 inch, no-bleed paperback interior. For 24-150 pages KDP
+     requires at least .375in at the gutter and .25in at the outside edge.
+     Mirror those margins so the type area is centred in KDP's safe zone.
+     The larger bottom margin keeps the running folio at least .25in from trim. */
+  @page { size: 6in 9in; margin-top: .44in; margin-bottom: .72in; }
+  @page:right { margin-left: .42in; margin-right: .30in; }
+  @page:left { margin-left: .30in; margin-right: .42in; }
+  @page part { size: 6in 9in; margin-top: .44in; margin-bottom: .72in; }
+  @page part:right { margin-left: .42in; margin-right: .30in; }
+  @page part:left { margin-left: .30in; margin-right: .42in; }
+  .part-opener { width: 5.28in; height: 7.84in; }
+  main p, main blockquote p, .review-note p {
+    hyphens: auto;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  .edition-colophon p { text-align: center; }
+"""
+    if standard_color_layout:
+        print_css += r"""
+  /* Standard Color paperback: keep the online edition untouched while giving
+     both printed volumes the same readable type and chapter rhythm. */
+  main { font-size: 11.3pt; line-height: 1.64; }
+  main h2 {
+    break-before: page;
+    page-break-before: always;
+    margin-top: .38in;
+  }
+  main .short-chapter {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  main .pagebreak {
+    break-before: auto;
+    display: none;
+    page-break-before: auto;
+  }
+  main .compact-ending-tail-tight,
+  main .compact-chapter-8,
+  main .compact-chapter-18,
+  main .epilogue-compact { font-size: 11.3pt; line-height: 1.64; }
+  main p,
+  main .compact-ending-tail > p,
+  main .compact-ending-tail .ending-tail > p,
+  main .compact-ending-tail-tight > p,
+  main .compact-ending-tail-tight .ending-tail > p,
+  main .compact-chapter-8 > p,
+  main .compact-chapter-8 .ending-tail > p,
+  main .compact-chapter-18 > p,
+  main .compact-chapter-18 .ending-tail > p,
+  main .epilogue-compact > p,
+  main .epilogue-compact .ending-tail > p { margin-bottom: .21in; }
+"""
+    if "</style>" not in document:
+        raise ValueError("Book document has no stylesheet to extend for paperback")
+    document = document.replace("</style>", f"{print_css}</style>", 1)
+    document, removed_covers = re.subn(
+        r'<section class="cover".*?</section>',
+        "",
+        document,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if removed_covers != 1:
+        raise ValueError("Could not remove exactly one cover from paperback interior")
+    # Printed interiors do not need clickable rectangles. Removing href values
+    # before Chrome prints the PDF prevents KDP's non-printable-markup warning.
+    return re.sub(r'\s+href="[^"]*"', "", document)
+
+
+def validate_paperback_text_margins(pdf_path: Path) -> None:
+    """Reject text outside KDP's 24-150 page, no-bleed safe margins."""
+    result = subprocess.run(
+        ["pdftotext", "-bbox", str(pdf_path), "-"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    root = ET.fromstring(result.stdout)
+    pages = root.findall(".//{*}page")
+    violations: list[str] = []
+    for page_number, page in enumerate(pages, start=1):
+        width = float(page.attrib["width"])
+        height = float(page.attrib["height"])
+        # The first PDF page is a right-hand page. KDP requires a .375in
+        # gutter and .25in at the top, bottom, and outside edge.
+        left_limit = 27.0 if page_number % 2 else 18.0
+        right_limit = width - (18.0 if page_number % 2 else 27.0)
+        for word in page.findall(".//{*}word"):
+            x_min = float(word.attrib["xMin"])
+            y_min = float(word.attrib["yMin"])
+            x_max = float(word.attrib["xMax"])
+            y_max = float(word.attrib["yMax"])
+            if (
+                x_min < left_limit
+                or x_max > right_limit
+                or y_min < 18.0
+                or y_max > height - 18.0
+            ):
+                violations.append(
+                    f"page {page_number}: {word.text!r} "
+                    f"({x_min:.2f}, {y_min:.2f}, {x_max:.2f}, {y_max:.2f})"
+                )
+                break
+    if violations:
+        raise ValueError(
+            "Paperback text falls outside KDP safe margins: "
+            + "; ".join(violations)
+        )
+
+
+def paperback_artifact_paths(
+    version: dict[str, object], output_dir: Path
+) -> tuple[Path, Path]:
+    pdf_name = language_variant_name(
+        versioned_pdf_name(version), str(load_book_metadata()["language"])
+    )
+    stem = pdf_name.removesuffix(".pdf")
+    return (
+        output_dir / f"{stem}_Paperback_Interior_6x9.pdf",
+        output_dir / f"{stem}_Paperback_Cover_StandardColor.pdf",
+    )
+
+
+def front_cover_document(document: str) -> str:
+    cover_match = re.search(
+        r'(<section class="cover".*?</section>)', document, flags=re.DOTALL
+    )
+    if not cover_match:
+        raise ValueError("Could not extract the front cover")
+    standalone_css = r"""
+      @page {
+        size: 6in 9in; margin: 0.68in 0.62in 0.7in;
+        @bottom-center { content: none; }
+      }
+      html, body { width: auto; margin: 0; padding: 0; background: #fff; }
+      .cover {
+        page: auto !important; width: 4.76in !important; height: 7.62in !important;
+        margin: 0 !important; break-after: auto !important;
+        page-break-after: auto !important;
+      }
+    """
+    return (
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+        f"<style>{stylesheet()}{standalone_css}</style></head><body>"
+        f"{cover_match.group(1)}</body></html>"
+    )
+
+
+def render_paperback_cover(
+    front_cover_pdf: Path,
+    page_count: int,
+    destination: Path,
+    temp_dir: Path,
+    inkscape: str,
+) -> None:
+    front_prefix = temp_dir / "front-page"
+    front_png = front_prefix.with_suffix(".png")
+    cropped_front = temp_dir / "front-art.png"
+    subprocess.run(
+        [
+            "pdftoppm",
+            "-f",
+            "1",
+            "-l",
+            "1",
+            "-r",
+            "400",
+            "-singlefile",
+            "-png",
+            str(front_cover_pdf),
+            str(front_prefix),
+        ],
+        check=True,
+    )
+    subprocess.run(
+        ["convert", str(front_png), "-fuzz", "5%", "-trim", "+repage", str(cropped_front)],
+        check=True,
+    )
+    dimensions = subprocess.run(
+        ["identify", "-format", "%w %h", str(cropped_front)],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.split()
+    if len(dimensions) != 2:
+        raise ValueError("Could not determine the cropped front-cover dimensions")
+    front_pixel_width, front_pixel_height = map(int, dimensions)
+
+    spine_width = page_count * PAPERBACK_COLOR_WHITE_PAPER_SPINE_IN_PER_PAGE
+    total_width = (
+        2 * PAPERBACK_TRIM_WIDTH_IN
+        + 2 * PAPERBACK_BLEED_IN
+        + spine_width
+    )
+    cover_height = PAPERBACK_TRIM_HEIGHT_IN + 2 * PAPERBACK_BLEED_IN
+    front_region_width = PAPERBACK_TRIM_WIDTH_IN + PAPERBACK_BLEED_IN
+    front_region_x = PAPERBACK_BLEED_IN + PAPERBACK_TRIM_WIDTH_IN + spine_width
+    front_width = cover_height * front_pixel_width / front_pixel_height
+    front_height = cover_height
+    if front_width > front_region_width:
+        front_width = front_region_width
+        front_height = front_region_width * front_pixel_height / front_pixel_width
+    front_x = front_region_x + (front_region_width - front_width) / 2
+    front_y = (cover_height - front_height) / 2
+    spine_center = PAPERBACK_BLEED_IN + PAPERBACK_TRIM_WIDTH_IN + spine_width / 2
+
+    spine_markup = ""
+    if page_count >= PAPERBACK_SPINE_TEXT_MIN_PAGES:
+        spine_markup = f"""
+  <text x="{spine_center * 1000:.3f}" y="4625" text-anchor="middle"
+        dominant-baseline="middle"
+        transform="rotate(90 {spine_center * 1000:.3f} 4625)"
+        font-family="DejaVu Sans, sans-serif" font-size="105" font-weight="bold"
+        letter-spacing="20" fill="#dce7f4">{html.escape(PAPERBACK_SPINE_TITLE)}</text>"""
+
+    template = PAPERBACK_COVER_TEMPLATE.read_text(encoding="utf-8")
+    replacements = {
+        "{{TOTAL_WIDTH_IN}}": f"{total_width:.6f}",
+        "{{TOTAL_WIDTH_U}}": f"{total_width * 1000:.3f}",
+        "{{PAGE_COUNT}}": str(page_count),
+        "{{FRONT_X_U}}": f"{front_x * 1000:.3f}",
+        "{{FRONT_Y_U}}": f"{front_y * 1000:.3f}",
+        "{{FRONT_WIDTH_U}}": f"{front_width * 1000:.3f}",
+        "{{FRONT_HEIGHT_U}}": f"{front_height * 1000:.3f}",
+        "{{FRONT_ART_URI}}": cropped_front.resolve().as_uri(),
+        "{{SPINE_TEXT}}": spine_markup,
+    }
+    for token, value in replacements.items():
+        template = template.replace(token, value)
+    unresolved = sorted(set(re.findall(r"{{[A-Z_]+}}", template)))
+    if unresolved:
+        raise ValueError(f"Unresolved paperback cover tokens: {unresolved}")
+
+    rendered_svg = temp_dir / "paperback-cover.svg"
+    vector_pdf = temp_dir / "paperback-cover-vector.pdf"
+    rendered_svg.write_text(template, encoding="utf-8")
+    subprocess.run(
+        [
+            inkscape,
+            str(rendered_svg),
+            f"--export-filename={vector_pdf}",
+            "--export-text-to-path",
+        ],
+        check=True,
+    )
+    subprocess.run(
+        [
+            "gs",
+            "-q",
+            "-dBATCH",
+            "-dNOPAUSE",
+            "-dAutoRotatePages=/None",
+            "-dCompatibilityLevel=1.3",
+            "-sDEVICE=pdfwrite",
+            "-dPDFSETTINGS=/prepress",
+            f"-sOutputFile={destination}",
+            str(vector_pdf),
+        ],
+        check=True,
+    )
+
+
+def build_paperback(
+    source: Path,
+    output_dir: Path,
+    chrome: str,
+    inkscape: str,
+) -> tuple[Path, Path, int]:
+    """Build one bounded KDP interior and its page-count-specific wrap cover."""
+    version = load_book_version()
+    interior_path, cover_path = paperback_artifact_paths(version, output_dir)
+    existing = [path for path in (interior_path, cover_path) if path.exists()]
+    if existing:
+        raise FileExistsError(
+            "Published paperback artifacts are immutable; increment version.json "
+            f"before replacing: {', '.join(str(path) for path in existing)}"
+        )
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="myscoutee-paperback-") as temp_name:
+        temp_dir = Path(temp_name)
+        paperback_html = temp_dir / "paperback.html"
+        front_cover_html = temp_dir / "front-cover.html"
+        front_cover_pdf = temp_dir / "front-cover.pdf"
+        interior_pdf = temp_dir / "interior.pdf"
+        cover_pdf = temp_dir / "cover.pdf"
+        document = build_document(source.resolve())
+        paperback_html.write_text(
+            paperback_document(
+                document, standard_color_layout=True
+            ),
+            encoding="utf-8",
+        )
+        front_cover_html.write_text(front_cover_document(document), encoding="utf-8")
+        render_pdf(
+            paperback_html,
+            interior_pdf,
+            chrome,
+            inkscape,
+            include_cover=False,
+        )
+        validate_paperback_text_margins(interior_pdf)
+        chrome_print(front_cover_html, front_cover_pdf, chrome)
+        page_count = len(pdf_page_texts(interior_pdf))
+        if page_count < 72:
+            raise ValueError(
+                "KDP Standard Color paperback interior is too short: "
+                f"{page_count} pages; minimum is 72"
+            )
+        kdp_cover_page_count = page_count + page_count % 2
+        render_paperback_cover(
+            front_cover_pdf,
+            kdp_cover_page_count,
+            cover_pdf,
+            temp_dir,
+            inkscape,
+        )
+        shutil.copy2(interior_pdf, interior_path)
+        shutil.copy2(cover_pdf, cover_path)
+    return interior_path, cover_path, page_count
+
+
 def main() -> None:
     global BOOK_METADATA, ILLUSTRATIONS
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1475,18 +1873,35 @@ def main() -> None:
     parser.add_argument("--epub", type=Path)
     parser.add_argument("--cover-pdf", type=Path)
     parser.add_argument("--epub-only", action="store_true")
+    parser.add_argument("--paperback", action="store_true")
+    parser.add_argument("--paperback-output-dir", type=Path)
     args = parser.parse_args()
 
     if args.epub is not None and not args.epub_only:
         parser.error("--epub requires --epub-only")
     if args.epub_only and (args.html_only or args.pdf is not None):
         parser.error("--epub-only cannot be combined with --html-only or --pdf")
+    if args.paperback and (
+        args.html_only or args.epub_only or args.epub is not None or args.pdf is not None
+    ):
+        parser.error(
+            "--paperback cannot be combined with --html-only, --epub-only, "
+            "--epub or --pdf"
+        )
 
     if args.source.name.endswith("_HU.md"):
         BOOK_METADATA = BOOK_DIR / "metadata.hu.json"
         ILLUSTRATIONS = BOOK_DIR / "illustrations.hu.json"
 
     version = load_book_version()
+    if args.paperback:
+        paperback_dir = args.paperback_output_dir or PAPERBACK_DIR
+        interior, cover, page_count = build_paperback(
+            args.source, paperback_dir, args.chrome, args.inkscape
+        )
+        print(f"Wrote {interior} ({page_count} interior pages)")
+        print(f"Wrote {cover}")
+        return
     if args.epub_only:
         if version["status"] != "public" or not version["locked"]:
             raise ValueError("A default EPUB release requires a locked public edition")

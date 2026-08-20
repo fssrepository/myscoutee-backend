@@ -16,8 +16,8 @@ The current editable reading copy is
 [MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf).
 The browser edition is
 [MYSCOUTEE_THE_STORY_PART_II_PUBLIC_EDITION_EN.html](MYSCOUTEE_THE_STORY_PART_II_PUBLIC_EDITION_EN.html).
-The matching locked PDF, checksum and publication manifest live under
-[`../published/`](../published/).
+The matching locked online PDF, checksum and publication manifest live under
+[`../published/online/`](../published/online/).
 
 Build the editable review HTML and PDF from the repository root with:
 
@@ -30,6 +30,18 @@ The builder writes the browser edition beside the manuscript. An explicit
 writes the public PDF, SHA-256 checksum and publication manifest. It refuses to
 overwrite a published version, so any later released correction requires a new
 edition number.
+
+Build the separate KDP-ready English paperback interior and full wrap cover
+with:
+
+```bash
+python3 guides/story/trilogy/02-the-system-between-us/book/build_review_book.py --paperback
+```
+
+The two upload PDFs are written under `../published/paperback/`. The interior
+does not contain the outer cover, body prose is justified, printed links have
+no PDF annotations, and the cover width and permitted spine title are derived
+from the final Standard Color page count on white paper.
 
 The private-source and transcript tasks remain useful post-publication source
 hardening, not claims that the public memoir is a complete legal record. The

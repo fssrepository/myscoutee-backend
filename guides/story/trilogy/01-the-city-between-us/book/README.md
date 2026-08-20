@@ -34,8 +34,8 @@ language and copyright. The builder places these values in the HTML and PDF;
 - While `locked` is `false`, the versioned PDF is written under
   `draft/` inside this book package and rebuilding may replace it.
 - When the Founder explicitly requests technical closure, set `locked` to
-  `true`. The first subsequent build writes the versioned PDF under
-  the flat `../published/` directory together with an SHA-256
+  `true`. The first subsequent online build writes the versioned PDF under
+  `../published/online/` together with an SHA-256
   checksum and publication manifest. The editable draft export remains under
   `draft/`; technical closure protects the published artifact, not the source
   manuscript or its working export.
@@ -59,7 +59,7 @@ The builder writes:
 - `draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
   as the current editable export while `locked` is `false`;
 - the equivalent versioned PDF plus `.pdf.sha256` and `.publication.json` files
-  directly under the flat `../published/` directory only after explicit
+  under `../published/online/` only after explicit
   technical closure.
 
 When the Hungarian review manuscript is supplied with explicit `--source`,
@@ -67,8 +67,8 @@ When the Hungarian review manuscript is supplied with explicit `--source`,
 `illustrations.hu.json` and leaves the locked English edition untouched.
 
 Only the current editable PDF is retained under `draft/`. The matching locked
-public edition remains under `../published/` with its checksum and manifest;
-earlier edition history remains in `CHANGELOG.md` and Git.
+public edition remains under `../published/online/` with its checksum and
+manifest; earlier edition history remains in `CHANGELOG.md` and Git.
 
 The builder reads `version.json` and `metadata.json`; do not type a version or
 document metadata directly into the manuscript or generated HTML. Before
@@ -85,10 +85,28 @@ replace `The Story` or the literary subtitle `The City Between Us`.
 
 The build embeds `frontend/src/assets/logo/heart.png`. It needs Python 3,
 `google-chrome`, Inkscape, Ghostscript, `pdftk`, and the Poppler tools `pdftotext`,
-and `pdfseparate`. It needs no network access or third-party Python
-package. Full-bleed cover and part-opener pages are rendered separately and
-merged into the typeset book; vector ending ornaments are then stamped at a
-fixed bottom-of-page position.
+`pdfseparate`, `pdftoppm`, plus ImageMagick's `convert` and `identify`. It needs
+no network access or third-party Python package. Full-bleed cover and
+part-opener pages are rendered separately and merged into the typeset book;
+vector ending ornaments are then stamped at a fixed bottom-of-page position.
+
+## Paperback build
+
+The KDP-ready English paperback is a separate published format. Build its
+cover-free 6 × 9 inch interior and page-count-specific Standard Color wrap cover
+from the repository root with:
+
+```bash
+python3 guides/story/trilogy/01-the-city-between-us/book/build_public_book.py --paperback
+```
+
+The two upload PDFs are written under `../published/paperback/`. Paperback
+paragraphs are justified, hyperlinks are emitted as print text without PDF
+annotations, and the mirrored inside/outside margins stay above KDP's safe
+minimums. The wrap places the back cover on the left, the front cover on the
+right and computes the white-paper color spine from the final interior page
+count. KDP rounds an odd manuscript page count up to an even cover-calculation
+count; the builder applies the same rule.
 
 ## Ending ornament system
 

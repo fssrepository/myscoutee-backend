@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="{{TOTAL_WIDTH_IN}}in" height="9.25in"
+     viewBox="0 0 {{TOTAL_WIDTH_U}} 9250">
+  <title>MyScoutee Part I — KDP paperback cover — standard color, {{PAGE_COUNT}} pages</title>
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0.88" y2="1">
+      <stop offset="0" stop-color="#101b31"/>
+      <stop offset="0.55" stop-color="#16345d"/>
+      <stop offset="1" stop-color="#1c294f"/>
+    </linearGradient>
+    <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f6bc4d" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#f6bc4d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="violetGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#7653d7" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#7653d7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="{{TOTAL_WIDTH_U}}" height="9250" fill="url(#base)"/>
+  <ellipse cx="4700" cy="1300" rx="2700" ry="2200" fill="url(#goldGlow)"/>
+  <ellipse cx="1100" cy="7600" rx="2400" ry="2200" fill="url(#violetGlow)"/>
+
+  <image x="{{FRONT_X_U}}" y="{{FRONT_Y_U}}"
+         width="{{FRONT_WIDTH_U}}" height="{{FRONT_HEIGHT_U}}"
+         preserveAspectRatio="none" xlink:href="{{FRONT_ART_URI}}"/>
+
+  <g fill="#f6f2ea">
+    <text x="650" y="760" font-family="DejaVu Sans, sans-serif" font-size="145"
+          font-weight="bold" letter-spacing="34" fill="#f6bc4d">MYSCOUTEE ORIGIN STORY  •  PART I</text>
+
+    <text x="650" y="1480" font-family="DejaVu Serif, serif" font-size="330">
+      <tspan x="650" dy="0">How can a world crowded</tspan>
+      <tspan x="650" dy="410">with people leave so many of us</tspan>
+      <tspan x="650" dy="410">without a path to one another?</tspan>
+    </text>
+
+    <line x1="650" y1="2640" x2="5400" y2="2640" stroke="#f6bc4d" stroke-width="15" opacity="0.9"/>
+
+    <text x="650" y="3030" font-family="DejaVu Serif, serif" font-size="185" fill="#e9edf5">
+      <tspan x="650" dy="0" word-spacing="64.1" letter-spacing="10.4">In this first part of The MyScoutee Trilogy,</tspan>
+      <tspan x="650" dy="285" word-spacing="31.9" letter-spacing="4.7">Peter Szabo traces a life across Hungarian soil,</tspan>
+      <tspan x="650" dy="285" word-spacing="65.7" letter-spacing="7.5">Budapest, London, and nearly fifty countries.</tspan>
+      <tspan x="650" dy="285" word-spacing="12.8" letter-spacing="1.4">Rooms shared with strangers, missed connections,</tspan>
+      <tspan x="650" dy="285" word-spacing="29.1" letter-spacing="5.1">acts of trust, and the long road home gradually</tspan>
+      <tspan x="650" dy="285">reveal the question behind MyScoutee.</tspan>
+
+      <tspan x="650" dy="430" word-spacing="1.8" letter-spacing="0.3">Part memoir, part origin story, The City Between Us</tspan>
+      <tspan x="650" dy="285" word-spacing="51.2" letter-spacing="5.6">follows the experiences that turned loneliness,</tspan>
+      <tspan x="650" dy="285" word-spacing="33.2" letter-spacing="4.4">movement, and chance encounters into the first</tspan>
+      <tspan x="650" dy="285" word-spacing="6.3" letter-spacing="1.0">lines of a system designed to help mutual intention</tspan>
+      <tspan x="650" dy="285">become a real, freely chosen meeting.</tspan>
+    </text>
+
+    <text x="650" y="6760" font-family="DejaVu Serif, serif" font-size="225"
+          font-style="italic" fill="#f6d58f">
+      <tspan x="650" dy="0">This is not a promise of perfect matches.</tspan>
+      <tspan x="650" dy="350">It is the story of why the path matters.</tspan>
+    </text>
+
+    <text x="650" y="7890" font-family="DejaVu Sans, sans-serif" font-size="150"
+          font-weight="bold" letter-spacing="30" fill="#ffffff">PETER SZABO</text>
+    <text x="650" y="8250" font-family="DejaVu Sans, sans-serif" font-size="118"
+          letter-spacing="18" fill="#aebbd0">FIRST ENGLISH EDITION</text>
+    <text x="650" y="8530" font-family="DejaVu Sans, sans-serif" font-size="105"
+          letter-spacing="12" fill="#8f9db6">© 2026 MYSCOUTEE</text>
+  </g>
+{{SPINE_TEXT}}
+</svg>

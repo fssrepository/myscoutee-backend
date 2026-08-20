@@ -82,7 +82,8 @@ the complete word and never duplicates the `M`.
 - [book changelog](../book/CHANGELOG.md)
 - [browser edition](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
 - [current editable v1.0.0 PDF](../book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
-- [flat published-artifact contract](../published/README.md) — contains the
+- [published-artifact contract](../published/README.md) — separates the online
+  and paperback editions and contains the
   locked v1.0.0 PDF with SHA-256 checksum and publication manifest
 
 The illustrated edition contains text-wrapped portraits, portrait sets and wide
