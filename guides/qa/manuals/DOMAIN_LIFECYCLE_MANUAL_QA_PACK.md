@@ -5194,7 +5194,7 @@ Execution evidence on 2026-08-16 (PASS / CLOSED):
   owns only the Tournament-specific cutoff between terminal parent membership
   and the participant set materialized by Start.
 
-Execution progress on 2026-08-25 (post-commit rejection pending):
+Execution evidence on 2026-08-25 (PASS / CLOSED):
 
 - A scheduled Start was already in flight but stuck; Nova accepted before its
   materialization committed. Casey's visible assistance completed that one
@@ -5211,18 +5211,23 @@ Execution progress on 2026-08-25 (post-commit rejection pending):
   R2-ready notification. Empty `eventLeaderboardEntries` is expected before a
   score is submitted: the visible zero-point standings are derived from the
   generated group membership.
-- The remaining branch is Riley's pending invitation after the successful
-  materialization: `Accept` must be rejected without changing parent
-  membership, rooms, chats, standings, counters or notifications.
+- Riley then attempted `Accept` after the successful materialization. The UI
+  rejected it; the independent persisted oracle retained Riley pending and
+  proved parent membership, rooms, chats, standings, counters and
+  notifications unchanged. The fixture was reset after this proof.
 
 ### `TOURNAMENT-MEMBER-002` — active participant removal
 
 - From an isolated active tournament with generated rooms and one retained
   score row, Remove one accepted participant from the parent event.
 - Verify parent and generated-room active membership, room-chat authorization
-  and exact actor counters are revoked once. Any retained historical score
-  identity remains auditable and cannot become a live participant again by a
-  read or poll.
+  and exact actor counters are revoked once. The parent record becomes
+  `deleted`; the generated Group member record becomes `removed`. The
+  leaderboard query sorts the group-member state `A`, `DQ`, `R` first and the
+  normal score/FIFA ordering second. Its existing `#` cell shows the normal
+  number for `A`, and `DQ` or `R` for those terminal rows; it is not a new
+  column or a UI-side re-sort. Any retained historical score identity remains
+  auditable and cannot become a live participant again by a read or poll.
 - Remove is a membership exit, not DQ and not an event-level Block state. The
   remaining room membership and every unrelated resource owner/type are
   unchanged in place and after reload.

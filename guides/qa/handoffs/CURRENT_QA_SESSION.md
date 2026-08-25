@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 20:01 CEST
+Updated: 2026-08-25 20:52 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -38,19 +38,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-MEMBER-001 — first-stage materialization admission cutoff
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--first-stage-materialization-admission-cutoff
-scenario: XLS-driven Core execution order. Tournament priority is 11 (9/14 complete); this remains the first open Tournament row before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: MANUAL IN PROGRESS — post-materialization rejection pending
-state: A scheduled Qualifiers Start was already in flight but stuck when Nova accepted. Casey's one visible assistance committed the materialization: R1=Casey, R2=Nova; Riley remains the parent pending-invitation control. The contract is commit-level admission: an in-flight Start does not lock admission, but a successful first-stage materialization does. The Activities child-room counter write fix is validated: Nova has Events/Active Events=1 and one root parent card; Casey has the parent under My Events. R2 Standings contains Nova alone at 0; room-ready and invitation acceptance notifications were observed.
-required_resume: Do not reset or restage. Riley performs exactly one visible Accept attempt on the existing pending invitation. It must be rejected after the materialization commit. Then compare parent membership, rooms, chats, standings, user counters and notifications with the current persisted oracle. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this branch closes.
-event: manual-qa-checkpoint:v1:event-domain:event — QA TOURNAMENT-MEMBER-001
+checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
+scenario: XLS-driven Core execution order. Tournament priority is 11 (10/14 complete); TOURNAMENT-MEMBER-002 is now the first open Tournament row before TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
+state: The isolated fixture was reset after the invalid first Remove attempt, then staged cleanly at 2026-08-25T19:12:48.569Z. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. The fixture has no staged notification, scheduler or recompute work.
+required_resume: The prior attempt exposed the missing room cascade and was not evidence. After the hot-deploy fix, reset then stage this checkpoint once; do not open unrelated menus. Use the configured three sessions. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is `A`, `DQ`, `R` then score/FIFA tie-break; the existing `#` cell shows normal rank for A and `DQ`/`R` for terminal rows.
+event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
 actors:
-  Casey: Tournament host; completed the stuck materialization
-  Nova: accepted during the in-flight Start window and assigned to R2
-  Riley: pending post-commit negative control
-next_actor: Riley performs one visible Accept attempt
-stop_phrase: megvan
+  Casey: Tournament host and removal actor
+  removed participant: controlled accepted active room member
+  remaining participant: unchanged active-room control
+next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted oracle.
+stop_phrase: Remove action completed
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -141,9 +141,8 @@ audit added four unexecuted Tournament-specific cases: pre-Start terminal
 membership cutoff, active participant removal, DQ/Reinstate and generated-
 group resource aggregation, plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain remains 9/14 until the post-materialization Riley
-rejection closes `TOURNAMENT-MEMBER-001`; `CHAT-LIST-001` remains deferred
-until the open Tournament block is completed.
+Therefore the domain is now 10/14; `TOURNAMENT-MEMBER-002` is next and
+`CHAT-LIST-001` remains deferred until the open Tournament block is completed.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit

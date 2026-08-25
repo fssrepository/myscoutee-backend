@@ -656,6 +656,13 @@
       expected: "Before Start, Casey and Nova are the only accepted parent members while Riley remains the one pending invitation. After Casey starts Qualifiers once, Nova appears once in one generated room, leaderboard and group chat; Riley appears in none of them.",
       worker: "MUST NOT RUN a scheduler for the invitation acceptance. The one visible Start action owns the real grouping path; wait only for that documented path to finish."
     },
+    "TOURNAMENT-MEMBER-002": {
+      stage: "tournament-member-removal",
+      why: "Prove that removing an active Tournament participant exits its parent and generated-room participation without deleting the historical score identity.",
+      action: "As Casey, open QA TOURNAMENT-MEMBER-002 > Members and Remove Nova once. Do not disqualify or block Nova.",
+      expected: "Nova disappears from active parent and generated-room membership and loses the room chat. Her one existing score row remains an auditable historical row; Riley's room and counters remain unchanged.",
+      worker: "No scheduler or manual data repair. The one visible Remove action owns every membership, chat and counter change."
+    },
     "TOURNAMENT-003": {
       stage: "tournament",
       why: "Prove exact-once tournament review and advancement from one finalized stage.",
@@ -1222,7 +1229,11 @@
   }
 
   function isTournamentFixtureStage(stageKind) {
-    return ["tournament", "tournament-definition-draft", "tournament-member-cutoff"].includes(stageKind);
+    return ["tournament", "tournament-definition-draft", "tournament-member-cutoff", "tournament-member-removal"].includes(stageKind);
+  }
+
+  function isTournamentMemberRemovalStage(stageKind) {
+    return stageKind === "tournament-member-removal";
   }
 
   function materializeTournamentStageTimes(definitions, parentStartAtIso) {
@@ -1244,6 +1255,172 @@
         endAt: new Date(endMs).toISOString()
       };
     });
+  }
+
+  function tournamentMemberRemovalRoomChat(roomId, title, memberIds, ownerUserId, stagedAtIso) {
+    return {
+      _id: `${PREFIX}:tournament-member-removal:chat:${roomId}:${ownerUserId}`,
+      id: roomId,
+      ownerUserId,
+      avatar: TOURNAMENT_ROOM_IMAGE_URL,
+      title,
+      lastMessage: "",
+      lastSenderId: null,
+      memberIds: [...memberIds].sort(),
+      unread: 0,
+      dateIso: stagedAtIso,
+      channelType: "mainEvent",
+      ownerId: roomId,
+      eventId: roomId,
+      ownerStatus: "A",
+      revision: 1,
+      subEventId: null,
+      groupId: null
+    };
+  }
+
+  function stageTournamentMemberRemoval(stagedAtIso) {
+    const timing = { startAtIso: dateIso(-30), endAtIso: dateIso(180) };
+    const definitions = materializeTournamentStageTimes(tournamentStages(), timing.startAtIso)
+      .map((stage, index) => index === 0
+        ? {
+            ...stage,
+            stageStatus: "A",
+            stageStatusReason: "stage-started",
+            stageStatusUpdatedAt: stagedAtIso,
+            membersAccepted: 3,
+            membersPending: 0,
+            groupsCount: 2,
+            groupsPending: 0
+          }
+        : {
+            ...stage,
+            stageStatus: "RS",
+            stageStatusReason: "awaiting-prior-stage",
+            membersAccepted: 0,
+            membersPending: 0,
+            groupsCount: 0,
+            groupsPending: 0
+          });
+    const qualifier = definitions[0];
+    const groupAId = `${qualifier.id}:group:1`;
+    const groupBId = `${qualifier.id}:group:2`;
+    const roomAId = `random-room:${EVENT_ID}:${qualifier.id}:${groupAId}`;
+    const roomBId = `random-room:${EVENT_ID}:${qualifier.id}:${groupBId}`;
+    const parent = eventDocument(EVENT_ID, EXPECTED_TITLE, {
+      ...timing,
+      mode: "Tournament",
+      subEventsEnabled: true,
+      subEventDefinitions: definitions,
+      subEvents: definitions,
+      acceptedUserIds: [participantUserId, thirdUserId]
+    });
+    const room = (id, title, acceptedUserIds, groupId) => ({
+      _id: id,
+      sourceId: id,
+      syncKey: `scheduler:${id}`,
+      title,
+      subtitle: `Tournament group for ${EXPECTED_TITLE}.`,
+      status: "A",
+      published: true,
+      ownerUserId: null,
+      creatorUserId: null,
+      organizerUserId: hostUserId,
+      admins: [],
+      visibility: "Invitation only",
+      blindMode: "Open Event",
+      autoInviter: false,
+      ticketing: false,
+      approvalRequired: false,
+      capacityMin: 1,
+      capacityMax: 2,
+      capacityTotal: 2,
+      acceptedMembers: acceptedUserIds.length,
+      pendingMembers: 0,
+      acceptedMemberUserIds: acceptedUserIds,
+      pendingMemberUserIds: [],
+      invitedMemberUserIds: [],
+      pendingRequestMemberUserIds: [],
+      subEvents: [],
+      subEventsEnabled: false,
+      subEventDefinitions: [],
+      mode: "Tournament",
+      topics: ["Manual QA"],
+      imageUrl: TOURNAMENT_ROOM_IMAGE_URL,
+      startAtIso: timing.startAtIso,
+      endAtIso: timing.endAtIso,
+      parentEventId: EVENT_ID,
+      generated: true,
+      eventType: "tournament-room",
+      groupId,
+      createdDate: stagedAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: stagedAtIso,
+      updatedUser: Q.ACTOR
+    });
+    Q.collection("events").insertMany([
+      parent,
+      room(roomAId, "Tournament Group A", [hostUserId, participantUserId], groupAId),
+      room(roomBId, "Tournament Group B", [thirdUserId], groupBId)
+    ]);
+    Q.collection("activityMembers").insertMany([
+      memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+      memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
+      memberDocument(EVENT_ID, thirdUserId, "Member", "accepted"),
+      memberDocument(roomAId, hostUserId, "Member", "accepted"),
+      memberDocument(roomAId, participantUserId, "Member", "accepted"),
+      memberDocument(roomBId, thirdUserId, "Member", "accepted")
+    ]);
+    const runtimeId = `${PREFIX}:tournament-member-removal:runtime:qualifiers`;
+    Q.collection("activitySubEventStageRuntime").insertOne({
+      _id: runtimeId,
+      syncKey: runtimeId,
+      recordId: `${EVENT_ID}:${qualifier.id}`,
+      status: "A",
+      ownerId: EVENT_ID,
+      subEventId: qualifier.id,
+      stageStatus: "A",
+      stageStatusReason: "stage-started",
+      stageStatusUpdatedAt: stagedAtIso,
+      groupsCount: 2,
+      groupResourceMetricsByAssetOwnerId: {},
+      createdDate: stagedAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: stagedAtIso,
+      updatedUser: Q.ACTOR
+    });
+    Q.collection("eventLeaderboardEntries").insertOne({
+      _id: `${PREFIX}:tournament-member-removal:score:nova`,
+      syncKey: `${PREFIX}:tournament-member-removal:score:nova`,
+      eventId: EVENT_ID,
+      subEventId: qualifier.id,
+      groupId: groupAId,
+      entryType: "score",
+      memberId: participantUserId,
+      scoreValue: 7,
+      note: "Manual QA retained removal-history score",
+      createdAtIso: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    });
+    Q.collection("chats").insertMany([
+      tournamentMemberRemovalRoomChat(roomAId, "Tournament Group A", [hostUserId, participantUserId], hostUserId, stagedAtIso),
+      tournamentMemberRemovalRoomChat(roomAId, "Tournament Group A", [hostUserId, participantUserId], participantUserId, stagedAtIso),
+      tournamentMemberRemovalRoomChat(roomBId, "Tournament Group B", [thirdUserId], thirdUserId, stagedAtIso)
+    ]);
+    // The fixture bypasses normal writes only while establishing its baseline.
+    // Its post-Remove counters are produced exclusively by the application write.
+    applyEventActivityCounterDeltas(hostUserId, {
+      menu: { hosting: 1 }, event: { all: 1, hosting: 1 }
+    });
+    applyEventActivityCounterDeltas(participantUserId, {
+      menu: { events: 1 }, event: { all: 1, active: 1 }
+    });
+    applyEventActivityCounterDeltas(thirdUserId, {
+      menu: { events: 1 }, event: { all: 1, active: 1 }
+    });
+    return { qualifierId: qualifier.id, groupAId, groupBId, roomAId, roomBId };
   }
 
   function casualSlotDefinitions() {
@@ -2041,6 +2218,9 @@
         })
       ]);
       return;
+    }
+    if (isTournamentMemberRemovalStage(stageKind)) {
+      return stageTournamentMemberRemoval(stagedAtIso);
     }
     if (isTournamentFixtureStage(stageKind)) {
       const definitions = tournamentStages();
@@ -7399,7 +7579,7 @@
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
-    if (["invitation-ordinary", "invitation-full", "invitation-visibility", "tournament", "tournament-definition-draft", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
+    if (["invitation-ordinary", "invitation-full", "invitation-visibility", "tournament", "tournament-definition-draft", "tournament-member-removal", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
         || checkpointId === "EVENT-INV-003"
         || checkpointId === "EVENT-FEEDBACK-002"
         || hasTicketPendingControl()
@@ -7458,17 +7638,25 @@
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {
       clearFixture();
-      stageData(selected.stage, stagedAtIso, runtimeContext);
+      const stagedContext = stageData(selected.stage, stagedAtIso, runtimeContext) || {};
+      if (isTournamentMemberRemovalStage(selected.stage)) {
+        Object.assign(state.context, stagedContext);
+      }
       if (selected.stage.startsWith("invitation-")) {
         synchronizeEventActivityCounters(invitationFixtureUserIds(selected.stage));
       }
-      if (isTournamentFixtureStage(selected.stage)) {
+      if (isTournamentFixtureStage(selected.stage) && !isTournamentMemberRemovalStage(selected.stage)) {
         synchronizeEventActivityCounters([hostUserId, participantUserId, thirdUserId]);
+      }
+      if (isTournamentFixtureStage(selected.stage)) {
         state.actionBaselineUserActivitySnapshots = [hostUserId, participantUserId, thirdUserId]
           .map(userActivitiesSnapshot);
         Q.collection(Q.STATE_COLLECTION).updateOne(
           { _id: state._id },
-          { $set: { actionBaselineUserActivitySnapshots: state.actionBaselineUserActivitySnapshots } }
+          { $set: {
+            context: state.context,
+            actionBaselineUserActivitySnapshots: state.actionBaselineUserActivitySnapshots
+          } }
         );
       }
       if (checkpointId.startsWith("EVENT-LIFE-")) {
@@ -9905,6 +10093,145 @@
     });
   }
 
+  function tournamentMemberRemovalSnapshot(state) {
+    const context = state && state.context ? state.context : {};
+    const roomIds = [Q.text(context.roomAId), Q.text(context.roomBId)].filter(Boolean);
+    const ownerIds = [EVENT_ID, ...roomIds];
+    const eventBySourceId = new Map(Q.collection("events").find({ sourceId: { $in: ownerIds } })
+      .toArray().map(item => [Q.text(item.sourceId), item]));
+    const activeMemberIds = ownerId => Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId,
+      status: { $in: ["accepted", "pending"] }
+    }).toArray().map(member => Q.text(member.userId)).sort();
+    const storedMemberStatus = (ownerId, userId) => {
+      const member = Q.collection("activityMembers").findOne({
+        ownerType: "event",
+        ownerId,
+        userId
+      });
+      return Q.text(member && member.status).toLowerCase();
+    };
+    const roomChats = roomIds.flatMap(roomId => Q.collection("chats").find({ eventId: roomId })
+      .toArray().map(chat => ({
+        roomId,
+        ownerUserId: Q.text(chat.ownerUserId),
+        memberIds: sortedUnique(chat.memberIds || []),
+        chatId: Q.text(chat.id || chat.chatId)
+      })));
+    const score = Q.collection("eventLeaderboardEntries").findOne({
+      _id: `${PREFIX}:tournament-member-removal:score:nova`
+    });
+    const counter = userId => {
+      const user = Q.ensureUser(userId, "tournament-member-removal user");
+      return {
+        userId,
+        events: nestedNumber(user, "activities.events"),
+        eventAll: nestedNumber(user, "activities.event.all"),
+        eventActive: nestedNumber(user, "activities.event.active")
+      };
+    };
+    return {
+      parent: {
+        acceptedMemberUserIds: sortedUnique((eventBySourceId.get(EVENT_ID) || {}).acceptedMemberUserIds || []),
+        activeMemberUserIds: activeMemberIds(EVENT_ID),
+        status: Q.text((eventBySourceId.get(EVENT_ID) || {}).status),
+        novaMembershipStatus: storedMemberStatus(EVENT_ID, participantUserId)
+      },
+      rooms: roomIds.map(roomId => ({
+        roomId,
+        acceptedMemberUserIds: sortedUnique((eventBySourceId.get(roomId) || {}).acceptedMemberUserIds || []),
+        activeMemberUserIds: activeMemberIds(roomId),
+        status: Q.text((eventBySourceId.get(roomId) || {}).status),
+        novaMembershipStatus: storedMemberStatus(roomId, participantUserId)
+      })),
+      roomChats,
+      retainedScore: score ? {
+        id: Q.text(score._id),
+        eventId: Q.text(score.eventId),
+        subEventId: Q.text(score.subEventId),
+        groupId: Q.text(score.groupId),
+        memberId: Q.text(score.memberId),
+        scoreValue: Number(score.scoreValue || 0),
+        note: Q.text(score.note)
+      } : null,
+      counters: [hostUserId, participantUserId, thirdUserId].map(counter)
+    };
+  }
+
+  function counterFromSnapshot(snapshots, userId) {
+    const saved = (snapshots || []).find(item => Q.text(item.userId) === userId);
+    const activities = saved && saved.activities && saved.activities.present
+      ? saved.activities.value || {}
+      : {};
+    return {
+      events: nestedNumber(activities, "events"),
+      eventAll: nestedNumber(activities, "event.all"),
+      eventActive: nestedNumber(activities, "event.active")
+    };
+  }
+
+  function verifyTournamentMemberRemoval() {
+    if (checkpointId !== "TOURNAMENT-MEMBER-002") {
+      Q.fail("verify-tournament-member-removal is only valid for TOURNAMENT-MEMBER-002.");
+    }
+    const state = requireMatchingState();
+    const current = tournamentMemberRemovalSnapshot(state);
+    const roomA = current.rooms.find(item => item.roomId === Q.text(state.context.roomAId));
+    const roomB = current.rooms.find(item => item.roomId === Q.text(state.context.roomBId));
+    const novaCounter = current.counters.find(item => item.userId === participantUserId);
+    const caseyCounter = current.counters.find(item => item.userId === hostUserId);
+    const rileyCounter = current.counters.find(item => item.userId === thirdUserId);
+    const beforeNova = counterFromSnapshot(state.actionBaselineUserActivitySnapshots, participantUserId);
+    const beforeCasey = counterFromSnapshot(state.actionBaselineUserActivitySnapshots, hostUserId);
+    const beforeRiley = counterFromSnapshot(state.actionBaselineUserActivitySnapshots, thirdUserId);
+    const expectedScore = {
+      id: `${PREFIX}:tournament-member-removal:score:nova`,
+      eventId: EVENT_ID,
+      subEventId: Q.text(state.context.qualifierId),
+      groupId: Q.text(state.context.groupAId),
+      memberId: participantUserId,
+      scoreValue: 7,
+      note: "Manual QA retained removal-history score"
+    };
+    const novaHasRoomChat = current.roomChats.some(chat => (
+      chat.ownerUserId === participantUserId || chat.memberIds.includes(participantUserId)));
+    if (!current.parent
+        || current.parent.status !== "A"
+        || current.parent.activeMemberUserIds.includes(participantUserId)
+        || current.parent.acceptedMemberUserIds.includes(participantUserId)
+        || current.parent.novaMembershipStatus !== "deleted"
+        || !roomA || !roomB
+        || roomA.status !== "A" || roomB.status !== "A"
+        || roomA.activeMemberUserIds.includes(participantUserId)
+        || roomA.acceptedMemberUserIds.includes(participantUserId)
+        || roomA.novaMembershipStatus !== "removed"
+        || roomA.novaMembershipStatus === "disqualified"
+        || novaHasRoomChat
+        || !roomB.activeMemberUserIds.includes(thirdUserId)
+        || !roomB.acceptedMemberUserIds.includes(thirdUserId)
+        || !sameJson(current.retainedScore, expectedScore)
+        || !novaCounter
+        || novaCounter.events !== Math.max(0, beforeNova.events - 1)
+        || novaCounter.eventAll !== Math.max(0, beforeNova.eventAll - 1)
+        || novaCounter.eventActive !== Math.max(0, beforeNova.eventActive - 1)
+        || !sameJson(caseyCounter && {
+          events: caseyCounter.events, eventAll: caseyCounter.eventAll, eventActive: caseyCounter.eventActive
+        }, beforeCasey)
+        || !sameJson(rileyCounter && {
+          events: rileyCounter.events, eventAll: rileyCounter.eventAll, eventActive: rileyCounter.eventActive
+        }, beforeRiley)) {
+      Q.fail("TOURNAMENT-MEMBER-002 did not write parent=deleted and Group A=removed exactly once while retaining Nova's immutable score and Riley control.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "tournament-member-removal-verified",
+      oracle: current,
+      next: "Reload Casey and Nova once. In Group A standings confirm Nova's retained 7-point row is at the end with R in the existing # cell; confirm it cannot advance or reopen the parent/room, then record PASS/CLOSED and reset."
+    });
+  }
+
   function verifyTicketPollResume() {
     if (checkpointId !== "EVENT-TICKET-POLL-001") {
       Q.fail("verify-ticket-poll-resume is only valid for EVENT-TICKET-POLL-001.");
@@ -11532,6 +11859,7 @@
         ? resetTournamentCard()
         : reset(); break;
     case "verify-tournament-room-life-baseline": verifyTournamentRoomLifeBaseline(); break;
+    case "verify-tournament-member-removal": verifyTournamentMemberRemoval(); break;
     case "verify-tournament-card-transition": verifyTournamentCardTransition(); break;
     case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
     case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;

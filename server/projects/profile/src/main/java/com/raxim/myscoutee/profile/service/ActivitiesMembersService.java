@@ -66,6 +66,7 @@ public class ActivitiesMembersService {
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_INVITED = "I";
     private static final String STATUS_DELETED = "deleted";
+    private static final String STATUS_REMOVED = "removed";
     private static final String STATUS_SUPPRESSED = "suppressed";
     private static final String RESOURCE_STATUS_DELETED = "D";
     private static final String STATUS_DISQUALIFIED = "disqualified";
@@ -93,7 +94,7 @@ public class ActivitiesMembersService {
     private static final Set<String> SUPPRESSIBLE_STATUSES =
             Set.of(STATUS_ACCEPTED, STATUS_PENDING, STATUS_INVITED, STATUS_DISQUALIFIED);
     private static final Set<String> HIDDEN_MEMBERSHIP_STATUSES =
-            Set.of(STATUS_DELETED, STATUS_SUPPRESSED);
+            Set.of(STATUS_DELETED, STATUS_SUPPRESSED, STATUS_REMOVED);
     private static final Set<String> ADMIN_ROLES = Set.of("Admin");
     private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
     private static final DateTimeFormatter SLOT_DATE_FORMATTER = DateTimeFormatter
@@ -426,6 +427,28 @@ public class ActivitiesMembersService {
         return member != null
                 && STATUS_PENDING.equals(normalizeStatus(member.getStatus()))
                 && isInvitationMembership(member);
+    }
+
+    /**
+     * Reads the stored membership state without applying the normal Members-view
+     * visibility filter. Tournament standings use this for terminal group-room
+     * states, so the standings never infer a removal from an event projection.
+     */
+    public Map<String, String> queryStoredMemberStatuses(String ownerType, String ownerId) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
+            return Map.of();
+        }
+        Map<String, String> statusesByUserId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository
+                .findByOwnerTypeAndOwnerId(normalizedOwnerType, normalizedOwnerId)) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                statusesByUserId.put(userId, normalizeStatus(member.getStatus()));
+            }
+        }
+        return Map.copyOf(statusesByUserId);
     }
 
     public boolean pendingInvitationRequiresAdminApproval(String eventId, String userId) {
@@ -893,7 +916,7 @@ public class ActivitiesMembersService {
                 .filter(Objects::nonNull)
                 .filter(member -> !retainedUserIds.contains(normalizeId(member.getUserId())))
                 .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
-                .map(member -> toDeletedMember(member, actorUserId, nowIso))
+                .map(member -> toRemovedMember(member, actorUserId, nowIso))
                 .toList();
         List<ActivityMember> membersToSave = new ArrayList<>(nextDocuments);
         membersToSave.addAll(removedMembers);
@@ -1153,6 +1176,16 @@ public class ActivitiesMembersService {
             }
         } else {
             activityMembersRepository.save(next);
+        }
+
+        if (OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_ACCEPTED.equals(currentStatus)) {
+            removeGeneratedTournamentRoomParticipation(
+                    ownerId,
+                    targetUserId,
+                    actorUserId,
+                    nowIso);
         }
 
         boolean removingPendingEventMembership = OWNER_TYPE_EVENT.equals(ownerType)
@@ -1830,6 +1863,52 @@ public class ActivitiesMembersService {
             membersByOwner.put(ownerKey(member.getOwnerType(), member.getOwnerId()), member);
         }
         return List.copyOf(membersByOwner.values());
+    }
+
+    private void removeGeneratedTournamentRoomParticipation(
+            String parentEventId,
+            String targetUserId,
+            String actorUserId,
+            String nowIso) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        if (!StringUtils.hasText(normalizedParentEventId)
+                || !StringUtils.hasText(normalizedTargetUserId)) {
+            return;
+        }
+        Map<String, ActivityEvent> roomsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent room : activityEventsRepository
+                .findByParentEventIdIn(List.of(normalizedParentEventId))) {
+            String roomSourceId = normalizeId(room == null ? null : room.getSourceId());
+            if (!StringUtils.hasText(roomSourceId)
+                    || !Boolean.TRUE.equals(room.getGenerated())
+                    || !TOURNAMENT_ROOM_EVENT_TYPE.equalsIgnoreCase(safeText(room.getEventType()))) {
+                continue;
+            }
+            roomsBySourceId.putIfAbsent(roomSourceId, room);
+        }
+        if (roomsBySourceId.isEmpty()) {
+            return;
+        }
+        List<ActivityMember> removedRoomMembers = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, roomsBySourceId.keySet())
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(member -> normalizedTargetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
+                .map(member -> toDeletedMember(member, actorUserId, nowIso))
+                .toList();
+        if (removedRoomMembers.isEmpty()) {
+            return;
+        }
+        activityMembersRepository.saveAll(removedRoomMembers);
+        refreshEmbeddedEventMembersBatch(roomsBySourceId.keySet());
+        for (Map.Entry<String, ActivityEvent> entry : roomsBySourceId.entrySet()) {
+            OwnerMembersSnapshot roomMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, entry.getKey());
+            if (roomMembers != null && !roomMembers.acceptedMemberUserIds().isEmpty()) {
+                chatService.ensureMainEventChat(entry.getValue(), roomMembers.acceptedMemberUserIds());
+            }
+        }
     }
 
     private boolean isInEventParticipationTree(ActivityMember member, String rootEventId) {
@@ -3735,6 +3814,9 @@ public class ActivitiesMembersService {
         if (STATUS_DELETED.equals(normalizedStatus)) {
             return "Deleted";
         }
+        if (STATUS_REMOVED.equals(normalizedStatus)) {
+            return "Removed";
+        }
         if (STATUS_SUPPRESSED.equals(normalizedStatus)) {
             return "Suppressed";
         }
@@ -3865,6 +3947,23 @@ public class ActivitiesMembersService {
         }
         ActivityMember next = cloneMember(member);
         next.setStatus(STATUS_DELETED);
+        next.setStatusBeforeSuppression(null);
+        next.setSuppressionRootOwnerId(null);
+        next.setSuppressedAtIso(null);
+        next.setPendingSource(null);
+        next.setRequestKind(null);
+        next.setActionAtIso(nowIso);
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
+        return next;
+    }
+
+    private ActivityMember toRemovedMember(ActivityMember member, String actorUserId, String nowIso) {
+        if (member == null) {
+            return null;
+        }
+        ActivityMember next = cloneMember(member);
+        next.setStatus(STATUS_REMOVED);
         next.setStatusBeforeSuppression(null);
         next.setSuppressionRootOwnerId(null);
         next.setSuppressedAtIso(null);
@@ -4628,6 +4727,9 @@ public class ActivitiesMembersService {
         if (STATUS_DELETED.equals(normalizedStatus)) {
             return STATUS_DELETED;
         }
+        if (STATUS_REMOVED.equals(normalizedStatus)) {
+            return STATUS_REMOVED;
+        }
         if (STATUS_SUPPRESSED.equals(normalizedStatus)) {
             return STATUS_SUPPRESSED;
         }
@@ -4874,6 +4976,9 @@ public class ActivitiesMembersService {
         }
         if (STATUS_DELETED.equals(status)) {
             return "No longer active in this event.";
+        }
+        if (STATUS_REMOVED.equals(status)) {
+            return "Removed from this tournament group.";
         }
         if (STATUS_DISQUALIFIED.equals(status)) {
             return "Disqualified from this event.";

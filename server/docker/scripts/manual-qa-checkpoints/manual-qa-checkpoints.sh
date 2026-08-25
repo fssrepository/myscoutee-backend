@@ -66,6 +66,7 @@ Usage:
   bash manual-qa-checkpoints.sh prepare-tournament-final-completion-retest event-domain TOURNAMENT-004
   bash manual-qa-checkpoints.sh verify-tournament-final-completion event-domain TOURNAMENT-004
   bash manual-qa-checkpoints.sh verify-tournament-room-life-baseline event-domain TOURNAMENT-ROOM-LIFE-001
+  bash manual-qa-checkpoints.sh verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
@@ -360,6 +361,11 @@ case "${scenario}:${command}" in
   event-domain:repair-tournament-admission-root-projection)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-ADMISSION-001" ] || fail "${command} is restricted to TOURNAMENT-ADMISSION-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-member-removal)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-MEMBER-002" ] || fail "${command} is restricted to TOURNAMENT-MEMBER-002."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:rearm-score-reopen|\

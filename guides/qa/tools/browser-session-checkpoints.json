@@ -390,6 +390,33 @@
         }
       ]
     },
+    "TOURNAMENT-MEMBER-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · removes Nova once"
+        },
+        {
+          "actor": "Nova removed active participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · active Group A member before Remove"
+        },
+        {
+          "actor": "Riley unchanged room control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · active Group B control"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2
