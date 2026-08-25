@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 20:52 CEST
+Updated: 2026-08-25 21:52 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,7 +42,7 @@ checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
 scenario: XLS-driven Core execution order. Tournament priority is 11 (10/14 complete); TOURNAMENT-MEMBER-002 is now the first open Tournament row before TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
 ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: The isolated fixture was reset after the invalid first Remove attempt, then staged cleanly at 2026-08-25T19:16:15.150Z. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. The fixture has no staged notification, scheduler or recompute work.
+state: The isolated fixture was reset and staged cleanly at 2026-08-25T19:52:11.475Z. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. The fixture has no staged notification, scheduler or recompute work. Three isolated managed browser sessions were relaunched from this baseline.
 required_resume: The prior attempt exposed the missing room cascade and was not evidence. After the hot-deploy fix, reset then stage this checkpoint once; do not open unrelated menus. Use the configured three sessions. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is `A`, `DQ`, `R` then score/FIFA tie-break; the existing `#` cell shows normal rank for A and `DQ`/`R` for terminal rows.
 event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
 actors:
