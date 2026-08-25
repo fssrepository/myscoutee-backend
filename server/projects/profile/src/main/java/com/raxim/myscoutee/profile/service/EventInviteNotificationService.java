@@ -198,6 +198,93 @@ public class EventInviteNotificationService {
                 StringUtils.hasText(senderUserId) ? senderUserId : null));
     }
 
+    public void notifyTournamentRoomMemberRemoved(
+            ActivityEvent roomEvent,
+            String parentEventId,
+            String removedUserId,
+            String removedUserName,
+            String removedAtIso,
+            String actorUserId,
+            List<String> remainingRoomUserIds) {
+        if (roomEvent == null) {
+            return;
+        }
+        String roomEventId = safeText(roomEvent.getSourceId());
+        String memberUserId = safeText(removedUserId);
+        String senderUserId = safeText(actorUserId);
+        if (!StringUtils.hasText(roomEventId) || !StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        String roomTitle = resolveTitle(roomEvent);
+        String memberName = StringUtils.hasText(safeText(removedUserName))
+                ? safeText(removedUserName)
+                : memberUserId;
+        String occurrenceId = UUID.randomUUID().toString();
+        Map<String, String> commonPayload = new LinkedHashMap<>();
+        commonPayload.put("eventId", roomEventId);
+        commonPayload.put("parentEventId", safeText(parentEventId));
+        commonPayload.put("eventTitle", roomTitle);
+        commonPayload.put("eventScope", "tournament-room");
+        commonPayload.put("memberUserId", memberUserId);
+        commonPayload.put("memberName", memberName);
+        commonPayload.put("membershipAction", "removed");
+        commonPayload.put("notification_tone", "warning");
+        commonPayload.put("removalOccurrenceId", occurrenceId);
+        if (StringUtils.hasText(senderUserId)) {
+            commonPayload.put("senderUserId", senderUserId);
+        }
+        if (StringUtils.hasText(safeText(removedAtIso))) {
+            commonPayload.put("removedAtIso", safeText(removedAtIso));
+        }
+
+        if (!memberUserId.equals(senderUserId)) {
+            Map<String, String> targetPayload = new LinkedHashMap<>(commonPayload);
+            targetPayload.put("recipientRole", "removed-member");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-tournament-room-member-removed",
+                    "event",
+                    roomEventId,
+                    "removed-member",
+                    List.of(memberUserId),
+                    roomTitle,
+                    "You were removed from " + roomTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(roomEvent),
+                    APP_BADGE_URL,
+                    "event-tournament-room-member-removed-" + roomEventId + "-" + memberUserId,
+                    targetPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+
+        LinkedHashSet<String> peerRecipients = new LinkedHashSet<>();
+        if (remainingRoomUserIds != null) {
+            remainingRoomUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(peerRecipients::add);
+        }
+        peerRecipients.remove(memberUserId);
+        peerRecipients.remove(senderUserId);
+        if (!peerRecipients.isEmpty()) {
+            Map<String, String> peerPayload = new LinkedHashMap<>(commonPayload);
+            peerPayload.put("recipientRole", "room-peer");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-tournament-room-member-removed",
+                    "event",
+                    roomEventId,
+                    "room-peers",
+                    List.copyOf(peerRecipients),
+                    roomTitle,
+                    memberName + " was removed from " + roomTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(roomEvent),
+                    APP_BADGE_URL,
+                    "event-tournament-room-member-removed-" + roomEventId + "-" + memberUserId,
+                    peerPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+    }
+
     public void notifyJoinRequested(
             ActivityEvent event,
             String memberUserId,

@@ -47,6 +47,7 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.ActivitiesMembersService.StoredMemberState;
 
 @Service
 public class ActivitiesEventLeaderboardService {
@@ -573,9 +574,16 @@ public class ActivitiesEventLeaderboardService {
         GeneratorModels.ScoreGeneratorResult result) {
         String groupId = normalizeId(group.id());
         List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(eventId, subEventId, group, entries);
-        Map<String, String> memberStatusesById = resolveGroupMemberStatuses(eventId, subEventId, groupId);
+        Map<String, StoredMemberState> memberStatesById = resolveGroupMemberStates(eventId, subEventId, groupId);
+        Map<String, String> memberStatusesById = new LinkedHashMap<>();
+        memberStatesById.forEach((memberId, state) -> memberStatusesById.put(memberId, state.status()));
         Map<String, String> memberNameById = members.stream()
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
+        memberStatesById.forEach((memberId, state) -> {
+            if (StringUtils.hasText(state.name())) {
+                memberNameById.putIfAbsent(memberId, state.name());
+            }
+        });
 
         List<EventLeaderboardScoreEntryDto> scoreEntries = entries.stream()
                 .filter(entry -> "score".equals(normalizeId(entry.getEntryType())))
@@ -660,26 +668,26 @@ public class ActivitiesEventLeaderboardService {
                 fifaRows);
     }
 
-    private Map<String, String> resolveGroupMemberStatuses(
+    private Map<String, StoredMemberState> resolveGroupMemberStates(
             String eventId,
             String subEventId,
             String groupId) {
         String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, groupId);
-        Map<String, String> randomRoomStatuses = activitiesMembersService
-                .queryStoredMemberStatuses(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId);
-        if (!randomRoomStatuses.isEmpty()
+        Map<String, StoredMemberState> randomRoomStates = activitiesMembersService
+                .queryStoredMemberStates(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId);
+        if (!randomRoomStates.isEmpty()
                 || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId)) {
-            return randomRoomStatuses;
+            return randomRoomStates;
         }
         String memberOwnerId = groupMemberOwnerId(eventId, subEventId, groupId);
-        Map<String, String> canonicalStatuses = activitiesMembersService
-                .queryStoredMemberStatuses(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
-        if (!canonicalStatuses.isEmpty()
+        Map<String, StoredMemberState> canonicalStates = activitiesMembersService
+                .queryStoredMemberStates(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
+        if (!canonicalStates.isEmpty()
                 || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId)
                 || memberOwnerId.equals(normalizeId(groupId))) {
-            return canonicalStatuses;
+            return canonicalStates;
         }
-        return activitiesMembersService.queryStoredMemberStatuses(MEMBER_OWNER_TYPE_GROUP, normalizeId(groupId));
+        return activitiesMembersService.queryStoredMemberStates(MEMBER_OWNER_TYPE_GROUP, normalizeId(groupId));
     }
 
     private String participantState(String membershipStatus) {
