@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/activity/components/activities-popup/templates/chat/activities-chat-template.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  min-width: 0;\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;AACA,aAAA;;",
+  "names": []
+}

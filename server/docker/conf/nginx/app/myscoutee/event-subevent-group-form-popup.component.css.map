@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/activity/components/event-subevent-group-form-popup/event-subevent-group-form-popup.component.scss"],
+  "sourcesContent": [":host {\n  display: contents;\n}\n\n\n.subevent-group-flow {\n  display: block;\n  min-height: 11.5rem;\n  overflow: hidden;\n}\n\n@media (max-width: 760px) {\n  .subevent-group-flow {\n    min-height: 11.5rem;\n  }\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;;AAIF,CAAA;AACE,WAAA;AACA,cAAA;AACA,YAAA;;AAGF,QAAA,WAAA;AACE,GAPF;AAQI,gBAAA;;;",
+  "names": []
+}

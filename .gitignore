@@ -71,7 +71,7 @@ Thumbs.db
 /**/CMakeCache.txt
 /**/cmake_install.cmake
 
-/server/docker/conf/nginx/app/myscoutee
+/server/docker/conf/nginx/app/myscoutee/.frontend-ready
 
 # local secrets
 /server/.env.secret

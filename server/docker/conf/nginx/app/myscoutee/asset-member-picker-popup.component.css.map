@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/asset/components/asset-member-picker-popup/asset-member-picker-popup.component.scss"],
+  "sourcesContent": [":host {\n  display: contents;\n}\n\n.asset-member-picker-content {\n  height: 100%;\n  min-height: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 0.58rem;\n}\n\n.asset-member-picker-confirm-error {\n  margin: -0.12rem 0 0;\n  color: #a32f3d;\n  font-size: 0.76rem;\n  font-weight: 700;\n}\n\n.asset-member-picker-smart-list {\n  display: flex;\n  flex: 1 1 auto;\n  min-height: 0;\n  height: 100%;\n  touch-action: pan-y;\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,UAAA;AACA,cAAA;AACA,WAAA;AACA,kBAAA;AACA,OAAA;;AAGF,CAAA;AACE,UAAA,SAAA,EAAA;AACA,SAAA;AACA,aAAA;AACA,eAAA;;AAGF,CAAA;AACE,WAAA;AACA,QAAA,EAAA,EAAA;AACA,cAAA;AACA,UAAA;AACA,gBAAA;;",
+  "names": []
+}

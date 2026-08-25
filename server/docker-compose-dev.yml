@@ -56,7 +56,9 @@ services:
       profilemanagement:
         condition: service_healthy
       frontend-sync:
-        condition: service_healthy
+        # Keep serving the last committed static build while the watcher prepares
+        # a newer one; a missing dependency build must not block Nginx startup.
+        condition: service_started
       #- certbot
     #command: ["/scripts/wait-for-it.sh", "-t", "0", "profilemanagement:8080", "--", "nginx", "-g", "daemon off;"]
   mongodb:

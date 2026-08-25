@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/admin/components/admin-help-session-page/admin-help-session-page.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  min-height: 100vh;\n  background: #eef3fb;\n}\n\n.admin-help-session-error {\n  min-height: 100vh;\n  display: grid;\n  place-items: center;\n  padding: 24px;\n}\n\n.admin-help-session-error__panel {\n  width: min(420px, 100%);\n  padding: 20px;\n  border: 1px solid rgba(86, 112, 150, 0.22);\n  border-radius: 8px;\n  background: #fff;\n  color: #243145;\n  box-shadow: 0 18px 48px rgba(36, 49, 69, 0.12);\n}\n\n.admin-help-session-error__actions {\n  display: flex;\n  gap: 10px;\n  flex-wrap: wrap;\n  margin-top: 16px;\n}\n\n.admin-help-session-error__actions button {\n  min-height: 36px;\n  padding: 0 14px;\n  border: 1px solid rgba(86, 112, 150, 0.24);\n  border-radius: 8px;\n  background: #f7f9fc;\n  color: #243145;\n  cursor: pointer;\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;AACA,cAAA;AACA,cAAA;;AAGF,CAAA;AACE,cAAA;AACA,WAAA;AACA,eAAA;AACA,WAAA;;AAGF,CAAA;AACE,SAAA,IAAA,KAAA,EAAA;AACA,WAAA;AACA,UAAA,IAAA,MAAA,KAAA,EAAA,EAAA,GAAA,EAAA,GAAA,EAAA;AACA,iBAAA;AACA,cAAA;AACA,SAAA;AACA,cAAA,EAAA,KAAA,KAAA,KAAA,EAAA,EAAA,EAAA,EAAA,EAAA,EAAA;;AAGF,CAAA;AACE,WAAA;AACA,OAAA;AACA,aAAA;AACA,cAAA;;AAGF,CAPA,kCAOA;AACE,cAAA;AACA,WAAA,EAAA;AACA,UAAA,IAAA,MAAA,KAAA,EAAA,EAAA,GAAA,EAAA,GAAA,EAAA;AACA,iBAAA;AACA,cAAA;AACA,SAAA;AACA,UAAA;;",
+  "names": []
+}

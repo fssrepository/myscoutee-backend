@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/ui/components/core/menu/outlet/menu-outlet.component.scss"],
+  "sourcesContent": [":host {\n  --app-menu-outlet-overlay-z-index: 19000;\n  --app-menu-outlet-contained-z-index: 35;\n  position: fixed;\n  z-index: var(--app-menu-outlet-overlay-z-index);\n  display: none;\n  width: 0;\n  height: 0;\n  overflow: visible;\n}\n\n:host(.app-menu-outlet--open) {\n  display: block;\n}\n\n:host(.app-menu-outlet--dock),\n:host(.app-menu-outlet--fixed) {\n  position: absolute;\n  z-index: var(--app-menu-outlet-contained-z-index);\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: block;\n  width: auto;\n  height: auto;\n}\n"],
+  "mappings": ";AAAA;AACE,qCAAA;AACA,uCAAA;AACA,YAAA;AACA,WAAA,IAAA;AACA,WAAA;AACA,SAAA;AACA,UAAA;AACA,YAAA;;AAGF,MAAA,CAAA;AACE,WAAA;;AAGF,MAAA,CAAA;AAAA,MAAA,CAAA;AAEE,YAAA;AACA,WAAA,IAAA;AACA,QAAA;AACA,SAAA;AACA,UAAA;AACA,WAAA;AACA,SAAA;AACA,UAAA;;",
+  "names": []
+}
