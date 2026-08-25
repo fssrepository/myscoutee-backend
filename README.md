@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-08-18:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `CHAT-LIST-001`.
+**2026-08-25:** 62/224 passed — core 59/127, external/optional 3/97; current checkpoint: `TOURNAMENT-MEMBER-001` (manual Start transition pending).
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|

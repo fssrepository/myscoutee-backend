@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 19:48 CEST
+Updated: 2026-08-25 20:01 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -41,15 +41,15 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-MEMBER-001 — pre-Start membership cutoff
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--pre-start-membership-cutoff
 scenario: XLS-driven Core execution order. The workbook's DOMAIN PRIORITY gives Tournament priority 11 (9/14 complete) before Chat priority 10 (1/20 complete); in the physical testcase table, TOURNAMENT-MEMBER-001 is the first open Tournament row, before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: NOT STARTED / FIXTURE-READY
-state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z. Nova accepted the prepared invitation exactly once: parent accepted IDs are Casey/Nova, Riley is the only pending invitation, and the normal main-event chat/acceptance outbox effects appeared. A raw Mongo read proved the live `subEvents` still retain both start/end windows and RS stage statuses; the empty values in the generic `subEventDefinitions` summary are definition-view semantics, not a product defect. Three isolated managed Chrome sessions remain live. Casey is currently on the prepared Members surface, where the one bundled pre-Start observation is ready.
-required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001` plus the raw live-subEvents check before any Start; do not restage. Retain the managed windows (or replace only this checkpoint's managed windows if they are gone). In one Casey observation, verify `2 members · 1 pending`, Casey=Admin, Nova=Member and Riley=`Invitation Pending`; also inspect Casey's visible notification (bell badge `1`) and confirm its Nova-accepted title/body. The persisted outbox/inbox oracle supports this UI check but does not replace it. If opening the notification acknowledges it as read, record that expected read side effect separately and prove it changes no membership, stage or Tournament projection. Only after this bundled observation may Casey perform the single Start action. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
+ledger_status: MANUAL IN PROGRESS — pre-Start boundary PASS; Start transition pending
+state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z. Nova accepted the prepared invitation exactly once: parent accepted IDs are Casey/Nova, Riley is the only pending invitation, and the normal main-event chat/acceptance outbox effects appeared. A raw Mongo read proved the live `subEvents` still retain both start/end windows and RS stage statuses; the empty values in the generic `subEventDefinitions` summary are definition-view semantics, not a product defect. Casey completed the bundled pre-Start UI observation: `2 members · 1 pending`, Casey=Admin, Nova=Member, Riley=`Invitation Pending`; Casey also opened and confirmed `Event invitation accepted` / `Nova Social accepted the invitation to QA TOURNAMENT-MEMBER-001.` The inbox record has no `readAtIso`, so that view did not acknowledge it. A subsequent read-only status proved parent membership unchanged and zero generated rooms/groups/leaderboard entries. Three isolated managed Chrome sessions remain live.
+required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001` plus the raw live-subEvents check before any Start; do not restage. Retain the managed windows (or replace only this checkpoint's managed windows if they are gone). The bundled pre-Start member and notification observation is complete and its notification remained unread. Casey now performs exactly one Qualifiers Start action. Then inspect the generated participant set: Nova appears exactly once in one room, leaderboard and group chat; Riley appears in none of them. Compare this with the persisted identity-level oracle before closing/resetting. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
 event: manual-qa-checkpoint:v1:event-domain:event — QA TOURNAMENT-MEMBER-001
 actors:
   Casey: Tournament host and first-stage Start actor
   accepted invitee: controlled terminal parent member before Start
   pending invitee: unchanged parent-scoped negative control
-next_actor: Casey completes the bundled Members plus Nova-accepted notification observation before Start
+next_actor: Casey performs exactly one Qualifiers Start action
 stop_phrase: megvan
 ```
 
