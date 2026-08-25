@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 19:25 CEST
+Updated: 2026-08-25 19:31 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -41,15 +41,15 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-MEMBER-001 — pre-Start membership cutoff
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--pre-start-membership-cutoff
 scenario: XLS-driven Core execution order. The workbook's DOMAIN PRIORITY gives Tournament priority 11 (9/14 complete) before Chat priority 10 (1/20 complete); in the physical testcase table, TOURNAMENT-MEMBER-001 is the first open Tournament row, before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: NOT STARTED / FIXTURE PREPARATION REQUIRED
-state: The former CHAT-LIST-001 fixture was prepared but never manually executed; its browser session is no longer running. CHAT-LIST-001 is deferred behind the reopened Tournament block and must not become an ad-hoc detour. No fixture runner or browser-session configuration currently exists for TOURNAMENT-MEMBER-001, so no manual producer can yet be issued.
-required_resume: First run the read-only status for the former CHAT-LIST-001 boundary to determine whether its disposable fixture remains live; do not execute its manual branch. If it remains staged, reset only that fixture through its guarded harness route before any Tournament staging. Then implement and verify the isolated TOURNAMENT-MEMBER-001 fixture, status oracle, reset path and managed actor configuration. Stage it once, prove its complete pre-Start baseline with status, then issue only its first manual instruction: accept the controlled parent invitation while leaving the second invitation pending. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
-event: controlled Tournament parent event and first-stage runtime; exact fixture identity is established by the new TOURNAMENT-MEMBER-001 stage oracle
+ledger_status: NOT STARTED / FIXTURE-READY
+state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z with a passing read-only baseline: Casey is the sole accepted parent Admin; Nova and Riley each have one pending admin invitation; all event/chat/leaderboard/runtime collections are empty; the first Qualifiers stage is RS and actionable. Three isolated managed Chrome sessions are live. Nova's inspected UI exposes the exact `mail Invitations 1` launcher.
+required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001`. If the exact pre-Start baseline remains intact, do not restage: retain the three managed windows (or replace only this checkpoint's managed windows if they are gone) and issue Nova's pending invitation action. Nova opens `mail Invitations 1`, opens `QA TOURNAMENT-MEMBER-001`, accepts once, and stops. Riley remains untouched; Casey must not Start yet. After the accepted-parent status/oracle passes, issue Casey's single Start action. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
+event: manual-qa-checkpoint:v1:event-domain:event — QA TOURNAMENT-MEMBER-001
 actors:
   Casey: Tournament host and first-stage Start actor
   accepted invitee: controlled terminal parent member before Start
   pending invitee: unchanged parent-scoped negative control
-next_actor: Codex completes the missing isolated fixture/oracle setup; no user UI action is due yet
+next_actor: Nova opens `mail Invitations 1` and accepts QA TOURNAMENT-MEMBER-001 once
 stop_phrase: megvan
 ```
 
