@@ -2481,9 +2481,11 @@ public class ActivitiesMembersService {
         LinkedHashSet<String> addedUserIds = new LinkedHashSet<>(normalizedSyncedUserIds);
         addedUserIds.removeAll(previousAcceptedUserIds);
         previousAcceptedUserIds.removeAll(new LinkedHashSet<>(normalizedSyncedUserIds));
-        userActivityCountersService.applyActiveEventMembershipDeltas(
-                addedUserIds,
-                previousAcceptedUserIds);
+        if (!StringUtils.hasText(normalizeId(materializedEvent.getParentEventId()))) {
+            userActivityCountersService.applyActiveEventMembershipDeltas(
+                    addedUserIds,
+                    previousAcceptedUserIds);
+        }
         return normalizedSyncedUserIds;
     }
 
