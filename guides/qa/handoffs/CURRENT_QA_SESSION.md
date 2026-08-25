@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 19:31 CEST
+Updated: 2026-08-25 19:38 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,14 +42,14 @@ checkpoint: TOURNAMENT-MEMBER-001 — pre-Start membership cutoff
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--pre-start-membership-cutoff
 scenario: XLS-driven Core execution order. The workbook's DOMAIN PRIORITY gives Tournament priority 11 (9/14 complete) before Chat priority 10 (1/20 complete); in the physical testcase table, TOURNAMENT-MEMBER-001 is the first open Tournament row, before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
 ledger_status: NOT STARTED / FIXTURE-READY
-state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z with a passing read-only baseline: Casey is the sole accepted parent Admin; Nova and Riley each have one pending admin invitation; all event/chat/leaderboard/runtime collections are empty; the first Qualifiers stage is RS and actionable. Three isolated managed Chrome sessions are live. Nova's inspected UI exposes the exact `mail Invitations 1` launcher.
-required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001`. If the exact pre-Start baseline remains intact, do not restage: retain the three managed windows (or replace only this checkpoint's managed windows if they are gone) and issue Nova's pending invitation action. Nova opens `mail Invitations 1`, opens `QA TOURNAMENT-MEMBER-001`, accepts once, and stops. Riley remains untouched; Casey must not Start yet. After the accepted-parent status/oracle passes, issue Casey's single Start action. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
+state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z. Nova accepted the prepared invitation exactly once: parent accepted IDs are Casey/Nova, Riley is the only pending invitation, and the normal main-event chat/acceptance outbox effects appeared. A raw Mongo read proved the live `subEvents` still retain both start/end windows and RS stage statuses; the empty values in the generic `subEventDefinitions` summary are definition-view semantics, not a product defect. Three isolated managed Chrome sessions remain live.
+required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001` plus the raw live-subEvents check before any Start; do not restage. Retain the managed windows (or replace only this checkpoint's managed windows if they are gone). Nova and Riley remain untouched. Casey opens `My Events 1`, opens `QA TOURNAMENT-MEMBER-001`, and stops before any Stage action so its exact visible control can be inspected. Only then issue Casey's single Start action. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
 event: manual-qa-checkpoint:v1:event-domain:event — QA TOURNAMENT-MEMBER-001
 actors:
   Casey: Tournament host and first-stage Start actor
   accepted invitee: controlled terminal parent member before Start
   pending invitee: unchanged parent-scoped negative control
-next_actor: Nova opens `mail Invitations 1` and accepts QA TOURNAMENT-MEMBER-001 once
+next_actor: Casey opens `My Events 1` and QA TOURNAMENT-MEMBER-001, then stops before Start
 stop_phrase: megvan
 ```
 
