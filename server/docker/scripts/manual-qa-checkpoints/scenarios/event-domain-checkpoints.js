@@ -649,6 +649,13 @@
       expected: "Each accepted participant occurs once in the correct group; group member UI and group chat match the same group identity.",
       worker: "MUST RUN only through the named grouping path; pending invitations must not be promoted implicitly."
     },
+    "TOURNAMENT-MEMBER-001": {
+      stage: "tournament-member-cutoff",
+      why: "Prove that only terminal parent membership at first-stage Start becomes Tournament participants; a pending invitation remains parent-scoped.",
+      action: "As Nova, open the prepared QA TOURNAMENT-MEMBER-001 invitation and accept it once. Do not act as Riley and do not start the Tournament yet.",
+      expected: "Before Start, Casey and Nova are the only accepted parent members while Riley remains the one pending invitation. After Casey starts Qualifiers once, Nova appears once in one generated room, leaderboard and group chat; Riley appears in none of them.",
+      worker: "MUST NOT RUN a scheduler for the invitation acceptance. The one visible Start action owns the real grouping path; wait only for that documented path to finish."
+    },
     "TOURNAMENT-003": {
       stage: "tournament",
       why: "Prove exact-once tournament review and advancement from one finalized stage.",
@@ -1215,7 +1222,7 @@
   }
 
   function isTournamentFixtureStage(stageKind) {
-    return ["tournament", "tournament-definition-draft"].includes(stageKind);
+    return ["tournament", "tournament-definition-draft", "tournament-member-cutoff"].includes(stageKind);
   }
 
   function materializeTournamentStageTimes(definitions, parentStartAtIso) {
@@ -2037,28 +2044,37 @@
     }
     if (isTournamentFixtureStage(stageKind)) {
       const definitions = tournamentStages();
-      const tournamentTiming = checkpointId === "TOURNAMENT-002"
+      const tournamentTiming = checkpointId === "TOURNAMENT-002" || checkpointId === "TOURNAMENT-MEMBER-001"
         ? { startAtIso: dateIso(-5), endAtIso: dateIso(115) }
         : future;
       const materializedDefinitions = materializeTournamentStageTimes(
         definitions,
         tournamentTiming.startAtIso
       );
+      const isMemberCutoff = stageKind === "tournament-member-cutoff";
       const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
         ...tournamentTiming,
         status: stageKind === "tournament-definition-draft" ? "DR" : "A",
-        acceptedUserIds: [participantUserId, thirdUserId],
+        acceptedUserIds: isMemberCutoff ? [] : [participantUserId, thirdUserId],
+        pendingUserIds: isMemberCutoff ? [participantUserId, thirdUserId] : [],
+        invitedUserIds: isMemberCutoff ? [participantUserId, thirdUserId] : [],
         mode: "Tournament",
         subEventsEnabled: true,
         subEventDefinitions: materializedDefinitions,
         subEvents: materializedDefinitions.map(item => ({ ...item, membersAccepted: 0, membersPending: 0 }))
       });
       Q.collection("events").insertOne(event);
-      Q.collection("activityMembers").insertMany([
-        memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
-        memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
-        memberDocument(EVENT_ID, thirdUserId, "Member", "accepted")
-      ]);
+      Q.collection("activityMembers").insertMany(isMemberCutoff
+        ? [
+            memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+            memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite"),
+            memberDocument(EVENT_ID, thirdUserId, "Member", "pending", "invite")
+          ]
+        : [
+            memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+            memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
+            memberDocument(EVENT_ID, thirdUserId, "Member", "accepted")
+          ]);
       return;
     }
 

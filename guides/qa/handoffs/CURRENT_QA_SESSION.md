@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-18 14:47 CEST
+Updated: 2026-08-25 19:25 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -38,16 +38,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-LIST-001 — chat list and contexts
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
-scenario: Tournament reopened at 9/14 by four newly captured member/DQ/resource gaps plus the existing partially verified Tournament worker row; CHAT-LIST-001 remains the already-staged live boundary
-ledger_status: PENDING / MANUAL EXECUTION PAUSED
-state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser was opened from the CHAT-LIST-001 manifest. No further manual case is executed on 2026-08-17. The ledger now also contains TOURNAMENT-MEMBER-001/002, TOURNAMENT-DQ-001 and TOURNAMENT-RESOURCE-001 plus six new Asset rows; none is executed.
-required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, finish the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread. After CHAT-LIST-001 is fully closed/reset, return to the higher-priority reopened Tournament block at TOURNAMENT-MEMBER-001; do not discard this already-staged Chat boundary merely to reorder domains.
-event: manual-qa-checkpoint:v1:chat-list:event (identity only; no Event document is required by this list fixture)
+checkpoint: TOURNAMENT-MEMBER-001 — pre-Start membership cutoff
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--pre-start-membership-cutoff
+scenario: XLS-driven Core execution order. The workbook's DOMAIN PRIORITY gives Tournament priority 11 (9/14 complete) before Chat priority 10 (1/20 complete); in the physical testcase table, TOURNAMENT-MEMBER-001 is the first open Tournament row, before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+ledger_status: NOT STARTED / FIXTURE PREPARATION REQUIRED
+state: The former CHAT-LIST-001 fixture was prepared but never manually executed; its browser session is no longer running. CHAT-LIST-001 is deferred behind the reopened Tournament block and must not become an ad-hoc detour. No fixture runner or browser-session configuration currently exists for TOURNAMENT-MEMBER-001, so no manual producer can yet be issued.
+required_resume: First run the read-only status for the former CHAT-LIST-001 boundary to determine whether its disposable fixture remains live; do not execute its manual branch. If it remains staged, reset only that fixture through its guarded harness route before any Tournament staging. Then implement and verify the isolated TOURNAMENT-MEMBER-001 fixture, status oracle, reset path and managed actor configuration. Stage it once, prove its complete pre-Start baseline with status, then issue only its first manual instruction: accept the controlled parent invitation while leaving the second invitation pending. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
+event: controlled Tournament parent event and first-stage runtime; exact fixture identity is established by the new TOURNAMENT-MEMBER-001 stage oracle
 actors:
-  Casey: sole controlled Chat-list reader
-next_actor: Casey opens Activities -> Chats and checks the All list before switching context
+  Casey: Tournament host and first-stage Start actor
+  accepted invitee: controlled terminal parent member before Start
+  pending invitee: unchanged parent-scoped negative control
+next_actor: Codex completes the missing isolated fixture/oracle setup; no user UI action is due yet
 stop_phrase: megvan
 ```
 
