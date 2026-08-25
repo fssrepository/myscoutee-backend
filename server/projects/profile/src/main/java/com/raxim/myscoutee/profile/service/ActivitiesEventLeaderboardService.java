@@ -53,6 +53,12 @@ public class ActivitiesEventLeaderboardService {
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_DELETED = "D";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
+    private static final String MEMBER_STATUS_REMOVED = "removed";
+    private static final String PARTICIPANT_STATE_ACTIVE = "A";
+    private static final String PARTICIPANT_STATE_DISQUALIFIED = "DQ";
+    private static final String PARTICIPANT_STATE_REMOVED = "R";
+    private static final String PARTICIPANT_STATE_VACANT = "V";
     private static final String MEMBER_OWNER_TYPE_EVENT = "event";
     private static final String MEMBER_OWNER_TYPE_GROUP = "group";
 
@@ -567,6 +573,7 @@ public class ActivitiesEventLeaderboardService {
         GeneratorModels.ScoreGeneratorResult result) {
         String groupId = normalizeId(group.id());
         List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(eventId, subEventId, group, entries);
+        Map<String, String> memberStatusesById = resolveGroupMemberStatuses(eventId, subEventId, groupId);
         Map<String, String> memberNameById = members.stream()
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
 
@@ -603,7 +610,9 @@ public class ActivitiesEventLeaderboardService {
                                 row.memberId(),
                                 memberNameById.getOrDefault(row.memberId(), row.memberName()),
                                 row.total(),
-                                row.updates()))
+                                row.updates(),
+                                "",
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
                         .toList();
 
         List<EventLeaderboardFifaStandingRowDto> fifaRows = result == null
@@ -619,7 +628,9 @@ public class ActivitiesEventLeaderboardService {
                                 row.losses(),
                                 row.goalsFor(),
                                 row.goalsAgainst(),
-                                row.goalDiff()))
+                                row.goalDiff(),
+                                "",
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
                         .toList();
 
         Set<String> persistedMemberIds = members.stream()
@@ -628,18 +639,222 @@ public class ActivitiesEventLeaderboardService {
                 .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
         scoreRows = acceptedMembersFirst(scoreRows, persistedMemberIds, EventLeaderboardScoreStandingRowDto::memberId);
         fifaRows = acceptedMembersFirst(fifaRows, persistedMemberIds, EventLeaderboardFifaStandingRowDto::memberId);
+        scoreRows = appendTerminalScoreRows(scoreRows, scoreEntries, memberStatusesById, memberNameById);
+        fifaRows = appendTerminalFifaRows(fifaRows, fifaMatches, memberStatusesById, memberNameById);
+        scoreRows = sortScoreRowsByParticipantState(scoreRows);
+        fifaRows = sortFifaRowsByParticipantState(fifaRows);
 
         return new EventLeaderboardGroupDto(
                 groupId,
                 safeText(group.name()),
                 members.size(),
                 Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
-                result == null ? List.of() : result.advancingMemberIds(),
+                result == null ? List.of() : result.advancingMemberIds().stream()
+                        .filter(memberId -> PARTICIPANT_STATE_ACTIVE.equals(
+                                participantState(memberStatusesById.get(memberId), memberId, groupId)))
+                        .toList(),
                 members,
                 scoreEntries,
                 fifaMatches,
                 scoreRows,
                 fifaRows);
+    }
+
+    private Map<String, String> resolveGroupMemberStatuses(
+            String eventId,
+            String subEventId,
+            String groupId) {
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, groupId);
+        Map<String, String> randomRoomStatuses = activitiesMembersService
+                .queryStoredMemberStatuses(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId);
+        if (!randomRoomStatuses.isEmpty()
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId)) {
+            return randomRoomStatuses;
+        }
+        String memberOwnerId = groupMemberOwnerId(eventId, subEventId, groupId);
+        Map<String, String> canonicalStatuses = activitiesMembersService
+                .queryStoredMemberStatuses(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
+        if (!canonicalStatuses.isEmpty()
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId)
+                || memberOwnerId.equals(normalizeId(groupId))) {
+            return canonicalStatuses;
+        }
+        return activitiesMembersService.queryStoredMemberStatuses(MEMBER_OWNER_TYPE_GROUP, normalizeId(groupId));
+    }
+
+    private String participantState(String membershipStatus) {
+        String normalizedStatus = safeText(membershipStatus);
+        if (MEMBER_STATUS_DISQUALIFIED.equalsIgnoreCase(normalizedStatus)) {
+            return PARTICIPANT_STATE_DISQUALIFIED;
+        }
+        if (MEMBER_STATUS_REMOVED.equalsIgnoreCase(normalizedStatus)) {
+            return PARTICIPANT_STATE_REMOVED;
+        }
+        return PARTICIPANT_STATE_ACTIVE;
+    }
+
+    private String participantState(String membershipStatus, String memberId, String groupId) {
+        String normalizedGroupId = normalizeId(groupId);
+        String placeholderPrefix = normalizedGroupId + "-member-";
+        if (StringUtils.hasText(normalizedGroupId)
+                && normalizeId(memberId).startsWith(placeholderPrefix)) {
+            return PARTICIPANT_STATE_VACANT;
+        }
+        return participantState(membershipStatus);
+    }
+
+    private List<EventLeaderboardScoreStandingRowDto> appendTerminalScoreRows(
+            List<EventLeaderboardScoreStandingRowDto> rows,
+            List<EventLeaderboardScoreEntryDto> scoreEntries,
+            Map<String, String> memberStatusesById,
+            Map<String, String> memberNameById) {
+        Map<String, int[]> totalsByMemberId = new LinkedHashMap<>();
+        for (EventLeaderboardScoreEntryDto entry : scoreEntries) {
+            String memberId = normalizeId(entry.memberId());
+            String participantState = participantState(memberStatusesById.get(memberId));
+            if (PARTICIPANT_STATE_ACTIVE.equals(participantState)) {
+                continue;
+            }
+            int[] totals = totalsByMemberId.computeIfAbsent(memberId, ignored -> new int[2]);
+            totals[0] += entry.value() == null ? 0 : entry.value();
+            totals[1] += 1;
+        }
+        Set<String> existingIds = rows.stream()
+                .map(EventLeaderboardScoreStandingRowDto::memberId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toSet());
+        List<EventLeaderboardScoreStandingRowDto> combined = new ArrayList<>(rows);
+        for (Map.Entry<String, int[]> entry : totalsByMemberId.entrySet()) {
+            String memberId = entry.getKey();
+            if (existingIds.contains(memberId)) {
+                continue;
+            }
+            int[] totals = entry.getValue();
+            combined.add(new EventLeaderboardScoreStandingRowDto(
+                    memberId,
+                    memberNameById.getOrDefault(memberId, fallbackMemberName("", memberId)),
+                    totals[0],
+                    totals[1],
+                    "",
+                    participantState(memberStatusesById.get(memberId))));
+        }
+        return combined;
+    }
+
+    private List<EventLeaderboardFifaStandingRowDto> appendTerminalFifaRows(
+            List<EventLeaderboardFifaStandingRowDto> rows,
+            List<EventLeaderboardFifaMatchDto> fifaMatches,
+            Map<String, String> memberStatusesById,
+            Map<String, String> memberNameById) {
+        Map<String, FifaStandingTotals> totalsByMemberId = new LinkedHashMap<>();
+        for (EventLeaderboardFifaMatchDto match : fifaMatches) {
+            String homeMemberId = normalizeId(match.homeMemberId());
+            String awayMemberId = normalizeId(match.awayMemberId());
+            int homeScore = match.homeScore() == null ? 0 : match.homeScore();
+            int awayScore = match.awayScore() == null ? 0 : match.awayScore();
+            if (!PARTICIPANT_STATE_ACTIVE.equals(participantState(memberStatusesById.get(homeMemberId)))) {
+                totalsByMemberId.computeIfAbsent(homeMemberId, ignored -> new FifaStandingTotals())
+                        .record(homeScore, awayScore);
+            }
+            if (!PARTICIPANT_STATE_ACTIVE.equals(participantState(memberStatusesById.get(awayMemberId)))) {
+                totalsByMemberId.computeIfAbsent(awayMemberId, ignored -> new FifaStandingTotals())
+                        .record(awayScore, homeScore);
+            }
+        }
+        Set<String> existingIds = rows.stream()
+                .map(EventLeaderboardFifaStandingRowDto::memberId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toSet());
+        List<EventLeaderboardFifaStandingRowDto> combined = new ArrayList<>(rows);
+        for (Map.Entry<String, FifaStandingTotals> entry : totalsByMemberId.entrySet()) {
+            String memberId = entry.getKey();
+            if (existingIds.contains(memberId)) {
+                continue;
+            }
+            FifaStandingTotals totals = entry.getValue();
+            combined.add(new EventLeaderboardFifaStandingRowDto(
+                    memberId,
+                    memberNameById.getOrDefault(memberId, fallbackMemberName("", memberId)),
+                    totals.points,
+                    totals.played,
+                    totals.wins,
+                    totals.draws,
+                    totals.losses,
+                    totals.goalsFor,
+                    totals.goalsAgainst,
+                    totals.goalsFor - totals.goalsAgainst,
+                    "",
+                    participantState(memberStatusesById.get(memberId))));
+        }
+        return combined;
+    }
+
+    private List<EventLeaderboardScoreStandingRowDto> sortScoreRowsByParticipantState(
+            List<EventLeaderboardScoreStandingRowDto> rows) {
+        List<EventLeaderboardScoreStandingRowDto> sorted = rows.stream()
+                .sorted(Comparator.comparing(EventLeaderboardScoreStandingRowDto::participantState)
+                        .thenComparing(EventLeaderboardScoreStandingRowDto::total, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardScoreStandingRowDto::memberName))
+                .toList();
+        List<EventLeaderboardScoreStandingRowDto> positioned = new ArrayList<>();
+        int activePosition = 0;
+        for (EventLeaderboardScoreStandingRowDto row : sorted) {
+            String positionLabel = PARTICIPANT_STATE_ACTIVE.equals(row.participantState())
+                    ? String.valueOf(++activePosition)
+                    : row.participantState();
+            positioned.add(new EventLeaderboardScoreStandingRowDto(
+                    row.memberId(), row.memberName(), row.total(), row.updates(), positionLabel, row.participantState()));
+        }
+        return positioned;
+    }
+
+    private List<EventLeaderboardFifaStandingRowDto> sortFifaRowsByParticipantState(
+            List<EventLeaderboardFifaStandingRowDto> rows) {
+        List<EventLeaderboardFifaStandingRowDto> sorted = rows.stream()
+                .sorted(Comparator.comparing(EventLeaderboardFifaStandingRowDto::participantState)
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::points, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::goalDiff, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::goalsFor, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::memberName))
+                .toList();
+        List<EventLeaderboardFifaStandingRowDto> positioned = new ArrayList<>();
+        int activePosition = 0;
+        for (EventLeaderboardFifaStandingRowDto row : sorted) {
+            String positionLabel = PARTICIPANT_STATE_ACTIVE.equals(row.participantState())
+                    ? String.valueOf(++activePosition)
+                    : row.participantState();
+            positioned.add(new EventLeaderboardFifaStandingRowDto(
+                    row.memberId(), row.memberName(), row.points(), row.played(), row.wins(), row.draws(),
+                    row.losses(), row.goalsFor(), row.goalsAgainst(), row.goalDiff(), positionLabel, row.participantState()));
+        }
+        return positioned;
+    }
+
+    private static final class FifaStandingTotals {
+        private int points;
+        private int played;
+        private int wins;
+        private int draws;
+        private int losses;
+        private int goalsFor;
+        private int goalsAgainst;
+
+        private void record(int goalsFor, int goalsAgainst) {
+            played += 1;
+            this.goalsFor += goalsFor;
+            this.goalsAgainst += goalsAgainst;
+            if (goalsFor > goalsAgainst) {
+                wins += 1;
+                points += 3;
+            } else if (goalsFor == goalsAgainst) {
+                draws += 1;
+                points += 1;
+            } else {
+                losses += 1;
+            }
+        }
     }
 
     private GeneratorModels.ScoreGeneratorGroup toGeneratorGroup(

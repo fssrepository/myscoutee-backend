@@ -4006,6 +4006,7 @@ public class ActivitiesEventsService {
             if (group.fifaRows() != null && !group.fifaRows().isEmpty()) {
                 group.fifaRows().stream()
                         .filter(Objects::nonNull)
+                        .filter(row -> "A".equals(row.participantState()))
                         .limit(winnerCount)
                         .map(EventLeaderboardFifaStandingRowDto::memberId)
                         .map(this::normalizeId)
@@ -4014,6 +4015,7 @@ public class ActivitiesEventsService {
             } else if (group.scoreRows() != null && !group.scoreRows().isEmpty()) {
                 group.scoreRows().stream()
                         .filter(Objects::nonNull)
+                        .filter(row -> "A".equals(row.participantState()))
                         .limit(winnerCount)
                         .map(EventLeaderboardScoreStandingRowDto::memberId)
                         .map(this::normalizeId)

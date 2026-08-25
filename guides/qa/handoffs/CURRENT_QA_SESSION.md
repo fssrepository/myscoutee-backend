@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-18 14:47 CEST
+Updated: 2026-08-25 21:52 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -38,27 +38,30 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-LIST-001 — chat list and contexts
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-functional-coverage
-scenario: Tournament reopened at 9/14 by four newly captured member/DQ/resource gaps plus the existing partially verified Tournament worker row; CHAT-LIST-001 remains the already-staged live boundary
-ledger_status: PENDING / MANUAL EXECUTION PAUSED
-state: CHAT-LIST-001 is phase=fixture-ready. Casey has exactly four controlled Chat rows (main-event, group, service and App Support), no controlled messages, per-context unread 1, All=4 and Sub-event=0. The authenticated Java page oracle passed exact date ASC/DESC IDs, exact context totals and stable headers; the post-read normalized Mongo snapshot is byte-identical. One isolated Casey browser was opened from the CHAT-LIST-001 manifest. No further manual case is executed on 2026-08-17. The ledger now also contains TOURNAMENT-MEMBER-001/002, TOURNAMENT-DQ-001 and TOURNAMENT-RESOURCE-001 plus six new Asset rows; none is executed.
-required_resume: Run status chat-domain CHAT-LIST-001 only if continuity is uncertain. If phase=fixture-ready and every validation is true, finish the short Casey manual branch without restaging or relaunching: open Chats, inspect All and each populated context, then close/reopen and confirm the same All order and counters. Do not open a thread. After CHAT-LIST-001 is fully closed/reset, return to the higher-priority reopened Tournament block at TOURNAMENT-MEMBER-001; do not discard this already-staged Chat boundary merely to reorder domains.
-event: manual-qa-checkpoint:v1:chat-list:event (identity only; no Event document is required by this list fixture)
+checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
+scenario: XLS-driven Core execution order. Tournament priority is 11 (10/14 complete); TOURNAMENT-MEMBER-002 is now the first open Tournament row before TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
+state: The isolated fixture was reset and staged cleanly at 2026-08-25T19:52:11.475Z. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. The fixture has no staged notification, scheduler or recompute work. Three isolated managed browser sessions were relaunched from this baseline.
+required_resume: The prior attempt exposed the missing room cascade and was not evidence. After the hot-deploy fix, reset then stage this checkpoint once; do not open unrelated menus. Use the configured three sessions. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is `A`, `DQ`, `R` then score/FIFA tie-break; the existing `#` cell shows normal rank for A and `DQ`/`R` for terminal rows.
+event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
 actors:
-  Casey: sole controlled Chat-list reader
-next_actor: Casey opens Activities -> Chats and checks the All list before switching context
-stop_phrase: megvan
+  Casey: Tournament host and removal actor
+  removed participant: controlled accepted active room member
+  remaining participant: unchanged active-room control
+next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted oracle.
+stop_phrase: Remove action completed
 ```
 
-Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
-registration lock at first-stage Start. Rejected post-Start Join, invitation
-acceptance and Admin approval are three branches of this checkpoint and must
-leave parent membership, nested Groups, capacity, chat, leaderboard, counters,
-checkout and notifications unchanged. Parent admission remains outside the
-nested `Groups` counter; event-owner materialized rooms keep member-pending at
-zero. Never alter the already-passed Start notification producers for this
-checkpoint.
+Resolved admission decision: first-stage admission locks on the successful
+materialization commit, not when a scheduled Start is merely queued or stuck.
+An invitation accepted during that in-flight window participates exactly once
+in the committed materialization. After the commit, Join, invitation Accept
+and Admin approval are rejected and leave parent membership, nested Groups,
+capacity, chat, leaderboard, counters, checkout and notifications unchanged.
+Parent admission remains outside the nested `Groups` counter; event-owner
+materialized rooms keep member-pending at zero. Never alter the already-passed
+Start notification producers for this checkpoint.
 
 Separate captured score-correction follow-ups:
 `TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
@@ -138,15 +141,8 @@ audit added four unexecuted Tournament-specific cases: pre-Start terminal
 membership cutoff, active participant removal, DQ/Reinstate and generated-
 group resource aggregation, plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 9/14, without invalidating any closed
-Start/Finalize evidence. Machine setup for the already-
-active `CHAT-LIST-001` boundary is complete: four known context rows, exact
-totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
-manual branch is now due: open Activities -> Chats, inspect All, switch through
-Event, Group, Service and App Support, then close/reopen and confirm All is
-unchanged. Do not open a thread. Closed Tournament and `CHAT-AUTH-001`
-producers remain untouched. Once this staged Chat row closes, generated domain
-priority returns to Tournament before continuing the remaining Chat rows.
+Therefore the domain is now 10/14; `TOURNAMENT-MEMBER-002` is next and
+`CHAT-LIST-001` remains deferred until the open Tournament block is completed.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -233,6 +229,17 @@ records: before state, manual action, immediate state, worker expectation,
 delayed projection, unchanged controls and independent persisted oracle. A
 checkpoint row may contain a short causally continuous sequence of these
 boundaries under the granularity rules below. UI evidence alone is not a PASS.
+
+When an active checkpoint has already reached one prepared surface, bundle its
+causally ready visual assertions into one directed observation: the positive
+state, named negative control, relevant counter/badge and any notification
+created by that same boundary. Codex prepares the navigation and names the
+exact expected text/state; the user should not be asked to discover menus or
+invent assertions. A persisted oracle supports, but never replaces, the
+user-visible notification/content check. If opening that notification marks it
+read, record the acknowledgement as its own expected side effect and prove it
+did not change the checkpoint's membership, lifecycle or other negative
+controls.
 
 For tournament lifecycle notifications, manual and automatic producers share
 one semantic contract. Every Start/close/finalize message identifies the stage;

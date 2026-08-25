@@ -120,7 +120,9 @@ public final class EventLeaderboardDtos {
             String memberId,
             String memberName,
             Integer total,
-            Integer updates) {
+            Integer updates,
+            String positionLabel,
+            String participantState) {
     }
 
     public record EventLeaderboardFifaStandingRowDto(
@@ -133,7 +135,9 @@ public final class EventLeaderboardDtos {
             Integer losses,
             Integer goalsFor,
             Integer goalsAgainst,
-            Integer goalDiff) {
+            Integer goalDiff,
+            String positionLabel,
+            String participantState) {
     }
 
     public record EventLeaderboardGroupDto(

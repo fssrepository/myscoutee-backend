@@ -5181,27 +5181,53 @@ Execution evidence on 2026-08-16 (PASS / CLOSED):
   check was fixed so its documented verifier now reaches the existing guarded
   JavaScript oracle.
 
-### `TOURNAMENT-MEMBER-001` — pre-Start membership cutoff
+### `TOURNAMENT-MEMBER-001` — first-stage materialization admission cutoff
 
 - Use the real parent-event invitation path to make one controlled invitation
-  terminally accepted before first-stage Start while a second controlled
-  invitation remains pending.
-- Start the first stage exactly once. The newly accepted identity must appear
-  exactly once in one generated room, its leaderboard and group chat. The
-  pending identity remains parent-scoped and must not enter any generated
-  room, standings row or chat.
+  terminally accepted while a scheduled first-stage Start is still in flight,
+  while a second controlled invitation remains pending.
+- The successful first-stage materialization is the admission cutoff. The
+  accepted identity must appear exactly once in one generated room, its
+  leaderboard and group chat. The pending identity remains parent-scoped and
+  must not enter any generated room, standings row or chat.
 - Reuse the generic invitation UI evidence from `EVENT-INV-*`; this checkpoint
   owns only the Tournament-specific cutoff between terminal parent membership
   and the participant set materialized by Start.
+
+Execution evidence on 2026-08-25 (PASS / CLOSED):
+
+- A scheduled Start was already in flight but stuck; Nova accepted before its
+  materialization committed. Casey's visible assistance completed that one
+  materialization, so Nova was validly included at the commit boundary.
+- Start materialized exactly two parent-linked rooms: R1 for Casey and R2 for
+  Nova. Riley entered neither room, group chat nor standings. The R2
+  `Standings` UI showed only Nova at zero points.
+- The parent-only Activities counter contract was repaired at the write
+  boundary: a materialized event with `parentEventId` retains its membership
+  diff but does not increment user event counters. Nova consequently saw one
+  root parent card and `Events = Active Events = 1`; Casey saw the parent once
+  under `My Events`.
+- Casey saw Nova's acceptance and R1-ready notifications; Nova saw the
+  R2-ready notification. Empty `eventLeaderboardEntries` is expected before a
+  score is submitted: the visible zero-point standings are derived from the
+  generated group membership.
+- Riley then attempted `Accept` after the successful materialization. The UI
+  rejected it; the independent persisted oracle retained Riley pending and
+  proved parent membership, rooms, chats, standings, counters and
+  notifications unchanged. The fixture was reset after this proof.
 
 ### `TOURNAMENT-MEMBER-002` — active participant removal
 
 - From an isolated active tournament with generated rooms and one retained
   score row, Remove one accepted participant from the parent event.
 - Verify parent and generated-room active membership, room-chat authorization
-  and exact actor counters are revoked once. Any retained historical score
-  identity remains auditable and cannot become a live participant again by a
-  read or poll.
+  and exact actor counters are revoked once. The parent record becomes
+  `deleted`; the generated Group member record becomes `removed`. The
+  leaderboard query sorts the group-member state `A`, `DQ`, `R` first and the
+  normal score/FIFA ordering second. Its existing `#` cell shows the normal
+  number for `A`, and `DQ` or `R` for those terminal rows; it is not a new
+  column or a UI-side re-sort. Any retained historical score identity remains
+  auditable and cannot become a live participant again by a read or poll.
 - Remove is a membership exit, not DQ and not an event-level Block state. The
   remaining room membership and every unrelated resource owner/type are
   unchanged in place and after reload.
