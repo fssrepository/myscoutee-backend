@@ -64,7 +64,8 @@ services:
     container_name: mongodb
     hostname: mongodb
     env_file:
-      - .env.secrets
+      # Committed development-only credentials. Production uses .env.secrets.
+      - docker-dev.env
     #restart: always
     #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
@@ -94,7 +95,7 @@ services:
     container_name: mongodb-sync
     hostname: mongodb-sync
     env_file:
-      - .env.secrets
+      - docker-dev.env
     command: ["/usr/local/bin/mongodb-seed-sync"]
     environment:
       MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
@@ -134,7 +135,7 @@ services:
     container_name: minio
     hostname: minio
     env_file:
-      - .env.secrets
+      - docker-dev.env
     command: server /data --console-address ":9001"
     environment:
       MEDIA_BUCKET: "${MEDIA_BUCKET}"
@@ -164,7 +165,7 @@ services:
     container_name: myscoutee
     hostname: myscoutee
     env_file:
-      - .env.secrets
+      - docker-dev.env
     working_dir: /workspace
     user: "${UID:-1000}:${GID:-1000}"
     command:
