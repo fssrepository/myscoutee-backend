@@ -38,29 +38,30 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-MEMBER-001 — pre-Start membership cutoff
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--pre-start-membership-cutoff
-scenario: XLS-driven Core execution order. The workbook's DOMAIN PRIORITY gives Tournament priority 11 (9/14 complete) before Chat priority 10 (1/20 complete); in the physical testcase table, TOURNAMENT-MEMBER-001 is the first open Tournament row, before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: MANUAL IN PROGRESS — pre-Start boundary PASS; Start transition pending
-state: CHAT-LIST-001 is confirmed not-staged and remains deferred. TOURNAMENT-MEMBER-001 staged at 2026-08-25T17:30:09.859Z. Nova accepted the prepared invitation exactly once: parent accepted IDs are Casey/Nova, Riley is the only pending invitation, and the normal main-event chat/acceptance outbox effects appeared. A raw Mongo read proved the live `subEvents` still retain both start/end windows and RS stage statuses; the empty values in the generic `subEventDefinitions` summary are definition-view semantics, not a product defect. Casey completed the bundled pre-Start UI observation: `2 members · 1 pending`, Casey=Admin, Nova=Member, Riley=`Invitation Pending`; Casey also opened and confirmed `Event invitation accepted` / `Nova Social accepted the invitation to QA TOURNAMENT-MEMBER-001.` The inbox record has no `readAtIso`, so that view did not acknowledge it. A subsequent read-only status proved parent membership unchanged and zero generated rooms/groups/leaderboard entries. Three isolated managed Chrome sessions remain live.
-required_resume: If continuity is uncertain, run only `status event-domain TOURNAMENT-MEMBER-001` plus the raw live-subEvents check before any Start; do not restage. Retain the managed windows (or replace only this checkpoint's managed windows if they are gone). The bundled pre-Start member and notification observation is complete and its notification remained unread. Casey now performs exactly one Qualifiers Start action. Then inspect the generated participant set: Nova appears exactly once in one room, leaderboard and group chat; Riley appears in none of them. Compare this with the persisted identity-level oracle before closing/resetting. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this row is closed/reset.
+checkpoint: TOURNAMENT-MEMBER-001 — first-stage materialization admission cutoff
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-001--first-stage-materialization-admission-cutoff
+scenario: XLS-driven Core execution order. Tournament priority is 11 (9/14 complete); this remains the first open Tournament row before TOURNAMENT-MEMBER-002, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+ledger_status: MANUAL IN PROGRESS — post-materialization rejection pending
+state: A scheduled Qualifiers Start was already in flight but stuck when Nova accepted. Casey's one visible assistance committed the materialization: R1=Casey, R2=Nova; Riley remains the parent pending-invitation control. The contract is commit-level admission: an in-flight Start does not lock admission, but a successful first-stage materialization does. The Activities child-room counter write fix is validated: Nova has Events/Active Events=1 and one root parent card; Casey has the parent under My Events. R2 Standings contains Nova alone at 0; room-ready and invitation acceptance notifications were observed.
+required_resume: Do not reset or restage. Riley performs exactly one visible Accept attempt on the existing pending invitation. It must be rejected after the materialization commit. Then compare parent membership, rooms, chats, standings, user counters and notifications with the current persisted oracle. Do not proceed to TOURNAMENT-MEMBER-002, DQ, resources, JOB-TOURNAMENT or Chat until this branch closes.
 event: manual-qa-checkpoint:v1:event-domain:event — QA TOURNAMENT-MEMBER-001
 actors:
-  Casey: Tournament host and first-stage Start actor
-  accepted invitee: controlled terminal parent member before Start
-  pending invitee: unchanged parent-scoped negative control
-next_actor: Casey performs exactly one Qualifiers Start action
+  Casey: Tournament host; completed the stuck materialization
+  Nova: accepted during the in-flight Start window and assigned to R2
+  Riley: pending post-commit negative control
+next_actor: Riley performs one visible Accept attempt
 stop_phrase: megvan
 ```
 
-Resolved admission decision: `TOURNAMENT-ADMISSION-001` uses a strict parent
-registration lock at first-stage Start. Rejected post-Start Join, invitation
-acceptance and Admin approval are three branches of this checkpoint and must
-leave parent membership, nested Groups, capacity, chat, leaderboard, counters,
-checkout and notifications unchanged. Parent admission remains outside the
-nested `Groups` counter; event-owner materialized rooms keep member-pending at
-zero. Never alter the already-passed Start notification producers for this
-checkpoint.
+Resolved admission decision: first-stage admission locks on the successful
+materialization commit, not when a scheduled Start is merely queued or stuck.
+An invitation accepted during that in-flight window participates exactly once
+in the committed materialization. After the commit, Join, invitation Accept
+and Admin approval are rejected and leave parent membership, nested Groups,
+capacity, chat, leaderboard, counters, checkout and notifications unchanged.
+Parent admission remains outside the nested `Groups` counter; event-owner
+materialized rooms keep member-pending at zero. Never alter the already-passed
+Start notification producers for this checkpoint.
 
 Separate captured score-correction follow-ups:
 `TOURNAMENT-SCORE-REOPEN-001` owns `Score review -> Finalize -> Reopen scores ->
@@ -140,15 +141,9 @@ audit added four unexecuted Tournament-specific cases: pre-Start terminal
 membership cutoff, active participant removal, DQ/Reinstate and generated-
 group resource aggregation, plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 9/14, without invalidating any closed
-Start/Finalize evidence. Machine setup for the already-
-active `CHAT-LIST-001` boundary is complete: four known context rows, exact
-totals/order and the zero-write Java/Mongo oracle all pass. Casey's short
-manual branch is now due: open Activities -> Chats, inspect All, switch through
-Event, Group, Service and App Support, then close/reopen and confirm All is
-unchanged. Do not open a thread. Closed Tournament and `CHAT-AUTH-001`
-producers remain untouched. Once this staged Chat row closes, generated domain
-priority returns to Tournament before continuing the remaining Chat rows.
+Therefore the domain remains 9/14 until the post-materialization Riley
+rejection closes `TOURNAMENT-MEMBER-001`; `CHAT-LIST-001` remains deferred
+until the open Tournament block is completed.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
