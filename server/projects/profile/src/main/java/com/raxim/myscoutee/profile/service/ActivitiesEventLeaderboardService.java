@@ -58,6 +58,7 @@ public class ActivitiesEventLeaderboardService {
     private static final String PARTICIPANT_STATE_ACTIVE = "A";
     private static final String PARTICIPANT_STATE_DISQUALIFIED = "DQ";
     private static final String PARTICIPANT_STATE_REMOVED = "R";
+    private static final String PARTICIPANT_STATE_VACANT = "V";
     private static final String MEMBER_OWNER_TYPE_EVENT = "event";
     private static final String MEMBER_OWNER_TYPE_GROUP = "group";
 
@@ -611,7 +612,7 @@ public class ActivitiesEventLeaderboardService {
                                 row.total(),
                                 row.updates(),
                                 "",
-                                participantState(memberStatusesById.get(row.memberId()))))
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
                         .toList();
 
         List<EventLeaderboardFifaStandingRowDto> fifaRows = result == null
@@ -629,7 +630,7 @@ public class ActivitiesEventLeaderboardService {
                                 row.goalsAgainst(),
                                 row.goalDiff(),
                                 "",
-                                participantState(memberStatusesById.get(row.memberId()))))
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
                         .toList();
 
         Set<String> persistedMemberIds = members.stream()
@@ -648,7 +649,10 @@ public class ActivitiesEventLeaderboardService {
                 safeText(group.name()),
                 members.size(),
                 Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
-                result == null ? List.of() : result.advancingMemberIds(),
+                result == null ? List.of() : result.advancingMemberIds().stream()
+                        .filter(memberId -> PARTICIPANT_STATE_ACTIVE.equals(
+                                participantState(memberStatusesById.get(memberId), memberId, groupId)))
+                        .toList(),
                 members,
                 scoreEntries,
                 fifaMatches,
@@ -687,6 +691,16 @@ public class ActivitiesEventLeaderboardService {
             return PARTICIPANT_STATE_REMOVED;
         }
         return PARTICIPANT_STATE_ACTIVE;
+    }
+
+    private String participantState(String membershipStatus, String memberId, String groupId) {
+        String normalizedGroupId = normalizeId(groupId);
+        String placeholderPrefix = normalizedGroupId + "-member-";
+        if (StringUtils.hasText(normalizedGroupId)
+                && normalizeId(memberId).startsWith(placeholderPrefix)) {
+            return PARTICIPANT_STATE_VACANT;
+        }
+        return participantState(membershipStatus);
     }
 
     private List<EventLeaderboardScoreStandingRowDto> appendTerminalScoreRows(

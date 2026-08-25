@@ -22,15 +22,15 @@ import {
 } from "./chunk-WZ5SST2P.js";
 import {
   DeploymentConfigurationService
-} from "./chunk-PK4DOAMC.js";
+} from "./chunk-PB4YNHSN.js";
 import {
   I18nService
-} from "./chunk-Q3344WPR.js";
+} from "./chunk-B7YPVC5F.js";
 import {
   AppUtils,
   CURRENT_PROFILE_FORM_VERSION
 } from "./chunk-XQ4NDAVX.js";
-import "./chunk-7MTG4XZU.js";
+import "./chunk-MS7VTGLY.js";
 import {
   NgComponentOutlet
 } from "./chunk-J7IJFFQ2.js";
@@ -39,12 +39,12 @@ import {
   UserProfileStore,
   hasOperatorRole,
   resolveRouteConfig
-} from "./chunk-KLUOB5SD.js";
-import "./chunk-6POEHVT7.js";
+} from "./chunk-INZQPXQM.js";
+import "./chunk-IECLTXM5.js";
 import {
   SessionService,
   isFirebaseLoginEnabled
-} from "./chunk-2ENBQWLU.js";
+} from "./chunk-333NTD7D.js";
 import {
   APP_CACHE_KEYS,
   APP_STORAGE_KEYS,
@@ -99,7 +99,7 @@ import {
 } from "./chunk-XJL7SWH7.js";
 
 // src/app/app.routes.ts
-var loadEntryPage = () => import("./entry-page.component-XCS3FJEC.js").then((m) => m.EntryPageComponent);
+var loadEntryPage = () => import("./entry-page.component-KAYNOUWA.js").then((m) => m.EntryPageComponent);
 var entryAreaGuard = async () => {
   const injector = inject(Injector);
   const sessionService = inject(SessionService);
@@ -111,7 +111,7 @@ var entryAreaGuard = async () => {
   if (session.kind === "operator-bootstrap") {
     return router.createUrlTree(["/operator"]);
   }
-  const { UsersService } = await import("./users.service-KHTPIDCA.js");
+  const { UsersService } = await import("./users.service-QVMIYQDJ.js");
   const usersService = injector.get(UsersService);
   const user = usersService.peekCachedUserById(session.kind === "demo" ? session.userId : session.profile.id);
   if (isAdminUser(user)) {
@@ -128,7 +128,7 @@ var restrictedAreaGuard = async (_route, state) => {
   const router = inject(Router);
   const session = await sessionService.ensureSession();
   if (session) {
-    const { UsersService } = await import("./users.service-KHTPIDCA.js");
+    const { UsersService } = await import("./users.service-QVMIYQDJ.js");
     const usersService = injector.get(UsersService);
     if (!usersService.localModeEnabled) {
       if (isBrowserOffline()) {
@@ -180,7 +180,7 @@ var operatorAreaGuard = async (_route, state) => {
   if (!session) {
     return entryRedirect(router, state.url);
   }
-  const { UsersService } = await import("./users.service-KHTPIDCA.js");
+  const { UsersService } = await import("./users.service-QVMIYQDJ.js");
   const usersService = injector.get(UsersService);
   const user = await usersService.loadUserById(session.kind === "demo" ? session.userId : void 0).catch(() => null);
   if (isOperatorUser(user)) {
@@ -202,10 +202,10 @@ var adminAreaGuard = async (_route, state) => {
   if (!session) {
     return entryRedirect(router, state.url);
   }
-  const { UsersService } = await import("./users.service-KHTPIDCA.js");
+  const { UsersService } = await import("./users.service-QVMIYQDJ.js");
   const usersService = injector.get(UsersService);
   if (session.kind === "demo" && usersService.localModeEnabled) {
-    const { AdminWorkspaceStore } = await import("./admin-workspace.store-M2QC3FQD.js");
+    const { AdminWorkspaceStore } = await import("./admin-workspace.store-Q2M6UQN4.js");
     const adminWorkspace = injector.get(AdminWorkspaceStore);
     const userId = session.userId.trim();
     const storedAdminId = adminWorkspace.readStoredAdminId();
@@ -253,27 +253,27 @@ var routes = [
   },
   {
     path: "privacy-policy",
-    loadComponent: () => import("./document-viewer.component-WMJ545HS.js").then((m) => m.DocumentViewerComponent),
+    loadComponent: () => import("./document-viewer.component-TMU4SOKY.js").then((m) => m.DocumentViewerComponent),
     data: { documentKind: "privacy" }
   },
   {
     path: "terms",
-    loadComponent: () => import("./document-viewer.component-WMJ545HS.js").then((m) => m.DocumentViewerComponent),
+    loadComponent: () => import("./document-viewer.component-TMU4SOKY.js").then((m) => m.DocumentViewerComponent),
     data: { documentKind: "terms" }
   },
   {
     path: "admin/help/:token",
-    loadComponent: () => import("./admin-help-session-page.component-ZRMGGV7H.js").then((m) => m.AdminHelpSessionPageComponent)
+    loadComponent: () => import("./admin-help-session-page.component-Z6FTTZIX.js").then((m) => m.AdminHelpSessionPageComponent)
   },
   {
     path: "admin",
     canActivate: [adminAreaGuard],
-    loadChildren: () => import("./admin.module-I6PO7TKQ.js").then((m) => m.AdminModule)
+    loadChildren: () => import("./admin.module-CZDQGO33.js").then((m) => m.AdminModule)
   },
   {
     path: "operator",
     canActivate: [operatorAreaGuard],
-    loadComponent: () => import("./operator-page.component-ZDX5CHFL.js").then((m) => m.OperatorPageComponent)
+    loadComponent: () => import("./operator-page.component-OYLK6CGE.js").then((m) => m.OperatorPageComponent)
   },
   {
     path: "",
@@ -282,7 +282,7 @@ var routes = [
       { path: "home", redirectTo: "game", pathMatch: "full" },
       {
         path: "game",
-        loadComponent: () => import("./home.component-JA2F5KMB.js").then((m) => m.HomeComponent),
+        loadComponent: () => import("./home.component-54OD2RA3.js").then((m) => m.HomeComponent),
         data: { section: "game" }
       }
     ]
@@ -610,7 +610,7 @@ var PwaService = class _PwaService {
     if (!this.shouldEnableNotificationRegistration()) {
       return;
     }
-    const { FirebaseMessagingService } = await import("./firebase-messaging.service-FBCNPBGF.js");
+    const { FirebaseMessagingService } = await import("./firebase-messaging.service-3XA6ZYEX.js");
     await this.injector.get(FirebaseMessagingService).requestAndRegisterForActiveUser();
   }
   dismissInstallPrompt() {
@@ -1173,7 +1173,7 @@ var AppLocationService = class _AppLocationService {
   }
   async httpUsersService() {
     if (!this.httpUsersServicePromise) {
-      this.httpUsersServicePromise = import("./users.service-LVN35Z6E.js").then((module) => this.injector.get(module.HttpUsersService));
+      this.httpUsersServicePromise = import("./users.service-ICK4V5I4.js").then((module) => this.injector.get(module.HttpUsersService));
     }
     return this.httpUsersServicePromise;
   }
@@ -1393,7 +1393,7 @@ var App = class _App {
     if (this.sideMenuComponentLoadPromise) {
       return this.sideMenuComponentLoadPromise;
     }
-    this.sideMenuComponentLoadPromise = import("./side-menu.component-HZ76V2BT.js").then((module) => {
+    this.sideMenuComponentLoadPromise = import("./side-menu.component-XJGKSM37.js").then((module) => {
       this.sideMenuComponentRef.set(module.SideMenuComponent);
     }).finally(() => {
       this.sideMenuComponentLoadPromise = null;
