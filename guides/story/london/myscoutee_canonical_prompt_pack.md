@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.2 STORY-PRESERVATION + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.4 STORY-PRESERVATION + PUBLIC-TIME + NARRATION-SYNC + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -34,6 +34,7 @@
 - Clinical imagery appears only in the final block, immediately before the hard cut.
 - Final runtime target = **3:20**: six ~30 s blocks + final ~20 s block.
 - Final title = **MYSCOUTEE / THE PATH BETWEEN PEOPLE**.
+- **NARRATION–PUBLIC-TIME SYNC LOCK:** Blocks 05–06 explicitly voice the Venice / clemency / institutional-speed / empty-chair structural echoes already present in their storyboard/video beats. These lines describe parallel timing and irony only; they must never be rendered as a claim that the protagonist caused a political, judicial or presidential outcome.
 
 ### OPERATOR NOTES — GENERATION ORDER — DO NOT COPY
 1. **CHARACTER 01–31** — complete main + memory-character identity library. Generate these first so MEMORY WORLD identities are stable from their first generation.
@@ -44,12 +45,13 @@
 6. **MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR**
 7. **MEMORY WORLD 06 — HUMANITY BREAKS THROUGH / RECURRING POSITIVE COUNTERMEMORIES**
 8. **MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS** — restores planned micro-flashes that were lost during earlier prompt simplification.
-9. **HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY**
-10. **WORLD 01–07** — physical London–Budapest location/environment continuity
-11. **MAP 01–07** — separate spatial aids
-12. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
-13. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset, pitch and expression for all seven blocks; speech_rate may vary only minimally as allowed by the narration duration gate.
-14. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
+9. **MEMORY PRESERVATION WORLD P02 — PUBLIC TIME / VENICE / CONSTITUTIONAL REVERSALS** — preserves the late Part-II public-time arc without implying that the protagonist caused political or institutional outcomes.
+10. **HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY**
+11. **WORLD 01–07** — physical London–Budapest location/environment continuity
+12. **MAP 01–07** — separate spatial aids
+13. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
+14. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset, pitch and expression for all seven blocks; speech_rate may vary only minimally as allowed by the narration duration gate.
+15. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
 
 The MEMORY WORLD images are generated once and reused. They show the remembered event/place DIRECTLY, as if the camera were physically inside that remembered scene. They contain NO London–Budapest present-city layer, NO window frame from the present, NO rain/reflection composite from the present and NO score cards.
 
@@ -78,6 +80,13 @@ This v2.2 pass was created because earlier cleanup silently removed or flattened
 - late reveal bridge: Nile/water reflection → cold clinical light;
 - late reveal bridge: different snore → monitor-like rhythm;
 - late reveal bridge: balloon-helping hands → white sheet / restraint edge.
+
+**PART-II PUBLIC-TIME / INSTITUTIONAL REVERSAL MATERIAL RESTORED INTO THE ACTUAL FILM:**
+- clemency refusal followed by revised papers deliberately held for a future presidency change;
+- TWO LETTERS TO VENICE: the protagonist's small submission from below and an anonymous presidential-office submission from above reaching the same Venice Commission, with NO causal claim between them;
+- the Constitutional Court quorum collapse after seven recusals followed by an eighth, contrasted with one citizen, a laptop and an AI assistant trying to reach constitutional review from below;
+- the earlier black-humour gesture of declaring an institution “fired” gaining later public-time irony when long-serving office-holders were publicly asked to leave — shown only as an ironic echo, never as prediction or causation;
+- the EMPTY PRESIDENTIAL CHAIR after the mandate ended, explicitly NOT a verdict in the protagonist's case and NOT presented as an outcome caused by his letter.
 
 These restored details may be short secondary reflections rather than dominant frames, but they are **mandatory story inventory**, not disposable decoration. Future prompt cleanup must not remove them without explicit user approval.
 
@@ -234,6 +243,10 @@ For every MEMORY WORLD / HIDDEN REALITY WORLD generation:
 **GENERATED OUTPUT:** save/rename the result as `MWP01_ROUTES_ROOMS_DOCUMENTS.png`.  
 This is a deliberate preservation bank for short memories already present in the story-bible/addendum but lost from earlier rebuilt storyboard passes. It does not replace MW01–MW06.
 
+**MEMORY PRESERVATION WORLD P02 — attach:** C01_PROTAGONIST.png  
+**GENERATED OUTPUT:** save/rename the result as `MWP02_PUBLIC_TIME_VENICE.png`.  
+This is a preservation bank for the late Part-II clemency / Venice / constitutional-review / empty-chair arc. Public-history cells must remain non-identifying and must never imply that the protagonist's submission caused later institutional or political outcomes.
+
 **HIDDEN REALITY WORLD 07 — attach:** C01_PROTAGONIST.png, C05_FINAL_NURSE.png  
 **GENERATED OUTPUT:** save/rename the result as `HRW07_CLINICAL_REALITY.png`. **Never attach this asset before STORYBOARD / VIDEO block 07.**
 
@@ -246,6 +259,7 @@ Canonical MEMORY filenames:
 - MEMORY WORLD 05 → `MW05_COURT_FILE.png`
 - MEMORY WORLD 06 → `MW06_HUMAN_COUNTERMEMORIES.png`
 - MEMORY PRESERVATION WORLD P01 → `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
+- MEMORY PRESERVATION WORLD P02 → `MWP02_PUBLIC_TIME_VENICE.png`
 - HIDDEN REALITY WORLD 07 → `HRW07_CLINICAL_REALITY.png`
 
 ### PHASE C — MAIN WORLD LIBRARY
@@ -300,9 +314,9 @@ For every STORYBOARD generation:
 
 **STORYBOARD 04 — attach:** `W04_MAIN_WORLD.png`, `MW04_POLICE_DEFENCE.png`, `C01_PROTAGONIST.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C25_SEARCH_OFFICER_MALE.png`, `C26_DEFENCE_OFFICE_SUBSTITUTE.png`. **GENERATED OUTPUT:** save/rename the result as `SB04_STORYBOARD.png`.
 
-**STORYBOARD 05 — attach:** `W05_MAIN_WORLD.png`, `MW05_COURT_FILE.png`, `C01_PROTAGONIST.png`, `C04_APPOINTED_LAWYER.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`, `C30_COURT_CLERK.png`, `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`. **GENERATED OUTPUT:** save/rename the result as `SB05_STORYBOARD.png`.
+**STORYBOARD 05 — attach:** `W05_MAIN_WORLD.png`, `MW05_COURT_FILE.png`, `MWP02_PUBLIC_TIME_VENICE.png`, `C01_PROTAGONIST.png`, `C04_APPOINTED_LAWYER.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`, `C30_COURT_CLERK.png`, `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`. **GENERATED OUTPUT:** save/rename the result as `SB05_STORYBOARD.png`.
 
-**STORYBOARD 06 — attach:** `W06_MAIN_WORLD.png`, `MW06_HUMAN_COUNTERMEMORIES.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB06_STORYBOARD.png`.
+**STORYBOARD 06 — attach:** `W06_MAIN_WORLD.png`, `MW06_HUMAN_COUNTERMEMORIES.png`, `MWP02_PUBLIC_TIME_VENICE.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB06_STORYBOARD.png`.
 
 **STORYBOARD 07 — attach:** `W07_MAIN_WORLD.png`, `HRW07_CLINICAL_REALITY.png`, `MWP01_ROUTES_ROOMS_DOCUMENTS.png`, `MW01_LONDON_SOCIAL.png`, `MW02_GLOBAL_ROUTES.png`, `C01_PROTAGONIST.png`, `C05_FINAL_NURSE.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`. **GENERATED OUTPUT:** save/rename the result as `SB07_STORYBOARD.png`.
 
@@ -2520,6 +2534,87 @@ These details exist to preserve biography, not to simplify it.
 
 > **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
+## MEMORY PRESERVATION WORLD P02 — PUBLIC TIME / VENICE / CONSTITUTIONAL REVERSALS
+
+```text
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+FUNCTION:
+This is a STORY-PRESERVATION SOURCE BANK for the late Part-II moment when a private case enters public constitutional time.
+Some cells are literal personal/document memories; others are restrained public-history context explicitly retained by the source narrative.
+They are NOT evidence that the protagonist caused any later political, judicial or institutional outcome.
+
+CAUSALITY / IDENTITY LOCK — NON-NEGOTIABLE:
+- The protagonist's Venice submission is one documented act from below, not the cause of later Venice Commission, parliamentary, presidential, judicial or personnel events.
+- The empty presidential chair is NOT a verdict in the protagonist's case.
+- Do NOT portray any real president, prime minister, judge, prosecutor, minister, party leader or identifiable public figure.
+- Use anonymous offices, chairs, hands, documents, silhouettes and non-identifiable institutional personnel only.
+- No party logos, campaign branding, advocacy, triumphalism or political propaganda.
+- Do not imply conspiracy or one unified institutional intention.
+
+PRESENT-CITY SEPARATION:
+Show every source scene DIRECTLY in this sheet.
+DO NOT show the London–Budapest dream city.
+DO NOT place these source scenes inside reflections here.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO prompts may embed only the specifically named source cell into real present-city glass as a short reflection or micro-flash.
+
+IDENTITY:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist is visible.
+All public officeholders and institutional staff remain anonymous and non-identifiable; no additional politician character sheet is required.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European institutional realism.
+Ordinary paper, laptops, offices, court furniture and public architecture rather than symbolic fantasy.
+No news-graphics collage, no falling-head montage, no propaganda poster, no dramatic coup imagery.
+Text should remain mostly unreadable except where the single institutional destination VENICE COMMISSION is needed to make the two-letter parallel legible.
+
+NINE CELLS:
+
+Cell 1 — Ordinary protagonist desk / home-paperwork memory after a clemency refusal. A restrained official refusal letter and envelope sit among the protagonist's existing case papers. The protagonist is present at human scale. No presidential portrait, no triumph or rage, and no invented reason for the refusal.
+
+Cell 2 — Revised clemency papers prepared later and deliberately set aside to be submitted again after the presidency changes. Show an ordinary dated document stack, envelope and handwritten/typed routing note to hold the papers for a future officeholder; keep names unreadable and do not identify the incoming minister.
+
+Cell 3 — TWO LETTERS TO VENICE, FROM BELOW: the protagonist at an ordinary laptop/desk sending his own submission to the Venice Commission. A small clock/time cue may suggest the documented afternoon send. This is the 'one small push from below' image: one citizen, ordinary room, laptop, documents, no heroic staging.
+
+Cell 4 — TWO LETTERS TO VENICE, FROM ABOVE: an anonymous high-office desk with formal constitutional questions being prepared or sent to the SAME Venice Commission. No identifiable officeholder is visible; use only hands, formal stationery, restrained presidential-office architecture and the shared institutional destination.
+
+Cell 5 — The two distinct Venice submissions made visually comparable without claiming causation: one ordinary citizen-side document/laptop source and one anonymous high-office document source both addressed to VENICE COMMISSION. Keep them clearly separate, equal in destination but radically different in scale and authority. No arrows, no cause/effect graphic.
+
+Cell 6 — Constitutional Court quorum-collapse public-time source: a formal fifteen-seat constitutional-court chamber in which eight seats are visibly unavailable / empty / turned away from the case, leaving only seven usable participants and therefore no quorum. No identifiable judges, no robes-as-spectacle, no falling chairs, no comedy.
+
+Cell 7 — One citizen / laptop / AI route from below: the protagonist alone at an ordinary desk with a laptop, a restrained AI-assistant text cursor and constitutional filing papers, while the route is stopped before substantive review. Keep the AI interface small and ordinary; the human and the unanswered constitutional door are the point.
+
+Cell 8 — Black-humour timing echo: an earlier self-made submission on the protagonist's desk carries the absurd tone of declaring an institution 'fired'; nearby, a later public-news / administrative source indicates that long-serving office-holders are being asked to leave. Do not show identifiable people or imply prediction, authority or causation. The irony is timing only.
+
+Cell 9 — EMPTY PRESIDENTIAL CHAIR: an anonymous formal presidential-office chair stands empty after the mandate has ended, with restrained office architecture and no identifiable portrait. It is quiet, institutional and non-triumphal. This empty chair is explicitly NOT a verdict in the protagonist's case; it only completes the private irony of a clemency request addressed upward before the office itself entered constitutional uncertainty.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine literal photographic source cells.
+No present-city reflection layer.
+No score cards.
+No real politician or identifiable public figure.
+No causal claim that the protagonist produced later political or institutional outcomes.
+No narrative element in this bank may be silently deleted merely because it is a micro-flash.
+```
+
+> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
+
 ## HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY
 
 ```text
@@ -4164,6 +4259,7 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 
 Use the following separate MEMORY CONTENT reference(s):
 - MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR
+- MEMORY PRESERVATION WORLD P02 — PUBLIC TIME / VENICE / CONSTITUTIONAL REVERSALS (late Part-II public-time micro-flashes; no causal claim)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -4224,9 +4320,9 @@ FRAME 5 — Yellow tram windows. Literal file sequence: photograph, fingerprint 
 
 FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two expert chairs, differing reactions, one asks what happened; the protagonist remains calm/cooperative. Do not imply a single unified expert voice.
 
-FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real politician likeness, no party branding, no advocacy, and no large readable text.
+FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; include a very brief self-made institutional-dismissal paper carrying the absurd 'institution fired' tone; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. The 'institution fired' line is black humour from below, not authority, prediction or causation. No real politician likeness, no party branding, no advocacy, and no large readable text.
 
-FRAME 8 — Broad entrance glass. Literal clerk/court-route memory: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. Keep text unreadable and focus on ordinary people, phone, letter, file.
+FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late Part-II public-time chain from MWP02: first the protagonist's clemency refusal / revised papers held for a future presidency change; then TWO LETTERS TO VENICE — his ordinary laptop submission from below and an anonymous presidential-office submission from above reaching the same Venice Commission. The destination may be briefly legible; names remain unreadable. Do NOT imply that his letter caused the Commission's later posture, the presidency change or any institutional outcome.
 
 FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many faint cards; the city feels like it can classify everyone.
 
@@ -4270,6 +4366,7 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 
 Use the following separate MEMORY CONTENT reference(s):
 - MEMORY WORLD 06 — HUMANITY BREAKS THROUGH / RECURRING POSITIVE COUNTERMEMORIES
+- MEMORY PRESERVATION WORLD P02 — PUBLIC TIME / VENICE / CONSTITUTIONAL REVERSALS (constitutional/public-time micro-flashes only; no causal claim)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -4330,13 +4427,13 @@ FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / 
 
 FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
 
-FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
+FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes carry the MWP02 constitutional parallel: an anonymous Constitutional Court chamber unable to form a quorum after seven recusals followed by an eighth, and the protagonist alone with a laptop / AI-assistant cursor trying to reach constitutional review from below. The two cases are different and neither decides the other; the shared image is simply an unanswered constitutional door. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
 FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards sharpen at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
 
 FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible near his head at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
 
-FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. The protagonist walks toward a quieter continuation. NO clinical imagery yet.
+FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. In one final civic-glass reflection, MWP02 briefly shows the EMPTY PRESIDENTIAL CHAIR after the mandate ended; it is quiet, anonymous and explicitly NOT a verdict in the protagonist's case. The earlier absurd 'institution fired' gesture may echo only as timing, never as prediction or cause. The reflection clears and the protagonist walks toward a quieter continuation. NO clinical imagery yet.
 
 FINAL CHECK:
 Exactly one 16:9 final canvas with exactly nine equal numbered cinematic frames arranged 3×3.
@@ -4524,7 +4621,7 @@ Then the system entered the story without ever becoming one person. A voice at t
 ```
 
 
-### NARRATION 05 — THE FILE
+### NARRATION 05 — THE FILE / VENICE FROM BELOW
 
 **GENERATED OUTPUT:** `A05_NARRATION.wav`
 
@@ -4535,11 +4632,11 @@ Then the system entered the story without ever becoming one person. A voice at t
 ================================================================================
 
 ```text
-A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home, what you gave up, or what you were trying to repair. The more the record grew, the less room it seemed to leave for the life that made it.
+A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home, what you gave up, or what you were trying to repair. I asked the highest office for mercy and got none. Later, the President and I sent different questions to the same place: Venice. One from above, one small push from below.
 ```
 
 
-### NARRATION 06 — HUMANITY BREAKS THROUGH
+### NARRATION 06 — HUMANITY BREAKS THROUGH / MOVING OFFICES
 
 **GENERATED OUTPUT:** `A06_NARRATION.wav`
 
@@ -4550,7 +4647,7 @@ A file can hold a photograph, a fingerprint, a signature, a list of things you o
 ================================================================================
 
 ```text
-But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not. A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed.
+But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not. A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. The country could move whole offices in weeks. My case had not moved. Even the chair at the top had. Then the system resumed.
 ```
 
 
@@ -5257,6 +5354,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W05_MAIN_WORLD.png`
 - `SB05_STORYBOARD.png`
 - `MW05_COURT_FILE.png`
+- `MWP02_PUBLIC_TIME_VENICE.png`
 - `C01_PROTAGONIST.png`
 - `C04_APPOINTED_LAWYER.png`
 - `C27_JUDGE.png`
@@ -5271,6 +5369,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W05_MAIN_WORLD.png` → `@W05_MAIN_WORLD`
 - `SB05_STORYBOARD.png` → `@SB05_STORYBOARD`
 - `MW05_COURT_FILE.png` → `@MW05_COURT_FILE`
+- `MWP02_PUBLIC_TIME_VENICE.png` → `@MWP02_PUBLIC_TIME_VENICE`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C04_APPOINTED_LAWYER.png` → `@C04_APPOINTED_LAWYER`
 - `C27_JUDGE.png` → `@C27_JUDGE`
@@ -5309,6 +5408,7 @@ REFERENCE ROLE ASSIGNMENT
 - @W05_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
 - @SB05_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @MW05_COURT_FILE = court / file / assets / forensic / black-humour memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MWP02_PUBLIC_TIME_VENICE = late Part-II public-time preservation bank for clemency refusal/revised papers, the two Venice submissions from below/above, constitutional-review parallels, the institutional-firing timing echo and the empty presidential chair. Use only the exact short source moments named in this block. Never imply that the protagonist caused later political or institutional events and never display the whole sheet.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C04_APPOINTED_LAWYER = exact identity anchor for the appointed lawyer; preserve face, age, body proportions and role.
 - @C27_JUDGE = exact identity anchor for the judge; preserve face, age, body proportions and role.
@@ -5332,7 +5432,7 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 10–15s: folder opening, photograph/paper handling, pen/signature scratch, one soft stamp or file closure.
 15–20s: evidence/property bag or box movement, phone/laptop object handling, still ordinary and non-thriller.
 20–25s: forensic-room ventilation, two chairs shifting at different moments, page turn, restrained clock tick.
-25–30s: brief self-made-paper/cardboard handling carries the black-humour sequence — KATA/police-career joke and the anonymous ridiculous-hat political-cardboard/asylum-request flash — then posted letter/envelope, folder close and a distant phone ring unanswered before exterior rain becomes dominant again. No rally sound, no political speech.
+25–30s: brief self-made-paper/cardboard handling carries the black-humour sequence — KATA/police-career joke, the absurd institutional-dismissal note and the anonymous ridiculous-hat political-cardboard/asylum-request flash — then an official clemency envelope/refusal paper, revised document stack and two distinct document-send/keyboard cues for the Venice submissions from below and above. End with folder close and exterior rain becoming dominant again. No rally sound, no political speech, no triumphant resignation cue and no causal sound design.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -5392,9 +5492,9 @@ FRAME 5 — Yellow tram windows. Literal file sequence: photograph, fingerprint 
 
 FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two expert chairs, differing reactions, one asks what happened; the protagonist remains calm/cooperative. Do not imply a single unified expert voice.
 
-FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real politician likeness, no party branding, no advocacy, and no large readable text.
+FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; include a very brief self-made institutional-dismissal paper carrying the absurd 'institution fired' tone; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. The 'institution fired' line is black humour from below, not authority, prediction or causation. No real politician likeness, no party branding, no advocacy, and no large readable text.
 
-FRAME 8 — Broad entrance glass. Literal clerk/court-route memory: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. Keep text unreadable and focus on ordinary people, phone, letter, file.
+FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late Part-II public-time chain from @MWP02_PUBLIC_TIME_VENICE: first the protagonist's clemency refusal / revised papers held for a future presidency change; then TWO LETTERS TO VENICE — his ordinary laptop submission from below and an anonymous presidential-office submission from above reaching the same Venice Commission. The destination may be briefly legible; names remain unreadable. Do NOT imply that his letter caused the Commission's later posture, the presidency change or any institutional outcome.
 
 FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many faint cards; the city feels like it can classify everyone.
 
@@ -5415,6 +5515,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W06_MAIN_WORLD.png`
 - `SB06_STORYBOARD.png`
 - `MW06_HUMAN_COUNTERMEMORIES.png`
+- `MWP02_PUBLIC_TIME_VENICE.png`
 - `C01_PROTAGONIST.png`
 - `C02_SOHO_WOMAN.png`
 - `C03_POLICEWOMAN.png`
@@ -5433,6 +5534,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W06_MAIN_WORLD.png` → `@W06_MAIN_WORLD`
 - `SB06_STORYBOARD.png` → `@SB06_STORYBOARD`
 - `MW06_HUMAN_COUNTERMEMORIES.png` → `@MW06_HUMAN_COUNTERMEMORIES`
+- `MWP02_PUBLIC_TIME_VENICE.png` → `@MWP02_PUBLIC_TIME_VENICE`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C02_SOHO_WOMAN.png` → `@C02_SOHO_WOMAN`
 - `C03_POLICEWOMAN.png` → `@C03_POLICEWOMAN`
@@ -5475,6 +5577,7 @@ REFERENCE ROLE ASSIGNMENT
 - @W06_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
 - @SB06_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @MW06_HUMAN_COUNTERMEMORIES = late-film recurring human counter-memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MWP02_PUBLIC_TIME_VENICE = late Part-II public-time preservation bank. In this block use only the constitutional-quorum / citizen-laptop parallel and the empty presidential chair. These are structural/public-time echoes, not causal claims and not verdicts in the protagonist's case. Never display the whole sheet.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C02_SOHO_WOMAN = exact identity anchor for the soho woman; preserve face, age, body proportions and role.
 - @C03_POLICEWOMAN = exact identity anchor for the policewoman; preserve face, age, body proportions and role.
@@ -5503,7 +5606,7 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 15–20s: quiet procedural room tone with one restrained suppressed laugh / warm exhale, no words.
 20–24s: lawyer/court paper movement and chair shift, then a few dance-floor shoe steps and room ambience, no music beat.
 24–27s: the six-person table memory becomes briefly dominant: ordinary chairs, cups, quiet natural room tone, several people breathing/moving and one soft human laugh without intelligible dialogue.
-27–30s: multiple memory sound fragments overlap lightly but remain intelligible; then simplify to footsteps, rain and the city continuing toward Westminster.
+27–30s: multiple memory sound fragments overlap lightly but remain intelligible; add one brief dry constitutional-room chair shift / paper pause and a small laptop-key / cursor-click texture, then a final quiet empty-office room tone for the presidential-chair reflection. No political speech, applause, resignation sting or causal sound cue. Simplify to footsteps, rain and the city continuing toward Westminster.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -5561,13 +5664,13 @@ FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / 
 
 FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
 
-FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
+FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes from @MWP02_PUBLIC_TIME_VENICE carry the constitutional parallel: an anonymous Constitutional Court chamber unable to form a quorum after seven recusals followed by an eighth, and the protagonist alone with a laptop / AI-assistant cursor trying to reach constitutional review from below. The two cases are different and neither decides the other; the shared image is simply an unanswered constitutional door. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
 FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards sharpen at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
 
 FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible near his head at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
 
-FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. The protagonist walks toward a quieter continuation. NO clinical imagery yet.
+FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. In one final civic-glass reflection, @MWP02_PUBLIC_TIME_VENICE briefly shows the EMPTY PRESIDENTIAL CHAIR after the mandate ended; it is quiet, anonymous and explicitly NOT a verdict in the protagonist's case. The earlier absurd 'institution fired' gesture may echo only as timing, never as prediction or cause. The reflection clears and the protagonist walks toward a quieter continuation. NO clinical imagery yet.
 
 OUTPUT RULE
 Create one continuous photorealistic cinematic sequence for this block. The attached reference images are control assets, not objects that appear in the film. Preserve protagonist identity and location continuity. No fantasy glow, no psychedelic dream treatment, no game-engine look, no explanatory subtitles, no visible file names and no reference-grid borders.
@@ -5861,34 +5964,34 @@ The strange part was not that people stopped being human. The process could forg
 
 `A05_PART_A.wav`
 ```text
-A file can hold a photograph, a fingerprint, a signature, a list of things you own.
+A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home.
 ```
 
 `A05_PART_B.wav`
 ```text
-It cannot hold why you came home, what you gave up, or what you were trying to repair.
+What you gave up, or what you were trying to repair. I asked the highest office for mercy and got none.
 ```
 
 `A05_PART_C.wav`
 ```text
-The more the record grew, the less room it seemed to leave for the life that made it.
+Later, the President and I sent different questions to the same place: Venice. One from above, one small push from below.
 ```
 
 #### BLOCK 06 PARTS
 
 `A06_PART_A.wav`
 ```text
-But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room.
+But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not.
 ```
 
 `A06_PART_B.wav`
 ```text
-People pulled together when a balloon landed where it should not.
+A judge, an officer, a lawyer, a dancer: for a second, each role became a person again.
 ```
 
 `A06_PART_C.wav`
 ```text
-A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed.
+The country could move whole offices in weeks. My case had not moved. Even the chair at the top had. Then the system resumed.
 ```
 
 #### BLOCK 07 PARTS
