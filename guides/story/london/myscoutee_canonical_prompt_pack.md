@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.6 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + NARRATION-SYNC + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.13 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -20,40 +20,98 @@
 - WORLD image = **0 px outer margin**, image content touches all four canvas edges, only 1–2 px internal gutters.
 - WORLD image = no title bar, no caption band, no legend, no decorative frame, no layout text. **In-world English/Hungarian signage is allowed and required.**
 - MAP asset = **separate generation**; simple block-model production plan, not photorealistic, not Google Maps 3D, no legend/captions.
-- CHARACTER asset = one image, 3 vertical panels: full-body front + full-body back + frontal headshot; seamless mid-grey studio background; no title/frame. CHARACTER 01–31 form the canonical main + memory identity library and are generated before MEMORY WORLDS.
+- CHARACTER asset = one image, 3 vertical panels: full-body front + full-body back + frontal headshot; seamless mid-grey studio background; no title/frame. CHARACTER 01–31 form the canonical main + memory identity library. A character sheet must exist before any MEMORY WORLD that uses it; under the EARLY V01 LIVE-TEST priority, generate only the Block-01-required character subset first, then complete the remaining character library after the first production video block has been tested.
 - STORYBOARD asset = exactly **one 16:9 final canvas containing a 3×3 grid of 9 equal numbered cinematic frames**. Each individual frame is composed and cropped as a true **16:9 cinematic frame**; never square. 0 px outer margin.
 - Physical present = **one uninterrupted exterior pedestrian walk** through the same impossible London–Budapest metropolis.
 - The protagonist never physically enters the remembered office, shared house, police station, lawyer room, courtroom, foreign trip, or clinical room during the dream-city walk. Those are **literal memory events inside real reflective / transparent surfaces**.
 - Dedicated **MEMORY WORLD references** are generated as clean visual source banks of the remembered places/events themselves. They are NOT windows and contain no present-city reflection layer. MAIN WORLD sheets establish the physical London–Budapest city and its real glass/wet surfaces; STORYBOARD / VIDEO generation then places the relevant MEMORY WORLD scene inside those existing surfaces.
+- **LIVING MEMORY FRAGMENT LOCK:** although each MEMORY WORLD is a static reference sheet, the memory as seen in the FINISHED VIDEO is a short living moving fragment inside the reflective/transparent surface: natural micro-action, body movement, facial response, object motion and environmental motion continue for the brief duration of the memory. Never treat the supplied MEMORY WORLD still as a frozen photograph, poster or static projection inside the glass.
+- **SEPARATE MEMORY-VIDEO OVERLAY NOTE — CONSIDERED, NOT THE CANONICAL PATH:** production considered generating every reflected memory as its own separate video clip and then placing that moving clip into the reflective surface. That would multiply paid video generations, push the 3000-credit ceiling toward/over failure, and create another assembly/compositing dependency. Therefore the canonical production path is to animate the selected MEMORY WORLD content natively inside the MAIN Seedance video/extension pass using the still reference bank. A separately pre-generated memory-video overlay is a MANUAL FALLBACK only and may not be created unless the user explicitly authorizes that exact extra-cost path after a credit preflight.
 - London supplies recognizable street geometry. Budapest/Hungary is not generic “Central Europe”: **explicit recognizable Pest/Budapest anchors, Hungarian signage and transport must remain visible.**
 - The city is normal to everyone inside it. No fantasy glow, no dream filter, no cyberpunk.
 - Memories are not chronological. **Memory edits without asking permission. Global route. Local encounter.**
 - **STORY-PRESERVATION LOCK:** a memory that has been deliberately placed in a MEMORY WORLD, character library, story bible addendum, or prior canonical storyboard must NOT silently disappear from the finished film during prompt cleanup. If it is not a dominant 3×3 keyframe, preserve it as a brief secondary reflection/micro-flash unless the user explicitly approves dropping it.
 - **NO SILENT SIMPLIFICATION:** prompt shortening may change wording, never narrative inventory. Human encounters, black humour, awkwardness, kindness, travel thresholds and system/person contrasts are story content, not expendable decoration.
-- Score cards are not part of WORLD assets. They are added only in STORYBOARD / video generation.
+- Score cards are not part of WORLD assets. They are added only in STORYBOARD / video generation, always anchored ABOVE each person's head with a visible gap from the hairline; baseline cards remain normally and clearly visible in a restrained translucent state; direct gaze only gives the viewed person's existing card a slightly fuller internal light/fill temporarily, never a dramatic flare.
 - Clinical imagery appears only in the final block, immediately before the hard cut.
 - Final runtime target = **3:20**: six ~30 s blocks + final ~20 s block.
 - Final title = **MYSCOUTEE / THE PATH BETWEEN PEOPLE**.
 - **NARRATION–SYSTEM-TIME SYNC LOCK:** Blocks 05–06 voice the abstract structural echoes already present in their storyboard/video beats: a refused request for relief, two unequal people reaching toward the same distant review door, institutional speed contrasted with personal delay, and an empty chair high in the system. These are universal system/person images, not references to a named contemporary event or office.
 - **GALA ABSTRACTION LOCK:** The film keeps the autobiographical STRUCTURE while removing contemporary real-world identifiers. Do not show or name real officeholders, parties, named high-state bodies, named international review bodies, named tax regimes or identifiable current public events. London and Budapest remain the dream-city geography, not a claim about current public affairs. Preserve every underlying human beat by translating it into fictional, universal institutional imagery rather than deleting it.
 - **CARDBOARD-ASYLUM EXCEPTION — STORY PRESERVATION:** The anonymous ridiculous-hat cardboard public figure and asylum-request black-humour beat remain because they are fictional and non-identifiable. Remove real names, likenesses, party or campaign branding and contemporary-office identifiers — do NOT replace the asylum joke with a different generic escape joke.
+- **AI-SURVIVAL NARRATION LOCK:** the film must explicitly acknowledge in the OFF-SCREEN narration that AI helped the protagonist hold the fragmented story together and, at times, simply keep going. This is a human/structural acknowledgement, not a technology advertisement. Because the visual memory field is already intentionally dense, this acknowledgement is **NARRATION ONLY**: do NOT add a new AI screen, chatbot UI, laptop micro-flash, logo, product shot or separate AI memory image merely to illustrate the line.
+- **SCORE-CARD POSITION + GAZE LOCK:** every score card belongs **ABOVE the viewed person's head**, centered over the crown with visible air between card and hair. Never place a card on the forehead, across the eyes/face, inside the head, on the torso, beside the body or floating elsewhere without a person anchor. Cards remain normally and clearly visible at a restrained translucent baseline even when nobody is looking. When one person directly looks at another, the VIEWED person's above-head card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, then eases back to the same normal baseline. No flare and no dramatic brightness jump.
+- **NORMAL-BASELINE / GAZE-FILL INTERPRETATION:** `normal` means the card is visibly and continuously present without being ghosted away or reduced to near-invisibility. The gaze response is not a reveal: it is only a modest increase in internal fill/light, like the same translucent card becoming slightly more luminous and full for a moment. Position, size and basic opacity stay stable.
+- **MCP / HIGGSFIELD HANDOFF LOCK:** if another AI continues this project and the user explicitly grants Higgsfield MCP/app permission, its FIRST external action is to search the connected Higgsfield workspace/project/history/media for the existing MyScoutee project and already-generated canonical assets. Reuse matching valid assets and generations. Do not silently start a fresh Higgsfield project, duplicate the project, or regenerate an existing canonical asset before that search is complete. If the existing project cannot be found, report that fact and STOP; creating any replacement project requires fresh explicit user authorization.
+- **EXTERNAL-SUPERCOMPUTER EXECUTION CONTRACT:** this prompt pack is intentionally written so an external AI agent with explicit Higgsfield MCP/app permission can run the production from start to finish. The intended orchestration setup for this production is **ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration**, acting as an external supercomputer rather than as a manual copy/paste assistant. The agent must execute the canonical dependency graph, maintain the credit ledger, create/recover assets, generate narration and video, inspect outputs against the acceptance locks and continue autonomously between the explicit MANUAL GATES defined below. Human intervention is intentionally limited to those gates and explicit keep/stop/fallback approvals. The agent is not allowed to redesign the workflow, simplify the story, switch models, add an editor, or activate a fallback merely because another route looks easier.
+- **HIGGSFIELD-NATIVE-ONLY / NO EXTERNAL VIDEO EDITOR LOCK:** the final film must demonstrate what Higgsfield can actually deliver without an external NLE rescuing continuity. Do not use DaVinci Resolve, Premiere, After Effects, ffmpeg, external crossfades, external frame interpolation, external audio repair, external concatenation or any other outside video editor to hide seams or repair generated footage. Normal file transfer/storage is allowed; creative or technical seam repair outside Higgsfield is not. If the native Higgsfield path cannot deliver a usable continuous master, STOP and report that limitation rather than silently fixing it elsewhere.
+- **NATIVE FORWARD-EXTENSION CONTINUITY LOCK:** `V01_CITY_JUDGES_FIRST.mp4` is the only independently generated opening block. Blocks 02–07 must use Seedance 2.5 `video_extension` with `extension_mode=forward` from the immediately preceding accepted canonical video/chain, while also supplying the new block's exact image references and locked narration audio reference when the current Higgsfield interface/backend accepts them. The purpose is to preserve the previous last frame, camera velocity, protagonist stride, weather, lighting, crowd flow, ambience, foley texture and restrained score across each 30-second boundary. Do not revert to seven unrelated standalone generations during normal execution.
+- **MANUAL FALLBACK AUTHORIZATION LOCK — NON-NEGOTIABLE:** Seedance 2.5, the locked native-resolution plan, the seven full narration files and the native forward-extension chain are the active production path. Every deviation is CONTINGENCY DOCUMENTATION ONLY until the user explicitly authorizes that exact fallback after being told the trigger, expected credit cost and continuity/story impact. This includes: changing video model, changing final resolution, abandoning the native extension chain, using a Higgsfield-native rough-cut/Canvas assembly instead of a cumulative extension result, splitting a block into subclips, regenerating narration with changed `speech_rate`, creating PART A/B/C narration files, separate music generation, region/video editing, creating a replacement Higgsfield project, or any paid retry/regeneration after a failed take. Another AI must NEVER interpret a general instruction such as “finish the film”, “continue”, or prior MCP permission as permission to activate a fallback. When a fallback condition appears, STOP, report it, propose the smallest option, and wait for the user. Do not research, compare or test alternate video models unless the user explicitly asks for that comparison in a later turn.
+- **EARLY V01 LIVE-TEST PRIORITY:** discover as early as possible whether the full production video pipeline actually works by generating **CINEMA BLOCK 01 / `V01_CITY_JUDGES_FIRST.mp4`** before bulk-producing the rest of the film. This is NOT a disposable proxy. Generate it at the intended final production settings (30 s, 16:9, 1080p only after the mandatory full-film cost preflight confirms the projected all-in production remains within the 3000-credit hard ceiling, locked narration audio reference, full Block-01 reference stack, audio generation on). If the first technically usable take preserves the mandatory story, identity, narration and physical-present logic, it becomes the canonical first 30 seconds of the final film and must NOT be discarded merely because it began as the live test. After V01 is accepted, fast-track Block 02 and test the first native forward extension before bulk-producing the rest; V01 alone cannot validate seam continuity.
 
-### OPERATOR NOTES — GENERATION ORDER — DO NOT COPY
-1. **CHARACTER 01–31** — complete main + memory-character identity library. Generate these first so MEMORY WORLD identities are stable from their first generation.
-2. **MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING**
-3. **MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS**
-4. **MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN**
-5. **MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE**
-6. **MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR**
-7. **MEMORY WORLD 06 — HUMANITY BREAKS THROUGH / RECURRING POSITIVE COUNTERMEMORIES**
-8. **MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS** — restores planned micro-flashes that were lost during earlier prompt simplification.
-9. **MEMORY PRESERVATION WORLD P02 — SYSTEM TIME / TWO DOORS / INSTITUTIONAL REVERSALS** — preserves the late Part-II system-time arc without implying that the protagonist caused political or institutional outcomes.
-10. **HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY**
-11. **WORLD 01–07** — physical London–Budapest location/environment continuity
-12. **MAP 01–07** — separate spatial aids
-13. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
-14. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset, pitch and expression for all seven blocks; speech_rate may vary only minimally as allowed by the narration duration gate.
-15. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
+### OPERATOR NOTES — GENERATION ORDER / EARLY V01 LIVE-TEST — DO NOT COPY
+
+**THIS PRIORITY OVERRIDES THE OLD “BUILD THE ENTIRE LIBRARY FIRST” ORDER.** The first goal is to reach one real, final-quality 30-second video generation as early as possible without making a disposable test asset.
+
+#### FAST-TRACK GATE — BUILD ONLY WHAT CINEMA BLOCK 01 NEEDS
+
+If Higgsfield MCP/app permission is available, **search the existing Higgsfield MyScoutee project/workspace/history/media first** and reuse any already-valid canonical assets below. Generate only what is missing.
+
+1. Generate / recover the Block-01 character subset first: `C01`, `C02`, `C06`, `C07`, `C08`, `C09`, plus `C10` because `MW01_LONDON_SOCIAL.png` uses that identity in its complete preservation sheet.
+2. Generate / recover `W01_MAIN_WORLD.png`. It has no default image-reference dependency and can be produced in parallel with the Block-01 character subset.
+3. Generate / recover `A01_NARRATION.wav` as early as possible using the locked narrator voice. Do not wait for A02–A07.
+4. Generate `MW01_LONDON_SOCIAL.png` from its complete listed character references. Do not prune its non-Block-01 cells merely to accelerate the test.
+5. Generate `MWP01_ROUTES_ROOMS_DOCUMENTS.png` from `C01_PROTAGONIST.png`. Preserve its complete 3×3 inventory; Block 01 will use only the assigned micro-flashes.
+6. Generate `SB01_STORYBOARD.png` from the exact Block-01 references listed in PHASE E.
+7. **Immediately generate `V01_CITY_JUDGES_FIRST.mp4`** in Higgsfield Cinema Studio / Seedance 2.5 at approximately 30 s, 16:9, **1080p final-production quality only after the 3000-credit full-film budget preflight passes**, audio generation ON, with `A01_NARRATION.wav` as the authoritative audio reference and the full exact Block-01 image-reference stack.
+8. Apply the FIRST-PASS acceptance rule. If V01 is technically usable and story-preserving, **KEEP IT AS THE FINAL FILM'S FIRST 30 SECONDS**. Do not regenerate it later simply because the rest of the asset library was generated afterward.
+9. If V01 has a catastrophic failure, identify the smallest cause, report the exact proposed repair/regeneration and its estimated credit impact, then STOP for explicit user approval. Only after approval may the affected upstream asset or V01 itself be regenerated and the gate repeated. Do not abandon the entire pipeline and do not reroll for cosmetic perfection.
+
+**Do not generate MAP 01 before this gate unless route troubleshooting specifically requires it. Maps are not allowed to delay the first production video test.**
+
+### OPERATOR NOTES — 3000-CREDIT HARD PRODUCTION CEILING — DO NOT COPY
+
+**HARD RULE:** the complete finished film — image generations that are not covered by unlimited allowances, all seven narration files, the seven logical video stages (V01 plus six native forward extensions), any separately generated music, and every catastrophic-failure retry/edit — must remain at or below **3000 Higgsfield credits total**. Never begin a paid generation merely because the current balance is sufficient for that one job. Maintain a running project ledger and preflight the projected cost of the remaining film first.
+
+**CURRENT VERIFIED REFERENCE COSTS (HIGGSFIELD PREFLIGHT, 2026-08-26; re-check before purchase/generation because pricing can change):**
+- Seedance 2.5, omni-reference, 30 s, 16:9, 1080p, audio ON = **270 credits**.
+- Seedance 2.5, omni-reference, 20 s, 16:9, 1080p, audio ON = **180 credits**.
+- Six 30 s blocks + one 20 s block at native 1080p = **1800 credits total video**.
+- Current Seed Audio 1.0 preflights for the seven locked narration scripts total approximately **13.8 credits** (A01 1.8, A02 1.8, A03 1.8, A04 2.3, A05 2.2, A06 2.6, A07 1.3). Re-check before generation.
+- Therefore the presently verified base 1080p video + narration plan is approximately **1813.8 credits**, before any non-unlimited still-image charges, separate music generation or retries.
+
+**BUDGET ENVELOPE / DEFAULT RESERVE:**
+- Base final video + locked narration: target **≤ 1820 credits**.
+- Still-image assets: target **0 paid credits whenever the active plan provides an unlimited eligible image window**; otherwise preflight every paid batch and count it against the same 3000-credit ceiling. Unlimited usage is not a reason to generate unnecessary variants.
+- Separate music: **do not generate by default.** Seedance already creates the restrained score inside each video pass. Separate music is a MANUAL FALLBACK/creative branch: report the reason and estimated cost, then create it only after the user explicitly authorizes that music path. Reserve **≤ 300 credits** for the entire path unless the user explicitly changes the budget.
+- Catastrophic-failure reserve: preserve approximately **700 credits** whenever possible. At current Seedance pricing this is enough for two failed 30 s 1080p blocks plus most/all of one additional affected block. Cosmetic retries are forbidden.
+- Keep an additional small safety margin rather than planning exactly to 3000.
+
+**LIVE-TEST DECISION RULE:** V01 is still the earliest real production test, not a disposable proxy. Before generating V01, run a current cost preflight for the locked final Seedance 2.5 / native-resolution plan and calculate the projected ALL-IN remainder. If the verified projection with the above reserve stays below 3000, generate V01 directly at native 1080p and keep a successful take as final. Do **not** spend credits on a separate low-resolution V01 merely to test motion if that test would then be discarded. If current pricing or other required paid assets would push the projected all-in total over 3000, STOP before V01 and report the budget problem to the user. Do not choose, test or apply a cheaper model, lower resolution, split strategy or other production fallback without fresh explicit user authorization.
+
+**VIDEO MODEL LOCK:** Seedance 2.5 is the production model for this canonical pack. Do not search for, compare, stress-test or substitute any alternate video model during normal execution. A model change exists only as a user-initiated future decision outside the active production path; if the user later explicitly asks to reconsider models, evaluate that request then and do not let the existence of alternatives alter current prompt interpretation or continuity.
+
+**RUNNING LEDGER:** after every paid generation, record: asset/job name → model → duration/resolution → actual credits charged → cumulative credits used → protected reserve remaining. Another AI taking over the project must reconstruct this ledger from Higgsfield history before spending additional credits whenever MCP/app permission is available.
+
+#### AFTER V01 PASSES — TEST THE FIRST NATIVE EXTENSION BEFORE BULK PRODUCTION
+
+10. Build/recover only the additional Block-02 dependencies that are still missing: the required Block-02 characters, `W02_MAIN_WORLD.png`, `MW02_GLOBAL_ROUTES.png`, `SB02_STORYBOARD.png` and `A02_NARRATION.wav`; reuse MW01/MWP01 and any already-valid shared assets.
+11. Preflight the actual Seedance 2.5 forward-extension job using accepted `V01_CITY_JUDGES_FIRST.mp4` as the source video and the exact Block-02 reference stack. Count the returned cost against the same 3000-credit ledger.
+12. **MANUAL GATE — FIRST EXTENSION:** before spending on the first extension, report the actual extension mode/inputs/cost and obtain explicit user approval. Then generate the first forward extension.
+13. Inspect the V01→Block-02 boundary specifically for a hard visual reset or obvious audio restart. The seam does not need mathematical frame identity, but it must read as the same uninterrupted walk and the same sonic world without a title-card/new-scene feeling. If the native extension is acceptable, KEEP it. If Higgsfield returns only a continuation segment instead of a cumulative/native continuous result, or if the interface rejects the required reference/audio combination, STOP and report the exact behavior; do not use an external editor and do not silently choose another assembly method.
+14. **MANUAL GATE — NATIVE CONTINUITY ACCEPTANCE:** show/report the first extension result and wait once for the user's approval that the native seam strategy is acceptable. After approval, the remaining normal production may proceed autonomously.
+
+#### AFTER THE FIRST EXTENSION PASSES — COMPLETE THE REST
+
+15. Complete the remaining CHARACTER sheets not already generated.
+16. Complete MEMORY WORLD 03–06, MEMORY PRESERVATION WORLD P02 and HIDDEN REALITY WORLD 07; preserve already-generated MW01, MW02 and MWP01.
+17. Complete WORLD 03–07; preserve W01–W02.
+18. Generate MAP 01–07 only as planning/continuity aids when useful; they remain optional for Cinema generation and must not delay production.
+19. Complete STORYBOARD 03–07; preserve SB01–SB02.
+20. Generate and duration-validate A03–A07 with the same locked narrator voice; preserve A01–A02.
+21. Generate logical CINEMA BLOCKS 03–07 in order as **forward extensions of the immediately preceding accepted native chain**, using the same first-pass acceptance rule and a fresh cost preflight before every paid extension. Do not stop for routine approval after every successful block; stop only at the manual fallback/catastrophic-failure/budget gates already defined.
+
+The canonical dependencies and exact attachment lists in PHASE A–G still control each asset. The fast-track changes only **when** assets are generated and how the seven logical blocks are linked natively; it never changes their story content or required references.
 
 The MEMORY WORLD images are generated once and reused. They show the remembered event/place DIRECTLY, as if the camera were physically inside that remembered scene. They contain NO London–Budapest present-city layer, NO window frame from the present, NO rain/reflection composite from the present and NO score cards.
 
@@ -107,7 +165,7 @@ This film is deliberately too large, dense and generatively unstable to use a co
 
 These are **generative fingerprints, not automatic failures**. The dream city is already intentionally absurd and impossible. Do not “correct” it toward ordinary realism if doing so would flatten the film.
 
-**REGENERATE ONLY FOR CATASTROPHIC FAILURE:**
+**CATASTROPHIC FAILURE — ONLY ELIGIBLE TO PROPOSE A RETRY:**
 1. A mandatory story beat / required human encounter / required black-humour or preservation micro-flash is missing, replaced with unrelated content or made unreadable.
 2. The protagonist or a key recurring referenced person becomes materially the wrong identity in a story-critical moment.
 3. The locked narration is altered, re-voiced, paraphrased, duplicated, reordered, materially time-damaged or becomes unintelligible.
@@ -115,7 +173,7 @@ These are **generative fingerprints, not automatic failures**. The dream city is
 5. The core physical-present rule collapses so badly that the current London–Budapest exterior walk is no longer readable as the film's continuous present.
 6. The output is technically unusable: corrupted/incomplete render, missing major video/audio section, frozen/blank output, or another defect that prevents normal viewing.
 
-**NO AUTOMATIC RETRIES:** after one completed usable generation, do not automatically run another take in search of cosmetic improvement. If a catastrophic failure is detected, identify the exact failure first and regenerate only the affected block or emergency subclip. Never regenerate the whole film because one local detail is imperfect.
+**NO AUTOMATIC RETRIES — MANUAL APPROVAL REQUIRED:** after one completed usable generation, do not automatically run another take in search of cosmetic improvement. If a catastrophic failure is detected, identify and report the exact failure, the smallest proposed retry scope and estimated credit cost, then STOP. Regenerate the affected block or any emergency subclip only after explicit user approval. Never regenerate the whole film because one local detail is imperfect.
 
 **PRIORITY ORDER:** preserve human/story inventory → preserve narration/reveal/continuity → preserve readable world logic → accept artistic generative imperfection → optimize cosmetics last.
 
@@ -132,6 +190,205 @@ The geography is cinematically compressed but must always feel walkable.
 
 ---
 
+
+### CONTINUATION / AGENT HANDOFF — HIGGSFIELD PROJECT RECOVERY — DO NOT COPY
+
+If a different AI/agent takes over this pack later, treat this file as the canonical continuation contract. **When and only when the user explicitly grants Higgsfield MCP/app permission, first search the connected Higgsfield project/workspace/history/media for the existing MyScoutee project and canonical assets/generations.** Prefer recovery/reuse over recreation. Do not assume the project is empty, do not create a parallel project by default, and do not regenerate canonical assets merely because they are not present in the local chat. If search cannot locate the existing project, report that result and STOP. A replacement project/workflow may begin only after fresh explicit user approval.
+
+The current external-agent/MCP surface may not expose a write action for Cinema Studio's Project Brief / project-description field. If that field cannot be edited through the connected toolset, **do not invent a workaround and do not create a second project**. Ask the user to paste the canonical Project Brief below once in the existing MyScoutee project, then continue through MCP. If a future MCP surface does expose a project-brief update action, use this exact brief unless the user has approved a newer one.
+
+### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF / DESCRIPTION — COPY INTO THE PROJECT FIELD
+
+```text
+PROJECT
+MYSCOUTEE — THE PATH BETWEEN PEOPLE
+Runtime target: ~3:20
+Format: photorealistic cinematic short
+Primary video model: Seedance 2.5
+Aspect ratio: 16:9
+Production ceiling: 3000 Higgsfield credits total
+
+PROJECT ORIGIN / CREATOR PATH
+- This film grows from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then abstracted into the canonical film prompt pack, and finally into this Higgsfield-native short.
+- The source-document-to-two-volume-book synthesis took roughly two days. The canonical film prompt pack was assembled in roughly one additional day.
+- Only a few weeks before this project, the creator had no practical knowledge of AI video generation and had never made a comparable film. Prior video work consisted only of a small number of minimal experiments published on the MyScoutee YouTube channel.
+- The workflow itself is part of the experiment: source documents → AI-assisted book → canonical production prompt pack → externally orchestrated Higgsfield film.
+
+PRODUCT / PUBLIC CONTEXT
+- MyScoutee is not only the film title. It is a real social software product whose development was itself substantially AI-assisted.
+- MyScoutee already has public presence on LinkedIn, YouTube, Instagram and Facebook.
+- The film therefore has a dual role: a standalone cinematic work and a transparent public demonstration of the product, its development path and an end-to-end AI production workflow.
+- Higgsfield watermarking and Festival redistribution are not hidden or removed. If the film is redistributed by Higgsfield, the result visibly remains both a Higgsfield production example and a MyScoutee project artifact.
+
+PRE-PRODUCTION VALIDATION
+- Before paid Higgsfield production, visual and workflow ideas were validated in Google Flow using the creator's no-additional-cost access at the time to Nano Banana 2, Nano Banana Pro and the current Gemini Omni Flash video model.
+- Google Flow outputs are pre-production validation only. No externally generated Google Flow image or video is used as final Festival production footage or as a submitted final image/video asset.
+- All AI image and video generations actually used by the Festival Entry must be generated and retained inside the dedicated Higgsfield Cinema Studio festival project.
+
+CRITICAL AI REVIEW / HALLUCINATION CONTROL
+- The canonical book-to-film and prompt-pack workflow was also subjected to independent critic-AI review rather than relying on a single model path.
+- Gemini 3.1 Pro and a separate ChatGPT GPT-5.6 Sol high-reasoning instance were used as critical reviewers. Their role was to challenge unsupported claims, detect hallucination risk, expose contradictions or missing context, and help improve prompt precision and internal consistency.
+- These critic AIs did not replace the source archive or the creator's authorship. They functioned as adversarial quality-control layers around the synthesis and prompt-engineering process.
+- The production orchestrator remains a separate ChatGPT GPT-5.6 Sol Pro 5× high-reasoning instance operating through Higgsfield; critic review and production execution are deliberately distinct roles.
+
+LOCAL TOOLING CONSTRAINT / NATIVE HIGGSFIELD TEST
+- The creator does not have a suitable local GPU and cannot practically run DaVinci Resolve on the local machine.
+- Earlier minimal video experiments used Codex-assisted automated cutting and crossfades instead of a local NLE workflow.
+- This film intentionally removes that external editing safety net. No external video editor is used to hide native seams or compensate for Higgsfield continuity limits.
+- The finished film therefore leaves Higgsfield's native strengths and limitations visible rather than repairing them outside the platform.
+
+PRODUCTION TRANSPARENCY
+- This project is executed from a canonical prompt pack that is the production source of truth for story, references, continuity, budget, manual gates and fallback rules.
+- The human–AI relationship is intentionally deeper than a conventional tool-assisted workflow. The human supplies the lived source material, authorship, intent, taste, ethical boundaries and explicit manual approvals; AI helped reconstruct and synthesize the source archive into the two-volume book, derive and maintain the film structure and prompt pack, orchestrate production, and provide the film with its consistent off-screen narration voice. In that practical sense, AI did not only accelerate the work; it helped give the accumulated material a coherent voice.
+- This end-to-end collaboration is itself part of what the project is testing: how far a human and AI can operate as one production system while human authorship and approval remain explicit.
+- External orchestration is performed by ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration, acting in an external-supercomputer role through the Higgsfield MCP/app connection. This is intentionally not a Plus configuration.
+- Routine production execution is intended to be autonomous. Human intervention is deliberately limited to the explicit MANUAL GATES, approvals and subjective keep/stop decisions defined by the canonical prompt pack; the human operator is not expected to hand-build the generation chain step by step.
+- The canonical production pack is intentionally large — approximately 470 KB, more than 6,300 lines and about 66,000 words at this stage — because it carries the story inventory, reference graph, continuity rules, narration, budget discipline, acceptance criteria and manual-fallback authorization in one recoverable execution contract.
+- The finished film functions as a practical test of whether a large source archive can travel through an AI-assisted book and prompt-pack workflow into a complete film, with Higgsfield handling the final native image/video production under a fixed 3000-credit ceiling and first-usable-take discipline.
+
+AUTONOMY / SUPERCOMPUTER DEMONSTRATION
+- The project is not primarily a demonstration of frame-by-frame perfection. Its central production question is how far an AI-controlled pipeline can autonomously carry a complex film from source material to finished native output while respecting a detailed execution contract.
+- The external GPT-5.6 Sol Pro 5× high-reasoning orchestrator is presented operationally as an external supercomputer: it interprets the canonical prompt pack, recovers project state, builds the required assets in dependency order, tracks credits and continuity, executes the Higgsfield generation chain, and pauses only at the explicitly defined human decision gates.
+- Minor native generative imperfections are acceptable when story, identity, continuity, narration and physical-world logic remain intact. The meaningful result is the degree of autonomous end-to-end execution achieved without hidden manual shot-building or external video-editing repair.
+
+CORE CONCEPT
+One apparently uninterrupted exterior walk through an impossible London–Budapest metropolis at rainy blue hour/night.
+London street geometry and Budapest architecture, yellow trams, Hungarian signage and civic landmarks physically coexist as one normal city.
+
+VISUAL LANGUAGE
+- Photorealistic, grounded cinematic realism.
+- Rain, wet glass and real reflective surfaces are structural elements.
+- Memories appear only inside real windows, glass and wet reflections.
+- Reflected memories are living moving fragments generated inside the main video/extension pass, not frozen stills and not separately pre-rendered overlay videos by default.
+- The protagonist never physically enters a memory during the walk.
+- Score cards always float above people's heads with visible air above the hair.
+- Score cards are normally visible.
+- Direct gaze gives the viewed person's existing card only a modest fuller internal light/fill.
+
+CHARACTER / PERFORMANCE
+- One recurring fictional protagonist.
+- Same protagonist identity throughout.
+- Off-screen first-person narration only.
+- The visible protagonist never lip-syncs to narration.
+- No other visible character delivers intelligible dialogue.
+
+STORY / TONE
+- Human, observational, awkward, funny and sometimes absurd.
+- Institutional roles remain human locally even when the larger system loses context.
+- Autobiographical structure is preserved, but the film is Gala-abstracted and universal rather than documentary.
+- AI is acknowledged only in narration as something that helped the protagonist hold the fragmented story together and sometimes keep going.
+- Do not add AI UI, chatbot screens or explanatory technology imagery.
+
+GALA ABSTRACTION
+DO:
+- Preserve the human and structural meaning of the original events.
+- Translate specific institutional events into fictional universal images.
+
+DO NOT:
+- Use real contemporary political names or likenesses.
+- Use party or campaign branding.
+- Name contemporary officeholders.
+- Name the original tax regime.
+- Identify current political events or institutions where abstraction is sufficient.
+- Turn the film into political advocacy, propaganda or documentary reconstruction.
+
+AUDIO
+- The off-screen narrator voice is AI-generated in Higgsfield using Seed Audio 1.0, then locked consistently across all seven narration blocks. The synthetic voice is an intentional part of the film's human–AI authorship rather than a placeholder for later human dubbing.
+- Locked off-screen narrator voice across the entire film.
+- Narration is authoritative and must never be re-voiced or paraphrased.
+- Seedance generates physically plausible ambience, foley/SFX and restrained non-lyrical score around narration.
+- Sound must continue naturally across extensions with no deliberate chapter reset or new musical downbeat.
+
+CONTINUITY
+- The film should feel like one uninterrupted walk.
+- V01 is the initial 30-second production segment.
+- V02–V07 should continue via native forward video extension wherever technically supported.
+- Each extension inherits the previous accepted endpoint: camera height, direction, velocity, protagonist movement phase, lighting, rain, traffic, crowd state, score-card state, ambience and score texture.
+- Never deliberately introduce a fresh establishing shot, fade, title break or chapter opening between blocks.
+
+FINAL REVEAL
+- Clinical reality appears only in the final block.
+- Ordinary, non-graphic clinical room.
+- Protagonist is conscious, not waking from a dream.
+- One leg elevated/immobilized, one arm restrained.
+- Calm ordinary nurse.
+- No horror, gore or supernatural interpretation.
+
+PRODUCTION RULES
+- Seedance 2.5 is the canonical video model.
+- First technically usable story-preserving take is canonical.
+- Do not regenerate for cosmetic generative imperfections.
+- No external video editor is used to hide Higgsfield limitations.
+- The finished film should demonstrate what Higgsfield can produce natively.
+- Evaluate the production primarily as an autonomous human–AI orchestration demonstration, not as a manual frame-perfect finishing exercise.
+
+BUDGET / MANUAL GATES
+- Hard all-in ceiling: 3000 Higgsfield credits.
+- Run full-film cost projection before the first paid video generation.
+- V01 is an early live production test, not disposable.
+- After V01, user approval is required before proceeding into the extension chain.
+- Any retry, alternative model, resolution change, block split, narration regeneration, separate music generation or other fallback requires explicit user approval.
+
+FESTIVAL PUBLICATION / SOCIAL PLAN
+- Final social publication is mandatory for Festival submission and is treated as a manual publication gate, not an autonomous AI action.
+- Primary Festival social post: the existing public MyScoutee YouTube channel, using the same final watermarked + packshot version submitted to Higgsfield.
+- The YouTube post must remain public and directly viewable through the end of the Festival. The resulting public URL is supplied back to the Higgsfield submission.
+- Optional mirror: Instagram. LinkedIn and Facebook may be used for project discovery and product context but are not relied upon as the Festival MVS social link.
+- The public social description should state the production lineage and constraints transparently: real MyScoutee product; source documents → two-volume Amazon book → canonical prompt pack → Higgsfield-native film; external ChatGPT GPT-5.6 Sol Pro 5× orchestration; minimal human gates; no external NLE used to conceal Higgsfield limitations; Google Flow used only for pre-production validation, not final Entry image/video assets.
+- If the user chooses the optional Create-in-Public/Race path, V01 may be published as the first WIP Cut only after the V01 acceptance gate; poster + this Project Brief must accompany that public project. Publishing WIP is never automatic.
+```
+
+### FESTIVAL SOCIAL PUBLICATION COPY PACK — MANUAL FINAL STEP / DO NOT POST AUTOMATICALLY
+
+**Primary MVS platform:** YouTube, on the existing public MyScoutee channel. Use the exact final Higgsfield-watermarked + packshot version. Keep the post public through the end of the Festival and use its public URL in the Higgsfield final submission. Instagram may carry the same final version as an optional mirror. LinkedIn/Facebook are supporting discovery channels only for this Festival workflow.
+
+**Suggested YouTube title:**
+
+```text
+MYSCOUTEE — THE PATH BETWEEN PEOPLE | Higgsfield Global Film Festival
+```
+
+**Suggested YouTube description:**
+
+```text
+MYSCOUTEE — THE PATH BETWEEN PEOPLE is a ~3:20 AI short created for the Higgsfield Global Film Festival and produced natively inside Higgsfield.
+
+The project began with a large real-world source archive. AI-assisted synthesis turned that material into a two-volume book published on Amazon in roughly two days; the canonical film prompt pack was then assembled in roughly one additional day. Only a few weeks before this project, the creator had no practical knowledge of AI video generation and had never made a comparable film.
+
+The final production is driven by a ~470 KB / 6,300+ line / ~66,000-word canonical prompt pack and externally orchestrated by ChatGPT GPT-5.6 Sol, Pro 5×, high reasoning. Human intervention is intentionally limited to defined approval gates, budget decisions and keep/stop judgments.
+
+Pre-production validation used Google Flow — Nano Banana 2, Nano Banana Pro and Gemini Omni Flash — only to test visual and workflow ideas. Those external image/video generations are not used as final Festival production footage. All final AI image/video generations used by the Entry are created and retained inside the Higgsfield festival project.
+
+MyScoutee is a real AI-assisted social software product with existing public channels. This film is both a cinematic work and a transparent test of an end-to-end workflow: source documents → book → production prompt pack → Higgsfield-native film.
+
+The creator does not have a suitable local GPU and cannot practically run DaVinci Resolve. Earlier minimal video experiments used Codex-assisted automated edits and crossfades. For this film, no external video editor is used to hide seams or compensate for Higgsfield limitations: the final result intentionally shows what the Higgsfield-native workflow can achieve under a fixed 3000-credit production ceiling.
+
+Created in Higgsfield. Official Higgsfield watermark and packshot retained.
+```
+
+**Optional short description for Instagram / LinkedIn / Facebook discovery posts:**
+
+```text
+From source documents to a two-volume book, from the book to a ~66,000-word production prompt pack, and from that pack to a film. MYSCOUTEE — THE PATH BETWEEN PEOPLE is an externally orchestrated, Higgsfield-native AI short built with minimal human intervention and no external NLE used to conceal platform limitations. MyScoutee is a real AI-assisted social product; this film documents the path from product and personal archive to cinematic system.
+```
+
+### EXTERNAL SUPERCOMPUTER BOOTSTRAP / MANUAL GATES
+
+Once the user explicitly says to start and grants Higgsfield MCP/app permission, the external AI agent should run the project end-to-end without asking for routine confirmations. Stop only at these gates:
+
+1. **PROJECT RECOVERY GATE:** existing MyScoutee project cannot be located, or Project Brief cannot be set/read and the user has not yet pasted the brief above.
+2. **VOICE GATE:** no narrator voice is already locked and the audio tool requires a user voice selection.
+3. **V01 SPEND GATE:** Block-01 assets and A01 are ready; report the current all-in 3000-credit preflight and the exact V01 cost, then obtain explicit approval for the first paid 30-second production generation.
+4. **V01 ACCEPTANCE GATE:** after V01 finishes, present/report the result and wait for the user's keep/repair decision. A usable first take is the canonical opening.
+5. **FIRST EXTENSION SPEND + CONTINUITY GATE:** prepare Block 02, report the first native forward-extension mode/inputs/cost, obtain approval, generate it, then present/report the V01→02 seam once for approval of the native continuity strategy.
+6. **FALLBACK / CATASTROPHIC / BUDGET GATE:** any deviation from the canonical Seedance 2.5 native-extension plan, any paid retry/edit, or any projected breach of the 3000-credit ceiling requires a stop and explicit user authorization.
+7. **FINAL SOCIAL / SUBMISSION GATE:** after the final Higgsfield film is accepted and the official watermark + packshot version is ready, STOP. The user manually publishes that exact final version on the public MyScoutee YouTube channel (Instagram may be an optional mirror), keeps it public, and returns the public URL for the Higgsfield Festival submission. Do not claim submission is complete until this mandatory public-link step is satisfied.
+
+**OPTIONAL CREATE-IN-PUBLIC / RACE GATE:** if the user explicitly chooses the public Race path before its deadline, the accepted V01 may become the first WIP Cut. Publishing is never automatic; obtain explicit approval before making the project public. The WIP project must also have a poster and the Project Brief above.
+
+After Gate 5 is approved, continue Blocks 03–07 autonomously within the locked budget and first-pass rules, stopping only if Gate 6 is triggered. After the final film is accepted, stop at Gate 7.
+
+The first production milestone remains `V01_CITY_JUDGES_FIRST.mp4`; reach it using the FAST-TRACK GATE above before bulk-generating the rest of the film. An accepted V01 is production footage, not a throwaway test.
 
 ## OPERATOR GUIDE — READ ONLY / DO NOT COPY INTO A MODEL
 
@@ -175,7 +432,7 @@ attach the already-generated W01 + SB01 + MW01 + MWP01 + listed Cxx files **and 
 
 ### PHASE A — CHARACTER LIBRARY
 
-Generate CHARACTER 01 through CHARACTER 31 first.
+Follow the EARLY V01 LIVE-TEST priority above: generate the Block-01-required character subset first, reach and validate V01, then complete CHARACTER 01 through CHARACTER 31. Do not generate a MEMORY WORLD until every character reference required by that specific MEMORY WORLD exists.
 
 - References to attach: **none**.
 - UI: normal image generation; use one generation per CHARACTER heading.
@@ -266,7 +523,7 @@ Canonical MEMORY filenames:
 
 ### PHASE C — MAIN WORLD LIBRARY
 
-Generate WORLD 01 through WORLD 07 after the MEMORY WORLD library exists, but **do not attach MEMORY WORLD images to these generations**. These sheets define only the physical London–Budapest present.
+Under the EARLY V01 LIVE-TEST priority, generate `W01_MAIN_WORLD.png` as soon as possible; it does not need the MEMORY WORLD library and may be created in parallel with the Block-01 character subset. After V01 passes, complete WORLD 02 through WORLD 07. **Do not attach MEMORY WORLD images to MAIN WORLD generations.** These sheets define only the physical London–Budapest present.
 
 - Set **Image → Aspect ratio → 16:9**.
 - References to attach: **none by default**.
@@ -336,7 +593,7 @@ Canonical STORYBOARD filenames:
 
 This is the **PRIMARY audio workflow** for this pack.
 
-The narration is generated FIRST inside Higgsfield, then supplied to Seedance 2.5 as an **audio reference**. This is more reliable than asking seven separate Seedance video generations to invent the same narrator voice again.
+The narration is generated inside Higgsfield, then supplied to Seedance 2.5 as an **audio reference**. For the EARLY V01 LIVE-TEST, generate and lock `A01_NARRATION.wav` first and use it immediately for V01; A02–A07 may be generated after V01 passes. This is more reliable than asking separate Seedance video generations to invent the narrator voice again.
 
 **IMPORTANT SEPARATION OF JOBS:**
 - **Higgsfield Audio / Seed Audio 1.0 = narration only.**
@@ -348,7 +605,7 @@ The narration is generated FIRST inside Higgsfield, then supplied to Seedance 2.
 2. Choose ONE English-speaking adult male voice preset and never change it between blocks.
 3. Target delivery: around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate, reflective, fluent English, at most a very light Hungarian/Central-European accent.
 4. Avoid trailer-announcer energy, advertising delivery, melodrama, whisper-ASMR and exaggerated sadness.
-5. Start every narration with the same speed / pitch / expression settings. Keep voice preset, pitch and expression locked. Only `speech_rate` may be adjusted minimally for an individual block if that take fails the duration gate below.
+5. Start every narration with the same speed / pitch / expression settings. Keep voice preset, pitch and expression locked. `speech_rate` adjustment is a manual fallback only: if a take fails the duration gate, report the measured duration and proposed minimal change, then wait for explicit user approval before generating another narration take.
 6. Prefer WAV / 48 kHz if the UI offers it.
 
 **NARRATION DURATION ACCEPTANCE GATE — MUST PASS BEFORE CINEMA STUDIO:**
@@ -356,8 +613,8 @@ The narration is generated FIRST inside Higgsfield, then supplied to Seedance 2.
 - `A07_NARRATION.wav`: accepted duration = **15–19 seconds**.
 - Measure/check the actual generated WAV duration before accepting the take.
 - If a take is inside the gate: ACCEPT it and treat that exact WAV as locked for the block.
-- If a take is too long: regenerate the SAME exact words in Seed Audio using the SAME voice preset, pitch and expression, with only a small increase in `speech_rate`.
-- If a take is too short: regenerate the SAME exact words using the SAME voice preset, pitch and expression, with only a small decrease in `speech_rate`.
+- If a take is too long: STOP and report the measured duration plus the proposed small `speech_rate` increase. Regenerate the SAME exact words with the SAME voice preset, pitch and expression only after explicit user approval.
+- If a take is too short: STOP and report the measured duration plus the proposed small `speech_rate` decrease. Regenerate the SAME exact words with the SAME voice preset, pitch and expression only after explicit user approval.
 - Make small changes only; preserve the calm delivery. Do not solve timing by making the narration sound rushed.
 - Do NOT remove/rewrite words merely to hit duration unless making an explicit editorial script change to this pack.
 - Do NOT ask Seedance to aggressively time-stretch, compress or re-voice an overlong narration file.
@@ -378,34 +635,58 @@ For each file, scroll to **HIGGSFIELD AUDIO / SEED AUDIO 1.0 — FINAL NARRATION
 
 The narration is always **OFF-SCREEN first-person voice-over**. The visible protagonist does not lip-sync to it.
 
-### PHASE G — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO + SFX GENERATION
+### PHASE G — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — NATIVE CONTINUOUS VIDEO + AUDIO GENERATION
 
-After all required image references and the matching clean narration file exist, generate the video block in Cinema Studio.
+The seven named CINEMA BLOCKS are **logical story blocks**, not seven unrelated clips to be stitched later. The final production path is Higgsfield-native:
 
-For each block:
-1. Open Higgsfield Cinema Studio and select **Seedance 2.5**.
-2. Use **omni-reference / reference mode** if the UI exposes a mode choice.
-3. Set **16:9 landscape** and the block duration: Blocks 01–06 ≈ 30 s; Block 07 ≈ 20 s.
+- **Block 01:** one normal Seedance 2.5 omni-reference generation, 30 s.
+- **Blocks 02–07:** Seedance 2.5 `video_extension`, `extension_mode=forward`, each continuing from the immediately preceding accepted canonical video/chain.
+- **No external assembly or seam repair.** The native extension boundary itself must carry continuity.
+
+As soon as the exact Block-01 references and `A01_NARRATION.wav` exist, reach the V01 spend gate; do not wait for the rest of the film library. After V01 acceptance, fast-track the Block-02 dependencies and validate the first forward extension before bulk-producing the remaining assets.
+
+#### BLOCK 01 — OPENING GENERATION
+
+1. Select **Seedance 2.5**.
+2. Use **omni-reference / reference mode**.
+3. Set **30 s, 16:9, 1080p** only after the mandatory all-in 3000-credit preflight passes.
 4. Keep audio generation **ON**.
-5. Attach exactly the IMAGE references listed under that CINEMA BLOCK.
-6. Also attach the matching narration file, e.g. `A01_NARRATION.wav`, as the block's **audio reference**.
-7. Bind/verify the `@` tokens shown in the block, including `@A01_NARRATION`, `@A02_NARRATION`, etc.
-8. Paste **only** that CINEMA BLOCK's fenced `text` prompt.
-9. Seedance must treat the narration reference as the voice/timing backbone and generate the **ambience, foley/SFX and restrained score around it**.
-10. No visible person lip-syncs to the narration. No extra intelligible dialogue is added.
-11. Save the resulting MP4 with its generated soundtrack embedded.
+5. Attach exactly the Block-01 image references and `A01_NARRATION.wav` listed below.
+6. Paste only the Block-01 fenced prompt.
+7. Keep the first technically usable story-preserving result as `V01_CITY_JUDGES_FIRST.mp4`.
+
+#### BLOCKS 02–07 — NATIVE FORWARD EXTENSION
+
+For each later logical block:
+
+1. Select **Seedance 2.5** with `mode=video_extension` and `extension_mode=forward` (or the exact equivalent labels exposed by the current Higgsfield UI/MCP).
+2. Supply the immediately preceding accepted canonical video/chain as the **video being extended**. Do not start from a fresh blank generation.
+3. Also supply the current block's exact MAIN WORLD / STORYBOARD / MEMORY WORLD / CHARACTER image references and matching `Axx_NARRATION.wav` audio reference when the current Higgsfield extension interface accepts those reference types together.
+4. Request the logical added duration: Blocks 02–06 ≈ 30 s each; Block 07 ≈ 20 s.
+5. Keep audio generation **ON**. The extension must continue the existing source video's sonic world rather than sounding like a new clip.
+6. Paste only the matching block's fenced prompt. The copyable prompts for Blocks 02–07 contain an explicit extension-boundary continuity lock.
+7. Before every paid extension, run the current cost preflight with the actual source video and update the 3000-credit ledger. Until real extension pricing is known, use the standalone 1080p block cost as the conservative budget ceiling; never assume extension is cheaper.
+8. Accept the first technically usable story-preserving result. Do not regenerate to polish a small native seam.
+
+**CRITICAL EXTENSION ASSUMPTION CHECK:** the desired no-editor master requires Higgsfield's native extension result/project to preserve the already-accepted source and its new continuation as one continuous deliverable or otherwise provide an equivalent native continuous project output. Validate this behavior on the first V01→02 extension. If the current implementation returns only a disconnected continuation segment, strips/replaces the source audio, cannot accept the required new narration/reference stack, or otherwise requires external concatenation, STOP. Report the exact Higgsfield behavior and wait for the user. Do not use DaVinci, Premiere, ffmpeg, crossfades or another external editor. A Higgsfield-native Canvas/rough-cut alternative is a fallback and also requires explicit user approval.
+
+**BOUNDARY CONTINUITY TARGET — VISUAL:** at every extension boundary continue the exact previous end-state as naturally as the model permits: same protagonist identity and stride phase, camera height/lens/heading/velocity, street position and walking direction, rain density, wet reflections, lighting/exposure, nearby crowd/traffic flow and score-card baseline. Do not open a new block with an establishing shot, camera reset, teleport, new weather state, fade, flash or chapter-like visual punctuation. The first moments after the boundary should feel like the previous shot simply kept rolling.
+
+**BOUNDARY CONTINUITY TARGET — AUDIO:** continue the existing rain/traffic/footstep noise floor and restrained score texture without a new intro, downbeat, sting, fade-in, fade-out or chapter reset. The new locked narration belongs inside the continuing sound world. Do not create a second narrator, re-voice the narrator, or restart the score as if a new clip began. Small native generative drift is acceptable; an obvious silence/reset/new-track event is a continuity failure eligible only for a user-approved repair.
 
 **AUDIO PRIORITY IN SEEDANCE:**
 1. Preserve the supplied narration reference and its voice/pacing.
-2. Add physically plausible synchronized ambience.
-3. Add restrained foley/SFX specified in the block prompt.
-4. Add only very low-level non-lyrical score where specified.
+2. Preserve/continue the source video's existing ambience and score character across extension boundaries.
+3. Add physically plausible synchronized ambience.
+4. Add restrained foley/SFX specified in the block prompt.
+5. Add only very low-level non-lyrical score where specified, continuing rather than restarting the existing texture.
 
-If Seedance alters, re-voices, duplicates or paraphrases the supplied narration, treat that generation as a failed audio take and regenerate. Do not accept a different narrator just because the picture is good.
+If Seedance alters, re-voices, duplicates or paraphrases the supplied narration, treat that generation as a catastrophic audio failure. Report the failure and estimated smallest repair cost, then STOP; regenerate/edit only after explicit user approval. Do not accept a different narrator just because the picture is good.
 
-**FIRST-PASS BLOCK ACCEPTANCE:** outside the catastrophic-failure conditions defined in the FIRST-PASS ARTISTIC ACCEPTANCE rule, accept the first completed usable block. Do not spend credits rerolling a block for cosmetic polish, slightly strange reflections, imperfect architectural fusion, minor background continuity or other non-story-breaking generative artifacts. If a catastrophic failure occurs, regenerate only that affected block (or the smallest emergency subclip), never the entire film by default.
+**FIRST-PASS BLOCK ACCEPTANCE:** outside the catastrophic-failure conditions defined in the FIRST-PASS ARTISTIC ACCEPTANCE rule, accept the first completed usable generation/extension. Do not spend credits rerolling for cosmetic polish, slightly strange reflections, imperfect architectural fusion, minor background continuity or a small native seam that still reads as one walk. If a catastrophic failure occurs, report the smallest proposed repair scope and cost and STOP. Any region/video edit, retry, emergency split or alternate native assembly path is a manual fallback.
 
-Reference roles are fixed:
+Reference roles remain fixed:
+- **PREVIOUS ACCEPTED VIDEO/CHAIN = continuity anchor for Blocks 02–07**
 - **MAIN WORLD = physical present**
 - **MEMORY WORLD = literal remembered content**
 - **CHARACTER = identity**
@@ -3821,6 +4102,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -3849,11 +4131,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -3862,12 +4144,12 @@ No static slideshow feeling, no 2.5D, no game engine, no psychedelic dream effec
 Memories are literal events, not metaphors.
 
 CARD INTENSITY FOR THIS BLOCK:
-Cards are barely visible, about 5–8% opacity. Most are missed. The protagonist has no readable self-card yet.
+Cards are clearly visible at their normal restrained translucent baseline. They should register without demanding attention. The protagonist has no readable self-card yet.
 
 NINE ORDERED KEYFRAMES:
-FRAME 1 — Opening low forward tracking in wet hybrid Soho. The protagonist walks naturally through a real crowd. St Stephen's Basilica terminates a London street axis; KÖNYV/KÁVÉ signage and a yellow tram already exist inside Soho. Nobody reacts. Cards are almost invisible.
+FRAME 1 — Opening low forward tracking in wet hybrid Soho. The protagonist walks naturally through a real crowd. St Stephen's Basilica terminates a London street axis; KÖNYV/KÁVÉ signage and a yellow tram already exist inside Soho. Nobody reacts. Cards are already normally visible in their restrained translucent baseline state; they register without demanding attention.
 
-FRAME 2 — Wider Piccadilly Circus continuity with Eros clearly present. A red bus, yellow tram and black taxi move normally through the junction. Two pedestrians glance at each other; the viewed person's faint card sharpens for only a moment, then softens.
+FRAME 2 — Wider Piccadilly Circus continuity with Eros clearly present. A red bus, yellow tram and black taxi move normally through the junction. Two pedestrians glance at each other; the viewed person's normally visible card takes on a slightly fuller internal light/fill for only a moment, then returns to normal.
 
 FRAME 3 — Lateral move beside a black taxi. In its rain-covered side window, a literal Soho restaurant/sushi memory appears: the wrong-lavatory moment and the SOHO WOMAN briefly visible with a small human smile. Keep current Piccadilly/Soho reflection layered on the glass.
 
@@ -3879,7 +4161,7 @@ FRAME 6 — Adjacent tram/bus pane. Literal foreign-currency-mortgage housemate 
 
 FRAME 7 — Cinema/theatre glass in Leicester. Literal dating memory: same photograph, phone/profile age field changes visually from 37 to 33; the human face does not change. Keep the phone/profile small inside the reflected memory and avoid UI spectacle.
 
-FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
+FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards take on and release a slightly fuller internal light/fill asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
 
 FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
 
@@ -3928,6 +4210,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -3960,11 +4243,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -3973,7 +4256,7 @@ No static slideshow feeling, no 2.5D, no game engine, no psychedelic dream effec
 Memories are literal events, not metaphors.
 
 CARD INTENSITY FOR THIS BLOCK:
-Cards remain faint and mostly peripheral, roughly 5–8%, occasionally reaching 10% during direct gaze.
+Cards remain normally visible and visually restrained. During direct gaze, the viewed card receives only a slight fuller internal light/fill before returning to normal; do not express this as a large opacity or brightness jump.
 
 NINE ORDERED KEYFRAMES:
 FRAME 1 — Continue through Charing Cross / Strand with the Nyugati-hybrid station frontage and Hungarian State Opera block visible in the present. The protagonist walks; the city remains normal.
@@ -3988,7 +4271,7 @@ FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from
 
 FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloon lands in a vegetable plot near a wall; local people and passengers cooperate hand-to-hand to solve the situation. Warm human cooperation, no fantasy.
 
-FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly sharpens one card over the current glass reflection.
+FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly gives the viewed card a slightly fuller internal light/fill over the current glass reflection.
 
 FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
 
@@ -4038,6 +4321,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -4064,11 +4348,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -4077,7 +4361,7 @@ No static slideshow feeling, no 2.5D, no game engine, no psychedelic dream effec
 Memories are literal events, not metaphors.
 
 CARD INTENSITY FOR THIS BLOCK:
-Cards become somewhat clearer around people seen through professional glass, roughly 8–12%, but still not explicit UI. Direct gaze remains the trigger.
+Cards remain normally visible around people seen through professional glass and still do not read as explicit UI. Direct gaze adds only a slight fuller internal light/fill to the viewed card.
 
 NINE ORDERED KEYFRAMES:
 FRAME 1 — Continue through the work-city exterior: New York Palace / Academy / Lechner-derived Budapest blocks inside London geometry. The protagonist walks beside large office glass; IRODA/KÖNYVELÉS signs exist as normal city signage.
@@ -4092,7 +4376,7 @@ FRAME 5 — Wet civic glass. Literal SMALL-WORKER TAX-RULE CHANGE memory: calend
 
 FRAME 6 — Taxi or tram window. Literal delegation/password/accounting memory: accountant, portal/login responsibility and correction chain implied by hands, screen and paperwork, without turning it into cybersecurity graphics.
 
-FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards sharpen briefly when they look at one another.
+FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards briefly gain a slightly fuller internal light/fill when they look at one another.
 
 FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions. Brief document flashes preserve the diploma/certificate with the missing language-exam credential and the later Brexit/work-coverage paper edge: separate literal records, not an infographic.
 
@@ -4141,6 +4425,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -4168,11 +4453,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -4181,7 +4466,7 @@ No static slideshow feeling, no 2.5D, no game engine, no psychedelic dream effec
 Memories are literal events, not metaphors.
 
 CARD INTENSITY FOR THIS BLOCK:
-Cards rise to roughly 10–15% in the current formal-city crowd. They still sharpen only through gaze and remain physically imperfect.
+Cards stay normally visible in the current formal-city crowd and remain physically imperfect. Direct gaze adds only a slight fuller internal light/fill to the viewed card; do not make the change dramatic.
 
 NINE ORDERED KEYFRAMES:
 FRAME 1 — Continue outside along Fleet Street / Temple formal city. Budapest Palace-of-Justice / National-Museum architecture is fused into London blocks. The protagonist remains on the pavement.
@@ -4198,7 +4483,7 @@ FRAME 6 — Red-bus side window. Literal appointed-defence memory: a substitute/
 
 FRAME 7 — Dark entrance glass. Literal phone/corridor memory of attempts to contact police, prosecution, court and defence routes. Different people redirect the protagonist. Keep all speakers anonymous and ordinary.
 
-FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Several formal glass surfaces simultaneously carry one-second procedural fragments; present pedestrians look at each other and cards sharpen asynchronously. Everyone remains human locally.
+FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Several formal glass surfaces simultaneously carry one-second procedural fragments; present pedestrians look at each other and the viewed cards briefly gain a slightly fuller internal light/fill asynchronously. Everyone remains human locally.
 
 FRAME 9 — Blackfriars-approach wide exterior. The institutional memories fade, but the formal Budapest-in-London architecture remains physically present. The protagonist keeps walking outside.
 
@@ -4246,6 +4531,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -4275,11 +4561,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -4307,7 +4593,7 @@ FRAME 7 — Dark public glass. Black-humour memory: first the self-made "THE SYS
 
 FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late system-time chain from MWP02: first a refused request for relief / revised papers deliberately held for a later institutional opening; then TWO LETTERS TO ONE DISTANT DOOR — his ordinary laptop submission from below and an anonymous senior-institution submission from above reaching the same unnamed external review body. No destination name is readable. Do NOT imply that his letter caused any later institutional change.
 
-FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many faint cards; the city feels like it can classify everyone.
+FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many normally visible restrained cards; the city feels like it can classify everyone.
 
 FINAL CHECK:
 Exactly one 16:9 final canvas with exactly nine equal numbered cinematic frames arranged 3×3.
@@ -4353,6 +4639,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -4384,11 +4671,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -4412,7 +4699,7 @@ FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes,
 
 FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes carry the MWP02 institutional parallel: an anonymous high-review chamber unable to assemble a quorum after multiple participants step aside, and the protagonist alone with a laptop / AI-assistant cursor trying to reach review from below. The two routes are different and neither decides the other; the shared image is simply an unanswered institutional door. No real court, office, country or current public event is identifiable. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
-FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards sharpen at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
+FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards gain a slightly fuller internal light/fill at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
 
 FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible near his head at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
 
@@ -4464,6 +4751,7 @@ Use the following separate MEMORY CONTENT reference(s):
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
 Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
 Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
 The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
@@ -4491,11 +4779,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD LAYER:
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 VISUAL STYLE:
 Photorealistic live-action European feature film.
@@ -4517,13 +4805,13 @@ FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED /
 
 FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
 
-FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still faintly present.
+FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still visibly present at the normal restrained baseline.
 
 FRAME 7 — Same glass surface, closer. Without fantasy effects, the reflected city loses information and the pane appears to show a cold ordinary clinical room directly behind him. The last reflected cards disappear. The protagonist turns. This is the last dream-city frame.
 
 FRAME 8 — HARD CUT to the real clinical room. Same protagonist, conscious, not waking up. One leg elevated and immobilized; one arm restrained. A calm ordinary NURSE is nearby preparing routine non-graphic equipment for an enema/endoscopy-related procedure. No horror, no gore, no supernatural quality, no cards. The nurse has a small ordinary human smile.
 
-FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. Then intended edit cuts to black with the title added cleanly in post: MYSCOUTEE / THE PATH BETWEEN PEOPLE. Do not turn this frame into a dream wake-up or explanatory ending.
+FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. WITHIN THIS SAME HIGGSFIELD-GENERATED FINAL BLOCK, make a clean hard transition to black and render the final title exactly as two restrained centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. No external editor or later post-production title insertion. Do not turn this frame into a dream wake-up or explanatory ending.
 
 FINAL CHECK:
 Exactly one 16:9 final canvas with exactly nine equal numbered cinematic frames arranged 3×3.
@@ -4600,7 +4888,7 @@ Work should have been simpler than travel. Three people, one problem, three scre
 ================================================================================
 
 ```text
-Then the system entered the story without ever becoming one person. A voice at the door. A search. A question. A lawyer I could not quite reach. An officer who almost laughed. The strange part was not that people stopped being human. The process could forget that they were.
+Then the system entered the story without ever becoming one person. A voice at the door. A search. A lawyer I could not quite reach. An officer who almost laughed. People could stay human while the process forgot that they were. When the rooms stopped connecting, an AI helped me hold the whole story together — and sometimes simply keep going.
 ```
 
 
@@ -4736,7 +5024,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -4797,14 +5085,14 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
-Cards are barely visible, about 5–8% opacity. Most are missed. The protagonist has no readable self-card yet.
+Cards are clearly visible at their normal restrained translucent baseline. They should register without demanding attention. The protagonist has no readable self-card yet.
 
 CAMERA / VISUAL STYLE
 Photorealistic live-action European feature film.
@@ -4814,9 +5102,9 @@ Memories are literal events, not metaphors.
 Connect the ordered beats with grounded continuous cinema movement. Use forward tracking, lateral vehicle tracking, Steadicam, rack focus, foreground pedestrian/vehicle wipes and controlled arcs when appropriate. Do not stage nine static recreations or a slideshow.
 
 ORDERED TEMPORAL BEATS — FOLLOW 1→9
-FRAME 1 — Opening low forward tracking in wet hybrid Soho. The protagonist walks naturally through a real crowd. St Stephen's Basilica terminates a London street axis; KÖNYV/KÁVÉ signage and a yellow tram already exist inside Soho. Nobody reacts. Cards are almost invisible.
+FRAME 1 — Opening low forward tracking in wet hybrid Soho. The protagonist walks naturally through a real crowd. St Stephen's Basilica terminates a London street axis; KÖNYV/KÁVÉ signage and a yellow tram already exist inside Soho. Nobody reacts. Cards are already normally visible in their restrained translucent baseline state; they register without demanding attention.
 
-FRAME 2 — Wider Piccadilly Circus continuity with Eros clearly present. A red bus, yellow tram and black taxi move normally through the junction. Two pedestrians glance at each other; the viewed person's faint card sharpens for only a moment, then softens.
+FRAME 2 — Wider Piccadilly Circus continuity with Eros clearly present. A red bus, yellow tram and black taxi move normally through the junction. Two pedestrians glance at each other; the viewed person's normally visible card takes on a slightly fuller internal light/fill for only a moment, then returns to normal.
 
 FRAME 3 — Lateral move beside a black taxi. In its rain-covered side window, a literal Soho restaurant/sushi memory appears: the wrong-lavatory moment and the SOHO WOMAN briefly visible with a small human smile. Keep current Piccadilly/Soho reflection layered on the glass.
 
@@ -4828,7 +5116,7 @@ FRAME 6 — Adjacent tram/bus pane. Literal foreign-currency-mortgage housemate 
 
 FRAME 7 — Cinema/theatre glass in Leicester. Literal dating memory: same photograph, phone/profile age field changes visually from 37 to 33; the human face does not change. Keep the phone/profile small inside the reflected memory and avoid UI spectacle.
 
-FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
+FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards take on and release a slightly fuller internal light/fill asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
 
 FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
 
@@ -4841,11 +5129,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
-**GENERATED OUTPUT:** save the generated clip as `V02_GLOBAL_ROUTE.mp4`.
+**NATIVE EXTENSION SOURCE:** `V01_CITY_JUDGES_FIRST.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V02_CHAIN_TO_0100.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V01_CITY_JUDGES_FIRST.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W02_MAIN_WORLD.png`
 - `SB02_STORYBOARD.png`
 - `MW02_GLOBAL_ROUTES.png`
@@ -4899,6 +5189,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -4910,7 +5203,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -4980,14 +5273,14 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
-Cards remain faint and mostly peripheral, roughly 5–8%, occasionally reaching 10% during direct gaze.
+Cards remain normally visible and visually restrained. During direct gaze, the viewed card receives only a slight fuller internal light/fill before returning to normal; do not express this as a large opacity or brightness jump.
 
 CAMERA / VISUAL STYLE
 Photorealistic live-action European feature film.
@@ -5009,7 +5302,7 @@ FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from
 
 FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloon lands in a vegetable plot near a wall; local people and passengers cooperate hand-to-hand to solve the situation. Warm human cooperation, no fantasy.
 
-FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly sharpens one card over the current glass reflection.
+FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly gives the viewed card a slightly fuller internal light/fill over the current glass reflection.
 
 FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
 
@@ -5024,11 +5317,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
-**GENERATED OUTPUT:** save the generated clip as `V03_WORK_SYSTEM.mp4`.
+**NATIVE EXTENSION SOURCE:** `V02_CHAIN_TO_0100.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V03_CHAIN_TO_0130.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V02_CHAIN_TO_0100.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W03_MAIN_WORLD.png`
 - `SB03_STORYBOARD.png`
 - `MW03_WORK_RULE_CHANGE_ADMIN.png`
@@ -5062,6 +5357,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -5073,7 +5371,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5132,14 +5430,14 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
-Cards become somewhat clearer around people seen through professional glass, roughly 8–12%, but still not explicit UI. Direct gaze remains the trigger.
+Cards remain normally visible around people seen through professional glass and still do not read as explicit UI. Direct gaze adds only a slight fuller internal light/fill to the viewed card.
 
 CAMERA / VISUAL STYLE
 Photorealistic live-action European feature film.
@@ -5161,7 +5459,7 @@ FRAME 5 — Wet civic glass. Literal SMALL-WORKER TAX-RULE CHANGE memory: calend
 
 FRAME 6 — Taxi or tram window. Literal delegation/password/accounting memory: accountant, portal/login responsibility and correction chain implied by hands, screen and paperwork, without turning it into cybersecurity graphics.
 
-FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards sharpen briefly when they look at one another.
+FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards briefly gain a slightly fuller internal light/fill when they look at one another.
 
 FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions. Brief document flashes preserve the diploma/certificate with the missing language-exam credential and the later Brexit/work-coverage paper edge: separate literal records, not an infographic.
 
@@ -5176,11 +5474,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
-**GENERATED OUTPUT:** save the generated clip as `V04_POLICE_DEFENCE.mp4`.
+**NATIVE EXTENSION SOURCE:** `V03_CHAIN_TO_0130.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V04_CHAIN_TO_0200.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V03_CHAIN_TO_0130.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W04_MAIN_WORLD.png`
 - `SB04_STORYBOARD.png`
 - `MW04_POLICE_DEFENCE.png`
@@ -5214,6 +5514,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -5225,7 +5528,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5244,6 +5547,9 @@ AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 @A04_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
 Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
 The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
+
+AI-SURVIVAL LINE — NARRATION ONLY
+The AI acknowledgement in @A04_NARRATION is intentionally NOT assigned a new visual memory beat. Do not add a chatbot screen, laptop insert, AI logo, interface, typed conversation, new room or extra reflection to illustrate it. Let the existing dense police/defence visual sequence continue while the voice-over carries this meaning.
 
 Generate the remaining soundtrack natively around @A04_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
@@ -5285,14 +5591,14 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
-Cards rise to roughly 10–15% in the current formal-city crowd. They still sharpen only through gaze and remain physically imperfect.
+Cards stay normally visible in the current formal-city crowd and remain physically imperfect. Direct gaze adds only a slight fuller internal light/fill to the viewed card; do not make the change dramatic.
 
 CAMERA / VISUAL STYLE
 Photorealistic live-action European feature film.
@@ -5316,7 +5622,7 @@ FRAME 6 — Red-bus side window. Literal appointed-defence memory: a substitute/
 
 FRAME 7 — Dark entrance glass. Literal phone/corridor memory of attempts to contact police, prosecution, court and defence routes. Different people redirect the protagonist. Keep all speakers anonymous and ordinary.
 
-FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Several formal glass surfaces simultaneously carry one-second procedural fragments; present pedestrians look at each other and cards sharpen asynchronously. Everyone remains human locally.
+FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Several formal glass surfaces simultaneously carry one-second procedural fragments; present pedestrians look at each other and the viewed cards briefly gain a slightly fuller internal light/fill asynchronously. Everyone remains human locally.
 
 FRAME 9 — Blackfriars-approach wide exterior. The institutional memories fade, but the formal Budapest-in-London architecture remains physically present. The protagonist keeps walking outside.
 
@@ -5329,11 +5635,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
-**GENERATED OUTPUT:** save the generated clip as `V05_COURT_FILE.mp4`.
+**NATIVE EXTENSION SOURCE:** `V04_CHAIN_TO_0200.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V05_CHAIN_TO_0230.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V04_CHAIN_TO_0200.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W05_MAIN_WORLD.png`
 - `SB05_STORYBOARD.png`
 - `MW05_COURT_FILE.png`
@@ -5373,6 +5681,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -5384,7 +5695,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5446,11 +5757,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
 Cards are now clearly perceptible around the current crowd, roughly 12–18%, but still translucent and non-HUD. The protagonist's own card is not yet fully readable.
@@ -5479,7 +5790,7 @@ FRAME 7 — Dark public glass. Black-humour memory: first the self-made "THE SYS
 
 FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late system-time chain from @MWP02_SYSTEM_TIME_REVERSALS: first a refused request for relief / revised papers deliberately held for a later institutional opening; then TWO LETTERS TO ONE DISTANT DOOR — his ordinary laptop submission from below and an anonymous senior-institution submission from above reaching the same unnamed external review body. No destination name is readable. Do NOT imply that his letter caused any later institutional change.
 
-FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many faint cards; the city feels like it can classify everyone.
+FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many normally visible restrained cards; the city feels like it can classify everyone.
 
 OUTPUT RULE
 Create one continuous photorealistic cinematic sequence for this block. The attached reference images are control assets, not objects that appear in the film. Preserve protagonist identity and location continuity. No fantasy glow, no psychedelic dream treatment, no game-engine look, no explanatory subtitles, no visible file names and no reference-grid borders.
@@ -5490,11 +5801,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
-**GENERATED OUTPUT:** save the generated clip as `V06_HUMANITY_OVERLOAD.mp4`.
+**NATIVE EXTENSION SOURCE:** `V05_CHAIN_TO_0230.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V06_CHAIN_TO_0300.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V05_CHAIN_TO_0230.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W06_MAIN_WORLD.png`
 - `SB06_STORYBOARD.png`
 - `MW06_HUMAN_COUNTERMEMORIES.png`
@@ -5542,6 +5855,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -5553,7 +5869,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5620,11 +5936,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
 Cards across the current crowd are 18–25% and frequently readable during gaze. In FRAME 8 the protagonist's own card becomes clearly visible for the first time, matching the crowd.
@@ -5649,7 +5965,7 @@ FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes,
 
 FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes from @MWP02_SYSTEM_TIME_REVERSALS carry the institutional parallel: an anonymous high-review chamber unable to assemble a quorum after multiple participants step aside, and the protagonist alone with a laptop / AI-assistant cursor trying to reach review from below. The two routes are different and neither decides the other; the shared image is simply an unanswered institutional door. No real court, office, country or current public event is identifiable. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
-FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards sharpen at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
+FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards gain a slightly fuller internal light/fill at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
 
 FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible near his head at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
 
@@ -5664,11 +5980,13 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 20 seconds, 16:9 landscape, one continuous sequence ending in the hard cut.
-**GENERATED OUTPUT:** save the generated clip as `V07_LAST_WINDOW_REVEAL.mp4`.
+**NATIVE EXTENSION SOURCE:** `V06_CHAIN_TO_0300.mp4`
+**GENERATED OUTPUT:** save the accepted native extended result/chain as `V07_MASTER_0320.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
 
+- `V06_CHAIN_TO_0300.mp4`  ← VIDEO TO EXTEND FORWARD; continuity anchor, not a separate visual reference
 - `W07_MAIN_WORLD.png`
 - `SB07_STORYBOARD.png`
 - `HRW07_CLINICAL_REALITY.png`
@@ -5708,6 +6026,9 @@ If the UI gives a different @token, substitute that actual token in the prompt b
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
 
+NATIVE FORWARD-EXTENSION BOUNDARY LOCK — NON-NEGOTIABLE
+This logical block is NOT a fresh opening shot. Continue forward from the supplied immediately preceding accepted video/chain. The first generated moment must inherit the previous last moment: same protagonist identity, stride phase and direction; same camera height, lens feel, heading and forward velocity; same street/rain/light/exposure state; same nearby crowd and traffic flow; same normally visible above-head score-card behavior; same ambience/noise floor and restrained score texture. Do not use an establishing reset, teleport, fade, flash, chapter opening, new musical downbeat, new ambience bed or deliberate cut feeling at the extension boundary. Let the previous shot feel as if it simply kept rolling. The new narration joins the continuing sonic world; never re-voice or duplicate it. Preserve the source video's existing audio continuity as far as the native extension mode permits.
+
 ACTIVE @REFERENCES
 Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
@@ -5719,7 +6040,7 @@ TARGET OUTPUT
 
 FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
 Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
-Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+Catastrophic failure is the ONLY eligible reason to PROPOSE a regeneration: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do NOT automatically retry. Report the failure and wait for explicit user approval before any paid regeneration or emergency split. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5780,11 +6101,11 @@ Memory order is emotional, not chronological. Memory edits without asking permis
 
 SCORE-CARD BEHAVIOR
 Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
-They are faint rounded translucent forms near head level, physically imperfect like reflection/lens artefact, not crisp HUD.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
 A tiny one/two-digit trace may exist but should usually be defocused.
-Everyone can judge everyone: when one person directly looks at another, the VIEWED person's card temporarily becomes clearer, asynchronously.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
 Do not use flags, ethnicity stereotypes or face-based nationality coding.
-Do not bake cards into mirrors as floating screens; they belong near people in the current dream city.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
 
 CARD INTENSITY FOR THIS BLOCK
 At the start, crowd cards and the protagonist's own card are equally clear. As the final glass reflection loses the city, reflected cards fade out one by one. In the clinical reality there are NO cards, contours or numbers.
@@ -5807,22 +6128,22 @@ FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED /
 
 FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
 
-FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still faintly present.
+FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still visibly present at the normal restrained baseline.
 
 FRAME 7 — Same glass surface, closer. Without fantasy effects, the reflected city loses information and the pane appears to show a cold ordinary clinical room directly behind him. The last reflected cards disappear. The protagonist turns. This is the last dream-city frame.
 
 FRAME 8 — HARD CUT to the real clinical room. Same protagonist, conscious, not waking up. One leg elevated and immobilized; one arm restrained. A calm ordinary NURSE is nearby preparing routine non-graphic equipment for an enema/endoscopy-related procedure. No horror, no gore, no supernatural quality, no cards. The nurse has a small ordinary human smile.
 
-FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. Then intended edit cuts to black with the title added cleanly in post: MYSCOUTEE / THE PATH BETWEEN PEOPLE. Do not turn this frame into a dream wake-up or explanatory ending.
+FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. WITHIN THIS SAME HIGGSFIELD-GENERATED FINAL BLOCK, make a clean hard transition to black and render the final title exactly as two restrained centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. No external editor or later post-production title insertion. Do not turn this frame into a dream wake-up or explanatory ending.
 
 OUTPUT RULE
 Create one continuous photorealistic cinematic sequence for this block. The attached reference images are control assets, not objects that appear in the film. Preserve protagonist identity and location continuity. No fantasy glow, no psychedelic dream treatment, no game-engine look, no explanatory subtitles, no visible file names and no reference-grid borders.
 ```
 
 
-### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — EMERGENCY FALLBACK ONLY
+### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — MANUAL-AUTHORIZATION FALLBACK ONLY
 
-Seedance 2.5 is intended to handle Blocks 01–06 as single ~30-second generations and Block 07 as one ~20-second generation. Use this fallback ONLY if Cinema Studio cannot reliably produce the full block.
+**INACTIVE BY DEFAULT. DO NOT APPLY, PREPARE OR GENERATE ANY SPLIT ASSETS UNLESS THE USER EXPLICITLY AUTHORIZES THIS FALLBACK AFTER A SPECIFIC FULL-BLOCK FAILURE HAS BEEN REPORTED.** Seedance 2.5 is intended to handle Blocks 01–06 as single ~30-second generations and Block 07 as one ~20-second generation. A failed or difficult full block is only a reason to PROPOSE this split; it is not permission to activate it. General approval to continue the film or use Higgsfield/MCP does not count.
 
 **CRITICAL AUDIO RULE:** never attach the same full `Axx_NARRATION.wav` to PART A, PART B and PART C. A full 23–27 second narration file cannot be the timing reference for three separate ~10-second subclips.
 
@@ -5833,7 +6154,7 @@ For a split block, create/use three narration segments:
 
 **PREFERRED AUDIO-SPLIT METHOD:** if Higgsfield offers a simple trim/segment operation that preserves the approved `Axx_NARRATION.wav` without re-voicing it, split that LOCKED narration at natural sentence/pause boundaries and save the three parts above.
 
-**NO-MANUAL-AUDIO-EDITOR METHOD:** if you cannot trim audio, return to Higgsfield Audio / Seed Audio 1.0 and generate PART A / B / C separately from the exact corresponding narration sentences, using the SAME locked voice preset, pitch and expression. Do not let Seedance invent or re-speak the narration. Keep each sub-narration comfortably shorter than its video subclip so there is room for ambience and transitions.
+**NO-MANUAL-AUDIO-EDITOR METHOD — SECOND MANUAL GATE:** if the user has already authorized the split but the approved narration cannot be trimmed cleanly, STOP and report that limitation. Generate PART A / B / C separately in Higgsfield Audio / Seed Audio 1.0 only after the user explicitly authorizes this re-generation method. Use the exact corresponding narration sentences with the SAME locked voice preset, pitch and expression. Do not let Seedance invent or re-speak the narration. Keep each sub-narration comfortably shorter than its video subclip so there is room for ambience and transitions.
 
 For every subclip:
 1. Attach the SAME scene-specific image-reference bundle as the parent Cinema block.
@@ -5871,9 +6192,9 @@ Continue directly from the previous generated clip. Generate only storyboard fra
 
 For STORYBOARD 07, PART C contains the actual clinical hard cut; Parts A and B must not expose the full clinical room.
 
-### SHORT-CLIP NARRATION PART COPY PACK — USE ONLY WITH THE EMERGENCY FALLBACK
+### SHORT-CLIP NARRATION PART COPY PACK — INACTIVE UNTIL BOTH MANUAL GATES ARE APPROVED
 
-> **OPERATOR NOTE — DO NOT COPY:** If you cannot trim the approved full narration WAV, generate the following narration parts in Higgsfield Audio / Seed Audio 1.0 using the SAME locked narrator voice preset, pitch and expression. These parts are exact subsets of the approved narration scripts; no new narration is introduced. Save each result under the filename shown.
+> **OPERATOR NOTE — DO NOT COPY:** This section is contingency reference only. Use it only after the user has explicitly authorized (1) the short-clip split for the affected block and, if trimming is unavailable, (2) separate PART A/B/C narration generation. Without those approvals, do not generate these files. After approval, use Higgsfield Audio / Seed Audio 1.0 with the SAME locked narrator voice preset, pitch and expression. These parts are exact subsets of the approved narration scripts; no new narration is introduced. Save each result under the filename shown.
 
 #### BLOCK 01 PARTS
 
@@ -5935,12 +6256,12 @@ Then the system entered the story without ever becoming one person. A voice at t
 
 `A04_PART_B.wav`
 ```text
-A question. A lawyer I could not quite reach. An officer who almost laughed.
+A lawyer I could not quite reach. An officer who almost laughed. People could stay human while the process forgot that they were.
 ```
 
 `A04_PART_C.wav`
 ```text
-The strange part was not that people stopped being human. The process could forget that they were.
+When the rooms stopped connecting, an AI helped me hold the whole story together — and sometimes simply keep going.
 ```
 
 #### BLOCK 05 PARTS
@@ -5994,39 +6315,30 @@ London, Budapest, every memory stayed in the glass until the reflections disappe
 What remained was not an answer: a room, a body, another human face.
 ```
 
-**PART-FILE ACCEPTANCE RULE:** each generated narration part must finish comfortably before the end of its intended subclip. If it runs too long, regenerate that part with a minimal `speech_rate` increase using the same locked voice preset; do not ask Seedance to time-compress it. Silence/ambience after a short narration part is acceptable and intentional.
+**PART-FILE ACCEPTANCE RULE:** each generated narration part must finish comfortably before the end of its intended subclip. If it runs too long, report the measured duration and proposed minimal `speech_rate` increase, then STOP. Regenerate that part only after explicit user approval; do not ask Seedance to time-compress it. Silence/ambience after a short narration part is acceptable and intentional.
 
 
 ================================================================================
-## NO-MANUAL-EDIT FINAL ASSEMBLY — HIGGSFIELD PROJECT / SUPERCOMPUTER
+## HIGGSFIELD-NATIVE CONTINUOUS MASTER — NO EXTERNAL EDITOR
 ================================================================================
 
-> **OPERATOR NOTE — DO NOT COPY UNLESS YOU ARE IN A HIGGSFIELD ASSEMBLY / SUPERCOMPUTER WORKFLOW:** the seven Seedance clips already contain the locked supplied narration reference plus the ambience + foley/SFX + restrained score generated around it. The remaining task is only ordered concatenation, not creative re-editing.
+> **OPERATOR NOTE — DO NOT COPY INTO AN IMAGE/VIDEO MODEL:** there is no external post-production assembly stage in the canonical plan. The film is also a test of what Higgsfield can realistically produce without an outside editor compensating for it.
 
-**INPUT CLIPS IN EXACT ORDER:**
+**CANONICAL NATIVE CHAIN:**
 
-1. `V01_CITY_JUDGES_FIRST.mp4`
-2. `V02_GLOBAL_ROUTE.mp4`
-3. `V03_WORK_SYSTEM.mp4`
-4. `V04_POLICE_DEFENCE.mp4`
-5. `V05_COURT_FILE.mp4`
-6. `V06_HUMANITY_OVERLOAD.mp4`
-7. `V07_LAST_WINDOW_REVEAL.mp4`
+1. `V01_CITY_JUDGES_FIRST.mp4` — independent opening, ~00:00–00:30.
+2. `V02_CHAIN_TO_0100.mp4` — native forward extension through ~01:00.
+3. `V03_CHAIN_TO_0130.mp4` — native forward extension through ~01:30.
+4. `V04_CHAIN_TO_0200.mp4` — native forward extension through ~02:00.
+5. `V05_CHAIN_TO_0230.mp4` — native forward extension through ~02:30.
+6. `V06_CHAIN_TO_0300.mp4` — native forward extension through ~03:00.
+7. `V07_MASTER_0320.mp4` — final native forward extension through ~03:20 and the intended deliverable.
 
-**COPY THIS ONLY IF THE ASSEMBLY TOOL ACCEPTS A NATURAL-LANGUAGE ASSEMBLY INSTRUCTION:**
+The exact way Higgsfield labels/returns an extension may evolve. The semantic rule is fixed: **each accepted next result must natively continue the immediately preceding accepted film state, and the final Higgsfield project/result must itself contain or export the continuous ordered film without an outside NLE.** Confirm this behavior at the V01→02 continuity gate before bulk production.
 
-```text
-Assemble the seven supplied MYSCOUTEE video blocks in the exact numerical order 01 → 07.
+Do not export seven unrelated clips and later hide the joins with DaVinci, Premiere, After Effects, Resolve, ffmpeg, an external crossfade, optical-flow repair, audio overlap or any other outside editor. Do not create a separate externally mixed soundtrack to hide block boundaries.
 
-Do not reorder, shorten, retime, crossfade, remix, replace, regenerate or reinterpret any block.
-Preserve each block's embedded narration, ambience and sound effects exactly.
-Use direct cuts between blocks. No transition effects, no dissolve, no added B-roll, no extra music, no new narration and no subtitles.
-The physical walk must feel like one continuous progression from Soho to the final Westminster/Whitehall glass threshold even though it is built from seven generated blocks.
+If Higgsfield's current native extension/project behavior cannot produce the required continuous deliverable, STOP and tell the user exactly what the platform produced. A Higgsfield-native Canvas/project rough-cut route may be proposed only as a MANUAL FALLBACK, with its credit implications and continuity limitations stated first.
 
-After the final clinical hold, cut to black. Display exactly:
-MYSCOUTEE
-THE PATH BETWEEN PEOPLE
+The final clinical hold and title must be produced inside the native final block/project path. Do not add the title later in an external editor. If the generated title text is materially wrong or unreadable, report it as a local final-block failure and request explicit user approval for the smallest Higgsfield-native repair (for example a region/video edit if available); do not repair it outside Higgsfield.
 
-Keep the title plain, centered and restrained on black. No logo animation, no trailer sting, no extra tagline unless explicitly requested later.
-End after a short silent hold.
-```
