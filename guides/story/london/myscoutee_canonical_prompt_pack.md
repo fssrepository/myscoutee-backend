@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.1 FINAL
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2 STORY-PRESERVATION AUDITED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -28,6 +28,8 @@
 - London supplies recognizable street geometry. Budapest/Hungary is not generic “Central Europe”: **explicit recognizable Pest/Budapest anchors, Hungarian signage and transport must remain visible.**
 - The city is normal to everyone inside it. No fantasy glow, no dream filter, no cyberpunk.
 - Memories are not chronological. **Memory edits without asking permission. Global route. Local encounter.**
+- **STORY-PRESERVATION LOCK:** a memory that has been deliberately placed in a MEMORY WORLD, character library, story bible addendum, or prior canonical storyboard must NOT silently disappear from the finished film during prompt cleanup. If it is not a dominant 3×3 keyframe, preserve it as a brief secondary reflection/micro-flash unless the user explicitly approves dropping it.
+- **NO SILENT SIMPLIFICATION:** prompt shortening may change wording, never narrative inventory. Human encounters, black humour, awkwardness, kindness, travel thresholds and system/person contrasts are story content, not expendable decoration.
 - Score cards are not part of WORLD assets. They are added only in STORYBOARD / video generation.
 - Clinical imagery appears only in the final block, immediately before the hard cut.
 - Final runtime target = **3:20**: six ~30 s blocks + final ~20 s block.
@@ -41,16 +43,43 @@
 5. **MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE**
 6. **MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR**
 7. **MEMORY WORLD 06 — HUMANITY BREAKS THROUGH / RECURRING POSITIVE COUNTERMEMORIES**
-8. **HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY**
-9. **WORLD 01–07** — physical London–Budapest location/environment continuity
-10. **MAP 01–07** — separate spatial aids
-11. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
-12. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset and the same voice settings for all seven blocks.
-13. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
+8. **MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS** — restores planned micro-flashes that were lost during earlier prompt simplification.
+9. **HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY**
+10. **WORLD 01–07** — physical London–Budapest location/environment continuity
+11. **MAP 01–07** — separate spatial aids
+12. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
+13. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset, pitch and expression for all seven blocks; speech_rate may vary only minimally as allowed by the narration duration gate.
+14. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
 
 The MEMORY WORLD images are generated once and reused. They show the remembered event/place DIRECTLY, as if the camera were physically inside that remembered scene. They contain NO London–Budapest present-city layer, NO window frame from the present, NO rain/reflection composite from the present and NO score cards.
 
 Character-reference capacity is NOT treated as a scarcity constraint. Distinct planned memory participants receive distinct character sheets. Anonymous crowd/background extras may still remain unreferenced where their identity has no narrative continuity value.
+
+### OPERATOR NOTES — STORY-PRESERVATION AUDIT — DO NOT COPY
+
+This v2.2 pass was created because earlier cleanup silently removed or flattened story material. **No existing dominant storyboard beat was deleted in this pass.** The restoration is additive.
+
+**CURRENT-PACK ORPHANS RESTORED INTO THE ACTUAL FILM:**
+- DIFFERENT-SNORE / overnight housemate replacement — existed in MW01 and CHARACTER 06 but had fallen out of the actual storyboard/video.
+- BARMOUTH low-tide / five-person road-trip group — existed in MW02 + C18–C21 and even survived as an SFX cue, but had no visual beat.
+- ANONYMOUS POLITICAL CARDBOARD FIGURE / ridiculous hat / asylum-request black humour — existed in MW05 + C31 and in an earlier storyboard, but had disappeared from the final temporal beats.
+- SIX PEOPLE AROUND A REAL TABLE — existed in MW06 but had disappeared from the actual late-film humanity sequence.
+
+**STORY-BIBLE / ADDENDUM MICRO-FLASHES RESTORED AFTER BEING LEFT BEHIND DURING REBUILD:**
+- workers'-hostel fluorescent corridor / closed door;
+- canal-side shared house / reeds / crowded shoes at the entrance;
+- rural field/corn-row → travel threshold;
+- Trivandrum airport clock;
+- rented-car key on a budget-hotel table;
+- camel photograph on phone with ordinary security personnel in the background;
+- Nile/Aswan hotel room prepared for two but occupied by one;
+- health-insurance form with one blank field;
+- diploma / missing language credential + later Brexit/work-coverage paper edge;
+- late reveal bridge: Nile/water reflection → cold clinical light;
+- late reveal bridge: different snore → monitor-like rhythm;
+- late reveal bridge: balloon-helping hands → white sheet / restraint edge.
+
+These restored details may be short secondary reflections rather than dominant frames, but they are **mandatory story inventory**, not disposable decoration. Future prompt cleanup must not remove them without explicit user approval.
 
 ### OPERATOR NOTES — CANONICAL PHYSICAL WALK — DO NOT COPY
 WORLD 01: Soho → Piccadilly Circus → Coventry Street / Leicester Square → Haymarket / Trafalgar edge  
@@ -96,7 +125,7 @@ attach `C01_PROTAGONIST.png` + the other listed Cxx character sheets → paste M
 attach `W01_MAIN_WORLD.png` + `MW01_LONDON_SOCIAL.png` + listed Cxx character sheets → paste STORYBOARD 01 prompt → model generates the 3×3 storyboard → save generated result as `SB01_STORYBOARD.png`.
 
 **CINEMA BLOCK 01 finally:**
-attach the already-generated W01 + SB01 + MW01 + Cxx files → bind them as the listed `@references` → paste the Cinema Block 01 video prompt → Seedance generates the video block.
+attach the already-generated W01 + SB01 + MW01 + MWP01 + listed Cxx files **and the locked `A01_NARRATION.wav` audio reference** → bind them as the listed `@references` → paste the Cinema Block 01 video prompt → Seedance generates picture + ambience/foley/SFX/score around the supplied narration.
 
 ### HOW TO READ EVERY LINE IN THE OPERATOR GUIDE
 
@@ -174,6 +203,10 @@ For every MEMORY WORLD / HIDDEN REALITY WORLD generation:
 **MEMORY WORLD 06 — attach:** C01_PROTAGONIST.png, C02_SOHO_WOMAN.png, C03_POLICEWOMAN.png, C04_APPOINTED_LAWYER.png, C10_BEGINNER_DANCE_WOMAN.png, C11_RUSSIAN_TRANSIT_PASSENGER.png, C16_BALLOON_LOCAL_HELPER_MAN.png, C17_BALLOON_LOCAL_HELPER_WOMAN.png, C27_JUDGE.png, C28_FORENSIC_EXPERT_A.png, C29_FORENSIC_EXPERT_B.png  
 **GENERATED OUTPUT:** save/rename the result as `MW06_HUMAN_COUNTERMEMORIES.png`.
 
+**MEMORY PRESERVATION WORLD P01 — attach:** C01_PROTAGONIST.png  
+**GENERATED OUTPUT:** save/rename the result as `MWP01_ROUTES_ROOMS_DOCUMENTS.png`.  
+This is a deliberate preservation bank for short memories already present in the story-bible/addendum but lost from earlier rebuilt storyboard passes. It does not replace MW01–MW06.
+
 **HIDDEN REALITY WORLD 07 — attach:** C01_PROTAGONIST.png, C05_FINAL_NURSE.png  
 **GENERATED OUTPUT:** save/rename the result as `HRW07_CLINICAL_REALITY.png`. **Never attach this asset before STORYBOARD / VIDEO block 07.**
 
@@ -185,6 +218,7 @@ Canonical MEMORY filenames:
 - MEMORY WORLD 04 → `MW04_POLICE_DEFENCE.png`
 - MEMORY WORLD 05 → `MW05_COURT_FILE.png`
 - MEMORY WORLD 06 → `MW06_HUMAN_COUNTERMEMORIES.png`
+- MEMORY PRESERVATION WORLD P01 → `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
 - HIDDEN REALITY WORLD 07 → `HRW07_CLINICAL_REALITY.png`
 
 ### PHASE C — MAIN WORLD LIBRARY
@@ -231,11 +265,11 @@ For every STORYBOARD generation:
 - MAP is optional and normally **not attached** unless you are troubleshooting route continuity.
 - Copy only the code block under the matching STORYBOARD heading.
 
-**STORYBOARD 01 — attach:** `W01_MAIN_WORLD.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C07_FX_MORTGAGE_HOUSEMATE.png`, `C08_FX_MORTGAGE_SPOUSE.png`, `C09_FX_MORTGAGE_CHILD.png`. **GENERATED OUTPUT:** save/rename the result as `SB01_STORYBOARD.png`.
+**STORYBOARD 01 — attach:** `W01_MAIN_WORLD.png`, `MW01_LONDON_SOCIAL.png`, `MWP01_ROUTES_ROOMS_DOCUMENTS.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C07_FX_MORTGAGE_HOUSEMATE.png`, `C08_FX_MORTGAGE_SPOUSE.png`, `C09_FX_MORTGAGE_CHILD.png`. **GENERATED OUTPUT:** save/rename the result as `SB01_STORYBOARD.png`.
 
-**STORYBOARD 02 — attach:** `W02_MAIN_WORLD.png`, `MW02_GLOBAL_ROUTES.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C12_AGRA_BUS_WOMAN.png`, `C13_SUDANESE_TRAVELER_MAN.png`, `C14_SUDANESE_TRAVELER_WOMAN.png`, `C15_CAIRO_TAXI_DRIVER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`, `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`, `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`, `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`. **GENERATED OUTPUT:** save/rename the result as `SB02_STORYBOARD.png`.
+**STORYBOARD 02 — attach:** `W02_MAIN_WORLD.png`, `MW02_GLOBAL_ROUTES.png`, `MW01_LONDON_SOCIAL.png`, `MWP01_ROUTES_ROOMS_DOCUMENTS.png`, `C01_PROTAGONIST.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C12_AGRA_BUS_WOMAN.png`, `C13_SUDANESE_TRAVELER_MAN.png`, `C14_SUDANESE_TRAVELER_WOMAN.png`, `C15_CAIRO_TAXI_DRIVER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`, `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`, `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`, `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`. **GENERATED OUTPUT:** save/rename the result as `SB02_STORYBOARD.png`.
 
-**STORYBOARD 03 — attach:** `W03_MAIN_WORLD.png`, `MW03_WORK_KATA_ADMIN.png`, `C01_PROTAGONIST.png`, `C22_ACCOUNTANT.png`, `C23_ADMIN_COLLEAGUE_A.png`, `C24_ADMIN_COLLEAGUE_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB03_STORYBOARD.png`.
+**STORYBOARD 03 — attach:** `W03_MAIN_WORLD.png`, `MW03_WORK_KATA_ADMIN.png`, `MWP01_ROUTES_ROOMS_DOCUMENTS.png`, `C01_PROTAGONIST.png`, `C22_ACCOUNTANT.png`, `C23_ADMIN_COLLEAGUE_A.png`, `C24_ADMIN_COLLEAGUE_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB03_STORYBOARD.png`.
 
 **STORYBOARD 04 — attach:** `W04_MAIN_WORLD.png`, `MW04_POLICE_DEFENCE.png`, `C01_PROTAGONIST.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C25_SEARCH_OFFICER_MALE.png`, `C26_DEFENCE_OFFICE_SUBSTITUTE.png`. **GENERATED OUTPUT:** save/rename the result as `SB04_STORYBOARD.png`.
 
@@ -243,7 +277,7 @@ For every STORYBOARD generation:
 
 **STORYBOARD 06 — attach:** `W06_MAIN_WORLD.png`, `MW06_HUMAN_COUNTERMEMORIES.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB06_STORYBOARD.png`.
 
-**STORYBOARD 07 — attach:** `W07_MAIN_WORLD.png`, `HRW07_CLINICAL_REALITY.png`, `C01_PROTAGONIST.png`, `C05_FINAL_NURSE.png`. **GENERATED OUTPUT:** save/rename the result as `SB07_STORYBOARD.png`.
+**STORYBOARD 07 — attach:** `W07_MAIN_WORLD.png`, `HRW07_CLINICAL_REALITY.png`, `MWP01_ROUTES_ROOMS_DOCUMENTS.png`, `MW01_LONDON_SOCIAL.png`, `MW02_GLOBAL_ROUTES.png`, `C01_PROTAGONIST.png`, `C05_FINAL_NURSE.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`. **GENERATED OUTPUT:** save/rename the result as `SB07_STORYBOARD.png`.
 
 Canonical STORYBOARD filenames:
 
@@ -2381,6 +2415,80 @@ No score cards.
 
 ---
 
+
+---
+
+> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
+
+## MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS
+
+```text
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+FUNCTION:
+This is a STORY-PRESERVATION MEMORY SOURCE BANK.
+It restores short literal memories and threshold details that were present in the story-bible/addendum but were accidentally lost during later prompt simplification.
+These are NOT decorative inserts. They preserve the human biography that the system-world keeps trying to flatten.
+
+Show every memory DIRECTLY, as if the camera were physically inside that remembered place.
+DO NOT show the present London–Budapest dream city.
+DO NOT put these memories inside windows or reflections in this reference sheet.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO prompts may use these scenes as sub-second or short reflection memories.
+
+IDENTITY:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist is visible.
+Other incidental people may remain anonymous unless another canonical character reference is explicitly supplied in the final video block.
+
+VISUAL LANGUAGE:
+Photorealistic live-action realism.
+Literal ordinary environments and objects.
+No symbolic fantasy, no dream haze, no abstract graphics, no nostalgic glow.
+Human scale, practical light, believable wear and imperfection.
+
+NINE CELLS:
+
+Cell 1 — Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
+
+Cell 2 — Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
+
+Cell 3 — Rural field / corn-row memory: grounded agricultural rows leading the eye toward distance, the beginning of a route rather than a postcard landscape.
+
+Cell 4 — Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
+
+Cell 5 — A rented-car key resting on an ordinary budget-hotel table during a self-organized journey. Include mundane travel objects such as folded route notes, receipts or a cheap room keycard; no luxury travel styling.
+
+Cell 6 — A phone displaying an ordinary camel photograph while airport/security personnel remain naturally visible in the remembered background. Keep the moment observational, not threatening and not exoticized.
+
+Cell 7 — Nile / Aswan hotel-room memory: a modest room prepared for two people but occupied by only the protagonist, with two sleeping places and a real window toward the river. The empty half of the room matters more than tourism spectacle.
+
+Cell 8 — Ordinary health-insurance / administrative form with one clearly empty field while the protagonist handles the paperwork. Keep most text unreadable; the missing field and human hand are the visual fact.
+
+Cell 9 — Education / belonging / record threshold: an ordinary diploma/certificate and supporting paperwork where a required language-exam stamp/credential is visibly absent, with the edge of later Brexit/work-coverage paperwork in the same physical document stack. No infographic, no accusatory montage.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine literal photographic memory cells.
+No present-city reflection layer.
+No score cards.
+No explanatory captions.
+These details exist to preserve biography, not to simplify it.
+```
+
 > **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY
@@ -3602,6 +3710,7 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 
 Use the following separate MEMORY CONTENT reference(s):
 - MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING
+- MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS (secondary micro-flashes only)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -3657,13 +3766,13 @@ FRAME 3 — Lateral move beside a black taxi. In its rain-covered side window, a
 
 FRAME 4 — Large shopfront glass. Literal Soho lunch memory: the protagonist sits with colleagues while they eat; he quietly pretends he is not hungry. No melodrama. Present rain and London–Budapest reflection remain visible.
 
-FRAME 5 — Yellow tram side windows. Literal shared-London-house memory: a cramped room containing many Hungarian adult housemates, compressed domestic space, shoes and belongings. Present tram frame and city reflection remain clear.
+FRAME 5 — Yellow tram side windows. Literal shared-London-house memory: a cramped room containing many Hungarian adult housemates, compressed domestic space, shoes and belongings. In an adjacent tram pane, preserve the DIFFERENT-SNORE memory: the same cramped bedroom at night, but one sleeping place has been silently replaced by another adult silhouette / housemate, furniture more stable than the people. Present tram frame and city reflection remain clear.
 
 FRAME 6 — Adjacent tram/bus pane. Literal foreign-currency-mortgage housemate memory: one Hungarian man living abroad while spouse/child/home obligations remain in Hungary. Show a small ordinary domestic/family fragment, not explanatory text.
 
 FRAME 7 — Cinema/theatre glass in Leicester. Literal dating memory: same photograph, phone/profile age field changes visually from 37 to 33; the human face does not change. Keep the phone/profile small inside the reflected memory and avoid UI spectacle.
 
-FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city.
+FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
 
 FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
 
@@ -3708,6 +3817,7 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 Use the following separate MEMORY CONTENT reference(s):
 - MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS
 - MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING (only for the beginner-dance memory)
+- MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS (short route/threshold flashes)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -3765,15 +3875,15 @@ FRAME 2 — London Underground entrance glass viewed from outside. Literal Mosco
 
 FRAME 3 — Full red-bus side window. Literal India / Agra memory: the protagonist sits on a bus; a woman speaks from behind or across the seat, creating a human voice/contact moment. Avoid tourist-postcard monuments and exoticizing imagery.
 
-FRAME 4 — Black taxi window. Literal Cairo memory: protagonist sharing a taxi with a Sudanese couple, ordinary temporary trust between strangers. Current Strand reflection and rain remain layered on the taxi glass.
+FRAME 4 — Black taxi window. Literal Cairo memory: protagonist sharing a taxi with a Sudanese couple, ordinary temporary trust between strangers. A very brief adjacent reflection may show the remembered camel photograph on a phone with ordinary security personnel behind it. Current Strand reflection and rain remain layered on the taxi glass.
 
-FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from the taxi roof near an airport/exit context. Capture surprise and practical reaction, not slapstick.
+FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from the taxi roof near an airport/exit context. Capture surprise and practical reaction, not slapstick. Before the pane clears, include a short literal Nile/Aswan hotel-room flash: a room prepared for two but occupied by one, the empty half of the room clearly readable.
 
 FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloon lands in a vegetable plot near a wall; local people and passengers cooperate hand-to-hand to solve the situation. Warm human cooperation, no fantasy.
 
 FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly sharpens one card over the current glass reflection.
 
-FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes: rail track → Budapest tram wire → London transport line → wet bus window, visually echoing the notebook principle. Do not make it abstract animation; each is a literal remembered transport fragment.
+FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
 
 FRAME 9 — Wide Aldwych / Embankment-side exterior. Opera/Nyugati/M4/Hungarian signage remain unmistakable in the present city. Memory panes return to normal reflections as the protagonist continues the exterior walk.
 
@@ -3817,6 +3927,7 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 
 Use the following separate MEMORY CONTENT reference(s):
 - MEMORY WORLD 03 — WORK / ACCOUNTING / KATA / ADMIN
+- MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS (document/belonging micro-flashes)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -3870,13 +3981,13 @@ FRAME 3 — Accounting-frontage glass. Literal memory of 13–15-hour workdays, 
 
 FRAME 4 — Three adjacent panes / one large divided façade. Literal 'three people / no shared screen' memory: three people dealing with the same administrative problem, each looking at a different document/screen version. They are physically near but informationally separated. No one is evil.
 
-FRAME 5 — Wet civic glass. Literal KATA-change memory: calendar/date, ordinary government-style notification/letter and a return/form needing correction. Keep text mostly unreadable; show process through objects and reactions.
+FRAME 5 — Wet civic glass. Literal KATA-change memory: calendar/date, ordinary government-style notification/letter and a return/form needing correction. Keep text mostly unreadable; show process through objects and reactions. A secondary document pane preserves the health-insurance form with one conspicuously empty field; do not turn it into explanatory UI.
 
 FRAME 6 — Taxi or tram window. Literal delegation/password/accounting memory: accountant, portal/login responsibility and correction chain implied by hands, screen and paperwork, without turning it into cybersecurity graphics.
 
 FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards sharpen briefly when they look at one another.
 
-FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions.
+FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions. Brief document flashes preserve the diploma/certificate with the missing language-exam credential and the later Brexit/work-coverage paper edge: separate literal records, not an infographic.
 
 FRAME 9 — Wide Holborn/Fleet-edge continuation. The current city is still exterior, wet and crowded. The protagonist keeps walking; cards are slightly clearer around professional crowds than in Soho, but the phenomenon remains unexplained.
 
@@ -4084,7 +4195,7 @@ FRAME 5 — Yellow tram windows. Literal file sequence: photograph, fingerprint 
 
 FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two expert chairs, differing reactions, one asks what happened; the protagonist remains calm/cooperative. Do not imply a single unified expert voice.
 
-FRAME 7 — Dark public glass. Black-humour memory: 'KATA's most wanted' / impossible police-career application tone represented as a small satirical self-made visual/poster or CV fragment inside the memory, without identifiable political figures and without large readable text.
+FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real politician likeness, no party branding, no advocacy, and no large readable text.
 
 FRAME 8 — Broad entrance glass. Literal clerk/court-route memory: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. Keep text unreadable and focus on ordinary people, phone, letter, file.
 
@@ -4188,7 +4299,7 @@ FRAME 3 — Large public glass. Literal police/humanity memory: the POLICEWOMAN 
 
 FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / shows a moment of ordinary human discomfort or practical help. Avoid hero/villain framing.
 
-FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm unrelated human memory such as dance-floor or stranger cooperation. The point is that roles are not whole people.
+FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
 
 FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
@@ -4238,6 +4349,9 @@ Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-ci
 
 Use the following separate MEMORY CONTENT reference(s):
 - HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY
+- MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS (late memory-to-reality bridge)
+- MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING (different-snore bedroom bridge only)
+- MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS (balloon-cooperation bridge only)
 
 MEMORY-COMPOSITING RULE:
 The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
@@ -4251,6 +4365,9 @@ Use the supplied PROTAGONIST reference as the exact protagonist identity.
 CHARACTER REFERENCES FOR THIS BOARD — REQUIRED WHEN THEIR PERSON APPEARS:
 - CHARACTER 01 — PROTAGONIST
 - CHARACTER 05 — FINAL NURSE
+- CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE for the different-snore bridge
+- CHARACTER 16 — BALLOON LOCAL HELPER — MAN for the balloon-hand bridge
+- CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN for the balloon-hand bridge
 Do not replace a referenced person with a newly invented face.
 
 Keep protagonist face, age, body and hair identical. Current-city clothing follows the protagonist reference; remembered clothing may follow the period/context established by the MEMORY WORLD.
@@ -4283,13 +4400,13 @@ At the start, crowd cards and the protagonist's own card are equally clear. As t
 NINE ORDERED KEYFRAMES:
 FRAME 1 — Quieter Westminster / Whitehall exterior. The protagonist continues the same walk. Hungarian Parliament and a distant St Stephen's Basilica echo remain possible in separated sightlines. Cards are clearer but pedestrians are now more distant.
 
-FRAME 2 — A large dark street-facing pane briefly catches an ambiguous COLD WHITE LIGHT that does not belong to the warm-neutral lobby. Less than a second in the intended video. Immediately retain normal city reflection around it.
+FRAME 2 — A large dark street-facing pane first carries the literal Nile/Aswan hotel-window memory from MWP01: river light and the empty-half hotel room. For less than a second, the reflected water highlight bleaches into an ambiguous COLD WHITE CLINICAL LIGHT from the hidden-reality reference, then immediately returns to the normal city reflection. This is a memory-to-reality bridge, not a generic random white flash.
 
-FRAME 3 — Another passing window reflection contains only the edge of a WHITE COAT for a fraction of a second, immediately returning to the London–Budapest city.
+FRAME 3 — Another passing window first catches the cramped shared-bedroom / DIFFERENT-SNORE memory from MEMORY WORLD 01. In the intended video, the snoring rhythm briefly becomes monitor-like for a single beat while only the edge of a WHITE COAT crosses the reflection, then everything immediately returns to the London–Budapest city. Do not show a complete clinical room.
 
 FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED / ELEVATED LEG, less than a second, still mixed with rain and current street reflection. Do not show a complete clinical room.
 
-FRAME 5 — Another extremely short reflection contains a METAL RESTRAINT and a white-sheet edge. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
+FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
 
 FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still faintly present.
 
@@ -4322,7 +4439,7 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 
 **GENERATED OUTPUT:** `A01_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4337,7 +4454,7 @@ I don't remember my life as a straight line. A street becomes a room, a window b
 
 **GENERATED OUTPUT:** `A02_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4352,7 +4469,7 @@ I remember routes before dates: a card at a gate, a voice behind a bus seat, a t
 
 **GENERATED OUTPUT:** `A03_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4367,7 +4484,7 @@ Work should have been simpler than travel. Three people, one problem, three scre
 
 **GENERATED OUTPUT:** `A04_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4382,7 +4499,7 @@ Then the system entered the story without ever becoming one person. A voice at t
 
 **GENERATED OUTPUT:** `A05_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4397,7 +4514,7 @@ A file can hold a photograph, a fingerprint, a signature, a list of things you o
 
 **GENERATED OUTPUT:** `A06_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4412,7 +4529,7 @@ But humanity kept leaking through. A stranger opened a gate. Someone smiled in t
 
 **GENERATED OUTPUT:** `A07_NARRATION.wav`
 
-**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset, pitch and expression as Narration 01–07; speech_rate may vary only within the duration-gate rule. Narration only. Prefer WAV / 48 kHz if available.
 
 ================================================================================
 **⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
@@ -4425,7 +4542,7 @@ By then the city was reading me too. London, Budapest, every memory stayed in th
 
 ## HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK
 
-This is the **actual video-generation section**. Everything before this section creates or organizes reference images.
+This is the **actual video-generation section**. Everything before this section creates or organizes reference images and the locked narration WAV references.
 
 **Use Higgsfield Cinema Studio with Seedance 2.5.** For every CINEMA BLOCK below:
 
@@ -4465,6 +4582,7 @@ Cinema Studio / Seedance should receive the uploaded reference images as **@ ref
 - `W01_MAIN_WORLD.png`
 - `SB01_STORYBOARD.png`
 - `MW01_LONDON_SOCIAL.png`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
 - `C01_PROTAGONIST.png`
 - `C02_SOHO_WOMAN.png`
 - `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`
@@ -4478,6 +4596,7 @@ Cinema Studio / Seedance should receive the uploaded reference images as **@ ref
 - `W01_MAIN_WORLD.png` → `@W01_MAIN_WORLD`
 - `SB01_STORYBOARD.png` → `@SB01_STORYBOARD`
 - `MW01_LONDON_SOCIAL.png` → `@MW01_LONDON_SOCIAL`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png` → `@MWP01_ROUTES_ROOMS_DOCUMENTS`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C02_SOHO_WOMAN.png` → `@C02_SOHO_WOMAN`
 - `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` → `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE`
@@ -4511,6 +4630,7 @@ REFERENCE ROLE ASSIGNMENT
 - @W01_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
 - @SB01_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @MW01_LONDON_SOCIAL = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MWP01_ROUTES_ROOMS_DOCUMENTS = preservation source bank for the full restored route / room / document-threshold inventory: workers'-hostel corridor, canal-side shared house, rural field/corn row, Trivandrum airport clock, rented-car key, camel-photo/security, Nile/Aswan room, health-insurance blank field, diploma/missing language credential and later Brexit/work-coverage paper. In this block, use only the workers'-hostel and canal-home micro-flashes explicitly named in the temporal beats; never display the whole sheet. The broader inventory remains preserved in this role definition for cross-block continuity and must not be treated as disposable.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C02_SOHO_WOMAN = exact identity anchor for the soho woman; preserve face, age, body proportions and role.
 - @C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact identity anchor for the shared house substitute snoring housemate; preserve face, age, body proportions and role.
@@ -4532,8 +4652,8 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 5–10s: Piccadilly opens wider; crowd wash, one restrained tram bell, traffic moves past without a dramatic hit.
 10–15s: taxi-window memory zone; very soft restaurant cutlery/glass clink and indoor room tone heard as if behind wet glass, while current rain remains audible.
 15–20s: café/lunch ambience briefly joins the city bed, muffled and memory-like, never louder than narration.
-20–25s: tram movement, rail squeal kept soft, a short enclosed shared-house room tone, no intelligible speech.
-25–30s: return to clean wet-city ambience, bus/tram/taxi movement and footsteps continuing forward.
+20–25s: tram movement and soft rail squeal under a short enclosed shared-house room tone; for one brief beat a DIFFERENT SNORE is heard from the replaced sleeping arrangement, then it is swallowed by tram/city sound. No intelligible speech.
+25–30s: return to clean wet-city ambience, with two almost subliminal threshold textures from the reflections: fluorescent hostel-corridor hum / door latch, then open canal-side air and distant reeds before bus/tram/taxi movement and footsteps take over again.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -4589,13 +4709,13 @@ FRAME 3 — Lateral move beside a black taxi. In its rain-covered side window, a
 
 FRAME 4 — Large shopfront glass. Literal Soho lunch memory: the protagonist sits with colleagues while they eat; he quietly pretends he is not hungry. No melodrama. Present rain and London–Budapest reflection remain visible.
 
-FRAME 5 — Yellow tram side windows. Literal shared-London-house memory: a cramped room containing many Hungarian adult housemates, compressed domestic space, shoes and belongings. Present tram frame and city reflection remain clear.
+FRAME 5 — Yellow tram side windows. Literal shared-London-house memory: a cramped room containing many Hungarian adult housemates, compressed domestic space, shoes and belongings. In an adjacent tram pane, preserve the DIFFERENT-SNORE memory: the same cramped bedroom at night, but one sleeping place has been silently replaced by another adult silhouette / housemate, furniture more stable than the people. Present tram frame and city reflection remain clear.
 
 FRAME 6 — Adjacent tram/bus pane. Literal foreign-currency-mortgage housemate memory: one Hungarian man living abroad while spouse/child/home obligations remain in Hungary. Show a small ordinary domestic/family fragment, not explanatory text.
 
 FRAME 7 — Cinema/theatre glass in Leicester. Literal dating memory: same photograph, phone/profile age field changes visually from 37 to 33; the human face does not change. Keep the phone/profile small inside the reflected memory and avoid UI spectacle.
 
-FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city.
+FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards sharpen and blur asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
 
 FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
 
@@ -4617,6 +4737,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `SB02_STORYBOARD.png`
 - `MW02_GLOBAL_ROUTES.png`
 - `MW01_LONDON_SOCIAL.png`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
 - `C01_PROTAGONIST.png`
 - `C10_BEGINNER_DANCE_WOMAN.png`
 - `C11_RUSSIAN_TRANSIT_PASSENGER.png`
@@ -4638,6 +4759,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `SB02_STORYBOARD.png` → `@SB02_STORYBOARD`
 - `MW02_GLOBAL_ROUTES.png` → `@MW02_GLOBAL_ROUTES`
 - `MW01_LONDON_SOCIAL.png` → `@MW01_LONDON_SOCIAL`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png` → `@MWP01_ROUTES_ROOMS_DOCUMENTS`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C10_BEGINNER_DANCE_WOMAN.png` → `@C10_BEGINNER_DANCE_WOMAN`
 - `C11_RUSSIAN_TRANSIT_PASSENGER.png` → `@C11_RUSSIAN_TRANSIT_PASSENGER`
@@ -4679,6 +4801,7 @@ REFERENCE ROLE ASSIGNMENT
 - @SB02_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @MW02_GLOBAL_ROUTES = global route / Russia / India / Cairo / balloon / travel memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
 - @MW01_LONDON_SOCIAL = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MWP01_ROUTES_ROOMS_DOCUMENTS = preservation memory bank for the route/threshold micro-flashes used in this block: camel-photo/security, Nile/Aswan room, rural field/corn row, Trivandrum airport clock and rented-car key. Use only the specific short flashes named in the temporal beats; never display the whole sheet. Preserve the rest of the MWP01 inventory for its other assigned blocks; do not treat unused cells here as removable story material.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C10_BEGINNER_DANCE_WOMAN = exact identity anchor for the beginner dance woman; preserve face, age, body proportions and role.
 - @C11_RUSSIAN_TRANSIT_PASSENGER = exact identity anchor for the russian transit passenger; preserve face, age, body proportions and role.
@@ -4763,15 +4886,15 @@ FRAME 2 — London Underground entrance glass viewed from outside. Literal Mosco
 
 FRAME 3 — Full red-bus side window. Literal India / Agra memory: the protagonist sits on a bus; a woman speaks from behind or across the seat, creating a human voice/contact moment. Avoid tourist-postcard monuments and exoticizing imagery.
 
-FRAME 4 — Black taxi window. Literal Cairo memory: protagonist sharing a taxi with a Sudanese couple, ordinary temporary trust between strangers. Current Strand reflection and rain remain layered on the taxi glass.
+FRAME 4 — Black taxi window. Literal Cairo memory: protagonist sharing a taxi with a Sudanese couple, ordinary temporary trust between strangers. A very brief adjacent reflection may show the remembered camel photograph on a phone with ordinary security personnel behind it. Current Strand reflection and rain remain layered on the taxi glass.
 
-FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from the taxi roof near an airport/exit context. Capture surprise and practical reaction, not slapstick.
+FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from the taxi roof near an airport/exit context. Capture surprise and practical reaction, not slapstick. Before the pane clears, include a short literal Nile/Aswan hotel-room flash: a room prepared for two but occupied by one, the empty half of the room clearly readable.
 
 FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloon lands in a vegetable plot near a wall; local people and passengers cooperate hand-to-hand to solve the situation. Warm human cooperation, no fantasy.
 
 FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly sharpens one card over the current glass reflection.
 
-FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes: rail track → Budapest tram wire → London transport line → wet bus window, visually echoing the notebook principle. Do not make it abstract animation; each is a literal remembered transport fragment.
+FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
 
 FRAME 9 — Wide Aldwych / Embankment-side exterior. Opera/Nyugati/M4/Hungarian signage remain unmistakable in the present city. Memory panes return to normal reflections as the protagonist continues the exterior walk.
 
@@ -4792,6 +4915,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W03_MAIN_WORLD.png`
 - `SB03_STORYBOARD.png`
 - `MW03_WORK_KATA_ADMIN.png`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
 - `C01_PROTAGONIST.png`
 - `C22_ACCOUNTANT.png`
 - `C23_ADMIN_COLLEAGUE_A.png`
@@ -4803,6 +4927,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W03_MAIN_WORLD.png` → `@W03_MAIN_WORLD`
 - `SB03_STORYBOARD.png` → `@SB03_STORYBOARD`
 - `MW03_WORK_KATA_ADMIN.png` → `@MW03_WORK_KATA_ADMIN`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png` → `@MWP01_ROUTES_ROOMS_DOCUMENTS`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C22_ACCOUNTANT.png` → `@C22_ACCOUNTANT`
 - `C23_ADMIN_COLLEAGUE_A.png` → `@C23_ADMIN_COLLEAGUE_A`
@@ -4834,6 +4959,7 @@ REFERENCE ROLE ASSIGNMENT
 - @W03_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
 - @SB03_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @MW03_WORK_KATA_ADMIN = work / accounting / KATA / administrative-system memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MWP01_ROUTES_ROOMS_DOCUMENTS = preservation bank for the health-insurance blank field, missing language credential and later work/belonging/Brexit paperwork. Use as brief literal document memories only.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C22_ACCOUNTANT = exact identity anchor for the accountant; preserve face, age, body proportions and role.
 - @C23_ADMIN_COLLEAGUE_A = exact identity anchor for the admin colleague a; preserve face, age, body proportions and role.
@@ -4853,8 +4979,8 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 5–10s: keyboard taps and ordinary office ventilation appear softly behind the city, as if memories are inside windows.
 10–15s: printer feed, paper handling, one subdued phone vibration / notification tone.
 15–20s: three slightly separated workstations implied by alternating keyboard/paper sounds; never turn this into a sci-fi computer soundscape.
-20–25s: phone call connection tone, page turn, restrained desk movement; no intelligible second speaker.
-25–30s: corrected form/paper movement and one quiet confirmation tone, while the rain/city bed continues underneath.
+20–25s: phone call connection tone, page turn, restrained desk movement; a health-insurance form and empty-field memory is carried only by paper/pen handling, no intelligible second speaker.
+25–30s: corrected form/paper movement, diploma/credential papers and a later Brexit/work-coverage document edge handled as ordinary records, then one quiet confirmation tone while the rain/city bed continues underneath.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -4910,13 +5036,13 @@ FRAME 3 — Accounting-frontage glass. Literal memory of 13–15-hour workdays, 
 
 FRAME 4 — Three adjacent panes / one large divided façade. Literal 'three people / no shared screen' memory: three people dealing with the same administrative problem, each looking at a different document/screen version. They are physically near but informationally separated. No one is evil.
 
-FRAME 5 — Wet civic glass. Literal KATA-change memory: calendar/date, ordinary government-style notification/letter and a return/form needing correction. Keep text mostly unreadable; show process through objects and reactions.
+FRAME 5 — Wet civic glass. Literal KATA-change memory: calendar/date, ordinary government-style notification/letter and a return/form needing correction. Keep text mostly unreadable; show process through objects and reactions. A secondary document pane preserves the health-insurance form with one conspicuously empty field; do not turn it into explanatory UI.
 
 FRAME 6 — Taxi or tram window. Literal delegation/password/accounting memory: accountant, portal/login responsibility and correction chain implied by hands, screen and paperwork, without turning it into cybersecurity graphics.
 
 FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards sharpen briefly when they look at one another.
 
-FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions.
+FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions. Brief document flashes preserve the diploma/certificate with the missing language-exam credential and the later Brexit/work-coverage paper edge: separate literal records, not an infographic.
 
 FRAME 9 — Wide Holborn/Fleet-edge continuation. The current city is still exterior, wet and crowded. The protagonist keeps walking; cards are slightly clearer around professional crowds than in Soho, but the phenomenon remains unexplained.
 
@@ -5157,7 +5283,7 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 10–15s: folder opening, photograph/paper handling, pen/signature scratch, one soft stamp or file closure.
 15–20s: evidence/property bag or box movement, phone/laptop object handling, still ordinary and non-thriller.
 20–25s: forensic-room ventilation, two chairs shifting at different moments, page turn, restrained clock tick.
-25–30s: posted letter/envelope, folder close, distant phone ring unanswered, then the exterior rain becomes dominant again.
+25–30s: brief self-made-paper/cardboard handling carries the black-humour sequence — KATA/police-career joke and the anonymous ridiculous-hat political-cardboard/asylum-request flash — then posted letter/envelope, folder close and a distant phone ring unanswered before exterior rain becomes dominant again. No rally sound, no political speech.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -5217,7 +5343,7 @@ FRAME 5 — Yellow tram windows. Literal file sequence: photograph, fingerprint 
 
 FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two expert chairs, differing reactions, one asks what happened; the protagonist remains calm/cooperative. Do not imply a single unified expert voice.
 
-FRAME 7 — Dark public glass. Black-humour memory: 'KATA's most wanted' / impossible police-career application tone represented as a small satirical self-made visual/poster or CV fragment inside the memory, without identifiable political figures and without large readable text.
+FRAME 7 — Dark public glass. Black-humour memory: first the self-made 'KATA's most wanted' / impossible police-career application visual or CV fragment; then, in an adjacent pane, the anonymous cardboard/election political figure with a deliberately ridiculous hat and the political-asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real politician likeness, no party branding, no advocacy, and no large readable text.
 
 FRAME 8 — Broad entrance glass. Literal clerk/court-route memory: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. Keep text unreadable and focus on ordinary people, phone, letter, file.
 
@@ -5323,7 +5449,8 @@ AMBIENCE / FOLEY / SFX EVENT TRACK
 10–15s: balloon fabric/rope/hand effort, soil and vegetation movement, immediately followed by current-city traffic.
 15–20s: quiet procedural room tone with one restrained suppressed laugh / warm exhale, no words.
 20–24s: lawyer/court paper movement and chair shift, then a few dance-floor shoe steps and room ambience, no music beat.
-24–30s: multiple memory sound fragments overlap lightly but remain intelligible; then simplify to footsteps, rain and the city continuing toward Westminster.
+24–27s: the six-person table memory becomes briefly dominant: ordinary chairs, cups, quiet natural room tone, several people breathing/moving and one soft human laugh without intelligible dialogue.
+27–30s: multiple memory sound fragments overlap lightly but remain intelligible; then simplify to footsteps, rain and the city continuing toward Westminster.
 
 MUSIC / SCORE
 Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
@@ -5379,7 +5506,7 @@ FRAME 3 — Large public glass. Literal police/humanity memory: the POLICEWOMAN 
 
 FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / shows a moment of ordinary human discomfort or practical help. Avoid hero/villain framing.
 
-FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm unrelated human memory such as dance-floor or stranger cooperation. The point is that roles are not whole people.
+FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
 
 FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
@@ -5406,8 +5533,14 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W07_MAIN_WORLD.png`
 - `SB07_STORYBOARD.png`
 - `HRW07_CLINICAL_REALITY.png`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png`
+- `MW01_LONDON_SOCIAL.png`
+- `MW02_GLOBAL_ROUTES.png`
 - `C01_PROTAGONIST.png`
 - `C05_FINAL_NURSE.png`
+- `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`
+- `C16_BALLOON_LOCAL_HELPER_MAN.png`
+- `C17_BALLOON_LOCAL_HELPER_WOMAN.png`
 - `A07_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
@@ -5415,8 +5548,14 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `W07_MAIN_WORLD.png` → `@W07_MAIN_WORLD`
 - `SB07_STORYBOARD.png` → `@SB07_STORYBOARD`
 - `HRW07_CLINICAL_REALITY.png` → `@HRW07_CLINICAL_REALITY`
+- `MWP01_ROUTES_ROOMS_DOCUMENTS.png` → `@MWP01_ROUTES_ROOMS_DOCUMENTS`
+- `MW01_LONDON_SOCIAL.png` → `@MW01_LONDON_SOCIAL`
+- `MW02_GLOBAL_ROUTES.png` → `@MW02_GLOBAL_ROUTES`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C05_FINAL_NURSE.png` → `@C05_FINAL_NURSE`
+- `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` → `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE`
+- `C16_BALLOON_LOCAL_HELPER_MAN.png` → `@C16_BALLOON_LOCAL_HELPER_MAN`
+- `C17_BALLOON_LOCAL_HELPER_WOMAN.png` → `@C17_BALLOON_LOCAL_HELPER_WOMAN`
 - `A07_NARRATION.wav` → `@A07_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
@@ -5444,8 +5583,13 @@ REFERENCE ROLE ASSIGNMENT
 - @W07_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
 - @SB07_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
 - @HRW07_CLINICAL_REALITY = hidden physical clinical reality. Use it only for the sub-second fragments in frames 2–5 and the actual clinical room after the hard cut in frames 8–9. Never display the whole 3×3 sheet.
+- @MWP01_ROUTES_ROOMS_DOCUMENTS = preservation bank for the Nile/Aswan room and route-threshold memories used as match-cut bridges into the hidden reality.
+- @MW01_LONDON_SOCIAL = use only the established different-snore shared-bedroom memory for the late audio/visual bridge.
+- @MW02_GLOBAL_ROUTES = use only the established balloon/vegetable-plot cooperation memory for the hand-to-restraint match bridge.
 - @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
 - @C05_FINAL_NURSE = exact identity anchor for the final nurse; preserve face, age, body proportions and role.
+- @C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact identity for the different-snore memory bridge.
+- @C16_BALLOON_LOCAL_HELPER_MAN and @C17_BALLOON_LOCAL_HELPER_WOMAN = exact helper identities when their hands/effort are visible in the balloon cooperation bridge.
 - Do not invent replacement identities for any named person above.
 
 AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
@@ -5457,9 +5601,9 @@ The visible protagonist does NOT speak the narration and must NOT lip-sync to it
 Generate the remaining soundtrack natively around @A07_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
-0–5s: the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds.
-5–9s: an almost subliminal cold ventilation / fluorescent electrical hum intrudes beneath the rain during the white-light and white-coat reflection fragments.
-9–13s: one faint metal contact and white-sheet/fabric movement appear only as ambiguous fragments while city ambience remains present.
+0–5s: the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds. A very brief Nile/Aswan room-and-river ambience enters through the first reflection before the cold-white-light intrusion.
+5–9s: the shared-bedroom DIFFERENT SNORE appears for a moment and its rhythm becomes monitor-like for a single ambiguous beat beneath the rain; an almost subliminal cold ventilation / fluorescent electrical hum accompanies the white-coat edge. Immediately return to city sound.
+9–13s: balloon-rope / hand-effort / vegetation sound flashes for a moment, then matches into one faint metal contact and white-sheet/fabric movement while city ambience remains present. The connection is physical and brief, not a dream whoosh.
 13–15s: final glass approach; footsteps stop, rain and reflected traffic thin rapidly, no dream whoosh and no horror rise.
 At the HARD CUT to the clinical room: city/rain stop instantly. Replace them with flat real clinical room tone, ventilation, quiet breathing, bed linen, one small ordinary metal/equipment click.
 15–20s: clinical ambience only under the end of narration. No sting, no heartbeat effect, no ominous music, no supernatural sound.
@@ -5512,13 +5656,13 @@ Connect the ordered beats with grounded continuous cinema movement. Use forward 
 ORDERED TEMPORAL BEATS — FOLLOW 1→9
 FRAME 1 — Quieter Westminster / Whitehall exterior. The protagonist continues the same walk. Hungarian Parliament and a distant St Stephen's Basilica echo remain possible in separated sightlines. Cards are clearer but pedestrians are now more distant.
 
-FRAME 2 — A large dark street-facing pane briefly catches an ambiguous COLD WHITE LIGHT that does not belong to the warm-neutral lobby. Less than a second in the intended video. Immediately retain normal city reflection around it.
+FRAME 2 — A large dark street-facing pane first carries the literal Nile/Aswan hotel-window memory from MWP01: river light and the empty-half hotel room. For less than a second, the reflected water highlight bleaches into an ambiguous COLD WHITE CLINICAL LIGHT from the hidden-reality reference, then immediately returns to the normal city reflection. This is a memory-to-reality bridge, not a generic random white flash.
 
-FRAME 3 — Another passing window reflection contains only the edge of a WHITE COAT for a fraction of a second, immediately returning to the London–Budapest city.
+FRAME 3 — Another passing window first catches the cramped shared-bedroom / DIFFERENT-SNORE memory from MEMORY WORLD 01. In the intended video, the snoring rhythm briefly becomes monitor-like for a single beat while only the edge of a WHITE COAT crosses the reflection, then everything immediately returns to the London–Budapest city. Do not show a complete clinical room.
 
 FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED / ELEVATED LEG, less than a second, still mixed with rain and current street reflection. Do not show a complete clinical room.
 
-FRAME 5 — Another extremely short reflection contains a METAL RESTRAINT and a white-sheet edge. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
+FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
 
 FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still faintly present.
 
