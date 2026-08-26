@@ -2,10 +2,14 @@
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
-> Everything before the first actual asset prompt is HUMAN/OPERATOR documentation only.
-> **Do not paste the IMPORTANT OPERATING RULE, Google Flow setting note, LOCKED SYSTEM, GENERATION ORDER, CANONICAL PHYSICAL WALK, or COPY/PASTE OPERATOR GUIDE into Flow, Nano Banana, Higgsfield, Cinema Studio or Seedance.**
-> The first text you actually paste into a generation model is the contents of the fenced `text` code block under **CHARACTER 01 — PROTAGONIST**.
-> After that, for every asset, paste **only the fenced `text` code block directly under that asset heading**. The prose outside code blocks is for you, not for the model.
+> Everything before the **COPYABLE PROMPTS START** divider is HUMAN/OPERATOR documentation only.
+> **Do not paste the IMPORTANT OPERATING RULE, Flow setting note, LOCKED SYSTEM, GENERATION ORDER, CANONICAL PHYSICAL WALK, filenames, attachment lists, or operator instructions into any generation prompt.**
+>
+> **VERY IMPORTANT — INPUT vs OUTPUT:** a filename shown in the operator guide is usually the **name you give the GENERATED RESULT AFTER the prompt creates it**. It is not automatically an existing input image. A file is an INPUT only when the guide explicitly says **ATTACH / INPUT REFERENCES**.
+>
+> Example: under CHARACTER 01 you paste the CHARACTER 01 code block with no references. The model generates an image. **That generated image is then saved/renamed as `C01_PROTAGONIST.png`.** Later sections may tell you to ATTACH `C01_PROTAGONIST.png`; only then does it become an input reference.
+>
+> The first text you actually paste into a generation model is the fenced `text` code block under **CHARACTER 01 — PROTAGONIST**. After that, for every asset, paste **only the fenced `text` code block belonging to that asset**.
 
 **IMPORTANT OPERATING RULE:** every code block below is a separate generation request. Never paste a WORLD prompt together with a MAP prompt. Never paste multiple CHARACTER prompts together. The pack is deliberately repetitive so every prompt is independently copyable in Google Flow / Nano Banana and Higgsfield Cinema Studio.
 
@@ -41,7 +45,7 @@
 9. **WORLD 01–07** — physical London–Budapest location/environment continuity
 10. **MAP 01–07** — separate spatial aids
 11. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
-12. **VIDEO GENERATION** — use MAIN WORLD as the physical present, the relevant MEMORY WORLD as the literal memory content, and the exact character sheets for every identified person in that memory
+12. **VIDEO GENERATION IN SEEDANCE 2.5** — Seedance generates picture + off-screen narration + ambience + foley/SFX + restrained score in the SAME pass. No separate audio file is required in the primary no-edit workflow. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact character sheets for identified people, STORYBOARD as time order, and the AUDIO section inside each CINEMA BLOCK as the sound script.
 
 The MEMORY WORLD images are generated once and reused. They show the remembered event/place DIRECTLY, as if the camera were physically inside that remembered scene. They contain NO London–Budapest present-city layer, NO window frame from the present, NO rain/reflection composite from the present and NO score cards.
 
@@ -65,16 +69,41 @@ The geography is cinematically compressed but must always feel walkable.
 
 This section is the operating manual for the entire file. **Do not improvise between sections.** Every generation uses exactly ONE prompt code block from this file. The prose around a code block is an instruction to you; **paste only the contents inside the relevant `text` code block into the generation model.**
 
-### ZERO-AMBIGUITY RULE
+### ZERO-AMBIGUITY RULE — EVERY ASSET HAS INPUT → PROMPT → OUTPUT
 
-For every asset below, do these four things in this order:
+Read every generation in this file as the same three-step pipeline:
 
-1. Attach only the references listed for that asset.
-2. Set the UI option stated for that asset.
-3. Copy only the single prompt code block under that asset heading.
-4. Save the result using the canonical filename below so the later Cinema Studio packs can name it unambiguously.
+**A. INPUT REFERENCES** — only files explicitly listed as `ATTACH` are uploaded as references. If the section says `none`, start from the text prompt only.
+
+**B. COPY/PASTE PROMPT** — paste only the single fenced `text` code block for that asset. Never paste the filename list or this guide.
+
+**C. GENERATED OUTPUT** — the model creates a new image/video. After generation, save or rename that result to the canonical filename shown in the guide. That filename is then used as a later reference asset.
+
+So a line such as `CHARACTER 01 → C01_PROTAGONIST.png` means: **run the CHARACTER 01 prompt → receive a generated character sheet → save that generated sheet as `C01_PROTAGONIST.png`.** It does NOT mean that `C01_PROTAGONIST.png` already exists before you run the prompt.
 
 Never paste CHARACTER + MEMORY WORLD + MAIN WORLD + STORYBOARD prompts together. They are separate generations. A reference image is attached as an image/reference; its old text prompt is **not** pasted again.
+
+### ONE COMPLETE EXAMPLE — WHAT THE FILENAMES MEAN
+
+**CHARACTER 01:**
+`no input image` → paste CHARACTER 01 prompt → model generates a character sheet → save generated result as `C01_PROTAGONIST.png`.
+
+**MEMORY WORLD 01 later:**
+attach `C01_PROTAGONIST.png` + the other listed Cxx character sheets → paste MEMORY WORLD 01 prompt → model generates the 3×3 memory-world image → save generated result as `MW01_LONDON_SOCIAL.png`.
+
+**STORYBOARD 01 later:**
+attach `W01_MAIN_WORLD.png` + `MW01_LONDON_SOCIAL.png` + listed Cxx character sheets → paste STORYBOARD 01 prompt → model generates the 3×3 storyboard → save generated result as `SB01_STORYBOARD.png`.
+
+**CINEMA BLOCK 01 finally:**
+attach the already-generated W01 + SB01 + MW01 + Cxx files → bind them as the listed `@references` → paste the Cinema Block 01 video prompt → Seedance generates the video block.
+
+### HOW TO READ EVERY LINE IN THE OPERATOR GUIDE
+
+`ATTACH: filename.png` = this file must already exist and is an **INPUT**.
+
+`GENERATED OUTPUT: filename.png` = this file does **not** exist yet; the current prompt will create an image/video, and you save that new result under this name.
+
+`→ @ALIAS` = only for Cinema Studio/Seedance video generation: after attaching the existing file, bind/mention that uploaded reference with the shown `@` token inside the video prompt.
 
 ### PHASE A — CHARACTER LIBRARY
 
@@ -83,39 +112,39 @@ Generate CHARACTER 01 through CHARACTER 31 first.
 - References to attach: **none**.
 - UI: normal image generation; use one generation per CHARACTER heading.
 - Copy: only the code block under that CHARACTER heading.
-- Save using the canonical names below.
+- **GENERATED OUTPUT:** after each prompt finishes, save/rename the NEWLY GENERATED character sheet using the canonical name below.
 
-- CHARACTER 01 → `C01_PROTAGONIST.png`
-- CHARACTER 02 → `C02_SOHO_WOMAN.png`
-- CHARACTER 03 → `C03_POLICEWOMAN.png`
-- CHARACTER 04 → `C04_APPOINTED_LAWYER.png`
-- CHARACTER 05 → `C05_FINAL_NURSE.png`
-- CHARACTER 06 → `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`
-- CHARACTER 07 → `C07_FX_MORTGAGE_HOUSEMATE.png`
-- CHARACTER 08 → `C08_FX_MORTGAGE_SPOUSE.png`
-- CHARACTER 09 → `C09_FX_MORTGAGE_CHILD.png`
-- CHARACTER 10 → `C10_BEGINNER_DANCE_WOMAN.png`
-- CHARACTER 11 → `C11_RUSSIAN_TRANSIT_PASSENGER.png`
-- CHARACTER 12 → `C12_AGRA_BUS_WOMAN.png`
-- CHARACTER 13 → `C13_SUDANESE_TRAVELER_MAN.png`
-- CHARACTER 14 → `C14_SUDANESE_TRAVELER_WOMAN.png`
-- CHARACTER 15 → `C15_CAIRO_TAXI_DRIVER.png`
-- CHARACTER 16 → `C16_BALLOON_LOCAL_HELPER_MAN.png`
-- CHARACTER 17 → `C17_BALLOON_LOCAL_HELPER_WOMAN.png`
-- CHARACTER 18 → `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`
-- CHARACTER 19 → `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`
-- CHARACTER 20 → `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`
-- CHARACTER 21 → `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`
-- CHARACTER 22 → `C22_ACCOUNTANT.png`
-- CHARACTER 23 → `C23_ADMIN_COLLEAGUE_A.png`
-- CHARACTER 24 → `C24_ADMIN_COLLEAGUE_B.png`
-- CHARACTER 25 → `C25_SEARCH_OFFICER_MALE.png`
-- CHARACTER 26 → `C26_DEFENCE_OFFICE_SUBSTITUTE.png`
-- CHARACTER 27 → `C27_JUDGE.png`
-- CHARACTER 28 → `C28_FORENSIC_EXPERT_A.png`
-- CHARACTER 29 → `C29_FORENSIC_EXPERT_B.png`
-- CHARACTER 30 → `C30_COURT_CLERK.png`
-- CHARACTER 31 → `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`
+- CHARACTER 01 prompt → generated result → `C01_PROTAGONIST.png`
+- CHARACTER 02 prompt → generated result → `C02_SOHO_WOMAN.png`
+- CHARACTER 03 prompt → generated result → `C03_POLICEWOMAN.png`
+- CHARACTER 04 prompt → generated result → `C04_APPOINTED_LAWYER.png`
+- CHARACTER 05 prompt → generated result → `C05_FINAL_NURSE.png`
+- CHARACTER 06 prompt → generated result → `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`
+- CHARACTER 07 prompt → generated result → `C07_FX_MORTGAGE_HOUSEMATE.png`
+- CHARACTER 08 prompt → generated result → `C08_FX_MORTGAGE_SPOUSE.png`
+- CHARACTER 09 prompt → generated result → `C09_FX_MORTGAGE_CHILD.png`
+- CHARACTER 10 prompt → generated result → `C10_BEGINNER_DANCE_WOMAN.png`
+- CHARACTER 11 prompt → generated result → `C11_RUSSIAN_TRANSIT_PASSENGER.png`
+- CHARACTER 12 prompt → generated result → `C12_AGRA_BUS_WOMAN.png`
+- CHARACTER 13 prompt → generated result → `C13_SUDANESE_TRAVELER_MAN.png`
+- CHARACTER 14 prompt → generated result → `C14_SUDANESE_TRAVELER_WOMAN.png`
+- CHARACTER 15 prompt → generated result → `C15_CAIRO_TAXI_DRIVER.png`
+- CHARACTER 16 prompt → generated result → `C16_BALLOON_LOCAL_HELPER_MAN.png`
+- CHARACTER 17 prompt → generated result → `C17_BALLOON_LOCAL_HELPER_WOMAN.png`
+- CHARACTER 18 prompt → generated result → `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`
+- CHARACTER 19 prompt → generated result → `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`
+- CHARACTER 20 prompt → generated result → `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`
+- CHARACTER 21 prompt → generated result → `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`
+- CHARACTER 22 prompt → generated result → `C22_ACCOUNTANT.png`
+- CHARACTER 23 prompt → generated result → `C23_ADMIN_COLLEAGUE_A.png`
+- CHARACTER 24 prompt → generated result → `C24_ADMIN_COLLEAGUE_B.png`
+- CHARACTER 25 prompt → generated result → `C25_SEARCH_OFFICER_MALE.png`
+- CHARACTER 26 prompt → generated result → `C26_DEFENCE_OFFICE_SUBSTITUTE.png`
+- CHARACTER 27 prompt → generated result → `C27_JUDGE.png`
+- CHARACTER 28 prompt → generated result → `C28_FORENSIC_EXPERT_A.png`
+- CHARACTER 29 prompt → generated result → `C29_FORENSIC_EXPERT_B.png`
+- CHARACTER 30 prompt → generated result → `C30_COURT_CLERK.png`
+- CHARACTER 31 prompt → generated result → `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`
 
 ### PHASE B — MEMORY WORLD LIBRARY
 
@@ -127,25 +156,25 @@ For every MEMORY WORLD / HIDDEN REALITY WORLD generation:
 - Copy only the code block under the matching MEMORY WORLD heading.
 
 **MEMORY WORLD 01 — attach:** C01_PROTAGONIST.png, C02_SOHO_WOMAN.png, C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png, C07_FX_MORTGAGE_HOUSEMATE.png, C08_FX_MORTGAGE_SPOUSE.png, C09_FX_MORTGAGE_CHILD.png, C10_BEGINNER_DANCE_WOMAN.png  
-Save as `MW01_LONDON_SOCIAL.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW01_LONDON_SOCIAL.png`.
 
 **MEMORY WORLD 02 — attach:** C01_PROTAGONIST.png, C11_RUSSIAN_TRANSIT_PASSENGER.png, C12_AGRA_BUS_WOMAN.png, C13_SUDANESE_TRAVELER_MAN.png, C14_SUDANESE_TRAVELER_WOMAN.png, C15_CAIRO_TAXI_DRIVER.png, C16_BALLOON_LOCAL_HELPER_MAN.png, C17_BALLOON_LOCAL_HELPER_WOMAN.png, C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png, C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png, C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png, C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png  
-Save as `MW02_GLOBAL_ROUTES.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW02_GLOBAL_ROUTES.png`.
 
 **MEMORY WORLD 03 — attach:** C01_PROTAGONIST.png, C22_ACCOUNTANT.png, C23_ADMIN_COLLEAGUE_A.png, C24_ADMIN_COLLEAGUE_B.png  
-Save as `MW03_WORK_KATA_ADMIN.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW03_WORK_KATA_ADMIN.png`.
 
 **MEMORY WORLD 04 — attach:** C01_PROTAGONIST.png, C03_POLICEWOMAN.png, C04_APPOINTED_LAWYER.png, C25_SEARCH_OFFICER_MALE.png, C26_DEFENCE_OFFICE_SUBSTITUTE.png  
-Save as `MW04_POLICE_DEFENCE.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW04_POLICE_DEFENCE.png`.
 
 **MEMORY WORLD 05 — attach:** C01_PROTAGONIST.png, C04_APPOINTED_LAWYER.png, C27_JUDGE.png, C28_FORENSIC_EXPERT_A.png, C29_FORENSIC_EXPERT_B.png, C30_COURT_CLERK.png, C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png  
-Save as `MW05_COURT_FILE.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW05_COURT_FILE.png`.
 
 **MEMORY WORLD 06 — attach:** C01_PROTAGONIST.png, C02_SOHO_WOMAN.png, C03_POLICEWOMAN.png, C04_APPOINTED_LAWYER.png, C10_BEGINNER_DANCE_WOMAN.png, C11_RUSSIAN_TRANSIT_PASSENGER.png, C16_BALLOON_LOCAL_HELPER_MAN.png, C17_BALLOON_LOCAL_HELPER_WOMAN.png, C27_JUDGE.png, C28_FORENSIC_EXPERT_A.png, C29_FORENSIC_EXPERT_B.png  
-Save as `MW06_HUMAN_COUNTERMEMORIES.png`.
+**GENERATED OUTPUT:** save/rename the result as `MW06_HUMAN_COUNTERMEMORIES.png`.
 
 **HIDDEN REALITY WORLD 07 — attach:** C01_PROTAGONIST.png, C05_FINAL_NURSE.png  
-Save as `HRW07_CLINICAL_REALITY.png`. **Never attach this asset before STORYBOARD / VIDEO block 07.**
+**GENERATED OUTPUT:** save/rename the result as `HRW07_CLINICAL_REALITY.png`. **Never attach this asset before STORYBOARD / VIDEO block 07.**
 
 Canonical MEMORY filenames:
 
@@ -164,15 +193,15 @@ Generate WORLD 01 through WORLD 07 after the MEMORY WORLD library exists, but **
 - Set **Image → Aspect ratio → 16:9**.
 - References to attach: **none by default**.
 - Copy only the code block under the matching WORLD heading.
-- Save as:
+- **GENERATED OUTPUT:** save/rename each NEWLY GENERATED world sheet as:
 
-- WORLD 01 → `W01_MAIN_WORLD.png`
-- WORLD 02 → `W02_MAIN_WORLD.png`
-- WORLD 03 → `W03_MAIN_WORLD.png`
-- WORLD 04 → `W04_MAIN_WORLD.png`
-- WORLD 05 → `W05_MAIN_WORLD.png`
-- WORLD 06 → `W06_MAIN_WORLD.png`
-- WORLD 07 → `W07_MAIN_WORLD.png`
+- WORLD 01 prompt → generated result → `W01_MAIN_WORLD.png`
+- WORLD 02 prompt → generated result → `W02_MAIN_WORLD.png`
+- WORLD 03 prompt → generated result → `W03_MAIN_WORLD.png`
+- WORLD 04 prompt → generated result → `W04_MAIN_WORLD.png`
+- WORLD 05 prompt → generated result → `W05_MAIN_WORLD.png`
+- WORLD 06 prompt → generated result → `W06_MAIN_WORLD.png`
+- WORLD 07 prompt → generated result → `W07_MAIN_WORLD.png`
 
 ### PHASE D — MAP LIBRARY
 
@@ -180,15 +209,15 @@ Generate each MAP separately. A MAP is a planning asset, never part of a WORLD p
 
 - References to attach: none.
 - Copy only the code block under the matching MAP heading.
-- Save as:
+- **GENERATED OUTPUT:** save/rename each NEWLY GENERATED map as:
 
-- MAP 01 → `MAP01_WALK_PLAN.png`
-- MAP 02 → `MAP02_WALK_PLAN.png`
-- MAP 03 → `MAP03_WALK_PLAN.png`
-- MAP 04 → `MAP04_WALK_PLAN.png`
-- MAP 05 → `MAP05_WALK_PLAN.png`
-- MAP 06 → `MAP06_WALK_PLAN.png`
-- MAP 07 → `MAP07_WALK_PLAN.png`
+- MAP 01 prompt → generated result → `MAP01_WALK_PLAN.png`
+- MAP 02 prompt → generated result → `MAP02_WALK_PLAN.png`
+- MAP 03 prompt → generated result → `MAP03_WALK_PLAN.png`
+- MAP 04 prompt → generated result → `MAP04_WALK_PLAN.png`
+- MAP 05 prompt → generated result → `MAP05_WALK_PLAN.png`
+- MAP 06 prompt → generated result → `MAP06_WALK_PLAN.png`
+- MAP 07 prompt → generated result → `MAP07_WALK_PLAN.png`
 
 ### PHASE E — STORYBOARD LIBRARY
 
@@ -201,19 +230,19 @@ For every STORYBOARD generation:
 - MAP is optional and normally **not attached** unless you are troubleshooting route continuity.
 - Copy only the code block under the matching STORYBOARD heading.
 
-**STORYBOARD 01 — attach:** `W01_MAIN_WORLD.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C07_FX_MORTGAGE_HOUSEMATE.png`, `C08_FX_MORTGAGE_SPOUSE.png`, `C09_FX_MORTGAGE_CHILD.png`. Save as `SB01_STORYBOARD.png`.
+**STORYBOARD 01 — attach:** `W01_MAIN_WORLD.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png`, `C07_FX_MORTGAGE_HOUSEMATE.png`, `C08_FX_MORTGAGE_SPOUSE.png`, `C09_FX_MORTGAGE_CHILD.png`. **GENERATED OUTPUT:** save/rename the result as `SB01_STORYBOARD.png`.
 
-**STORYBOARD 02 — attach:** `W02_MAIN_WORLD.png`, `MW02_GLOBAL_ROUTES.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C12_AGRA_BUS_WOMAN.png`, `C13_SUDANESE_TRAVELER_MAN.png`, `C14_SUDANESE_TRAVELER_WOMAN.png`, `C15_CAIRO_TAXI_DRIVER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`, `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`, `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`, `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`. Save as `SB02_STORYBOARD.png`.
+**STORYBOARD 02 — attach:** `W02_MAIN_WORLD.png`, `MW02_GLOBAL_ROUTES.png`, `MW01_LONDON_SOCIAL.png`, `C01_PROTAGONIST.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C12_AGRA_BUS_WOMAN.png`, `C13_SUDANESE_TRAVELER_MAN.png`, `C14_SUDANESE_TRAVELER_WOMAN.png`, `C15_CAIRO_TAXI_DRIVER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png`, `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`, `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`, `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`. **GENERATED OUTPUT:** save/rename the result as `SB02_STORYBOARD.png`.
 
-**STORYBOARD 03 — attach:** `W03_MAIN_WORLD.png`, `MW03_WORK_KATA_ADMIN.png`, `C01_PROTAGONIST.png`, `C22_ACCOUNTANT.png`, `C23_ADMIN_COLLEAGUE_A.png`, `C24_ADMIN_COLLEAGUE_B.png`. Save as `SB03_STORYBOARD.png`.
+**STORYBOARD 03 — attach:** `W03_MAIN_WORLD.png`, `MW03_WORK_KATA_ADMIN.png`, `C01_PROTAGONIST.png`, `C22_ACCOUNTANT.png`, `C23_ADMIN_COLLEAGUE_A.png`, `C24_ADMIN_COLLEAGUE_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB03_STORYBOARD.png`.
 
-**STORYBOARD 04 — attach:** `W04_MAIN_WORLD.png`, `MW04_POLICE_DEFENCE.png`, `C01_PROTAGONIST.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C25_SEARCH_OFFICER_MALE.png`, `C26_DEFENCE_OFFICE_SUBSTITUTE.png`. Save as `SB04_STORYBOARD.png`.
+**STORYBOARD 04 — attach:** `W04_MAIN_WORLD.png`, `MW04_POLICE_DEFENCE.png`, `C01_PROTAGONIST.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C25_SEARCH_OFFICER_MALE.png`, `C26_DEFENCE_OFFICE_SUBSTITUTE.png`. **GENERATED OUTPUT:** save/rename the result as `SB04_STORYBOARD.png`.
 
-**STORYBOARD 05 — attach:** `W05_MAIN_WORLD.png`, `MW05_COURT_FILE.png`, `C01_PROTAGONIST.png`, `C04_APPOINTED_LAWYER.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`, `C30_COURT_CLERK.png`, `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`. Save as `SB05_STORYBOARD.png`.
+**STORYBOARD 05 — attach:** `W05_MAIN_WORLD.png`, `MW05_COURT_FILE.png`, `C01_PROTAGONIST.png`, `C04_APPOINTED_LAWYER.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`, `C30_COURT_CLERK.png`, `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`. **GENERATED OUTPUT:** save/rename the result as `SB05_STORYBOARD.png`.
 
-**STORYBOARD 06 — attach:** `W06_MAIN_WORLD.png`, `MW06_HUMAN_COUNTERMEMORIES.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`. Save as `SB06_STORYBOARD.png`.
+**STORYBOARD 06 — attach:** `W06_MAIN_WORLD.png`, `MW06_HUMAN_COUNTERMEMORIES.png`, `C01_PROTAGONIST.png`, `C02_SOHO_WOMAN.png`, `C03_POLICEWOMAN.png`, `C04_APPOINTED_LAWYER.png`, `C10_BEGINNER_DANCE_WOMAN.png`, `C11_RUSSIAN_TRANSIT_PASSENGER.png`, `C16_BALLOON_LOCAL_HELPER_MAN.png`, `C17_BALLOON_LOCAL_HELPER_WOMAN.png`, `C27_JUDGE.png`, `C28_FORENSIC_EXPERT_A.png`, `C29_FORENSIC_EXPERT_B.png`. **GENERATED OUTPUT:** save/rename the result as `SB06_STORYBOARD.png`.
 
-**STORYBOARD 07 — attach:** `W07_MAIN_WORLD.png`, `HRW07_CLINICAL_REALITY.png`, `C01_PROTAGONIST.png`, `C05_FINAL_NURSE.png`. Save as `SB07_STORYBOARD.png`.
+**STORYBOARD 07 — attach:** `W07_MAIN_WORLD.png`, `HRW07_CLINICAL_REALITY.png`, `C01_PROTAGONIST.png`, `C05_FINAL_NURSE.png`. **GENERATED OUTPUT:** save/rename the result as `SB07_STORYBOARD.png`.
 
 Canonical STORYBOARD filenames:
 
@@ -225,7 +254,48 @@ Canonical STORYBOARD filenames:
 - STORYBOARD 06 → `SB06_STORYBOARD.png`
 - STORYBOARD 07 → `SB07_STORYBOARD.png`
 
-### PHASE F — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO GENERATION
+### PHASE F — AUDIO WORKFLOW — SEEDANCE 2.5 NATIVE AUDIO / NO SEPARATE AUDIO EDIT
+
+This is the **PRIMARY workflow for this pack** because the film must be usable without DaVinci/Premiere/manual sound editing.
+
+**YOU DO NOT GENERATE A SEPARATE NARRATION FILE OR SFX FILE IN THE NORMAL WORKFLOW.**
+Do not create `A01_AUDIO_MASTER.wav` etc. for the primary workflow.
+Seedance 2.5 generates the video, narration, ambience, foley/SFX and restrained score together in the same generation pass.
+
+For each CINEMA BLOCK, the copyable Seedance prompt already contains a complete **AUDIO — NATIVE SEEDANCE 2.5** section with:
+- the exact English off-screen narration script;
+- narrator voice character/delivery;
+- approximate narration start/end timing;
+- environmental ambience;
+- timed foley/SFX cues;
+- music/score rules;
+- explicit forbidden audio.
+
+**NARRATOR CONTINUITY — DO THIS IN EVERY BLOCK:**
+1. Attach `C01_PROTAGONIST.png` in every CINEMA BLOCK and bind it to `@C01_PROTAGONIST`.
+2. The prompt tells Seedance to use the protagonist's voice identity as the **OFF-SCREEN narrator** while the visible protagonist does NOT move his mouth.
+3. Keep exactly the same `@C01_PROTAGONIST` reference for all seven blocks.
+4. Keep the repeated voice direction unchanged: adult male around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate, natural English, at most a very light Hungarian/Central-European accent.
+5. No other character speaks intelligible dialogue. This avoids lip-sync dependence and reduces voice drift.
+
+**WHAT YOU ACTUALLY DO FOR AUDIO:**
+- Do nothing in a separate audio tool.
+- Go directly to the matching CINEMA BLOCK.
+- Attach the listed image references.
+- Paste that CINEMA BLOCK's single Seedance 2.5 code block.
+- Seedance generates the **finished clip with its audio already embedded**.
+- Listen to the result. If the narration wording/voice or SFX is wrong, regenerate or region/audio-fix inside Higgsfield if available; do not manually edit an external soundtrack.
+
+**AUDIO PRIORITY INSIDE EACH GENERATED CLIP:**
+1. Narration intelligibility.
+2. Real city/room ambience.
+3. Specific synchronized foley/SFX.
+4. Very restrained non-lyrical score only where specified.
+The score must duck beneath narration and must never become trailer music.
+
+**IMPORTANT:** narration is OFF-SCREEN first-person voice-over. Nobody visible should lip-sync to it. Memory characters may breathe, laugh softly or make non-verbal sounds, but they must not introduce intelligible dialogue unless a later prompt explicitly asks for it.
+
+### PHASE G — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO GENERATION
 
 This phase uses the finished reference assets to create VIDEO. The intended Cinema Studio model for this pack is **Seedance 2.5**.
 
@@ -235,21 +305,36 @@ For each film block, do exactly this:
 
 1. Open Higgsfield Cinema Studio and select **Seedance 2.5**.
 2. Set the output to **16:9 landscape**.
-3. Attach exactly the files listed under that CINEMA BLOCK.
-4. Paste **only the fenced `text` code block** under `PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD`.
-5. Generate only that block. Do not paste any earlier prompt from the file.
+3. Attach exactly the IMAGE files listed under that CINEMA BLOCK. There is no required external audio file in the primary workflow.
+4. Bind/verify the `@` reference tokens shown for those image references.
+5. Paste **only the fenced `text` code block** under `PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD`.
+6. Generate only that block. Seedance 2.5 generates the narration + ambience + foley/SFX + restrained score natively together with the picture.
+7. Save the resulting clip with its embedded audio. Do not paste any earlier prompt from the file.
 
-Reference roles are fixed: **MAIN WORLD = physical present**, **MEMORY WORLD = literal remembered content**, **CHARACTER = identity**, **STORYBOARD = ordered time**. The 3×3 reference sheets are control assets only and must never appear as grids inside the finished video.
+Reference roles are fixed: **MAIN WORLD = physical present**, **MEMORY WORLD = literal remembered content**, **CHARACTER = identity + protagonist narrator voice anchor**, **STORYBOARD = ordered time**, **AUDIO section inside the CINEMA prompt = exact narration/SFX/ambience direction**. The 3×3 reference sheets are control assets only and must never appear as grids inside the finished video.
 
 Blocks 01–06 target approximately **30 seconds each**. Block 07 targets approximately **20 seconds**. If the Cinema Studio duration control does not allow the whole block in one generation, keep the same attachment bundle and use the short-clip split rule at the end of the video copy pack.
 
----
+
+================================================================================
+# END OF READ-ONLY OPERATOR DOCUMENTATION — DO NOT COPY ABOVE THIS LINE
+================================================================================
+
+# ⬇⬇⬇ COPYABLE PROMPTS START BELOW THIS LINE ⬇⬇⬇
+
+**COPY RULE:** inside each asset section, copy ONLY the fenced `text` code block. Everything outside the fence remains operator guidance.
+
+================================================================================
 
 ## BEGIN COPYABLE ASSET PROMPTS
 
-**FROM THIS POINT ON:** for each asset, use the operator guide to attach the listed references, then copy **only** the fenced `text` code block under that asset heading. Do not copy headings or explanatory prose.
+================================================================================
+# OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
+================================================================================
 
 ## CHARACTER REFERENCE LIBRARY — GENERATE BEFORE MEMORY WORLDS
+
+> **WHAT HAPPENS HERE:** each CHARACTER code block GENERATES a new character-sheet image. After generation, save that result under the canonical Cxx filename from the Operator Guide. The Cxx filename is an OUTPUT name here, not an input.
 
 These character sheets are generated FIRST and reused inside the MEMORY WORLD sheets, STORYBOARDS and final video generations. The large Seedance reference budget is not treated as a reason to collapse distinct people into anonymous replacements. If a person has a specific role in a planned memory, keep a dedicated identity reference.
 
@@ -1808,6 +1893,10 @@ No title or outer frame.
 
 > **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
+================================================================================
+# OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
+================================================================================
+
 ## MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING
 
 ```text
@@ -2357,6 +2446,10 @@ This reference is forbidden before STORYBOARD 07.
 
 
 ---
+
+================================================================================
+# OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
+================================================================================
 
 ## WORLD 01 — 00:00–00:30 — THE CITY JUDGES FIRST — SOHO / PICCADILLY / LEICESTER
 
@@ -3456,6 +3549,10 @@ No legend, captions, camera graphics or Google-Maps-style detail.
 
 > **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
+================================================================================
+# OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
+================================================================================
+
 ## STORYBOARD 01 — 00:00–00:30 — THE CITY JUDGES FIRST
 
 ```text
@@ -4191,6 +4288,9 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 ```
 
 
+================================================================================
+
+================================================================================
 ## HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK
 
 This is the **actual video-generation section**. Everything before this section creates or organizes reference images.
@@ -4206,11 +4306,26 @@ This is the **actual video-generation section**. Everything before this section 
 
 The prompts below are deliberately self-contained so each Cinema block can be copied independently.
 
+### @ REFERENCE TOKEN RULE — IMPORTANT
+
+Cinema Studio / Seedance should receive the uploaded reference images as **@ references inside the prompt**. For each block below, the pack gives a preferred `@ALIAS` for every attached file.
+
+- Attach the file first.
+- If Cinema Studio lets you select/insert that asset with the preferred alias, use that alias.
+- If Cinema Studio displays a different automatic `@token`, replace the preferred alias in the prompt with the actual token shown by the UI before generation.
+- The bare filename is operator information only; the COPYABLE video prompt uses `@references`.
+- Do not attach all 50 assets indiscriminately. Attach only the assets listed for that block, even if more reference slots are available.
+
+================================================================================
+# CINEMA OPERATOR INFO ABOVE / COPYABLE VIDEO PROMPTS ARE INSIDE CODE BLOCKS BELOW
+================================================================================
+
 
 ### CINEMA BLOCK 01 — 00:00–00:30 — THE CITY JUDGES FIRST
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V01_CITY_JUDGES_FIRST.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4225,10 +4340,31 @@ The prompts below are deliberately self-contained so each Cinema block can be co
 - `C08_FX_MORTGAGE_SPOUSE.png`
 - `C09_FX_MORTGAGE_CHILD.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W01_MAIN_WORLD.png` → `@W01_MAIN_WORLD`
+- `SB01_STORYBOARD.png` → `@SB01_STORYBOARD`
+- `MW01_LONDON_SOCIAL.png` → `@MW01_LONDON_SOCIAL`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C02_SOHO_WOMAN.png` → `@C02_SOHO_WOMAN`
+- `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` → `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE`
+- `C07_FX_MORTGAGE_HOUSEMATE.png` → `@C07_FX_MORTGAGE_HOUSEMATE`
+- `C08_FX_MORTGAGE_SPOUSE.png` → `@C08_FX_MORTGAGE_SPOUSE`
+- `C09_FX_MORTGAGE_CHILD.png` → `@C09_FX_MORTGAGE_CHILD`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4238,10 +4374,52 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W01_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB01_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW01_LONDON_SOCIAL.png = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W01_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB01_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW01_LONDON_SOCIAL = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C02_SOHO_WOMAN = exact identity anchor for the soho woman; preserve face, age, body proportions and role.
+- @C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact identity anchor for the shared house substitute snoring housemate; preserve face, age, body proportions and role.
+- @C07_FX_MORTGAGE_HOUSEMATE = exact identity anchor for the fx mortgage housemate; preserve face, age, body proportions and role.
+- @C08_FX_MORTGAGE_SPOUSE = exact identity anchor for the fx mortgage spouse; preserve face, age, body proportions and role.
+- @C09_FX_MORTGAGE_CHILD = exact identity anchor for the fx mortgage child; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"I don't remember my life as a straight line. A street becomes a room, a window becomes another country, a glance becomes a verdict before anyone has time to speak. Memory edits without asking permission. Sometimes the only thing that survives the cut is a smile."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: rainy Soho / West End city bed, wet tyre hiss, distant red-bus brakes, soft tram rail noise, footsteps on wet stone.
+5–10s: Piccadilly opens wider; crowd wash, one restrained tram bell, traffic moves past without a dramatic hit.
+10–15s: taxi-window memory zone; very soft restaurant cutlery/glass clink and indoor room tone heard as if behind wet glass, while current rain remains audible.
+15–20s: café/lunch ambience briefly joins the city bed, muffled and memory-like, never louder than narration.
+20–25s: tram movement, rail squeal kept soft, a short enclosed shared-house room tone, no intelligible speech.
+25–30s: return to clean wet-city ambience, bus/tram/taxi movement and footsteps continuing forward.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4249,7 +4427,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4305,6 +4483,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V02_GLOBAL_ROUTE.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4327,10 +4506,39 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`
 - `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W02_MAIN_WORLD.png` → `@W02_MAIN_WORLD`
+- `SB02_STORYBOARD.png` → `@SB02_STORYBOARD`
+- `MW02_GLOBAL_ROUTES.png` → `@MW02_GLOBAL_ROUTES`
+- `MW01_LONDON_SOCIAL.png` → `@MW01_LONDON_SOCIAL`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C10_BEGINNER_DANCE_WOMAN.png` → `@C10_BEGINNER_DANCE_WOMAN`
+- `C11_RUSSIAN_TRANSIT_PASSENGER.png` → `@C11_RUSSIAN_TRANSIT_PASSENGER`
+- `C12_AGRA_BUS_WOMAN.png` → `@C12_AGRA_BUS_WOMAN`
+- `C13_SUDANESE_TRAVELER_MAN.png` → `@C13_SUDANESE_TRAVELER_MAN`
+- `C14_SUDANESE_TRAVELER_WOMAN.png` → `@C14_SUDANESE_TRAVELER_WOMAN`
+- `C15_CAIRO_TAXI_DRIVER.png` → `@C15_CAIRO_TAXI_DRIVER`
+- `C16_BALLOON_LOCAL_HELPER_MAN.png` → `@C16_BALLOON_LOCAL_HELPER_MAN`
+- `C17_BALLOON_LOCAL_HELPER_WOMAN.png` → `@C17_BALLOON_LOCAL_HELPER_WOMAN`
+- `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png` → `@C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION`
+- `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` → `@C19_BARMOUTH_ROAD_TRIP_COMPANION_A`
+- `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` → `@C20_BARMOUTH_ROAD_TRIP_COMPANION_B`
+- `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` → `@C21_BARMOUTH_ROAD_TRIP_COMPANION_C`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4340,11 +4548,61 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W02_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB02_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW02_GLOBAL_ROUTES.png = global route / Russia / India / Cairo / balloon / travel memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- MW01_LONDON_SOCIAL.png = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W02_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB02_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW02_GLOBAL_ROUTES = global route / Russia / India / Cairo / balloon / travel memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @MW01_LONDON_SOCIAL = London / social / home / dating memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C10_BEGINNER_DANCE_WOMAN = exact identity anchor for the beginner dance woman; preserve face, age, body proportions and role.
+- @C11_RUSSIAN_TRANSIT_PASSENGER = exact identity anchor for the russian transit passenger; preserve face, age, body proportions and role.
+- @C12_AGRA_BUS_WOMAN = exact identity anchor for the agra bus woman; preserve face, age, body proportions and role.
+- @C13_SUDANESE_TRAVELER_MAN = exact identity anchor for the sudanese traveler man; preserve face, age, body proportions and role.
+- @C14_SUDANESE_TRAVELER_WOMAN = exact identity anchor for the sudanese traveler woman; preserve face, age, body proportions and role.
+- @C15_CAIRO_TAXI_DRIVER = exact identity anchor for the cairo taxi driver; preserve face, age, body proportions and role.
+- @C16_BALLOON_LOCAL_HELPER_MAN = exact identity anchor for the balloon local helper man; preserve face, age, body proportions and role.
+- @C17_BALLOON_LOCAL_HELPER_WOMAN = exact identity anchor for the balloon local helper woman; preserve face, age, body proportions and role.
+- @C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION = exact identity anchor for the barmouth road trip driver companion; preserve face, age, body proportions and role.
+- @C19_BARMOUTH_ROAD_TRIP_COMPANION_A = exact identity anchor for the barmouth road trip companion a; preserve face, age, body proportions and role.
+- @C20_BARMOUTH_ROAD_TRIP_COMPANION_B = exact identity anchor for the barmouth road trip companion b; preserve face, age, body proportions and role.
+- @C21_BARMOUTH_ROAD_TRIP_COMPANION_C = exact identity anchor for the barmouth road trip companion c; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"I remember routes before dates: a card at a gate, a voice behind a bus seat, a taxi shared with strangers, luggage falling, hands lifting a balloon basket from a field. Global route. Local encounter. The world was large; the moments that stayed were human."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: continue the same rainy London–Budapest city bed; station exterior rumble and footsteps.
+5–9s: one realistic transit-gate confirmation beep and gate mechanism, brief indoor station resonance under the outdoor city layer.
+9–13s: bus/coach interior rumble and seat/fabric movement, no intelligible passenger dialogue.
+13–18s: Cairo taxi engine, road texture and restrained distant horn; human presence without spoken lines.
+18–21s: one luggage impact / slide, practical and not comedic.
+21–25s: balloon fabric, rope tension, soil/vegetation movement and several people exerting effort; no shouted words.
+25–30s: open coastal wind and soft waves from the Barmouth memory dissolve back into rain and city movement.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4352,7 +4610,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4408,6 +4666,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V03_WORK_SYSTEM.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4420,10 +4679,29 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C23_ADMIN_COLLEAGUE_A.png`
 - `C24_ADMIN_COLLEAGUE_B.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W03_MAIN_WORLD.png` → `@W03_MAIN_WORLD`
+- `SB03_STORYBOARD.png` → `@SB03_STORYBOARD`
+- `MW03_WORK_KATA_ADMIN.png` → `@MW03_WORK_KATA_ADMIN`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C22_ACCOUNTANT.png` → `@C22_ACCOUNTANT`
+- `C23_ADMIN_COLLEAGUE_A.png` → `@C23_ADMIN_COLLEAGUE_A`
+- `C24_ADMIN_COLLEAGUE_B.png` → `@C24_ADMIN_COLLEAGUE_B`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4433,10 +4711,50 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W03_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB03_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW03_WORK_KATA_ADMIN.png = work / accounting / KATA / administrative-system memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W03_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB03_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW03_WORK_KATA_ADMIN = work / accounting / KATA / administrative-system memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C22_ACCOUNTANT = exact identity anchor for the accountant; preserve face, age, body proportions and role.
+- @C23_ADMIN_COLLEAGUE_A = exact identity anchor for the admin colleague a; preserve face, age, body proportions and role.
+- @C24_ADMIN_COLLEAGUE_B = exact identity anchor for the admin colleague b; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"Work should have been simpler than travel. Three people, one problem, three screens. A form changed, a rule moved, a deadline arrived. Nobody had to be cruel. The gap between ordinary actions was enough. I kept trying to repair the record while the work kept moving."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: wet professional-city ambience, rain on glass, distant tram and traffic.
+5–10s: keyboard taps and ordinary office ventilation appear softly behind the city, as if memories are inside windows.
+10–15s: printer feed, paper handling, one subdued phone vibration / notification tone.
+15–20s: three slightly separated workstations implied by alternating keyboard/paper sounds; never turn this into a sci-fi computer soundscape.
+20–25s: phone call connection tone, page turn, restrained desk movement; no intelligible second speaker.
+25–30s: corrected form/paper movement and one quiet confirmation tone, while the rain/city bed continues underneath.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4444,7 +4762,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4500,6 +4818,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V04_POLICE_DEFENCE.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4513,10 +4832,30 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C25_SEARCH_OFFICER_MALE.png`
 - `C26_DEFENCE_OFFICE_SUBSTITUTE.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W04_MAIN_WORLD.png` → `@W04_MAIN_WORLD`
+- `SB04_STORYBOARD.png` → `@SB04_STORYBOARD`
+- `MW04_POLICE_DEFENCE.png` → `@MW04_POLICE_DEFENCE`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C03_POLICEWOMAN.png` → `@C03_POLICEWOMAN`
+- `C04_APPOINTED_LAWYER.png` → `@C04_APPOINTED_LAWYER`
+- `C25_SEARCH_OFFICER_MALE.png` → `@C25_SEARCH_OFFICER_MALE`
+- `C26_DEFENCE_OFFICE_SUBSTITUTE.png` → `@C26_DEFENCE_OFFICE_SUBSTITUTE`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4526,10 +4865,52 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W04_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB04_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW04_POLICE_DEFENCE.png = police / apartment-search / fingerprint / defence memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W04_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB04_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW04_POLICE_DEFENCE = police / apartment-search / fingerprint / defence memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C03_POLICEWOMAN = exact identity anchor for the policewoman; preserve face, age, body proportions and role.
+- @C04_APPOINTED_LAWYER = exact identity anchor for the appointed lawyer; preserve face, age, body proportions and role.
+- @C25_SEARCH_OFFICER_MALE = exact identity anchor for the search officer male; preserve face, age, body proportions and role.
+- @C26_DEFENCE_OFFICE_SUBSTITUTE = exact identity anchor for the defence office substitute; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"Then the system entered the story without ever becoming one person. A voice at the door. A search. A question. A lawyer I could not quite reach. An officer who almost laughed. The strange part was not that people stopped being human. The process could forget that they were."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: formal rainy city street, close footsteps, distant traffic; tension remains grounded.
+5–9s: ordinary residential buzzer / door mechanism and approaching footsteps, no spoken 'postman' line in the audio.
+9–14s: apartment room tone, drawers/objects handled carefully, paper and fabric movement; no raid spectacle, no sirens.
+14–17s: one sudden shoe contact / misstep followed by a restrained involuntary breath of pain, no gore and no dramatic impact effect.
+17–22s: fingerprint/processing room tone, small scanner/desk sounds, paper handling.
+22–26s: telephone connection / corridor ambience suggesting defence handoff, no intelligible dialogue.
+26–30s: one tiny suppressed human chuckle or breath-smile, then return to rain and forward footsteps. No comedy sting.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4537,7 +4918,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4593,6 +4974,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V05_COURT_FILE.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4608,10 +4990,32 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C30_COURT_CLERK.png`
 - `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W05_MAIN_WORLD.png` → `@W05_MAIN_WORLD`
+- `SB05_STORYBOARD.png` → `@SB05_STORYBOARD`
+- `MW05_COURT_FILE.png` → `@MW05_COURT_FILE`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C04_APPOINTED_LAWYER.png` → `@C04_APPOINTED_LAWYER`
+- `C27_JUDGE.png` → `@C27_JUDGE`
+- `C28_FORENSIC_EXPERT_A.png` → `@C28_FORENSIC_EXPERT_A`
+- `C29_FORENSIC_EXPERT_B.png` → `@C29_FORENSIC_EXPERT_B`
+- `C30_COURT_CLERK.png` → `@C30_COURT_CLERK`
+- `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` → `@C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4621,10 +5025,53 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W05_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB05_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW05_COURT_FILE.png = court / file / assets / forensic / black-humour memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W05_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB05_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW05_COURT_FILE = court / file / assets / forensic / black-humour memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C04_APPOINTED_LAWYER = exact identity anchor for the appointed lawyer; preserve face, age, body proportions and role.
+- @C27_JUDGE = exact identity anchor for the judge; preserve face, age, body proportions and role.
+- @C28_FORENSIC_EXPERT_A = exact identity anchor for the forensic expert a; preserve face, age, body proportions and role.
+- @C29_FORENSIC_EXPERT_B = exact identity anchor for the forensic expert b; preserve face, age, body proportions and role.
+- @C30_COURT_CLERK = exact identity anchor for the court clerk; preserve face, age, body proportions and role.
+- @C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE = exact identity anchor for the anonymous fictional political figure; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home, what you gave up, or what you were trying to repair. The more the record grew, the less room it seemed to leave for the life that made it."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: rainy river/civic-city ambience, footsteps and distant traffic.
+5–10s: quiet courtroom/administrative room tone enters through glass, paper set on a desk, chair movement, no intelligible judicial dialogue.
+10–15s: folder opening, photograph/paper handling, pen/signature scratch, one soft stamp or file closure.
+15–20s: evidence/property bag or box movement, phone/laptop object handling, still ordinary and non-thriller.
+20–25s: forensic-room ventilation, two chairs shifting at different moments, page turn, restrained clock tick.
+25–30s: posted letter/envelope, folder close, distant phone ring unanswered, then the exterior rain becomes dominant again.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4632,7 +5079,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4688,6 +5135,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+**GENERATED OUTPUT:** save the generated clip as `V06_HUMANITY_OVERLOAD.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4707,10 +5155,36 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C28_FORENSIC_EXPERT_A.png`
 - `C29_FORENSIC_EXPERT_B.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W06_MAIN_WORLD.png` → `@W06_MAIN_WORLD`
+- `SB06_STORYBOARD.png` → `@SB06_STORYBOARD`
+- `MW06_HUMAN_COUNTERMEMORIES.png` → `@MW06_HUMAN_COUNTERMEMORIES`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C02_SOHO_WOMAN.png` → `@C02_SOHO_WOMAN`
+- `C03_POLICEWOMAN.png` → `@C03_POLICEWOMAN`
+- `C04_APPOINTED_LAWYER.png` → `@C04_APPOINTED_LAWYER`
+- `C10_BEGINNER_DANCE_WOMAN.png` → `@C10_BEGINNER_DANCE_WOMAN`
+- `C11_RUSSIAN_TRANSIT_PASSENGER.png` → `@C11_RUSSIAN_TRANSIT_PASSENGER`
+- `C16_BALLOON_LOCAL_HELPER_MAN.png` → `@C16_BALLOON_LOCAL_HELPER_MAN`
+- `C17_BALLOON_LOCAL_HELPER_WOMAN.png` → `@C17_BALLOON_LOCAL_HELPER_WOMAN`
+- `C27_JUDGE.png` → `@C27_JUDGE`
+- `C28_FORENSIC_EXPERT_A.png` → `@C28_FORENSIC_EXPERT_A`
+- `C29_FORENSIC_EXPERT_B.png` → `@C29_FORENSIC_EXPERT_B`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4720,10 +5194,57 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W06_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB06_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- MW06_HUMAN_COUNTERMEMORIES.png = late-film recurring human counter-memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W06_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB06_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @MW06_HUMAN_COUNTERMEMORIES = late-film recurring human counter-memory source bank. Use only the relevant remembered scene; never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C02_SOHO_WOMAN = exact identity anchor for the soho woman; preserve face, age, body proportions and role.
+- @C03_POLICEWOMAN = exact identity anchor for the policewoman; preserve face, age, body proportions and role.
+- @C04_APPOINTED_LAWYER = exact identity anchor for the appointed lawyer; preserve face, age, body proportions and role.
+- @C10_BEGINNER_DANCE_WOMAN = exact identity anchor for the beginner dance woman; preserve face, age, body proportions and role.
+- @C11_RUSSIAN_TRANSIT_PASSENGER = exact identity anchor for the russian transit passenger; preserve face, age, body proportions and role.
+- @C16_BALLOON_LOCAL_HELPER_MAN = exact identity anchor for the balloon local helper man; preserve face, age, body proportions and role.
+- @C17_BALLOON_LOCAL_HELPER_WOMAN = exact identity anchor for the balloon local helper woman; preserve face, age, body proportions and role.
+- @C27_JUDGE = exact identity anchor for the judge; preserve face, age, body proportions and role.
+- @C28_FORENSIC_EXPERT_A = exact identity anchor for the forensic expert a; preserve face, age, body proportions and role.
+- @C29_FORENSIC_EXPERT_B = exact identity anchor for the forensic expert b; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not. A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed."
+
+NARRATION TIMING
+Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: denser South Bank city bed, rain, crowd, bus brakes, tram rail, taxi tyre hiss.
+5–10s: brief transit-gate beep, then a soft human breath-smile; both feel like memory fragments inside separate glass surfaces.
+10–15s: balloon fabric/rope/hand effort, soil and vegetation movement, immediately followed by current-city traffic.
+15–20s: quiet procedural room tone with one restrained suppressed laugh / warm exhale, no words.
+20–24s: lawyer/court paper movement and chair shift, then a few dance-floor shoe steps and room ambience, no music beat.
+24–30s: multiple memory sound fragments overlap lightly but remain intelligible; then simplify to footsteps, rain and the city continuing toward Westminster.
+
+MUSIC / SCORE
+Use a very restrained low-level non-lyrical cinematic texture only if it helps continuity. Keep it sparse and below narration; no melody-forward score, no trailer swell, no vocal music.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4731,7 +5252,7 @@ Until the final hard cut, the MAIN WORLD always remains the physical present. A 
 
 Never paste or reproduce a full MEMORY WORLD 3×3 sheet inside a window. Isolate only the relevant remembered scene. Keep a readable trace of rain, pane boundary or present-city reflection around/through the memory so it remains physically embedded in the real surface.
 
-Do not use or reveal HRW07_CLINICAL_REALITY.png in this block.
+Do not introduce, hint at or reveal the hidden clinical reality in this block.
 
 PHYSICAL PRESENT
 The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
@@ -4787,6 +5308,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 **MODEL:** Seedance 2.5  
 **TARGET VIDEO:** approximately 20 seconds, 16:9 landscape, one continuous sequence ending in the hard cut.
+**GENERATED OUTPUT:** save the generated clip as `V07_LAST_WINDOW_REVEAL.mp4`.
 
 
 **ATTACH EXACTLY THESE FILES:**
@@ -4797,10 +5319,27 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C01_PROTAGONIST.png`
 - `C05_FINAL_NURSE.png`
 
+**REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
+
+- `W07_MAIN_WORLD.png` → `@W07_MAIN_WORLD`
+- `SB07_STORYBOARD.png` → `@SB07_STORYBOARD`
+- `HRW07_CLINICAL_REALITY.png` → `@HRW07_CLINICAL_REALITY`
+- `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
+- `C05_FINAL_NURSE.png` → `@C05_FINAL_NURSE`
+
+If the UI gives a different @token, substitute that actual token in the prompt below.
+
+================================================================================
+**⬇ COPY ONLY THE CODE BLOCK BELOW INTO CINEMA STUDIO ⬇**
+================================================================================
+
 **PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
 SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+ACTIVE @REFERENCES
+Use the attached assets only through the @reference tokens named below. The @token is the binding between this prompt and the uploaded reference image.
 
 TARGET OUTPUT
 - Duration: approximately 20 seconds, or the closest available Cinema Studio duration without changing the story order.
@@ -4810,10 +5349,48 @@ TARGET OUTPUT
 
 REFERENCE ROLE ASSIGNMENT
 
-- W07_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
-- SB07_STORYBOARD.png = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
-- HRW07_CLINICAL_REALITY.png = hidden physical clinical reality. Use it only for the sub-second fragments in frames 2–5 and the actual clinical room after the hard cut in frames 8–9. Never display the whole 3×3 sheet.
-- Attached CHARACTER files = exact identity anchors. Preserve those faces, ages, body proportions and roles. Do not invent replacement identities for named people.
+- @W07_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
+- @SB07_STORYBOARD = TEMPORAL PLAN. Read frames 1→9 as chronological keyframes for this one block. Never reproduce the storyboard grid in the output.
+- @HRW07_CLINICAL_REALITY = hidden physical clinical reality. Use it only for the sub-second fragments in frames 2–5 and the actual clinical room after the hard cut in frames 8–9. Never display the whole 3×3 sheet.
+- @C01_PROTAGONIST = exact protagonist identity: face, age, body proportions, hair and continuity.
+- @C05_FINAL_NURSE = exact identity anchor for the final nurse; preserve face, age, body proportions and role.
+- Do not invent replacement identities for any named person above.
+
+AUDIO — NATIVE SEEDANCE 2.5
+
+Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+
+NARRATOR VOICE IDENTITY
+Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
+The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
+Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
+No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
+No second narrator and no intelligible dialogue from visible memory characters.
+
+EXACT NARRATION — SPEAK THESE WORDS VERBATIM
+"By then the city was reading me too. London, Budapest, every memory stayed in the glass until the reflections disappeared. What remained was not an answer: a room, a body, another human face."
+
+NARRATION TIMING
+Begin the narration about 0.8 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 19 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+
+AMBIENCE / FOLEY / SFX EVENT TRACK
+0–5s: the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds.
+5–9s: an almost subliminal cold ventilation / fluorescent electrical hum intrudes beneath the rain during the white-light and white-coat reflection fragments.
+9–13s: one faint metal contact and white-sheet/fabric movement appear only as ambiguous fragments while city ambience remains present.
+13–15s: final glass approach; footsteps stop, rain and reflected traffic thin rapidly, no dream whoosh and no horror rise.
+At the HARD CUT to the clinical room: city/rain stop instantly. Replace them with flat real clinical room tone, ventilation, quiet breathing, bed linen, one small ordinary metal/equipment click.
+15–20s: clinical ambience only under the end of narration. No sting, no heartbeat effect, no ominous music, no supernatural sound.
+
+MUSIC / SCORE
+No music after the hard cut to the clinical room. Before the hard cut, use at most a nearly imperceptible low tonal bed. No sting, no crescendo, no heartbeat effect.
+
+MIX
+Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
+Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+
+DO NOT GENERATE
+No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
+No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
 
 MEMORY COMPOSITING
 
@@ -4873,9 +5450,9 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 ```
 
 
-### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — ONLY IF THE FULL BLOCK CANNOT BE GENERATED
+### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — EMERGENCY FALLBACK ONLY
 
-Keep **exactly the same attachment bundle** listed for that CINEMA BLOCK. Use the same full Cinema prompt, but limit the temporal beats to one third of the storyboard. Do not redesign the world between clips.
+Seedance 2.5 is intended to handle the 30-second blocks directly. If a block must be split into shorter clips, copy the SAME block prompt but keep only the relevant storyboard beats and the matching portion of the AUDIO event track. Repeat the exact same narrator voice instructions and keep @C01_PROTAGONIST attached in every subclip.
 
 **CLIP A — append this at the END of the matching Cinema prompt:**
 
@@ -4900,3 +5477,38 @@ Continue directly from the previous generated clip. Generate only storyboard fra
 
 For STORYBOARD 07, PART C contains the actual clinical hard cut; Parts A and B must not expose the full clinical room.
 
+
+
+================================================================================
+## NO-MANUAL-EDIT FINAL ASSEMBLY — HIGGSFIELD PROJECT / SUPERCOMPUTER
+================================================================================
+
+> **OPERATOR NOTE — DO NOT COPY UNLESS YOU ARE IN A HIGGSFIELD ASSEMBLY / SUPERCOMPUTER WORKFLOW:** the seven Seedance clips already contain their own native narration + ambience + foley/SFX + restrained score generated together with picture. The remaining task is only ordered concatenation, not creative re-editing.
+
+**INPUT CLIPS IN EXACT ORDER:**
+
+1. `V01_CITY_JUDGES_FIRST.mp4`
+2. `V02_GLOBAL_ROUTE.mp4`
+3. `V03_WORK_SYSTEM.mp4`
+4. `V04_POLICE_DEFENCE.mp4`
+5. `V05_COURT_FILE.mp4`
+6. `V06_HUMANITY_OVERLOAD.mp4`
+7. `V07_LAST_WINDOW_REVEAL.mp4`
+
+**COPY THIS ONLY IF THE ASSEMBLY TOOL ACCEPTS A NATURAL-LANGUAGE ASSEMBLY INSTRUCTION:**
+
+```text
+Assemble the seven supplied MYSCOUTEE video blocks in the exact numerical order 01 → 07.
+
+Do not reorder, shorten, retime, crossfade, remix, replace, regenerate or reinterpret any block.
+Preserve each block's embedded narration, ambience and sound effects exactly.
+Use direct cuts between blocks. No transition effects, no dissolve, no added B-roll, no extra music, no new narration and no subtitles.
+The physical walk must feel like one continuous progression from Soho to the final Westminster/Whitehall glass threshold even though it is built from seven generated blocks.
+
+After the final clinical hold, cut to black. Display exactly:
+MYSCOUTEE
+THE PATH BETWEEN PEOPLE
+
+Keep the title plain, centered and restrained on black. No logo animation, no trailer sting, no extra tagline unless explicitly requested later.
+End after a short silent hold.
+```
