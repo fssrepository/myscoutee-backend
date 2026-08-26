@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.13 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.27 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -11,9 +11,11 @@
 >
 > The first text you actually paste into a generation model is the fenced `text` code block under **CHARACTER 01 — PROTAGONIST**. After that, for every asset, paste **only the fenced `text` code block belonging to that asset**.
 
-**IMPORTANT OPERATING RULE:** every code block below is a separate generation request. Never paste a WORLD prompt together with a MAP prompt. Never paste multiple CHARACTER prompts together. The pack is deliberately repetitive so every prompt is independently copyable in Google Flow / Nano Banana and Higgsfield Cinema Studio.
+**IMPORTANT OPERATING RULE:** every code block below is a separate generation request. Never paste a WORLD prompt together with a MAP prompt. Never paste multiple CHARACTER prompts together. The pack is deliberately repetitive so every prompt is independently executable.
 
-**CRITICAL GOOGLE FLOW OUTPUT SETTING:** for every WORLD and STORYBOARD 3×3 generation, set **Image → Aspect ratio → 16:9 in the Google Flow UI BEFORE pressing Generate**. This is an output setting, not something the text prompt can reliably override. If Flow is set to 1:1, the model may produce a square canvas even when the prompt says 16:9. Do not generate these assets with the Flow aspect-ratio selector left at 1:1.
+**HIGGSFIELD MCP PLUGIN — PRODUCTION MEDIA ONLY — NON-NEGOTIABLE:** all production image, narration/audio and video generation for this film must be executed by Higgsfield models through the Higgsfield MCP plugin / Higgsfield Cinema Studio. ChatGPT GPT-5.6 Sol acts only as the external orchestrator: it reads and maintains this prompt pack, selects the approved Higgsfield operation, submits prompts/references through the Higgsfield MCP plugin, tracks results/credits and stops at the defined manual gates. ChatGPT-native image generation, ChatGPT-native audio generation and any non-Higgsfield video generator are forbidden for this project unless the user explicitly overrides this rule in a later message. Historical Google Flow / Nano Banana / Gemini Omni Flash work is pre-production validation only; it is not the production-generation path.
+
+**AUTOMATION BASELINE / NO MANUAL COMPENSATION — NON-NEGOTIABLE:** this project evaluates whether the official Higgsfield MCP plugin exposes enough control for an external AI orchestrator to operate the production end-to-end. The creator is NOT expected to learn or operate Cinema Studio merely to compensate for MCP endpoints that Higgsfield has not exposed. If a required project-administration action cannot be performed through the current MCP surface, record it as a **HIGGSFIELD MCP TECHNICAL LIMITATION**, stop that dependent automation path, and report the missing capability precisely. Do not silently transfer the missing operation to the human as routine labor. A manual UI workaround may be used only if the user explicitly chooses it after the limitation is disclosed, and that workaround must be counted as a human intervention / automation exception rather than presented as autonomous execution. This evaluation principle applies independently of the Film Gala; it is a baseline expectation for any end-to-end AI production workflow.
 
 ### OPERATOR NOTES — LOCKED SYSTEM — DO NOT COPY
 - WORLD asset = exactly **one 16:9 widescreen canvas containing a 3×3 grid of 9 equal photographic cells**. Because the 16:9 canvas is divided equally into 3 columns and 3 rows, **each cell is also 16:9**, never square.
@@ -42,12 +44,159 @@
 - **AI-SURVIVAL NARRATION LOCK:** the film must explicitly acknowledge in the OFF-SCREEN narration that AI helped the protagonist hold the fragmented story together and, at times, simply keep going. This is a human/structural acknowledgement, not a technology advertisement. Because the visual memory field is already intentionally dense, this acknowledgement is **NARRATION ONLY**: do NOT add a new AI screen, chatbot UI, laptop micro-flash, logo, product shot or separate AI memory image merely to illustrate the line.
 - **SCORE-CARD POSITION + GAZE LOCK:** every score card belongs **ABOVE the viewed person's head**, centered over the crown with visible air between card and hair. Never place a card on the forehead, across the eyes/face, inside the head, on the torso, beside the body or floating elsewhere without a person anchor. Cards remain normally and clearly visible at a restrained translucent baseline even when nobody is looking. When one person directly looks at another, the VIEWED person's above-head card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, then eases back to the same normal baseline. No flare and no dramatic brightness jump.
 - **NORMAL-BASELINE / GAZE-FILL INTERPRETATION:** `normal` means the card is visibly and continuously present without being ghosted away or reduced to near-invisibility. The gaze response is not a reveal: it is only a modest increase in internal fill/light, like the same translucent card becoming slightly more luminous and full for a moment. Position, size and basic opacity stay stable.
-- **MCP / HIGGSFIELD HANDOFF LOCK:** if another AI continues this project and the user explicitly grants Higgsfield MCP/app permission, its FIRST external action is to search the connected Higgsfield workspace/project/history/media for the existing MyScoutee project and already-generated canonical assets. Reuse matching valid assets and generations. Do not silently start a fresh Higgsfield project, duplicate the project, or regenerate an existing canonical asset before that search is complete. If the existing project cannot be found, report that fact and STOP; creating any replacement project requires fresh explicit user authorization.
+- **MCP / HIGGSFIELD HANDOFF LOCK:** if another AI continues this project and the user explicitly grants Higgsfield MCP plugin permission, its FIRST external action is to search the connected Higgsfield workspace/project/history/media for the existing Cinema Studio project named **`AI Film Festival`**, which is the canonical Higgsfield container for the MyScoutee film, and for already-generated canonical assets. Reuse matching valid assets and generations only when they were created for this Entry inside the current Festival Generation Window and remain eligible under the Official Rules. Do not silently start a fresh Higgsfield project, duplicate the project, or regenerate an existing canonical asset before that search is complete. If the exact `AI Film Festival` project cannot be found, report that fact and STOP; creating any replacement project requires fresh explicit user authorization.
+- **TARGET HIGGSFIELD PROJECT ROUTING LOCK — NON-NEGOTIABLE:** every production image, narration/audio asset, video generation, accepted extension and festival meta asset logically belongs to the existing Higgsfield Cinema Studio project **`AI Film Festival`**. The external orchestrator must never assume that a generation appearing in global **My generations** is automatically attached to this project. Before bulk production, verify whether the current Higgsfield MCP plugin exposes project-scoped generation, import, assignment or attachment. If it does not, STOP the dependent automation path and record the missing project-routing operation as a **Higgsfield MCP technical limitation**. Do **not** make Cinema Studio UI administration a routine human requirement merely to compensate for the missing MCP interface, and do not create another project as a workaround. A manual association test/workaround is optional only after explicit user authorization and is logged as a human intervention, not as successful autonomous routing.
+- **HIGGSFIELD ASSET-ID / REFERENCE-REGISTRY LOCK — NON-NEGOTIABLE:** every accepted generated asset must be recorded immediately in a canonical ASSET REGISTRY before any later prompt depends on it. Capture the exact Higgsfield generation/job UUID returned by the Higgsfield MCP plugin, plus any returned media UUID / result URL and the logical canonical asset name. Never rely on filename, prose such as “the previous image”, generation order, or visual memory alone to identify a reference. The minimum registry fields are: `logical_asset_id`, `canonical_filename`, `asset_type`, `higgsfield_project=AI Film Festival`, `generation_job_id`, `media_id_or_result_url_if_available`, `reference_element_name_if_created`, `reference_element_id_if_created`, and `status` (`GENERATED`, `ACCEPTED_CANONICAL`, `PROJECT_ASSOCIATION_UNVERIFIED`, `REJECTED`). A reference may be used downstream only after the correct generation ID is known and the asset is accepted; if project association is required but unverified, do not mark it ready for production dependency use.
+- **REFERENCE BINDING RULE — ID FIRST:** when a Higgsfield model accepts reference media, pass the exact completed Higgsfield generation/job UUID or confirmed media UUID through the MCP `medias` input with the correct role. Human-readable filenames and pack aliases remain operator labels only. In Cinema Studio UI workflows, bind the actual uploaded/selected asset and use the actual `@token` shown by Higgsfield; never invent an `@token` from a filename.
+- **REFERENCE ELEMENT RULE — CONDITIONAL, NOT UNIVERSAL:** for reusable accepted IMAGE assets such as recurring characters, environments or props, create one Higgsfield Reference Element only when the current Higgsfield model/tool explicitly supports Elements. Store both its human-readable `element_name` and exact `element_id` in the ASSET REGISTRY. MCP prompts use the exact `<<<element_id>>>` placeholder only for models documented as supporting Reference Elements. Do **not** assume Seedance 2.5 or any other model supports Elements merely because another model does; when Element support is absent, use the direct generation/media UUID reference instead. Never create duplicate Elements for the same accepted canonical asset unless the original Element is unusable and the user authorizes replacement.
 - **EXTERNAL-SUPERCOMPUTER EXECUTION CONTRACT:** this prompt pack is intentionally written so an external AI agent with explicit Higgsfield MCP/app permission can run the production from start to finish. The intended orchestration setup for this production is **ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration**, acting as an external supercomputer rather than as a manual copy/paste assistant. The agent must execute the canonical dependency graph, maintain the credit ledger, create/recover assets, generate narration and video, inspect outputs against the acceptance locks and continue autonomously between the explicit MANUAL GATES defined below. Human intervention is intentionally limited to those gates and explicit keep/stop/fallback approvals. The agent is not allowed to redesign the workflow, simplify the story, switch models, add an editor, or activate a fallback merely because another route looks easier.
+- **SINGLE-OUTPUT-PER-ASSET LOCK — NON-NEGOTIABLE:** every canonical production asset is generated exactly ONCE per authorized attempt and must request exactly ONE output. For Higgsfield MCP plugin calls, set `count=1` for image/video generations and audio generation; where a backend exposes `batch_size`, `num_outputs`, `samples`, `variations`, candidates or equivalent controls, set the effective value to **1**. Never request 2/4/8 alternate images, videos, narrations or seed variations for the same asset. Never run a seed sweep or parallel candidate takes for selection. A 3×3 WORLD / MEMORY WORLD / STORYBOARD is still ONE generated image containing nine planned cells, not nine alternate generations. Batch submission is permitted only as transport/scheduling for DIFFERENT canonical assets, with exactly one job/output per distinct asset; do not place the same asset into a batch more than once. If a model/UI would force multiple paid outputs, STOP and ask the user rather than spending credits. Any second attempt at the same asset is a RETRY and therefore requires the existing explicit manual retry authorization gate.
 - **HIGGSFIELD-NATIVE-ONLY / NO EXTERNAL VIDEO EDITOR LOCK:** the final film must demonstrate what Higgsfield can actually deliver without an external NLE rescuing continuity. Do not use DaVinci Resolve, Premiere, After Effects, ffmpeg, external crossfades, external frame interpolation, external audio repair, external concatenation or any other outside video editor to hide seams or repair generated footage. Normal file transfer/storage is allowed; creative or technical seam repair outside Higgsfield is not. If the native Higgsfield path cannot deliver a usable continuous master, STOP and report that limitation rather than silently fixing it elsewhere.
 - **NATIVE FORWARD-EXTENSION CONTINUITY LOCK:** `V01_CITY_JUDGES_FIRST.mp4` is the only independently generated opening block. Blocks 02–07 must use Seedance 2.5 `video_extension` with `extension_mode=forward` from the immediately preceding accepted canonical video/chain, while also supplying the new block's exact image references and locked narration audio reference when the current Higgsfield interface/backend accepts them. The purpose is to preserve the previous last frame, camera velocity, protagonist stride, weather, lighting, crowd flow, ambience, foley texture and restrained score across each 30-second boundary. Do not revert to seven unrelated standalone generations during normal execution.
 - **MANUAL FALLBACK AUTHORIZATION LOCK — NON-NEGOTIABLE:** Seedance 2.5, the locked native-resolution plan, the seven full narration files and the native forward-extension chain are the active production path. Every deviation is CONTINGENCY DOCUMENTATION ONLY until the user explicitly authorizes that exact fallback after being told the trigger, expected credit cost and continuity/story impact. This includes: changing video model, changing final resolution, abandoning the native extension chain, using a Higgsfield-native rough-cut/Canvas assembly instead of a cumulative extension result, splitting a block into subclips, regenerating narration with changed `speech_rate`, creating PART A/B/C narration files, separate music generation, region/video editing, creating a replacement Higgsfield project, or any paid retry/regeneration after a failed take. Another AI must NEVER interpret a general instruction such as “finish the film”, “continue”, or prior MCP permission as permission to activate a fallback. When a fallback condition appears, STOP, report it, propose the smallest option, and wait for the user. Do not research, compare or test alternate video models unless the user explicitly asks for that comparison in a later turn.
 - **EARLY V01 LIVE-TEST PRIORITY:** discover as early as possible whether the full production video pipeline actually works by generating **CINEMA BLOCK 01 / `V01_CITY_JUDGES_FIRST.mp4`** before bulk-producing the rest of the film. This is NOT a disposable proxy. Generate it at the intended final production settings (30 s, 16:9, 1080p only after the mandatory full-film cost preflight confirms the projected all-in production remains within the 3000-credit hard ceiling, locked narration audio reference, full Block-01 reference stack, audio generation on). If the first technically usable take preserves the mandatory story, identity, narration and physical-present logic, it becomes the canonical first 30 seconds of the final film and must NOT be discarded merely because it began as the live test. After V01 is accepted, fast-track Block 02 and test the first native forward extension before bulk-producing the rest; V01 alone cannot validate seam continuity.
+
+### OPERATOR NOTES — HIGGSFIELD MCP SINGLE-OUTPUT PARAMETER CONTRACT — DO NOT COPY
+
+For every production generation through the **Higgsfield MCP plugin**:
+- IMAGE: `count=1`; if exposed, `batch_size=1`; one canonical result only.
+- VIDEO: `count=1`; one canonical take/extension only.
+- AUDIO/NARRATION: `count=1`; one canonical narration result only.
+- Do not request multiple candidates, variations, seeds or samples for the same prompt/asset.
+- A batch tool may group DIFFERENT assets for efficiency only when every request is a distinct canonical asset and each request creates exactly one output.
+- If the same canonical asset appears twice in one batch/request set, that is an error: STOP before submission.
+- Any second generation of an already-attempted asset is a retry and requires the explicit MANUAL FALLBACK / RETRY authorization already defined in this pack.
+- Cost preflight must assume one output only. If Higgsfield reports a cost corresponding to multiple outputs, do not submit.
+
+### OPERATOR NOTES — HUMAN-READABLE PROJECT STRUCTURE / PUBLIC AUDITABILITY — DO NOT COPY
+
+**PUBLIC READABILITY PRINCIPLE — NON-NEGOTIABLE:** the Higgsfield Festival project is expected to become publicly inspectable. Machine UUIDs are necessary for deterministic MCP binding, but they are NOT a usable public production language. Every canonical asset therefore has TWO identities:
+
+1. **Human identity:** a short logical asset ID plus a descriptive public display name and contextual collection/subfolder. This is what a human reviewer should understand.
+2. **Machine identity:** exact Higgsfield generation/job UUID, media UUID/URL, and optional Element UUID. These live in the ASSET REGISTRY and are used by the orchestrator for exact binding.
+
+Never expose a project as an undifferentiated wall of UUIDs or generic auto-generated filenames when the Cinema Studio UI permits readable naming/organization. UUIDs support the workflow; they do not replace production semantics.
+
+**CANONICAL PUBLIC DISPLAY-NAME PATTERN:**
+- Character: `C01 — Protagonist — Character Sheet`
+- Main world: `W01 — City Judges First — Soho / Piccadilly / Leicester`
+- Memory world: `MW01 — London Social — Memory World`
+- Memory pack: `MWP01 — Routes / Rooms / Documents — Memory Pack`
+- Storyboard: `SB01 — City Judges First — Storyboard`
+- Narration: `A01 — City Judges First — Narration`
+- Video block: `V01 — City Judges First — Opening 30s`
+- Final delivery: `FINAL — MyScoutee — Watermarked Festival Master`
+
+The compact canonical filename remains useful for dependency mapping, but when Cinema Studio exposes a display-name/title field, use the human-readable display name above or the corresponding exact descriptive name for that asset.
+
+**CONTEXTUAL COLLECTION / SUBFOLDER TAXONOMY — CREATE INSIDE `AI Film Festival`:**
+
+```text
+00 — PROJECT / META
+    Project Brief
+    Poster / Cover
+    Submission / Social / Watermark / Packshot
+
+01 — CHARACTERS
+    01A — Core / Recurring
+    01B — London Social / House / Dance
+    01C — Global Routes / Travel
+    01D — Work / Admin
+    01E — Police / Legal / Institutional
+    01F — Final Clinical
+
+02 — PRESENT CITY / MAIN WORLDS
+    W01 — Soho / Piccadilly / Leicester
+    W02 — Charing Cross / Strand / Aldwych / Embankment
+    W03 — Kingsway / Holborn / Work City
+    W04 — Fleet Street / Temple / Formal City
+    W05 — Blackfriars / Thames / South Bank
+    W06 — Waterloo / London Eye / Westminster Approach
+    W07 — Westminster / Whitehall / Threshold
+
+03 — MEMORY WORLDS
+    03A — London Social / Shared Lives
+    03B — Global Routes / Travel Encounters
+    03C — Work / Admin / Documents
+    03D — Police / Court / Institutional
+    03E — Human Microflashes / Crescendo
+    03F — Hidden Clinical Reality
+
+04 — MEMORY PACKS / TECHNICAL REFERENCES
+
+05 — STORYBOARDS
+    SB01 through SB07
+
+06 — AUDIO / NARRATION
+    A01 through A07
+    Approved native audio references only
+
+07 — VIDEO / CANONICAL CHAIN
+    V01 through V07 / accepted native extension chain
+
+08 — FINAL DELIVERY / FESTIVAL
+    Final master
+    Official watermark + packshot version
+    Social-publication record
+    Submission metadata
+```
+
+Do not create meaningless folders merely to reduce item count. Context takes priority over an arbitrary maximum. If Cinema Studio supports nested subfolders, use the structure above; if only one collection level is available, flatten each leaf into a readable collection such as `01E — Characters — Police / Legal / Institutional`.
+
+**ASSET REGISTRY HUMAN FIELDS — REQUIRED:** in addition to the machine IDs already required, every registry entry must contain:
+- `public_display_name`
+- `collection_path`
+- `story_context` (one short human sentence)
+- `project_ui_status` (`NOT_ADDED`, `ADDED_TO_PROJECT`, `PLACED_IN_COLLECTION`, `UI_VERIFIED`)
+
+The registry is the bridge between public human organization and machine-precise MCP references.
+
+### OPERATOR NOTES — HIGGSFIELD MCP AUTOMATION LIMITATIONS / MANUAL UI BOUNDARY — DO NOT COPY
+
+This section records the **actual automation boundary observed in the current Higgsfield MCP plugin**, so a future agent does not pretend a capability exists or silently shift missing product functionality to the user. Re-check the live MCP surface before production because capabilities may improve. If a listed limitation becomes automatable later, automate it and record that change. The baseline is not Festival-specific: an end-to-end AI production interface should expose the project-state operations needed to complete its own workflow without requiring the human to become the missing API layer.
+
+**CURRENTLY AUTOMATABLE THROUGH THE HIGGSFIELD MCP PLUGIN:**
+- generate Higgsfield images, videos and narration/audio;
+- force single-output generation (`count=1`, equivalent controls = 1);
+- preflight generation credit cost where the exposed model tool supports it;
+- receive exact generation/job UUIDs and result URLs;
+- reuse completed Higgsfield generation/media UUIDs as downstream references when the selected model supports those media roles;
+- browse relevant Higgsfield generation/media history exposed by the plugin;
+- create and reuse Higgsfield Reference Elements for supported image/video workflows;
+- inspect current model capabilities/parameters and available workspaces exposed by MCP.
+
+**NOT CURRENTLY EXPOSED AS RELIABLE MCP WRITE ACTIONS:**
+- writing or updating the Cinema Studio **Project Brief** field;
+- creating, renaming or moving Cinema Studio **collections/subfolders**;
+- assigning/attaching/moving a global MCP generation into the exact Cinema Studio Festival project `AI Film Festival`;
+- setting the human-readable Cinema Studio asset display name when the generation tool itself exposes only the generated job;
+- publishing the Festival project / Create-in-Public state;
+- applying or verifying the Festival submission UI's final project-level watermark/packshot workflow;
+- performing the mandatory external social-media publication and returning that public URL to the Festival submission UI;
+- final Festival submission/confirmation unless a future MCP action explicitly exposes it.
+
+**NO DEFAULT MANUAL CINEMA STUDIO COMPENSATION:**
+The intended production path does **not** require the creator to perform missing Cinema Studio administration actions by hand. For every missing MCP operation, the orchestrator records: `required_action`, `expected_project_state`, `missing_MCP_capability`, `affected_asset_or_stage`, and `automation_status=BLOCKED_BY_MCP_LIMITATION`.
+
+A one-off Cinema Studio UI experiment may be performed only when the user explicitly chooses to diagnose Higgsfield behavior (for example, testing whether a global Higgsfield generation can be associated with `AI Film Festival`). Such a diagnostic is evidence collection, not the normal production workflow. It does not convert a missing MCP endpoint into a human responsibility.
+
+If the user explicitly authorizes a manual workaround for a particular blocked action, record it as `MANUAL_EXCEPTION_AUTHORIZED`, perform only the minimum semantic operation necessary, and keep it visible in the final automation report. Never describe that stage as autonomous. If the user does not authorize a workaround, leave the stage blocked and report the platform limitation rather than teaching the user Cinema Studio as a substitute for an incomplete MCP interface.
+
+Do **not** invent button labels that are not visible in the current UI, and do not regenerate an asset merely to work around project administration.
+
+**FESTIVAL-COMPLIANCE PRECEDENCE:** the current Official Rules require all used AI video/image generations to be made on Higgsfield during the Generation Window and require the underlying used assets/generations to remain in the dedicated submission project for audit. MCP generation is acceptable as Higgsfield generation only if this project-retention/audit requirement can also be satisfied. Therefore, if an MCP-generated asset cannot be associated with and retained inside `AI Film Festival`, do not use that asset in the submitted film and do not continue bulk production on the assumption that global `My generations` is sufficient.
+
+### PROJECT-ASSOCIATION PROOF GATE — BEFORE ANY FURTHER BULK PAID PRODUCTION
+
+Before spending on the wider asset library, characterize the project-routing capability using **one already-created in-window Higgsfield asset**. This is an optional diagnostic of the Higgsfield product boundary, not a requirement that the creator adopt Cinema Studio as a manual production tool. Use the current W01 generation if it is the intended canonical WORLD 01 candidate. If the user explicitly elects the diagnostic, inspect the `AI Film Festival` Cinema Studio UI:
+
+1. associate/add that exact existing Higgsfield generation to the project without regenerating it;
+2. set or preserve the readable name `W01 — City Judges First — Soho / Piccadilly / Leicester` where the UI supports naming;
+3. place it under `02 — PRESENT CITY / MAIN WORLDS / W01 — Soho / Piccadilly / Leicester`;
+4. verify that the project retains the asset/generation in `All assets` / project history and that the generation can still be identified by the same registry UUID;
+5. mark `project_ui_status: UI_VERIFIED`.
+
+Whether this succeeds or fails, record the result as part of the Higgsfield automation evaluation. If the MCP itself cannot perform the same project-routing operation, that remains an MCP coverage limitation even when the UI can do it manually. Do not turn a successful UI diagnostic into a recurring human production duty without explicit user authorization.
 
 ### OPERATOR NOTES — GENERATION ORDER / EARLY V01 LIVE-TEST — DO NOT COPY
 
@@ -55,7 +204,7 @@
 
 #### FAST-TRACK GATE — BUILD ONLY WHAT CINEMA BLOCK 01 NEEDS
 
-If Higgsfield MCP/app permission is available, **search the existing Higgsfield MyScoutee project/workspace/history/media first** and reuse any already-valid canonical assets below. Generate only what is missing.
+If Higgsfield MCP plugin permission is available, **search the existing Higgsfield Cinema Studio project `AI Film Festival` / workspace / history / media first** and reuse any already-valid canonical assets below only if they were newly generated for this Entry within the current Festival Generation Window and can be retained in `AI Film Festival` for audit. Generate only what is missing. A global `My generations` item is not presumed to be project-attached; verify project association before treating it as a canonical Festival asset.
 
 1. Generate / recover the Block-01 character subset first: `C01`, `C02`, `C06`, `C07`, `C08`, `C09`, plus `C10` because `MW01_LONDON_SOCIAL.png` uses that identity in its complete preservation sheet.
 2. Generate / recover `W01_MAIN_WORLD.png`. It has no default image-reference dependency and can be produced in parallel with the Block-01 character subset.
@@ -82,7 +231,7 @@ If Higgsfield MCP/app permission is available, **search the existing Higgsfield 
 
 **BUDGET ENVELOPE / DEFAULT RESERVE:**
 - Base final video + locked narration: target **≤ 1820 credits**.
-- Still-image assets: target **0 paid credits whenever the active plan provides an unlimited eligible image window**; otherwise preflight every paid batch and count it against the same 3000-credit ceiling. Unlimited usage is not a reason to generate unnecessary variants.
+- Still-image assets: target **0 paid credits whenever the active plan provides an unlimited eligible image window**; otherwise preflight every paid generation (or batch of DISTINCT assets, one output each) and count it against the same 3000-credit ceiling. Unlimited usage is not a reason to generate unnecessary variants.
 - Separate music: **do not generate by default.** Seedance already creates the restrained score inside each video pass. Separate music is a MANUAL FALLBACK/creative branch: report the reason and estimated cost, then create it only after the user explicitly authorizes that music path. Reserve **≤ 300 credits** for the entire path unless the user explicitly changes the budget.
 - Catastrophic-failure reserve: preserve approximately **700 credits** whenever possible. At current Seedance pricing this is enough for two failed 30 s 1080p blocks plus most/all of one additional affected block. Cosmetic retries are forbidden.
 - Keep an additional small safety margin rather than planning exactly to 3000.
@@ -193,20 +342,27 @@ The geography is cinematically compressed but must always feel walkable.
 
 ### CONTINUATION / AGENT HANDOFF — HIGGSFIELD PROJECT RECOVERY — DO NOT COPY
 
-If a different AI/agent takes over this pack later, treat this file as the canonical continuation contract. **When and only when the user explicitly grants Higgsfield MCP/app permission, first search the connected Higgsfield project/workspace/history/media for the existing MyScoutee project and canonical assets/generations.** Prefer recovery/reuse over recreation. Do not assume the project is empty, do not create a parallel project by default, and do not regenerate canonical assets merely because they are not present in the local chat. If search cannot locate the existing project, report that result and STOP. A replacement project/workflow may begin only after fresh explicit user approval.
+If a different AI/agent takes over this pack later, treat this file as the canonical continuation contract. **When and only when the user explicitly grants Higgsfield MCP plugin permission, first search the connected Higgsfield workspace/project/history/media for the exact existing Cinema Studio project `AI Film Festival` and its canonical MyScoutee assets/generations.** Prefer recovery/reuse over recreation. Do not assume the project is empty, do not create a parallel project by default, and do not regenerate canonical assets merely because they are not present in the local chat. A result in global `My generations` is not sufficient proof that it belongs to the Festival project. If search cannot locate the exact `AI Film Festival` project, or project association cannot be verified, report that result and STOP. A replacement project/workflow may begin only after fresh explicit user approval.
 
-The current external-agent/MCP surface may not expose a write action for Cinema Studio's Project Brief / project-description field. If that field cannot be edited through the connected toolset, **do not invent a workaround and do not create a second project**. Ask the user to paste the canonical Project Brief below once in the existing MyScoutee project, then continue through MCP. If a future MCP surface does expose a project-brief update action, use this exact brief unless the user has approved a newer one.
+The current Higgsfield MCP plugin surface does not expose every Cinema Studio project-administration write action needed by this workflow. In particular, Project Brief editing, project collection/subfolder management, project assignment/placement of global generations, readable project asset naming, and Festival publication/submission controls may remain UI-only. These are recorded as **platform automation limitations**, not silently reassigned to the creator. The creator is not expected to use Cinema Studio merely to compensate for missing MCP interfaces. If an unavailable action blocks a required state, report it and stop that dependent automation path. A manual workaround is performed only if the user explicitly authorizes that specific exception, and it remains disclosed in the final human-intervention log. If a future MCP surface exposes any of these actions, automate them directly and update the registry.
 
 ### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF / DESCRIPTION — COPY INTO THE PROJECT FIELD
 
 ```text
 PROJECT
 MYSCOUTEE — THE PATH BETWEEN PEOPLE
+Higgsfield Cinema Studio project container: AI Film Festival
 Runtime target: ~3:20
 Format: photorealistic cinematic short
 Primary video model: Seedance 2.5
 Aspect ratio: 16:9
 Production ceiling: 3000 Higgsfield credits total
+
+MCP TECHNICAL LIMITATION SUMMARY
+- The Higgsfield MCP plugin can drive Higgsfield image/video/audio generation, cost preflight, generation-ID capture and supported downstream reference binding.
+- At the current plugin capability level, some Cinema Studio administration is not exposed as reliable MCP write actions: Project Brief editing, project asset assignment, collection/subfolder creation or movement, public display-name management, and final Festival publish/submission UI.
+- These gaps are treated as **measured Higgsfield MCP automation limitations**, not as routine manual tasks for the creator. The creator is not expected to learn or operate Cinema Studio merely to substitute for missing MCP interfaces. If a missing operation blocks the autonomous path, the limitation is recorded and the dependent path stops unless the creator explicitly authorizes a one-off manual exception.
+- This standard is independent of the Film Gala: for an end-to-end AI production system, project-state control is a baseline automation expectation, not a Festival-specific convenience.
 
 PROJECT ORIGIN / CREATOR PATH
 - This film grows from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then abstracted into the canonical film prompt pack, and finally into this Higgsfield-native short.
@@ -223,7 +379,7 @@ PRODUCT / PUBLIC CONTEXT
 PRE-PRODUCTION VALIDATION
 - Before paid Higgsfield production, visual and workflow ideas were validated in Google Flow using the creator's no-additional-cost access at the time to Nano Banana 2, Nano Banana Pro and the current Gemini Omni Flash video model.
 - Google Flow outputs are pre-production validation only. No externally generated Google Flow image or video is used as final Festival production footage or as a submitted final image/video asset.
-- All AI image and video generations actually used by the Festival Entry must be generated and retained inside the dedicated Higgsfield Cinema Studio festival project.
+- All AI image and video generations actually used by the Festival Entry must be newly generated on Higgsfield within the Festival Generation Window and their underlying generations/assets must be retained inside the dedicated `AI Film Festival` submission project for audit. Google Flow material is validation only and is never a final visual asset.
 
 CRITICAL AI REVIEW / HALLUCINATION CONTROL
 - The canonical book-to-film and prompt-pack workflow was also subjected to independent critic-AI review rather than relying on a single model path.
@@ -237,13 +393,27 @@ LOCAL TOOLING CONSTRAINT / NATIVE HIGGSFIELD TEST
 - This film intentionally removes that external editing safety net. No external video editor is used to hide native seams or compensate for Higgsfield continuity limits.
 - The finished film therefore leaves Higgsfield's native strengths and limitations visible rather than repairing them outside the platform.
 
+PUBLIC PROJECT ORGANIZATION / AUDITABILITY
+- The Festival project is organized for human inspection, not only machine execution. Every asset has a concise logical ID plus a descriptive human-readable display name; opaque Higgsfield UUIDs are stored in the production registry for deterministic references but are not treated as the public meaning of the asset.
+- Cinema Studio collections/subfolders separate Characters, Present City / Main Worlds, Memory Worlds, Memory Packs / Technical References, Storyboards, Audio / Narration, Canonical Video Chain, and Final Festival Delivery. Larger groups are subdivided by story context (social/travel/work/institutional/clinical) rather than left as one hundred unrelated files in one folder.
+- The project is intended to remain understandable when its prompts, assets and generation history become publicly inspectable after submission. A reviewer should be able to understand what an asset is and where it belongs without decoding UUIDs.
+
+MCP AUTOMATION BOUNDARY / DISCLOSED TECHNICAL LIMITS
+- External orchestration uses the Higgsfield MCP plugin for actual Higgsfield image/video/audio generation, cost checks, exact generation IDs and supported downstream references.
+- At the current MCP capability level, some Cinema Studio project-administration actions are not exposed as reliable write operations: Project Brief editing, project collection/subfolder creation or movement, project assignment of a global generation, readable asset naming and certain Festival publication/submission UI actions. These are disclosed workflow limits and part of the platform evaluation.
+- Missing MCP administration is **not** converted into routine human production labor. The intended workflow leaves the operation blocked and records the limitation. Only an explicitly authorized diagnostic or manual exception may use the Cinema Studio UI, and that intervention is logged separately rather than counted as autonomous execution.
+- If a required visual generation cannot be retained inside the Festival project for audit through the available automation surface, production stops rather than assuming that global `My generations` is sufficient or requiring the creator to become the missing project-management API.
+
 PRODUCTION TRANSPARENCY
 - This project is executed from a canonical prompt pack that is the production source of truth for story, references, continuity, budget, manual gates and fallback rules.
 - The human–AI relationship is intentionally deeper than a conventional tool-assisted workflow. The human supplies the lived source material, authorship, intent, taste, ethical boundaries and explicit manual approvals; AI helped reconstruct and synthesize the source archive into the two-volume book, derive and maintain the film structure and prompt pack, orchestrate production, and provide the film with its consistent off-screen narration voice. In that practical sense, AI did not only accelerate the work; it helped give the accumulated material a coherent voice.
 - This end-to-end collaboration is itself part of what the project is testing: how far a human and AI can operate as one production system while human authorship and approval remain explicit.
 - External orchestration is performed by ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration, acting in an external-supercomputer role through the Higgsfield MCP/app connection. This is intentionally not a Plus configuration.
-- Routine production execution is intended to be autonomous. Human intervention is deliberately limited to the explicit MANUAL GATES, approvals and subjective keep/stop decisions defined by the canonical prompt pack; the human operator is not expected to hand-build the generation chain step by step.
-- The canonical production pack is intentionally large — approximately 470 KB, more than 6,300 lines and about 66,000 words at this stage — because it carries the story inventory, reference graph, continuity rules, narration, budget discipline, acceptance criteria and manual-fallback authorization in one recoverable execution contract.
+- Production-media boundary: the orchestrator calls the **Higgsfield MCP plugin**, but Higgsfield generates every production image, narration/audio asset and video. ChatGPT itself does not generate production media for this project.
+- Generation multiplicity is locked to **one output per canonical asset per authorized attempt**. The orchestrator must explicitly use `count=1` / `batch_size=1` / one sample wherever the Higgsfield MCP plugin exposes such controls. No four-variation image sets, no multi-take video candidates, no narration alternatives and no seed sweeps are part of the production workflow. A second generation of the same asset is a manual-gated retry, not a normal variation.
+- Asset identity has both a human and machine layer. Every accepted generation receives a logical ID, descriptive public display name, contextual collection path and one-sentence story context, while the exact Higgsfield generation/job UUID remains in the canonical registry for deterministic MCP binding. Reusable image references may additionally receive a Higgsfield Reference Element ID where supported. Public reviewers read names and context; the orchestrator binds exact IDs.
+- Routine production execution is intended to be autonomous. Human intervention is deliberately limited to intentional authorship/approval decisions, subjective keep/stop judgments and explicitly authorized exceptions. The human operator is not expected to hand-build the generation chain or act as the missing Cinema Studio API layer.
+- The canonical production pack is intentionally large — approximately 490 KB, more than 6,550 lines and about 70,700 words at this stage — because it carries the story inventory, reference graph, continuity rules, narration, budget discipline, acceptance criteria and manual-fallback authorization in one recoverable execution contract.
 - The finished film functions as a practical test of whether a large source archive can travel through an AI-assisted book and prompt-pack workflow into a complete film, with Higgsfield handling the final native image/video production under a fixed 3000-credit ceiling and first-usable-take discipline.
 
 AUTONOMY / SUPERCOMPUTER DEMONSTRATION
@@ -316,11 +486,17 @@ FINAL REVEAL
 
 PRODUCTION RULES
 - Seedance 2.5 is the canonical video model.
+- Exactly ONE output is requested for each canonical asset per authorized attempt; no alternate candidate set is generated.
 - First technically usable story-preserving take is canonical.
 - Do not regenerate for cosmetic generative imperfections.
 - No external video editor is used to hide Higgsfield limitations.
 - The finished film should demonstrate what Higgsfield can produce natively.
 - Evaluate the production primarily as an autonomous human–AI orchestration demonstration, not as a manual frame-perfect finishing exercise.
+
+AUTOMATION LIMITS NOTE
+- The goal is maximal autonomous production and an honest measurement of the current Higgsfield MCP boundary. Missing MCP coverage is a product limitation to document, not a reason to shift Cinema Studio administration onto the creator.
+- Current known UI-only candidates include Project Brief maintenance, collection/subfolder organization, project association of generated assets, readable project asset naming and final Festival publication/submission steps. If any of these is required but unavailable through MCP, record the blocked capability. Use a manual UI workaround only after explicit user authorization and count it as a disclosed automation exception.
+- This expectation applies outside the Festival as well: an AI production system that presents itself as end-to-end should expose the project-state operations required to manage the work it generates.
 
 BUDGET / MANUAL GATES
 - Hard all-in ceiling: 3000 Higgsfield credits.
@@ -355,7 +531,7 @@ MYSCOUTEE — THE PATH BETWEEN PEOPLE is a ~3:20 AI short created for the Higgsf
 
 The project began with a large real-world source archive. AI-assisted synthesis turned that material into a two-volume book published on Amazon in roughly two days; the canonical film prompt pack was then assembled in roughly one additional day. Only a few weeks before this project, the creator had no practical knowledge of AI video generation and had never made a comparable film.
 
-The final production is driven by a ~470 KB / 6,300+ line / ~66,000-word canonical prompt pack and externally orchestrated by ChatGPT GPT-5.6 Sol, Pro 5×, high reasoning. Human intervention is intentionally limited to defined approval gates, budget decisions and keep/stop judgments.
+The final production is driven by a ~490 KB / 6,550+ line / ~70,700-word canonical prompt pack and externally orchestrated by ChatGPT GPT-5.6 Sol, Pro 5×, high reasoning. Human intervention is intentionally limited to defined approval gates, budget decisions and keep/stop judgments.
 
 Pre-production validation used Google Flow — Nano Banana 2, Nano Banana Pro and Gemini Omni Flash — only to test visual and workflow ideas. Those external image/video generations are not used as final Festival production footage. All final AI image/video generations used by the Entry are created and retained inside the Higgsfield festival project.
 
@@ -369,14 +545,14 @@ Created in Higgsfield. Official Higgsfield watermark and packshot retained.
 **Optional short description for Instagram / LinkedIn / Facebook discovery posts:**
 
 ```text
-From source documents to a two-volume book, from the book to a ~66,000-word production prompt pack, and from that pack to a film. MYSCOUTEE — THE PATH BETWEEN PEOPLE is an externally orchestrated, Higgsfield-native AI short built with minimal human intervention and no external NLE used to conceal platform limitations. MyScoutee is a real AI-assisted social product; this film documents the path from product and personal archive to cinematic system.
+From source documents to a two-volume book, from the book to a ~70,700-word production prompt pack, and from that pack to a film. MYSCOUTEE — THE PATH BETWEEN PEOPLE is an externally orchestrated, Higgsfield-native AI short built with minimal human intervention and no external NLE used to conceal platform limitations. MyScoutee is a real AI-assisted social product; this film documents the path from product and personal archive to cinematic system.
 ```
 
 ### EXTERNAL SUPERCOMPUTER BOOTSTRAP / MANUAL GATES
 
 Once the user explicitly says to start and grants Higgsfield MCP/app permission, the external AI agent should run the project end-to-end without asking for routine confirmations. Stop only at these gates:
 
-1. **PROJECT RECOVERY GATE:** existing MyScoutee project cannot be located, or Project Brief cannot be set/read and the user has not yet pasted the brief above.
+1. **PROJECT RECOVERY / ROUTING GATE:** the exact Higgsfield Cinema Studio project `AI Film Festival` cannot be located, project association for existing assets cannot be verified through available interfaces, or the Project Brief cannot be set/read through MCP when that state is required. STOP the dependent autonomous path and log the precise MCP limitation rather than making routine Cinema Studio administration a hidden user requirement. A manual exception requires explicit authorization.
 2. **VOICE GATE:** no narrator voice is already locked and the audio tool requires a user voice selection.
 3. **V01 SPEND GATE:** Block-01 assets and A01 are ready; report the current all-in 3000-credit preflight and the exact V01 cost, then obtain explicit approval for the first paid 30-second production generation.
 4. **V01 ACCEPTANCE GATE:** after V01 finishes, present/report the result and wait for the user's keep/repair decision. A usable first take is the canonical opening.
@@ -402,7 +578,7 @@ Read every generation in this file as the same three-step pipeline:
 
 **B. COPY/PASTE PROMPT** — paste only the single fenced `text` code block for that asset. Never paste the filename list or this guide.
 
-**C. GENERATED OUTPUT** — the model creates a new image/video. After generation, save or rename that result to the canonical filename shown in the guide. That filename is then used as a later reference asset.
+**C. GENERATED OUTPUT + ID REGISTRATION** — the Higgsfield model creates one new output. Immediately capture the exact Higgsfield generation/job UUID (and media UUID/result URL if returned), record it in the canonical ASSET REGISTRY, then save/label the result with the canonical filename shown in the guide. The filename is a human-readable alias; the generation/media ID is the machine binding used for later MCP references.
 
 So a line such as `CHARACTER 01 → C01_PROTAGONIST.png` means: **run the CHARACTER 01 prompt → receive a generated character sheet → save that generated sheet as `C01_PROTAGONIST.png`.** It does NOT mean that `C01_PROTAGONIST.png` already exists before you run the prompt.
 
@@ -427,6 +603,37 @@ attach the already-generated W01 + SB01 + MW01 + MWP01 + listed Cxx files **and 
 `ATTACH: filename.png` = this file must already exist and is an **INPUT**.
 
 `GENERATED OUTPUT: filename.png` = this file does **not** exist yet; the current prompt will create an image/video, and you save that new result under this name.
+
+### CANONICAL ASSET REGISTRY — REQUIRED DURING PRODUCTION
+
+Maintain one live registry entry for every generated asset. Do not infer IDs later from chronology.
+
+```text
+logical_asset_id: W01_MAIN_WORLD
+public_display_name: W01 — City Judges First — Soho / Piccadilly / Leicester
+canonical_filename: W01_MAIN_WORLD.png
+asset_type: image/environment
+story_context: Present-city reference for the opening 00:00–00:30 block.
+collection_path: 02 — PRESENT CITY / MAIN WORLDS / W01 — Soho / Piccadilly / Leicester
+higgsfield_project: AI Film Festival
+generation_job_id: <exact Higgsfield UUID returned by MCP>
+media_id_or_result_url_if_available: <exact returned value or null>
+reference_element_name_if_created: <human-readable name or null>
+reference_element_id_if_created: <exact Higgsfield element UUID or null>
+project_ui_status: NOT_ADDED | ADDED_TO_PROJECT | PLACED_IN_COLLECTION | UI_VERIFIED
+status: GENERATED | ACCEPTED_CANONICAL | PROJECT_ASSOCIATION_UNVERIFIED | REJECTED
+```
+
+Rules:
+- Record the generation/job ID immediately after every Higgsfield job returns.
+- Assign the human-readable `public_display_name`, `collection_path` and one-sentence `story_context` at the same time; never leave public meaning to be reconstructed from a UUID later.
+- The human-readable name is primary for public inspection and collaboration; the UUID is primary only for deterministic machine binding. Both are required.
+- `ACCEPTED_CANONICAL` means this exact generated output is the one downstream assets may reference.
+- Never substitute another generation with a similar filename or prompt.
+- For MCP reference input, prefer exact accepted generation/media IDs.
+- Create a Reference Element only for accepted reusable IMAGE assets and only when the currently selected model explicitly supports Elements.
+- If a Reference Element is created, record its exact `element_id`; the readable name alone is never sufficient for MCP binding.
+- If project association to `AI Film Festival` cannot be verified where required, mark `PROJECT_ASSOCIATION_UNVERIFIED` and STOP before building dependent bulk assets.
 
 `→ @ALIAS` = only for Cinema Studio/Seedance video generation: after attaching the existing file, bind/mention that uploaded reference with the shown `@` token inside the video prompt.
 
@@ -2271,8 +2478,6 @@ No title or outer frame.
 
 ---
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ================================================================================
 # OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
 ================================================================================
@@ -2352,8 +2557,6 @@ No score cards.
 
 ---
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS
 
 ```text
@@ -2431,8 +2634,6 @@ No score cards.
 
 ---
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN
 
 ```text
@@ -2505,8 +2706,6 @@ No score cards.
 
 
 ---
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## MEMORY WORLD 04 — POLICE / SEARCH / DEFENCE
 
@@ -2583,8 +2782,6 @@ No score cards.
 
 ---
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR
 
 ```text
@@ -2659,8 +2856,6 @@ No score cards.
 
 
 ---
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## MEMORY WORLD 06 — HUMANITY BREAKS THROUGH / RECURRING POSITIVE COUNTERMEMORIES
 
@@ -2744,8 +2939,6 @@ No score cards.
 
 ---
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS
 
 ```text
@@ -2815,8 +3008,6 @@ No explanatory captions.
 These details exist to preserve biography, not to simplify it.
 ```
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## MEMORY PRESERVATION WORLD P02 — SYSTEM TIME / TWO DOORS / INSTITUTIONAL REVERSALS
 
 ```text
@@ -2876,8 +3067,6 @@ No named contemporary public institution, officeholder, current event, tax regim
 No causal claim that the protagonist produced later institutional outcomes.
 No narrative element in this bank may be silently deleted merely because it is a micro-flash.
 ```
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY
 
@@ -3061,8 +3250,6 @@ Budapest must be specifically recognizable through the named anchors above, not 
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## WORLD 02 — 00:30–01:00 — ROUTES / PASSAGES — CHARING CROSS / STRAND / ALDWYCH / EMBANKMENT
 
 ```text
@@ -3156,8 +3343,6 @@ All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## WORLD 03 — 01:00–01:30 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES
 
@@ -3253,8 +3438,6 @@ Budapest must be specifically recognizable through the named anchors above, not 
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## WORLD 04 — 01:30–02:00 — FORMAL CITY — FLEET STREET / TEMPLE / CIVIC FACADES / BLACKFRIARS APPROACH
 
 ```text
@@ -3348,8 +3531,6 @@ All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## WORLD 05 — 02:00–02:30 — THE RIVER OPENS — BLACKFRIARS / THAMES / SOUTH BANK
 
@@ -3445,8 +3626,6 @@ Budapest must be specifically recognizable through the named anchors above, not 
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## WORLD 06 — 02:30–03:00 — CITY OVERLOAD — SOUTH BANK / WATERLOO / LONDON EYE / WESTMINSTER APPROACH
 
 ```text
@@ -3540,8 +3719,6 @@ All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## WORLD 07 — 03:00–03:20 — THE LAST CITY — WESTMINSTER / WHITEHALL / DARK GLASS THRESHOLD
 
@@ -4063,8 +4240,6 @@ No legend, captions, camera graphics or Google-Maps-style detail.
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ================================================================================
 # OPERATOR TEXT ENDS HERE FOR THIS LIBRARY — COPY ONLY EACH `text` CODE BLOCK BELOW
 ================================================================================
@@ -4173,8 +4348,6 @@ Use the nine frames as ordered temporal keyframes, not nine unrelated illustrati
 The present remains one continuous exterior walk until the hard cut in STORYBOARD 07.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## STORYBOARD 02 — 00:30–01:00 — GLOBAL ROUTE / LOCAL ENCOUNTER
 
@@ -4286,8 +4459,6 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## STORYBOARD 03 — 01:00–01:30 — WORK / RULE CHANGE / THE SYSTEM ENTERS
 
 ```text
@@ -4391,8 +4562,6 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 ```
 
 
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
-
 ## STORYBOARD 04 — 01:30–02:00 — POLICE / LAWYERS / PROCEDURE
 
 ```text
@@ -4495,8 +4664,6 @@ Use the nine frames as ordered temporal keyframes, not nine unrelated illustrati
 The present remains one continuous exterior walk until the hard cut in STORYBOARD 07.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## STORYBOARD 05 — 02:00–02:30 — COURT / CLASSIFICATION / THE PERSON VS THE FILE
 
@@ -4603,8 +4770,6 @@ Use the nine frames as ordered temporal keyframes, not nine unrelated illustrati
 The present remains one continuous exterior walk until the hard cut in STORYBOARD 07.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## STORYBOARD 06 — 02:30–03:00 — OVERLOAD / HUMANITY BREAKS THROUGH
 
@@ -4713,8 +4878,6 @@ Use the nine frames as ordered temporal keyframes, not nine unrelated illustrati
 The present remains one continuous exterior walk until the hard cut in STORYBOARD 07.
 ```
 
-
-> **FLOW SETTING BEFORE GENERATION: Image → Aspect ratio → 16:9. Do not leave Flow at 1:1.**
 
 ## STORYBOARD 07 — 03:00–03:20 — THE LAST WINDOW / HARD CUT
 
@@ -4960,6 +5123,8 @@ Cinema Studio / Seedance should receive the uploaded reference images as **@ ref
 - If Cinema Studio lets you select/insert that asset with the preferred alias, use that alias.
 - If Cinema Studio displays a different automatic `@token`, replace the preferred alias in the prompt with the actual token shown by the UI before generation.
 - The bare filename is operator information only; the COPYABLE video prompt uses `@references`.
+- **MCP path:** bind reference media using the exact accepted Higgsfield generation/media ID from the ASSET REGISTRY and the correct media role; do not expect a filename or alias to resolve an asset automatically.
+- **Cinema Studio UI path:** after the actual asset is selected/uploaded, use the exact `@token` displayed by Higgsfield. The preferred `@ALIAS` in this pack is a readable mapping target, not proof that such a token exists.
 - Do not attach all 50 assets indiscriminately. Attach only the assets listed for that block, even if more reference slots are available.
 
 ================================================================================
@@ -6341,4 +6506,23 @@ Do not export seven unrelated clips and later hide the joins with DaVinci, Premi
 If Higgsfield's current native extension/project behavior cannot produce the required continuous deliverable, STOP and tell the user exactly what the platform produced. A Higgsfield-native Canvas/project rough-cut route may be proposed only as a MANUAL FALLBACK, with its credit implications and continuity limitations stated first.
 
 The final clinical hold and title must be produced inside the native final block/project path. Do not add the title later in an external editor. If the generated title text is materially wrong or unreadable, report it as a local final-block failure and request explicit user approval for the smallest Higgsfield-native repair (for example a region/video edit if available); do not repair it outside Higgsfield.
+
+
+================================================================================
+## HISTORICAL PRE-PRODUCTION RECORD — GOOGLE FLOW / 3×3 WORKFLOW
+================================================================================
+
+> **OPERATOR / AUDIT NOTE — HISTORICAL ONLY. NOT AN ACTIVE PRODUCTION INSTRUCTION.**
+
+Before the Higgsfield-native production path was locked, Google Flow was used as a no-additional-cost pre-production validation environment. The creator tested visual and workflow ideas there with Nano Banana 2, Nano Banana Pro and Gemini Omni Flash.
+
+A key experiment was the 3×3 control-image method: one 16:9 image containing nine ordered visual frames could act as a compact storyboard/reference bank for a longer AI-video shot, including roughly 30-second guided sequences. This made it possible to test world design, character continuity, memory/reflection logic and temporal shot guidance while reducing unnecessary paid production-generation attempts.
+
+The Google Flow work belongs to the development history of the production method only. It is not part of the canonical Festival production asset chain. No Google Flow image, video or audio is used as final submitted production media or as a substitute for a required Higgsfield generation.
+
+Canonical lineage:
+
+**source archive → AI-assisted two-volume book → canonical prompt pack → Google Flow pre-production validation of the 3×3 workflow → Higgsfield-native production**
+
+All active production instructions in this pack remain Higgsfield-only unless the user explicitly overrides that rule in a later instruction.
 
