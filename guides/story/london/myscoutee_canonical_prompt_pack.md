@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.27 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.31 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -346,6 +346,23 @@ If a different AI/agent takes over this pack later, treat this file as the canon
 
 The current Higgsfield MCP plugin surface does not expose every Cinema Studio project-administration write action needed by this workflow. In particular, Project Brief editing, project collection/subfolder management, project assignment/placement of global generations, readable project asset naming, and Festival publication/submission controls may remain UI-only. These are recorded as **platform automation limitations**, not silently reassigned to the creator. The creator is not expected to use Cinema Studio merely to compensate for missing MCP interfaces. If an unavailable action blocks a required state, report it and stop that dependent automation path. A manual workaround is performed only if the user explicitly authorizes that specific exception, and it remains disclosed in the final human-intervention log. If a future MCP surface exposes any of these actions, automate them directly and update the registry.
 
+### OPERATOR NOTES — LIVE MCP / CINEMA STUDIO DIAGNOSTIC — 2026-08-27 — DO NOT COPY
+
+The external GPT-5.6 Sol orchestrator has now performed a real no-generation MCP diagnostic against the connected Higgsfield account/workspace. The Cinema Studio UI visibly contains the existing project `AI Film Festival` and exposes manual UI controls including Upload, Add folder, Edit and Submit. The same account state also reports all credits used / zero available credits, matching the MCP balance result and making a wrong-account explanation less likely.
+
+Observed through the live MCP connection without paid generation:
+- workspace/balance read succeeds;
+- general-file upload succeeds; the canonical Markdown prompt pack can be uploaded to Higgsfield storage without generation;
+- creation of a reusable Reference Element from an already-uploaded image succeeds without generation;
+- regular generation history and Reference Elements can be read;
+- no MCP action is exposed for enumerating Cinema Studio projects, writing the Project Brief, creating/moving project folders/collections, assigning a global uploaded/generated asset to `AI Film Festival`, setting project-level human display names, or submitting/publishing the Festival project.
+
+This separates two independent questions that must not be conflated:
+1. **generation entitlement / credits** — a paid balance may enable paid model generation;
+2. **project-state automation coverage** — missing MCP project-management endpoints remain missing unless Higgsfield actually exposes additional actions.
+
+The MCP already performs real read/write operations while the connected account has zero generation credits, so MCP operation itself is not simply disabled by the free/zero-credit state. If the account is upgraded or credits are added later, re-run the MCP capability inventory before the first paid generation and record any endpoint changes. Do not assume that paying for generation automatically adds project-state APIs.
+
 ### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF / DESCRIPTION — COPY INTO THE PROJECT FIELD
 
 ```text
@@ -358,6 +375,25 @@ Primary video model: Seedance 2.5
 Aspect ratio: 16:9
 Production ceiling: 3000 Higgsfield credits total
 
+LIVE EXTERNAL SUPERCOMPUTER / REAL-WORLD ORCHESTRATION TEST
+- This project is not only a film-generation experiment. It is a live test of whether a powerful external reasoning system can operate Higgsfield as a production environment rather than merely provide prompts to a human operator.
+- The production orchestrator is ChatGPT GPT-5.6 Sol in a Pro 5× high-reasoning configuration, running outside Higgsfield and connected through the official Higgsfield MCP interface. In this project, the phrase **external supercomputer** is an operational role: the external AI reads the canonical execution contract, recovers state, resolves dependencies, uploads and binds supported assets, performs cost checks, records exact IDs, evaluates outputs, maintains continuity and decides when the workflow must stop at an explicit human gate.
+- The experiment is already happening in reality, not being described retrospectively. Before paid media generation, the external orchestrator connected to the live Higgsfield workspace, read workspace/balance state, uploaded the canonical Markdown pack as a general Higgsfield file, inspected existing media and created a reusable Reference Element from an already-uploaded asset without generating new media.
+- The same live test exposed a separate limitation: the current MCP surface does not expose the Cinema Studio project-state operations needed to manage `AI Film Festival` end-to-end, even though those operations are visibly available to a human in the Cinema Studio UI.
+- This separates intelligence from interface coverage: stronger reasoning cannot execute a Cinema Studio action that the official external interface does not expose. The production therefore measures the boundary between AI capability and Higgsfield's machine-operable project control, rather than assuming that more compute alone solves missing platform actions.
+
+PUBLIC POSITIONING / AUTOMATION-APEX TEST
+- Higgsfield publicly presents **Supercomputer** as an agentic workspace that can run a whole creative pipeline/project from one chat, while Cinema Studio presents Project Briefs, shared project state and subfolders as agent-aware production features. Public help also says Supercomputer can route work through Higgsfield models including Cinema Studio.
+- However, the current public help does **not clearly document the bridge between Supercomputer's own workspace/project state and an already-existing Cinema Studio project**: it does not explain whether or how Supercomputer opens that project, edits its Project Brief, manages its subfolders, or routes existing assets into it. That internal capability may exist; this project records it as **unverified rather than assumed**.
+- This production therefore pushes automation to the highest practical level and tests Higgsfield layer by layer: reasoning/orchestration → workspace/files → reusable Elements → generation → Cinema Studio project state → asset routing → publication. The goal is to identify exactly where autonomous control ends, whether the controlling agent is Higgsfield's own Supercomputer or an external AI through MCP.
+- Human intervention is not hidden. Every manual action is classified either as an intentional authorship/approval gate or as a disclosed `MANUAL_EXCEPTION_AUTHORIZED` response to a missing automation capability. The human is never silently used as the missing API layer.
+
+PAID-VS-FREE MCP TEST DESIGN
+- Generation credits and MCP project-control capability are treated as separate variables. The live connection already performs genuine MCP reads and writes at zero available generation credits, proving that at least part of the MCP/plugin surface is functioning in the current state.
+- Higgsfield's current public connection guide says an **active paid subscription is required**, while the live connected workspace in this test reports a free plan / zero credits and nevertheless permits non-generation MCP operations such as state reads, file upload and Reference Element creation. This is recorded as a documentation-versus-observed-behavior discrepancy; it does not prove that paid generation is available on the free state.
+- Higgsfield's MCP help also states that automated generation through MCP uses standard credits and does not receive the web-only Unlimited/free-generation allowance. Therefore adding credits or moving to a paid plan may enable generation and additional entitlements, but it must NOT be assumed to solve missing Project Brief, folder/collection, project-assignment or publication APIs unless those actions actually appear in the live MCP surface after the account change.
+- If the account state changes, the orchestrator re-runs the capability inventory before paid production and records the before/after difference as part of the experiment.
+
 MCP TECHNICAL LIMITATION SUMMARY
 - The Higgsfield MCP plugin can drive Higgsfield image/video/audio generation, cost preflight, generation-ID capture and supported downstream reference binding.
 - At the current plugin capability level, some Cinema Studio administration is not exposed as reliable MCP write actions: Project Brief editing, project asset assignment, collection/subfolder creation or movement, public display-name management, and final Festival publish/submission UI.
@@ -368,7 +404,7 @@ PROJECT ORIGIN / CREATOR PATH
 - This film grows from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then abstracted into the canonical film prompt pack, and finally into this Higgsfield-native short.
 - The source-document-to-two-volume-book synthesis took roughly two days. The canonical film prompt pack was assembled in roughly one additional day.
 - Only a few weeks before this project, the creator had no practical knowledge of AI video generation and had never made a comparable film. Prior video work consisted only of a small number of minimal experiments published on the MyScoutee YouTube channel.
-- The workflow itself is part of the experiment: source documents → AI-assisted book → canonical production prompt pack → externally orchestrated Higgsfield film.
+- The workflow itself is part of the experiment: source documents → AI-assisted book → canonical production prompt pack → live external-supercomputer orchestration through Higgsfield MCP → Higgsfield-native film. The test includes not only generation quality but whether machine-accessible project state is sufficient for the external AI to operate the production without turning the creator into a manual API bridge.
 
 PRODUCT / PUBLIC CONTEXT
 - MyScoutee is not only the film title. It is a real social software product whose development was itself substantially AI-assisted.
@@ -408,7 +444,7 @@ PRODUCTION TRANSPARENCY
 - This project is executed from a canonical prompt pack that is the production source of truth for story, references, continuity, budget, manual gates and fallback rules.
 - The human–AI relationship is intentionally deeper than a conventional tool-assisted workflow. The human supplies the lived source material, authorship, intent, taste, ethical boundaries and explicit manual approvals; AI helped reconstruct and synthesize the source archive into the two-volume book, derive and maintain the film structure and prompt pack, orchestrate production, and provide the film with its consistent off-screen narration voice. In that practical sense, AI did not only accelerate the work; it helped give the accumulated material a coherent voice.
 - This end-to-end collaboration is itself part of what the project is testing: how far a human and AI can operate as one production system while human authorship and approval remain explicit.
-- External orchestration is performed by ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration, acting in an external-supercomputer role through the Higgsfield MCP/app connection. This is intentionally not a Plus configuration.
+- External orchestration is performed by ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration, acting in a live external-supercomputer role through the Higgsfield MCP/app connection. This is not a hypothetical future workflow: the connected agent is already reading live workspace state, uploading non-generation project files, creating supported reusable state and measuring the exact boundary where the current MCP stops exposing Cinema Studio control. This is intentionally not a Plus configuration.
 - Production-media boundary: the orchestrator calls the **Higgsfield MCP plugin**, but Higgsfield generates every production image, narration/audio asset and video. ChatGPT itself does not generate production media for this project.
 - Generation multiplicity is locked to **one output per canonical asset per authorized attempt**. The orchestrator must explicitly use `count=1` / `batch_size=1` / one sample wherever the Higgsfield MCP plugin exposes such controls. No four-variation image sets, no multi-take video candidates, no narration alternatives and no seed sweeps are part of the production workflow. A second generation of the same asset is a manual-gated retry, not a normal variation.
 - Asset identity has both a human and machine layer. Every accepted generation receives a logical ID, descriptive public display name, contextual collection path and one-sentence story context, while the exact Higgsfield generation/job UUID remains in the canonical registry for deterministic MCP binding. Reusable image references may additionally receive a Higgsfield Reference Element ID where supported. Public reviewers read names and context; the orchestrator binds exact IDs.
@@ -418,8 +454,10 @@ PRODUCTION TRANSPARENCY
 
 AUTONOMY / SUPERCOMPUTER DEMONSTRATION
 - The project is not primarily a demonstration of frame-by-frame perfection. Its central production question is how far an AI-controlled pipeline can autonomously carry a complex film from source material to finished native output while respecting a detailed execution contract.
-- The external GPT-5.6 Sol Pro 5× high-reasoning orchestrator is presented operationally as an external supercomputer: it interprets the canonical prompt pack, recovers project state, builds the required assets in dependency order, tracks credits and continuity, executes the Higgsfield generation chain, and pauses only at the explicitly defined human decision gates.
-- Minor native generative imperfections are acceptable when story, identity, continuity, narration and physical-world logic remain intact. The meaningful result is the degree of autonomous end-to-end execution achieved without hidden manual shot-building or external video-editing repair.
+- The external GPT-5.6 Sol Pro 5× high-reasoning orchestrator is used as a real external supercomputer, not merely described as one. It interprets the canonical prompt pack, interrogates the live Higgsfield MCP surface, recovers whatever state the interface exposes, uploads and binds supported assets, builds the dependency graph, tracks IDs/credits/continuity, executes allowed generation operations and pauses only at explicit human decision gates or measured API boundaries.
+- This makes the film simultaneously a creative work and a systems experiment. Success is not only whether Higgsfield can render the images and video, but whether Higgsfield exposes enough machine-operable state for an external AI to control the production honestly from end to end.
+- A missing MCP endpoint is therefore part of the measured result. It is not repaired invisibly by asking the creator to click through repetitive project administration. A paid-plan change is also treated experimentally: generation entitlement may change, but project-state capability is considered improved only if new machine actions can actually be observed and used.
+- Minor native generative imperfections are acceptable when story, identity, continuity, narration and physical-world logic remain intact. The meaningful result is the degree of autonomous end-to-end execution achieved without hidden manual shot-building, hidden project administration or external video-editing repair.
 
 CORE CONCEPT
 One apparently uninterrupted exterior walk through an impossible London–Budapest metropolis at rainy blue hour/night.
@@ -6507,7 +6545,6 @@ If Higgsfield's current native extension/project behavior cannot produce the req
 
 The final clinical hold and title must be produced inside the native final block/project path. Do not add the title later in an external editor. If the generated title text is materially wrong or unreadable, report it as a local final-block failure and request explicit user approval for the smallest Higgsfield-native repair (for example a region/video edit if available); do not repair it outside Higgsfield.
 
-
 ================================================================================
 ## HISTORICAL PRE-PRODUCTION RECORD — GOOGLE FLOW / 3×3 WORKFLOW
 ================================================================================
@@ -6522,7 +6559,7 @@ The Google Flow work belongs to the development history of the production method
 
 Canonical lineage:
 
-**source archive → AI-assisted two-volume book → canonical prompt pack → Google Flow pre-production validation of the 3×3 workflow → Higgsfield-native production**
+**source archive → AI-assisted two-volume book → canonical prompt pack → Google Flow pre-production validation of the 3×3 workflow → live external-supercomputer orchestration through Higgsfield MCP → Higgsfield-native production**
 
 All active production instructions in this pack remain Higgsfield-only unless the user explicitly overrides that rule in a later instruction.
 
