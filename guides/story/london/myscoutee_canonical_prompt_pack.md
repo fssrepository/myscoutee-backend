@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.1 FINAL
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -45,7 +45,8 @@
 9. **WORLD 01–07** — physical London–Budapest location/environment continuity
 10. **MAP 01–07** — separate spatial aids
 11. **STORYBOARD 01–07** — 3×3 temporal boards, using MAIN WORLD + relevant MEMORY WORLD + exact CHARACTER references
-12. **VIDEO GENERATION IN SEEDANCE 2.5** — Seedance generates picture + off-screen narration + ambience + foley/SFX + restrained score in the SAME pass. No separate audio file is required in the primary no-edit workflow. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact character sheets for identified people, STORYBOARD as time order, and the AUDIO section inside each CINEMA BLOCK as the sound script.
+12. **HIGGSFIELD AUDIO / SEED AUDIO 1.0** — generate and duration-validate the seven locked clean narration WAV files first. Use the same narrator voice preset and the same voice settings for all seven blocks.
+13. **VIDEO GENERATION IN SEEDANCE 2.5** — supply the matching locked narration WAV as an audio reference. Seedance generates picture + ambience + foley/SFX + restrained score around that narration in the same video pass. Use MAIN WORLD as the physical present, the relevant MEMORY WORLD as literal memory content, the exact CHARACTER references for identified people, and STORYBOARD as ordered time.
 
 The MEMORY WORLD images are generated once and reused. They show the remembered event/place DIRECTLY, as if the camera were physically inside that remembered scene. They contain NO London–Budapest present-city layer, NO window frame from the present, NO rain/reflection composite from the present and NO score cards.
 
@@ -254,66 +255,85 @@ Canonical STORYBOARD filenames:
 - STORYBOARD 06 → `SB06_STORYBOARD.png`
 - STORYBOARD 07 → `SB07_STORYBOARD.png`
 
-### PHASE F — AUDIO WORKFLOW — SEEDANCE 2.5 NATIVE AUDIO / NO SEPARATE AUDIO EDIT
+### PHASE F — HIGGSFIELD AUDIO — LOCKED NARRATION GENERATION
 
-This is the **PRIMARY workflow for this pack** because the film must be usable without DaVinci/Premiere/manual sound editing.
+This is the **PRIMARY audio workflow** for this pack.
 
-**YOU DO NOT GENERATE A SEPARATE NARRATION FILE OR SFX FILE IN THE NORMAL WORKFLOW.**
-Do not create `A01_AUDIO_MASTER.wav` etc. for the primary workflow.
-Seedance 2.5 generates the video, narration, ambience, foley/SFX and restrained score together in the same generation pass.
+The narration is generated FIRST inside Higgsfield, then supplied to Seedance 2.5 as an **audio reference**. This is more reliable than asking seven separate Seedance video generations to invent the same narrator voice again.
 
-For each CINEMA BLOCK, the copyable Seedance prompt already contains a complete **AUDIO — NATIVE SEEDANCE 2.5** section with:
-- the exact English off-screen narration script;
-- narrator voice character/delivery;
-- approximate narration start/end timing;
-- environmental ambience;
-- timed foley/SFX cues;
-- music/score rules;
-- explicit forbidden audio.
+**IMPORTANT SEPARATION OF JOBS:**
+- **Higgsfield Audio / Seed Audio 1.0 = narration only.**
+- **Seedance 2.5 = picture + ambience + foley/SFX + restrained score, built around the already-generated narration reference.**
+- Do NOT ask the TTS model to generate rain, traffic, music or SFX. The narration file is intentionally clean.
 
-**NARRATOR CONTINUITY — DO THIS IN EVERY BLOCK:**
-1. Attach `C01_PROTAGONIST.png` in every CINEMA BLOCK and bind it to `@C01_PROTAGONIST`.
-2. The prompt tells Seedance to use the protagonist's voice identity as the **OFF-SCREEN narrator** while the visible protagonist does NOT move his mouth.
-3. Keep exactly the same `@C01_PROTAGONIST` reference for all seven blocks.
-4. Keep the repeated voice direction unchanged: adult male around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate, natural English, at most a very light Hungarian/Central-European accent.
-5. No other character speaks intelligible dialogue. This avoids lip-sync dependence and reduces voice drift.
+**VOICE LOCK — DO THIS ONCE AND KEEP IT FOR ALL 7 NARRATION FILES:**
+1. Open Higgsfield Audio / Text-to-Speech and select **Seed Audio 1.0**.
+2. Choose ONE English-speaking adult male voice preset and never change it between blocks.
+3. Target delivery: around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate, reflective, fluent English, at most a very light Hungarian/Central-European accent.
+4. Avoid trailer-announcer energy, advertising delivery, melodrama, whisper-ASMR and exaggerated sadness.
+5. Start every narration with the same speed / pitch / expression settings. Keep voice preset, pitch and expression locked. Only `speech_rate` may be adjusted minimally for an individual block if that take fails the duration gate below.
+6. Prefer WAV / 48 kHz if the UI offers it.
 
-**WHAT YOU ACTUALLY DO FOR AUDIO:**
-- Do nothing in a separate audio tool.
-- Go directly to the matching CINEMA BLOCK.
-- Attach the listed image references.
-- Paste that CINEMA BLOCK's single Seedance 2.5 code block.
-- Seedance generates the **finished clip with its audio already embedded**.
-- Listen to the result. If the narration wording/voice or SFX is wrong, regenerate or region/audio-fix inside Higgsfield if available; do not manually edit an external soundtrack.
+**NARRATION DURATION ACCEPTANCE GATE — MUST PASS BEFORE CINEMA STUDIO:**
+- `A01_NARRATION.wav` through `A06_NARRATION.wav`: accepted duration = **23–27 seconds**.
+- `A07_NARRATION.wav`: accepted duration = **15–19 seconds**.
+- Measure/check the actual generated WAV duration before accepting the take.
+- If a take is inside the gate: ACCEPT it and treat that exact WAV as locked for the block.
+- If a take is too long: regenerate the SAME exact words in Seed Audio using the SAME voice preset, pitch and expression, with only a small increase in `speech_rate`.
+- If a take is too short: regenerate the SAME exact words using the SAME voice preset, pitch and expression, with only a small decrease in `speech_rate`.
+- Make small changes only; preserve the calm delivery. Do not solve timing by making the narration sound rushed.
+- Do NOT remove/rewrite words merely to hit duration unless making an explicit editorial script change to this pack.
+- Do NOT ask Seedance to aggressively time-stretch, compress or re-voice an overlong narration file.
+- The unused seconds in a 30-second block are intentional breathing room for city ambience, memory surfaces and visual transitions.
 
-**AUDIO PRIORITY INSIDE EACH GENERATED CLIP:**
-1. Narration intelligibility.
-2. Real city/room ambience.
-3. Specific synchronized foley/SFX.
-4. Very restrained non-lyrical score only where specified.
-The score must duck beneath narration and must never become trailer music.
+**GENERATE THESE 7 CLEAN NARRATION FILES:**
+- Block 01 → `A01_NARRATION.wav`
+- Block 02 → `A02_NARRATION.wav`
+- Block 03 → `A03_NARRATION.wav`
+- Block 04 → `A04_NARRATION.wav`
+- Block 05 → `A05_NARRATION.wav`
+- Block 06 → `A06_NARRATION.wav`
+- Block 07 → `A07_NARRATION.wav`
 
-**IMPORTANT:** narration is OFF-SCREEN first-person voice-over. Nobody visible should lip-sync to it. Memory characters may breathe, laugh softly or make non-verbal sounds, but they must not introduce intelligible dialogue unless a later prompt explicitly asks for it.
+For each file, scroll to **HIGGSFIELD AUDIO / SEED AUDIO 1.0 — FINAL NARRATION COPY PACK** near the end of this document. Paste **only the fenced narration text** for that block into the TTS text field. The code block contains only words that should actually be spoken.
 
-### PHASE G — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO GENERATION
+**DO NOT COPY voice instructions into the TTS text field.** If you paste instructions there, the TTS model may literally speak them.
 
-This phase uses the finished reference assets to create VIDEO. The intended Cinema Studio model for this pack is **Seedance 2.5**.
+The narration is always **OFF-SCREEN first-person voice-over**. The visible protagonist does not lip-sync to it.
 
-Do **not** paste any CHARACTER, MEMORY WORLD, MAIN WORLD, MAP or STORYBOARD image-generation prompt into Cinema Studio. Scroll to the final section **HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK**.
+### PHASE G — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO + SFX GENERATION
 
-For each film block, do exactly this:
+After all required image references and the matching clean narration file exist, generate the video block in Cinema Studio.
 
+For each block:
 1. Open Higgsfield Cinema Studio and select **Seedance 2.5**.
-2. Set the output to **16:9 landscape**.
-3. Attach exactly the IMAGE files listed under that CINEMA BLOCK. There is no required external audio file in the primary workflow.
-4. Bind/verify the `@` reference tokens shown for those image references.
-5. Paste **only the fenced `text` code block** under `PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD`.
-6. Generate only that block. Seedance 2.5 generates the narration + ambience + foley/SFX + restrained score natively together with the picture.
-7. Save the resulting clip with its embedded audio. Do not paste any earlier prompt from the file.
+2. Use **omni-reference / reference mode** if the UI exposes a mode choice.
+3. Set **16:9 landscape** and the block duration: Blocks 01–06 ≈ 30 s; Block 07 ≈ 20 s.
+4. Keep audio generation **ON**.
+5. Attach exactly the IMAGE references listed under that CINEMA BLOCK.
+6. Also attach the matching narration file, e.g. `A01_NARRATION.wav`, as the block's **audio reference**.
+7. Bind/verify the `@` tokens shown in the block, including `@A01_NARRATION`, `@A02_NARRATION`, etc.
+8. Paste **only** that CINEMA BLOCK's fenced `text` prompt.
+9. Seedance must treat the narration reference as the voice/timing backbone and generate the **ambience, foley/SFX and restrained score around it**.
+10. No visible person lip-syncs to the narration. No extra intelligible dialogue is added.
+11. Save the resulting MP4 with its generated soundtrack embedded.
 
-Reference roles are fixed: **MAIN WORLD = physical present**, **MEMORY WORLD = literal remembered content**, **CHARACTER = identity + protagonist narrator voice anchor**, **STORYBOARD = ordered time**, **AUDIO section inside the CINEMA prompt = exact narration/SFX/ambience direction**. The 3×3 reference sheets are control assets only and must never appear as grids inside the finished video.
+**AUDIO PRIORITY IN SEEDANCE:**
+1. Preserve the supplied narration reference and its voice/pacing.
+2. Add physically plausible synchronized ambience.
+3. Add restrained foley/SFX specified in the block prompt.
+4. Add only very low-level non-lyrical score where specified.
 
-Blocks 01–06 target approximately **30 seconds each**. Block 07 targets approximately **20 seconds**. If the Cinema Studio duration control does not allow the whole block in one generation, keep the same attachment bundle and use the short-clip split rule at the end of the video copy pack.
+If Seedance alters, re-voices, duplicates or paraphrases the supplied narration, treat that generation as a failed audio take and regenerate. Do not accept a different narrator just because the picture is good.
+
+Reference roles are fixed:
+- **MAIN WORLD = physical present**
+- **MEMORY WORLD = literal remembered content**
+- **CHARACTER = identity**
+- **STORYBOARD = ordered visual time**
+- **Axx_NARRATION = exact off-screen narrator voice + spoken-content + timing anchor**
+
+The 3×3 references remain control assets only; they must never appear as grids in the finished video.
 
 
 ================================================================================
@@ -4291,6 +4311,118 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 ================================================================================
 
 ================================================================================
+================================================================================
+## HIGGSFIELD AUDIO / SEED AUDIO 1.0 — FINAL NARRATION COPY PACK
+================================================================================
+
+> **OPERATOR NOTE — DO NOT COPY:** Generate these seven CLEAN narration files before Cinema Studio. Select the same Seed Audio 1.0 male voice preset for all seven. The fenced block contains ONLY text that should be spoken. Do not add SFX/music instructions to the TTS request.
+
+
+### NARRATION 01 — THE CITY JUDGES FIRST
+
+**GENERATED OUTPUT:** `A01_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+I don't remember my life as a straight line. A street becomes a room, a window becomes another country, a glance becomes a verdict before anyone has time to speak. Memory edits without asking permission. Sometimes the only thing that survives the cut is a smile.
+```
+
+
+### NARRATION 02 — GLOBAL ROUTE / LOCAL ENCOUNTER
+
+**GENERATED OUTPUT:** `A02_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+I remember routes before dates: a card at a gate, a voice behind a bus seat, a taxi shared with strangers, luggage falling, hands lifting a balloon basket from a field. Global route. Local encounter. The world was large; the moments that stayed were human.
+```
+
+
+### NARRATION 03 — WORK / THREE SCREENS
+
+**GENERATED OUTPUT:** `A03_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+Work should have been simpler than travel. Three people, one problem, three screens. A form changed, a rule moved, a deadline arrived. Nobody had to be cruel. The gap between ordinary actions was enough. I kept trying to repair the record while the work kept moving.
+```
+
+
+### NARRATION 04 — THE SYSTEM ENTERS
+
+**GENERATED OUTPUT:** `A04_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+Then the system entered the story without ever becoming one person. A voice at the door. A search. A question. A lawyer I could not quite reach. An officer who almost laughed. The strange part was not that people stopped being human. The process could forget that they were.
+```
+
+
+### NARRATION 05 — THE FILE
+
+**GENERATED OUTPUT:** `A05_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home, what you gave up, or what you were trying to repair. The more the record grew, the less room it seemed to leave for the life that made it.
+```
+
+
+### NARRATION 06 — HUMANITY BREAKS THROUGH
+
+**GENERATED OUTPUT:** `A06_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not. A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed.
+```
+
+
+### NARRATION 07 — THE LAST CITY / REVEAL
+
+**GENERATED OUTPUT:** `A07_NARRATION.wav`
+
+**HIGGSFIELD AUDIO SETTINGS — DO NOT COPY:** Seed Audio 1.0; use the exact same selected male voice preset and voice settings as Narration 01–07. Narration only. Prefer WAV / 48 kHz if available.
+
+================================================================================
+**⬇ COPY ONLY THE WORDS INSIDE THIS CODE BLOCK INTO THE TTS TEXT FIELD ⬇**
+================================================================================
+
+```text
+By then the city was reading me too. London, Budapest, every memory stayed in the glass until the reflections disappeared. What remained was not an answer: a room, a body, another human face.
+```
+
+
 ## HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK
 
 This is the **actual video-generation section**. Everything before this section creates or organizes reference images.
@@ -4339,6 +4471,7 @@ Cinema Studio / Seedance should receive the uploaded reference images as **@ ref
 - `C07_FX_MORTGAGE_HOUSEMATE.png`
 - `C08_FX_MORTGAGE_SPOUSE.png`
 - `C09_FX_MORTGAGE_CHILD.png`
+- `A01_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -4351,6 +4484,7 @@ Cinema Studio / Seedance should receive the uploaded reference images as **@ ref
 - `C07_FX_MORTGAGE_HOUSEMATE.png` → `@C07_FX_MORTGAGE_HOUSEMATE`
 - `C08_FX_MORTGAGE_SPOUSE.png` → `@C08_FX_MORTGAGE_SPOUSE`
 - `C09_FX_MORTGAGE_CHILD.png` → `@C09_FX_MORTGAGE_CHILD`
+- `A01_NARRATION.wav` → `@A01_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -4385,22 +4519,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C09_FX_MORTGAGE_CHILD = exact identity anchor for the fx mortgage child; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A01_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"I don't remember my life as a straight line. A street becomes a room, a window becomes another country, a glance becomes a verdict before anyone has time to speak. Memory edits without asking permission. Sometimes the only thing that survives the cut is a smile."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A01_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: rainy Soho / West End city bed, wet tyre hiss, distant red-bus brakes, soft tram rail noise, footsteps on wet stone.
@@ -4416,10 +4541,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A01_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -4505,6 +4630,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png`
 - `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`
 - `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`
+- `A02_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -4525,6 +4651,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` → `@C19_BARMOUTH_ROAD_TRIP_COMPANION_A`
 - `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` → `@C20_BARMOUTH_ROAD_TRIP_COMPANION_B`
 - `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` → `@C21_BARMOUTH_ROAD_TRIP_COMPANION_C`
+- `A02_NARRATION.wav` → `@A02_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -4567,22 +4694,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C21_BARMOUTH_ROAD_TRIP_COMPANION_C = exact identity anchor for the barmouth road trip companion c; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A02_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"I remember routes before dates: a card at a gate, a voice behind a bus seat, a taxi shared with strangers, luggage falling, hands lifting a balloon basket from a field. Global route. Local encounter. The world was large; the moments that stayed were human."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A02_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: continue the same rainy London–Budapest city bed; station exterior rumble and footsteps.
@@ -4599,10 +4717,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A02_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -4678,6 +4796,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C22_ACCOUNTANT.png`
 - `C23_ADMIN_COLLEAGUE_A.png`
 - `C24_ADMIN_COLLEAGUE_B.png`
+- `A03_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -4688,6 +4807,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C22_ACCOUNTANT.png` → `@C22_ACCOUNTANT`
 - `C23_ADMIN_COLLEAGUE_A.png` → `@C23_ADMIN_COLLEAGUE_A`
 - `C24_ADMIN_COLLEAGUE_B.png` → `@C24_ADMIN_COLLEAGUE_B`
+- `A03_NARRATION.wav` → `@A03_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -4720,22 +4840,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C24_ADMIN_COLLEAGUE_B = exact identity anchor for the admin colleague b; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A03_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"Work should have been simpler than travel. Three people, one problem, three screens. A form changed, a rule moved, a deadline arrived. Nobody had to be cruel. The gap between ordinary actions was enough. I kept trying to repair the record while the work kept moving."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A03_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: wet professional-city ambience, rain on glass, distant tram and traffic.
@@ -4751,10 +4862,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A03_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -4831,6 +4942,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C04_APPOINTED_LAWYER.png`
 - `C25_SEARCH_OFFICER_MALE.png`
 - `C26_DEFENCE_OFFICE_SUBSTITUTE.png`
+- `A04_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -4842,6 +4954,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C04_APPOINTED_LAWYER.png` → `@C04_APPOINTED_LAWYER`
 - `C25_SEARCH_OFFICER_MALE.png` → `@C25_SEARCH_OFFICER_MALE`
 - `C26_DEFENCE_OFFICE_SUBSTITUTE.png` → `@C26_DEFENCE_OFFICE_SUBSTITUTE`
+- `A04_NARRATION.wav` → `@A04_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -4875,22 +4988,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C26_DEFENCE_OFFICE_SUBSTITUTE = exact identity anchor for the defence office substitute; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A04_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"Then the system entered the story without ever becoming one person. A voice at the door. A search. A question. A lawyer I could not quite reach. An officer who almost laughed. The strange part was not that people stopped being human. The process could forget that they were."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A04_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: formal rainy city street, close footsteps, distant traffic; tension remains grounded.
@@ -4907,10 +5011,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A04_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -4989,6 +5093,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C29_FORENSIC_EXPERT_B.png`
 - `C30_COURT_CLERK.png`
 - `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`
+- `A05_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -5002,6 +5107,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C29_FORENSIC_EXPERT_B.png` → `@C29_FORENSIC_EXPERT_B`
 - `C30_COURT_CLERK.png` → `@C30_COURT_CLERK`
 - `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` → `@C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE`
+- `A05_NARRATION.wav` → `@A05_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -5037,22 +5143,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE = exact identity anchor for the anonymous fictional political figure; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A05_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"A file can hold a photograph, a fingerprint, a signature, a list of things you own. It cannot hold why you came home, what you gave up, or what you were trying to repair. The more the record grew, the less room it seemed to leave for the life that made it."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A05_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: rainy river/civic-city ambience, footsteps and distant traffic.
@@ -5068,10 +5165,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A05_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -5154,6 +5251,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C27_JUDGE.png`
 - `C28_FORENSIC_EXPERT_A.png`
 - `C29_FORENSIC_EXPERT_B.png`
+- `A06_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -5171,6 +5269,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C27_JUDGE.png` → `@C27_JUDGE`
 - `C28_FORENSIC_EXPERT_A.png` → `@C28_FORENSIC_EXPERT_A`
 - `C29_FORENSIC_EXPERT_B.png` → `@C29_FORENSIC_EXPERT_B`
+- `A06_NARRATION.wav` → `@A06_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -5210,22 +5309,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C29_FORENSIC_EXPERT_B = exact identity anchor for the forensic expert b; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A06_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room. People pulled together when a balloon landed where it should not. A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed."
-
-NARRATION TIMING
-Begin the narration about 1.5 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 27 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A06_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: denser South Bank city bed, rain, crowd, bus brakes, tram rail, taxi tyre hiss.
@@ -5241,10 +5331,10 @@ Use a very restrained low-level non-lyrical cinematic texture only if it helps c
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A06_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -5318,6 +5408,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `HRW07_CLINICAL_REALITY.png`
 - `C01_PROTAGONIST.png`
 - `C05_FINAL_NURSE.png`
+- `A07_NARRATION.wav`  ← clean Higgsfield Audio narration reference
 
 **REFERENCE @ MAPPING — DO NOT COPY; USE THIS TO ASSIGN/VERIFY TOKENS:**
 
@@ -5326,6 +5417,7 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `HRW07_CLINICAL_REALITY.png` → `@HRW07_CLINICAL_REALITY`
 - `C01_PROTAGONIST.png` → `@C01_PROTAGONIST`
 - `C05_FINAL_NURSE.png` → `@C05_FINAL_NURSE`
+- `A07_NARRATION.wav` → `@A07_NARRATION`
 
 If the UI gives a different @token, substitute that actual token in the prompt below.
 
@@ -5356,22 +5448,13 @@ REFERENCE ROLE ASSIGNMENT
 - @C05_FINAL_NURSE = exact identity anchor for the final nurse; preserve face, age, body proportions and role.
 - Do not invent replacement identities for any named person above.
 
-AUDIO — NATIVE SEEDANCE 2.5
+AUDIO — SUPPLIED NARRATION REFERENCE + NATIVE SEEDANCE 2.5 SFX
 
-Generate the COMPLETE audio for this clip natively in the SAME pass as the picture. Do not expect or require an external audio master.
+@A07_NARRATION = EXACT OFF-SCREEN NARRATION REFERENCE AND TIMING BACKBONE.
+Use the supplied audio reference as authoritative. Preserve the same narrator voice, spoken wording, pacing and order. Do NOT re-voice, paraphrase, duplicate, summarize or replace it.
+The visible protagonist does NOT speak the narration and must NOT lip-sync to it. No other visible character speaks intelligible dialogue.
 
-NARRATOR VOICE IDENTITY
-Use @C01_PROTAGONIST as the voice-identity anchor for the same recurring narrator across MYSCOUTEE CINEMA BLOCKS 01–07.
-The narration is OFF-SCREEN first-person voice-over. The visible protagonist does NOT speak these words and must NOT move his mouth in sync with them.
-Adult male voice around 40, low-to-mid register, intelligent, restrained, slightly tired, intimate and reflective. Fluent natural English with at most a very light Central-European / Hungarian accent. Dry human warmth, never theatrical.
-No movie-trailer voice. No advertising delivery. No whisper-ASMR. No exaggerated sadness.
-No second narrator and no intelligible dialogue from visible memory characters.
-
-EXACT NARRATION — SPEAK THESE WORDS VERBATIM
-"By then the city was reading me too. London, Budapest, every memory stayed in the glass until the reflections disappeared. What remained was not an answer: a room, a body, another human face."
-
-NARRATION TIMING
-Begin the narration about 0.8 seconds. Natural unhurried delivery with short breathing spaces between sentences. Finish the final word by approximately 19 seconds; leave the remaining time for environmental sound and visual breathing room. Do not rush the final sentence.
+Generate the remaining soundtrack natively around @A07_NARRATION: physically plausible ambience, synchronized foley/SFX and only the restrained score specified below. Keep all generated sound beneath the narration.
 
 AMBIENCE / FOLEY / SFX EVENT TRACK
 0–5s: the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds.
@@ -5387,10 +5470,10 @@ No music after the hard cut to the clinical room. Before the hard cut, use at mo
 MIX
 Narration stays clear and centered, with ambience and effects underneath rather than competing with it. Environmental sounds must feel physically recorded in real spaces, not like a trailer sound library. Memory sounds may feel slightly filtered by distance/glass, but never use magical whooshes or dream-reverb. Maintain a compatible sonic palette with the neighboring blocks so all seven clips can cut together.
 Keep the narration clearly intelligible and foregrounded. Duck ambience, foley and score beneath speech. Audio transitions follow the physical reflection/memory logic; do not use magical transition sounds.
+The supplied @A07_NARRATION must remain clearly intelligible and dominant. Do not create a second narrator layer. Do not time-stretch it aggressively. Let the visual action follow the narration timing when necessary.
 
 DO NOT GENERATE
-No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound.
-No visible lip-sync to the narration. No extra spoken lines. No generated subtitles.
+No replacement narration. No paraphrased narration. No duplicate voice-over. No subtitles. No spoken labels. No explanatory character dialogue. No announcer. No chanting. No lyrics. No horror stingers. No giant cinematic impacts. No obvious dream-transition sound. No visible lip-sync to the narration.
 
 MEMORY COMPOSITING
 
@@ -5452,12 +5535,32 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — EMERGENCY FALLBACK ONLY
 
-Seedance 2.5 is intended to handle the 30-second blocks directly. If a block must be split into shorter clips, copy the SAME block prompt but keep only the relevant storyboard beats and the matching portion of the AUDIO event track. Repeat the exact same narrator voice instructions and keep @C01_PROTAGONIST attached in every subclip.
+Seedance 2.5 is intended to handle Blocks 01–06 as single ~30-second generations and Block 07 as one ~20-second generation. Use this fallback ONLY if Cinema Studio cannot reliably produce the full block.
+
+**CRITICAL AUDIO RULE:** never attach the same full `Axx_NARRATION.wav` to PART A, PART B and PART C. A full 23–27 second narration file cannot be the timing reference for three separate ~10-second subclips.
+
+For a split block, create/use three narration segments:
+- `Axx_PART_A.wav` = narration belonging to storyboard frames 1→3.
+- `Axx_PART_B.wav` = narration belonging to storyboard frames 4→6.
+- `Axx_PART_C.wav` = narration belonging to storyboard frames 7→9.
+
+**PREFERRED AUDIO-SPLIT METHOD:** if Higgsfield offers a simple trim/segment operation that preserves the approved `Axx_NARRATION.wav` without re-voicing it, split that LOCKED narration at natural sentence/pause boundaries and save the three parts above.
+
+**NO-MANUAL-AUDIO-EDITOR METHOD:** if you cannot trim audio, return to Higgsfield Audio / Seed Audio 1.0 and generate PART A / B / C separately from the exact corresponding narration sentences, using the SAME locked voice preset, pitch and expression. Do not let Seedance invent or re-speak the narration. Keep each sub-narration comfortably shorter than its video subclip so there is room for ambience and transitions.
+
+For every subclip:
+1. Attach the SAME scene-specific image-reference bundle as the parent Cinema block.
+2. Attach ONLY the matching narration segment (`@Axx_PART_A`, `@Axx_PART_B` or `@Axx_PART_C`) as audio reference.
+3. In the copied Cinema prompt, replace the parent `@Axx_NARRATION` token with the matching PART token.
+4. Keep only the storyboard beats and AUDIO-event-track cues that belong to that part.
+5. Seedance generates ambience, foley/SFX and restrained score around the supplied narration segment; it must not re-voice it.
+6. Preserve the same visual identity/world continuity across A → B → C.
 
 **CLIP A — append this at the END of the matching Cinema prompt:**
 
 ```text
 SHORT-CLIP OVERRIDE — PART A
+Use only the supplied @Axx_PART_A narration segment as the off-screen narration/timing backbone for this subclip. Do not use the full parent narration file and do not generate replacement narration.
 Generate only storyboard frames 1→3 from this block, in order. Do not advance to frame 4. Treat this as the opening segment of a longer continuous sequence. End on a natural continuation point, not a conclusion.
 ```
 
@@ -5465,6 +5568,7 @@ Generate only storyboard frames 1→3 from this block, in order. Do not advance 
 
 ```text
 SHORT-CLIP OVERRIDE — PART B
+Use only the supplied @Axx_PART_B narration segment as the off-screen narration/timing backbone for this subclip. Do not use the full parent narration file and do not generate replacement narration.
 Continue directly from the previous generated clip. Generate only storyboard frames 4→6 from this block, in order. Preserve the exact protagonist, world, lighting, weather, transport, memory-surface behavior and camera continuity from the previous clip. Do not re-establish the city and do not advance to frame 7.
 ```
 
@@ -5472,18 +5576,145 @@ Continue directly from the previous generated clip. Generate only storyboard fra
 
 ```text
 SHORT-CLIP OVERRIDE — PART C
+Use only the supplied @Axx_PART_C narration segment as the off-screen narration/timing backbone for this subclip. Do not use the full parent narration file and do not generate replacement narration.
 Continue directly from the previous generated clip. Generate only storyboard frames 7→9 from this block, in order. Preserve the exact protagonist, world, lighting, weather, transport, memory-surface behavior and camera continuity from the previous clip. Complete only the ending specified by this block.
 ```
 
+`@Axx_PART_A/B/C` is a placeholder naming pattern: replace `xx` with the actual block number and use the actual @token assigned by Cinema Studio.
+
 For STORYBOARD 07, PART C contains the actual clinical hard cut; Parts A and B must not expose the full clinical room.
 
+### SHORT-CLIP NARRATION PART COPY PACK — USE ONLY WITH THE EMERGENCY FALLBACK
+
+> **OPERATOR NOTE — DO NOT COPY:** If you cannot trim the approved full narration WAV, generate the following narration parts in Higgsfield Audio / Seed Audio 1.0 using the SAME locked narrator voice preset, pitch and expression. These parts are exact subsets of the approved narration scripts; no new narration is introduced. Save each result under the filename shown.
+
+#### BLOCK 01 PARTS
+
+`A01_PART_A.wav`
+```text
+I don't remember my life as a straight line. A street becomes a room, a window becomes another country.
+```
+
+`A01_PART_B.wav`
+```text
+A glance becomes a verdict before anyone has time to speak. Memory edits without asking permission.
+```
+
+`A01_PART_C.wav`
+```text
+Sometimes the only thing that survives the cut is a smile.
+```
+
+#### BLOCK 02 PARTS
+
+`A02_PART_A.wav`
+```text
+I remember routes before dates: a card at a gate, a voice behind a bus seat,
+```
+
+`A02_PART_B.wav`
+```text
+a taxi shared with strangers, luggage falling, hands lifting a balloon basket from a field.
+```
+
+`A02_PART_C.wav`
+```text
+Global route. Local encounter. The world was large; the moments that stayed were human.
+```
+
+#### BLOCK 03 PARTS
+
+`A03_PART_A.wav`
+```text
+Work should have been simpler than travel. Three people, one problem, three screens.
+```
+
+`A03_PART_B.wav`
+```text
+A form changed, a rule moved, a deadline arrived. Nobody had to be cruel.
+```
+
+`A03_PART_C.wav`
+```text
+The gap between ordinary actions was enough. I kept trying to repair the record while the work kept moving.
+```
+
+#### BLOCK 04 PARTS
+
+`A04_PART_A.wav`
+```text
+Then the system entered the story without ever becoming one person. A voice at the door. A search.
+```
+
+`A04_PART_B.wav`
+```text
+A question. A lawyer I could not quite reach. An officer who almost laughed.
+```
+
+`A04_PART_C.wav`
+```text
+The strange part was not that people stopped being human. The process could forget that they were.
+```
+
+#### BLOCK 05 PARTS
+
+`A05_PART_A.wav`
+```text
+A file can hold a photograph, a fingerprint, a signature, a list of things you own.
+```
+
+`A05_PART_B.wav`
+```text
+It cannot hold why you came home, what you gave up, or what you were trying to repair.
+```
+
+`A05_PART_C.wav`
+```text
+The more the record grew, the less room it seemed to leave for the life that made it.
+```
+
+#### BLOCK 06 PARTS
+
+`A06_PART_A.wav`
+```text
+But humanity kept leaking through. A stranger opened a gate. Someone smiled in the wrong room.
+```
+
+`A06_PART_B.wav`
+```text
+People pulled together when a balloon landed where it should not.
+```
+
+`A06_PART_C.wav`
+```text
+A judge, an officer, a lawyer, a dancer: for a second, each role became a person again. Then the system resumed.
+```
+
+#### BLOCK 07 PARTS
+
+`A07_PART_A.wav`
+```text
+By then the city was reading me too.
+```
+
+`A07_PART_B.wav`
+```text
+London, Budapest, every memory stayed in the glass until the reflections disappeared.
+```
+
+`A07_PART_C.wav`
+```text
+What remained was not an answer: a room, a body, another human face.
+```
+
+**PART-FILE ACCEPTANCE RULE:** each generated narration part must finish comfortably before the end of its intended subclip. If it runs too long, regenerate that part with a minimal `speech_rate` increase using the same locked voice preset; do not ask Seedance to time-compress it. Silence/ambience after a short narration part is acceptable and intentional.
 
 
 ================================================================================
 ## NO-MANUAL-EDIT FINAL ASSEMBLY — HIGGSFIELD PROJECT / SUPERCOMPUTER
 ================================================================================
 
-> **OPERATOR NOTE — DO NOT COPY UNLESS YOU ARE IN A HIGGSFIELD ASSEMBLY / SUPERCOMPUTER WORKFLOW:** the seven Seedance clips already contain their own native narration + ambience + foley/SFX + restrained score generated together with picture. The remaining task is only ordered concatenation, not creative re-editing.
+> **OPERATOR NOTE — DO NOT COPY UNLESS YOU ARE IN A HIGGSFIELD ASSEMBLY / SUPERCOMPUTER WORKFLOW:** the seven Seedance clips already contain the locked supplied narration reference plus the ambience + foley/SFX + restrained score generated around it. The remaining task is only ordered concatenation, not creative re-editing.
 
 **INPUT CLIPS IN EXACT ORDER:**
 
