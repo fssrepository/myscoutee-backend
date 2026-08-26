@@ -225,13 +225,23 @@ Canonical STORYBOARD filenames:
 - STORYBOARD 06 → `SB06_STORYBOARD.png`
 - STORYBOARD 07 → `SB07_STORYBOARD.png`
 
-### PHASE F — CINEMA STUDIO / SEEDANCE
+### PHASE F — HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — VIDEO GENERATION
 
-Do **not** paste the image-generation prompts into Cinema Studio. Scroll to the final section **CINEMA STUDIO — BLOCK-BY-BLOCK COPY PACK**. For each film block there is one explicit attachment bundle and one video prompt. Attach that bundle, then paste only that block's Cinema prompt.
+This phase uses the finished reference assets to create VIDEO. The intended Cinema Studio model for this pack is **Seedance 2.5**.
 
-The MAIN WORLD is the physical present. The MEMORY WORLD is the content that appears inside glass. The CHARACTER sheets lock identity. The STORYBOARD supplies ordered time. The model must never display the 3×3 sheets themselves inside the video.
+Do **not** paste any CHARACTER, MEMORY WORLD, MAIN WORLD, MAP or STORYBOARD image-generation prompt into Cinema Studio. Scroll to the final section **HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK**.
 
-If your selected video model cannot generate the whole ~30-second block at once, keep the **same attachment bundle** and split the Cinema prompt by storyboard frames: **A = frames 1–3, B = frames 4–6, C = frames 7–9**. Continue from the previous clip instead of restarting the world.
+For each film block, do exactly this:
+
+1. Open Higgsfield Cinema Studio and select **Seedance 2.5**.
+2. Set the output to **16:9 landscape**.
+3. Attach exactly the files listed under that CINEMA BLOCK.
+4. Paste **only the fenced `text` code block** under `PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD`.
+5. Generate only that block. Do not paste any earlier prompt from the file.
+
+Reference roles are fixed: **MAIN WORLD = physical present**, **MEMORY WORLD = literal remembered content**, **CHARACTER = identity**, **STORYBOARD = ordered time**. The 3×3 reference sheets are control assets only and must never appear as grids inside the finished video.
+
+Blocks 01–06 target approximately **30 seconds each**. Block 07 targets approximately **20 seconds**. If the Cinema Studio duration control does not allow the whole block in one generation, keep the same attachment bundle and use the short-clip split rule at the end of the video copy pack.
 
 ---
 
@@ -4181,20 +4191,27 @@ The present remains one continuous exterior walk until the hard cut in STORYBOAR
 ```
 
 
-## CINEMA STUDIO — BLOCK-BY-BLOCK COPY PACK
+## HIGGSFIELD CINEMA STUDIO / SEEDANCE 2.5 — FINAL VIDEO COPY PACK
 
-This section replaces the old generic `REFERENCE ROLE TEMPLATE` completely.
+This is the **actual video-generation section**. Everything before this section creates or organizes reference images.
 
-**Cinema Studio workflow for every block:**
+**Use Higgsfield Cinema Studio with Seedance 2.5.** For every CINEMA BLOCK below:
 
-1. Attach the exact files listed under that CINEMA BLOCK.
-2. Do not paste any of the earlier image-generation prompts.
-3. Paste only the single Cinema code block for that film block.
-4. Treat the attached STORYBOARD as ordered time, the MAIN WORLD as physical present, the MEMORY WORLD as remembered content, and CHARACTER sheets as identity locks.
-5. Never show a 3×3 sheet, grid lines, file names or reference-board layout inside the finished video.
+1. Set **16:9 landscape** in Cinema Studio.
+2. Attach exactly the files listed under `ATTACH EXACTLY THESE FILES`.
+3. Paste only the fenced `text` block under `PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD`.
+4. Do not paste headings, filenames, operator notes or any earlier image-generation prompt into the prompt field.
+5. Treat STORYBOARD as ordered time, MAIN WORLD as physical present, MEMORY WORLD as remembered content, and CHARACTER sheets as identity locks.
+6. Never show a 3×3 sheet, grid lines, file names or reference-board layout inside the finished video.
+
+The prompts below are deliberately self-contained so each Cinema block can be copied independently.
 
 
 ### CINEMA BLOCK 01 — 00:00–00:30 — THE CITY JUDGES FIRST
+
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
 
 **ATTACH EXACTLY THESE FILES:**
 
@@ -4208,9 +4225,17 @@ This section replaces the old generic `REFERENCE ROLE TEMPLATE` completely.
 - `C08_FX_MORTGAGE_SPOUSE.png`
 - `C09_FX_MORTGAGE_CHILD.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W01_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4278,6 +4303,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 02 — 00:30–01:00 — GLOBAL ROUTE / LOCAL ENCOUNTER
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W02_MAIN_WORLD.png`
@@ -4298,9 +4327,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png`
 - `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W02_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4369,6 +4406,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 03 — 01:00–01:30 — WORK / KATA / THE SYSTEM ENTERS
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W03_MAIN_WORLD.png`
@@ -4379,9 +4420,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C23_ADMIN_COLLEAGUE_A.png`
 - `C24_ADMIN_COLLEAGUE_B.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W03_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4449,6 +4498,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 04 — 01:30–02:00 — POLICE / LAWYERS / PROCEDURE
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W04_MAIN_WORLD.png`
@@ -4460,9 +4513,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C25_SEARCH_OFFICER_MALE.png`
 - `C26_DEFENCE_OFFICE_SUBSTITUTE.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W04_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4530,6 +4591,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 05 — 02:00–02:30 — COURT / CLASSIFICATION / PERSON VS FILE
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W05_MAIN_WORLD.png`
@@ -4543,9 +4608,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C30_COURT_CLERK.png`
 - `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W05_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4613,6 +4686,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 06 — 02:30–03:00 — OVERLOAD / HUMANITY BREAKS THROUGH
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 30 seconds, 16:9 landscape, one continuous sequence.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W06_MAIN_WORLD.png`
@@ -4630,9 +4707,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C28_FORENSIC_EXPERT_A.png`
 - `C29_FORENSIC_EXPERT_B.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 30 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W06_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4700,6 +4785,10 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 
 ### CINEMA BLOCK 07 — 03:00–03:20 — LAST WINDOW / HARD CUT
 
+**MODEL:** Seedance 2.5  
+**TARGET VIDEO:** approximately 20 seconds, 16:9 landscape, one continuous sequence ending in the hard cut.
+
+
 **ATTACH EXACTLY THESE FILES:**
 
 - `W07_MAIN_WORLD.png`
@@ -4708,9 +4797,17 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 - `C01_PROTAGONIST.png`
 - `C05_FINAL_NURSE.png`
 
-**THEN COPY ONLY THIS PROMPT:**
+**PASTE THIS INTO THE CINEMA STUDIO PROMPT FIELD:**
 
 ```text
+SEEDANCE 2.5 — CINEMA STUDIO VIDEO GENERATION
+
+TARGET OUTPUT
+- Duration: approximately 20 seconds, or the closest available Cinema Studio duration without changing the story order.
+- Aspect ratio: 16:9 landscape.
+- One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
+- The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
 REFERENCE ROLE ASSIGNMENT
 
 - W07_MAIN_WORLD.png = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4776,13 +4873,30 @@ Create one continuous photorealistic cinematic sequence for this block. The atta
 ```
 
 
-### CINEMA SHORT-CLIP SPLIT RULE
+### SEEDANCE 2.5 SHORT-CLIP SPLIT RULE — ONLY IF THE FULL BLOCK CANNOT BE GENERATED
 
-If the chosen model cannot generate the entire block in one run, **do not change the attachment bundle**. Split only the temporal instruction:
+Keep **exactly the same attachment bundle** listed for that CINEMA BLOCK. Use the same full Cinema prompt, but limit the temporal beats to one third of the storyboard. Do not redesign the world between clips.
 
-- A = storyboard frames 1–3
-- B = storyboard frames 4–6
-- C = storyboard frames 7–9
+**CLIP A — append this at the END of the matching Cinema prompt:**
 
-For B and C, continue from the previous generated clip rather than re-establishing the world. Keep the same MAIN WORLD, MEMORY WORLD(s), CHARACTER references and STORYBOARD attached.
+```text
+SHORT-CLIP OVERRIDE — PART A
+Generate only storyboard frames 1→3 from this block, in order. Do not advance to frame 4. Treat this as the opening segment of a longer continuous sequence. End on a natural continuation point, not a conclusion.
+```
+
+**CLIP B — append this at the END of the matching Cinema prompt:**
+
+```text
+SHORT-CLIP OVERRIDE — PART B
+Continue directly from the previous generated clip. Generate only storyboard frames 4→6 from this block, in order. Preserve the exact protagonist, world, lighting, weather, transport, memory-surface behavior and camera continuity from the previous clip. Do not re-establish the city and do not advance to frame 7.
+```
+
+**CLIP C — append this at the END of the matching Cinema prompt:**
+
+```text
+SHORT-CLIP OVERRIDE — PART C
+Continue directly from the previous generated clip. Generate only storyboard frames 7→9 from this block, in order. Preserve the exact protagonist, world, lighting, weather, transport, memory-surface behavior and camera continuity from the previous clip. Complete only the ending specified by this block.
+```
+
+For STORYBOARD 07, PART C contains the actual clinical hard cut; Parts A and B must not expose the full clinical room.
 
