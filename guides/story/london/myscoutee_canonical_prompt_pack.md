@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2 STORY-PRESERVATION AUDITED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.2 STORY-PRESERVATION + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -80,6 +80,33 @@ This v2.2 pass was created because earlier cleanup silently removed or flattened
 - late reveal bridge: balloon-helping hands → white sheet / restraint edge.
 
 These restored details may be short secondary reflections rather than dominant frames, but they are **mandatory story inventory**, not disposable decoration. Future prompt cleanup must not remove them without explicit user approval.
+
+### OPERATOR NOTES — FIRST-PASS ARTISTIC ACCEPTANCE / REGENERATION LOCK — DO NOT COPY
+
+This film is deliberately too large, dense and generatively unstable to use a conventional “regenerate until visually perfect” workflow. **The first completed take that preserves the story and remains technically usable is the intended production take.** Do not discard a valid block merely because generative cinema leaves small irregularities.
+
+**ACCEPT AS PART OF THE FILM — DO NOT REGENERATE FOR THESE ALONE:**
+- slightly impossible but readable London–Budapest architectural fusion;
+- imperfect reflection geometry, unusual glass layering or physically strange but coherent memory embedding;
+- brief continuity softness in anonymous background people, crowd positions, rain, traffic or secondary objects;
+- micro-flashes that land a little earlier/later or last a little shorter/longer than imagined while remaining readable;
+- minor shape/texture instability, unusual perspective, transient object deformation or dreamlike spatial contradiction that does not destroy the scene;
+- a reflection or transition becoming more uncanny than planned when it still supports the film's established “Memory edits without asking permission” language;
+- small non-critical differences in camera path, blocking or environmental detail when the ordered story beat is still present.
+
+These are **generative fingerprints, not automatic failures**. The dream city is already intentionally absurd and impossible. Do not “correct” it toward ordinary realism if doing so would flatten the film.
+
+**REGENERATE ONLY FOR CATASTROPHIC FAILURE:**
+1. A mandatory story beat / required human encounter / required black-humour or preservation micro-flash is missing, replaced with unrelated content or made unreadable.
+2. The protagonist or a key recurring referenced person becomes materially the wrong identity in a story-critical moment.
+3. The locked narration is altered, re-voiced, paraphrased, duplicated, reordered, materially time-damaged or becomes unintelligible.
+4. The clinical reality is revealed before Block 07, the final hard-cut logic is broken, or the protagonist is incorrectly shown “waking up.”
+5. The core physical-present rule collapses so badly that the current London–Budapest exterior walk is no longer readable as the film's continuous present.
+6. The output is technically unusable: corrupted/incomplete render, missing major video/audio section, frozen/blank output, or another defect that prevents normal viewing.
+
+**NO AUTOMATIC RETRIES:** after one completed usable generation, do not automatically run another take in search of cosmetic improvement. If a catastrophic failure is detected, identify the exact failure first and regenerate only the affected block or emergency subclip. Never regenerate the whole film because one local detail is imperfect.
+
+**PRIORITY ORDER:** preserve human/story inventory → preserve narration/reveal/continuity → preserve readable world logic → accept artistic generative imperfection → optimize cosmetics last.
 
 ### OPERATOR NOTES — CANONICAL PHYSICAL WALK — DO NOT COPY
 WORLD 01: Soho → Piccadilly Circus → Coventry Street / Leicester Square → Haymarket / Trafalgar edge  
@@ -359,6 +386,8 @@ For each block:
 4. Add only very low-level non-lyrical score where specified.
 
 If Seedance alters, re-voices, duplicates or paraphrases the supplied narration, treat that generation as a failed audio take and regenerate. Do not accept a different narrator just because the picture is good.
+
+**FIRST-PASS BLOCK ACCEPTANCE:** outside the catastrophic-failure conditions defined in the FIRST-PASS ARTISTIC ACCEPTANCE rule, accept the first completed usable block. Do not spend credits rerolling a block for cosmetic polish, slightly strange reflections, imperfect architectural fusion, minor background continuity or other non-story-breaking generative artifacts. If a catastrophic failure occurs, regenerate only that affected block (or the smallest emergency subclip), never the entire film by default.
 
 Reference roles are fixed:
 - **MAIN WORLD = physical present**
@@ -4625,6 +4654,10 @@ TARGET OUTPUT
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
 
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+
 REFERENCE ROLE ASSIGNMENT
 
 - @W01_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4795,6 +4828,10 @@ TARGET OUTPUT
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
 
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+
 REFERENCE ROLE ASSIGNMENT
 
 - @W02_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -4954,6 +4991,10 @@ TARGET OUTPUT
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
 
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+
 REFERENCE ROLE ASSIGNMENT
 
 - @W03_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -5101,6 +5142,10 @@ TARGET OUTPUT
 - Aspect ratio: 16:9 landscape.
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5254,6 +5299,10 @@ TARGET OUTPUT
 - Aspect ratio: 16:9 landscape.
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
@@ -5417,6 +5466,10 @@ TARGET OUTPUT
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
 
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
+
 REFERENCE ROLE ASSIGNMENT
 
 - @W06_MAIN_WORLD = PHYSICAL PRESENT. It controls the current London–Budapest city, exact architecture, named Budapest anchors, rain, transport, real window/glass geometry, wet surfaces, lighting and surrounding street.
@@ -5577,6 +5630,10 @@ TARGET OUTPUT
 - Aspect ratio: 16:9 landscape.
 - One continuous photorealistic cinematic sequence, not a montage of nine disconnected stills.
 - The attached files are references only; never show their grid layouts, borders, filenames or reference-sheet design in the video.
+
+FIRST-PASS ARTISTIC ACCEPTANCE — CRITICAL
+Treat the first completed technically usable generation as the intended final take if the mandatory story beats, locked identities, narration, physical-present logic and reveal structure are preserved. Do NOT treat small generative irregularities as reasons to retry: imperfect reflections, strange-but-coherent London–Budapest fusion, brief background continuity drift, unusual perspective, micro-flash timing variation, minor object deformation or dreamlike spatial contradiction are acceptable artistic fingerprints in this film.
+Regenerate ONLY for catastrophic failure: missing/replaced mandatory story content, materially wrong key identity, altered/duplicated/unintelligible locked narration, premature clinical reveal or broken final hard cut, collapse of the continuous exterior-present logic, or technically unusable/corrupt output. Do not automatically retry for cosmetic improvement. Never simplify or delete a required human memory in order to make the generation cleaner.
 
 REFERENCE ROLE ASSIGNMENT
 
