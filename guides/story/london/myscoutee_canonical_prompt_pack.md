@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.35 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.36 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -374,7 +374,7 @@ Primary video model: Seedance 2.5
 Production ceiling: 3000 Higgsfield credits
 
 PROJECT / FILM
-MyScoutee is a real AI-assisted social software project. This film grew from a large real-world source archive that was first synthesized with AI into a two-volume book, then into a canonical production prompt pack, and finally into this Higgsfield-native short.
+MyScoutee is a real AI-assisted social software project. This film grew from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then into a canonical production prompt pack, and finally into this Higgsfield-native short. MyScoutee can also be found by searching the name on LinkedIn, YouTube, Instagram and Facebook; no external links are required in this brief.
 
 The film follows one apparently continuous rainy walk through an impossible London–Budapest city. Literal memories appear only inside real reflective or transparent surfaces. The visible protagonist never enters those memories. The final block hard-cuts from the city into an ordinary clinical reality. The tone is human, observational, awkward and sometimes absurd; contemporary political identities are removed while the underlying human structure is preserved.
 
@@ -384,7 +384,7 @@ Higgsfield currently advertises Supercomputer as **Powered by GPT-5.6 Sol**, as 
 The test is therefore not a comparison of model intelligence. It uses an external GPT-5.6 Sol to validate how much of the end-to-end workflow advertised for Higgsfield's own GPT-5.6 Sol-powered Supercomputer is actually machine-operable through the interfaces Higgsfield exposes. In the live no-generation test, MCP successfully exposed workspace/balance state, accepted the canonical Markdown pack and created a reusable Reference Element, while no reliable write action was exposed for Cinema Studio Project Brief editing, collection/subfolder management, asset-to-project assignment, readable project asset naming or project publication/submission. Such gaps are recorded as interface/project-state limitations rather than silently transferred to the creator as routine manual work.
 
 FESTIVAL CONTEXT
-The current Festival rules require AI video and image generation for an Entry to occur on Higgsfield inside its dedicated Cinema Studio submission project during the Generation Window, and require the assets/generations used in the film to remain in that project for verification. This makes project-state routing a real production requirement in this Entry. If the available automated interface cannot create or preserve the required project state, the dependent autonomous path is recorded as blocked rather than treated as a hidden human step.
+The current Festival rules require AI video and image generation for an Entry to occur on Higgsfield inside its dedicated Cinema Studio submission project during the Generation Window, and require the assets/generations used in the film to remain in that project for verification. The Minimal Viable Submission also requires the final Higgsfield-watermarked + packshot film to be posted from a public account on an accepted social platform and to remain publicly available through the end of the Festival. The planned primary post is the existing public MyScoutee YouTube channel, with Instagram available as an optional mirror. These requirements are treated as real project-state/publication conditions; missing automation remains a measured platform/interface limitation rather than routine hidden manual labor.
 
 PRE-PRODUCTION / PRODUCTION BOUNDARY
 Google Flow was used only for no-additional-cost pre-production validation of visual ideas and the 3×3 storyboard/reference method. No Google Flow image or video is used as final Festival production media.
