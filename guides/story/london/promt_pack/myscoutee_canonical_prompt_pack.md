@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.47 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.48 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -45,7 +45,7 @@
 - **SCORE-CARD POSITION + GAZE LOCK:** every score card belongs **ABOVE the viewed person's head**, centered over the crown with visible air between card and hair. Never place a card on the forehead, across the eyes/face, inside the head, on the torso, beside the body or floating elsewhere without a person anchor. Cards remain normally and clearly visible at a restrained translucent baseline even when nobody is looking. When one person directly looks at another, the VIEWED person's above-head card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, then eases back to the same normal baseline. No flare and no dramatic brightness jump.
 - **NORMAL-BASELINE / GAZE-FILL INTERPRETATION:** `normal` means the card is visibly and continuously present without being ghosted away or reduced to near-invisibility. The gaze response is not a reveal: it is only a modest increase in internal fill/light, like the same translucent card becoming slightly more luminous and full for a moment. Position, size and basic opacity stay stable.
 - **MCP / HIGGSFIELD HANDOFF LOCK:** if another AI continues this project and the user explicitly grants Higgsfield MCP plugin permission, its FIRST external action is to search the connected Higgsfield workspace/project/history/media for the existing Cinema Studio project named **`AI Film Festival`**, which is the canonical Higgsfield container for the MyScoutee film, and for already-generated canonical assets. Reuse matching valid assets and generations only when they were created for this Entry inside the current Festival Generation Window and remain eligible under the Official Rules. Do not silently start a fresh Higgsfield project, duplicate the project, or regenerate an existing canonical asset before that search is complete. If the exact `AI Film Festival` project cannot be found, report that fact and STOP; creating any replacement project requires fresh explicit user authorization.
-- **TARGET HIGGSFIELD PROJECT ROUTING LOCK — NON-NEGOTIABLE:** every generated production image, narration/audio asset, video generation, accepted extension and festival meta asset used for the Entry must ultimately be retained in the existing Higgsfield Cinema Studio project **`AI Film Festival`**. A Higgsfield generation may exist elsewhere in Cinema Studio before it is associated with the project; do not regenerate it merely because MCP cannot perform that association. If the current MCP surface cannot move/attach the same existing Higgsfield generation into the project, record that as a **Higgsfield MCP technical limitation**. The missing MCP action is an automation gap, not an automatic asset-disqualification rule.
+- **TARGET HIGGSFIELD CONTEST-PROJECT STATE — OBSERVED LIMITATION:** live Cinema Studio testing shows that an existing asset/generation cannot currently be **moved or copied into the contest project** from the surrounding Cinema Studio library. Do not assume a hidden `Move`, `Copy`, `Assign`, `Attach to project`, or equivalent route exists. This is a project-state/workflow limitation independent of MCP: the UI itself does not expose the required transfer operation. MCP also exposes no equivalent contest-project assignment action. Record this as a Higgsfield contest-project / MCP automation gap and do not regenerate an accepted asset merely to imitate a missing transfer operation.
 - **HIGGSFIELD ASSET-ID / REFERENCE-REGISTRY LOCK — NON-NEGOTIABLE:** every accepted generated asset must be recorded immediately in a canonical ASSET REGISTRY before any later prompt depends on it. Capture the exact Higgsfield generation/job UUID returned by the Higgsfield MCP plugin, plus any returned media UUID / result URL and the logical canonical asset name. Never rely on filename, prose such as “the previous image”, generation order, or visual memory alone to identify a reference. The minimum registry fields are: `logical_asset_id`, `canonical_filename`, `asset_type`, `higgsfield_project=AI Film Festival`, `generation_job_id`, `media_id_or_result_url_if_available`, `reference_element_name_if_created`, `reference_element_id_if_created`, and `status` (`GENERATED`, `ACCEPTED_CANONICAL`, `PROJECT_ASSOCIATION_UNVERIFIED`, `REJECTED`). A reference may be used downstream only after the correct generation ID is known and the asset is accepted; if project association is required but unverified, do not mark it ready for production dependency use.
 - **REFERENCE BINDING RULE — ID FIRST:** when a Higgsfield model accepts reference media, pass the exact completed Higgsfield generation/job UUID or confirmed media UUID through the MCP `medias` input with the correct role. Human-readable filenames and pack aliases remain operator labels only. In Cinema Studio UI workflows, bind the actual uploaded/selected asset and use the actual `@token` shown by Higgsfield; never invent an `@token` from a filename.
 - **REFERENCE ELEMENT RULE — IMPORT-FIRST / NO DUPLICATES:** if Cinema Studio **Import Elements** has already created a named metadata-only Character, Location or Prop Element, that existing Element is the canonical container for the later rendered reference image. After the matching canonical image is generated and accepted, attach/bind that exact render to the existing imported Element; **do not create a second Element for the same character/location/prop.** Store the existing `element_name` + exact `element_id` and the generated image job/media ID in the ASSET REGISTRY. If MCP cannot attach media to an existing Element, record that missing update/attach operation as an MCP automation gap; the Cinema Studio UI's `Add element image` action is the observed manual equivalent. MCP prompts use `<<<element_id>>>` only for models documented as supporting Reference Elements; otherwise use the direct accepted generation/media UUID.
@@ -177,7 +177,7 @@ This section records the **actual automation boundary observed in the current Hi
 - writing or updating the Cinema Studio **Project Brief** field;
 - creating, renaming or moving Cinema Studio **collections/subfolders**;
 - reading the Cinema Studio Import Elements **Scene grouping** through the current MCP Element object, or writing Element collection/grouping paths through MCP;
-- assigning/attaching/moving a global MCP generation into the exact Cinema Studio Festival project `AI Film Festival`;
+- moving, copying, assigning or attaching an existing Cinema Studio/MCP asset or generation into the contest project; live UI testing exposes no such transfer path, and MCP exposes no equivalent write action;
 - setting the human-readable Cinema Studio asset display name when the generation tool itself exposes only the generated job;
 - publishing the Festival project / Create-in-Public state;
 - applying or verifying the Festival submission UI's final project-level watermark/packshot workflow;
@@ -193,19 +193,19 @@ If the user explicitly authorizes a manual workaround for a particular blocked a
 
 Do **not** invent button labels that are not visible in the current UI, and do not regenerate an asset merely to work around project administration.
 
-**FESTIVAL-COMPLIANCE PRECEDENCE:** the current Official Rules require all used AI video/image generations to be made on Higgsfield during the Generation Window and the underlying used assets/generations to be retained in the dedicated submission project for audit. If an eligible Higgsfield generation currently sits elsewhere in Cinema Studio, retain/associate that same generation with `AI Film Festival` rather than regenerating it. If MCP does not expose that project-state operation, record the missing capability as an MCP automation gap; the MCP limitation itself does not make the Higgsfield generation ineligible.
+**FESTIVAL-COMPLIANCE PRECEDENCE:** the current Official Rules require the submission workflow to satisfy the Festival's Higgsfield-generation and dedicated contest-project requirements. Live Cinema Studio testing currently shows no UI operation for moving or copying an already-existing asset/generation into the contest project, and MCP exposes no equivalent project-assignment action. Do not invent an association workflow that the product does not expose. Record the resulting project-state conflict as an observed Higgsfield workflow limitation.
 
-### PROJECT-ASSOCIATION PROOF GATE — BEFORE ANY FURTHER BULK PAID PRODUCTION
+### CONTEST-PROJECT TRANSFER OBSERVATION — DO NOT INVENT A WORKAROUND
 
-Before spending on the wider asset library, characterize the project-routing capability using **one already-created in-window Higgsfield asset**. This is an optional diagnostic of the Higgsfield product boundary, not a requirement that the creator adopt Cinema Studio as a manual production tool. Use the current W01 generation if it is the intended canonical WORLD 01 candidate. If the user explicitly elects the diagnostic, inspect the `AI Film Festival` Cinema Studio UI:
+Live Cinema Studio UI testing has established that existing assets/generations cannot currently be moved or copied into the contest project. Therefore the earlier manual `associate/add existing generation to project` diagnostic is retired.
 
-1. associate/add that exact existing Higgsfield generation to the project without regenerating it;
-2. set or preserve the readable name `W01 — City Judges First — Soho / Piccadilly / Leicester` where the UI supports naming;
-3. place it under `02 — PRESENT CITY / MAIN WORLDS / W01 — Soho / Piccadilly / Leicester`;
-4. verify that the project retains the asset/generation in `All assets` / project history and that the generation can still be identified by the same registry UUID;
-5. mark `project_ui_status: UI_VERIFIED`.
+Observed state:
+1. contest project exists;
+2. surrounding Cinema Studio libraries expose generated assets/elements;
+3. no `Move`, `Copy`, `Assign`, `Attach to contest project`, or equivalent transfer path is exposed for bringing an existing asset into that contest project;
+4. MCP likewise exposes no contest-project assignment/write operation.
 
-Whether this succeeds or fails, record the result as part of the Higgsfield automation evaluation. If the MCP itself cannot perform the same project-routing operation, that remains an MCP coverage limitation even when the UI can do it manually. Do not turn a successful UI diagnostic into a recurring human production duty without explicit user authorization.
+Treat this as a measured Higgsfield project-state limitation. Do not tell the creator to perform repetitive UI transfer steps that do not exist, and do not regenerate already accepted media merely to create a second copy inside the contest project unless the user explicitly authorizes such a new generation for a separate reason.
 
 ### OPERATOR NOTES — GENERATION ORDER / EARLY V01 LIVE-TEST — DO NOT COPY
 
@@ -364,7 +364,7 @@ Observed through the live MCP connection without paid generation:
 - general-file upload succeeds; the canonical Markdown prompt pack can be uploaded to Higgsfield storage without generation;
 - creation of a reusable Reference Element from an already-uploaded image succeeds without generation;
 - regular generation history and Reference Elements can be read;
-- no MCP action is exposed for enumerating Cinema Studio projects, writing the Project Brief, creating/moving project folders/collections, assigning a global uploaded/generated asset to `AI Film Festival`, setting project-level human display names, or submitting/publishing the Festival project.
+- no MCP action is exposed for enumerating Cinema Studio projects, writing the Project Brief, creating/moving project folders/collections, assigning an existing uploaded/generated asset to the contest project, setting project-level human display names, or submitting/publishing the Festival project. Live Cinema Studio UI testing additionally shows no Move or Copy route for transferring an existing asset into the contest project.
 
 This separates two independent questions that must not be conflated:
 1. **generation entitlement / credits** — a paid balance may enable paid model generation;
@@ -520,7 +520,7 @@ Rules:
 - For MCP reference input, prefer exact accepted generation/media IDs.
 - Create a Reference Element only for accepted reusable IMAGE assets and only when the currently selected model explicitly supports Elements.
 - If a Reference Element is created, record its exact `element_id`; the readable name alone is never sufficient for MCP binding.
-- If project association to `AI Film Festival` cannot be verified where required, mark `PROJECT_ASSOCIATION_UNVERIFIED` and STOP before building dependent bulk assets.
+- If contest-project placement cannot be established because the product exposes no transfer operation, mark `PROJECT_ASSOCIATION_UNVERIFIED` and record `BLOCKED_BY_HIGGSFIELD_PROJECT_STATE`; do not fabricate a Move/Copy/Attach step.
 
 `→ @ALIAS` = only for Cinema Studio/Seedance video generation: after attaching the existing file, bind/mention that uploaded reference with the shown `@` token inside the video prompt.
 
