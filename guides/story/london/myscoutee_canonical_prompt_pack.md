@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.31 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.35 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -368,188 +368,28 @@ The MCP already performs real read/write operations while the connected account 
 ```text
 PROJECT
 MYSCOUTEE — THE PATH BETWEEN PEOPLE
-Higgsfield Cinema Studio project container: AI Film Festival
-Runtime target: ~3:20
-Format: photorealistic cinematic short
+Cinema Studio project: AI Film Festival
+Runtime: ~3:20 | 16:9 | photorealistic cinematic short
 Primary video model: Seedance 2.5
-Aspect ratio: 16:9
-Production ceiling: 3000 Higgsfield credits total
+Production ceiling: 3000 Higgsfield credits
 
-LIVE EXTERNAL SUPERCOMPUTER / REAL-WORLD ORCHESTRATION TEST
-- This project is not only a film-generation experiment. It is a live test of whether a powerful external reasoning system can operate Higgsfield as a production environment rather than merely provide prompts to a human operator.
-- The production orchestrator is ChatGPT GPT-5.6 Sol in a Pro 5× high-reasoning configuration, running outside Higgsfield and connected through the official Higgsfield MCP interface. In this project, the phrase **external supercomputer** is an operational role: the external AI reads the canonical execution contract, recovers state, resolves dependencies, uploads and binds supported assets, performs cost checks, records exact IDs, evaluates outputs, maintains continuity and decides when the workflow must stop at an explicit human gate.
-- The experiment is already happening in reality, not being described retrospectively. Before paid media generation, the external orchestrator connected to the live Higgsfield workspace, read workspace/balance state, uploaded the canonical Markdown pack as a general Higgsfield file, inspected existing media and created a reusable Reference Element from an already-uploaded asset without generating new media.
-- The same live test exposed a separate limitation: the current MCP surface does not expose the Cinema Studio project-state operations needed to manage `AI Film Festival` end-to-end, even though those operations are visibly available to a human in the Cinema Studio UI.
-- This separates intelligence from interface coverage: stronger reasoning cannot execute a Cinema Studio action that the official external interface does not expose. The production therefore measures the boundary between AI capability and Higgsfield's machine-operable project control, rather than assuming that more compute alone solves missing platform actions.
+PROJECT / FILM
+MyScoutee is a real AI-assisted social software project. This film grew from a large real-world source archive that was first synthesized with AI into a two-volume book, then into a canonical production prompt pack, and finally into this Higgsfield-native short.
 
-PUBLIC POSITIONING / AUTOMATION-APEX TEST
-- Higgsfield publicly presents **Supercomputer** as an agentic workspace that can run a whole creative pipeline/project from one chat, while Cinema Studio presents Project Briefs, shared project state and subfolders as agent-aware production features. Public help also says Supercomputer can route work through Higgsfield models including Cinema Studio.
-- However, the current public help does **not clearly document the bridge between Supercomputer's own workspace/project state and an already-existing Cinema Studio project**: it does not explain whether or how Supercomputer opens that project, edits its Project Brief, manages its subfolders, or routes existing assets into it. That internal capability may exist; this project records it as **unverified rather than assumed**.
-- This production therefore pushes automation to the highest practical level and tests Higgsfield layer by layer: reasoning/orchestration → workspace/files → reusable Elements → generation → Cinema Studio project state → asset routing → publication. The goal is to identify exactly where autonomous control ends, whether the controlling agent is Higgsfield's own Supercomputer or an external AI through MCP.
-- Human intervention is not hidden. Every manual action is classified either as an intentional authorship/approval gate or as a disclosed `MANUAL_EXCEPTION_AUTHORIZED` response to a missing automation capability. The human is never silently used as the missing API layer.
+The film follows one apparently continuous rainy walk through an impossible London–Budapest city. Literal memories appear only inside real reflective or transparent surfaces. The visible protagonist never enters those memories. The final block hard-cuts from the city into an ordinary clinical reality. The tone is human, observational, awkward and sometimes absurd; contemporary political identities are removed while the underlying human structure is preserved.
 
-PAID-VS-FREE MCP TEST DESIGN
-- Generation credits and MCP project-control capability are treated as separate variables. The live connection already performs genuine MCP reads and writes at zero available generation credits, proving that at least part of the MCP/plugin surface is functioning in the current state.
-- Higgsfield's current public connection guide says an **active paid subscription is required**, while the live connected workspace in this test reports a free plan / zero credits and nevertheless permits non-generation MCP operations such as state reads, file upload and Reference Element creation. This is recorded as a documentation-versus-observed-behavior discrepancy; it does not prove that paid generation is available on the free state.
-- Higgsfield's MCP help also states that automated generation through MCP uses standard credits and does not receive the web-only Unlimited/free-generation allowance. Therefore adding credits or moving to a paid plan may enable generation and additional entitlements, but it must NOT be assumed to solve missing Project Brief, folder/collection, project-assignment or publication APIs unless those actions actually appear in the live MCP surface after the account change.
-- If the account state changes, the orchestrator re-runs the capability inventory before paid production and records the before/after difference as part of the experiment.
+EXTERNAL GPT-5.6 SOL VALIDATION TEST
+Higgsfield currently advertises Supercomputer as **Powered by GPT-5.6 Sol**, as a superagent for the creative stack, and says it can run an entire creative project from one chat. This production independently tests that advertised agentic concept from outside Higgsfield: ChatGPT GPT-5.6 Sol, Pro 5× high reasoning, operates through Higgsfield's official MCP connection and attempts to carry the real production end-to-end — project-state recovery, dependency resolution, asset/reference handling, ID and credit tracking, generation control and the defined human decision gates.
 
-MCP TECHNICAL LIMITATION SUMMARY
-- The Higgsfield MCP plugin can drive Higgsfield image/video/audio generation, cost preflight, generation-ID capture and supported downstream reference binding.
-- At the current plugin capability level, some Cinema Studio administration is not exposed as reliable MCP write actions: Project Brief editing, project asset assignment, collection/subfolder creation or movement, public display-name management, and final Festival publish/submission UI.
-- These gaps are treated as **measured Higgsfield MCP automation limitations**, not as routine manual tasks for the creator. The creator is not expected to learn or operate Cinema Studio merely to substitute for missing MCP interfaces. If a missing operation blocks the autonomous path, the limitation is recorded and the dependent path stops unless the creator explicitly authorizes a one-off manual exception.
-- This standard is independent of the Film Gala: for an end-to-end AI production system, project-state control is a baseline automation expectation, not a Festival-specific convenience.
+The test is therefore not a comparison of model intelligence. It uses an external GPT-5.6 Sol to validate how much of the end-to-end workflow advertised for Higgsfield's own GPT-5.6 Sol-powered Supercomputer is actually machine-operable through the interfaces Higgsfield exposes. In the live no-generation test, MCP successfully exposed workspace/balance state, accepted the canonical Markdown pack and created a reusable Reference Element, while no reliable write action was exposed for Cinema Studio Project Brief editing, collection/subfolder management, asset-to-project assignment, readable project asset naming or project publication/submission. Such gaps are recorded as interface/project-state limitations rather than silently transferred to the creator as routine manual work.
 
-PROJECT ORIGIN / CREATOR PATH
-- This film grows from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then abstracted into the canonical film prompt pack, and finally into this Higgsfield-native short.
-- The source-document-to-two-volume-book synthesis took roughly two days. The canonical film prompt pack was assembled in roughly one additional day.
-- Only a few weeks before this project, the creator had no practical knowledge of AI video generation and had never made a comparable film. Prior video work consisted only of a small number of minimal experiments published on the MyScoutee YouTube channel.
-- The workflow itself is part of the experiment: source documents → AI-assisted book → canonical production prompt pack → live external-supercomputer orchestration through Higgsfield MCP → Higgsfield-native film. The test includes not only generation quality but whether machine-accessible project state is sufficient for the external AI to operate the production without turning the creator into a manual API bridge.
+FESTIVAL CONTEXT
+The current Festival rules require AI video and image generation for an Entry to occur on Higgsfield inside its dedicated Cinema Studio submission project during the Generation Window, and require the assets/generations used in the film to remain in that project for verification. This makes project-state routing a real production requirement in this Entry. If the available automated interface cannot create or preserve the required project state, the dependent autonomous path is recorded as blocked rather than treated as a hidden human step.
 
-PRODUCT / PUBLIC CONTEXT
-- MyScoutee is not only the film title. It is a real social software product whose development was itself substantially AI-assisted.
-- MyScoutee already has public presence on LinkedIn, YouTube, Instagram and Facebook.
-- The film therefore has a dual role: a standalone cinematic work and a transparent public demonstration of the product, its development path and an end-to-end AI production workflow.
-- Higgsfield watermarking and Festival redistribution are not hidden or removed. If the film is redistributed by Higgsfield, the result visibly remains both a Higgsfield production example and a MyScoutee project artifact.
+PRE-PRODUCTION / PRODUCTION BOUNDARY
+Google Flow was used only for no-additional-cost pre-production validation of visual ideas and the 3×3 storyboard/reference method. No Google Flow image or video is used as final Festival production media.
 
-PRE-PRODUCTION VALIDATION
-- Before paid Higgsfield production, visual and workflow ideas were validated in Google Flow using the creator's no-additional-cost access at the time to Nano Banana 2, Nano Banana Pro and the current Gemini Omni Flash video model.
-- Google Flow outputs are pre-production validation only. No externally generated Google Flow image or video is used as final Festival production footage or as a submitted final image/video asset.
-- All AI image and video generations actually used by the Festival Entry must be newly generated on Higgsfield within the Festival Generation Window and their underlying generations/assets must be retained inside the dedicated `AI Film Festival` submission project for audit. Google Flow material is validation only and is never a final visual asset.
-
-CRITICAL AI REVIEW / HALLUCINATION CONTROL
-- The canonical book-to-film and prompt-pack workflow was also subjected to independent critic-AI review rather than relying on a single model path.
-- Gemini 3.1 Pro and a separate ChatGPT GPT-5.6 Sol high-reasoning instance were used as critical reviewers. Their role was to challenge unsupported claims, detect hallucination risk, expose contradictions or missing context, and help improve prompt precision and internal consistency.
-- These critic AIs did not replace the source archive or the creator's authorship. They functioned as adversarial quality-control layers around the synthesis and prompt-engineering process.
-- The production orchestrator remains a separate ChatGPT GPT-5.6 Sol Pro 5× high-reasoning instance operating through Higgsfield; critic review and production execution are deliberately distinct roles.
-
-LOCAL TOOLING CONSTRAINT / NATIVE HIGGSFIELD TEST
-- The creator does not have a suitable local GPU and cannot practically run DaVinci Resolve on the local machine.
-- Earlier minimal video experiments used Codex-assisted automated cutting and crossfades instead of a local NLE workflow.
-- This film intentionally removes that external editing safety net. No external video editor is used to hide native seams or compensate for Higgsfield continuity limits.
-- The finished film therefore leaves Higgsfield's native strengths and limitations visible rather than repairing them outside the platform.
-
-PUBLIC PROJECT ORGANIZATION / AUDITABILITY
-- The Festival project is organized for human inspection, not only machine execution. Every asset has a concise logical ID plus a descriptive human-readable display name; opaque Higgsfield UUIDs are stored in the production registry for deterministic references but are not treated as the public meaning of the asset.
-- Cinema Studio collections/subfolders separate Characters, Present City / Main Worlds, Memory Worlds, Memory Packs / Technical References, Storyboards, Audio / Narration, Canonical Video Chain, and Final Festival Delivery. Larger groups are subdivided by story context (social/travel/work/institutional/clinical) rather than left as one hundred unrelated files in one folder.
-- The project is intended to remain understandable when its prompts, assets and generation history become publicly inspectable after submission. A reviewer should be able to understand what an asset is and where it belongs without decoding UUIDs.
-
-MCP AUTOMATION BOUNDARY / DISCLOSED TECHNICAL LIMITS
-- External orchestration uses the Higgsfield MCP plugin for actual Higgsfield image/video/audio generation, cost checks, exact generation IDs and supported downstream references.
-- At the current MCP capability level, some Cinema Studio project-administration actions are not exposed as reliable write operations: Project Brief editing, project collection/subfolder creation or movement, project assignment of a global generation, readable asset naming and certain Festival publication/submission UI actions. These are disclosed workflow limits and part of the platform evaluation.
-- Missing MCP administration is **not** converted into routine human production labor. The intended workflow leaves the operation blocked and records the limitation. Only an explicitly authorized diagnostic or manual exception may use the Cinema Studio UI, and that intervention is logged separately rather than counted as autonomous execution.
-- If a required visual generation cannot be retained inside the Festival project for audit through the available automation surface, production stops rather than assuming that global `My generations` is sufficient or requiring the creator to become the missing project-management API.
-
-PRODUCTION TRANSPARENCY
-- This project is executed from a canonical prompt pack that is the production source of truth for story, references, continuity, budget, manual gates and fallback rules.
-- The human–AI relationship is intentionally deeper than a conventional tool-assisted workflow. The human supplies the lived source material, authorship, intent, taste, ethical boundaries and explicit manual approvals; AI helped reconstruct and synthesize the source archive into the two-volume book, derive and maintain the film structure and prompt pack, orchestrate production, and provide the film with its consistent off-screen narration voice. In that practical sense, AI did not only accelerate the work; it helped give the accumulated material a coherent voice.
-- This end-to-end collaboration is itself part of what the project is testing: how far a human and AI can operate as one production system while human authorship and approval remain explicit.
-- External orchestration is performed by ChatGPT GPT-5.6 Sol, Pro 5×, high-reasoning configuration, acting in a live external-supercomputer role through the Higgsfield MCP/app connection. This is not a hypothetical future workflow: the connected agent is already reading live workspace state, uploading non-generation project files, creating supported reusable state and measuring the exact boundary where the current MCP stops exposing Cinema Studio control. This is intentionally not a Plus configuration.
-- Production-media boundary: the orchestrator calls the **Higgsfield MCP plugin**, but Higgsfield generates every production image, narration/audio asset and video. ChatGPT itself does not generate production media for this project.
-- Generation multiplicity is locked to **one output per canonical asset per authorized attempt**. The orchestrator must explicitly use `count=1` / `batch_size=1` / one sample wherever the Higgsfield MCP plugin exposes such controls. No four-variation image sets, no multi-take video candidates, no narration alternatives and no seed sweeps are part of the production workflow. A second generation of the same asset is a manual-gated retry, not a normal variation.
-- Asset identity has both a human and machine layer. Every accepted generation receives a logical ID, descriptive public display name, contextual collection path and one-sentence story context, while the exact Higgsfield generation/job UUID remains in the canonical registry for deterministic MCP binding. Reusable image references may additionally receive a Higgsfield Reference Element ID where supported. Public reviewers read names and context; the orchestrator binds exact IDs.
-- Routine production execution is intended to be autonomous. Human intervention is deliberately limited to intentional authorship/approval decisions, subjective keep/stop judgments and explicitly authorized exceptions. The human operator is not expected to hand-build the generation chain or act as the missing Cinema Studio API layer.
-- The canonical production pack is intentionally large — approximately 490 KB, more than 6,550 lines and about 70,700 words at this stage — because it carries the story inventory, reference graph, continuity rules, narration, budget discipline, acceptance criteria and manual-fallback authorization in one recoverable execution contract.
-- The finished film functions as a practical test of whether a large source archive can travel through an AI-assisted book and prompt-pack workflow into a complete film, with Higgsfield handling the final native image/video production under a fixed 3000-credit ceiling and first-usable-take discipline.
-
-AUTONOMY / SUPERCOMPUTER DEMONSTRATION
-- The project is not primarily a demonstration of frame-by-frame perfection. Its central production question is how far an AI-controlled pipeline can autonomously carry a complex film from source material to finished native output while respecting a detailed execution contract.
-- The external GPT-5.6 Sol Pro 5× high-reasoning orchestrator is used as a real external supercomputer, not merely described as one. It interprets the canonical prompt pack, interrogates the live Higgsfield MCP surface, recovers whatever state the interface exposes, uploads and binds supported assets, builds the dependency graph, tracks IDs/credits/continuity, executes allowed generation operations and pauses only at explicit human decision gates or measured API boundaries.
-- This makes the film simultaneously a creative work and a systems experiment. Success is not only whether Higgsfield can render the images and video, but whether Higgsfield exposes enough machine-operable state for an external AI to control the production honestly from end to end.
-- A missing MCP endpoint is therefore part of the measured result. It is not repaired invisibly by asking the creator to click through repetitive project administration. A paid-plan change is also treated experimentally: generation entitlement may change, but project-state capability is considered improved only if new machine actions can actually be observed and used.
-- Minor native generative imperfections are acceptable when story, identity, continuity, narration and physical-world logic remain intact. The meaningful result is the degree of autonomous end-to-end execution achieved without hidden manual shot-building, hidden project administration or external video-editing repair.
-
-CORE CONCEPT
-One apparently uninterrupted exterior walk through an impossible London–Budapest metropolis at rainy blue hour/night.
-London street geometry and Budapest architecture, yellow trams, Hungarian signage and civic landmarks physically coexist as one normal city.
-
-VISUAL LANGUAGE
-- Photorealistic, grounded cinematic realism.
-- Rain, wet glass and real reflective surfaces are structural elements.
-- Memories appear only inside real windows, glass and wet reflections.
-- Reflected memories are living moving fragments generated inside the main video/extension pass, not frozen stills and not separately pre-rendered overlay videos by default.
-- The protagonist never physically enters a memory during the walk.
-- Score cards always float above people's heads with visible air above the hair.
-- Score cards are normally visible.
-- Direct gaze gives the viewed person's existing card only a modest fuller internal light/fill.
-
-CHARACTER / PERFORMANCE
-- One recurring fictional protagonist.
-- Same protagonist identity throughout.
-- Off-screen first-person narration only.
-- The visible protagonist never lip-syncs to narration.
-- No other visible character delivers intelligible dialogue.
-
-STORY / TONE
-- Human, observational, awkward, funny and sometimes absurd.
-- Institutional roles remain human locally even when the larger system loses context.
-- Autobiographical structure is preserved, but the film is Gala-abstracted and universal rather than documentary.
-- AI is acknowledged only in narration as something that helped the protagonist hold the fragmented story together and sometimes keep going.
-- Do not add AI UI, chatbot screens or explanatory technology imagery.
-
-GALA ABSTRACTION
-DO:
-- Preserve the human and structural meaning of the original events.
-- Translate specific institutional events into fictional universal images.
-
-DO NOT:
-- Use real contemporary political names or likenesses.
-- Use party or campaign branding.
-- Name contemporary officeholders.
-- Name the original tax regime.
-- Identify current political events or institutions where abstraction is sufficient.
-- Turn the film into political advocacy, propaganda or documentary reconstruction.
-
-AUDIO
-- The off-screen narrator voice is AI-generated in Higgsfield using Seed Audio 1.0, then locked consistently across all seven narration blocks. The synthetic voice is an intentional part of the film's human–AI authorship rather than a placeholder for later human dubbing.
-- Locked off-screen narrator voice across the entire film.
-- Narration is authoritative and must never be re-voiced or paraphrased.
-- Seedance generates physically plausible ambience, foley/SFX and restrained non-lyrical score around narration.
-- Sound must continue naturally across extensions with no deliberate chapter reset or new musical downbeat.
-
-CONTINUITY
-- The film should feel like one uninterrupted walk.
-- V01 is the initial 30-second production segment.
-- V02–V07 should continue via native forward video extension wherever technically supported.
-- Each extension inherits the previous accepted endpoint: camera height, direction, velocity, protagonist movement phase, lighting, rain, traffic, crowd state, score-card state, ambience and score texture.
-- Never deliberately introduce a fresh establishing shot, fade, title break or chapter opening between blocks.
-
-FINAL REVEAL
-- Clinical reality appears only in the final block.
-- Ordinary, non-graphic clinical room.
-- Protagonist is conscious, not waking from a dream.
-- One leg elevated/immobilized, one arm restrained.
-- Calm ordinary nurse.
-- No horror, gore or supernatural interpretation.
-
-PRODUCTION RULES
-- Seedance 2.5 is the canonical video model.
-- Exactly ONE output is requested for each canonical asset per authorized attempt; no alternate candidate set is generated.
-- First technically usable story-preserving take is canonical.
-- Do not regenerate for cosmetic generative imperfections.
-- No external video editor is used to hide Higgsfield limitations.
-- The finished film should demonstrate what Higgsfield can produce natively.
-- Evaluate the production primarily as an autonomous human–AI orchestration demonstration, not as a manual frame-perfect finishing exercise.
-
-AUTOMATION LIMITS NOTE
-- The goal is maximal autonomous production and an honest measurement of the current Higgsfield MCP boundary. Missing MCP coverage is a product limitation to document, not a reason to shift Cinema Studio administration onto the creator.
-- Current known UI-only candidates include Project Brief maintenance, collection/subfolder organization, project association of generated assets, readable project asset naming and final Festival publication/submission steps. If any of these is required but unavailable through MCP, record the blocked capability. Use a manual UI workaround only after explicit user authorization and count it as a disclosed automation exception.
-- This expectation applies outside the Festival as well: an AI production system that presents itself as end-to-end should expose the project-state operations required to manage the work it generates.
-
-BUDGET / MANUAL GATES
-- Hard all-in ceiling: 3000 Higgsfield credits.
-- Run full-film cost projection before the first paid video generation.
-- V01 is an early live production test, not disposable.
-- After V01, user approval is required before proceeding into the extension chain.
-- Any retry, alternative model, resolution change, block split, narration regeneration, separate music generation or other fallback requires explicit user approval.
-
-FESTIVAL PUBLICATION / SOCIAL PLAN
-- Final social publication is mandatory for Festival submission and is treated as a manual publication gate, not an autonomous AI action.
-- Primary Festival social post: the existing public MyScoutee YouTube channel, using the same final watermarked + packshot version submitted to Higgsfield.
-- The YouTube post must remain public and directly viewable through the end of the Festival. The resulting public URL is supplied back to the Higgsfield submission.
-- Optional mirror: Instagram. LinkedIn and Facebook may be used for project discovery and product context but are not relied upon as the Festival MVS social link.
-- The public social description should state the production lineage and constraints transparently: real MyScoutee product; source documents → two-volume Amazon book → canonical prompt pack → Higgsfield-native film; external ChatGPT GPT-5.6 Sol Pro 5× orchestration; minimal human gates; no external NLE used to conceal Higgsfield limitations; Google Flow used only for pre-production validation, not final Entry image/video assets.
-- If the user chooses the optional Create-in-Public/Race path, V01 may be published as the first WIP Cut only after the V01 acceptance gate; poster + this Project Brief must accompany that public project. Publishing WIP is never automatic.
+All final production image, narration/audio and video generation is Higgsfield-native. Exactly one output is requested per canonical asset per authorized attempt. The first technically usable story-preserving take is kept. Paid retries or fallback paths require explicit approval. The final film is intentionally produced without an external video editor repairing Higgsfield-native continuity.
 ```
 
 ### FESTIVAL SOCIAL PUBLICATION COPY PACK — MANUAL FINAL STEP / DO NOT POST AUTOMATICALLY
