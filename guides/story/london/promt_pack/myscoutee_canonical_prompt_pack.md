@@ -377,36 +377,39 @@ This separates two independent questions that must not be conflated:
 
 The MCP already performs real read/write operations while the connected account has zero generation credits, so MCP operation itself is not simply disabled by the free/zero-credit state. If the account is upgraded or credits are added later, re-run the MCP capability inventory before the first paid generation and record any endpoint changes. Do not assume that paying for generation automatically adds project-state APIs.
 
-### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF / DESCRIPTION — COPY INTO THE PROJECT FIELD
+### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF — STRUCTURED / CONCISE
 
 ```text
 MYSCOUTEE — THE PATH BETWEEN PEOPLE
 
 ~3:20 | 16:9 | photorealistic | Seedance 2.5 | 3000-credit ceiling
 
-PROJECT
-MyScoutee is a real AI-assisted social software project. The source archive became a two-volume Amazon book, then a canonical prompt pack, then this Higgsfield-native film. Public presence: YouTube, LinkedIn, Instagram, Facebook.
+✨ Context
+MyScoutee is a real AI-assisted social software project with public presence on YouTube, LinkedIn, Instagram and Facebook. A large source archive became a two-volume Amazon book in roughly two days. ChatGPT GPT-5.6 Sol, Pro 5× High Reasoning then artistically transformed the two books into one canonical cinematic master prompt in roughly one additional day. Only a few weeks before this production, the creator had no practical knowledge of AI video generation. Pre-production was validated in Google Flow with Nano Banana 2, Nano Banana Pro and Gemini Omni Flash.
 
-FILM
-The film follows one apparently continuous rainy walk through an impossible London–Budapest city. Literal memories appear only inside real reflective or transparent surfaces. The visible protagonist never enters those memories. The final block hard-cuts from the city into an ordinary clinical reality. The tone is human, observational, awkward and sometimes absurd; contemporary political identities are removed while the underlying human structure is preserved.
+🎭 Narrative
+One continuous rainy walk through an impossible London–Budapest city. Literal memories live inside real reflective or transparent surfaces; the protagonist never physically enters them. Above-head score cards visualize social classification. The final block hard-cuts into ordinary clinical reality. Human, observational, awkward and sometimes absurd.
 
-AUTOMATION
-External GPT-5.6 Sol operates Higgsfield through the official MCP. Goal: run the production end-to-end with minimal manual UI work.
+🎨 Visuals
+Photorealistic European feature-film realism: rainy blue hour, wet stone, real glass, London geometry fused with explicit Budapest architecture, yellow trams and Hungarian signage. Memories move inside reflections; no fantasy glow, game-engine look or obvious sci-fi HUD.
 
-OBSERVED GAPS
-- Import Elements: 128 KiB Markdown limit; clean import = 48 unique Elements.
-- HIGGSFIELD MCP ELEMENT MEDIA-BINDING GAP: MCP cannot attach, replace or upsert an image/media onto an existing imported Element. `create` only creates a new Element, so duplicating the Element is not an equivalent workaround.
-- Elements are workspace-global, not project-scoped.
-- MCP cannot read or write Scene-folder membership.
-- `Move to` removed project visibility while the backend Element remained.
-- Contest-project asset transfer, assignment and project-state management are not exposed through MCP.
+🎬 Production
+Final production is Higgsfield-native through the official MCP. Seedance 2.5, seven logical video blocks, locked Higgsfield narration, one output per canonical asset, no external video editor. V01 is the opening generation; V02–V07 continue by native forward extension.
 
-PRODUCTION
-Final media is Higgsfield-native. One output per canonical asset per authorized attempt. No external video editor.
+🚀 Status
+- MASTER PROMPT READY: v2.2.57 — 488,623 bytes (~477 KiB), 6,425 lines, ~68,700 words.
+- IMPORT ELEMENTS: 128 KiB Markdown limit; clean import = 48 canonical Elements: 31 Characters + 16 Locations + 1 Prop.
+- ELEMENT MEDIA GAP: MCP can upload media and create Elements, but cannot attach / replace / upsert image media on an existing imported Element.
+- PROJECT-STATE GAP: Elements are workspace-global; MCP cannot manage Scene-folder membership or reliably transfer existing assets into the contest project. `Move to` removed project visibility in testing.
+- CURRENT BALANCE: 0 generation credits; final Higgsfield production has not started.
 
-PUBLICATION
-Final Higgsfield-watermarked + packshot film on the MyScoutee YouTube channel. MyScoutee's LinkedIn, Instagram and Facebook presence can point to the film. The YouTube post stays public through Festival end.
+🔗 Resources
+Two-volume MyScoutee Amazon book; canonical master prompt pack; clean 48-Element importer + manifest; Google Flow validation work.
+
+📝 Notes
+Final accepted Higgsfield-watermarked + packshot film will be published on the existing public MyScoutee YouTube channel; LinkedIn, Instagram and Facebook can point to it.
 ```
+
 
 ### FESTIVAL SOCIAL PUBLICATION COPY PACK — MANUAL FINAL STEP / DO NOT POST AUTOMATICALLY
 
