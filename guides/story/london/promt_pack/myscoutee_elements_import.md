@@ -1,6 +1,6 @@
 # MYSCOUTEE — CINEMA STUDIO IMPORT ELEMENTS — CLEAN UNIQUE SET
 
-Pack version: v2.2.48
+Pack version: v2.2.57
 Purpose: Higgsfield Cinema Studio `Import Elements` only.
 
 ## IMPORT CONTRACT

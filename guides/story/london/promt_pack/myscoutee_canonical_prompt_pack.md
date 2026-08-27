@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.48 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.57 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -173,10 +173,12 @@ This section records the **actual automation boundary observed in the current Hi
 - list Cinema Studio-imported Elements and address their completed Element UUIDs in supported generation preflight/generation prompts;
 - inspect current model capabilities/parameters and available workspaces exposed by MCP.
 
+**OBSERVED ELEMENT PREFLIGHT DETAIL:** An MCP cost preflight accepted an imported metadata-only Protagonist Element ID for Nano Banana 2 at 1.5 credits without submitting a generation. This proves request validation only; it does not prove visual reference behavior while `medias=[]`.
+
 **NOT CURRENTLY EXPOSED AS RELIABLE MCP WRITE ACTIONS:**
 - writing or updating the Cinema Studio **Project Brief** field;
 - creating, renaming or moving Cinema Studio **collections/subfolders**;
-- reading the Cinema Studio Import Elements **Scene grouping** through the current MCP Element object, or writing Element collection/grouping paths through MCP;
+- reading contest-project **Scene-folder membership** through the current MCP Element object, or assigning imported Elements to Scene folders/collections through MCP;
 - moving, copying, assigning or attaching an existing Cinema Studio/MCP asset or generation into the contest project; live UI testing exposes no such transfer path, and MCP exposes no equivalent write action;
 - setting the human-readable Cinema Studio asset display name when the generation tool itself exposes only the generated job;
 - publishing the Festival project / Create-in-Public state;
@@ -190,6 +192,8 @@ The intended production path does **not** require the creator to perform missing
 A one-off Cinema Studio UI experiment may be performed only when the user explicitly chooses to diagnose Higgsfield behavior (for example, testing whether a global Higgsfield generation can be associated with `AI Film Festival`). Such a diagnostic is evidence collection, not the normal production workflow. It does not convert a missing MCP endpoint into a human responsibility.
 
 If the user explicitly authorizes a manual workaround for a particular blocked action, record it as `MANUAL_EXCEPTION_AUTHORIZED`, perform only the minimum semantic operation necessary, and keep it visible in the final automation report. Never describe that stage as autonomous. If the user does not authorize a workaround, leave the stage blocked and report the platform limitation rather than teaching the user Cinema Studio as a substitute for an incomplete MCP interface.
+
+Do **not** use contest-project Element `Move to` as an organization mechanism: live batch testing caused the selected imported Element set to disappear from project Elements. Treat the operation as destructive/unsafe unless a later verified Higgsfield workflow proves otherwise.
 
 Do **not** invent button labels that are not visible in the current UI, and do not regenerate an asset merely to work around project administration.
 
@@ -375,30 +379,32 @@ The MCP already performs real read/write operations while the connected account 
 ### HIGGSFIELD CINEMA STUDIO PROJECT BRIEF / DESCRIPTION — COPY INTO THE PROJECT FIELD
 
 ```text
-PROJECT
 MYSCOUTEE — THE PATH BETWEEN PEOPLE
-Cinema Studio project: AI Film Festival
-Runtime: ~3:20 | 16:9 | photorealistic cinematic short
-Primary video model: Seedance 2.5
-Production ceiling: 3000 Higgsfield credits
 
-PROJECT / FILM
-MyScoutee is a real AI-assisted social software project. This film grew from a large real-world source archive that was first synthesized with AI into a two-volume book published on Amazon, then into a canonical production prompt pack, and finally into this Higgsfield-native short. MyScoutee can also be found by searching the name on LinkedIn, YouTube, Instagram and Facebook; no external links are required in this brief.
+~3:20 | 16:9 | photorealistic | Seedance 2.5 | 3000-credit ceiling
 
+PROJECT
+MyScoutee is a real AI-assisted social software project. The source archive became a two-volume Amazon book, then a canonical prompt pack, then this Higgsfield-native film. Public presence: YouTube, LinkedIn, Instagram, Facebook.
+
+FILM
 The film follows one apparently continuous rainy walk through an impossible London–Budapest city. Literal memories appear only inside real reflective or transparent surfaces. The visible protagonist never enters those memories. The final block hard-cuts from the city into an ordinary clinical reality. The tone is human, observational, awkward and sometimes absurd; contemporary political identities are removed while the underlying human structure is preserved.
 
-EXTERNAL GPT-5.6 SOL VALIDATION TEST
-Higgsfield currently advertises Supercomputer as **Powered by GPT-5.6 Sol**, as a superagent for the creative stack, and says it can run an entire creative project from one chat. This production independently tests that advertised agentic concept from outside Higgsfield: ChatGPT GPT-5.6 Sol, Pro 5× high reasoning, operates through Higgsfield's official MCP connection and attempts to carry the real production end-to-end — project-state recovery, dependency resolution, asset/reference handling, ID and credit tracking, generation control and the defined human decision gates.
+AUTOMATION
+External GPT-5.6 Sol operates Higgsfield through the official MCP. Goal: run the production end-to-end with minimal manual UI work.
 
-The test is therefore not a comparison of model intelligence. It uses an external GPT-5.6 Sol to validate how much of the end-to-end workflow advertised for Higgsfield's own GPT-5.6 Sol-powered Supercomputer is machine-operable through the interfaces Higgsfield exposes. Live no-generation testing confirmed: Cinema Studio **Import Elements limit = 128 KiB per Markdown file**; the full ~488 KB pack failed, while a ~110.6 KiB split extracted 16 Elements. **Import Elements can create metadata-only Characters, Locations and Props from Markdown; it correctly classified the score-card system as a Prop, while MCP Element creation currently requires media.** Those imported Elements are visible through MCP with `name`, `category` and `description`, but no attached media (`medias=[]`), matching the UI's **Add element image** state. The canonical workflow therefore keeps each imported Element and attaches its later accepted rendered image to that same Element rather than creating a duplicate; MCP currently exposes no equivalent existing-Element media-attach/update action. The full original CHARACTER prompt is not exposed behind the Element. An MCP cost preflight accepted the imported Protagonist Element ID for Nano Banana 2 at **1.5 credits** without submitting a generation. Import Elements also created Scene groupings in the Cinema Studio UI. A later two-slice test showed that importing arbitrary slices of the full production pack can create duplicate logical Locations when the same World is described in both bootstrap/route metadata and its full WORLD prompt; the clean importer is therefore one-definition-per-Element with an expected total of 48. MCP Element reads do not expose the UI Scene grouping, and no MCP write action is exposed for collection/folder creation.
+OBSERVED GAPS
+- Import Elements: 128 KiB Markdown limit; clean import = 48 unique Elements.
+- MCP cannot attach or update media on an existing imported Element.
+- Elements are workspace-global, not project-scoped.
+- MCP cannot read or write Scene-folder membership.
+- `Move to` removed project visibility while the backend Element remained.
+- Contest-project asset transfer, assignment and project-state management are not exposed through MCP.
 
-FESTIVAL CONTEXT
-The current Festival rules require AI video and image generation for an Entry to occur on Higgsfield inside its dedicated Cinema Studio submission project during the Generation Window, and require the assets/generations used in the film to remain in that project for verification. The Minimal Viable Submission also requires the final Higgsfield-watermarked + packshot film to be posted from a public account on an accepted social platform and to remain publicly available through the end of the Festival. The planned primary post is the existing public MyScoutee YouTube channel, with Instagram available as an optional mirror. These requirements are treated as real project-state/publication conditions; missing automation remains a measured platform/interface limitation rather than routine hidden manual labor.
+PRODUCTION
+Final media is Higgsfield-native. One output per canonical asset per authorized attempt. No external video editor.
 
-PRE-PRODUCTION / PRODUCTION BOUNDARY
-Google Flow was used only for no-additional-cost pre-production validation of visual ideas and the 3×3 storyboard/reference method. No Google Flow image or video is used as final Festival production media.
-
-All final production image, narration/audio and video generation is Higgsfield-native. Exactly one output is requested per canonical asset per authorized attempt. The first technically usable story-preserving take is kept. Paid retries or fallback paths require explicit approval. The final film is intentionally produced without an external video editor repairing Higgsfield-native continuity.
+PUBLICATION
+Final Higgsfield-watermarked + packshot film on the MyScoutee YouTube channel. MyScoutee's LinkedIn, Instagram and Facebook presence can point to the film. The YouTube post stays public through Festival end.
 ```
 
 ### FESTIVAL SOCIAL PUBLICATION COPY PACK — MANUAL FINAL STEP / DO NOT POST AUTOMATICALLY

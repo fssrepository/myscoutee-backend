@@ -1,6 +1,6 @@
 # MYSCOUTEE — ELEMENT IMPORT MANIFEST
 
-Pack version: v2.2.48
+Pack version: v2.2.57
 
 - Import source: `myscoutee_elements_import.md`
 - Size: 27001 bytes (26.4 KiB)
