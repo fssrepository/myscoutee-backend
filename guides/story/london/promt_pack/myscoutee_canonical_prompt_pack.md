@@ -384,11 +384,13 @@ MYSCOUTEE — THE PATH BETWEEN PEOPLE
 
 ~3:20 | 16:9 | photorealistic | Seedance 2.5 | 3000-credit ceiling
 
+MYSCOUTEE — THE PATH BETWEEN PEOPLE follows one continuous walk through an impossible London–Budapest city, where fragments of a life appear inside windows, vehicles and wet reflections. Travel, work, relationships and encounters with institutions collide out of order, while people continuously reduce one another to visible scores. Beneath the systems, classifications and absurdities, the film keeps returning to the same question: what remains of a person when the record can never contain the whole story?
+
 ✨ Context
 MyScoutee is a real AI-assisted social software project with public presence on YouTube, LinkedIn, Instagram and Facebook. A large source archive became a two-volume Amazon book in roughly two days. ChatGPT GPT-5.6 Sol, Pro 5× High Reasoning then artistically transformed the two books into one canonical cinematic master prompt in roughly one additional day. Only a few weeks before this production, the creator had no practical knowledge of AI video generation. Pre-production was validated in Google Flow with Nano Banana 2, Nano Banana Pro and Gemini Omni Flash.
 
 🎭 Narrative
-One continuous rainy walk through an impossible London–Budapest city. Literal memories live inside real reflective or transparent surfaces; the protagonist never physically enters them. Above-head score cards visualize social classification. The final block hard-cuts into ordinary clinical reality. Human, observational, awkward and sometimes absurd.
+Seven linked blocks move from social memory through travel, work, procedure and classification toward brief human counter-memories and a final clinical reveal. Memory order is emotional rather than chronological; the film preserves awkwardness, kindness and black humour without turning people into heroes or villains.
 
 🎨 Visuals
 Photorealistic European feature-film realism: rainy blue hour, wet stone, real glass, London geometry fused with explicit Budapest architecture, yellow trams and Hungarian signage. Memories move inside reflections; no fantasy glow, game-engine look or obvious sci-fi HUD.
