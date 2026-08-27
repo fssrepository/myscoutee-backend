@@ -47,7 +47,7 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
+| Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
@@ -94,7 +94,7 @@ The principal checkpoint chains are:
   join approval, Past bucketing, two-step invitation acceptance and finally
   the same event's Friends Only discovery boundary.
 - `EVENT-EDITOR-004` -> `TOURNAMENT-001` -> `TOURNAMENT-002` ->
-  `TOURNAMENT-MEMBER-001` -> `TOURNAMENT-MEMBER-002` ->
+  `TOURNAMENT-MEMBER-001` -> `TOURNAMENT-MEMBER-002` -> `TOURNAMENT-MEMBER-003` ->
   `TOURNAMENT-DQ-001` -> `TOURNAMENT-RESOURCE-001` -> `TOURNAMENT-003`:
   tournament definition, grouping, participant-state boundaries, generated-
   group resources and advancement. Each new row uses an isolated fixture and
@@ -5218,19 +5218,49 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 
 ### `TOURNAMENT-MEMBER-002` — active participant removal
 
-- From an isolated active tournament with generated rooms and one retained
-  score row, Remove one accepted participant from the parent event.
+- From an isolated already-started, non-blocked tournament whose persisted
+  parent `currentStage`, Qualifiers definition and Qualifiers runtime are all
+  `A`, with generated rooms and one retained score row, Remove one accepted
+  participant from the parent event. This is explicitly after Start; no Start
+  or stuck/blocked recovery belongs to this checkpoint.
 - Verify parent and generated-room active membership, room-chat authorization
   and exact actor counters are revoked once. The parent record becomes
   `deleted`; the generated Group member record becomes `removed`. The
   leaderboard query sorts the group-member state `A`, `DQ`, `R` first and the
-  normal score/FIFA ordering second. Its existing `#` cell shows the normal
-  number for `A`, and `DQ` or `R` for those terminal rows; it is not a new
-  column or a UI-side re-sort. Any retained historical score identity remains
+  normal score/FIFA ordering second; any generated vacant slot is `V` and
+  follows `R`. Its existing `#` cell shows the normal number for `A`, and
+  `DQ`, `R` or `V` for terminal/vacant rows; it is not a new column or a
+  UI-side re-sort. Any retained historical score identity remains
   auditable and cannot become a live participant again by a read or poll.
 - Remove is a membership exit, not DQ and not an event-level Block state. The
   remaining room membership and every unrelated resource owner/type are
   unchanged in place and after reload.
+- Nova receives exactly one self-removal notification. Casey receives none as
+  the action actor, and Riley receives none because Riley is in Group B. This
+  checkpoint deliberately proves cross-room isolation; same-room peer delivery
+  belongs to the separate four-person `TOURNAMENT-MEMBER-003` fixture.
+
+### `TOURNAMENT-MEMBER-003` — four-person room removal recipients
+
+- Stage one isolated active Tournament with a single four-person Qualifiers
+  group: Casey, Nova, Riley and Lina. Casey removes Nova once from the parent;
+  this is deliberately separate from the `TOURNAMENT-MEMBER-002` 2+1 control.
+- The persisted parent membership becomes `deleted`, while Nova's generated
+  Group A membership becomes `removed`. Group A Standings retains the exact
+  score identity and shows active rows Riley 9, Lina 5 and Casey 1 first, then
+  `R` / `Nova Social` / 7 and finally `V` / `-----` in the existing `#`
+  column. The component does not
+  sort or reconstruct the name; server and frontend-local repositories read
+  the stored group membership state.
+- Recipient pass boundary: Nova receives exactly one self-removal notification;
+  Riley and Lina each receive exactly one same-room peer notification naming
+  Nova; Casey receives none because Casey performed the action. A participant
+  in a different group would receive none, which remains the independent
+  isolation control already exercised by `TOURNAMENT-MEMBER-002`.
+- Run `verify-tournament-member-notification event-domain
+  TOURNAMENT-MEMBER-003` immediately after the one visible Remove action. It
+  proves parent/group state, immutable four-row score history, chat revocation,
+  exact outbox/inbox recipient sets and actor exclusion before visual closure.
 
 ### `TOURNAMENT-DQ-001` — disqualification and reinstatement
 

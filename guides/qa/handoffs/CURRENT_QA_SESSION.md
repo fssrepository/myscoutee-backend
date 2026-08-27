@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 21:52 CEST
+Updated: 2026-08-25 23:21 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -24,6 +24,8 @@ file first, then open only the linked active checkpoint section.
   [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
 - Isolated corrected-score revision fixture:
   [`tournament-score-reopen-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-score-reopen-checkpoints.js)
+- Isolated four-person room-removal notification fixture:
+  [`tournament-member-notification-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-member-notification-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -40,10 +42,10 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
-scenario: XLS-driven Core execution order. Tournament priority is 11 (10/14 complete); TOURNAMENT-MEMBER-002 is now the first open Tournament row before TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+scenario: XLS-driven Core execution order. Tournament priority is 11 (10/15 complete); TOURNAMENT-MEMBER-002 is the active row, followed by the new isolated TOURNAMENT-MEMBER-003, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
 ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: The isolated fixture was reset and staged cleanly at 2026-08-25T19:52:11.475Z. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. The fixture has no staged notification, scheduler or recompute work. Three isolated managed browser sessions were relaunched from this baseline.
-required_resume: The prior attempt exposed the missing room cascade and was not evidence. After the hot-deploy fix, reset then stage this checkpoint once; do not open unrelated menus. Use the configured three sessions. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is `A`, `DQ`, `R` then score/FIFA tie-break; the existing `#` cell shows normal rank for A and `DQ`/`R` for terminal rows.
+state: The old POST-REMOVE attempt was discarded as non-evidence. The corrected fixture was reset and staged at 2026-08-25T21:21:28.276Z. The persisted status oracle proves an already-started, non-blocked Tournament: parent status `A`, parent `currentStage=Qualifiers/A` (1/2), Qualifiers definition `A` and Qualifiers runtime `A`. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. There is no staged notification, scheduler or recompute work. The three managed browser sessions were replaced from this exact baseline.
+required_resume: Do not reset or stage again while this baseline is intact. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is active rows, `DQ`, `R`, then vacant `V`, with score/FIFA tie-break inside each state; the existing `#` cell must show `R` beside `Nova Social`, never an ID, and `V / -----` must be below it. After T-M002 closes and resets, stage the separate T-M003 fixture; it uses Casey + Nova + Riley + Lina in one four-person Group A to prove Nova self-notification, Riley/Lina same-room notifications and Casey actor exclusion.
 event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
 actors:
   Casey: Tournament host and removal actor
@@ -137,12 +139,21 @@ the checkpoint says otherwise.
 
 The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
 both score-reopen checkpoints, and its retained fixture is reset. Coverage
-audit added four unexecuted Tournament-specific cases: pre-Start terminal
-membership cutoff, active participant removal, DQ/Reinstate and generated-
-group resource aggregation, plus the existing `JOB-TOURNAMENT` row whose
+audit added five Tournament-specific cases: pre-Start terminal membership
+cutoff, active participant removal, the separate four-person same-room
+notification boundary, DQ/Reinstate and generated-group resource aggregation,
+plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 10/14; `TOURNAMENT-MEMBER-002` is next and
+Therefore the domain is now 10/15; `TOURNAMENT-MEMBER-002` is active and
 `CHAT-LIST-001` remains deferred until the open Tournament block is completed.
+
+Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
+is the cross-room non-recipient/control boundary. Use the new
+`TOURNAMENT-MEMBER-003` as one four-person room because two independent peers
+are needed beside the actor and removed member. Run `TOURNAMENT-DQ-001` with a
+four-person group as well, so active score ordering and the terminal DQ row can
+be compared in one leaderboard. Existing closed grouping, room-lifecycle and
+score-revision fixtures keep their proven 2+1/2+2 layouts.
 
 When a guarded fixture repair changes time or state behind an already-open
 browser, its old projection is not valid visual evidence. Require one explicit
@@ -1064,8 +1075,9 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-ADMISSION-001 (closed; HTTP/Java PASS, frontend-local NOT EXECUTED)
 -> TOURNAMENT-SCORE-REOPEN-001 (closed)
 -> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
--> TOURNAMENT-MEMBER-001 (not run)
--> TOURNAMENT-MEMBER-002 (not run)
+-> TOURNAMENT-MEMBER-001 (closed)
+-> TOURNAMENT-MEMBER-002 (staged; action not yet performed)
+-> TOURNAMENT-MEMBER-003 (not run; four-person same-room notification fixture)
 -> TOURNAMENT-DQ-001 (not run)
 -> TOURNAMENT-RESOURCE-001 (not run)
 -> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)

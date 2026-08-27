@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071a3a"/>
+      <stop offset="0.5" stop-color="#17255b"/>
+      <stop offset="1" stop-color="#351457"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="60%">
+      <stop offset="0" stop-color="#5975d9" stop-opacity=".42"/>
+      <stop offset=".46" stop-color="#3a3d98" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#050b20" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="38"/></filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <ellipse cx="263" cy="964" rx="440" ry="250" fill="#582779" opacity=".32" filter="url(#blur)"/>
+  <ellipse cx="1650" cy="118" rx="360" ry="250" fill="#157b9d" opacity=".22" filter="url(#blur)"/>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-55 785 C245 605 423 890 676 735 C854 627 956 537 1128 583 C1361 646 1444 358 1980 462" stroke="#9dcbef" stroke-width="3" opacity=".20"/>
+    <path d="M-20 822 C234 653 438 939 698 775 C885 657 964 581 1136 624 C1373 684 1470 404 1960 510" stroke="#ffd66f" stroke-width="2" opacity=".26" stroke-dasharray="3 19"/>
+    <path d="M-10 293 C241 412 394 204 631 321 C844 426 1015 199 1202 274 C1451 373 1543 183 1960 259" stroke="#b5a9ff" stroke-width="2" opacity=".20" stroke-dasharray="2 18"/>
+    <path d="M-16 337 C246 454 411 248 639 365 C850 470 1029 246 1212 319 C1452 416 1550 228 1950 301" stroke="#8fc6e8" stroke-width="2" opacity=".14"/>
+  </g>
+
+  <g fill="#ffe486">
+    <circle cx="675" cy="735" r="6" opacity=".8"/><circle cx="1128" cy="583" r="6" opacity=".8"/>
+    <circle cx="631" cy="321" r="5" opacity=".65"/><circle cx="1202" cy="274" r="5" opacity=".65"/>
+  </g>
+
+  <g stroke="#dfeaff" fill="none" opacity=".20">
+    <circle cx="960" cy="488" r="324" stroke-width="1.5"/>
+    <circle cx="960" cy="488" r="286" stroke-width="1" stroke-dasharray="2 18"/>
+    <path d="M960 132 L977 471 L1305 488 L977 505 L960 844 L943 505 L615 488 L943 471 Z" stroke-width="1"/>
+  </g>
+
+  <rect x="74" y="74" width="1772" height="932" rx="32" fill="none" stroke="#d6e4ff" stroke-opacity=".18" stroke-width="2"/>
+</svg>

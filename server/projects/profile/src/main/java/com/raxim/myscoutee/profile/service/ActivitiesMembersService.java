@@ -435,20 +435,51 @@ public class ActivitiesMembersService {
      * states, so the standings never infer a removal from an event projection.
      */
     public Map<String, String> queryStoredMemberStatuses(String ownerType, String ownerId) {
+        Map<String, String> statusesByUserId = new LinkedHashMap<>();
+        queryStoredMemberStates(ownerType, ownerId)
+                .forEach((userId, state) -> statusesByUserId.put(userId, state.status()));
+        return Map.copyOf(statusesByUserId);
+    }
+
+    /**
+     * Reads terminal membership state and display data directly from the stored
+     * owner membership documents. This intentionally bypasses the normal
+     * Members-view visibility filter so retained tournament score rows can keep
+     * both their terminal marker and the participant's name.
+     */
+    public Map<String, StoredMemberState> queryStoredMemberStates(String ownerType, String ownerId) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
             return Map.of();
         }
-        Map<String, String> statusesByUserId = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository
-                .findByOwnerTypeAndOwnerId(normalizedOwnerType, normalizedOwnerId)) {
-            String userId = normalizeId(member == null ? null : member.getUserId());
-            if (StringUtils.hasText(userId)) {
-                statusesByUserId.put(userId, normalizeStatus(member.getStatus()));
+        List<ActivityMember> storedMembers = activityMembersRepository
+                .findByOwnerTypeAndOwnerId(normalizedOwnerType, normalizedOwnerId);
+        LinkedHashSet<String> userIds = storedMembers.stream()
+                .filter(Objects::nonNull)
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, String> namesByUserId = new LinkedHashMap<>();
+        if (!userIds.isEmpty()) {
+            for (Users user : usersRepository.findByUserIdIn(userIds)) {
+                String userId = normalizeId(user == null ? null : user.getUserId());
+                if (StringUtils.hasText(userId)) {
+                    namesByUserId.putIfAbsent(userId, safeText(user.getName()));
+                }
             }
         }
-        return Map.copyOf(statusesByUserId);
+        Map<String, StoredMemberState> statesByUserId = new LinkedHashMap<>();
+        for (ActivityMember member : storedMembers) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                statesByUserId.put(userId, new StoredMemberState(
+                        normalizeStatus(member.getStatus()),
+                        firstNonBlank(namesByUserId.get(userId), userId)));
+            }
+        }
+        return Map.copyOf(statesByUserId);
     }
 
     public boolean pendingInvitationRequiresAdminApproval(String eventId, String userId) {
@@ -1896,17 +1927,33 @@ public class ActivitiesMembersService {
                 .filter(Objects::nonNull)
                 .filter(member -> normalizedTargetUserId.equals(normalizeId(member.getUserId())))
                 .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
-                .map(member -> toDeletedMember(member, actorUserId, nowIso))
+                .map(member -> toRemovedMember(member, actorUserId, nowIso))
                 .toList();
         if (removedRoomMembers.isEmpty()) {
             return;
         }
+        Set<String> affectedRoomIds = removedRoomMembers.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        String removedMemberName = memberDisplayName(removedRoomMembers.get(0));
         activityMembersRepository.saveAll(removedRoomMembers);
         refreshEmbeddedEventMembersBatch(roomsBySourceId.keySet());
         for (Map.Entry<String, ActivityEvent> entry : roomsBySourceId.entrySet()) {
             OwnerMembersSnapshot roomMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, entry.getKey());
             if (roomMembers != null && !roomMembers.acceptedMemberUserIds().isEmpty()) {
                 chatService.ensureMainEventChat(entry.getValue(), roomMembers.acceptedMemberUserIds());
+            }
+            if (affectedRoomIds.contains(entry.getKey())) {
+                eventInviteNotificationService.notifyTournamentRoomMemberRemoved(
+                        entry.getValue(),
+                        normalizedParentEventId,
+                        normalizedTargetUserId,
+                        removedMemberName,
+                        nowIso,
+                        actorUserId,
+                        roomMembers == null ? List.of() : roomMembers.acceptedMemberUserIds());
             }
         }
     }
@@ -5010,6 +5057,9 @@ public class ActivitiesMembersService {
         } catch (Exception ignored) {
             return 0L;
         }
+    }
+
+    public record StoredMemberState(String status, String name) {
     }
 
     public record OwnerMembersSnapshot(
