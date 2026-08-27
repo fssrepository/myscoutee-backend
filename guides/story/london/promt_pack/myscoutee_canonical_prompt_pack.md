@@ -1,4 +1,4 @@
-# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.46 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
+# MYSCOUTEE — CANONICAL PROMPT PACK v2.2.47 STORY-PRESERVATION + GALA-ABSTRACTION-EXACT + AI-SURVIVAL-NARRATION + ABOVE-HEAD-SCORECARDS + NORMAL-BASELINE/GAZE-FILL + MCP/SUPERCOMPUTER-HANDOFF + EARLY-V01-LIVE-TEST + HIGGSFIELD-NATIVE-EXTENSION + NO-EXTERNAL-EDITOR + FIRST-PASS LOCKED
 ## Rebuilt from the original 3×3 storyboard workflow — dedicated MEMORY WORLD references
 
 > # ⚠️ OPERATOR PREFACE — DO NOT COPY THIS SECTION INTO ANY MODEL
@@ -143,26 +143,12 @@ The compact canonical filename remains useful for dependency mapping, but when C
 
 Do not create meaningless folders merely to reduce item count. Context takes priority over an arbitrary maximum. If Cinema Studio supports nested subfolders, use the structure above; if only one collection level is available, flatten each leaf into a readable collection such as `01E — Characters — Police / Legal / Institutional`.
 
-**IMPORT ELEMENTS GROUPING HINT — MACHINE-READABLE:**
-When Cinema Studio **Import Elements** parses this Markdown, apply the existing Scene and Category grouping and, **if collection/grouping paths are supported by the importer**, apply the following `collection_path` to the element extracted from the matching source heading. **Do not create duplicate elements from this metadata block.**
+**IMPORT ELEMENTS — DEDICATED CLEAN SOURCE:**
+Do **not** feed arbitrary 128 KiB slices of this full production pack to Cinema Studio `Import Elements`. Live testing showed that repeated descriptions of the same logical World can be extracted twice — for example once from route/bootstrap metadata and again from the full WORLD prompt. Use only the dedicated stable file `myscoutee_elements_import.md`.
 
-- `CHARACTER 01` → `01 — CHARACTERS / 01A — Core / Recurring`
-- `CHARACTER 02`, `CHARACTER 06–10` → `01 — CHARACTERS / 01B — London Social / House / Dance`
-- `CHARACTER 11–21` → `01 — CHARACTERS / 01C — Global Routes / Travel`
-- `CHARACTER 22–24` → `01 — CHARACTERS / 01D — Work / Admin`
-- `CHARACTER 03–04`, `CHARACTER 25–31` → `01 — CHARACTERS / 01E — Police / Legal / Institutional`
-- `CHARACTER 05` → `01 — CHARACTERS / 01F — Final Clinical`
-- `WORLD 01–07` → matching leaf under `02 — PRESENT CITY / MAIN WORLDS`
-- `MEMORY WORLD 01–06` → matching story-context leaf under `03 — MEMORY WORLDS`
-- `HIDDEN REALITY WORLD 07` → `03 — MEMORY WORLDS / 03F — Hidden Clinical Reality`
-- `MEMORY PRESERVATION WORLD P01–P02` → `04 — MEMORY PACKS / TECHNICAL REFERENCES`
-- `SCORE CARDS` / score-card prop → `04 — MEMORY PACKS / TECHNICAL REFERENCES / Scorecards`
-- `STORYBOARD 01–07` → `05 — STORYBOARDS`
-- `NARRATION 01–07` → `06 — AUDIO / NARRATION`
-- `CINEMA BLOCK 01–07` → `07 — VIDEO / CANONICAL CHAIN`
-- final master / watermark / packshot / submission assets → `08 — FINAL DELIVERY / FESTIVAL`
+The dedicated importer defines each logical reusable asset exactly once. Expected clean import: **48 Elements = 31 Characters + 16 Locations + 1 Prop**. `Primary scene` is organizational metadata only; an Element may be referenced from multiple Scenes without duplication. Reuse the same Element ID wherever later storyboards/video blocks need it.
 
-This grouping metadata is an importer test as well as organization metadata. If Import Elements ignores `collection_path`, preserve the extracted Elements and record collection creation as an unsupported importer/MCP capability.
+If the importer creates Scene/Category grouping, preserve it. If custom collection/folder grouping is not exposed, record that as an importer/MCP organization limitation rather than duplicating Elements to simulate folders.
 
 **ASSET REGISTRY HUMAN FIELDS — REQUIRED:** in addition to the machine IDs already required, every registry entry must contain:
 - `public_display_name`
@@ -404,7 +390,7 @@ The film follows one apparently continuous rainy walk through an impossible Lond
 EXTERNAL GPT-5.6 SOL VALIDATION TEST
 Higgsfield currently advertises Supercomputer as **Powered by GPT-5.6 Sol**, as a superagent for the creative stack, and says it can run an entire creative project from one chat. This production independently tests that advertised agentic concept from outside Higgsfield: ChatGPT GPT-5.6 Sol, Pro 5× high reasoning, operates through Higgsfield's official MCP connection and attempts to carry the real production end-to-end — project-state recovery, dependency resolution, asset/reference handling, ID and credit tracking, generation control and the defined human decision gates.
 
-The test is therefore not a comparison of model intelligence. It uses an external GPT-5.6 Sol to validate how much of the end-to-end workflow advertised for Higgsfield's own GPT-5.6 Sol-powered Supercomputer is machine-operable through the interfaces Higgsfield exposes. Live no-generation testing confirmed: Cinema Studio **Import Elements limit = 128 KiB per Markdown file**; the full ~488 KB pack failed, while a ~110.6 KiB split extracted 16 Elements. **Import Elements can create metadata-only Characters, Locations and Props from Markdown; it correctly classified the score-card system as a Prop, while MCP Element creation currently requires media.** Those imported Elements are visible through MCP with `name`, `category` and `description`, but no attached media (`medias=[]`), matching the UI's **Add element image** state. The canonical workflow therefore keeps each imported Element and attaches its later accepted rendered image to that same Element rather than creating a duplicate; MCP currently exposes no equivalent existing-Element media-attach/update action. The full original CHARACTER prompt is not exposed behind the Element. An MCP cost preflight accepted the imported Protagonist Element ID for Nano Banana 2 at **1.5 credits** without submitting a generation. Import Elements also created Scene groupings in the Cinema Studio UI. MCP Element reads do not expose the UI Scene grouping, and no MCP write action is exposed for collection/folder creation.
+The test is therefore not a comparison of model intelligence. It uses an external GPT-5.6 Sol to validate how much of the end-to-end workflow advertised for Higgsfield's own GPT-5.6 Sol-powered Supercomputer is machine-operable through the interfaces Higgsfield exposes. Live no-generation testing confirmed: Cinema Studio **Import Elements limit = 128 KiB per Markdown file**; the full ~488 KB pack failed, while a ~110.6 KiB split extracted 16 Elements. **Import Elements can create metadata-only Characters, Locations and Props from Markdown; it correctly classified the score-card system as a Prop, while MCP Element creation currently requires media.** Those imported Elements are visible through MCP with `name`, `category` and `description`, but no attached media (`medias=[]`), matching the UI's **Add element image** state. The canonical workflow therefore keeps each imported Element and attaches its later accepted rendered image to that same Element rather than creating a duplicate; MCP currently exposes no equivalent existing-Element media-attach/update action. The full original CHARACTER prompt is not exposed behind the Element. An MCP cost preflight accepted the imported Protagonist Element ID for Nano Banana 2 at **1.5 credits** without submitting a generation. Import Elements also created Scene groupings in the Cinema Studio UI. A later two-slice test showed that importing arbitrary slices of the full production pack can create duplicate logical Locations when the same World is described in both bootstrap/route metadata and its full WORLD prompt; the clean importer is therefore one-definition-per-Element with an expected total of 48. MCP Element reads do not expose the UI Scene grouping, and no MCP write action is exposed for collection/folder creation.
 
 FESTIVAL CONTEXT
 The current Festival rules require AI video and image generation for an Entry to occur on Higgsfield inside its dedicated Cinema Studio submission project during the Generation Window, and require the assets/generations used in the film to remain in that project for verification. The Minimal Viable Submission also requires the final Higgsfield-watermarked + packshot film to be posted from a public account on an accepted social platform and to remain publicly available through the end of the Festival. The planned primary post is the existing public MyScoutee YouTube channel, with Instagram available as an optional mirror. These requirements are treated as real project-state/publication conditions; missing automation remains a measured platform/interface limitation rather than routine hidden manual labor.
