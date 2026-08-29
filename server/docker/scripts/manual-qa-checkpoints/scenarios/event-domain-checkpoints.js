@@ -659,8 +659,8 @@
     "TOURNAMENT-MEMBER-002": {
       stage: "tournament-member-removal",
       why: "Prove that removing a participant after the Tournament and Qualifiers have already started exits its parent and generated-room participation without deleting the historical score identity.",
-      action: "Confirm the parent current stage, Qualifiers definition and runtime are all active, not blocked. Then as Casey open QA TOURNAMENT-MEMBER-002 > Members and Remove Nova once. Do not Start, disqualify or block Nova.",
-      expected: "Nova disappears from active parent and generated-room membership and loses the room chat. Her one existing score row remains an auditable historical row and she receives exactly one self-removal notification. Casey receives none as actor; Riley receives none because Group B is a different room and its state/counters remain unchanged.",
+      action: "Confirm the parent current stage and Qualifiers runtime are active, not blocked. Then as Casey open QA TOURNAMENT-MEMBER-002 > Members and Remove Nova once. Do not Start, disqualify or block Nova.",
+      expected: "Nova disappears from active parent and generated-room membership and loses the room chat. Her one existing score row remains an auditable historical row and she receives exactly one self-removal notification. Casey receives none as actor; Riley receives one event-participant notification while Group B and its counters remain unchanged.",
       worker: "No scheduler or manual data repair. The one visible Remove action owns every membership, chat and counter change."
     },
     "TOURNAMENT-003": {
@@ -1303,6 +1303,24 @@
             groupsPending: 0
           });
     const qualifier = definitions[0];
+    const definitionDocuments = definitions.map(stage => ({
+      id: stage.id,
+      name: stage.name,
+      description: stage.description,
+      timing: stage.timing,
+      offsetMinutes: stage.offsetMinutes,
+      durationMinutes: stage.durationMinutes,
+      location: stage.location,
+      tournamentGroupCapacityMin: stage.tournamentGroupCapacityMin,
+      tournamentGroupCapacityMax: stage.tournamentGroupCapacityMax,
+      tournamentLeaderboardType: stage.tournamentLeaderboardType,
+      tournamentAdvancePerGroup: stage.tournamentAdvancePerGroup,
+      optional: stage.optional,
+      pricing: stage.pricing,
+      capacityMin: stage.capacityMin,
+      capacityMax: stage.capacityMax,
+      icon: stage.icon
+    }));
     const groupAId = `${qualifier.id}:group:1`;
     const groupBId = `${qualifier.id}:group:2`;
     const roomAId = `random-room:${EVENT_ID}:${qualifier.id}:${groupAId}`;
@@ -1311,7 +1329,7 @@
       ...timing,
       mode: "Tournament",
       subEventsEnabled: true,
-      subEventDefinitions: definitions,
+      subEventDefinitions: definitionDocuments,
       subEvents: definitions,
       acceptedUserIds: [participantUserId, thirdUserId]
     });
@@ -2957,6 +2975,7 @@
             return {
               user: Q.user(userId),
               current: {
+                game: nestedNumber(currentActivities, "game"),
                 chats: nestedNumber(currentActivities, "chats"),
                 chat: currentActivities.chat || {},
                 events: nestedNumber(currentActivities, "events"),
@@ -2964,6 +2983,7 @@
                 event: currentActivities.event || {}
               },
               actionDelta: {
+                game: delta("game"),
                 chats: delta("chats"),
                 chatAll: delta("chat.all"),
                 chatEvent: delta("chat.event"),
@@ -10148,8 +10168,6 @@
       .find({ "payload.parentEventId": EVENT_ID, "payload.membershipAction": "removed" })
       .toArray();
     const parentEvent = eventBySourceId.get(EVENT_ID) || {};
-    const qualifierDefinition = (parentEvent.subEventDefinitions || [])
-      .find(stage => Q.text(stage.id) === Q.text(context.qualifierId));
     const qualifierRuntime = Q.collection("activitySubEventStageRuntime").findOne({
       ownerId: EVENT_ID,
       subEventId: Q.text(context.qualifierId)
@@ -10166,7 +10184,6 @@
           totalStages: Number(parentEvent.currentStage && parentEvent.currentStage.totalStages || 0),
           status: Q.text(parentEvent.currentStage && parentEvent.currentStage.status)
         },
-        qualifierDefinitionStatus: Q.text(qualifierDefinition && qualifierDefinition.stageStatus),
         qualifierRuntimeStatus: Q.text(qualifierRuntime && qualifierRuntime.stageStatus),
         novaMembershipStatus: storedMemberStatus(EVENT_ID, participantUserId)
       },
@@ -10192,12 +10209,16 @@
           recipientScope: Q.text(item.recipientScope),
           recipientUserIds: sortedUnique(item.recipientUserIds || []),
           recipientRole: Q.text(item.payload && item.payload.recipientRole),
-          memberName: Q.text(item.payload && item.payload.memberName)
+          memberName: Q.text(item.payload && item.payload.memberName),
+          title: Q.text(item.title),
+          body: Q.text(item.body || item.message)
         })),
         inbox: removalInbox.map(item => ({
           recipientUserId: Q.text(item.recipientUserId),
           recipientRole: Q.text(item.payload && item.payload.recipientRole),
-          memberName: Q.text(item.payload && item.payload.memberName)
+          memberName: Q.text(item.payload && item.payload.memberName),
+          title: Q.text(item.title),
+          body: Q.text(item.body || item.message)
         }))
       },
       counters: [hostUserId, participantUserId, thirdUserId].map(counter)
@@ -10243,6 +10264,10 @@
       chat.ownerUserId === participantUserId || chat.memberIds.includes(participantUserId)));
     const removalOutbox = current.removalNotifications.outbox;
     const removalInbox = current.removalNotifications.inbox;
+    const removedMemberOutbox = removalOutbox.find(item => item.recipientRole === "removed-member");
+    const participantOutbox = removalOutbox.find(item => item.recipientRole === "event-participant");
+    const novaInbox = removalInbox.find(item => item.recipientUserId === participantUserId);
+    const rileyInbox = removalInbox.find(item => item.recipientUserId === thirdUserId);
     if (!current.parent
         || current.parent.status !== "A"
         || current.parent.currentStage.id !== Q.text(state.context.qualifierId)
@@ -10250,7 +10275,6 @@
         || current.parent.currentStage.stageNumber !== 1
         || current.parent.currentStage.totalStages !== 2
         || current.parent.currentStage.status !== "A"
-        || current.parent.qualifierDefinitionStatus !== "A"
         || current.parent.qualifierRuntimeStatus !== "A"
         || current.parent.activeMemberUserIds.includes(participantUserId)
         || current.parent.acceptedMemberUserIds.includes(participantUserId)
@@ -10265,15 +10289,28 @@
         || !roomB.activeMemberUserIds.includes(thirdUserId)
         || !roomB.acceptedMemberUserIds.includes(thirdUserId)
         || !sameJson(current.retainedScore, expectedScore)
-        || removalOutbox.length !== 1
-        || removalOutbox[0].recipientScope !== "removed-member"
-        || !sameJson(removalOutbox[0].recipientUserIds, [participantUserId])
-        || removalOutbox[0].recipientRole !== "removed-member"
-        || removalOutbox[0].memberName !== "Nova Social"
-        || removalInbox.length !== 1
-        || removalInbox[0].recipientUserId !== participantUserId
-        || removalInbox[0].recipientRole !== "removed-member"
-        || removalInbox[0].memberName !== "Nova Social"
+        || removalOutbox.length !== 2
+        || !removedMemberOutbox
+        || removedMemberOutbox.recipientScope !== "removed-member"
+        || !sameJson(removedMemberOutbox.recipientUserIds, [participantUserId])
+        || removedMemberOutbox.memberName !== "Nova Social"
+        || removedMemberOutbox.title !== EXPECTED_TITLE
+        || removedMemberOutbox.body !== `You were removed from ${EXPECTED_TITLE}.`
+        || !participantOutbox
+        || participantOutbox.recipientScope !== "event-participants"
+        || !sameJson(participantOutbox.recipientUserIds, [thirdUserId])
+        || participantOutbox.memberName !== "Nova Social"
+        || participantOutbox.title !== EXPECTED_TITLE
+        || participantOutbox.body !== `Nova Social was removed from ${EXPECTED_TITLE}.`
+        || removalOutbox.some(item => item.recipientUserIds.includes(hostUserId))
+        || removalInbox.length !== 2
+        || !novaInbox
+        || novaInbox.recipientRole !== "removed-member"
+        || novaInbox.memberName !== "Nova Social"
+        || !rileyInbox
+        || rileyInbox.recipientRole !== "event-participant"
+        || rileyInbox.memberName !== "Nova Social"
+        || removalInbox.some(item => item.recipientUserId === hostUserId)
         || !novaCounter
         || novaCounter.events !== Math.max(0, beforeNova.events - 1)
         || novaCounter.eventAll !== Math.max(0, beforeNova.eventAll - 1)
@@ -10284,14 +10321,14 @@
         || !sameJson(rileyCounter && {
           events: rileyCounter.events, eventAll: rileyCounter.eventAll, eventActive: rileyCounter.eventActive
         }, beforeRiley)) {
-      Q.fail("TOURNAMENT-MEMBER-002 did not write parent=deleted and Group A=removed exactly once while retaining Nova's score, sending only Nova's self-removal notification and preserving Riley's cross-room control.");
+      Q.fail("TOURNAMENT-MEMBER-002 did not write parent=deleted and Group A=removed exactly once while retaining Nova's score, notifying Nova plus every non-actor event participant, and preserving Riley's Group B state.");
     }
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
       phase: "tournament-member-removal-verified",
       oracle: current,
-      next: "Reload Casey and Nova once. In Group A standings confirm the order is active Casey, then R / Nova Social / 7, then V / ----- for the vacant slot; confirm Nova cannot advance or reopen the parent/room, then record PASS/CLOSED and reset."
+      next: "Reload Casey and Nova once. In Group A standings confirm the order is active Casey, then R / Nova Social / 7, then V / ----- for the vacant slot. Confirm Nova sees the self-removal notification, Riley sees the event-participant notification, Casey sees none, and Nova cannot reopen the parent/room; then record PASS/CLOSED and reset."
     });
   }
 

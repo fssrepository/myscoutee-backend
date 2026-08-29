@@ -1659,7 +1659,17 @@ class ActivitiesMembersServiceTest {
                 org.mockito.ArgumentMatchers.eq("admin"),
                 anyString());
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
-        verify(chatService).postSystemMessage("event-1", "Target User left the event.", "member-left");
+        verify(chatService).postSystemMessage(
+                "event-1",
+                "Target User was removed from the event.",
+                "member-removed");
+        verify(eventInviteNotificationService).notifyEventMemberRemoved(
+                eq(event),
+                eq("target"),
+                eq("Target User"),
+                anyString(),
+                eq("admin"),
+                eq(List.of()));
     }
 
     @Test

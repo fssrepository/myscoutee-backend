@@ -581,7 +581,7 @@ public class ActivitiesEventLeaderboardService {
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
         memberStatesById.forEach((memberId, state) -> {
             if (StringUtils.hasText(state.name())) {
-                memberNameById.putIfAbsent(memberId, state.name());
+                memberNameById.put(memberId, state.name());
             }
         });
 

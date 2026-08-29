@@ -5219,8 +5219,8 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 ### `TOURNAMENT-MEMBER-002` — active participant removal
 
 - From an isolated already-started, non-blocked tournament whose persisted
-  parent `currentStage`, Qualifiers definition and Qualifiers runtime are all
-  `A`, with generated rooms and one retained score row, Remove one accepted
+  parent `currentStage` and Qualifiers runtime are both `A`, with generated
+  rooms and one retained score row, Remove one accepted
   participant from the parent event. This is explicitly after Start; no Start
   or stuck/blocked recovery belongs to this checkpoint.
 - Verify parent and generated-room active membership, room-chat authorization
@@ -5236,11 +5236,13 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   remaining room membership and every unrelated resource owner/type are
   unchanged in place and after reload.
 - Nova receives exactly one self-removal notification. Casey receives none as
-  the action actor, and Riley receives none because Riley is in Group B. This
-  checkpoint deliberately proves cross-room isolation; same-room peer delivery
-  belongs to the separate four-person `TOURNAMENT-MEMBER-003` fixture.
+  the action actor. Riley receives exactly one event-participant notification
+  even though Riley is in Group B: membership-change notifications belong to
+  the parent event and go to every remaining accepted non-actor participant.
+  Riley's Group B membership, room chat and counters remain unchanged, so this
+  checkpoint proves cross-room delivery together with group-state isolation.
 
-### `TOURNAMENT-MEMBER-003` — four-person room removal recipients
+### `TOURNAMENT-MEMBER-003` — four-person removal recipient fan-out
 
 - Stage one isolated active Tournament with a single four-person Qualifiers
   group: Casey, Nova, Riley and Lina. Casey removes Nova once from the parent;
@@ -5253,10 +5255,11 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   sort or reconstruct the name; server and frontend-local repositories read
   the stored group membership state.
 - Recipient pass boundary: Nova receives exactly one self-removal notification;
-  Riley and Lina each receive exactly one same-room peer notification naming
-  Nova; Casey receives none because Casey performed the action. A participant
-  in a different group would receive none, which remains the independent
-  isolation control already exercised by `TOURNAMENT-MEMBER-002`.
+  Riley and Lina each receive exactly one event-participant notification naming
+  Nova; Casey receives none because Casey performed the action. Recipient
+  selection comes from accepted parent-event membership, not generated-room
+  membership; `TOURNAMENT-MEMBER-002` independently proves that this delivery
+  crosses group boundaries without mutating the other group.
 - Run `verify-tournament-member-notification event-domain
   TOURNAMENT-MEMBER-003` immediately after the one visible Remove action. It
   proves parent/group state, immutable four-row score history, chat revocation,

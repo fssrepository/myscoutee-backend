@@ -145,6 +145,18 @@
     };
   }
 
+  function stageDefinitionDocument(stage) {
+    const definition = { ...stage };
+    delete definition.stageStatus;
+    delete definition.stageStatusReason;
+    delete definition.stageStatusUpdatedAt;
+    delete definition.membersAccepted;
+    delete definition.membersPending;
+    delete definition.groupsCount;
+    delete definition.groupsPending;
+    return definition;
+  }
+
   function rootEvent(stagedAtIso, stage) {
     return {
       _id: EVENT_ID,
@@ -178,7 +190,7 @@
       invitedMemberUserIds: [],
       pendingRequestMemberUserIds: [],
       subEventsEnabled: true,
-      subEventDefinitions: [stage],
+      subEventDefinitions: [stageDefinitionDocument(stage)],
       subEvents: [stage],
       currentStage: { id: STAGE_ID, name: "Qualifiers", stageNumber: 1, totalStages: 1, status: "A" },
       mode: "Tournament",
@@ -434,7 +446,7 @@
     const outbox = current.notifications.outbox;
     const inbox = current.notifications.inbox;
     const targetOutbox = outbox.find(item => item.role === "removed-member");
-    const peerOutbox = outbox.find(item => item.role === "room-peer");
+    const participantOutbox = outbox.find(item => item.role === "event-participant");
     const baselineByUser = new Map((currentState.actionBaselineCounters || []).map(item => [Q.text(item.userId), item]));
     const currentByUser = new Map(current.counters.map(item => [item.userId, item]));
     const unchangedUsers = [HOST_ID, RILEY_ID, LINA_ID].every(userId =>
@@ -453,7 +465,9 @@
         || current.roomChats.some(chat => chat.ownerUserId === NOVA_ID || chat.memberIds.includes(NOVA_ID))
         || outbox.length !== 2
         || !targetOutbox || !Q.sameJson(targetOutbox.recipients, [NOVA_ID])
-        || !peerOutbox || !Q.sameJson(peerOutbox.recipients, [RILEY_ID, LINA_ID].sort())
+        || !participantOutbox
+        || participantOutbox.scope !== "event-participants"
+        || !Q.sameJson(participantOutbox.recipients, [RILEY_ID, LINA_ID].sort())
         || outbox.some(item => item.recipients.includes(HOST_ID))
         || outbox.some(item => item.memberName !== "Nova Social")
         || inbox.length !== 3
@@ -462,7 +476,7 @@
         || inbox.some(item => item.memberName !== "Nova Social")
         || !unchangedUsers
         || !novaCounterRemoved) {
-      Q.fail(`${CHECKPOINT} did not preserve the four-person room removal, leaderboard identity, exact same-room recipients and actor exclusion boundary.`);
+      Q.fail(`${CHECKPOINT} did not preserve the four-person room removal, leaderboard identity, exact event-participant recipients and actor exclusion boundary.`);
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "application-write-verified",
@@ -473,7 +487,7 @@
       checkpointId: CHECKPOINT,
       phase: "application-write-verified",
       oracle: current,
-      visualPass: "In Group A Standings the order is Riley 9, Lina 5, Casey 1, then R / Nova Social / 7, then V / ----- for the vacant slot in the existing # column. Nova sees the self-removal notification; Riley and Lina see the peer notification; Casey sees none."
+      visualPass: "In Group A Standings the order is Riley 9, Lina 5, Casey 1, then R / Nova Social / 7, then V / ----- for the vacant slot in the existing # column. Nova sees the self-removal notification; Riley and Lina see the event-participant notification; Casey sees none."
     });
   }
 

@@ -965,7 +965,8 @@ public class ActivitiesMembersService {
             finalizeAcceptedEventReservations(ownerId, joinedEventMembers);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
-            postEventMembershipChangeMessages(ownerId, joinedEventMembers, removedVisibleMembers);
+            notifyRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
+            postEventMembershipChangeMessages(ownerId, joinedEventMembers, removedVisibleMembers, actorUserId);
             userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
         }
         if (OWNER_TYPE_SUB_EVENT.equals(ownerType)
@@ -1270,9 +1271,10 @@ public class ActivitiesMembersService {
                         actorUserId);
             }
             if (ACTION_ACCEPT.equals(action)) {
-                postEventMembershipChangeMessages(ownerId, List.of(next), List.of());
+                postEventMembershipChangeMessages(ownerId, List.of(next), List.of(), actorUserId);
             } else if (ACTION_REMOVE.equals(action)) {
-                postEventMembershipChangeMessages(ownerId, List.of(), List.of(current));
+                notifyRemovedEventMembers(ownerId, List.of(current), actorUserId, nowIso);
+                postEventMembershipChangeMessages(ownerId, List.of(), List.of(current), actorUserId);
             } else if (ACTION_DISQUALIFY.equals(action) || ACTION_REINSTATE.equals(action)) {
                 postMemberActionChatMessage(ownerId, action, next);
             }
@@ -1445,7 +1447,11 @@ public class ActivitiesMembersService {
             eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
             if (accepted) {
-                postEventMembershipChangeMessages(normalizedEventId, List.of(current), List.of());
+                postEventMembershipChangeMessages(
+                        normalizedEventId,
+                        List.of(current),
+                        List.of(),
+                        viewerUserId);
             }
             userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
             if (!adminApprovalAlreadyPending && isAdminApprovalMembership(current)) {
@@ -1662,7 +1668,16 @@ public class ActivitiesMembersService {
                 clearRemovedManagedAssetMembers(removedManagedAssetIds, normalizedActorUserId, nowIso);
                 promotedWaitlistMembers =
                         processEventWaitlist(normalizedEventId, findPreferredEventRecord(normalizedEventId), true);
-                postEventMembershipChangeMessages(normalizedEventId, List.of(), List.of(current));
+                notifyRemovedEventMembers(
+                        normalizedEventId,
+                        List.of(current),
+                        normalizedActorUserId,
+                        nowIso);
+                postEventMembershipChangeMessages(
+                        normalizedEventId,
+                        List.of(),
+                        List.of(current),
+                        normalizedActorUserId);
             }
 
             refreshSuppressedEventSources(persistedEventSourceIds, normalizedUserId);
@@ -1845,7 +1860,11 @@ public class ActivitiesMembersService {
                     .orElse(null);
             if (restoredRoot != null && STATUS_ACCEPTED.equals(normalizeStatus(restoredRoot.getStatus()))) {
                 enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId);
-                postEventMembershipChangeMessages(normalizedEventId, List.of(restoredRoot), List.of());
+                postEventMembershipChangeMessages(
+                        normalizedEventId,
+                        List.of(restoredRoot),
+                        List.of(),
+                        normalizedActorUserId);
             }
 
             LinkedHashSet<String> affectedEventSourceIds = eventSourceIds(restoredMembers);
@@ -1932,28 +1951,12 @@ public class ActivitiesMembersService {
         if (removedRoomMembers.isEmpty()) {
             return;
         }
-        Set<String> affectedRoomIds = removedRoomMembers.stream()
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        String removedMemberName = memberDisplayName(removedRoomMembers.get(0));
         activityMembersRepository.saveAll(removedRoomMembers);
         refreshEmbeddedEventMembersBatch(roomsBySourceId.keySet());
         for (Map.Entry<String, ActivityEvent> entry : roomsBySourceId.entrySet()) {
             OwnerMembersSnapshot roomMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, entry.getKey());
             if (roomMembers != null && !roomMembers.acceptedMemberUserIds().isEmpty()) {
                 chatService.ensureMainEventChat(entry.getValue(), roomMembers.acceptedMemberUserIds());
-            }
-            if (affectedRoomIds.contains(entry.getKey())) {
-                eventInviteNotificationService.notifyTournamentRoomMemberRemoved(
-                        entry.getValue(),
-                        normalizedParentEventId,
-                        normalizedTargetUserId,
-                        removedMemberName,
-                        nowIso,
-                        actorUserId,
-                        roomMembers == null ? List.of() : roomMembers.acceptedMemberUserIds());
             }
         }
     }
@@ -4463,7 +4466,8 @@ public class ActivitiesMembersService {
     private void postEventMembershipChangeMessages(
             String eventId,
             List<ActivityMember> joinedMembers,
-            List<ActivityMember> removedMembers) {
+            List<ActivityMember> removedMembers,
+            String actorUserId) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId) || chatService == null) {
             return;
@@ -4492,8 +4496,47 @@ public class ActivitiesMembersService {
             }
             String displayName = memberDisplayName(member);
             if (StringUtils.hasText(displayName)) {
-                chatService.postSystemMessage(normalizedEventId, displayName + " left the event.", "member-left");
+                boolean removedByAnotherUser = !normalizeId(member.getUserId()).equals(normalizeId(actorUserId));
+                chatService.postSystemMessage(
+                        normalizedEventId,
+                        removedByAnotherUser
+                                ? displayName + " was removed from the event."
+                                : displayName + " left the event.",
+                        removedByAnotherUser ? "member-removed" : "member-left");
             }
+        }
+    }
+
+    private void notifyRemovedEventMembers(
+            String eventId,
+            List<ActivityMember> removedMembers,
+            String actorUserId,
+            String removedAtIso) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || removedMembers == null
+                || removedMembers.isEmpty()) {
+            return;
+        }
+        ActivityEvent event = findPreferredEventRecord(normalizedEventId);
+        if (event == null) {
+            return;
+        }
+        OwnerMembersSnapshot remainingMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        List<String> remainingAcceptedUserIds = remainingMembers == null
+                ? List.of()
+                : remainingMembers.acceptedMemberUserIds();
+        for (ActivityMember member : removedMembers) {
+            if (member == null || !STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))) {
+                continue;
+            }
+            eventInviteNotificationService.notifyEventMemberRemoved(
+                    event,
+                    normalizeId(member.getUserId()),
+                    memberDisplayName(member),
+                    removedAtIso,
+                    actorUserId,
+                    remainingAcceptedUserIds);
         }
     }
 

@@ -43,9 +43,9 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
 scenario: XLS-driven Core execution order. Tournament priority is 11 (10/15 complete); TOURNAMENT-MEMBER-002 is the active row, followed by the new isolated TOURNAMENT-MEMBER-003, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: The old POST-REMOVE attempt was discarded as non-evidence. The corrected fixture was reset and staged at 2026-08-25T21:21:28.276Z. The persisted status oracle proves an already-started, non-blocked Tournament: parent status `A`, parent `currentStage=Qualifiers/A` (1/2), Qualifiers definition `A` and Qualifiers runtime `A`. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. There is no staged notification, scheduler or recompute work. The three managed browser sessions were replaced from this exact baseline.
-required_resume: Do not reset or stage again while this baseline is intact. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is active rows, `DQ`, `R`, then vacant `V`, with score/FIFA tie-break inside each state; the existing `#` cell must show `R` beside `Nova Social`, never an ID, and `V / -----` must be below it. After T-M002 closes and resets, stage the separate T-M003 fixture; it uses Casey + Nova + Riley + Lina in one four-person Group A to prove Nova self-notification, Riley/Lina same-room notifications and Casey actor exclusion.
+ledger_status: REPAIR REPLAY STAGED / BASELINE VERIFIED — functional action not yet performed
+state: The repaired backend and frontend-local hot-deploys compiled successfully. The failed POST-REMOVE data was reset, and a clean baseline was staged at `2026-08-29T23:51:56.878Z`. The persisted oracle proves parent status `A`, parent `currentStage=Qualifiers/A` (1/2), Qualifiers runtime `A`, Group A Casey+Nova, Group B Riley, Nova's retained score 7, zero removal notifications, and unchanged write-side counters. Three fresh Casey/Nova/Riley browser sessions are open from this baseline.
+required_resume: Do not reset or stage again while this clean baseline is intact. Casey must perform exactly one parent Members > Nova > Remove action. The oracle must then prove parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score, and Riley's unchanged Group B state. The existing `#` cell must show `R` beside `Nova Social`, never an ID; the parent event channel must say `Nova Social was removed from the event.` Nova must receive one self-removal notification, Riley one event-participant notification despite being in Group B, and Casey none as actor. After T-M002 closes and resets, stage T-M003 to prove the same parent-event fan-out to two independent remaining participants plus actor exclusion in one four-person group.
 event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
 actors:
   Casey: Tournament host and removal actor
@@ -140,17 +140,18 @@ the checkpoint says otherwise.
 The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
 both score-reopen checkpoints, and its retained fixture is reset. Coverage
 audit added five Tournament-specific cases: pre-Start terminal membership
-cutoff, active participant removal, the separate four-person same-room
-notification boundary, DQ/Reinstate and generated-group resource aggregation,
+cutoff, active participant removal, the separate four-person notification
+fan-out boundary, DQ/Reinstate and generated-group resource aggregation,
 plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
 Therefore the domain is now 10/15; `TOURNAMENT-MEMBER-002` is active and
 `CHAT-LIST-001` remains deferred until the open Tournament block is completed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
-is the cross-room non-recipient/control boundary. Use the new
-`TOURNAMENT-MEMBER-003` as one four-person room because two independent peers
-are needed beside the actor and removed member. Run `TOURNAMENT-DQ-001` with a
+proves parent-event notification delivery across room boundaries while Group B
+state remains unchanged. Use `TOURNAMENT-MEMBER-003` as one four-person room
+because two independent participant recipients are needed beside the actor and
+removed member. Run `TOURNAMENT-DQ-001` with a
 four-person group as well, so active score ordering and the terminal DQ row can
 be compared in one leaderboard. Existing closed grouping, room-lifecycle and
 score-revision fixtures keep their proven 2+1/2+2 layouts.
@@ -1025,6 +1026,17 @@ drop command, and do not clear the complete MinIO volume to refresh demo media.
 
 ### 6. Recording and communication
 
+During the active manual-QA campaign, keep the hot-deploy output directory
+`server/docker/conf/nginx/app/myscoutee/` locally excluded from ordinary Git
+status and commits. Its hashed bundles are generated verification artifacts,
+not source changes to recommit after every frontend edit. Use the repository-
+local `.git/info/exclude` for new bundle names and local `skip-worktree` flags
+for already tracked bundle files; never add personal transient rules to the
+versioned `.gitignore`. Before a deliberate release/package commit, remove
+both local exclusions, regenerate once through the owning frontend watcher,
+review the complete output delta, and include it only when that release
+workflow explicitly owns the built assets.
+
 After every transactional boundary, including a partial PASS inside a larger
 checkpoint:
 
@@ -1077,7 +1089,7 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
 -> TOURNAMENT-MEMBER-001 (closed)
 -> TOURNAMENT-MEMBER-002 (staged; action not yet performed)
--> TOURNAMENT-MEMBER-003 (not run; four-person same-room notification fixture)
+-> TOURNAMENT-MEMBER-003 (not run; four-person participant fan-out fixture)
 -> TOURNAMENT-DQ-001 (not run)
 -> TOURNAMENT-RESOURCE-001 (not run)
 -> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)

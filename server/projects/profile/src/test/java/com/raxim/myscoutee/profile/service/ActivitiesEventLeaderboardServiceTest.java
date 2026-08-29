@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.ActivitiesMembersService.StoredMemberState;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventLeaderboardServiceTest {
@@ -449,6 +450,43 @@ class ActivitiesEventLeaderboardServiceTest {
                 .extracting(row -> row.memberId())
                 .doesNotContain("legacy-member");
         verify(activitiesMembersService, never()).queryMembers("group", "sub-1:group:1");
+    }
+
+    @Test
+    void removedScoreRowUsesTheStoredMemberNameInsteadOfTheEntryIdFallback() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent event = eventRecord("event-1", "canonical");
+        String groupId = "sub-1:group:1";
+        String roomOwnerId = "random-room:event-1:sub-1:" + groupId;
+        EventLeaderboardEntry removedScore = scoreEntry("removed-score", "nova-id", 7);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(List.of(removedScore));
+        when(activitiesMembersService.queryMembers(
+                "event", roomOwnerId, false, "event-1", "sub-1"))
+                .thenReturn(List.of(activityMember("casey-id", "accepted")));
+        when(activitiesMembersService.queryStoredMemberStates("event", roomOwnerId))
+                .thenReturn(Map.of(
+                        "casey-id", new StoredMemberState("accepted", "Casey Bridge"),
+                        "nova-id", new StoredMemberState("removed", "Nova Social")));
+        when(activitiesMembersService.hasStoredOwnerMembers("event", roomOwnerId)).thenReturn(true);
+
+        var state = service.queryState("event-1", "sub-1");
+
+        assertThat(state.groups().getFirst().scoreRows())
+                .filteredOn(row -> "nova-id".equals(row.memberId()))
+                .singleElement()
+                .satisfies(row -> {
+                    assertThat(row.positionLabel()).isEqualTo("R");
+                    assertThat(row.memberName()).isEqualTo("Nova Social");
+                    assertThat(row.total()).isEqualTo(7);
+                });
     }
 
     @Test

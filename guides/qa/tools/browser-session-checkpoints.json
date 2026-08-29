@@ -413,7 +413,7 @@
           "actor": "Riley unchanged room control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · active Group B control"
+          "expectedName": "Riley Outside · Group B remains active and receives the parent-event notice"
         }
       ]
     },
@@ -437,16 +437,10 @@
           "expectedName": "Nova Social · receives the self-removal notification"
         },
         {
-          "actor": "Riley same-room peer",
+          "actor": "Riley event participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · receives the Group A peer notification"
-        },
-        {
-          "actor": "Lina same-room peer",
-          "sessionKind": "demo",
-          "userId": "178e8d0cbe164fa3fede5884",
-          "expectedName": "Lina Park · receives the Group A peer notification"
+          "expectedName": "Riley Outside · receives the event-participant notification; Lina is verified by the persisted oracle"
         }
       ]
     },
