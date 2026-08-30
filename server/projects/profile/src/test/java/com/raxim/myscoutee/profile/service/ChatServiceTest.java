@@ -144,6 +144,31 @@ class ChatServiceTest {
     }
 
     @Test
+    void syncChatHeaderReturnsTheCurrentPersistedListRowState() {
+        Chat viewerChat = chat("chat-1", "viewer", 3, "2026-08-30T05:15:00Z", "groupSubEvent");
+        viewerChat.setRevision(42L);
+        viewerChat.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
+        viewerChat.setLastMessage("Latest group message");
+        viewerChat.setLastSenderId("sender");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByOwnerUserIdAndChatId("viewer", "chat-1"))
+                .thenReturn(Optional.of(viewerChat));
+
+        var unchanged = service.syncChatHeader("chat-1", "viewer", 42L);
+        var changed = service.syncChatHeader("chat-1", "viewer", 41L);
+
+        assertThat(unchanged.changed()).isFalse();
+        assertThat(changed.changed()).isTrue();
+        assertThat(changed.revision()).isEqualTo(42L);
+        assertThat(changed.ownerStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        assertThat(changed.unread()).isEqualTo(3);
+        assertThat(changed.lastMessage()).isEqualTo("Latest group message");
+        assertThat(changed.lastSenderId()).isEqualTo("sender");
+        assertThat(changed.dateIso()).isEqualTo("2026-08-30T05:15:00Z");
+    }
+
+    @Test
     void ensureMainEventChatCreatesOneSystemChannelViewForEveryRoomMember() {
         ActivityEvent room = new ActivityEvent();
         room.setSourceId("random-room:event-1:stage-1:room-1");
@@ -292,7 +317,12 @@ class ChatServiceTest {
             assertThat(message.getText()).contains("automatically generated room");
         });
         verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
-        verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
+        ArgumentCaptor<Update> chatUpdates = ArgumentCaptor.forClass(Update.class);
+        verify(bulkOperations, times(2)).updateOne(any(Query.class), chatUpdates.capture());
+        assertThat(chatUpdates.getAllValues()).allSatisfy(update -> {
+            Document increments = update.getUpdateObject().get("$inc", Document.class);
+            assertThat(((Number) increments.get("revision")).longValue()).isEqualTo(1L);
+        });
         ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
         verify(userCounterBulkOperations, times(2)).updateOne(
                 any(Query.class),
@@ -334,7 +364,8 @@ class ChatServiceTest {
                         && "chat-1".equals(event.chatId())
                         && "viewer".equals(event.senderId())
                         && event.messageIds().equals(List.of("m1"))));
-        verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat -> chat.getUnread() == 0));
+        verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat ->
+                chat.getUnread() == 0 && chat.getRevision() > viewerChat.getRevision()));
         verify(mongoTemplate).updateMulti(any(Query.class), any(), eq(ChatMessage.class));
     }
 

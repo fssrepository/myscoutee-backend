@@ -51,7 +51,11 @@ public final class ChatDtos {
     public record ChatHeaderSyncResponseDto(
             Long revision,
             boolean changed,
-            String ownerStatus) {
+            String ownerStatus,
+            Integer unread,
+            String lastMessage,
+            String lastSenderId,
+            String dateIso) {
     }
 
     public record ChatNavigationContextDto(

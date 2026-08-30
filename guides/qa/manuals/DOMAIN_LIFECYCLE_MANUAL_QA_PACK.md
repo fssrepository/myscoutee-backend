@@ -2011,8 +2011,12 @@ consistent lifecycle.
 - Keep Nova's thread open, keep Riley's Chat closed, and let Casey type then
   send one unique message. Nova sees transient typing and one live message with
   no unread or notification increment; Riley receives exactly one
-  Chats/All/Group/row increment and one notification. Opening only Riley's list
-  does not clear it.
+  Chats/All/Group/row increment and one notification. If Riley's Chat list is
+  already open while the Group thread is closed, its existing list poll must,
+  without closing or reopening the popup, replace that Group row with the same
+  current state a fresh list query returns: unread `1`, Casey as last sender,
+  the exact message summary and timestamp, and the resulting date/relevance
+  order. Polling or opening only Riley's list does not clear the unread state.
 - Open Riley's thread: the same message is acknowledged exactly once, all four
   Riley counters return to zero and Casey sees one Riley reader identity.
 - Close Riley's thread and hard-reload only Riley's isolated browser, send one

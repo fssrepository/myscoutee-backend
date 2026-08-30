@@ -341,9 +341,11 @@ public class ChatService {
         return new ChatHeaderSyncResponseDto(
                 revision,
                 changed,
-                changed && StringUtils.hasText(safeText(chat.getOwnerStatus()))
-                        ? safeText(chat.getOwnerStatus())
-                        : null);
+                StringUtils.hasText(safeText(chat.getOwnerStatus())) ? safeText(chat.getOwnerStatus()) : null,
+                normalizeCount(chat.getUnread()),
+                safeText(chat.getLastMessage()),
+                StringUtils.hasText(normalizeId(chat.getLastSenderId())) ? normalizeId(chat.getLastSenderId()) : null,
+                StringUtils.hasText(safeText(chat.getDateIso())) ? safeText(chat.getDateIso()) : null);
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -1260,6 +1262,7 @@ public class ChatService {
                 int unreadDelta = unread - normalizeCount(viewerChat.getUnread());
                 Chat nextViewerChat = copyChat(viewerChat);
                 nextViewerChat.setUnread(unread);
+                nextViewerChat.setRevision(nextChatRevision(viewerChat));
                 viewerChat = chatsRepository.save(nextViewerChat);
                 incrementStoredChatCounters(nextViewerChat, unreadDelta);
                 homeUserProfileService.evictUserReadCaches(viewerUserId);
@@ -1313,6 +1316,7 @@ public class ChatService {
         if (viewerChat != null && previousUnread > 0) {
             Chat nextViewerChat = copyChat(viewerChat);
             nextViewerChat.setUnread(0);
+            nextViewerChat.setRevision(nextChatRevision(viewerChat));
             viewerChat = chatsRepository.save(nextViewerChat);
             incrementStoredChatCounters(nextViewerChat, -previousUnread);
             homeUserProfileService.evictUserReadCaches(viewerUserId);
@@ -1391,6 +1395,7 @@ public class ChatService {
             next.setDateIso(sentAtIso);
             boolean senderCopy = clearUnreadForSender && normalizedLastSenderId.equals(normalizeId(next.getOwnerUserId()));
             next.setUnread(senderCopy ? 0 : normalizeCount(existing.getUnread()) + 1);
+            next.setRevision(nextChatRevision(existing));
             updatedDocuments.add(next);
             int unreadDelta = normalizeCount(next.getUnread()) - normalizeCount(existing.getUnread());
             if (unreadDelta != 0) {
@@ -1401,7 +1406,8 @@ public class ChatService {
                     .set("lastMessage", next.getLastMessage())
                     .set("lastSenderId", next.getLastSenderId())
                     .set("dateIso", next.getDateIso())
-                    .set("unread", next.getUnread());
+                    .set("unread", next.getUnread())
+                    .inc("revision", 1L);
             bulk.updateOne(Query.query(Criteria.where("_id").is(existing.getMongoId())), update);
             hasBulkUpdates = true;
         }
@@ -1510,6 +1516,7 @@ public class ChatService {
                 next.setLastSenderId(latestSender == null ? "" : normalizeId(latestSender.getId()));
                 next.setDateIso(latest.getSentAtIso());
             }
+            next.setRevision(nextChatRevision(existing));
             updatedDocuments.add(next);
         }
         if (!updatedDocuments.isEmpty()) {
@@ -2339,6 +2346,11 @@ public class ChatService {
 
     private long normalizeChatRevision(Long value) {
         return value == null || value < 1L ? 1L : value;
+    }
+
+    private long nextChatRevision(Chat chat) {
+        long current = normalizeChatRevision(chat == null ? null : chat.getRevision());
+        return current + 1L;
     }
 
     private ChatMessageReplyRecord normalizeReply(ChatMessageReplyDto replyTo) {
