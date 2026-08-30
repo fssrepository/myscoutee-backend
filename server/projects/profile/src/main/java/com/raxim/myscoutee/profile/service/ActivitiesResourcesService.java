@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEve
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceScopeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
@@ -95,6 +96,53 @@ public class ActivitiesResourcesService {
         }
         Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
         return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
+    }
+
+    public ActivitySubEventResourceScopeDto queryScope(String ownerId, String subEventId, String viewerUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedViewerUserId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Resource scope and viewer are required.");
+        }
+        String eventId = authorizationEventId(normalizedOwnerId, normalizedSubEventId);
+        if (!accessControlService.canAssignEventResourcesForSubject(eventId, normalizedViewerUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to view resources.");
+        }
+
+        List<ActivitySubEventResourceStateDto> visibleStates = activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(normalizedOwnerId, normalizedSubEventId, STATUS_DELETED)
+                .stream()
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(record -> normalizeId(record.getAssetOwnerUserId())))
+                .map(record -> {
+                    Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+                    return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+        ActivitySubEventResourceStateDto viewerState = visibleStates.stream()
+                .filter(state -> normalizedViewerUserId.equals(normalizeId(state.assetOwnerUserId())))
+                .findFirst()
+                .orElseGet(() -> emptyState(normalizedOwnerId, normalizedSubEventId, normalizedViewerUserId));
+        return new ActivitySubEventResourceScopeDto(viewerState, visibleStates);
+    }
+
+    private ActivitySubEventResourceStateDto emptyState(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId) {
+        return new ActivitySubEventResourceStateDto(
+                ownerId,
+                subEventId,
+                assetOwnerUserId,
+                Map.of(),
+                Map.of(),
+                Map.of(),
+                Map.of(),
+                Map.of());
     }
 
     public ActivitySubEventResourceReadReceiptDto markResourceTypeRead(

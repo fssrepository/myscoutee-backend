@@ -677,6 +677,14 @@ public final class SharedDtos {
         }
     }
 
+    public record ActivitySubEventResourceScopeDto(
+            ActivitySubEventResourceStateDto viewerState,
+            List<ActivitySubEventResourceStateDto> visibleStates) {
+        public ActivitySubEventResourceScopeDto {
+            visibleStates = visibleStates == null ? List.of() : List.copyOf(visibleStates);
+        }
+    }
+
     public record ActivitySubEventStageRuntimeStateDto(
             String ownerId,
             String subEventId,

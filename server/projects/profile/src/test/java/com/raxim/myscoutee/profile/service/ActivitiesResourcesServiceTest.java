@@ -192,6 +192,24 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void queryScopeReturnsEveryParticipantResourceStateWithoutMergingTheViewerWriteState() {
+        ActivitySubEventResource first = resourceState("event-1", "sub-1", "u1");
+        ActivitySubEventResource second = resourceState("event-1", "sub-1", "u2");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D"))
+                .thenReturn(List.of(second, first));
+
+        var scope = service.queryScope("event-1", "sub-1", "u1");
+
+        assertThat(scope.viewerState().assetOwnerUserId()).isEqualTo("u1");
+        assertThat(scope.visibleStates())
+                .extracting(ActivitySubEventResourceStateDto::assetOwnerUserId)
+                .containsExactly("u1", "u2");
+    }
+
+    @Test
     void markResourceTypeReadPersistsOnlyTheSelectedGroupTypeForTheCurrentUser() {
         String ownerId = "event-1:sub-1:sub-1:group:1";
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -649,6 +667,18 @@ class ActivitiesResourcesServiceTest {
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
         return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
+    }
+
+    private ActivitySubEventResource resourceState(String ownerId, String subEventId, String assetOwnerUserId) {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setStatus("A");
+        resource.setOwnerId(ownerId);
+        resource.setSubEventId(subEventId);
+        resource.setAssetOwnerUserId(assetOwnerUserId);
+        resource.setAssetAssignmentIds(Map.of());
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        return resource;
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {
