@@ -5242,6 +5242,27 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   Riley's Group B membership, room chat and counters remain unchanged, so this
   checkpoint proves cross-room delivery together with group-state isolation.
 
+Execution evidence on 2026-08-30 (PASS / CLOSED):
+
+- From the clean already-started baseline, Casey removed Nova exactly once.
+  The UI retained parent status Active and Qualifiers `A`, removed Nova from
+  active Members and Group A access, kept Riley active in unchanged Group B,
+  and rendered Group A Standings as active Casey, `R / Nova Social / 7`, then
+  `V / -----`. The retained row never exposed Nova's database ID.
+- The parent event channel rendered `Nova Social was removed from the event.`;
+  it did not misclassify the admin action as an voluntary `left` transition.
+  Nova saw the exact self-removal notification, Riley saw the exact parent-
+  event participant notification despite belonging to Group B, and Casey saw
+  none as actor.
+- The independent persisted oracle passed: parent Nova=`deleted`, Group A
+  Nova=`removed`, Nova absent from every room-chat owner/member projection,
+  score identity/value `Nova/7` unchanged, exactly two outbox intents and two
+  inbox rows with roles `removed-member` and `event-participant`, Casey absent
+  from all recipients, Nova event counters `1/1 -> 0/0`, and Casey/Riley event
+  counters unchanged. The fixture may now be reset; do not repeat this case
+  unless removal, standings identity/order, chat wording, participant fan-out
+  or write-side event counters change.
+
 ### `TOURNAMENT-MEMBER-003` — four-person removal recipient fan-out
 
 - Stage one isolated active Tournament with a single four-person Qualifiers
@@ -5264,6 +5285,13 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   TOURNAMENT-MEMBER-003` immediately after the one visible Remove action. It
   proves parent/group state, immutable four-row score history, chat revocation,
   exact outbox/inbox recipient sets and actor exclusion before visual closure.
+- Fixture boundary: a real started Tournament may already have a materialized
+  parent event channel with earlier lifecycle messages. This isolated fixture
+  does not own that channel-creation/history contract and may materialize the
+  parent channel at Remove time. Do not classify that as a failure here. This
+  row owns only Nova's room-chat revocation, the new removal effects, exact
+  recipient fan-out and leaderboard persistence; initial event-channel history
+  remains in the Tournament/Chat lifecycle coverage.
 
 ### `TOURNAMENT-DQ-001` — disqualification and reinstatement
 

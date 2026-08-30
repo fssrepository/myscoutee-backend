@@ -40,18 +40,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
-scenario: XLS-driven Core execution order. Tournament priority is 11 (10/15 complete); TOURNAMENT-MEMBER-002 is the active row, followed by the new isolated TOURNAMENT-MEMBER-003, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: REPAIR REPLAY STAGED / BASELINE VERIFIED — functional action not yet performed
-state: The repaired backend and frontend-local hot-deploys compiled successfully. The failed POST-REMOVE data was reset, and a clean baseline was staged at `2026-08-29T23:51:56.878Z`. The persisted oracle proves parent status `A`, parent `currentStage=Qualifiers/A` (1/2), Qualifiers runtime `A`, Group A Casey+Nova, Group B Riley, Nova's retained score 7, zero removal notifications, and unchanged write-side counters. Three fresh Casey/Nova/Riley browser sessions are open from this baseline.
-required_resume: Do not reset or stage again while this clean baseline is intact. Casey must perform exactly one parent Members > Nova > Remove action. The oracle must then prove parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score, and Riley's unchanged Group B state. The existing `#` cell must show `R` beside `Nova Social`, never an ID; the parent event channel must say `Nova Social was removed from the event.` Nova must receive one self-removal notification, Riley one event-participant notification despite being in Group B, and Casey none as actor. After T-M002 closes and resets, stage T-M003 to prove the same parent-event fan-out to two independent remaining participants plus actor exclusion in one four-person group.
-event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
+checkpoint: TOURNAMENT-MEMBER-003 — four-person removal recipient fan-out
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-003--four-person-removal-recipient-fan-out
+scenario: XLS-driven Core execution order. Tournament priority is 11 (11/15 complete); TOURNAMENT-MEMBER-003 is the active row, followed by TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
+ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
+state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. TOURNAMENT-MEMBER-003 is staged with one active four-person Qualifiers group: Casey 1, Nova 7, Riley 9 and Lina 5; all four are accepted on parent and room, all four room-chat copies contain the same membership, removal notifications are zero, and the stored event counters are captured. Three fresh Casey/Nova/Riley browser sessions are open; Lina is the fourth persisted participant and oracle-only second recipient because this workstation is limited to three concurrent actor windows.
+required_resume: Do not reset or stage again while this baseline is intact. Casey removes Nova exactly once from the parent Members UI. Verify visible order Riley 9, Lina 5, Casey 1, then `R / Nova Social / 7`, then `V / -----`; Nova receives one self-removal notification, Riley receives one event-participant notification, Casey none. The persisted oracle additionally proves Lina's independent event-participant notification, Nova's room-chat revocation, immutable four-row scores, exact counters and actor exclusion. Parent event-channel preexistence/history is explicitly outside this isolated fixture; it may materialize at Remove time without failing this row.
+event: QA TOURNAMENT-MEMBER-003 — active parent, one four-person group, Nova removal target
 actors:
   Casey: Tournament host and removal actor
   removed participant: controlled accepted active room member
-  remaining participant: unchanged active-room control
-next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted oracle.
+  remaining participants: Riley visible recipient; Lina oracle-only independent recipient
+next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted fan-out oracle.
 stop_phrase: Remove action completed
 ```
 

@@ -348,7 +348,7 @@
       roomId: ROOM_ID,
       members: ALL_USERS.map(Q.user),
       scores: scoreSnapshot(),
-      next: "Open the four configured sessions. As Casey remove Nova exactly once from the parent Members action; do not use DQ, a scheduler or fixture repair."
+      next: "Open the three configured sessions. As Casey remove Nova exactly once from the parent Members action; Riley is the visible participant-recipient control and Lina is verified by the persisted oracle. Do not use DQ, a scheduler or fixture repair."
     });
   }
 
