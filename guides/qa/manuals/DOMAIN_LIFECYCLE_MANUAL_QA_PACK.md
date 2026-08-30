@@ -2146,6 +2146,19 @@ chat/message lifecycle and remains usable by another participant.
 - This journey owns the former `CHAT-IMAGE-001`, `CHAT-VOICE-001`,
   `CHAT-POLL-001` and `CHAT-CARD-001` assertions.
 
+Result on 2026-08-30: **PASS / CLOSED**. Casey, Nova and Riley completed the
+single consolidated journey. The terminal Mongo oracle retained exactly five
+canonical content messages (image, voice, poll, Event and Asset), both Nova
+and Riley as readers, two exact South votes and canonical voter
+name/initials/gender/image presentation. The authenticated three-browser
+oracle returned identical content for every actor, HTTP 200 image/preview,
+voice and both voter-avatar media, exact All Transport/Sedan/SUV filtering,
+the unavailable-target control and zero terminal Chat/Group unread counters.
+Available Event and Asset cards opened their canonical read-only surfaces on
+the tested layouts; denied/cancelled media created no extra message, orphan or
+counter. Changing an existing poll vote is a message mutation, like a
+reaction, and intentionally does not create a new unread Chat item.
+
 ### `CHAT-GOVERNANCE-001` — members and moderation intake
 
 Purpose: prove that the visible room population, access control and a reported

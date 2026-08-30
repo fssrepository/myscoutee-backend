@@ -596,7 +596,14 @@
       .toArray();
     const users = FLOW_ACTOR_IDS.map(userId => {
       const user = Q.collection("users").findOne({ $or: [{ _id: userId }, { userId }] }) || {};
-      return { userId, activities: user.activities || null };
+      return {
+        userId,
+        name: user.name || "",
+        initials: user.initials || "",
+        gender: user.gender || "",
+        images: user.images || [],
+        activities: user.activities || null
+      };
     });
     const outbox = Q.collection("notificationOutbox").find(flowRelatedSelector()).sort({ createdDate: 1, _id: 1 }).toArray();
     const notifications = Q.collection("userNotifications").find(flowRelatedSelector()).sort({ createdDate: 1, _id: 1 }).toArray();

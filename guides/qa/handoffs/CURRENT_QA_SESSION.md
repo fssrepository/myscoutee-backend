@@ -42,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-CONTENT-001 — rich-content conversation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-content-001--rich-content-conversation
+checkpoint: CHAT-GOVERNANCE-001 — members and moderation intake
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-governance-001--members-and-moderation-intake
 scenario: XLS-driven Core execution order. Tournament is 15/15 complete; Chat now has six business-journey cases instead of twenty independently scheduled microtests.
-ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-ACTIONS-001 is PASS/CLOSED
-state: CHAT-ACTIONS-001 terminal-pass retained 18 surrounding messages plus one identity-preserving tombstone; Nova Edit/Unsend both returned 403. A lost concurrent read update and tombstone read recreation were fixed with guarded atomic write-side additions; simultaneous Nova/Riley replay persisted both readers and left the tombstone empty. A final UI regression fixed the missing profile image in live read receipts across backend/websocket and frontend HTTP/local paths; the user saw both real avatars immediately and after reopen, and the read-only database check retained both reader IDs with zero unread/chat counters. Fixture reset after capture.
-required_resume: Implement one replayable CHAT-CONTENT-001 fixture in one accepted three-user Group thread. Present image, short voice clip, two-option poll with vote change, Event card, Asset/link card, denied recorder/cancel and unavailable-target controls as one complete click journey, then run one exact attachment/vote/target persistence oracle. Do not split these into microtests.
-event: No active Event mutation; next fixture is consolidated CHAT-CONTENT-001
+ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-CONTENT-001 is PASS/CLOSED
+state: CHAT-CONTENT-001 terminal-pass retained exactly five canonical image/voice/poll/Event/Asset messages, both recipient readers and two canonical South voter avatar presentations. Three authenticated browser views returned identical content; image, preview, voice and both avatar media returned HTTP 200; All Transport/Sedan/SUV filtering, canonical card navigation, unavailable-target isolation and zero terminal unread/notification counters passed. Vote changes remain same-message mutations and intentionally add no unread Chat item. Fixture media cleanup and reset completed after capture.
+required_resume: Implement one replayable CHAT-GOVERNANCE-001 fixture. Compare canonical Event and Group members against pending, left and other-group negative controls, prove direct denial, then submit the same accepted-participant report twice and require one idempotent Admin review identity with exact reporter/chat/message/event/group context and no unrelated writes.
+event: No active Event mutation; next fixture is consolidated CHAT-GOVERNANCE-001
 actors:
-  Casey: sender and reader
-  Nova: open-thread realtime recipient
-  Riley: closed-thread unread and reconnect recipient
-next_actor: Codex prepares and proves the consolidated rich-content fixture, then the user executes the complete journey once.
-stop_phrase: Rich chat content checked
+  Casey: Event/Group administrator and moderation reviewer
+  Nova: accepted participant and report submitter
+  Riley: accepted member/control participant
+next_actor: Codex prepares and proves the consolidated governance fixture, then gives the complete click journey and terminal oracle.
+stop_phrase: Chat governance checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -1123,10 +1123,11 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> JOB-TOURNAMENT (Core closed; generic Monitoring owned by MON-013)
 -> CHAT-FLOW-001 (closed; consolidated everyday conversation and recovery)
 -> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
--> CHAT-CONTENT-001 (active; consolidated rich-content conversation)
+-> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
+-> CHAT-GOVERNANCE-001 (active; consolidated members and moderation intake)
 ```
 
-Tournament is 15/15 complete. Continue with consolidated `CHAT-CONTENT-001` in
+Tournament is 15/15 complete. Continue with consolidated `CHAT-GOVERNANCE-001` in
 physical ledger order; do not schedule its former micro rows independently and
 do not replay closed Tournament fixtures unless their owning code or contract
 changes. EXT/optional remains deferred.

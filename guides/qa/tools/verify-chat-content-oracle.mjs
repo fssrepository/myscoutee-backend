@@ -206,7 +206,7 @@ async function browserOracle({
   const expectedReaders = [...actorUserIds.slice(1)].sort();
   for (const message of availableContent) {
     const readers = (message.readBy ?? []).map(reader => `${reader.id ?? ''}`).sort();
-    if (`${message.senderAvatar?.id ?? ''}` !== actorUserIds[0]
+    if (`${message.senderId ?? ''}` !== actorUserIds[0]
       || JSON.stringify(readers) !== JSON.stringify(expectedReaders)) {
       throw new Error(`Sender/read state mismatch for ${message.id}.`);
     }

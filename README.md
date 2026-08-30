@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-08-30:** 69/212 passed — core 66/115, external/optional 3/97; Tournament 15/15 complete; current checkpoint: `CHAT-CONTENT-001` (consolidated rich-content conversation).
+**2026-08-30:** 71/212 passed — core 68/115, external/optional 3/97; Tournament 15/15 complete; current checkpoint: `CHAT-GOVERNANCE-001` (members and moderation intake).
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
