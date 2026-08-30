@@ -2085,7 +2085,13 @@ surrounding history instead of replaying five independent fixtures.
   again. The write path now uses guarded atomic Mongo `$addToSet` updates and
   excludes deleted messages. A simultaneous Nova/Riley websocket replay
   persisted both reader IDs, reopen retained both, and the tombstone reader
-  list remained empty. This domain has no separate mutation-audit collection;
+  list remained empty. A final three-window UI replay also exposed that the
+  live read receipt omitted the reader image URL and therefore rendered
+  initials until reopen. The receipt contract now carries the canonical
+  profile image through backend HTTP/websocket and frontend HTTP/local paths;
+  the user confirmed both real profile images immediately and after reopen,
+  while a read-only Mongo check retained both reader IDs and zero unread/chat
+  counters for every actor. This domain has no separate mutation-audit collection;
   transient reply/reaction/pin/edit transitions are the accepted three-client
   UI evidence, while the final document and denial requests are persisted/API
   evidence.
