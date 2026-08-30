@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-08-06
+Last updated: 2026-08-30
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -40,6 +40,7 @@ the same prerequisite without depending on an earlier human action.
 | Producer | Persisted output | Direct UI projection | Automatic consumers | Required follow-up cases |
 | --- | --- | --- | --- | --- |
 | Event Editor draft save | Canonical draft event, `event.synced` telemetry, event recompute task | Hosting/Draft event card and reopened editor | Statistics worker, Monitoring projection, affinity recompute worker | `EVENT-EDITOR-001`, `GRAPH-006` |
+| Childless Event runtime materialization | One persisted `MAIN_EVENT` runtime item referencing the canonical Event; no synthetic sub-event definition or `:default` identity | View Event shows one main-event runtime card instead of an empty Sub-events list | None on View/reload; only the owning Event save may write or enqueue normal Event recompute | `EVENT-RUNTIME-001` |
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
@@ -72,6 +73,9 @@ The principal checkpoint chains are:
 - `EVENT-EDITOR-001` -> `EVENT-EDITOR-002` -> `EVENT-PUBLISH-CHAT-001` -> `EVENT-LIFE-001` ->
   `EVENT-LIFE-002` -> `EVENT-LIFE-003`: draft, publish, unpublish, trash and
   restore.
+- `EVENT-RUNTIME-001` is an isolated zero-child Event contract. It proves the
+  write-owned main-event runtime item and its read-only View Event projection;
+  it does not reuse or reopen the already-closed `EVENT-EDITOR-001` evidence.
 - `EVENT-VISIBILITY-001` continues only after `EVENT-TICKET-007` has completed:
   Casey changes the same event to Friends Only, then one external non-member
   friend and one external non-member non-friend compare Explore. The ticket
@@ -724,7 +728,9 @@ Execution evidence on 2026-08-04:
 - Reopen the editor and verify the definition did not flatten into a casual
   event or lose stage/group configuration.
 - Verify runtime group counts and stage rows correspond to the saved
-  definition before any automatic grouping occurs.
+  definition before any automatic grouping occurs. Because real stage
+  definitions exist, the runtime list must not add a duplicate `MAIN_EVENT`
+  card or synthetic `:default` child.
 - Start the visible tournament action or arm only the documented persisted job
   schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
@@ -736,6 +742,38 @@ Execution evidence on 2026-08-04:
   while a no-op reopen/save does not duplicate user-visible effects.
 - Verify removed definitions are no longer presented as active resources,
   groups or reminders.
+
+### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
+
+- Start from one isolated normal Event definition with Slots Off and Sub Events
+  Off. Before the owning Save, require no runtime item for the new identity.
+- Save once through the normal Event write path. The write must persist exactly
+  one runtime item with `runtimeKind=MAIN_EVENT`, the canonical `eventId` and
+  runtime owner, and `subEventId=null`. It must not insert a fake sub-event
+  definition, copy the full Event into a second canonical Event document or
+  create a synthetic `:default` child identity.
+- Open **View Event** as the host. The runtime query must return that persisted
+  item and the UI must show exactly one card using the main Event title,
+  timeframe and location. The Sub-events surface must not show `No items`, an
+  empty child section or a second copy of the same Event.
+- The card is main-Event scoped: the Event-level Members action remains
+  available and shows the canonical creator/Admin once with matching accepted,
+  pending and capacity counts. Other normal Event-level actions and configured
+  resources remain available under the real Event/runtime owner identity.
+  Tournament-only Groups, stage, Finalize and leaderboard actions are absent.
+- Every badge is state-driven. With the clean baseline there is no red counter;
+  a pending member or resource may add only its documented counter and must not
+  manufacture a generic Sub-events count.
+- Close and reopen View Event, switch Upcoming/Past where applicable and reload
+  once. All reads are `X`: the same one runtime item/card remains, and no Event,
+  runtime, member, resource, task, outbox, chat or notification write is added.
+- Independent persisted oracle: one canonical Event, one `MAIN_EVENT` runtime
+  item, zero sub-event definitions/items and zero generated slots. Query and UI
+  identities/counts must match those records exactly.
+- Control coverage stays in the existing cases: `EVENT-EDITOR-004` proves that
+  real stage definitions do not also receive a `MAIN_EVENT` duplicate, while
+  `EVENT-SLOT-001` proves each real occurrence/definition is returned without a
+  parent main-event card being copied into every slot.
 
 ## Recurring slot and Sub-event list checkpoints
 
@@ -749,8 +787,9 @@ Execution evidence on 2026-08-04:
   same parent and template while exposing its own slot source identity and
   occurrence timeframe.
 - Every occurrence must contain the two definitions once and in the saved
-  order. Reopen, paging, calendar navigation and Upcoming/Past switching are
-  read-only.
+  order. No occurrence may contain an additional `MAIN_EVENT` card or a
+  synthetic `:default` child. Reopen, paging, calendar navigation and
+  Upcoming/Past switching are read-only.
 
 ### `EVENT-SLOT-002` — future occurrence operation gating
 
@@ -1947,12 +1986,11 @@ it is not a substitute for the chat product surface. The following CP13 cases
 are deliberately short and sequential. Each case owns one visible transition
 and one persisted oracle. Reuse one controlled accepted-member chat where
 possible, but reset only the rows owned by the next case. The original
-Tournament lifecycle evidence remains closed at 9/9, but its coverage audit
-added four unexecuted member/DQ/resource rows, while the existing partially
-verified Tournament worker row still needs its Monitoring/browser oracle; the
-domain is therefore reopened at 9/14. `CHAT-LIST-001` remains the already-staged live boundary; after that
-single row closes, generated priority returns to Tournament before the rest of
-Chat.
+Tournament lifecycle, added membership, score-reopen and DQ checkpoints retain
+their closed evidence. Tournament is currently 13/15: generated-group resource
+aggregation is active and the partially verified worker row still needs its
+Monitoring/browser oracle. `CHAT-LIST-001` remains deferred until those two
+Tournament rows close, after which generated priority returns to Chat.
 
 ### List, history and transport
 

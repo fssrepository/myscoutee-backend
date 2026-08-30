@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 02:31 CEST
+Updated: 2026-08-30 04:15 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -75,6 +75,15 @@ score-correction checkpoints are PASS/CLOSED; the late guard was exercised
 through the real Java route and its retained fixture was reset. Do not replay
 their closed Start/Finalize/result producers when preparing another domain.
 
+Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the childless
+normal-Event runtime contract. A normal Event saved with Slots Off and Sub
+Events Off must write exactly one persisted `MAIN_EVENT` runtime item; View
+Event must query and render that real item instead of an empty list or a
+frontend/query fallback. Real stage or slot cases must not duplicate the parent
+card. This is recorded under the Event domain and remains NOT RUN; it does not
+replace the active Tournament checkpoint or authorize implementation before
+the campaign reaches that row.
+
 ### Efficient resume gate
 
 Do not repeat baseline methodology when the resume pointer and persisted oracle
@@ -137,15 +146,16 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
-both score-reopen checkpoints, and its retained fixture is reset. Coverage
-audit added five Tournament-specific cases: pre-Start terminal membership
-cutoff, active participant removal, the separate four-person notification
-fan-out boundary, DQ/Reinstate and generated-group resource aggregation,
-plus the existing `JOB-TOURNAMENT` row whose
-primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 12/15; `TOURNAMENT-DQ-001` is active and
-`CHAT-LIST-001` remains deferred until the open Tournament block is completed.
+The original Tournament lifecycle block and both score-reopen checkpoints are
+PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
+checkpoint is also PASS/CLOSED. Coverage audit added five Tournament-specific
+cases: pre-Start terminal membership cutoff, active participant removal, the
+separate four-person notification fan-out boundary, DQ/Reinstate and
+generated-group resource aggregation, plus the existing `JOB-TOURNAMENT` row
+whose primary lifecycle oracle passed but Monitoring/browser completion
+remains. Therefore the domain is now 13/15; `TOURNAMENT-RESOURCE-001` is active
+and `CHAT-LIST-001` remains deferred until the open Tournament block is
+completed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -1097,17 +1107,15 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-MEMBER-001 (closed)
 -> TOURNAMENT-MEMBER-002 (closed; widened cross-group chat isolation replay PASS)
 -> TOURNAMENT-MEMBER-003 (closed; four-person participant fan-out PASS)
--> TOURNAMENT-DQ-001 (active; fixture preparation)
--> TOURNAMENT-RESOURCE-001 (not run)
+-> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
+-> TOURNAMENT-RESOURCE-001 (active; fixture preparation)
 -> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)
 ```
 
-`CHAT-LIST-001` was already staged before these gaps were captured. Finish that
-single live checkpoint first so its fixture is not discarded. The generated
-priority table then selects the reopened Tournament domain (priority 11) ahead
-of the remaining Chat domain (priority 10). Run the four new Tournament rows
-and then complete `JOB-TOURNAMENT` in their physical ledger order before
-resuming Chat. EXT/optional remains deferred.
+`CHAT-LIST-001` remains deferred while the generated priority table selects the
+open Tournament domain (priority 11) ahead of Chat (priority 10). Complete
+`TOURNAMENT-RESOURCE-001` and then `JOB-TOURNAMENT` in physical ledger order
+before resuming Chat. EXT/optional remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The Admin-optional/operator/payment/deployment sequence
