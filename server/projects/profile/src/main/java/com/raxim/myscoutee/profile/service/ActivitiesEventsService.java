@@ -1417,7 +1417,9 @@ public class ActivitiesEventsService {
             baseSlots = filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
-        Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(lookups.stageRuntimeLookups());
+        Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(
+                lookups.stageRuntimeLookups(),
+                viewer.userId());
         List<EventSubEventsSlotDto> slots = activityEventSubEventsMapper.withSubEventStates(
                 baseSlots,
                 Map.of(),
@@ -1772,7 +1774,8 @@ public class ActivitiesEventsService {
     }
 
     private Map<String, ActivitySubEventStageRuntimeStateDto> subEventStageRuntimeRecordsByKey(
-            Collection<SubEventStageRuntimeLookup> refs) {
+            Collection<SubEventStageRuntimeLookup> refs,
+            String viewerUserId) {
         if (refs == null || refs.isEmpty()) {
             return Map.of();
         }
@@ -1791,7 +1794,7 @@ public class ActivitiesEventsService {
         Map<String, ActivitySubEventStageRuntimeStateDto> recordsByKey = new LinkedHashMap<>();
         List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
         for (ActivitySubEventStageRuntime record : records == null ? List.<ActivitySubEventStageRuntime>of() : records) {
-            ActivitySubEventStageRuntimeStateDto dto = activitySubEventStageRuntimeMapper.toDto(record);
+            ActivitySubEventStageRuntimeStateDto dto = activitySubEventStageRuntimeMapper.toDto(record, viewerUserId);
             if (dto == null) {
                 continue;
             }
@@ -2545,7 +2548,8 @@ public class ActivitiesEventsService {
                         stage.stageFinalizedAt(),
                         stage.stageFinalizedByUserId(),
                         stage.stageResultRevision(),
-                        autoGroupsCount),
+                        autoGroupsCount,
+                        null),
                 existing,
                 actorUserId);
         if (next != null) {
@@ -5067,7 +5071,8 @@ public class ActivitiesEventsService {
                 checkoutResultStatesBySourceId,
                 current == null ? Set.of() : current.pendingPaymentEventSourceIds(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey(),
-                creatorAvatarUrlsByUserId(hydratedRecords));
+                creatorAvatarUrlsByUserId(hydratedRecords),
+                resourcePendingReadBySourceId(hydratedRecords, viewer == null ? null : viewer.userId()));
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
                 .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
@@ -5719,7 +5724,55 @@ public class ActivitiesEventsService {
                 effectiveCheckoutResultStatesBySourceId,
                 ctx == null ? Map.of() : ctx.creatorAvatarUrlsByUserId(),
                 ctx == null ? Map.of() : ctx.trackedEventStatusesBySourceId(),
-                viewer == null ? null : viewer.userId());
+                viewer == null ? null : viewer.userId(),
+                ctx == null ? Map.of() : ctx.resourcePendingReadBySourceId());
+    }
+
+    private Map<String, Integer> resourcePendingReadBySourceId(
+            Collection<ActivityEvent> records,
+            String viewerUserId) {
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Set<String> sourceIds = (records == null ? List.<ActivityEvent>of() : records).stream()
+                .filter(Objects::nonNull)
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (!StringUtils.hasText(normalizedViewerUserId) || sourceIds.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> runtimeOwnerIds = new LinkedHashSet<>(sourceIds);
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            for (EventSlotOccurrenceDto slot : record == null || record.getUpcomingSlots() == null
+                    ? List.<EventSlotOccurrenceDto>of()
+                    : record.getUpcomingSlots()) {
+                String slotSourceId = normalizeId(slot == null ? null : slot.id());
+                if (StringUtils.hasText(slotSourceId)) {
+                    runtimeOwnerIds.add(slotSourceId);
+                }
+            }
+        }
+        Map<String, Integer> result = new LinkedHashMap<>();
+        for (ActivitySubEventStageRuntime runtime : activitySubEventStageRuntimeRepository
+                .findByOwnerIdInAndStatusNot(runtimeOwnerIds, RUNTIME_STATUS_DELETED)) {
+            String parentSourceId = runtimeParentEventId(runtime == null ? null : runtime.getOwnerId());
+            if (!sourceIds.contains(parentSourceId)) {
+                continue;
+            }
+            int readPending = activitySubEventStageRuntimeMapper.resourcePendingRead(
+                    runtime,
+                    normalizedViewerUserId);
+            if (readPending > 0) {
+                result.merge(parentSourceId, readPending, Math::addExact);
+            }
+        }
+        return result;
+    }
+
+    private String runtimeParentEventId(String runtimeOwnerId) {
+        String normalizedOwnerId = normalizeId(runtimeOwnerId);
+        int slotMarker = normalizedOwnerId.indexOf(":slot:");
+        return slotMarker > 0 ? normalizedOwnerId.substring(0, slotMarker) : normalizedOwnerId;
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> singleRecordSnapshot(ActivityEvent record) {
@@ -7805,7 +7858,8 @@ public class ActivitiesEventsService {
             Map<String, String> checkoutResultStatesBySourceId,
             Set<String> pendingPaymentEventSourceIds,
             Map<String, Double> edgeWeightsByPairKey,
-            Map<String, String> creatorAvatarUrlsByUserId) {
+            Map<String, String> creatorAvatarUrlsByUserId,
+            Map<String, Integer> resourcePendingReadBySourceId) {
         private EventQueryContext(
                 List<ActivityEvent> allEvents,
                 List<ActivityEvent> mergedEvents,
@@ -7823,6 +7877,7 @@ public class ActivitiesEventsService {
                     Map.of(),
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
+                    Map.of(),
                     Map.of());
         }
 
@@ -7844,6 +7899,30 @@ public class ActivitiesEventsService {
                     checkoutResultStatesBySourceId,
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
+                    Map.of(),
+                    Map.of());
+        }
+
+        private EventQueryContext(
+                List<ActivityEvent> allEvents,
+                List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds,
+                Map<String, String> trackedEventStatusesBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey,
+                Map<String, String> creatorAvatarUrlsByUserId) {
+            this(
+                    allEvents,
+                    mergedEvents,
+                    snapshotsBySourceId,
+                    trackedEventSourceIds,
+                    trackedEventStatusesBySourceId,
+                    checkoutResultStatesBySourceId,
+                    pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey,
+                    creatorAvatarUrlsByUserId,
                     Map.of());
         }
     }

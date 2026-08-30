@@ -34,6 +34,7 @@ public class ActivitySubEventStageRuntime {
     private Integer stageResultRevision;
     private Integer groupsCount;
     private Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupResourceMetricsByAssetOwnerId = new LinkedHashMap<>();
+    private Map<String, Map<String, Map<String, String>>> groupResourceReadAtByUserId = new LinkedHashMap<>();
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -68,6 +69,10 @@ public class ActivitySubEventStageRuntime {
     public Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> getGroupResourceMetricsByAssetOwnerId() { return groupResourceMetricsByAssetOwnerId; }
     public void setGroupResourceMetricsByAssetOwnerId(Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupResourceMetricsByAssetOwnerId) {
         this.groupResourceMetricsByAssetOwnerId = groupResourceMetricsByAssetOwnerId == null ? new LinkedHashMap<>() : groupResourceMetricsByAssetOwnerId;
+    }
+    public Map<String, Map<String, Map<String, String>>> getGroupResourceReadAtByUserId() { return groupResourceReadAtByUserId; }
+    public void setGroupResourceReadAtByUserId(Map<String, Map<String, Map<String, String>>> groupResourceReadAtByUserId) {
+        this.groupResourceReadAtByUserId = groupResourceReadAtByUserId == null ? new LinkedHashMap<>() : groupResourceReadAtByUserId;
     }
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }

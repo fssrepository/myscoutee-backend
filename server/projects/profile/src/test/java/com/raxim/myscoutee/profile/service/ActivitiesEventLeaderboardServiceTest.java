@@ -228,6 +228,39 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
+    void tournamentStageGroupsHideOnlyTypesReadByTheQueryingUser() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setOwnerId("event-1");
+        runtime.setSubEventId("sub-1");
+        runtime.setGroupResourceMetricsByAssetOwnerId(Map.of(
+                "sub-1:group:1",
+                Map.of("owner-1", Map.of(
+                        "Transport", new GroupResourceMetricRecord(0, 2, 0, 4),
+                        "Accommodation", new GroupResourceMetricRecord(0, 1, 0, 3)))));
+        runtime.setGroupResourceReadAtByUserId(Map.of(
+                "sub-1:group:1",
+                Map.of("u1", Map.of("Accommodation", "2026-08-30T00:00:00Z"))));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(java.util.Optional.of(runtime));
+
+        var u1Groups = service.queryTournamentStageGroups("event-1", null, "sub-1", "u1");
+        var u2Groups = service.queryTournamentStageGroups("event-1", null, "sub-1", "u2");
+
+        assertThat(u1Groups.getFirst().resourceMetricsByType().get("Transport").pending()).isEqualTo(2);
+        assertThat(u1Groups.getFirst().resourceMetricsByType().get("Accommodation").pending()).isZero();
+        assertThat(u2Groups.getFirst().resourceMetricsByType().get("Accommodation").pending()).isEqualTo(1);
+    }
+
+    @Test
     void upsertEntryRejectsDeniedActorBeforeSavingEntry() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,

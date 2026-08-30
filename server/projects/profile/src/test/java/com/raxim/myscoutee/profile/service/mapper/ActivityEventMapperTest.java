@@ -77,6 +77,26 @@ class ActivityEventMapperTest {
     }
 
     @Test
+    void tournamentActivitySubtractsOnlyTheQueryingUsersPersistedResourceReads() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setActivity(2);
+
+        var dto = mapper.toDto(
+                event,
+                new ActivityEventMapper.MappingContext(
+                        null,
+                        Map.of(),
+                        Map.of(),
+                        Map.of(),
+                        Map.of(),
+                        "user-1",
+                        Map.of("event-1", 1)));
+
+        assertThat(dto.activity()).isEqualTo(1);
+    }
+
+    @Test
     void systemEventWithoutCreatorUserDoesNotTryToResolveAUserAvatar() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("random-room:event-1:stage-1:room-1");

@@ -618,6 +618,22 @@ public final class SharedDtos {
             Integer capacityMax) {
     }
 
+    public record ActivitySubEventResourceReadRequestDto(
+            String ownerId,
+            String subEventId,
+            String resourceType,
+            String userId) {
+    }
+
+    public record ActivitySubEventResourceReadReceiptDto(
+            String ownerId,
+            String subEventId,
+            String groupId,
+            String resourceType,
+            String userId,
+            String readAtIso) {
+    }
+
     public record ActivitySubEventResourceStateDto(
             String ownerId,
             String subEventId,
@@ -670,7 +686,8 @@ public final class SharedDtos {
             String stageFinalizedAt,
             String stageFinalizedByUserId,
             Integer stageResultRevision,
-            Integer groupsCount) {
+            Integer groupsCount,
+            Integer groupsResourcePendingRead) {
     }
 
     public record PolicyItemDto(

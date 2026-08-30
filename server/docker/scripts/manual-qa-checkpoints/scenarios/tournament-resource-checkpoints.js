@@ -22,10 +22,6 @@
   const ACCOMMODATION_ID = `${PREFIX}:asset:nova-accommodation`;
   const SUPPLIES_ID = `${PREFIX}:asset:riley-supplies`;
   const ASSET_IDS = [TRANSPORT_ID, ACCOMMODATION_ID, SUPPLIES_ID];
-  const REQUEST_IDS = [
-    `${PREFIX}:request:nova-transport`,
-    `${PREFIX}:request:riley-accommodation`
-  ];
 
   function sorted(values) {
     return [...new Set((values || []).map(Q.text).filter(Boolean))].sort();
@@ -98,7 +94,7 @@
         { assetOwnerUserId: { $in: USERS }, "assetAssignmentIds.Supplies": SUPPLIES_ID }
       ] } },
       { collection: "assets", selector: { $or: [{ _id: { $in: ASSET_IDS } }, { assetId: { $in: ASSET_IDS } }] } },
-      { collection: "assetRequests", selector: { $or: [{ _id: { $in: REQUEST_IDS } }, { requestId: { $in: REQUEST_IDS } }, { assetId: { $in: ASSET_IDS } }] } },
+      { collection: "assetRequests", selector: { assetId: { $in: ASSET_IDS } } },
       { collection: "notificationOutbox", selector: relatedSelector() },
       { collection: "userNotifications", selector: relatedSelector() },
       { collection: "affinityRecomputeTasks", selector: relatedSelector() }
@@ -252,41 +248,6 @@
     ];
   }
 
-  function borrowRequest(requestId, userId, status, stagedAtIso) {
-    const profile = Q.user(userId);
-    const name = profile.name || userId;
-    const initials = name.split(/\s+/).filter(Boolean).map(part => part[0]).join("").slice(0, 2).toUpperCase();
-    return {
-      id: requestId,
-      userId,
-      name,
-      initials,
-      gender: "",
-      status,
-      note: "Controlled pending group-resource request.",
-      requestKind: "borrow",
-      requestedAtIso: stagedAtIso,
-      booking: {
-        eventId: RESOURCE_OWNER_ID,
-        eventTitle: "QA TOURNAMENT-RESOURCE-001 - Qualifiers - Group A",
-        subEventId: STAGE_ID,
-        subEventTitle: "Qualifiers",
-        slotKey: "",
-        slotLabel: "Group A",
-        timeframe: "Tournament Qualifiers",
-        startAtIso: dateIso(-30),
-        endAtIso: dateIso(150),
-        quantity: 1,
-        totalAmount: 0,
-        previousTotalAmount: null,
-        currency: "USD",
-        acceptedPolicyIds: [],
-        paymentSessionId: null,
-        inventoryApplied: false
-      }
-    };
-  }
-
   function assetDocument(assetId, ownerUserId, type, title, capacityTotal, requests, stagedAtIso) {
     return {
       _id: assetId,
@@ -311,29 +272,6 @@
       createdUser: ownerUserId,
       updatedDate: stagedAtIso,
       updatedUser: ownerUserId
-    };
-  }
-
-  function assetRequestDocument(asset, request, stagedAtIso) {
-    return {
-      _id: request.id,
-      requestId: request.id,
-      assetId: asset.assetId,
-      ownerUserId: asset.ownerUserId,
-      ownerKey: `${asset.ownerUserId}:${asset.assetId}`,
-      assetCapacity: asset.capacityTotal,
-      userId: request.userId,
-      name: request.name,
-      initials: request.initials,
-      gender: request.gender,
-      status: request.status,
-      note: request.note,
-      requestKind: request.requestKind,
-      requestedAtIso: request.requestedAtIso,
-      booking: request.booking,
-      menuActions: [],
-      createdDate: stagedAtIso,
-      updatedDate: stagedAtIso
     };
   }
 
@@ -386,6 +324,7 @@
   function runtimeSnapshot() {
     const runtime = Q.collection("activitySubEventStageRuntime").findOne({ ownerId: EVENT_ID, subEventId: STAGE_ID }) || {};
     const byOwner = (((runtime.groupResourceMetricsByAssetOwnerId || {})[GROUP_ID]) || {});
+    const readsByUser = (((runtime.groupResourceReadAtByUserId || {})[GROUP_ID]) || {});
     const normalized = {};
     for (const ownerId of Object.keys(byOwner).sort()) {
       normalized[ownerId] = {};
@@ -397,8 +336,30 @@
       ownerId: Q.text(runtime.ownerId),
       subEventId: Q.text(runtime.subEventId),
       groupsCount: Q.number(runtime.groupsCount),
-      byAssetOwner: normalized
+      byAssetOwner: normalized,
+      readsByUser: Object.fromEntries(Object.keys(readsByUser).sort().map(userId => [
+        userId,
+        Object.fromEntries(Object.keys(readsByUser[userId] || {}).sort().map(type => [
+          type,
+          Q.text(readsByUser[userId][type])
+        ]))
+      ]))
     };
+  }
+
+  function exactFinalResourceReads(readsByUser) {
+    const expectedTypesByUser = {
+      [CASEY_ID]: ["Accommodation", "Supplies", "Transport"],
+      [NOVA_ID]: ["Accommodation", "Supplies", "Transport"],
+      [RILEY_ID]: ["Accommodation", "Supplies", "Transport"]
+    };
+    return Q.sameJson(sorted(Object.keys(readsByUser || {})), sorted(USERS))
+      && USERS.every(userId => Q.sameJson(
+        sorted(Object.keys((readsByUser || {})[userId] || {})),
+        expectedTypesByUser[userId]
+      ))
+      && USERS.every(userId => Object.values((readsByUser || {})[userId] || {})
+        .every(value => Q.text(value).length > 0));
   }
 
   function eventSnapshot() {
@@ -491,7 +452,7 @@
     const result = { Transport: zero, Accommodation: zero, Supplies: zero };
     if (ownerId === CASEY_ID && type === "Transport") result.Transport = { accepted: 1, pending: 1, capacityMin: 0, capacityMax: 4 };
     if (ownerId === NOVA_ID && type === "Accommodation") result.Accommodation = { accepted: 1, pending: 1, capacityMin: 0, capacityMax: 3 };
-    if (ownerId === RILEY_ID && type === "Supplies") result.Supplies = { accepted: 0, pending: 0, capacityMin: 0, capacityMax: 6 };
+    if (ownerId === RILEY_ID && type === "Supplies") result.Supplies = { accepted: 0, pending: 1, capacityMin: 0, capacityMax: 6 };
     return result;
   }
 
@@ -505,11 +466,9 @@
     const savedUserActivities = USERS.map(userActivities);
     clearFixture();
     const stagedAtIso = Q.nowIso();
-    const transportRequest = borrowRequest(REQUEST_IDS[0], NOVA_ID, "pending", stagedAtIso);
-    const accommodationRequest = borrowRequest(REQUEST_IDS[1], RILEY_ID, "pending", stagedAtIso);
     const assets = [
-      assetDocument(TRANSPORT_ID, CASEY_ID, "Transport", "Casey Group Shuttle", 4, [transportRequest], stagedAtIso),
-      assetDocument(ACCOMMODATION_ID, NOVA_ID, "Accommodation", "Nova Group Lodge", 3, [accommodationRequest], stagedAtIso),
+      assetDocument(TRANSPORT_ID, CASEY_ID, "Transport", "Casey Group Shuttle", 4, [], stagedAtIso),
+      assetDocument(ACCOMMODATION_ID, NOVA_ID, "Accommodation", "Nova Group Lodge", 3, [], stagedAtIso),
       assetDocument(SUPPLIES_ID, RILEY_ID, "Supplies", "Riley Group Supplies", 6, [], stagedAtIso)
     ];
     try {
@@ -551,10 +510,6 @@
         updatedUser: CASEY_ID
       })));
       Q.collection("assets").insertMany(assets);
-      Q.collection("assetRequests").insertMany([
-        assetRequestDocument(assets[0], transportRequest, stagedAtIso),
-        assetRequestDocument(assets[1], accommodationRequest, stagedAtIso)
-      ]);
       applyCounterDelta(CASEY_ID, 1, true);
       [NOVA_ID, RILEY_ID].forEach(userId => applyCounterDelta(userId, 1));
       const baseline = snapshot();
@@ -658,7 +613,8 @@
       exactCaseyMetrics: Q.sameJson(runtimeOwners[CASEY_ID], expectedOwnerMetrics(CASEY_ID, "Transport")),
       exactNovaMetrics: Q.sameJson(runtimeOwners[NOVA_ID], expectedOwnerMetrics(NOVA_ID, "Accommodation")),
       exactRileyMetrics: Q.sameJson(runtimeOwners[RILEY_ID], expectedOwnerMetrics(RILEY_ID, "Supplies")),
-      exactCounterPropagation: current.event.groupsCount === 1 && current.event.groupsPending === 2 && current.event.activity === 2,
+      exactCounterPropagation: current.runtime.groupsCount === 1 && current.event.groupsPending === 3 && current.event.activity === 3,
+      exactPerViewerResourceReads: exactFinalResourceReads(current.runtime.readsByUser),
       exactRootAndRoom: current.event.rootCount === 1 && current.event.roomCount === 1 && current.event.leakedGeneratedRootCount === 0,
       unchangedMembershipRoles: exactRoles(current.roles) && rolesMatch(current.roles, currentState.baselineRoles),
       unchangedUserCounters: countersMatch(current.counters, currentState.baselineCounters),

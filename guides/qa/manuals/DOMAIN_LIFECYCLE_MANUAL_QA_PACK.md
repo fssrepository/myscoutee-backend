@@ -5445,6 +5445,16 @@ is **PASS / CLOSED**.
 - The exact delta must appear in place and survive reload. No generated room
   card may leak into the root Activities list, and no asset action may change
   an event role or create another membership.
+- Resource badges are per viewer and per type. Immediately after the three
+  assignments, each write-side metric is `1` for the created Transport,
+  Accommodation or Supplies item. This fixture does not pre-seed Explore
+  borrow requests: a later join/invite/request would be another independent
+  pending write. Casey therefore sees Accommodation `1` plus Supplies `1`,
+  Nova sees Transport `1` plus Supplies `1`, and Riley sees Transport `1` plus
+  Accommodation `1`; each assignment actor has already read the type they
+  wrote. After each participant reads every remaining unread type,
+  those exact receipts must persist across reload without changing the raw
+  Transport/Accommodation pending totals or any assignment.
 
 ## Asset cases
 

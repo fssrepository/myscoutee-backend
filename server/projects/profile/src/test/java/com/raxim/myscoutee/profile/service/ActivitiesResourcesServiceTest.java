@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -18,10 +19,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.bson.Document;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,10 +40,12 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
@@ -59,6 +65,7 @@ import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
 import com.raxim.myscoutee.profile.security.ChatPolicyFacts;
 import com.raxim.myscoutee.profile.security.MemberPolicyFacts;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
+import com.mongodb.client.result.UpdateResult;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesResourcesServiceTest {
@@ -92,6 +99,8 @@ class ActivitiesResourcesServiceTest {
     private AdminMenuCounterService adminMenuCounterService;
     @Mock
     private ActivityTournamentGroupCounterService tournamentGroupCounterService;
+    @Mock
+    private MongoTemplate mongoTemplate;
 
     private ActivitiesResourcesService service;
     private AccessControlService accessControlService;
@@ -119,7 +128,8 @@ class ActivitiesResourcesServiceTest {
                 accessControlService,
                 new ActivitySubEventResourceMapper(),
                 eventSlotReadModelService,
-                tournamentGroupCounterService);
+                tournamentGroupCounterService,
+                mongoTemplate);
     }
 
     @AfterEach
@@ -179,6 +189,29 @@ class ActivitiesResourcesServiceTest {
         assertThat(state.ownerId()).isEqualTo("event-1");
         assertThat(state.subEventId()).isEqualTo("sub-1");
         assertThat(state.assetOwnerUserId()).isEqualTo("u1");
+    }
+
+    @Test
+    void markResourceTypeReadPersistsOnlyTheSelectedGroupTypeForTheCurrentUser() {
+        String ownerId = "event-1:sub-1:sub-1:group:1";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(mongoTemplate.updateFirst(any(), any(), eq(ActivitySubEventStageRuntime.class)))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
+
+        var receipt = service.markResourceTypeRead(
+                new ActivitySubEventResourceReadRequestDto(ownerId, "sub-1", "Accommodation", "u1"),
+                "u1");
+
+        assertThat(receipt.resourceType()).isEqualTo("Accommodation");
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(any(), updateCaptor.capture(), eq(ActivitySubEventStageRuntime.class));
+        Document setFields = updateCaptor.getValue().getUpdateObject().get("$set", Document.class);
+        assertThat(setFields)
+                .containsEntry(
+                        "groupResourceReadAtByUserId.sub-1:group:1.u1.Accommodation",
+                        receipt.readAtIso())
+                .doesNotContainKey("groupResourceReadAtByUserId.sub-1:group:1.u1.Transport");
     }
 
     @Test
@@ -331,11 +364,18 @@ class ActivitiesResourcesServiceTest {
                 .get("u1")
                 .get("Transport")
                 .capacityMax()).isEqualTo(4);
+        assertThat(runtime.getGroupResourceMetricsByAssetOwnerId()
+                .get(groupId)
+                .get("u1")
+                .get("Transport")
+                .pending()).isEqualTo(1);
+        assertThat(runtime.getGroupResourceReadAtByUserId().get(groupId).get("u1"))
+                .containsOnlyKeys("Transport");
         verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
     }
 
     @Test
-    void refreshGroupRuntimeResourceMetricsPersistsCurrentScopedRequestCount() {
+    void refreshGroupRuntimeResourceMetricsPersistsCountAndInvalidatesOnlyChangedTypeReads() {
         String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
         String groupId = "sub-1:group:1";
         String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
@@ -379,8 +419,19 @@ class ActivitiesResourcesServiceTest {
         when(assetsService.queryAssignableAssetDetails(
                 "u1", "event-1", "sub-1", Set.of("owned-asset")))
                 .thenReturn(Map.of("owned-asset", ownedAsset));
+        ActivitySubEventStageRuntime existingRuntime = new ActivitySubEventStageRuntime();
+        existingRuntime.setOwnerId(runtimeOwnerId);
+        existingRuntime.setSubEventId("sub-1");
+        existingRuntime.setGroupResourceMetricsByAssetOwnerId(Map.of(
+                groupId,
+                Map.of("u1", Map.of("Transport", new GroupResourceMetricRecord(0, 1, 0, 8)))));
+        existingRuntime.setGroupResourceReadAtByUserId(Map.of(
+                groupId,
+                Map.of(
+                        "u1", Map.of("Transport", "read-1", "Accommodation", "read-2"),
+                        "u2", Map.of("Transport", "read-3"))));
         when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(runtimeOwnerId, "sub-1"))
-                .thenReturn(Optional.empty());
+                .thenReturn(Optional.of(existingRuntime));
         when(activitySubEventStageRuntimeRepository.save(any(ActivitySubEventStageRuntime.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -390,7 +441,7 @@ class ActivitiesResourcesServiceTest {
                 "u1",
                 "admin");
 
-        assertThat(metrics.get("Transport").pending()).isEqualTo(2);
+        assertThat(metrics.get("Transport").pending()).isZero();
         ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
                 ActivitySubEventStageRuntime.class);
         verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
@@ -398,7 +449,13 @@ class ActivitiesResourcesServiceTest {
                 .get(groupId)
                 .get("u1")
                 .get("Transport")
-                .pending()).isEqualTo(2);
+                .pending()).isEqualTo(3);
+        assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId))
+                .containsOnlyKeys("u1", "admin");
+        assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("u1"))
+                .containsOnlyEntry("Accommodation", "read-2");
+        assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("admin"))
+                .containsOnlyKeys("Transport");
         verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
     }
 

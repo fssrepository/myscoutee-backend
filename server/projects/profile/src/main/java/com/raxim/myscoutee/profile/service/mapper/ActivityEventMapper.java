@@ -24,7 +24,8 @@ public class ActivityEventMapper {
             Map<String, String> checkoutResultStatesBySourceId,
             Map<String, String> creatorAvatarUrlsByUserId,
             Map<String, String> currentUserMembershipStatusesBySourceId,
-            String viewerUserId) {
+            String viewerUserId,
+            Map<String, Integer> resourcePendingReadBySourceId) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
@@ -32,6 +33,26 @@ public class ActivityEventMapper {
             currentUserMembershipStatusesBySourceId = currentUserMembershipStatusesBySourceId == null
                     ? Map.of()
                     : currentUserMembershipStatusesBySourceId;
+            resourcePendingReadBySourceId = resourcePendingReadBySourceId == null
+                    ? Map.of()
+                    : resourcePendingReadBySourceId;
+        }
+
+        public MappingContext(
+                LocationCoordinatesDto viewerCoordinates,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Map<String, String> creatorAvatarUrlsByUserId,
+                Map<String, String> currentUserMembershipStatusesBySourceId,
+                String viewerUserId) {
+            this(
+                    viewerCoordinates,
+                    snapshotsBySourceId,
+                    checkoutResultStatesBySourceId,
+                    creatorAvatarUrlsByUserId,
+                    currentUserMembershipStatusesBySourceId,
+                    viewerUserId,
+                    Map.of());
         }
     }
 
@@ -64,7 +85,7 @@ public class ActivityEventMapper {
                 safeText(record.getSubtitle()),
                 safeText(record.getTimeframe()),
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
-                aggregateRuntimeActivity(record),
+                Math.max(0, aggregateRuntimeActivity(record) - resourcePendingRead(record, context)),
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
                 safeText(record.getCreatorInitials()),
@@ -162,6 +183,13 @@ public class ActivityEventMapper {
             pending += normalizeCount(item.suppliesPending());
         }
         return Math.max(normalizeCount(record == null ? null : record.getActivity()), pending);
+    }
+
+    private int resourcePendingRead(ActivityEvent record, MappingContext context) {
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        return context == null || !StringUtils.hasText(sourceId)
+                ? 0
+                : normalizeCount(context.resourcePendingReadBySourceId().get(sourceId));
     }
 
     private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {

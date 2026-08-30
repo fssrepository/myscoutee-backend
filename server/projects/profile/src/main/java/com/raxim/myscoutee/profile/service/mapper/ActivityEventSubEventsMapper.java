@@ -1181,7 +1181,8 @@ public class ActivityEventSubEventsMapper {
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
                 stageRuntime.groupsCount() == null ? item.groupsCount() : stageRuntime.groupsCount(),
-                item.groupsPending(),
+                Math.max(0, nonNegativeInteger(item.groupsPending())
+                        - nonNegativeInteger(stageRuntime.groupsResourcePendingRead())),
                 firstNonBlank(stageRuntime.stageStatus(), item.stageStatus()),
                 firstNonBlank(stageRuntime.stageStatusReason(), item.stageStatusReason()),
                 firstNonBlank(stageRuntime.stageStatusUpdatedAt(), item.stageStatusUpdatedAt()),
