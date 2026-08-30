@@ -186,7 +186,7 @@
         }
       ]
     },
-    "CHAT-CONTENT-001": {
+  "CHAT-CONTENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
@@ -214,9 +214,37 @@
           "userId": "650000000000000000000063",
           "expectedName": "Riley Outside · closed unread/reconnect reader and voter"
         }
-      ]
+    ]
+  },
+  "CHAT-GOVERNANCE-001": {
+    "targetUrl": "http://localhost/game",
+    "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+    "layout": {
+      "columns": 3
     },
-    "TOURNAMENT-001": {
+    "sessions": [
+      {
+        "actor": "Casey governance admin reviewer",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000061",
+        "autoDismissExplanationGuide": false,
+        "expectedName": "Casey Bridge · Event/Group member inspection and Admin report review"
+      },
+      {
+        "actor": "Nova governance reporter",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000062",
+        "expectedName": "Nova Social · accepted member and idempotent report submitter"
+      },
+      {
+        "actor": "Riley governance report target",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000063",
+        "expectedName": "Riley Outside · accepted member and reported message author"
+      }
+    ]
+  },
+  "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {

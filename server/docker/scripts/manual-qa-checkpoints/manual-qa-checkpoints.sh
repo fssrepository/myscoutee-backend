@@ -212,7 +212,13 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
-    chat-domain) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
+    chat-domain)
+      if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/chat-governance-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js"
+      fi
+      ;;
     event-domain)
       if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
@@ -342,7 +348,7 @@ case "${scenario}:${command}" in
     ;;
   chat-domain:stage|chat-domain:status|chat-domain:reset|chat-domain:prepare-actions-read-race-retest|chat-domain:repair-content-share-sources)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || [ "$3" = "CHAT-CONTENT-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001, CHAT-ACTIONS-001 or CHAT-CONTENT-001."
+    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || [ "$3" = "CHAT-CONTENT-001" ] || [ "$3" = "CHAT-GOVERNANCE-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001, CHAT-ACTIONS-001, CHAT-CONTENT-001 or CHAT-GOVERNANCE-001."
     if [ "${command}" = "prepare-actions-read-race-retest" ] && [ "$3" != "CHAT-ACTIONS-001" ]; then
       fail "${command} is restricted to CHAT-ACTIONS-001."
     fi

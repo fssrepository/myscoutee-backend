@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,6 +21,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -691,10 +693,25 @@ public class HomeUserProfileService {
             sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChatMessage == null ? null : reportedChatMessage.getText()));
         }
 
+        String reportSyncKey = reportSyncKey(
+                userId,
+                targetUserId,
+                eventId,
+                request.reason(),
+                request.details(),
+                sourceType,
+                sourceId,
+                chatId,
+                messageId,
+                assetId);
+        if (userReportSubmissionsRepository.findBySyncKey(reportSyncKey).isPresent()) {
+            return new UserSubmitActionResponseDto(true, "Report already submitted.");
+        }
+
         String nowIso = Instant.now().toString();
         UserReportSubmission document = new UserReportSubmission();
         document.setId(new ObjectId().toHexString());
-        document.setSyncKey(UUID.randomUUID().toString());
+        document.setSyncKey(reportSyncKey);
         document.setUserId(userId);
         document.setHandle(safeText(request.handle()));
         document.setReason(safeText(request.reason()));
@@ -719,7 +736,11 @@ public class HomeUserProfileService {
         document.setCreatedUser(userId);
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(userId);
-        userReportSubmissionsRepository.save(document);
+        try {
+            userReportSubmissionsRepository.save(document);
+        } catch (DuplicateKeyException duplicate) {
+            return new UserSubmitActionResponseDto(true, "Report already submitted.");
+        }
         adminTelemetryService.record("report.submitted", "moderation", document.getId(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
@@ -3550,6 +3571,31 @@ public class HomeUserProfileService {
 
     private String normalizeToken(String value) {
         return normalizeId(value).toLowerCase();
+    }
+
+    private String reportSyncKey(
+            String reporterUserId,
+            String targetUserId,
+            String eventId,
+            String reason,
+            String details,
+            String sourceType,
+            String sourceId,
+            String chatId,
+            String messageId,
+            String assetId) {
+        String identity = String.join("|",
+                normalizeId(reporterUserId),
+                normalizeId(targetUserId),
+                normalizeId(eventId),
+                normalizeId(reason),
+                normalizeId(details),
+                normalizeToken(sourceType),
+                normalizeId(sourceId),
+                normalizeId(chatId),
+                normalizeId(messageId),
+                normalizeId(assetId));
+        return "user-report:" + UUID.nameUUIDFromBytes(identity.getBytes(StandardCharsets.UTF_8));
     }
 
     private String safeText(String value) {

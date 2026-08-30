@@ -155,7 +155,12 @@ try {
         await acceptEntryConsent(port, storageScope, targetUrl);
       }
       await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
-      await dismissExplanationGuide(port, storageScope);
+      const autoDismissExplanationGuide = session.autoDismissExplanationGuide
+        ?? checkpoint.autoDismissExplanationGuide
+        ?? true;
+      if (autoDismissExplanationGuide) {
+        await dismissExplanationGuide(port, storageScope);
+      }
     }
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);

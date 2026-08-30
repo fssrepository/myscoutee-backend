@@ -765,9 +765,9 @@ public class ChatService {
         if (StringUtils.hasText(memberOwnerType) && StringUtils.hasText(memberOwnerId)) {
             Criteria criteria = Criteria.where("ownerType").is(memberOwnerType)
                     .and("ownerId").is(memberOwnerId)
-                    .and("status").in(Boolean.TRUE.equals(pendingOnly)
-                            ? List.of(MEMBER_STATUS_PENDING)
-                            : List.of(MEMBER_STATUS_ACCEPTED, MEMBER_STATUS_PENDING));
+                    .and("status").is(Boolean.TRUE.equals(pendingOnly)
+                            ? MEMBER_STATUS_PENDING
+                            : MEMBER_STATUS_ACCEPTED);
             long total = mongoTemplate.count(new Query(criteria), ActivityMember.class);
             Query memberPageQuery = new Query(criteria)
                     .with(Sort.by(Sort.Direction.ASC, "userId"))
