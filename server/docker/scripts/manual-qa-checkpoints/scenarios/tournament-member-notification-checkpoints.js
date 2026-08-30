@@ -83,14 +83,21 @@
     else Q.collection("users").updateOne(selector, { $unset: { activities: "" } });
   }
 
-  function applyEventCounterDelta(userId, delta) {
+  function applyEventCounterDelta(userId, delta, hosting = false) {
+    const increments = hosting
+      ? {
+          "activities.hosting": delta,
+          "activities.event.all": delta,
+          "activities.event.hosting": delta
+        }
+      : {
+          "activities.events": delta,
+          "activities.event.all": delta,
+          "activities.event.active": delta
+        };
     const result = Q.collection("users").updateOne(
       { $or: [{ _id: userId }, { userId }] },
-      { $inc: {
-        "activities.events": delta,
-        "activities.event.all": delta,
-        "activities.event.active": delta
-      } }
+      { $inc: increments }
     );
     if (result.matchedCount !== 1) Q.fail(`user '${userId}' disappeared while ${CHECKPOINT} was staged.`);
   }
@@ -325,7 +332,7 @@
       updatedUser: HOST_ID
     })));
     Q.collection("chats").insertMany(ALL_USERS.map(userId => roomChat(userId, stagedAtIso)));
-    applyEventCounterDelta(HOST_ID, 1);
+    applyEventCounterDelta(HOST_ID, 1, true);
     applyEventCounterDelta(NOVA_ID, 1);
     applyEventCounterDelta(RILEY_ID, 1);
     applyEventCounterDelta(LINA_ID, 1);
@@ -372,8 +379,10 @@
     return {
       userId,
       events: Q.number(activities.events),
+      hosting: Q.number(activities.hosting),
       eventAll: Q.number(event.all),
-      eventActive: Q.number(event.active)
+      eventActive: Q.number(event.active),
+      eventHosting: Q.number(event.hosting)
     };
   }
 

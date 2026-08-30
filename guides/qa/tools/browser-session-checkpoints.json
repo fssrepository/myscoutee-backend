@@ -421,7 +421,7 @@
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
-        "columns": 2
+        "columns": 3
       },
       "sessions": [
         {

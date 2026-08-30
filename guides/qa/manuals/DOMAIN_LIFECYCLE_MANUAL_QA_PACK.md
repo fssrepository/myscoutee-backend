@@ -5292,6 +5292,11 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   row owns only Nova's room-chat revocation, the new removal effects, exact
   recipient fan-out and leaderboard persistence; initial event-channel history
   remains in the Tournament/Chat lifecycle coverage.
+- Fixture counter boundary: Casey is the parent owner, so staging must write
+  the event into `My Events` through `activities.hosting` and
+  `activities.event.hosting`, while Nova/Riley/Lina use participant
+  `Events/Active Events` counters. Do not stage Casey through the participant
+  counter path merely to make all four setup calls uniform.
 
 ### `TOURNAMENT-DQ-001` — disqualification and reinstatement
 

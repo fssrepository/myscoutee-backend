@@ -44,7 +44,7 @@ checkpoint: TOURNAMENT-MEMBER-003 — four-person removal recipient fan-out
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-003--four-person-removal-recipient-fan-out
 scenario: XLS-driven Core execution order. Tournament priority is 11 (11/15 complete); TOURNAMENT-MEMBER-003 is the active row, followed by TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
 ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. TOURNAMENT-MEMBER-003 is staged with one active four-person Qualifiers group: Casey 1, Nova 7, Riley 9 and Lina 5; all four are accepted on parent and room, all four room-chat copies contain the same membership, removal notifications are zero, and the stored event counters are captured. Three fresh Casey/Nova/Riley browser sessions are open; Lina is the fourth persisted participant and oracle-only second recipient because this workstation is limited to three concurrent actor windows.
+state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. The first TOURNAMENT-MEMBER-003 attempt is non-evidence because Lina was removed instead of Nova and exposed a fixture-only host-counter defect. That attempt was reset. The clean replacement baseline was staged at `2026-08-30T00:07:50Z`: Casey now has write-side `hosting=1`, `event.all=1`, `event.hosting=1` and participant counters zero, so `My Events` must show 1; Nova/Riley use `Events/Active Events=1`. All four parent/room memberships, four scores and four room-chat copies are restored, with zero removal notifications. Three fresh Casey/Nova/Riley windows are open side by side.
 required_resume: Do not reset or stage again while this baseline is intact. Casey removes Nova exactly once from the parent Members UI. Verify visible order Riley 9, Lina 5, Casey 1, then `R / Nova Social / 7`, then `V / -----`; Nova receives one self-removal notification, Riley receives one event-participant notification, Casey none. The persisted oracle additionally proves Lina's independent event-participant notification, Nova's room-chat revocation, immutable four-row scores, exact counters and actor exclusion. Parent event-channel preexistence/history is explicitly outside this isolated fixture; it may materialize at Remove time without failing this row.
 event: QA TOURNAMENT-MEMBER-003 — active parent, one four-person group, Nova removal target
 actors:
@@ -857,6 +857,13 @@ Casey/Lina/Liam for friend/non-friend discovery. This is one domain checkpoint
 with two named UI phases, not two simultaneous five-actor layouts and not a new
 testcase row. Check memory/swap/CPU before and after every replacement. Keep
 personal profile paths and names out of Git.
+
+The application is calibrated for narrow portrait/mobile actor windows. When
+a checkpoint uses exactly three managed sessions, always place all three in a
+single horizontal row (`columns: 3`) so they remain simultaneously visible
+side by side. Do not use a 2+1 layout with the third window below the first two.
+Only use fewer columns when the checkpoint actually opens fewer than three
+windows or the user explicitly requests a different comparison layout.
 
 The managed launcher treats those three slots as exclusive: before opening a
 checkpoint it closes and removes only earlier launcher-owned manifests and
