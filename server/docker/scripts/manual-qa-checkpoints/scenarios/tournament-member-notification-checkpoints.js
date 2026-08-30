@@ -18,7 +18,7 @@
   const RILEY_ID = "650000000000000000000063";
   const LINA_ID = "178e8d0cbe164fa3fede5884";
   const ALL_USERS = [HOST_ID, NOVA_ID, RILEY_ID, LINA_ID];
-  const EXPECTED_ACTIVE_AFTER_REMOVE = [HOST_ID, RILEY_ID, LINA_ID].sort();
+  const REMOVABLE_USER_IDS = [NOVA_ID, RILEY_ID, LINA_ID];
   const SCORE_BY_USER_ID = {
     [HOST_ID]: 1,
     [NOVA_ID]: 7,
@@ -47,6 +47,8 @@
         { entityId: EVENT_ID },
         { entityId: ROOM_ID },
         { sourceId: ROOM_ID },
+        { chatId: EVENT_ID },
+        { chatId: ROOM_ID },
         { "payload.eventId": EVENT_ID },
         { "payload.eventId": ROOM_ID },
         { "payload.parentEventId": EVENT_ID }
@@ -83,14 +85,21 @@
     else Q.collection("users").updateOne(selector, { $unset: { activities: "" } });
   }
 
-  function applyEventCounterDelta(userId, delta) {
+  function applyEventCounterDelta(userId, delta, hosting = false) {
+    const increments = hosting
+      ? {
+          "activities.hosting": delta,
+          "activities.event.all": delta,
+          "activities.event.hosting": delta
+        }
+      : {
+          "activities.events": delta,
+          "activities.event.all": delta,
+          "activities.event.active": delta
+        };
     const result = Q.collection("users").updateOne(
       { $or: [{ _id: userId }, { userId }] },
-      { $inc: {
-        "activities.events": delta,
-        "activities.event.all": delta,
-        "activities.event.active": delta
-      } }
+      { $inc: increments }
     );
     if (result.matchedCount !== 1) Q.fail(`user '${userId}' disappeared while ${CHECKPOINT} was staged.`);
   }
@@ -145,6 +154,18 @@
     };
   }
 
+  function stageDefinitionDocument(stage) {
+    const definition = { ...stage };
+    delete definition.stageStatus;
+    delete definition.stageStatusReason;
+    delete definition.stageStatusUpdatedAt;
+    delete definition.membersAccepted;
+    delete definition.membersPending;
+    delete definition.groupsCount;
+    delete definition.groupsPending;
+    return definition;
+  }
+
   function rootEvent(stagedAtIso, stage) {
     return {
       _id: EVENT_ID,
@@ -178,7 +199,7 @@
       invitedMemberUserIds: [],
       pendingRequestMemberUserIds: [],
       subEventsEnabled: true,
-      subEventDefinitions: [stage],
+      subEventDefinitions: [stageDefinitionDocument(stage)],
       subEvents: [stage],
       currentStage: { id: STAGE_ID, name: "Qualifiers", stageNumber: 1, totalStages: 1, status: "A" },
       mode: "Tournament",
@@ -313,7 +334,7 @@
       updatedUser: HOST_ID
     })));
     Q.collection("chats").insertMany(ALL_USERS.map(userId => roomChat(userId, stagedAtIso)));
-    applyEventCounterDelta(HOST_ID, 1);
+    applyEventCounterDelta(HOST_ID, 1, true);
     applyEventCounterDelta(NOVA_ID, 1);
     applyEventCounterDelta(RILEY_ID, 1);
     applyEventCounterDelta(LINA_ID, 1);
@@ -336,7 +357,7 @@
       roomId: ROOM_ID,
       members: ALL_USERS.map(Q.user),
       scores: scoreSnapshot(),
-      next: "Open the four configured sessions. As Casey remove Nova exactly once from the parent Members action; do not use DQ, a scheduler or fixture repair."
+      next: "Open the three configured sessions. As Casey remove Nova exactly once from the parent Members action; Riley is the visible participant-recipient control and Lina is verified by the persisted oracle. Do not use DQ, a scheduler or fixture repair."
     });
   }
 
@@ -360,8 +381,10 @@
     return {
       userId,
       events: Q.number(activities.events),
+      hosting: Q.number(activities.hosting),
       eventAll: Q.number(event.all),
-      eventActive: Q.number(event.active)
+      eventActive: Q.number(event.active),
+      eventHosting: Q.number(event.hosting)
     };
   }
 
@@ -388,6 +411,36 @@
     };
   }
 
+  function chatSnapshot(chatId) {
+    const chats = Q.collection("chats").find({
+      $or: [{ id: chatId }, { chatId }, { ownerId: chatId }, { eventId: chatId }]
+    }).toArray();
+    const messages = Q.collection("chatMessages").find({ chatId }).sort({ sentAtIso: 1, id: 1 }).toArray();
+    return {
+      owners: chats.map(chat => ({
+        ownerUserId: Q.text(chat.ownerUserId),
+        memberIds: sorted(chat.memberIds)
+      })).sort((left, right) => left.ownerUserId.localeCompare(right.ownerUserId)),
+      messages: messages.map(message => ({
+        id: Q.text(message.id),
+        clientId: Q.text(message.clientId),
+        text: Q.text(message.text)
+      }))
+    };
+  }
+
+  function hasExactRemainingChatOwners(chat, expectedActiveUserIds) {
+    return chat.owners.length === expectedActiveUserIds.length
+      && Q.sameJson(sorted(chat.owners.map(owner => owner.ownerUserId)), expectedActiveUserIds)
+      && chat.owners.every(owner => Q.sameJson(owner.memberIds, expectedActiveUserIds));
+  }
+
+  function hasExactRemovalMessage(chat, expectedText) {
+    return chat.messages.length === 1
+      && chat.messages[0].clientId === "member-removed"
+      && chat.messages[0].text === expectedText;
+  }
+
   function snapshot() {
     const parent = Q.collection("events").findOne({ sourceId: EVENT_ID });
     const room = Q.collection("events").findOne({ sourceId: ROOM_ID });
@@ -405,6 +458,8 @@
         ownerUserId: Q.text(chat.ownerUserId),
         memberIds: sorted(chat.memberIds)
       })).sort((left, right) => left.ownerUserId.localeCompare(right.ownerUserId)),
+      eventChat: chatSnapshot(EVENT_ID),
+      groupChat: chatSnapshot(ROOM_ID),
       scores: scoreSnapshot(),
       notifications: notificationSnapshot(),
       counters: counters()
@@ -419,7 +474,13 @@
         next: `After resetting the active checkpoint, run stage event-domain ${CHECKPOINT}.` });
       return;
     }
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: currentState.phase, oracle: snapshot() });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: currentState.phase,
+      actionBaselineCounters: currentState.actionBaselineCounters || [],
+      oracle: snapshot()
+    });
   }
 
   function verify() {
@@ -433,36 +494,71 @@
     })).sort((left, right) => left.memberId.localeCompare(right.memberId));
     const outbox = current.notifications.outbox;
     const inbox = current.notifications.inbox;
+    const removedUserIds = REMOVABLE_USER_IDS.filter(userId =>
+      storedStatus(EVENT_ID, userId) === "deleted"
+        && storedStatus(ROOM_ID, userId) === "removed");
+    const removedUserId = removedUserIds.length === 1 ? removedUserIds[0] : "";
+    const removedUserName = removedUserId ? Q.text(Q.user(removedUserId).name) : "";
+    const expectedActiveUserIds = ALL_USERS.filter(userId => userId !== removedUserId).sort();
+    const expectedParticipantRecipients = REMOVABLE_USER_IDS
+      .filter(userId => userId !== removedUserId)
+      .sort();
     const targetOutbox = outbox.find(item => item.role === "removed-member");
-    const peerOutbox = outbox.find(item => item.role === "room-peer");
+    const participantOutbox = outbox.find(item => item.role === "event-participant");
     const baselineByUser = new Map((currentState.actionBaselineCounters || []).map(item => [Q.text(item.userId), item]));
     const currentByUser = new Map(current.counters.map(item => [item.userId, item]));
-    const unchangedUsers = [HOST_ID, RILEY_ID, LINA_ID].every(userId =>
-      Q.sameJson(currentByUser.get(userId), baselineByUser.get(userId)));
-    const novaBefore = baselineByUser.get(NOVA_ID);
-    const novaAfter = currentByUser.get(NOVA_ID);
-    const novaCounterRemoved = novaBefore && novaAfter
-      && novaAfter.events === Math.max(0, Q.number(novaBefore.events) - 1)
-      && novaAfter.eventAll === Math.max(0, Q.number(novaBefore.eventAll) - 1)
-      && novaAfter.eventActive === Math.max(0, Q.number(novaBefore.eventActive) - 1);
-    if (current.parent.novaStatus !== "deleted"
-        || current.parent.acceptedUserIds.includes(NOVA_ID)
-        || current.room.novaStatus !== "removed"
-        || !Q.sameJson(current.room.acceptedUserIds, EXPECTED_ACTIVE_AFTER_REMOVE)
-        || !Q.sameJson(current.scores, expectedScores)
-        || current.roomChats.some(chat => chat.ownerUserId === NOVA_ID || chat.memberIds.includes(NOVA_ID))
-        || outbox.length !== 2
-        || !targetOutbox || !Q.sameJson(targetOutbox.recipients, [NOVA_ID])
-        || !peerOutbox || !Q.sameJson(peerOutbox.recipients, [RILEY_ID, LINA_ID].sort())
-        || outbox.some(item => item.recipients.includes(HOST_ID))
-        || outbox.some(item => item.memberName !== "Nova Social")
-        || inbox.length !== 3
-        || !Q.sameJson(sorted(inbox.map(item => item.recipientUserId)), [NOVA_ID, RILEY_ID, LINA_ID].sort())
-        || inbox.some(item => item.recipientUserId === HOST_ID)
-        || inbox.some(item => item.memberName !== "Nova Social")
-        || !unchangedUsers
-        || !novaCounterRemoved) {
-      Q.fail(`${CHECKPOINT} did not preserve the four-person room removal, leaderboard identity, exact same-room recipients and actor exclusion boundary.`);
+    const unchangedUsers = ALL_USERS.filter(userId => userId !== removedUserId).every(userId => {
+      const before = baselineByUser.get(userId);
+      const after = currentByUser.get(userId);
+      return before && after
+        && after.events === Q.number(before.events)
+        && after.hosting === Q.number(before.hosting)
+        && after.eventAll === Q.number(before.eventAll)
+        && after.eventActive === Q.number(before.eventActive)
+        && after.eventHosting === Q.number(before.eventHosting);
+    });
+    const removedBefore = baselineByUser.get(removedUserId);
+    const removedAfter = currentByUser.get(removedUserId);
+    const removedCounterDecremented = removedBefore && removedAfter
+      && removedAfter.events === Math.max(0, Q.number(removedBefore.events) - 1)
+      && removedAfter.eventAll === Math.max(0, Q.number(removedBefore.eventAll) - 1)
+      && removedAfter.eventActive === Math.max(0, Q.number(removedBefore.eventActive) - 1);
+    const checks = {
+      oneRemovedParticipant: removedUserIds.length === 1,
+      parentRemoval: Boolean(removedUserId)
+        && Q.sameJson(current.parent.acceptedUserIds, expectedActiveUserIds),
+      roomRemoval: Boolean(removedUserId)
+        && Q.sameJson(current.room.acceptedUserIds, expectedActiveUserIds),
+      immutableScores: Q.sameJson(current.scores, expectedScores),
+      roomChatRevocation: current.roomChats.every(chat =>
+        chat.ownerUserId !== removedUserId && !chat.memberIds.includes(removedUserId)),
+      eventChatOwners: hasExactRemainingChatOwners(current.eventChat, expectedActiveUserIds),
+      eventChatMessage: hasExactRemovalMessage(
+        current.eventChat,
+        `${removedUserName} was removed from the event.`),
+      groupChatOwners: hasExactRemainingChatOwners(current.groupChat, expectedActiveUserIds),
+      groupChatMessage: hasExactRemovalMessage(
+        current.groupChat,
+        `${removedUserName} was removed from the tournament group.`),
+      exactOutbox: outbox.length === 2
+        && targetOutbox && Q.sameJson(targetOutbox.recipients, [removedUserId])
+        && participantOutbox
+        && participantOutbox.scope === "event-participants"
+        && Q.sameJson(participantOutbox.recipients, expectedParticipantRecipients)
+        && !outbox.some(item => item.recipients.includes(HOST_ID))
+        && !outbox.some(item => item.memberName !== removedUserName),
+      exactInbox: inbox.length === 3
+        && Q.sameJson(sorted(inbox.map(item => item.recipientUserId)), REMOVABLE_USER_IDS.sort())
+        && !inbox.some(item => item.recipientUserId === HOST_ID)
+        && !inbox.some(item => item.memberName !== removedUserName),
+      unchangedRemainingCounters: unchangedUsers,
+      removedMemberCounter: Boolean(removedCounterDecremented)
+    };
+    const failedChecks = Object.entries(checks)
+      .filter(([, passed]) => !passed)
+      .map(([name]) => name);
+    if (failedChecks.length > 0) {
+      Q.fail(`${CHECKPOINT} failed persisted checks: ${failedChecks.join(", ")}.`);
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "application-write-verified",
@@ -473,7 +569,7 @@
       checkpointId: CHECKPOINT,
       phase: "application-write-verified",
       oracle: current,
-      visualPass: "In Group A Standings the order is Riley 9, Lina 5, Casey 1, then R / Nova Social / 7, then V / ----- for the vacant slot in the existing # column. Nova sees the self-removal notification; Riley and Lina see the peer notification; Casey sees none."
+      visualPass: `${removedUserName} is retained as the R leaderboard row with the controlled score. The removed participant has one self-removal notification; the other two non-actor participants have one event-participant notification each; Casey has none. The parent Event channel and Group A channel each contain exactly one matching removal system message and retain only the three active users.`
     });
   }
 
@@ -481,6 +577,7 @@
     Q.assertDeploymentSafety();
     const currentState = state();
     Q.restoreSnapshots(currentState.snapshots || []);
+    Q.collection("chatMessages").deleteMany({ chatId: { $in: [EVENT_ID, ROOM_ID] } });
     for (const saved of currentState.savedUserActivities || []) restoreUserActivities(saved);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: STATE_ID });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "reset-complete", resetAtIso: Q.nowIso() });

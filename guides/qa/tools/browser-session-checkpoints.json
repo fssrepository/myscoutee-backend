@@ -14,6 +14,19 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "QA-RESET-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova reset recheck",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "ENTRY-DEMO-REG-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
@@ -132,7 +145,119 @@
         }
       ]
     },
-    "TOURNAMENT-001": {
+    "CHAT-FLOW-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-flow sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · controlled Group sender"
+        },
+        {
+          "actor": "Nova chat-flow live reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · open live reader"
+        },
+        {
+          "actor": "Riley chat-flow recovery reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · closed/reload reader"
+        }
+      ]
+    },
+    "CHAT-ACTIONS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-actions message owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · reply/edit/pin/unsend owner"
+        },
+        {
+          "actor": "Nova chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · reaction and non-owner denial actor"
+        },
+        {
+          "actor": "Riley chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · reaction add/remove actor"
+        }
+      ]
+    },
+  "CHAT-CONTENT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-content sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · image, voice, poll and share-card sender",
+          "microphonePermission": "granted",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "Nova chat-content live participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · live reader, denied-recorder control and voter",
+          "microphonePermission": "denied"
+        },
+        {
+          "actor": "Riley chat-content recovery participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · closed unread/reconnect reader and voter"
+        }
+    ]
+  },
+  "CHAT-GOVERNANCE-001": {
+    "targetUrl": "http://localhost/game",
+    "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+    "layout": {
+      "columns": 3
+    },
+    "sessions": [
+      {
+        "actor": "Casey governance admin reviewer",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000061",
+        "autoDismissExplanationGuide": false,
+        "expectedName": "Casey Bridge · Event/Group member inspection and Admin report review"
+      },
+      {
+        "actor": "Nova governance reporter",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000062",
+        "expectedName": "Nova Social · accepted member and idempotent report submitter"
+      },
+      {
+        "actor": "Riley governance report target",
+        "sessionKind": "demo",
+        "userId": "650000000000000000000063",
+        "expectedName": "Riley Outside · accepted member and reported message author"
+      }
+    ]
+  },
+  "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
@@ -413,7 +538,7 @@
           "actor": "Riley unchanged room control",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · active Group B control"
+          "expectedName": "Riley Outside · Group B remains active and receives the parent-event notice"
         }
       ]
     },
@@ -421,7 +546,7 @@
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
-        "columns": 2
+        "columns": 3
       },
       "sessions": [
         {
@@ -437,16 +562,64 @@
           "expectedName": "Nova Social · receives the self-removal notification"
         },
         {
-          "actor": "Riley same-room peer",
+          "actor": "Riley event participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000063",
-          "expectedName": "Riley Outside · receives the Group A peer notification"
+          "expectedName": "Riley Outside · receives the event-participant notification; Lina is verified by the persisted oracle"
+        }
+      ]
+    },
+    "TOURNAMENT-DQ-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · disqualifies and reinstates Nova"
         },
         {
-          "actor": "Lina same-room peer",
+          "actor": "Nova affected participant",
           "sessionKind": "demo",
-          "userId": "178e8d0cbe164fa3fede5884",
-          "expectedName": "Lina Park · receives the Group A peer notification"
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · keeps membership, score and chat access while DQ"
+        },
+        {
+          "actor": "Riley active participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · active-order and participant-notification control; Lina is persisted-oracle only"
+        }
+      ]
+    },
+    "TOURNAMENT-RESOURCE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Transport owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · assigns Casey Group Shuttle"
+        },
+        {
+          "actor": "Nova Accommodation owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · assigns Nova Group Lodge"
+        },
+        {
+          "actor": "Riley Supplies owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · assigns Riley Group Supplies"
         }
       ]
     },

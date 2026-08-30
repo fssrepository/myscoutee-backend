@@ -68,6 +68,15 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-room-life-baseline event-domain TOURNAMENT-ROOM-LIFE-001
   bash manual-qa-checkpoints.sh verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002
   bash manual-qa-checkpoints.sh verify-tournament-member-notification event-domain TOURNAMENT-MEMBER-003
+  bash manual-qa-checkpoints.sh verify-tournament-dq event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-reinstate event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh stage-tournament-dq-review event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-finalize event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh arm-tournament-dq-review event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-result event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh arm-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-resource event-domain TOURNAMENT-RESOURCE-001
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
@@ -203,12 +212,22 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
-    chat-domain) scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js" ;;
+    chat-domain)
+      if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/chat-governance-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/chat-domain-checkpoints.js"
+      fi
+      ;;
     event-domain)
       if [ "${checkpoint_id}" = "TOURNAMENT-ADMISSION-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-MEMBER-003" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-member-notification-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-DQ-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-dq-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-RESOURCE-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-resource-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-001" ] || [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-002" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-score-reopen-checkpoints.js"
       else
@@ -327,9 +346,15 @@ case "${scenario}:${command}" in
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;
-  chat-domain:stage|chat-domain:status|chat-domain:reset)
+  chat-domain:stage|chat-domain:status|chat-domain:reset|chat-domain:prepare-actions-read-race-retest|chat-domain:repair-content-share-sources)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "CHAT-LIST-001" ] || fail "${command} is restricted to CHAT-LIST-001."
+    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || [ "$3" = "CHAT-CONTENT-001" ] || [ "$3" = "CHAT-GOVERNANCE-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001, CHAT-ACTIONS-001, CHAT-CONTENT-001 or CHAT-GOVERNANCE-001."
+    if [ "${command}" = "prepare-actions-read-race-retest" ] && [ "$3" != "CHAT-ACTIONS-001" ]; then
+      fail "${command} is restricted to CHAT-ACTIONS-001."
+    fi
+    if [ "${command}" = "repair-content-share-sources" ] && [ "$3" != "CHAT-CONTENT-001" ]; then
+      fail "${command} is restricted to CHAT-CONTENT-001."
+    fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)
@@ -374,6 +399,23 @@ case "${scenario}:${command}" in
   event-domain:verify-tournament-member-notification)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-MEMBER-003" ] || fail "${command} is restricted to TOURNAMENT-MEMBER-003."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-dq|\
+  event-domain:verify-tournament-reinstate|\
+  event-domain:stage-tournament-dq-review|\
+  event-domain:verify-tournament-dq-review-finalize|\
+  event-domain:arm-tournament-dq-review|\
+  event-domain:verify-tournament-dq-review-result|\
+  event-domain:arm-tournament-dq-review-noop|\
+  event-domain:verify-tournament-dq-review-noop)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-DQ-001" ] || fail "${command} is restricted to TOURNAMENT-DQ-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-resource)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-RESOURCE-001" ] || fail "${command} is restricted to TOURNAMENT-RESOURCE-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:rearm-score-reopen|\

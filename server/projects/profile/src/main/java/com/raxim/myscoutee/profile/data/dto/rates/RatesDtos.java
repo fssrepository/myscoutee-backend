@@ -28,7 +28,8 @@ public final class RatesDtos {
             List<RateMenuItemDto> items,
             Integer total,
             String nextCursor,
-            List<UserDto> users) {
+            List<UserDto> users,
+            Integer gameCounter) {
     }
 
     public record UserRateRecordDto(

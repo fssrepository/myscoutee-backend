@@ -14,7 +14,7 @@ class ActivitySubEventStageRuntimeMapperTest {
     private final ActivitySubEventStageRuntimeMapper mapper = new ActivitySubEventStageRuntimeMapper();
 
     @Test
-    void doesNotCalculateBadgeCountersDuringRuntimeMapping() {
+    void calculatesOnlyTheQueryingUsersPersistedResourceReads() {
         ActivitySubEventStageRuntime record = new ActivitySubEventStageRuntime();
         record.setOwnerId("event-1");
         record.setSubEventId("stage-1");
@@ -27,9 +27,14 @@ class ActivitySubEventStageRuntimeMapperTest {
                 "group-b", Map.of(
                         "owner-2", Map.of(
                                 "Supplies", new GroupResourceMetricRecord(2, 2, 0, 5)))));
+        record.setGroupResourceReadAtByUserId(Map.of(
+                "group-a", Map.of("user-1", Map.of("Accommodation", "read-at")),
+                "group-b", Map.of("user-2", Map.of("Supplies", "read-at"))));
 
-        ActivitySubEventStageRuntimeStateDto result = mapper.toDto(record);
+        ActivitySubEventStageRuntimeStateDto result = mapper.toDto(record, "user-1");
 
         assertEquals(4, result.groupsCount());
+        assertEquals(1, result.groupsResourcePendingRead());
+        assertEquals(0, mapper.toDto(record, "user-3").groupsResourcePendingRead());
     }
 }

@@ -35,8 +35,9 @@ public class ActivitiesEventTournamentGroupsController {
     public List<EventTournamentGroupDto> queryStageGroups(
             @RequestParam("eventId") String eventId,
             @RequestParam(value = "slotId", required = false) String slotId,
-            @RequestParam("stageId") String stageId) {
-        return activitiesEventLeaderboardService.queryTournamentStageGroups(eventId, slotId, stageId);
+            @RequestParam("stageId") String stageId,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesEventLeaderboardService.queryTournamentStageGroups(eventId, slotId, stageId, userId);
     }
 
     @PostMapping("/group")

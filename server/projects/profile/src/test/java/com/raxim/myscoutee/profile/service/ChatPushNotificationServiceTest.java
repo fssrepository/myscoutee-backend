@@ -18,13 +18,16 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class ChatPushNotificationServiceTest {
     @Test
-    void enqueueKeepsEveryNonSenderChatMemberForInboxMaterialization() {
+    void enqueueExcludesARecipientActivelyReadingTheChat() {
         UsersRepository usersRepository = org.mockito.Mockito.mock(UsersRepository.class);
         NotificationOutboxService notificationOutboxService = org.mockito.Mockito.mock(NotificationOutboxService.class);
+        ChatWebSocketSessionRegistry sessionRegistry = org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.empty());
+        when(sessionRegistry.isUserConnected("chat-1", "connected-viewer")).thenReturn(true);
         ChatPushNotificationService service = new ChatPushNotificationService(
                 usersRepository,
-                notificationOutboxService);
+                notificationOutboxService,
+                sessionRegistry);
         Chat chat = new Chat();
         chat.setChatId("chat-1");
         chat.setOwnerUserId("connected-viewer");
@@ -56,7 +59,8 @@ class ChatPushNotificationServiceTest {
         ArgumentCaptor<NotificationIntent> intent = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(intent.capture());
         assertThat(intent.getValue().recipientUserIds())
-                .containsExactly("connected-viewer", "offline-viewer")
+                .containsExactly("offline-viewer")
+                .doesNotContain("connected-viewer")
                 .doesNotContain("sender");
     }
 
@@ -64,9 +68,11 @@ class ChatPushNotificationServiceTest {
     void doesNotCreateNotificationsForSystemChatMessages() {
         UsersRepository usersRepository = org.mockito.Mockito.mock(UsersRepository.class);
         NotificationOutboxService notificationOutboxService = org.mockito.Mockito.mock(NotificationOutboxService.class);
+        ChatWebSocketSessionRegistry sessionRegistry = org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         ChatPushNotificationService service = new ChatPushNotificationService(
                 usersRepository,
-                notificationOutboxService);
+                notificationOutboxService,
+                sessionRegistry);
         Chat chat = new Chat();
         chat.setChatId("chat-1");
         chat.setOwnerUserId("admin");

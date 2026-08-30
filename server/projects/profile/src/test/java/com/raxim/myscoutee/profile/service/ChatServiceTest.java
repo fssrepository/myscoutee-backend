@@ -44,6 +44,8 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -144,10 +146,47 @@ class ChatServiceTest {
     }
 
     @Test
+    void syncChatHeaderReturnsTheCurrentPersistedListRowState() {
+        Chat viewerChat = chat("chat-1", "viewer", 3, "2026-08-30T05:15:00Z", "groupSubEvent");
+        viewerChat.setRevision(42L);
+        viewerChat.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
+        viewerChat.setLastMessage("Latest group message");
+        viewerChat.setLastSenderId("sender");
+        viewerChat.setContextStartAtIso("2026-08-30T06:00:00Z");
+        viewerChat.setContextEndAtIso("2026-08-30T07:30:00Z");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.queryMenuCounters("viewer")).thenReturn(new UserMenuCountersDto(
+                0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserChatCountersDto(3, 0, 0, 3, 0, 0),
+                null, null, null, 0, 0, 0));
+        when(chatsRepository.findByOwnerUserIdAndChatId("viewer", "chat-1"))
+                .thenReturn(Optional.of(viewerChat));
+
+        var unchanged = service.syncChatHeader("chat-1", "viewer", 42L);
+        var changed = service.syncChatHeader("chat-1", "viewer", 41L);
+
+        assertThat(unchanged.changed()).isFalse();
+        assertThat(changed.changed()).isTrue();
+        assertThat(changed.revision()).isEqualTo(42L);
+        assertThat(changed.ownerStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        assertThat(changed.unread()).isEqualTo(3);
+        assertThat(changed.lastMessage()).isEqualTo("Latest group message");
+        assertThat(changed.lastSenderId()).isEqualTo("sender");
+        assertThat(changed.dateIso()).isEqualTo("2026-08-30T05:15:00Z");
+        assertThat(changed.contextStartAtIso()).isEqualTo("2026-08-30T06:00:00Z");
+        assertThat(changed.contextEndAtIso()).isEqualTo("2026-08-30T07:30:00Z");
+        assertThat(changed.chats()).isEqualTo(3);
+        assertThat(changed.chatCounters().group()).isEqualTo(3);
+    }
+
+    @Test
     void ensureMainEventChatCreatesOneSystemChannelViewForEveryRoomMember() {
         ActivityEvent room = new ActivityEvent();
         room.setSourceId("random-room:event-1:stage-1:room-1");
         room.setTitle("Random Room R1");
+        room.setStartAtIso("2026-03-01T09:00:00Z");
+        room.setEndAtIso("2026-03-01T10:00:00Z");
         List<Chat> persisted = new ArrayList<>();
         when(chatsRepository.findByChatId(room.getSourceId()))
                 .thenReturn(List.of())
@@ -170,6 +209,8 @@ class ChatServiceTest {
             assertThat(chat.getTitle()).isEqualTo("Random Room R1");
             assertThat(chat.getAvatar()).isEqualTo("SY");
             assertThat(chat.getMemberIds()).containsExactly("user-1", "user-2");
+            assertThat(chat.getContextStartAtIso()).isEqualTo(room.getStartAtIso());
+            assertThat(chat.getContextEndAtIso()).isEqualTo(room.getEndAtIso());
         });
         assertThat(persisted).extracting(Chat::getOwnerUserId)
                 .containsExactly("user-1", "user-2");
@@ -292,7 +333,12 @@ class ChatServiceTest {
             assertThat(message.getText()).contains("automatically generated room");
         });
         verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
-        verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
+        ArgumentCaptor<Update> chatUpdates = ArgumentCaptor.forClass(Update.class);
+        verify(bulkOperations, times(2)).updateOne(any(Query.class), chatUpdates.capture());
+        assertThat(chatUpdates.getAllValues()).allSatisfy(update -> {
+            Document increments = update.getUpdateObject().get("$inc", Document.class);
+            assertThat(((Number) increments.get("revision")).longValue()).isEqualTo(1L);
+        });
         ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
         verify(userCounterBulkOperations, times(2)).updateOne(
                 any(Query.class),
@@ -318,7 +364,9 @@ class ChatServiceTest {
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        Users viewer = user("viewer", "Viewer User", "VU");
+        viewer.setImages(List.of("/images/profiles/viewer/small.webp"));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
         when(mongoTemplate.updateMulti(any(Query.class), any(), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(4L, 4L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -328,8 +376,69 @@ class ChatServiceTest {
         assertThat(result.read()).isNotNull();
         assertThat(result.read().unread()).isZero();
         assertThat(result.read().messageIds()).containsExactly("m1");
-        verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat -> chat.getUnread() == 0));
+        assertThat(result.read().userImageUrl()).isEqualTo("/images/profiles/viewer/small.webp");
+        verify(chatStreamPublisher).publish(org.mockito.ArgumentMatchers.argThat(event ->
+                event != null
+                        && "read".equals(event.type())
+                        && "chat-1".equals(event.chatId())
+                        && "viewer".equals(event.senderId())
+                        && event.messageIds().equals(List.of("m1"))));
+        verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat ->
+                chat.getUnread() == 0 && chat.getRevision() > viewerChat.getRevision()));
         verify(mongoTemplate).updateMulti(any(Query.class), any(), eq(ChatMessage.class));
+    }
+
+    @Test
+    void openingOlderMessagePageAddsReaderWithAtomicMongoUpdate() {
+        Chat viewerChat = chat("chat-1", "viewer", 1, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(unreadMessage));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 15, "15");
+
+        assertThat(result.read()).isNotNull();
+        assertThat(result.read().messageIds()).containsExactly("m1");
+        assertThat(result.items().getFirst().readBy())
+                .extracting(reader -> reader.id())
+                .contains("viewer", "someone-else");
+        verify(mongoTemplate).updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void reopeningDeletedMessageDoesNotRecreateReadReceipts() {
+        Chat viewerChat = chat("chat-1", "viewer", 0, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage deletedMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
+        deletedMessage.setDeletedAtIso("2026-05-26T08:01:00Z");
+        deletedMessage.setReadBy(List.of());
+        deletedMessage.refreshMessageSearchFields();
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(deletedMessage));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
+
+        assertThat(result.read()).isNull();
+        assertThat(result.items().getFirst().readBy()).isEmpty();
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
     }
 
     @Test

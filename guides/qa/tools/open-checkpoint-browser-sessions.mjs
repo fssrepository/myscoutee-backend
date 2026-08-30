@@ -84,7 +84,10 @@ try {
     const geolocationPermission = normalizeGeolocationPermission(
       session.geolocationPermission ?? checkpoint.geolocationPermission ?? 'granted'
     );
-    await prepareChromeProfilePreferences(userDataDirectory, geolocationPermission);
+    const microphonePermission = normalizeMicrophonePermission(
+      session.microphonePermission ?? checkpoint.microphonePermission ?? 'prompt'
+    );
+    await prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission);
     const column = index % columns;
     const row = Math.floor(index / columns);
     const position = {
@@ -94,7 +97,7 @@ try {
       height: windowHeight
     };
 
-    const browser = spawn(chromeBinary, [
+    const browserArguments = [
       `--user-data-dir=${userDataDirectory}`,
       '--remote-debugging-port=0',
       '--no-first-run',
@@ -105,8 +108,10 @@ try {
       '--ozone-platform=x11',
       `--window-position=${position.x},${position.y}`,
       `--window-size=${position.width},${position.height}`,
+      ...(session.fakeMediaStream === true ? ['--use-fake-device-for-media-stream'] : []),
       'about:blank'
-    ], {
+    ];
+    const browser = spawn(chromeBinary, browserArguments, {
       detached: true,
       stdio: 'ignore'
     });
@@ -119,6 +124,8 @@ try {
       userId: session.userId,
       geolocation,
       geolocationPermission,
+      microphonePermission,
+      fakeMediaStream: session.fakeMediaStream === true,
       pid: browser.pid,
       userDataDirectory,
       position
@@ -135,6 +142,7 @@ try {
       geolocationPermission,
       userDataDirectory
     );
+    await prepareBrowserMicrophone(port, entryUrl, microphonePermission);
     if (sessionKind === 'anonymous') {
       await clearManagedSession(port, storageScope);
       if (bootstrapEntryConsent) {
@@ -147,7 +155,12 @@ try {
         await acceptEntryConsent(port, storageScope, targetUrl);
       }
       await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
-      await dismissExplanationGuide(port, storageScope);
+      const autoDismissExplanationGuide = session.autoDismissExplanationGuide
+        ?? checkpoint.autoDismissExplanationGuide
+        ?? true;
+      if (autoDismissExplanationGuide) {
+        await dismissExplanationGuide(port, storageScope);
+      }
     }
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);
@@ -172,6 +185,14 @@ function normalizeGeolocationPermission(raw) {
   throw new Error(`Invalid geolocation permission '${value}' in ${checkpointId}`);
 }
 
+function normalizeMicrophonePermission(raw) {
+  const value = `${raw ?? ''}`.trim().toLowerCase();
+  if (value === 'granted' || value === 'denied' || value === 'prompt') {
+    return value;
+  }
+  throw new Error(`Invalid microphone permission '${value}' in ${checkpointId}`);
+}
+
 function validateSession(session) {
   const sessionKind = `${session?.sessionKind ?? 'demo'}`.trim().toLowerCase();
   const validKind = sessionKind === 'demo' || sessionKind === 'anonymous';
@@ -182,12 +203,13 @@ function validateSession(session) {
   }
 }
 
-async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission) {
+async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission) {
   const defaultProfileDirectory = path.join(userDataDirectory, 'Default');
   await mkdir(defaultProfileDirectory, { recursive: true });
-  const defaultContentSettings = geolocationPermission === 'prompt'
-    ? {}
-    : { geolocation: geolocationPermission === 'granted' ? 1 : 2 };
+  const defaultContentSettings = {
+    ...(geolocationPermission === 'prompt' ? {} : { geolocation: geolocationPermission === 'granted' ? 1 : 2 }),
+    ...(microphonePermission === 'prompt' ? {} : { media_stream_mic: microphonePermission === 'granted' ? 1 : 2 })
+  };
   await writeFile(path.join(defaultProfileDirectory, 'Preferences'), `${JSON.stringify({
     profile: {
       exit_type: 'Normal',
@@ -195,6 +217,24 @@ async function prepareChromeProfilePreferences(userDataDirectory, geolocationPer
       default_content_setting_values: defaultContentSettings
     }
   })}\n`);
+}
+
+async function prepareBrowserMicrophone(port, entryPageUrl, permission) {
+  if (permission === 'prompt') {
+    return;
+  }
+  const origin = new URL(entryPageUrl).origin;
+  const browser = await jsonRequest(`http://127.0.0.1:${port}/json/version`);
+  if (!browser.webSocketDebuggerUrl) {
+    throw new Error(`Chrome microphone permission target is unavailable on port ${port}.`);
+  }
+  for (const allowedOrigin of new Set([origin, origin.replace('http:', 'https:')])) {
+    await cdpCommand(browser.webSocketDebuggerUrl, 'Browser.setPermission', {
+      origin: allowedOrigin,
+      permission: { name: 'microphone' },
+      setting: permission
+    });
+  }
 }
 
 async function closePreviousCheckpointSessions(filePath) {

@@ -211,7 +211,11 @@ public class ActivitiesEventLeaderboardService {
         return tournamentGroupsState(normalizedEventId, event, userId);
     }
 
-    public List<EventTournamentGroupDto> queryTournamentStageGroups(String eventId, String slotId, String stageId) {
+    public List<EventTournamentGroupDto> queryTournamentStageGroups(
+            String eventId,
+            String slotId,
+            String stageId,
+            String userId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedSlotId = normalizeId(slotId);
         String normalizedStageId = normalizeId(stageId);
@@ -225,7 +229,14 @@ public class ActivitiesEventLeaderboardService {
             event = resolveCanonicalEvent(normalizedEventId);
             subEvent = resolveSubEvent(event, normalizedStageId);
         }
-        return tournamentGroups(ownerSourceId, event, subEvent);
+        return tournamentGroups(ownerSourceId, event, subEvent, userId);
+    }
+
+    public List<EventTournamentGroupDto> queryTournamentStageGroups(
+            String eventId,
+            String slotId,
+            String stageId) {
+        return queryTournamentStageGroups(eventId, slotId, stageId, null);
     }
 
     public EventTournamentGroupsStateDto saveTournamentGroup(EventTournamentGroupUpsertRequestDto request) {
@@ -400,10 +411,10 @@ public class ActivitiesEventLeaderboardService {
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),
                 canManageTournamentGroups(userId, event),
-                tournamentStages(normalizedOwnerId, event));
+                tournamentStages(normalizedOwnerId, event, userId));
     }
 
-    private List<EventTournamentStageDto> tournamentStages(String ownerId, ActivityEvent event) {
+    private List<EventTournamentStageDto> tournamentStages(String ownerId, ActivityEvent event, String userId) {
         List<SubEventItem> subEvents = runtimeStageSequence(event);
         List<EventTournamentStageDto> stages = new ArrayList<>();
         for (int index = 0; index < subEvents.size(); index += 1) {
@@ -422,12 +433,16 @@ public class ActivitiesEventLeaderboardService {
                     safeText(subEvent.stageStatus()),
                     normalizeLeaderboardType(subEvent.tournamentLeaderboardType()),
                     Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
-                    tournamentGroups(ownerId, event, subEvent)));
+                    tournamentGroups(ownerId, event, subEvent, userId)));
         }
         return stages;
     }
 
-    private List<EventTournamentGroupDto> tournamentGroups(String ownerId, ActivityEvent event, SubEventItem subEvent) {
+    private List<EventTournamentGroupDto> tournamentGroups(
+            String ownerId,
+            ActivityEvent event,
+            SubEventItem subEvent,
+            String userId) {
         List<SubEventGroupItemDto> groups = resolveGroups(ownerId, event, subEvent);
         String normalizedSubEventId = normalizeId(subEvent == null ? null : subEvent.id());
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> randomRoomSnapshots =
@@ -477,7 +492,7 @@ public class ActivitiesEventLeaderboardService {
                     membership.pending(),
                     membership.ownerType(),
                     membership.ownerId(),
-                    groupResourceMetrics(stageRuntime, groupId)));
+                    groupResourceMetrics(stageRuntime, groupId, userId)));
         }
         return result;
     }
@@ -521,7 +536,8 @@ public class ActivitiesEventLeaderboardService {
 
     private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
             ActivitySubEventStageRuntime runtime,
-            String groupId) {
+            String groupId,
+            String userId) {
         Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> byGroup = runtime == null
                 || runtime.getGroupResourceMetricsByAssetOwnerId() == null
                 ? Map.of()
@@ -544,12 +560,18 @@ public class ActivitiesEventLeaderboardService {
                 totals[3] += safeCount(metric.capacityMax());
             }
         }
+        Map<String, String> readAtByType = runtime == null
+                || runtime.getGroupResourceReadAtByUserId() == null
+                ? Map.of()
+                : runtime.getGroupResourceReadAtByUserId()
+                        .getOrDefault(normalizeId(groupId), Map.of())
+                        .getOrDefault(normalizeId(userId), Map.of());
         Map<String, EventTournamentResourceMetricDto> result = new LinkedHashMap<>();
         for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
             int[] totals = entry.getValue();
             result.put(entry.getKey(), new EventTournamentResourceMetricDto(
                     totals[0],
-                    totals[1],
+                    readAtByType.containsKey(entry.getKey()) ? 0 : totals[1],
                     totals[2],
                     Math.max(totals[2], totals[3])));
         }
@@ -581,7 +603,7 @@ public class ActivitiesEventLeaderboardService {
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
         memberStatesById.forEach((memberId, state) -> {
             if (StringUtils.hasText(state.name())) {
-                memberNameById.putIfAbsent(memberId, state.name());
+                memberNameById.put(memberId, state.name());
             }
         });
 

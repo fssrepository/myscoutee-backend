@@ -19,6 +19,10 @@ public class ActivitySubEventStageRuntimeMapper {
     private static final String STATUS_DELETED = "D";
 
     public ActivitySubEventStageRuntimeStateDto toDto(ActivitySubEventStageRuntime record) {
+        return toDto(record, null);
+    }
+
+    public ActivitySubEventStageRuntimeStateDto toDto(ActivitySubEventStageRuntime record, String viewerUserId) {
         if (record == null || STATUS_DELETED.equals(safeText(record.getStatus()))) {
             return null;
         }
@@ -31,7 +35,8 @@ public class ActivitySubEventStageRuntimeMapper {
                 safeText(record.getStageFinalizedAt()),
                 safeText(record.getStageFinalizedByUserId()),
                 normalizeCount(record.getStageResultRevision()),
-                normalizeCount(record.getGroupsCount()));
+                normalizeCount(record.getGroupsCount()),
+                resourcePendingRead(record, viewerUserId));
     }
 
     public ActivitySubEventStageRuntime toRecord(
@@ -97,6 +102,8 @@ public class ActivitySubEventStageRuntimeMapper {
         clone.setGroupsCount(source.getGroupsCount());
         clone.setGroupResourceMetricsByAssetOwnerId(cloneGroupResourceMetrics(
                 source.getGroupResourceMetricsByAssetOwnerId()));
+        clone.setGroupResourceReadAtByUserId(cloneGroupResourceReadAt(
+                source.getGroupResourceReadAtByUserId()));
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -116,6 +123,52 @@ public class ActivitySubEventStageRuntimeMapper {
                         ownerEntry.getValue() == null ? Map.of() : ownerEntry.getValue()));
             }
             result.put(groupEntry.getKey(), byAssetOwner);
+        }
+        return result;
+    }
+
+    public int resourcePendingRead(ActivitySubEventStageRuntime record, String viewerUserId) {
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        if (record == null || !StringUtils.hasText(normalizedViewerUserId)) {
+            return 0;
+        }
+        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> metricsByGroup =
+                record.getGroupResourceMetricsByAssetOwnerId() == null
+                        ? Map.of()
+                        : record.getGroupResourceMetricsByAssetOwnerId();
+        Map<String, Map<String, Map<String, String>>> readsByGroup =
+                record.getGroupResourceReadAtByUserId() == null
+                        ? Map.of()
+                        : record.getGroupResourceReadAtByUserId();
+        int total = 0;
+        for (Map.Entry<String, Map<String, Map<String, String>>> groupEntry : readsByGroup.entrySet()) {
+            Map<String, String> readAtByType = groupEntry.getValue() == null
+                    ? Map.of()
+                    : groupEntry.getValue().getOrDefault(normalizedViewerUserId, Map.of());
+            Map<String, Map<String, GroupResourceMetricRecord>> metricsByOwner =
+                    metricsByGroup.getOrDefault(groupEntry.getKey(), Map.of());
+            for (String resourceType : readAtByType.keySet()) {
+                for (Map<String, GroupResourceMetricRecord> metricsByType : metricsByOwner.values()) {
+                    GroupResourceMetricRecord metric = metricsByType == null ? null : metricsByType.get(resourceType);
+                    total = Math.addExact(total, normalizeCount(metric == null ? null : metric.pending()));
+                }
+            }
+        }
+        return total;
+    }
+
+    private Map<String, Map<String, Map<String, String>>> cloneGroupResourceReadAt(
+            Map<String, Map<String, Map<String, String>>> source) {
+        Map<String, Map<String, Map<String, String>>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<String, Map<String, String>>> groupEntry :
+                (source == null ? Map.<String, Map<String, Map<String, String>>>of() : source).entrySet()) {
+            Map<String, Map<String, String>> byUser = new LinkedHashMap<>();
+            for (Map.Entry<String, Map<String, String>> userEntry :
+                    (groupEntry.getValue() == null ? Map.<String, Map<String, String>>of() : groupEntry.getValue()).entrySet()) {
+                byUser.put(userEntry.getKey(), new LinkedHashMap<>(
+                        userEntry.getValue() == null ? Map.of() : userEntry.getValue()));
+            }
+            result.put(groupEntry.getKey(), byUser);
         }
         return result;
     }

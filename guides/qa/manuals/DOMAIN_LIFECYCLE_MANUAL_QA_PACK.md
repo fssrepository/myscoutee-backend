@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-08-06
+Last updated: 2026-08-30
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -40,6 +40,7 @@ the same prerequisite without depending on an earlier human action.
 | Producer | Persisted output | Direct UI projection | Automatic consumers | Required follow-up cases |
 | --- | --- | --- | --- | --- |
 | Event Editor draft save | Canonical draft event, `event.synced` telemetry, event recompute task | Hosting/Draft event card and reopened editor | Statistics worker, Monitoring projection, affinity recompute worker | `EVENT-EDITOR-001`, `GRAPH-006` |
+| Childless Event runtime materialization | One persisted `MAIN_EVENT` runtime item referencing the canonical Event; no synthetic sub-event definition or `:default` identity | View Event shows one main-event runtime card instead of an empty Sub-events list | None on View/reload; only the owning Event save may write or enqueue normal Event recompute | `EVENT-RUNTIME-001` |
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
@@ -72,6 +73,9 @@ The principal checkpoint chains are:
 - `EVENT-EDITOR-001` -> `EVENT-EDITOR-002` -> `EVENT-PUBLISH-CHAT-001` -> `EVENT-LIFE-001` ->
   `EVENT-LIFE-002` -> `EVENT-LIFE-003`: draft, publish, unpublish, trash and
   restore.
+- `EVENT-RUNTIME-001` is an isolated zero-child Event contract. It proves the
+  write-owned main-event runtime item and its read-only View Event projection;
+  it does not reuse or reopen the already-closed `EVENT-EDITOR-001` evidence.
 - `EVENT-VISIBILITY-001` continues only after `EVENT-TICKET-007` has completed:
   Casey changes the same event to Friends Only, then one external non-member
   friend and one external non-member non-friend compare Explore. The ticket
@@ -724,7 +728,9 @@ Execution evidence on 2026-08-04:
 - Reopen the editor and verify the definition did not flatten into a casual
   event or lose stage/group configuration.
 - Verify runtime group counts and stage rows correspond to the saved
-  definition before any automatic grouping occurs.
+  definition before any automatic grouping occurs. Because real stage
+  definitions exist, the runtime list must not add a duplicate `MAIN_EVENT`
+  card or synthetic `:default` child.
 - Start the visible tournament action or arm only the documented persisted job
   schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
@@ -736,6 +742,44 @@ Execution evidence on 2026-08-04:
   while a no-op reopen/save does not duplicate user-visible effects.
 - Verify removed definitions are no longer presented as active resources,
   groups or reminders.
+
+### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
+
+- Start from one isolated normal Event definition with Slots Off and Sub Events
+  Off. Before the owning Save, require no runtime item for the new identity.
+- Save once through the normal Event write path. The write must persist exactly
+  one runtime item with `runtimeKind=MAIN_EVENT`, the canonical `eventId` and
+  runtime owner, and `subEventId=null`. It must not insert a fake sub-event
+  definition, copy the full Event into a second canonical Event document or
+  create a synthetic `:default` child identity.
+- Open **View Event** as the host. The runtime query must return that persisted
+  item and the UI must show exactly one card using the main Event title,
+  timeframe and location. The Sub-events surface must not show `No items`, an
+  empty child section or a second copy of the same Event.
+- Share that Event into one accepted Event/Group chat, then open the shared
+  Event card as a participant. It must enter the same canonical **View Event ->
+  Sub Events** runtime surface, not a chat-specific read-only form. The same
+  persisted `MAIN_EVENT` card, title, timeframe, location, member boundary and
+  available Event actions must be visible; opening, closing and reopening the
+  shared card must remain read-only and must not create a second runtime item.
+- The card is main-Event scoped: the Event-level Members action remains
+  available and shows the canonical creator/Admin once with matching accepted,
+  pending and capacity counts. Other normal Event-level actions and configured
+  resources remain available under the real Event/runtime owner identity.
+  Tournament-only Groups, stage, Finalize and leaderboard actions are absent.
+- Every badge is state-driven. With the clean baseline there is no red counter;
+  a pending member or resource may add only its documented counter and must not
+  manufacture a generic Sub-events count.
+- Close and reopen View Event, switch Upcoming/Past where applicable and reload
+  once. All reads are `X`: the same one runtime item/card remains, and no Event,
+  runtime, member, resource, task, outbox, chat or notification write is added.
+- Independent persisted oracle: one canonical Event, one `MAIN_EVENT` runtime
+  item, zero sub-event definitions/items and zero generated slots. Query and UI
+  identities/counts must match those records exactly.
+- Control coverage stays in the existing cases: `EVENT-EDITOR-004` proves that
+  real stage definitions do not also receive a `MAIN_EVENT` duplicate, while
+  `EVENT-SLOT-001` proves each real occurrence/definition is returned without a
+  parent main-event card being copied into every slot.
 
 ## Recurring slot and Sub-event list checkpoints
 
@@ -749,8 +793,9 @@ Execution evidence on 2026-08-04:
   same parent and template while exposing its own slot source identity and
   occurrence timeframe.
 - Every occurrence must contain the two definitions once and in the saved
-  order. Reopen, paging, calendar navigation and Upcoming/Past switching are
-  read-only.
+  order. No occurrence may contain an additional `MAIN_EVENT` card or a
+  synthetic `:default` child. Reopen, paging, calendar navigation and
+  Upcoming/Past switching are read-only.
 
 ### `EVENT-SLOT-002` — future occurrence operation gating
 
@@ -1942,106 +1987,251 @@ Execution evidence in progress on 2026-08-14:
 
 ## Chat functional coverage
 
-The authorization checkpoint above is only the membership/privacy boundary;
-it is not a substitute for the chat product surface. The following CP13 cases
-are deliberately short and sequential. Each case owns one visible transition
-and one persisted oracle. Reuse one controlled accepted-member chat where
-possible, but reset only the rows owned by the next case. The original
-Tournament lifecycle evidence remains closed at 9/9, but its coverage audit
-added four unexecuted member/DQ/resource rows, while the existing partially
-verified Tournament worker row still needs its Monitoring/browser oracle; the
-domain is therefore reopened at 9/14. `CHAT-LIST-001` remains the already-staged live boundary; after that
-single row closes, generated priority returns to Tournament before the rest of
-Chat.
+Chat is executed as six user journeys, not as one-row microtests. Each journey
+is presented to the user in one block: purpose, complete click sequence, every
+visible counter/state assertion, and one independent persisted final oracle.
+The former list/history/send/counter/read/reconnect/typing and individual
+message-action rows below are retained only as mapped assertions inside these
+owners; they are not independently scheduled checkpoints.
 
-### List, history and transport
+- `CHAT-AUTH-001` — access and privacy boundary (PASS/CLOSED).
+- `CHAT-FLOW-001` — everyday conversation, history, unread/read and recovery.
+- `CHAT-ACTIONS-001` — reply, reaction, pin, edit and unsend lifecycle.
+- `CHAT-CONTENT-001` — image, voice, poll and shared-card conversation.
+- `CHAT-GOVERNANCE-001` — canonical members and moderation intake.
+- `CHAT-PUSH-001` — background device delivery and deep-link reconciliation.
 
-- `CHAT-LIST-001`: load one known main-event, group, service and support chat,
-  switch the available contexts and sort once. Exact row IDs, context totals,
-  date order and compact header/status must survive close/reopen with no write.
-  - Prepared on `2026-08-17` for Casey with four isolated rows and unread
-    counters `All=4`, `Event=1`, `Sub-event=0`, `Group=1`, `Service=1`,
-    `App Support=1`.
-  - The authenticated Java page oracle already passed exact descending and
-    ascending IDs, exact per-context totals, one unread per row and stable
-    `ownerStatus=A`/revision 1. The post-read Mongo oracle is byte-identical;
-    an apparent first failure was an oracle-only BSON wrapper normalization
-    defect, while direct EJSON section comparison proved no product write.
-  - Remaining manual branch: open Chats, verify All plus each populated
-    context, close/reopen the popup and confirm the same All order/counters.
-    Do not open a thread, because read acknowledgement belongs to
-    `CHAT-READ-001`.
-- `CHAT-HISTORY-001`: open one thread containing 18 controlled messages. The
-  latest window and one older page must merge in reverse-thread order without
-  a gap or duplicate; day markers and exact IDs must survive reopen.
-- `CHAT-SEND-001`: send one unique text while another accepted participant
-  keeps the thread open. The sender gets one immediate pending/confirmed row,
-  the recipient gets the same persisted message once, and client/server echo
-  reconciliation must not duplicate it.
-- `CHAT-RECONNECT-001`: disconnect only the recipient transport, send one
-  message, then restore that connection. Catch-up must deliver the persisted
-  ID once and reconcile unread state without a browser reload.
-- `CHAT-TYPING-001`: produce one brief typing signal, stop it, then also prove
-  the remote TTL fallback. Only other accepted participants may see it; no
-  message, notification or counter may be written.
+### `CHAT-FLOW-001` — everyday conversation and recovery
 
-### Unread and read acknowledgement
+Purpose: prove in one three-actor conversation that discovery, history,
+realtime delivery, unread/read ownership and transport recovery form one
+consistent lifecycle.
 
-- `CHAT-COUNTER-001`: send one message while the recipient Chat surface is
-  closed, then open only the list. Stored Chats/All/context counters, menu
-  badges and the row badge must all be `+1`; the sender remains unchanged and
-  list loading alone does not clear the value.
-- `CHAT-READ-001`: open the one-unread thread. Recipient counters change
-  exactly `1 -> 0`, one persisted reader identity appears, and the sender sees
-  one matching reader avatar without a new notification or duplicate after
-  reopen.
+- Start with Casey, Nova and Riley accepted in one controlled Event/Group chat,
+  plus known Event, Group, Service and App Support list rows. The group thread
+  contains 18 deterministic historical messages spanning two day markers.
+- Before opening a thread, inspect All and every context once. Exact rows,
+  counters and descending order must survive popup close/reopen, and list reads
+  must write nothing. Then open the Group thread, load the older page once and
+  prove all 18 IDs appear exactly once in chronological thread order.
+- Keep Nova's thread open, keep Riley's Chat closed, and let Casey type then
+  send one unique message. Nova sees transient typing and one live message with
+  no unread or notification increment; Riley receives exactly one
+  Chats/All/Group/row increment and one notification. If Riley's Chat list is
+  already open while the Group thread is closed, its existing list poll must,
+  without closing or reopening the popup, replace that Group row with the same
+  current state a fresh list query returns: unread `1`, Casey as last sender,
+  the exact message summary and timestamp, and the resulting date/relevance
+  order. Polling or opening only Riley's list does not clear the unread state.
+- Open Riley's thread: the same message is acknowledged exactly once, all four
+  Riley counters return to zero and Casey sees one Riley reader identity.
+- Close Riley's thread and hard-reload the isolated browsers, leave Riley's
+  Chat list open with its Group thread closed, then send the second Casey
+  message. The recreated transport and existing list poll expose that persisted
+  ID once without a popup reopen; opening the Group thread clears the unread
+  once. Counters and history contain neither a gap nor a duplicate. Close/reopen
+  all three views and repeat the exact row/history/counter comparison.
+- Final oracle owns the former `CHAT-LIST-001`, `CHAT-HISTORY-001`,
+  `CHAT-SEND-001`, `CHAT-COUNTER-001`, `CHAT-READ-001`,
+  `CHAT-RECONNECT-001` and `CHAT-TYPING-001` assertions together: exact
+  message IDs/client IDs, per-user unread/read state, reader identities,
+  context totals, history cursors, active-reader notification suppression and
+  zero undocumented notifications.
+- Retained partial evidence from 2026-08-30: the isolated list phase already
+  proved All=4, Event=1, Sub-event=0, Group=1, Service=1 and App Support=1,
+  exact ascending/descending IDs, stable ownerStatus/revision and a
+  byte-identical no-write close/reopen. It is not a standalone test PASS.
+- **PASS/CLOSED on 2026-08-30:** the consolidated terminal oracle found the 18
+  deterministic history rows plus exactly two Casey messages, with Nova and
+  Riley recorded once as readers of both. All three Group owner copies retained
+  the second message summary and zero unread; their write-side revisions were
+  Casey `2`, Nova `3`, Riley `3`. Chat counters were zero for every actor.
+  Notification persistence contained exactly two Riley-only outboxes and two
+  Riley inbox rows, Casey/Nova notification deltas were zero and Riley was
+  exactly `+2`. The user also confirmed the already-open Riley list converged
+  without reopen. During this journey the owning defects were corrected for
+  live read publication, active-viewer notification suppression and complete
+  poll-driven row-state reconciliation through the Signal Store.
+- **Counter-source regression replay on 2026-08-30:** after separating the
+  active Activities tab's list-owned aggregate from the two inactive tabs'
+  side-menu snapshot, the user accepted the three-window UI behavior and the
+  repeated terminal oracle again passed all eight sections: exactly 20 messages,
+  the two new Casey messages once each, exact final row summaries, all Chat
+  counters cleared, exact Riley-only outbox/inbox and notification counters,
+  and unchanged fixture membership. The fixture was reset after capture. The
+  persisted oracle does not independently reconstruct the transient unchanged
+  Rates/Events badges; that assertion remains the user's live UI observation.
 
-### Message lifecycle and interaction
+### `CHAT-ACTIONS-001` — one message's complete action lifecycle
 
-- `CHAT-REPLY-001`: reply once to a controlled older message. Both clients
-  retain the immutable source ID/preview, and selecting the preview locates
-  the source even when the older history page first has to load.
-- `CHAT-EDIT-001`: edit one own text message and try the same mutation as a
-  different participant. The same ID gains one edit timestamp and live Edited
-  presentation; the non-owner is denied and no new message/unread is created.
-- `CHAT-DELETE-001`: unsend one own message and try as a non-owner. The same ID
-  becomes one tombstone, its payload/reply/reactions/readers/pin clear on every
-  client and reload, and surrounding history remains intact.
-- `CHAT-REACTION-001`: add a reaction from two users, change one and remove
-  one. There is at most one reaction per user, summary/detail identities agree
-  live and after reopen, and unread/notification counters do not change.
-- `CHAT-PIN-001`: pin one message, open Pinned, select its source and unpin.
-  One pinned ID/actor is persisted, navigation focuses the source, and the
-  terminal pinned list is empty without unrelated deltas.
+Purpose: prove every ordinary message mutation against the same identities and
+surrounding history instead of replaying five independent fixtures.
 
-### Attachments and shared cards
+- In one existing three-user thread, Casey replies to an older message; the
+  immutable source preview and source jump work even when the older page must
+  load. Nova and Riley each react, Nova changes reaction and Riley removes it.
+- Casey pins the reply, opens Pinned and navigates back to the source. Casey
+  edits the same message once; Nova's non-owner edit is server-denied without a
+  new message, unread or notification.
+- Casey unpins and unsends the message; Nova's non-owner unsend is denied. The
+  same message ID becomes one tombstone and clears text, attachment, reply,
+  reactions, readers and pin while surrounding history remains intact.
+- Reopen all clients and compare the single persisted message history plus
+  mutation audit. This journey owns the former `CHAT-REPLY-001`,
+  `CHAT-EDIT-001`, `CHAT-DELETE-001`, `CHAT-REACTION-001` and
+  `CHAT-PIN-001` assertions.
+- **PASS/CLOSED on 2026-08-30:** the user completed the consolidated
+  three-window journey. The terminal oracle retained exactly the original 18
+  surrounding messages plus one Casey message whose same ID became a single
+  tombstone; text, reply, edit marker, pin, reactions, attachments and search
+  fields were cleared, and memberships were unchanged. Nova's authenticated
+  non-owner Edit and Unsend both returned HTTP `403`. The observed one-reader
+  reopen exposed a real lost-update window: the older/live receipt path saved
+  stale whole message documents, and deleted tombstones could acquire readers
+  again. The write path now uses guarded atomic Mongo `$addToSet` updates and
+  excludes deleted messages. A simultaneous Nova/Riley websocket replay
+  persisted both reader IDs, reopen retained both, and the tombstone reader
+  list remained empty. A final three-window UI replay also exposed that the
+  live read receipt omitted the reader image URL and therefore rendered
+  initials until reopen. The receipt contract now carries the canonical
+  profile image through backend HTTP/websocket and frontend HTTP/local paths;
+  the user confirmed both real profile images immediately and after reopen,
+  while a read-only Mongo check retained both reader IDs and zero unread/chat
+  counters for every actor. This domain has no separate mutation-audit collection;
+  transient reply/reaction/pin/edit transitions are the accepted three-client
+  UI evidence, while the final document and denial requests are persisted/API
+  evidence.
 
-- `CHAT-IMAGE-001`: send one controlled image and open its preview. Both
-  clients use one canonical attachment identity/URL, the preview is readable,
-  and reload does not upload or render a duplicate.
-- `CHAT-VOICE-001`: record a few-second clip, review, send and play it once as
-  the recipient. One canonical clip survives reopen; cancel or denied recorder
-  permission creates neither a message nor orphan media.
-- `CHAT-POLL-001`: create one two-option poll, vote as two users and change one
-  vote. Totals progress `0 -> 1 -> 2` and remain `2` after the move; bars,
-  voter identities and persisted attachment state agree.
-- `CHAT-CARD-001`: send one event card and one asset or link card, then open
-  each. Canonical target IDs navigate through the shared target flow, while a
-  removed or denied target becomes unavailable without exposing its data.
+### `CHAT-CONTENT-001` — rich-content conversation
 
-### Membership, moderation intake and device delivery
+Purpose: prove that all supported content travels through the same canonical
+chat/message lifecycle and remains usable by another participant.
 
-- `CHAT-MEMBERS-001`: open the chat Member list and load one extra page only
-  when needed. IDs, roles and avatars equal canonical accepted membership;
-  pending/left users are absent, server-denied and no read causes a write.
-- `CHAT-REPORT-001`: report one participant message once and submit the same
-  report again. Exactly one Admin review identity contains the reporter,
-  chat/message context and no unrelated history; Admin resolution remains an
-  Administration-domain case.
-- `CHAT-PUSH-001`: background or close one accepted recipient app, send one
-  participant message and tap the push. Exactly one recipient push opens the
-  exact chat/message and reconciles in-app unread state; sender and system
-  messages are explicit no-push controls.
+- In one accepted Group thread, Casey sends one controlled image, one
+  few-second voice clip, one two-option poll, one Event card and one Asset/link
+  card. Nova observes every message live exactly once.
+- Nova opens the image preview, plays the voice clip, votes once, changes that
+  vote, and opens both available cards. The Event attachment must route to the
+  canonical **View Event -> Sub Events** surface rather than a chat-specific
+  form; this Chat checkpoint proves navigation and target identity, while
+  `EVENT-RUNTIME-001` owns the runtime-card content and persistence oracle.
+  Riley casts the second poll vote. Totals move 0 -> 1 -> 2 and stay 2 after
+  Nova changes option. Every visible voter pill must use the voter's canonical
+  profile image; initials are allowed only when that user truly has no image.
+  The poll attachment write must persist the canonical voter name, initials,
+  gender and image URL so reopen/local persistence cannot regress to initials.
+- In Asset Explore, select the highlighted whole-type option (`All Transport`),
+  require the controlled Sedan fixture to appear, select `Sedan` and require
+  the same fixture to remain as the category-filtered result, then select the
+  `SUV` subtype and require it to disappear. Return to `All Transport` and
+  share the same card. The same whole-type selector contract applies to
+  Accommodation and Supplies.
+- Open the controlled Asset card on both the mobile and desktop layouts. It
+  must open the canonical read-only Asset Editor used by Asset Explore, not
+  the legacy nested resource-asset form or a chat-specific popup. The editor
+  must fully cover the popup beneath it so only its own close action is
+  visible. Its hydrated fields must show subtitle
+  `Controlled rich-content Chat asset`, category `Sedan`, total capacity `4`
+  and quantity `1`. Because the fixture has no image, the editor's shared image
+  carousel must show its normal empty state without requesting or rendering a
+  broken image URL. No entry-point-specific inset panel, carousel override or
+  popup geometry is allowed.
+- Open the poll vote dialog on both layouts and require every answer row to
+  remain geometrically stable under hover, press and selection; poll answer
+  buttons opt out of shared scale motion so the click target never moves.
+- One denied/removed card target becomes unavailable without leaking detail.
+  One recorder-permission denial/cancel branch creates no message or orphan
+  media. Reopen the thread and require canonical attachment/target IDs, working
+  media URLs and no duplicate upload/render.
+- This journey owns the former `CHAT-IMAGE-001`, `CHAT-VOICE-001`,
+  `CHAT-POLL-001` and `CHAT-CARD-001` assertions.
+
+Result on 2026-08-30: **PASS / CLOSED**. Casey, Nova and Riley completed the
+single consolidated journey. The terminal Mongo oracle retained exactly five
+canonical content messages (image, voice, poll, Event and Asset), both Nova
+and Riley as readers, two exact South votes and canonical voter
+name/initials/gender/image presentation. The authenticated three-browser
+oracle returned identical content for every actor, HTTP 200 image/preview,
+voice and both voter-avatar media, exact All Transport/Sedan/SUV filtering,
+the unavailable-target control and zero terminal Chat/Group unread counters.
+Available Event and Asset cards opened their canonical read-only surfaces on
+the tested layouts; denied/cancelled media created no extra message, orphan or
+counter. Changing an existing poll vote is a message mutation, like a
+reaction, and intentionally does not create a new unread Chat item.
+
+### `CHAT-GOVERNANCE-001` — members and moderation intake
+
+Purpose: prove that the visible room population, access control and a reported
+message share the same canonical membership boundary.
+
+- Open Members for controlled Event and Group chats. Accepted IDs, roles and
+  avatars match the owning event/group membership; pending, left and
+  other-group users are absent and direct access is server-denied.
+- Report one accepted participant message and repeat the same submission once.
+  The reporter sees one acknowledgement; Admin sees exactly one review item
+  with reporter/chat/message/event/group context and no unrelated history.
+- Member inspection remains read-only. The report is idempotent and produces
+  only its documented review/notification writes. Admin resolution stays in
+  the Administration domain.
+- This journey owns the former `CHAT-MEMBERS-001` and
+  `CHAT-REPORT-001` assertions while `CHAT-AUTH-001` retains its already
+  closed base authorization evidence.
+
+Execution evidence (2026-08-30, PASS/CLOSED):
+
+- The replayable three-actor fixture exposed the canonical Event and Group A
+  chats to Casey, Nova and Riley. All three authenticated terminal reads
+  returned the exact four-person Event membership and three-person Group A
+  membership with persisted profile images; Lina remained pending-only,
+  Sophia remained left/denied, and Olivia was accepted only in the Event and
+  Group B controls. Every direct negative-control read returned `404`.
+- Nova submitted the same Riley message report twice. The write-side
+  deterministic identity retained exactly one unresolved report with the
+  exact Nova reporter, Riley target, Harassment reason, details, Event,
+  Group A chat and source-message identity. The three-message controlled
+  history remained unchanged and the fixture oracle found no unrelated write.
+- Casey opened the resulting Admin review and the user confirmed its reporter,
+  reason, source context, shared-source navigation and member presentation.
+  The shared `app-image-card` now owns compact portrait sizing and contain-fit
+  rendering; the same configuration fixes portrait rendering in the Event
+  Members list without a page-specific style override.
+- The independent Mongo status returned `terminal-pass` for all eight
+  persisted invariants. The authenticated browser oracle passed all twelve
+  membership, access, avatar, report-context and history assertions for all
+  three actors. Backend and frontend hot-deploy owners compiled successfully;
+  the frontend-local membership/report adapters carry the same contract but
+  were not separately executed in this run.
+
+### `CHAT-PUSH-001` — background device delivery
+
+Purpose: prove one real background delivery boundary, not general messaging
+again.
+
+- Background/close one accepted physical-device recipient, send one
+  participant message and tap the resulting push.
+- Exactly one target-only push opens the exact chat/message and reconciles the
+  in-app unread/read state. Sender self-notification, a foreground recipient
+  and one system message are explicit no-push controls.
+- Compare device UI, push tag/deep link, persisted message, notification
+  inbox/outbox and terminal counters. Physical-device evidence remains
+  mandatory.
+- Physical-device registration preflight, 2026-08-30: **permission flow PASS /
+  delivery NOT RUN**. A clean local WebAPK launch as Riley displayed the native
+  Android notification permission prompt without sending the user to Settings;
+  the user selected **Allow**, and Android retained `POST_NOTIFICATIONS` as
+  granted. No Chat fixture or message was produced. The independent post-Allow
+  oracle still found zero Riley devices/tokens. The public Firebase client
+  configuration endpoint returned `404` with the deployment-not-activated
+  reason, and the persisted deployment configuration had no active/tested
+  Firebase revision or populated public client fields. Do not manufacture a
+  frontend token fallback: activate a verified deployment Firebase revision,
+  then repeat the read-only device preflight before staging the message.
+- Execution decision, 2026-08-30: defer this delivery boundary to the external
+  `QA-EXPANSION-CP04` run. Execute it only with the production deployment on a
+  production-like VMware host, a verified active Firebase revision and the
+  physical phone. It is covered as the Chat-specific producer/control branch
+  across `OPERATOR-FIREBASE-003` and `MOBILE-PUSH-001` through
+  `MOBILE-PUSH-004`; it no longer blocks the local Core campaign.
 
 ## Event feedback and Impressions checkpoints
 
@@ -5219,8 +5409,8 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 ### `TOURNAMENT-MEMBER-002` — active participant removal
 
 - From an isolated already-started, non-blocked tournament whose persisted
-  parent `currentStage`, Qualifiers definition and Qualifiers runtime are all
-  `A`, with generated rooms and one retained score row, Remove one accepted
+  parent `currentStage` and Qualifiers runtime are both `A`, with generated
+  rooms and one retained score row, Remove one accepted
   participant from the parent event. This is explicitly after Start; no Start
   or stuck/blocked recovery belongs to this checkpoint.
 - Verify parent and generated-room active membership, room-chat authorization
@@ -5236,31 +5426,92 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   remaining room membership and every unrelated resource owner/type are
   unchanged in place and after reload.
 - Nova receives exactly one self-removal notification. Casey receives none as
-  the action actor, and Riley receives none because Riley is in Group B. This
-  checkpoint deliberately proves cross-room isolation; same-room peer delivery
-  belongs to the separate four-person `TOURNAMENT-MEMBER-003` fixture.
+  the action actor. Riley receives exactly one event-participant notification
+  even though Riley is in Group B: membership-change notifications belong to
+  the parent event and go to every remaining accepted non-actor participant.
+  Riley's Group B membership, room chat and counters remain unchanged, so this
+  checkpoint proves cross-room delivery together with group-state isolation.
+  The parent Event channel is shared by Casey and Riley and receives exactly
+  one removal message. Only the affected Group A channel receives the matching
+  tournament-group removal message; Group B must retain zero messages, zero
+  unread delta and an empty last-message summary.
 
-### `TOURNAMENT-MEMBER-003` — four-person room removal recipients
+Execution evidence on 2026-08-30 (PASS / CLOSED):
+
+- From the clean already-started baseline, Casey removed Nova exactly once.
+  The UI retained parent status Active and Qualifiers `A`, removed Nova from
+  active Members and Group A access, kept Riley active in unchanged Group B,
+  and rendered Group A Standings as active Casey, `R / Nova Social / 7`, then
+  `V / -----`. The retained row never exposed Nova's database ID.
+- The parent event channel rendered `Nova Social was removed from the event.`;
+  it did not misclassify the admin action as a voluntary `left` transition.
+  Group A rendered exactly one `Nova Social was removed from the tournament
+  group.` system message. Riley's unrelated Group B retained no message, no
+  unread delta and no last-message change.
+  Nova saw the exact self-removal notification, Riley saw the exact parent-
+  event participant notification despite belonging to Group B, and Casey saw
+  none as actor.
+- The independent persisted oracle passed: parent Nova=`deleted`, Group A
+  Nova=`removed`, Nova absent from every room-chat owner/member projection,
+  score identity/value `Nova/7` unchanged, exactly two outbox intents and two
+  inbox rows with roles `removed-member` and `event-participant`, Casey absent
+  from all recipients, Nova event counters `1/1 -> 0/0`, and Casey/Riley event
+  counters unchanged. The widened oracle also proved one canonical parent
+  Event message, one canonical affected-Group-A message, and byte-for-byte
+  message/unread isolation for Group B. The fixture was reset; do not repeat this case
+  unless removal, standings identity/order, chat wording, participant fan-out
+  or write-side event counters change.
+
+### `TOURNAMENT-MEMBER-003` — four-person removal recipient fan-out
 
 - Stage one isolated active Tournament with a single four-person Qualifiers
-  group: Casey, Nova, Riley and Lina. Casey removes Nova once from the parent;
+  group: Casey, Nova, Riley and Lina. Casey removes one scored non-host member
+  once from the parent; the verifier derives the actual target from the paired
+  parent=`deleted` and generated-room=`removed` writes,
   this is deliberately separate from the `TOURNAMENT-MEMBER-002` 2+1 control.
-- The persisted parent membership becomes `deleted`, while Nova's generated
+- The persisted parent membership becomes `deleted`, while the target's
   Group A membership becomes `removed`. Group A Standings retains the exact
-  score identity and shows active rows Riley 9, Lina 5 and Casey 1 first, then
-  `R` / `Nova Social` / 7 and finally `V` / `-----` in the existing `#`
+  score identity, sorts all active rows first, then the target as `R`, and
+  finally `V` / `-----` in the existing `#`
   column. The component does not
   sort or reconstruct the name; server and frontend-local repositories read
   the stored group membership state.
-- Recipient pass boundary: Nova receives exactly one self-removal notification;
-  Riley and Lina each receive exactly one same-room peer notification naming
-  Nova; Casey receives none because Casey performed the action. A participant
-  in a different group would receive none, which remains the independent
-  isolation control already exercised by `TOURNAMENT-MEMBER-002`.
+- Recipient pass boundary: the removed member receives exactly one self-removal
+  notification; both other non-actor participants each receive exactly one
+  event-participant notification naming the target; Casey receives none because
+  Casey performed the action. Recipient
+  selection comes from accepted parent-event membership, not generated-room
+  membership; `TOURNAMENT-MEMBER-002` independently proves that this delivery
+  crosses group boundaries without mutating the other group.
 - Run `verify-tournament-member-notification event-domain
   TOURNAMENT-MEMBER-003` immediately after the one visible Remove action. It
   proves parent/group state, immutable four-row score history, chat revocation,
   exact outbox/inbox recipient sets and actor exclusion before visual closure.
+- Fixture boundary: a real started Tournament may already have a materialized
+  parent event channel with earlier lifecycle messages. This isolated fixture
+  does not own that channel-creation/history contract and may materialize the
+  parent channel at Remove time. Do not classify that as a failure here. This
+  row owns only the target's room-chat revocation, the new removal effects, exact
+  recipient fan-out and leaderboard persistence; initial event-channel history
+  remains in the Tournament/Chat lifecycle coverage.
+- Fixture counter boundary: Casey is the parent owner, so staging must write
+  the event into `My Events` through `activities.hosting` and
+  `activities.event.hosting`, while Nova/Riley/Lina use participant
+  `Events/Active Events` counters. Do not stage Casey through the participant
+  counter path merely to make all four setup calls uniform.
+
+Execution evidence on 2026-08-30 (PASS / CLOSED):
+
+- Casey removed Lina from the clean four-person room. Standings retained Lina
+  as `R / Lina Park / 5`; Riley, Nova and Casey stayed active and the four
+  stored score identities/values remained unchanged.
+- Lina received the self-removal notification. Nova and Riley each received
+  the participant notification naming Lina; Casey was excluded as actor.
+- The parent Event channel contained exactly one `Lina Park was removed from
+  the event.` message and Group A exactly one `Lina Park was removed from the
+  tournament group.` message. Both channels retained only Casey, Nova and
+  Riley; Lina lost both projections. Lina's event counters decreased once and
+  all remaining event counters stayed unchanged. The fixture was reset.
 
 ### `TOURNAMENT-DQ-001` — disqualification and reinstatement
 
@@ -5274,6 +5525,64 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 - In a separately reset pre-Finalize branch, Reinstate the same identity and
   prove eligibility returns without a duplicate membership or score row.
   Finalize/review replay must be exact-once in both branches.
+- Treat the DQ/Reinstate Event and Group system messages as chat activity, not
+  new Impression evidence. On Riley's unchanged participant control, the
+  ordinary realtime poll may expose the profile-derived Attendee presentation,
+  but the server poll must not add an Impressions red counter merely because
+  that projection first became available: the change flag is owned by an
+  actual persisted `Users.impressions` write, not by a projected payload diff.
+  Opening the popup must show
+  unchanged empty metrics and `0 signals`; the controlled event must still
+  have zero feedback states, feedback answers and affinity recompute tasks,
+  while Riley's stored Impressions and event-feedback counters remain exactly
+  at baseline. A later evidence-backed Event Feedback change remains owned by
+  `EVENT-IMPRESSION-001` and must still produce its normal change signal.
+
+Partial execution evidence (2026-08-30): the controlled four-person DQ branch
+is persisted at `dq-verified`. Casey disqualified scored Nova once; the oracle
+proved one retained parent and room membership row with `disqualified` status,
+the unchanged score row, exact Event and Group system-chat delivery, and the
+affected-member plus remaining-participant notification fan-out. Riley's
+ordinary realtime poll did not show an Impressions red counter. Its persisted
+`Users.impressions` stayed `null`, all four event-feedback counters stayed at
+zero, and the controlled event retained zero feedback states, feedback answers
+and affinity-recompute tasks. The first verifier run exposed only a harness
+false negative: a Mongo-returned checkpoint subdocument and the fresh evidence
+object had identical values but different JSON key order. The DQ harness now
+compares stored Impressions semantically and every numeric evidence field
+explicitly; the unchanged persisted state then passed without replaying the UI
+action.
+
+Reinstate continuation evidence (2026-08-30): Casey reinstated Nova once and
+the persisted oracle advanced to `reinstate-verified` with one completed cycle.
+Nova has exactly one accepted parent membership and one accepted room
+membership; all four original score rows remain unchanged. The Event and Group
+channels each contain exactly the DQ message followed by one Reinstate message,
+and every chat copy has the Reinstate message as its latest entry. Nova received
+the affected-member notification while Riley and Lina received the participant
+notification, exactly once for Reinstate. Riley again showed no Impressions red
+counter; stored Impressions remained `null`, all event-feedback counters
+remained zero and the fixture still has zero feedback states, answers and
+affinity-recompute tasks.
+
+Review/finalize closure evidence (2026-08-30): after a named reset, the
+separate pre-Finalize fixture retained Nova as the highest-score row (`DQ 10`)
+behind active Riley `9`, Lina `5` and Casey `1`. Casey finalized Qualifiers
+once; the direct-write oracle recorded stage and runtime `F / stage-finalized`,
+result revision `1`, no premature Final membership and one Finalize intent for
+Riley+Lina only. The first real `event-tournament-review` pass recorded count
+`2`, explicitly representing one Final group-membership write plus one outcome
+revision. Final membership and its score-plan marker contain exactly Riley and
+Lina; Nova is excluded despite its leading score and Casey is the active
+non-advancer. Notification intents are exactly Riley+Lina finalized,
+Riley+Lina advanced and Casey not advanced, with no Nova outcome. A second
+unchanged real-worker pass recorded count `0`; the complete domain and
+notification snapshot remained identical. The final browser comparison was
+accepted. No red Groups counter is expected merely because one group exists:
+the established counter is `groupsPending`, while the group accordion itself
+shows the materialized group and members. No Impression badge appeared and all
+write-side Impression/feedback evidence stayed unchanged. `TOURNAMENT-DQ-001`
+is **PASS / CLOSED**.
 
 ### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
 
@@ -5288,6 +5597,47 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 - The exact delta must appear in place and survive reload. No generated room
   card may leak into the root Activities list, and no asset action may change
   an event role or create another membership.
+- Resource badges are per viewer and per type. Immediately after the three
+  assignments, each write-side metric is `1` for the created Transport,
+  Accommodation or Supplies item. This fixture does not pre-seed Explore
+  borrow requests: a later join/invite/request would be another independent
+  pending write. Casey therefore sees Accommodation `1` plus Supplies `1`,
+  Nova sees Transport `1` plus Supplies `1`, and Riley sees Transport `1` plus
+  Accommodation `1`; each assignment actor has already read the type they
+  wrote. After each participant reads every remaining unread type,
+  those exact receipts must persist across reload without changing the raw
+  Transport/Accommodation pending totals or any assignment.
+- **PASS/CLOSED — 2026-08-30**: Casey assigned `Casey Group Shuttle`, Nova
+  assigned `Nova Group Lodge` and Riley assigned `Riley Group Supplies` to the
+  same generated Group A. All three viewers subsequently saw all three cards;
+  the editable state remained owner-scoped. The independent oracle proved
+  exactly three owner writes, exact Group A/runtime/type metrics, root activity
+  `3`, stage `groupsPending=3`, no generated root-room leak, unchanged event and
+  room roles, unchanged user counters and zero undocumented notifications.
+  Every viewer's per-type read receipt then persisted across reload while the
+  raw write-side pending metrics remained unchanged.
+- Assigned-resource Join/Invite and Resource Explore are separate pending-write
+  boundaries and were not appended to this closed aggregation transaction.
+  They are routed into the existing Asset membership and borrow checkpoints:
+  at least one replay must originate from this generated-group resource
+  surface and assert the exact event, stage/sub-event and group runtime owner
+  scope plus an unchanged other-group control. No additional Tournament row is
+  needed for the same generic Asset lifecycle.
+
+### `JOB-TOURNAMENT` — real tournament review scheduler
+
+- **CORE PASS/CLOSED — 2026-08-30**: the real
+  `event-tournament-review` scheduler was already exercised through two
+  retained Tournament branches. The deterministic advancement replay produced
+  the exact next-stage membership and score-plan write with `lastRunCount=1`,
+  followed by a byte-identical unchanged replay with `lastRunCount=0`. The
+  later DQ branch independently produced the exact eligible Final membership
+  and notification outcomes, then another unchanged `count=0` replay. Browser
+  evidence matched the persisted stage, leaderboard and advancement state.
+- The only former remainder was the generic Monitoring/Job Detail screen.
+  It is now an assertion inside the Administration journey
+  `ADMIN-MONITORING-001`; it must not keep the already-proven Tournament Core
+  row partial or trigger another lifecycle replay.
 
 ## Asset cases
 
@@ -5310,29 +5660,35 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
-- Invite one controlled user from the Asset Members UI.
-- Verify the row is pending and linked to the exact asset owner/type/id, not to
-  the current event or an unrelated asset.
-- Verify the recipient projection names the same asset and inviter once.
+- From one asset already assigned through a generated Tournament-group
+  resource surface, create one manager Invite and one participant Join request.
+- Verify the two pending rows keep distinct request kinds and are linked to the
+  exact asset owner/type/id plus event, stage/sub-event and generated-group
+  booking scope. The other generated group and the parent event membership
+  remain unchanged.
+- Verify recipient/requester projections name the same asset and actor once.
 
 ### `ASSET-MEMBER-002` — accept/reject and role isolation
 
-- Accept one asset invitation and reject another independently.
+- Accept one of the group-scoped Invite/Join requests and reject the other
+  independently.
 - Verify accepted asset membership/role, resolved notification and rejected
-  cleanup. Asset Manager must not silently promote the user to Event Admin or
-  change an existing event membership role.
+  cleanup in the same generated-group booking scope. Asset Manager must not
+  silently promote the user to Event Admin, change an existing event
+  membership role or affect another group.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-- Request one controlled asset for an exact event/sub-event timeframe and
-  accept it. In two independent reset branches, reject and cancel controlled
-  requests.
+- From Resource Explore under one generated Tournament group, request one
+  controlled asset for the exact event/stage/group timeframe and accept it. In
+  two independent reset branches, reject and cancel controlled requests.
 - Requester and owner must see the same request identity/status. Only an owned
   asset or a pending/accepted borrow for the exact booking scope becomes
   assignment-eligible. Availability, notification and optional payment intent
   effects occur exactly once.
 - Borrow permission is not Asset Manager membership and never changes an Event
-  role.
+  role. The accepted asset becomes assignment-eligible only for the exact
+  generated-group booking scope; a sibling group remains unchanged.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 
@@ -5363,14 +5719,23 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
 
 ### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
 
-- Edit the capacity of one already assigned asset and require the saved asset
-  write to refresh every referenced sub-event projection. Do not reconstruct
-  the answer in the list query.
-- Unassign it, then in an independent branch Remove one separate asset manager
-  from the event. Only settings/contributions owned by that removed manager are
-  cleaned up; unrelated owners and resource types remain intact.
-- Verify materialized counters, roles and assignment records after each write,
-  after reload and after an idempotent terminal replay.
+- Start from two generated Tournament groups. Group A contains at least two
+  owner-scoped resource assignments; Group B is the unchanged negative
+  control. Edit the capacity of one Group A asset and require the owning save
+  to refresh only that exact event/stage/group/owner/type materialization. Do
+  not reconstruct the answer in the list query.
+- Unassign that resource, then in an independent reset branch remove one
+  separate Group A asset manager from the event. The writes must subtract the
+  exact removed owner/type contribution from Group A runtime metrics, the
+  stage `groupsPending` aggregate and the root Event activity aggregate. Only
+  settings/contributions owned by the removed manager are cleaned up;
+  unrelated Group A owners/types and every Group B record/counter remain
+  byte-identical.
+- Verify the source asset, assignment/settings/contributions, materialized
+  group/stage/root counters, Event and Tournament-group roles after each write,
+  after popup close/reopen, after browser reload and after an idempotent
+  terminal replay. No read projection or frontend counter fallback may repair
+  the persisted result.
 
 ## Operator configuration and security cases
 
@@ -5422,24 +5787,27 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
   prior policy, prove access changes exactly once and no stale browser state
   overrides the authoritative server decision.
 
-## Coverage-expansion checkpoints appended after the original 106-case spine
+## Consolidated executable journeys and source-oracle archive
 
-The 106 testcases that existed at the start of the 2026-08-13 coverage audit
-remain the immutable workflow spine. The following 84 cases are new rows, not
-splits or rewrites of that spine. They are deliberately grouped into resumable
-checkpoint sequences, while every row still owns one bounded producer action
-and one decisive persisted oracle. Runtime execution must use at most three
-browser identities at once; mobile observations replace, rather than add to,
-one desktop phase when three desktop accounts are already active.
+The matrix contains 116 executable journeys after the 2026-08-30 granularity
+audit. All 75 PASS/CLOSED rows remain individually immutable: only their
+owning `QA domain` may move, while ID, status, contract and evidence stay
+unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
+were consolidated into complete lifecycle parents. Every assertion below is
+still required, but an old source ID is not an independently scheduled test
+unless it remains a current CSV/XLSX row. The consolidated parent rows in the
+matrix and the handoff's resume pointer are authoritative.
 
-The XLSX uses the teal `EXT / optional` scope marker for the `Admin optional`
-domain and for cases whose stable ID starts with `OPERATOR-`, `PAYMENT-` or
-`DEPLOY-`. The third block is the capacity-deferred qualification scope: it
-contains controls that are not required for a correctly seeded deployment to
-start and serve an average member, plus external operator/provider/deployment
-boundaries. Scope and execution status remain independent: a deferred row is
-still counted by the normal Done/Pending/Not-started/Failed formulas, and the
-overview reports separate Core and External/optional totals.
+The tables below are therefore a source-oracle archive for the consolidated
+parents, not an instruction to recreate microtests. Runtime execution uses at
+most three browser identities at once; mobile observations replace, rather
+than add to, one desktop phase when three desktop accounts are already active.
+
+The XLSX uses the teal `EXT / optional` scope marker only for journeys whose
+stable ID starts with `OPERATOR-`, `PAYMENT-` or `DEPLOY-`. Local Admin work is
+distributed to its actual Core owner; there is no separate Admin-optional
+execution bucket. Scope and execution status remain independent, and the overview reports
+separate Core and External/optional totals.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -5640,6 +6008,15 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 
 ### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
 
+External execution environment: deploy the production build to the dedicated
+production-like VMware host, activate a disposable verified Firebase revision,
+and use one physical phone. This bundle also owns the deferred
+`CHAT-PUSH-001` producer/control flow: Casey sends one ordinary participant
+message, Nova stays foreground as the no-system-push control, and Riley is the
+background/closed-app target. The native permission prompt already passed on
+the local clean WebAPK install, but permission, token rotation and delivery are
+repeated here against the production runtime.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `OPERATOR-FIREBASE-002` | Save a new Firebase revision, fail one capability test and attempt activation. | Any configuration change clears prior tested revisions; unverified activation fails and the currently active login/messaging runtime remains untouched. |
@@ -5694,33 +6071,27 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `OPERATOR-MEASUREMENT-001` | Synchronize one controlled deployment measurement period. | Exact source period, counts and valuation inputs persist once; leaderboard reads consume it without rewriting the report. |
 | `OPERATOR-MEASUREMENT-002` | Fail and requeue one measurement report. | Attempt history remains ordered, duplicate work is prevented and the successful replacement leaves the failed record immutable. |
 
-### Administration ownership and launch-impact weighting
+### Administration ownership and journey consolidation
 
-The route that exposes a control does not define either its capability owner or
-its launch scope. For this capacity-limited qualification, `EXT / optional`
-means deferred from the minimum usable product launch, not only a third-party
-integration. The deciding oracle is a correctly seeded deployment: if an
-average member can still use the product from its static/default state without
-that Admin function, the function belongs in the third block.
+The route that exposes a control does not define its capability owner. Local
+Admin journeys are Core and follow the state they read or mutate:
 
-- `ADMIN-ACCESS-001` remains Core `Identity & access`, because missing backend
-  denial exposes protected data/actions to an ordinary user.
-- Event, Tournament, Notifications, identity/account-purge and affinity
-  workers that maintain real member state remain Core under their owning
-  capability. A broken worker changes the ordinary user's product truth.
-- Reports, feedback/report moderation, warn/block/support controls,
-  notification-rule editing/manual run, public-content revision management,
-  Statistics, Monitoring, Admin Graph exploration/layout, parameter editors
-  and generic Admin UI smoke are `Admin optional`. A missing Save may prevent
-  changing a default, and imperfect statistics may inconvenience operations,
-  but neither prevents the seeded product from starting or serving a member.
-- Operator, Registry/network, payment-provider and deployment-host cases remain
-  deferred external boundaries.
+- `ROLE-TRIAD-CORE-001` owns authorization plus warn/report/feedback/support/
+  block/unblock in `Identity & access`.
+- `CONTENT-ADMIN-LIFECYCLE-001` owns revisions and idea lifecycle in `Content`.
+- `BELL-RATING-LIFECYCLE-001` and
+  `NOTIFICATION-ADMIN-LIFECYCLE-001` own rating/bell/rule/outbox effects in
+  `Notifications`.
+- `ADMIN-MONITORING-001`, `ADMIN-AFFINITY-GRAPH-001` and
+  `ADMIN-PARAMETERS-001` own the remaining Administration surfaces.
+- Event, Tournament, Chat and other workers remain with their actual member
+  domain. Operator, Registry/network, payment-provider and deployment-host
+  journeys remain deferred external boundaries.
 
-Optional does not mean harmless: every existing testcase, status, evidence and
-priority remains authoritative. It means those rows do not consume the Core
-launch queue before higher-impact workflows. Stable IDs are preserved; only
-the normalized QA domain/scope and physical domain ordering change.
+The already-PASS `BASE-STAT`, `STAT-011` and `STAT-012` rows moved only to
+Administration, Chat and Event respectively; their content and evidence were
+not rewritten. The tables below retain the retired non-PASS source IDs as
+assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP08` — admin access and moderation
 
@@ -5757,11 +6128,9 @@ the normalized QA domain/scope and physical domain ordering change.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `ROLE-TRIAD-001` | Keep member, admin and operator sessions open and probe each other's route families. | Each role sees only its own capabilities; direct cross-role calls are denied and activity/admin/operator counters remain independently scoped. |
-| `ROLE-TRIAD-002` | Operator changes branding while member home and admin workspace are already open. | Public revision converges on both consumers without logging out, losing admin state or allowing either consumer to edit operator config. |
-| `ROLE-TRIAD-003` | Operator activates verified Firebase while admin stays in moderation and member starts a new login. | New login uses Firebase, existing authorized admin work remains stable, and activation creates no member/admin notification or role mutation. |
-| `ROLE-TRIAD-004` | Admin blocks the member while the operator monitors deployment state. | Member protected access closes according to policy; operator session/network remains intact and admin action cannot alter deployment/operator authority. |
-| `ROLE-TRIAD-005` | Operator deactivates the deployment while member and admin have open authenticated screens, then reactivates. | Both consumer/admin paths fail closed without stale cached writes; operator recovery remains usable and all three reconstruct correct roles after reactivation. |
+| `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, propagate one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; branding converges without logout; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. |
+| `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
+| `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
 ## Execution and evidence rules
 

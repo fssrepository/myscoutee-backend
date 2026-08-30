@@ -144,4 +144,50 @@ class EventInviteNotificationServiceTest {
                 .containsEntry("approvedAtIso", "2026-08-12T19:49:11Z")
                 .containsEntry("notification_status_badge_fallback", "Approved");
     }
+
+    @Test
+    void notifiesTheRemovedMemberAndEveryRemainingEventParticipantExceptTheActor() {
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        UserNotificationService userNotificationService = mock(UserNotificationService.class);
+        EventInviteNotificationService service = new EventInviteNotificationService(
+                notificationOutboxService,
+                userNotificationService);
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Weekend hike");
+
+        service.notifyEventMemberRemoved(
+                event,
+                "removed-1",
+                "Nova Social",
+                "2026-08-30T01:27:00Z",
+                "actor-1",
+                List.of("actor-1", "participant-1", "removed-1", "participant-1"));
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(2)).enqueue(intentCaptor.capture());
+        List<NotificationIntent> intents = intentCaptor.getAllValues();
+        assertThat(intents).anySatisfy(intent -> {
+            assertThat(intent.type()).isEqualTo("event-member-removed");
+            assertThat(intent.recipientScope()).isEqualTo("removed-member");
+            assertThat(intent.recipientUserIds()).containsExactly("removed-1");
+            assertThat(intent.body()).isEqualTo("You were removed from Weekend hike.");
+            assertThat(intent.payload()).containsEntry("recipientRole", "removed-member");
+        });
+        assertThat(intents).anySatisfy(intent -> {
+            assertThat(intent.type()).isEqualTo("event-member-removed");
+            assertThat(intent.recipientScope()).isEqualTo("event-participants");
+            assertThat(intent.recipientUserIds()).containsExactly("participant-1");
+            assertThat(intent.body()).isEqualTo("Nova Social was removed from Weekend hike.");
+            assertThat(intent.payload()).containsEntry("recipientRole", "event-participant");
+        });
+        assertThat(intents).allSatisfy(intent -> {
+            assertThat(intent.recipientUserIds()).doesNotContain("actor-1");
+            assertThat(intent.payload())
+                    .containsEntry("eventId", "event-1")
+                    .containsEntry("parentEventId", "event-1")
+                    .containsEntry("memberName", "Nova Social")
+                    .containsEntry("membershipAction", "removed");
+        });
+    }
 }

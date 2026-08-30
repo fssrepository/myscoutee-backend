@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 23:21 CEST
+Updated: 2026-08-30 12:35 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -26,6 +26,8 @@ file first, then open only the linked active checkpoint section.
   [`tournament-score-reopen-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-score-reopen-checkpoints.js)
 - Isolated four-person room-removal notification fixture:
   [`tournament-member-notification-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-member-notification-checkpoints.js)
+- Isolated generated-group resource aggregation fixture:
+  [`tournament-resource-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-resource-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -40,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-MEMBER-002 — active participant removal
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-002--active-participant-removal
-scenario: XLS-driven Core execution order. Tournament priority is 11 (10/15 complete); TOURNAMENT-MEMBER-002 is the active row, followed by the new isolated TOURNAMENT-MEMBER-003, TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: The old POST-REMOVE attempt was discarded as non-evidence. The corrected fixture was reset and staged at 2026-08-25T21:21:28.276Z. The persisted status oracle proves an already-started, non-blocked Tournament: parent status `A`, parent `currentStage=Qualifiers/A` (1/2), Qualifiers definition `A` and Qualifiers runtime `A`. Casey, Nova and Riley are accepted on the active parent. Generated Group A contains Casey + Nova; Group B contains Riley. Nova owns the sole retained Qualifiers score row (7). Stored write-side event counters are Casey hosting=1, Nova Events/Active=1, Riley Events/Active=1. There is no staged notification, scheduler or recompute work. The three managed browser sessions were replaced from this exact baseline.
-required_resume: Do not reset or stage again while this baseline is intact. First visually confirm Casey's parent, Group A/Group B and Nova's score row. Then, only as Casey, choose Members > Remove for Nova once. Do not use Disqualify, Block, a scheduler or a direct data repair. Immediately run `verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002`; it proves parent=`deleted`, Group-A member=`removed`, Nova room-chat revocation, exact stored counters, immutable score and Riley control. On the one reload check, the returned standings order is active rows, `DQ`, `R`, then vacant `V`, with score/FIFA tie-break inside each state; the existing `#` cell must show `R` beside `Nova Social`, never an ID, and `V / -----` must be below it. After T-M002 closes and resets, stage the separate T-M003 fixture; it uses Casey + Nova + Riley + Lina in one four-person Group A to prove Nova self-notification, Riley/Lina same-room notifications and Casey actor exclusion.
-event: QA TOURNAMENT-MEMBER-002 — active parent, two generated rooms, Nova removal target
+checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and moderation
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
+scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
+ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
+state: No ROLE-TRIAD-CORE-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its production-like Firebase continuation is owned by external DEPLOY-FIREBASE-LIFECYCLE-001.
+required_resume: Prepare one complete ROLE-TRIAD-CORE-001 journey with exactly three isolated sessions: member, admin and operator. Present the purpose, every click and visible route/counter expectation before starting. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
+event: No active fixture; QA infrastructure baseline is clean
 actors:
-  Casey: Tournament host and removal actor
-  removed participant: controlled accepted active room member
-  remaining participant: unchanged active-room control
-next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted oracle.
-stop_phrase: Remove action completed
+  Member: isolated ordinary-user session
+  Admin: isolated administration session
+  Operator: isolated deployment/operator session
+next_actor: Codex prepares the complete ROLE-TRIAD-CORE-001 action/oracle sequence before the user starts probing.
+stop_phrase: Three-role authorization checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -74,6 +76,24 @@ HTTP and frontend-local carry the revision and Reopen guards. Both
 score-correction checkpoints are PASS/CLOSED; the late guard was exercised
 through the real Java route and its retained fixture was reset. Do not replay
 their closed Start/Finalize/result producers when preparing another domain.
+
+Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the childless
+normal-Event runtime contract. A normal Event saved with Slots Off and Sub
+Events Off must write exactly one persisted `MAIN_EVENT` runtime item; View
+Event must query and render that real item instead of an empty list or a
+frontend/query fallback. Real stage or slot cases must not duplicate the parent
+card. This is recorded under the Event domain and remains NOT RUN; it does not
+replace the active Tournament checkpoint or authorize implementation before
+the campaign reaches that row.
+
+Separate captured Asset follow-up: Tournament-origin asset behavior remains
+owned by the Asset block instead of duplicating closed Tournament cases.
+`ASSET-MEMBER-001/002` own generated-group Join/Invite transitions,
+`ASSET-BORROW-001` owns generated-group Resource Explore/borrow, and
+`ASSET-ASSIGN-003` now explicitly owns generated-group edit, unassign and
+removed-manager cleanup with exact write-side Group/stage/root counter reversal
+and a byte-identical sibling-group negative control. This is required coverage,
+not a later optional reminder.
 
 ### Efficient resume gate
 
@@ -137,20 +157,26 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The original Tournament lifecycle block remains PASS/CLOSED at 9/9, including
-both score-reopen checkpoints, and its retained fixture is reset. Coverage
-audit added five Tournament-specific cases: pre-Start terminal membership
-cutoff, active participant removal, the separate four-person same-room
-notification boundary, DQ/Reinstate and generated-group resource aggregation,
-plus the existing `JOB-TOURNAMENT` row whose
-primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 10/15; `TOURNAMENT-MEMBER-002` is active and
-`CHAT-LIST-001` remains deferred until the open Tournament block is completed.
+The original Tournament lifecycle block and both score-reopen checkpoints are
+PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
+checkpoint and generated-group resource aggregation are also PASS/CLOSED.
+`JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
+idempotency evidence; generic Job Detail/Monitoring presentation is an
+assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
+is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is the active local
+checkpoint after QA infrastructure passed 2/2. The consolidated desktop Chat
+flow, actions, rich content and governance journeys plus the closed Chat
+statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
+assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
+build runs on the dedicated production-like VMware host with a verified active
+Firebase revision and a physical phone. Do not stage or send that message
+during local Core execution.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
-is the cross-room non-recipient/control boundary. Use the new
-`TOURNAMENT-MEMBER-003` as one four-person room because two independent peers
-are needed beside the actor and removed member. Run `TOURNAMENT-DQ-001` with a
+proves parent-event notification delivery across room boundaries while Group B
+state remains unchanged. Use `TOURNAMENT-MEMBER-003` as one four-person room
+because two independent participant recipients are needed beside the actor and
+removed member. Run `TOURNAMENT-DQ-001` with a
 four-person group as well, so active score ordering and the terminal DQ row can
 be compared in one leaderboard. Existing closed grouping, room-lifecycle and
 score-revision fixtures keep their proven 2+1/2+2 layouts.
@@ -195,13 +221,13 @@ right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
 and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus Admin optional, Operator,
-Payment and Deployment deferred boundaries, prioritized continuously from
-`14` down to `1`.
+coarse: 10 Core capability/operations domains plus the Operator, Payment and
+Deployment deferred boundaries. Their numeric priorities preserve the
+authoritative execution order.
 A generated priority overview places the first five Core domains in its first
 hasáb, the remaining five Core domains in its second hasáb, and reserves the
-third `EXT / optional` hasáb for Admin optional, Operator, Payment and
-Deployment. The third hasáb must therefore always sum to the separate
+third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
+hasáb must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
@@ -209,19 +235,14 @@ mobile WebView, Statistics, Monitoring and background jobs in the owning
 domain's `Area` instead of manufacturing singleton domains. Create a new
 top-level domain only for an independently executable capability with a
 material workflow set; otherwise classify the row under its real owner.
-The same ownership rule applies to the configurable Admin shell, but this
-capacity-limited release uses a separate launch gate. Ask whether a correctly
-seeded deployment still starts and remains usable by an average member when
-the Admin function is absent. Backend denial of unauthorized Admin access and
-workers that maintain real member state stay Core under their owning domain.
-Reports, moderation controls, notification-rule editing/manual run, content
-revision management, support controls, Statistics, Monitoring, Admin Graph
-layout/exploration, runtime parameter editors and generic Admin UI smoke are
-`Admin optional`: their defects remain valid defects, but default/static state
-lets the product launch without qualifying those controls first. Operator,
-Registry, payment and deployment cases remain deferred as before. Row-level
-Manual QA priority orders risk inside a scope; it does not promote an optional
-control into the Core launch gate.
+The same ownership rule applies to the configurable Admin shell. Local Admin
+work is Core and is distributed by the state it reads or mutates: authorization
+and moderation belong to Identity & access, revisions to Content, notification
+rules to Notifications, statistics and monitoring to Administration, and so
+on. The route or shell does not manufacture a separate Admin domain.
+Operator, Registry, payment and deployment cases remain deferred external
+boundaries. Row-level Manual QA priority orders risk inside a scope; it does
+not change capability ownership.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
 currently active domain closes, choose the highest-priority Core domain whose
@@ -299,31 +320,32 @@ record has been removed.
 
 ### 1.1 Checkpoint granularity and new rows
 
-- Treat the already-versioned testcase set as an immutable workflow spine
-  during a coverage-expansion audit. Do not split, merge, rename, renumber or
-  rewrite its IDs or test contracts merely to make the new plan look more
-  uniform. The `QA domain` classification may be normalized only as an
-  explicit taxonomy migration while all other existing cells remain
-  unchanged. Count
+- Treat every PASS/CLOSED testcase as immutable evidence. It may move to its
+  actual owning `QA domain`, but its ID, status, contract, evidence and every
+  other cell remain unchanged. Non-PASS source rows may instead be consolidated
+  into one complete domain journey when they are only micro-oracles of the same
+  lifecycle; preserve every source assertion inside the parent contract and do
+  not count the retired source IDs as independently scheduled tests. Count
   logical CSV records rather than physical lines because quoted multiline
   cells span several file lines; ignore `LEGEND-*` records when quoting the
   testcase total. Capture a canonical serialized hash keyed by every
-  pre-existing testcase ID and prove the same ID/content hashes after CSV and
-  XLSX synchronization. Insert new Core coverage beside its owning domain
+  PASS testcase ID and prove the same ID/content hashes after CSV and XLSX
+  synchronization. Insert Core coverage beside its owning domain
   rows and before the `LEGEND-EXT`/external block; do not append a Core row
   after EXT merely because it was discovered later. Preserve the relative
-  order and contents of all existing testcase rows while doing so. New rows
-  receive stable IDs and ordered checkpoint groups. The target count is an
+  order and contents of all PASS testcase rows while doing so. Consolidated or
+  new journeys receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
   but never manufacture row splits only to reach an estimate.
-- A feature-rich domain must not be represented by one umbrella row. Audit its
-  actual visible and persisted contracts, then create short, causally
-  continuous cases. The 2026-08-16 Chat audit is the reference:
-  `CHAT-AUTH-001` remains the authorization boundary, while list/history,
-  realtime delivery, unread/read, message mutations, reactions/pins,
-  attachments, members/reporting and push delivery are separate rows. This
-  produced 20 real Chat cases without changing the active Tournament resume
-  pointer.
+- A feature-rich domain must be represented by executable user journeys, not
+  one umbrella row and not one independently scheduled row per button or
+  assertion. Keep causally continuous actions in one case and list their exact
+  UI/persisted checkpoints inside it. Split only at a materially different
+  authority, fixture reset, external device or runtime boundary. The corrected
+  Chat model is the reference: authorization, everyday conversation/recovery,
+  message actions, rich content, governance and physical-device push are six
+  journeys; list/history/send/read/reaction/media details are assertions owned
+  by those journeys rather than standalone microtests.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
   workbook totals. Verify the CSV has 19 columns per logical record, including
@@ -336,9 +358,9 @@ record has been removed.
   `External / optional`,
   `Total`. The four status rows and the Done percentage are filtered to Core
   tests only, so they partition the displayed Core total instead of mixing the
-  deferred scope into product progress. `Admin optional` rows and stable IDs
-  beginning `OPERATOR-`, `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional`
-  without renaming testcase IDs; that scope is a separate count and `Total` is
+  deferred scope into product progress. Stable IDs beginning `OPERATOR-`,
+  `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional` without renaming
+  testcase IDs; that scope is a separate count and `Total` is
   the final Core+deferred count. The generator also adds `EXT` to the left
   overview legend. Scope is orthogonal to
   status. Read the generated formulas and cached totals back after
@@ -857,6 +879,13 @@ with two named UI phases, not two simultaneous five-actor layouts and not a new
 testcase row. Check memory/swap/CPU before and after every replacement. Keep
 personal profile paths and names out of Git.
 
+The application is calibrated for narrow portrait/mobile actor windows. When
+a checkpoint uses exactly three managed sessions, always place all three in a
+single horizontal row (`columns: 3`) so they remain simultaneously visible
+side by side. Do not use a 2+1 layout with the third window below the first two.
+Only use fewer columns when the checkpoint actually opens fewer than three
+windows or the user explicitly requests a different comparison layout.
+
 The managed launcher treats those three slots as exclusive: before opening a
 checkpoint it closes and removes only earlier launcher-owned manifests and
 temporary profiles. It must not touch personal Chrome windows or profiles.
@@ -1025,6 +1054,17 @@ drop command, and do not clear the complete MinIO volume to refresh demo media.
 
 ### 6. Recording and communication
 
+During the active manual-QA campaign, keep the hot-deploy output directory
+`server/docker/conf/nginx/app/myscoutee/` locally excluded from ordinary Git
+status and commits. Its hashed bundles are generated verification artifacts,
+not source changes to recommit after every frontend edit. Use the repository-
+local `.git/info/exclude` for new bundle names and local `skip-worktree` flags
+for already tracked bundle files; never add personal transient rules to the
+versioned `.gitignore`. Before a deliberate release/package commit, remove
+both local exclusions, regenerate once through the owning frontend watcher,
+review the complete output delta, and include it only when that release
+workflow explicitly owns the built assets.
+
 After every transactional boundary, including a partial PASS inside a larger
 checkpoint:
 
@@ -1076,20 +1116,31 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-SCORE-REOPEN-001 (closed)
 -> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
 -> TOURNAMENT-MEMBER-001 (closed)
--> TOURNAMENT-MEMBER-002 (staged; action not yet performed)
--> TOURNAMENT-MEMBER-003 (not run; four-person same-room notification fixture)
--> TOURNAMENT-DQ-001 (not run)
--> TOURNAMENT-RESOURCE-001 (not run)
--> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)
+-> TOURNAMENT-MEMBER-002 (closed; widened cross-group chat isolation replay PASS)
+-> TOURNAMENT-MEMBER-003 (closed; four-person participant fan-out PASS)
+-> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
+-> TOURNAMENT-RESOURCE-001 (closed; generated-group resource aggregation PASS)
+-> JOB-TOURNAMENT (Core closed; generic Monitoring covered by ADMIN-MONITORING-001)
+-> CHAT-FLOW-001 (closed; consolidated everyday conversation and recovery)
+-> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
+-> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
+-> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
+-> DEPLOY-FIREBASE-LIFECYCLE-001 (deferred production-like VMware/Firebase journey)
+-> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
+-> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
+-> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
+-> ROLE-TRIAD-CORE-001 (active local Core checkpoint)
 ```
 
-`CHAT-LIST-001` was already staged before these gaps were captured. Finish that
-single live checkpoint first so its fixture is not discarded. The generated
-priority table then selects the reopened Tournament domain (priority 11) ahead
-of the remaining Chat domain (priority 10). Run the four new Tournament rows
-and then complete `JOB-TOURNAMENT` in their physical ledger order before
-resuming Chat. EXT/optional remains deferred.
+Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
+locally with `ROLE-TRIAD-CORE-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, closed Chat desktop journeys or
+closed Tournament fixtures unless their owning code or contract changes. The
+physical-device Chat boundary is retained under external CP04 and must be run
+with production-like VMware/Firebase evidence, not the local demo stack.
 
-`ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
-revision prerequisite. The Admin-optional/operator/payment/deployment sequence
-remains deferred under Core-first execution.
+The former Firebase registration, role activation/deactivation and physical
+Chat-push microcases are assertions inside external
+`DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
+by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
+the Core Identity & access gate. Only the Operator, Payment and Deployment
+sequences stay deferred under Core-first execution.

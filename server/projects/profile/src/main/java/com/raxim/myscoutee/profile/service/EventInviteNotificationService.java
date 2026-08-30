@@ -198,33 +198,32 @@ public class EventInviteNotificationService {
                 StringUtils.hasText(senderUserId) ? senderUserId : null));
     }
 
-    public void notifyTournamentRoomMemberRemoved(
-            ActivityEvent roomEvent,
-            String parentEventId,
+    public void notifyEventMemberRemoved(
+            ActivityEvent event,
             String removedUserId,
             String removedUserName,
             String removedAtIso,
             String actorUserId,
-            List<String> remainingRoomUserIds) {
-        if (roomEvent == null) {
+            List<String> remainingEventUserIds) {
+        if (event == null) {
             return;
         }
-        String roomEventId = safeText(roomEvent.getSourceId());
+        String eventId = safeText(event.getSourceId());
         String memberUserId = safeText(removedUserId);
         String senderUserId = safeText(actorUserId);
-        if (!StringUtils.hasText(roomEventId) || !StringUtils.hasText(memberUserId)) {
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(memberUserId)) {
             return;
         }
-        String roomTitle = resolveTitle(roomEvent);
+        String eventTitle = resolveTitle(event);
         String memberName = StringUtils.hasText(safeText(removedUserName))
                 ? safeText(removedUserName)
                 : memberUserId;
         String occurrenceId = UUID.randomUUID().toString();
         Map<String, String> commonPayload = new LinkedHashMap<>();
-        commonPayload.put("eventId", roomEventId);
-        commonPayload.put("parentEventId", safeText(parentEventId));
-        commonPayload.put("eventTitle", roomTitle);
-        commonPayload.put("eventScope", "tournament-room");
+        commonPayload.put("eventId", eventId);
+        commonPayload.put("parentEventId", eventId);
+        commonPayload.put("eventTitle", eventTitle);
+        commonPayload.put("eventScope", "members");
         commonPayload.put("memberUserId", memberUserId);
         commonPayload.put("memberName", memberName);
         commonPayload.put("membershipAction", "removed");
@@ -241,46 +240,141 @@ public class EventInviteNotificationService {
             Map<String, String> targetPayload = new LinkedHashMap<>(commonPayload);
             targetPayload.put("recipientRole", "removed-member");
             notificationOutboxService.enqueue(new NotificationIntent(
-                    "event-tournament-room-member-removed",
+                    "event-member-removed",
                     "event",
-                    roomEventId,
+                    eventId,
                     "removed-member",
                     List.of(memberUserId),
-                    roomTitle,
-                    "You were removed from " + roomTitle + ".",
+                    eventTitle,
+                    "You were removed from " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
-                    resolveImageUrl(roomEvent),
+                    resolveImageUrl(event),
                     APP_BADGE_URL,
-                    "event-tournament-room-member-removed-" + roomEventId + "-" + memberUserId,
+                    "event-member-removed-" + eventId + "-" + memberUserId,
                     targetPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
         }
 
-        LinkedHashSet<String> peerRecipients = new LinkedHashSet<>();
-        if (remainingRoomUserIds != null) {
-            remainingRoomUserIds.stream()
+        LinkedHashSet<String> participantRecipients = new LinkedHashSet<>();
+        if (remainingEventUserIds != null) {
+            remainingEventUserIds.stream()
                     .map(this::safeText)
                     .filter(StringUtils::hasText)
-                    .forEach(peerRecipients::add);
+                    .forEach(participantRecipients::add);
         }
-        peerRecipients.remove(memberUserId);
-        peerRecipients.remove(senderUserId);
-        if (!peerRecipients.isEmpty()) {
-            Map<String, String> peerPayload = new LinkedHashMap<>(commonPayload);
-            peerPayload.put("recipientRole", "room-peer");
+        participantRecipients.remove(memberUserId);
+        participantRecipients.remove(senderUserId);
+        if (!participantRecipients.isEmpty()) {
+            Map<String, String> participantPayload = new LinkedHashMap<>(commonPayload);
+            participantPayload.put("recipientRole", "event-participant");
             notificationOutboxService.enqueue(new NotificationIntent(
-                    "event-tournament-room-member-removed",
+                    "event-member-removed",
                     "event",
-                    roomEventId,
-                    "room-peers",
-                    List.copyOf(peerRecipients),
-                    roomTitle,
-                    memberName + " was removed from " + roomTitle + ".",
+                    eventId,
+                    "event-participants",
+                    List.copyOf(participantRecipients),
+                    eventTitle,
+                    memberName + " was removed from " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
-                    resolveImageUrl(roomEvent),
+                    resolveImageUrl(event),
                     APP_BADGE_URL,
-                    "event-tournament-room-member-removed-" + roomEventId + "-" + memberUserId,
-                    peerPayload,
+                    "event-member-removed-" + eventId + "-" + memberUserId,
+                    participantPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+    }
+
+    public void notifyEventMemberStatusChanged(
+            ActivityEvent event,
+            String memberUserId,
+            String memberUserName,
+            String action,
+            String changedAtIso,
+            String actorUserId,
+            List<String> activeEventUserIds) {
+        if (event == null) {
+            return;
+        }
+        String eventId = safeText(event.getSourceId());
+        String targetUserId = safeText(memberUserId);
+        String senderUserId = safeText(actorUserId);
+        String normalizedAction = safeText(action).toLowerCase();
+        if (!StringUtils.hasText(eventId)
+                || !StringUtils.hasText(targetUserId)
+                || !("disqualified".equals(normalizedAction) || "reinstated".equals(normalizedAction))) {
+            return;
+        }
+
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(memberUserName))
+                ? safeText(memberUserName)
+                : targetUserId;
+        String occurrenceId = UUID.randomUUID().toString();
+        String kind = "event-member-" + normalizedAction;
+        String actionText = "disqualified".equals(normalizedAction)
+                ? "disqualified from"
+                : "reinstated to";
+        Map<String, String> commonPayload = new LinkedHashMap<>();
+        commonPayload.put("eventId", eventId);
+        commonPayload.put("parentEventId", eventId);
+        commonPayload.put("eventTitle", eventTitle);
+        commonPayload.put("eventScope", "members");
+        commonPayload.put("memberUserId", targetUserId);
+        commonPayload.put("memberName", memberName);
+        commonPayload.put("membershipAction", normalizedAction);
+        commonPayload.put("notification_tone", "disqualified".equals(normalizedAction) ? "warning" : "success");
+        commonPayload.put("membershipOccurrenceId", occurrenceId);
+        if (StringUtils.hasText(senderUserId)) {
+            commonPayload.put("senderUserId", senderUserId);
+        }
+        if (StringUtils.hasText(safeText(changedAtIso))) {
+            commonPayload.put("changedAtIso", safeText(changedAtIso));
+        }
+
+        if (!targetUserId.equals(senderUserId)) {
+            Map<String, String> targetPayload = new LinkedHashMap<>(commonPayload);
+            targetPayload.put("recipientRole", "affected-member");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    kind,
+                    "event",
+                    eventId,
+                    "affected-member",
+                    List.of(targetUserId),
+                    eventTitle,
+                    "You were " + actionText + " " + eventTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(event),
+                    APP_BADGE_URL,
+                    kind + "-" + eventId + "-" + targetUserId,
+                    targetPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+
+        LinkedHashSet<String> participantRecipients = new LinkedHashSet<>();
+        if (activeEventUserIds != null) {
+            activeEventUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(participantRecipients::add);
+        }
+        participantRecipients.remove(targetUserId);
+        participantRecipients.remove(senderUserId);
+        if (!participantRecipients.isEmpty()) {
+            Map<String, String> participantPayload = new LinkedHashMap<>(commonPayload);
+            participantPayload.put("recipientRole", "event-participant");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    kind,
+                    "event",
+                    eventId,
+                    "event-participants",
+                    List.copyOf(participantRecipients),
+                    eventTitle,
+                    memberName + " was " + actionText + " " + eventTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(event),
+                    APP_BADGE_URL,
+                    kind + "-" + eventId + "-" + targetUserId,
+                    participantPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
         }
     }
