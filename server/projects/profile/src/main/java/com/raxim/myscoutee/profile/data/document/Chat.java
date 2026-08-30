@@ -39,6 +39,8 @@ public class Chat {
     private List<String> memberIds = new ArrayList<>();
     private Integer unread;
     private String dateIso;
+    private String contextStartAtIso;
+    private String contextEndAtIso;
     private String channelType;
     private String ownerId;
     @Indexed(name = "chat_event")
@@ -132,6 +134,22 @@ public class Chat {
 
     public void setDateIso(String dateIso) {
         this.dateIso = dateIso;
+    }
+
+    public String getContextStartAtIso() {
+        return contextStartAtIso;
+    }
+
+    public void setContextStartAtIso(String contextStartAtIso) {
+        this.contextStartAtIso = contextStartAtIso;
+    }
+
+    public String getContextEndAtIso() {
+        return contextEndAtIso;
+    }
+
+    public void setContextEndAtIso(String contextEndAtIso) {
+        this.contextEndAtIso = contextEndAtIso;
     }
 
     public String getChannelType() {

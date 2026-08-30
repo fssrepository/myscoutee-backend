@@ -152,6 +152,8 @@ class ChatServiceTest {
         viewerChat.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
         viewerChat.setLastMessage("Latest group message");
         viewerChat.setLastSenderId("sender");
+        viewerChat.setContextStartAtIso("2026-08-30T06:00:00Z");
+        viewerChat.setContextEndAtIso("2026-08-30T07:30:00Z");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.queryMenuCounters("viewer")).thenReturn(new UserMenuCountersDto(
@@ -172,6 +174,8 @@ class ChatServiceTest {
         assertThat(changed.lastMessage()).isEqualTo("Latest group message");
         assertThat(changed.lastSenderId()).isEqualTo("sender");
         assertThat(changed.dateIso()).isEqualTo("2026-08-30T05:15:00Z");
+        assertThat(changed.contextStartAtIso()).isEqualTo("2026-08-30T06:00:00Z");
+        assertThat(changed.contextEndAtIso()).isEqualTo("2026-08-30T07:30:00Z");
         assertThat(changed.chats()).isEqualTo(3);
         assertThat(changed.chatCounters().group()).isEqualTo(3);
     }
@@ -181,6 +185,8 @@ class ChatServiceTest {
         ActivityEvent room = new ActivityEvent();
         room.setSourceId("random-room:event-1:stage-1:room-1");
         room.setTitle("Random Room R1");
+        room.setStartAtIso("2026-03-01T09:00:00Z");
+        room.setEndAtIso("2026-03-01T10:00:00Z");
         List<Chat> persisted = new ArrayList<>();
         when(chatsRepository.findByChatId(room.getSourceId()))
                 .thenReturn(List.of())
@@ -203,6 +209,8 @@ class ChatServiceTest {
             assertThat(chat.getTitle()).isEqualTo("Random Room R1");
             assertThat(chat.getAvatar()).isEqualTo("SY");
             assertThat(chat.getMemberIds()).containsExactly("user-1", "user-2");
+            assertThat(chat.getContextStartAtIso()).isEqualTo(room.getStartAtIso());
+            assertThat(chat.getContextEndAtIso()).isEqualTo(room.getEndAtIso());
         });
         assertThat(persisted).extracting(Chat::getOwnerUserId)
                 .containsExactly("user-1", "user-2");

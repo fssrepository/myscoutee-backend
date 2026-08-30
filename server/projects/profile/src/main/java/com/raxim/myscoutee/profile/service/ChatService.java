@@ -255,6 +255,9 @@ public class ChatService {
         for (String memberUserId : memberUserIds) {
             Chat current = existingByOwnerUserId.get(memberUserId);
             Chat document = current == null ? new Chat() : copyChat(current);
+            boolean contextWindowChanged = current != null
+                    && (!Objects.equals(current.getContextStartAtIso(), event.getStartAtIso())
+                            || !Objects.equals(current.getContextEndAtIso(), event.getEndAtIso()));
             document.setMongoId(current == null
                     ? buildMongoId(memberUserId, chatId)
                     : current.getMongoId());
@@ -269,11 +272,17 @@ public class ChatService {
             document.setDateIso(current == null
                     ? nowIso
                     : firstNonBlank(current.getDateIso(), nowIso));
+            document.setContextStartAtIso(event.getStartAtIso());
+            document.setContextEndAtIso(event.getEndAtIso());
             document.setChannelType(CHAT_CHANNEL_MAIN_EVENT);
             document.setOwnerId(eventId);
             document.setEventId(eventId);
             document.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
-            document.setRevision(current == null ? 1L : normalizeChatRevision(current.getRevision()));
+            document.setRevision(current == null
+                    ? 1L
+                    : contextWindowChanged
+                            ? nextChatRevision(current)
+                            : normalizeChatRevision(current.getRevision()));
             document.setSubEventId(null);
             document.setGroupId(null);
             document.setDistanceKm(null);
@@ -348,6 +357,8 @@ public class ChatService {
                 safeText(chat.getLastMessage()),
                 StringUtils.hasText(normalizeId(chat.getLastSenderId())) ? normalizeId(chat.getLastSenderId()) : null,
                 StringUtils.hasText(safeText(chat.getDateIso())) ? safeText(chat.getDateIso()) : null,
+                StringUtils.hasText(safeText(chat.getContextStartAtIso())) ? safeText(chat.getContextStartAtIso()) : null,
+                StringUtils.hasText(safeText(chat.getContextEndAtIso())) ? safeText(chat.getContextEndAtIso()) : null,
                 normalizeCount(counters.chats()),
                 counters.chat());
     }
@@ -462,6 +473,14 @@ public class ChatService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The resource owner cannot open a service chat with themselves.");
         }
 
+        SubEventItem contextSubEvent = findChatContextSubEvent(event, subEventId);
+        String contextStartAtIso = firstNonBlank(
+                contextSubEvent == null ? null : contextSubEvent.startAt(),
+                event.getStartAtIso());
+        String contextEndAtIso = firstNonBlank(
+                contextSubEvent == null ? null : contextSubEvent.endAt(),
+                event.getEndAtIso());
+
         List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
         if (chatDocuments.isEmpty()) {
             Users targetUser = findUser(targetUserId);
@@ -476,6 +495,8 @@ public class ChatService {
             baseChat.setMemberIds(List.of(userId, targetUserId));
             baseChat.setUnread(0);
             baseChat.setDateIso(Instant.now().toString());
+            baseChat.setContextStartAtIso(contextStartAtIso);
+            baseChat.setContextEndAtIso(contextEndAtIso);
             baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
             baseChat.setOwnerId(eventId);
             baseChat.setEventId(eventId);
@@ -483,11 +504,35 @@ public class ChatService {
             baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
             chatsRepository.save(baseChat);
             chatDocuments = List.of(baseChat);
+        } else if (chatDocuments.stream().anyMatch(chat ->
+                !Objects.equals(chat.getContextStartAtIso(), contextStartAtIso)
+                        || !Objects.equals(chat.getContextEndAtIso(), contextEndAtIso))) {
+            chatDocuments = chatDocuments.stream().map(chat -> {
+                Chat next = copyChat(chat);
+                next.setContextStartAtIso(contextStartAtIso);
+                next.setContextEndAtIso(contextEndAtIso);
+                next.setRevision(nextChatRevision(chat));
+                return next;
+            }).toList();
+            chatsRepository.saveAll(chatDocuments);
+            evictChatOwnerReadCaches(chatDocuments);
         }
         chatDocuments = ensureOwnerCopies(chatDocuments);
         Chat viewerChat = findOwnerChat(chatDocuments, userId);
         Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
         return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    private SubEventItem findChatContextSubEvent(ActivityEvent event, String subEventId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        return (event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> normalizedSubEventId.equals(normalizeId(item.id())))
+                .findFirst()
+                .orElse(null);
     }
 
     private ActivityEvent findServiceChatEvent(String eventId) {
@@ -1703,12 +1748,7 @@ public class ChatService {
                         && !CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))) {
             return null;
         }
-        SubEventItem subEvent = (event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents())
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(item -> parts.subEventId().equals(normalizeId(item.id())))
-                .findFirst()
-                .orElse(null);
+        SubEventItem subEvent = findChatContextSubEvent(event, parts.subEventId());
         if (subEvent == null) {
             return null;
         }
@@ -2368,6 +2408,8 @@ public class ChatService {
         copy.setMemberIds(new ArrayList<>(source.getMemberIds() == null ? List.of() : source.getMemberIds()));
         copy.setUnread(source.getUnread());
         copy.setDateIso(source.getDateIso());
+        copy.setContextStartAtIso(source.getContextStartAtIso());
+        copy.setContextEndAtIso(source.getContextEndAtIso());
         copy.setChannelType(source.getChannelType());
         copy.setOwnerId(source.getOwnerId());
         copy.setEventId(source.getEventId());

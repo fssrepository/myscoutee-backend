@@ -340,11 +340,14 @@ case "${scenario}:${command}" in
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;
-  chat-domain:stage|chat-domain:status|chat-domain:reset|chat-domain:prepare-actions-read-race-retest)
+  chat-domain:stage|chat-domain:status|chat-domain:reset|chat-domain:prepare-actions-read-race-retest|chat-domain:repair-content-share-sources)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001 or CHAT-ACTIONS-001."
+    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || [ "$3" = "CHAT-CONTENT-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001, CHAT-ACTIONS-001 or CHAT-CONTENT-001."
     if [ "${command}" = "prepare-actions-read-race-retest" ] && [ "$3" != "CHAT-ACTIONS-001" ]; then
       fail "${command} is restricted to CHAT-ACTIONS-001."
+    fi
+    if [ "${command}" = "repair-content-share-sources" ] && [ "$3" != "CHAT-CONTENT-001" ]; then
+      fail "${command} is restricted to CHAT-CONTENT-001."
     fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

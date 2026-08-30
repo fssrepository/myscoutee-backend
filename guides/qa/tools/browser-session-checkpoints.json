@@ -186,6 +186,36 @@
         }
       ]
     },
+    "CHAT-CONTENT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-content sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · image, voice, poll and share-card sender",
+          "microphonePermission": "granted",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "Nova chat-content live participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · live reader, denied-recorder control and voter",
+          "microphonePermission": "denied"
+        },
+        {
+          "actor": "Riley chat-content recovery participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · closed unread/reconnect reader and voter"
+        }
+      ]
+    },
     "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

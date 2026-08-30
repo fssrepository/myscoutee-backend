@@ -35,6 +35,8 @@ public final class ChatDtos {
             List<ChatMemberDto> members,
             Integer unread,
             String dateIso,
+            String contextStartAtIso,
+            String contextEndAtIso,
             String channelType,
             String ownerId,
             Double distanceKm,
@@ -57,6 +59,8 @@ public final class ChatDtos {
             String lastMessage,
             String lastSenderId,
             String dateIso,
+            String contextStartAtIso,
+            String contextEndAtIso,
             Integer chats,
             UserChatCountersDto chatCounters) {
     }

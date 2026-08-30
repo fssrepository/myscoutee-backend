@@ -756,6 +756,12 @@ Execution evidence on 2026-08-04:
   item and the UI must show exactly one card using the main Event title,
   timeframe and location. The Sub-events surface must not show `No items`, an
   empty child section or a second copy of the same Event.
+- Share that Event into one accepted Event/Group chat, then open the shared
+  Event card as a participant. It must enter the same canonical **View Event ->
+  Sub Events** runtime surface, not a chat-specific read-only form. The same
+  persisted `MAIN_EVENT` card, title, timeframe, location, member boundary and
+  available Event actions must be visible; opening, closing and reopening the
+  shared card must remain read-only and must not create a second runtime item.
 - The card is main-Event scoped: the Event-level Members action remains
   available and shows the canonical creator/Admin once with matching accepted,
   pending and capacity counts. Other normal Event-level actions and configured
@@ -2105,8 +2111,31 @@ chat/message lifecycle and remains usable by another participant.
   few-second voice clip, one two-option poll, one Event card and one Asset/link
   card. Nova observes every message live exactly once.
 - Nova opens the image preview, plays the voice clip, votes once, changes that
-  vote, and opens both available cards. Riley casts the second poll vote.
-  Totals move 0 -> 1 -> 2 and stay 2 after Nova changes option.
+  vote, and opens both available cards. The Event attachment must route to the
+  canonical **View Event -> Sub Events** surface rather than a chat-specific
+  form; this Chat checkpoint proves navigation and target identity, while
+  `EVENT-RUNTIME-001` owns the runtime-card content and persistence oracle.
+  Riley casts the second poll vote. Totals move 0 -> 1 -> 2 and stay 2 after
+  Nova changes option.
+- In Asset Explore, select the highlighted whole-type option (`All Transport`),
+  require the controlled Sedan fixture to appear, select `Sedan` and require
+  the same fixture to remain as the category-filtered result, then select the
+  `SUV` subtype and require it to disappear. Return to `All Transport` and
+  share the same card. The same whole-type selector contract applies to
+  Accommodation and Supplies.
+- Open the controlled Asset card on both the mobile and desktop layouts. It
+  must open the canonical read-only Asset Editor used by Asset Explore, not
+  the legacy nested resource-asset form or a chat-specific popup. The editor
+  must fully cover the popup beneath it so only its own close action is
+  visible. Its hydrated fields must show subtitle
+  `Controlled rich-content Chat asset`, category `Sedan`, total capacity `4`
+  and quantity `1`. Because the fixture has no image, the editor's shared image
+  carousel must show its normal empty state without requesting or rendering a
+  broken image URL. No entry-point-specific inset panel, carousel override or
+  popup geometry is allowed.
+- Open the poll vote dialog on both layouts and require every answer row to
+  remain geometrically stable under hover, press and selection; poll answer
+  buttons opt out of shared scale motion so the click target never moves.
 - One denied/removed card target becomes unavailable without leaking detail.
   One recorder-permission denial/cancel branch creates no message or orphan
   media. Reopen the thread and require canonical attachment/target IDs, working
