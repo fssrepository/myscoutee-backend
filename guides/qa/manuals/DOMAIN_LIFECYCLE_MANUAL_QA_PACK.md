@@ -2177,6 +2177,31 @@ message share the same canonical membership boundary.
   `CHAT-REPORT-001` assertions while `CHAT-AUTH-001` retains its already
   closed base authorization evidence.
 
+Execution evidence (2026-08-30, PASS/CLOSED):
+
+- The replayable three-actor fixture exposed the canonical Event and Group A
+  chats to Casey, Nova and Riley. All three authenticated terminal reads
+  returned the exact four-person Event membership and three-person Group A
+  membership with persisted profile images; Lina remained pending-only,
+  Sophia remained left/denied, and Olivia was accepted only in the Event and
+  Group B controls. Every direct negative-control read returned `404`.
+- Nova submitted the same Riley message report twice. The write-side
+  deterministic identity retained exactly one unresolved report with the
+  exact Nova reporter, Riley target, Harassment reason, details, Event,
+  Group A chat and source-message identity. The three-message controlled
+  history remained unchanged and the fixture oracle found no unrelated write.
+- Casey opened the resulting Admin review and the user confirmed its reporter,
+  reason, source context, shared-source navigation and member presentation.
+  The shared `app-image-card` now owns compact portrait sizing and contain-fit
+  rendering; the same configuration fixes portrait rendering in the Event
+  Members list without a page-specific style override.
+- The independent Mongo status returned `terminal-pass` for all eight
+  persisted invariants. The authenticated browser oracle passed all twelve
+  membership, access, avatar, report-context and history assertions for all
+  three actors. Backend and frontend hot-deploy owners compiled successfully;
+  the frontend-local membership/report adapters carry the same contract but
+  were not separately executed in this run.
+
 ### `CHAT-PUSH-001` — background device delivery
 
 Purpose: prove one real background delivery boundary, not general messaging
