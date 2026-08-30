@@ -5373,8 +5373,26 @@ the affected-member notification while Riley and Lina received the participant
 notification, exactly once for Reinstate. Riley again showed no Impressions red
 counter; stored Impressions remained `null`, all event-feedback counters
 remained zero and the fixture still has zero feedback states, answers and
-affinity-recompute tasks. The separately reset review/finalize branch remains
-open, so this checkpoint is not closed.
+affinity-recompute tasks.
+
+Review/finalize closure evidence (2026-08-30): after a named reset, the
+separate pre-Finalize fixture retained Nova as the highest-score row (`DQ 10`)
+behind active Riley `9`, Lina `5` and Casey `1`. Casey finalized Qualifiers
+once; the direct-write oracle recorded stage and runtime `F / stage-finalized`,
+result revision `1`, no premature Final membership and one Finalize intent for
+Riley+Lina only. The first real `event-tournament-review` pass recorded count
+`2`, explicitly representing one Final group-membership write plus one outcome
+revision. Final membership and its score-plan marker contain exactly Riley and
+Lina; Nova is excluded despite its leading score and Casey is the active
+non-advancer. Notification intents are exactly Riley+Lina finalized,
+Riley+Lina advanced and Casey not advanced, with no Nova outcome. A second
+unchanged real-worker pass recorded count `0`; the complete domain and
+notification snapshot remained identical. The final browser comparison was
+accepted. No red Groups counter is expected merely because one group exists:
+the established counter is `groupsPending`, while the group accordion itself
+shows the materialized group and members. No Impression badge appeared and all
+write-side Impression/feedback evidence stayed unchanged. `TOURNAMENT-DQ-001`
+is **PASS / CLOSED**.
 
 ### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
 

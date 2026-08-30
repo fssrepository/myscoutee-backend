@@ -40,19 +40,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-DQ-001 — disqualification and reinstatement
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-dq-001--disqualification-and-reinstatement
-scenario: XLS-driven Core execution order. Tournament priority is 11 (12/15 complete); TOURNAMENT-DQ-001 is the active row, followed by TOURNAMENT-RESOURCE-001, JOB-TOURNAMENT completion and every Chat row.
-ledger_status: IN PROGRESS — DQ, Reinstate and Impression control PASS; separate review/finalize branch pending
-state: The separate four-person review fixture is staged at review-noop-verified. Casey finalized Qualifiers once; the first real worker pass recorded count 2 (one Final group-membership write plus one outcome revision), advanced exactly Riley+Lina, excluded high-score DQ Nova and active loser Casey, then the unchanged second pass recorded count 0 with identical domain and notification evidence. Three fresh Casey/Nova/Riley browser sessions remain open side by side for the final rendering comparison.
-required_resume: Run the read-only TOURNAMENT-DQ-001 status gate and require phase review-noop-verified. Do not replay Finalize, arm either worker pass or Start Final. Complete only the browser comparison: Final Group A contains Riley+Lina; Casey has the automatic non-advancement row, Riley has Finalize plus advancement rows, Nova has no review outcome and no Impressions red badge. Then close and reset the checkpoint.
-event: staged — QA TOURNAMENT-DQ-001 review domain and no-op oracles PASS; final browser comparison pending
+checkpoint: TOURNAMENT-RESOURCE-001 — generated-group resource aggregation
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-resource-001--generated-group-resource-aggregation
+scenario: XLS-driven Core execution order. Tournament priority is 11 (13/15 complete); TOURNAMENT-RESOURCE-001 is the active row, followed by JOB-TOURNAMENT completion and every Chat row.
+ledger_status: DESIGN CAPTURED / NOT RUN — isolated fixture preparation is next
+state: TOURNAMENT-DQ-001 is PASS/CLOSED and reset after exact DQ/Reinstate, Impression, Finalize, DQ advancement and unchanged real-worker evidence. No manual-QA fixture is staged. The three DQ browser windows remain open but no longer own valid staged evidence.
+required_resume: Build and inspect an isolated already-materialized Tournament group plus controlled Transport, Accommodation and Supplies ownership before opening replacement browsers. The assignment writes must persist exact event/stage/group/asset-owner/type scope and write-owned group-runtime metrics; group, Groups pending counter, stage/View Event navigation and root action badge must agree before/after/reload without changing membership roles or exposing a generated room as a root event card.
+event: not staged — next fixture is QA TOURNAMENT-RESOURCE-001
 actors:
-  Casey: Tournament host and DQ/Reinstate actor
-  scored target: controlled accepted participant retained as DQ
-  eligible controls: two active scored participants in the same group
-next_actor: User performs the read-only Final membership and three-browser notification/counter comparison; no mutation action remains.
-stop_phrase: Review/no-op verified — visual closure pending
+  Casey: Tournament host and resource-assignment actor
+  group members: controlled generated-group participants
+  asset owners: controlled eligible owners for one Transport, Accommodation and Supplies asset
+next_actor: Codex traces the canonical resource assignment write path and prepares the isolated baseline; only then the user receives one complete click/check sequence.
+stop_phrase: Tournament resource baseline ready
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
