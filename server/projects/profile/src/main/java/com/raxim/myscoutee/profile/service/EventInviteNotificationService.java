@@ -284,6 +284,101 @@ public class EventInviteNotificationService {
         }
     }
 
+    public void notifyEventMemberStatusChanged(
+            ActivityEvent event,
+            String memberUserId,
+            String memberUserName,
+            String action,
+            String changedAtIso,
+            String actorUserId,
+            List<String> activeEventUserIds) {
+        if (event == null) {
+            return;
+        }
+        String eventId = safeText(event.getSourceId());
+        String targetUserId = safeText(memberUserId);
+        String senderUserId = safeText(actorUserId);
+        String normalizedAction = safeText(action).toLowerCase();
+        if (!StringUtils.hasText(eventId)
+                || !StringUtils.hasText(targetUserId)
+                || !("disqualified".equals(normalizedAction) || "reinstated".equals(normalizedAction))) {
+            return;
+        }
+
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(memberUserName))
+                ? safeText(memberUserName)
+                : targetUserId;
+        String occurrenceId = UUID.randomUUID().toString();
+        String kind = "event-member-" + normalizedAction;
+        String actionText = "disqualified".equals(normalizedAction)
+                ? "disqualified from"
+                : "reinstated to";
+        Map<String, String> commonPayload = new LinkedHashMap<>();
+        commonPayload.put("eventId", eventId);
+        commonPayload.put("parentEventId", eventId);
+        commonPayload.put("eventTitle", eventTitle);
+        commonPayload.put("eventScope", "members");
+        commonPayload.put("memberUserId", targetUserId);
+        commonPayload.put("memberName", memberName);
+        commonPayload.put("membershipAction", normalizedAction);
+        commonPayload.put("notification_tone", "disqualified".equals(normalizedAction) ? "warning" : "success");
+        commonPayload.put("membershipOccurrenceId", occurrenceId);
+        if (StringUtils.hasText(senderUserId)) {
+            commonPayload.put("senderUserId", senderUserId);
+        }
+        if (StringUtils.hasText(safeText(changedAtIso))) {
+            commonPayload.put("changedAtIso", safeText(changedAtIso));
+        }
+
+        if (!targetUserId.equals(senderUserId)) {
+            Map<String, String> targetPayload = new LinkedHashMap<>(commonPayload);
+            targetPayload.put("recipientRole", "affected-member");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    kind,
+                    "event",
+                    eventId,
+                    "affected-member",
+                    List.of(targetUserId),
+                    eventTitle,
+                    "You were " + actionText + " " + eventTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(event),
+                    APP_BADGE_URL,
+                    kind + "-" + eventId + "-" + targetUserId,
+                    targetPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+
+        LinkedHashSet<String> participantRecipients = new LinkedHashSet<>();
+        if (activeEventUserIds != null) {
+            activeEventUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(participantRecipients::add);
+        }
+        participantRecipients.remove(targetUserId);
+        participantRecipients.remove(senderUserId);
+        if (!participantRecipients.isEmpty()) {
+            Map<String, String> participantPayload = new LinkedHashMap<>(commonPayload);
+            participantPayload.put("recipientRole", "event-participant");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    kind,
+                    "event",
+                    eventId,
+                    "event-participants",
+                    List.copyOf(participantRecipients),
+                    eventTitle,
+                    memberName + " was " + actionText + " " + eventTitle + ".",
+                    DEFAULT_CLICK_URL,
+                    resolveImageUrl(event),
+                    APP_BADGE_URL,
+                    kind + "-" + eventId + "-" + targetUserId,
+                    participantPayload,
+                    StringUtils.hasText(senderUserId) ? senderUserId : null));
+        }
+    }
+
     public void notifyJoinRequested(
             ActivityEvent event,
             String memberUserId,

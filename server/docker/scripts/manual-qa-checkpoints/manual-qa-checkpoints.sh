@@ -68,6 +68,8 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-room-life-baseline event-domain TOURNAMENT-ROOM-LIFE-001
   bash manual-qa-checkpoints.sh verify-tournament-member-removal event-domain TOURNAMENT-MEMBER-002
   bash manual-qa-checkpoints.sh verify-tournament-member-notification event-domain TOURNAMENT-MEMBER-003
+  bash manual-qa-checkpoints.sh verify-tournament-dq event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-reinstate event-domain TOURNAMENT-DQ-001
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
@@ -209,6 +211,8 @@ run_scenario() {
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-admission-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-MEMBER-003" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-member-notification-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-DQ-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-dq-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-001" ] || [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-002" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-score-reopen-checkpoints.js"
       else
@@ -374,6 +378,11 @@ case "${scenario}:${command}" in
   event-domain:verify-tournament-member-notification)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-MEMBER-003" ] || fail "${command} is restricted to TOURNAMENT-MEMBER-003."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-dq|event-domain:verify-tournament-reinstate)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-DQ-001" ] || fail "${command} is restricted to TOURNAMENT-DQ-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:rearm-score-reopen|\

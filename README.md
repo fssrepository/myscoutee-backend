@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-08-25:** 63/224 passed — core 60/127, external/optional 3/97; current checkpoint: `TOURNAMENT-MEMBER-002` (active-member removal fixture pending).
+**2026-08-30:** 65/225 passed — core 62/128, external/optional 3/97; current checkpoint: `TOURNAMENT-DQ-001` (disqualification/reinstatement fixture preparation).
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|

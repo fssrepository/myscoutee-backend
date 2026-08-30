@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 02:19 CEST
+Updated: 2026-08-30 02:31 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -40,19 +40,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-MEMBER-003 — four-person removal recipient fan-out
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-003--four-person-removal-recipient-fan-out
-scenario: XLS-driven Core execution order. Tournament priority is 11 (11/15 complete); TOURNAMENT-MEMBER-003 is the active row, followed by TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
-ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. The earlier mistaken TOURNAMENT-MEMBER-003 actions and their residual chat messages are discarded as non-evidence. A clean replacement baseline was staged at `2026-08-30T00:18:55Z`: all four parent/room memberships, four scores and four room-chat copies exist, both fixture chat histories and all removal notifications are empty, and Casey's write-side `My Events` counter is 1. Three fresh Casey/Nova/Riley windows are open side by side.
-required_resume: Do not reset or stage again while this baseline is intact. Casey removes Nova exactly once from the parent Members UI. Verify visible order Riley 9, Lina 5, Casey 1, then `R / Nova Social / 7`, then `V / -----`; Nova receives one self-removal notification, Riley receives one event-participant notification, Casey none. Parent Event chat must contain exactly `Nova Social was removed from the event.` and Group A chat exactly `Nova Social was removed from the tournament group.` Casey and Riley can read both; Nova loses both chat projections. The persisted oracle additionally proves Lina's independent notification and both chat projections, immutable scores, exact counters, actor exclusion and one canonical message per channel.
-event: QA TOURNAMENT-MEMBER-003 — active parent, one four-person group, Nova removal target
+checkpoint: TOURNAMENT-DQ-001 — disqualification and reinstatement
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-dq-001--disqualification-and-reinstatement
+scenario: XLS-driven Core execution order. Tournament priority is 11 (12/15 complete); TOURNAMENT-DQ-001 is the active row, followed by TOURNAMENT-RESOURCE-001, JOB-TOURNAMENT completion and every Chat row.
+ledger_status: DESIGN CAPTURED / NOT RUN — fixture preparation is next
+state: TOURNAMENT-MEMBER-002 and TOURNAMENT-MEMBER-003 are PASS/CLOSED and reset. T002's widened replay proved one parent Event message, one affected Group A message and unchanged Group B with zero messages/unread/lastMessage. T003 passed with Lina as the dynamically derived removal target, exact same-room recipient fan-out and both channel projections. No manual-QA fixture is currently staged; the three T002 browser windows remain open but no longer own valid staged evidence.
+required_resume: Build and inspect the isolated four-person TOURNAMENT-DQ-001 baseline before opening replacement browsers. The case must preserve scored membership as DQ, order active score rows before the DQ row, retain the exact name/score/history, exclude DQ from advancement, then use a separately reset pre-Finalize branch to prove Reinstate without duplicate membership or score.
+event: not staged — next fixture is QA TOURNAMENT-DQ-001
 actors:
-  Casey: Tournament host and removal actor
-  removed participant: controlled accepted active room member
-  remaining participants: Riley visible recipient; Lina oracle-only independent recipient
-next_actor: User performs the one Casey > Members > Remove Nova action after the baseline visual read; Codex runs the persisted fan-out oracle.
-stop_phrase: Remove action completed
+  Casey: Tournament host and DQ/Reinstate actor
+  scored target: controlled accepted participant retained as DQ
+  eligible controls: two active scored participants in the same group
+next_actor: Codex prepares and proves the DQ baseline; only then the user receives the complete click/check sequence.
+stop_phrase: DQ baseline ready
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -144,7 +144,7 @@ cutoff, active participant removal, the separate four-person notification
 fan-out boundary, DQ/Reinstate and generated-group resource aggregation,
 plus the existing `JOB-TOURNAMENT` row whose
 primary lifecycle oracle passed but Monitoring/browser completion remains.
-Therefore the domain is now 10/15; `TOURNAMENT-MEMBER-002` is active and
+Therefore the domain is now 12/15; `TOURNAMENT-DQ-001` is active and
 `CHAT-LIST-001` remains deferred until the open Tournament block is completed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
@@ -1095,9 +1095,9 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-SCORE-REOPEN-001 (closed)
 -> TOURNAMENT-SCORE-REOPEN-002 (closed; fixture reset)
 -> TOURNAMENT-MEMBER-001 (closed)
--> TOURNAMENT-MEMBER-002 (staged; action not yet performed)
--> TOURNAMENT-MEMBER-003 (not run; four-person participant fan-out fixture)
--> TOURNAMENT-DQ-001 (not run)
+-> TOURNAMENT-MEMBER-002 (closed; widened cross-group chat isolation replay PASS)
+-> TOURNAMENT-MEMBER-003 (closed; four-person participant fan-out PASS)
+-> TOURNAMENT-DQ-001 (active; fixture preparation)
 -> TOURNAMENT-RESOURCE-001 (not run)
 -> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)
 ```

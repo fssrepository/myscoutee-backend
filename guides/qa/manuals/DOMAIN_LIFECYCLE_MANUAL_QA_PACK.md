@@ -5241,6 +5241,10 @@ Execution evidence on 2026-08-25 (PASS / CLOSED):
   the parent event and go to every remaining accepted non-actor participant.
   Riley's Group B membership, room chat and counters remain unchanged, so this
   checkpoint proves cross-room delivery together with group-state isolation.
+  The parent Event channel is shared by Casey and Riley and receives exactly
+  one removal message. Only the affected Group A channel receives the matching
+  tournament-group removal message; Group B must retain zero messages, zero
+  unread delta and an empty last-message summary.
 
 Execution evidence on 2026-08-30 (PASS / CLOSED):
 
@@ -5250,7 +5254,10 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   and rendered Group A Standings as active Casey, `R / Nova Social / 7`, then
   `V / -----`. The retained row never exposed Nova's database ID.
 - The parent event channel rendered `Nova Social was removed from the event.`;
-  it did not misclassify the admin action as an voluntary `left` transition.
+  it did not misclassify the admin action as a voluntary `left` transition.
+  Group A rendered exactly one `Nova Social was removed from the tournament
+  group.` system message. Riley's unrelated Group B retained no message, no
+  unread delta and no last-message change.
   Nova saw the exact self-removal notification, Riley saw the exact parent-
   event participant notification despite belonging to Group B, and Casey saw
   none as actor.
@@ -5259,25 +5266,30 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   score identity/value `Nova/7` unchanged, exactly two outbox intents and two
   inbox rows with roles `removed-member` and `event-participant`, Casey absent
   from all recipients, Nova event counters `1/1 -> 0/0`, and Casey/Riley event
-  counters unchanged. The fixture may now be reset; do not repeat this case
+  counters unchanged. The widened oracle also proved one canonical parent
+  Event message, one canonical affected-Group-A message, and byte-for-byte
+  message/unread isolation for Group B. The fixture was reset; do not repeat this case
   unless removal, standings identity/order, chat wording, participant fan-out
   or write-side event counters change.
 
 ### `TOURNAMENT-MEMBER-003` — four-person removal recipient fan-out
 
 - Stage one isolated active Tournament with a single four-person Qualifiers
-  group: Casey, Nova, Riley and Lina. Casey removes Nova once from the parent;
+  group: Casey, Nova, Riley and Lina. Casey removes one scored non-host member
+  once from the parent; the verifier derives the actual target from the paired
+  parent=`deleted` and generated-room=`removed` writes,
   this is deliberately separate from the `TOURNAMENT-MEMBER-002` 2+1 control.
-- The persisted parent membership becomes `deleted`, while Nova's generated
+- The persisted parent membership becomes `deleted`, while the target's
   Group A membership becomes `removed`. Group A Standings retains the exact
-  score identity and shows active rows Riley 9, Lina 5 and Casey 1 first, then
-  `R` / `Nova Social` / 7 and finally `V` / `-----` in the existing `#`
+  score identity, sorts all active rows first, then the target as `R`, and
+  finally `V` / `-----` in the existing `#`
   column. The component does not
   sort or reconstruct the name; server and frontend-local repositories read
   the stored group membership state.
-- Recipient pass boundary: Nova receives exactly one self-removal notification;
-  Riley and Lina each receive exactly one event-participant notification naming
-  Nova; Casey receives none because Casey performed the action. Recipient
+- Recipient pass boundary: the removed member receives exactly one self-removal
+  notification; both other non-actor participants each receive exactly one
+  event-participant notification naming the target; Casey receives none because
+  Casey performed the action. Recipient
   selection comes from accepted parent-event membership, not generated-room
   membership; `TOURNAMENT-MEMBER-002` independently proves that this delivery
   crosses group boundaries without mutating the other group.
@@ -5289,7 +5301,7 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   parent event channel with earlier lifecycle messages. This isolated fixture
   does not own that channel-creation/history contract and may materialize the
   parent channel at Remove time. Do not classify that as a failure here. This
-  row owns only Nova's room-chat revocation, the new removal effects, exact
+  row owns only the target's room-chat revocation, the new removal effects, exact
   recipient fan-out and leaderboard persistence; initial event-channel history
   remains in the Tournament/Chat lifecycle coverage.
 - Fixture counter boundary: Casey is the parent owner, so staging must write
@@ -5297,6 +5309,19 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   `activities.event.hosting`, while Nova/Riley/Lina use participant
   `Events/Active Events` counters. Do not stage Casey through the participant
   counter path merely to make all four setup calls uniform.
+
+Execution evidence on 2026-08-30 (PASS / CLOSED):
+
+- Casey removed Lina from the clean four-person room. Standings retained Lina
+  as `R / Lina Park / 5`; Riley, Nova and Casey stayed active and the four
+  stored score identities/values remained unchanged.
+- Lina received the self-removal notification. Nova and Riley each received
+  the participant notification naming Lina; Casey was excluded as actor.
+- The parent Event channel contained exactly one `Lina Park was removed from
+  the event.` message and Group A exactly one `Lina Park was removed from the
+  tournament group.` message. Both channels retained only Casey, Nova and
+  Riley; Lina lost both projections. Lina's event counters decreased once and
+  all remaining event counters stayed unchanged. The fixture was reset.
 
 ### `TOURNAMENT-DQ-001` — disqualification and reinstatement
 

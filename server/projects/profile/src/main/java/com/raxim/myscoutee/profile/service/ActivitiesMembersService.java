@@ -1218,6 +1218,14 @@ public class ActivitiesMembersService {
                     targetUserId,
                     actorUserId,
                     nowIso);
+        } else if (OWNER_TYPE_EVENT.equals(ownerType)
+                && (ACTION_DISQUALIFY.equals(action) || ACTION_REINSTATE.equals(action))) {
+            updateGeneratedTournamentRoomParticipationStatus(
+                    ownerId,
+                    targetUserId,
+                    action,
+                    actorUserId,
+                    nowIso);
         }
 
         boolean removingPendingEventMembership = OWNER_TYPE_EVENT.equals(ownerType)
@@ -1277,6 +1285,7 @@ public class ActivitiesMembersService {
                 postEventMembershipChangeMessages(ownerId, List.of(), List.of(current), actorUserId);
             } else if (ACTION_DISQUALIFY.equals(action) || ACTION_REINSTATE.equals(action)) {
                 postMemberActionChatMessage(ownerId, action, next);
+                notifyEventMemberStatusChanged(ownerId, next, action, actorUserId, nowIso);
             }
             userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
         } else if (OWNER_TYPE_SUB_EVENT.equals(ownerType)) {
@@ -1970,6 +1979,83 @@ public class ActivitiesMembersService {
                             "member-removed");
                 }
             }
+        }
+    }
+
+    private void updateGeneratedTournamentRoomParticipationStatus(
+            String parentEventId,
+            String targetUserId,
+            String action,
+            String actorUserId,
+            String nowIso) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedAction = normalizeMemberAction(action);
+        String expectedCurrentStatus = ACTION_DISQUALIFY.equals(normalizedAction)
+                ? STATUS_ACCEPTED
+                : ACTION_REINSTATE.equals(normalizedAction) ? STATUS_DISQUALIFIED : "";
+        String nextStatus = ACTION_DISQUALIFY.equals(normalizedAction)
+                ? STATUS_DISQUALIFIED
+                : ACTION_REINSTATE.equals(normalizedAction) ? STATUS_ACCEPTED : "";
+        if (!StringUtils.hasText(normalizedParentEventId)
+                || !StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(expectedCurrentStatus)
+                || !StringUtils.hasText(nextStatus)) {
+            return;
+        }
+        Map<String, ActivityEvent> roomsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent room : activityEventsRepository.findByParentEventIdIn(List.of(normalizedParentEventId))) {
+            String roomSourceId = normalizeId(room == null ? null : room.getSourceId());
+            if (!StringUtils.hasText(roomSourceId)
+                    || !Boolean.TRUE.equals(room.getGenerated())
+                    || !TOURNAMENT_ROOM_EVENT_TYPE.equalsIgnoreCase(safeText(room.getEventType()))) {
+                continue;
+            }
+            roomsBySourceId.putIfAbsent(roomSourceId, room);
+        }
+        if (roomsBySourceId.isEmpty()) {
+            return;
+        }
+        List<ActivityMember> changedRoomMembers = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, roomsBySourceId.keySet())
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(member -> normalizedTargetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> expectedCurrentStatus.equals(normalizeStatus(member.getStatus())))
+                .map(member -> {
+                    ActivityMember next = cloneMember(member);
+                    next.setStatus(nextStatus);
+                    next.setPendingSource(null);
+                    next.setRequestKind(null);
+                    next.setInvitedByUserId(null);
+                    next.setActionAtIso(nowIso);
+                    next.setUpdatedDate(nowIso);
+                    next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
+                    return next;
+                })
+                .toList();
+        if (changedRoomMembers.isEmpty()) {
+            return;
+        }
+        LinkedHashSet<String> affectedRoomIds = changedRoomMembers.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String memberName = memberDisplayName(changedRoomMembers.get(0));
+        activityMembersRepository.saveAll(changedRoomMembers);
+        refreshEmbeddedEventMembersBatch(affectedRoomIds);
+        if (!StringUtils.hasText(memberName)) {
+            return;
+        }
+        String actionText = ACTION_DISQUALIFY.equals(normalizedAction)
+                ? "disqualified from"
+                : "reinstated to";
+        for (String roomId : affectedRoomIds) {
+            chatService.postSystemMessage(
+                    roomId,
+                    memberName + " was " + actionText + " the tournament group.",
+                    "member-" + normalizedAction);
         }
     }
 
@@ -4550,6 +4636,31 @@ public class ActivitiesMembersService {
                     actorUserId,
                     remainingAcceptedUserIds);
         }
+    }
+
+    private void notifyEventMemberStatusChanged(
+            String eventId,
+            ActivityMember member,
+            String action,
+            String actorUserId,
+            String changedAtIso) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId) || member == null) {
+            return;
+        }
+        ActivityEvent event = findPreferredEventRecord(normalizedEventId);
+        if (event == null) {
+            return;
+        }
+        OwnerMembersSnapshot activeMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        eventInviteNotificationService.notifyEventMemberStatusChanged(
+                event,
+                normalizeId(member.getUserId()),
+                memberDisplayName(member),
+                ACTION_DISQUALIFY.equals(action) ? "disqualified" : "reinstated",
+                changedAtIso,
+                actorUserId,
+                activeMembers == null ? List.of() : activeMembers.acceptedMemberUserIds());
     }
 
     private List<String> eventAcceptanceRecipientUserIds(
