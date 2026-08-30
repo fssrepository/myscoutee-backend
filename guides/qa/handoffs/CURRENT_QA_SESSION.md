@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 04:15 CEST
+Updated: 2026-08-30 04:29 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -26,6 +26,8 @@ file first, then open only the linked active checkpoint section.
   [`tournament-score-reopen-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-score-reopen-checkpoints.js)
 - Isolated four-person room-removal notification fixture:
   [`tournament-member-notification-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-member-notification-checkpoints.js)
+- Isolated generated-group resource aggregation fixture:
+  [`tournament-resource-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-resource-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
@@ -43,16 +45,16 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-RESOURCE-001 — generated-group resource aggregation
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-resource-001--generated-group-resource-aggregation
 scenario: XLS-driven Core execution order. Tournament priority is 11 (13/15 complete); TOURNAMENT-RESOURCE-001 is the active row, followed by JOB-TOURNAMENT completion and every Chat row.
-ledger_status: DESIGN CAPTURED / NOT RUN — isolated fixture preparation is next
-state: TOURNAMENT-DQ-001 is PASS/CLOSED and reset after exact DQ/Reinstate, Impression, Finalize, DQ advancement and unchanged real-worker evidence. No manual-QA fixture is staged. The three DQ browser windows remain open but no longer own valid staged evidence.
-required_resume: Build and inspect an isolated already-materialized Tournament group plus controlled Transport, Accommodation and Supplies ownership before opening replacement browsers. The assignment writes must persist exact event/stage/group/asset-owner/type scope and write-owned group-runtime metrics; group, Groups pending counter, stage/View Event navigation and root action badge must agree before/after/reload without changing membership roles or exposing a generated room as a root event card.
-event: not staged — next fixture is QA TOURNAMENT-RESOURCE-001
+ledger_status: DESIGN CAPTURED / MANUAL ACTION ACTIVE — isolated baseline is proven; assignment replay is next
+state: TOURNAMENT-RESOURCE-001 is staged at phase baseline-ready. The second independent status proved one root event, one hidden generated room, one active generated Group A, zero resource writes, zero pending activity, exact accepted roles, stable user counters and zero checkpoint-owned notifications. Three replacement Casey/Nova/Riley windows are open side by side.
+required_resume: Continue only from the staged baseline. Casey assigns Casey Group Shuttle as Transport, Nova assigns Nova Group Lodge as Accommodation and Riley assigns Riley Group Supplies as Supplies through Group A's existing Event Resource flow. Then reload and compare the exact group, Groups, stage/View Event and root event action counters before running verify-tournament-resource. Do not restage or reopen browsers while the user is executing the sequence.
+event: QA TOURNAMENT-RESOURCE-001 — active Qualifiers, one generated Group A, baseline pending 0
 actors:
   Casey: Tournament host and resource-assignment actor
   group members: controlled generated-group participants
   asset owners: controlled eligible owners for one Transport, Accommodation and Supplies asset
-next_actor: Codex traces the canonical resource assignment write path and prepares the isolated baseline; only then the user receives one complete click/check sequence.
-stop_phrase: Tournament resource baseline ready
+next_actor: User executes the complete three-owner assignment and reload sequence; Codex then runs the persisted verification once.
+stop_phrase: Tournament resource assignments ready for oracle
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

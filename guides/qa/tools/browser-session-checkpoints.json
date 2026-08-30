@@ -471,6 +471,33 @@
         }
       ]
     },
+    "TOURNAMENT-RESOURCE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Transport owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · assigns Casey Group Shuttle"
+        },
+        {
+          "actor": "Nova Accommodation owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · assigns Nova Group Lodge"
+        },
+        {
+          "actor": "Riley Supplies owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · assigns Riley Group Supplies"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2

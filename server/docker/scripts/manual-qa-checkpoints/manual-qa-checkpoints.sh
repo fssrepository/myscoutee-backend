@@ -76,6 +76,7 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-dq-review-result event-domain TOURNAMENT-DQ-001
   bash manual-qa-checkpoints.sh arm-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
   bash manual-qa-checkpoints.sh verify-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-resource event-domain TOURNAMENT-RESOURCE-001
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
@@ -219,6 +220,8 @@ run_scenario() {
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-member-notification-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-DQ-001" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-dq-checkpoints.js"
+      elif [ "${checkpoint_id}" = "TOURNAMENT-RESOURCE-001" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/tournament-resource-checkpoints.js"
       elif [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-001" ] || [ "${checkpoint_id}" = "TOURNAMENT-SCORE-REOPEN-002" ]; then
         scenario_script="${SCRIPT_DIR}/scenarios/tournament-score-reopen-checkpoints.js"
       else
@@ -396,6 +399,11 @@ case "${scenario}:${command}" in
   event-domain:verify-tournament-dq-review-noop)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-DQ-001" ] || fail "${command} is restricted to TOURNAMENT-DQ-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:verify-tournament-resource)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "TOURNAMENT-RESOURCE-001" ] || fail "${command} is restricted to TOURNAMENT-RESOURCE-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:rearm-score-reopen|\
