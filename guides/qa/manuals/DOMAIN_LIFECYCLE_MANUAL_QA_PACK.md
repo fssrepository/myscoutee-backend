@@ -5335,6 +5335,18 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
 - In a separately reset pre-Finalize branch, Reinstate the same identity and
   prove eligibility returns without a duplicate membership or score row.
   Finalize/review replay must be exact-once in both branches.
+- Treat the DQ/Reinstate Event and Group system messages as chat activity, not
+  new Impression evidence. On Riley's unchanged participant control, the
+  ordinary realtime poll may expose the profile-derived Attendee presentation,
+  but the server poll must not add an Impressions red counter merely because
+  that projection first became available: the change flag is owned by an
+  actual persisted `Users.impressions` write, not by a projected payload diff.
+  Opening the popup must show
+  unchanged empty metrics and `0 signals`; the controlled event must still
+  have zero feedback states, feedback answers and affinity recompute tasks,
+  while Riley's stored Impressions and event-feedback counters remain exactly
+  at baseline. A later evidence-backed Event Feedback change remains owned by
+  `EVENT-IMPRESSION-001` and must still produce its normal change signal.
 
 ### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
 

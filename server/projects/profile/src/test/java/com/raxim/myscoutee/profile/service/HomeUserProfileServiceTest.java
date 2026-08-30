@@ -730,6 +730,54 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeSnapshotDoesNotReportProjectedImpressionsAsAWrite() {
+        Users active = user("realtime-projected-impressions", 0d);
+        when(usersRepository.findByUserId("realtime-projected-impressions")).thenReturn(Optional.of(active));
+        when(eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-projected-impressions"))
+                .thenReturn(List.of());
+
+        var baseline = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-projected-impressions", null));
+        active.setActivities(storedActivityCounters());
+        service.evictUserReadCaches("realtime-projected-impressions");
+
+        var projected = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-projected-impressions", baseline.cursor()));
+
+        assertThat(projected.impressions().host()).isNotNull();
+        assertThat(projected.impressions().member()).isNotNull();
+        assertThat(projected.counters().impressionsHostChanged()).isFalse();
+        assertThat(projected.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
+    void realtimeSnapshotReportsStoredImpressionsWriteExactlyOnce() {
+        Users active = user("realtime-stored-impressions", 0d);
+        when(usersRepository.findByUserId("realtime-stored-impressions")).thenReturn(Optional.of(active));
+        when(eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-stored-impressions"))
+                .thenReturn(List.of());
+
+        var baseline = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-stored-impressions", null));
+        active.setImpressions(new Users.UserImpressionsRecord(
+                null,
+                storedImpressionsSection()));
+        service.evictUserReadCaches("realtime-stored-impressions");
+
+        var changed = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-stored-impressions", baseline.cursor()));
+        var unchanged = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-stored-impressions", changed.cursor()));
+
+        assertThat(changed.counters().impressionsHostChanged()).isFalse();
+        assertThat(changed.counters().impressionsMemberChanged()).isTrue();
+        assertThat(unchanged.counters().impressionsHostChanged()).isFalse();
+        assertThat(unchanged.counters().impressionsMemberChanged()).isFalse();
+    }
+
+    @Test
     void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
@@ -856,6 +904,25 @@ class HomeUserProfileServiceTest {
                 15,
                 16,
                 17);
+    }
+
+    private Users.UserImpressionsSectionRecord storedImpressionsSection() {
+        return new Users.UserImpressionsSectionRecord(
+                1,
+                4.5d,
+                3,
+                2,
+                1,
+                0,
+                List.of("friendly"),
+                List.of("Social Charmer 80%"),
+                List.of(new Users.UserPersonalityTraitRecord(
+                        "social-charmer",
+                        "Social Charmer",
+                        80,
+                        1,
+                        "2026-08-30T00:00:00Z")),
+                List.of("social"));
     }
 
     private void assertFlatCounters(UserRealtimeCountersDto counters) {

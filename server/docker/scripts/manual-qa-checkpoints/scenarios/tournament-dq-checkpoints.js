@@ -297,6 +297,23 @@
     };
   }
 
+  function impressionEvidenceSnapshot() {
+    const riley = Q.ensureUser(RILEY_ID, `${CHECKPOINT} Riley impression evidence user`);
+    const eventFeedback = (riley.activities && riley.activities.eventFeedback) || {};
+    return {
+      rileyStoredImpressions: riley.impressions || null,
+      rileyEventFeedback: {
+        ownEvents: Q.number(eventFeedback.ownEvents),
+        pending: Q.number(eventFeedback.pending),
+        feedbacked: Q.number(eventFeedback.feedbacked),
+        removed: Q.number(eventFeedback.removed)
+      },
+      fixtureFeedbackStates: Q.collection("eventFeedbackStates").countDocuments({ eventId: EVENT_ID }),
+      fixtureFeedbackAnswers: Q.collection("eventFeedbackAnswers").countDocuments({ eventId: EVENT_ID }),
+      fixtureAffinityTasks: Q.collection("affinityRecomputeTasks").countDocuments(relatedSelector())
+    };
+  }
+
   function snapshot() {
     const parent = Q.collection("events").findOne({ sourceId: EVENT_ID }) || {};
     const room = Q.collection("events").findOne({ sourceId: ROOM_ID }) || {};
@@ -311,6 +328,7 @@
       parentChat: chatSnapshot(EVENT_ID),
       groupChat: chatSnapshot(ROOM_ID),
       counters: ALL_USERS.map(counter),
+      impressionEvidence: impressionEvidenceSnapshot(),
       notifications: notificationSnapshot()
     };
   }
@@ -350,9 +368,10 @@
     applyCounterDelta(CASEY_ID, 1, true);
     [NOVA_ID, RILEY_ID, LINA_ID].forEach(userId => applyCounterDelta(userId, 1));
     const baselineCounters = ALL_USERS.map(counter);
+    const baselineImpressionEvidence = impressionEvidenceSnapshot();
     Q.collection(Q.STATE_COLLECTION).insertOne({
       _id: STATE_ID, scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "baseline-ready",
-      stagedAtIso, snapshots, savedUserActivities, baselineCounters
+      stagedAtIso, snapshots, savedUserActivities, baselineCounters, baselineImpressionEvidence
     });
     Q.printObject({
       scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "baseline-ready",
@@ -395,6 +414,18 @@
         && Q.number(prior.eventActive) === item.eventActive
         && Q.number(prior.eventHosting) === item.eventHosting;
     });
+  }
+
+  function impressionEvidenceUnchanged(currentState, current) {
+    if (currentState.baselineImpressionEvidence) {
+      return Q.sameJson(currentState.baselineImpressionEvidence, current.impressionEvidence);
+    }
+    const evidence = current.impressionEvidence;
+    return evidence.rileyStoredImpressions === null
+      && Q.sameJson(evidence.rileyEventFeedback, { ownEvents: 0, pending: 0, feedbacked: 0, removed: 0 })
+      && evidence.fixtureFeedbackStates === 0
+      && evidence.fixtureFeedbackAnswers === 0
+      && evidence.fixtureAffinityTasks === 0;
   }
 
   function exactActionNotifications(notifications, action, occurrenceCount) {
@@ -457,6 +488,7 @@
       groupMessage: Q.sameJson(current.groupChat.messages, [{
         clientId: "member-disqualify", text: "Nova Social was disqualified from the tournament group."
       }]),
+      noImpressionEvidenceMutation: impressionEvidenceUnchanged(currentState, current),
       exactNotifications: exactActionNotifications(current.notifications, "disqualified", 1)
         && current.notifications.outbox.length === 2
         && current.notifications.inbox.length === 3
@@ -483,6 +515,7 @@
       retainedChats: exactCopies(current.parentChat) && exactCopies(current.groupChat),
       completeAtomicCycles: completedCycles > 0,
       countersRestored: countersMatch(currentState.baselineCounters, current.counters),
+      noImpressionEvidenceMutation: impressionEvidenceUnchanged(currentState, current),
       exactNotifications: exactActionNotifications(current.notifications, "disqualified", completedCycles)
         && exactActionNotifications(current.notifications, "reinstated", completedCycles)
         && current.notifications.outbox.length === completedCycles * 4

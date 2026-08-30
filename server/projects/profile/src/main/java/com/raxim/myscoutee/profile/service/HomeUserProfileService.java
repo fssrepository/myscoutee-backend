@@ -497,7 +497,7 @@ public class HomeUserProfileService {
         }
 
         UserImpressionsDto impressions = resolveMergedUserImpressions(user);
-        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor(), impressions);
+        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor());
         AssetTicketsPageDto offlineTicketSnapshot = assetsService.queryTicketPage(
                 resolvedUserId,
                 0,
@@ -508,7 +508,7 @@ public class HomeUserProfileService {
                 counters,
                 impressions,
                 offlineTicketSnapshot,
-                buildRealtimeCursor(user, counters, impressions),
+                buildRealtimeCursor(user, counters),
                 Instant.now().toString());
     }
 
@@ -2596,8 +2596,7 @@ public class HomeUserProfileService {
 
     private UserRealtimeCountersDto buildRealtimeCounters(
             Users user,
-            String requestCursor,
-            UserImpressionsDto impressions) {
+            String requestCursor) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
         int fingerprintOffset = cursorPartCount >= 38
@@ -2605,8 +2604,10 @@ public class HomeUserProfileService {
                 : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
-        String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
-        String nextMemberHash = impressionsFingerprint(impressions == null ? null : impressions.member());
+        Users.UserImpressionsRecord storedImpressions = user == null ? null : user.getImpressions();
+        String nextHostHash = storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host());
+        String nextMemberHash = storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member());
+        boolean hasPreviousImpressionFingerprints = cursorPartCount >= fingerprintOffset + 2;
         return new UserRealtimeCountersDto(
                 counters.game(),
                 counters.chats(),
@@ -2626,8 +2627,8 @@ public class HomeUserProfileService {
                 counters.adminJobs(),
                 counters.adminMetrics(),
                 resolveRealtimeNotificationCount(user, counters.notifications()),
-                StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
-                StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
+                hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
+                hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash));
     }
 
     private int resolveRealtimeNotificationCount(
@@ -2645,8 +2646,8 @@ public class HomeUserProfileService {
 
     private String buildRealtimeCursor(
             Users user,
-            UserRealtimeCountersDto counters,
-            UserImpressionsDto impressions) {
+            UserRealtimeCountersDto counters) {
+        Users.UserImpressionsRecord storedImpressions = user == null ? null : user.getImpressions();
         return String.join(":",
                 normalizeId(user.getId()),
                 String.valueOf(normalizeCount(counters.game())),
@@ -2684,8 +2685,8 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
                 String.valueOf(normalizeCount(counters.notifications())),
-                impressionsFingerprint(impressions == null ? null : impressions.host()),
-                impressionsFingerprint(impressions == null ? null : impressions.member()));
+                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
+                storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()));
     }
 
     private void recordSessionAction(String userId, String action, String metadata) {
@@ -3466,7 +3467,7 @@ public class HomeUserProfileService {
         return normalizedCursor.split(":", -1).length;
     }
 
-    private String impressionsFingerprint(UserImpressionsSectionDto section) {
+    private String storedImpressionsFingerprint(Users.UserImpressionsSectionRecord section) {
         if (section == null) {
             return "";
         }
