@@ -14,6 +14,19 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "QA-RESET-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova reset recheck",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "ENTRY-DEMO-REG-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

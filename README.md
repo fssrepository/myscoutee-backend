@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-08-30:** 72/212 passed — core 69/114, external/optional 3/98; Tournament 15/15 and Chat 5/5 complete; current local checkpoint: `ASSET-LIFE-001`; `CHAT-PUSH-001` is deferred to the external CP04 production-like VMware/Firebase run.
+**2026-08-30:** 74/212 passed — core 71/114, external/optional 3/98; QA infrastructure 2/2, Tournament 15/15 and Chat 5/5 complete; current local checkpoint: `ASSET-LIFE-001`; `CHAT-PUSH-001` is deferred to the external CP04 production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|

@@ -44,15 +44,15 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: ASSET-LIFE-001 — shared type schemas and lifecycle
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
-scenario: XLS-driven Core execution order. Tournament is 15/15 complete and all four consolidated desktop Chat journeys are PASS/CLOSED. CHAT-PUSH-001 is deferred to the external CP04 production-like VMware/Firebase run and no longer blocks local Core execution.
-ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-PUSH-001 DEFERRED TO EXT CP04
-state: No Asset lifecycle fixture or UI mutation has been started. The installed Riley WebAPK retained notification permission, but no device/token or Chat message was created; that exact boundary is recorded for external CP04.
+scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Tournament is 15/15 and local Chat is 5/5 complete. CHAT-PUSH-001 remains deferred to external CP04. Asset is the highest-priority open local product domain.
+ledger_status: DESIGN CAPTURED / NOT RUN — QA INFRASTRUCTURE 2/2 PASS/CLOSED
+state: No Asset lifecycle fixture or UI mutation has been started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload with zero Invitations/Notifications badges and empty lists, followed by the exact persisted zero-state oracle.
 required_resume: Prepare one bounded ASSET-LIFE-001 run covering Transport, Accommodation and Supplies creation, one shared Transport edit, then Delete and Restore of the same Transport identity. Present the complete click path and every screen/counter/reload oracle to the user before the first mutation, then run the independent persisted terminal oracle once after the user completes the sequence.
-event: No active Chat or Asset fixture; CHAT-GOVERNANCE-001 was reset cleanly
+event: No active fixture; QA infrastructure baseline is clean
 actors:
   Casey: primary Asset owner/actor
-  Nova: controlled secondary actor if the lifecycle requires a non-owner view
-  Riley: controlled secondary actor if the lifecycle requires an additional unchanged view
+  Nova: controlled unchanged secondary actor where required
+  Riley: controlled unchanged secondary actor where required
 next_actor: Codex prepares the complete ASSET-LIFE-001 action/oracle sequence before the user starts clicking.
 stop_phrase: Asset lifecycle checked
 ```
@@ -163,7 +163,8 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation stays owned
 by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
-`ASSET-LIFE-001` is the active local checkpoint. The consolidated desktop Chat
+`ASSET-LIFE-001` is the active local checkpoint after QA infrastructure passed
+2/2. The consolidated desktop Chat
 flow, actions, rich content and governance journeys are PASS/CLOSED and reset.
 `CHAT-PUSH-001` is deferred to external `QA-EXPANSION-CP04`, where the
 production build runs on the dedicated production-like VMware host with a
@@ -1129,11 +1130,13 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
 -> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
 -> CHAT-PUSH-001 (deferred to external CP04 production-like VMware/Firebase run)
+-> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
+-> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> ASSET-LIFE-001 (active local Core checkpoint)
 ```
 
-Tournament is 15/15 complete. Continue locally with `ASSET-LIFE-001` in
-physical ledger order; do not replay the four closed Chat desktop journeys or
+Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
+locally with `ASSET-LIFE-001` in physical ledger order; do not replay the four closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run
 with production-like VMware/Firebase evidence, not the local demo stack.
