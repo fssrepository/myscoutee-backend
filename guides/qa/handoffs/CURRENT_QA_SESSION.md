@@ -43,16 +43,16 @@ resume pointer and reusable working method.
 checkpoint: TOURNAMENT-DQ-001 — disqualification and reinstatement
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-dq-001--disqualification-and-reinstatement
 scenario: XLS-driven Core execution order. Tournament priority is 11 (12/15 complete); TOURNAMENT-DQ-001 is the active row, followed by TOURNAMENT-RESOURCE-001, JOB-TOURNAMENT completion and every Chat row.
-ledger_status: DESIGN CAPTURED / NOT RUN — fixture preparation is next
-state: TOURNAMENT-MEMBER-002 and TOURNAMENT-MEMBER-003 are PASS/CLOSED and reset. T002's widened replay proved one parent Event message, one affected Group A message and unchanged Group B with zero messages/unread/lastMessage. T003 passed with Lina as the dynamically derived removal target, exact same-room recipient fan-out and both channel projections. No manual-QA fixture is currently staged; the three T002 browser windows remain open but no longer own valid staged evidence.
-required_resume: Build and inspect the isolated four-person TOURNAMENT-DQ-001 baseline before opening replacement browsers. The case must preserve scored membership as DQ, order active score rows before the DQ row, retain the exact name/score/history, exclude DQ from advancement, then use a separately reset pre-Finalize branch to prove Reinstate without duplicate membership or score.
-event: not staged — next fixture is QA TOURNAMENT-DQ-001
+ledger_status: IN PROGRESS — DQ, Reinstate and Impression control PASS; separate review/finalize branch pending
+state: The isolated four-person TOURNAMENT-DQ-001 fixture is staged at reinstate-verified after one complete DQ/Reinstate cycle. Nova has exactly one accepted parent and room membership plus the unchanged score row; exact-once Event/Group chat, affected/participant notifications and unchanged Riley Impression write evidence all passed. The three managed browser windows are the current Casey/Nova/Riley sessions.
+required_resume: Run the read-only TOURNAMENT-DQ-001 status gate and require phase reinstate-verified; do not replay either Disqualify or Reinstate on this fixture. Reset through the named harness, stage the separate pre-Finalize DQ branch, then prove DQ advancement exclusion and idempotent review before closing the checkpoint.
+event: staged — QA TOURNAMENT-DQ-001; one DQ/Reinstate cycle is oracle-verified
 actors:
   Casey: Tournament host and DQ/Reinstate actor
   scored target: controlled accepted participant retained as DQ
   eligible controls: two active scored participants in the same group
-next_actor: Codex prepares and proves the DQ baseline; only then the user receives the complete click/check sequence.
-stop_phrase: DQ baseline ready
+next_actor: Codex prepares the separately reset pre-Finalize DQ branch and provides its complete click-and-visual-check sequence.
+stop_phrase: Reinstate verified — review branch pending
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

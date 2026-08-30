@@ -5348,6 +5348,34 @@ Execution evidence on 2026-08-30 (PASS / CLOSED):
   at baseline. A later evidence-backed Event Feedback change remains owned by
   `EVENT-IMPRESSION-001` and must still produce its normal change signal.
 
+Partial execution evidence (2026-08-30): the controlled four-person DQ branch
+is persisted at `dq-verified`. Casey disqualified scored Nova once; the oracle
+proved one retained parent and room membership row with `disqualified` status,
+the unchanged score row, exact Event and Group system-chat delivery, and the
+affected-member plus remaining-participant notification fan-out. Riley's
+ordinary realtime poll did not show an Impressions red counter. Its persisted
+`Users.impressions` stayed `null`, all four event-feedback counters stayed at
+zero, and the controlled event retained zero feedback states, feedback answers
+and affinity-recompute tasks. The first verifier run exposed only a harness
+false negative: a Mongo-returned checkpoint subdocument and the fresh evidence
+object had identical values but different JSON key order. The DQ harness now
+compares stored Impressions semantically and every numeric evidence field
+explicitly; the unchanged persisted state then passed without replaying the UI
+action.
+
+Reinstate continuation evidence (2026-08-30): Casey reinstated Nova once and
+the persisted oracle advanced to `reinstate-verified` with one completed cycle.
+Nova has exactly one accepted parent membership and one accepted room
+membership; all four original score rows remain unchanged. The Event and Group
+channels each contain exactly the DQ message followed by one Reinstate message,
+and every chat copy has the Reinstate message as its latest entry. Nova received
+the affected-member notification while Riley and Lina received the participant
+notification, exactly once for Reinstate. Riley again showed no Impressions red
+counter; stored Impressions remained `null`, all event-feedback counters
+remained zero and the fixture still has zero feedback states, answers and
+affinity-recompute tasks. The separately reset review/finalize branch remains
+open, so this checkpoint is not closed.
+
 ### `TOURNAMENT-RESOURCE-001` — generated-group resource aggregation
 
 - From one already materialized Tournament group, assign controlled Transport,

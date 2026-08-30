@@ -418,7 +418,22 @@
 
   function impressionEvidenceUnchanged(currentState, current) {
     if (currentState.baselineImpressionEvidence) {
-      return Q.sameJson(currentState.baselineImpressionEvidence, current.impressionEvidence);
+      const baseline = currentState.baselineImpressionEvidence;
+      const evidence = current.impressionEvidence;
+      const storedImpressionsMatch = Q.sameJson(
+        JSON.parse(EJSON.stringify(baseline.rileyStoredImpressions, null, 0, { relaxed: false })),
+        JSON.parse(EJSON.stringify(evidence.rileyStoredImpressions, null, 0, { relaxed: false }))
+      );
+      const feedbackKeys = ["ownEvents", "pending", "feedbacked", "removed"];
+      const countKeys = ["fixtureFeedbackStates", "fixtureFeedbackAnswers", "fixtureAffinityTasks"];
+      const hasOwn = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
+      return storedImpressionsMatch
+        && feedbackKeys.every(key => hasOwn(baseline.rileyEventFeedback, key)
+          && hasOwn(evidence.rileyEventFeedback, key)
+          && Q.number(baseline.rileyEventFeedback[key]) === Q.number(evidence.rileyEventFeedback[key]))
+        && countKeys.every(key => hasOwn(baseline, key)
+          && hasOwn(evidence, key)
+          && Q.number(baseline[key]) === Q.number(evidence[key]));
     }
     const evidence = current.impressionEvidence;
     return evidence.rileyStoredImpressions === null
