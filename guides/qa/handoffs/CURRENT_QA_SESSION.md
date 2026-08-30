@@ -42,18 +42,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ROLE-TRIAD-001 — three-role authorization boundaries
+checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and moderation
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
 scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
-ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/11 PASS/CLOSED
-state: No ROLE-TRIAD-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its verified Firebase continuation was merged into external ENTRY-FIREBASE-REG-001.
-required_resume: Prepare one consolidated ROLE-TRIAD-001 run with exactly three isolated sessions: member, admin and operator. Before the first probe, present the purpose, complete click path, expected role-specific UI/counters and every direct-route denial/no-mutation oracle; after the user completes the sequence, run one independent persisted authorization/audit oracle.
+ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
+state: No ROLE-TRIAD-CORE-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its production-like Firebase continuation is owned by external DEPLOY-FIREBASE-LIFECYCLE-001.
+required_resume: Prepare one complete ROLE-TRIAD-CORE-001 journey with exactly three isolated sessions: member, admin and operator. Present the purpose, every click and visible route/counter expectation before starting. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
 event: No active fixture; QA infrastructure baseline is clean
 actors:
   Member: isolated ordinary-user session
   Admin: isolated administration session
   Operator: isolated deployment/operator session
-next_actor: Codex prepares the complete ROLE-TRIAD-001 action/oracle sequence before the user starts probing.
+next_actor: Codex prepares the complete ROLE-TRIAD-CORE-001 action/oracle sequence before the user starts probing.
 stop_phrase: Three-role authorization checked
 ```
 
@@ -161,15 +161,16 @@ The original Tournament lifecycle block and both score-reopen checkpoints are
 PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
 checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
-idempotency evidence; generic Job Detail/Monitoring presentation stays owned
-by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
-`ROLE-TRIAD-001` is the active local checkpoint after QA infrastructure passed
-2/2. The consolidated desktop Chat
-flow, actions, rich content and governance journeys are PASS/CLOSED and reset.
-`CHAT-PUSH-001` is deferred to external `QA-EXPANSION-CP04`, where the
-production build runs on the dedicated production-like VMware host with a
-verified active Firebase revision and a physical phone. Do not stage or send
-its Chat message during local Core execution.
+idempotency evidence; generic Job Detail/Monitoring presentation is an
+assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
+is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is the active local
+checkpoint after QA infrastructure passed 2/2. The consolidated desktop Chat
+flow, actions, rich content and governance journeys plus the closed Chat
+statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
+assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
+build runs on the dedicated production-like VMware host with a verified active
+Firebase revision and a physical phone. Do not stage or send that message
+during local Core execution.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -220,13 +221,13 @@ right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
 and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus Admin optional, Operator,
-Payment and Deployment deferred boundaries, prioritized continuously from
-`14` down to `1`.
+coarse: 10 Core capability/operations domains plus the Operator, Payment and
+Deployment deferred boundaries. Their numeric priorities preserve the
+authoritative execution order.
 A generated priority overview places the first five Core domains in its first
 hasáb, the remaining five Core domains in its second hasáb, and reserves the
-third `EXT / optional` hasáb for Admin optional, Operator, Payment and
-Deployment. The third hasáb must therefore always sum to the separate
+third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
+hasáb must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
@@ -234,19 +235,14 @@ mobile WebView, Statistics, Monitoring and background jobs in the owning
 domain's `Area` instead of manufacturing singleton domains. Create a new
 top-level domain only for an independently executable capability with a
 material workflow set; otherwise classify the row under its real owner.
-The same ownership rule applies to the configurable Admin shell, but this
-capacity-limited release uses a separate launch gate. Ask whether a correctly
-seeded deployment still starts and remains usable by an average member when
-the Admin function is absent. Backend denial of unauthorized Admin access and
-workers that maintain real member state stay Core under their owning domain.
-Reports, moderation controls, notification-rule editing/manual run, content
-revision management, support controls, Statistics, Monitoring, Admin Graph
-layout/exploration, runtime parameter editors and generic Admin UI smoke are
-`Admin optional`: their defects remain valid defects, but default/static state
-lets the product launch without qualifying those controls first. Operator,
-Registry, payment and deployment cases remain deferred as before. Row-level
-Manual QA priority orders risk inside a scope; it does not promote an optional
-control into the Core launch gate.
+The same ownership rule applies to the configurable Admin shell. Local Admin
+work is Core and is distributed by the state it reads or mutates: authorization
+and moderation belong to Identity & access, revisions to Content, notification
+rules to Notifications, statistics and monitoring to Administration, and so
+on. The route or shell does not manufacture a separate Admin domain.
+Operator, Registry, payment and deployment cases remain deferred external
+boundaries. Row-level Manual QA priority orders risk inside a scope; it does
+not change capability ownership.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
 currently active domain closes, choose the highest-priority Core domain whose
@@ -324,21 +320,21 @@ record has been removed.
 
 ### 1.1 Checkpoint granularity and new rows
 
-- Treat the already-versioned testcase set as an immutable workflow spine
-  during a coverage-expansion audit. Do not split, merge, rename, renumber or
-  rewrite its IDs or test contracts merely to make the new plan look more
-  uniform. The `QA domain` classification may be normalized only as an
-  explicit taxonomy migration while all other existing cells remain
-  unchanged. Count
+- Treat every PASS/CLOSED testcase as immutable evidence. It may move to its
+  actual owning `QA domain`, but its ID, status, contract, evidence and every
+  other cell remain unchanged. Non-PASS source rows may instead be consolidated
+  into one complete domain journey when they are only micro-oracles of the same
+  lifecycle; preserve every source assertion inside the parent contract and do
+  not count the retired source IDs as independently scheduled tests. Count
   logical CSV records rather than physical lines because quoted multiline
   cells span several file lines; ignore `LEGEND-*` records when quoting the
   testcase total. Capture a canonical serialized hash keyed by every
-  pre-existing testcase ID and prove the same ID/content hashes after CSV and
-  XLSX synchronization. Insert new Core coverage beside its owning domain
+  PASS testcase ID and prove the same ID/content hashes after CSV and XLSX
+  synchronization. Insert Core coverage beside its owning domain
   rows and before the `LEGEND-EXT`/external block; do not append a Core row
   after EXT merely because it was discovered later. Preserve the relative
-  order and contents of all existing testcase rows while doing so. New rows
-  receive stable IDs and ordered checkpoint groups. The target count is an
+  order and contents of all PASS testcase rows while doing so. Consolidated or
+  new journeys receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
   but never manufacture row splits only to reach an estimate.
 - A feature-rich domain must be represented by executable user journeys, not
@@ -362,9 +358,9 @@ record has been removed.
   `External / optional`,
   `Total`. The four status rows and the Done percentage are filtered to Core
   tests only, so they partition the displayed Core total instead of mixing the
-  deferred scope into product progress. `Admin optional` rows and stable IDs
-  beginning `OPERATOR-`, `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional`
-  without renaming testcase IDs; that scope is a separate count and `Total` is
+  deferred scope into product progress. Stable IDs beginning `OPERATOR-`,
+  `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional` without renaming
+  testcase IDs; that scope is a separate count and `Total` is
   the final Core+deferred count. The generator also adds `EXT` to the left
   overview legend. Scope is orthogonal to
   status. Read the generated formulas and cached totals back after
@@ -1124,27 +1120,27 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-MEMBER-003 (closed; four-person participant fan-out PASS)
 -> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
 -> TOURNAMENT-RESOURCE-001 (closed; generated-group resource aggregation PASS)
--> JOB-TOURNAMENT (Core closed; generic Monitoring owned by MON-013)
+-> JOB-TOURNAMENT (Core closed; generic Monitoring covered by ADMIN-MONITORING-001)
 -> CHAT-FLOW-001 (closed; consolidated everyday conversation and recovery)
 -> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
 -> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
 -> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
--> CHAT-PUSH-001 (deferred to external CP04 production-like VMware/Firebase run)
+-> DEPLOY-FIREBASE-LIFECYCLE-001 (deferred production-like VMware/Firebase journey)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
--> ROLE-TRIAD-001 (active local Core checkpoint)
+-> ROLE-TRIAD-CORE-001 (active local Core checkpoint)
 ```
 
 Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
-locally with `ROLE-TRIAD-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, four closed Chat desktop journeys or
+locally with `ROLE-TRIAD-CORE-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run
 with production-like VMware/Firebase evidence, not the local demo stack.
 
-`ENTRY-FIREBASE-REG-001`, `ROLE-TRIAD-003` and `ROLE-TRIAD-005` are external
-Deployment CP04 cases. The verified Firebase continuation of the closed local
-landing case is consolidated into `ENTRY-FIREBASE-REG-001`; these external
-dependencies do not block the Core Identity & access gate. The remaining
-Admin-optional/operator/payment/deployment sequence stays deferred under
-Core-first execution.
+The former Firebase registration, role activation/deactivation and physical
+Chat-push microcases are assertions inside external
+`DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
+by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
+the Core Identity & access gate. Only the Operator, Payment and Deployment
+sequences stay deferred under Core-first execution.

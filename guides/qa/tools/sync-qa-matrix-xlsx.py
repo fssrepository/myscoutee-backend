@@ -73,13 +73,11 @@ DOMAIN_METADATA = (
     ("Notifications", 7, "FFE2F0D9", "BELL"),
     ("Client platform", 6, "FFD9E1F2", "MOBILE"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
-    ("Admin optional", 4, "FFCBD7E7", "ADMIN-OPTIONAL"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
     ("Payment", 2, "FF76A5AF", "PAYMENT"),
     ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
 EXTERNAL_OPTIONAL_DOMAINS = frozenset({
-    "Admin optional",
     "Operator",
     "Payment",
     "Deployment",
@@ -94,71 +92,20 @@ ROW_FILL_COLORS.update({
     for domain, _, color, _ in DOMAIN_METADATA
 })
 
-# Stable IDs stay unchanged while the QA domain answers two separate
-# questions: which capability owns the contract, and whether that contract is
-# needed for the minimum usable launch. Admin surfaces that only change a
-# seeded/default configuration are deliberately assigned to the deferred third
-# block; real user-state workers remain with their Core capability.
+# Exact exceptions cover consolidated journeys whose stable ID prefix does not
+# identify the owning capability. Local Admin work is distributed to its real
+# Core domain; only genuine operator/payment/deployment boundaries remain in
+# the deferred third block.
 EXACT_DOMAIN_OVERRIDES = {
-    "ADMIN-ACCESS-001": "Identity & access",
-    # Verified Firebase and live deployment-state journeys require the
-    # production-like CP04 bundle; they must not hold the Core identity gate
-    # open while the local demo stack cannot execute their prerequisite.
-    "ENTRY-FIREBASE-REG-001": "Deployment",
-    "ROLE-TRIAD-003": "Deployment",
-    "ROLE-TRIAD-005": "Deployment",
-    # The Chat contract stays traceable under its stable ID, but real FCM
-    # delivery is qualified only with the production-like deployment bundle.
-    "CHAT-PUSH-001": "Deployment",
-    "JOB-RANDOM": "Event",
+    "BASE-STAT": "Administration",
+    "CONTENT-ADMIN-LIFECYCLE-001": "Content",
+    "NOTIFICATION-ADMIN-LIFECYCLE-001": "Notifications",
+    "STAT-011": "Chat",
+    "STAT-012": "Event",
     "JOB-AUTO": "Event",
     "JOB-TOURNAMENT": "Tournament",
-    "JOB-COUNTER": "Event",
-    "JOB-BASKET": "Event",
-    "JOB-OUTBOX": "Notifications",
     "JOB-MESSAGES": "Notifications",
     "JOB-PURGE": "Identity & access",
-    "ADMIN-REPORT-001": "Admin optional",
-    "ADMIN-FEEDBACK-001": "Admin optional",
-    "ADMIN-USER-WARN-001": "Admin optional",
-    "ADMIN-USER-BLOCK-001": "Admin optional",
-    "ADMIN-NOTIFICATION-RULE-001": "Admin optional",
-    "ADMIN-NOTIFICATION-RUN-001": "Admin optional",
-    "ADMIN-CONTENT-REV-001": "Admin optional",
-    "ADMIN-CONTENT-REV-002": "Admin optional",
-    "ADMIN-CONTENT-REV-003": "Admin optional",
-    "ADMIN-IDEA-LIFECYCLE-001": "Admin optional",
-    "ADMIN-SUPPORT-SESSION-001": "Admin optional",
-    "BASE-STAT": "Admin optional",
-    "BASE-MON": "Admin optional",
-    "BASE-GRAPH": "Admin optional",
-    "STAT-010": "Admin optional",
-    "STAT-011": "Admin optional",
-    "STAT-012": "Admin optional",
-    "STAT-013": "Admin optional",
-    "STAT-014": "Admin optional",
-    "STAT-020": "Admin optional",
-    "MON-011": "Admin optional",
-    "MON-012": "Admin optional",
-    "MON-013": "Admin optional",
-    "MON-014": "Admin optional",
-    "GRAPH-002": "Admin optional",
-    "GRAPH-003": "Admin optional",
-    "GRAPH-004": "Admin optional",
-    "GRAPH-005": "Admin optional",
-    "GRAPH-006": "Admin optional",
-    "GRAPH-007": "Admin optional",
-    "PARAM-001": "Admin optional",
-    "PARAM-010": "Admin optional",
-    "PARAM-011": "Admin optional",
-    "PARAM-012": "Admin optional",
-    "PARAM-013": "Admin optional",
-    "PARAM-014": "Admin optional",
-    "PARAM-015": "Admin optional",
-    "PARAM-016": "Admin optional",
-    "PARAM-017": "Admin optional",
-    "JOB-GRAPH-LAYOUT": "Admin optional",
-    "STATIC-SMOKE": "Admin optional",
 }
 
 ET.register_namespace("", NS)
@@ -180,8 +127,7 @@ def cell_column(index: int) -> str:
 def expected_domain(identifier: str) -> str:
     normalized = identifier.strip().upper()
     # A route/screen name is not the QA owner or the launch gate. Exact
-    # overrides preserve stable IDs while assigning either the real Core
-    # capability or the deferred Admin-optional block.
+    # overrides preserve stable IDs while assigning the real Core capability.
     if normalized in EXACT_DOMAIN_OVERRIDES:
         return EXACT_DOMAIN_OVERRIDES[normalized]
     domain_prefixes = (
@@ -517,8 +463,7 @@ def qa_scope_formula(row_index: int, id_column: str, domain_column: str) -> str:
     reference = f"{id_column}{row_index}"
     domain_reference = f"{domain_column}{row_index}"
     return (
-        f'IF(OR({domain_reference}="Admin optional",'
-        f'LEFT({reference},9)="OPERATOR-",'
+        f'IF(OR(LEFT({reference},9)="OPERATOR-",'
         f'LEFT({reference},8)="PAYMENT-",'
         f'LEFT({reference},7)="DEPLOY-"),"External","Core")'
     )

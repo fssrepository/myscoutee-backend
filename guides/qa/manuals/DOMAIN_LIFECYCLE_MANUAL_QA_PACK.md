@@ -5635,9 +5635,9 @@ is **PASS / CLOSED**.
   and notification outcomes, then another unchanged `count=0` replay. Browser
   evidence matched the persisted stage, leaderboard and advancement state.
 - The only former remainder was the generic Monitoring/Job Detail screen.
-  Under the current launch-gate ownership rule, that UI belongs to Admin
-  optional `MON-013`; it must not keep the already-proven Tournament core row
-  partial or trigger another lifecycle replay.
+  It is now an assertion inside the Administration journey
+  `ADMIN-MONITORING-001`; it must not keep the already-proven Tournament Core
+  row partial or trigger another lifecycle replay.
 
 ## Asset cases
 
@@ -5787,24 +5787,27 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
   prior policy, prove access changes exactly once and no stale browser state
   overrides the authoritative server decision.
 
-## Coverage-expansion checkpoints appended after the original 106-case spine
+## Consolidated executable journeys and source-oracle archive
 
-The 106 testcases that existed at the start of the 2026-08-13 coverage audit
-remain the immutable workflow spine. The following 84 cases are new rows, not
-splits or rewrites of that spine. They are deliberately grouped into resumable
-checkpoint sequences, while every row still owns one bounded producer action
-and one decisive persisted oracle. Runtime execution must use at most three
-browser identities at once; mobile observations replace, rather than add to,
-one desktop phase when three desktop accounts are already active.
+The matrix contains 116 executable journeys after the 2026-08-30 granularity
+audit. All 75 PASS/CLOSED rows remain individually immutable: only their
+owning `QA domain` may move, while ID, status, contract and evidence stay
+unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
+were consolidated into complete lifecycle parents. Every assertion below is
+still required, but an old source ID is not an independently scheduled test
+unless it remains a current CSV/XLSX row. The consolidated parent rows in the
+matrix and the handoff's resume pointer are authoritative.
 
-The XLSX uses the teal `EXT / optional` scope marker for the `Admin optional`
-domain and for cases whose stable ID starts with `OPERATOR-`, `PAYMENT-` or
-`DEPLOY-`. The third block is the capacity-deferred qualification scope: it
-contains controls that are not required for a correctly seeded deployment to
-start and serve an average member, plus external operator/provider/deployment
-boundaries. Scope and execution status remain independent: a deferred row is
-still counted by the normal Done/Pending/Not-started/Failed formulas, and the
-overview reports separate Core and External/optional totals.
+The tables below are therefore a source-oracle archive for the consolidated
+parents, not an instruction to recreate microtests. Runtime execution uses at
+most three browser identities at once; mobile observations replace, rather
+than add to, one desktop phase when three desktop accounts are already active.
+
+The XLSX uses the teal `EXT / optional` scope marker only for journeys whose
+stable ID starts with `OPERATOR-`, `PAYMENT-` or `DEPLOY-`. Local Admin work is
+distributed to its actual Core owner; there is no separate Admin-optional
+execution bucket. Scope and execution status remain independent, and the overview reports
+separate Core and External/optional totals.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -6068,33 +6071,27 @@ repeated here against the production runtime.
 | `OPERATOR-MEASUREMENT-001` | Synchronize one controlled deployment measurement period. | Exact source period, counts and valuation inputs persist once; leaderboard reads consume it without rewriting the report. |
 | `OPERATOR-MEASUREMENT-002` | Fail and requeue one measurement report. | Attempt history remains ordered, duplicate work is prevented and the successful replacement leaves the failed record immutable. |
 
-### Administration ownership and launch-impact weighting
+### Administration ownership and journey consolidation
 
-The route that exposes a control does not define either its capability owner or
-its launch scope. For this capacity-limited qualification, `EXT / optional`
-means deferred from the minimum usable product launch, not only a third-party
-integration. The deciding oracle is a correctly seeded deployment: if an
-average member can still use the product from its static/default state without
-that Admin function, the function belongs in the third block.
+The route that exposes a control does not define its capability owner. Local
+Admin journeys are Core and follow the state they read or mutate:
 
-- `ADMIN-ACCESS-001` remains Core `Identity & access`, because missing backend
-  denial exposes protected data/actions to an ordinary user.
-- Event, Tournament, Notifications, identity/account-purge and affinity
-  workers that maintain real member state remain Core under their owning
-  capability. A broken worker changes the ordinary user's product truth.
-- Reports, feedback/report moderation, warn/block/support controls,
-  notification-rule editing/manual run, public-content revision management,
-  Statistics, Monitoring, Admin Graph exploration/layout, parameter editors
-  and generic Admin UI smoke are `Admin optional`. A missing Save may prevent
-  changing a default, and imperfect statistics may inconvenience operations,
-  but neither prevents the seeded product from starting or serving a member.
-- Operator, Registry/network, payment-provider and deployment-host cases remain
-  deferred external boundaries.
+- `ROLE-TRIAD-CORE-001` owns authorization plus warn/report/feedback/support/
+  block/unblock in `Identity & access`.
+- `CONTENT-ADMIN-LIFECYCLE-001` owns revisions and idea lifecycle in `Content`.
+- `BELL-RATING-LIFECYCLE-001` and
+  `NOTIFICATION-ADMIN-LIFECYCLE-001` own rating/bell/rule/outbox effects in
+  `Notifications`.
+- `ADMIN-MONITORING-001`, `ADMIN-AFFINITY-GRAPH-001` and
+  `ADMIN-PARAMETERS-001` own the remaining Administration surfaces.
+- Event, Tournament, Chat and other workers remain with their actual member
+  domain. Operator, Registry/network, payment-provider and deployment-host
+  journeys remain deferred external boundaries.
 
-Optional does not mean harmless: every existing testcase, status, evidence and
-priority remains authoritative. It means those rows do not consume the Core
-launch queue before higher-impact workflows. Stable IDs are preserved; only
-the normalized QA domain/scope and physical domain ordering change.
+The already-PASS `BASE-STAT`, `STAT-011` and `STAT-012` rows moved only to
+Administration, Chat and Event respectively; their content and evidence were
+not rewritten. The tables below retain the retired non-PASS source IDs as
+assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP08` — admin access and moderation
 
@@ -6131,11 +6128,9 @@ the normalized QA domain/scope and physical domain ordering change.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `ROLE-TRIAD-001` | Keep member, admin and operator sessions open and probe each other's route families. | Each role sees only its own capabilities; direct cross-role calls are denied and activity/admin/operator counters remain independently scoped. |
-| `ROLE-TRIAD-002` | Operator changes branding while member home and admin workspace are already open. | Public revision converges on both consumers without logging out, losing admin state or allowing either consumer to edit operator config. |
-| `ROLE-TRIAD-003` | Operator activates verified Firebase while admin stays in moderation and member starts a new login. | New login uses Firebase, existing authorized admin work remains stable, and activation creates no member/admin notification or role mutation. |
-| `ROLE-TRIAD-004` | Admin blocks the member while the operator monitors deployment state. | Member protected access closes according to policy; operator session/network remains intact and admin action cannot alter deployment/operator authority. |
-| `ROLE-TRIAD-005` | Operator deactivates the deployment while member and admin have open authenticated screens, then reactivates. | Both consumer/admin paths fail closed without stale cached writes; operator recovery remains usable and all three reconstruct correct roles after reactivation. |
+| `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, propagate one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; branding converges without logout; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. |
+| `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
+| `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
 ## Execution and evidence rules
 
