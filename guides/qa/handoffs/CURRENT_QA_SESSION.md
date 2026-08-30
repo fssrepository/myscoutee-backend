@@ -42,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-LIFE-001 — shared type schemas and lifecycle
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
-scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Tournament is 15/15 and local Chat is 5/5 complete. CHAT-PUSH-001 remains deferred to external CP04. Asset is the highest-priority open local product domain.
-ledger_status: DESIGN CAPTURED / NOT RUN — QA INFRASTRUCTURE 2/2 PASS/CLOSED
-state: No Asset lifecycle fixture or UI mutation has been started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload with zero Invitations/Notifications badges and empty lists, followed by the exact persisted zero-state oracle.
-required_resume: Prepare one bounded ASSET-LIFE-001 run covering Transport, Accommodation and Supplies creation, one shared Transport edit, then Delete and Restore of the same Transport identity. Present the complete click path and every screen/counter/reload oracle to the user before the first mutation, then run the independent persisted terminal oracle once after the user completes the sequence.
+checkpoint: ROLE-TRIAD-001 — three-role authorization boundaries
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
+scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
+ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/11 PASS/CLOSED
+state: No ROLE-TRIAD-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its verified Firebase continuation was merged into external ENTRY-FIREBASE-REG-001.
+required_resume: Prepare one consolidated ROLE-TRIAD-001 run with exactly three isolated sessions: member, admin and operator. Before the first probe, present the purpose, complete click path, expected role-specific UI/counters and every direct-route denial/no-mutation oracle; after the user completes the sequence, run one independent persisted authorization/audit oracle.
 event: No active fixture; QA infrastructure baseline is clean
 actors:
-  Casey: primary Asset owner/actor
-  Nova: controlled unchanged secondary actor where required
-  Riley: controlled unchanged secondary actor where required
-next_actor: Codex prepares the complete ASSET-LIFE-001 action/oracle sequence before the user starts clicking.
-stop_phrase: Asset lifecycle checked
+  Member: isolated ordinary-user session
+  Admin: isolated administration session
+  Operator: isolated deployment/operator session
+next_actor: Codex prepares the complete ROLE-TRIAD-001 action/oracle sequence before the user starts probing.
+stop_phrase: Three-role authorization checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -163,7 +163,7 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation stays owned
 by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
-`ASSET-LIFE-001` is the active local checkpoint after QA infrastructure passed
+`ROLE-TRIAD-001` is the active local checkpoint after QA infrastructure passed
 2/2. The consolidated desktop Chat
 flow, actions, rich content and governance journeys are PASS/CLOSED and reset.
 `CHAT-PUSH-001` is deferred to external `QA-EXPANSION-CP04`, where the
@@ -1132,15 +1132,19 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CHAT-PUSH-001 (deferred to external CP04 production-like VMware/Firebase run)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
--> ASSET-LIFE-001 (active local Core checkpoint)
+-> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
+-> ROLE-TRIAD-001 (active local Core checkpoint)
 ```
 
 Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
-locally with `ASSET-LIFE-001` in physical ledger order; do not replay the four closed Chat desktop journeys or
+locally with `ROLE-TRIAD-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, four closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run
 with production-like VMware/Firebase evidence, not the local demo stack.
 
-`ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
-revision prerequisite. The Admin-optional/operator/payment/deployment sequence
-remains deferred under Core-first execution.
+`ENTRY-FIREBASE-REG-001`, `ROLE-TRIAD-003` and `ROLE-TRIAD-005` are external
+Deployment CP04 cases. The verified Firebase continuation of the closed local
+landing case is consolidated into `ENTRY-FIREBASE-REG-001`; these external
+dependencies do not block the Core Identity & access gate. The remaining
+Admin-optional/operator/payment/deployment sequence stays deferred under
+Core-first execution.

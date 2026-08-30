@@ -101,6 +101,12 @@ ROW_FILL_COLORS.update({
 # block; real user-state workers remain with their Core capability.
 EXACT_DOMAIN_OVERRIDES = {
     "ADMIN-ACCESS-001": "Identity & access",
+    # Verified Firebase and live deployment-state journeys require the
+    # production-like CP04 bundle; they must not hold the Core identity gate
+    # open while the local demo stack cannot execute their prerequisite.
+    "ENTRY-FIREBASE-REG-001": "Deployment",
+    "ROLE-TRIAD-003": "Deployment",
+    "ROLE-TRIAD-005": "Deployment",
     # The Chat contract stays traceable under its stable ID, but real FCM
     # delivery is qualified only with the production-like deployment bundle.
     "CHAT-PUSH-001": "Deployment",
