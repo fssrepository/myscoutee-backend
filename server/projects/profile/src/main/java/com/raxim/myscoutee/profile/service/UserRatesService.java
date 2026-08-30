@@ -135,8 +135,11 @@ public class UserRatesService {
         String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
         String mode = normalizeMode(modeValue);
         String direction = normalizeDisplayDirection(directionValue);
+        int gameCounter = currentUser == null || currentUser.getActivities() == null
+                ? 0
+                : Math.max(0, Objects.requireNonNullElse(currentUser.getActivities().game(), 0));
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(mode) || !StringUtils.hasText(direction)) {
-            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
+            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of(), gameCounter);
         }
 
         String sort = normalizeQuerySort(sortValue);
@@ -145,7 +148,7 @@ public class UserRatesService {
         long rangeStartMs = parseRangeBoundaryMillis(rangeStartIso, 0L, false);
         long rangeEndMs = parseRangeBoundaryMillis(rangeEndIso, Long.MAX_VALUE, true);
         if (rangeStartMs > rangeEndMs) {
-            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
+            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of(), gameCounter);
         }
 
         List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId).stream()
@@ -171,7 +174,7 @@ public class UserRatesService {
                 : null;
         List<UserDto> users = homeUserProfileService.queryUsersByIds(resolveDisplayUserIds(pageItems));
 
-        return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor, users);
+        return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor, users, gameCounter);
     }
 
     public UserRatesSyncResponseDto sync(UserRatesSyncRequestDto request) {

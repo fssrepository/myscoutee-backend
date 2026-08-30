@@ -42,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-FLOW-001 — everyday conversation and recovery
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-flow-001--everyday-conversation-and-recovery
+checkpoint: CHAT-ACTIONS-001 — one message's complete action lifecycle
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-actions-001--one-messages-complete-action-lifecycle
 scenario: XLS-driven Core execution order. Tournament is 15/15 complete; Chat now has six business-journey cases instead of twenty independently scheduled microtests.
-ledger_status: IN PROGRESS — consolidated persisted flow oracle PASS; chat-list live poll regression awaits visual confirmation
-state: The replayable three-actor fixture is active and the consolidated persisted oracle passed exact history, message, read-state, notification and counter checks. Live read publication and active-viewer notification suppression were corrected. The existing Chat list poll was then found to synchronize only owner status; its contract now returns the persisted row summary/unread/date state, message/read writes advance the row revision, and the Signal Store reconverts only the affected cached Chat row. Existing frontend/backend dev watchers compiled successfully. The remaining assertion is that Riley's already-open Chat list displays the new Group unread row state after its normal poll without popup reopen, and that opening the thread clears it through the same path.
-required_resume: Do not reset the fixture. With Riley's Chat list open and Group thread closed, send one fresh Casey Group message. Wait for the existing list poll and visually require Riley's Group row unread, Casey sender, exact summary/date and correct order without reopening. Then open the thread, require the unread to clear and run the persisted final oracle before closing CHAT-FLOW-001.
-event: No active Event mutation; next fixture is consolidated CHAT-FLOW-001
+ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-FLOW-001 is PASS/CLOSED
+state: CHAT-FLOW-001 completed with a terminal persisted oracle: 18 deterministic history messages plus exactly two Casey messages, exact Nova+Riley readers, all chat counters zero, two Riley-only notification outboxes/inbox rows, Casey/Nova notification delta zero, Riley +2, unchanged memberships and Group revisions Casey=2/Nova=3/Riley=3. The user confirmed the already-open Chat list poll rendered the new Riley unread row without reopen. Its fixture was reset after evidence capture. No CHAT-ACTIONS-001 fixture is active yet.
+required_resume: Implement one replayable CHAT-ACTIONS-001 fixture around one existing three-user Group thread and one target message. Present reply, reaction add/change/remove, pin/source navigation, owner edit, non-owner edit denial, unpin, owner unsend and non-owner unsend denial as one complete click journey, then run one exact persisted final oracle. Do not split these into microtests.
+event: No active Event mutation; next fixture is consolidated CHAT-ACTIONS-001
 actors:
   Casey: sender and reader
   Nova: open-thread realtime recipient
   Riley: closed-thread unread and reconnect recipient
-next_actor: Codex prepares and proves the consolidated three-actor fixture, then the user executes the complete journey once.
-stop_phrase: Everyday conversation and recovery checked
+next_actor: Codex prepares and proves the consolidated message-action fixture, then the user executes the complete journey once.
+stop_phrase: Message action lifecycle checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

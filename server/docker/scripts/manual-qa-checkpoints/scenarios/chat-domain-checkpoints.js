@@ -18,7 +18,6 @@
   const FLOW_STAGE_ID = `${FLOW_EVENT_ID}:stage`;
   const FLOW_GROUP_ID = `${FLOW_STAGE_ID}:group`;
   const FLOW_FIRST_MESSAGE = "QA CHAT FLOW 001 · Casey live message";
-  const FLOW_SECOND_MESSAGE = "QA CHAT FLOW 001 · Casey recovery message";
   const FLOW_LIST_POLL_MESSAGE = "QA CHAT FLOW 001 · Casey list poll message";
   const CONTEXTS = [
     { key: "event", channelType: "mainEvent", suffix: "event", title: "QA Chat · Main event", avatar: "QE" },
@@ -421,7 +420,7 @@
   }
 
   function flowTerminalValidation(snapshot, baseline) {
-    const expectedMessageTexts = [FLOW_FIRST_MESSAGE, FLOW_SECOND_MESSAGE, FLOW_LIST_POLL_MESSAGE];
+    const expectedMessageTexts = [FLOW_FIRST_MESSAGE, FLOW_LIST_POLL_MESSAGE];
     const newMessages = (snapshot.messages || []).filter(message => expectedMessageTexts.includes(Q.text(message.text)));
     const byText = Object.fromEntries(newMessages.map(message => [Q.text(message.text), message]));
     const exactNewMessages = newMessages.length === expectedMessageTexts.length
@@ -442,7 +441,7 @@
     const currentUsers = Object.fromEntries((snapshot.users || []).map(user => [Q.text(user.userId), user]));
     const notificationCounter = user => Q.number(user && user.activities && user.activities.notifications);
     return {
-      exactTwentyOneMessages: (snapshot.messages || []).length === 21,
+      exactTwentyMessages: (snapshot.messages || []).length === 20,
       exactNewMessages,
       exactFinalSummaries: Boolean(latest) && groupCopies.length === FLOW_ACTOR_IDS.length
         && groupCopies.every(chat => Q.text(chat.lastMessage) === FLOW_LIST_POLL_MESSAGE
@@ -451,17 +450,17 @@
           && Q.number(chat.unread) === 0
           && Q.number(chat.revision) > 1),
       allCountersCleared: (snapshot.users || []).every(flowCounterZero),
-      exactOutbox: outbox.length === 3 && outbox.every(row =>
+      exactOutbox: outbox.length === 2 && outbox.every(row =>
         Q.text(row.notificationType) === "chat-message"
         && Q.text(row.entityType) === "chat"
         && Q.text(row.entityId) === groupId
         && Q.sameJson((row.recipientUserIds || []).map(Q.text).sort(), [RILEY_ID])),
-      exactInbox: notifications.length === 3
+      exactInbox: notifications.length === 2
         && notifications.every(row => Q.text(row.recipientUserId) === RILEY_ID)
         && notifications.every(row => Q.text(row.sourceType) === "chat" && Q.text(row.sourceId) === groupId),
       exactNotificationCounters: notificationCounter(currentUsers[CASEY_ID]) === notificationCounter(baselineUsers[CASEY_ID])
         && notificationCounter(currentUsers[NOVA_ID]) === notificationCounter(baselineUsers[NOVA_ID])
-        && notificationCounter(currentUsers[RILEY_ID]) === notificationCounter(baselineUsers[RILEY_ID]) + 3,
+        && notificationCounter(currentUsers[RILEY_ID]) === notificationCounter(baselineUsers[RILEY_ID]) + 2,
       unchangedFixtureMembership: (snapshot.members || []).length === FLOW_ACTOR_IDS.length * 2
         && (snapshot.members || []).every(member => Q.text(member.status) === "accepted")
     };
@@ -555,7 +554,6 @@
         actorUserIds: FLOW_ACTOR_IDS,
         groupChatId: flowChatId(CONTEXTS[1]),
         firstMessage: FLOW_FIRST_MESSAGE,
-        secondMessage: FLOW_SECOND_MESSAGE,
         listPollMessage: FLOW_LIST_POLL_MESSAGE,
         expectedContextIds: Object.fromEntries(CONTEXTS.map(item => [item.key, flowChatId(item)])),
         historyIds: history.map(message => message.id)
@@ -572,7 +570,6 @@
           groupHistory: 18,
           unreadPerActor: 0,
           firstMessage: FLOW_FIRST_MESSAGE,
-          secondMessage: FLOW_SECOND_MESSAGE,
           listPollMessage: FLOW_LIST_POLL_MESSAGE
         },
         validation,
@@ -593,18 +590,20 @@
     }
     if (Q.text(state.checkpointId) !== CHECKPOINT) Q.fail(`active Chat checkpoint is '${Q.text(state.checkpointId)}', not '${CHECKPOINT}'.`);
     const current = flowSnapshot();
+    const expected = { ...(state.context || {}), listPollMessage: FLOW_LIST_POLL_MESSAGE };
+    delete expected.secondMessage;
     const newMessageCount = current.messages.filter(message =>
-      [FLOW_FIRST_MESSAGE, FLOW_SECOND_MESSAGE, FLOW_LIST_POLL_MESSAGE].includes(Q.text(message.text))).length;
+      [FLOW_FIRST_MESSAGE, FLOW_LIST_POLL_MESSAGE].includes(Q.text(message.text))).length;
     if (newMessageCount === 0) {
       const validation = flowBaselineValidation(current);
       validation.zeroWriteSnapshot = sameNormalizedSnapshot(current, state.baseline);
       if (!Object.values(validation).every(Boolean)) Q.fail(`CHAT-FLOW-001 baseline drift detected: ${JSON.stringify(validation)}.`);
-      Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "fixture-ready", expected: state.context, validation });
+      Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "fixture-ready", expected, validation });
       return;
     }
     const validation = flowTerminalValidation(current, state.baseline);
     if (!Object.values(validation).every(Boolean)) Q.fail(`CHAT-FLOW-001 terminal mismatch: ${JSON.stringify(validation)}.`);
-    Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "terminal-pass", expected: state.context, validation });
+    Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "terminal-pass", expected, validation });
   }
 
   function flowReset() {

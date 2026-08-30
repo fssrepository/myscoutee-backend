@@ -44,6 +44,8 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -152,6 +154,10 @@ class ChatServiceTest {
         viewerChat.setLastSenderId("sender");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.queryMenuCounters("viewer")).thenReturn(new UserMenuCountersDto(
+                0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserChatCountersDto(3, 0, 0, 3, 0, 0),
+                null, null, null, 0, 0, 0));
         when(chatsRepository.findByOwnerUserIdAndChatId("viewer", "chat-1"))
                 .thenReturn(Optional.of(viewerChat));
 
@@ -166,6 +172,8 @@ class ChatServiceTest {
         assertThat(changed.lastMessage()).isEqualTo("Latest group message");
         assertThat(changed.lastSenderId()).isEqualTo("sender");
         assertThat(changed.dateIso()).isEqualTo("2026-08-30T05:15:00Z");
+        assertThat(changed.chats()).isEqualTo(3);
+        assertThat(changed.chatCounters().group()).isEqualTo(3);
     }
 
     @Test

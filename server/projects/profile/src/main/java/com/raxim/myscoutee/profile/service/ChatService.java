@@ -84,6 +84,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponse
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatServiceEnsureRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -338,6 +339,7 @@ public class ChatService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found."));
         long revision = normalizeChatRevision(chat.getRevision());
         boolean changed = knownRevision == null || knownRevision.longValue() != revision;
+        UserMenuCountersDto counters = homeUserProfileService.queryMenuCounters(userId);
         return new ChatHeaderSyncResponseDto(
                 revision,
                 changed,
@@ -345,7 +347,9 @@ public class ChatService {
                 normalizeCount(chat.getUnread()),
                 safeText(chat.getLastMessage()),
                 StringUtils.hasText(normalizeId(chat.getLastSenderId())) ? normalizeId(chat.getLastSenderId()) : null,
-                StringUtils.hasText(safeText(chat.getDateIso())) ? safeText(chat.getDateIso()) : null);
+                StringUtils.hasText(safeText(chat.getDateIso())) ? safeText(chat.getDateIso()) : null,
+                normalizeCount(counters.chats()),
+                counters.chat());
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -362,7 +366,7 @@ public class ChatService {
             String supportCaseFilterValue) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
-            return new ChatPageResponseDto(List.of(), 0, null);
+            return chatPageResponse(userId, List.of(), 0, null);
         }
 
         String contextFilter = normalizeChatContextFilter(contextFilterValue);
@@ -371,7 +375,7 @@ public class ChatService {
         long rangeStartMs = parseIsoMillis(rangeStartIso, Long.MIN_VALUE);
         long rangeEndMs = parseIsoMillis(rangeEndIso, Long.MAX_VALUE);
         if (rangeStartMs > rangeEndMs) {
-            return new ChatPageResponseDto(List.of(), 0, null);
+            return chatPageResponse(userId, List.of(), 0, null);
         }
         if (Boolean.TRUE.equals(adminServiceOnly) && "service".equals(contextFilter)) {
             return querySupportCasePage(
@@ -404,7 +408,7 @@ public class ChatService {
         String nextCursor = endOffset < total && !items.isEmpty()
                 ? Integer.toString(endOffset)
                 : null;
-        return new ChatPageResponseDto(items, safePageTotal(total), nextCursor);
+        return chatPageResponse(userId, items, safePageTotal(total), nextCursor);
     }
 
     public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
@@ -605,7 +609,21 @@ public class ChatService {
         String nextCursor = endOffset < total && !items.isEmpty()
                 ? Integer.toString(endOffset)
                 : null;
-        return new ChatPageResponseDto(items, total, nextCursor);
+        return chatPageResponse(userId, items, total, nextCursor);
+    }
+
+    private ChatPageResponseDto chatPageResponse(
+            String userId,
+            List<ChatDto> items,
+            int total,
+            String nextCursor) {
+        UserMenuCountersDto counters = homeUserProfileService.queryMenuCounters(userId);
+        return new ChatPageResponseDto(
+                items,
+                total,
+                nextCursor,
+                normalizeCount(counters.chats()),
+                counters.chat());
     }
 
     public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {

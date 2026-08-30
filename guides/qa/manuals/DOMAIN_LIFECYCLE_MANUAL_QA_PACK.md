@@ -2019,11 +2019,12 @@ consistent lifecycle.
   order. Polling or opening only Riley's list does not clear the unread state.
 - Open Riley's thread: the same message is acknowledged exactly once, all four
   Riley counters return to zero and Casey sees one Riley reader identity.
-- Close Riley's thread and hard-reload only Riley's isolated browser, send one
-  second Casey message while Riley is back on the game screen, then reopen the
-  Group thread. The recreated transport catches up to that persisted ID once;
-  counters and history contain neither a gap nor a duplicate. Close/reopen all
-  three views and repeat the exact row/history/counter comparison.
+- Close Riley's thread and hard-reload the isolated browsers, leave Riley's
+  Chat list open with its Group thread closed, then send the second Casey
+  message. The recreated transport and existing list poll expose that persisted
+  ID once without a popup reopen; opening the Group thread clears the unread
+  once. Counters and history contain neither a gap nor a duplicate. Close/reopen
+  all three views and repeat the exact row/history/counter comparison.
 - Final oracle owns the former `CHAT-LIST-001`, `CHAT-HISTORY-001`,
   `CHAT-SEND-001`, `CHAT-COUNTER-001`, `CHAT-READ-001`,
   `CHAT-RECONNECT-001` and `CHAT-TYPING-001` assertions together: exact
@@ -2034,6 +2035,17 @@ consistent lifecycle.
   proved All=4, Event=1, Sub-event=0, Group=1, Service=1 and App Support=1,
   exact ascending/descending IDs, stable ownerStatus/revision and a
   byte-identical no-write close/reopen. It is not a standalone test PASS.
+- **PASS/CLOSED on 2026-08-30:** the consolidated terminal oracle found the 18
+  deterministic history rows plus exactly two Casey messages, with Nova and
+  Riley recorded once as readers of both. All three Group owner copies retained
+  the second message summary and zero unread; their write-side revisions were
+  Casey `2`, Nova `3`, Riley `3`. Chat counters were zero for every actor.
+  Notification persistence contained exactly two Riley-only outboxes and two
+  Riley inbox rows, Casey/Nova notification deltas were zero and Riley was
+  exactly `+2`. The user also confirmed the already-open Riley list converged
+  without reopen. During this journey the owning defects were corrected for
+  live read publication, active-viewer notification suppression and complete
+  poll-driven row-state reconciliation through the Signal Store.
 
 ### `CHAT-ACTIONS-001` — one message's complete action lifecycle
 

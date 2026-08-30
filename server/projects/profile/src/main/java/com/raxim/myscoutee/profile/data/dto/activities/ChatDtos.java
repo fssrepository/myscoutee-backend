@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 
 public final class ChatDtos {
@@ -55,7 +56,9 @@ public final class ChatDtos {
             Integer unread,
             String lastMessage,
             String lastSenderId,
-            String dateIso) {
+            String dateIso,
+            Integer chats,
+            UserChatCountersDto chatCounters) {
     }
 
     public record ChatNavigationContextDto(
@@ -108,7 +111,9 @@ public final class ChatDtos {
     public record ChatPageResponseDto(
             List<ChatDto> items,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            Integer chats,
+            UserChatCountersDto chatCounters) {
     }
 
     public record ChatMembersPageResponseDto(
