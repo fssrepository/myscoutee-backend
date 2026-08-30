@@ -44,15 +44,15 @@ checkpoint: TOURNAMENT-DQ-001 — disqualification and reinstatement
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-dq-001--disqualification-and-reinstatement
 scenario: XLS-driven Core execution order. Tournament priority is 11 (12/15 complete); TOURNAMENT-DQ-001 is the active row, followed by TOURNAMENT-RESOURCE-001, JOB-TOURNAMENT completion and every Chat row.
 ledger_status: IN PROGRESS — DQ, Reinstate and Impression control PASS; separate review/finalize branch pending
-state: The completed DQ/Reinstate cycle was reset only after both oracles passed. A separate four-person review fixture is now staged at review-baseline-ready: Nova is the retained high-score DQ control at 10, Riley 9 and Lina 5 are the expected active advancers, Casey 1 is the active non-advancer, Final is empty and the real review worker is held. Three fresh Casey/Nova/Riley browser sessions are open side by side.
-required_resume: Run the read-only TOURNAMENT-DQ-001 status gate and require phase review-baseline-ready. Do not restage, DQ or Reinstate. Casey must confirm the Qualifiers standings and click Finalize Stage exactly once; verify that direct write before arming the held real review worker, then prove Riley+Lina advancement and one unchanged worker no-op.
-event: staged — QA TOURNAMENT-DQ-001 separate DQ review branch; Finalize pending
+state: The separate four-person review fixture is staged at review-noop-verified. Casey finalized Qualifiers once; the first real worker pass recorded count 2 (one Final group-membership write plus one outcome revision), advanced exactly Riley+Lina, excluded high-score DQ Nova and active loser Casey, then the unchanged second pass recorded count 0 with identical domain and notification evidence. Three fresh Casey/Nova/Riley browser sessions remain open side by side for the final rendering comparison.
+required_resume: Run the read-only TOURNAMENT-DQ-001 status gate and require phase review-noop-verified. Do not replay Finalize, arm either worker pass or Start Final. Complete only the browser comparison: Final Group A contains Riley+Lina; Casey has the automatic non-advancement row, Riley has Finalize plus advancement rows, Nova has no review outcome and no Impressions red badge. Then close and reset the checkpoint.
+event: staged — QA TOURNAMENT-DQ-001 review domain and no-op oracles PASS; final browser comparison pending
 actors:
   Casey: Tournament host and DQ/Reinstate actor
   scored target: controlled accepted participant retained as DQ
   eligible controls: two active scored participants in the same group
-next_actor: Casey verifies the prepared Qualifiers standings and clicks Finalize Stage exactly once.
-stop_phrase: Review baseline ready — Finalize pending
+next_actor: User performs the read-only Final membership and three-browser notification/counter comparison; no mutation action remains.
+stop_phrase: Review/no-op verified — visual closure pending
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

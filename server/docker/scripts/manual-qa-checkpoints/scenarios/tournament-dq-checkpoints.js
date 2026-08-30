@@ -916,7 +916,7 @@
     const notAdvanced = reviewNotification(current, "event-stage-not-advanced");
     const checks = {
       realWorkerCompleted: current.reviewRule.currentStatus === "completed"
-        && current.reviewRule.lastRunCount === 1
+        && current.reviewRule.lastRunCount === 2
         && current.reviewRule.historyLength === Q.number(currentState.reviewHistoryLengthBeforeRun) + 1,
       exactAdvancers: current.finalMembers.length === 2
         && Q.sameJson(sorted(acceptedFinal), sorted([RILEY_ID, LINA_ID])),
