@@ -254,6 +254,7 @@ public class ChatMessageMapper {
                     changed = putIfChanged(voteObject, "name", deletedUserName()) || changed;
                     changed = putIfChanged(voteObject, "initials", deletedUserInitials()) || changed;
                     changed = putIfChanged(voteObject, "gender", "deleted") || changed;
+                    changed = putIfChanged(voteObject, "imageUrl", "") || changed;
                 }
             }
             return changed ? root.toJson() : normalizedDescription;

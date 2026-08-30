@@ -62,6 +62,8 @@ const checks = {
   exactMediaPayloads: results.every(result => result.media.image.ok
     && result.media.imagePreview.ok
     && result.media.voice.ok),
+  exactPollVoterImages: results.every(result => result.pollVoterImages.length === 2
+    && result.pollVoterImages.every(image => image.ok)),
   exactAssetCategoryFiltering: results.every(result => result.wholeTransportContainsFixture
     && result.sedanTransportContainsFixture
     && result.suvExcludesFixture),
@@ -220,6 +222,7 @@ async function browserOracle({
     imagePreview: await readMedia(byType.image.attachments[0].previewUrl, 'image/'),
     voice: await readMedia(byType.voice.attachments[0].url, 'audio/')
   };
+  const pollVoterImages = await Promise.all((south?.votes ?? []).map(vote => readMedia(vote.imageUrl, 'image/')));
   const chatSearch = new URLSearchParams({ userId: actorUserId, limit: '20', contextFilter: 'all', sort: 'date', sortDirection: 'desc' });
   const chatResponse = await fetch(`/api/activities/chats/page?${chatSearch}`, { headers });
   if (!chatResponse.ok) throw new Error(`Chat list returned HTTP ${chatResponse.status}.`);
@@ -259,6 +262,7 @@ async function browserOracle({
       readers: (message.readBy ?? []).map(reader => `${reader.id ?? ''}`).sort()
     })),
     media,
+    pollVoterImages,
     unavailableControl: unavailableAttachment?.type === 'asset'
       && unavailableAttachment.entityId === removedAssetId
       && unavailableAttachment.status === 'unavailable'

@@ -2487,7 +2487,88 @@ public class ChatService {
             record.setSizeBytes(attachment.sizeBytes() == null ? null : Math.max(0L, attachment.sizeBytes()));
             normalized.add(record);
         }
+        canonicalizePollVotePresentations(normalized);
         return normalized;
+    }
+
+    private void canonicalizePollVotePresentations(List<ChatMessageAttachmentRecord> attachments) {
+        Map<ChatMessageAttachmentRecord, Document> pollDocuments = new LinkedHashMap<>();
+        Set<String> voterUserIds = new LinkedHashSet<>();
+        for (ChatMessageAttachmentRecord attachment : safeAttachments(attachments)) {
+            if (attachment == null || !"poll".equalsIgnoreCase(safeText(attachment.getType()))) {
+                continue;
+            }
+            try {
+                Document root = Document.parse(safeText(attachment.getDescription()));
+                Object optionsValue = root.get("options");
+                if (!(optionsValue instanceof List<?> optionNodes)) {
+                    continue;
+                }
+                pollDocuments.put(attachment, root);
+                for (Object optionNode : optionNodes) {
+                    if (!(optionNode instanceof Document optionDocument)) {
+                        continue;
+                    }
+                    Object votesValue = optionDocument.get("votes");
+                    if (!(votesValue instanceof List<?> voteNodes)) {
+                        continue;
+                    }
+                    for (Object voteNode : voteNodes) {
+                        if (voteNode instanceof Document voteDocument) {
+                            String voterUserId = normalizeId(Objects.toString(voteDocument.get("userId"), ""));
+                            if (StringUtils.hasText(voterUserId)) {
+                                voterUserIds.add(voterUserId);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Preserve malformed legacy poll payloads; normal attachment validation remains authoritative.
+            }
+        }
+        if (pollDocuments.isEmpty() || voterUserIds.isEmpty()) {
+            return;
+        }
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(voterUserIds)) {
+            String userId = user == null ? "" : normalizeId(user.getUserId());
+            if (StringUtils.hasText(userId)) {
+                usersById.put(userId, user);
+            }
+        }
+        for (Map.Entry<ChatMessageAttachmentRecord, Document> entry : pollDocuments.entrySet()) {
+            Object optionsValue = entry.getValue().get("options");
+            if (!(optionsValue instanceof List<?> optionNodes)) {
+                continue;
+            }
+            for (Object optionNode : optionNodes) {
+                if (!(optionNode instanceof Document optionDocument)) {
+                    continue;
+                }
+                Object votesValue = optionDocument.get("votes");
+                if (!(votesValue instanceof List<?> voteNodes)) {
+                    continue;
+                }
+                for (Object voteNode : voteNodes) {
+                    if (!(voteNode instanceof Document voteDocument)) {
+                        continue;
+                    }
+                    String voterUserId = normalizeId(Objects.toString(voteDocument.get("userId"), ""));
+                    if (!StringUtils.hasText(voterUserId)) {
+                        continue;
+                    }
+                    Users voter = usersById.get(voterUserId);
+                    boolean deleted = voter == null
+                            || "D".equalsIgnoreCase(safeText(voter.getStatus()))
+                            || "deleted".equalsIgnoreCase(safeText(voter.getProfileStatus()));
+                    voteDocument.put("name", deleted ? "Deleted user" : resolveUserName(voter, voterUserId));
+                    voteDocument.put("initials", deleted ? "DU" : resolveUserInitials(voter, voterUserId));
+                    voteDocument.put("gender", deleted ? "deleted" : resolveUserGender(voter));
+                    voteDocument.put("imageUrl", deleted ? "" : resolveUserImageUrl(voter));
+                }
+            }
+            entry.getKey().setDescription(entry.getValue().toJson());
+        }
     }
 
     private List<ChatMessageAttachmentRecord> copyAttachmentRecords(List<ChatMessageAttachmentRecord> attachments) {
@@ -2613,6 +2694,17 @@ public class ChatService {
 
     private String resolveUserGender(Users user) {
         return normalizeGender(user == null ? null : user.getGender());
+    }
+
+    private String resolveUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null) {
+            return "";
+        }
+        return user.getImages().stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse("");
     }
 
     private String buildInitials(String value) {

@@ -2116,7 +2116,10 @@ chat/message lifecycle and remains usable by another participant.
   form; this Chat checkpoint proves navigation and target identity, while
   `EVENT-RUNTIME-001` owns the runtime-card content and persistence oracle.
   Riley casts the second poll vote. Totals move 0 -> 1 -> 2 and stay 2 after
-  Nova changes option.
+  Nova changes option. Every visible voter pill must use the voter's canonical
+  profile image; initials are allowed only when that user truly has no image.
+  The poll attachment write must persist the canonical voter name, initials,
+  gender and image URL so reopen/local persistence cannot regress to initials.
 - In Asset Explore, select the highlighted whole-type option (`All Transport`),
   require the controlled Sedan fixture to appear, select `Sedan` and require
   the same fixture to remain as the category-filtered result, then select the

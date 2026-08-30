@@ -1061,7 +1061,8 @@
     const pollOptions = Array.isArray(pollState && pollState.options) ? pollState.options : [];
     const north = pollOptions.find(option => Q.text(option && option.text) === CONTENT_POLL_OPTIONS[0]);
     const south = pollOptions.find(option => Q.text(option && option.text) === CONTENT_POLL_OPTIONS[1]);
-    const southVoters = (south && south.votes || []).map(vote => Q.text(vote && vote.userId)).sort();
+    const southVotes = south && south.votes || [];
+    const southVoters = southVotes.map(vote => Q.text(vote && vote.userId)).sort();
     const baselineById = Object.fromEntries((state.baseline.messages || []).map(message => [Q.text(message.id), message]));
     const baselineMessagesUnchanged = (current.messages || [])
       .filter(message => Object.prototype.hasOwnProperty.call(baselineById, Q.text(message.id)))
@@ -1081,18 +1082,26 @@
     const groupCopies = (current.chats || []).filter(chat => Q.text(chat.id) === groupId);
     const baselineUsers = Object.fromEntries((state.baseline.users || []).map(user => [Q.text(user.userId), user]));
     const currentUsers = Object.fromEntries((current.users || []).map(user => [Q.text(user.userId), user]));
+    const exactPollVoterPresentations = southVotes.every(vote => {
+      const voter = currentUsers[Q.text(vote && vote.userId)];
+      return Boolean(voter)
+        && Q.text(vote && vote.name) === Q.text(voter.name)
+        && Q.text(vote && vote.initials) === Q.text(voter.initials)
+        && Q.text(vote && vote.gender).toLowerCase() === Q.text(voter.gender).toLowerCase()
+        && Q.text(vote && vote.imageUrl) === Q.text(voter.images && voter.images[0]);
+    });
     const notificationCounter = user => Q.number(user && user.activities && user.activities.notifications);
     const validation = {
       exactFiveContentMessages: newMessages.length === 5
         && Q.sameJson(typeSequence, ["image", "voice", "poll", "event", "asset"])
         && newMessages.every(exactMessageShape),
       exactImageAttachment: Boolean(image)
-        && Q.text(image.attachments[0].url).startsWith("/media/public?key=images%2F")
-        && Q.text(image.attachments[0].previewUrl).startsWith("/media/public?key=images%2F")
+        && Q.text(image.attachments[0].url).startsWith("/api/media/public?key=images/")
+        && Q.text(image.attachments[0].previewUrl).startsWith("/api/media/public?key=images/")
         && Q.text(image.attachments[0].mimeType).startsWith("image/")
         && Q.number(image.attachments[0].sizeBytes) > 0,
       exactVoiceAttachment: Boolean(voice)
-        && Q.text(voice.attachments[0].url).startsWith("/media/public?key=audio%2F")
+        && Q.text(voice.attachments[0].url).startsWith("/api/media/public?key=audio/")
         && Q.text(voice.attachments[0].mimeType).startsWith("audio/")
         && Q.number(voice.attachments[0].sizeBytes) > 0,
       exactFinalPoll: Boolean(poll)
@@ -1100,6 +1109,7 @@
         && Q.sameJson(pollOptions.map(option => Q.text(option && option.text)), CONTENT_POLL_OPTIONS)
         && (north && north.votes || []).length === 0
         && Q.sameJson(southVoters, [NOVA_ID, RILEY_ID].sort())
+        && exactPollVoterPresentations
         && Q.sameJson((poll.pollVoterUserIds || []).map(Q.text).sort(), [NOVA_ID, RILEY_ID].sort()),
       exactEventCard: Boolean(eventCard)
         && Q.text(eventCard.attachments[0].entityId) === CONTENT_EVENT_ID
