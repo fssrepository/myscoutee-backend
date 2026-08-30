@@ -101,6 +101,9 @@ ROW_FILL_COLORS.update({
 # block; real user-state workers remain with their Core capability.
 EXACT_DOMAIN_OVERRIDES = {
     "ADMIN-ACCESS-001": "Identity & access",
+    # The Chat contract stays traceable under its stable ID, but real FCM
+    # delivery is qualified only with the production-like deployment bundle.
+    "CHAT-PUSH-001": "Deployment",
     "JOB-RANDOM": "Event",
     "JOB-AUTO": "Event",
     "JOB-TOURNAMENT": "Tournament",
