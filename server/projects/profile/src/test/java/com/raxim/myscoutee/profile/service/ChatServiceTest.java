@@ -356,7 +356,9 @@ class ChatServiceTest {
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        Users viewer = user("viewer", "Viewer User", "VU");
+        viewer.setImages(List.of("/images/profiles/viewer/small.webp"));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
         when(mongoTemplate.updateMulti(any(Query.class), any(), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(4L, 4L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -366,6 +368,7 @@ class ChatServiceTest {
         assertThat(result.read()).isNotNull();
         assertThat(result.read().unread()).isZero();
         assertThat(result.read().messageIds()).containsExactly("m1");
+        assertThat(result.read().userImageUrl()).isEqualTo("/images/profiles/viewer/small.webp");
         verify(chatStreamPublisher).publish(org.mockito.ArgumentMatchers.argThat(event ->
                 event != null
                         && "read".equals(event.type())

@@ -2228,6 +2228,7 @@ public class ChatService {
                 readUpdate.reader().id(),
                 readUpdate.reader().initials(),
                 readUpdate.reader().gender(),
+                readUpdate.reader().imageUrl(),
                 readUpdate.readMessageIds(),
                 readUpdate.readAtIso(),
                 readUpdate.unread());
@@ -2241,6 +2242,7 @@ public class ChatService {
                 readUpdate.reader().id(),
                 readUpdate.reader().initials(),
                 readUpdate.reader().gender(),
+                readUpdate.reader().imageUrl(),
                 readUpdate.readMessageIds(),
                 readUpdate.readAtIso(),
                 readUpdate.unread());

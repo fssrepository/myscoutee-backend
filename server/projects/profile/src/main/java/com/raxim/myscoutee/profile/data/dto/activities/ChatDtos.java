@@ -196,6 +196,7 @@ public final class ChatDtos {
             String userId,
             String userInitials,
             String userGender,
+            String userImageUrl,
             List<String> messageIds,
             String readAtIso,
             Integer unread) {
