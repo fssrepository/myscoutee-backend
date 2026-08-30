@@ -2215,6 +2215,23 @@ again.
 - Compare device UI, push tag/deep link, persisted message, notification
   inbox/outbox and terminal counters. Physical-device evidence remains
   mandatory.
+- Physical-device registration preflight, 2026-08-30: **permission flow PASS /
+  delivery NOT RUN**. A clean local WebAPK launch as Riley displayed the native
+  Android notification permission prompt without sending the user to Settings;
+  the user selected **Allow**, and Android retained `POST_NOTIFICATIONS` as
+  granted. No Chat fixture or message was produced. The independent post-Allow
+  oracle still found zero Riley devices/tokens. The public Firebase client
+  configuration endpoint returned `404` with the deployment-not-activated
+  reason, and the persisted deployment configuration had no active/tested
+  Firebase revision or populated public client fields. Do not manufacture a
+  frontend token fallback: activate a verified deployment Firebase revision,
+  then repeat the read-only device preflight before staging the message.
+- Execution decision, 2026-08-30: defer this delivery boundary to the external
+  `QA-EXPANSION-CP04` run. Execute it only with the production deployment on a
+  production-like VMware host, a verified active Firebase revision and the
+  physical phone. It is covered as the Chat-specific producer/control branch
+  across `OPERATOR-FIREBASE-003` and `MOBILE-PUSH-001` through
+  `MOBILE-PUSH-004`; it no longer blocks the local Core campaign.
 
 ## Event feedback and Impressions checkpoints
 
@@ -5987,6 +6004,15 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
 
 ### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
+
+External execution environment: deploy the production build to the dedicated
+production-like VMware host, activate a disposable verified Firebase revision,
+and use one physical phone. This bundle also owns the deferred
+`CHAT-PUSH-001` producer/control flow: Casey sends one ordinary participant
+message, Nova stays foreground as the no-system-push control, and Riley is the
+background/closed-app target. The native permission prompt already passed on
+the local clean WebAPK install, but permission, token rotation and delivery are
+repeated here against the production runtime.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |

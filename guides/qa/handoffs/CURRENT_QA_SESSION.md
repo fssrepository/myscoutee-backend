@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 12:01 CEST
+Updated: 2026-08-30 12:35 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-PUSH-001 — background device delivery
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-push-001--background-device-delivery
-scenario: XLS-driven Core execution order. Tournament is 15/15 complete; the four consolidated desktop Chat journeys are PASS/CLOSED and the remaining Chat boundary requires a real backgrounded physical device.
-ledger_status: DESIGN CAPTURED / REAL DEVICE NOT RUN — CHAT-GOVERNANCE-001 is PASS/CLOSED
-state: CHAT-GOVERNANCE-001 passed and reset. The CHAT-PUSH-001 read-only preflight found devices=[] for Casey, Nova and Riley, so no push-capable physical recipient currently exists and no Chat fixture/message mutation was started.
-required_resume: Register Riley on one real physical device with notifications enabled, then repeat the read-only registration preflight. Only after one enabled token exists, retain Casey as sender and Nova as foreground-recipient control, background or close Riley's device, send exactly one participant message, tap exactly one resulting OS push, and compare deep link, persisted message, inbox/outbox, unread/read and all no-push controls. Do not substitute the three desktop Chrome windows for OS-level evidence.
-event: No active Chat fixture; CHAT-GOVERNANCE-001 was reset cleanly
+checkpoint: ASSET-LIFE-001 — shared type schemas and lifecycle
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
+scenario: XLS-driven Core execution order. Tournament is 15/15 complete and all four consolidated desktop Chat journeys are PASS/CLOSED. CHAT-PUSH-001 is deferred to the external CP04 production-like VMware/Firebase run and no longer blocks local Core execution.
+ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-PUSH-001 DEFERRED TO EXT CP04
+state: No Asset lifecycle fixture or UI mutation has been started. The installed Riley WebAPK retained notification permission, but no device/token or Chat message was created; that exact boundary is recorded for external CP04.
+required_resume: Prepare one bounded ASSET-LIFE-001 run covering Transport, Accommodation and Supplies creation, one shared Transport edit, then Delete and Restore of the same Transport identity. Present the complete click path and every screen/counter/reload oracle to the user before the first mutation, then run the independent persisted terminal oracle once after the user completes the sequence.
+event: No active Chat or Asset fixture; CHAT-GOVERNANCE-001 was reset cleanly
 actors:
-  Casey: participant message sender
-  Nova: foreground accepted-recipient no-push control
-  Riley: backgrounded physical-device recipient
-next_actor: User opens the reachable dev app on a physical phone as Riley and enables notifications; Codex then verifies the stored registration before staging or sending anything.
-stop_phrase: Chat push checked
+  Casey: primary Asset owner/actor
+  Nova: controlled secondary actor if the lifecycle requires a non-owner view
+  Riley: controlled secondary actor if the lifecycle requires an additional unchanged view
+next_actor: Codex prepares the complete ASSET-LIFE-001 action/oracle sequence before the user starts clicking.
+stop_phrase: Asset lifecycle checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -163,10 +163,12 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation stays owned
 by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
-`CHAT-PUSH-001` is the active checkpoint. The consolidated desktop Chat flow,
-actions, rich content and governance journeys are PASS/CLOSED and reset. Run a
-read-only device-registration preflight before staging or sending anything;
-this checkpoint cannot be closed without one real background OS push.
+`ASSET-LIFE-001` is the active local checkpoint. The consolidated desktop Chat
+flow, actions, rich content and governance journeys are PASS/CLOSED and reset.
+`CHAT-PUSH-001` is deferred to external `QA-EXPANSION-CP04`, where the
+production build runs on the dedicated production-like VMware host with a
+verified active Firebase revision and a physical phone. Do not stage or send
+its Chat message during local Core execution.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -1126,13 +1128,15 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
 -> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
 -> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
--> CHAT-PUSH-001 (active; physical-device background delivery)
+-> CHAT-PUSH-001 (deferred to external CP04 production-like VMware/Firebase run)
+-> ASSET-LIFE-001 (active local Core checkpoint)
 ```
 
-Tournament is 15/15 complete. Continue with `CHAT-PUSH-001` in physical ledger
-order; do not replay the four closed Chat desktop journeys or closed Tournament
-fixtures unless their owning code or contract changes. Physical-device evidence
-is mandatory for this boundary. EXT/optional remains deferred.
+Tournament is 15/15 complete. Continue locally with `ASSET-LIFE-001` in
+physical ledger order; do not replay the four closed Chat desktop journeys or
+closed Tournament fixtures unless their owning code or contract changes. The
+physical-device Chat boundary is retained under external CP04 and must be run
+with production-like VMware/Firebase evidence, not the local demo stack.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The Admin-optional/operator/payment/deployment sequence
