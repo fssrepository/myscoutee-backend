@@ -1623,8 +1623,21 @@ class ActivitiesMembersServiceTest {
     @Test
     void removeMemberUsesPolicyAndRunsCleanupBeforeReturningMembers() {
         ActivityEvent event = event("event-1", "host", "admin");
+        ActivityEvent room = event("room-1", "system", "system");
+        room.setParentEventId("event-1");
+        room.setGenerated(true);
+        room.setEventType("tournament-room");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
+        ActivityMember roomTarget = member("room-target-sync", "room-1", "target", "Member", "accepted");
+        ActivityMember roomParticipant = member(
+                "room-participant-sync",
+                "room-1",
+                "room-participant",
+                "Member",
+                "accepted");
         AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
+        AtomicReference<List<ActivityMember>> storedRoomMembers =
+                new AtomicReference<>(List.of(roomTarget, roomParticipant));
         Users targetUser = new Users();
         targetUser.setId("target");
         targetUser.setName("Target User");
@@ -1632,14 +1645,32 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canRemoveEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.findByParentEventIdIn(List.of("event-1"))).thenReturn(List.of(room));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(room));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "room-1"))
+                .thenAnswer(invocation -> storedRoomMembers.get());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any()))
+                .thenAnswer(invocation -> storedRoomMembers.get());
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);
             storedMember.set(saved);
             return saved;
         });
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            storedRoomMembers.set(storedRoomMembers.get().stream()
+                    .map(existing -> saved.stream()
+                            .filter(next -> existing.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(existing))
+                    .toList());
+            return saved;
+        });
+        when(activitySubEventResourcesRepository.findByOwnerIdInAndStatusNot(any(), anyString()))
+                .thenReturn(List.of());
         when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
 
         var result = service.applyAction(new ActivityMemberActionRequestDto(
@@ -1662,6 +1693,11 @@ class ActivitiesMembersServiceTest {
         verify(chatService).postSystemMessage(
                 "event-1",
                 "Target User was removed from the event.",
+                "member-removed");
+        verify(chatService).ensureMainEventChat(room, List.of("room-participant"));
+        verify(chatService).postSystemMessage(
+                "room-1",
+                "Target User was removed from the tournament group.",
                 "member-removed");
         verify(eventInviteNotificationService).notifyEventMemberRemoved(
                 eq(event),

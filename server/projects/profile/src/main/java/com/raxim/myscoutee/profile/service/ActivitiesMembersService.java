@@ -1951,12 +1951,24 @@ public class ActivitiesMembersService {
         if (removedRoomMembers.isEmpty()) {
             return;
         }
+        LinkedHashSet<String> affectedRoomIds = removedRoomMembers.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String removedMemberName = memberDisplayName(removedRoomMembers.get(0));
         activityMembersRepository.saveAll(removedRoomMembers);
         refreshEmbeddedEventMembersBatch(roomsBySourceId.keySet());
         for (Map.Entry<String, ActivityEvent> entry : roomsBySourceId.entrySet()) {
             OwnerMembersSnapshot roomMembers = queryOwnerSnapshot(OWNER_TYPE_EVENT, entry.getKey());
             if (roomMembers != null && !roomMembers.acceptedMemberUserIds().isEmpty()) {
                 chatService.ensureMainEventChat(entry.getValue(), roomMembers.acceptedMemberUserIds());
+                if (affectedRoomIds.contains(entry.getKey()) && StringUtils.hasText(removedMemberName)) {
+                    chatService.postSystemMessage(
+                            entry.getKey(),
+                            removedMemberName + " was removed from the tournament group.",
+                            "member-removed");
+                }
             }
         }
     }

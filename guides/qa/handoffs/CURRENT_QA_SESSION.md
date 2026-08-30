@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-25 23:21 CEST
+Updated: 2026-08-30 02:19 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -44,8 +44,8 @@ checkpoint: TOURNAMENT-MEMBER-003 — four-person removal recipient fan-out
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-member-003--four-person-removal-recipient-fan-out
 scenario: XLS-driven Core execution order. Tournament priority is 11 (11/15 complete); TOURNAMENT-MEMBER-003 is the active row, followed by TOURNAMENT-DQ-001, TOURNAMENT-RESOURCE-001 and every Chat row.
 ledger_status: STAGED / BASELINE VERIFIED — functional action not yet performed
-state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. The first TOURNAMENT-MEMBER-003 attempt is non-evidence because Lina was removed instead of Nova and exposed a fixture-only host-counter defect. That attempt was reset. The clean replacement baseline was staged at `2026-08-30T00:07:50Z`: Casey now has write-side `hosting=1`, `event.all=1`, `event.hosting=1` and participant counters zero, so `My Events` must show 1; Nova/Riley use `Events/Active Events=1`. All four parent/room memberships, four scores and four room-chat copies are restored, with zero removal notifications. Three fresh Casey/Nova/Riley windows are open side by side.
-required_resume: Do not reset or stage again while this baseline is intact. Casey removes Nova exactly once from the parent Members UI. Verify visible order Riley 9, Lina 5, Casey 1, then `R / Nova Social / 7`, then `V / -----`; Nova receives one self-removal notification, Riley receives one event-participant notification, Casey none. The persisted oracle additionally proves Lina's independent event-participant notification, Nova's room-chat revocation, immutable four-row scores, exact counters and actor exclusion. Parent event-channel preexistence/history is explicitly outside this isolated fixture; it may materialize at Remove time without failing this row.
+state: TOURNAMENT-MEMBER-002 is PASS/CLOSED and reset. The earlier mistaken TOURNAMENT-MEMBER-003 actions and their residual chat messages are discarded as non-evidence. A clean replacement baseline was staged at `2026-08-30T00:18:55Z`: all four parent/room memberships, four scores and four room-chat copies exist, both fixture chat histories and all removal notifications are empty, and Casey's write-side `My Events` counter is 1. Three fresh Casey/Nova/Riley windows are open side by side.
+required_resume: Do not reset or stage again while this baseline is intact. Casey removes Nova exactly once from the parent Members UI. Verify visible order Riley 9, Lina 5, Casey 1, then `R / Nova Social / 7`, then `V / -----`; Nova receives one self-removal notification, Riley receives one event-participant notification, Casey none. Parent Event chat must contain exactly `Nova Social was removed from the event.` and Group A chat exactly `Nova Social was removed from the tournament group.` Casey and Riley can read both; Nova loses both chat projections. The persisted oracle additionally proves Lina's independent notification and both chat projections, immutable scores, exact counters, actor exclusion and one canonical message per channel.
 event: QA TOURNAMENT-MEMBER-003 — active parent, one four-person group, Nova removal target
 actors:
   Casey: Tournament host and removal actor
