@@ -5455,6 +5455,37 @@ is **PASS / CLOSED**.
   wrote. After each participant reads every remaining unread type,
   those exact receipts must persist across reload without changing the raw
   Transport/Accommodation pending totals or any assignment.
+- **PASS/CLOSED — 2026-08-30**: Casey assigned `Casey Group Shuttle`, Nova
+  assigned `Nova Group Lodge` and Riley assigned `Riley Group Supplies` to the
+  same generated Group A. All three viewers subsequently saw all three cards;
+  the editable state remained owner-scoped. The independent oracle proved
+  exactly three owner writes, exact Group A/runtime/type metrics, root activity
+  `3`, stage `groupsPending=3`, no generated root-room leak, unchanged event and
+  room roles, unchanged user counters and zero undocumented notifications.
+  Every viewer's per-type read receipt then persisted across reload while the
+  raw write-side pending metrics remained unchanged.
+- Assigned-resource Join/Invite and Resource Explore are separate pending-write
+  boundaries and were not appended to this closed aggregation transaction.
+  They are routed into the existing Asset membership and borrow checkpoints:
+  at least one replay must originate from this generated-group resource
+  surface and assert the exact event, stage/sub-event and group runtime owner
+  scope plus an unchanged other-group control. No additional Tournament row is
+  needed for the same generic Asset lifecycle.
+
+### `JOB-TOURNAMENT` — real tournament review scheduler
+
+- **CORE PASS/CLOSED — 2026-08-30**: the real
+  `event-tournament-review` scheduler was already exercised through two
+  retained Tournament branches. The deterministic advancement replay produced
+  the exact next-stage membership and score-plan write with `lastRunCount=1`,
+  followed by a byte-identical unchanged replay with `lastRunCount=0`. The
+  later DQ branch independently produced the exact eligible Final membership
+  and notification outcomes, then another unchanged `count=0` replay. Browser
+  evidence matched the persisted stage, leaderboard and advancement state.
+- The only former remainder was the generic Monitoring/Job Detail screen.
+  Under the current launch-gate ownership rule, that UI belongs to Admin
+  optional `MON-013`; it must not keep the already-proven Tournament core row
+  partial or trigger another lifecycle replay.
 
 ## Asset cases
 
@@ -5477,29 +5508,35 @@ is **PASS / CLOSED**.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
-- Invite one controlled user from the Asset Members UI.
-- Verify the row is pending and linked to the exact asset owner/type/id, not to
-  the current event or an unrelated asset.
-- Verify the recipient projection names the same asset and inviter once.
+- From one asset already assigned through a generated Tournament-group
+  resource surface, create one manager Invite and one participant Join request.
+- Verify the two pending rows keep distinct request kinds and are linked to the
+  exact asset owner/type/id plus event, stage/sub-event and generated-group
+  booking scope. The other generated group and the parent event membership
+  remain unchanged.
+- Verify recipient/requester projections name the same asset and actor once.
 
 ### `ASSET-MEMBER-002` — accept/reject and role isolation
 
-- Accept one asset invitation and reject another independently.
+- Accept one of the group-scoped Invite/Join requests and reject the other
+  independently.
 - Verify accepted asset membership/role, resolved notification and rejected
-  cleanup. Asset Manager must not silently promote the user to Event Admin or
-  change an existing event membership role.
+  cleanup in the same generated-group booking scope. Asset Manager must not
+  silently promote the user to Event Admin, change an existing event
+  membership role or affect another group.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-- Request one controlled asset for an exact event/sub-event timeframe and
-  accept it. In two independent reset branches, reject and cancel controlled
-  requests.
+- From Resource Explore under one generated Tournament group, request one
+  controlled asset for the exact event/stage/group timeframe and accept it. In
+  two independent reset branches, reject and cancel controlled requests.
 - Requester and owner must see the same request identity/status. Only an owned
   asset or a pending/accepted borrow for the exact booking scope becomes
   assignment-eligible. Availability, notification and optional payment intent
   effects occur exactly once.
 - Borrow permission is not Asset Manager membership and never changes an Event
-  role.
+  role. The accepted asset becomes assignment-eligible only for the exact
+  generated-group booking scope; a sibling group remains unchanged.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

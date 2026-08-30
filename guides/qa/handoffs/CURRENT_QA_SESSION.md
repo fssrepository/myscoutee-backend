@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 04:29 CEST
+Updated: 2026-08-30 06:36 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,19 +42,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: TOURNAMENT-RESOURCE-001 — generated-group resource aggregation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#tournament-resource-001--generated-group-resource-aggregation
-scenario: XLS-driven Core execution order. Tournament priority is 11 (13/15 complete); TOURNAMENT-RESOURCE-001 is the active row, followed by JOB-TOURNAMENT completion and every Chat row.
-ledger_status: DESIGN CAPTURED / MANUAL ACTION ACTIVE — isolated baseline is proven; assignment replay is next
-state: TOURNAMENT-RESOURCE-001 is staged at phase baseline-ready. The second independent status proved one root event, one hidden generated room, one active generated Group A, zero resource writes, zero pending activity, exact accepted roles, stable user counters and zero checkpoint-owned notifications. Three replacement Casey/Nova/Riley windows are open side by side.
-required_resume: Continue only from the staged baseline. Casey assigns Casey Group Shuttle as Transport, Nova assigns Nova Group Lodge as Accommodation and Riley assigns Riley Group Supplies as Supplies through Group A's existing Event Resource flow. Then reload and compare the exact group, Groups, stage/View Event and root event action counters before running verify-tournament-resource. Do not restage or reopen browsers while the user is executing the sequence.
-event: QA TOURNAMENT-RESOURCE-001 — active Qualifiers, one generated Group A, baseline pending 0
+checkpoint: CHAT-LIST-001 — controlled chat contexts and ordering
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-list-001--chat-list-and-contexts
+scenario: XLS-driven Core execution order. Tournament priority 11 is 15/15 complete; Chat priority 10 is now active at its first physical open row.
+ledger_status: DESIGN CAPTURED / NOT RUN — fixture staging and read-only baseline proof are next
+state: TOURNAMENT-RESOURCE-001 passed its complete persisted oracle and is closed. Exactly three owner-scoped Group A assignments, aggregate activity/groupsPending=3, all cross-owner cards, every per-viewer read receipt, unchanged roles/counters and zero undocumented notifications were proven. JOB-TOURNAMENT is also Core PASS/CLOSED from its retained real scheduler count>0/count=0 domain and browser evidence; generic Monitoring remains Admin optional MON-013. The Tournament resource fixture is still retained and must be reset before staging Chat.
+required_resume: Reset TOURNAMENT-RESOURCE-001 once, prove it is not staged, then stage CHAT-LIST-001 with the chat-domain harness and require a second read-only status to match its complete baseline before replacing the managed browsers. Do not mutate any chat until that status is proven. Then present the entire list/context/sort/reopen click sequence and every exact row/counter/order assertion here in chat.
+event: No active Event mutation; next fixture is CHAT-LIST-001
 actors:
-  Casey: Tournament host and resource-assignment actor
-  group members: controlled generated-group participants
-  asset owners: controlled eligible owners for one Transport, Accommodation and Supplies asset
-next_actor: User executes the complete three-owner assignment and reload sequence; Codex then runs the persisted verification once.
-stop_phrase: Tournament resource assignments ready for oracle
+  configured chat actors: defined by the CHAT-LIST-001 fixture and browser-session checkpoint
+next_actor: Codex resets the closed Tournament fixture, stages and proves CHAT-LIST-001, then the user executes the full bundled browser sequence.
+stop_phrase: Chat list contexts and ordering checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -150,14 +148,13 @@ the checkpoint says otherwise.
 
 The original Tournament lifecycle block and both score-reopen checkpoints are
 PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
-checkpoint is also PASS/CLOSED. Coverage audit added five Tournament-specific
-cases: pre-Start terminal membership cutoff, active participant removal, the
-separate four-person notification fan-out boundary, DQ/Reinstate and
-generated-group resource aggregation, plus the existing `JOB-TOURNAMENT` row
-whose primary lifecycle oracle passed but Monitoring/browser completion
-remains. Therefore the domain is now 13/15; `TOURNAMENT-RESOURCE-001` is active
-and `CHAT-LIST-001` remains deferred until the open Tournament block is
-completed.
+checkpoint and generated-group resource aggregation are also PASS/CLOSED.
+`JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
+idempotency evidence; generic Job Detail/Monitoring presentation stays owned
+by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
+`CHAT-LIST-001` is the active checkpoint: reset the retained resource fixture,
+stage and prove the controlled chat baseline, then replace the managed browser
+windows and execute its complete list/context/sort/reopen sequence.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -1110,14 +1107,14 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-MEMBER-002 (closed; widened cross-group chat isolation replay PASS)
 -> TOURNAMENT-MEMBER-003 (closed; four-person participant fan-out PASS)
 -> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
--> TOURNAMENT-RESOURCE-001 (active; fixture preparation)
--> JOB-TOURNAMENT (primary domain PASS; Monitoring/browser completion pending)
+-> TOURNAMENT-RESOURCE-001 (closed; generated-group resource aggregation PASS)
+-> JOB-TOURNAMENT (Core closed; generic Monitoring owned by MON-013)
+-> CHAT-LIST-001 (active; controlled chat list and contexts)
 ```
 
-`CHAT-LIST-001` remains deferred while the generated priority table selects the
-open Tournament domain (priority 11) ahead of Chat (priority 10). Complete
-`TOURNAMENT-RESOURCE-001` and then `JOB-TOURNAMENT` in physical ledger order
-before resuming Chat. EXT/optional remains deferred.
+Tournament is 15/15 complete. Continue with `CHAT-LIST-001` in physical ledger
+order; do not replay closed Tournament fixtures unless their owning code or
+contract changes. EXT/optional remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The Admin-optional/operator/payment/deployment sequence
