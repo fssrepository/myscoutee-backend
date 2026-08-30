@@ -328,6 +328,12 @@ class ChatServiceTest {
         assertThat(result.read()).isNotNull();
         assertThat(result.read().unread()).isZero();
         assertThat(result.read().messageIds()).containsExactly("m1");
+        verify(chatStreamPublisher).publish(org.mockito.ArgumentMatchers.argThat(event ->
+                event != null
+                        && "read".equals(event.type())
+                        && "chat-1".equals(event.chatId())
+                        && "viewer".equals(event.senderId())
+                        && event.messageIds().equals(List.of("m1"))));
         verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat -> chat.getUnread() == 0));
         verify(mongoTemplate).updateMulti(any(Query.class), any(), eq(ChatMessage.class));
     }

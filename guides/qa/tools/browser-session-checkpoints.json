@@ -132,6 +132,33 @@
         }
       ]
     },
+    "CHAT-FLOW-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-flow sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · controlled Group sender"
+        },
+        {
+          "actor": "Nova chat-flow live reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · open live reader"
+        },
+        {
+          "actor": "Riley chat-flow recovery reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · closed/reload reader"
+        }
+      ]
+    },
     "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

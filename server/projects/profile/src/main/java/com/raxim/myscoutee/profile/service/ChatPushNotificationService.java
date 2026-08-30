@@ -24,12 +24,15 @@ public class ChatPushNotificationService {
 
     private final UsersRepository usersRepository;
     private final NotificationOutboxService notificationOutboxService;
+    private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
 
     public ChatPushNotificationService(
             UsersRepository usersRepository,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry) {
         this.usersRepository = usersRepository;
         this.notificationOutboxService = notificationOutboxService;
+        this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
     }
 
     public void notifyRecipients(List<Chat> chatDocuments, ChatStreamEvent event) {
@@ -48,7 +51,10 @@ public class ChatPushNotificationService {
         String clickUrl = buildClickUrl(event);
         String notificationTag = buildNotificationTag(event);
         long timestampMillis = resolveTimestampMillis(event.sentAtIso());
-        List<String> recipients = List.copyOf(resolveRecipientUserIds(chatDocuments, event.senderId()));
+        List<String> recipients = List.copyOf(resolveRecipientUserIds(
+                chatDocuments,
+                event.chatId(),
+                event.senderId()));
         if (recipients.isEmpty()) {
             return;
         }
@@ -83,7 +89,10 @@ public class ChatPushNotificationService {
         return "system".equalsIgnoreCase(safeText(event.senderGender()));
     }
 
-    private Set<String> resolveRecipientUserIds(List<Chat> chatDocuments, String senderUserId) {
+    private Set<String> resolveRecipientUserIds(
+            List<Chat> chatDocuments,
+            String chatId,
+            String senderUserId) {
         Set<String> recipients = new LinkedHashSet<>();
         String normalizedSenderUserId = safeText(senderUserId);
         for (Chat chat : chatDocuments) {
@@ -102,6 +111,7 @@ public class ChatPushNotificationService {
                 }
             }
         }
+        recipients.removeIf(userId -> chatWebSocketSessionRegistry.isUserConnected(chatId, userId));
         return recipients;
     }
 

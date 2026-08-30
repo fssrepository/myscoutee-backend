@@ -342,7 +342,7 @@ case "${scenario}:${command}" in
     ;;
   chat-domain:stage|chat-domain:status|chat-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "CHAT-LIST-001" ] || fail "${command} is restricted to CHAT-LIST-001."
+    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || fail "${command} is restricted to CHAT-LIST-001 or CHAT-FLOW-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)

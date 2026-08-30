@@ -667,6 +667,9 @@ public class ChatService {
         ChatReadUpdate readUpdate = startIndex == 0
                 ? markChannelRead(snapshot, userId, messages)
                 : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
+        if (readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
+            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
+        }
         Map<String, Users> userCache = new LinkedHashMap<>();
         List<ChatMessageDto> items = messages.stream()
                 .map(message -> chatMessageMapper.toDto(message, userId, userCache))
