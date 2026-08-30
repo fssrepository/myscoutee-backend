@@ -397,21 +397,47 @@
     });
   }
 
-  function exactActionNotifications(notifications, action) {
+  function exactActionNotifications(notifications, action, occurrenceCount) {
     const actionText = action === "disqualified" ? "disqualified from" : "reinstated to";
     const outbox = notifications.outbox.filter(item => item.action === action);
     const inbox = notifications.inbox.filter(item => item.action === action);
-    const affected = outbox.find(item => item.role === "affected-member");
-    const participants = outbox.find(item => item.role === "event-participant");
-    return outbox.length === 2
-      && affected && Q.sameJson(affected.recipients, [NOVA_ID])
-      && participants && Q.sameJson(participants.recipients, sorted([RILEY_ID, LINA_ID]))
-      && inbox.length === 3
-      && Q.sameJson(sorted(inbox.map(item => item.recipientUserId)), sorted([NOVA_ID, RILEY_ID, LINA_ID]))
+    const affected = outbox.filter(item => item.role === "affected-member");
+    const participants = outbox.filter(item => item.role === "event-participant");
+    return occurrenceCount > 0
+      && outbox.length === occurrenceCount * 2
+      && affected.length === occurrenceCount
+      && affected.every(item => Q.sameJson(item.recipients, [NOVA_ID]))
+      && participants.length === occurrenceCount
+      && participants.every(item => Q.sameJson(item.recipients, sorted([RILEY_ID, LINA_ID])))
+      && inbox.length === occurrenceCount * 3
+      && [NOVA_ID, RILEY_ID, LINA_ID].every(userId =>
+        inbox.filter(item => item.recipientUserId === userId).length === occurrenceCount)
       && inbox.every(item => item.memberName === "Nova Social")
-      && inbox.find(item => item.recipientUserId === NOVA_ID)?.body === `You were ${actionText} QA TOURNAMENT-DQ-001.`
+      && inbox.filter(item => item.recipientUserId === NOVA_ID)
+        .every(item => item.body === `You were ${actionText} QA TOURNAMENT-DQ-001.`)
       && inbox.filter(item => item.recipientUserId !== NOVA_ID)
         .every(item => item.body === `Nova Social was ${actionText} QA TOURNAMENT-DQ-001.`);
+  }
+
+  function exactMessageCycles(parentMessages, groupMessages) {
+    if (parentMessages.length < 2 || parentMessages.length % 2 !== 0 || groupMessages.length !== parentMessages.length) {
+      return 0;
+    }
+    for (let index = 0; index < parentMessages.length; index += 2) {
+      const expectedParent = [
+        { clientId: "member-disqualify", text: "Nova Social was disqualified from the event." },
+        { clientId: "member-reinstate", text: "Nova Social was reinstated to the event." }
+      ];
+      const expectedGroup = [
+        { clientId: "member-disqualify", text: "Nova Social was disqualified from the tournament group." },
+        { clientId: "member-reinstate", text: "Nova Social was reinstated to the tournament group." }
+      ];
+      if (!Q.sameJson(parentMessages.slice(index, index + 2), expectedParent)
+          || !Q.sameJson(groupMessages.slice(index, index + 2), expectedGroup)) {
+        return 0;
+      }
+    }
+    return parentMessages.length / 2;
   }
 
   function verifyDq() {
@@ -431,7 +457,7 @@
       groupMessage: Q.sameJson(current.groupChat.messages, [{
         clientId: "member-disqualify", text: "Nova Social was disqualified from the tournament group."
       }]),
-      exactNotifications: exactActionNotifications(current.notifications, "disqualified")
+      exactNotifications: exactActionNotifications(current.notifications, "disqualified", 1)
         && current.notifications.outbox.length === 2
         && current.notifications.inbox.length === 3
     };
@@ -447,30 +473,27 @@
   function verifyReinstate() {
     Q.assertDeploymentSafety();
     const currentState = state();
-    if (currentState.phase !== "dq-verified") Q.fail(`${CHECKPOINT} DQ oracle must pass before Reinstate verification.`);
     const current = snapshot();
-    const expectedMessages = (scope) => [
-      { clientId: "member-disqualify", text: `Nova Social was disqualified from the ${scope}.` },
-      { clientId: "member-reinstate", text: `Nova Social was reinstated to the ${scope}.` }
-    ];
+    const completedCycles = exactMessageCycles(current.parentChat.messages, current.groupChat.messages);
     const checks = {
       parentRestored: current.parentNovaStatus === "accepted" && Q.sameJson(current.parentAcceptedUserIds, sorted(ALL_USERS)),
       roomRestored: current.roomNovaStatus === "accepted" && Q.sameJson(current.roomAcceptedUserIds, sorted(ALL_USERS)),
       noDuplicateRows: current.parentNovaRows === 1 && current.roomNovaRows === 1,
       immutableScores: exactScores(current.scores),
       retainedChats: exactCopies(current.parentChat) && exactCopies(current.groupChat),
-      parentMessages: Q.sameJson(current.parentChat.messages, expectedMessages("event")),
-      groupMessages: Q.sameJson(current.groupChat.messages, expectedMessages("tournament group")),
+      completeAtomicCycles: completedCycles > 0,
       countersRestored: countersMatch(currentState.baselineCounters, current.counters),
-      exactNotifications: exactActionNotifications(current.notifications, "disqualified")
-        && exactActionNotifications(current.notifications, "reinstated")
-        && current.notifications.outbox.length === 4
-        && current.notifications.inbox.length === 6
+      exactNotifications: exactActionNotifications(current.notifications, "disqualified", completedCycles)
+        && exactActionNotifications(current.notifications, "reinstated", completedCycles)
+        && current.notifications.outbox.length === completedCycles * 4
+        && current.notifications.inbox.length === completedCycles * 6
     };
     const failed = Object.entries(checks).filter(([, value]) => !value).map(([key]) => key);
     if (failed.length > 0) Q.fail(`${CHECKPOINT} Reinstate checks failed: ${failed.join(", ")}.`);
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: { phase: "reinstate-verified", reinstateVerifiedAtIso: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "reinstate-verified", oracle: current });
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "reinstate-verified", reinstateVerifiedAtIso: Q.nowIso(), completedCycles
+    } });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "reinstate-verified", completedCycles, oracle: current });
   }
 
   function reset() {
