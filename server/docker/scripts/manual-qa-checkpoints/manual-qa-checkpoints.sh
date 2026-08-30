@@ -70,6 +70,12 @@ Usage:
   bash manual-qa-checkpoints.sh verify-tournament-member-notification event-domain TOURNAMENT-MEMBER-003
   bash manual-qa-checkpoints.sh verify-tournament-dq event-domain TOURNAMENT-DQ-001
   bash manual-qa-checkpoints.sh verify-tournament-reinstate event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh stage-tournament-dq-review event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-finalize event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh arm-tournament-dq-review event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-result event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh arm-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
+  bash manual-qa-checkpoints.sh verify-tournament-dq-review-noop event-domain TOURNAMENT-DQ-001
   bash manual-qa-checkpoints.sh verify-tournament-card-transition event-domain TOURNAMENT-CARD-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-invitation event-domain TOURNAMENT-ADMISSION-001
   bash manual-qa-checkpoints.sh prepare-tournament-admission-approval event-domain TOURNAMENT-ADMISSION-001
@@ -380,7 +386,14 @@ case "${scenario}:${command}" in
     [ "$3" = "TOURNAMENT-MEMBER-003" ] || fail "${command} is restricted to TOURNAMENT-MEMBER-003."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  event-domain:verify-tournament-dq|event-domain:verify-tournament-reinstate)
+  event-domain:verify-tournament-dq|\
+  event-domain:verify-tournament-reinstate|\
+  event-domain:stage-tournament-dq-review|\
+  event-domain:verify-tournament-dq-review-finalize|\
+  event-domain:arm-tournament-dq-review|\
+  event-domain:verify-tournament-dq-review-result|\
+  event-domain:arm-tournament-dq-review-noop|\
+  event-domain:verify-tournament-dq-review-noop)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "TOURNAMENT-DQ-001" ] || fail "${command} is restricted to TOURNAMENT-DQ-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
