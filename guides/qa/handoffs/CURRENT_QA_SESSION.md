@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 06:51 CEST
+Updated: 2026-08-30 08:27 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -46,7 +46,7 @@ checkpoint: CHAT-ACTIONS-001 — one message's complete action lifecycle
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-actions-001--one-messages-complete-action-lifecycle
 scenario: XLS-driven Core execution order. Tournament is 15/15 complete; Chat now has six business-journey cases instead of twenty independently scheduled microtests.
 ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-FLOW-001 is PASS/CLOSED
-state: CHAT-FLOW-001 completed with a terminal persisted oracle: 18 deterministic history messages plus exactly two Casey messages, exact Nova+Riley readers, all chat counters zero, two Riley-only notification outboxes/inbox rows, Casey/Nova notification delta zero, Riley +2, unchanged memberships and Group revisions Casey=2/Nova=3/Riley=3. The user confirmed the already-open Chat list poll rendered the new Riley unread row without reopen. Its fixture was reset after evidence capture. No CHAT-ACTIONS-001 fixture is active yet.
+state: CHAT-FLOW-001 completed and its post-counter-source regression replay also reached terminal-pass: exactly 20 messages, exact final summaries, all Chat counters zero, exact Riley-only notification outbox/inbox/counters and unchanged memberships. The user accepted the three-window live UI behavior; the persisted oracle cannot reconstruct the transient unchanged Rates/Events badges. The replay fixture was reset after evidence capture. No CHAT-ACTIONS-001 fixture is active yet.
 required_resume: Implement one replayable CHAT-ACTIONS-001 fixture around one existing three-user Group thread and one target message. Present reply, reaction add/change/remove, pin/source navigation, owner edit, non-owner edit denial, unpin, owner unsend and non-owner unsend denial as one complete click journey, then run one exact persisted final oracle. Do not split these into microtests.
 event: No active Event mutation; next fixture is consolidated CHAT-ACTIONS-001
 actors:

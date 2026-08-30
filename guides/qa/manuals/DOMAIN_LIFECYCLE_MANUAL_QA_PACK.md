@@ -2046,6 +2046,15 @@ consistent lifecycle.
   without reopen. During this journey the owning defects were corrected for
   live read publication, active-viewer notification suppression and complete
   poll-driven row-state reconciliation through the Signal Store.
+- **Counter-source regression replay on 2026-08-30:** after separating the
+  active Activities tab's list-owned aggregate from the two inactive tabs'
+  side-menu snapshot, the user accepted the three-window UI behavior and the
+  repeated terminal oracle again passed all eight sections: exactly 20 messages,
+  the two new Casey messages once each, exact final row summaries, all Chat
+  counters cleared, exact Riley-only outbox/inbox and notification counters,
+  and unchanged fixture membership. The fixture was reset after capture. The
+  persisted oracle does not independently reconstruct the transient unchanged
+  Rates/Events badges; that assertion remains the user's live UI observation.
 
 ### `CHAT-ACTIONS-001` — one message's complete action lifecycle
 
