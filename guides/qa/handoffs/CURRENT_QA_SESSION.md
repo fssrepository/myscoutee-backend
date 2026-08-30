@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 06:36 CEST
+Updated: 2026-08-30 06:51 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,17 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-LIST-001 — controlled chat contexts and ordering
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-list-001--chat-list-and-contexts
-scenario: XLS-driven Core execution order. Tournament priority 11 is 15/15 complete; Chat priority 10 is now active at its first physical open row.
-ledger_status: DESIGN CAPTURED / NOT RUN — fixture staging and read-only baseline proof are next
-state: TOURNAMENT-RESOURCE-001 passed its complete persisted oracle and is closed. Exactly three owner-scoped Group A assignments, aggregate activity/groupsPending=3, all cross-owner cards, every per-viewer read receipt, unchanged roles/counters and zero undocumented notifications were proven. JOB-TOURNAMENT is also Core PASS/CLOSED from its retained real scheduler count>0/count=0 domain and browser evidence; generic Monitoring remains Admin optional MON-013. The Tournament resource fixture is still retained and must be reset before staging Chat.
-required_resume: Reset TOURNAMENT-RESOURCE-001 once, prove it is not staged, then stage CHAT-LIST-001 with the chat-domain harness and require a second read-only status to match its complete baseline before replacing the managed browsers. Do not mutate any chat until that status is proven. Then present the entire list/context/sort/reopen click sequence and every exact row/counter/order assertion here in chat.
-event: No active Event mutation; next fixture is CHAT-LIST-001
+checkpoint: CHAT-FLOW-001 — everyday conversation and recovery
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-flow-001--everyday-conversation-and-recovery
+scenario: XLS-driven Core execution order. Tournament is 15/15 complete; Chat now has six business-journey cases instead of twenty independently scheduled microtests.
+ledger_status: DESIGN CAPTURED / PARTIAL LIST PHASE PASS — the consolidated three-actor fixture and full flow remain NOT RUN
+state: The old CHAT-LIST-001 fixture was reset and is not active. Its authenticated All/context/sort/reopen proof is retained only as the first partial assertion of CHAT-FLOW-001: exact four-row counters/order and byte-identical zero-write reads passed. It is not a standalone test PASS. The full flow must additionally prove 18-message history, typing, exact-once delivery, closed-recipient unread, read acknowledgement and one reconnect/catch-up in the same three-actor journey.
+required_resume: Implement or extend one replayable CHAT-FLOW-001 fixture and oracle for Casey, Nova and Riley; require an exact read-only baseline before opening browsers. Then present the purpose, the entire three-actor click sequence and every visible row/history/typing/message/counter/read/reconnect assertion in one chat response. After the user completes the whole journey, run one complete persisted final oracle and either fix the owning defect or close the case. Do not restage CHAT-LIST-001 as an independent manual test.
+event: No active Event mutation; next fixture is consolidated CHAT-FLOW-001
 actors:
-  configured chat actors: defined by the CHAT-LIST-001 fixture and browser-session checkpoint
-next_actor: Codex resets the closed Tournament fixture, stages and proves CHAT-LIST-001, then the user executes the full bundled browser sequence.
-stop_phrase: Chat list contexts and ordering checked
+  Casey: sender and reader
+  Nova: open-thread realtime recipient
+  Riley: closed-thread unread and reconnect recipient
+next_actor: Codex prepares and proves the consolidated three-actor fixture, then the user executes the complete journey once.
+stop_phrase: Everyday conversation and recovery checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -161,9 +163,9 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation stays owned
 by Admin optional `MON-013`. Tournament is therefore 15/15 complete.
-`CHAT-LIST-001` is the active checkpoint: reset the retained resource fixture,
-stage and prove the controlled chat baseline, then replace the managed browser
-windows and execute its complete list/context/sort/reopen sequence.
+`CHAT-FLOW-001` is the active checkpoint. Its former standalone list phase is
+already proven and reset; prepare one consolidated three-actor fixture and run
+list, history, typing, delivery, unread/read and reconnect as one journey.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -335,14 +337,15 @@ record has been removed.
   receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
   but never manufacture row splits only to reach an estimate.
-- A feature-rich domain must not be represented by one umbrella row. Audit its
-  actual visible and persisted contracts, then create short, causally
-  continuous cases. The 2026-08-16 Chat audit is the reference:
-  `CHAT-AUTH-001` remains the authorization boundary, while list/history,
-  realtime delivery, unread/read, message mutations, reactions/pins,
-  attachments, members/reporting and push delivery are separate rows. This
-  produced 20 real Chat cases without changing the active Tournament resume
-  pointer.
+- A feature-rich domain must be represented by executable user journeys, not
+  one umbrella row and not one independently scheduled row per button or
+  assertion. Keep causally continuous actions in one case and list their exact
+  UI/persisted checkpoints inside it. Split only at a materially different
+  authority, fixture reset, external device or runtime boundary. The corrected
+  Chat model is the reference: authorization, everyday conversation/recovery,
+  message actions, rich content, governance and physical-device push are six
+  journeys; list/history/send/read/reaction/media details are assertions owned
+  by those journeys rather than standalone microtests.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
   workbook totals. Verify the CSV has 19 columns per logical record, including
@@ -1118,12 +1121,13 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
 -> TOURNAMENT-RESOURCE-001 (closed; generated-group resource aggregation PASS)
 -> JOB-TOURNAMENT (Core closed; generic Monitoring owned by MON-013)
--> CHAT-LIST-001 (active; controlled chat list and contexts)
+-> CHAT-FLOW-001 (active; consolidated everyday conversation and recovery)
 ```
 
-Tournament is 15/15 complete. Continue with `CHAT-LIST-001` in physical ledger
-order; do not replay closed Tournament fixtures unless their owning code or
-contract changes. EXT/optional remains deferred.
+Tournament is 15/15 complete. Continue with consolidated `CHAT-FLOW-001` in
+physical ledger order; do not schedule its former micro rows independently and
+do not replay closed Tournament fixtures unless their owning code or contract
+changes. EXT/optional remains deferred.
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
 revision prerequisite. The Admin-optional/operator/payment/deployment sequence

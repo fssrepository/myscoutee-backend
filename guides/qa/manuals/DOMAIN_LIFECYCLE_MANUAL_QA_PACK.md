@@ -1981,105 +1981,121 @@ Execution evidence in progress on 2026-08-14:
 
 ## Chat functional coverage
 
-The authorization checkpoint above is only the membership/privacy boundary;
-it is not a substitute for the chat product surface. The following CP13 cases
-are deliberately short and sequential. Each case owns one visible transition
-and one persisted oracle. Reuse one controlled accepted-member chat where
-possible, but reset only the rows owned by the next case. The original
-Tournament lifecycle, added membership, score-reopen and DQ checkpoints retain
-their closed evidence. Tournament is currently 13/15: generated-group resource
-aggregation is active and the partially verified worker row still needs its
-Monitoring/browser oracle. `CHAT-LIST-001` remains deferred until those two
-Tournament rows close, after which generated priority returns to Chat.
+Chat is executed as six user journeys, not as one-row microtests. Each journey
+is presented to the user in one block: purpose, complete click sequence, every
+visible counter/state assertion, and one independent persisted final oracle.
+The former list/history/send/counter/read/reconnect/typing and individual
+message-action rows below are retained only as mapped assertions inside these
+owners; they are not independently scheduled checkpoints.
 
-### List, history and transport
+- `CHAT-AUTH-001` — access and privacy boundary (PASS/CLOSED).
+- `CHAT-FLOW-001` — everyday conversation, history, unread/read and recovery.
+- `CHAT-ACTIONS-001` — reply, reaction, pin, edit and unsend lifecycle.
+- `CHAT-CONTENT-001` — image, voice, poll and shared-card conversation.
+- `CHAT-GOVERNANCE-001` — canonical members and moderation intake.
+- `CHAT-PUSH-001` — background device delivery and deep-link reconciliation.
 
-- `CHAT-LIST-001`: load one known main-event, group, service and support chat,
-  switch the available contexts and sort once. Exact row IDs, context totals,
-  date order and compact header/status must survive close/reopen with no write.
-  - Prepared on `2026-08-17` for Casey with four isolated rows and unread
-    counters `All=4`, `Event=1`, `Sub-event=0`, `Group=1`, `Service=1`,
-    `App Support=1`.
-  - The authenticated Java page oracle already passed exact descending and
-    ascending IDs, exact per-context totals, one unread per row and stable
-    `ownerStatus=A`/revision 1. The post-read Mongo oracle is byte-identical;
-    an apparent first failure was an oracle-only BSON wrapper normalization
-    defect, while direct EJSON section comparison proved no product write.
-  - Remaining manual branch: open Chats, verify All plus each populated
-    context, close/reopen the popup and confirm the same All order/counters.
-    Do not open a thread, because read acknowledgement belongs to
-    `CHAT-READ-001`.
-- `CHAT-HISTORY-001`: open one thread containing 18 controlled messages. The
-  latest window and one older page must merge in reverse-thread order without
-  a gap or duplicate; day markers and exact IDs must survive reopen.
-- `CHAT-SEND-001`: send one unique text while another accepted participant
-  keeps the thread open. The sender gets one immediate pending/confirmed row,
-  the recipient gets the same persisted message once, and client/server echo
-  reconciliation must not duplicate it.
-- `CHAT-RECONNECT-001`: disconnect only the recipient transport, send one
-  message, then restore that connection. Catch-up must deliver the persisted
-  ID once and reconcile unread state without a browser reload.
-- `CHAT-TYPING-001`: produce one brief typing signal, stop it, then also prove
-  the remote TTL fallback. Only other accepted participants may see it; no
-  message, notification or counter may be written.
+### `CHAT-FLOW-001` — everyday conversation and recovery
 
-### Unread and read acknowledgement
+Purpose: prove in one three-actor conversation that discovery, history,
+realtime delivery, unread/read ownership and transport recovery form one
+consistent lifecycle.
 
-- `CHAT-COUNTER-001`: send one message while the recipient Chat surface is
-  closed, then open only the list. Stored Chats/All/context counters, menu
-  badges and the row badge must all be `+1`; the sender remains unchanged and
-  list loading alone does not clear the value.
-- `CHAT-READ-001`: open the one-unread thread. Recipient counters change
-  exactly `1 -> 0`, one persisted reader identity appears, and the sender sees
-  one matching reader avatar without a new notification or duplicate after
-  reopen.
+- Start with Casey, Nova and Riley accepted in one controlled Event/Group chat,
+  plus known Event, Group, Service and App Support list rows. The group thread
+  contains 18 deterministic historical messages spanning two day markers.
+- Before opening a thread, inspect All and every context once. Exact rows,
+  counters and descending order must survive popup close/reopen, and list reads
+  must write nothing. Then open the Group thread, load the older page once and
+  prove all 18 IDs appear exactly once in chronological thread order.
+- Keep Nova's thread open, keep Riley's Chat closed, and let Casey type then
+  send one unique message. Nova sees transient typing and one live message with
+  no unread increment; Riley receives exactly one Chats/All/Group/row increment.
+  Opening only Riley's list does not clear it.
+- Open Riley's thread: the same message is acknowledged exactly once, all four
+  Riley counters return to zero and Casey sees one Riley reader identity.
+- Disconnect only Riley's transport, send one second Casey message, then
+  reconnect without browser reload. Riley catches up to that persisted ID once;
+  counters and history contain neither a gap nor a duplicate. Close/reopen all
+  three views and repeat the exact row/history/counter comparison.
+- Final oracle owns the former `CHAT-LIST-001`, `CHAT-HISTORY-001`,
+  `CHAT-SEND-001`, `CHAT-COUNTER-001`, `CHAT-READ-001`,
+  `CHAT-RECONNECT-001` and `CHAT-TYPING-001` assertions together: exact
+  message IDs/client IDs, per-user unread/read state, reader identities,
+  context totals, history cursors and zero undocumented notifications.
+- Retained partial evidence from 2026-08-30: the isolated list phase already
+  proved All=4, Event=1, Sub-event=0, Group=1, Service=1 and App Support=1,
+  exact ascending/descending IDs, stable ownerStatus/revision and a
+  byte-identical no-write close/reopen. It is not a standalone test PASS.
 
-### Message lifecycle and interaction
+### `CHAT-ACTIONS-001` — one message's complete action lifecycle
 
-- `CHAT-REPLY-001`: reply once to a controlled older message. Both clients
-  retain the immutable source ID/preview, and selecting the preview locates
-  the source even when the older history page first has to load.
-- `CHAT-EDIT-001`: edit one own text message and try the same mutation as a
-  different participant. The same ID gains one edit timestamp and live Edited
-  presentation; the non-owner is denied and no new message/unread is created.
-- `CHAT-DELETE-001`: unsend one own message and try as a non-owner. The same ID
-  becomes one tombstone, its payload/reply/reactions/readers/pin clear on every
-  client and reload, and surrounding history remains intact.
-- `CHAT-REACTION-001`: add a reaction from two users, change one and remove
-  one. There is at most one reaction per user, summary/detail identities agree
-  live and after reopen, and unread/notification counters do not change.
-- `CHAT-PIN-001`: pin one message, open Pinned, select its source and unpin.
-  One pinned ID/actor is persisted, navigation focuses the source, and the
-  terminal pinned list is empty without unrelated deltas.
+Purpose: prove every ordinary message mutation against the same identities and
+surrounding history instead of replaying five independent fixtures.
 
-### Attachments and shared cards
+- In one existing three-user thread, Casey replies to an older message; the
+  immutable source preview and source jump work even when the older page must
+  load. Nova and Riley each react, Nova changes reaction and Riley removes it.
+- Casey pins the reply, opens Pinned and navigates back to the source. Casey
+  edits the same message once; Nova's non-owner edit is server-denied without a
+  new message, unread or notification.
+- Casey unpins and unsends the message; Nova's non-owner unsend is denied. The
+  same message ID becomes one tombstone and clears text, attachment, reply,
+  reactions, readers and pin while surrounding history remains intact.
+- Reopen all clients and compare the single persisted message history plus
+  mutation audit. This journey owns the former `CHAT-REPLY-001`,
+  `CHAT-EDIT-001`, `CHAT-DELETE-001`, `CHAT-REACTION-001` and
+  `CHAT-PIN-001` assertions.
 
-- `CHAT-IMAGE-001`: send one controlled image and open its preview. Both
-  clients use one canonical attachment identity/URL, the preview is readable,
-  and reload does not upload or render a duplicate.
-- `CHAT-VOICE-001`: record a few-second clip, review, send and play it once as
-  the recipient. One canonical clip survives reopen; cancel or denied recorder
-  permission creates neither a message nor orphan media.
-- `CHAT-POLL-001`: create one two-option poll, vote as two users and change one
-  vote. Totals progress `0 -> 1 -> 2` and remain `2` after the move; bars,
-  voter identities and persisted attachment state agree.
-- `CHAT-CARD-001`: send one event card and one asset or link card, then open
-  each. Canonical target IDs navigate through the shared target flow, while a
-  removed or denied target becomes unavailable without exposing its data.
+### `CHAT-CONTENT-001` — rich-content conversation
 
-### Membership, moderation intake and device delivery
+Purpose: prove that all supported content travels through the same canonical
+chat/message lifecycle and remains usable by another participant.
 
-- `CHAT-MEMBERS-001`: open the chat Member list and load one extra page only
-  when needed. IDs, roles and avatars equal canonical accepted membership;
-  pending/left users are absent, server-denied and no read causes a write.
-- `CHAT-REPORT-001`: report one participant message once and submit the same
-  report again. Exactly one Admin review identity contains the reporter,
-  chat/message context and no unrelated history; Admin resolution remains an
-  Administration-domain case.
-- `CHAT-PUSH-001`: background or close one accepted recipient app, send one
-  participant message and tap the push. Exactly one recipient push opens the
-  exact chat/message and reconciles in-app unread state; sender and system
-  messages are explicit no-push controls.
+- In one accepted Group thread, Casey sends one controlled image, one
+  few-second voice clip, one two-option poll, one Event card and one Asset/link
+  card. Nova observes every message live exactly once.
+- Nova opens the image preview, plays the voice clip, votes once, changes that
+  vote, and opens both available cards. Riley casts the second poll vote.
+  Totals move 0 -> 1 -> 2 and stay 2 after Nova changes option.
+- One denied/removed card target becomes unavailable without leaking detail.
+  One recorder-permission denial/cancel branch creates no message or orphan
+  media. Reopen the thread and require canonical attachment/target IDs, working
+  media URLs and no duplicate upload/render.
+- This journey owns the former `CHAT-IMAGE-001`, `CHAT-VOICE-001`,
+  `CHAT-POLL-001` and `CHAT-CARD-001` assertions.
+
+### `CHAT-GOVERNANCE-001` — members and moderation intake
+
+Purpose: prove that the visible room population, access control and a reported
+message share the same canonical membership boundary.
+
+- Open Members for controlled Event and Group chats. Accepted IDs, roles and
+  avatars match the owning event/group membership; pending, left and
+  other-group users are absent and direct access is server-denied.
+- Report one accepted participant message and repeat the same submission once.
+  The reporter sees one acknowledgement; Admin sees exactly one review item
+  with reporter/chat/message/event/group context and no unrelated history.
+- Member inspection remains read-only. The report is idempotent and produces
+  only its documented review/notification writes. Admin resolution stays in
+  the Administration domain.
+- This journey owns the former `CHAT-MEMBERS-001` and
+  `CHAT-REPORT-001` assertions while `CHAT-AUTH-001` retains its already
+  closed base authorization evidence.
+
+### `CHAT-PUSH-001` — background device delivery
+
+Purpose: prove one real background delivery boundary, not general messaging
+again.
+
+- Background/close one accepted physical-device recipient, send one
+  participant message and tap the resulting push.
+- Exactly one target-only push opens the exact chat/message and reconciles the
+  in-app unread/read state. Sender self-notification, a foreground recipient
+  and one system message are explicit no-push controls.
+- Compare device UI, push tag/deep link, persisted message, notification
+  inbox/outbox and terminal counters. Physical-device evidence remains
+  mandatory.
 
 ## Event feedback and Impressions checkpoints
 

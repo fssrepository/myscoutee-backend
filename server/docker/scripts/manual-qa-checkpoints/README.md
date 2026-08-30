@@ -447,13 +447,17 @@ scheduled run, and exact agreement between layout totals and its stored node,
 edge and forest collections. The default product interval is one day in both
 `demo_db` and `myscoutee_db`.
 
-`CHAT-LIST-001` replaces only the selected Casey actor's Chat rows for the
+`CHAT-LIST-001` is a supporting fixture/oracle for the list phase inside the
+consolidated `CHAT-FLOW-001` journey; it is not an independently scheduled
+manual testcase. It replaces only the selected Casey actor's Chat rows for the
 short fixture window and snapshots the exact originals for reset. It stages
 one main-event, group, service and App Support row, one unread item in each
-context and no messages. The authenticated browser oracle must prove date
+context and no messages. The authenticated browser oracle proves date
 ascending/descending order and all context totals through the real Java page
 route; `status` then proves that every staged chat and activity counter stayed
-byte-identical after those reads.
+byte-identical after those reads. The complete manual PASS still requires the
+three-actor history/delivery/unread/read/reconnect phases owned by
+`CHAT-FLOW-001`.
 
 ```bash
 bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
