@@ -8,6 +8,7 @@
   const COMMAND = Q.text(process.env.MANUAL_QA_COMMAND);
   const LIST_CHECKPOINT = "CHAT-LIST-001";
   const FLOW_CHECKPOINT = "CHAT-FLOW-001";
+  const ACTIONS_CHECKPOINT = "CHAT-ACTIONS-001";
   const PREFIX = "manual-qa-checkpoint:v1:chat-list";
   const FLOW_PREFIX = "manual-qa-checkpoint:v1:chat-flow";
   const CASEY_ID = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID) || "650000000000000000000061";
@@ -19,6 +20,10 @@
   const FLOW_GROUP_ID = `${FLOW_STAGE_ID}:group`;
   const FLOW_FIRST_MESSAGE = "QA CHAT FLOW 001 · Casey live message";
   const FLOW_LIST_POLL_MESSAGE = "QA CHAT FLOW 001 · Casey list poll message";
+  const ACTIONS_SOURCE_ID = `${FLOW_PREFIX}:history:02`;
+  const ACTIONS_REPLY_TEXT = "QA CHAT ACTIONS 001 · Casey reply";
+  const ACTIONS_EDITED_TEXT = "QA CHAT ACTIONS 001 · Casey edited reply";
+  const ACTIONS_READ_RACE_TEXT = "QA CHAT ACTIONS 001 · read race retest";
   const CONTEXTS = [
     { key: "event", channelType: "mainEvent", suffix: "event", title: "QA Chat · Main event", avatar: "QE" },
     { key: "group", channelType: "groupSubEvent", suffix: "group", title: "QA Chat · Group", avatar: "QG" },
@@ -27,7 +32,7 @@
   ];
 
   function assertCheckpoint() {
-    if (![LIST_CHECKPOINT, FLOW_CHECKPOINT].includes(CHECKPOINT)) {
+    if (![LIST_CHECKPOINT, FLOW_CHECKPOINT, ACTIONS_CHECKPOINT].includes(CHECKPOINT)) {
       Q.fail(`unsupported Chat checkpoint '${CHECKPOINT}'.`);
     }
   }
@@ -606,6 +611,158 @@
     Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "terminal-pass", expected, validation });
   }
 
+  function actionsStatus() {
+    const state = Q.activeState(SCENARIO, false);
+    if (!state) {
+      Q.printObject({ scenario: SCENARIO, checkpoint: CHECKPOINT, phase: "not-staged", next: `Run stage chat-domain ${CHECKPOINT}.` });
+      return;
+    }
+    if (Q.text(state.checkpointId) !== CHECKPOINT) Q.fail(`active Chat checkpoint is '${Q.text(state.checkpointId)}', not '${CHECKPOINT}'.`);
+    const current = flowSnapshot();
+    const baselineValidation = flowBaselineValidation(current);
+    const actionMessages = (current.messages || []).filter(message =>
+      Q.text(message.sentAtIso).localeCompare(Q.text(state.stagedAtIso)) > 0
+      && Q.text(message.senderAvatar && message.senderAvatar.id) === CASEY_ID);
+    if (actionMessages.length === 0) {
+      baselineValidation.zeroWriteSnapshot = sameNormalizedSnapshot(current, state.baseline);
+      if (!Object.values(baselineValidation).every(Boolean)) {
+        Q.fail(`CHAT-ACTIONS-001 baseline drift detected: ${JSON.stringify(baselineValidation)}.`);
+      }
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpoint: CHECKPOINT,
+        phase: "fixture-ready",
+        expected: {
+          groupChatId: flowChatId(CONTEXTS[1]),
+          sourceMessageId: ACTIONS_SOURCE_ID,
+          sourceMessageText: "QA history 02",
+          replyText: ACTIONS_REPLY_TEXT,
+          editedText: ACTIONS_EDITED_TEXT
+        },
+        validation: baselineValidation
+      });
+      return;
+    }
+
+    const target = actionMessages.length === 1 ? actionMessages[0] : null;
+    const baselineById = Object.fromEntries((state.baseline.messages || []).map(message => [Q.text(message.id), message]));
+    const comparableMessage = message => {
+      const copy = EJSON.parse(EJSON.stringify(message, null, 0, { relaxed: false }));
+      copy.readBy = (copy.readBy || []).sort((left, right) => Q.text(left && left.id).localeCompare(Q.text(right && right.id)));
+      copy.messageReadByUserIds = (copy.messageReadByUserIds || []).map(Q.text).sort();
+      return copy;
+    };
+    const unchangedHistory = (current.messages || [])
+      .filter(message => Object.prototype.hasOwnProperty.call(baselineById, Q.text(message.id)))
+      .every(message => sameNormalizedSnapshot(comparableMessage(message), comparableMessage(baselineById[Q.text(message.id)])));
+    if (target && Q.text(target.text) === ACTIONS_READ_RACE_TEXT && !Q.text(target.deletedAtIso)) {
+      const readers = (target.readBy || []).map(reader => Q.text(reader && reader.id)).sort();
+      const readerSearchIds = (target.messageReadByUserIds || []).map(Q.text).sort();
+      const groupCopies = (current.chats || []).filter(chat => Q.text(chat.id) === flowChatId(CONTEXTS[1]));
+      const validation = {
+        oneNormalActionMessage: actionMessages.length === 1,
+        exactPersistedReaders: Q.sameJson(readers, [NOVA_ID, RILEY_ID].sort()),
+        exactReaderSearchIds: Q.sameJson(readerSearchIds, [NOVA_ID, RILEY_ID].sort()),
+        normalMessageStillIntact: target.replyTo == null
+          && target.editedAtIso == null
+          && target.pinnedAtIso == null
+          && (target.reactions || []).length === 0
+          && (target.attachments || []).length === 0,
+        exactHistoryCardinality: (current.messages || []).length === (state.baseline.messages || []).length + 1,
+        surroundingHistoryUnchanged: unchangedHistory,
+        allGroupCopiesRead: groupCopies.length === FLOW_ACTOR_IDS.length
+          && groupCopies.every(chat => Q.number(chat.unread) === 0),
+        allChatCountersCleared: (current.users || []).every(flowCounterZero)
+      };
+      if (!Object.values(validation).every(Boolean)) {
+        Q.fail(`CHAT-ACTIONS-001 normal-message read-race retest mismatch: ${JSON.stringify(validation)}.`);
+      }
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpoint: CHECKPOINT,
+        phase: "read-race-ui-pass",
+        targetMessageId: target.id,
+        readers,
+        validation
+      });
+      return;
+    }
+    const validation = {
+      oneActionMessage: actionMessages.length === 1,
+      sameMessageBecameTombstone: Boolean(target)
+        && Q.text(target.deletedAtIso)
+        && Q.text(target.deletedByUserId) === CASEY_ID
+        && !Q.text(target.text)
+        && target.replyTo == null
+        && target.editedAtIso == null
+        && target.pinnedAtIso == null
+        && target.pinnedByUserId == null
+        && (target.reactions || []).length === 0
+        && (target.readBy || []).length === 0
+        && (target.attachments || []).length === 0,
+      tombstoneSearchFieldsCleared: Boolean(target)
+        && Q.sameJson((target.messageSenderUserIds || []).map(Q.text), [CASEY_ID])
+        && (target.messageReadByUserIds || []).length === 0
+        && (target.messageReactionUserIds || []).length === 0
+        && (target.messageAttachmentKeys || []).length === 0
+        && (target.pollVoterUserIds || []).length === 0,
+      immutableSourceIntact: Boolean(baselineById[ACTIONS_SOURCE_ID])
+        && unchangedHistory
+        && Q.text(baselineById[ACTIONS_SOURCE_ID].text) === "QA history 02",
+      exactHistoryCardinality: (current.messages || []).length === (state.baseline.messages || []).length + 1,
+      unchangedFixtureMembership: (current.members || []).length === FLOW_ACTOR_IDS.length * 2
+        && (current.members || []).every(member => Q.text(member.status) === "accepted")
+    };
+    if (!Object.values(validation).every(Boolean)) {
+      Q.fail(`CHAT-ACTIONS-001 terminal mismatch: ${JSON.stringify(validation)}.`);
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpoint: CHECKPOINT,
+      phase: "terminal-pass",
+      targetMessageId: target.id,
+      validation,
+      note: "The persisted final document proves identity-preserving unsend. Reply, reaction, pin and edit transitions remain visual/manual evidence because this domain has no separate mutation-audit collection."
+    });
+  }
+
+  function prepareActionsReadRaceRetest() {
+    const state = Q.activeState(SCENARIO, true);
+    if (CHECKPOINT !== ACTIONS_CHECKPOINT || Q.text(state.checkpointId) !== ACTIONS_CHECKPOINT) {
+      Q.fail("prepare-actions-read-race-retest requires the active CHAT-ACTIONS-001 fixture.");
+    }
+    const current = flowSnapshot();
+    const target = (current.messages || []).find(message =>
+      Q.text(message.sentAtIso).localeCompare(Q.text(state.stagedAtIso)) > 0
+      && Q.text(message.senderAvatar && message.senderAvatar.id) === CASEY_ID
+      && Q.text(message.deletedAtIso));
+    if (!target) Q.fail("CHAT-ACTIONS-001 has no unique deleted Casey target for the read regression.");
+    const tombstoneUpdate = Q.collection("chatMessages").updateOne(
+      { chatId: flowChatId(CONTEXTS[1]), id: target.id, deletedAtIso: { $nin: [null, ""] } },
+      { $set: { readBy: [], messageReadByUserIds: [] } }
+    );
+    const raceUpdate = Q.collection("chatMessages").updateOne(
+      { chatId: flowChatId(CONTEXTS[1]), id: `${FLOW_PREFIX}:history:01`, "senderAvatar.id": CASEY_ID },
+      { $set: { readBy: [], messageReadByUserIds: [] } }
+    );
+    if (tombstoneUpdate.matchedCount !== 1 || raceUpdate.matchedCount !== 1) {
+      Q.fail("CHAT-ACTIONS-001 read-race retest preparation did not match both guarded messages.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      phase: "read-race-retest-ready",
+      "context.actionTargetMessageId": target.id,
+      "context.readRaceMessageId": `${FLOW_PREFIX}:history:01`
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpoint: CHECKPOINT,
+      phase: "read-race-retest-ready",
+      targetMessageId: target.id,
+      readRaceMessageId: `${FLOW_PREFIX}:history:01`,
+      next: "Send simultaneous Nova/Riley websocket read receipts, reopen through HTTP, run both forbidden non-owner mutations, then run status."
+    });
+  }
+
   function flowReset() {
     const state = Q.activeState(SCENARIO, true);
     if (Q.text(state.checkpointId) !== CHECKPOINT) Q.fail(`active Chat checkpoint is '${Q.text(state.checkpointId)}', not '${CHECKPOINT}'.`);
@@ -620,8 +777,9 @@
 
   Q.assertDeploymentSafety();
   assertCheckpoint();
-  if (COMMAND === "stage") (CHECKPOINT === FLOW_CHECKPOINT ? flowStage : listStage)();
-  else if (COMMAND === "status") (CHECKPOINT === FLOW_CHECKPOINT ? flowStatus : listStatus)();
-  else if (COMMAND === "reset") (CHECKPOINT === FLOW_CHECKPOINT ? flowReset : listReset)();
+  if (COMMAND === "prepare-actions-read-race-retest") prepareActionsReadRaceRetest();
+  else if (COMMAND === "stage") (CHECKPOINT === LIST_CHECKPOINT ? listStage : flowStage)();
+  else if (COMMAND === "status") (CHECKPOINT === ACTIONS_CHECKPOINT ? actionsStatus : CHECKPOINT === FLOW_CHECKPOINT ? flowStatus : listStatus)();
+  else if (COMMAND === "reset") (CHECKPOINT === LIST_CHECKPOINT ? listReset : flowReset)();
   else Q.fail(`unsupported command '${COMMAND}' for ${SCENARIO}.`);
 })();

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 08:27 CEST
+Updated: 2026-08-30 08:58 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -42,19 +42,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CHAT-ACTIONS-001 — one message's complete action lifecycle
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-actions-001--one-messages-complete-action-lifecycle
+checkpoint: CHAT-CONTENT-001 — rich-content conversation
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-content-001--rich-content-conversation
 scenario: XLS-driven Core execution order. Tournament is 15/15 complete; Chat now has six business-journey cases instead of twenty independently scheduled microtests.
-ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-FLOW-001 is PASS/CLOSED
-state: CHAT-FLOW-001 completed and its post-counter-source regression replay also reached terminal-pass: exactly 20 messages, exact final summaries, all Chat counters zero, exact Riley-only notification outbox/inbox/counters and unchanged memberships. The user accepted the three-window live UI behavior; the persisted oracle cannot reconstruct the transient unchanged Rates/Events badges. The replay fixture was reset after evidence capture. No CHAT-ACTIONS-001 fixture is active yet.
-required_resume: Implement one replayable CHAT-ACTIONS-001 fixture around one existing three-user Group thread and one target message. Present reply, reaction add/change/remove, pin/source navigation, owner edit, non-owner edit denial, unpin, owner unsend and non-owner unsend denial as one complete click journey, then run one exact persisted final oracle. Do not split these into microtests.
-event: No active Event mutation; next fixture is consolidated CHAT-ACTIONS-001
+ledger_status: DESIGN CAPTURED / NOT RUN — CHAT-ACTIONS-001 is PASS/CLOSED
+state: CHAT-ACTIONS-001 terminal-pass retained 18 surrounding messages plus one identity-preserving tombstone; Nova Edit/Unsend both returned 403. A lost concurrent read update and tombstone read recreation were fixed with guarded atomic write-side additions; simultaneous Nova/Riley replay persisted both readers and left the tombstone empty. Fixture reset after capture.
+required_resume: Implement one replayable CHAT-CONTENT-001 fixture in one accepted three-user Group thread. Present image, short voice clip, two-option poll with vote change, Event card, Asset/link card, denied recorder/cancel and unavailable-target controls as one complete click journey, then run one exact attachment/vote/target persistence oracle. Do not split these into microtests.
+event: No active Event mutation; next fixture is consolidated CHAT-CONTENT-001
 actors:
   Casey: sender and reader
   Nova: open-thread realtime recipient
   Riley: closed-thread unread and reconnect recipient
-next_actor: Codex prepares and proves the consolidated message-action fixture, then the user executes the complete journey once.
-stop_phrase: Message action lifecycle checked
+next_actor: Codex prepares and proves the consolidated rich-content fixture, then the user executes the complete journey once.
+stop_phrase: Rich chat content checked
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -1121,10 +1121,12 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> TOURNAMENT-DQ-001 (closed; DQ/Reinstate, Impression and advancement PASS)
 -> TOURNAMENT-RESOURCE-001 (closed; generated-group resource aggregation PASS)
 -> JOB-TOURNAMENT (Core closed; generic Monitoring owned by MON-013)
--> CHAT-FLOW-001 (active; consolidated everyday conversation and recovery)
+-> CHAT-FLOW-001 (closed; consolidated everyday conversation and recovery)
+-> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
+-> CHAT-CONTENT-001 (active; consolidated rich-content conversation)
 ```
 
-Tournament is 15/15 complete. Continue with consolidated `CHAT-FLOW-001` in
+Tournament is 15/15 complete. Continue with consolidated `CHAT-CONTENT-001` in
 physical ledger order; do not schedule its former micro rows independently and
 do not replay closed Tournament fixtures unless their owning code or contract
 changes. EXT/optional remains deferred.

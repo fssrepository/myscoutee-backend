@@ -2074,6 +2074,21 @@ surrounding history instead of replaying five independent fixtures.
   mutation audit. This journey owns the former `CHAT-REPLY-001`,
   `CHAT-EDIT-001`, `CHAT-DELETE-001`, `CHAT-REACTION-001` and
   `CHAT-PIN-001` assertions.
+- **PASS/CLOSED on 2026-08-30:** the user completed the consolidated
+  three-window journey. The terminal oracle retained exactly the original 18
+  surrounding messages plus one Casey message whose same ID became a single
+  tombstone; text, reply, edit marker, pin, reactions, attachments and search
+  fields were cleared, and memberships were unchanged. Nova's authenticated
+  non-owner Edit and Unsend both returned HTTP `403`. The observed one-reader
+  reopen exposed a real lost-update window: the older/live receipt path saved
+  stale whole message documents, and deleted tombstones could acquire readers
+  again. The write path now uses guarded atomic Mongo `$addToSet` updates and
+  excludes deleted messages. A simultaneous Nova/Riley websocket replay
+  persisted both reader IDs, reopen retained both, and the tombstone reader
+  list remained empty. This domain has no separate mutation-audit collection;
+  transient reply/reaction/pin/edit transitions are the accepted three-client
+  UI evidence, while the final document and denial requests are persisted/API
+  evidence.
 
 ### `CHAT-CONTENT-001` — rich-content conversation
 

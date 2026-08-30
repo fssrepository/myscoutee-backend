@@ -1250,32 +1250,39 @@ public class ChatService {
         List<ChatMessage> messages = preloadedMessages != null
                 ? preloadedMessages
                 : chatMessagesRepository.findByChatIdAndMessageIds(snapshot.chatId(), targetMessageIds);
-        List<ChatMessage> changedMessages = new ArrayList<>();
         for (ChatMessage message : messages) {
             if (message == null) {
                 continue;
             }
             String senderId = message.getSenderAvatar() == null ? "" : normalizeId(message.getSenderAvatar().getId());
             boolean matchesTarget = targetMessageIds.contains(normalizeId(message.getId()));
-            if (!matchesTarget || viewerUserId.equals(senderId) || hasReader(message, viewerUserId)) {
+            if (!matchesTarget
+                    || viewerUserId.equals(senderId)
+                    || StringUtils.hasText(message.getDeletedAtIso())
+                    || hasReader(message, viewerUserId)) {
                 continue;
             }
             if (reader == null) {
                 viewer = findUser(viewerUserId);
                 reader = buildReadAvatarRecord(viewer, viewerUserId);
             }
-            if (addReader(message, reader)) {
-                message.refreshMessageSearchFields();
+            Query unreadMessage = new Query(unreadMessageCriteria(snapshot.chatId(), viewerUserId)
+                    .and("id").is(normalizeId(message.getId())));
+            Update readUpdate = new Update()
+                    .addToSet("readBy", reader)
+                    .addToSet("messageReadByUserIds", viewerUserId);
+            var updateResult = mongoTemplate.updateFirst(unreadMessage, readUpdate, ChatMessage.class);
+            if (updateResult != null && updateResult.getModifiedCount() > 0) {
+                addReader(message, reader);
+                List<String> readByUserIds = new ArrayList<>(message.getMessageReadByUserIds());
+                readByUserIds.add(viewerUserId);
+                message.setMessageReadByUserIds(readByUserIds);
                 readMessageIds.add(normalizeId(message.getId()));
-                changedMessages.add(message);
             }
         }
         Chat viewerChat = snapshot.viewerChat();
-        if (!changedMessages.isEmpty()) {
-            chatMessagesRepository.saveAll(changedMessages);
-        }
-        if (viewerChat != null && !changedMessages.isEmpty()) {
-            int unread = Math.max(0, normalizeCount(viewerChat.getUnread()) - changedMessages.size());
+        if (viewerChat != null && !readMessageIds.isEmpty()) {
+            int unread = Math.max(0, normalizeCount(viewerChat.getUnread()) - readMessageIds.size());
             if (normalizeCount(viewerChat.getUnread()) != unread) {
                 int unreadDelta = unread - normalizeCount(viewerChat.getUnread());
                 Chat nextViewerChat = copyChat(viewerChat);
@@ -1292,7 +1299,7 @@ public class ChatService {
                 reader == null ? chatMessageMapper.emptyReadAvatarDto() : chatMessageMapper.toReadAvatarDto(reader, viewer),
                 readAtIso,
                 viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread()),
-                !changedMessages.isEmpty());
+                !readMessageIds.isEmpty());
     }
 
     private ChatReadUpdate markChannelRead(
@@ -1302,6 +1309,7 @@ public class ChatService {
         String readAtIso = Instant.now().toString();
         List<String> loadedUnreadIds = (loadedMessages == null ? List.<ChatMessage>of() : loadedMessages).stream()
                 .filter(Objects::nonNull)
+                .filter(message -> !StringUtils.hasText(message.getDeletedAtIso()))
                 .filter(message -> message.getSenderAvatar() == null
                         || !viewerUserId.equals(normalizeId(message.getSenderAvatar().getId())))
                 .filter(message -> !hasReader(message, viewerUserId))
@@ -1322,9 +1330,7 @@ public class ChatService {
         }
         Users viewer = findUser(viewerUserId);
         ChatReadAvatarRecord reader = buildReadAvatarRecord(viewer, viewerUserId);
-        Query unreadMessages = new Query(Criteria.where("chatId").is(snapshot.chatId())
-                .and("senderAvatar.id").ne(viewerUserId)
-                .and("messageReadByUserIds").ne(viewerUserId));
+        Query unreadMessages = new Query(unreadMessageCriteria(snapshot.chatId(), viewerUserId));
         Update readUpdate = new Update()
                 .addToSet("readBy", reader)
                 .addToSet("messageReadByUserIds", viewerUserId);
@@ -1347,6 +1353,17 @@ public class ChatService {
                 readAtIso,
                 0,
                 changed);
+    }
+
+    private Criteria unreadMessageCriteria(String chatId, String viewerUserId) {
+        return new Criteria().andOperator(
+                Criteria.where("chatId").is(chatId),
+                Criteria.where("senderAvatar.id").ne(viewerUserId),
+                Criteria.where("messageReadByUserIds").ne(viewerUserId),
+                new Criteria().orOperator(
+                        Criteria.where("deletedAtIso").exists(false),
+                        Criteria.where("deletedAtIso").is(null),
+                        Criteria.where("deletedAtIso").is("")));
     }
 
     private ChatMessageDto mutateMessage(

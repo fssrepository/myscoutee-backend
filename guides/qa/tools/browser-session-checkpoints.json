@@ -159,6 +159,33 @@
         }
       ]
     },
+    "CHAT-ACTIONS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-actions message owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · reply/edit/pin/unsend owner"
+        },
+        {
+          "actor": "Nova chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · reaction and non-owner denial actor"
+        },
+        {
+          "actor": "Riley chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · reaction add/remove actor"
+        }
+      ]
+    },
     "TOURNAMENT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

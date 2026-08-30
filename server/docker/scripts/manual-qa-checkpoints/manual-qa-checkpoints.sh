@@ -340,9 +340,12 @@ case "${scenario}:${command}" in
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;
-  chat-domain:stage|chat-domain:status|chat-domain:reset)
+  chat-domain:stage|chat-domain:status|chat-domain:reset|chat-domain:prepare-actions-read-race-retest)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || fail "${command} is restricted to CHAT-LIST-001 or CHAT-FLOW-001."
+    [ "$3" = "CHAT-LIST-001" ] || [ "$3" = "CHAT-FLOW-001" ] || [ "$3" = "CHAT-ACTIONS-001" ] || fail "${command} is restricted to CHAT-LIST-001, CHAT-FLOW-001 or CHAT-ACTIONS-001."
+    if [ "${command}" = "prepare-actions-read-race-retest" ] && [ "$3" != "CHAT-ACTIONS-001" ]; then
+      fail "${command} is restricted to CHAT-ACTIONS-001."
+    fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)

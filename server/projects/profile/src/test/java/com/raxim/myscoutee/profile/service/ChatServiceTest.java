@@ -378,6 +378,59 @@ class ChatServiceTest {
     }
 
     @Test
+    void openingOlderMessagePageAddsReaderWithAtomicMongoUpdate() {
+        Chat viewerChat = chat("chat-1", "viewer", 1, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(unreadMessage));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 15, "15");
+
+        assertThat(result.read()).isNotNull();
+        assertThat(result.read().messageIds()).containsExactly("m1");
+        assertThat(result.items().getFirst().readBy())
+                .extracting(reader -> reader.id())
+                .contains("viewer", "someone-else");
+        verify(mongoTemplate).updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void reopeningDeletedMessageDoesNotRecreateReadReceipts() {
+        Chat viewerChat = chat("chat-1", "viewer", 0, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage deletedMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
+        deletedMessage.setDeletedAtIso("2026-05-26T08:01:00Z");
+        deletedMessage.setReadBy(List.of());
+        deletedMessage.refreshMessageSearchFields();
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(deletedMessage));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
+
+        assertThat(result.read()).isNull();
+        assertThat(result.items().getFirst().readBy()).isEmpty();
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+    }
+
+    @Test
     void queryMembersPageUsesLogicalChatIdAndPaginatesTheMongoUsersQuery() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat otherOwnerChat = chat("chat-1", "sender", 0);
