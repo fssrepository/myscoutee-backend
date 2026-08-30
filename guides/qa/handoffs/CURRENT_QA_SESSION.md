@@ -84,6 +84,15 @@ card. This is recorded under the Event domain and remains NOT RUN; it does not
 replace the active Tournament checkpoint or authorize implementation before
 the campaign reaches that row.
 
+Separate captured Asset follow-up: Tournament-origin asset behavior remains
+owned by the Asset block instead of duplicating closed Tournament cases.
+`ASSET-MEMBER-001/002` own generated-group Join/Invite transitions,
+`ASSET-BORROW-001` owns generated-group Resource Explore/borrow, and
+`ASSET-ASSIGN-003` now explicitly owns generated-group edit, unassign and
+removed-manager cleanup with exact write-side Group/stage/root counter reversal
+and a byte-identical sibling-group negative control. This is required coverage,
+not a later optional reminder.
+
 ### Efficient resume gate
 
 Do not repeat baseline methodology when the resume pointer and persisted oracle

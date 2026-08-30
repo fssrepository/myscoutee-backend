@@ -5567,14 +5567,23 @@ is **PASS / CLOSED**.
 
 ### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
 
-- Edit the capacity of one already assigned asset and require the saved asset
-  write to refresh every referenced sub-event projection. Do not reconstruct
-  the answer in the list query.
-- Unassign it, then in an independent branch Remove one separate asset manager
-  from the event. Only settings/contributions owned by that removed manager are
-  cleaned up; unrelated owners and resource types remain intact.
-- Verify materialized counters, roles and assignment records after each write,
-  after reload and after an idempotent terminal replay.
+- Start from two generated Tournament groups. Group A contains at least two
+  owner-scoped resource assignments; Group B is the unchanged negative
+  control. Edit the capacity of one Group A asset and require the owning save
+  to refresh only that exact event/stage/group/owner/type materialization. Do
+  not reconstruct the answer in the list query.
+- Unassign that resource, then in an independent reset branch remove one
+  separate Group A asset manager from the event. The writes must subtract the
+  exact removed owner/type contribution from Group A runtime metrics, the
+  stage `groupsPending` aggregate and the root Event activity aggregate. Only
+  settings/contributions owned by the removed manager are cleaned up;
+  unrelated Group A owners/types and every Group B record/counter remain
+  byte-identical.
+- Verify the source asset, assignment/settings/contributions, materialized
+  group/stage/root counters, Event and Tournament-group roles after each write,
+  after popup close/reopen, after browser reload and after an idempotent
+  terminal replay. No read projection or frontend counter fallback may repair
+  the persisted result.
 
 ## Operator configuration and security cases
 
