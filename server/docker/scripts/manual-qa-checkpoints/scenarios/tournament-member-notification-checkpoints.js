@@ -18,7 +18,7 @@
   const RILEY_ID = "650000000000000000000063";
   const LINA_ID = "178e8d0cbe164fa3fede5884";
   const ALL_USERS = [HOST_ID, NOVA_ID, RILEY_ID, LINA_ID];
-  const EXPECTED_ACTIVE_AFTER_REMOVE = [HOST_ID, RILEY_ID, LINA_ID].sort();
+  const REMOVABLE_USER_IDS = [NOVA_ID, RILEY_ID, LINA_ID];
   const SCORE_BY_USER_ID = {
     [HOST_ID]: 1,
     [NOVA_ID]: 7,
@@ -429,10 +429,10 @@
     };
   }
 
-  function hasExactRemainingChatOwners(chat) {
-    return chat.owners.length === EXPECTED_ACTIVE_AFTER_REMOVE.length
-      && Q.sameJson(sorted(chat.owners.map(owner => owner.ownerUserId)), EXPECTED_ACTIVE_AFTER_REMOVE)
-      && chat.owners.every(owner => Q.sameJson(owner.memberIds, EXPECTED_ACTIVE_AFTER_REMOVE));
+  function hasExactRemainingChatOwners(chat, expectedActiveUserIds) {
+    return chat.owners.length === expectedActiveUserIds.length
+      && Q.sameJson(sorted(chat.owners.map(owner => owner.ownerUserId)), expectedActiveUserIds)
+      && chat.owners.every(owner => Q.sameJson(owner.memberIds, expectedActiveUserIds));
   }
 
   function hasExactRemovalMessage(chat, expectedText) {
@@ -494,47 +494,65 @@
     })).sort((left, right) => left.memberId.localeCompare(right.memberId));
     const outbox = current.notifications.outbox;
     const inbox = current.notifications.inbox;
+    const removedUserIds = REMOVABLE_USER_IDS.filter(userId =>
+      storedStatus(EVENT_ID, userId) === "deleted"
+        && storedStatus(ROOM_ID, userId) === "removed");
+    const removedUserId = removedUserIds.length === 1 ? removedUserIds[0] : "";
+    const removedUserName = removedUserId ? Q.text(Q.user(removedUserId).name) : "";
+    const expectedActiveUserIds = ALL_USERS.filter(userId => userId !== removedUserId).sort();
+    const expectedParticipantRecipients = REMOVABLE_USER_IDS
+      .filter(userId => userId !== removedUserId)
+      .sort();
     const targetOutbox = outbox.find(item => item.role === "removed-member");
     const participantOutbox = outbox.find(item => item.role === "event-participant");
     const baselineByUser = new Map((currentState.actionBaselineCounters || []).map(item => [Q.text(item.userId), item]));
     const currentByUser = new Map(current.counters.map(item => [item.userId, item]));
-    const unchangedUsers = [HOST_ID, RILEY_ID, LINA_ID].every(userId =>
-      Q.sameJson(currentByUser.get(userId), baselineByUser.get(userId)));
-    const novaBefore = baselineByUser.get(NOVA_ID);
-    const novaAfter = currentByUser.get(NOVA_ID);
-    const novaCounterRemoved = novaBefore && novaAfter
-      && novaAfter.events === Math.max(0, Q.number(novaBefore.events) - 1)
-      && novaAfter.eventAll === Math.max(0, Q.number(novaBefore.eventAll) - 1)
-      && novaAfter.eventActive === Math.max(0, Q.number(novaBefore.eventActive) - 1);
+    const unchangedUsers = ALL_USERS.filter(userId => userId !== removedUserId).every(userId => {
+      const before = baselineByUser.get(userId);
+      const after = currentByUser.get(userId);
+      return before && after
+        && after.events === Q.number(before.events)
+        && after.hosting === Q.number(before.hosting)
+        && after.eventAll === Q.number(before.eventAll)
+        && after.eventActive === Q.number(before.eventActive)
+        && after.eventHosting === Q.number(before.eventHosting);
+    });
+    const removedBefore = baselineByUser.get(removedUserId);
+    const removedAfter = currentByUser.get(removedUserId);
+    const removedCounterDecremented = removedBefore && removedAfter
+      && removedAfter.events === Math.max(0, Q.number(removedBefore.events) - 1)
+      && removedAfter.eventAll === Math.max(0, Q.number(removedBefore.eventAll) - 1)
+      && removedAfter.eventActive === Math.max(0, Q.number(removedBefore.eventActive) - 1);
     const checks = {
-      parentRemoval: current.parent.novaStatus === "deleted"
-        && !current.parent.acceptedUserIds.includes(NOVA_ID),
-      roomRemoval: current.room.novaStatus === "removed"
-        && Q.sameJson(current.room.acceptedUserIds, EXPECTED_ACTIVE_AFTER_REMOVE),
+      oneRemovedParticipant: removedUserIds.length === 1,
+      parentRemoval: Boolean(removedUserId)
+        && Q.sameJson(current.parent.acceptedUserIds, expectedActiveUserIds),
+      roomRemoval: Boolean(removedUserId)
+        && Q.sameJson(current.room.acceptedUserIds, expectedActiveUserIds),
       immutableScores: Q.sameJson(current.scores, expectedScores),
       roomChatRevocation: current.roomChats.every(chat =>
-        chat.ownerUserId !== NOVA_ID && !chat.memberIds.includes(NOVA_ID)),
-      eventChatOwners: hasExactRemainingChatOwners(current.eventChat),
+        chat.ownerUserId !== removedUserId && !chat.memberIds.includes(removedUserId)),
+      eventChatOwners: hasExactRemainingChatOwners(current.eventChat, expectedActiveUserIds),
       eventChatMessage: hasExactRemovalMessage(
         current.eventChat,
-        "Nova Social was removed from the event."),
-      groupChatOwners: hasExactRemainingChatOwners(current.groupChat),
+        `${removedUserName} was removed from the event.`),
+      groupChatOwners: hasExactRemainingChatOwners(current.groupChat, expectedActiveUserIds),
       groupChatMessage: hasExactRemovalMessage(
         current.groupChat,
-        "Nova Social was removed from the tournament group."),
+        `${removedUserName} was removed from the tournament group.`),
       exactOutbox: outbox.length === 2
-        && targetOutbox && Q.sameJson(targetOutbox.recipients, [NOVA_ID])
+        && targetOutbox && Q.sameJson(targetOutbox.recipients, [removedUserId])
         && participantOutbox
         && participantOutbox.scope === "event-participants"
-        && Q.sameJson(participantOutbox.recipients, [RILEY_ID, LINA_ID].sort())
+        && Q.sameJson(participantOutbox.recipients, expectedParticipantRecipients)
         && !outbox.some(item => item.recipients.includes(HOST_ID))
-        && !outbox.some(item => item.memberName !== "Nova Social"),
+        && !outbox.some(item => item.memberName !== removedUserName),
       exactInbox: inbox.length === 3
-        && Q.sameJson(sorted(inbox.map(item => item.recipientUserId)), [NOVA_ID, RILEY_ID, LINA_ID].sort())
+        && Q.sameJson(sorted(inbox.map(item => item.recipientUserId)), REMOVABLE_USER_IDS.sort())
         && !inbox.some(item => item.recipientUserId === HOST_ID)
-        && !inbox.some(item => item.memberName !== "Nova Social"),
+        && !inbox.some(item => item.memberName !== removedUserName),
       unchangedRemainingCounters: unchangedUsers,
-      removedMemberCounter: Boolean(novaCounterRemoved)
+      removedMemberCounter: Boolean(removedCounterDecremented)
     };
     const failedChecks = Object.entries(checks)
       .filter(([, passed]) => !passed)
@@ -551,7 +569,7 @@
       checkpointId: CHECKPOINT,
       phase: "application-write-verified",
       oracle: current,
-      visualPass: "In Group A Standings the order is Riley 9, Lina 5, Casey 1, then R / Nova Social / 7, then V / ----- for the vacant slot in the existing # column. Nova sees the self-removal notification; Riley and Lina see the event-participant notification; Casey sees none. The parent Event channel says Nova Social was removed from the event and Group A says Nova Social was removed from the tournament group; both channels retain only Casey, Riley and Lina."
+      visualPass: `${removedUserName} is retained as the R leaderboard row with the controlled score. The removed participant has one self-removal notification; the other two non-actor participants have one event-participant notification each; Casey has none. The parent Event channel and Group A channel each contain exactly one matching removal system message and retain only the three active users.`
     });
   }
 
