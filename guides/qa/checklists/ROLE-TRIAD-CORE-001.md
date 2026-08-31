@@ -1,5 +1,18 @@
 # ROLE-TRIAD-CORE-001 manual execution checklist
 
+## Result
+
+- **PASS / CLOSED — 2026-08-31**
+- The user accepted the complete 22-step visual and interaction journey after
+  the full run plus focused defect replays.
+- Persisted boundary oracles covered the warn/report/support-status/block/
+  unblock lifecycle during execution. The final broad read-only oracle also
+  proved that all three actor roles remained intact, branding was restored,
+  Kai was unblocked as `host only`, the controlled feedback was resolved by
+  Ava with exactly one notification/outbox pair, and no moderation chat,
+  legacy feedback chat, support-case or affinity residue was introduced by
+  that final feedback replay.
+
 The fixture was reset and staged cleanly, and a read-only oracle confirmed the
 `baseline-ready` state. Three new isolated managed browser windows are open:
 Kai (member), Ava (admin), and the Deployment Operator. Do not introduce a
@@ -23,7 +36,7 @@ mutation. Report the step number and the state that was actually visible.
 
 ## 22-step journey
 
-1. [ ] Kai authorization boundaries
+1. [x] Kai authorization boundaries
 
    - `/game` works in Kai's window.
    - No Admin or Operator entry is visible.
@@ -31,21 +44,21 @@ mutation. Report the step number and the state that was actually visible.
    - Protected content must not flash before the denial or redirect.
    - Return to the normal member surface afterwards.
 
-2. [ ] Ava authorization boundaries
+2. [x] Ava authorization boundaries
 
    - Ava's `/admin` workspace works.
    - Reports, Feedback, and Chats are available.
    - `/operator` cannot open and redirects back to the admin surface.
    - Ava's admin session and selected admin identity remain unchanged.
 
-3. [ ] Operator authorization boundaries
+3. [x] Operator authorization boundaries
 
    - `/operator` works in the Operator window.
    - Admin moderation data is not visible.
    - Direct navigation to `/admin` does not grant admin access.
    - The Operator session and operator authority remain intact.
 
-4. [ ] Branding mutation and persistence
+4. [x] Branding mutation and persistence
 
    In the Operator window:
 
@@ -59,7 +72,7 @@ mutation. Report the step number and the state that was actually visible.
      and its absence is not a failure.
    - Kai and Ava still cannot edit operator configuration.
 
-5. [ ] Reports baseline and report details
+5. [x] Reports baseline and report details
 
    In Ava:
 
@@ -73,7 +86,7 @@ mutation. Report the step number and the state that was actually visible.
    - `View user` may open a new tab, but it must not replace the admin session
      in Ava's original tab. Close the new tab after checking it.
 
-6. [ ] Send the warning and verify admin status counters
+6. [x] Send the warning and verify admin status counters
 
    In Ava, on the selected `No-show / unsafe event behavior` report:
 
@@ -89,7 +102,7 @@ mutation. Report the step number and the state that was actually visible.
      actionable Chats `1`.
    - A normal poll cycle does not clear or revert these values.
 
-7. [ ] Receive the warning in Kai's closed-chat state
+7. [x] Receive the warning in Kai's closed-chat state
 
    Keep Kai's support chat closed.
 
@@ -99,7 +112,7 @@ mutation. Report the step number and the state that was actually visible.
    - The notification and chat both refer to the same warning.
    - Ava's Chats `1` is a case-status counter, not a copy of Kai's unread.
 
-8. [ ] Open Kai's persisted App support chat
+8. [x] Open Kai's persisted App support chat
 
    - The existing `c-support-admin-*` thread opens; no synthetic View chat or
      replacement support session is created.
@@ -116,7 +129,7 @@ mutation. Report the step number and the state that was actually visible.
    - Ava's case remains Warned and Ava's Chats main badge remains `1`.
    - Closing the chat does not recreate the already-read warning notification.
 
-9. [ ] Send Kai's support reply
+9. [x] Send Kai's support reply
 
    Keep Ava's chat closed. Kai sends exactly:
 
@@ -125,7 +138,7 @@ mutation. Report the step number and the state that was actually visible.
    - The message is written to the same persisted support thread.
    - Kai's session does not change during the send.
 
-10. [ ] Verify Ava unread state separately from the Chats main badge
+10. [x] Verify Ava unread state separately from the Chats main badge
 
    - Ava's Activities → Chats → App support row gains an unread badge.
    - Ava's bell also signals because the thread is closed.
@@ -136,7 +149,7 @@ mutation. Report the step number and the state that was actually visible.
    - Neither the status badge nor the row unread disappears and reappears over
      a complete normal poll cycle.
 
-11. [ ] Open Ava's support chat and exercise live status buckets
+11. [x] Open Ava's support chat and exercise live status buckets
 
    - Kai's reply is immediately visible with the earlier messages.
    - Real avatars are shown and History is directly before Close in the header.
@@ -156,7 +169,7 @@ mutation. Report the step number and the state that was actually visible.
    - The actionable main badge stays `1`, the avatar aggregate stays `4`, and
      the foreground/background poll handoff does not overwrite any transition.
 
-12. [ ] Verify History, View chat, and popup stacking
+12. [x] Verify History, View chat, and popup stacking
 
    Select History in Ava's chat header.
 
@@ -172,7 +185,7 @@ mutation. Report the step number and the state that was actually visible.
    - `View chat` opens the same persisted support thread inside the admin app;
      it does not create a new identity or replace Ava's session.
 
-13. [ ] Resolve exactly one controlled report
+13. [x] Resolve exactly one controlled report
 
    - Resolve only `No-show / unsafe event behavior`.
    - Reports main badge changes `2 → 1`.
@@ -186,7 +199,7 @@ mutation. Report the step number and the state that was actually visible.
    - Ava's avatar aggregate becomes `3` = Reports `1` + Feedback `1` +
      actionable Chats `1`.
 
-14. [ ] Resolve exactly one controlled feedback item
+14. [x] Resolve exactly one controlled feedback item
 
    In Ava:
 
@@ -212,7 +225,7 @@ mutation. Report the step number and the state that was actually visible.
      actionable Picked moderation case.
    - All changes are immediate and survive a normal poll cycle.
 
-15. [ ] Block Kai
+15. [x] Block Kai
 
    From Ava's Reports/History surface:
 
@@ -224,7 +237,7 @@ mutation. Report the step number and the state that was actually visible.
      existing actionable case changes from Picked to Blocked immediately.
    - Reports remains `1`; blocking does not resolve the control report.
 
-16. [ ] Observe the live block and the blocked-user support chat
+16. [x] Observe the live block and the blocked-user support chat
 
    In Kai, without reload:
 
@@ -237,7 +250,7 @@ mutation. Report the step number and the state that was actually visible.
    - Reading the block message clears Kai's unread and bell.
    - Ava and the Operator remain usable with their existing sessions.
 
-17. [ ] Verify Blocked users layout and persisted chat shortcut
+17. [x] Verify Blocked users layout and persisted chat shortcut
 
    In Ava, while Reports/History is still open:
 
@@ -253,7 +266,7 @@ mutation. Report the step number and the state that was actually visible.
    - Chat opens the same persisted `c-support-admin-*` thread; it creates no
      synthetic thread, tab identity, or admin-session replacement.
 
-18. [ ] Send the block-review message
+18. [x] Send the block-review message
 
    Keep Ava's chat closed. While blocked, Kai sends exactly:
 
@@ -266,7 +279,7 @@ mutation. Report the step number and the state that was actually visible.
    - The message appears in the same persisted support thread.
    - A normal poll cycle neither clears nor duplicates these counters.
 
-19. [ ] Unblock Kai from the Blocked users SmartList
+19. [x] Unblock Kai from the Blocked users SmartList
 
    In Ava:
 
@@ -277,7 +290,7 @@ mutation. Report the step number and the state that was actually visible.
    - The support case may remain Blocked until its separate support workflow
      is closed; therefore Chats main badge `1` is still correct at this point.
 
-20. [ ] Observe Kai access restoration
+20. [x] Observe Kai access restoration
 
    In Kai, without reload:
 
@@ -288,7 +301,7 @@ mutation. Report the step number and the state that was actually visible.
    - Ava and Operator roles and sessions do not change.
    - The support thread and its history remain available.
 
-21. [ ] Restore branding exactly
+21. [x] Restore branding exactly
 
    In the Operator window:
 
@@ -299,7 +312,7 @@ mutation. Report the step number and the state that was actually visible.
      branding while retaining their sessions and roles.
    - Automatic open-client branding convergence is still not required.
 
-22. [ ] Close the support case and verify the final state
+22. [x] Close the support case and verify the final state
 
    In Ava's Chats list:
 

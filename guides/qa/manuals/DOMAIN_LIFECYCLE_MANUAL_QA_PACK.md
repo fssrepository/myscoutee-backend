@@ -6301,6 +6301,33 @@ remain authoritative for the testcase contract, persisted evidence and status.
   disabled no-history action and notification-only controlled feedback before
   the next persisted oracle.
 
+- **`ROLE-TRIAD-CORE-001` PASS / CLOSED — 2026-08-31 13:16 CEST**:
+  the user accepted the complete 22-step visual and interaction journey after
+  the original run and the focused correction replays recorded above. Those
+  replays supplied persisted boundary evidence for branding save/restore,
+  warning delivery, the shared support thread, live support-status bucket
+  transitions, report/feedback resolution, block/unblock and final access
+  restoration. The versioned broad status oracle was run once more against
+  the final focused fixture. It proved that Kai, Ava and the Deployment
+  Operator retained their intended identities and authorities; Kai was
+  unblocked as `host only` with no previous profile status; branding exactly
+  matched the revision-`0` baseline; both report controls were restored and
+  unchanged by the focused replay; and all Ava support buckets plus the
+  affinity residue were `0`.
+
+  Kai's controlled feedback was resolved exactly by `admin-demo-ava` at
+  `2026-08-31T11:07:11.199156350Z`. Its canonical feedback notification and
+  outbox counts were exactly `1/1`, while moderation chat, message,
+  notification, outbox, support-case and feedback-text counts were all `0`.
+  The rejected legacy feedback channel had the same all-zero boundary, and
+  Ava plus the Operator had zero self-notifications. Earlier transaction
+  artifacts are intentionally absent from this terminal focused state because
+  each failed or completed attempt was restored through the versioned
+  snapshot reset after its evidence was recorded; closure therefore uses the
+  cumulative persisted boundary oracles together with the user's frontend
+  verdict, not a claim that one post-reset document still contains every
+  historical transition.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**

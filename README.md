@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-08-30:** 75/116 passed — core 75/96, external/optional 0/20; QA infrastructure 2/2, Tournament 15/15 and Chat 6/6 complete; current local checkpoint: `ROLE-TRIAD-CORE-001`; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
+**2026-08-31:** 76/116 passed — core 76/96, external/optional 0/20; QA infrastructure 2/2, Identity & access 7/8, Tournament 15/15 and Chat 6/6 complete; current local checkpoint: `JOB-PURGE`; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
