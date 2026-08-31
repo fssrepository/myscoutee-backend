@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 13:20 CEST
+Updated: 2026-08-31 13:42 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -54,13 +54,13 @@ detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#admin-job-cross-surface-imp
 checklist: ../checklists/JOB-PURGE.md
 scenario: Priority order is authoritative. ROLE-TRIAD-CORE-001 is PASS/CLOSED and its versioned fixture is reset/not-staged. JOB-PURGE is the only remaining open Identity & access case; after it closes the domain becomes 8/8.
 ledger_status: PASS / PARTIAL — IDENTITY & ACCESS 7/8 PASS/CLOSED
-state: The versioned Admin Job fixture prepared account-purge variation with-reference at `2026-08-31T11:19:25.857Z` against the already-running demo stack. Baseline oracle is prepared:true, userExists:true, relatedRateCount:1, exact purge job Pending/queued with retryCount 0, rule enabled, manualRunEnabled false and pendingCount 1. No existing deleted user or purge job required quarantine.
+state: The first prepared account-purge checkpoint completed through the real scheduler at `2026-08-31T11:40:08.832892576Z`; its oracle proved affected 1, pending 0, userExists:false, relatedRateCount:0 and the exact purge job Completed with retryCount 0 and no error. Codex then restored its protected snapshot, recreated only the existing backend owner with the dev-only outer account-purge poll set to 60000 ms, and prepared a fresh with-reference checkpoint at `2026-08-31T11:42:32.972Z`. The fresh full-width Ava `/admin` browser was identity-verified and launched at `2026-08-31T11:42:33.184Z`. The real scheduler consumed this dynamic table checkpoint at `2026-08-31T11:43:17.083601993Z`; the current read-only oracle is prepared:true, rule Completed, lastRunCount 1, pendingCount 0, userExists:false, relatedRateCount:0, and the exact purge job Completed with empty userId, retryCount 0 and no error. The snapshot is intentionally retained pending the user's visual table verdict.
 baseline_history: ROLE-TRIAD-CORE-001 closed from the cumulative 22-step user verdict plus persisted boundary oracles. Its final broad oracle proved all actor roles intact, restored branding, Kai unblocked, exact feedback notification/outbox 1/1 and zero moderation or legacy-feedback chat residue. The role-triad reset completed at `2026-08-31T11:19:15.136Z`; follow-up status was not-staged. The ledger and workbook now report 76/116 total, Core 76/96 and Identity & access 7/8.
-required_resume: In the existing Ava admin session open Configuration -> Jobs -> account-purge. Confirm enabled, manual Run disabled and pre-run/pending count 1. Leave the screen open for the existing scheduler poll. PASS UI is Completed, last-run/affected count 1, pending 0, completion time present, no error and Run still disabled. Do not start another worker or use a hidden manual trigger. After the user reports the visible result, run `ADMIN_FIXTURE_MONGO_MODE=container bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh status account-purge` and require userExists:false, relatedRateCount:0, exact purge job completed with empty userId, completion timestamp, retryCount 0 and no error; then reset and prove prepared:false.
+required_resume: In the fresh Ava admin session opened by Codex, open Configuration -> Jobs -> Finalize deleted accounts (internal key account-purge). The scheduler has already completed the staged checkpoint, so the dynamic table's existing live poll must show Completed, last-run/affected count 1, pending 0, completion time present, no error and Run still disabled. Do not reload merely to force the state and do not use a hidden manual trigger. After the user reports the visible result, accept the already-proven persisted oracle, reset account-purge and prove prepared:false; then close JOB-PURGE in the QA ledger.
 event: Active snapshot-protected admin-job fixture; account-purge / with-reference
 actors:
-  Admin: reuse the existing isolated Ava administration session
-next_actor: The user observes the prepared account-purge row/detail through its normal live scheduler refresh and reports the visible completed state.
+  Admin: fresh isolated Ava administration session launched by Codex
+next_actor: The user verifies the completed account-purge row/detail produced by the normal scheduler through the table's live refresh and reports the visual verdict.
 queued_followup: None. JOB-PURGE is the final Identity & access row.
 stop_phrase: JOB-PURGE complete
 ```

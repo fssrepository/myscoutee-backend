@@ -27,6 +27,22 @@
         }
       ]
     },
+    "JOB-PURGE": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava account-purge observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · scheduled account-purge observer"
+        }
+      ]
+    },
     "ROLE-TRIAD-CORE-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
