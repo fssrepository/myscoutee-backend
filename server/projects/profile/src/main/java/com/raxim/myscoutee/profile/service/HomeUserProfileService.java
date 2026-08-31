@@ -52,6 +52,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSupportCaseCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
@@ -2897,7 +2898,19 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.subEvent()),
                 chat == null ? 0 : normalizeCount(chat.group()),
                 chat == null ? 0 : normalizeCount(chat.service()),
-                chat == null ? 0 : normalizeCount(chat.appSupport()));
+                chat == null ? 0 : normalizeCount(chat.appSupport()),
+                toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()));
+    }
+
+    private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
+            Users.UserSupportCaseCountersRecord supportCases) {
+        return new UserSupportCaseCountersDto(
+                supportCases == null ? 0 : normalizeCount(supportCases.pending()),
+                supportCases == null ? 0 : normalizeCount(supportCases.warned()),
+                supportCases == null ? 0 : normalizeCount(supportCases.picked()),
+                supportCases == null ? 0 : normalizeCount(supportCases.solved()),
+                supportCases == null ? 0 : normalizeCount(supportCases.blocked()),
+                supportCases == null ? 0 : normalizeCount(supportCases.all()));
     }
 
     private UserAssetCountersDto toUserAssetCountersDto(Users.UserAssetCountersRecord asset) {
@@ -2934,7 +2947,19 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.subEvent()),
                 chat == null ? 0 : normalizeCount(chat.group()),
                 chat == null ? 0 : normalizeCount(chat.service()),
-                chat == null ? 0 : normalizeCount(chat.appSupport()));
+                chat == null ? 0 : normalizeCount(chat.appSupport()),
+                toUserSupportCaseCountersRecord(chat == null ? null : chat.supportCases()));
+    }
+
+    private Users.UserSupportCaseCountersRecord toUserSupportCaseCountersRecord(
+            UserSupportCaseCountersDto supportCases) {
+        return new Users.UserSupportCaseCountersRecord(
+                supportCases == null ? 0 : normalizeCount(supportCases.pending()),
+                supportCases == null ? 0 : normalizeCount(supportCases.warned()),
+                supportCases == null ? 0 : normalizeCount(supportCases.picked()),
+                supportCases == null ? 0 : normalizeCount(supportCases.solved()),
+                supportCases == null ? 0 : normalizeCount(supportCases.blocked()),
+                supportCases == null ? 0 : normalizeCount(supportCases.all()));
     }
 
     private Users.UserAssetCountersRecord toUserAssetCountersRecord(UserAssetCountersDto asset) {

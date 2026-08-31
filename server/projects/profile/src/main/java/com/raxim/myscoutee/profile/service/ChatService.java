@@ -144,6 +144,7 @@ public class ChatService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final UserActivityCountersService userActivityCountersService;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
     private final UserNotificationService userNotificationService;
@@ -163,6 +164,7 @@ public class ChatService {
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             HomeUserProfileService homeUserProfileService,
+            UserActivityCountersService userActivityCountersService,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             UserNotificationService userNotificationService,
@@ -179,6 +181,7 @@ public class ChatService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.userActivityCountersService = userActivityCountersService;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
         this.userNotificationService = userNotificationService;
@@ -712,6 +715,7 @@ public class ChatService {
             updatedDocuments.add(next);
         }
         chatsRepository.saveAll(updatedDocuments);
+        userActivityCountersService.refreshSupportCaseCountersForAdmins();
         adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
 
         Chat viewerChat = findOwnerChat(updatedDocuments, userId);
@@ -1022,6 +1026,7 @@ public class ChatService {
                 supportCaseState);
         List<Chat> chatDocuments = List.of(targetChat, adminChat);
         chatsRepository.saveAll(chatDocuments);
+        userActivityCountersService.refreshSupportCaseCountersForAdmins();
 
         ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
         message.setSender(resolvedAdminName);

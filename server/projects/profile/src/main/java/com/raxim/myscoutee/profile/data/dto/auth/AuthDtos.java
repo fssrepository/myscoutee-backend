@@ -119,7 +119,27 @@ public final class AuthDtos {
             Integer subEvent,
             Integer group,
             Integer service,
-            Integer appSupport) {
+            Integer appSupport,
+            UserSupportCaseCountersDto supportCases) {
+        public UserChatCountersDto(
+                Integer all,
+                Integer event,
+                Integer subEvent,
+                Integer group,
+                Integer service,
+                Integer appSupport) {
+            this(all, event, subEvent, group, service, appSupport,
+                    new UserSupportCaseCountersDto(0, 0, 0, 0, 0, 0));
+        }
+    }
+
+    public record UserSupportCaseCountersDto(
+            Integer pending,
+            Integer warned,
+            Integer picked,
+            Integer solved,
+            Integer blocked,
+            Integer all) {
     }
 
     public record UserEventCountersDto(

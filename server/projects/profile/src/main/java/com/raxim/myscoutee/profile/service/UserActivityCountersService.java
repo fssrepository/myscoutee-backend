@@ -10,9 +10,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -23,6 +25,7 @@ import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
@@ -35,6 +38,9 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class UserActivityCountersService {
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
+    private static final List<String> SUPPORT_CASE_STATUSES = List.of(
+            "pending", "warned", "picked", "solved", "blocked");
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
     private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
 
@@ -161,6 +167,26 @@ public class UserActivityCountersService {
 
     private UserEventCountersDto emptyEventCountersDto() {
         return new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0);
+    }
+
+    public void refreshSupportCaseCountersForAdmins() {
+        SupportCaseCounters counters = resolveSupportCaseCounters();
+        Map<String, Users> adminsById = new LinkedHashMap<>();
+        for (Users admin : usersRepository.findByHostTier("Admin")) {
+            String userId = normalizeId(admin == null ? null : admin.getUserId());
+            if (StringUtils.hasText(userId)) {
+                adminsById.put(userId, admin);
+            }
+        }
+        for (Users admin : usersRepository.findByUserIdIn(DEMO_ADMIN_IDS)) {
+            String userId = normalizeId(admin == null ? null : admin.getUserId());
+            if (StringUtils.hasText(userId)) {
+                adminsById.put(userId, admin);
+            }
+        }
+        for (String userId : adminsById.keySet()) {
+            updateSupportCaseCounters(userId, counters);
+        }
     }
 
     public void refreshAssetCountersForUser(String userId) {
@@ -293,6 +319,50 @@ public class UserActivityCountersService {
         int updatedUsers = applyFeedbackBucketDeltas(deltasByUserId);
         markFeedbackProjectionState(normalizedSourceIds, eventsBySourceId, now);
         return updatedUsers;
+    }
+
+    private SupportCaseCounters resolveSupportCaseCounters() {
+        List<Document> rows = mongoTemplate.aggregate(
+                Aggregation.newAggregation(
+                        context -> new Document("$match", new Document()
+                                .append("channelType", new Document("$in", List.of("appSupport", "supportCase")))
+                                .append("supportCase.status", new Document("$in", SUPPORT_CASE_STATUSES))
+                                .append("id", new Document("$type", "string").append("$ne", ""))),
+                        context -> new Document("$group", new Document("_id", "$id")
+                                .append("status", new Document("$first", "$supportCase.status"))),
+                        context -> new Document("$group", new Document("_id", "$status")
+                                .append("count", new Document("$sum", 1)))),
+                Chat.class,
+                Document.class)
+                .getMappedResults();
+        int pending = 0;
+        int warned = 0;
+        int picked = 0;
+        int solved = 0;
+        int blocked = 0;
+        for (Document row : rows) {
+            Object rawCount = row == null ? null : row.get("count");
+            int value = rawCount instanceof Number number
+                    ? Math.max(0, number.intValue())
+                    : 0;
+            String status = row == null ? "" : normalizeId(row.getString("_id"));
+            switch (status) {
+                case "pending" -> pending = value;
+                case "warned" -> warned = value;
+                case "picked" -> picked = value;
+                case "solved" -> solved = value;
+                case "blocked" -> blocked = value;
+                default -> {
+                }
+            }
+        }
+        return new SupportCaseCounters(
+                pending,
+                warned,
+                picked,
+                solved,
+                blocked,
+                pending + warned + picked + solved + blocked);
     }
 
     private EventCounters resolveEventCounters(String userId) {
@@ -559,6 +629,21 @@ public class UserActivityCountersService {
                 .set("activities.eventFeedback.pending", count(feedback.pending()))
                 .set("activities.eventFeedback.feedbacked", count(feedback.feedbacked()))
                 .set("activities.eventFeedback.removed", count(feedback.removed()));
+        updateUserActivityFields(normalizedUserId, update);
+    }
+
+    private void updateSupportCaseCounters(String userId, SupportCaseCounters counters) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || counters == null) {
+            return;
+        }
+        Update update = new Update()
+                .set("activities.chat.supportCases.pending", count(counters.pending()))
+                .set("activities.chat.supportCases.warned", count(counters.warned()))
+                .set("activities.chat.supportCases.picked", count(counters.picked()))
+                .set("activities.chat.supportCases.solved", count(counters.solved()))
+                .set("activities.chat.supportCases.blocked", count(counters.blocked()))
+                .set("activities.chat.supportCases.all", count(counters.all()));
         updateUserActivityFields(normalizedUserId, update);
     }
 
@@ -993,6 +1078,15 @@ public class UserActivityCountersService {
                 default -> new FeedbackCounters(ownEvents, Math.max(0, pending - 1), feedbacked, removed);
             };
         }
+    }
+
+    private record SupportCaseCounters(
+            int pending,
+            int warned,
+            int picked,
+            int solved,
+            int blocked,
+            int all) {
     }
 
     private record FeedbackEligibilityKey(String userId, String eventId) {

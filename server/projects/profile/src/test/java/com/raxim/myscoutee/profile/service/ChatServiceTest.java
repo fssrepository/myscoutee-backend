@@ -83,6 +83,8 @@ class ChatServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private UserActivityCountersService userActivityCountersService;
+    @Mock
     private ChatStreamPublisher chatStreamPublisher;
     @Mock
     private ChatPushNotificationService chatPushNotificationService;
@@ -108,6 +110,7 @@ class ChatServiceTest {
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 homeUserProfileService,
+                userActivityCountersService,
                 chatStreamPublisher,
                 chatPushNotificationService,
                 userNotificationService,
