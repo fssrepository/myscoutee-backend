@@ -49,7 +49,7 @@ detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-r
 scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
 ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
 state: ROLE-TRIAD-CORE-001 is staged at baseline-ready after a guarded snapshot reset of the earlier partial warning/support-chat run. Both controlled Kai reports are unwarned and unresolved, the controlled feedback is unresolved, Kai is unblocked, branding is MyScoutee revision 0, and the controlled support chat/message/notification/outbox counts are zero.
-required_resume: Continue the already-open three managed sessions without restaging: Kai at /game, Ava at /admin and Demo Operator at /operator. Present the purpose, exact click and visible result one step at a time. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
+required_resume: Continue the already-open three managed sessions without restaging: Kai at /game, Ava at /admin and Demo Operator at /operator. Present the purpose, exact click and visible result one step at a time. The user alone performs and validates every frontend action; Codex never performs frontend validation and validates only backend/API/persisted oracles after the user's action. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
 event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T05:14:14.704Z
 actors:
   Member: isolated ordinary-user session
@@ -206,6 +206,16 @@ has an exact idempotent delta). Keep the independent post-request oracle strict;
 removing an in-request readback must never remove the separate QA read oracle.
 
 ## QA working method
+
+### Manual frontend ownership
+
+**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+
+The user exclusively performs and evaluates frontend manual, visual and
+interaction checks during this campaign. Codex never performs frontend
+validation, including browser automation, screenshots or a second frontend
+walkthrough. Codex guides one requested step at a time and validates only the
+backend/API/persisted oracle after the user has performed the frontend action.
 
 ### 1. One checkpoint, one transition
 

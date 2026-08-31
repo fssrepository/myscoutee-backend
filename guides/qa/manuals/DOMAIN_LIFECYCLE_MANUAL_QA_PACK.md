@@ -6134,6 +6134,13 @@ assertion references for their consolidated parents, not as microtests.
 
 ## Execution and evidence rules
 
+**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+
+0. The user exclusively performs and evaluates frontend manual, visual and
+   interaction checks. Codex never performs frontend validation, including
+   browser automation, screenshots or a second frontend walkthrough. Codex
+   guides the requested frontend step and validates only its backend/API/
+   persisted oracle after the user's action.
 1. Begin every human action with why the step exists, what it tests and the
    exact visible result expected.
 2. Record a shared campaign lineage ID when one manually created event feeds
