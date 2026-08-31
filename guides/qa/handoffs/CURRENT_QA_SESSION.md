@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 14:05 CEST
+Updated: 2026-08-31 14:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -11,8 +11,8 @@ file first, then open only the linked active checkpoint section.
 
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
-- Active human execution checklist and commit-friendly progress markers:
-  [`JOB-PURGE.md`](../checklists/JOB-PURGE.md)
+- Active consolidated Event journey and its ordered source checkpoints:
+  [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -49,19 +49,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: NONE — JOB-PURGE closed; no local fixture is staged
-detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#admin-job-cross-surface-impact
-checklist: ../checklists/JOB-PURGE.md
-scenario: ROLE-TRIAD-CORE-001 and JOB-PURGE are PASS/CLOSED. Identity & access is complete at 8/8; no local checkpoint is currently selected or staged.
-ledger_status: PASS / CLOSED — IDENTITY & ACCESS 8/8
-state: JOB-PURGE completed through the real scheduler and dynamic Jobs table. The user accepted Completed, affected 1, pending 0, completion time, no error and disabled manual Run. The terminal oracle proved userExists:false, relatedRateCount:0 and the exact purge job Completed with empty userId, retryCount 0 and no error. Snapshot-safe reset at `2026-08-31 14:05 CEST` restored the original account-purge rule including intervalSeconds 86400, removed the fixture namespace and proved prepared:false. The same visual pass corrected Timing-popup X cancellation, unchanged-checkmark dirty behavior, duplicate header Quartz text and the redundant Timing Edit dirty dot; the existing frontend watcher compiled successfully.
+checkpoint: EVENT-SLOT-TOURNAMENT-001 — selected; first source checkpoint EVENT-EDITOR-004 is not staged
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing
+checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
+scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
+ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
+state: Selection only. ROLE-TRIAD-CORE-001 and JOB-PURGE remain PASS/CLOSED and reset. No Event fixture has been staged and no managed Event browser has been launched for this journey.
 baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
-required_resume: Do not restage ROLE-TRIAD-CORE-001 or JOB-PURGE. Select the next unclosed Core checkpoint from the canonical matrix before mutating fixtures or launching another managed browser set.
-event: None; no prepared fixture snapshot
+required_resume: Do not restage ROLE-TRIAD-CORE-001 or JOB-PURGE. Run the read-only event-domain status gate for EVENT-EDITOR-004 first. If it reports phase=not-staged, stage EVENT-EDITOR-004 once and verify the complete baseline before launching its managed host browser. Do not run any already-closed Tournament producer as part of this consolidated Event row.
+event: EVENT-EDITOR-004 selected; no prepared fixture snapshot
 actors:
-  Admin: the managed Ava JOB-PURGE browser may be closed; no active checkpoint owns it
-next_actor: Select the next unclosed Core checkpoint from the canonical matrix.
-queued_followup: Identity & access is complete; choose the next Core domain block.
+  Casey: host/editor; no managed browser is active yet
+next_actor: Read-only EVENT-EDITOR-004 status gate, then one guarded stage if and only if phase=not-staged.
+queued_followup: After EVENT-EDITOR-004, continue EVENT-SLOT-001 through EVENT-SLOT-004 in source order with separate stage/oracle boundaries.
 stop_phrase: None
 ```
 
