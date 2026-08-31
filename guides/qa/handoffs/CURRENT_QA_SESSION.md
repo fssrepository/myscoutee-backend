@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 07:14 CEST
+Updated: 2026-08-31 09:27 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -48,14 +48,14 @@ checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and 
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
 scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
 ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
-state: ROLE-TRIAD-CORE-001 is staged at baseline-ready after a guarded snapshot reset of the earlier partial warning/support-chat run. Both controlled Kai reports are unwarned and unresolved, the controlled feedback is unresolved, Kai is unblocked, branding is MyScoutee revision 0, and the controlled support chat/message/notification/outbox counts are zero.
-required_resume: Continue the already-open three managed sessions without restaging: Kai at /game, Ava at /admin and Demo Operator at /operator. Present the purpose, exact click and visible result one step at a time. The user alone performs and validates every frontend action; Codex never performs frontend validation and validates only backend/API/persisted oracles after the user's action. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
-event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T05:14:14.704Z
+state: ROLE-TRIAD-CORE-001 is staged at baseline-ready after a guarded reset and fresh stage of the second partial warning attempt. The complete 2026-08-31 parent/frontend commit and reflog history was audited. The backend and frontend fixes are compiled by their existing hot-deploy watchers: Warn now completes the standard support-chat message/signals before marking the report warned; View Chat requires a persisted supportChatId and loads the latest dashboard user; local patches carry that id; admin chat badges read appSupport; failed chat loads are visible; support history refreshes an unfiltered dashboard. Both controlled Kai reports are unwarned and unresolved, the controlled feedback is unresolved, Kai is unblocked, branding is MyScoutee revision 0, and controlled support chat/message/notification/outbox counts plus member/admin appSupport counters are zero.
+required_resume: Keep the already-open managed Kai, Ava and Demo Operator sessions, but reload each window exactly once before the next assertion because the guarded reset and frontend hot-sync changed state/code behind them. Do not restage or relaunch the browsers. After the user confirms all three reloads, present the purpose, exact click and visible result one step at a time. The user alone performs and validates every frontend action; Codex never performs frontend validation and validates only backend/API/persisted oracles after the user's action. Re-run the Admin Warn transition first and require the warn message, View Chat, recipient notification and appSupport counters to emerge from the same persisted mutation before continuing the causally continuous three-role journey.
+event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T07:27:27.935Z
 actors:
   Member: isolated ordinary-user session
   Admin: isolated administration session
   Operator: isolated deployment/operator session
-next_actor: User starts with the three-role route/capability boundary; Codex guides and verifies each transition.
+next_actor: User reloads each of the three already-open managed windows exactly once, then confirms completion; Codex gives the next single manual action.
 stop_phrase: Three-role authorization checked
 ```
 

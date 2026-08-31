@@ -1,8 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -10,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +23,6 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -48,9 +43,6 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AdminModerationService {
-    private static final DateTimeFormatter CHAT_TIME_FORMAT = DateTimeFormatter
-            .ofPattern("h:mm a", Locale.US)
-            .withZone(ZoneId.systemDefault());
     private static final List<AdminUserDto> DEMO_ADMINS = List.of(
             new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "admin1@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
@@ -63,6 +55,7 @@ public class AdminModerationService {
     private final UsersRepository usersRepository;
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
+    private final ChatService chatService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
@@ -74,6 +67,7 @@ public class AdminModerationService {
             UsersRepository usersRepository,
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
+            ChatService chatService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService) {
@@ -83,6 +77,7 @@ public class AdminModerationService {
         this.usersRepository = usersRepository;
         this.chatsRepository = chatsRepository;
         this.chatMessagesRepository = chatMessagesRepository;
+        this.chatService = chatService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
@@ -146,10 +141,13 @@ public class AdminModerationService {
         String targetUserId = normalize(userId);
         ensureReportedUser(targetUserId);
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
-        markReportWarned(targetUserId, admin.id(), request == null ? null : request.reportId());
+        UserReportSubmission report = requireWarningReport(
+                targetUserId,
+                request == null ? null : request.reportId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Please update the reported behavior before your account is blocked.", "warned");
+        markReportWarned(report, admin.id());
         adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
@@ -310,15 +308,22 @@ public class AdminModerationService {
         }
     }
 
-    private void markReportWarned(String targetUserId, String adminUserId, String reportId) {
+    private UserReportSubmission requireWarningReport(String targetUserId, String reportId) {
         String normalizedReportId = normalize(reportId);
         if (!StringUtils.hasText(normalizedReportId)) {
-            return;
+            return null;
         }
         UserReportSubmission report = reportsRepository.findById(normalizedReportId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found."));
         if (!targetUserId.equals(normalize(report.getTargetUserId()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report does not belong to the reported user.");
+        }
+        return report;
+    }
+
+    private void markReportWarned(UserReportSubmission report, String adminUserId) {
+        if (report == null) {
+            return;
         }
         String nowIso = Instant.now().toString();
         report.setWarnedAtIso(nowIso);
@@ -329,145 +334,13 @@ public class AdminModerationService {
     }
 
     private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportStatus) {
-        Instant now = Instant.now();
-        String nowIso = now.toString();
-        String chatId = "c-support-admin-" + targetUserId;
-        String messageId = "m-admin-" + new ObjectId().toHexString();
-        Users targetUser = usersRepository.findByUserId(targetUserId).orElse(null);
-        ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
-        ChatMessage userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
-        userMessage.setChatId(chatId);
-        userMessage.setMongoId(ChatMessage.buildMongoId(chatId, userMessage.getId()));
-        userMessage.refreshMessageSearchFields();
-        chatMessagesRepository.save(userMessage);
-        Chat userChat = appendSupportMessageForOwner(
+        chatService.sendAdminSupportMessage(
                 targetUserId,
-                chatId,
+                admin.id(),
+                admin.name(),
                 admin.initials(),
-                "MyScoutee Support",
-                List.of(targetUserId, admin.id()),
                 text,
-                admin.id(),
-                nowIso,
-                true,
-                supportStatus,
-                admin);
-        Chat adminChat = appendSupportMessageForOwner(
-                admin.id(),
-                chatId,
-                text(targetUser == null ? null : targetUser.getInitials(), "U"),
-                "MyScoutee Support · " + text(targetUser == null ? null : targetUser.getName(), "Reported user"),
-                List.of(targetUserId, admin.id()),
-                text,
-                admin.id(),
-                nowIso,
-                false,
-                supportStatus,
-                admin);
-        saveSupportChat(userChat);
-        saveSupportChat(adminChat);
-    }
-
-    private void saveSupportChat(Chat candidate) {
-        try {
-            chatsRepository.save(candidate);
-        } catch (DuplicateKeyException exception) {
-            Chat existing = chatsRepository.findByOwnerUserIdAndChatId(candidate.getOwnerUserId(), candidate.getChatId())
-                    .orElseThrow(() -> exception);
-            existing.setAvatar(candidate.getAvatar());
-            existing.setTitle(candidate.getTitle());
-            existing.setMemberIds(candidate.getMemberIds());
-            existing.setChannelType(candidate.getChannelType());
-            existing.setOwnerId(candidate.getOwnerId());
-            existing.setLastMessage(candidate.getLastMessage());
-            existing.setLastSenderId(candidate.getLastSenderId());
-            existing.setDateIso(candidate.getDateIso());
-            existing.setSupportCase(candidate.getSupportCase());
-            if (candidate.getUnread() != null && candidate.getUnread() > 0) {
-                existing.setUnread(Math.max(1, existing.getUnread() == null ? 1 : existing.getUnread() + 1));
-            } else {
-                existing.setUnread(0);
-            }
-            chatsRepository.save(existing);
-        }
-    }
-
-    private Chat appendSupportMessageForOwner(
-            String ownerUserId,
-            String chatId,
-            String avatar,
-            String title,
-            List<String> memberIds,
-            String lastMessage,
-            String lastSenderId,
-            String dateIso,
-            boolean unreadForOwner,
-            String supportStatus,
-            AdminUserDto assignee) {
-        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
-            Chat next = new Chat();
-            next.setMongoId(new ObjectId().toHexString());
-            next.setChatId(chatId);
-            next.setOwnerUserId(ownerUserId);
-            next.setUnread(0);
-            next.setChannelType("appSupport");
-            next.setOwnerId(chatId);
-            return next;
-        });
-        chat.setAvatar(avatar);
-        chat.setTitle(title);
-        chat.setMemberIds(memberIds);
-        chat.setChannelType("appSupport");
-        chat.setOwnerId(chatId);
-        chat.setLastMessage(lastMessage);
-        chat.setLastSenderId(lastSenderId);
-        chat.setDateIso(dateIso);
-        chat.setSupportCase(supportCase(text(supportStatus, "pending"), assignee, dateIso));
-        chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
-        return chat;
-    }
-
-    private Chat.SupportCaseRecord supportCase(String status, AdminUserDto assigneeDto, String updatedAtIso) {
-        Chat.SupportCaseRecord supportCase = new Chat.SupportCaseRecord();
-        supportCase.setStatus(text(status, "pending"));
-        supportCase.setUpdatedAtIso(text(updatedAtIso, ""));
-        if (assigneeDto != null && StringUtils.hasText(text(assigneeDto.id(), ""))) {
-            Chat.SupportCaseAssigneeRecord assignee = new Chat.SupportCaseAssigneeRecord();
-            assignee.setUserId(text(assigneeDto.id(), ""));
-            assignee.setName(text(assigneeDto.name(), ""));
-            assignee.setInitials(text(assigneeDto.initials(), ""));
-            supportCase.setAssignee(assignee);
-        }
-        return supportCase;
-    }
-
-    private ChatMessage supportMessage(
-            String messageId,
-            String sender,
-            ChatAvatarRecord avatar,
-            String text,
-            Instant now,
-            String nowIso,
-            boolean mine,
-            List<ChatReadAvatarRecord> readBy) {
-        ChatMessage message = new ChatMessage();
-        message.setId(messageId);
-        message.setSender(sender);
-        message.setSenderAvatar(avatar);
-        message.setText(text);
-        message.setTime(CHAT_TIME_FORMAT.format(now));
-        message.setSentAtIso(nowIso);
-        message.setMine(mine);
-        message.setReadBy(readBy);
-        return message;
-    }
-
-    private ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
-        ChatAvatarRecord avatar = new ChatAvatarRecord();
-        avatar.setId(id);
-        avatar.setInitials(initials);
-        avatar.setGender(gender);
-        return avatar;
+                supportStatus);
     }
 
     private AdminReviewCountsDto reviewCounts(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {

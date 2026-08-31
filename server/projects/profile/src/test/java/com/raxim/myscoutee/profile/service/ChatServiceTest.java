@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -675,6 +676,62 @@ class ChatServiceTest {
 
         verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
         verify(chatsRepository, never()).findByChatId(anyString());
+    }
+
+    @Test
+    void adminSupportMessageUsesTheChatMutationSignalsAndOnlyIncrementsTheTargetUnread() {
+        String chatId = "c-support-admin-target";
+        Users target = user("target", "Target User", "TU");
+        Users admin = user("admin", "Admin User", "AU");
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(admin));
+        when(chatsRepository.findByChatId(chatId)).thenReturn(List.of());
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
+                .thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
+                .thenReturn(userCounterBulkOperations);
+
+        var result = service.sendAdminSupportMessage(
+                "target",
+                "admin",
+                "Admin User",
+                "AU",
+                "Please review this warning.",
+                "warned");
+
+        assertThat(result.senderName()).isEqualTo("Admin User");
+        assertThat(result.text()).isEqualTo("Please review this warning.");
+        ArgumentCaptor<List<Chat>> definitionsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository).saveAll(definitionsCaptor.capture());
+        assertThat(definitionsCaptor.getValue()).hasSize(2);
+        assertThat(definitionsCaptor.getValue()).allSatisfy(chat -> {
+            assertThat(chat.getChannelType()).isEqualTo("appSupport");
+            assertThat(chat.getSupportCase().getStatus()).isEqualTo("warned");
+        });
+        ArgumentCaptor<Update> counterUpdateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(userCounterBulkOperations).updateOne(any(Query.class), counterUpdateCaptor.capture());
+        Document increments = counterUpdateCaptor.getValue().getUpdateObject().get("$inc", Document.class);
+        assertThat(((Number) increments.get("activities.chats")).intValue()).isEqualTo(1);
+        assertThat(((Number) increments.get("activities.chat.all")).intValue()).isEqualTo(1);
+        assertThat(((Number) increments.get("activities.chat.appSupport")).intValue()).isEqualTo(1);
+        verify(chatPushNotificationService).notifyRecipients(
+                org.mockito.ArgumentMatchers.argThat(chats -> chats.stream().anyMatch(chat ->
+                        "target".equals(chat.getOwnerUserId()) && Integer.valueOf(1).equals(chat.getUnread()))
+                        && chats.stream().anyMatch(chat ->
+                        "admin".equals(chat.getOwnerUserId()) && Integer.valueOf(0).equals(chat.getUnread()))),
+                org.mockito.ArgumentMatchers.argThat(event ->
+                        event != null
+                                && "message".equals(event.type())
+                                && chatId.equals(event.chatId())
+                                && "admin".equals(event.senderId())));
+        verify(chatStreamPublisher, timeout(1000)).publish(org.mockito.ArgumentMatchers.argThat(event ->
+                event != null
+                        && "message".equals(event.type())
+                        && chatId.equals(event.chatId())
+                        && "admin".equals(event.senderId())));
+        verify(homeUserProfileService).evictUserReadCaches(java.util.Set.of("target", "admin"));
     }
 
     @Test
