@@ -6141,8 +6141,10 @@ assertion references for their consolidated parents, not as microtests.
   controlled feedback is unresolved; branding is revision `0`; controlled
   support chat/message/notification/outbox and affinity-task counts are all
   zero; Ava's support-case status buckets are all zero; operator authority is
-  intact. Reload the three retained browsers once before replay because their
-  in-memory state predates this stage and the final frontend hot-sync.
+  intact. The managed launcher replaced the three old browser profiles at
+  `2026-08-31T08:56:31.679Z` and confirmed fresh isolated Kai, Ava and
+  Deployment Operator sessions on the baseline route. Use those windows
+  without another reload before capturing the visual baseline.
 
 ## Execution and evidence rules
 
