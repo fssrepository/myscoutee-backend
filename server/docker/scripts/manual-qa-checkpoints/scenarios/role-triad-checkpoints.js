@@ -13,10 +13,12 @@
     ObjectId("690000000000000000000102")
   ];
   const FEEDBACK_ID = ObjectId("690000000000000000000202");
-  const SUPPORT_CHAT_IDS = [
+  const MODERATION_CHAT_IDS = [
     `c-support-admin-${MEMBER_ID}`,
     "c-support-admin-bf057de7c586eede7e84bdc7"
   ];
+  const FEEDBACK_CHAT_IDS = [`c-feedback-admin-${MEMBER_ID}`];
+  const CONTROLLED_CHAT_IDS = [...MODERATION_CHAT_IDS, ...FEEDBACK_CHAT_IDS];
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
@@ -30,10 +32,10 @@
     reports: { _id: { $in: REPORT_IDS } },
     feedback: { _id: FEEDBACK_ID },
     configuration: { _id: "deployment-configuration" },
-    chats: { id: { $in: SUPPORT_CHAT_IDS } },
-    messages: { chatId: { $in: SUPPORT_CHAT_IDS } },
-    notifications: { sourceType: "chat", sourceId: { $in: SUPPORT_CHAT_IDS } },
-    outbox: { entityType: "chat", entityId: { $in: SUPPORT_CHAT_IDS } },
+    chats: { id: { $in: CONTROLLED_CHAT_IDS } },
+    messages: { chatId: { $in: CONTROLLED_CHAT_IDS } },
+    notifications: { sourceType: "chat", sourceId: { $in: CONTROLLED_CHAT_IDS } },
+    outbox: { entityType: "chat", entityId: { $in: CONTROLLED_CHAT_IDS } },
     shareTokens: { kind: "adminHelp" },
     affinityTask: { taskKey: `USER:${MEMBER_ID}` }
   };
@@ -132,6 +134,29 @@
     };
   }
 
+  function chatBoundarySummary(chatIds) {
+    return {
+      chatCount: Q.collection("chats").countDocuments({ id: { $in: chatIds } }),
+      messageCount: Q.collection("chatMessages").countDocuments({ chatId: { $in: chatIds } }),
+      notificationCount: Q.collection("userNotifications").countDocuments({
+        sourceType: "chat",
+        sourceId: { $in: chatIds }
+      }),
+      outboxCount: Q.collection("notificationOutbox").countDocuments({
+        entityType: "chat",
+        entityId: { $in: chatIds }
+      }),
+      supportCaseDocumentCount: Q.collection("chats").countDocuments({
+        id: { $in: chatIds },
+        "supportCase.status": { $exists: true }
+      }),
+      feedbackResolvedMessageCount: Q.collection("chatMessages").countDocuments({
+        chatId: { $in: chatIds },
+        text: /^Your feedback /
+      })
+    };
+  }
+
   function observed() {
     const reports = REPORT_IDS.map(report);
     const feedbackDocument = feedback();
@@ -146,10 +171,9 @@
       reports: reports.map(reportSummary),
       feedback: feedbackSummary(feedbackDocument),
       branding: brandingSummary(configDocument),
-      supportChatCount: Q.collection("chats").countDocuments(selectors.chats),
-      supportMessageCount: Q.collection("chatMessages").countDocuments(selectors.messages),
-      supportNotificationCount: Q.collection("userNotifications").countDocuments(selectors.notifications),
-      supportOutboxCount: Q.collection("notificationOutbox").countDocuments(selectors.outbox),
+      controlledChats: chatBoundarySummary(CONTROLLED_CHAT_IDS),
+      moderationChats: chatBoundarySummary(MODERATION_CHAT_IDS),
+      feedbackChannel: chatBoundarySummary(FEEDBACK_CHAT_IDS),
       affinityTaskCount: Q.collection("affinityRecomputeTasks").countDocuments(selectors.affinityTask)
     };
   }
@@ -170,8 +194,8 @@
     if (!values.feedback.id || values.feedback.resolvedAtIso) {
       Q.fail("the controlled Kai feedback must start unresolved.");
     }
-    if (values.supportChatCount !== 0 || values.supportMessageCount !== 0
-        || values.supportNotificationCount !== 0 || values.supportOutboxCount !== 0) {
+    if (values.controlledChats.chatCount !== 0 || values.controlledChats.messageCount !== 0
+        || values.controlledChats.notificationCount !== 0 || values.controlledChats.outboxCount !== 0) {
       Q.fail("the controlled support conversation and its notification records must start empty.");
     }
     if (!values.branding.productName || !values.branding.themePreset) {

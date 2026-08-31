@@ -6151,7 +6151,7 @@ remain authoritative for the testcase contract, persisted evidence and status.
   Deployment Operator sessions on the baseline route. Use those windows
   without another reload before capturing the visual baseline.
 
-- **`ROLE-TRIAD-CORE-001` active partial transaction — 2026-08-31 11:14
+- **`ROLE-TRIAD-CORE-001` superseded partial transaction — 2026-08-31 11:14
   CEST**: a read-only oracle observed the user's replay after it had begun.
   Branding is `MyScoutee A`, revision `1`; controlled report
   `690000000000000000000102` is warned and unresolved; the other report and
@@ -6167,8 +6167,84 @@ remain authoritative for the testcase contract, persisted evidence and status.
   response and resolves warned state from the live workspace dashboard; the
   owner watcher compiled and hot-synced that scoped fix at
   `2026-08-31 11:24:24 CEST`. No unread or menu-counter behavior changed.
-  Reload Ava once for the new code bundle, verify the already-persisted warned
-  report, then continue from the user's first unchecked item.
+  This attempt was later reset for the focused replay recorded below; do not
+  reconstruct or continue it.
+
+- **`ROLE-TRIAD-CORE-001` second replay baseline — 2026-08-31 11:32
+  CEST**: the first post-fix targeted attempt persisted the warned report,
+  Ava All `1` / Warned `1`, and exactly one support message at
+  `2026-08-31T09:29:21.162285526Z`, but the immediate oracle found zero support
+  notifications and zero outbox rows; the user observed no visible warning
+  message. That failed attempt was reset. An independent status proved
+  `not-staged`, a new stage completed at `2026-08-31T09:31:32.395Z`, and the
+  final status proved a clean `baseline-ready` boundary with both reports
+  unwarned and support chat/message/notification/outbox all `0`. Fresh isolated
+  Kai, Ava and Operator browser sessions replaced the prior profiles. Ava now
+  performs exactly one Warn on `No-show / unsafe event behavior`, closes the
+  Warn popup, verifies the immediate `View chat` action, and stops so Codex can
+  run the persisted oracle before any resend or support reply.
+
+- **`ROLE-TRIAD-CORE-001` step-11 live bucket defect and fix — 2026-08-31
+  11:42 CEST**: the replay progressed through the controlled Warn and Kai reply.
+  The read-only oracle then reported support chat/message/notification/outbox
+  `2/2/2/2` and, after the user's Pick then Unpick, canonical support buckets
+  All `1`, Pending `1`, Warned `0`, Picked `0`, Solved `0`, Blocked `0`. The
+  user's still-open dropdown instead retained Picked `1`, proving a frontend
+  reconciliation failure rather than a backend transition failure. The status
+  signal had attempted to recover the previous chat status from the SmartList
+  source cache after the request; a normal poll may replace that cached source
+  with a converted row, yielding no previous status and therefore a no-op
+  delta. The frontend now passes the known pre-mutation status directly through
+  the successful request boundary. The owner watcher compiled and hot-synced
+  the fix at `2026-08-31 11:41:35 CEST`; it adds no list iteration, reload or
+  counter query. Do not replay Warn, Kai's reply, Pick or Unpick. Reload Ava
+  once for the code revision, wait one normal poll cycle at canonical Pending
+  `1`, perform only the remaining final Pick, and inspect the open bucket menu
+  before the persisted oracle.
+
+- **`ROLE-TRIAD-CORE-001` feedback-channel and filtered-row defects —
+  2026-08-31 12:03 CEST**: the replay continued through one report resolution,
+  one feedback resolution and further support-case actions. The versioned
+  read-only oracle proved the controlled report warned/resolved, the controlled
+  feedback resolved, support chat/message/notification/outbox counts `4/4/4/4`
+  and two stored cases currently Picked/Pending. A direct persisted read then
+  proved that the feedback-resolved text was the fourth message and
+  `lastMessage` of Kai's `c-support-admin-*` moderation thread; there was no
+  separate feedback chat. The feedback resolver had reused the generic support
+  writer with status Solved, coupling an independent feedback notification to
+  the warn case. The Java and frontend-local paths now write feedback notices
+  to `c-feedback-admin-<userId>`, retain App-support delivery/unread signaling,
+  and deliberately store no support case or moderation-counter refresh. The
+  harness selector includes that new channel so future reset/status snapshots
+  own it. Its status oracle reports `moderationChats` and `feedbackChannel`
+  separately, including support-case-document and feedback-message counts, so
+  an aggregated total cannot conceal another channel merge. The checklist now
+  expects feedback resolution to leave Ava's case buckets All `2`, Picked `1`,
+  Solved `1` and actionable Chats `1`.
+
+  Separately, the successful support-case response already used the SmartList
+  `removeVisibleItemByIdentity` method when the updated row no longer matched
+  the active filter, but its match check read a lagging component mirror. It
+  now reads the current `activitiesSupportCaseFilter` store signal, so a final
+  Pick performed while Pending is selected removes the row from that filtered
+  SmartList immediately. It adds no component-owned array mutation, list
+  iteration, refetch or reload. Regression tests cover the dedicated feedback
+  channel/no-support-case boundary and the resolver routing. The running
+  backend owner pipeline completed `compileJava/classes` successfully and
+  restarted at 11:56 CEST; the frontend watcher completed its final build and
+  hot-sync at 11:57:33 CEST. Tests were not launched in a second Gradle or
+  frontend process because the running dev pipeline owns compilation.
+
+- **`ROLE-TRIAD-CORE-001` third clean full-replay baseline — 2026-08-31
+  12:05 CEST**: the failed transaction above was restored by the versioned
+  reset at `2026-08-31T10:03:44.997Z`. An independent status proved
+  `not-staged`; a new stage completed at `2026-08-31T10:04:15.133Z`; and the
+  final read-only status proved `baseline-ready`. Both reports are unresolved
+  and unwarned, feedback is unresolved, branding is revision `0`, controlled
+  chat/message/notification/outbox counts are all `0`, all Ava support buckets
+  are `0`, and Kai is unblocked as `host only`. The launcher replaced the old
+  profiles and opened fresh isolated Kai, Ava and Deployment Operator windows.
+  Execute the revised 22-step English checklist from step 1; do not restage.
 
 ## Execution and evidence rules
 

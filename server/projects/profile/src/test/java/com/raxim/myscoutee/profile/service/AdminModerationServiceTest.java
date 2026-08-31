@@ -20,9 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReviewResolveRequestDto;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
@@ -112,5 +114,34 @@ class AdminModerationServiceTest {
 
         verify(reportsRepository, never()).save(any(UserReportSubmission.class));
         verify(adminTelemetryService, never()).record(anyString(), anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void resolvingFeedbackWritesToTheDedicatedFeedbackChannel() {
+        UserFeedbackSubmission feedback = new UserFeedbackSubmission();
+        feedback.setId("feedback-1");
+        feedback.setUserId("target");
+        feedback.setSubject("Faster review");
+
+        when(configProperties.isFirebaseEnabled()).thenReturn(false);
+        when(feedbackRepository.findById("feedback-1")).thenReturn(Optional.of(feedback));
+        when(reportsRepository.findAllByOrderByCreatedDateDesc()).thenReturn(List.of());
+        when(feedbackRepository.findAllByOrderByCreatedDateDesc()).thenReturn(List.of(feedback));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of());
+        when(usersRepository.findByProfileStatus("blocked")).thenReturn(List.of());
+
+        service.resolveFeedback(
+                "feedback-1",
+                new AdminReviewResolveRequestDto("admin-demo-ava", true));
+
+        verify(feedbackRepository).save(feedback);
+        verify(chatService).sendAdminFeedbackMessage(
+                "target",
+                "admin-demo-ava",
+                "Ava Moderation",
+                "AM",
+                "Your feedback \"Faster review\" has been reviewed by MyScoutee. Thank you for helping improve the app.");
+        verify(chatService, never()).sendAdminSupportMessage(
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
     }
 }

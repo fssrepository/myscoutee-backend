@@ -1040,6 +1040,66 @@ public class ChatService {
                 message);
     }
 
+    ChatMessageDto sendAdminFeedbackMessage(
+            String targetUserId,
+            String adminUserId,
+            String adminName,
+            String adminInitials,
+            String text) {
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedAdminUserId = normalizeId(adminUserId);
+        String normalizedText = normalizeText(text);
+        String chatId = "c-feedback-admin-" + normalizedTargetUserId;
+        if (!StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedAdminUserId)
+                || !StringUtils.hasText(normalizedText)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feedback target, admin and message are required.");
+        }
+        Users targetUser = findUser(normalizedTargetUserId);
+        if (targetUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feedback target was not found.");
+        }
+        Users adminUser = findUser(normalizedAdminUserId);
+        String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
+        String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
+        String nowIso = Instant.now().toString();
+        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
+        for (Chat existing : chatsRepository.findByChatId(chatId)) {
+            if (existing != null && StringUtils.hasText(normalizeId(existing.getOwnerUserId()))) {
+                existingByOwnerUserId.put(normalizeId(existing.getOwnerUserId()), existing);
+            }
+        }
+        Chat targetChat = feedbackChatDocument(
+                existingByOwnerUserId.get(normalizedTargetUserId),
+                normalizedTargetUserId,
+                chatId,
+                resolvedAdminInitials,
+                "MyScoutee Feedback",
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                nowIso);
+        Chat adminChat = feedbackChatDocument(
+                existingByOwnerUserId.get(normalizedAdminUserId),
+                normalizedAdminUserId,
+                chatId,
+                resolveUserInitials(targetUser, normalizedTargetUserId),
+                "MyScoutee Feedback · " + resolveUserName(targetUser, normalizedTargetUserId),
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                nowIso);
+        List<Chat> chatDocuments = List.of(targetChat, adminChat);
+        chatsRepository.saveAll(chatDocuments);
+
+        ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
+        message.setSender(resolvedAdminName);
+        ChatAvatarRecord senderAvatar = message.getSenderAvatar();
+        if (senderAvatar != null) {
+            senderAvatar.setInitials(resolvedAdminInitials);
+        }
+        return persistChatMessage(
+                new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
+                normalizedAdminUserId,
+                message);
+    }
+
     private ChatMessageDto persistChatMessage(
             ChatDocumentsSnapshot accessSnapshot,
             String userId,
@@ -1082,6 +1142,33 @@ public class ChatService {
         chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
         chat.setOwnerId(chatId);
         applySupportCaseState(chat, supportCaseState);
+        return chat;
+    }
+
+    private Chat feedbackChatDocument(
+            Chat existing,
+            String ownerUserId,
+            String chatId,
+            String avatar,
+            String title,
+            List<String> memberIds,
+            String nowIso) {
+        Chat chat = existing == null ? new Chat() : copyChat(existing);
+        if (existing == null) {
+            chat.setMongoId(buildMongoId(ownerUserId, chatId));
+            chat.setChatId(chatId);
+            chat.setOwnerUserId(ownerUserId);
+            chat.setUnread(0);
+            chat.setLastMessage("");
+            chat.setLastSenderId("");
+            chat.setDateIso(nowIso);
+        }
+        chat.setAvatar(avatar);
+        chat.setTitle(title);
+        chat.setMemberIds(memberIds);
+        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
+        chat.setOwnerId(chatId);
+        chat.setSupportCase(null);
         return chat;
     }
 

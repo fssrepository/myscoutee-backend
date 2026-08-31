@@ -141,7 +141,11 @@ mutation. Report the step number and the state that was actually visible.
    - From Kai's support row, select Pick: Warned `1 → 0`, Picked `0 → 1`
      immediately and without reload.
    - Select Unpick: Picked `1 → 0`, Pending `0 → 1` immediately.
-   - Select Pick once more: Pending `1 → 0`, Picked `0 → 1` immediately.
+   - Select the Pending bucket, then select Pick once more: Kai's row is
+     removed immediately from the currently filtered SmartList, while Pending
+     `1 → 0` and Picked `0 → 1`. Switching to Picked shows the same row in its
+     new bucket; no reload, component-owned array mutation, or list refetch is
+     involved.
    - The actionable main badge stays `1`, the avatar aggregate stays `4`, and
      the foreground/background poll handoff does not overwrite any transition.
 
@@ -182,12 +186,17 @@ mutation. Report the step number and the state that was actually visible.
    - The external green Resolved filter badge changes `0 → 1`.
    - Only this feedback changes; unrelated report, rating, and impression data
      remain unchanged.
-   - Kai receives exactly one feedback-resolved support message/notification;
-     Ava receives no self-notification. Kai opens and reads it once.
-   - Kai's support case becomes Solved: All `2`, Solved `2`, all other status
-     buckets `0`.
-   - Ava's Chats main badge changes `1 → 0`; avatar aggregate changes `3 → 1`.
-     The remaining `1` is the unresolved `Harassment` report.
+   - Kai receives exactly one feedback-resolved message/notification in the
+     separate persisted `c-feedback-admin-*` App support channel; Ava receives
+     no self-notification. Kai opens and reads it once.
+   - The feedback channel is not Kai's moderation/warn `c-support-admin-*`
+     thread and has no support-case state. It does not add, solve, or otherwise
+     alter any moderation case bucket.
+   - Ava's support buckets therefore remain All `2`, Picked `1`, Solved `1`,
+     with all other status buckets `0`.
+   - Ava's Chats main badge remains `1`; avatar aggregate changes `3 → 2`.
+     The remaining `2` are the unresolved `Harassment` report and Kai's
+     actionable Picked moderation case.
    - All changes are immediate and survive a normal poll cycle.
 
 15. [ ] Block Kai
@@ -198,8 +207,8 @@ mutation. Report the step number and the state that was actually visible.
    - The crossed-person Blocked users action shows an external red `1` badge.
    - Counts of ten or more use the standard `9+` format.
    - Kai's case becomes Blocked: All `2`, Blocked `1`, Solved `1`.
-   - Chats main badge changes `0 → 1`; avatar aggregate changes `1 → 2`
-     immediately.
+   - Chats main badge remains `1`; avatar aggregate remains `2` while the
+     existing actionable case changes from Picked to Blocked immediately.
    - Reports remains `1`; blocking does not resolve the control report.
 
 16. [ ] Observe the live block and the blocked-user support chat

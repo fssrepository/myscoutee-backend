@@ -253,11 +253,10 @@ public class AdminModerationService {
         feedback.setUpdatedUser(admin.id());
         feedbackRepository.save(feedback);
         if (resolved && !wasResolved) {
-            appendSupportMessage(
+            appendFeedbackMessage(
                     normalize(feedback.getUserId()),
                     admin,
-                    feedbackResolvedMessage(feedback),
-                    "solved");
+                    feedbackResolvedMessage(feedback));
         }
         adminTelemetryService.record(resolved ? "admin.feedback.resolved" : "admin.feedback.unresolved", "moderation", normalizedFeedbackId, admin.id());
         return dashboard(admin.id());
@@ -355,6 +354,15 @@ public class AdminModerationService {
                 admin.initials(),
                 text,
                 supportStatus);
+    }
+
+    private void appendFeedbackMessage(String targetUserId, AdminUserDto admin, String text) {
+        chatService.sendAdminFeedbackMessage(
+                targetUserId,
+                admin.id(),
+                admin.name(),
+                admin.initials(),
+                text);
     }
 
     private AdminReviewCountsDto reviewCounts(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
