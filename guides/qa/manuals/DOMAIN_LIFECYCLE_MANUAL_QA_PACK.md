@@ -6126,6 +6126,11 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
+The active commit-friendly execution checklist for the local Core journey is
+[`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md). Its 22
+top-level checkboxes track human visual execution; this pack and the ledger
+remain authoritative for the testcase contract, persisted evidence and status.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, persist one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; the authorized branding revision persists, while already-open clients may require an explicit reload; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. Automatic branding refresh is not required. |
@@ -6145,6 +6150,25 @@ assertion references for their consolidated parents, not as microtests.
   `2026-08-31T08:56:31.679Z` and confirmed fresh isolated Kai, Ava and
   Deployment Operator sessions on the baseline route. Use those windows
   without another reload before capturing the visual baseline.
+
+- **`ROLE-TRIAD-CORE-001` active partial transaction — 2026-08-31 11:14
+  CEST**: a read-only oracle observed the user's replay after it had begun.
+  Branding is `MyScoutee A`, revision `1`; controlled report
+  `690000000000000000000102` is warned and unresolved; the other report and
+  controlled feedback remain unresolved; Kai remains unblocked as
+  `host only`; stored admin support buckets are All `1` / Warned `1` with all
+  other statuses `0`; controlled support chat/message/notification/outbox
+  counts are `2/1/1/1`; affinity-task count is `0`. This persisted state is
+  consistent with the write boundaries in checklist steps 4–6, but it does
+  not mark or prove any human visual checkbox. Do not repeat Save branding or
+  Warn and do not restage. The user found that the open report detail retained
+  its pre-Warn report object and therefore did not change its action to
+  `View chat`. The frontend now refreshes the selected report from the Warn
+  response and resolves warned state from the live workspace dashboard; the
+  owner watcher compiled and hot-synced that scoped fix at
+  `2026-08-31 11:24:24 CEST`. No unread or menu-counter behavior changed.
+  Reload Ava once for the new code bundle, verify the already-persisted warned
+  report, then continue from the user's first unchecked item.
 
 ## Execution and evidence rules
 
