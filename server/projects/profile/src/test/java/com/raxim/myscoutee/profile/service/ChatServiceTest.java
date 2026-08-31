@@ -738,55 +738,6 @@ class ChatServiceTest {
     }
 
     @Test
-    void adminFeedbackMessageUsesASeparateChannelWithoutCreatingASupportCase() {
-        String chatId = "c-feedback-admin-target";
-        Users target = user("target", "Target User", "TU");
-        Users admin = user("admin", "Admin User", "AU");
-        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
-        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(admin));
-        when(chatsRepository.findByChatId(chatId)).thenReturn(List.of());
-        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
-                .thenReturn(bulkOperations);
-        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
-                .thenReturn(userCounterBulkOperations);
-
-        var result = service.sendAdminFeedbackMessage(
-                "target",
-                "admin",
-                "Admin User",
-                "AU",
-                "Thank you for your feedback.");
-
-        assertThat(result.senderName()).isEqualTo("Admin User");
-        assertThat(result.text()).isEqualTo("Thank you for your feedback.");
-        ArgumentCaptor<List<Chat>> definitionsCaptor = ArgumentCaptor.forClass(List.class);
-        verify(chatsRepository).saveAll(definitionsCaptor.capture());
-        assertThat(definitionsCaptor.getValue()).hasSize(2);
-        assertThat(definitionsCaptor.getValue()).allSatisfy(chat -> {
-            assertThat(chat.getChatId()).isEqualTo(chatId);
-            assertThat(chat.getChannelType()).isEqualTo("appSupport");
-            assertThat(chat.getOwnerId()).isEqualTo(chatId);
-            assertThat(chat.getSupportCase()).isNull();
-        });
-        assertThat(definitionsCaptor.getValue())
-                .extracting(Chat::getTitle)
-                .containsExactlyInAnyOrder("MyScoutee Feedback", "MyScoutee Feedback · Target User");
-        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
-        verify(chatPushNotificationService).notifyRecipients(
-                org.mockito.ArgumentMatchers.argThat(chats -> chats.stream().anyMatch(chat ->
-                        "target".equals(chat.getOwnerUserId()) && Integer.valueOf(1).equals(chat.getUnread()))
-                        && chats.stream().anyMatch(chat ->
-                        "admin".equals(chat.getOwnerUserId()) && Integer.valueOf(0).equals(chat.getUnread()))),
-                org.mockito.ArgumentMatchers.argThat(event ->
-                        event != null
-                                && "message".equals(event.type())
-                                && chatId.equals(event.chatId())
-                                && "admin".equals(event.senderId())));
-    }
-
-    @Test
     void editMessageRejectsDeniedChatBeforeLoadingMessage() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorEditChatMessage("viewer", "chat-1")).thenReturn(false);

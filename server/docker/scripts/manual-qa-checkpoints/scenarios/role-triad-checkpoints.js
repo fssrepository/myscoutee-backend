@@ -13,12 +13,13 @@
     ObjectId("690000000000000000000102")
   ];
   const FEEDBACK_ID = ObjectId("690000000000000000000202");
+  const FEEDBACK_ID_TEXT = FEEDBACK_ID.toHexString();
   const MODERATION_CHAT_IDS = [
     `c-support-admin-${MEMBER_ID}`,
     "c-support-admin-bf057de7c586eede7e84bdc7"
   ];
-  const FEEDBACK_CHAT_IDS = [`c-feedback-admin-${MEMBER_ID}`];
-  const CONTROLLED_CHAT_IDS = [...MODERATION_CHAT_IDS, ...FEEDBACK_CHAT_IDS];
+  const LEGACY_FEEDBACK_CHAT_IDS = [`c-feedback-admin-${MEMBER_ID}`];
+  const OWNED_CHAT_IDS = [...MODERATION_CHAT_IDS, ...LEGACY_FEEDBACK_CHAT_IDS];
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
@@ -32,10 +33,20 @@
     reports: { _id: { $in: REPORT_IDS } },
     feedback: { _id: FEEDBACK_ID },
     configuration: { _id: "deployment-configuration" },
-    chats: { id: { $in: CONTROLLED_CHAT_IDS } },
-    messages: { chatId: { $in: CONTROLLED_CHAT_IDS } },
-    notifications: { sourceType: "chat", sourceId: { $in: CONTROLLED_CHAT_IDS } },
-    outbox: { entityType: "chat", entityId: { $in: CONTROLLED_CHAT_IDS } },
+    chats: { id: { $in: OWNED_CHAT_IDS } },
+    messages: { chatId: { $in: OWNED_CHAT_IDS } },
+    notifications: {
+      $or: [
+        { sourceType: "chat", sourceId: { $in: OWNED_CHAT_IDS } },
+        { sourceType: "feedback", sourceId: FEEDBACK_ID_TEXT }
+      ]
+    },
+    outbox: {
+      $or: [
+        { entityType: "chat", entityId: { $in: OWNED_CHAT_IDS } },
+        { entityType: "feedback", entityId: FEEDBACK_ID_TEXT }
+      ]
+    },
     shareTokens: { kind: "adminHelp" },
     affinityTask: { taskKey: `USER:${MEMBER_ID}` }
   };
@@ -157,6 +168,22 @@
     };
   }
 
+  function feedbackNotificationSummary() {
+    return {
+      notificationCount: Q.collection("userNotifications").countDocuments({
+        kind: "feedback-resolved",
+        sourceType: "feedback",
+        sourceId: FEEDBACK_ID_TEXT,
+        recipientUserId: MEMBER_ID
+      }),
+      outboxCount: Q.collection("notificationOutbox").countDocuments({
+        notificationType: "feedback-resolved",
+        entityType: "feedback",
+        entityId: FEEDBACK_ID_TEXT
+      })
+    };
+  }
+
   function observed() {
     const reports = REPORT_IDS.map(report);
     const feedbackDocument = feedback();
@@ -171,9 +198,9 @@
       reports: reports.map(reportSummary),
       feedback: feedbackSummary(feedbackDocument),
       branding: brandingSummary(configDocument),
-      controlledChats: chatBoundarySummary(CONTROLLED_CHAT_IDS),
       moderationChats: chatBoundarySummary(MODERATION_CHAT_IDS),
-      feedbackChannel: chatBoundarySummary(FEEDBACK_CHAT_IDS),
+      legacyFeedbackChat: chatBoundarySummary(LEGACY_FEEDBACK_CHAT_IDS),
+      feedbackNotification: feedbackNotificationSummary(),
       affinityTaskCount: Q.collection("affinityRecomputeTasks").countDocuments(selectors.affinityTask)
     };
   }
@@ -194,9 +221,13 @@
     if (!values.feedback.id || values.feedback.resolvedAtIso) {
       Q.fail("the controlled Kai feedback must start unresolved.");
     }
-    if (values.controlledChats.chatCount !== 0 || values.controlledChats.messageCount !== 0
-        || values.controlledChats.notificationCount !== 0 || values.controlledChats.outboxCount !== 0) {
-      Q.fail("the controlled support conversation and its notification records must start empty.");
+    if (values.moderationChats.chatCount !== 0 || values.moderationChats.messageCount !== 0
+        || values.moderationChats.notificationCount !== 0 || values.moderationChats.outboxCount !== 0
+        || values.legacyFeedbackChat.chatCount !== 0 || values.legacyFeedbackChat.messageCount !== 0
+        || values.legacyFeedbackChat.notificationCount !== 0 || values.legacyFeedbackChat.outboxCount !== 0
+        || values.feedbackNotification.notificationCount !== 0
+        || values.feedbackNotification.outboxCount !== 0) {
+      Q.fail("the controlled moderation chats, legacy feedback chat, and feedback notification records must start empty.");
     }
     if (!values.branding.productName || !values.branding.themePreset) {
       Q.fail("deployment branding baseline is incomplete.");

@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,6 +32,8 @@ import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 class AdminModerationServiceTest {
@@ -55,6 +59,8 @@ class AdminModerationServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AppSettingsService appSettingsService;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
 
     private AdminModerationService service;
 
@@ -72,7 +78,8 @@ class AdminModerationServiceTest {
                 userActivityCountersService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                appSettingsService);
+                appSettingsService,
+                notificationOutboxService);
     }
 
     @AfterEach
@@ -117,7 +124,7 @@ class AdminModerationServiceTest {
     }
 
     @Test
-    void resolvingFeedbackWritesToTheDedicatedFeedbackChannel() {
+    void resolvingFeedbackEnqueuesOneNotificationWithoutWritingAChat() {
         UserFeedbackSubmission feedback = new UserFeedbackSubmission();
         feedback.setId("feedback-1");
         feedback.setUserId("target");
@@ -135,13 +142,20 @@ class AdminModerationServiceTest {
                 new AdminReviewResolveRequestDto("admin-demo-ava", true));
 
         verify(feedbackRepository).save(feedback);
-        verify(chatService).sendAdminFeedbackMessage(
-                "target",
-                "admin-demo-ava",
-                "Ava Moderation",
-                "AM",
-                "Your feedback \"Faster review\" has been reviewed by MyScoutee. Thank you for helping improve the app.");
         verify(chatService, never()).sendAdminSupportMessage(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("feedback-resolved");
+        assertThat(intent.entityType()).isEqualTo("feedback");
+        assertThat(intent.entityId()).isEqualTo("feedback-1");
+        assertThat(intent.recipientUserIds()).containsExactly("target");
+        assertThat(intent.body()).isEqualTo(
+                "Your feedback \"Faster review\" has been reviewed by MyScoutee. Thank you for helping improve the app.");
+        assertThat(intent.payload())
+                .containsEntry("feedbackId", "feedback-1")
+                .containsEntry("senderUserId", "admin-demo-ava")
+                .containsEntry("notification_tone", "success");
     }
 }

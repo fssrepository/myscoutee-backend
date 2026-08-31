@@ -40,6 +40,8 @@ import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @Service
 public class AdminModerationService {
@@ -60,6 +62,7 @@ public class AdminModerationService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
+    private final NotificationOutboxService notificationOutboxService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
@@ -72,7 +75,8 @@ public class AdminModerationService {
             UserActivityCountersService userActivityCountersService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AppSettingsService appSettingsService) {
+            AppSettingsService appSettingsService,
+            NotificationOutboxService notificationOutboxService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
@@ -84,6 +88,7 @@ public class AdminModerationService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -253,10 +258,7 @@ public class AdminModerationService {
         feedback.setUpdatedUser(admin.id());
         feedbackRepository.save(feedback);
         if (resolved && !wasResolved) {
-            appendFeedbackMessage(
-                    normalize(feedback.getUserId()),
-                    admin,
-                    feedbackResolvedMessage(feedback));
+            enqueueFeedbackResolvedNotification(feedback, admin);
         }
         adminTelemetryService.record(resolved ? "admin.feedback.resolved" : "admin.feedback.unresolved", "moderation", normalizedFeedbackId, admin.id());
         return dashboard(admin.id());
@@ -356,13 +358,44 @@ public class AdminModerationService {
                 supportStatus);
     }
 
-    private void appendFeedbackMessage(String targetUserId, AdminUserDto admin, String text) {
-        chatService.sendAdminFeedbackMessage(
-                targetUserId,
-                admin.id(),
-                admin.name(),
-                admin.initials(),
-                text);
+    private void enqueueFeedbackResolvedNotification(UserFeedbackSubmission feedback, AdminUserDto admin) {
+        String targetUserId = normalize(feedback == null ? null : feedback.getUserId());
+        String feedbackId = normalize(feedback == null ? null : feedback.getId());
+        if (!StringUtils.hasText(targetUserId) || !StringUtils.hasText(feedbackId)) {
+            return;
+        }
+        String subject = normalize(feedback.getSubject());
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("feedbackId", feedbackId);
+        payload.put("senderUserId", admin.id());
+        payload.put("senderName", admin.name());
+        payload.put("notification_tone", "success");
+        payload.put("notification_status_badge_fallback", "Resolved");
+        payload.put("notification_status_badge_tone", "success");
+        if (StringUtils.hasText(subject)) {
+            payload.put("feedbackSubject", subject);
+        }
+        if (admin.images() != null) {
+            admin.images().stream()
+                    .map(this::normalize)
+                    .filter(StringUtils::hasText)
+                    .findFirst()
+                    .ifPresent(image -> payload.put("senderAvatarUrl", image));
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "feedback-resolved",
+                "feedback",
+                feedbackId,
+                "feedback-submitters",
+                List.of(targetUserId),
+                StringUtils.hasText(subject) ? subject : "Feedback",
+                feedbackResolvedMessage(feedback),
+                "/game",
+                payload.get("senderAvatarUrl"),
+                "/assets/logo/heart.webp",
+                "feedback-resolved-" + feedbackId,
+                payload,
+                admin.id()));
     }
 
     private AdminReviewCountsDto reviewCounts(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {

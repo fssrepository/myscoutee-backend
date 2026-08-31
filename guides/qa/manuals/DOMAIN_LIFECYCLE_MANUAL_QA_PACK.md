@@ -6202,7 +6202,7 @@ remain authoritative for the testcase contract, persisted evidence and status.
   `1`, perform only the remaining final Pick, and inspect the open bucket menu
   before the persisted oracle.
 
-- **`ROLE-TRIAD-CORE-001` feedback-channel and filtered-row defects —
+- **`ROLE-TRIAD-CORE-001` feedback-delivery and filtered-row defects —
   2026-08-31 12:03 CEST**: the replay continued through one report resolution,
   one feedback resolution and further support-case actions. The versioned
   read-only oracle proved the controlled report warned/resolved, the controlled
@@ -6212,15 +6212,10 @@ remain authoritative for the testcase contract, persisted evidence and status.
   `lastMessage` of Kai's `c-support-admin-*` moderation thread; there was no
   separate feedback chat. The feedback resolver had reused the generic support
   writer with status Solved, coupling an independent feedback notification to
-  the warn case. The Java and frontend-local paths now write feedback notices
-  to `c-feedback-admin-<userId>`, retain App-support delivery/unread signaling,
-  and deliberately store no support case or moderation-counter refresh. The
-  harness selector includes that new channel so future reset/status snapshots
-  own it. Its status oracle reports `moderationChats` and `feedbackChannel`
-  separately, including support-case-document and feedback-message counts, so
-  an aggregated total cannot conceal another channel merge. The checklist now
-  expects feedback resolution to leave Ava's case buckets All `2`, Picked `1`,
-  Solved `1` and actionable Chats `1`.
+  the warn case. An intermediate repair moved the text into
+  `c-feedback-admin-<userId>`; subsequent review rejected that model too,
+  because feedback is not a chat domain at all. That intermediate channel is
+  retained here only as failed-attempt evidence and must not be recreated.
 
   Separately, the successful support-case response already used the SmartList
   `removeVisibleItemByIdentity` method when the updated row no longer matched
@@ -6228,8 +6223,7 @@ remain authoritative for the testcase contract, persisted evidence and status.
   now reads the current `activitiesSupportCaseFilter` store signal, so a final
   Pick performed while Pending is selected removes the row from that filtered
   SmartList immediately. It adds no component-owned array mutation, list
-  iteration, refetch or reload. Regression tests cover the dedicated feedback
-  channel/no-support-case boundary and the resolver routing. The running
+  iteration, refetch or reload. The running
   backend owner pipeline completed `compileJava/classes` successfully and
   restarted at 11:56 CEST; the frontend watcher completed its final build and
   hot-sync at 11:57:33 CEST. Tests were not launched in a second Gradle or
@@ -6279,6 +6273,33 @@ remain authoritative for the testcase contract, persisted evidence and status.
   synced to nginx at `2026-08-31 12:27:27 CEST`. Do not restage: reload only
   Ava, confirm Unpick retains and patches the row under All, then select Pending
   and Pick exactly once so removal occurs only from that concrete bucket.
+
+- **`ROLE-TRIAD-CORE-001` notification-only feedback and History guard —
+  2026-08-31 12:36 CEST**: feedback resolution now enqueues exactly one normal
+  `feedback-resolved` bell notification keyed by the feedback ID and addressed
+  only to its submitter. Java uses the notification outbox directly;
+  frontend-local writes the equivalent notification record. Neither path
+  creates a chat, chat message, support case, chat unread delta or Chats badge
+  delta. The checkpoint snapshot owns both the canonical feedback
+  notification/outbox records and the rejected legacy `c-feedback-admin-*`
+  artifacts, so reset removes an earlier bad replay and future status makes
+  any recurrence visible.
+
+  The App-support chat History action now derives availability and its external
+  alert badge from the already-loaded admin dashboard `reportCount`. A zero
+  count disables the action and the defensive click path returns silently,
+  instead of opening the `Unable to open history` dialog. A positive count is
+  shown as the standard red counter badge and continues to open the shared
+  Reports/History SmartList above the mounted chat.
+
+  The earlier replay was then restored through the versioned reset at
+  `2026-08-31T10:51:11.225Z`; independent status returned `not-staged`; and a
+  new stage at `2026-08-31T10:51:20.623Z` proved a clean baseline. Canonical
+  feedback notification/outbox, rejected legacy feedback chat artifacts and
+  moderation chat artifacts are all zero. Three fresh isolated browser
+  profiles replaced the previous sessions. This focused replay tests only the
+  disabled no-history action and notification-only controlled feedback before
+  the next persisted oracle.
 
 ## Execution and evidence rules
 

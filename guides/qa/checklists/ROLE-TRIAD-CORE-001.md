@@ -160,6 +160,10 @@ mutation. Report the step number and the state that was actually visible.
 
    Select History in Ava's chat header.
 
+   - A support user with no moderation history has a disabled History action;
+     clicking it cannot open an empty-state or error dialog.
+   - A support user with history has an external red badge containing the
+     total stored report count.
    - History opens above the chat while the underlying chat remains mounted.
    - Only Kai's relevant reports and moderation history are listed.
    - The list is a SmartList, not a separately hand-built panel.
@@ -193,12 +197,14 @@ mutation. Report the step number and the state that was actually visible.
    - The external green Resolved filter badge changes `0 → 1`.
    - Only this feedback changes; unrelated report, rating, and impression data
      remain unchanged.
-   - Kai receives exactly one feedback-resolved message/notification in the
-     separate persisted `c-feedback-admin-*` App support channel; Ava receives
-     no self-notification. Kai opens and reads it once.
-   - The feedback channel is not Kai's moderation/warn `c-support-admin-*`
-     thread and has no support-case state. It does not add, solve, or otherwise
-     alter any moderation case bucket.
+   - Kai receives exactly one `feedback-resolved` bell notification sourced
+     from the controlled feedback ID; Ava receives no self-notification. Kai
+     opens and reads it once through the normal notification surface/poll.
+   - Feedback resolution creates no chat, channel or chat message. In
+     particular it neither creates `c-feedback-admin-*` nor writes into Kai's
+     moderation/warn `c-support-admin-*` thread.
+   - It does not change chat unread, the Chats main badge, or any moderation
+     support-case bucket.
    - Ava's support buckets therefore remain All `2`, Picked `1`, Solved `1`,
      with all other status buckets `0`.
    - Ava's Chats main badge remains `1`; avatar aggregate changes `3 → 2`.
