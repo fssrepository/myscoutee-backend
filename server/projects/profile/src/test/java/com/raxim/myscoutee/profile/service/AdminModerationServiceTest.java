@@ -46,6 +46,8 @@ class AdminModerationServiceTest {
     @Mock
     private ChatService chatService;
     @Mock
+    private UserActivityCountersService userActivityCountersService;
+    @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
     private AdminTelemetryService adminTelemetryService;
@@ -65,6 +67,7 @@ class AdminModerationServiceTest {
                 chatsRepository,
                 chatMessagesRepository,
                 chatService,
+                userActivityCountersService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 appSettingsService);

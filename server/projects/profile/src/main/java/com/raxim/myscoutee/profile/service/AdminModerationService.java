@@ -56,6 +56,7 @@ public class AdminModerationService {
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
     private final ChatService chatService;
+    private final UserActivityCountersService userActivityCountersService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
@@ -68,6 +69,7 @@ public class AdminModerationService {
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
             ChatService chatService,
+            UserActivityCountersService userActivityCountersService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService) {
@@ -78,6 +80,7 @@ public class AdminModerationService {
         this.chatsRepository = chatsRepository;
         this.chatMessagesRepository = chatMessagesRepository;
         this.chatService = chatService;
+        this.userActivityCountersService = userActivityCountersService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
@@ -88,10 +91,21 @@ public class AdminModerationService {
     }
 
     public AdminDashboardDto dashboard(String adminUserId, String reportsStatus, String feedbackStatus) {
+        AdminUserDto admin = resolveAdmin(adminUserId);
+        ensureStoredSupportCaseCounters(admin.id());
         return dashboardFor(
-                resolveAdmin(adminUserId),
+                admin,
                 normalizeReviewStatus(reportsStatus),
                 normalizeReviewStatus(feedbackStatus));
+    }
+
+    private void ensureStoredSupportCaseCounters(String adminUserId) {
+        Users admin = usersRepository.findByUserId(normalize(adminUserId)).orElse(null);
+        Users.UserActivitiesRecord activities = admin == null ? null : admin.getActivities();
+        Users.UserChatCountersRecord chat = activities == null ? null : activities.chat();
+        if (chat == null || chat.supportCases() == null) {
+            userActivityCountersService.refreshSupportCaseCountersForAdmins();
+        }
     }
 
     public AdminUserDto resolveAdminActor(String adminUserId) {
