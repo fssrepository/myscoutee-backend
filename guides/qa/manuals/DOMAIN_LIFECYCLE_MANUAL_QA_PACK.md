@@ -6132,6 +6132,18 @@ assertion references for their consolidated parents, not as microtests.
 | `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
 | `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
+- **`ROLE-TRIAD-CORE-001` clean replay baseline READY — 2026-08-31**:
+  the versioned harness reset the reviewed partial transaction, an independent
+  `status` proved `not-staged`, and a fresh stage completed at
+  `2026-08-31T08:52:06.310Z`. A second read-only status proved
+  `baseline-ready`: Kai is unblocked with `profileStatus=host only` and no
+  previous status; both controlled reports are unresolved and unwarned; the
+  controlled feedback is unresolved; branding is revision `0`; controlled
+  support chat/message/notification/outbox and affinity-task counts are all
+  zero; Ava's support-case status buckets are all zero; operator authority is
+  intact. Reload the three retained browsers once before replay because their
+  in-memory state predates this stage and the final frontend hot-sync.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
