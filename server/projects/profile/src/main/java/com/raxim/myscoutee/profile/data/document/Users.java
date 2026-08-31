@@ -544,7 +544,27 @@ public class Users {
             Integer subEvent,
             Integer group,
             Integer service,
-            Integer appSupport) {
+            Integer appSupport,
+            UserSupportCaseCountersRecord supportCases) {
+        public UserChatCountersRecord(
+                Integer all,
+                Integer event,
+                Integer subEvent,
+                Integer group,
+                Integer service,
+                Integer appSupport) {
+            this(all, event, subEvent, group, service, appSupport,
+                    new UserSupportCaseCountersRecord(0, 0, 0, 0, 0, 0));
+        }
+    }
+
+    public record UserSupportCaseCountersRecord(
+            Integer pending,
+            Integer warned,
+            Integer picked,
+            Integer solved,
+            Integer blocked,
+            Integer all) {
     }
 
     public record UserEventCountersRecord(

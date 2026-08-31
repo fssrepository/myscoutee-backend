@@ -243,6 +243,38 @@ class UserNotificationServiceTest {
     }
 
     @Test
+    void readingChatMessagesReadsOnlyTheirNotificationsAndDecrementsOnce() {
+        when(userNotificationPageRepository.markUnreadChatMessagesRead(
+                eq("viewer-1"),
+                eq("chat-1"),
+                eq(List.of("message-1", "message-2")),
+                any(String.class))).thenReturn(2L);
+
+        int changed = service.markChatMessagesRead(
+                " viewer-1 ",
+                " chat-1 ",
+                List.of("message-1", "message-2"));
+
+        assertThat(changed).isEqualTo(2);
+        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -2);
+    }
+
+    @Test
+    void readingAWholeChatResolvesEveryUnreadNotificationFromThatChat() {
+        when(userNotificationPageRepository.markUnreadBySource(
+                eq("viewer-1"),
+                eq("chat-message"),
+                eq("chat"),
+                eq("chat-1"),
+                any(String.class))).thenReturn(3L);
+
+        int changed = service.markChatRead(" viewer-1 ", " chat-1 ");
+
+        assertThat(changed).isEqualTo(3);
+        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -3);
+    }
+
+    @Test
     void pageReturnsStoredMutedPreferenceAndPreferenceMutationUsesUserScope() {
         Users user = new Users();
         user.setUserId("viewer-1");

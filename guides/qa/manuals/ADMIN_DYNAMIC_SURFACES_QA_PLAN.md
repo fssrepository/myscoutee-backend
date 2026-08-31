@@ -182,6 +182,16 @@ Archived evidence sources:
 
 ### Current continuation state
 
+On 2026-08-31 `JOB-PURGE`, the final Identity & access row, closed through the
+real scheduler and dynamic Jobs table. The stronger guarded
+`account-purge / with-reference` variation visibly moved from one eligible item
+to Completed with affected count `1` and pending count `0`. Its terminal oracle
+proved user and `userRates` counts `0/0`, the exact purge job Completed with a
+cleared `userId`, completion time, retry count `0` and no error. Snapshot-safe
+reset then restored the original rule including its `86400`-second interval and
+proved `prepared:false`. Identity & access is now 8/8 PASS/CLOSED; no local
+checkpoint is currently staged.
+
 A read-only `demo_db` audit on 2026-08-04 found all nine then-existing rules enabled and no
 rule running. The random-room fixture's source events and generated fixture
 rooms were absent, but a stale `admin-job-fixture:v1:event-random-groups`

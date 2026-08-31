@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 12:35 CEST
+Updated: 2026-08-31 14:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -11,6 +11,8 @@ file first, then open only the linked active checkpoint section.
 
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
+- Active consolidated Event journey and its ordered source checkpoints:
+  [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -20,6 +22,11 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+- Three-role authorization/moderation fixture:
+  [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
+- Admin Job fixture toolkit and account-purge scenario:
+  [`admin-job-fixtures.sh`](../../../server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh),
+  [`account-purge.js`](../../../server/docker/scripts/admin-job-fixtures/scenarios/account-purge.js)
 - Isolated first-stage admission fixture:
   [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
 - Isolated corrected-score revision fixture:
@@ -42,19 +49,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and moderation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
-scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
-ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
-state: No ROLE-TRIAD-CORE-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its production-like Firebase continuation is owned by external DEPLOY-FIREBASE-LIFECYCLE-001.
-required_resume: Prepare one complete ROLE-TRIAD-CORE-001 journey with exactly three isolated sessions: member, admin and operator. Present the purpose, every click and visible route/counter expectation before starting. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
-event: No active fixture; QA infrastructure baseline is clean
+checkpoint: EVENT-SLOT-TOURNAMENT-001 — selected; first source checkpoint EVENT-EDITOR-004 is not staged
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing
+checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
+scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
+ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
+state: Selection only. ROLE-TRIAD-CORE-001 and JOB-PURGE remain PASS/CLOSED and reset. No Event fixture has been staged and no managed Event browser has been launched for this journey.
+baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
+required_resume: Do not restage ROLE-TRIAD-CORE-001 or JOB-PURGE. Run the read-only event-domain status gate for EVENT-EDITOR-004 first. If it reports phase=not-staged, stage EVENT-EDITOR-004 once and verify the complete baseline before launching its managed host browser. Do not run any already-closed Tournament producer as part of this consolidated Event row.
+event: EVENT-EDITOR-004 selected; no prepared fixture snapshot
 actors:
-  Member: isolated ordinary-user session
-  Admin: isolated administration session
-  Operator: isolated deployment/operator session
-next_actor: Codex prepares the complete ROLE-TRIAD-CORE-001 action/oracle sequence before the user starts probing.
-stop_phrase: Three-role authorization checked
+  Casey: host/editor; no managed browser is active yet
+next_actor: Read-only EVENT-EDITOR-004 status gate, then one guarded stage if and only if phase=not-staged.
+queued_followup: After EVENT-EDITOR-004, continue EVENT-SLOT-001 through EVENT-SLOT-004 in source order with separate stage/oracle boundaries.
+stop_phrase: None
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -163,8 +171,9 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation is an
 assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
-is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is the active local
-checkpoint after QA infrastructure passed 2/2. The consolidated desktop Chat
+is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is PASS/CLOSED and reset;
+`JOB-PURGE` is PASS/CLOSED and Identity & access is 8/8 complete after QA
+infrastructure passed 2/2. The consolidated desktop Chat
 flow, actions, rich content and governance journeys plus the closed Chat
 statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
 assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
@@ -204,6 +213,16 @@ has an exact idempotent delta). Keep the independent post-request oracle strict;
 removing an in-request readback must never remove the separate QA read oracle.
 
 ## QA working method
+
+### Manual frontend ownership
+
+**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+
+The user exclusively performs and evaluates frontend manual, visual and
+interaction checks during this campaign. Codex never performs frontend
+validation, including browser automation, screenshots or a second frontend
+walkthrough. Codex guides one requested step at a time and validates only the
+backend/API/persisted oracle after the user has performed the frontend action.
 
 ### 1. One checkpoint, one transition
 
@@ -1129,11 +1148,14 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
--> ROLE-TRIAD-CORE-001 (active local Core checkpoint)
+-> ROLE-TRIAD-CORE-001 (closed; complete three-role journey PASS)
+-> JOB-PURGE (closed; final Identity & access checkpoint)
 ```
 
-Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
-locally with `ROLE-TRIAD-CORE-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, closed Chat desktop journeys or
+Tournament is 15/15 complete, QA infrastructure is 2/2 complete and Identity &
+access is 8/8 complete. Select the next Core checkpoint from the canonical
+matrix; do not replay
+the closed role-triad, consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run
 with production-like VMware/Firebase evidence, not the local demo stack.

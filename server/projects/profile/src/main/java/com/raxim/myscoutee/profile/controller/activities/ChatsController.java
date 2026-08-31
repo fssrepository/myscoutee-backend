@@ -76,6 +76,13 @@ public class ChatsController {
                 supportCaseFilter);
     }
 
+    @GetMapping("/by-id/{chatId}")
+    public ChatDto queryChatById(
+            @PathVariable("chatId") String chatId,
+            @RequestParam("userId") String userId) {
+        return chatService.queryChatById(chatId, userId);
+    }
+
     @PostMapping("/service")
     public ChatDto ensureServiceChat(
             @RequestBody ChatServiceEnsureRequestDto request,

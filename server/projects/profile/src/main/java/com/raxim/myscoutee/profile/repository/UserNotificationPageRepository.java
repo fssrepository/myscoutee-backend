@@ -189,6 +189,33 @@ public class UserNotificationPageRepository {
         return result.getModifiedCount();
     }
 
+    public long markUnreadChatMessagesRead(
+            String recipientUserId,
+            String chatId,
+            java.util.Collection<String> messageIds,
+            String readAtIso) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return 0L;
+        }
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("recipientUserId").is(recipientUserId),
+                Criteria.where("kind").is("chat-message"),
+                Criteria.where("sourceType").is("chat"),
+                Criteria.where("sourceId").is(chatId),
+                Criteria.where("payload.messageId").in(messageIds),
+                unreadCriteria());
+        initializeMissingRevision(criteria);
+        UpdateResult result = mongoTemplate.updateMulti(
+                Query.query(criteria),
+                new Update()
+                        .set("readAtIso", readAtIso)
+                        .set("updatedDate", readAtIso)
+                        .set("updatedUser", recipientUserId)
+                        .inc("revision", 1L),
+                UserNotification.class);
+        return result.getModifiedCount();
+    }
+
     public void incrementUnreadCounter(String recipientUserId, int delta) {
         if (delta == 0) {
             return;

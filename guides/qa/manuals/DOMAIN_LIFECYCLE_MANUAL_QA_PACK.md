@@ -5790,7 +5790,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 ## Consolidated executable journeys and source-oracle archive
 
 The matrix contains 116 executable journeys after the 2026-08-30 granularity
-audit. All 75 PASS/CLOSED rows remain individually immutable: only their
+audit. All 76 PASS/CLOSED rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
@@ -6002,7 +6002,7 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `ENTRY-CONSENT-003` | Create a new privacy revision that retains existing optional rubrics and adds one new rubric. | The latest consent preselects only matching stable IDs; every new or previously unselected optional rubric starts unselected, and approval creates a separate v5 consent without rewriting v4. |
 | `OPERATOR-BOOTSTRAP-001` | Use a disposable bootstrap credential once, then retry and recover through the documented boundary. | First use creates the operator session and consumes/rotates bootstrap authority; replay and ordinary user access fail closed without exposing the secret. |
 | `OPERATOR-CONFIG-001` | Add/reorder one admin email, save, reopen and restore. | Server-normalized unique admin list persists once; role access follows the active configuration and invalid/empty/duplicate inputs preserve the prior revision. |
-| `OPERATOR-BRANDING-001` | Change product name, logo character/image, home label and theme, then observe open and fresh clients. | Public configuration revision changes once; header/entry/PWA branding converges without stale cross-revision cache and rollback restores the prior revision exactly. |
+| `OPERATOR-BRANDING-001` | Change product name, logo character/image, home label and theme, save, explicitly reload one consumer and verify one fresh client, then restore. | Public configuration revision changes once; header/entry/PWA branding matches the persisted revision after explicit reload/fresh load and rollback restores the prior revision exactly. Automatic refresh in an already-open client is not required. |
 | `OPERATOR-PRIVACY-001` | Save valid controller/contact values, test invalid partial/email input and restore. | Public deployment config exposes only the valid pair; invalid save is atomic and neither operator secrets nor unrelated branding changes. |
 | `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
 
@@ -6126,14 +6126,217 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
+The active commit-friendly execution checklist for the local Core journey is
+[`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md). Its 22
+top-level checkboxes track human visual execution; this pack and the ledger
+remain authoritative for the testcase contract, persisted evidence and status.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, propagate one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; branding converges without logout; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. |
+| `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, persist one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; the authorized branding revision persists, while already-open clients may require an explicit reload; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. Automatic branding refresh is not required. |
 | `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
 | `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
+- **`ROLE-TRIAD-CORE-001` clean replay baseline READY — 2026-08-31**:
+  the versioned harness reset the reviewed partial transaction, an independent
+  `status` proved `not-staged`, and a fresh stage completed at
+  `2026-08-31T08:52:06.310Z`. A second read-only status proved
+  `baseline-ready`: Kai is unblocked with `profileStatus=host only` and no
+  previous status; both controlled reports are unresolved and unwarned; the
+  controlled feedback is unresolved; branding is revision `0`; controlled
+  support chat/message/notification/outbox and affinity-task counts are all
+  zero; Ava's support-case status buckets are all zero; operator authority is
+  intact. The managed launcher replaced the three old browser profiles at
+  `2026-08-31T08:56:31.679Z` and confirmed fresh isolated Kai, Ava and
+  Deployment Operator sessions on the baseline route. Use those windows
+  without another reload before capturing the visual baseline.
+
+- **`ROLE-TRIAD-CORE-001` superseded partial transaction — 2026-08-31 11:14
+  CEST**: a read-only oracle observed the user's replay after it had begun.
+  Branding is `MyScoutee A`, revision `1`; controlled report
+  `690000000000000000000102` is warned and unresolved; the other report and
+  controlled feedback remain unresolved; Kai remains unblocked as
+  `host only`; stored admin support buckets are All `1` / Warned `1` with all
+  other statuses `0`; controlled support chat/message/notification/outbox
+  counts are `2/1/1/1`; affinity-task count is `0`. This persisted state is
+  consistent with the write boundaries in checklist steps 4–6, but it does
+  not mark or prove any human visual checkbox. Do not repeat Save branding or
+  Warn and do not restage. The user found that the open report detail retained
+  its pre-Warn report object and therefore did not change its action to
+  `View chat`. The frontend now refreshes the selected report from the Warn
+  response and resolves warned state from the live workspace dashboard; the
+  owner watcher compiled and hot-synced that scoped fix at
+  `2026-08-31 11:24:24 CEST`. No unread or menu-counter behavior changed.
+  This attempt was later reset for the focused replay recorded below; do not
+  reconstruct or continue it.
+
+- **`ROLE-TRIAD-CORE-001` second replay baseline — 2026-08-31 11:32
+  CEST**: the first post-fix targeted attempt persisted the warned report,
+  Ava All `1` / Warned `1`, and exactly one support message at
+  `2026-08-31T09:29:21.162285526Z`, but the immediate oracle found zero support
+  notifications and zero outbox rows; the user observed no visible warning
+  message. That failed attempt was reset. An independent status proved
+  `not-staged`, a new stage completed at `2026-08-31T09:31:32.395Z`, and the
+  final status proved a clean `baseline-ready` boundary with both reports
+  unwarned and support chat/message/notification/outbox all `0`. Fresh isolated
+  Kai, Ava and Operator browser sessions replaced the prior profiles. Ava now
+  performs exactly one Warn on `No-show / unsafe event behavior`, closes the
+  Warn popup, verifies the immediate `View chat` action, and stops so Codex can
+  run the persisted oracle before any resend or support reply.
+
+- **`ROLE-TRIAD-CORE-001` step-11 live bucket defect and fix — 2026-08-31
+  11:42 CEST**: the replay progressed through the controlled Warn and Kai reply.
+  The read-only oracle then reported support chat/message/notification/outbox
+  `2/2/2/2` and, after the user's Pick then Unpick, canonical support buckets
+  All `1`, Pending `1`, Warned `0`, Picked `0`, Solved `0`, Blocked `0`. The
+  user's still-open dropdown instead retained Picked `1`, proving a frontend
+  reconciliation failure rather than a backend transition failure. The status
+  signal had attempted to recover the previous chat status from the SmartList
+  source cache after the request; a normal poll may replace that cached source
+  with a converted row, yielding no previous status and therefore a no-op
+  delta. The frontend now passes the known pre-mutation status directly through
+  the successful request boundary. The owner watcher compiled and hot-synced
+  the fix at `2026-08-31 11:41:35 CEST`; it adds no list iteration, reload or
+  counter query. Do not replay Warn, Kai's reply, Pick or Unpick. Reload Ava
+  once for the code revision, wait one normal poll cycle at canonical Pending
+  `1`, perform only the remaining final Pick, and inspect the open bucket menu
+  before the persisted oracle.
+
+- **`ROLE-TRIAD-CORE-001` feedback-delivery and filtered-row defects —
+  2026-08-31 12:03 CEST**: the replay continued through one report resolution,
+  one feedback resolution and further support-case actions. The versioned
+  read-only oracle proved the controlled report warned/resolved, the controlled
+  feedback resolved, support chat/message/notification/outbox counts `4/4/4/4`
+  and two stored cases currently Picked/Pending. A direct persisted read then
+  proved that the feedback-resolved text was the fourth message and
+  `lastMessage` of Kai's `c-support-admin-*` moderation thread; there was no
+  separate feedback chat. The feedback resolver had reused the generic support
+  writer with status Solved, coupling an independent feedback notification to
+  the warn case. An intermediate repair moved the text into
+  `c-feedback-admin-<userId>`; subsequent review rejected that model too,
+  because feedback is not a chat domain at all. That intermediate channel is
+  retained here only as failed-attempt evidence and must not be recreated.
+
+  Separately, the successful support-case response already used the SmartList
+  `removeVisibleItemByIdentity` method when the updated row no longer matched
+  the active filter, but its match check read a lagging component mirror. It
+  now reads the current `activitiesSupportCaseFilter` store signal, so a final
+  Pick performed while Pending is selected removes the row from that filtered
+  SmartList immediately. It adds no component-owned array mutation, list
+  iteration, refetch or reload. The running
+  backend owner pipeline completed `compileJava/classes` successfully and
+  restarted at 11:56 CEST; the frontend watcher completed its final build and
+  hot-sync at 11:57:33 CEST. Tests were not launched in a second Gradle or
+  frontend process because the running dev pipeline owns compilation.
+
+- **`ROLE-TRIAD-CORE-001` third clean full-replay baseline — 2026-08-31
+  12:05 CEST**: the failed transaction above was restored by the versioned
+  reset at `2026-08-31T10:03:44.997Z`. An independent status proved
+  `not-staged`; a new stage completed at `2026-08-31T10:04:15.133Z`; and the
+  final read-only status proved `baseline-ready`. Both reports are unresolved
+  and unwarned, feedback is unresolved, branding is revision `0`, controlled
+  chat/message/notification/outbox counts are all `0`, all Ava support buckets
+  are `0`, and Kai is unblocked as `host only`. The launcher replaced the old
+  profiles and opened fresh isolated Kai, Ava and Deployment Operator windows.
+  Execute the revised 22-step English checklist from step 1; do not restage.
+
+- **`ROLE-TRIAD-CORE-001` support-row identity and notification-poll ownership
+  fix — 2026-08-31 12:22 CEST**: during the third replay the user selected the
+  final Pick while the Pending support bucket was active. The persisted oracle
+  proved canonical All `1` / Picked `1` / Pending `0`, but the already-open
+  Pending SmartList still displayed the row as Pending. The successful update
+  path was calling shared `removeVisibleItemByIdentity`, but supplied
+  `chats:<chatId>` while the activity-chat converter assigns support rows the
+  canonical key `chats:supportCase:<chatId>`. The component now obtains that
+  exact identity from `ActivityChatSingleRowConverter.smartListKeyForIdentity`
+  and retains the shared SmartList removal path; no component array mutation,
+  row iteration, list refetch or SmartList-core exception was added.
+
+  A follow-up All-bucket check exposed a second predicate error: admin-service
+  mode fixes `chatContextFilter` to `service` to select the support-case data
+  source, while each returned moderation row still has the semantic
+  `appSupport` context. Live reconciliation had incorrectly treated that route
+  marker as row membership and therefore removed a status-updated row even
+  under All. Admin-service matching now evaluates only the support-status
+  filter: All patches the converted row, and only a row leaving a concrete
+  status bucket is removed. The focused regression spec covers both branches.
+
+  The same replay showed a separate timing conflict when opening a chat: the
+  chat response immediately copied its `notificationUnread` context into
+  `NotificationCenterStore`, while the notification row remained in New until
+  its own poll, allowing later reconciliation to appear to restore the count.
+  Chat loading no longer writes the notification counter. Its own chat unread
+  and activity-row read receipt still update immediately; the related
+  notification row and bell count now converge together through the normal
+  notification poll from persisted read state. The frontend owner watcher
+  rebuilt the affected lazy chunks successfully; the final All-bucket revision
+  synced to nginx at `2026-08-31 12:27:27 CEST`. Do not restage: reload only
+  Ava, confirm Unpick retains and patches the row under All, then select Pending
+  and Pick exactly once so removal occurs only from that concrete bucket.
+
+- **`ROLE-TRIAD-CORE-001` notification-only feedback and History guard —
+  2026-08-31 12:36 CEST**: feedback resolution now enqueues exactly one normal
+  `feedback-resolved` bell notification keyed by the feedback ID and addressed
+  only to its submitter. Java uses the notification outbox directly;
+  frontend-local writes the equivalent notification record. Neither path
+  creates a chat, chat message, support case, chat unread delta or Chats badge
+  delta. The checkpoint snapshot owns both the canonical feedback
+  notification/outbox records and the rejected legacy `c-feedback-admin-*`
+  artifacts, so reset removes an earlier bad replay and future status makes
+  any recurrence visible.
+
+  The App-support chat History action now derives availability and its external
+  alert badge from the already-loaded admin dashboard `reportCount`. A zero
+  count disables the action and the defensive click path returns silently,
+  instead of opening the `Unable to open history` dialog. A positive count is
+  shown as the standard red counter badge and continues to open the shared
+  Reports/History SmartList above the mounted chat.
+
+  The earlier replay was then restored through the versioned reset at
+  `2026-08-31T10:51:11.225Z`; independent status returned `not-staged`; and a
+  new stage at `2026-08-31T10:51:20.623Z` proved a clean baseline. Canonical
+  feedback notification/outbox, rejected legacy feedback chat artifacts and
+  moderation chat artifacts are all zero. Three fresh isolated browser
+  profiles replaced the previous sessions. This focused replay tests only the
+  disabled no-history action and notification-only controlled feedback before
+  the next persisted oracle.
+
+- **`ROLE-TRIAD-CORE-001` PASS / CLOSED — 2026-08-31 13:16 CEST**:
+  the user accepted the complete 22-step visual and interaction journey after
+  the original run and the focused correction replays recorded above. Those
+  replays supplied persisted boundary evidence for branding save/restore,
+  warning delivery, the shared support thread, live support-status bucket
+  transitions, report/feedback resolution, block/unblock and final access
+  restoration. The versioned broad status oracle was run once more against
+  the final focused fixture. It proved that Kai, Ava and the Deployment
+  Operator retained their intended identities and authorities; Kai was
+  unblocked as `host only` with no previous profile status; branding exactly
+  matched the revision-`0` baseline; both report controls were restored and
+  unchanged by the focused replay; and all Ava support buckets plus the
+  affinity residue were `0`.
+
+  Kai's controlled feedback was resolved exactly by `admin-demo-ava` at
+  `2026-08-31T11:07:11.199156350Z`. Its canonical feedback notification and
+  outbox counts were exactly `1/1`, while moderation chat, message,
+  notification, outbox, support-case and feedback-text counts were all `0`.
+  The rejected legacy feedback channel had the same all-zero boundary, and
+  Ava plus the Operator had zero self-notifications. Earlier transaction
+  artifacts are intentionally absent from this terminal focused state because
+  each failed or completed attempt was restored through the versioned
+  snapshot reset after its evidence was recorded; closure therefore uses the
+  cumulative persisted boundary oracles together with the user's frontend
+  verdict, not a claim that one post-reset document still contains every
+  historical transition.
+
 ## Execution and evidence rules
 
+**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+
+0. The user exclusively performs and evaluates frontend manual, visual and
+   interaction checks. Codex never performs frontend validation, including
+   browser automation, screenshots or a second frontend walkthrough. Codex
+   guides the requested frontend step and validates only its backend/API/
+   persisted oracle after the user's action.
 1. Begin every human action with why the step exists, what it tests and the
    exact visible result expected.
 2. Record a shared campaign lineage ID when one manually created event feeds

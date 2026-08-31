@@ -97,6 +97,7 @@ import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
 import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.profile.service.mapper.SubEventItemMapper;
+import com.raxim.myscoutee.profile.service.notifications.UserNotificationService;
 
 @Service
 public class ChatService {
@@ -143,8 +144,10 @@ public class ChatService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final UserActivityCountersService userActivityCountersService;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
+    private final UserNotificationService userNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
@@ -161,8 +164,10 @@ public class ChatService {
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             HomeUserProfileService homeUserProfileService,
+            UserActivityCountersService userActivityCountersService,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
+            UserNotificationService userNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
             AccessControlService accessControlService,
@@ -176,8 +181,10 @@ public class ChatService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.userActivityCountersService = userActivityCountersService;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
+        this.userNotificationService = userNotificationService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
@@ -203,6 +210,15 @@ public class ChatService {
                 null,
                 false,
                 null).items();
+    }
+
+    public ChatDto queryChatById(String chatId, String requestedUserId) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Chat chat = snapshot.viewerChat() == null
+                ? snapshot.chatDocuments().get(0)
+                : snapshot.viewerChat();
+        return toChatDto(chat, chatMemberUsers(List.of(chat)));
     }
 
     public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
@@ -699,6 +715,7 @@ public class ChatService {
             updatedDocuments.add(next);
         }
         chatsRepository.saveAll(updatedDocuments);
+        userActivityCountersService.refreshSupportCaseCountersForAdmins();
         adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
 
         Chat viewerChat = findOwnerChat(updatedDocuments, userId);
@@ -717,7 +734,12 @@ public class ChatService {
         int startIndex = normalizeChatMessagesCursor(cursor);
         int total = normalizeLongCount(chatMessagesRepository.countByChatId(snapshot.chatId()));
         if (startIndex >= total) {
-            return new ChatMessagesPageResponseDto(List.of(), total, null, null);
+            return new ChatMessagesPageResponseDto(
+                    List.of(),
+                    total,
+                    null,
+                    null,
+                    userNotificationService.currentUnreadCount(userId));
         }
         List<ChatMessage> messages = chatMessagesRepository
                 .findByChatIdOrderBySentAtIsoDesc(snapshot.chatId(), PageRequest.of(startIndex / pageSize, pageSize))
@@ -744,7 +766,8 @@ public class ChatService {
                 items,
                 total,
                 nextIndex < total ? String.valueOf(nextIndex) : null,
-                toReadReceiptDto(readUpdate));
+                toReadReceiptDto(readUpdate),
+                userNotificationService.currentUnreadCount(userId));
     }
 
     public ChatMembersPageResponseDto queryMembersPage(
@@ -946,6 +969,81 @@ public class ChatService {
         ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(normalizedChatId, userId);
         Users sender = findUser(userId);
         ChatMessage message = buildMessage(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
+        return persistChatMessage(accessSnapshot, userId, message);
+    }
+
+    ChatMessageDto sendAdminSupportMessage(
+            String targetUserId,
+            String adminUserId,
+            String adminName,
+            String adminInitials,
+            String text,
+            String supportStatus) {
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedAdminUserId = normalizeId(adminUserId);
+        String normalizedText = normalizeText(text);
+        String chatId = "c-support-admin-" + normalizedTargetUserId;
+        if (!StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedAdminUserId)
+                || !StringUtils.hasText(normalizedText)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
+        }
+        Users targetUser = findUser(normalizedTargetUserId);
+        if (targetUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
+        }
+        Users adminUser = findUser(normalizedAdminUserId);
+        String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
+        String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
+        String nowIso = Instant.now().toString();
+        SupportCaseState supportCaseState = new SupportCaseState(
+                normalizeSupportCaseStatus(supportStatus),
+                normalizedAdminUserId,
+                resolvedAdminName,
+                resolvedAdminInitials,
+                nowIso);
+        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
+        for (Chat existing : chatsRepository.findByChatId(chatId)) {
+            if (existing != null && StringUtils.hasText(normalizeId(existing.getOwnerUserId()))) {
+                existingByOwnerUserId.put(normalizeId(existing.getOwnerUserId()), existing);
+            }
+        }
+        Chat targetChat = supportChatDocument(
+                existingByOwnerUserId.get(normalizedTargetUserId),
+                normalizedTargetUserId,
+                chatId,
+                resolvedAdminInitials,
+                "MyScoutee Support",
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                supportCaseState);
+        Chat adminChat = supportChatDocument(
+                existingByOwnerUserId.get(normalizedAdminUserId),
+                normalizedAdminUserId,
+                chatId,
+                resolveUserInitials(targetUser, normalizedTargetUserId),
+                "MyScoutee Support · " + resolveUserName(targetUser, normalizedTargetUserId),
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                supportCaseState);
+        List<Chat> chatDocuments = List.of(targetChat, adminChat);
+        chatsRepository.saveAll(chatDocuments);
+        userActivityCountersService.refreshSupportCaseCountersForAdmins();
+
+        ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
+        message.setSender(resolvedAdminName);
+        ChatAvatarRecord senderAvatar = message.getSenderAvatar();
+        if (senderAvatar != null) {
+            senderAvatar.setInitials(resolvedAdminInitials);
+        }
+        return persistChatMessage(
+                new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
+                normalizedAdminUserId,
+                message);
+    }
+
+    private ChatMessageDto persistChatMessage(
+            ChatDocumentsSnapshot accessSnapshot,
+            String userId,
+            ChatMessage message) {
         ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(accessSnapshot.chatId(), message);
         CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
         List<Chat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
@@ -958,6 +1056,33 @@ public class ChatService {
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
         return chatMessageMapper.toDto(message, userId);
+    }
+
+    private Chat supportChatDocument(
+            Chat existing,
+            String ownerUserId,
+            String chatId,
+            String avatar,
+            String title,
+            List<String> memberIds,
+            SupportCaseState supportCaseState) {
+        Chat chat = existing == null ? new Chat() : copyChat(existing);
+        if (existing == null) {
+            chat.setMongoId(buildMongoId(ownerUserId, chatId));
+            chat.setChatId(chatId);
+            chat.setOwnerUserId(ownerUserId);
+            chat.setUnread(0);
+            chat.setLastMessage("");
+            chat.setLastSenderId("");
+            chat.setDateIso(supportCaseState.updatedAtIso());
+        }
+        chat.setAvatar(avatar);
+        chat.setTitle(title);
+        chat.setMemberIds(memberIds);
+        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
+        chat.setOwnerId(chatId);
+        applySupportCaseState(chat, supportCaseState);
+        return chat;
     }
 
     public ChatMessageDto editMessage(String chatId, String requestedUserId, String messageId, String text) {
@@ -1338,6 +1463,9 @@ public class ChatService {
                 homeUserProfileService.evictUserReadCaches(viewerUserId);
             }
         }
+        if (!readMessageIds.isEmpty()) {
+            userNotificationService.markChatMessagesRead(viewerUserId, snapshot.chatId(), List.copyOf(readMessageIds));
+        }
         return new ChatReadUpdate(
                 viewerChat,
                 List.copyOf(readMessageIds),
@@ -1364,6 +1492,7 @@ public class ChatService {
                 .toList();
         Chat viewerChat = snapshot.viewerChat();
         int previousUnread = viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread());
+        userNotificationService.markChatRead(viewerUserId, snapshot.chatId());
         if (previousUnread == 0 && loadedUnreadIds.isEmpty()) {
             return new ChatReadUpdate(
                     viewerChat,

@@ -42,6 +42,8 @@ public class UserNotificationService {
     private static final String BUCKET_ALL = "all";
     private static final String EVENT_INVITE_KIND = "event-invite";
     private static final String EVENT_SOURCE_TYPE = "event";
+    private static final String CHAT_MESSAGE_KIND = "chat-message";
+    private static final String CHAT_SOURCE_TYPE = "chat";
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 50;
     private static final int MAX_SYNC_ITEMS = 500;
@@ -204,6 +206,48 @@ public class UserNotificationService {
             userNotificationPageRepository.incrementUnreadCounter(
                     normalizedRecipientUserId,
                     -changedCount);
+        }
+        return changedCount;
+    }
+
+    public int markChatMessagesRead(String recipientUserId, String chatId, List<String> messageIds) {
+        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedChatId = safeText(chatId);
+        List<String> normalizedMessageIds = compactIds(messageIds);
+        if (!StringUtils.hasText(normalizedRecipientUserId)
+                || !StringUtils.hasText(normalizedChatId)
+                || normalizedMessageIds.isEmpty()) {
+            return 0;
+        }
+        return applyChatNotificationReadCount(
+                normalizedRecipientUserId,
+                userNotificationPageRepository.markUnreadChatMessagesRead(
+                        normalizedRecipientUserId,
+                        normalizedChatId,
+                        normalizedMessageIds,
+                        Instant.now().toString()));
+    }
+
+    public int markChatRead(String recipientUserId, String chatId) {
+        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedChatId = safeText(chatId);
+        if (!StringUtils.hasText(normalizedRecipientUserId) || !StringUtils.hasText(normalizedChatId)) {
+            return 0;
+        }
+        return applyChatNotificationReadCount(
+                normalizedRecipientUserId,
+                userNotificationPageRepository.markUnreadBySource(
+                        normalizedRecipientUserId,
+                        CHAT_MESSAGE_KIND,
+                        CHAT_SOURCE_TYPE,
+                        normalizedChatId,
+                        Instant.now().toString()));
+    }
+
+    private int applyChatNotificationReadCount(String recipientUserId, long changed) {
+        int changedCount = safeInt(changed);
+        if (changedCount > 0) {
+            userNotificationPageRepository.incrementUnreadCounter(recipientUserId, -changedCount);
         }
         return changedCount;
     }
