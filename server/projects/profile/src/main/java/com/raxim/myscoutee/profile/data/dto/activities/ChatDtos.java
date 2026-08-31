@@ -130,7 +130,8 @@ public final class ChatDtos {
             List<ChatMessageDto> items,
             Integer total,
             String nextCursor,
-            ChatReadReceiptDto read) {
+            ChatReadReceiptDto read,
+            Integer notificationUnread) {
     }
 
     public record ChatMessageDto(

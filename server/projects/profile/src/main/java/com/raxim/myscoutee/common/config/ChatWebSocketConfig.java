@@ -34,13 +34,7 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(chatWebSocketHandler, "/activities/chats/ws")
                 .addInterceptors(chatHandshakeInterceptor)
                 .setAllowedOriginPatterns(allowedOriginPatterns());
-        registry.addHandler(chatWebSocketHandler, "/api/activities/chats/ws")
-                .addInterceptors(chatHandshakeInterceptor)
-                .setAllowedOriginPatterns(allowedOriginPatterns());
         registry.addHandler(adminNotificationWebSocketHandler, "/admin/notifications/ws")
-                .addInterceptors(chatHandshakeInterceptor)
-                .setAllowedOriginPatterns(allowedOriginPatterns());
-        registry.addHandler(adminNotificationWebSocketHandler, "/api/admin/notifications/ws")
                 .addInterceptors(chatHandshakeInterceptor)
                 .setAllowedOriginPatterns(allowedOriginPatterns());
     }

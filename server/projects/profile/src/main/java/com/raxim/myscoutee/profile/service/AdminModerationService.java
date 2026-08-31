@@ -548,6 +548,7 @@ public class AdminModerationService {
 
     private AdminReportedUserDto toReportedUser(String userId, List<UserReportSubmission> reports, Map<String, Users> usersById, String adminUserId) {
         Users user = usersById.get(userId);
+        Chat supportChat = supportChat(adminUserId, userId);
         return new AdminReportedUserDto(
                 userId,
                 text(user == null ? null : user.getName(), "Reported user"),
@@ -558,12 +559,14 @@ public class AdminModerationService {
                 text(user == null ? null : user.getProfileStatus(), "public"),
                 reports.size(),
                 reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
-                supportChat(adminUserId, userId) != null,
-                supportChatUnread(adminUserId, userId),
+                supportChat != null,
+                supportChat == null || supportChat.getUnread() == null ? 0 : Math.max(0, supportChat.getUnread()),
+                supportChat == null ? null : supportChat.getChatId(),
                 reports.stream().map(report -> toReport(report, usersById)).toList());
     }
 
     private AdminReportedUserDto toBlockedUser(Users user, List<UserReportSubmission> reports, Map<String, Users> usersById, String adminUserId) {
+        Chat supportChat = supportChat(adminUserId, user.getId());
         return new AdminReportedUserDto(
                 text(user.getId(), ""),
                 text(user.getName(), "Blocked user"),
@@ -574,8 +577,9 @@ public class AdminModerationService {
                 text(user.getProfileStatus(), "blocked"),
                 reports.size(),
                 reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
-                supportChat(adminUserId, user.getId()) != null,
-                supportChatUnread(adminUserId, user.getId()),
+                supportChat != null,
+                supportChat == null || supportChat.getUnread() == null ? 0 : Math.max(0, supportChat.getUnread()),
+                supportChat == null ? null : supportChat.getChatId(),
                 reports.stream().map(report -> toReport(report, usersById)).toList());
     }
 
@@ -589,11 +593,6 @@ public class AdminModerationService {
         return chatsRepository.findByOwnerUserIdAndChatId(adminId, chatId)
                 .or(() -> chatsRepository.findByChatId(chatId).stream().findFirst())
                 .orElse(null);
-    }
-
-    private int supportChatUnread(String adminUserId, String targetUserId) {
-        Chat chat = supportChat(adminUserId, targetUserId);
-        return chat == null ? 0 : Math.max(0, chat.getUnread() == null ? 0 : chat.getUnread());
     }
 
     private AdminReportDto toReport(UserReportSubmission report, Map<String, Users> usersById) {

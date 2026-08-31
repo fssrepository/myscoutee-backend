@@ -405,6 +405,7 @@ public final class AdminDtos {
             String lastReportedAtIso,
             Boolean hasSupportChat,
             Integer supportChatUnread,
+            String supportChatId,
             List<AdminReportDto> reports) {}
     public record AdminReportDto(
             String id,

@@ -57,6 +57,7 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
 import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
+import com.raxim.myscoutee.profile.service.notifications.UserNotificationService;
 
 @ExtendWith(MockitoExtension.class)
 class ChatServiceTest {
@@ -85,6 +86,8 @@ class ChatServiceTest {
     @Mock
     private ChatPushNotificationService chatPushNotificationService;
     @Mock
+    private UserNotificationService userNotificationService;
+    @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
@@ -106,6 +109,7 @@ class ChatServiceTest {
                 homeUserProfileService,
                 chatStreamPublisher,
                 chatPushNotificationService,
+                userNotificationService,
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,

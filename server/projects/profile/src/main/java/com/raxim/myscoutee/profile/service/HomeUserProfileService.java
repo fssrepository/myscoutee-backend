@@ -507,6 +507,7 @@ public class HomeUserProfileService {
                 "upcoming");
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
+                safeText(user.getProfileStatus()),
                 counters,
                 impressions,
                 offlineTicketSnapshot,

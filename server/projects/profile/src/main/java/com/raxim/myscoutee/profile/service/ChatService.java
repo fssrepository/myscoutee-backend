@@ -97,6 +97,7 @@ import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
 import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.profile.service.mapper.SubEventItemMapper;
+import com.raxim.myscoutee.profile.service.notifications.UserNotificationService;
 
 @Service
 public class ChatService {
@@ -145,6 +146,7 @@ public class ChatService {
     private final HomeUserProfileService homeUserProfileService;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
+    private final UserNotificationService userNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
@@ -163,6 +165,7 @@ public class ChatService {
             HomeUserProfileService homeUserProfileService,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
+            UserNotificationService userNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
             AccessControlService accessControlService,
@@ -178,6 +181,7 @@ public class ChatService {
         this.homeUserProfileService = homeUserProfileService;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
+        this.userNotificationService = userNotificationService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
@@ -203,6 +207,15 @@ public class ChatService {
                 null,
                 false,
                 null).items();
+    }
+
+    public ChatDto queryChatById(String chatId, String requestedUserId) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Chat chat = snapshot.viewerChat() == null
+                ? snapshot.chatDocuments().get(0)
+                : snapshot.viewerChat();
+        return toChatDto(chat, chatMemberUsers(List.of(chat)));
     }
 
     public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
@@ -717,7 +730,12 @@ public class ChatService {
         int startIndex = normalizeChatMessagesCursor(cursor);
         int total = normalizeLongCount(chatMessagesRepository.countByChatId(snapshot.chatId()));
         if (startIndex >= total) {
-            return new ChatMessagesPageResponseDto(List.of(), total, null, null);
+            return new ChatMessagesPageResponseDto(
+                    List.of(),
+                    total,
+                    null,
+                    null,
+                    userNotificationService.currentUnreadCount(userId));
         }
         List<ChatMessage> messages = chatMessagesRepository
                 .findByChatIdOrderBySentAtIsoDesc(snapshot.chatId(), PageRequest.of(startIndex / pageSize, pageSize))
@@ -744,7 +762,8 @@ public class ChatService {
                 items,
                 total,
                 nextIndex < total ? String.valueOf(nextIndex) : null,
-                toReadReceiptDto(readUpdate));
+                toReadReceiptDto(readUpdate),
+                userNotificationService.currentUnreadCount(userId));
     }
 
     public ChatMembersPageResponseDto queryMembersPage(
@@ -1338,6 +1357,9 @@ public class ChatService {
                 homeUserProfileService.evictUserReadCaches(viewerUserId);
             }
         }
+        if (!readMessageIds.isEmpty()) {
+            userNotificationService.markChatMessagesRead(viewerUserId, snapshot.chatId(), List.copyOf(readMessageIds));
+        }
         return new ChatReadUpdate(
                 viewerChat,
                 List.copyOf(readMessageIds),
@@ -1364,6 +1386,7 @@ public class ChatService {
                 .toList();
         Chat viewerChat = snapshot.viewerChat();
         int previousUnread = viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread());
+        userNotificationService.markChatRead(viewerUserId, snapshot.chatId());
         if (previousUnread == 0 && loadedUnreadIds.isEmpty()) {
             return new ChatReadUpdate(
                     viewerChat,

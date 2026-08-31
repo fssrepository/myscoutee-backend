@@ -41,6 +41,7 @@ trigger another stack or database process.
 | `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
 | `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
 | `operator-domain` | Snapshots the exact deployment configuration and prints a credentials-safe Firebase capability oracle | No scheduler; QA supplies disposable provider configuration through the Operator UI |
+| `role-triad` | Snapshots the exact Kai/Ava/Operator identities, two reports, one feedback item, branding, support-chat and notification boundary | No scheduler; one continuous three-session authorization and moderation journey |
 
 Only one manual scenario may be staged at a time. The historical 2026-08-04
 results were **not** rerun while these helpers were added.

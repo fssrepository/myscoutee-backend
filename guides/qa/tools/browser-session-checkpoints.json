@@ -27,6 +27,35 @@
         }
       ]
     },
+    "ROLE-TRIAD-CORE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Kai controlled member",
+          "sessionKind": "demo",
+          "userId": "7822c5f99eff99d63abe8933",
+          "expectedName": "Kai Morgan · member authorization and moderation target"
+        },
+        {
+          "actor": "Ava moderation admin",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · admin moderation actor"
+        },
+        {
+          "actor": "Deployment operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Demo Operator · operator-only branding actor"
+        }
+      ]
+    },
     "ENTRY-DEMO-REG-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

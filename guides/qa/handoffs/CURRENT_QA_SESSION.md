@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-30 12:35 CEST
+Updated: 2026-08-31 06:25 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -20,6 +20,8 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+- Three-role authorization/moderation fixture:
+  [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Isolated first-stage admission fixture:
   [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
 - Isolated corrected-score revision fixture:
@@ -46,14 +48,14 @@ checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and 
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
 scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
 ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
-state: No ROLE-TRIAD-CORE-001 mutation or cross-role probe has started. CLEANUP proved zero active snapshots/fixture artifacts and terminal rules; QA-RESET-001 passed Nova's explicit reload and persisted zero-state oracle. The local landing eligibility contract is PASS/CLOSED; its production-like Firebase continuation is owned by external DEPLOY-FIREBASE-LIFECYCLE-001.
-required_resume: Prepare one complete ROLE-TRIAD-CORE-001 journey with exactly three isolated sessions: member, admin and operator. Present the purpose, every click and visible route/counter expectation before starting. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
-event: No active fixture; QA infrastructure baseline is clean
+state: ROLE-TRIAD-CORE-001 is staged at baseline-ready after a guarded snapshot reset of the earlier partial warning/support-chat run. Both controlled Kai reports are unwarned and unresolved, the controlled feedback is unresolved, Kai is unblocked, branding is MyScoutee revision 0, and the controlled support chat/message/notification/outbox counts are zero.
+required_resume: Continue the already-open three managed sessions without restaging: Kai at /game, Ava at /admin and Demo Operator at /operator. Present the purpose, exact click and visible result one step at a time. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
+event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T04:23:10.709Z
 actors:
   Member: isolated ordinary-user session
   Admin: isolated administration session
   Operator: isolated deployment/operator session
-next_actor: Codex prepares the complete ROLE-TRIAD-CORE-001 action/oracle sequence before the user starts probing.
+next_actor: User starts with the three-role route/capability boundary; Codex guides and verifies each transition.
 stop_phrase: Three-role authorization checked
 ```
 

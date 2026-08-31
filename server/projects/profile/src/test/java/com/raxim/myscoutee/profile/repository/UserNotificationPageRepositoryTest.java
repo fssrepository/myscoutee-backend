@@ -150,6 +150,33 @@ class UserNotificationPageRepositoryTest {
     }
 
     @Test
+    void markUnreadChatMessagesReadScopesTheMutationToChatAndMessageIds() {
+        when(mongoTemplate.updateMulti(
+                any(Query.class),
+                any(Update.class),
+                eq(UserNotification.class))).thenReturn(UpdateResult.acknowledged(2L, 2L, null));
+
+        long changed = repository.markUnreadChatMessagesRead(
+                "viewer-1",
+                "chat-1",
+                List.of("message-1", "message-2"),
+                "2026-07-27T20:00:00Z");
+
+        assertThat(changed).isEqualTo(2L);
+        ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate, times(2)).updateMulti(
+                query.capture(),
+                any(Update.class),
+                eq(UserNotification.class));
+        assertThat(query.getAllValues().getLast().getQueryObject().toJson())
+                .contains("\"recipientUserId\": \"viewer-1\"")
+                .contains("\"kind\": \"chat-message\"")
+                .contains("\"sourceType\": \"chat\"")
+                .contains("\"sourceId\": \"chat-1\"")
+                .contains("\"payload.messageId\": {\"$in\": [\"message-1\", \"message-2\"]}");
+    }
+
+    @Test
     void aggregatedUpsertLetsIncInitializeRevisionWithoutAConflictingSetOnInsert() {
         UserNotification notification = notification("notification-1", "2026-07-27T19:00:00Z");
         notification.setAggregationKey("viewer-1:event-ticket-replay:ticket-1");
