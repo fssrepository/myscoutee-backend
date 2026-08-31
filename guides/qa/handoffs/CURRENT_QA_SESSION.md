@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 06:25 CEST
+Updated: 2026-08-31 07:14 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -50,7 +50,7 @@ scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED;
 ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
 state: ROLE-TRIAD-CORE-001 is staged at baseline-ready after a guarded snapshot reset of the earlier partial warning/support-chat run. Both controlled Kai reports are unwarned and unresolved, the controlled feedback is unresolved, Kai is unblocked, branding is MyScoutee revision 0, and the controlled support chat/message/notification/outbox counts are zero.
 required_resume: Continue the already-open three managed sessions without restaging: Kai at /game, Ava at /admin and Demo Operator at /operator. Present the purpose, exact click and visible result one step at a time. In one causally continuous run prove role-specific UI plus direct-route denial/no mutation; operator branding revision convergence; admin warn, report, feedback, scoped support, block and unblock; recipient notifications/counters; restored member access; then run one independent persisted authorization/audit oracle.
-event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T04:23:10.709Z
+event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T05:14:14.704Z
 actors:
   Member: isolated ordinary-user session
   Admin: isolated administration session

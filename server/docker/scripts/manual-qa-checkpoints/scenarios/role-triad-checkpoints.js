@@ -60,6 +60,26 @@
     return Q.collection("deploymentConfigurations").findOne(selectors.configuration);
   }
 
+  function unreadNotificationCount(userId) {
+    return Q.collection("userNotifications").countDocuments({
+      recipientUserId: userId,
+      $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+    });
+  }
+
+  function synchronizeNotificationCounters() {
+    for (const userId of [MEMBER_ID, ADMIN_ID, OPERATOR_ID]) {
+      const unreadCount = unreadNotificationCount(userId);
+      const result = Q.collection("users").updateOne(
+        { $or: [{ _id: userId }, { userId }] },
+        { $set: { "activities.notifications": unreadCount } }
+      );
+      if (result.matchedCount !== 1) {
+        Q.fail(`notification counter target '${userId}' disappeared.`);
+      }
+    }
+  }
+
   function brandingSummary(document) {
     const branding = document && document.branding ? document.branding : {};
     return {
@@ -171,6 +191,7 @@
     config();
     Q.assertNotStaged(SCENARIO);
     Q.assertNoOtherActiveScenario(SCENARIO);
+    synchronizeNotificationCounters();
     const values = observed();
     assertBaseline(values);
     const stagedAtIso = Q.nowIso();
@@ -249,6 +270,7 @@
     config();
     const state = requireState();
     Q.restoreSnapshots(state.snapshots);
+    synchronizeNotificationCounters();
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     const values = observed();
     assertBaseline(values);
