@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 13:42 CEST
+Updated: 2026-08-31 14:05 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -49,20 +49,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: JOB-PURGE — scheduled deleted-account purge
+checkpoint: NONE — JOB-PURGE closed; no local fixture is staged
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#admin-job-cross-surface-impact
 checklist: ../checklists/JOB-PURGE.md
-scenario: Priority order is authoritative. ROLE-TRIAD-CORE-001 is PASS/CLOSED and its versioned fixture is reset/not-staged. JOB-PURGE is the only remaining open Identity & access case; after it closes the domain becomes 8/8.
-ledger_status: PASS / PARTIAL — IDENTITY & ACCESS 7/8 PASS/CLOSED
-state: The first prepared account-purge checkpoint completed through the real scheduler at `2026-08-31T11:40:08.832892576Z`; its oracle proved affected 1, pending 0, userExists:false, relatedRateCount:0 and the exact purge job Completed with retryCount 0 and no error. Codex then restored its protected snapshot, recreated only the existing backend owner with the dev-only outer account-purge poll set to 60000 ms, and prepared a fresh with-reference checkpoint at `2026-08-31T11:42:32.972Z`. The fresh full-width Ava `/admin` browser was identity-verified and launched at `2026-08-31T11:42:33.184Z`. The real scheduler consumed this dynamic table checkpoint at `2026-08-31T11:43:17.083601993Z`; the current read-only oracle is prepared:true, rule Completed, lastRunCount 1, pendingCount 0, userExists:false, relatedRateCount:0, and the exact purge job Completed with empty userId, retryCount 0 and no error. The snapshot is intentionally retained pending the user's visual table verdict.
-baseline_history: ROLE-TRIAD-CORE-001 closed from the cumulative 22-step user verdict plus persisted boundary oracles. Its final broad oracle proved all actor roles intact, restored branding, Kai unblocked, exact feedback notification/outbox 1/1 and zero moderation or legacy-feedback chat residue. The role-triad reset completed at `2026-08-31T11:19:15.136Z`; follow-up status was not-staged. The ledger and workbook now report 76/116 total, Core 76/96 and Identity & access 7/8.
-required_resume: In the fresh Ava admin session opened by Codex, open Configuration -> Jobs -> Finalize deleted accounts (internal key account-purge). The scheduler has already completed the staged checkpoint, so the dynamic table's existing live poll must show Completed, last-run/affected count 1, pending 0, completion time present, no error and Run still disabled. Do not reload merely to force the state and do not use a hidden manual trigger. After the user reports the visible result, accept the already-proven persisted oracle, reset account-purge and prove prepared:false; then close JOB-PURGE in the QA ledger.
-event: Active snapshot-protected admin-job fixture; account-purge / with-reference
+scenario: ROLE-TRIAD-CORE-001 and JOB-PURGE are PASS/CLOSED. Identity & access is complete at 8/8; no local checkpoint is currently selected or staged.
+ledger_status: PASS / CLOSED — IDENTITY & ACCESS 8/8
+state: JOB-PURGE completed through the real scheduler and dynamic Jobs table. The user accepted Completed, affected 1, pending 0, completion time, no error and disabled manual Run. The terminal oracle proved userExists:false, relatedRateCount:0 and the exact purge job Completed with empty userId, retryCount 0 and no error. Snapshot-safe reset at `2026-08-31 14:05 CEST` restored the original account-purge rule including intervalSeconds 86400, removed the fixture namespace and proved prepared:false. The same visual pass corrected Timing-popup X cancellation, unchanged-checkmark dirty behavior, duplicate header Quartz text and the redundant Timing Edit dirty dot; the existing frontend watcher compiled successfully.
+baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
+required_resume: Do not restage ROLE-TRIAD-CORE-001 or JOB-PURGE. Select the next unclosed Core checkpoint from the canonical matrix before mutating fixtures or launching another managed browser set.
+event: None; no prepared fixture snapshot
 actors:
-  Admin: fresh isolated Ava administration session launched by Codex
-next_actor: The user verifies the completed account-purge row/detail produced by the normal scheduler through the table's live refresh and reports the visual verdict.
-queued_followup: None. JOB-PURGE is the final Identity & access row.
-stop_phrase: JOB-PURGE complete
+  Admin: the managed Ava JOB-PURGE browser may be closed; no active checkpoint owns it
+next_actor: Select the next unclosed Core checkpoint from the canonical matrix.
+queued_followup: Identity & access is complete; choose the next Core domain block.
+stop_phrase: None
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -172,8 +172,8 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 idempotency evidence; generic Job Detail/Monitoring presentation is an
 assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
 is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is PASS/CLOSED and reset;
-`JOB-PURGE` is the active local checkpoint and the final open Identity &
-access row after QA infrastructure passed 2/2. The consolidated desktop Chat
+`JOB-PURGE` is PASS/CLOSED and Identity & access is 8/8 complete after QA
+infrastructure passed 2/2. The consolidated desktop Chat
 flow, actions, rich content and governance journeys plus the closed Chat
 statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
 assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
@@ -1149,11 +1149,12 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
 -> ROLE-TRIAD-CORE-001 (closed; complete three-role journey PASS)
--> JOB-PURGE (active; final Identity & access checkpoint)
+-> JOB-PURGE (closed; final Identity & access checkpoint)
 ```
 
-Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
-locally with `JOB-PURGE` in priority-13 Identity & access order; do not replay
+Tournament is 15/15 complete, QA infrastructure is 2/2 complete and Identity &
+access is 8/8 complete. Select the next Core checkpoint from the canonical
+matrix; do not replay
 the closed role-triad, consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run

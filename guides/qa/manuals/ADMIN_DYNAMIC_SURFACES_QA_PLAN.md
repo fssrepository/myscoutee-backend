@@ -182,16 +182,15 @@ Archived evidence sources:
 
 ### Current continuation state
 
-On 2026-08-31 `JOB-PURGE` became the final open Identity & access row after
-`ROLE-TRIAD-CORE-001` closed. The guarded fixture prepared the stronger
-`account-purge / with-reference` variation at
-`2026-08-31T11:19:25.857Z`: the exact disposable deleted user exists, its one
-`userRates` reference exists, the exact purge job is Pending/queued, the rule
-is enabled with manual Run disabled, and pending count is `1`. Reuse the
-existing Ava admin session and let only the already-running scheduler execute
-it. The terminal persisted oracle must prove user and rate counts `0/0`, exact
-job Completed with cleared `userId`, completion time, retry count `0` and no
-error; then reset the fixture and prove it is no longer prepared.
+On 2026-08-31 `JOB-PURGE`, the final Identity & access row, closed through the
+real scheduler and dynamic Jobs table. The stronger guarded
+`account-purge / with-reference` variation visibly moved from one eligible item
+to Completed with affected count `1` and pending count `0`. Its terminal oracle
+proved user and `userRates` counts `0/0`, the exact purge job Completed with a
+cleared `userId`, completion time, retry count `0` and no error. Snapshot-safe
+reset then restored the original rule including its `86400`-second interval and
+proved `prepared:false`. Identity & access is now 8/8 PASS/CLOSED; no local
+checkpoint is currently staged.
 
 A read-only `demo_db` audit on 2026-08-04 found all nine then-existing rules enabled and no
 rule running. The random-room fixture's source events and generated fixture
