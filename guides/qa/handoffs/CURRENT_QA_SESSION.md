@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 12:52 CEST
+Updated: 2026-08-31 13:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -12,7 +12,7 @@ file first, then open only the linked active checkpoint section.
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Active human execution checklist and commit-friendly progress markers:
-  [`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md)
+  [`JOB-PURGE.md`](../checklists/JOB-PURGE.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -24,6 +24,9 @@ file first, then open only the linked active checkpoint section.
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
+- Admin Job fixture toolkit and account-purge scenario:
+  [`admin-job-fixtures.sh`](../../../server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh),
+  [`account-purge.js`](../../../server/docker/scripts/admin-job-fixtures/scenarios/account-purge.js)
 - Isolated first-stage admission fixture:
   [`tournament-admission-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/tournament-admission-checkpoints.js)
 - Isolated corrected-score revision fixture:
@@ -46,22 +49,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ROLE-TRIAD-CORE-001 — three-role authorization, configuration and moderation
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp11--three-role-compound-workflows
-checklist: ../checklists/ROLE-TRIAD-CORE-001.md
-scenario: Priority order is authoritative. QA infrastructure is 2/2 PASS/CLOSED; Identity & access priority 13 is the highest-priority open Core domain. Verified Firebase registration/activation and deployment-state transitions are external CP04 journeys and do not block Core.
-ledger_status: DESIGN CAPTURED / NOT RUN — IDENTITY & ACCESS 6/8 PASS/CLOSED
-state: A clean focused replay is active after a versioned reset at `2026-08-31T10:51:11.225Z` and stage at `2026-08-31T10:51:20.623Z`. The final read-only status proves both controlled reports unresolved/unwarned, controlled feedback unresolved, moderation chat/message/notification/outbox `0/0/0/0`, rejected legacy feedback chat/message/notification/outbox `0/0/0/0`, canonical feedback notification/outbox `0/0`, branding revision `0`, Kai unblocked as `host only`, and all Ava support-case buckets `0`. Three fresh isolated browser profiles are open. The user is retesting only notification-only feedback resolution and the disabled History action.
-baseline_history: The earlier replay proved that both putting feedback text into the moderation thread and moving it to a separate `c-feedback-admin-*` App-support channel are incorrect: feedback is a notification domain, not a chat domain. Java now enqueues `feedback-resolved` directly through the notification outbox with the feedback ID as canonical source; frontend-local appends the equivalent notification record. No feedback resolver creates a chat, message, support case, chat unread or Chats badge delta. The role-triad snapshot/status oracle owns canonical feedback notification/outbox records and rejects or cleans legacy feedback chats. The App-support History action now reads the target user's existing dashboard `reportCount`: zero disables the action without an empty-state dialog, while a positive count appears as the standard red external counter. The running backend owner pipeline completed `compileJava/classes` and restarted at `12:40:08 CEST`; the frontend owner watcher built and hot-synced at `12:45:37 CEST`. A real non-control feedback resolution at `12:48:58 CEST` already produced a feedback notification/outbox pair through the HTTP path with no chat write in that request. No second Gradle, npm or test process was launched.
-required_resume: Do not restage. In Ava, first open the same App-support conversation whose user has no moderation history and confirm the History action is disabled; it must not open the previous `Unable to open history` dialog. Then open `Moderation & support → Feedback`, resolve only Kai's `Review event behavior faster`, and stop. In Kai, wait for the normal notification poll and verify exactly one feedback-resolved bell item appears; do not expect any chat, chat message, chat unread or Chats badge delta. Stop before resolving a report or sending a moderation message so Codex can run the persisted oracle: controlled feedback must be resolved, canonical feedback notification/outbox `1/1`, and both moderation chat plus legacy feedback chat boundaries must remain zero.
-event: Active snapshot-protected role-triad fixture; stagedAtIso 2026-08-31T10:51:20.623Z
+checkpoint: JOB-PURGE — scheduled deleted-account purge
+detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#admin-job-cross-surface-impact
+checklist: ../checklists/JOB-PURGE.md
+scenario: Priority order is authoritative. ROLE-TRIAD-CORE-001 is PASS/CLOSED and its versioned fixture is reset/not-staged. JOB-PURGE is the only remaining open Identity & access case; after it closes the domain becomes 8/8.
+ledger_status: PASS / PARTIAL — IDENTITY & ACCESS 7/8 PASS/CLOSED
+state: The versioned Admin Job fixture prepared account-purge variation with-reference at `2026-08-31T11:19:25.857Z` against the already-running demo stack. Baseline oracle is prepared:true, userExists:true, relatedRateCount:1, exact purge job Pending/queued with retryCount 0, rule enabled, manualRunEnabled false and pendingCount 1. No existing deleted user or purge job required quarantine.
+baseline_history: ROLE-TRIAD-CORE-001 closed from the cumulative 22-step user verdict plus persisted boundary oracles. Its final broad oracle proved all actor roles intact, restored branding, Kai unblocked, exact feedback notification/outbox 1/1 and zero moderation or legacy-feedback chat residue. The role-triad reset completed at `2026-08-31T11:19:15.136Z`; follow-up status was not-staged. The ledger and workbook now report 76/116 total, Core 76/96 and Identity & access 7/8.
+required_resume: In the existing Ava admin session open Configuration -> Jobs -> account-purge. Confirm enabled, manual Run disabled and pre-run/pending count 1. Leave the screen open for the existing scheduler poll. PASS UI is Completed, last-run/affected count 1, pending 0, completion time present, no error and Run still disabled. Do not start another worker or use a hidden manual trigger. After the user reports the visible result, run `ADMIN_FIXTURE_MONGO_MODE=container bash server/docker/scripts/admin-job-fixtures/admin-job-fixtures.sh status account-purge` and require userExists:false, relatedRateCount:0, exact purge job completed with empty userId, completion timestamp, retryCount 0 and no error; then reset and prove prepared:false.
+event: Active snapshot-protected admin-job fixture; account-purge / with-reference
 actors:
-  Member: isolated ordinary-user session
-  Admin: isolated administration session
-  Operator: isolated deployment/operator session
-next_actor: The user checks the disabled History action in a no-history App-support chat, resolves only Kai's controlled feedback, and verifies the resulting item only in Kai's normal notification surface. Codex then runs the persisted role-triad status oracle.
-queued_followup: After that focused oracle, recreate the event-feedback/notification state that was visible immediately before the `12:51` browser replacement. Keep the relevant browser open afterward and let the user observe the normal poll without reload; do not conflate this follow-up with the controlled admin Feedback resolution.
-stop_phrase: Three-role authorization checked
+  Admin: reuse the existing isolated Ava administration session
+next_actor: The user observes the prepared account-purge row/detail through its normal live scheduler refresh and reports the visible completed state.
+queued_followup: None. JOB-PURGE is the final Identity & access row.
+stop_phrase: JOB-PURGE complete
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -170,8 +171,9 @@ checkpoint and generated-group resource aggregation are also PASS/CLOSED.
 `JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
 idempotency evidence; generic Job Detail/Monitoring presentation is an
 assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
-is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is the active local
-checkpoint after QA infrastructure passed 2/2. The consolidated desktop Chat
+is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is PASS/CLOSED and reset;
+`JOB-PURGE` is the active local checkpoint and the final open Identity &
+access row after QA infrastructure passed 2/2. The consolidated desktop Chat
 flow, actions, rich content and governance journeys plus the closed Chat
 statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
 assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
@@ -1146,11 +1148,13 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
--> ROLE-TRIAD-CORE-001 (active local Core checkpoint)
+-> ROLE-TRIAD-CORE-001 (closed; complete three-role journey PASS)
+-> JOB-PURGE (active; final Identity & access checkpoint)
 ```
 
 Tournament is 15/15 complete and QA infrastructure is 2/2 complete. Continue
-locally with `ROLE-TRIAD-CORE-001` in priority-13 Identity & access order; do not replay the closed consent/session/landing cases, closed Chat desktop journeys or
+locally with `JOB-PURGE` in priority-13 Identity & access order; do not replay
+the closed role-triad, consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained under external CP04 and must be run
 with production-like VMware/Firebase evidence, not the local demo stack.

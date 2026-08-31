@@ -5790,7 +5790,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 ## Consolidated executable journeys and source-oracle archive
 
 The matrix contains 116 executable journeys after the 2026-08-30 granularity
-audit. All 75 PASS/CLOSED rows remain individually immutable: only their
+audit. All 76 PASS/CLOSED rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
