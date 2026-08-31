@@ -60,6 +60,7 @@ actors:
   Admin: isolated administration session
   Operator: isolated deployment/operator session
 next_actor: The user checks the disabled History action in a no-history App-support chat, resolves only Kai's controlled feedback, and verifies the resulting item only in Kai's normal notification surface. Codex then runs the persisted role-triad status oracle.
+queued_followup: After that focused oracle, recreate the event-feedback/notification state that was visible immediately before the `12:51` browser replacement. Keep the relevant browser open afterward and let the user observe the normal poll without reload; do not conflate this follow-up with the controlled admin Feedback resolution.
 stop_phrase: Three-role authorization checked
 ```
 

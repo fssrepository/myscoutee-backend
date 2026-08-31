@@ -93,6 +93,18 @@
     }
   }
 
+  function synchronizeNotificationCounter(userId) {
+    const unreadCount = unreadNotificationCount(userId);
+    const result = Q.collection("users").updateOne(
+      { $or: [{ _id: userId }, { userId }] },
+      { $set: { "activities.notifications": unreadCount } }
+    );
+    if (result.matchedCount !== 1) {
+      Q.fail(`notification counter target '${userId}' disappeared.`);
+    }
+    return unreadCount;
+  }
+
   function brandingSummary(document) {
     const branding = document && document.branding ? document.branding : {};
     return {
@@ -168,18 +180,18 @@
     };
   }
 
-  function feedbackNotificationSummary() {
+  function feedbackNotificationSummary(feedbackId, recipientUserId) {
     return {
       notificationCount: Q.collection("userNotifications").countDocuments({
         kind: "feedback-resolved",
         sourceType: "feedback",
-        sourceId: FEEDBACK_ID_TEXT,
-        recipientUserId: MEMBER_ID
+        sourceId: feedbackId,
+        recipientUserId
       }),
       outboxCount: Q.collection("notificationOutbox").countDocuments({
         notificationType: "feedback-resolved",
         entityType: "feedback",
-        entityId: FEEDBACK_ID_TEXT
+        entityId: feedbackId
       })
     };
   }
@@ -200,7 +212,7 @@
       branding: brandingSummary(configDocument),
       moderationChats: chatBoundarySummary(MODERATION_CHAT_IDS),
       legacyFeedbackChat: chatBoundarySummary(LEGACY_FEEDBACK_CHAT_IDS),
-      feedbackNotification: feedbackNotificationSummary(),
+      feedbackNotification: feedbackNotificationSummary(FEEDBACK_ID_TEXT, MEMBER_ID),
       affinityTaskCount: Q.collection("affinityRecomputeTasks").countDocuments(selectors.affinityTask)
     };
   }
@@ -321,6 +333,102 @@
     });
   }
 
+  function rearmFeedbackResolution() {
+    config();
+    const state = requireState();
+    const feedbackDocument = feedback();
+    if (!feedbackDocument) {
+      Q.fail(`controlled Kai feedback '${FEEDBACK_ID_TEXT}' was not found.`);
+    }
+    const notificationSelector = {
+      sourceType: "feedback",
+      sourceId: FEEDBACK_ID_TEXT
+    };
+    const outboxSelector = {
+      entityType: "feedback",
+      entityId: FEEDBACK_ID_TEXT
+    };
+    const rule = Q.assertRuleNotRunning("notification-outbox");
+    const trackedPendingOutboxes = Q.collection("notificationOutbox").countDocuments({
+      $and: [outboxSelector, { pendingCounterTracked: true }]
+    });
+    if (trackedPendingOutboxes > 0) {
+      const pendingBefore = Q.number(rule.runState && rule.runState.pendingCount);
+      if (trackedPendingOutboxes > pendingBefore) {
+        Q.fail("notification-outbox pendingCount is smaller than the feedback retest delta.");
+      }
+      const pendingUpdate = Q.collection("notificationRuleConfigs").updateOne(
+        {
+          _id: rule._id,
+          "runState.currentStatus": { $ne: "running" },
+          "runState.pendingCount": { $gte: trackedPendingOutboxes }
+        },
+        {
+          $inc: { "runState.pendingCount": -trackedPendingOutboxes },
+          $set: {
+            "runState.pendingCountUnit": "admin.jobs.rule.notification.outbox",
+            "runState.pendingCountUpdatedAtIso": Q.nowIso()
+          }
+        }
+      );
+      if (pendingUpdate.modifiedCount !== 1) {
+        Q.fail("failed to remove the feedback retest notification-outbox pending delta.");
+      }
+    }
+
+    const removedNotifications = Q.collection("userNotifications").deleteMany(notificationSelector);
+    const removedOutboxes = Q.collection("notificationOutbox").deleteMany(outboxSelector);
+    const nowIso = Q.nowIso();
+    const feedbackUpdate = Q.collection("userFeedback").updateOne(
+      { _id: FEEDBACK_ID },
+      {
+        $unset: {
+          resolvedAtIso: "",
+          resolvedByAdminUserId: ""
+        },
+        $set: {
+          updatedDate: nowIso,
+          updatedUser: "manual-qa-checkpoint:v1:role-triad:kai-feedback-retest"
+        }
+      }
+    );
+    if (feedbackUpdate.matchedCount !== 1) {
+      Q.fail("failed to rearm the exact feedback-resolution retest record.");
+    }
+    const unreadCount = synchronizeNotificationCounter(MEMBER_ID);
+    const rearmed = feedbackSummary(feedback());
+    const notificationState = feedbackNotificationSummary(
+      FEEDBACK_ID_TEXT,
+      MEMBER_ID);
+    if (rearmed.resolvedAtIso
+        || notificationState.notificationCount !== 0
+        || notificationState.outboxCount !== 0) {
+      Q.fail("feedback-resolution retest did not reach a clean unresolved boundary.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      {
+        $set: {
+          phase: "feedback-resolution-retest-ready",
+          feedbackResolutionRetestReadyAtIso: nowIso,
+          feedbackResolutionRetestTarget: "kai-controlled-feedback"
+        },
+        $inc: { feedbackResolutionRetestRearmCount: 1 }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "feedback-resolution-retest-ready",
+      feedback: rearmed,
+      removedNotifications: removedNotifications.deletedCount,
+      removedOutboxes: removedOutboxes.deletedCount,
+      recipientUnreadNotificationCount: unreadCount,
+      notificationState,
+      next: "Keep Kai and Ava open; resolve Review event behavior faster once and observe Kai's normal notification poll."
+    });
+  }
+
   function reset() {
     config();
     const state = requireState();
@@ -343,6 +451,7 @@
   switch (command) {
     case "stage": stage(); break;
     case "status": status(); break;
+    case "rearm-feedback-resolution": rearmFeedbackResolution(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

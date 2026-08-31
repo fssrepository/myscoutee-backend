@@ -37,6 +37,7 @@ Usage:
   bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh stage role-triad ROLE-TRIAD-CORE-001
   bash manual-qa-checkpoints.sh status role-triad ROLE-TRIAD-CORE-001
+  bash manual-qa-checkpoints.sh rearm-feedback-resolution role-triad ROLE-TRIAD-CORE-001
   bash manual-qa-checkpoints.sh reset role-triad ROLE-TRIAD-CORE-001
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
@@ -448,7 +449,7 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  role-triad:stage|role-triad:status|role-triad:reset)
+  role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ROLE-TRIAD-CORE-001" ] || fail "${command} is restricted to ROLE-TRIAD-CORE-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
