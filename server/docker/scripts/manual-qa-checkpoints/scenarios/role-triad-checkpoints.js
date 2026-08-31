@@ -105,6 +105,38 @@
     return unreadCount;
   }
 
+  function removeTrackedPendingOutboxDelta(selector, label) {
+    const trackedCount = Q.collection("notificationOutbox").countDocuments({
+      $and: [selector, { pendingCounterTracked: true }]
+    });
+    if (trackedCount === 0) {
+      return 0;
+    }
+    const rule = Q.assertRuleNotRunning("notification-outbox");
+    const pendingBefore = Q.number(rule.runState && rule.runState.pendingCount);
+    if (trackedCount > pendingBefore) {
+      Q.fail(`notification-outbox pendingCount is smaller than the ${label} delta.`);
+    }
+    const result = Q.collection("notificationRuleConfigs").updateOne(
+      {
+        _id: rule._id,
+        "runState.currentStatus": { $ne: "running" },
+        "runState.pendingCount": { $gte: trackedCount }
+      },
+      {
+        $inc: { "runState.pendingCount": -trackedCount },
+        $set: {
+          "runState.pendingCountUnit": "admin.jobs.rule.notification.outbox",
+          "runState.pendingCountUpdatedAtIso": Q.nowIso()
+        }
+      }
+    );
+    if (result.modifiedCount !== 1) {
+      Q.fail(`failed to remove the ${label} notification-outbox pending delta.`);
+    }
+    return trackedCount;
+  }
+
   function brandingSummary(document) {
     const branding = document && document.branding ? document.branding : {};
     return {
@@ -348,33 +380,7 @@
       entityType: "feedback",
       entityId: FEEDBACK_ID_TEXT
     };
-    const rule = Q.assertRuleNotRunning("notification-outbox");
-    const trackedPendingOutboxes = Q.collection("notificationOutbox").countDocuments({
-      $and: [outboxSelector, { pendingCounterTracked: true }]
-    });
-    if (trackedPendingOutboxes > 0) {
-      const pendingBefore = Q.number(rule.runState && rule.runState.pendingCount);
-      if (trackedPendingOutboxes > pendingBefore) {
-        Q.fail("notification-outbox pendingCount is smaller than the feedback retest delta.");
-      }
-      const pendingUpdate = Q.collection("notificationRuleConfigs").updateOne(
-        {
-          _id: rule._id,
-          "runState.currentStatus": { $ne: "running" },
-          "runState.pendingCount": { $gte: trackedPendingOutboxes }
-        },
-        {
-          $inc: { "runState.pendingCount": -trackedPendingOutboxes },
-          $set: {
-            "runState.pendingCountUnit": "admin.jobs.rule.notification.outbox",
-            "runState.pendingCountUpdatedAtIso": Q.nowIso()
-          }
-        }
-      );
-      if (pendingUpdate.modifiedCount !== 1) {
-        Q.fail("failed to remove the feedback retest notification-outbox pending delta.");
-      }
-    }
+    removeTrackedPendingOutboxDelta(outboxSelector, "controlled feedback retest");
 
     const removedNotifications = Q.collection("userNotifications").deleteMany(notificationSelector);
     const removedOutboxes = Q.collection("notificationOutbox").deleteMany(outboxSelector);
@@ -432,6 +438,7 @@
   function reset() {
     config();
     const state = requireState();
+    removeTrackedPendingOutboxDelta(selectors.outbox, "owned role-triad reset");
     Q.restoreSnapshots(state.snapshots);
     synchronizeNotificationCounters();
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
