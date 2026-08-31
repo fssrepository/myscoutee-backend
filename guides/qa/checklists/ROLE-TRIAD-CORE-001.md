@@ -106,8 +106,13 @@ mutation. Report the step number and the state that was actually visible.
    - The warning is immediately visible.
    - Real Kai and Ava avatar images are shown.
    - There is no generic or stretched `2 members` avatar pill.
-   - Opening clears Kai's chat unread, member Chats unread counter, and the
-     related bell notification.
+   - Opening clears Kai's chat unread and member Chats unread counter
+     immediately.
+   - The related bell notification and notification counter reconcile from
+     the server on the normal notification poll. Loading the chat must not
+     optimistically overwrite the notification counter from the chat response.
+   - After that poll, the related notification is no longer in New and the
+     bell counter reflects the same persisted read state.
    - Ava's case remains Warned and Ava's Chats main badge remains `1`.
    - Closing the chat does not recreate the already-read warning notification.
 
@@ -140,6 +145,8 @@ mutation. Report the step number and the state that was actually visible.
      `1`.
    - From Kai's support row, select Pick: Warned `1 → 0`, Picked `0 → 1`
      immediately and without reload.
+   - While the support filter is All, that status transition patches the same
+     visible row in place; it must not remove the row from All.
    - Select Unpick: Picked `1 → 0`, Pending `0 → 1` immediately.
    - Select the Pending bucket, then select Pick once more: Kai's row is
      removed immediately from the currently filtered SmartList, while Pending

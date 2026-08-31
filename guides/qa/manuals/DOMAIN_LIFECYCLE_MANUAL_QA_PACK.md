@@ -6246,6 +6246,40 @@ remain authoritative for the testcase contract, persisted evidence and status.
   profiles and opened fresh isolated Kai, Ava and Deployment Operator windows.
   Execute the revised 22-step English checklist from step 1; do not restage.
 
+- **`ROLE-TRIAD-CORE-001` support-row identity and notification-poll ownership
+  fix — 2026-08-31 12:22 CEST**: during the third replay the user selected the
+  final Pick while the Pending support bucket was active. The persisted oracle
+  proved canonical All `1` / Picked `1` / Pending `0`, but the already-open
+  Pending SmartList still displayed the row as Pending. The successful update
+  path was calling shared `removeVisibleItemByIdentity`, but supplied
+  `chats:<chatId>` while the activity-chat converter assigns support rows the
+  canonical key `chats:supportCase:<chatId>`. The component now obtains that
+  exact identity from `ActivityChatSingleRowConverter.smartListKeyForIdentity`
+  and retains the shared SmartList removal path; no component array mutation,
+  row iteration, list refetch or SmartList-core exception was added.
+
+  A follow-up All-bucket check exposed a second predicate error: admin-service
+  mode fixes `chatContextFilter` to `service` to select the support-case data
+  source, while each returned moderation row still has the semantic
+  `appSupport` context. Live reconciliation had incorrectly treated that route
+  marker as row membership and therefore removed a status-updated row even
+  under All. Admin-service matching now evaluates only the support-status
+  filter: All patches the converted row, and only a row leaving a concrete
+  status bucket is removed. The focused regression spec covers both branches.
+
+  The same replay showed a separate timing conflict when opening a chat: the
+  chat response immediately copied its `notificationUnread` context into
+  `NotificationCenterStore`, while the notification row remained in New until
+  its own poll, allowing later reconciliation to appear to restore the count.
+  Chat loading no longer writes the notification counter. Its own chat unread
+  and activity-row read receipt still update immediately; the related
+  notification row and bell count now converge together through the normal
+  notification poll from persisted read state. The frontend owner watcher
+  rebuilt the affected lazy chunks successfully; the final All-bucket revision
+  synced to nginx at `2026-08-31 12:27:27 CEST`. Do not restage: reload only
+  Ava, confirm Unpick retains and patches the row under All, then select Pending
+  and Pick exactly once so removal occurs only from that concrete bucket.
+
 ## Execution and evidence rules
 
 **KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
