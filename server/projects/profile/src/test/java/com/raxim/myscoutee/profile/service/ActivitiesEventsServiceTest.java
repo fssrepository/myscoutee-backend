@@ -1470,6 +1470,9 @@ class ActivitiesEventsServiceTest {
         existing.setFrequency(null);
         existing.setSlotsEnabled(null);
         existing.setSubEventsEnabled(true);
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(1);
+        existing.setCapacityTotal(1);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
@@ -1500,6 +1503,153 @@ class ActivitiesEventsServiceTest {
                 anyCollection(),
                 anyCollection(),
                 anyString());
+    }
+
+    @Test
+    void publishedCapacityDecreaseNotifiesOtherParticipantsAsDefinitionChange() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                7));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getCapacityMin()).isEqualTo(1);
+            assertThat(saved.getCapacityMax()).isEqualTo(7);
+            assertThat(saved.getCapacityTotal()).isEqualTo(7);
+        });
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> reasonsCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventDefinitionChanged(
+                eq("event-1"),
+                eq("Draft Event"),
+                audienceCaptor.capture(),
+                reasonsCaptor.capture(),
+                eq("host"));
+        assertThat(audienceCaptor.getValue()).containsExactly("member-1");
+        assertThat(reasonsCaptor.getValue()).containsExactly("details");
+    }
+
+    @Test
+    void publishedCapacityCanDecreaseToAcceptedCountDespiteOutstandingInvitation() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of("invitee"),
+                        List.of("invitee"),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                2));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getCapacityMax()).isEqualTo(2);
+            assertThat(saved.getCapacityTotal()).isEqualTo(2);
+        });
+    }
+
+    @Test
+    void publishedManageNoOpDoesNotWriteNotifyOrEnqueueRecompute() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        existing.setTicketing(false);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                8));
+
+        assertThat(result).isNotNull();
+        assertThat(result.capacityTotal()).isEqualTo(8);
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(activitiesMembersService, never()).ensureEventCreatorAdminMembership(anyString(), anyString());
+        verify(affinityRecomputeTaskService, never()).enqueueEventChanged(anyString(), anyString());
+        verify(scheduledMessageTaskService, never()).scheduleEventDefinitionChanged(
+                anyString(),
+                anyString(),
+                anyCollection(),
+                anyCollection(),
+                anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
@@ -2139,6 +2289,17 @@ class ActivitiesEventsServiceTest {
             Boolean published,
             Boolean ticketing,
             String visibility) {
+        return eventPayload(syncKey, id, creatorUserId, published, ticketing, visibility, 1);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2170,7 +2331,7 @@ class ActivitiesEventsServiceTest {
                 "",
                 null,
                 1,
-                null,
+                capacityMax,
                 1,
                 1,
                 false,

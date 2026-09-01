@@ -546,10 +546,10 @@
     },
     "EVENT-EDITOR-005": {
       stage: "active",
-      why: "Prove one downstream-relevant active-event edit and one no-op reopen independently.",
-      action: "As host, change exactly one of ticketing, capacity, schedule or sub-event definition and Save once; then reopen without saving.",
-      expected: "Only the selected field and its documented projection change; the no-op reopen adds no notification, task or domain mutation.",
-      worker: "Changed Save MUST RUN event recompute; no-op reopen MUST NOT RUN."
+      why: "Prove one active-event maximum-capacity decrease above accepted occupancy and one no-op Save independently.",
+      action: "As host, open the active card in Manage Event, decrease only Max capacity from 8 to 7 and Save once; close, reopen and Save once more without changing anything.",
+      expected: "Only capacityMax/capacityTotal change from 8 to 7. The two accepted participants remain intact, the accepted occupancy is the published minimum, the accepted participant receives one event-details-change notification, exactly one event recompute is attributable to the changed Save, and the no-op Save adds no write, task or notification.",
+      worker: "Changed Save MUST RUN one event recompute and the event-definition-change delivery path for the accepted non-actor participant; no-op Save MUST NOT RUN."
     },
     "EVENT-SLOT-001": {
       stage: "slot-editor-draft",
@@ -2352,6 +2352,9 @@
     } else {
       insertEventWithMembers(event, "accepted");
     }
+    if (checkpointId === "EVENT-EDITOR-005") {
+      synchronizeEventActivityCounters([hostUserId, participantUserId]);
+    }
     if (stageKind === "ticket-ready") {
       insertEmptyMainEventChat(event, [hostUserId, participantUserId], stagedAtIso);
     }
@@ -2412,6 +2415,8 @@
       blindMode: Q.text(event.blindMode),
       acceptedMembers: Number(event.acceptedMembers || 0),
       pendingMembers: Number(event.pendingMembers || 0),
+      capacityMin: Number(event.capacityMin || 0),
+      capacityMax: Number(event.capacityMax || 0),
       capacityTotal: Number(event.capacityTotal || 0),
       acceptedMemberUserIds: event.acceptedMemberUserIds || [],
       pendingMemberUserIds: event.pendingMemberUserIds || [],

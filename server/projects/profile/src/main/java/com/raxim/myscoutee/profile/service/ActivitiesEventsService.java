@@ -4469,6 +4469,9 @@ public class ActivitiesEventsService {
             return null;
         }
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, syncedMembersSnapshot);
+        if (isPublishedEventManageNoOp(existing, baseRecord)) {
+            return toEventDto(existing, actor);
+        }
         EventDefinitionChangeSummary definitionChange = eventDefinitionChangeSummary(existing, baseRecord);
         Set<String> preChangeAssignedAudienceUserIds = definitionChange.changed()
                 ? activeSubEventResourceAudienceUserIds(sourceId)
@@ -4571,7 +4574,9 @@ public class ActivitiesEventsService {
 
         List<String> reasons = new ArrayList<>();
         if (!Objects.equals(safeText(previous.getTitle()), safeText(next.getTitle()))
-                || !Objects.equals(safeText(previous.getLocation()), safeText(next.getLocation()))) {
+                || !Objects.equals(safeText(previous.getLocation()), safeText(next.getLocation()))
+                || normalizeCount(previous.getCapacityMin()) != normalizeCount(next.getCapacityMin())
+                || normalizeCount(previous.getCapacityMax()) != normalizeCount(next.getCapacityMax())) {
             reasons.add("details");
         }
         if (!Objects.equals(safeText(previous.getStartAtIso()), safeText(next.getStartAtIso()))
@@ -6203,6 +6208,31 @@ public class ActivitiesEventsService {
                 ? normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds())
                 : new ArrayList<>(syncedMembersSnapshot.pendingRequestMemberUserIds());
 
+        if (publishedManageMode) {
+            Integer effectiveCapacityMax = resolvePublishedCapacityMax(
+                    existing,
+                    nullableCount(request.capacityMax()),
+                    acceptedMembers);
+            document.setCapacityMax(effectiveCapacityMax);
+            document.setCapacityTotal(resolvePublishedCapacityTotal(effectiveCapacityMax, acceptedMembers));
+            document.setTicketing(existing != null
+                    && (Boolean.TRUE.equals(existing.getTicketing()) || Boolean.TRUE.equals(request.ticketing())));
+            document.setAcceptedMembers(acceptedMembers);
+            document.setPendingMembers(pendingMembers);
+            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
+            document.setPendingMemberUserIds(pendingMemberUserIds);
+            document.setInvitedMemberUserIds(invitedMemberUserIds);
+            document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
+            document.setAdmins(syncedMembersSnapshot == null
+                    ? normalizeIds(existing == null ? null : existing.getAdmins())
+                    : new ArrayList<>(syncedMembersSnapshot.adminUserIds()));
+            document.setFull(directRecordFull(document));
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(actorUserId);
+            document.normalizeLifecycleState();
+            return document;
+        }
+
         document.setId(resolveExistingId(ownerUserId, sourceId, existing));
         document.setSyncKey(resolveExistingSyncKey(ownerUserId, sourceId, existing == null ? request.syncKey() : existing.getSyncKey()));
         document.setSourceId(sourceId);
@@ -6256,7 +6286,7 @@ public class ActivitiesEventsService {
                 : nullableCount(request.capacityMin()));
         document.setCapacityMax(effectiveCapacityMax);
         document.setCapacityTotal(publishedManageMode
-                ? resolvePublishedCapacityTotal(existing, effectiveCapacityMax, acceptedMembers, syncedMembersSnapshot)
+                ? resolvePublishedCapacityTotal(effectiveCapacityMax, acceptedMembers)
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setTicketing(publishedManageMode
@@ -6395,24 +6425,22 @@ public class ActivitiesEventsService {
                 && !ActivityEvent.STATUS_DRAFT.equals(safeText(existing.getStatus()));
     }
 
+    private boolean isPublishedEventManageNoOp(ActivityEvent existing, ActivityEvent next) {
+        return isPublishedEventManageUpdate(existing)
+                && next != null
+                && normalizeCount(existing.getCapacityMax()) == normalizeCount(next.getCapacityMax())
+                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing());
+    }
+
     private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
         int existingMax = normalizeCount(existing == null ? null : existing.getCapacityMax());
-        int requestedMax = requestedCapacityMax == null ? 0 : Math.max(0, requestedCapacityMax);
-        int nextMax = Math.max(Math.max(existingMax, requestedMax), Math.max(0, acceptedMembers));
+        int requestedMax = requestedCapacityMax == null ? existingMax : Math.max(0, requestedCapacityMax);
+        int nextMax = Math.max(requestedMax, Math.max(0, acceptedMembers));
         return nextMax > 0 ? nextMax : null;
     }
 
-    private int resolvePublishedCapacityTotal(
-            ActivityEvent existing,
-            Integer capacityMax,
-            int acceptedMembers,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        int snapshotCapacity = syncedMembersSnapshot != null && syncedMembersSnapshot.capacityTotal() != null
-                ? Math.max(0, syncedMembersSnapshot.capacityTotal())
-                : 0;
-        return Math.max(
-                Math.max(normalizeCount(existing == null ? null : existing.getCapacityTotal()), snapshotCapacity),
-                Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0));
+    private int resolvePublishedCapacityTotal(Integer capacityMax, int acceptedMembers) {
+        return Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0);
     }
 
     private String resolveExistingId(String ownerUserId, String sourceId, ActivityEvent existing) {

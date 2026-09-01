@@ -681,6 +681,25 @@
         }
       ]
     },
+    "EVENT-EDITOR-005": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey active-event capacity editor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova event-change notification recipient",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "EVENT-SLOT-002": {
       "layout": {
         "columns": 2
