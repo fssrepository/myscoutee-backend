@@ -556,9 +556,15 @@
     "EVENT-RUNTIME-001": {
       stage: "runtime-childless-active",
       why: "Prove that one normal Slots Off/Sub Events Off Event Save materializes one persisted MAIN_EVENT runtime and that every View Event read remains read-only.",
-      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. In View Event inspect the single Event runtime card and Event Members, then open Transport, assign exactly one Casey-owned Transport and Save. Close/reopen Transport and reload once to prove the same assignment returns under the MAIN_EVENT card.",
-      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. The Transport save creates exactly one activityResources record under canonical Event ownerId plus the stable main-event runtime resource key, and one accepted owner assignment for the selected Asset. Reopen/reload returns the same one Transport without a synthetic Sub Event, duplicate runtime/member/chat or unrelated write.",
-      worker: "The changed Event Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Transport Save is one direct resource/Asset assignment mutation and MUST NOT RUN a scheduler; View Event, close/reopen and reload remain read-only."
+      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. In View Event inspect the single Event runtime card and Event Members, then open Transport, assign exactly one Casey-owned Transport and Save. Close/reopen Transport and reload once to prove the same assignment returns under the MAIN_EVENT card. From Transport Members invite Nova once, prove the pending invitation and Transport counter 2 survive close/reopen plus reload, then Delete invitation once and prove Nova disappears immediately while the Transport counter returns to 1 and remains 1 after close/reopen plus reload.",
+      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. The Transport save creates exactly one activityResources record under canonical Event ownerId plus the stable main-event runtime resource key, and one accepted owner assignment for the selected Asset. The scoped Nova invitation raises only the Transport pending/member state and counter from 1 to 2; Delete invitation removes that scoped request, returns the counter to 1 in place and persists accepted=1/pending=0. Reopen/reload returns the same one Transport and no Nova Asset invitation without a synthetic Sub Event, duplicate runtime/member/chat or unrelated write.",
+      worker: "The changed Event Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Transport Save is one direct resource/Asset assignment mutation. Scoped Asset Invite/Delete may enqueue one deduplicated Asset recompute each, but MUST NOT enqueue the same Asset change twice or rewrite unchanged Event participation. View Event, close/reopen and reload remain read-only.",
+      checks: [
+        "Precondition: one assigned Transport, accepted=1/pending=0, counter 1, one accepted manual owner request and no scoped Nova invitation.",
+        "Invite branch: Nova appears once as pending and counter 2 survives Members close/reopen plus one full reload while occupancy stays 1/0-4.",
+        "Delete branch: Delete invitation removes Nova and pending count immediately and returns counter 2 -> 1 without list reload.",
+        "Delete reload/oracle: Members close/reopen plus full reload keeps Nova absent, counter 1 and occupancy 1/0-4; persisted metrics are accepted=1/pending=0 with only the manual owner request/projection and no global Asset member."
+      ]
     },
     "EVENT-SLOT-001": {
       stage: "slot-editor-draft",
@@ -2443,6 +2449,7 @@
       blindMode: Q.text(event.blindMode),
       acceptedMembers: Number(event.acceptedMembers || 0),
       pendingMembers: Number(event.pendingMembers || 0),
+      activity: Number(event.activity || 0),
       capacityMin: Number(event.capacityMin || 0),
       capacityMax: Number(event.capacityMax || 0),
       capacityTotal: Number(event.capacityTotal || 0),
@@ -2619,6 +2626,12 @@
       ? Q.collection("assetRequests")
           .find({ assetId: RUNTIME_TRANSPORT_ASSET_ID })
           .sort({ requestedAtIso: 1, _id: 1 })
+          .toArray()
+      : [];
+    const runtimeTransportMemberRows = checkpointId === "EVENT-RUNTIME-001"
+      ? Q.collection("activityMembers")
+          .find({ ownerType: "asset", ownerId: RUNTIME_TRANSPORT_ASSET_ID })
+          .sort({ userId: 1, _id: 1 })
           .toArray()
       : [];
     const mainEventRuntime = Q.collection("activityEventRuntimeItems").find({ $or: [
@@ -3320,6 +3333,7 @@
       })),
       runtimeTransportRecomputeTasks: runtimeTransportRecomputeTasks.map(item => ({
         id: Q.text(item._id),
+        version: Number(item.version || 0),
         targetType: Q.text(item.targetType),
         targetId: Q.text(item.targetId),
         reasons: item.reasons || [],
@@ -3487,6 +3501,18 @@
         subEventId: Q.text(item.subEventId),
         assetOwnerUserId: Q.text(item.assetOwnerUserId),
         assetAssignmentIds: item.assetAssignmentIds || {},
+        resourceMetricsByType: Object.keys(item.resourceMetricsByType || {})
+          .sort()
+          .reduce((metrics, resourceType) => {
+            const metric = item.resourceMetricsByType[resourceType] || {};
+            metrics[resourceType] = {
+              accepted: Number(metric.accepted || 0),
+              pending: Number(metric.pending || 0),
+              capacityMin: Number(metric.capacityMin || 0),
+              capacityMax: Number(metric.capacityMax || 0)
+            };
+            return metrics;
+          }, {}),
         createdDate: item.createdDate,
         updatedDate: item.updatedDate
       })),
@@ -3518,6 +3544,16 @@
         eventId: Q.text(request.booking && request.booking.eventId),
         subEventId: Q.text(request.booking && request.booking.subEventId),
         requestedAtIso: Q.text(request.requestedAtIso)
+      })),
+      runtimeTransportMemberRows: runtimeTransportMemberRows.map(member => ({
+        id: Q.text(member._id),
+        ownerType: Q.text(member.ownerType),
+        ownerId: Q.text(member.ownerId),
+        userId: Q.text(member.userId),
+        status: Q.text(member.status),
+        requestKind: Q.text(member.requestKind),
+        pendingSource: Q.text(member.pendingSource),
+        invitedByUserId: Q.text(member.invitedByUserId)
       })),
       mainEventRuntime: mainEventRuntime.map(item => ({
         id: Q.text(item._id),
@@ -10578,7 +10614,9 @@
         ? { ...persistedOracle, tournamentMemberRemoval: tournamentMemberRemovalSnapshot(state) }
         : persistedOracle,
       expectedVisibleResult: selected.expected,
-      next: "Compare the UI screenshot with this identity-level oracle. If it agrees, record PASS and reset this checkpoint; otherwise retain both as defect evidence."
+      next: checkpointId === "EVENT-RUNTIME-001"
+        ? "From the clean one-assignment boundary, invite Nova once as the prepared pending state, then execute Delete invitation and stop after the in-place plus reload observations for the persisted/latency oracle."
+        : "Compare the UI screenshot with this identity-level oracle. If it agrees, record PASS and reset this checkpoint; otherwise retain both as defect evidence."
     });
   }
 

@@ -726,19 +726,12 @@ def row_style(values: list[str], headers: list[str]) -> str:
         return legend_styles[identifier]
     if qa_scope_bucket(item) == "external":
         return "external"
-
-    manual_status = item.get("Manual status", "").upper()
-    result = item.get("Result", "").upper()
-    combined = f"{manual_status} {result}"
-    if "FAIL" in combined or "CLEAN RETEST REQUIRED" in combined:
-        return "fail"
-    if result == "PASS":
-        return "pass"
-    if "PARTIAL" in combined or "OPEN" in combined:
-        return "partial"
-    if "NOT RUN" in combined:
-        return "not-run"
-    return "default"
+    return {
+        "done": "pass",
+        "pending": "partial",
+        "failed": "fail",
+        "not-started": "not-run",
+    }[qa_status_bucket(item)]
 
 
 def build_sheet(

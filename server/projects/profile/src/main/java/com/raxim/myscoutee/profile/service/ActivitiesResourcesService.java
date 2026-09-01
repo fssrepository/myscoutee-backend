@@ -255,9 +255,11 @@ public class ActivitiesResourcesService {
         if (!changed.isEmpty()) {
             eventSlotReadModelService.refreshForChangedEvents(activityEventsRepository.saveAll(changed));
         }
-        ActivitiesMembersService membersService = activitiesMembersServiceProvider.getIfAvailable();
-        if (membersService != null) {
-            membersService.refreshSubEventParticipationProjection(normalizedOwnerId, normalizedSubEventId);
+        if (!isMainEventRuntimeSubEvent(normalizedOwnerId, normalizedSubEventId)) {
+            ActivitiesMembersService membersService = activitiesMembersServiceProvider.getIfAvailable();
+            if (membersService != null) {
+                membersService.refreshSubEventParticipationProjection(normalizedOwnerId, normalizedSubEventId);
+            }
         }
     }
 
@@ -376,7 +378,6 @@ public class ActivitiesResourcesService {
             }
         }
         refreshEventSubEventResourceProjection(normalizedOwnerId, normalizedSubEventId);
-        refreshEventParticipationProjection(normalizedOwnerId);
     }
 
     private Map<String, SubEventResourceMetricDto> persistResourceMetricSnapshot(

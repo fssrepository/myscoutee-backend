@@ -493,6 +493,37 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void refreshMainEventResourceMetricsAvoidsUnrelatedParticipationReprojection() {
+        String eventId = "event-1";
+        String subEventId = "main-event:event-1";
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setRecordId("resource-1");
+        resource.setStatus("A");
+        resource.setOwnerId(eventId);
+        resource.setSubEventId(subEventId);
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of());
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                eventId, subEventId, "D")).thenReturn(List.of(resource));
+        when(assetsService.queryAssignableAssetDetails("u1", eventId, subEventId, Set.of()))
+                .thenReturn(Map.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivityEvent event = event(eventId, "u1", "u1");
+        event.setSubEvents(List.of());
+        event.setActivity(0);
+        when(activityEventsRepository.findBySourceId(eventId)).thenReturn(List.of(event));
+
+        service.refreshResourceMetricsForScope(eventId, subEventId, "u1");
+
+        verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        verifyNoInteractions(activitiesMembersServiceProvider);
+        verifyNoInteractions(activitiesMembersService);
+    }
+
+    @Test
     void refreshEventProjectionPersistsCanonicalRangeAndPendingBadgeCount() {
         ActivitySubEventResource resource = new ActivitySubEventResource();
         resource.setStatus("A");

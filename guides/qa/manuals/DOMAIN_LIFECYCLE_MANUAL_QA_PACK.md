@@ -897,13 +897,38 @@ Execution evidence (2026-09-01, PASS):
   `borrow`. A guarded versioned cleanup removed exactly the leaked Casey/Nova
   global Asset-member rows and Nova's one unscoped request/projection while
   retaining the assigned Transport, its accepted manual scoped request and its
-  resource record. The bounded replay is one Nova invite, close/reopen and one
-  reload: Nova must remain once as pending, the red Transport resource counter
-  must remain `2` (one assigned/open resource item plus one pending member),
-  and accepted occupancy must remain `1 / 0 - 4`. The clean assigned-resource
-  baseline counter is `1`. This is the MAIN_EVENT
+  resource record. The bounded replay begins with one Nova invite, close/reopen
+  and one reload: Nova must remain once as pending, the red Transport resource
+  counter must remain `2` (one assigned/open resource item plus one pending
+  member), and accepted occupancy must remain `1 / 0 - 4`. It now also owns the
+  causally adjacent **Delete invitation** reversal: delete Nova once, require
+  her row and pending header count to disappear immediately, and require the
+  Transport counter to return `2 -> 1` without a list reload. Close/reopen
+  Members and reload once; Nova must remain absent, the counter must remain
+  `1`, occupancy must remain `1 / 0 - 4`, and persisted resource metrics must
+  be exactly `accepted=1/pending=0`. The Asset keeps only the accepted manual
+  owner request in the same Event/MAIN_EVENT scope, its request projection
+  stays exactly one, and no global Asset-member row, duplicate affinity enqueue
+  or unchanged Event participation rewrite is allowed. This is the MAIN_EVENT
   integration assertion; the later `ASSET-MEMBER-001/002` cases still own the
   full generic Asset invitation lifecycle.
+- Casey accepted the scoped invite/reload branch and then confirmed that
+  **Delete invitation** is functionally correct but feels slightly slow. The
+  second complete pre-optimization delete request ran from its first observed
+  backend read at `11:24:10.512 CEST` to its last at `11:24:10.600 CEST`
+  (about `88ms`) and crossed Mongo 52 times: 42 reads/counts, four saves, one
+  remove, three updates and two aggregations. The independent checkpoint status
+  after that delete proves one unchanged MAIN_EVENT runtime, one Transport
+  assignment with persisted `accepted=1/pending=0`, exactly one accepted manual
+  owner request/projection, and no Nova request or global Asset-member row. The
+  trace also proved two avoidable write-path effects: the scoped Asset action
+  enqueued `ASSET_REQUESTS_CHANGED` again after the owning Asset sync had already
+  done so, and resource-only refresh rewrote unchanged Event participation.
+  The performance repair removes only those redundant paths and skips the
+  meaningless childless-MAIN_EVENT sub-event participation lookup. The existing
+  backend hot-deploy owner compiled in 2s and restarted successfully. A shortest
+  invite-as-precondition -> Delete replay remains for the before/after latency,
+  in-place reversal and reload oracle; the invite behavior itself is retained.
 - Start from one isolated normal Event definition with Slots Off and Sub Events
   Off. Before the owning Save, require no runtime item for the new identity.
 - Save once through the normal Event write path. The write must persist exactly

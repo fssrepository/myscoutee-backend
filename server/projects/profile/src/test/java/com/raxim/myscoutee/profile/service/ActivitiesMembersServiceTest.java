@@ -967,6 +967,8 @@ class ActivitiesMembersServiceTest {
                 eq(subEventId),
                 argThat(entries -> entries.stream().noneMatch(entry -> "target".equals(entry.userId()))),
                 eq("asset-owner"));
+        verify(affinityRecomputeTaskService, never())
+                .enqueueAssetRequestsChanged(anyString(), anyString());
     }
 
     @Test

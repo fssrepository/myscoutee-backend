@@ -1233,7 +1233,7 @@ public class ActivitiesMembersService {
         boolean removingPendingEventMembership = OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_REMOVE.equals(action)
                 && STATUS_PENDING.equals(currentStatus);
-        if (!removingPendingEventMembership) {
+        if (!removingPendingEventMembership && !scopedAssetAction) {
             enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
         }
         adminTelemetryService.record(

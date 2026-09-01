@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-01:** 78/116 passed — core 78/96, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `EVENT-SLOT-TOURNAMENT-001` and `JOB-PURGE` are PASS/CLOSED, while `EVENT-EDIT-RUNTIME-001` is in progress with `EVENT-EDITOR-005` PASS and the isolated `EVENT-RUNTIME-001` zero-runtime baseline staged; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
+**2026-09-01:** 79/116 passed — core 79/96, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `EVENT-SLOT-TOURNAMENT-001` and `JOB-PURGE` are PASS/CLOSED, while `EVENT-EDIT-RUNTIME-001` is in progress with `EVENT-EDITOR-005` PASS and the isolated `EVENT-RUNTIME-001` invite/reload branch accepted, awaiting its Delete invitation replay and final resource remove/reassign cycle; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
