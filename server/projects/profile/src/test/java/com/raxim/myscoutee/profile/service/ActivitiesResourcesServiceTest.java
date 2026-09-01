@@ -386,7 +386,7 @@ class ActivitiesResourcesServiceTest {
                 .get(groupId)
                 .get("u1")
                 .get("Transport")
-                .pending()).isEqualTo(1);
+                .pending()).isZero();
         assertThat(runtime.getGroupResourceReadAtByUserId().get(groupId).get("u1"))
                 .containsOnlyKeys("Transport");
         verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
@@ -467,7 +467,7 @@ class ActivitiesResourcesServiceTest {
                 .get(groupId)
                 .get("u1")
                 .get("Transport")
-                .pending()).isEqualTo(3);
+                .pending()).isEqualTo(2);
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId))
                 .containsOnlyKeys("u1", "admin");
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("u1"))

@@ -927,9 +927,6 @@ public class ActivitiesResourcesService {
         int capacityMin = 0;
         int capacityMax = 0;
         for (String assetId : assetIds) {
-            // Every assigned resource is itself one open group item. Join or
-            // borrow requests add further pending work on top of that item.
-            pending += 1;
             SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
             AssetDetailDto detail = eligibleAssets == null ? null : eligibleAssets.get(assetId);
             capacityMin += normalizeCount(settings == null ? null : settings.capacityMin());
