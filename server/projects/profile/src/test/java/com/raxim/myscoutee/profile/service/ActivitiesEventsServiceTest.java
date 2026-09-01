@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
@@ -1563,6 +1564,8 @@ class ActivitiesEventsServiceTest {
                 eq("host"));
         assertThat(audienceCaptor.getValue()).containsExactly("member-1");
         assertThat(reasonsCaptor.getValue()).containsExactly("details");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
@@ -1650,6 +1653,39 @@ class ActivitiesEventsServiceTest {
                 anyString());
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
+    }
+
+    @Test
+    void childlessEventSaveMaterializesOneMainEventRuntimeItem() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setStatus(ActivityEvent.STATUS_DRAFT);
+        existing.setPublished(false);
+        existing.setSlotsEnabled(false);
+        existing.setSubEventsEnabled(false);
+        existing.setSubEventDefinitions(List.of());
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload("sync-event-1", "event-1", "host", false));
+
+        assertThat(result).isNotNull();
+        ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
+                ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
+        verify(mongoTemplate).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue()).satisfies(runtime -> {
+            assertThat(runtime.getRecordId()).isEqualTo("main-event:event-1");
+            assertThat(runtime.getRuntimeKind()).isEqualTo("MAIN_EVENT");
+            assertThat(runtime.getEventId()).isEqualTo("event-1");
+            assertThat(runtime.getOwnerId()).isEqualTo("event-1");
+            assertThat(runtime.getSubEventId()).isNull();
+            assertThat(runtime.getTitle()).isEqualTo("Draft Event");
+        });
     }
 
     @Test
@@ -2358,7 +2394,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
-                true,
+                false,
                 List.of(),
                 List.of(),
                 "",

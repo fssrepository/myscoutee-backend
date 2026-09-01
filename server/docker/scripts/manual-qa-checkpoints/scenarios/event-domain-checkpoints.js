@@ -551,6 +551,13 @@
       expected: "Only capacityMax/capacityTotal change from 8 to 7. The two accepted participants remain intact, the accepted occupancy is the published minimum, the accepted participant receives one event-details-change notification, exactly one event recompute is attributable to the changed Save, and the no-op Save adds no write, task or notification.",
       worker: "Changed Save MUST RUN one event recompute and the event-definition-change delivery path for the accepted non-actor participant; no-op Save MUST NOT RUN."
     },
+    "EVENT-RUNTIME-001": {
+      stage: "runtime-childless-active",
+      why: "Prove that one normal Slots Off/Sub Events Off Event Save materializes one persisted MAIN_EVENT runtime and that every View Event read remains read-only.",
+      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. Open View Event and inspect the single Event runtime card and Event Members, then close/reopen View Event and reload once. Repeat the read-only View Event inspection as Nova.",
+      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. View Event shows exactly one Event card with the canonical title, timeframe, location, capacity and members; it shows no empty Sub Events state, duplicate parent, synthetic :default child or tournament-only action. Reopen/reload creates no second runtime or other write.",
+      worker: "The changed Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Activities SmartList updates on the fly from the Save response; View Event, close/reopen and reload MUST NOT RUN a worker or write anything."
+    },
     "EVENT-SLOT-001": {
       stage: "slot-editor-draft",
       why: "Prove that one recurring slot definition saved in Event Editor becomes multiple occurrence sections in the Sub-event list.",
@@ -1090,6 +1097,8 @@
       subEvents: options.subEvents || [],
       subEventsEnabled: options.subEventsEnabled === true,
       subEventDefinitions: options.subEventDefinitions || [],
+      slotsEnabled: options.slotsEnabled === true,
+      slotTemplates: options.slotTemplates || [],
       mode: options.mode || "Casual",
       topics: ["Manual QA"],
       imageUrl: Q.text(options.imageUrl),
@@ -1639,6 +1648,10 @@
       { collection: "activityResources", selector: { ownerId: { $regex: `^${PREFIX}` } } },
       { collection: "activitySubEventGroups", selector: { ownerId: { $regex: `^${PREFIX}` } } },
       { collection: "activitySubEventStageRuntime", selector: { ownerId: { $regex: `^${PREFIX}` } } },
+      { collection: "activityEventRuntimeItems", selector: { $or: [
+        { eventId: { $in: EVENT_IDS } },
+        { ownerId: { $regex: `^${PREFIX}` } }
+      ] } },
       { collection: "eventLeaderboardEntries", selector: { eventId: { $regex: `^${PREFIX}` } } },
       { collection: "chats", selector: { $or: [
         { eventId: { $in: EVENT_IDS } },
@@ -1719,6 +1732,11 @@
       "activitySubEventGroups",
       "activitySubEventStageRuntime"
     ]) Q.collection(collection).deleteMany({ $or: [
+      { ownerId: { $in: eventIds } },
+      { ownerId: { $regex: `^${PREFIX}` } }
+    ] });
+    Q.collection("activityEventRuntimeItems").deleteMany({ $or: [
+      { eventId: { $in: eventIds } },
       { ownerId: { $in: eventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
     ] });
@@ -2352,7 +2370,7 @@
     } else {
       insertEventWithMembers(event, "accepted");
     }
-    if (checkpointId === "EVENT-EDITOR-005") {
+    if (["EVENT-EDITOR-005", "EVENT-RUNTIME-001"].includes(checkpointId)) {
       synchronizeEventActivityCounters([hostUserId, participantUserId]);
     }
     if (stageKind === "ticket-ready") {
@@ -2580,6 +2598,10 @@
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).sort({ createdDate: 1 }).toArray();
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
+    const mainEventRuntime = Q.collection("activityEventRuntimeItems").find({ $or: [
+      { eventId: { $in: dynamicEventIds } },
+      { ownerId: { $in: dynamicEventIds } }
+    ] }).sort({ eventId: 1, runtimeKind: 1, _id: 1 }).toArray();
     const groups = Q.collection("activitySubEventGroups").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const leaderboard = Q.collection("eventLeaderboardEntries").find({ eventId: { $regex: `^${PREFIX}` } }).toArray();
     const eventChats = Q.collection("chats").find({
@@ -3415,6 +3437,26 @@
         stageStatusReason: Q.text(item.stageStatusReason),
         stageFinalizedAt: item.stageFinalizedAt,
         groupsCount: item.groupsCount
+      })),
+      mainEventRuntime: mainEventRuntime.map(item => ({
+        id: Q.text(item._id),
+        recordId: Q.text(item.recordId),
+        syncKey: Q.text(item.syncKey),
+        status: Q.text(item.status),
+        runtimeKind: Q.text(item.runtimeKind),
+        eventId: Q.text(item.eventId),
+        ownerId: Q.text(item.ownerId),
+        subEventId: item.subEventId == null ? null : Q.text(item.subEventId),
+        title: Q.text(item.title),
+        description: Q.text(item.description),
+        timeframe: Q.text(item.timeframe),
+        startAtIso: item.startAtIso,
+        endAtIso: item.endAtIso,
+        location: Q.text(item.location),
+        createdByUserId: Q.text(item.createdByUserId),
+        createdDate: item.createdDate,
+        updatedDate: item.updatedDate,
+        updatedUser: Q.text(item.updatedUser)
       })),
       manualTournamentGroups: groups.map(item => ({
         ownerId: Q.text(item.ownerId),
@@ -7662,6 +7704,8 @@
           ? ((hasTicketPendingControl() || checkpointId === "EVENT-TICKET-007")
               ? [hostUserId, participantUserId, thirdUserId]
               : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
+          : ["EVENT-EDITOR-005", "EVENT-RUNTIME-001"].includes(checkpointId)
+            ? [hostUserId, participantUserId].map(userActivitiesSnapshot)
           : selected.stage.startsWith("invitation-")
             ? invitationFixtureUserIds(selected.stage).map(userActivitiesSnapshot)
           : selected.stage.startsWith("feedback-")

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-01 06:40 CEST
+Updated: 2026-09-01 07:18 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -49,20 +49,21 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 and EVENT-RUNTIME-001 are NOT RUN
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-005--edit-an-active-downstream-definition
-checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-005--edit-an-active-downstream-definition
-scenario: The next unclosed Core row in canonical matrix order is EVENT-EDIT-RUNTIME-001. Execute EVENT-EDITOR-005 first, then EVENT-RUNTIME-001. The closed recurring-slot journey remains an immutable control and must not be replayed as a substitute.
-ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-EDIT-RUNTIME-001
-state: EVENT-SLOT-TOURNAMENT-001 is PASS/CLOSED. Its five sources are PASS; slot identity, save-driven list reload, role/time gating, past-stage Close and slot-scoped score/history were proven. The same-ID group overlay and unique runtime group-count repair are deployed. The final clean Close regression held groupsCount 2 -> 2, and EVENT-SLOT-004 saved Nova +3 only under the September 1 slot while the September 8 control stayed empty. All retained event-domain fixtures were reset and proved not staged.
+checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is NOT RUN
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
+checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
+scenario: Continue the partially passed EVENT-EDIT-RUNTIME-001 consolidated journey with its remaining EVENT-RUNTIME-001 source. The closed recurring-slot journey remains an immutable control and must not be replayed as a substitute.
+ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
+state: EVENT-EDITOR-005 is PASS. In staged EVENT-RUNTIME-001, Casey completed the owning 8 -> 9 Save. Persisted truth is one active childless Event at capacity 2/9 and exactly one active MAIN_EVENT runtime with canonical eventId/ownerId and subEventId null; direct View Event UI/read-only evidence remains.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE and EVENT-SLOT-TOURNAMENT-001 are closed with their versioned fixtures reset/not-staged. The ledger and workbook report 78/116 total, Core 78/96 and Identity & access 8/8.
-required_resume: Begin EVENT-EDITOR-005 from its captured contract. Prepare one isolated active Event baseline and one downstream-relevant definition edit with exact pre-save controls. Do not combine the no-op Save assertion or childless MAIN_EVENT materialization until the owning mutation boundary and its recompute/notification oracle are explicit.
-event: none staged
+required_resume: Inspect the one server-loaded MAIN_EVENT card through View Event as Casey and Nova, including Event Members, absence of empty/duplicate/synthetic/tournament controls, then verify close/reopen and reload are read-only. The old queued recompute may naturally finish; do not wait for or patch its original three-minute due time. New dev event-change tasks use the 15s override.
+event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-RUNTIME-001, active and staged
 actors:
-  Casey: next host/editor actor after a clean versioned baseline is prepared
-next_actor: Codex prepares and proves the EVENT-EDITOR-005 baseline, then gives Casey one bounded manual checklist.
-queued_followup: After EVENT-EDITOR-005 PASS, execute EVENT-RUNTIME-001 as the separate childless MAIN_EVENT runtime source.
-stop_phrase: EVENT-EDITOR-005 definition edit saved once, with exact persisted delta and no duplicate effect on no-op reopen/save
+  Casey: active host; owning Save is complete, inspect View Event and Event Members
+  Nova: accepted participant; inspect the same View Event runtime read-only
+next_actor: Casey and Nova execute the bounded read-only View Event checklist; Codex then compares the persisted collections against this post-Save boundary.
+queued_followup: Close EVENT-EDIT-RUNTIME-001 only after EVENT-RUNTIME-001 proves one persisted MAIN_EVENT runtime and read-only reopen/reload behavior.
+stop_phrase: EVENT-RUNTIME-001 exposes exactly one persisted MAIN_EVENT card with no empty, duplicate, synthetic child or read-side write
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -1002,11 +1003,11 @@ checkpoint replay are the active-session verification path.
 Do not wait through production debounce windows merely because a manual QA
 fixture runs against the dev stack. When the delay itself is not the contract
 under test, expose a dev-only configuration override and keep the real worker
-path: the current event-member recompute default is `15s` in `application-dev`
-and remains `5m` in production. Record the override in the checkpoint, verify
-the existing watcher reload, and never patch an individual task ad hoc. Cases
-whose purpose is timing/debounce must override this explicitly and retain their
-own controlled boundary.
+path: the event-change and event-member recompute defaults are both `15s` in
+`application-dev`; they remain `3m` and `5m` respectively in production.
+Record the override in the checkpoint, verify the existing watcher reload, and
+never patch an individual task ad hoc. Cases whose purpose is timing/debounce
+must override this explicitly and retain their own controlled boundary.
 
 For the profile backend, Gradle continuous `classes` may temporarily remove
 compiled outputs before recreating them. Spring DevTools must therefore use a

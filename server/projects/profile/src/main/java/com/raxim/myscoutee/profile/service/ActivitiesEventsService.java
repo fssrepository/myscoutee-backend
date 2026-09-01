@@ -41,6 +41,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
@@ -141,6 +142,7 @@ public class ActivitiesEventsService {
     private static final String STAGE_ACTION_RESUME = "resume-tournament";
     private static final String TOURNAMENT_SYSTEM_USER_ID = "scheduler";
     private static final String TOURNAMENT_SYSTEM_NAME = "MyScoutee System";
+    private static final String MAIN_EVENT_RUNTIME_KIND = ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT;
     private static final String RUNTIME_STATUS_DELETED = "D";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
@@ -1413,8 +1415,17 @@ public class ActivitiesEventsService {
                 parent,
                 request);
         List<EventSubEventsSlotDto> baseSlots = page.slots();
+        if (baseSlots.isEmpty()) {
+            EventSubEventsSlotDto mainEventRuntimeSlot = mainEventRuntimeSlot(parent);
+            if (mainEventRuntimeSlot != null) {
+                baseSlots = List.of(mainEventRuntimeSlot);
+                page = new EventSubEventsSlotPage(baseSlots, 1, null);
+            }
+        }
         if (Boolean.TRUE.equals(request.participantOnly())) {
-            baseSlots = filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
+            baseSlots = containsMainEventRuntime(baseSlots)
+                    ? filterMainEventRuntimeByAcceptedParticipation(baseSlots, parentEventId, viewer.userId())
+                    : filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(
@@ -1426,6 +1437,194 @@ public class ActivitiesEventsService {
                 stageRuntimeByKey,
                 viewer.userId());
         return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
+    }
+
+    private EventSubEventsSlotDto mainEventRuntimeSlot(ActivityEvent parent) {
+        String eventId = normalizeId(parent == null ? null : parent.getSourceId());
+        if (!StringUtils.hasText(eventId) || !isChildlessMainEventRuntimeOwner(parent)) {
+            return null;
+        }
+        ActivityMainEventRuntime runtime = mongoTemplate.findOne(
+                Query.query(Criteria.where("eventId").is(eventId)
+                        .and("runtimeKind").is(MAIN_EVENT_RUNTIME_KIND)
+                        .and("status").ne(RUNTIME_STATUS_DELETED)),
+                ActivityMainEventRuntime.class);
+        if (runtime == null) {
+            return null;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        int acceptedMembers = members == null
+                ? normalizeCount(parent.getAcceptedMembers())
+                : members.acceptedMembers();
+        int pendingMembers = members == null
+                ? normalizeCount(parent.getPendingMembers())
+                : members.pendingMembers();
+        String runtimeId = firstNonBlank(runtime.getRecordId(), runtime.getId());
+        SubEventItemDto item = new SubEventItemDto(
+                runtimeId,
+                firstNonBlank(runtime.getTitle(), parent.getTitle()),
+                firstNonBlank(runtime.getDescription(), parent.getSubtitle()),
+                firstNonBlank(runtime.getStartAtIso(), parent.getStartAtIso()),
+                firstNonBlank(runtime.getEndAtIso(), parent.getEndAtIso()),
+                firstNonBlank(runtime.getLocation(), parent.getLocation()),
+                firstNonBlank(runtime.getCreatedByUserId(), parent.getCreatorUserId()),
+                null,
+                null,
+                null,
+                null,
+                false,
+                parent.getPricing(),
+                parent.getCapacityMin(),
+                parent.getCapacityMax(),
+                acceptedMembers,
+                pendingMembers,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                MAIN_EVENT_RUNTIME_KIND,
+                eventId);
+        return new EventSubEventsSlotDto(
+                runtimeId,
+                eventId,
+                null,
+                null,
+                firstNonBlank(runtime.getTitle(), parent.getTitle()),
+                firstNonBlank(runtime.getTimeframe(), parent.getTimeframe()),
+                firstNonBlank(runtime.getStartAtIso(), parent.getStartAtIso()),
+                firstNonBlank(runtime.getEndAtIso(), parent.getEndAtIso()),
+                List.of(item));
+    }
+
+    private boolean containsMainEventRuntime(List<EventSubEventsSlotDto> slots) {
+        return slots != null && slots.stream()
+                .filter(Objects::nonNull)
+                .flatMap(slot -> slot.subEventItems() == null
+                        ? java.util.stream.Stream.<SubEventItemDto>empty()
+                        : slot.subEventItems().stream())
+                .anyMatch(item -> MAIN_EVENT_RUNTIME_KIND.equals(item == null ? null : item.runtimeKind()));
+    }
+
+    private List<EventSubEventsSlotDto> filterMainEventRuntimeByAcceptedParticipation(
+            List<EventSubEventsSlotDto> slots,
+            String eventId,
+            String userId) {
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(eventId));
+        String normalizedUserId = normalizeId(userId);
+        return members != null
+                && StringUtils.hasText(normalizedUserId)
+                && normalizeIds(members.acceptedMemberUserIds()).contains(normalizedUserId)
+                        ? slots
+                        : List.of();
+    }
+
+    private void syncMainEventRuntimeItem(ActivityEvent event, String actorUserId) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(eventId)) {
+            return;
+        }
+        Query query = Query.query(Criteria.where("eventId").is(eventId)
+                .and("runtimeKind").is(MAIN_EVENT_RUNTIME_KIND));
+        ActivityMainEventRuntime existing = mongoTemplate.findOne(query, ActivityMainEventRuntime.class);
+        String nowIso = Instant.now().toString();
+        if (!isChildlessMainEventRuntimeOwner(event)) {
+            if (existing != null && !RUNTIME_STATUS_DELETED.equals(safeText(existing.getStatus()))) {
+                existing.setStatus(RUNTIME_STATUS_DELETED);
+                existing.setUpdatedDate(nowIso);
+                existing.setUpdatedUser(actorUserId);
+                mongoTemplate.save(existing);
+            }
+            return;
+        }
+        if (matchesMainEventRuntime(existing, event, eventId)) {
+            return;
+        }
+
+        ActivityMainEventRuntime runtime = existing == null ? new ActivityMainEventRuntime() : existing;
+        if (!StringUtils.hasText(runtime.getId())) {
+            runtime.setId(new ObjectId().toHexString());
+        }
+        if (!StringUtils.hasText(runtime.getRecordId())) {
+            runtime.setRecordId("main-event:" + eventId);
+        }
+        if (!StringUtils.hasText(runtime.getSyncKey())) {
+            runtime.setSyncKey(UUID.randomUUID().toString());
+        }
+        if (!StringUtils.hasText(runtime.getCreatedDate())) {
+            runtime.setCreatedDate(nowIso);
+            runtime.setCreatedUser(actorUserId);
+        }
+        runtime.setStatus(ActivityEvent.STATUS_ACTIVE);
+        runtime.setRuntimeKind(MAIN_EVENT_RUNTIME_KIND);
+        runtime.setEventId(eventId);
+        runtime.setOwnerId(eventId);
+        runtime.setSubEventId(null);
+        runtime.setTitle(safeText(event.getTitle()));
+        runtime.setDescription(safeText(event.getSubtitle()));
+        runtime.setTimeframe(safeText(event.getTimeframe()));
+        runtime.setStartAtIso(safeText(event.getStartAtIso()));
+        runtime.setEndAtIso(safeText(event.getEndAtIso()));
+        runtime.setLocation(safeText(event.getLocation()));
+        runtime.setCreatedByUserId(normalizeId(event.getCreatorUserId()));
+        runtime.setUpdatedDate(nowIso);
+        runtime.setUpdatedUser(actorUserId);
+        mongoTemplate.save(runtime);
+    }
+
+    private boolean matchesMainEventRuntime(
+            ActivityMainEventRuntime runtime,
+            ActivityEvent event,
+            String eventId) {
+        return runtime != null
+                && StringUtils.hasText(runtime.getId())
+                && StringUtils.hasText(runtime.getRecordId())
+                && StringUtils.hasText(runtime.getSyncKey())
+                && ActivityEvent.STATUS_ACTIVE.equals(safeText(runtime.getStatus()))
+                && MAIN_EVENT_RUNTIME_KIND.equals(safeText(runtime.getRuntimeKind()))
+                && Objects.equals(eventId, normalizeId(runtime.getEventId()))
+                && Objects.equals(eventId, normalizeId(runtime.getOwnerId()))
+                && !StringUtils.hasText(normalizeId(runtime.getSubEventId()))
+                && Objects.equals(safeText(event.getTitle()), safeText(runtime.getTitle()))
+                && Objects.equals(safeText(event.getSubtitle()), safeText(runtime.getDescription()))
+                && Objects.equals(safeText(event.getTimeframe()), safeText(runtime.getTimeframe()))
+                && Objects.equals(safeText(event.getStartAtIso()), safeText(runtime.getStartAtIso()))
+                && Objects.equals(safeText(event.getEndAtIso()), safeText(runtime.getEndAtIso()))
+                && Objects.equals(safeText(event.getLocation()), safeText(runtime.getLocation()))
+                && Objects.equals(normalizeId(event.getCreatorUserId()), normalizeId(runtime.getCreatedByUserId()));
+    }
+
+    private boolean isChildlessMainEventRuntimeOwner(ActivityEvent event) {
+        if (event == null
+                || Boolean.TRUE.equals(event.getGenerated())
+                || !Boolean.FALSE.equals(event.getSlotsEnabled())
+                || !Boolean.FALSE.equals(event.getSubEventsEnabled())) {
+            return false;
+        }
+        String status = safeText(event.getStatus());
+        return !RUNTIME_STATUS_DELETED.equals(status)
+                && !ActivityEvent.STATUS_TRASHED.equals(status)
+                && !ActivityEvent.STATUS_INACTIVE.equals(status);
     }
 
     private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
@@ -4462,6 +4661,7 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository
                 .findByOwnerUserIdAndSourceId(ownerUserId, sourceId)
                 .orElse(null);
+        boolean publishedManageUpdate = isPublishedEventManageUpdate(existing);
         boolean allowed = existing == null
                 ? accessControlService.canCurrentActorCreateEvent(ownerUserId, sourceId)
                 : accessControlService.canCurrentActorEditEvent(sourceId);
@@ -4485,6 +4685,7 @@ public class ActivitiesEventsService {
         if (!canonicalDocuments.isEmpty()) {
             savedDocuments = canonicalDocuments;
         }
+        syncMainEventRuntimeItem(baseRecord, actorUserId);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         Set<String> removedRuntimeAudienceUserIds = definitionChange.removedSubEventIds().isEmpty()
                 ? Set.of()
@@ -4514,12 +4715,19 @@ public class ActivitiesEventsService {
         }
         telemetryTags.put("eventType", resolveTelemetryEventType(request));
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
-        syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        if (!publishedManageUpdate) {
+            syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        }
         if (definitionChange.changed()) {
             syncStageRuntimeGroupCountsForDefinitions(sourceId, actorUserId);
         }
-        eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
-        userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
+        boolean ticketingEnabled = existing != null
+                && !Boolean.TRUE.equals(existing.getTicketing())
+                && Boolean.TRUE.equals(baseRecord.getTicketing());
+        if (!publishedManageUpdate || ticketingEnabled) {
+            eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
+            userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
+        }
         notifyParticipantsWhenTicketingEnabled(
                 existing,
                 baseRecord,

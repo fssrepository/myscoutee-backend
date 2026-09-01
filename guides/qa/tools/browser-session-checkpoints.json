@@ -700,6 +700,25 @@
         }
       ]
     },
+    "EVENT-RUNTIME-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey childless-event runtime host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova accepted runtime participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "EVENT-SLOT-002": {
       "layout": {
         "columns": 2

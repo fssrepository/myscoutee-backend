@@ -167,7 +167,9 @@ public class ActivityEventSubEventsMapper {
                 item.stageFinalizedAt(),
                 item.stageFinalizedByUserId(),
                 item.stageResultRevision(),
-                item.groups());
+                item.groups(),
+                item.runtimeKind(),
+                item.eventId());
     }
 
     private EventSubEventsSlotPage templateSlotPage(
@@ -1141,7 +1143,9 @@ public class ActivityEventSubEventsMapper {
                 item.stageFinalizedAt(),
                 item.stageFinalizedByUserId(),
                 item.stageResultRevision(),
-                item.groups());
+                item.groups(),
+                item.runtimeKind(),
+                item.eventId());
     }
 
     private SubEventItemDto withStageRuntime(SubEventItemDto item, ActivitySubEventStageRuntimeStateDto stageRuntime) {
@@ -1191,7 +1195,9 @@ public class ActivityEventSubEventsMapper {
                 stageRuntime.stageResultRevision() == null
                         ? item.stageResultRevision()
                         : stageRuntime.stageResultRevision(),
-                item.groups());
+                item.groups(),
+                item.runtimeKind(),
+                item.eventId());
     }
 
     private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {

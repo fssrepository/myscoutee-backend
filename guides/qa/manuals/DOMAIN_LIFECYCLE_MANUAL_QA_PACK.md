@@ -783,8 +783,57 @@ Repair replay evidence (2026-09-01, PASS):
 - Verify removed definitions are no longer presented as active resources,
   groups or reminders.
 
+Execution evidence (2026-09-01, PASS):
+
+- The isolated active baseline contained Casey and Nova as the two accepted
+  members, maximum/total capacity `8 / 8`, and no lifecycle notification,
+  outbox or recompute artifact.
+- Casey opened `Manage Event`, changed only maximum capacity from `8` to `7`
+  and saved once. The Activities SmartList patched the visible card on the fly
+  from the returned Save DTO; it did not reload the list.
+- The independent persisted oracle retained status `A`, publication, both
+  accepted identities, minimum capacity `1`, the empty legacy
+  frequency/timeframe/location values, null coordinates, Slots Off and Sub
+  Events Off. Only maximum/total capacity changed to `7 / 7`.
+- Exactly one completed `event-definition-changed` task targeted Nova with
+  reason `details`, produced one `event-details-changed` notification/outbox,
+  and exactly one `EVENT_CHANGED` recompute completed on attempt 1 with an
+  empty error. Reopen plus a second Save without changes added no write, task,
+  notification or recompute.
+- The accepted-member count is the published capacity floor; an outstanding
+  invitation does not reserve capacity. Frontend and backend regression
+  sources cover a decrease to the accepted count and the no-op boundary. The
+  running frontend/backend owner builds passed. A capacity-only Manage Save
+  was also narrowed so ticket synchronization, full event-counter projection
+  and stage-reminder reconciliation stay off its response-critical path;
+  ticketing enablement retains those consumers.
+
 ### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
 
+- Preparation on 2026-09-01: the versioned fixture is staged with one active
+  canonical `QA EVENT-RUNTIME-001`, Casey and Nova accepted, capacity `2 / 8`,
+  Slots Off, Sub Events Off, zero definitions/slots and zero runtime items.
+  The two managed Casey/Nova browser sessions are open. The first bounded
+  mutation is Casey's Max capacity `8 -> 9` Manage Save. Its Activities card
+  must update on the fly from the returned Save DTO; only the subsequently
+  opened View Event/Sub Events surface loads the persisted runtime from the
+  server. This run exposed that the generic three-minute event-change debounce
+  was still inherited in dev. Manual QA must not wait through that production
+  window when debounce timing is not under test, so `application-dev` now uses
+  a `15s` event-change override while production retains `3m`; the already
+  queued task was not patched by the fixture.
+- Casey completed the owning Max capacity `8 -> 9` Save. The persisted oracle
+  contains one unchanged canonical Event identity, accepted Casey/Nova, capacity
+  `2 / 9`, zero definitions/slots and exactly one active runtime with
+  `runtimeKind=MAIN_EVENT`, canonical `eventId=ownerId`, `subEventId=null` and
+  no duplicate Event. The backend request thread ran from its first auth/query
+  at approximately `07:34:39.952 CEST` to its last observed database read at
+  `07:34:40.174 CEST` (about `222ms`), so the perceived Save did not materially
+  improve over the prior roughly `231ms` trace. The removed ticket sync, full
+  counter projection and stage-reminder reconciliation are absent; the
+  remaining synchronous work includes Event/runtime persistence, affinity-task
+  enqueue/admin pending counters and definition-change task scheduling. Actual
+  notification delivery ran on `task-controller`, outside the response thread.
 - Start from one isolated normal Event definition with Slots Off and Sub Events
   Off. Before the owning Save, require no runtime item for the new identity.
 - Save once through the normal Event write path. The write must persist exactly
