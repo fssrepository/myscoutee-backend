@@ -893,7 +893,7 @@ First producer and repair evidence (2026-09-01, repair replay pending):
 
 ### `EVENT-SLOT-002` — future occurrence operation gating
 
-- Prepared baseline (`2026-09-01T03:44:56.396Z`): independently staged active
+- Clean verdict baseline (`2026-09-01T04:07:16.244Z`): independently staged active
   Public Weekly Tournament `QA EVENT-SLOT-002` with accepted Casey Admin and
   accepted Nova Member. The read-only harness/API oracle returns future sections
   September 8 and 15, each with `Qualifiers` then `Final` in
@@ -913,9 +913,12 @@ First producer and repair evidence (2026-09-01, repair replay pending):
   avatar. The repair adds `mode`/`slotsEnabled` to the backend list contract and
   projection, preserves organizer/avatar fields in HTTP cloning, and applies
   one organizer enrichment helper to Create/Save and Publish/Unpublish display
-  sync. Backend and frontend hot-deploy both compiled successfully. Complete
-  one hard-reload publication replay, then reset/restage before evaluating the
-  read-only checkpoint.
+  sync. Backend and frontend hot-deploy both compiled successfully. The
+  hard-reload publication replay visually passed with the real Casey avatar and
+  structural `Multislot` badge stable in Draft, Active and after polling. That
+  contaminated run was reset; the clean verdict baseline above was restaged and
+  its read-only status confirms zero lifecycle/recompute tasks, outbox,
+  notifications, runtime, generated groups or leaderboard rows.
 - Inspect the controlled future occurrences as host and participant.
 - Verify members, transport, accommodation and supplies actions follow the
   saved definition and actor permission. Structure editing is host-only.

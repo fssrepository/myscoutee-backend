@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-01 06:05 CEST
+Updated: 2026-09-01 06:08 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -49,21 +49,21 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SLOT-TOURNAMENT-001 — active; EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS, EVENT-SLOT-002 repair replay is pending
+checkpoint: EVENT-SLOT-TOURNAMENT-001 — active; EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS, EVENT-SLOT-002 is freshly staged for its read-only role/menu verdict
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-slot-002--future-occurrence-operation-gating
 checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
 scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
 ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
-state: EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS. EVENT-SLOT-002 was independently staged at 2026-09-01T03:44:56.396Z as active Public Weekly Tournament `QA EVENT-SLOT-002`, with Casey accepted Admin and Nova accepted Member, two future occurrence sections and no runtime/group/leaderboard state. During menu inspection Casey performed Unpublish -> Publish, so the read-only checkpoint became intentionally retained repair evidence rather than a PASS candidate; the current oracle contains the resulting lifecycle/recompute task, outbox and notification rows. This exposed a list-projection defect: Event Editor's local sync knew `slotsEnabled=true` and showed `Multislot`, while the backend `EventDto` and narrow list-card projection omitted that field, so a later poll could overwrite the structural badge. The projection now includes `mode` and `slotsEnabled`, and both Casey/Nova API reads return `slotsEnabled=true`. Create/Save and Publish/Unpublish display sync now share organizer/avatar enrichment, while HTTP cloning preserves `creatorAvatarUrl` and `organizerUserId`. The existing backend watcher compiled successfully and restarted at 2026-09-01T04:01:29.635Z; the frontend watcher compiled in 6.297 seconds and deployed at 2026-09-01T04:02:19Z. The open Casey page still showed the old-bundle `U` fallback, so one hard reload and shortest publication replay remain before reset/restage.
+state: EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS. EVENT-SLOT-002's retained hard-reload publication repair replay visually passed: the real Casey avatar and structural `Multislot` badge remained correct in Draft and Active and after list polling. The contaminated first run was then reset, and EVENT-SLOT-002 was independently restaged at 2026-09-01T04:07:16.244Z as active Public Weekly Tournament `QA EVENT-SLOT-002`, with Casey accepted Admin, Nova accepted Member, two future occurrence sections and no runtime/group/leaderboard state. The 04:08 read-only status oracle confirms the stable weekly template, both RS stage definitions, zero lifecycle/recompute tasks, outbox and notifications, and `afterStageOutboxCount=0` / `afterStageRecomputeTaskCount=0`. This clean fixture is now the only eligible source for the role/menu verdict; do not Publish, Unpublish, Save, Join, Leave or invoke a stage action.
 baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
-required_resume: First finish the retained repair replay, not the read-only menu checkpoint. Hard reload Casey once so the bundle deployed at 06:02:19 is active. Confirm the active `QA EVENT-SLOT-002` card has the real Casey avatar and `Multislot`; open Event Editor, Unpublish once, confirm the draft card still has the real avatar and `Multislot` after the next normal poll, then Publish once and confirm both remain after the next poll. Report only those four assertions or any deviation. Codex then checks the lifecycle oracle, resets the contaminated fixture, independently restages EVENT-SLOT-002 and reissues the strict read-only role/menu checklist.
+required_resume: Continue only with the freshly staged read-only EVENT-SLOT-002 role/menu checklist in the two managed Casey/Nova sessions. Both actors locate `QA EVENT-SLOT-002`, enter its Sub Events view, confirm September 8 and 15 each contain Qualifiers then Final once, and inspect every visible card/stage overflow without selecting an action. Report the exact Casey/Nova event-card labels and each stage-menu label plus any missing/wrong avatar, badge, section or stage. Do not Publish, Unpublish, Edit, Save, Join, Leave, open Groups/Members/resources, or select any lifecycle/runtime action. Codex then reruns the status oracle; only a byte-equivalent read boundary can become PASS.
 event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-SLOT-002; active Public Weekly Tournament, two future occurrences, Casey Admin plus Nova Member, no generated runtime/grouping state
 actors:
   Casey: accepted Admin/host in the left managed browser
   Nova: accepted Member/participant in the right managed browser
-next_actor: Casey performs the one hard-reload Unpublish/Publish avatar-and-Multislot repair replay; Codex then resets/restages before any read-only EVENT-SLOT-002 verdict.
+next_actor: Casey and Nova perform the strict read-only event-card and future-stage menu inspection; Codex verifies the unchanged oracle afterward.
 queued_followup: After EVENT-SLOT-002, independently stage EVENT-SLOT-003 and continue through EVENT-SLOT-004 with separate mutation/oracle boundaries.
-stop_phrase: avatar/multislot repair kész, followed by active-before, draft-after-poll and active-after-poll observations
+stop_phrase: EVENT-SLOT-002 menük kész, followed by the exact Casey/Nova event-card and four stage-menu label sets or any deviation
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
