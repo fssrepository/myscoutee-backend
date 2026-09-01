@@ -20,6 +20,8 @@
   const visibilityNonFriendUserId = "2d520f3c98b0440c1556f4af";
   const PREFIX = "manual-qa-checkpoint:v1:event-domain";
   const EVENT_ID = `${PREFIX}:event`;
+  const RUNTIME_TRANSPORT_ASSET_ID = `${PREFIX}:runtime-transport`;
+  const RUNTIME_TRANSPORT_ASSET_TITLE = "QA Main Event Transport";
   const ISOLATION_EVENT_ID = `${PREFIX}:ticket-isolation-control`;
   const LOCKED_EVENT_ID = `${PREFIX}:feedback-locked`;
   const TRASHED_EVENT_ID = `${PREFIX}:feedback-trashed`;
@@ -554,9 +556,9 @@
     "EVENT-RUNTIME-001": {
       stage: "runtime-childless-active",
       why: "Prove that one normal Slots Off/Sub Events Off Event Save materializes one persisted MAIN_EVENT runtime and that every View Event read remains read-only.",
-      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. Open View Event and inspect the single Event runtime card and Event Members, then close/reopen View Event and reload once. Repeat the read-only View Event inspection as Nova.",
-      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. View Event shows exactly one Event card with the canonical title, timeframe, location, capacity and members; it shows no empty Sub Events state, duplicate parent, synthetic :default child or tournament-only action. Reopen/reload creates no second runtime or other write.",
-      worker: "The changed Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Activities SmartList updates on the fly from the Save response; View Event, close/reopen and reload MUST NOT RUN a worker or write anything."
+      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. In View Event inspect the single Event runtime card and Event Members, then open Transport, assign exactly one Casey-owned Transport and Save. Close/reopen Transport and reload once to prove the same assignment returns under the MAIN_EVENT card.",
+      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. The Transport save creates exactly one activityResources record under canonical Event ownerId plus the stable main-event runtime resource key, and one accepted owner assignment for the selected Asset. Reopen/reload returns the same one Transport without a synthetic Sub Event, duplicate runtime/member/chat or unrelated write.",
+      worker: "The changed Event Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Transport Save is one direct resource/Asset assignment mutation and MUST NOT RUN a scheduler; View Event, close/reopen and reload remain read-only."
     },
     "EVENT-SLOT-001": {
       stage: "slot-editor-draft",
@@ -595,9 +597,9 @@
     },
     "EVENT-INV-002": {
       stage: "invitation-pending",
-      why: "Prove the pending-invitation privacy boundary in both UI and server authorization.",
-      action: "As invited participant, inspect the invitation and try accepted-only controls plus a direct chat/deep link without accepting.",
-      expected: "Invitation affordances may be visible, but accepted-only chat, participant resources and protected reads remain unavailable and server-denied.",
+      why: "Prove the locally executable pending-invitation UI privacy boundary; production-authenticated denial is owned by DEPLOY-FIREBASE-LIFECYCLE-001.",
+      action: "As invited participant, inspect the invitation without accepting and verify that accepted-only chat, participant resources and controls remain unavailable.",
+      expected: "Invitation affordances may be visible, but accepted-only chat, participant resources and controls remain unavailable. The Firebase-authenticated direct/deep-link server-denial assertion is executed only in the production-like deployment journey and does not gate the local Event pass.",
       worker: "MUST NOT RUN: this checkpoint is read-only."
     },
     "EVENT-INV-003": {
@@ -1645,6 +1647,7 @@
         { ownerType: "event", ownerId: { $in: EVENT_IDS } },
         { ownerId: { $regex: `^${PREFIX}` } }
       ] } },
+      { collection: "assetRequests", selector: { assetId: { $regex: `^${PREFIX}` } } },
       { collection: "activityResources", selector: { ownerId: { $regex: `^${PREFIX}` } } },
       { collection: "activitySubEventGroups", selector: { ownerId: { $regex: `^${PREFIX}` } } },
       { collection: "activitySubEventStageRuntime", selector: { ownerId: { $regex: `^${PREFIX}` } } },
@@ -1668,7 +1671,10 @@
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "userNotifications", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "scheduledMessageTasks", selector: { eventId: { $in: EVENT_IDS } } },
-      { collection: "affinityRecomputeTasks", selector: { targetId: { $in: EVENT_IDS } } },
+      { collection: "affinityRecomputeTasks", selector: { $or: [
+        { targetId: { $in: EVENT_IDS } },
+        { targetId: { $regex: `^${PREFIX}` } }
+      ] } },
       { collection: "schedulerPlanMarkers", selector: { $or: [
         { ownerId: { $in: EVENT_IDS } },
         { ownerId: { $regex: `^${PREFIX}` } }
@@ -1748,6 +1754,7 @@
       { ownerType: "event", ownerId: { $in: eventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
     ] });
+    Q.collection("assetRequests").deleteMany({ assetId: { $regex: `^${PREFIX}` } });
     Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: { $in: eventIds } });
@@ -1786,7 +1793,10 @@
       });
     }
     Q.collection("scheduledMessageTasks").deleteMany({ eventId: { $in: eventIds } });
-    Q.collection("affinityRecomputeTasks").deleteMany({ targetId: { $in: eventIds } });
+    Q.collection("affinityRecomputeTasks").deleteMany({ $or: [
+      { targetId: { $in: eventIds } },
+      { targetId: { $regex: `^${PREFIX}` } }
+    ] });
     Q.collection("schedulerPlanMarkers").deleteMany({ $or: [
       { ownerId: { $in: eventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
@@ -2598,6 +2608,19 @@
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).sort({ createdDate: 1 }).toArray();
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
+    const activityResources = Q.collection("activityResources")
+      .find({ ownerId: { $regex: `^${PREFIX}` } })
+      .sort({ ownerId: 1, subEventId: 1, assetOwnerUserId: 1, _id: 1 })
+      .toArray();
+    const runtimeTransportAsset = checkpointId === "EVENT-RUNTIME-001"
+      ? Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID })
+      : null;
+    const runtimeTransportRequestProjections = checkpointId === "EVENT-RUNTIME-001"
+      ? Q.collection("assetRequests")
+          .find({ assetId: RUNTIME_TRANSPORT_ASSET_ID })
+          .sort({ requestedAtIso: 1, _id: 1 })
+          .toArray()
+      : [];
     const mainEventRuntime = Q.collection("activityEventRuntimeItems").find({ $or: [
       { eventId: { $in: dynamicEventIds } },
       { ownerId: { $in: dynamicEventIds } }
@@ -2691,6 +2714,12 @@
       targetId: { $in: dynamicEventIds },
       updatedDate: { $gt: state.stagedAtIso }
     }).sort({ updatedDate: 1, _id: 1 }).toArray();
+    const runtimeTransportRecomputeTasks = checkpointId === "EVENT-RUNTIME-001"
+      ? Q.collection("affinityRecomputeTasks").find({
+          targetId: RUNTIME_TRANSPORT_ASSET_ID,
+          updatedDate: { $gt: state.stagedAtIso }
+        }).sort({ updatedDate: 1, _id: 1 }).toArray()
+      : [];
     const workerRules = Q.collection("notificationRuleConfigs").find({
       ruleKey: { $in: [
         "notification-outbox",
@@ -3289,6 +3318,18 @@
         completedAtIso: Q.text(item.completedAtIso),
         updatedDate: Q.text(item.updatedDate)
       })),
+      runtimeTransportRecomputeTasks: runtimeTransportRecomputeTasks.map(item => ({
+        id: Q.text(item._id),
+        targetType: Q.text(item.targetType),
+        targetId: Q.text(item.targetId),
+        reasons: item.reasons || [],
+        status: Q.text(item.status),
+        availableAtIso: Q.text(item.availableAtIso),
+        attemptCount: Number(item.attemptCount || 0),
+        lastError: Q.text(item.lastError),
+        completedAtIso: Q.text(item.completedAtIso),
+        updatedDate: Q.text(item.updatedDate)
+      })),
       workerRules: workerRules.map(item => ({
         ruleKey: Q.text(item.ruleKey),
         enabled: item.enabled === true,
@@ -3437,6 +3478,46 @@
         stageStatusReason: Q.text(item.stageStatusReason),
         stageFinalizedAt: item.stageFinalizedAt,
         groupsCount: item.groupsCount
+      })),
+      activityResources: activityResources.map(item => ({
+        id: Q.text(item._id),
+        recordId: Q.text(item.recordId),
+        status: Q.text(item.status),
+        ownerId: Q.text(item.ownerId),
+        subEventId: Q.text(item.subEventId),
+        assetOwnerUserId: Q.text(item.assetOwnerUserId),
+        assetAssignmentIds: item.assetAssignmentIds || {},
+        createdDate: item.createdDate,
+        updatedDate: item.updatedDate
+      })),
+      runtimeTransportAsset: runtimeTransportAsset ? {
+        id: Q.text(runtimeTransportAsset._id),
+        assetId: Q.text(runtimeTransportAsset.assetId),
+        ownerUserId: Q.text(runtimeTransportAsset.ownerUserId),
+        type: Q.text(runtimeTransportAsset.type),
+        title: Q.text(runtimeTransportAsset.title),
+        status: Q.text(runtimeTransportAsset.status),
+        requests: (runtimeTransportAsset.requests || []).map(request => ({
+          id: Q.text(request.requestId || request.id),
+          userId: Q.text(request.userId || request.requesterUserId),
+          status: Q.text(request.status),
+          requestKind: Q.text(request.requestKind),
+          eventId: Q.text(request.booking && request.booking.eventId),
+          subEventId: Q.text(request.booking && request.booking.subEventId),
+          quantity: Number(request.booking && request.booking.quantity || 0)
+        }))
+      } : null,
+      runtimeTransportRequestProjections: runtimeTransportRequestProjections.map(request => ({
+        id: Q.text(request._id),
+        requestId: Q.text(request.requestId || request.id),
+        assetId: Q.text(request.assetId),
+        ownerUserId: Q.text(request.ownerUserId),
+        userId: Q.text(request.userId),
+        status: Q.text(request.status),
+        requestKind: Q.text(request.requestKind),
+        eventId: Q.text(request.booking && request.booking.eventId),
+        subEventId: Q.text(request.booking && request.booking.subEventId),
+        requestedAtIso: Q.text(request.requestedAtIso)
       })),
       mainEventRuntime: mainEventRuntime.map(item => ({
         id: Q.text(item._id),
@@ -7788,6 +7869,180 @@
     return state;
   }
 
+  function runtimeTransportAssetDocument(preparedAtIso) {
+    return {
+      _id: RUNTIME_TRANSPORT_ASSET_ID,
+      syncKey: RUNTIME_TRANSPORT_ASSET_ID,
+      assetId: RUNTIME_TRANSPORT_ASSET_ID,
+      ownerUserId: hostUserId,
+      type: "Transport",
+      title: RUNTIME_TRANSPORT_ASSET_TITLE,
+      subtitle: "EVENT-RUNTIME-001 controlled transport",
+      category: "Transport",
+      city: "Austin",
+      capacityTotal: 4,
+      quantity: 1,
+      details: "Snapshot-protected MAIN_EVENT resource fixture",
+      routes: ["Austin"],
+      policiesEnabled: false,
+      policies: [],
+      requests: [],
+      visibility: "Public",
+      status: "A",
+      createdDate: preparedAtIso,
+      createdUser: hostUserId,
+      updatedDate: preparedAtIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function prepareRuntimeTransport() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("prepare-runtime-transport is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    if (state.fixturePreparations && state.fixturePreparations.runtimeTransport) {
+      Q.fail("the EVENT-RUNTIME-001 Transport fixture has already been prepared.");
+    }
+    if (Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID })) {
+      Q.fail("the deterministic EVENT-RUNTIME-001 Transport already exists outside this active preparation.");
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    const runtimeItems = Q.collection("activityEventRuntimeItems").find({ $or: [
+      { eventId: EVENT_ID },
+      { ownerId: EVENT_ID }
+    ] }).toArray();
+    if (!event
+        || Q.text(event.sourceId || event._id) !== EVENT_ID
+        || Q.text(event.ownerUserId) !== hostUserId
+        || Q.text(event.status) !== "A"
+        || runtimeItems.length !== 1
+        || Q.text(runtimeItems[0].runtimeKind) !== "MAIN_EVENT"
+        || Q.text(runtimeItems[0].eventId) !== EVENT_ID
+        || Q.text(runtimeItems[0].ownerId) !== EVENT_ID
+        || runtimeItems[0].subEventId != null
+        || Q.collection("activityResources").countDocuments({ ownerId: EVENT_ID }) !== 0) {
+      Q.fail("EVENT-RUNTIME-001 is no longer at its clean pre-assignment MAIN_EVENT boundary.");
+    }
+    const assetSnapshot = Q.snapshotSpecs([
+      { collection: "assets", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } }
+    ])[0];
+    const preparedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: { snapshots: assetSnapshot },
+      $set: {
+        "fixturePreparations.runtimeTransport": {
+          preparedAtIso,
+          assetId: RUNTIME_TRANSPORT_ASSET_ID,
+          title: RUNTIME_TRANSPORT_ASSET_TITLE
+        }
+      }
+    });
+    Q.collection("assets").insertOne(runtimeTransportAssetDocument(preparedAtIso));
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-transport-ready",
+      preparedAtIso,
+      asset: {
+        assetId: RUNTIME_TRANSPORT_ASSET_ID,
+        ownerUserId: hostUserId,
+        type: "Transport",
+        title: RUNTIME_TRANSPORT_ASSET_TITLE
+      },
+      baseline: oracle(refreshedState),
+      next: `Reload Casey once, reopen View Event > Transport > Assign, select '${RUNTIME_TRANSPORT_ASSET_TITLE}' and save exactly once.`
+    });
+  }
+
+  function repairRuntimeTransportInviteScope() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("repair-runtime-transport-invite-scope is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    if (state.fixtureRepairs && state.fixtureRepairs.runtimeTransportInviteScope) {
+      Q.fail("the EVENT-RUNTIME-001 leaked Asset invite has already been cleaned.");
+    }
+
+    const asset = Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID });
+    const requests = asset && Array.isArray(asset.requests) ? asset.requests : [];
+    const validManualRequests = requests.filter(request => (
+      Q.text(request && request.userId) === hostUserId
+      && Q.text(request && request.status) === "accepted"
+      && Q.text(request && request.requestKind) === "manual"
+      && Q.text(request && request.booking && request.booking.eventId) === EVENT_ID
+      && Q.text(request && request.booking && request.booking.subEventId) === `main-event:${EVENT_ID}`
+    ));
+    const leakedRequests = requests.filter(request => (
+      Q.text(request && request.userId) === participantUserId
+      && Q.text(request && request.status) === "pending"
+      && !Q.text(request && request.booking && request.booking.eventId)
+      && !Q.text(request && request.booking && request.booking.subEventId)
+    ));
+    const globalAssetMembers = Q.collection("activityMembers").find({
+      ownerType: "asset",
+      ownerId: RUNTIME_TRANSPORT_ASSET_ID
+    }).toArray();
+    const requestProjections = Q.collection("assetRequests").find({
+      assetId: RUNTIME_TRANSPORT_ASSET_ID
+    }).toArray();
+    const leakedProjections = requestProjections.filter(request => (
+      Q.text(request && request.userId) === participantUserId
+      && !Q.text(request && request.booking && request.booking.eventId)
+      && !Q.text(request && request.booking && request.booking.subEventId)
+    ));
+
+    if (!asset
+        || requests.length !== 2
+        || validManualRequests.length !== 1
+        || leakedRequests.length !== 1
+        || globalAssetMembers.length !== 2
+        || !sameIds(globalAssetMembers.map(member => member.userId), [hostUserId, participantUserId])
+        || leakedProjections.length !== 1) {
+      Q.fail("the leaked EVENT-RUNTIME-001 Asset invite boundary is not exact; refusing targeted cleanup.");
+    }
+
+    Q.collection("assets").updateOne(
+      { assetId: RUNTIME_TRANSPORT_ASSET_ID },
+      { $set: { requests: validManualRequests } }
+    );
+    const memberRemoval = Q.collection("activityMembers").deleteMany({
+      ownerType: "asset",
+      ownerId: RUNTIME_TRANSPORT_ASSET_ID
+    });
+    const projectionRemoval = Q.collection("assetRequests").deleteOne({
+      _id: leakedProjections[0]._id
+    });
+    const repairedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "fixtureRepairs.runtimeTransportInviteScope": {
+          repairedAtIso,
+          removedGlobalMembers: Number(memberRemoval.deletedCount || 0),
+          removedUnscopedRequests: 1,
+          removedUnscopedProjections: Number(projectionRemoval.deletedCount || 0)
+        }
+      }
+    });
+
+    const refreshedState = requireMatchingState();
+    const repaired = oracle(refreshedState);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-transport-invite-scope-repaired",
+      repairedAtIso,
+      removedGlobalMembers: Number(memberRemoval.deletedCount || 0),
+      removedUnscopedRequests: 1,
+      removedUnscopedProjections: Number(projectionRemoval.deletedCount || 0),
+      retainedTransportRequests: repaired.runtimeTransportAsset && repaired.runtimeTransportAsset.requests,
+      retainedRequestProjections: repaired.runtimeTransportRequestProjections,
+      retainedResource: repaired.activityResources,
+      next: "Reload Casey once, open View Event > Transport > QA Main Event Transport > Members, invite Nova once, then close and reopen Members. Expect one pending invitation row and a red pending badge without a full list reload."
+    });
+  }
+
   function repairTournamentRoomPresentation() {
     if (checkpointId !== "TOURNAMENT-002") {
       Q.fail("repair-tournament-room-presentation is restricted to TOURNAMENT-002.");
@@ -12005,6 +12260,8 @@
     case "advance": advance(); break;
     case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
     case "prepare-invitation-admin-approval-retest": prepareInvitationAdminApprovalRetest(); break;
+    case "prepare-runtime-transport": prepareRuntimeTransport(); break;
+    case "repair-runtime-transport-invite-scope": repairRuntimeTransportInviteScope(); break;
     case "hold-auto-inviter": holdAutoInviter(); break;
     case "prepare-auto-inviter": prepareAutoInviter(); break;
     case "capture-auto-inviter-baseline": captureAutoInviterBaseline(); break;

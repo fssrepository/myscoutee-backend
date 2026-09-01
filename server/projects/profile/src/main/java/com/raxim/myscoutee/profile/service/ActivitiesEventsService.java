@@ -1428,15 +1428,43 @@ public class ActivitiesEventsService {
                     : filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
+        Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey = containsMainEventRuntime(baseSlots)
+                ? mainEventRuntimeResourceRecordsByKey(lookups.resourceLookups())
+                : Map.of();
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(
                 lookups.stageRuntimeLookups(),
                 viewer.userId());
         List<EventSubEventsSlotDto> slots = activityEventSubEventsMapper.withSubEventStates(
                 baseSlots,
-                Map.of(),
+                resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
         return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
+    }
+
+    private Map<String, ActivitySubEventResourceStateDto> mainEventRuntimeResourceRecordsByKey(
+            List<SubEventResourceLookup> lookups) {
+        Map<String, ActivitySubEventResourceStateDto> result = new LinkedHashMap<>();
+        for (SubEventResourceLookup lookup : lookups == null ? List.<SubEventResourceLookup>of() : lookups) {
+            if (lookup == null) {
+                continue;
+            }
+            ActivitySubEventResourceStateDto state = activitiesResourcesService.queryState(
+                    lookup.ownerId(),
+                    lookup.subEventId(),
+                    lookup.assetOwnerUserId());
+            if (state == null) {
+                continue;
+            }
+            String key = activityEventSubEventsMapper.subEventResourceRecordKey(
+                    state.ownerId(),
+                    state.subEventId(),
+                    state.assetOwnerUserId());
+            if (StringUtils.hasText(key)) {
+                result.put(key, state);
+            }
+        }
+        return result;
     }
 
     private EventSubEventsSlotDto mainEventRuntimeSlot(ActivityEvent parent) {

@@ -55,7 +55,9 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
@@ -300,6 +302,61 @@ class ActivitiesEventsServiceTest {
         verify(activitiesResourcesService, never()).queryState(anyString(), anyString(), anyString());
         verify(activitiesMembersService, never())
                 .buildBatchOwnerSnapshots(anyString(), anyCollection());
+    }
+
+    @Test
+    void childlessMainEventReloadUsesItsRuntimeResourceMetricProjection() {
+        Users viewer = new Users();
+        viewer.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setSubEventsEnabled(false);
+        parent.setSlotsEnabled(false);
+        parent.setSubEventDefinitions(List.of());
+
+        ActivityMainEventRuntime runtime = new ActivityMainEventRuntime();
+        runtime.setRecordId("main-event:event-1");
+        runtime.setRuntimeKind("MAIN_EVENT");
+        runtime.setStatus(ActivityEvent.STATUS_ACTIVE);
+        runtime.setEventId("event-1");
+        runtime.setOwnerId("event-1");
+        runtime.setTitle("Event event-1");
+
+        ActivitySubEventResourceStateDto resourceState = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "main-event:event-1",
+                "host",
+                Map.of("Transport", List.of("transport-1")),
+                Map.of(),
+                Map.of(),
+                Map.of(),
+                Map.of("Transport", new SubEventResourceMetricDto(1, 1, 0, 4)));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class))).thenReturn(runtime);
+        when(activitiesResourcesService.queryState("event-1", "main-event:event-1", "host"))
+                .thenReturn(resourceState);
+
+        EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
+                "host",
+                "event-1",
+                "upcoming",
+                "day",
+                null,
+                null,
+                null,
+                false));
+
+        assertThat(result.slots()).singleElement().satisfies(slot ->
+                assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                    assertThat(item.runtimeKind()).isEqualTo("MAIN_EVENT");
+                    assertThat(item.id()).isEqualTo("main-event:event-1");
+                    assertThat(item.carsAccepted()).isEqualTo(1);
+                    assertThat(item.carsPending()).isEqualTo(1);
+                    assertThat(item.carsCapacityMin()).isZero();
+                    assertThat(item.carsCapacityMax()).isEqualTo(4);
+                }));
+        verify(activitiesResourcesService).queryState("event-1", "main-event:event-1", "host");
     }
 
     @Test

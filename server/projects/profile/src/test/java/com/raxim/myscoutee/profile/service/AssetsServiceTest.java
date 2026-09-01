@@ -470,6 +470,7 @@ class AssetsServiceTest {
                 .singleElement()
                 .satisfies(request -> {
                     assertThat(request.status()).isEqualTo("pending");
+                    assertThat(request.requestKind()).isEqualTo("invite");
                     assertThat(request.booking().eventId()).isEqualTo("event-1:subevent-1:group-a");
                     assertThat(request.booking().subEventId()).isEqualTo("subevent-1");
                 });

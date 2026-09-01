@@ -847,6 +847,63 @@ Execution evidence (2026-09-01, PASS):
   with the full `activity-resource.builder.spec.ts` source at `8/8`; the running
   frontend owner build also passed and deployed. Manual popup/reload confirmation
   remains, and this implementation step did not mutate the retained fixture.
+- Casey reloaded the deployed frontend and manually confirmed the bounded
+  MAIN_EVENT card/resource checklist. The post-read versioned oracle returned
+  `activityResources=[]`, no runtime-scoped member or chat artifact, unchanged
+  Casey Admin plus Nova Member at `2 / 9`, and the same single MAIN_EVENT
+  `recordId`, `syncKey`, created/updated timestamps and canonical owner/event
+  identity. Thus Casey's Transport/Accommodation/Supplies and Event Members
+  inspection is read-only PASS; the terminal real assignment remains.
+- Campaign scope correction: the duplicate Nova popup replay is dropped as
+  low-value microtesting. Casey instead performs one real Transport assignment
+  from the MAIN_EVENT card. The mutation oracle requires exactly one resource
+  record with canonical Event `ownerId`, physical
+  `subEventId=main-event:<eventId>`, Casey as asset owner and exactly one
+  Transport asset ID; the corresponding Asset request is accepted and scoped
+  to the same runtime. Reopen plus full reload must return that same assignment
+  without a synthetic sub-event/member/chat or unrelated lifecycle work.
+- The first Assign popup correctly rendered its empty state because Casey had
+  no Transport asset. The versioned harness command
+  `prepare-runtime-transport` snapshots the deterministic asset selector before
+  inserting Casey's `QA Main Event Transport`; normal checkpoint reset therefore
+  removes/restores it exactly. Since this preparation happened behind an open
+  client, one explicit reload is required before the selector is reopened.
+- Casey assigned the deterministic Transport once. The persisted oracle proved
+  one canonical resource record at `main-event:<eventId>` and one accepted
+  owner Asset request, with the MAIN_EVENT runtime unchanged. The open card menu
+  nevertheless remained `0 / 0 - 0`: the Asset selector first omitted
+  `publishSubEventResourceMetrics`. After signal publication was restored, Casey
+  proved that the client still recomputed accepted occupancy as `0` instead of
+  consuming the successful save DTO's canonical `accepted=1` metric. A full
+  reload independently returned `0 / 0 - 0` because the synthetic list-shaped
+  MAIN_EVENT DTO was initialized with zero resource fields and did not hydrate
+  its stable `eventId + main-event:<eventId>` resource scope. The follow-up
+  repair applies the save DTO before signal publication and loads that same
+  indexed runtime resource scope on MAIN_EVENT reload; no definition identity is
+  involved. It also removes a redundant Asset-detail GET before background
+  request persistence. The measured blocking resource POST itself was about
+  `275ms`, with indexed lookups and normal projection refresh rather than a
+  multi-second query. Both frontend/backend hot-deploy owners compiled and
+  restarted successfully. The terminal retest requires reload persistence at
+  `1 / 0 - 4`, then one remove/reassign cycle with immediate
+  `1 -> 0 -> 1` label convergence from successful save-response signals.
+- The assigned Transport's **Members -> Invite** integration then exposed a
+  separate scope handoff defect inside this same MAIN_EVENT journey. The Save
+  persisted Nova as a global Asset member and mirrored an unscoped `borrow`
+  request, so the immediate client signal briefly showed a red badge but the
+  scoped Members query correctly returned neither row after reopen/reload. The
+  repair forwards canonical Event plus `main-event:<eventId>` into the Asset
+  member replacement and preserves admin `invite` separately from a member's
+  `borrow`. A guarded versioned cleanup removed exactly the leaked Casey/Nova
+  global Asset-member rows and Nova's one unscoped request/projection while
+  retaining the assigned Transport, its accepted manual scoped request and its
+  resource record. The bounded replay is one Nova invite, close/reopen and one
+  reload: Nova must remain once as pending, the red Transport resource counter
+  must remain `2` (one assigned/open resource item plus one pending member),
+  and accepted occupancy must remain `1 / 0 - 4`. The clean assigned-resource
+  baseline counter is `1`. This is the MAIN_EVENT
+  integration assertion; the later `ASSET-MEMBER-001/002` cases still own the
+  full generic Asset invitation lifecycle.
 - Start from one isolated normal Event definition with Slots Off and Sub Events
   Off. Before the owning Save, require no runtime item for the new identity.
 - Save once through the normal Event write path. The write must persist exactly
@@ -1598,15 +1655,17 @@ Execution evidence in progress on 2026-08-14:
 
 Execution evidence on 2026-08-04:
 
-- PARTIAL UI PASS: Riley could open the invitation card and the event's
+- LOCAL UI PASS / CLOSED: Riley could open the invitation card and the event's
   read-only view. The editor fields were disabled, and no event chat or
   participant-resource action was visible. Invitation-specific View, Accept
   and Reject actions were present.
-- OPEN AUTHORIZATION CHECK: the event uses Open Event member preview, so the
+- The event uses Open Event member preview, so the
   Members affordance is expected to be visible. The demo session bypasses the
-  production authenticated access-policy gate; therefore this UI pass cannot
-  prove the required direct/deep-link server denial. Repeat that half in a
-  Firebase-enabled, non-demo operator configuration.
+  production authenticated access-policy gate. The Firebase-authenticated
+  direct/deep-link denial is therefore migrated as an explicit assertion into
+  `DEPLOY-FIREBASE-LIFECYCLE-001`, where it can be exercised with a verified
+  non-demo identity. It no longer blocks the local Event pass and must not be
+  replayed as an Event microcheck in the demo stack.
 - The Members screenshot also exposed `EVENT-MEMBER-CREATOR-001`; that separate
   canonical-membership failure does not decide this privacy checkpoint.
 
