@@ -7896,6 +7896,156 @@
     };
   }
 
+  function materializeRuntimeMemberCleanBoundary() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("runtime member clean restage is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event || Q.text(event.sourceId || event._id) !== EVENT_ID) {
+      Q.fail("EVENT-RUNTIME-001 clean Event baseline is missing.");
+    }
+    const runtimeSubEventId = `main-event:${EVENT_ID}`;
+    const stagedAtIso = Q.nowIso();
+    Q.collection("events").updateOne(
+      { _id: event._id },
+      { $set: {
+        capacityMax: 9,
+        capacityTotal: 9,
+        updatedDate: stagedAtIso,
+        updatedUser: hostUserId
+      } }
+    );
+    Q.collection("activityEventRuntimeItems").insertOne({
+      _id: `${PREFIX}:runtime-member:main-event`,
+      recordId: runtimeSubEventId,
+      syncKey: `${PREFIX}:runtime-member:main-event`,
+      status: "A",
+      runtimeKind: "MAIN_EVENT",
+      eventId: EVENT_ID,
+      ownerId: EVENT_ID,
+      subEventId: null,
+      title: event.title,
+      description: event.subtitle,
+      timeframe: Q.text(event.timeframe),
+      startAtIso: event.startAtIso,
+      endAtIso: event.endAtIso,
+      location: Q.text(event.location),
+      createdByUserId: hostUserId,
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    });
+
+    const assetSnapshot = Q.snapshotSpecs([
+      { collection: "assets", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } }
+    ])[0];
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      { $push: { snapshots: assetSnapshot } }
+    );
+    const host = Q.user(hostUserId) || {};
+    const manualRequestId = `manual:${runtimeSubEventId}:${RUNTIME_TRANSPORT_ASSET_ID}`;
+    const manualRequest = {
+      id: manualRequestId,
+      userId: hostUserId,
+      name: Q.text(host.name),
+      initials: Q.text(host.initials),
+      gender: Q.text(host.gender),
+      status: "accepted",
+      note: "Reserved and assigned by the owner.",
+      requestKind: "manual",
+      requestedAtIso: stagedAtIso,
+      booking: {
+        eventId: EVENT_ID,
+        eventTitle: event.title,
+        subEventId: runtimeSubEventId,
+        subEventTitle: event.title,
+        slotKey: runtimeSubEventId,
+        slotLabel: event.title,
+        timeframe: "",
+        startAtIso: event.startAtIso,
+        endAtIso: event.endAtIso,
+        quantity: 1,
+        totalAmount: null,
+        previousTotalAmount: null,
+        currency: null,
+        acceptedPolicyIds: [],
+        paymentSessionId: null,
+        inventoryApplied: null
+      },
+      menuActions: []
+    };
+    const asset = runtimeTransportAssetDocument(stagedAtIso);
+    asset.requests = [manualRequest];
+    Q.collection("assets").insertOne(asset);
+    Q.collection("assetRequests").insertOne({
+      _id: manualRequestId,
+      requestId: manualRequestId,
+      assetId: RUNTIME_TRANSPORT_ASSET_ID,
+      ownerUserId: hostUserId,
+      ownerKey: `${hostUserId}:${RUNTIME_TRANSPORT_ASSET_ID}`,
+      assetCapacity: 4,
+      ...manualRequest,
+      createdDate: stagedAtIso,
+      updatedDate: stagedAtIso
+    });
+    const resourceId = `${PREFIX}:runtime-member:resource`;
+    Q.collection("activityResources").insertOne({
+      _id: resourceId,
+      syncKey: resourceId,
+      recordId: `${hostUserId}:${EVENT_ID}:${runtimeSubEventId}`,
+      ownerKey: `${hostUserId}:${EVENT_ID}`,
+      status: "A",
+      ownerId: EVENT_ID,
+      subEventId: runtimeSubEventId,
+      assetOwnerUserId: hostUserId,
+      assetAssignmentIds: { Transport: [RUNTIME_TRANSPORT_ASSET_ID] },
+      assetSettingsByType: {
+        Transport: {
+          [RUNTIME_TRANSPORT_ASSET_ID]: {
+            capacityMin: 0,
+            capacityMax: 4,
+            quantity: 1,
+            addedByUserId: hostUserId,
+            routeEnabled: false,
+            routes: ["Austin"]
+          }
+        }
+      },
+      supplyContributionEntriesByAssetId: {},
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-member-clean-ready",
+      stagedAtIso,
+      oracle: oracle(refreshedState),
+      next: "Open View Event > Transport > QA Main Event Transport > Members and test one scoped invite from this zero-pending boundary."
+    });
+  }
+
+  function restageRuntimeMemberClean() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("restage-runtime-member-clean is restricted to EVENT-RUNTIME-001.");
+    }
+    const active = Q.activeState(SCENARIO, false);
+    if (active) {
+      if (Q.text(active.checkpointId).toUpperCase() !== checkpointId) {
+        Q.fail(`staged checkpoint is '${active.checkpointId}', not '${checkpointId}'.`);
+      }
+      resetState(active);
+    }
+    stage();
+    materializeRuntimeMemberCleanBoundary();
+  }
+
   function prepareRuntimeTransport() {
     if (checkpointId !== "EVENT-RUNTIME-001") {
       Q.fail("prepare-runtime-transport is restricted to EVENT-RUNTIME-001.");
@@ -12261,6 +12411,7 @@
     case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
     case "prepare-invitation-admin-approval-retest": prepareInvitationAdminApprovalRetest(); break;
     case "prepare-runtime-transport": prepareRuntimeTransport(); break;
+    case "restage-runtime-member-clean": restageRuntimeMemberClean(); break;
     case "repair-runtime-transport-invite-scope": repairRuntimeTransportInviteScope(); break;
     case "hold-auto-inviter": holdAutoInviter(); break;
     case "prepare-auto-inviter": prepareAutoInviter(); break;

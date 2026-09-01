@@ -715,7 +715,8 @@
           "actor": "Nova accepted runtime participant",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social"
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": false
         }
       ]
     },

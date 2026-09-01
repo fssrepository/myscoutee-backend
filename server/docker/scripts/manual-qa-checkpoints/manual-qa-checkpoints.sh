@@ -46,6 +46,7 @@ Usage:
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
   bash manual-qa-checkpoints.sh prepare-runtime-transport event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restage-runtime-member-clean event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh repair-runtime-transport-invite-scope event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
   bash manual-qa-checkpoints.sh prepare-invitation-admin-approval-retest event-domain EVENT-INV-004
@@ -381,6 +382,11 @@ case "${scenario}:${command}" in
   event-domain:prepare-tournament-final-completion-retest|\
   event-domain:verify-tournament-final-completion)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:restage-runtime-member-clean)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-RUNTIME-001" ] || fail "${command} is restricted to EVENT-RUNTIME-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:verify-tournament-card-transition)
