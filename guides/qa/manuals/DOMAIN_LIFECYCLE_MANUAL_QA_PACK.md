@@ -734,6 +734,46 @@ Execution evidence on 2026-08-04:
 - Start the visible tournament action or arm only the documented persisted job
   schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
+Repair replay evidence (2026-09-01, PASS):
+
+- Casey's first manual producer saved one DR Tournament event with Qualifier
+  and Final definitions. The independent persisted oracle proved the submitted
+  definition order and settings, zero generated rooms/groups, zero stage
+  runtime/leaderboard state and exactly one pending `EVENT_CHANGED` recompute
+  task. Grouping/review remained unarmed as required.
+- The pre-Save visual boundary failed: accepting a stage form with its green
+  check updated only the editor model; the already-open Sub Events SmartList
+  did not receive a draft update. The repair publishes the complete normalized
+  definition snapshot through `EventSubeventsPopupStore`, updates the existing
+  SmartList through `syncVisibleItems`, preserves matching runtime metrics,
+  removes deleted stage cards through the same full-snapshot path, discards the
+  preview on an unsaved close and retains the existing full-save signal as the
+  sole server-confirmation reload. No polling was added.
+- Save diagnosis measured the backend `/activities/events/sync` request at
+  approximately 170 ms. Runtime Mongo explain used `event_source_lookup` and
+  `activity_member_owner_user`, each examining one key and one document, so no
+  new index was justified. The frontend nevertheless issued an unconditional
+  Event Detail GET immediately after the acknowledged POST. Interactive Save
+  now merges the compact server response into the complete submitted detail
+  DTO and removes that redundant critical-path read; independent QA readback
+  remains unchanged.
+- The running Angular watcher compiled and deployed the repair without errors.
+  The controlled fixture was reset, proved `not-staged`, and restaged at
+  `2026-09-01T03:11:23.190Z`. Because the fixture and bundle changed behind the
+  retained Casey window, the shortest visual replay begins with one explicit
+  reload and must inspect the Sub Events cards after each stage check before
+  the single parent Save.
+- Casey reported the shortest visual replay complete. The final independent
+  oracle proved the exact `Qualifier -> Final` definition order, group capacity
+  `2..4`, Score leaderboards, advancement `1 -> 0`, one unchanged accepted
+  Admin and zero generated group/room/runtime/leaderboard state. Exactly one
+  pending `EVENT_CHANGED` recompute task exists. The Save trace contained no
+  immediate Event Detail GET; the next Detail GET occurred 46 seconds later
+  for the explicit reopen. The owning database request trace narrowed from
+  approximately 170 ms before repair to 123 ms after repair. Source checkpoint
+  `EVENT-EDITOR-004` is **PASS**; the consolidated journey continues with
+  `EVENT-SLOT-001`.
+
 ### `EVENT-EDITOR-005` — edit an active downstream definition
 
 - Change one downstream-relevant field at a time: ticketing, capacity,
@@ -796,6 +836,44 @@ Execution evidence on 2026-08-04:
   order. No occurrence may contain an additional `MAIN_EVENT` card or a
   synthetic `:default` child. Reopen, paging, calendar navigation and
   Upcoming/Past switching are read-only.
+
+First producer and repair evidence (2026-09-01, repair replay pending):
+
+- Casey correctly entered a Weekly parent range from September 2 at 10:00 to
+  October 7 at 12:00 PM, enabled Slots and saved one Wednesday 10:00 template
+  while retaining the exact Tournament Qualifier/Final definitions. Upcoming
+  omitted the October 7 occurrence.
+- The independent oracle ruled out an AM/PM entry error. The parent bounds were
+  stored as `2026-09-02T08:00:00Z` and `2026-10-07T10:00:00Z`, but the template
+  remained timezone-less `2026-09-02T10:00`. The server therefore compared a
+  10:00-12:00 local-looking final slot to a 10:00 UTC-normalized parent end and
+  excluded it. A later raw Mongo read proved the template identity was stable
+  as embedded `_id=slot-1`; the harness had falsely projected only `item.id`
+  and was repaired to accept Mongo's embedded `_id` representation.
+- The save trace showed `/events/sync` followed by `/sub-events` only about five
+  seconds later. The list-owned save effect previously invalidated its query;
+  it did not imperatively invoke the already-mounted SmartList loader.
+- The frontend persistence boundary now converts non-closed template starts to
+  ISO instants together with the parent bounds, without mutating the editor
+  model. The matching save effect now clears its canonical load keys and calls
+  the Sub Events SmartList `reload()` directly, falling back to a query revision
+  only when the list is not mounted. The save still produces one canonical
+  Sub Events GET rather than a duplicate request.
+- The running frontend watcher compiled and deployed the repair without errors
+  in 9.339 seconds at `2026-09-01T03:31:16.836Z`. The repair replay must retain
+  the already-open list, Save once without changing the verified values, and
+  show six unique Wednesday sections from September 2 through October 7, each
+  containing Qualifier then Final exactly once. Persisted/read-side evidence is
+  still required before PASS.
+- First reload repair retest: Saves at 05:34:39, 05:35:44 and 05:36:24 were not
+  followed by a list-owned `/sub-events` request; the only 05:35:17 load came
+  from Casey's manual browser reload. The parent Activities effect consumed and
+  cleared the shared save message before the nested Sub Events effect observed
+  it. Event Editor now emits a dedicated durable, monotonically revisioned
+  event-save reload request through the Sub Events store. The matching open
+  list observes that request directly and invokes its own SmartList loader; no
+  unrelated Activities consumer clears it. The watcher compiled this repair in
+  5.748 seconds and synced it at `2026-09-01T03:38:01Z`.
 
 ### `EVENT-SLOT-002` — future occurrence operation gating
 

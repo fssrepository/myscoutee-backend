@@ -2423,7 +2423,7 @@
       slotsEnabled: event.slotsEnabled === true,
       subEventsEnabled: event.subEventsEnabled === true,
       slotTemplates: (event.slotTemplates || []).map(item => ({
-        id: Q.text(item.id),
+        id: Q.text(item.id || item._id),
         startAt: item.startAt,
         closed: item.closed === true,
         overrideDate: item.overrideDate
