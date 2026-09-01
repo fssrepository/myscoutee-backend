@@ -107,6 +107,7 @@ public class ActivityEventMapper {
                 resolveEventType(record),
                 normalizeMode(record.getMode()),
                 record.getCurrentStage(),
+                Boolean.TRUE.equals(record.getSlotsEnabled()),
                 acceptedMembers,
                 pendingMembers,
                 acceptedMemberUserIds,

@@ -1991,7 +1991,7 @@
       return;
     }
     if (stageKind === "slot-future") {
-      const definitions = casualSlotDefinitions();
+      const definitions = tournamentStages();
       const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
         acceptedUserIds: [participantUserId],
         startAtIso: context.parentStartAtIso,
@@ -1999,7 +1999,7 @@
         subEventsEnabled: true,
         subEventDefinitions: definitions,
         subEvents: definitions,
-        mode: "Casual"
+        mode: "Tournament"
       });
       event.frequency = "Weekly";
       event.slotsEnabled = true;

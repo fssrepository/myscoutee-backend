@@ -6742,6 +6742,8 @@ public class ActivitiesEventsService {
                 .include("slotTemplateId")
                 .include("generated")
                 .include("eventType")
+                .include("mode")
+                .include("slotsEnabled")
                 .include("currentStage")
                 .include("acceptedMembers")
                 .include("pendingMembers")

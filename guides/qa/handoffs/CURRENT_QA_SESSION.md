@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-01 05:21 CEST
+Updated: 2026-09-01 06:05 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -49,20 +49,21 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SLOT-TOURNAMENT-001 — active; EVENT-EDITOR-004 is PASS and EVENT-SLOT-001 repair replay is live
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-slot-001--editor-slot-definition-to-occurrence-sections
+checkpoint: EVENT-SLOT-TOURNAMENT-001 — active; EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS, EVENT-SLOT-002 repair replay is pending
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-slot-002--future-occurrence-operation-gating
 checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
 scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
 ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
-state: EVENT-EDITOR-004 repair replay is PASS. EVENT-SLOT-001's first producer retained the same draft identity and correctly persisted Weekly, Slots On, one Wednesday 10:00 template, the exact Qualifier/Final definitions and parent bounds 2026-09-02 10:00 through 2026-10-07 12:00 local. The visible Upcoming result omitted October 7. The independent oracle proved this was not a 12 AM/PM input error: the parent end was correctly 2026-10-07T10:00:00Z, while the slot template incorrectly remained a timezone-less 2026-09-02T10:00. The server compared that local-looking template against UTC-normalized parent bounds and excluded the final two-hour occurrence. The initial request trace showed the generic save invalidation delaying the Sub Events GET by about five seconds. After the first repair, later Saves at 05:34:39, 05:35:44 and 05:36:24 produced no list-owned `/sub-events`; the 05:35:17 request was attributable only to Casey's manual reload. Root cause: the parent Activities effect cleared its shared save message before the nested Sub Events effect observed it. A dedicated durable, revisioned event-save reload signal now runs directly from Event Editor to the matching Sub Events owner, whose effect calls its SmartList reload; the existing frontend-sync watcher compiled and deployed this second repair in 5.748 seconds and synced it at 2026-09-01T03:38:01Z. The persisted slot start is now correctly `2026-09-02T08:00:00.000Z`. Raw Mongo also proved stable template `_id=slot-1`; the harness falsely read only `item.id`, so its projection now accepts Mongo's embedded `_id`. EVENT-SLOT-001 remains NOT RUN until one shortest visual reload-signal replay and independent request/oracle check pass.
+state: EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS. EVENT-SLOT-002 was independently staged at 2026-09-01T03:44:56.396Z as active Public Weekly Tournament `QA EVENT-SLOT-002`, with Casey accepted Admin and Nova accepted Member, two future occurrence sections and no runtime/group/leaderboard state. During menu inspection Casey performed Unpublish -> Publish, so the read-only checkpoint became intentionally retained repair evidence rather than a PASS candidate; the current oracle contains the resulting lifecycle/recompute task, outbox and notification rows. This exposed a list-projection defect: Event Editor's local sync knew `slotsEnabled=true` and showed `Multislot`, while the backend `EventDto` and narrow list-card projection omitted that field, so a later poll could overwrite the structural badge. The projection now includes `mode` and `slotsEnabled`, and both Casey/Nova API reads return `slotsEnabled=true`. Create/Save and Publish/Unpublish display sync now share organizer/avatar enrichment, while HTTP cloning preserves `creatorAvatarUrl` and `organizerUserId`. The existing backend watcher compiled successfully and restarted at 2026-09-01T04:01:29.635Z; the frontend watcher compiled in 6.297 seconds and deployed at 2026-09-01T04:02:19Z. The open Casey page still showed the old-bundle `U` fallback, so one hard reload and shortest publication replay remain before reset/restage.
 baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
-required_resume: Do not restage, reset or relaunch while the retained EVENT-SLOT-001 chain and Casey window remain intact. Reload the Casey browser once because the bundle changed, open the retained event's Sub Events list in Upcoming, open Edit from that list, verify without changing that Start is Sep 2 10:00, End is Oct 7 12:00 PM, frequency is Weekly, Slots is On and the one schedule is Wednesday 10:00, then Save exactly once. The already-open list must reload without manual close/reopen and show six unique weekly sections Sep 2 through Oct 7, each with Qualifier then Final once. Stop and report any mismatch.
-event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-EDITOR-004; retained DR Tournament definition, Weekly Slots On, one currently timezone-less template pending repair replay, no generated runtime/grouping state
+required_resume: First finish the retained repair replay, not the read-only menu checkpoint. Hard reload Casey once so the bundle deployed at 06:02:19 is active. Confirm the active `QA EVENT-SLOT-002` card has the real Casey avatar and `Multislot`; open Event Editor, Unpublish once, confirm the draft card still has the real avatar and `Multislot` after the next normal poll, then Publish once and confirm both remain after the next poll. Report only those four assertions or any deviation. Codex then checks the lifecycle oracle, resets the contaminated fixture, independently restages EVENT-SLOT-002 and reissues the strict read-only role/menu checklist.
+event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-SLOT-002; active Public Weekly Tournament, two future occurrences, Casey Admin plus Nova Member, no generated runtime/grouping state
 actors:
-  Casey: host/editor; one isolated managed browser is active
-next_actor: Casey performs the issued EVENT-SLOT-001 one-save repair checklist and reports the six visible occurrence/list assertions together, then Codex checks UTC persistence, stable template/source identities, request timing and the no-read-side-write oracle.
-queued_followup: After EVENT-SLOT-001, continue EVENT-SLOT-002 through EVENT-SLOT-004 in source order with separate stage/oracle boundaries.
-stop_phrase: EVENT-SLOT-001 kész, followed by any visible deviation
+  Casey: accepted Admin/host in the left managed browser
+  Nova: accepted Member/participant in the right managed browser
+next_actor: Casey performs the one hard-reload Unpublish/Publish avatar-and-Multislot repair replay; Codex then resets/restages before any read-only EVENT-SLOT-002 verdict.
+queued_followup: After EVENT-SLOT-002, independently stage EVENT-SLOT-003 and continue through EVENT-SLOT-004 with separate mutation/oracle boundaries.
+stop_phrase: avatar/multislot repair kész, followed by active-before, draft-after-poll and active-after-poll observations
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

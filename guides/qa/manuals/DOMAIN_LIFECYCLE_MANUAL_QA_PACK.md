@@ -874,9 +874,48 @@ First producer and repair evidence (2026-09-01, repair replay pending):
   list observes that request directly and invokes its own SmartList loader; no
   unrelated Activities consumer clears it. The watcher compiled this repair in
   5.748 seconds and synced it at `2026-09-01T03:38:01Z`.
+- PASS after the dedicated reload repair: Casey extended the parent end to
+  October 14 and saved once. The matching `/events/sync` completed at
+  05:40:24.211 and the already-open Sub Events owner began `/sub-events` at
+  05:40:24.228, 17 ms later, without a browser reload. Casey then restored the
+  required October 7 12:00 PM boundary; the 05:41:29.590 Save was followed by
+  the list load at 05:41:29.605, 15 ms later, and the October 14 section was
+  removed without reopen.
+- The final persisted oracle contains one DR Weekly Tournament parent ending
+  `2026-10-07T10:00:00Z`, one open `slot-1` template at
+  `2026-09-02T08:00:00.000Z`, the exact Qualifier/Final definitions, one
+  accepted Casey Admin and no generated rooms, tournament groups, stage runtime
+  or leaderboard state. The read endpoint returns exactly six unique weekly
+  sections from September 2 through October 7, all under `slot-1`; each section
+  contains Qualifier then Final once with occurrence-scoped times and no
+  `MAIN_EVENT` or `:default` child. Source checkpoint `EVENT-SLOT-001` is
+  **PASS**.
 
 ### `EVENT-SLOT-002` — future occurrence operation gating
 
+- Prepared baseline (`2026-09-01T03:44:56.396Z`): independently staged active
+  Public Weekly Tournament `QA EVENT-SLOT-002` with accepted Casey Admin and
+  accepted Nova Member. The read-only harness/API oracle returns future sections
+  September 8 and 15, each with `Qualifiers` then `Final` in
+  `RS`/`awaiting-tournament-start`, and no stage runtime, generated group,
+  leaderboard, recompute-task, outbox or notification state.
+- Exact visible expectation: Casey's event-card menu includes `Manage Event`
+  and `View`; Nova's includes `View` but no `Manage Event` or `Edit Event`.
+  Across both future sections, the Qualifiers and Final runtime menus expose
+  only `Groups` to both actors. `Start Stage`, `Close Stage`,
+  `Finalize Stage`, `Reopen Scores`, `Suspend Tournament` and
+  `Resume Tournament` must all be absent.
+- Retained repair evidence: the first manual inspection left the read-only path
+  by performing Unpublish -> Publish. The local Event Editor sync exposed
+  `Multislot`, but a subsequent list poll could replace it because `EventDto`
+  and the narrow list-card projection omitted `slotsEnabled`. The same local
+  sync also rendered organizer initials when its detail DTO lacked the enriched
+  avatar. The repair adds `mode`/`slotsEnabled` to the backend list contract and
+  projection, preserves organizer/avatar fields in HTTP cloning, and applies
+  one organizer enrichment helper to Create/Save and Publish/Unpublish display
+  sync. Backend and frontend hot-deploy both compiled successfully. Complete
+  one hard-reload publication replay, then reset/restage before evaluating the
+  read-only checkpoint.
 - Inspect the controlled future occurrences as host and participant.
 - Verify members, transport, accommodation and supplies actions follow the
   saved definition and actor permission. Structure editing is host-only.
