@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-01 06:08 CEST
+Updated: 2026-09-01 06:40 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -49,21 +49,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SLOT-TOURNAMENT-001 — active; EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS, EVENT-SLOT-002 is freshly staged for its read-only role/menu verdict
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-slot-002--future-occurrence-operation-gating
-checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
-scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
-ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
-state: EVENT-EDITOR-004 and EVENT-SLOT-001 are PASS. EVENT-SLOT-002's retained hard-reload publication repair replay visually passed: the real Casey avatar and structural `Multislot` badge remained correct in Draft and Active and after list polling. The contaminated first run was then reset, and EVENT-SLOT-002 was independently restaged at 2026-09-01T04:07:16.244Z as active Public Weekly Tournament `QA EVENT-SLOT-002`, with Casey accepted Admin, Nova accepted Member, two future occurrence sections and no runtime/group/leaderboard state. The 04:08 read-only status oracle confirms the stable weekly template, both RS stage definitions, zero lifecycle/recompute tasks, outbox and notifications, and `afterStageOutboxCount=0` / `afterStageRecomputeTaskCount=0`. This clean fixture is now the only eligible source for the role/menu verdict; do not Publish, Unpublish, Save, Join, Leave or invoke a stage action.
-baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
-required_resume: Continue only with the freshly staged read-only EVENT-SLOT-002 role/menu checklist in the two managed Casey/Nova sessions. Both actors locate `QA EVENT-SLOT-002`, enter its Sub Events view, confirm September 8 and 15 each contain Qualifiers then Final once, and inspect every visible card/stage overflow without selecting an action. Report the exact Casey/Nova event-card labels and each stage-menu label plus any missing/wrong avatar, badge, section or stage. Do not Publish, Unpublish, Edit, Save, Join, Leave, open Groups/Members/resources, or select any lifecycle/runtime action. Codex then reruns the status oracle; only a byte-equivalent read boundary can become PASS.
-event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-SLOT-002; active Public Weekly Tournament, two future occurrences, Casey Admin plus Nova Member, no generated runtime/grouping state
+checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 and EVENT-RUNTIME-001 are NOT RUN
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-005--edit-an-active-downstream-definition
+checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-005--edit-an-active-downstream-definition
+scenario: The next unclosed Core row in canonical matrix order is EVENT-EDIT-RUNTIME-001. Execute EVENT-EDITOR-005 first, then EVENT-RUNTIME-001. The closed recurring-slot journey remains an immutable control and must not be replayed as a substitute.
+ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-EDIT-RUNTIME-001
+state: EVENT-SLOT-TOURNAMENT-001 is PASS/CLOSED. Its five sources are PASS; slot identity, save-driven list reload, role/time gating, past-stage Close and slot-scoped score/history were proven. The same-ID group overlay and unique runtime group-count repair are deployed. The final clean Close regression held groupsCount 2 -> 2, and EVENT-SLOT-004 saved Nova +3 only under the September 1 slot while the September 8 control stayed empty. All retained event-domain fixtures were reset and proved not staged.
+baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE and EVENT-SLOT-TOURNAMENT-001 are closed with their versioned fixtures reset/not-staged. The ledger and workbook report 78/116 total, Core 78/96 and Identity & access 8/8.
+required_resume: Begin EVENT-EDITOR-005 from its captured contract. Prepare one isolated active Event baseline and one downstream-relevant definition edit with exact pre-save controls. Do not combine the no-op Save assertion or childless MAIN_EVENT materialization until the owning mutation boundary and its recompute/notification oracle are explicit.
+event: none staged
 actors:
-  Casey: accepted Admin/host in the left managed browser
-  Nova: accepted Member/participant in the right managed browser
-next_actor: Casey and Nova perform the strict read-only event-card and future-stage menu inspection; Codex verifies the unchanged oracle afterward.
-queued_followup: After EVENT-SLOT-002, independently stage EVENT-SLOT-003 and continue through EVENT-SLOT-004 with separate mutation/oracle boundaries.
-stop_phrase: EVENT-SLOT-002 menük kész, followed by the exact Casey/Nova event-card and four stage-menu label sets or any deviation
+  Casey: next host/editor actor after a clean versioned baseline is prepared
+next_actor: Codex prepares and proves the EVENT-EDITOR-005 baseline, then gives Casey one bounded manual checklist.
+queued_followup: After EVENT-EDITOR-005 PASS, execute EVENT-RUNTIME-001 as the separate childless MAIN_EVENT runtime source.
+stop_phrase: EVENT-EDITOR-005 definition edit saved once, with exact persisted delta and no duplicate effect on no-op reopen/save
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

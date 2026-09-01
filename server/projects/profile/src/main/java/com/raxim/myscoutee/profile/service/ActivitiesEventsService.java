@@ -2553,19 +2553,45 @@ public class ActivitiesEventsService {
                 existing,
                 actorUserId);
         if (next != null) {
-            next.setGroupsCount(autoGroupsCount + manualGroupCountForRuntime(next.getId()));
+            next.setGroupsCount(tournamentGroupCountForRuntime(event, stage, next.getId()));
             activitySubEventStageRuntimeRepository.save(next);
         }
     }
 
-    private int manualGroupCountForRuntime(String runtimeRecordId) {
+    private int tournamentGroupCountForRuntime(
+            ActivityEvent event,
+            SubEventItem stage,
+            String runtimeRecordId) {
         String normalizedRuntimeRecordId = normalizeId(runtimeRecordId);
-        if (!StringUtils.hasText(normalizedRuntimeRecordId)) {
-            return 0;
+        List<ActivitySubEventGroup> manualGroups = StringUtils.hasText(normalizedRuntimeRecordId)
+                ? activitySubEventGroupsRepository
+                        .findByOwnerIdAndStatusNot(normalizedRuntimeRecordId, RUNTIME_STATUS_DELETED)
+                : List.of();
+        List<String> manualGroupIds = (manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups)
+                .stream()
+                .map(group -> normalizeId(group == null ? null : group.getGroupId()))
+                .filter(StringUtils::hasText)
+                .toList();
+        return tournamentGroupCount(event, stage, manualGroupIds);
+    }
+
+    private int tournamentGroupCount(
+            ActivityEvent event,
+            SubEventItem stage,
+            Collection<String> manualGroupIds) {
+        LinkedHashSet<String> groupIds = new LinkedHashSet<>();
+        String normalizedStageId = normalizeId(stage == null ? null : stage.id());
+        int autoGroupsCount = autoTournamentGroupCount(event, stage);
+        for (int index = 0; index < autoGroupsCount; index += 1) {
+            groupIds.add(normalizedStageId + ":group:" + (index + 1));
         }
-        List<ActivitySubEventGroup> groups = activitySubEventGroupsRepository
-                .findByOwnerIdAndStatusNot(normalizedRuntimeRecordId, RUNTIME_STATUS_DELETED);
-        return groups == null ? 0 : groups.size();
+        for (String manualGroupId : manualGroupIds == null ? List.<String>of() : manualGroupIds) {
+            String normalizedGroupId = normalizeId(manualGroupId);
+            if (StringUtils.hasText(normalizedGroupId)) {
+                groupIds.add(normalizedGroupId);
+            }
+        }
+        return groupIds.size();
     }
 
     public EventParticipationActionResultDto requestJoin(EventActionRequestDto request) {
@@ -4653,16 +4679,19 @@ public class ActivitiesEventsService {
             }
         }
 
-        Map<String, Integer> manualCountsByRuntimeId = new LinkedHashMap<>();
+        Map<String, LinkedHashSet<String>> manualGroupIdsByRuntimeId = new LinkedHashMap<>();
         List<ActivitySubEventGroup> manualGroups = groupOwnerIds.isEmpty()
                 ? List.of()
                 : activitySubEventGroupsRepository.findByOwnerIdInAndStatusNot(groupOwnerIds, RUNTIME_STATUS_DELETED);
         for (ActivitySubEventGroup group : manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups) {
             String groupOwnerId = normalizeId(group == null ? null : group.getOwnerId());
-            if (!StringUtils.hasText(groupOwnerId)) {
+            String groupId = normalizeId(group == null ? null : group.getGroupId());
+            if (!StringUtils.hasText(groupOwnerId) || !StringUtils.hasText(groupId)) {
                 continue;
             }
-            manualCountsByRuntimeId.put(groupOwnerId, manualCountsByRuntimeId.getOrDefault(groupOwnerId, 0) + 1);
+            manualGroupIdsByRuntimeId
+                    .computeIfAbsent(groupOwnerId, ignored -> new LinkedHashSet<>())
+                    .add(groupId);
         }
 
         String nowIso = Instant.now().toString();
@@ -4681,8 +4710,10 @@ public class ActivitiesEventsService {
                 continue;
             }
             String runtimeId = normalizeId(record == null ? null : record.getId());
-            int groupsCount = autoTournamentGroupCount(definitionEvent, stage)
-                    + manualCountsByRuntimeId.getOrDefault(runtimeId, 0);
+            int groupsCount = tournamentGroupCount(
+                    definitionEvent,
+                    stage,
+                    manualGroupIdsByRuntimeId.getOrDefault(runtimeId, new LinkedHashSet<>()));
             if (Objects.equals(record.getGroupsCount(), groupsCount)) {
                 continue;
             }

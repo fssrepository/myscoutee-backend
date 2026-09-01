@@ -927,9 +927,40 @@ First producer and repair evidence (2026-09-01, repair replay pending):
   actions at all.
 - Opening any runtime menu is an `X` write checkpoint: no task, outbox or
   stage-runtime mutation is allowed.
+- Final verdict (`2026-09-01`): **PASS**. Casey and Nova confirmed the expected
+  future-occurrence presentation and operation gating. The post-inspection
+  Docker-backed oracle remained identical to the clean baseline: both accepted
+  memberships and both RS definitions were unchanged, while lifecycle tasks,
+  recompute tasks, outbox, notifications, stage runtime, generated groups and
+  leaderboard rows all remained empty. Source checkpoint `EVENT-SLOT-002` is
+  **PASS**.
 
 ### `EVENT-SLOT-003` — close one past generated stage
 
+- Corrected clean baseline (`2026-09-01T04:19:57.213Z`): active Public Weekly Tournament
+  `QA EVENT-SLOT-003`; recent-past slot start `2026-09-01T01:19:57Z`;
+  only that slot's Qualifiers has an RS `awaiting-tournament-start` runtime,
+  one active Group A with Nova/Riley and leaderboard scores 7/4. The parent
+  definitions and September 8 occurrence are controls. Lifecycle/recompute
+  tasks and outbox are empty before the direct action.
+- Retained fixture-repair evidence: the first Close attempt exposed that the
+  raw Mongo fixture wrote the embedded template key as `id`, while the real
+  Java persistence shape uses `_id`. The sub-events API therefore produced a
+  malformed `:slot::2026-09-01...` owner and the action created a second SR
+  runtime beside the intended RS runtime. This run is ineligible for a product
+  verdict. The fixture now uses `_id`; reset/restage and API identity parity are
+  required before replaying Close. The corrected restage passed that gate: the
+  API returns the full stable template-bearing owner ID, one RS Qualifiers
+  runtime, and zero pre-action task/outbox rows.
+- The corrected UI replay then targeted that one runtime successfully, but
+  exposed a second count mismatch. The first fixture stored only its manual
+  Group A as `groupsCount=1`; an interim fixture matched the then-current
+  production sum at `3`. The following leaderboard checkpoint proved that the
+  generated Group A and persisted manual Group A share the same group ID and
+  are one logical group, so appending and counting both was a product merge
+  defect rather than a canonical third group. The backend now overlays the
+  persisted group by ID and both runtime-count paths count unique IDs. The
+  fixture therefore derives the canonical two groups.
 - Use the helper's exact `recentPastSlotId`, select Past order and locate its
   Qualifier stage.
 - The ended RS/A stage exposes Close Stage; future and unrelated occurrence
@@ -939,6 +970,16 @@ First producer and repair evidence (2026-09-01, repair replay pending):
   remain unchanged.
 - The direct mutation may enqueue normal event recompute, but it is not proof
   that `event-tournament-review` ran.
+- Final verdict (`2026-09-01`): **PASS**. Casey's clean UI route and the final
+  authenticated HTTP regression replay both targeted the same full
+  template-bearing slot owner. The clean post-fix replay staged at
+  `2026-09-01T04:39:43.360Z`; exactly one runtime changed `RS` -> `SR` with
+  reason `stage-closed`, canonical `groupsCount` remained `2 -> 2`, parent
+  definitions stayed RS, Group A and Nova/Riley scores 7/4 were byte-stable,
+  and no room, generated group or tournament-review state appeared. The direct
+  producer created exactly one pending `EVENT_CHANGED` recompute and two
+  participant notification outbox rows. The fixture was reset and proved
+  `not-staged`. Source checkpoint `EVENT-SLOT-003` is **PASS**.
 
 ### `EVENT-SLOT-004` — slot-scoped leaderboard
 
@@ -951,6 +992,42 @@ First producer and repair evidence (2026-09-01, repair replay pending):
   its documented tournament-input recompute.
 - Finalize/advance belongs to `TOURNAMENT-003`, so this checkpoint stops at the
   leaderboard boundary instead of combining the whole tournament lifecycle.
+
+Execution and repair evidence (`2026-09-01`):
+
+- The clean baseline staged at `2026-09-01T04:34:10.060Z` as active Public
+  Weekly Tournament `QA EVENT-SLOT-004`. Its recent-past occurrence was
+  `2026-09-01T01:34:10Z`; Qualifiers was `SR`/`stage-closed` with canonical
+  `groupsCount=2`, one persisted Group A membership for Nova/Riley and exact
+  slot-scoped score entries 7/4. The September 8 occurrence, parent
+  definitions, recompute tasks, outbox, rooms and generated groups were clean
+  controls.
+- Read-only preflight found two product defects before the user action. The
+  frontend stage snapshot loaded groups with the slot ID but loaded leaderboard
+  data with the parent event ID. The backend also appended a persisted manual
+  override after the generated group with the same ID, producing duplicate
+  Group A and an inflated runtime count. The frontend now uses the selected
+  slot owner for both snapshot requests; the backend overlays same-ID persisted
+  groups and both runtime-count paths count unique IDs. Focused regression
+  sources cover slot-owner selection and same-ID overlay. The already-running
+  Angular and Java hot-deploy owners compiled and deployed the changes
+  successfully without a parallel build or test process.
+- The clean post-repair API baseline returned exactly Group A once with Nova
+  and Riley, generated empty Group B once, Nova/Riley totals 7/4, and no score
+  entries in the September 8 control occurrence. Casey then completed the
+  manual Groups/Standings/History flow and reported the presentation correct.
+- The single Save at `2026-09-01T04:36:27.142609152Z` inserted exactly one
+  score row under the September 1 slot, Qualifiers, Group A and Nova identity:
+  value `+3`, note `EVENT-SLOT-004`. The reopened API state was Nova total 10
+  with two updates and Riley total 4 with one update; the September 8 control
+  retained zero entries and zero non-zero totals. Runtime status/count, Group
+  A membership, parent definitions and unrelated domain state were unchanged.
+- The producer inserted one slot-targeted tournament-input affinity recompute
+  task immediately after Save. The existing worker processed it at
+  `2026-09-01T04:36:51Z`; no review, lifecycle, notification, room or generated
+  group side effect was attributed to the read or Save. Final verdict:
+  **PASS**. The fixture was reset. Source checkpoint `EVENT-SLOT-004` and the
+  consolidated `EVENT-SLOT-TOURNAMENT-001` journey are **PASS/CLOSED**.
 
 ## Event lifecycle and bucket checkpoints
 

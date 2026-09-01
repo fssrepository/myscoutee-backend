@@ -700,6 +700,32 @@
         }
       ]
     },
+    "EVENT-SLOT-003": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey past-slot host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-SLOT-004": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey slot leaderboard host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2

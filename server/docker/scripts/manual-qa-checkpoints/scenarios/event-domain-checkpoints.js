@@ -2004,7 +2004,7 @@
       event.frequency = "Weekly";
       event.slotsEnabled = true;
       event.slotTemplates = [{
-        id: context.templateId,
+        _id: context.templateId,
         startAt: context.templateStartAt,
         overrideDate: null,
         closed: false,
@@ -2039,7 +2039,7 @@
       event.frequency = "Weekly";
       event.slotsEnabled = true;
       event.slotTemplates = [{
-        id: context.templateId,
+        _id: context.templateId,
         startAt: context.templateStartAt,
         overrideDate: null,
         closed: false,
@@ -2054,6 +2054,11 @@
         { ...memberDocument(groupOwnerId, thirdUserId, "Member", "accepted"), ownerType: "group" }
       ]);
       const now = Q.nowIso();
+      const projectedGroupsCount = expectedTournamentGroupCount(event, 0);
+      const qualifierStageStatus = checkpointId === "EVENT-SLOT-004" ? "SR" : "RS";
+      const qualifierStageStatusReason = checkpointId === "EVENT-SLOT-004"
+        ? "stage-closed"
+        : "awaiting-tournament-start";
       Q.collection("activitySubEventStageRuntime").insertOne({
         _id: runtimeId,
         syncKey: runtimeId,
@@ -2061,9 +2066,9 @@
         status: "A",
         ownerId: context.recentPastSlotId,
         subEventId: qualifier.id,
-        stageStatus: "RS",
-        stageStatusReason: "awaiting-tournament-start",
-        groupsCount: 1,
+        stageStatus: qualifierStageStatus,
+        stageStatusReason: qualifierStageStatusReason,
+        groupsCount: projectedGroupsCount,
         groupResourceMetricsByAssetOwnerId: {},
         createdDate: now,
         createdUser: Q.ACTOR,
