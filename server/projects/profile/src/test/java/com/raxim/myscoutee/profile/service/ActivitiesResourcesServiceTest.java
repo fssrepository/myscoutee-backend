@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -180,6 +181,8 @@ class ActivitiesResourcesServiceTest {
         resource.setAssetAssignmentIds(Map.of());
         resource.setAssetSettingsByType(Map.of());
         resource.setSupplyContributionEntriesByAssetId(Map.of());
+        resource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(1, 3, 0, 4)));
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
 
@@ -189,6 +192,7 @@ class ActivitiesResourcesServiceTest {
         assertThat(state.ownerId()).isEqualTo("event-1");
         assertThat(state.subEventId()).isEqualTo("sub-1");
         assertThat(state.assetOwnerUserId()).isEqualTo("u1");
+        assertThat(state.resourceMetricsByType().get("Transport").pending()).isEqualTo(3);
     }
 
     @Test
@@ -370,7 +374,11 @@ class ActivitiesResourcesServiceTest {
         ActivitySubEventResourceStateDto saved = service.replace(request);
 
         assertThat(saved.resourceMetricsByType().get("Transport").capacityMax()).isEqualTo(4);
-        verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getResourceMetricsByType().get("Transport").capacityMax())
+                .isEqualTo(4);
         ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
                 ActivitySubEventStageRuntime.class);
         verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
@@ -452,6 +460,8 @@ class ActivitiesResourcesServiceTest {
                 .thenReturn(Optional.of(existingRuntime));
         when(activitySubEventStageRuntimeRepository.save(any(ActivitySubEventStageRuntime.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         Map<String, SubEventResourceMetricDto> metrics = service.refreshGroupRuntimeResourceMetrics(
                 groupOwnerId,
@@ -460,6 +470,11 @@ class ActivitiesResourcesServiceTest {
                 "admin");
 
         assertThat(metrics.get("Transport").pending()).isZero();
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getResourceMetricsByType().get("Transport").pending())
+                .isEqualTo(2);
         ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
                 ActivitySubEventStageRuntime.class);
         verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
@@ -471,7 +486,7 @@ class ActivitiesResourcesServiceTest {
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId))
                 .containsOnlyKeys("u1", "admin");
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("u1"))
-                .containsOnlyEntry("Accommodation", "read-2");
+                .containsExactlyEntriesOf(Map.of("Accommodation", "read-2"));
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("admin"))
                 .containsOnlyKeys("Transport");
         verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
@@ -499,37 +514,8 @@ class ActivitiesResourcesServiceTest {
                         "borrowed-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
                                 0, 4, 2, "u1", false, List.of()))));
         resource.setSupplyContributionEntriesByAssetId(Map.of());
-        AssetRequestBookingDto booking = new AssetRequestBookingDto(
-                "event-1",
-                "Event",
-                "sub-1",
-                "Optional activity",
-                null,
-                null,
-                null,
-                null,
-                null,
-                2,
-                null,
-                null,
-                List.of(),
-                null,
-                null);
-        Map<String, AssetDetailDto> details = Map.of(
-                "owned-1", assetDetail("owned-1", "Transport", "u1", 4, List.of()),
-                "owned-2", assetDetail("owned-2", "Transport", "u1", 4, List.of()),
-                "borrowed-1", assetDetail(
-                        "borrowed-1",
-                        "Transport",
-                        "other-1",
-                        4,
-                        List.of(assetRequest("borrow-1", "u1", booking))),
-                "borrowed-2", assetDetail(
-                        "borrowed-2",
-                        "Transport",
-                        "other-2",
-                        4,
-                        List.of(assetRequest("borrow-2", "u1", booking))));
+        resource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(2, 2, 0, 24)));
         ActivityEvent event = event("event-1", "u1", "u1");
         event.setSubEvents(List.of(new SubEventItem(
                 "sub-1",
@@ -566,12 +552,6 @@ class ActivitiesResourcesServiceTest {
 
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
                 "event-1", "sub-1", "D")).thenReturn(List.of(resource));
-        when(assetsService.queryAssignableAssetDetails(
-                "u1",
-                "event-1",
-                "sub-1",
-                Set.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")))
-                .thenReturn(details);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
@@ -587,6 +567,8 @@ class ActivitiesResourcesServiceTest {
                     assertThat(subEvent.carsCapacityMin()).isZero();
                     assertThat(subEvent.carsCapacityMax()).isEqualTo(24);
                 }));
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getActivity()).isEqualTo(18));
         verify(activitiesMembersService).refreshSubEventParticipationProjection("event-1", "sub-1");
     }
 

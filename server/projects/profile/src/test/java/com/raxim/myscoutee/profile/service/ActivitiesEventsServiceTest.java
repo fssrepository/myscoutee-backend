@@ -36,6 +36,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -55,9 +57,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
@@ -219,7 +219,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void subEventReloadUsesEmbeddedCounterProjectionWithoutCounterQueries() {
+    void subEventReloadUsesPersistedResourceWriteState() {
         Users viewer = new Users();
         viewer.setId("host");
         ActivityEvent parent = event("event-1", "host", 0d);
@@ -260,14 +260,14 @@ class ActivitiesEventsServiceTest {
                 16,
                 1,
                 1,
-                2,
-                0,
-                0,
-                2,
                 0,
                 0,
                 0,
-                24,
+                0,
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
@@ -277,6 +277,11 @@ class ActivitiesEventsServiceTest {
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+        when(activitySubEventResourcesRepository.findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                Set.of("event-1"),
+                Set.of("host"),
+                "D"))
+                .thenReturn(List.of(resourceState("event-1", "optional-1", "host", 2, 2, 24)));
 
         EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
                 "host",
@@ -297,8 +302,9 @@ class ActivitiesEventsServiceTest {
                     assertThat(item.carsCapacityMin()).isZero();
                     assertThat(item.carsCapacityMax()).isEqualTo(24);
                 }));
-        verify(activitySubEventResourcesRepository, never())
-                .findByOwnerIdInAndStatusNot(anyCollection(), anyString());
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        Set.of("event-1"), Set.of("host"), "D");
         verify(activitiesResourcesService, never()).queryState(anyString(), anyString(), anyString());
         verify(activitiesMembersService, never())
                 .buildBatchOwnerSnapshots(anyString(), anyCollection());
@@ -321,21 +327,14 @@ class ActivitiesEventsServiceTest {
         runtime.setOwnerId("event-1");
         runtime.setTitle("Event event-1");
 
-        ActivitySubEventResourceStateDto resourceState = new ActivitySubEventResourceStateDto(
-                "event-1",
-                "main-event:event-1",
-                "host",
-                Map.of("Transport", List.of("transport-1")),
-                Map.of(),
-                Map.of(),
-                Map.of(),
-                Map.of("Transport", new SubEventResourceMetricDto(1, 1, 0, 4)));
-
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
         when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class))).thenReturn(runtime);
-        when(activitiesResourcesService.queryState("event-1", "main-event:event-1", "host"))
-                .thenReturn(resourceState);
+        when(activitySubEventResourcesRepository.findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                Set.of("event-1"),
+                Set.of("host"),
+                "D"))
+                .thenReturn(List.of(resourceState("event-1", "main-event:event-1", "host", 1, 1, 4)));
 
         EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
                 "host",
@@ -356,7 +355,9 @@ class ActivitiesEventsServiceTest {
                     assertThat(item.carsCapacityMin()).isZero();
                     assertThat(item.carsCapacityMax()).isEqualTo(4);
                 }));
-        verify(activitiesResourcesService).queryState("event-1", "main-event:event-1", "host");
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        Set.of("event-1"), Set.of("host"), "D");
     }
 
     @Test
@@ -1719,7 +1720,6 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
         ActivityEvent existing = event("event-1", "host", 0d);
         existing.setStatus(ActivityEvent.STATUS_DRAFT);
-        existing.setPublished(false);
         existing.setSlotsEnabled(false);
         existing.setSubEventsEnabled(false);
         existing.setSubEventDefinitions(List.of());
@@ -2285,6 +2285,26 @@ class ActivitiesEventsServiceTest {
             statuses.put(sourceId, "accepted");
         }
         return statuses;
+    }
+
+    private ActivitySubEventResource resourceState(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            int accepted,
+            int pending,
+            int capacityMax) {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setStatus("A");
+        resource.setOwnerId(ownerId);
+        resource.setSubEventId(subEventId);
+        resource.setAssetOwnerUserId(assetOwnerUserId);
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("transport-1")));
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        resource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(accepted, pending, 0, capacityMax)));
+        return resource;
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, double affinity) {

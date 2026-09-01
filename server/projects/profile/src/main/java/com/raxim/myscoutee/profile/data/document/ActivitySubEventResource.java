@@ -32,6 +32,7 @@ public class ActivitySubEventResource {
     private Map<String, List<String>> assetAssignmentIds = new LinkedHashMap<>();
     private Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> assetSettingsByType = new LinkedHashMap<>();
     private Map<String, List<SubEventSupplyContributionEntryRecord>> supplyContributionEntriesByAssetId = new LinkedHashMap<>();
+    private Map<String, SubEventResourceMetricRecord> resourceMetricsByType = new LinkedHashMap<>();
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -125,6 +126,14 @@ public class ActivitySubEventResource {
         this.supplyContributionEntriesByAssetId = supplyContributionEntriesByAssetId;
     }
 
+    public Map<String, SubEventResourceMetricRecord> getResourceMetricsByType() {
+        return resourceMetricsByType;
+    }
+
+    public void setResourceMetricsByType(Map<String, SubEventResourceMetricRecord> resourceMetricsByType) {
+        this.resourceMetricsByType = resourceMetricsByType;
+    }
+
     public String getCreatedDate() {
         return createdDate;
     }
@@ -171,5 +180,12 @@ public class ActivitySubEventResource {
             String userId,
             Integer quantity,
             String addedAtIso) {
+    }
+
+    public record SubEventResourceMetricRecord(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
     }
 }

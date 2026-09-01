@@ -1063,7 +1063,8 @@ public class AssetsService {
             String assetId,
             String eventId,
             String subEventId,
-            List<ActivityMemberEntryDto> members) {
+            List<ActivityMemberEntryDto> members,
+            String actorUserId) {
         String normalizedAssetId = normalizeId(assetId);
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -1131,7 +1132,7 @@ public class AssetsService {
         Asset next = cloneAsset(current);
         next.setRequests(deduplicateRequests(nextRequests));
         next.setUpdatedDate(Instant.now().toString());
-        next.setUpdatedUser(ownerUserId);
+        next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), ownerUserId));
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
@@ -1426,7 +1427,10 @@ public class AssetsService {
         for (String scope : scopes) {
             String[] parts = scope.split("\n", 2);
             if (parts.length == 2) {
-                activitiesResourcesService.refreshEventSubEventResourceProjection(parts[0], parts[1]);
+                activitiesResourcesService.refreshResourceMetricsForScope(
+                        parts[0],
+                        parts[1],
+                        saved == null ? null : saved.getUpdatedUser());
             }
         }
     }

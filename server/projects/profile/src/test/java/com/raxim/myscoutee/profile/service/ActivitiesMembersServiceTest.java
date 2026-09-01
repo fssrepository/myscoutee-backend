@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
@@ -837,7 +839,8 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1:subevent-1:group-a",
                 "subevent-1",
-                List.of(invited)))
+                List.of(invited),
+                "borrower"))
                 .thenReturn("asset-owner");
 
         service.replace(new ActivityMembersReplaceRequestDto(
@@ -857,12 +860,9 @@ class ActivitiesMembersServiceTest {
                 "asset-1",
                 "event-1:subevent-1:group-a",
                 "subevent-1",
-                List.of(invited));
-        verify(activitiesResourcesService).refreshGroupRuntimeResourceMetrics(
-                "event-1:subevent-1:group-a",
-                "subevent-1",
-                "asset-owner",
+                List.of(invited),
                 "borrower");
+        verifyNoInteractions(activitiesResourcesService);
         verify(activityMembersRepository, never()).saveAll(anyList());
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
     }
@@ -892,7 +892,81 @@ class ActivitiesMembersServiceTest {
                 anyString(),
                 anyString(),
                 anyString(),
-                anyList());
+                anyList(),
+                anyString());
+    }
+
+    @Test
+    void assetOwnerCanDeleteScopedInvitationAfterReloadWithoutPersistedInviterMetadata() {
+        String eventId = "event-1";
+        String subEventId = "main-event:event-1";
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("asset-owner");
+        scopedAsset.setTitle("Owner transport");
+        scopedAsset.setStatus("A");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "target",
+                "Target User",
+                "TU",
+                "woman",
+                "pending",
+                "Awaiting invitation response.",
+                "invite",
+                "2026-09-01T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Event",
+                        subEventId,
+                        "Event",
+                        subEventId,
+                        "Event",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+        Asset clearedAsset = new Asset();
+        clearedAsset.setAssetId("asset-1");
+        clearedAsset.setOwnerUserId("asset-owner");
+        clearedAsset.setTitle("Owner transport");
+        clearedAsset.setStatus("A");
+        clearedAsset.setRequests(List.of());
+
+        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                anyList(),
+                eq("asset-owner")))
+                .thenReturn("asset-owner");
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "asset-owner",
+                "target",
+                "remove",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result).noneMatch(entry -> "target".equals(entry.userId()));
+        verify(assetsService).syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                argThat(entries -> entries.stream().noneMatch(entry -> "target".equals(entry.userId()))),
+                eq("asset-owner"));
     }
 
     @Test

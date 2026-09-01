@@ -456,7 +456,8 @@ class AssetsServiceTest {
                 "asset-1",
                 "event-1:subevent-1:group-a",
                 "subevent-1",
-                List.of(invited));
+                List.of(invited),
+                "u1");
 
         assertThat(assetOwnerUserId).isEqualTo("u1");
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);

@@ -1428,9 +1428,8 @@ public class ActivitiesEventsService {
                     : filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
-        Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey = containsMainEventRuntime(baseSlots)
-                ? mainEventRuntimeResourceRecordsByKey(lookups.resourceLookups())
-                : Map.of();
+        Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey =
+                resourceRecordsByKey(lookups.resourceLookups());
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(
                 lookups.stageRuntimeLookups(),
                 viewer.userId());
@@ -1442,17 +1441,41 @@ public class ActivitiesEventsService {
         return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
     }
 
-    private Map<String, ActivitySubEventResourceStateDto> mainEventRuntimeResourceRecordsByKey(
+    private Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey(
             List<SubEventResourceLookup> lookups) {
+        if (lookups == null || lookups.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> ownerIds = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(SubEventResourceLookup::ownerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> assetOwnerUserIds = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(SubEventResourceLookup::assetOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> requestedKeys = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(lookup -> activityEventSubEventsMapper.subEventResourceRecordKey(
+                        lookup.ownerId(),
+                        lookup.subEventId(),
+                        lookup.assetOwnerUserId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (ownerIds.isEmpty() || assetOwnerUserIds.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
         Map<String, ActivitySubEventResourceStateDto> result = new LinkedHashMap<>();
-        for (SubEventResourceLookup lookup : lookups == null ? List.<SubEventResourceLookup>of() : lookups) {
-            if (lookup == null) {
-                continue;
-            }
-            ActivitySubEventResourceStateDto state = activitiesResourcesService.queryState(
-                    lookup.ownerId(),
-                    lookup.subEventId(),
-                    lookup.assetOwnerUserId());
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        ownerIds,
+                        assetOwnerUserIds,
+                        RUNTIME_STATUS_DELETED)) {
+            ActivitySubEventResourceStateDto state = activitySubEventResourceMapper.toDto(record);
             if (state == null) {
                 continue;
             }
@@ -1460,7 +1483,7 @@ public class ActivitiesEventsService {
                     state.ownerId(),
                     state.subEventId(),
                     state.assetOwnerUserId());
-            if (StringUtils.hasText(key)) {
+            if (requestedKeys.contains(key)) {
                 result.put(key, state);
             }
         }
