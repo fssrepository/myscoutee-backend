@@ -49,20 +49,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is NOT RUN
+checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is IN PROGRESS
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 scenario: Continue the partially passed EVENT-EDIT-RUNTIME-001 consolidated journey with its remaining EVENT-RUNTIME-001 source. The closed recurring-slot journey remains an immutable control and must not be replayed as a substitute.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: EVENT-EDITOR-005 is PASS. In staged EVENT-RUNTIME-001, Casey completed the owning 8 -> 9 Save. Persisted truth is one active childless Event at capacity 2/9 and exactly one active MAIN_EVENT runtime with canonical eventId/ownerId and subEventId null; direct View Event UI/read-only evidence remains.
+state: EVENT-EDITOR-005 is PASS. In EVENT-RUNTIME-001, Casey completed the owning 8 -> 9 Save. Persisted truth is one active childless Event at capacity 2/9 and exactly one active MAIN_EVENT runtime with canonical eventId/ownerId and subEventId null. A read-only wiring audit found that Transport/Accommodation/Supplies retain the canonical Event authorization owner and a stable runtime scope key, but the popup request drops runtimeKind/eventId and reconstructs MAIN_EVENT as an optional sub-event; resource mutations are therefore paused and this source cannot PASS yet.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE and EVENT-SLOT-TOURNAMENT-001 are closed with their versioned fixtures reset/not-staged. The ledger and workbook report 78/116 total, Core 78/96 and Identity & access 8/8.
-required_resume: Inspect the one server-loaded MAIN_EVENT card through View Event as Casey and Nova, including Event Members, absence of empty/duplicate/synthetic/tournament controls, then verify close/reopen and reload are read-only. The old queued recompute may naturally finish; do not wait for or patch its original three-minute due time. New dev event-change tasks use the 15s override.
+required_resume: Complete only the non-resource read-only card checks through View Event as Casey and Nova: Event Members, absence of empty/duplicate/synthetic/tournament controls, then close/reopen and reload. Do not save Transport, Accommodation or Supplies in the retained fixture until SubEventResourcePopupRequest preserves MAIN_EVENT semantics while retaining canonical Event authorization. The old queued recompute may naturally finish; do not wait for or patch its original three-minute due time. New dev event-change tasks use the 15s override.
 event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-RUNTIME-001, active and staged
 actors:
   Casey: active host; owning Save is complete, inspect View Event and Event Members
   Nova: accepted participant; inspect the same View Event runtime read-only
-next_actor: Casey and Nova execute the bounded read-only View Event checklist; Codex then compares the persisted collections against this post-Save boundary.
-queued_followup: Close EVENT-EDIT-RUNTIME-001 only after EVENT-RUNTIME-001 proves one persisted MAIN_EVENT runtime and read-only reopen/reload behavior.
+next_actor: Await direction on correcting the audited main-event resource popup identity; Casey and Nova may meanwhile execute the bounded non-resource read-only View Event checklist, after which Codex compares persisted collections against the post-Save boundary.
+queued_followup: Close EVENT-EDIT-RUNTIME-001 only after EVENT-RUNTIME-001 proves one persisted MAIN_EVENT runtime, main-event-native resource menu identity and read-only reopen/reload behavior.
 stop_phrase: EVENT-RUNTIME-001 exposes exactly one persisted MAIN_EVENT card with no empty, duplicate, synthetic child or read-side write
 ```
 

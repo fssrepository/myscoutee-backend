@@ -834,6 +834,19 @@ Execution evidence (2026-09-01, PASS):
   remaining synchronous work includes Event/runtime persistence, affinity-task
   enqueue/admin pending counters and definition-change task scheduling. Actual
   notification delivery ran on `task-controller`, outside the response thread.
+- A read-only wiring audit of the main runtime card's **Transport**,
+  **Accommodation** and **Supplies** menus is not PASS. The list correctly sends
+  the canonical Event as `ownerId`, so backend authorization remains Event
+  scoped, and it uses the persisted `main-event:<eventId>` runtime record ID as
+  a stable resource-scope key. However, `SubEventResourcePopupRequest` does not
+  carry `runtimeKind` or the canonical `eventId`; the resource popup therefore
+  reconstructs the target as `optional=true` and derives sub-event member/chat
+  identity (`ownerType=subEvent`, `optionalSubEvent`) from that runtime key.
+  This is not a main-Event-native contract even if resource CRUD can currently
+  round-trip under the reused `subEventId` field. Do not mutate resources in the
+  retained fixture until the popup boundary preserves `MAIN_EVENT` semantics;
+  keep the canonical Event as authorization owner and distinguish logical scope
+  kind from the non-null physical resource-scope ID required by the current API.
 - Start from one isolated normal Event definition with Slots Off and Sub Events
   Off. Before the owning Save, require no runtime item for the new identity.
 - Save once through the normal Event write path. The write must persist exactly
@@ -854,7 +867,9 @@ Execution evidence (2026-09-01, PASS):
 - The card is main-Event scoped: the Event-level Members action remains
   available and shows the canonical creator/Admin once with matching accepted,
   pending and capacity counts. Other normal Event-level actions and configured
-  resources remain available under the real Event/runtime owner identity.
+  resources must remain available under the real Event/runtime owner identity.
+  The retained run is blocked on that resource-menu identity oracle because the
+  current popup handoff downgrades `MAIN_EVENT` to an optional sub-event.
   Tournament-only Groups, stage, Finalize and leaderboard actions are absent.
 - Every badge is state-driven. With the clean baseline there is no red counter;
   a pending member or resource may add only its documented counter and must not
