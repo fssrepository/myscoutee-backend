@@ -52,7 +52,6 @@ public class ActivityEventSubEventsMapper {
         long nowMs = System.currentTimeMillis();
         if (parentRecord != null
                 && !isGeneratedSlotRecord(parentRecord)
-                && !Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())
                 && Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
                 && parentRecord.getSlotTemplates() != null
                 && !parentRecord.getSlotTemplates().isEmpty()) {
@@ -61,11 +60,10 @@ public class ActivityEventSubEventsMapper {
                     parentRecord);
         }
         List<EventSubEventsSlotDto> slots = subEventsSlotSources(normalizedParentEventId, parentRecord, query, nowMs).stream()
-                .filter(source -> source.definitions() != null && !source.definitions().isEmpty())
                 .filter(source -> slotSourceMatchesOrder(source, query, nowMs))
                 .filter(source -> slotSourceOverlapsRange(source, query))
                 .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
-                .map(this::toSlotDto)
+                .map(source -> toSlotDto(source, parentRecord))
                 .toList();
         return withPersistedCounterProjection(slicePage(slots, query), parentRecord);
     }
@@ -198,10 +196,10 @@ public class ActivityEventSubEventsMapper {
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
             List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
-            if (templateStart == null || definitions.isEmpty()) {
+            if (templateStart == null) {
                 continue;
             }
-            long duration = subEventDefinitionsDurationMinutes(definitions);
+            long duration = slotDurationMinutes(parent, definitions, templateStart);
             if (slotOverrideDateKey(template.overrideDate()) != null) {
                 LocalDateTime end = templateStart.plusMinutes(duration);
                 SubEventsSlotSource source = templateSlotSource(parentEventId, parent, template, definitions, templateStart, end);
@@ -282,7 +280,7 @@ public class ActivityEventSubEventsMapper {
                                 cursor.plan().definitions(),
                                 cursor.start(),
                                 cursor.start().plusMinutes(cursor.plan().duration()));
-                page.add(toSlotDto(source));
+                page.add(toSlotDto(source, parent));
             }
             if (cursor.plan() != null) {
                 OccurrenceCursor next = validCursor(cursor.plan(), cursor.index() + direction, direction);
@@ -447,7 +445,7 @@ public class ActivityEventSubEventsMapper {
             SubEventsSlotSource source) {
     }
 
-    private EventSubEventsSlotDto toSlotDto(SubEventsSlotSource source) {
+    private EventSubEventsSlotDto toSlotDto(SubEventsSlotSource source, ActivityEvent parentRecord) {
         List<SubEventItemDto> items = new ArrayList<>();
         List<SubEventDefinitionDto> definitions = source == null || source.definitions() == null
                 ? List.of()
@@ -473,6 +471,9 @@ public class ActivityEventSubEventsMapper {
                     entry.startOffsetMinutes(),
                     entry.durationMinutes(),
                     groupCountsByStageId.get(itemId)));
+        }
+        if (items.isEmpty() && source != null && StringUtils.hasText(source.slotSourceId())) {
+            items.add(toSlotMainEventItem(source, parentRecord));
         }
         return new EventSubEventsSlotDto(
                 source == null ? "" : source.id(),
@@ -627,14 +628,14 @@ public class ActivityEventSubEventsMapper {
         if (isGeneratedSlotRecord(parentRecord)) {
             return List.of(recordSlotSource(parentEventId, parentRecord));
         }
-        if (Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
-            return List.of();
-        }
         List<EventSlotTemplateDto> templates = Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
                 ? parentRecord.getSlotTemplates()
                 : List.of();
         if (templates != null && !templates.isEmpty()) {
             return templateSlotSources(parentEventId, parentRecord, templates, query, nowMs);
+        }
+        if (Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
+            return List.of();
         }
         List<SubEventDefinitionDto> definitions = cloneSubEventDefinitions(parentRecord.getSubEventDefinitions());
         if (definitions.isEmpty()) {
@@ -699,7 +700,7 @@ public class ActivityEventSubEventsMapper {
                 continue;
             }
             List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parentRecord, template);
-            long durationMinutes = subEventDefinitionsDurationMinutes(definitions);
+            long durationMinutes = slotDurationMinutes(parentRecord, definitions, templateStart);
             SlotGenerationHorizon templateHorizon = slotGenerationHorizonForTemplate(horizon, durationMinutes, query, now);
             if (templateHorizon == null) {
                 continue;
@@ -733,10 +734,11 @@ public class ActivityEventSubEventsMapper {
                 continue;
             }
             List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parentRecord, template);
-            LocalDateTime templateEnd = templateStart.plusMinutes(subEventDefinitionsDurationMinutes(definitions));
+            long durationMinutes = slotDurationMinutes(parentRecord, definitions, templateStart);
+            LocalDateTime templateEnd = templateStart.plusMinutes(durationMinutes);
             SlotGenerationHorizon templateHorizon = slotGenerationHorizonForTemplate(
                     horizon,
-                    subEventDefinitionsDurationMinutes(definitions),
+                    durationMinutes,
                     query,
                     now);
             if (templateHorizon == null
@@ -785,6 +787,26 @@ public class ActivityEventSubEventsMapper {
         return overrideDefinitions.isEmpty()
                 ? cloneSubEventDefinitions(parentRecord.getSubEventDefinitions())
                 : overrideDefinitions;
+    }
+
+    private long slotDurationMinutes(
+            ActivityEvent parentRecord,
+            List<SubEventDefinitionDto> definitions,
+            LocalDateTime slotStart) {
+        long definitionsDuration = subEventDefinitionsDurationMinutes(definitions);
+        if (definitionsDuration > 0L || parentRecord == null || slotStart == null) {
+            return definitionsDuration;
+        }
+        LocalDateTime parentStart = toLocalDateTime(parentRecord.getStartAtIso());
+        LocalDateTime parentEnd = toLocalDateTime(parentRecord.getEndAtIso());
+        if (parentStart == null || parentEnd == null || !parentEnd.isAfter(parentStart)) {
+            return 0L;
+        }
+        if (isOneTime(normalizedFrequency(parentRecord.getFrequency()))) {
+            return Math.max(0L, ChronoUnit.MINUTES.between(slotStart, parentEnd));
+        }
+        long duration = ChronoUnit.MINUTES.between(parentStart.toLocalTime(), parentEnd.toLocalTime());
+        return duration > 0L ? duration : duration + (24L * 60L);
     }
 
     private SlotGenerationHorizon slotGenerationHorizon(
@@ -1070,6 +1092,70 @@ public class ActivityEventSubEventsMapper {
                 null,
                 null,
                 null);
+    }
+
+    private SubEventItemDto toSlotMainEventItem(
+            SubEventsSlotSource source,
+            ActivityEvent parentRecord) {
+        String slotSourceId = normalizeId(source == null ? null : source.slotSourceId());
+        String eventId = firstNonBlank(
+                source == null ? null : source.parentEventId(),
+                parentRecord == null ? null : parentRecord.getSourceId());
+        String startAt = firstNonBlank(
+                source == null ? null : source.startAt(),
+                parentRecord == null ? null : parentRecord.getStartAtIso());
+        String endAt = firstNonBlank(
+                source == null ? null : source.endAt(),
+                parentRecord == null ? null : parentRecord.getEndAtIso(),
+                startAt);
+        long startMs = toSortableDate(startAt);
+        long endMs = toSortableDate(endAt);
+        int durationMinutes = startMs == Long.MAX_VALUE || endMs == Long.MAX_VALUE
+                ? 0
+                : (int) Math.max(0L, Math.min(Integer.MAX_VALUE, (endMs - startMs) / 60_000L));
+        return new SubEventItemDto(
+                "main-event:" + slotSourceId,
+                parentRecord == null ? source.title() : firstNonBlank(parentRecord.getTitle(), source.title()),
+                parentRecord == null ? "" : safeText(parentRecord.getSubtitle()),
+                startAt,
+                endAt,
+                parentRecord == null ? "" : safeText(parentRecord.getLocation()),
+                parentRecord == null ? null : safeText(parentRecord.getCreatorUserId()),
+                null,
+                null,
+                null,
+                null,
+                false,
+                parentRecord == null ? null : parentRecord.getPricing(),
+                parentRecord == null ? null : parentRecord.getCapacityMin(),
+                parentRecord == null ? source.capacityMax() : parentRecord.getCapacityMax(),
+                parentRecord == null ? 0 : nonNegativeInteger(parentRecord.getAcceptedMembers()),
+                parentRecord == null ? 0 : nonNegativeInteger(parentRecord.getPendingMembers()),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                durationMinutes,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                "MAIN_EVENT",
+                eventId);
     }
 
     private SubEventItemDto withResourceRecord(
