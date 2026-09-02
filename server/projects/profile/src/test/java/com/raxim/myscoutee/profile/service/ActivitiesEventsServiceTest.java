@@ -1714,14 +1714,15 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void childlessEventSaveMaterializesOneMainEventRuntimeItem() {
+    void emptyEnabledSubEventSurfaceStillMaterializesOneMainEventRuntimeItem() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
         ActivityEvent existing = event("event-1", "host", 0d);
         existing.setStatus(ActivityEvent.STATUS_DRAFT);
         existing.setSlotsEnabled(false);
-        existing.setSubEventsEnabled(false);
+        existing.setSubEventsEnabled(true);
+        existing.setSlotTemplates(List.of());
         existing.setSubEventDefinitions(List.of());
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
@@ -1729,7 +1730,15 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.of(existing));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        EventDto result = service.sync(eventPayload("sync-event-1", "event-1", "host", false));
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                false,
+                false,
+                "Public",
+                8,
+                true));
 
         assertThat(result).isNotNull();
         ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
@@ -2413,6 +2422,26 @@ class ActivitiesEventsServiceTest {
             Boolean ticketing,
             String visibility,
             Integer capacityMax) {
+        return eventPayload(
+                syncKey,
+                id,
+                creatorUserId,
+                published,
+                ticketing,
+                visibility,
+                capacityMax,
+                false);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax,
+            Boolean subEventsEnabled) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2471,7 +2500,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
-                false,
+                subEventsEnabled,
                 List.of(),
                 List.of(),
                 "",
