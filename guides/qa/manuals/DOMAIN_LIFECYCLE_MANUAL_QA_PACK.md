@@ -815,7 +815,27 @@ The stable user-facing click guide is
 complete journey and focused regression remain one testcase transaction. The
 guide never stores live status or machine evidence.
 
-- Preparation on 2026-09-01: the versioned fixture is staged with one active
+- Campaign correction on 2026-09-02: the 2026-08-04 `EVENT-EDITOR-001`
+  create/save/reopen PASS predates persisted MAIN_EVENT support, which entered
+  in commit `2f42d464` on 2026-09-01. Neither that historical create run nor
+  `EVENT-EDITOR-005` therefore proves the current create -> MAIN_EVENT
+  contract. The initial `EVENT-RUNTIME-001` harness also modeled the wrong
+  transaction boundary: it staged an already-created Event with no runtime and
+  allowed a capacity edit to materialize MAIN_EVENT. That made the later tail
+  testable but did not prove creation semantics. The retained evidence below
+  remains valid for the mutations it actually exercised; it is not retroactive
+  create evidence.
+- Corrected complete-run contract: normal `stage` now produces an exact empty
+  `pre-create` boundary. Casey creates and Saves the Draft through the UI with
+  Slots Off/Sub Events Off and proves one MAIN_EVENT. The same Draft is then
+  saved with one Slot, which must replace the MAIN_EVENT view while retaining
+  that runtime exactly once with status `D`. Removing the Slot and turning
+  Slots Off must reactivate the same runtime document, `recordId` and `syncKey`;
+  Publish preserves it. Only after those human-visible transitions does Codex
+  prepare Nova as accepted and capture the replayable `post-create` boundary at
+  `2 / 8`. This Slot round trip and the later runtime/resource tail remain one
+  `EVENT-EDIT-RUNTIME-001` transaction.
+- Historical preparation on 2026-09-01: the versioned fixture was staged with one active
   canonical `QA EVENT-RUNTIME-001`, Casey and Nova accepted, capacity `2 / 8`,
   Slots Off, Sub Events Off, zero definitions/slots and zero runtime items.
   The two managed Casey/Nova browser sessions are open. The first bounded
@@ -892,8 +912,9 @@ guide never stores live status or machine evidence.
   restarted successfully. The subsequent terminal retest proved reload
   persistence at `1 / 0 - 4` and one remove/reassign cycle with immediate
   `1 -> 0 -> 1` convergence from successful save-response signals. That full
-  tail is retained accepted evidence and is not part of the current focused
-  replay.
+  tail is retained accepted evidence. The user later selected a fresh complete
+  replay, so the current run includes it after the corrected create/Slot
+  boundary.
 - The assigned Transport's **Members -> Invite** integration then exposed a
   separate scope handoff defect inside this same MAIN_EVENT journey. The Save
   persisted Nova as a global Asset member and mirrored an unscoped `borrow`
@@ -935,11 +956,12 @@ guide never stores live status or machine evidence.
   The performance repair removes only those redundant paths and skips the
   meaningless childless-MAIN_EVENT sub-event participation lookup. The existing
   backend hot-deploy owner compiled in 2s and restarted successfully. A shortest
-  invite-as-precondition -> Delete replay remains for the before/after latency,
-  in-place reversal and reload oracle; the invite behavior itself is retained.
-- Start from one isolated normal Event definition with Slots Off and Sub Events
-  Off. Before the owning Save, require no runtime item for the new identity.
-- Save once through the normal Event write path. The write must persist exactly
+  invite-as-precondition -> Delete replay remains available for focused future
+  latency checks; the current user-selected run is the complete journey.
+- Start from the versioned empty `pre-create` boundary. Casey creates one exact
+  normal Casual Draft at capacity `1 / 8`, with Slots Off and Sub Events Off.
+  Before the first Save, require no Event or runtime for the reserved title.
+- Save once through the normal Event create path. The write must persist exactly
   one runtime item with `runtimeKind=MAIN_EVENT`, the canonical `eventId` and
   runtime owner, and `subEventId=null`. It must not insert a fake sub-event
   definition, copy the full Event into a second canonical Event document or
@@ -948,6 +970,14 @@ guide never stores live status or machine evidence.
   item and the UI must show exactly one card using the main Event title,
   timeframe and location. The Sub-events surface must not show `No items`, an
   empty child section or a second copy of the same Event.
+- Edit that same Draft, enable Slots and add exactly one Slot. After Save, the
+  Slot view must replace MAIN_EVENT; the two must not coexist. The original
+  MAIN_EVENT runtime remains one document with status `D`. Edit again, remove
+  the Slot and turn Slots Off. After Save, View Event must show MAIN_EVENT again
+  with the original document ID, `recordId` and `syncKey`, now active. Publish
+  once; it must preserve that identity. Codex then captures this state as the
+  `post-create` replay boundary and prepares Nova accepted at `2 / 8` without
+  treating that fixture prerequisite as create evidence.
 - Share that Event into one accepted Event/Group chat, then open the shared
   Event card as a participant. It must enter the same canonical **View Event ->
   Sub Events** runtime surface, not a chat-specific read-only form. The same
@@ -973,7 +1003,9 @@ guide never stores live status or machine evidence.
 - Control coverage stays in the existing cases: `EVENT-EDITOR-004` proves that
   real stage definitions do not also receive a `MAIN_EVENT` duplicate, while
   `EVENT-SLOT-001` proves each real occurrence/definition is returned without a
-  parent main-event card being copied into every slot.
+  parent main-event card being copied into every slot. Those controls do not
+  replace this testcase's explicit childless -> Slot -> childless identity
+  transition.
 
 ## Recurring slot and Sub-event list checkpoints
 

@@ -92,123 +92,113 @@ actually visible.
 
     `EVENT-RUNTIME-001 childless restored: original MAIN_EVENT visible and Event published`
 
-### 2. Managed-session check
+### 2. Capacity edit preserves the existing MAIN_EVENT
 
-21. Inspect the **Nova** window.
-22. Wait for the application to finish loading.
-23. Confirm that **No network** is absent and the application is online.
-24. Do not open or mutate an Event as Nova.
-25. Report:
-
-    `EVENT-RUNTIME-001 launcher ready: Nova online`
-
-### 3. Capacity edit preserves the existing MAIN_EVENT
-
-26. After Codex confirms the `post-create` boundary, reload **Casey** exactly
+21. After Codex confirms the `post-create` boundary, reload **Casey** exactly
     once.
-27. Open `Activities`, find `QA EVENT-RUNTIME-001`, open its menu, and select
+22. Open `Activities`, find `QA EVENT-RUNTIME-001`, open its menu, and select
     `Manage Event`.
-28. Change only `Max capacity` from `8` to `9`.
-29. Select `Save` exactly once.
-30. Do not reload the Activities list. Confirm that the same card changes in
+23. Change only `Max capacity` from `8` to `9`.
+24. Select `Save` exactly once.
+25. Do not reload the Activities list. Confirm that the same card changes in
     place from `2 / 8` to `2 / 9` and that no duplicate card appears.
-31. Select `View Event` and confirm that exactly one MAIN_EVENT card still
+26. Select `View Event` and confirm that exactly one MAIN_EVENT card still
     represents `QA EVENT-RUNTIME-001`.
-32. Report the following and wait for Codex to prove that the capacity Save
+27. Report the following and wait for Codex to prove that the capacity Save
     preserved the original runtime identity:
 
     `EVENT-RUNTIME-001 Save ready: card changed to 2/9 and one MAIN_EVENT remains`
 
-### 4. MAIN_EVENT presentation
+### 3. MAIN_EVENT presentation
 
-33. Open and close `Event Members`, `Transport`, `Accommodation`, and
+28. Open and close `Event Members`, `Transport`, `Accommodation`, and
     `Supplies`, one at a time.
-34. `Event Members` shows Casey once as Admin and Nova once as Member, with
+29. `Event Members` shows Casey once as Admin and Nova once as Member, with
     occupancy `2 / 9`.
-35. No resource category has a red counter at this boundary.
-36. Report the following, then wait while Codex checks the read-only boundary
+30. No resource category has a red counter at this boundary.
+31. Report the following, then wait while Codex checks the read-only boundary
     and prepares `QA Main Event Transport`:
 
     `EVENT-RUNTIME-001 MAIN_EVENT presentation ready`
 
-### 5. Assign one Transport
+### 4. Assign one Transport
 
-37. After Codex confirms that the Transport is prepared, reload the **Casey**
+32. After Codex confirms that the Transport is prepared, reload the **Casey**
     window exactly once.
-38. Navigate to:
+33. Navigate to:
 
     `Activities → QA EVENT-RUNTIME-001 → View Event → MAIN_EVENT → Transport`
 
-39. Open the green `+` menu and select `Assign`.
-40. Select only `QA Main Event Transport`, then select `Save` exactly once.
-41. Immediately confirm all of the following:
+34. Open the green `+` menu and select `Assign`.
+35. Select only `QA Main Event Transport`, then select `Save` exactly once.
+36. Immediately confirm all of the following:
 
     - Transport occupancy is `1 / 0 - 4`;
     - no red Transport counter is present;
     - the Transport card appears exactly once.
 
-42. Close and reopen `Transport`. It still shows `1 / 0 - 4` with no red
+37. Close and reopen `Transport`. It still shows `1 / 0 - 4` with no red
     counter.
-43. Reload the full Casey window exactly once, return to the same surface, and
+38. Reload the full Casey window exactly once, return to the same surface, and
     confirm the same state again.
-44. Report the following and wait for Codex's machine-side check:
+39. Report the following and wait for Codex's machine-side check:
 
     `EVENT-RUNTIME-001 Transport ready: 1/0-4, no red counter`
 
-### 6. Invite Nova and delete the invitation
+### 5. Invite Nova and delete the invitation
 
 The red Transport counter counts pending invitations only. Accepted Transport
 usage is the first number in the occupancy label. The correct transition in
 this section is therefore `0 → 1 → 0`, never `1 → 2 → 1`.
 
-45. In Casey, open `MAIN_EVENT → Transport → Members`.
-46. Select `Invite members`.
-47. On Nova's card, select the `+` control, then use the green checkmark in the
+40. In Casey, open `MAIN_EVENT → Transport → Members`.
+41. Select `Invite members`.
+42. On Nova's card, select the `+` control, then use the green checkmark in the
     header to send the invitation exactly once.
-48. Confirm that Nova appears exactly once with pending status.
-49. Confirm that the red Transport counter appears and changes `0 → 1` while
+43. Confirm that Nova appears exactly once with pending status.
+44. Confirm that the red Transport counter appears and changes `0 → 1` while
     occupancy remains `1 / 0 - 4`.
-50. Do not close Members or reload. Report the following and wait for Codex
+45. Do not close Members or reload. Report the following and wait for Codex
     before selecting Delete:
 
     `EVENT-RUNTIME-001 invite precondition ready: Nova pending, red counter 1`
 
-51. Open Nova's card menu and select `Delete invitation → Delete` exactly once.
-52. Without reloading the list, immediately confirm all of the following:
+46. Open Nova's card menu and select `Delete invitation → Delete` exactly once.
+47. Without reloading the list, immediately confirm all of the following:
 
     - Nova disappears;
     - the pending header and pending count disappear;
     - the red Transport counter changes `1 → 0` and disappears;
     - occupancy remains `1 / 0 - 4`.
 
-53. Close and reopen `Members`. Nova remains absent and no red counter is
+48. Close and reopen `Members`. Nova remains absent and no red counter is
     present.
-54. Reload the full Casey window exactly once, return to
+49. Reload the full Casey window exactly once, return to
     `Transport → Members`, and confirm the same state. Occupancy remains
     `1 / 0 - 4`.
-55. Report the following and wait for Codex's persistence and latency oracle:
+50. Report the following and wait for Codex's persistence and latency oracle:
 
     `EVENT-RUNTIME-001 Delete invitation ready: Nova absent, no red counter`
 
-### 7. Remove and reassign the Transport
+### 6. Remove and reassign the Transport
 
-56. In the `Transport` list, open the `QA Main Event Transport` card menu.
-57. Select `Remove`, then select `Remove` once in the `Remove assignment`
+51. In the `Transport` list, open the `QA Main Event Transport` card menu.
+52. Select `Remove`, then select `Remove` once in the `Remove assignment`
     confirmation dialog.
-58. Confirm that the Transport disappears, the accepted resource signal
+53. Confirm that the Transport disappears, the accepted resource signal
     changes `1 → 0`, and no red counter appears.
-59. Close and reopen Transport, then reload the full page exactly once. The
+54. Close and reopen Transport, then reload the full page exactly once. The
     assignment remains absent.
-60. Report the following and wait for Codex:
+55. Report the following and wait for Codex:
 
     `EVENT-RUNTIME-001 Transport removed: 1->0, no red counter`
 
-61. Open the green `+` menu on Transport again and select `Assign`.
-62. Select the same `QA Main Event Transport` asset and select `Save` once.
-63. Confirm that the accepted resource signal changes `0 → 1`, occupancy is
+56. Open the green `+` menu on Transport again and select `Assign`.
+57. Select the same `QA Main Event Transport` asset and select `Save` once.
+58. Confirm that the accepted resource signal changes `0 → 1`, occupancy is
     `1 / 0 - 4`, and the red pending counter remains absent.
-64. Close and reopen Transport, then reload once. The same state returns.
-65. Report the following and wait for Codex's terminal oracle:
+59. Close and reopen Transport, then reload once. The same state returns.
+60. Report the following and wait for Codex's terminal oracle:
 
     `EVENT-RUNTIME-001 Transport reassigned: 1/0-4, no red counter`
 

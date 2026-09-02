@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 03:19 CEST
+Updated: 2026-09-02 03:43 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,23 +56,23 @@ checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVEN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
 checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
-substage: baseline-ready — awaiting Casey's capacity Save
-next_replay_boundary: post-save-main-event — capture the persisted Event/runtime boundary after the 2/8 -> 2/9 Save
-fixture_phase: baseline-ready — Event 2/8, accepted Casey/Nova, Slots Off, Sub Events Off, no runtime/resource/Asset artifact
-browser_phase: managed Casey and Nova processes alive; tracked-session readiness returned 200 for both actors
-scenario: The user explicitly selected a complete EVENT-EDIT-RUNTIME-001 replay from the clean 2/8 baseline through the terminal remove/reassign oracle. Follow the stable Complete test journey section in order and stop at its named phrases for machine-side checks.
+substage: pre-create-ready — awaiting Casey's first UI Event Save
+next_replay_boundary: created-childless — capture the generated Event and MAIN_EVENT identities before the Slot round trip
+fixture_phase: pre-create-ready — no QA EVENT-RUNTIME-001 Event, MAIN_EVENT runtime, resource, controlled Transport, request or member artifact
+browser_phase: managed Casey and Nova processes alive; tracked-session readiness returned 200 for both actors; this is machine-side setup, not a user checklist section
+scenario: The user explicitly selected a complete EVENT-EDIT-RUNTIME-001 replay. Casey first creates the Event through the real UI, proves MAIN_EVENT, saves one Slot to replace that view, removes the Slot to restore the same MAIN_EVENT, publishes, and then continues through capacity, resource, invite/Delete and remove/reassign. The post-create 2/8 boundary becomes the replay savepoint for later tails; the Slot round trip remains part of this one testcase ID.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: EVENT-EDITOR-005 and the earlier complete EVENT-RUNTIME-001 journey remain retained evidence, but the user explicitly requested a fresh full replay. The launcher defect is repaired and the user confirmed that No network is absent in Nova. Codex initially misunderstood the requested scope and restored runtime-member-clean; after correction it immediately used the versioned reset followed by normal stage. Read-only status now proves the exact clean full-run baseline: one canonical Event at 2/8, Casey/Nova accepted, Slots Off, Sub Events Off, zero runtime, resource, Transport Asset/request/member and unrelated artifacts. Both managed browsers remain alive. Because the baseline changed behind Casey's open client, Casey must reload exactly once before opening Manage Event. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries; the full replay will still stop immediately before Delete so its optimized request can be measured cleanly.
+state: EVENT-EDITOR-005 and the earlier runtime/resource tail remain retained evidence, but neither the 2026-08-04 Event-create PASS nor yesterday's fixture-driven capacity Save proved the current create -> MAIN_EVENT contract. MAIN_EVENT support was introduced only on 2026-09-01. The earlier harness incorrectly staged an already-existing 2/8 Event with no runtime and let the capacity edit materialize it. That boundary was reset. Read-only status now proves the corrected pre-create state with zero Event/runtime/resource/Transport artifacts. The complete replay adds the missing childless -> Slot -> childless identity round trip before the existing runtime tail. Both managed browsers remain alive. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries; the full replay still stops immediately before Delete for a clean optimized measurement.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Follow the linked Complete test journey from its capacity-edit section. Reload Casey exactly once because the clean 2/8 fixture was staged behind the open client; open Activities -> QA EVENT-RUNTIME-001 -> Manage Event, change only Max capacity 8 -> 9 and Save exactly once. Confirm the same Activities card updates in place to 2/9 without a list reload, then stop with the Save phrase. Codex runs the Event/runtime oracle before allowing the MAIN_EVENT presentation and remaining full journey.
-event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-RUNTIME-001, active and staged
+required_resume: Reload Casey exactly once because the pre-create reset happened behind the open client. Follow checklist section 1: Activities -> Events -> green + -> Create Event; create the exact Casual 1-8 future Event with Slots Off and Sub Events Off, Save once as Draft, open Drafts -> View Event, and stop when exactly one MAIN_EVENT card is visible. Do not publish or add a Slot before the first stop phrase. Codex then captures the generated Event/runtime identity before the user continues the Slot-on/Slot-off transition.
+event: not created — QA EVENT-RUNTIME-001 is the reserved title for Casey's first manual action
 actors:
-  Casey: active host; authenticated managed document; requires exactly one reload before the first 2/8 -> 2/9 action
-  Nova: accepted participant; authenticated managed document; launcher visual reversal passed
-next_actor: Casey reloads exactly once, changes only Max capacity 8 -> 9, saves once and confirms the same Activities card becomes 2/9 without list reload.
-queued_followup: Codex proves one canonical Event at 2/9 and exactly one MAIN_EVENT runtime, then guides the user through the remaining full checklist sections and their stop phrases.
-pending_machine_oracle: After the capacity Save, prove one unchanged canonical Event identity at 2/9, exactly one active MAIN_EVENT runtime with canonical eventId=ownerId and subEventId=null, one attributable Event recompute and no duplicate/synthetic/foreign write.
-stop_phrase: EVENT-RUNTIME-001 Save ready: card changed to 2/9 without reload
+  Casey: authenticated managed document; creates the Event and owns every mutation
+  Nova: authenticated managed document; not yet an Event participant
+next_actor: Casey reloads exactly once, creates the exact Draft from checklist section 1, and opens View Event after the first Save.
+queued_followup: Codex captures the generated Draft and canonical MAIN_EVENT IDs, then allows one Slot-on Save, verifies MAIN_EVENT status D, allows Slot removal/Slots Off, proves the same MAIN_EVENT reactivated, and captures the published 2/8 replay savepoint before capacity edit.
+pending_machine_oracle: After the first Draft Save, prove one canonical Casey-owned Event at 1/8 with Slots Off/Sub Events Off and exactly one active MAIN_EVENT whose eventId=ownerId matches that generated Event, subEventId=null, and no resource/synthetic/duplicate artifact.
+stop_phrase: EVENT-RUNTIME-001 create ready: one MAIN_EVENT visible
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

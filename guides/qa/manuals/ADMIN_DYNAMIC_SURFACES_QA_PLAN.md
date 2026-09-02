@@ -1,8 +1,8 @@
 # Admin dynamic surfaces manual QA plan
 
-Status: living manual execution plan and evidence index  
-Last updated: 2026-08-04  
-Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)  
+Status: living manual execution plan and evidence index
+Last updated: 2026-09-02
+Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Reviewable spreadsheet source: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
 Priority model: [`MANUAL_QA_PRIORITY_MODEL.md`](../reference/MANUAL_QA_PRIORITY_MODEL.md)
 
@@ -28,6 +28,46 @@ document. Future manual testing of authentication, profiles, activities,
 assets, chat, notifications, moderation, operator functions, installation or
 other product areas must be appended to the same ledger (or linked from it when
 the evidence is too large), using the extension rules below.
+
+## Pair-QA operating contract
+
+The CSV/XLSX ledger selects the testcase and execution order. Each selected
+testcase has one stable English file under `guides/qa/checklists/` that tells the
+paired human exactly where to click, what to enter, what to observe and which
+phrase marks a machine-oracle boundary. The checklist is a repeatable user
+guide, not Codex's work log: never add live status, dates, checked boxes,
+backend evidence or transient fixture IDs to it.
+
+Before the paired human starts, Codex prepares or reuses the testcase's guarded
+`stage`, read-only `status` and exact `reset` operations, proves the selected
+baseline, and opens the configured isolated actor browsers. Fixture preparation
+must not replace a product transaction that the checklist explicitly puts
+under test. For example, when Event creation is the first behavior under test,
+the stage boundary contains no test Event; the human creates it through the UI
+and Codex captures the generated identity only after that action.
+
+A complex testcase remains one matrix row and one testcase ID. It may contain
+named replay substages at meaningful causal boundaries, such as `pre-create`,
+`created-childless`, `slot-override`, `post-create`, `post-save` or
+`resource-assigned`. These are transaction savepoints, not separate testcases
+and not infrastructure around every click. Once an earlier section has passed,
+Codex may restore the nearest accepted savepoint and replay only the shortest
+causal tail. A complete replay is used when the user explicitly requests it or
+when a failure contaminated the earlier baseline.
+
+The paired human exclusively performs and judges visual and interaction steps.
+At every named stop, and at the terminal boundary, Codex checks the independent
+API/backend/persisted oracle and records evidence in the QA pack and CSV/XLSX
+ledger, never in the checklist. If the human reports a discrepancy, freeze that
+boundary. Codex diagnoses the smallest owning scope and may use targeted CDP
+inspection only when logs, API state and persistence are insufficient. CDP is
+diagnostic: it does not click through the test or replace the human verdict.
+
+The live handoff must always contain the testcase ID, checklist section,
+current substage, fixture phase, actor/browser state, exact next human action,
+stop phrase and pending machine oracle. A later session starts with one
+read-only status gate and resumes from that pointer instead of reconstructing
+the campaign from chat history.
 
 ## Extending the ledger with future manual tests
 
