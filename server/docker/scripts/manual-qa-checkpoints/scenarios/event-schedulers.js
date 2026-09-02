@@ -25,6 +25,12 @@
   const COUNTER_OWNER_USER_ID = RANDOM_UI_USER_ID;
   const COUNTER_MEMBER_ID = `${PREFIX}:counter-expiry:member`;
   const COUNTER_RUNTIME_ID = `${PREFIX}:counter-expiry:main-event-runtime`;
+  const BASKET_BRANCH = "basket-purge";
+  const BASKET_RULE = "event-checkout-basket-purge";
+  const BASKET_EXPIRED_ID = `${PREFIX}:basket-purge:expired`;
+  const BASKET_FUTURE_ID = `${PREFIX}:basket-purge:future`;
+  const BASKET_USER_ID = "650000000000000000000062";
+  const BASKET_SOURCE_ID = `${PREFIX}:basket-purge:event`;
   const SECONDARY_RULES = ["notification-outbox", "affinity-recompute"];
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const requestedCheckpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID);
@@ -836,6 +842,166 @@
     });
   }
 
+  function basketQuarantineIds(boundaryIso) {
+    return Q.collection("eventCheckoutBasketItems")
+      .find({
+        _id: { $nin: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID] },
+        status: { $in: ["draft", "confirmed", "waiting", "approval-pending", "approved"] },
+        $or: [
+          { resultState: { $exists: false } },
+          { resultState: null },
+          { resultState: { $in: ["pending", "active", "failed"] } }
+        ],
+        expiresAtIso: { $exists: true, $nin: ["", null], $lte: boundaryIso }
+      }, { projection: { _id: 1 } })
+      .map(item => item._id)
+      .toArray();
+  }
+
+  function stageBasketPurge() {
+    Q.assertNotStaged(SCENARIO);
+    Q.assertNoOtherActiveScenario(SCENARIO);
+    Q.assertRuleNotRunning(BASKET_RULE);
+    const legacyFixture = Q.collection("adminJobFixtureSnapshots").findOne({});
+    if (legacyFixture) {
+      fail(`legacy Admin Job fixture '${Q.text(legacyFixture.job)}' is still active; reset it before staging this checkpoint.`);
+    }
+
+    const isolatedRules = scheduledRulesToIsolate(BASKET_RULE);
+    for (const rule of isolatedRules) {
+      if (rule.runState && rule.runState.currentStatus === "running") {
+        fail(`rule '${Q.text(rule.ruleKey)}' is running; wait for a terminal state and retry.`);
+      }
+    }
+    const stagedAtIso = Q.nowIso();
+    const quarantineIds = basketQuarantineIds(stagedAtIso);
+    const selectors = [{
+      collection: "eventCheckoutBasketItems",
+      selector: { _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID, ...quarantineIds] } }
+    }];
+    const snapshots = Q.snapshotSpecs(selectors);
+    const primaryRule = Q.requireRule(BASKET_RULE);
+    const expiredItem = {
+      _id: BASKET_EXPIRED_ID,
+      itemId: BASKET_EXPIRED_ID,
+      userId: BASKET_USER_ID,
+      sourceId: BASKET_SOURCE_ID,
+      kind: "event",
+      label: "Manual QA expired checkout draft",
+      amount: 12.5,
+      currency: "EUR",
+      quantity: 1,
+      status: "draft",
+      resultState: "active",
+      reservationActive: true,
+      pendingCounterTracked: true,
+      createdAtIso: stagedAtIso,
+      updatedAtIso: stagedAtIso,
+      expiresAtIso: pastIso(15)
+    };
+    const futureItem = {
+      _id: BASKET_FUTURE_ID,
+      itemId: BASKET_FUTURE_ID,
+      userId: BASKET_USER_ID,
+      sourceId: BASKET_SOURCE_ID,
+      kind: "event",
+      label: "Manual QA future checkout draft",
+      amount: 7.5,
+      currency: "EUR",
+      quantity: 1,
+      status: "draft",
+      resultState: "active",
+      reservationActive: true,
+      pendingCounterTracked: true,
+      createdAtIso: stagedAtIso,
+      updatedAtIso: stagedAtIso,
+      expiresAtIso: futureIso(60)
+    };
+    const state = {
+      _id: STATE_ID,
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT_ID,
+      branch: BASKET_BRANCH,
+      database: db.getName(),
+      stagedAtIso,
+      scheduledAtIso: null,
+      expectedDueAtIso: null,
+      scheduleCount: 0,
+      context: {
+        expiredId: BASKET_EXPIRED_ID,
+        futureId: BASKET_FUTURE_ID,
+        userId: BASKET_USER_ID,
+        sourceId: BASKET_SOURCE_ID,
+        quarantineIds,
+        expiredBaseline: expiredItem,
+        futureBaseline: futureItem
+      },
+      snapshots,
+      primaryRuleConfig: primaryRuleConfigSnapshot(primaryRule),
+      isolatedRuleConfigs: isolatedRules.map(schedulerRuleControlSnapshot),
+      secondaryRuleCounters: []
+    };
+    Q.collection(Q.STATE_COLLECTION).insertOne(state);
+
+    try {
+      holdScheduledRules(isolatedRules, stagedAtIso);
+      Q.holdRule(
+        BASKET_RULE,
+        2,
+        "EVENT-SCHEDULERS-001 basket-purge mixed baseline is held; schedule has not been issued.",
+        HOLD_SECONDS
+      );
+      Q.collection("notificationRuleConfigs").updateOne(
+        { ruleKey: BASKET_RULE },
+        {
+          $set: {
+            "runState.pendingCountUnit": "admin.jobs.table.affected",
+            updatedDate: stagedAtIso,
+            updatedUser: Q.ACTOR
+          }
+        }
+      );
+      if (quarantineIds.length > 0) {
+        Q.collection("eventCheckoutBasketItems").updateMany(
+          { _id: { $in: quarantineIds } },
+          {
+            $set: {
+              resultState: "manual-qa-quarantined",
+              pendingCounterTracked: false,
+              reservationActive: false,
+              updatedAtIso: stagedAtIso
+            }
+          }
+        );
+      }
+      Q.collection("eventCheckoutBasketItems").deleteMany({
+        _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID] }
+      });
+      Q.collection("eventCheckoutBasketItems").insertMany([expiredItem, futureItem]);
+    } catch (error) {
+      fail(`basket-purge stage failed after snapshot: ${Q.text(error && error.message)}. Run reset.`);
+    }
+
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT_ID,
+      branch: BASKET_BRANCH,
+      phase: "baseline-ready",
+      stagedAtIso,
+      schedulerHoldSeconds: HOLD_SECONDS,
+      expectedVisibleBaseline: {
+        eligibleBeforeNextRun: 2,
+        currentStatus: "idle",
+        expiredDraftCount: 1,
+        futureDraftCount: 1
+      },
+      quarantinedPreexistingDueBasketCount: quarantineIds.length,
+      isolatedScheduledRuleCount: isolatedRules.length,
+      metricsExpectation: "After scheduling, basket-purge must run exactly once and change both Metrics counters by +1.",
+      next: "Open Delete expired baskets, verify step 29, then record the Runner and Metrics baselines."
+    });
+  }
+
   function counterAt(user, path) {
     let value = user;
     for (const key of path.split(".")) value = value && value[key];
@@ -1063,6 +1229,11 @@
     return Q.sameJson(asPlainJson(left), asPlainJson(right));
   }
 
+  function samePlainJson(left, right) {
+    const asPlainJson = value => JSON.parse(EJSON.stringify(value, null, 0, { relaxed: true }));
+    return Q.sameJson(asPlainJson(left), asPlainJson(right));
+  }
+
   function counterStatus(state) {
     const event = Q.collection("events").findOne({ _id: COUNTER_EVENT_ID });
     const runtimes = Q.collection("activityEventRuntimeItems").find({
@@ -1206,6 +1377,109 @@
     };
   }
 
+  function basketStatus(state) {
+    const items = Q.collection("eventCheckoutBasketItems")
+      .find({ _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID] } })
+      .sort({ _id: 1 })
+      .toArray();
+    const expiredItem = items.find(item => Q.text(item._id) === BASKET_EXPIRED_ID);
+    const futureItem = items.find(item => Q.text(item._id) === BASKET_FUTURE_ID);
+    const rule = Q.ruleSummary(BASKET_RULE);
+    const schedulerIsolation = isolatedRulesStatus(state);
+    const metrics = monitoringCounters();
+    const metricsBaseline = state.metricsBaseline || null;
+    const metricsDelta = metricsBaseline ? {
+      scheduledTriggers: metrics.scheduledTriggers - Number(metricsBaseline.scheduledTriggers || 0),
+      auditEvents: metrics.auditEvents - Number(metricsBaseline.auditEvents || 0)
+    } : null;
+    const observedSchedulerRuns = schedulerRunsSince(state.scheduledAtIso);
+    const expectedRunsExactOnce = observedSchedulerRuns.length === 1
+      && observedSchedulerRuns[0].ruleKey === BASKET_RULE
+      && observedSchedulerRuns[0].status === "completed";
+    const metricsExactOnce = Boolean(metricsDelta
+      && metricsDelta.scheduledTriggers === 1
+      && metricsDelta.auditEvents === 1
+      && expectedRunsExactOnce);
+    const runObservedAfterSchedule = Boolean(
+      state.scheduledAtIso
+      && Number.isFinite(Date.parse(Q.text(rule.lastRunAtIso)))
+      && Date.parse(rule.lastRunAtIso) >= Date.parse(state.scheduledAtIso)
+    );
+    const expiredWasPurged = Boolean(expiredItem)
+      && Q.text(expiredItem.resultState) === "deleted"
+      && expiredItem.pendingCounterTracked === false
+      && expiredItem.reservationActive === false;
+    const futureUnchanged = Boolean(futureItem)
+      && samePlainJson(futureItem, state.context.futureBaseline);
+    const baselineReady = Number(state.scheduleCount) === 0
+      && schedulerIsolation.active
+      && rule.currentStatus === "idle"
+      && rule.pendingCount === 2
+      && items.length === 2
+      && Boolean(expiredItem && futureItem)
+      && Q.text(expiredItem.resultState) === "active"
+      && Q.text(futureItem.resultState) === "active"
+      && expiredItem.pendingCounterTracked === true
+      && futureItem.pendingCounterTracked === true
+      && Date.parse(Q.text(expiredItem.expiresAtIso)) <= Date.now()
+      && Date.parse(Q.text(futureItem.expiresAtIso)) > Date.now();
+    const detailValid = Q.text(rule.progressDetail)
+      .includes("Marked 1 expired checkout basket item(s) as deleted.");
+    const exactOutcome = Number(state.scheduleCount) === 1
+      && schedulerIsolation.active
+      && runObservedAfterSchedule
+      && rule.currentStatus === "completed"
+      && rule.lastRunCount === 1
+      && rule.pendingCount === 0
+      && detailValid
+      && items.length === 2
+      && expiredWasPurged
+      && futureUnchanged
+      && metricsExactOnce;
+    const phase = Number(state.scheduleCount) === 0
+      ? "baseline-ready"
+      : rule.currentStatus === "running"
+        ? "scheduler-running"
+        : exactOutcome
+          ? "scheduler-completed"
+          : "scheduled-waiting";
+    return {
+      phase,
+      rule,
+      schedulerIsolation,
+      metrics: {
+        baseline: metricsBaseline,
+        current: metrics,
+        delta: metricsDelta,
+        expectedDelta: metricsBaseline ? { scheduledTriggers: 1, auditEvents: 1 } : null,
+        observedSchedulerRuns,
+        expectedRunsExactOnce,
+        exactOnce: metricsExactOnce
+      },
+      current: {
+        items: items.map(item => ({
+          id: item._id,
+          status: item.status,
+          resultState: item.resultState,
+          pendingCounterTracked: item.pendingCounterTracked,
+          reservationActive: item.reservationActive,
+          expiresAtIso: item.expiresAtIso,
+          updatedAtIso: item.updatedAtIso
+        })),
+        physicalTargetCount: items.length,
+        quarantinedPreexistingDueBasketCount: (state.context.quarantineIds || []).length
+      },
+      validation: {
+        baselineReady,
+        runObservedAfterSchedule,
+        expiredWasPurged,
+        futureUnchanged,
+        detailValid,
+        exactOutcome
+      }
+    };
+  }
+
   function status() {
     const state = Q.activeState(SCENARIO, false);
     if (!state) {
@@ -1214,7 +1488,7 @@
         checkpointId: CHECKPOINT_ID,
         phase: "not-staged",
         prepared: false,
-        next: `Run stage ${SCENARIO} ${CHECKPOINT_ID} <${RANDOM_BRANCH}|${COUNTER_BRANCH}>.`
+        next: `Run stage ${SCENARIO} ${CHECKPOINT_ID} <${RANDOM_BRANCH}|${COUNTER_BRANCH}|${BASKET_BRANCH}>.`
       });
       return;
     }
@@ -1222,6 +1496,8 @@
       ? randomStatus(state)
       : state.branch === COUNTER_BRANCH
         ? counterStatus(state)
+        : state.branch === BASKET_BRANCH
+          ? basketStatus(state)
         : fail(`unsupported active branch '${state.branch}'.`);
     Q.printObject({
       scenario: SCENARIO,
@@ -1340,10 +1616,49 @@
     });
   }
 
+  function scheduleBasketPurge() {
+    const state = Q.activeState(SCENARIO, true);
+    if (state.branch !== BASKET_BRANCH) fail(`unsupported active branch '${state.branch}'.`);
+    Q.assertRuleNotRunning(BASKET_RULE);
+    const current = basketStatus(state);
+    if (state.scheduledAtIso
+        || !current.validation.baselineReady
+        || !current.schedulerIsolation.active) {
+      fail("the basket-purge baseline is no longer clean or was already scheduled; reset first.");
+    }
+    const metricsBaseline = monitoringCounters();
+    if (metricsBaseline.scheduledTriggers !== metricsBaseline.auditEvents) {
+      fail(`Metrics is not settled (${metricsBaseline.scheduledTriggers}/${metricsBaseline.auditEvents}); wait for ingestion and retry.`);
+    }
+    const scheduleResult = Q.scheduleRule(BASKET_RULE, requestedDelaySeconds, HOLD_SECONDS);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      {
+        $set: {
+          scheduledAtIso: scheduleResult.scheduledAtIso,
+          expectedDueAtIso: scheduleResult.expectedDueAtIso,
+          scheduledDelaySeconds: scheduleResult.delaySeconds,
+          scheduleCount: 1,
+          metricsBaseline
+        }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT_ID,
+      branch: state.branch,
+      phase: "scheduled-waiting",
+      ...scheduleResult,
+      metricsBaseline,
+      next: "Leave Job Detail open; wait for the existing scheduler's normal poll."
+    });
+  }
+
   function schedule() {
     const state = Q.activeState(SCENARIO, true);
     if (state.branch === RANDOM_BRANCH) return scheduleRandomGroups();
     if (state.branch === COUNTER_BRANCH) return scheduleCounterExpiry();
+    if (state.branch === BASKET_BRANCH) return scheduleBasketPurge();
     fail(`unsupported active branch '${state.branch}'.`);
   }
 
@@ -1353,6 +1668,8 @@
       ? RANDOM_RULE
       : state.branch === COUNTER_BRANCH
         ? COUNTER_RULE
+        : state.branch === BASKET_BRANCH
+          ? BASKET_RULE
         : fail(`unsupported active branch '${state.branch}'.`);
     Q.assertRuleNotRunning(targetRule);
     for (const saved of state.isolatedRuleConfigs || []) Q.assertRuleNotRunning(saved.ruleKey);
@@ -1369,7 +1686,9 @@
       restored: true,
       detail: state.branch === RANDOM_BRANCH
         ? "The source Event, rooms, memberships, chats, messages, notifications, selected user counters and held affinity tasks were restored. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
-        : "The expiry Event, existing Nova participant and Sophia host profiles and counters, and quarantined due-record fields were restored exactly. The target rule's original configuration was restored while its legitimate two-pass run history was retained; every isolated rule's original scheduling control was restored exactly."
+        : state.branch === COUNTER_BRANCH
+          ? "The expiry Event, existing Nova participant and Sophia host profiles and counters, and quarantined due-record fields were restored exactly. The target rule's original configuration was restored while its legitimate two-pass run history was retained; every isolated rule's original scheduling control was restored exactly."
+          : "The expired and future checkout drafts plus every quarantined due basket were restored exactly. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
     });
   }
 
@@ -1381,7 +1700,8 @@
     case "stage":
       if (requestedBranch === RANDOM_BRANCH) stageRandomGroups();
       else if (requestedBranch === COUNTER_BRANCH) stageCounterExpiry();
-      else fail(`stage requires '${RANDOM_BRANCH}' or '${COUNTER_BRANCH}'.`);
+      else if (requestedBranch === BASKET_BRANCH) stageBasketPurge();
+      else fail(`stage requires '${RANDOM_BRANCH}', '${COUNTER_BRANCH}' or '${BASKET_BRANCH}'.`);
       break;
     case "status": status(); break;
     case "schedule": schedule(); break;

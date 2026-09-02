@@ -34,6 +34,7 @@ Usage:
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 random-groups
   bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 counter-expiry
+  bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 basket-purge
   bash manual-qa-checkpoints.sh status event-schedulers EVENT-SCHEDULERS-001
   bash manual-qa-checkpoints.sh schedule event-schedulers EVENT-SCHEDULERS-001 [delay-seconds]
   bash manual-qa-checkpoints.sh reset event-schedulers EVENT-SCHEDULERS-001
