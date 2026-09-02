@@ -10,7 +10,8 @@ it are replay savepoints, not separate testcase IDs.
 ## Actors and startup
 
 - **Casey** is the tested Event admin. Perform every Event and Transport
-  mutation in Casey's window.
+  mutation in Casey's window. Casey enters the runtime screen with `Manage
+  Event`; the `Edit` button inside that screen edits the Event definition.
 - **Nova** is the controlled participant. Use Nova's window only where this
   guide explicitly requests it.
 - Codex prepares the clean boundary, opens the isolated browser windows, and
@@ -24,8 +25,10 @@ To start a complete replay, tell Codex:
 Start section 1 only after Codex confirms this baseline:
 
 - no Event titled `QA EVENT-RUNTIME-001` exists;
-- no matching MAIN_EVENT runtime, resource, controlled Transport, request, or
-  member artifact exists;
+- no matching MAIN_EVENT runtime, resource assignment, request, or member
+  artifact exists;
+- Casey owns exactly one unassigned fixture in each category: `QA Main Event
+  Transport`, `QA Slot Accommodation`, and `QA Slot Supplies`;
 - separate Casey and Nova windows are open.
 
 Stop at the first mismatch. Do not compensate with a second Save, Publish,
@@ -34,7 +37,7 @@ actually visible.
 
 ## Complete test journey
 
-### 1. Create the Event and prove MAIN_EVENT/Slot switching
+### 1. Create the Event and prove root/Slot MAIN_EVENT isolation
 
 1. In **Casey**, open `Activities → Events`.
 2. Open the green `+` menu and select `Create Event`.
@@ -53,7 +56,7 @@ actually visible.
 
 4. Select `Save` exactly once. Do not publish yet.
 5. Open `Drafts` and confirm that the Event appears exactly once at `1 / 8`.
-6. From that Draft card, select `View Event`.
+6. From that Draft card, select `Manage Event`.
 7. Confirm that the Sub Events surface already shows exactly one card for the
    main Event. The following are failures:
 
@@ -66,27 +69,54 @@ actually visible.
 
    `EVENT-RUNTIME-001 create ready: one MAIN_EVENT visible`
 
-9. Return to the same Draft card and select `Edit Event`.
-10. Turn `Slots` On and add exactly one slot inside the Event's date range.
-    Keep `Sub Events` Off and do not change another Event field.
-11. Select `Save` exactly once.
-12. Select `View Event` again.
-13. Confirm that the created slot is shown and the standalone MAIN_EVENT card
-    is absent. The slot view replaces the childless view; the two must never be
-    displayed together.
-14. Report the following and wait for Codex to verify that the original
-    MAIN_EVENT runtime is deactivated rather than duplicated:
+9. On the visible main Event card, open `Transport`.
+10. Open the green `+` menu, select `Assign`, select only `QA Main Event
+    Transport`, and select `Save` exactly once.
+11. Confirm that Transport shows that card exactly once at `1 / 0 - 4`, with
+    no red pending counter.
+12. Close Transport. The root MAIN_EVENT card remains visible exactly once.
+13. Select `Edit` in the runtime screen header. Do not use or expect a second
+    `Manage Event` action inside this screen: this `Edit` opens the Event
+    definition.
+14. Turn `Slots` On and add exactly two distinct slots inside the Event's date
+    range: one at the Event start and one one hour later. Keep `Sub Events` Off
+    and do not change another Event field.
+15. Select `Save` exactly once, then reopen the Draft card with `Manage Event`.
+16. Confirm that exactly two Slot sections are shown in chronological order.
+17. Confirm that each Slot contains exactly one card labelled `Event`. These
+    are two slot-scoped MAIN_EVENT runtimes. The following are failures:
 
-    `EVENT-RUNTIME-001 slot override ready: slot visible, MAIN_EVENT absent`
+    - either Slot is empty or says `No sub events yet`;
+    - only one Event card is shown for two Slots;
+    - the original root MAIN_EVENT is shown as a third standalone section;
+    - a synthetic `default` Sub Event appears.
 
-15. Return to `Edit Event`, remove the slot, and turn `Slots` Off. Keep
-    `Sub Events` Off.
-16. Select `Save` exactly once.
-17. Select `View Event` again and confirm that the single MAIN_EVENT card has
-    returned, with no slot and no empty state.
-18. Return to the Draft card and select `Publish → Publish` exactly once.
-19. Confirm that the active Event appears exactly once at `1 / 8`.
-20. Report the following and wait. Codex verifies that the original MAIN_EVENT
+18. Open the first Slot's Event card, then open `Accommodation`.
+19. Select `Assign`, select only `QA Slot Accommodation`, and select `Save`
+    exactly once. Confirm it appears once only in the first Slot.
+20. Open the second Slot's Event card, then open `Supplies`.
+21. Select `Assign`, select only `QA Slot Supplies`, and select `Save` exactly
+    once. Confirm it appears once only in the second Slot.
+22. Reopen both Slot cards and confirm the isolation:
+
+    - first Slot: Accommodation present; Supplies and Transport absent;
+    - second Slot: Supplies present; Accommodation and Transport absent.
+
+23. Report the following and wait for Codex to verify the root and generated
+    Slot runtime/resource identities:
+
+    `EVENT-RUNTIME-001 two slot MAIN_EVENT resources ready`
+
+24. Select `Edit`, remove both Slots, and turn `Slots` Off. Keep `Sub Events`
+    Off.
+25. Select `Save` exactly once, then reopen the Draft with `Manage Event`.
+26. Confirm that the original single MAIN_EVENT card has returned, with no Slot
+    section and no empty state.
+27. Open its resource categories and confirm that `QA Main Event Transport`
+    returned, while `QA Slot Accommodation` and `QA Slot Supplies` are absent.
+28. Return to the Draft card and select `Publish → Publish` exactly once.
+29. Confirm that the active Event appears exactly once at `1 / 8`.
+30. Report the following and wait. Codex verifies that the original MAIN_EVENT
     identity was reactivated, prepares Nova as the accepted participant, and
     records the replayable `post-create` boundary at `2 / 8`:
 
@@ -94,111 +124,88 @@ actually visible.
 
 ### 2. Capacity edit preserves the existing MAIN_EVENT
 
-21. After Codex confirms the `post-create` boundary, reload **Casey** exactly
+31. After Codex confirms the `post-create` boundary, reload **Casey** exactly
     once.
-22. Open `Activities`, find `QA EVENT-RUNTIME-001`, open its menu, and select
+32. Open `Activities`, find `QA EVENT-RUNTIME-001`, open its menu, and select
     `Manage Event`.
-23. Change only `Max capacity` from `8` to `9`.
-24. Select `Save` exactly once.
-25. Do not reload the Activities list. Confirm that the same card changes in
+33. Select `Edit`, then change only `Max capacity` from `8` to `9`.
+34. Select `Save` exactly once.
+35. Do not reload the Activities list. Confirm that the same card changes in
     place from `2 / 8` to `2 / 9` and that no duplicate card appears.
-26. Select `View Event` and confirm that exactly one MAIN_EVENT card still
+36. Select `Manage Event` and confirm that exactly one MAIN_EVENT card still
     represents `QA EVENT-RUNTIME-001`.
-27. Report the following and wait for Codex to prove that the capacity Save
+37. Report the following and wait for Codex to prove that the capacity Save
     preserved the original runtime identity:
 
     `EVENT-RUNTIME-001 Save ready: card changed to 2/9 and one MAIN_EVENT remains`
 
 ### 3. MAIN_EVENT presentation
 
-28. Open and close `Event Members`, `Transport`, `Accommodation`, and
+38. Open and close `Event Members`, `Transport`, `Accommodation`, and
     `Supplies`, one at a time.
-29. `Event Members` shows Casey once as Admin and Nova once as Member, with
+39. `Event Members` shows Casey once as Admin and Nova once as Member, with
     occupancy `2 / 9`.
-30. No resource category has a red counter at this boundary.
-31. Report the following, then wait while Codex checks the read-only boundary
-    and prepares `QA Main Event Transport`:
+40. Transport still contains `QA Main Event Transport` exactly once at
+    `1 / 0 - 4`. Accommodation and Supplies are empty, and no resource category
+    has a red counter.
+41. Report the following, then wait while Codex checks the read-only boundary:
 
     `EVENT-RUNTIME-001 MAIN_EVENT presentation ready`
 
-### 4. Assign one Transport
-
-32. After Codex confirms that the Transport is prepared, reload the **Casey**
-    window exactly once.
-33. Navigate to:
-
-    `Activities → QA EVENT-RUNTIME-001 → View Event → MAIN_EVENT → Transport`
-
-34. Open the green `+` menu and select `Assign`.
-35. Select only `QA Main Event Transport`, then select `Save` exactly once.
-36. Immediately confirm all of the following:
-
-    - Transport occupancy is `1 / 0 - 4`;
-    - no red Transport counter is present;
-    - the Transport card appears exactly once.
-
-37. Close and reopen `Transport`. It still shows `1 / 0 - 4` with no red
-    counter.
-38. Reload the full Casey window exactly once, return to the same surface, and
-    confirm the same state again.
-39. Report the following and wait for Codex's machine-side check:
-
-    `EVENT-RUNTIME-001 Transport ready: 1/0-4, no red counter`
-
-### 5. Invite Nova and delete the invitation
+### 4. Invite Nova and delete the invitation
 
 The red Transport counter counts pending invitations only. Accepted Transport
 usage is the first number in the occupancy label. The correct transition in
 this section is therefore `0 → 1 → 0`, never `1 → 2 → 1`.
 
-40. In Casey, open `MAIN_EVENT → Transport → Members`.
-41. Select `Invite members`.
-42. On Nova's card, select the `+` control, then use the green checkmark in the
+42. In Casey, open `MAIN_EVENT → Transport → Members`.
+43. Select `Invite members`.
+44. On Nova's card, select the `+` control, then use the green checkmark in the
     header to send the invitation exactly once.
-43. Confirm that Nova appears exactly once with pending status.
-44. Confirm that the red Transport counter appears and changes `0 → 1` while
+45. Confirm that Nova appears exactly once with pending status.
+46. Confirm that the red Transport counter appears and changes `0 → 1` while
     occupancy remains `1 / 0 - 4`.
-45. Do not close Members or reload. Report the following and wait for Codex
+47. Do not close Members or reload. Report the following and wait for Codex
     before selecting Delete:
 
     `EVENT-RUNTIME-001 invite precondition ready: Nova pending, red counter 1`
 
-46. Open Nova's card menu and select `Delete invitation → Delete` exactly once.
-47. Without reloading the list, immediately confirm all of the following:
+48. Open Nova's card menu and select `Delete invitation → Delete` exactly once.
+49. Without reloading the list, immediately confirm all of the following:
 
     - Nova disappears;
     - the pending header and pending count disappear;
     - the red Transport counter changes `1 → 0` and disappears;
     - occupancy remains `1 / 0 - 4`.
 
-48. Close and reopen `Members`. Nova remains absent and no red counter is
+50. Close and reopen `Members`. Nova remains absent and no red counter is
     present.
-49. Reload the full Casey window exactly once, return to
+51. Reload the full Casey window exactly once, return to
     `Transport → Members`, and confirm the same state. Occupancy remains
     `1 / 0 - 4`.
-50. Report the following and wait for Codex's persistence and latency oracle:
+52. Report the following and wait for Codex's persistence and latency oracle:
 
     `EVENT-RUNTIME-001 Delete invitation ready: Nova absent, no red counter`
 
-### 6. Remove and reassign the Transport
+### 5. Remove and reassign the Transport
 
-51. In the `Transport` list, open the `QA Main Event Transport` card menu.
-52. Select `Remove`, then select `Remove` once in the `Remove assignment`
+53. In the `Transport` list, open the `QA Main Event Transport` card menu.
+54. Select `Remove`, then select `Remove` once in the `Remove assignment`
     confirmation dialog.
-53. Confirm that the Transport disappears, the accepted resource signal
+55. Confirm that the Transport disappears, the accepted resource signal
     changes `1 → 0`, and no red counter appears.
-54. Close and reopen Transport, then reload the full page exactly once. The
+56. Close and reopen Transport, then reload the full page exactly once. The
     assignment remains absent.
-55. Report the following and wait for Codex:
+57. Report the following and wait for Codex:
 
     `EVENT-RUNTIME-001 Transport removed: 1->0, no red counter`
 
-56. Open the green `+` menu on Transport again and select `Assign`.
-57. Select the same `QA Main Event Transport` asset and select `Save` once.
-58. Confirm that the accepted resource signal changes `0 → 1`, occupancy is
+58. Open the green `+` menu on Transport again and select `Assign`.
+59. Select the same `QA Main Event Transport` asset and select `Save` once.
+60. Confirm that the accepted resource signal changes `0 → 1`, occupancy is
     `1 / 0 - 4`, and the red pending counter remains absent.
-59. Close and reopen Transport, then reload once. The same state returns.
-60. Report the following and wait for Codex's terminal oracle:
+61. Close and reopen Transport, then reload once. The same state returns.
+62. Report the following and wait for Codex's terminal oracle:
 
     `EVENT-RUNTIME-001 Transport reassigned: 1/0-4, no red counter`
 
@@ -216,7 +223,7 @@ new testcase and does not replace the complete journey.
    `pending=0`, occupancy `1 / 0 - 4`, and no red counter.
 3. Reload Casey exactly once, then open:
 
-   `Activities → QA EVENT-RUNTIME-001 → View Event → MAIN_EVENT → Transport → Members`
+   `Activities → QA EVENT-RUNTIME-001 → Manage Event → MAIN_EVENT → Transport → Members`
 
 4. Invite Nova once. Confirm that Nova appears once as pending and that the red
    counter changes `0 → 1` while occupancy remains `1 / 0 - 4`.

@@ -40,7 +40,7 @@ the same prerequisite without depending on an earlier human action.
 | Producer | Persisted output | Direct UI projection | Automatic consumers | Required follow-up cases |
 | --- | --- | --- | --- | --- |
 | Event Editor draft save | Canonical draft event, `event.synced` telemetry, event recompute task | Hosting/Draft event card and reopened editor | Statistics worker, Monitoring projection, affinity recompute worker | `EVENT-EDITOR-001`, `GRAPH-006` |
-| Childless Event runtime materialization | One persisted `MAIN_EVENT` runtime item referencing the canonical Event; no synthetic sub-event definition or `:default` identity | View Event shows one main-event runtime card instead of an empty Sub-events list | None on View/reload; only the owning Event save may write or enqueue normal Event recompute | `EVENT-RUNTIME-001` |
+| Event MAIN_EVENT runtime materialization | One persisted root `MAIN_EVENT` when Slots are Off; one scoped MAIN_EVENT view per Slot when Slots are On without child definitions; no synthetic `:default` identity | Manage Event for the admin and View Event for participants show the same runtime state instead of an empty Sub-events list | None on open/reload; only the owning Event save or explicit runtime/resource mutation may write | `EVENT-RUNTIME-001` |
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
@@ -826,15 +826,21 @@ guide never stores live status or machine evidence.
   remains valid for the mutations it actually exercised; it is not retroactive
   create evidence.
 - Corrected complete-run contract: normal `stage` now produces an exact empty
-  `pre-create` boundary. Casey creates and Saves the Draft through the UI with
-  Slots Off/Sub Events Off and proves one MAIN_EVENT. The same Draft is then
-  saved with one Slot, which must replace the MAIN_EVENT view while retaining
-  that runtime exactly once with status `D`. Removing the Slot and turning
-  Slots Off must reactivate the same runtime document, `recordId` and `syncKey`;
-  Publish preserves it. Only after those human-visible transitions does Codex
-  prepare Nova as accepted and capture the replayable `post-create` boundary at
-  `2 / 8`. This Slot round trip and the later runtime/resource tail remain one
-  `EVENT-EDIT-RUNTIME-001` transaction.
+  `pre-create` Event/runtime boundary plus three active, unassigned Casey-owned
+  fixtures: one Transport, one Accommodation and one Supplies asset. Casey
+  creates and Saves the Draft through the UI with Slots Off/Sub Events Off and
+  proves one root MAIN_EVENT, then assigns the Transport at that root scope.
+  The same Draft is saved with exactly two Slot definitions. The runtime view
+  must then show exactly one slot-scoped MAIN_EVENT card in each Slot; the root
+  runtime remains persisted once with status `D` and must not appear as a third
+  card. Casey assigns Accommodation only to the first Slot and Supplies only to
+  the second and proves that the scopes do not leak. Removing both Slots and
+  turning Slots Off must reactivate the original root runtime document,
+  `recordId` and `syncKey`, restore its Transport, and expose neither Slot
+  assignment. Publish preserves it. Only after those human-visible transitions
+  does Codex prepare Nova as accepted and capture the replayable `post-create`
+  boundary at `2 / 8`. This Slot round trip and the later runtime/resource tail
+  remain one `EVENT-EDIT-RUNTIME-001` transaction.
 - Historical preparation on 2026-09-01: the versioned fixture was staged with one active
   canonical `QA EVENT-RUNTIME-001`, Casey and Nova accepted, capacity `2 / 8`,
   Slots Off, Sub Events Off, zero definitions/slots and zero runtime items.
@@ -966,18 +972,23 @@ guide never stores live status or machine evidence.
   runtime owner, and `subEventId=null`. It must not insert a fake sub-event
   definition, copy the full Event into a second canonical Event document or
   create a synthetic `:default` child identity.
-- Open **View Event** as the host. The runtime query must return that persisted
+- Open **Manage Event** as the host. The runtime query must return that persisted
   item and the UI must show exactly one card using the main Event title,
   timeframe and location. The Sub-events surface must not show `No items`, an
   empty child section or a second copy of the same Event.
-- Edit that same Draft, enable Slots and add exactly one Slot. After Save, the
-  Slot view must replace MAIN_EVENT; the two must not coexist. The original
-  MAIN_EVENT runtime remains one document with status `D`. Edit again, remove
-  the Slot and turn Slots Off. After Save, View Event must show MAIN_EVENT again
-  with the original document ID, `recordId` and `syncKey`, now active. Publish
-  once; it must preserve that identity. Codex then captures this state as the
-  `post-create` replay boundary and prepares Nova accepted at `2 / 8` without
-  treating that fixture prerequisite as create evidence.
+- Assign `QA Main Event Transport` to the root MAIN_EVENT. Use the runtime
+  header's **Edit** action to edit that same Draft, enable Slots and add exactly
+  two distinct Slot definitions. After Save, each Slot must contain exactly one
+  MAIN_EVENT card. The root card must not coexist as a third card; its persisted
+  runtime remains one document with status `D`. Assign `QA Slot Accommodation`
+  only to the first Slot and `QA Slot Supplies` only to the second and prove
+  both scopes remain isolated. Edit again, remove both Slots and turn Slots
+  Off. After Save, Manage Event must show the original root MAIN_EVENT again
+  with its original document ID, `recordId`, `syncKey` and Transport assignment,
+  while neither Slot assignment is visible. Publish once; it must preserve that
+  identity. Codex then captures this state as the `post-create` replay boundary
+  and prepares Nova accepted at `2 / 8` without treating that fixture
+  prerequisite as create evidence.
 - Share that Event into one accepted Event/Group chat, then open the shared
   Event card as a participant. It must enter the same canonical **View Event ->
   Sub Events** runtime surface, not a chat-specific read-only form. The same
@@ -997,15 +1008,19 @@ guide never stores live status or machine evidence.
 - Close and reopen View Event, switch Upcoming/Past where applicable and reload
   once. All reads are `X`: the same one runtime item/card remains, and no Event,
   runtime, member, resource, task, outbox, chat or notification write is added.
-- Independent persisted oracle: one canonical Event, one `MAIN_EVENT` runtime
-  item, zero sub-event definitions/items and zero generated slots. Query and UI
-  identities/counts must match those records exactly.
+- Independent persisted oracle: at the root boundary there is one canonical
+  Event and one active root `MAIN_EVENT`. At the two-Slot boundary there are
+  exactly two active Slot templates and exactly one derived MAIN_EVENT view per
+  Slot, backed by isolated resource owner/subEvent scopes, while the persisted
+  root runtime exists once with status `D`. After Slot removal the same root
+  runtime is active again and only its Transport assignment is visible. Query
+  and UI identities/counts must match those records exactly.
 - Control coverage stays in the existing cases: `EVENT-EDITOR-004` proves that
   real stage definitions do not also receive a `MAIN_EVENT` duplicate, while
-  `EVENT-SLOT-001` proves each real occurrence/definition is returned without a
-  parent main-event card being copied into every slot. Those controls do not
-  replace this testcase's explicit childless -> Slot -> childless identity
-  transition.
+  `EVENT-SLOT-001` proves occurrence materialization for real child
+  definitions. Those controls do not replace this testcase's explicit root
+  MAIN_EVENT -> two independently scoped Slot MAIN_EVENT cards -> restored root
+  MAIN_EVENT transition.
 
 ## Recurring slot and Sub-event list checkpoints
 

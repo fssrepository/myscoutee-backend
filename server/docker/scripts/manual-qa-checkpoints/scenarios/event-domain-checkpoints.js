@@ -22,6 +22,15 @@
   const EVENT_ID = `${PREFIX}:event`;
   const RUNTIME_TRANSPORT_ASSET_ID = `${PREFIX}:runtime-transport`;
   const RUNTIME_TRANSPORT_ASSET_TITLE = "QA Main Event Transport";
+  const RUNTIME_ACCOMMODATION_ASSET_ID = `${PREFIX}:runtime-accommodation`;
+  const RUNTIME_ACCOMMODATION_ASSET_TITLE = "QA Slot Accommodation";
+  const RUNTIME_SUPPLIES_ASSET_ID = `${PREFIX}:runtime-supplies`;
+  const RUNTIME_SUPPLIES_ASSET_TITLE = "QA Slot Supplies";
+  const RUNTIME_ASSET_IDS = [
+    RUNTIME_TRANSPORT_ASSET_ID,
+    RUNTIME_ACCOMMODATION_ASSET_ID,
+    RUNTIME_SUPPLIES_ASSET_ID
+  ];
   const ISOLATION_EVENT_ID = `${PREFIX}:ticket-isolation-control`;
   const LOCKED_EVENT_ID = `${PREFIX}:feedback-locked`;
   const TRASHED_EVENT_ID = `${PREFIX}:feedback-trashed`;
@@ -555,16 +564,18 @@
     },
     "EVENT-RUNTIME-001": {
       stage: "runtime-pre-create",
-      why: "Prove the complete normal Event transaction from UI creation through its persisted MAIN_EVENT runtime, then prove that an ordinary Event edit preserves that runtime and every View Event read remains read-only.",
-      action: "As Casey, create and Save one normal Casual Draft titled QA EVENT-RUNTIME-001 with capacity 1-8, Slots Off and Sub Events Off. Prove that View Event already shows one MAIN_EVENT card. Edit the same Draft, enable one Slot and prove the slot replaces MAIN_EVENT; then remove the Slot, turn Slots Off and prove the original MAIN_EVENT returns. Publish once and stop for the post-create oracle/savepoint. After Codex prepares Nova as the accepted participant, continue with the capacity edit, Transport assignment, scoped Invite/Delete, and remove/reassign tail.",
-      expected: "The clean starting boundary contains no QA EVENT-RUNTIME-001 Event or runtime. The first UI Save produces one canonical Draft plus exactly one active runtime item with runtimeKind MAIN_EVENT, eventId and ownerId equal to the new Event, and subEventId null. Enabling one Slot deactivates that runtime and replaces the childless list with the slot view. Removing the Slot reactivates the same runtime document/record/sync identity without duplication. Publish preserves it. The captured post-create replay boundary has Casey and Nova accepted at 2/8. The capacity edit changes only the Event to 2/9 and preserves that runtime. The Transport save creates exactly one activityResources record and one accepted owner assignment. Accepted occupancy is 1/0-4 while the red pending badge is absent. The scoped Nova invitation raises only the Transport pending badge from 0 to 1; Delete invitation returns it to 0 and remains absent after reopen/reload.",
-      worker: "The initial fixture MUST NOT create the Event or MAIN_EVENT. The first full run uses the real Event create, Slot-on, Slot-off and Publish paths. Codex captures the generated identity at each named boundary and saves the restored childless state as the replay point. A later substage replay may restore that accepted boundary without repeating creation or the Slot round trip. The changed capacity Save MUST RUN one normal event recompute but MUST NOT create, replace or duplicate the runtime. View Event, close/reopen and reload remain read-only.",
+      why: "Prove the complete normal Event transaction from UI creation through root and slot-scoped MAIN_EVENT runtimes, including resource isolation, then prove that an ordinary Event edit preserves the restored root runtime.",
+      action: "As Casey, create and Save one normal Casual Draft titled QA EVENT-RUNTIME-001 with capacity 1-8, Slots Off and Sub Events Off. Assign the staged Transport to its root MAIN_EVENT. Edit the same Draft, enable two Slots and prove that each Slot exposes its own MAIN_EVENT card. Assign the staged Accommodation only to the first Slot and the staged Supplies only to the second Slot. Remove both Slots, turn Slots Off, prove the original root MAIN_EVENT and Transport return without slot-resource leakage, then Publish once. Continue with the capacity edit and the scoped Transport Invite/Delete and remove/reassign tail.",
+      expected: "The clean starting boundary contains no QA EVENT-RUNTIME-001 Event or runtime and contains exactly three unassigned Casey-owned resource fixtures. The first UI Save produces one canonical Draft plus one active root MAIN_EVENT. Two Slot definitions produce exactly two slot-scoped MAIN_EVENT cards while the persisted root runtime is retained once with status D. Root Transport, first-slot Accommodation and second-slot Supplies remain isolated by runtime ownerId/subEventId. Removing both Slots reactivates the original root runtime and its Transport without exposing either slot resource. Publish preserves it. The captured post-create replay boundary has Casey and Nova accepted at 2/8. The capacity edit changes only the Event to 2/9 and preserves that runtime and resource scope. The scoped Nova invitation raises only the root Transport pending badge from 0 to 1; Delete invitation returns it to 0 and remains absent after reopen/reload.",
+      worker: "The initial fixture MUST NOT create the Event, MAIN_EVENT or resource assignment; it prepares only three snapshot-protected Casey assets. The first full run uses the real Event create, root assignment, two-Slot Save, two slot-scoped assignments, Slot removal and Publish paths. Codex captures the generated runtime identities and resource scopes at named boundaries. A later substage replay may restore the accepted root boundary without repeating creation or the Slot round trip. The changed capacity Save MUST RUN one normal event recompute but MUST NOT create, replace or duplicate the root runtime. Manage Event/View Event, close/reopen and reload remain read-only.",
       checks: [
-        "Pre-create boundary: no Event, MAIN_EVENT runtime, resource or Asset assignment exists for this testcase.",
+        "Pre-create boundary: no Event, MAIN_EVENT runtime or assignment exists; exactly one unassigned Transport, Accommodation and Supplies fixture is available to Casey.",
         "Create boundary: the human-created Draft exists once at 1/8 and already exposes exactly one persisted MAIN_EVENT runtime.",
-        "Slot override boundary: the same Draft has one Slot, the slot view replaces MAIN_EVENT, and the original MAIN_EVENT runtime is retained once with status D.",
-        "Childless restoration: removing the Slot reactivates the original MAIN_EVENT identity, and Publish preserves it.",
-        "Post-create replay boundary: the same Event/runtime identities are retained with Casey and Nova accepted at 2/8 and no resource assignment.",
+        "Root resource boundary: the staged Transport is assigned only to ownerId=Event and subEventId=main-event:Event.",
+        "Slot runtime boundary: the same Draft has two Slots and each Slot contains exactly one MAIN_EVENT card; the original root runtime is retained once with status D.",
+        "Slot resource boundary: first-slot Accommodation and second-slot Supplies use their own generated Slot ownerId and main-event:Slot subEventId; neither leaks to its sibling or the root.",
+        "Childless restoration: removing both Slots reactivates the original MAIN_EVENT identity and its Transport, hides both slot resources, and Publish preserves the root state.",
+        "Post-create replay boundary: the same Event/runtime identities and root Transport are retained with Casey and Nova accepted at 2/8.",
         "Edit boundary: the capacity-only Save changes the Event to 2/9 while preserving the same single MAIN_EVENT runtime identity.",
         "Invite precondition: Nova appears once as pending and the red pending badge changes 0 -> 1 while occupancy stays 1/0-4; the already-passed invite/reload branch is not repeated as a microtest.",
         "Delete branch: Delete invitation removes Nova and pending count immediately and returns the red pending badge 1 -> 0 without list reload.",
@@ -1163,14 +1174,15 @@
       ] } },
       { collection: "activityMembers", selector: { $or: [
         { ownerType: "event", ownerId: eventId },
-        { ownerType: "asset", ownerId: RUNTIME_TRANSPORT_ASSET_ID }
+        { ownerType: "asset", ownerId: { $in: RUNTIME_ASSET_IDS } }
       ] } },
+      { collection: "assets", selector: { assetId: { $in: RUNTIME_ASSET_IDS } } },
       { collection: "activityEventRuntimeItems", selector: { $or: [
         { eventId },
         { ownerId: eventId }
       ] } },
-      { collection: "activityResources", selector: { ownerId: eventId } },
-      { collection: "assetRequests", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } },
+      { collection: "activityResources", selector: { ownerId: { $regex: `^${escapeRegex(eventId)}` } } },
+      { collection: "assetRequests", selector: { assetId: { $in: RUNTIME_ASSET_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [
         { entityId: eventId },
         { "payload.eventId": eventId }
@@ -1229,12 +1241,40 @@
         || Q.text(members[0].status) !== "accepted") {
       Q.fail("the UI-created Event must contain exactly Casey as its accepted Admin before the participant prerequisite is prepared.");
     }
-    if (Q.collection("activityResources").countDocuments({ ownerId: eventId }) !== 0
-        || Q.collection("assets").countDocuments({ assetId: RUNTIME_TRANSPORT_ASSET_ID }) !== 0
-        || Q.collection("assetRequests").countDocuments({ assetId: RUNTIME_TRANSPORT_ASSET_ID }) !== 0) {
-      Q.fail("the UI-created Event unexpectedly contains a resource or controlled Transport artifact.");
-    }
     return { event, eventId, runtime: runtimes[0] };
+  }
+
+  function assertRuntimeAssetCatalogReady(requireUnassigned = false) {
+    const assets = Q.collection("assets")
+      .find({ assetId: { $in: RUNTIME_ASSET_IDS } })
+      .sort({ type: 1, assetId: 1 })
+      .toArray();
+    const expectedById = {
+      [RUNTIME_TRANSPORT_ASSET_ID]: { type: "Transport", title: RUNTIME_TRANSPORT_ASSET_TITLE },
+      [RUNTIME_ACCOMMODATION_ASSET_ID]: { type: "Accommodation", title: RUNTIME_ACCOMMODATION_ASSET_TITLE },
+      [RUNTIME_SUPPLIES_ASSET_ID]: { type: "Supplies", title: RUNTIME_SUPPLIES_ASSET_TITLE }
+    };
+    if (assets.length !== RUNTIME_ASSET_IDS.length
+        || !assets.every(asset => {
+          const expected = expectedById[Q.text(asset.assetId)];
+          return expected
+            && Q.text(asset.ownerUserId) === hostUserId
+            && Q.text(asset.type) === expected.type
+            && Q.text(asset.title) === expected.title
+            && Q.text(asset.status) === "A";
+        })) {
+      Q.fail("EVENT-RUNTIME-001 requires exactly one active Casey-owned Transport, Accommodation and Supplies fixture.");
+    }
+    if (requireUnassigned
+        && (assets.some(asset => (asset.requests || []).length !== 0)
+          || Q.collection("assetRequests").countDocuments({ assetId: { $in: RUNTIME_ASSET_IDS } }) !== 0
+          || Q.collection("activityMembers").countDocuments({
+            ownerType: "asset",
+            ownerId: { $in: RUNTIME_ASSET_IDS }
+          }) !== 0)) {
+      Q.fail("EVENT-RUNTIME-001 resource fixtures are not at their unassigned zero-request boundary.");
+    }
+    return assets;
   }
 
   function captureRuntimeCreated() {
@@ -1246,6 +1286,10 @@
       Q.fail("the EVENT-RUNTIME-001 UI-create boundary has already been captured.");
     }
     const boundary = canonicalRuntimePostCreateBoundary("DR");
+    assertRuntimeAssetCatalogReady(true);
+    if (Q.collection("activityResources").countDocuments({ ownerId: { $regex: `^${escapeRegex(boundary.eventId)}` } }) !== 0) {
+      Q.fail("the UI-created childless Event unexpectedly contains a resource assignment before the manual root assignment step.");
+    }
     const capturedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
       "context.actualEventSourceId": boundary.eventId,
@@ -1267,7 +1311,7 @@
       capturedAtIso,
       createEvidence: refreshedState.runtimeCreateEvidence,
       oracle: oracle(refreshedState),
-      next: "Edit the same Draft, enable Slots, add one slot, and Save once. View Event must show the slot and no MAIN_EVENT card."
+      next: "Assign QA Main Event Transport to the root MAIN_EVENT. Then Edit the same Draft, enable Slots, add two distinct Slots, and Save once. Manage Event must show exactly one MAIN_EVENT card inside each Slot; assign QA Slot Accommodation only to the first and QA Slot Supplies only to the second before running the Slot oracle."
     });
   }
 
@@ -1291,10 +1335,13 @@
       { ownerId: eventId }
     ] }).toArray();
     const runtime = runtimeDocuments.length === 1 ? runtimeDocuments[0] : null;
+    const templates = event && (event.slotTemplates || [])
+      .filter(item => item && item.closed !== true)
+      .sort((left, right) => new Date(left.startAt).getTime() - new Date(right.startAt).getTime());
     if (!event
         || Q.text(event.status) !== "DR"
         || event.slotsEnabled !== true
-        || (event.slotTemplates || []).length < 1
+        || templates.length !== 2
         || event.subEventsEnabled !== false
         || !runtime
         || Q.text(runtime._id) !== Q.text(created.runtimeDocumentId)
@@ -1302,14 +1349,63 @@
         || Q.text(runtime.syncKey) !== Q.text(created.runtimeSyncKey)
         || Q.text(runtime.runtimeKind) !== "MAIN_EVENT"
         || Q.text(runtime.status) !== "D") {
-      Q.fail("the slot Save did not replace the childless view while retaining one deactivated MAIN_EVENT identity.");
+      Q.fail("the two-Slot Save did not retain the original root MAIN_EVENT identity in deactivated state.");
+    }
+    assertRuntimeAssetCatalogReady(false);
+    const generatedSlotOwnerId = template => {
+      const parsed = new Date(template.startAt);
+      if (!Q.text(template.id) || Number.isNaN(parsed.getTime())) {
+        Q.fail("EVENT-RUNTIME-001 contains an invalid Slot template identity or start time.");
+      }
+      return `${eventId}:slot:${Q.text(template.id)}:${parsed.toISOString().replace(/\.000Z$/, "Z")}`;
+    };
+    const firstSlotOwnerId = generatedSlotOwnerId(templates[0]);
+    const secondSlotOwnerId = generatedSlotOwnerId(templates[1]);
+    const expectedScopes = [
+      {
+        ownerId: eventId,
+        subEventId: `main-event:${eventId}`,
+        type: "Transport",
+        assetId: RUNTIME_TRANSPORT_ASSET_ID
+      },
+      {
+        ownerId: firstSlotOwnerId,
+        subEventId: `main-event:${firstSlotOwnerId}`,
+        type: "Accommodation",
+        assetId: RUNTIME_ACCOMMODATION_ASSET_ID
+      },
+      {
+        ownerId: secondSlotOwnerId,
+        subEventId: `main-event:${secondSlotOwnerId}`,
+        type: "Supplies",
+        assetId: RUNTIME_SUPPLIES_ASSET_ID
+      }
+    ];
+    const resources = Q.collection("activityResources").find({
+      ownerId: { $in: expectedScopes.map(scope => scope.ownerId) },
+      status: { $ne: "D" }
+    }).toArray();
+    if (resources.length !== expectedScopes.length
+        || !expectedScopes.every(scope => {
+          const resource = resources.find(item => Q.text(item.ownerId) === scope.ownerId);
+          const assignments = resource && resource.assetAssignmentIds || {};
+          const assignedIds = Object.values(assignments).flat().map(item => Q.text(item)).filter(Boolean);
+          return resource
+            && Q.text(resource.subEventId) === scope.subEventId
+            && Q.text(resource.assetOwnerUserId) === hostUserId
+            && (assignments[scope.type] || []).map(item => Q.text(item)).includes(scope.assetId)
+            && assignedIds.length === 1;
+        })) {
+      Q.fail("root Transport, first-slot Accommodation and second-slot Supplies are not isolated to their exact MAIN_EVENT runtime scopes.");
     }
     const verifiedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
       runtimeSlotOverrideEvidence: {
         verifiedAtIso,
         eventId,
-        slotTemplateIds: (event.slotTemplates || []).map(item => Q.text(item && item.id)).filter(Boolean),
+        slotTemplateIds: templates.map(item => Q.text(item.id)),
+        slotOwnerIds: [firstSlotOwnerId, secondSlotOwnerId],
+        resourceScopes: expectedScopes,
         runtimeDocumentId: Q.text(runtime._id),
         runtimeStatus: Q.text(runtime.status)
       }
@@ -1319,10 +1415,12 @@
       checkpointId,
       phase: "runtime-slot-override-verified",
       verifiedAtIso,
-      slotTemplateCount: (event.slotTemplates || []).length,
+      slotTemplateCount: templates.length,
+      slotOwnerIds: [firstSlotOwnerId, secondSlotOwnerId],
+      resourceScopes: expectedScopes,
       retainedMainEventRuntimeId: Q.text(runtime._id),
       retainedMainEventRuntimeStatus: Q.text(runtime.status),
-      next: "Edit the same Draft again, remove the slot and turn Slots Off, then Save once. View Event must show the original MAIN_EVENT again."
+      next: "Edit the same Draft again, remove both Slots and turn Slots Off, then Save once. Manage Event must show the original MAIN_EVENT and only its Transport assignment."
     });
   }
 
@@ -1344,6 +1442,19 @@
         || Q.text(boundary.runtime.recordId) !== Q.text(created.runtimeRecordId)
         || Q.text(boundary.runtime.syncKey) !== Q.text(created.runtimeSyncKey)) {
       Q.fail("the childless restoration created or replaced identity instead of reactivating the original MAIN_EVENT runtime.");
+    }
+    assertRuntimeAssetCatalogReady(false);
+    const rootResource = Q.collection("activityResources").findOne({
+      ownerId: boundary.eventId,
+      subEventId: `main-event:${boundary.eventId}`,
+      assetOwnerUserId: hostUserId,
+      status: { $ne: "D" }
+    });
+    const rootAssignments = rootResource && rootResource.assetAssignmentIds || {};
+    if (!rootResource
+        || !(rootAssignments.Transport || []).map(item => Q.text(item)).includes(RUNTIME_TRANSPORT_ASSET_ID)
+        || Object.values(rootAssignments).flat().map(item => Q.text(item)).filter(Boolean).length !== 1) {
+      Q.fail("the restored childless MAIN_EVENT did not retain exactly its original root Transport assignment.");
     }
     const capturedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
@@ -1412,7 +1523,6 @@
       Q.fail("EVENT-RUNTIME-001 has no captured post-create savepoint to restore.");
     }
     clearDynamicEventEffects(currentEventIds());
-    Q.collection("assets").deleteMany({ assetId: RUNTIME_TRANSPORT_ASSET_ID });
     Q.restoreSnapshots(state.runtimePostCreateSnapshots);
     for (const saved of state.runtimePostCreateUserActivitySnapshots || []) {
       restoreUserActivities(saved);
@@ -1453,6 +1563,7 @@
     insertEventWithMembers(event, "accepted");
     const runtime = mainEventRuntimeDocument(event, capturedAtIso);
     Q.collection("activityEventRuntimeItems").insertOne(runtime);
+    installRuntimeRootTransportAssignment(event, capturedAtIso);
     synchronizeEventActivityCounters([hostUserId, participantUserId]);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
       "context.actualEventSourceId": EVENT_ID,
@@ -2024,6 +2135,7 @@
   function selectors() {
     return [
       { collection: "events", selector: manualEventSelector() },
+      { collection: "assets", selector: { assetId: { $in: RUNTIME_ASSET_IDS } } },
       { collection: "activityMembers", selector: { $or: [
         { ownerType: "event", ownerId: { $in: EVENT_IDS } },
         { ownerId: { $regex: `^${PREFIX}` } }
@@ -2107,6 +2219,10 @@
   }
 
   function clearDynamicEventEffects(eventIds) {
+    const actualEventId = activeEventSourceId();
+    const generatedSlotOwnerSelector = actualEventId
+      ? { ownerId: { $regex: `^${escapeRegex(actualEventId)}:slot:` } }
+      : null;
     const chatIds = Q.collection("chats").find({
       $or: [{ eventId: { $in: eventIds } }, { ownerId: { $in: eventIds } }]
     }).toArray().map(chat => Q.text(chat.id || chat._id)).filter(Boolean);
@@ -2120,7 +2236,8 @@
       "activitySubEventStageRuntime"
     ]) Q.collection(collection).deleteMany({ $or: [
       { ownerId: { $in: eventIds } },
-      { ownerId: { $regex: `^${PREFIX}` } }
+      { ownerId: { $regex: `^${PREFIX}` } },
+      ...(generatedSlotOwnerSelector ? [generatedSlotOwnerSelector] : [])
     ] });
     Q.collection("activityEventRuntimeItems").deleteMany({ $or: [
       { eventId: { $in: eventIds } },
@@ -2343,7 +2460,10 @@
     const future = { startAtIso: dateIso(180), endAtIso: dateIso(300) };
     const past = { startAtIso: dateIso(-240), endAtIso: dateIso(-120) };
     if (stageKind === "editor-empty") return;
-    if (stageKind === "runtime-pre-create") return;
+    if (stageKind === "runtime-pre-create") {
+      Q.collection("assets").insertMany(runtimeAssetDocuments(stagedAtIso));
+      return;
+    }
     if (stageKind === "ticket-isolation") {
       insertTicketIsolationBaseline(stagedAtIso, future, context);
       return;
@@ -2992,9 +3112,21 @@
     }).sort({ createdDate: 1 }).toArray();
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const activityResources = Q.collection("activityResources")
-      .find({ ownerId: { $regex: `^${PREFIX}` } })
+      .find({ $or: [
+        { ownerId: { $in: dynamicEventIds } },
+        { ownerId: { $regex: `^${PREFIX}` } },
+        ...(activeEventSourceId()
+          ? [{ ownerId: { $regex: `^${escapeRegex(activeEventSourceId())}:slot:` } }]
+          : [])
+      ] })
       .sort({ ownerId: 1, subEventId: 1, assetOwnerUserId: 1, _id: 1 })
       .toArray();
+    const runtimeAssets = checkpointId === "EVENT-RUNTIME-001"
+      ? Q.collection("assets")
+          .find({ assetId: { $in: RUNTIME_ASSET_IDS } })
+          .sort({ type: 1, assetId: 1 })
+          .toArray()
+      : [];
     const runtimeTransportAsset = checkpointId === "EVENT-RUNTIME-001"
       ? Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID })
       : null;
@@ -3891,6 +4023,15 @@
           }, {}),
         createdDate: item.createdDate,
         updatedDate: item.updatedDate
+      })),
+      runtimeAssets: runtimeAssets.map(asset => ({
+        id: Q.text(asset._id),
+        assetId: Q.text(asset.assetId),
+        ownerUserId: Q.text(asset.ownerUserId),
+        type: Q.text(asset.type),
+        title: Q.text(asset.title),
+        status: Q.text(asset.status),
+        requestCount: (asset.requests || []).length
       })),
       runtimeTransportAsset: runtimeTransportAsset ? {
         id: Q.text(runtimeTransportAsset._id),
@@ -8281,21 +8422,21 @@
     return state;
   }
 
-  function runtimeTransportAssetDocument(preparedAtIso) {
+  function runtimeAssetDocument(preparedAtIso, options) {
     return {
-      _id: RUNTIME_TRANSPORT_ASSET_ID,
-      syncKey: RUNTIME_TRANSPORT_ASSET_ID,
-      assetId: RUNTIME_TRANSPORT_ASSET_ID,
+      _id: options.id,
+      syncKey: options.id,
+      assetId: options.id,
       ownerUserId: hostUserId,
-      type: "Transport",
-      title: RUNTIME_TRANSPORT_ASSET_TITLE,
-      subtitle: "EVENT-RUNTIME-001 controlled transport",
-      category: "Transport",
+      type: options.type,
+      title: options.title,
+      subtitle: `EVENT-RUNTIME-001 controlled ${options.type.toLowerCase()}`,
+      category: options.category,
       city: "Austin",
-      capacityTotal: 4,
-      quantity: 1,
-      details: "Snapshot-protected MAIN_EVENT resource fixture",
-      routes: ["Austin"],
+      capacityTotal: options.capacityTotal,
+      quantity: options.quantity,
+      details: "Snapshot-protected MAIN_EVENT runtime resource fixture",
+      routes: options.routes,
       policiesEnabled: false,
       policies: [],
       requests: [],
@@ -8306,6 +8447,122 @@
       updatedDate: preparedAtIso,
       updatedUser: hostUserId
     };
+  }
+
+  function runtimeAssetDocuments(preparedAtIso) {
+    return [
+      runtimeAssetDocument(preparedAtIso, {
+        id: RUNTIME_TRANSPORT_ASSET_ID,
+        type: "Transport",
+        title: RUNTIME_TRANSPORT_ASSET_TITLE,
+        category: "Van",
+        capacityTotal: 4,
+        quantity: 1,
+        routes: ["Austin"]
+      }),
+      runtimeAssetDocument(preparedAtIso, {
+        id: RUNTIME_ACCOMMODATION_ASSET_ID,
+        type: "Accommodation",
+        title: RUNTIME_ACCOMMODATION_ASSET_TITLE,
+        category: "Room",
+        capacityTotal: 2,
+        quantity: 1,
+        routes: ["Austin"]
+      }),
+      runtimeAssetDocument(preparedAtIso, {
+        id: RUNTIME_SUPPLIES_ASSET_ID,
+        type: "Supplies",
+        title: RUNTIME_SUPPLIES_ASSET_TITLE,
+        category: "Safety",
+        capacityTotal: 6,
+        quantity: 6,
+        routes: []
+      })
+    ];
+  }
+
+  function installRuntimeRootTransportAssignment(event, assignedAtIso) {
+    const eventId = Q.text(event && (event.sourceId || event._id));
+    const runtimeSubEventId = `main-event:${eventId}`;
+    const host = Q.user(hostUserId) || {};
+    const manualRequestId = `manual:${runtimeSubEventId}:${RUNTIME_TRANSPORT_ASSET_ID}`;
+    const manualRequest = {
+      id: manualRequestId,
+      userId: hostUserId,
+      name: Q.text(host.name),
+      initials: Q.text(host.initials),
+      gender: Q.text(host.gender),
+      status: "accepted",
+      note: "Reserved and assigned by the owner.",
+      requestKind: "manual",
+      requestedAtIso: assignedAtIso,
+      booking: {
+        eventId,
+        eventTitle: event.title,
+        subEventId: runtimeSubEventId,
+        subEventTitle: event.title,
+        slotKey: runtimeSubEventId,
+        slotLabel: event.title,
+        timeframe: "",
+        startAtIso: event.startAtIso,
+        endAtIso: event.endAtIso,
+        quantity: 1,
+        totalAmount: null,
+        previousTotalAmount: null,
+        currency: null,
+        acceptedPolicyIds: [],
+        paymentSessionId: null,
+        inventoryApplied: null
+      },
+      menuActions: []
+    };
+    const assetUpdate = Q.collection("assets").updateOne(
+      { assetId: RUNTIME_TRANSPORT_ASSET_ID },
+      { $set: { requests: [manualRequest], updatedDate: assignedAtIso, updatedUser: hostUserId } }
+    );
+    if (assetUpdate.matchedCount !== 1) {
+      Q.fail("EVENT-RUNTIME-001 root Transport fixture is missing.");
+    }
+    Q.collection("assetRequests").insertOne({
+      _id: manualRequestId,
+      requestId: manualRequestId,
+      assetId: RUNTIME_TRANSPORT_ASSET_ID,
+      ownerUserId: hostUserId,
+      ownerKey: `${hostUserId}:${RUNTIME_TRANSPORT_ASSET_ID}`,
+      assetCapacity: 4,
+      ...manualRequest,
+      createdDate: assignedAtIso,
+      updatedDate: assignedAtIso
+    });
+    const resourceId = `${PREFIX}:runtime-root:resource`;
+    Q.collection("activityResources").insertOne({
+      _id: resourceId,
+      syncKey: resourceId,
+      recordId: `${hostUserId}:${eventId}:${runtimeSubEventId}`,
+      ownerKey: `${hostUserId}:${eventId}`,
+      status: "A",
+      ownerId: eventId,
+      subEventId: runtimeSubEventId,
+      assetOwnerUserId: hostUserId,
+      assetAssignmentIds: { Transport: [RUNTIME_TRANSPORT_ASSET_ID] },
+      assetSettingsByType: {
+        Transport: {
+          [RUNTIME_TRANSPORT_ASSET_ID]: {
+            capacityMin: 0,
+            capacityMax: 4,
+            quantity: 1,
+            addedByUserId: hostUserId,
+            routeEnabled: false,
+            routes: ["Austin"]
+          }
+        }
+      },
+      supplyContributionEntriesByAssetId: {},
+      createdDate: assignedAtIso,
+      createdUser: hostUserId,
+      updatedDate: assignedAtIso,
+      updatedUser: hostUserId
+    });
   }
 
   function materializeRuntimeMemberCleanBoundary() {
@@ -8340,88 +8597,18 @@
       } }
     );
 
-    const assetSnapshot = Q.snapshotSpecs([
-      { collection: "assets", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } }
-    ])[0];
-    Q.collection(Q.STATE_COLLECTION).updateOne(
-      { _id: state._id },
-      { $push: { snapshots: assetSnapshot } }
-    );
-    const host = Q.user(hostUserId) || {};
-    const manualRequestId = `manual:${runtimeSubEventId}:${RUNTIME_TRANSPORT_ASSET_ID}`;
-    const manualRequest = {
-      id: manualRequestId,
-      userId: hostUserId,
-      name: Q.text(host.name),
-      initials: Q.text(host.initials),
-      gender: Q.text(host.gender),
-      status: "accepted",
-      note: "Reserved and assigned by the owner.",
-      requestKind: "manual",
-      requestedAtIso: stagedAtIso,
-      booking: {
-        eventId: EVENT_ID,
-        eventTitle: event.title,
-        subEventId: runtimeSubEventId,
-        subEventTitle: event.title,
-        slotKey: runtimeSubEventId,
-        slotLabel: event.title,
-        timeframe: "",
-        startAtIso: event.startAtIso,
-        endAtIso: event.endAtIso,
-        quantity: 1,
-        totalAmount: null,
-        previousTotalAmount: null,
-        currency: null,
-        acceptedPolicyIds: [],
-        paymentSessionId: null,
-        inventoryApplied: null
-      },
-      menuActions: []
-    };
-    const asset = runtimeTransportAssetDocument(stagedAtIso);
-    asset.requests = [manualRequest];
-    Q.collection("assets").insertOne(asset);
-    Q.collection("assetRequests").insertOne({
-      _id: manualRequestId,
-      requestId: manualRequestId,
-      assetId: RUNTIME_TRANSPORT_ASSET_ID,
-      ownerUserId: hostUserId,
-      ownerKey: `${hostUserId}:${RUNTIME_TRANSPORT_ASSET_ID}`,
-      assetCapacity: 4,
-      ...manualRequest,
-      createdDate: stagedAtIso,
-      updatedDate: stagedAtIso
-    });
-    const resourceId = `${PREFIX}:runtime-member:resource`;
-    Q.collection("activityResources").insertOne({
-      _id: resourceId,
-      syncKey: resourceId,
-      recordId: `${hostUserId}:${EVENT_ID}:${runtimeSubEventId}`,
-      ownerKey: `${hostUserId}:${EVENT_ID}`,
-      status: "A",
+    assertRuntimeAssetCatalogReady(false);
+    const resource = Q.collection("activityResources").findOne({
       ownerId: EVENT_ID,
       subEventId: runtimeSubEventId,
       assetOwnerUserId: hostUserId,
-      assetAssignmentIds: { Transport: [RUNTIME_TRANSPORT_ASSET_ID] },
-      assetSettingsByType: {
-        Transport: {
-          [RUNTIME_TRANSPORT_ASSET_ID]: {
-            capacityMin: 0,
-            capacityMax: 4,
-            quantity: 1,
-            addedByUserId: hostUserId,
-            routeEnabled: false,
-            routes: ["Austin"]
-          }
-        }
-      },
-      supplyContributionEntriesByAssetId: {},
-      createdDate: stagedAtIso,
-      createdUser: hostUserId,
-      updatedDate: stagedAtIso,
-      updatedUser: hostUserId
+      status: { $ne: "D" }
     });
+    if (!resource
+        || !((resource.assetAssignmentIds || {}).Transport || [])
+          .map(item => Q.text(item)).includes(RUNTIME_TRANSPORT_ASSET_ID)) {
+      Q.fail("EVENT-RUNTIME-001 replay boundary is missing its root Transport assignment.");
+    }
     const refreshedState = requireMatchingState();
     Q.printObject({
       scenario: SCENARIO,
@@ -8429,7 +8616,7 @@
       phase: "runtime-member-clean-ready",
       stagedAtIso,
       oracle: oracle(refreshedState),
-      next: "Open View Event > Transport > QA Main Event Transport > Members and test one scoped invite from this zero-pending boundary."
+      next: "Open Manage Event > root MAIN_EVENT > Transport > QA Main Event Transport > Members and test one scoped invite from this zero-pending boundary."
     });
   }
 
@@ -8445,13 +8632,8 @@
     if (checkpointId !== "EVENT-RUNTIME-001") {
       Q.fail("prepare-runtime-transport is restricted to EVENT-RUNTIME-001.");
     }
-    const state = requireMatchingState();
-    if (state.fixturePreparations && state.fixturePreparations.runtimeTransport) {
-      Q.fail("the EVENT-RUNTIME-001 Transport fixture has already been prepared.");
-    }
-    if (Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID })) {
-      Q.fail("the deterministic EVENT-RUNTIME-001 Transport already exists outside this active preparation.");
-    }
+    requireMatchingState();
+    assertRuntimeAssetCatalogReady(false);
     const event = Q.collection("events").findOne(manualEventSelector());
     const eventId = Q.text(event && (event.sourceId || event._id));
     const runtimeItems = Q.collection("activityEventRuntimeItems").find({ $or: [
@@ -8470,27 +8652,12 @@
         || Q.collection("activityResources").countDocuments({ ownerId: eventId }) !== 0) {
       Q.fail("EVENT-RUNTIME-001 is no longer at its clean pre-assignment MAIN_EVENT boundary.");
     }
-    const assetSnapshot = Q.snapshotSpecs([
-      { collection: "assets", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } }
-    ])[0];
     const preparedAtIso = Q.nowIso();
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
-      $push: { snapshots: assetSnapshot },
-      $set: {
-        "fixturePreparations.runtimeTransport": {
-          preparedAtIso,
-          eventId,
-          assetId: RUNTIME_TRANSPORT_ASSET_ID,
-          title: RUNTIME_TRANSPORT_ASSET_TITLE
-        }
-      }
-    });
-    Q.collection("assets").insertOne(runtimeTransportAssetDocument(preparedAtIso));
     const refreshedState = requireMatchingState();
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
-      phase: "runtime-transport-ready",
+      phase: "runtime-resource-catalog-ready",
       preparedAtIso,
       asset: {
         assetId: RUNTIME_TRANSPORT_ASSET_ID,
@@ -8499,7 +8666,7 @@
         title: RUNTIME_TRANSPORT_ASSET_TITLE
       },
       baseline: oracle(refreshedState),
-      next: `Reload Casey once, reopen View Event > Transport > Assign, select '${RUNTIME_TRANSPORT_ASSET_TITLE}' and save exactly once.`
+      next: `Open Manage Event > root MAIN_EVENT > Transport > Assign, select '${RUNTIME_TRANSPORT_ASSET_TITLE}' and save exactly once.`
     });
   }
 
@@ -8591,7 +8758,7 @@
       retainedTransportRequests: repaired.runtimeTransportAsset && repaired.runtimeTransportAsset.requests,
       retainedRequestProjections: repaired.runtimeTransportRequestProjections,
       retainedResource: repaired.activityResources,
-      next: "Reload Casey once, open View Event > Transport > QA Main Event Transport > Members, invite Nova once, then close and reopen Members. Expect one pending invitation row and a red pending badge without a full list reload."
+      next: "Reload Casey once, open Manage Event > root MAIN_EVENT > Transport > QA Main Event Transport > Members, invite Nova once, then close and reopen Members. Expect one pending invitation row and a red pending badge without a full list reload."
     });
   }
 

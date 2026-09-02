@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 03:43 CEST
+Updated: 2026-09-02 04:39 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,22 +56,22 @@ checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVEN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
 checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
-substage: pre-create-ready — awaiting Casey's first UI Event Save
-next_replay_boundary: created-childless — capture the generated Event and MAIN_EVENT identities before the Slot round trip
-fixture_phase: pre-create-ready — no QA EVENT-RUNTIME-001 Event, MAIN_EVENT runtime, resource, controlled Transport, request or member artifact
-browser_phase: managed Casey and Nova processes alive; tracked-session readiness returned 200 for both actors; this is machine-side setup, not a user checklist section
-scenario: The user explicitly selected a complete EVENT-EDIT-RUNTIME-001 replay. Casey first creates the Event through the real UI, proves MAIN_EVENT, saves one Slot to replace that view, removes the Slot to restore the same MAIN_EVENT, publishes, and then continues through capacity, resource, invite/Delete and remove/reassign. The post-create 2/8 boundary becomes the replay savepoint for later tails; the Slot round trip remains part of this one testcase ID.
+substage: pre-create-ready — fully restaged and awaiting Casey's first UI Event Save
+next_replay_boundary: created-childless — capture the generated Event and root MAIN_EVENT identities before the two-Slot transition
+fixture_phase: pre-create-ready — no QA EVENT-RUNTIME-001 Event, runtime, assignment, request or member artifact; exactly three active unassigned Casey assets exist: QA Main Event Transport, QA Slot Accommodation and QA Slot Supplies
+browser_phase: the existing managed Casey and Nova processes were reloaded after reset; both are online at the clean root view and no stale Event checkout draft was present
+scenario: Casey creates the Event through the real UI and proves one root MAIN_EVENT. Casey assigns Transport at that root scope, then edits the definition to add exactly two Slots. The runtime screen must show one slot-scoped MAIN_EVENT card in each Slot, not an empty list and not a third root card. Casey assigns Accommodation only to the first Slot and Supplies only to the second, proving independent runtime scopes. Removing both Slots restores the original root MAIN_EVENT and its Transport without leaking either Slot assignment. Casey then publishes and continues through capacity, scoped invite/Delete and root Transport remove/reassign. This is one EVENT-EDIT-RUNTIME-001 transaction with internal replay savepoints, not separate testcase IDs.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: EVENT-EDITOR-005 and the earlier runtime/resource tail remain retained evidence, but neither the 2026-08-04 Event-create PASS nor yesterday's fixture-driven capacity Save proved the current create -> MAIN_EVENT contract. MAIN_EVENT support was introduced only on 2026-09-01. The earlier harness incorrectly staged an already-existing 2/8 Event with no runtime and let the capacity edit materialize it. That boundary was reset. Read-only status now proves the corrected pre-create state with zero Event/runtime/resource/Transport artifacts. The complete replay adds the missing childless -> Slot -> childless identity round trip before the existing runtime tail. Both managed browsers remain alive. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries; the full replay still stops immediately before Delete for a clean optimized measurement.
+state: The product now maps an empty-definition Slot to one slot-scoped MAIN_EVENT runtime card. Two Slot definitions therefore produce two independently addressable MAIN_EVENT cards. Slots are runtime scopes; they do not mean that the root Event was only partially created. The root MAIN_EVENT remains persisted with status D while Slots are active and is reactivated when all Slots are removed. Backend and frontend hot-deploy compilation succeeded after this repair. The versioned fixture was fully reset and staged at 02:37:30Z with zero Event/runtime/resource artifacts and exactly the three unassigned assets required by the complete flow. Both existing browser documents were reloaded after that reset. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries; the full replay still stops immediately before Delete for a clean optimized measurement.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Reload Casey exactly once because the pre-create reset happened behind the open client. Follow checklist section 1: Activities -> Events -> green + -> Create Event; create the exact Casual 1-8 future Event with Slots Off and Sub Events Off, Save once as Draft, open Drafts -> View Event, and stop when exactly one MAIN_EVENT card is visible. Do not publish or add a Slot before the first stop phrase. Codex then captures the generated Event/runtime identity before the user continues the Slot-on/Slot-off transition.
+required_resume: Start checklist section 1 in the already-reloaded Casey window: Activities -> Events -> green + -> Create Event. Create the exact Casual 1-8 future Event with Slots Off and Sub Events Off, Save once as Draft, then use the Draft card's Manage Event action and stop when exactly one MAIN_EVENT card is visible. Do not publish, assign a resource or add Slots before the first stop phrase. Codex then captures the generated Event/runtime identity before the user continues.
 event: not created — QA EVENT-RUNTIME-001 is the reserved title for Casey's first manual action
 actors:
   Casey: authenticated managed document; creates the Event and owns every mutation
   Nova: authenticated managed document; not yet an Event participant
-next_actor: Casey reloads exactly once, creates the exact Draft from checklist section 1, and opens View Event after the first Save.
-queued_followup: Codex captures the generated Draft and canonical MAIN_EVENT IDs, then allows one Slot-on Save, verifies MAIN_EVENT status D, allows Slot removal/Slots Off, proves the same MAIN_EVENT reactivated, and captures the published 2/8 replay savepoint before capacity edit.
-pending_machine_oracle: After the first Draft Save, prove one canonical Casey-owned Event at 1/8 with Slots Off/Sub Events Off and exactly one active MAIN_EVENT whose eventId=ownerId matches that generated Event, subEventId=null, and no resource/synthetic/duplicate artifact.
+next_actor: Casey creates the exact Draft from checklist section 1 and opens Manage Event after the first Save.
+queued_followup: Codex captures the generated Draft and canonical root MAIN_EVENT IDs; after root Transport assignment and one two-Slot Save, Codex verifies exactly two active Slot templates, one MAIN_EVENT per Slot and isolated first-Slot Accommodation/second-Slot Supplies. After Slot removal it proves the original root MAIN_EVENT and Transport were restored without Slot-resource leakage, then captures the published 2/8 replay savepoint before capacity edit.
+pending_machine_oracle: After the first Draft Save, prove one canonical Casey-owned Event at 1/8 with Slots Off/Sub Events Off and exactly one active root MAIN_EVENT whose eventId=ownerId matches that generated Event, subEventId=null, with all three staged assets still unassigned and no resource/synthetic/duplicate artifact.
 stop_phrase: EVENT-RUNTIME-001 create ready: one MAIN_EVENT visible
 ```
 
@@ -95,14 +95,15 @@ score-correction checkpoints are PASS/CLOSED; the late guard was exercised
 through the real Java route and its retained fixture was reset. Do not replay
 their closed Start/Finalize/result producers when preparing another domain.
 
-Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the childless
-normal-Event runtime contract. A normal Event saved with Slots Off and Sub
-Events Off must write exactly one persisted `MAIN_EVENT` runtime item; View
-Event must query and render that real item instead of an empty list or a
-frontend/query fallback. Real stage or slot cases must not duplicate the parent
-card. This is recorded under the Event domain and remains NOT RUN; it does not
-replace the active Tournament checkpoint or authorize implementation before
-the campaign reaches that row.
+Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the normal-Event
+runtime contract. Slots Off with Sub Events Off renders the one persisted root
+`MAIN_EVENT`. With two Slot definitions and no child definitions, the runtime
+surface renders one `MAIN_EVENT` card inside each Slot; those are independent
+resource scopes while the root runtime is retained inactive. Removing all
+Slots restores that same root runtime. The host enters the whole runtime state
+with `Manage Event`; the runtime header's `Edit` action edits the Event
+definition, while a participant enters the same runtime surface with `View
+Event`.
 
 Separate captured Asset follow-up: Tournament-origin asset behavior remains
 owned by the Asset block instead of duplicating closed Tournament cases.
