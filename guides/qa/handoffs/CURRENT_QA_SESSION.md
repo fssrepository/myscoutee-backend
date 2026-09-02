@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 06:16 CEST
+Updated: 2026-09-02 06:34 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -52,25 +52,25 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SCHEDULERS-001 — active; random-groups terminal UI confirmation pending
+checkpoint: EVENT-SCHEDULERS-001 — active; random-groups participant UI confirmation pending
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
 checklist: ../checklists/EVENT-SCHEDULERS-001.md
 checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#1-automatic-room-assignment
-substage: random-groups-post-run-ui-pending — checklist steps 9-11 await user confirmation
-next_replay_boundary: random-groups-terminal — after the user reports the terminal phrase, repeat read-only status for stability, reset this branch, verify not-staged and prepare counter-expiry
-fixture_phase: manual-qa-checkpoints event-schedulers/EVENT-SCHEDULERS-001 random-groups scheduled at 2026-09-02T04:12:07.611Z; primary completed at 04:13:17.105Z with six affected, followed by one required notification-outbox wake-up completed at 04:13:18.073Z; nine unrelated scheduler controls remain held
-browser_phase: one isolated Ava Event scheduler observer window is open at /admin; the user owns every visible assertion and must not select Run
+substage: random-groups-participant-ui-pending — the scheduler completed exactly once; checklist steps 9-11 await the user's visible confirmation
+next_replay_boundary: random-groups-terminal — after the user reports the completion phrase, repeat read-only status for stability, reset this branch, verify not-staged and prepare counter-expiry
+fixture_phase: random-groups was staged at 2026-09-02T04:28:08.464Z and armed once at 04:32:47.219Z. The target completed at 04:33:17.874Z with six affected, followed by exactly one required notification-outbox wake-up. Nine unrelated scheduler controls remain held; do not reset before the user finishes the visible checks.
+browser_phase: isolated Ava /admin and Sophia /game windows remain open. Sophia's Chats list is currently open because Codex incorrectly navigated it during a routine CDP check; the user still exclusively owns every visible assertion and frontend verdict.
 scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
 ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
-state: The corrected pre-run baseline was 755/755. The persisted exact oracle now reports scheduler-completed and exactOutcome=true: event-random-groups has exactly one scheduled Completed history row with processedCount=6; its required notification-outbox wake-up has exactly one Completed row; no other rule ran. Metrics is stable at 757/757, the exact expected +2/+2 causal delta. Two generated rooms contain 3/3 unique accepted users, with no duplicates or missing/unexpected users; there are two welcome messages, two markers, two outboxes, six bells, and every selected user's chats/all/event counters changed by exactly +1. Target pendingCount is zero and all nine unrelated timing holds remain active.
+state: The focused replay machine oracle is exact: Metrics moved from 777/777 to 779/779; event-random-groups and its causal notification-outbox wake-up each have exactly one Completed history row and no unrelated rule ran. Two generated rooms contain 3/3 unique users; there are two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells. Every selected user's chats/all/event counters changed by exactly +1. Sophia belongs to Random Room R2. These machine facts do not constitute a frontend PASS; the user has not yet reported the visible result.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not schedule again and do not reset yet. Ava confirms Job Detail is Completed with zero eligible, Last run 6 and exactly one new target history row, then confirms Metrics is 757/757 and remains unchanged after reopening once. The +2/+2 delta is expected: one target rule plus one causal notification-outbox wake-up, not a duplicate target run.
-event: manual-qa-checkpoint:v1:event-schedulers:random-groups:event — isolated balanced scheduler source
+required_resume: Do not schedule again and do not reset. The user checks Sophia's Events -> Active Events and Chats for exactly one matching Random Room, opens the Chat and confirms one MyScoutee welcome message, then checks Ava's Job Detail and Metrics according to steps 9-10. Baseline Metrics was 777/777; the expected stable result is 779/779.
+event: manual-qa-checkpoint:v1:event-schedulers:random-groups:event — participant-visible random-room source
 actors:
   Ava: authenticated isolated demo admin; observes Jobs and Monitoring only
-next_actor: Ava performs checklist steps 9-11; no other actor participates
-queued_followup: after the terminal phrase, Codex repeats status to prove no further run, resets this branch, verifies phase=not-staged, then implements/prepares the counter-expiry substage before inviting further clicks
-pending_machine_oracle: terminal oracle already exact; only the final read-only stability check and reset remain after the user's visible confirmation
+next_actor: the user performs checklist steps 9-11 in Sophia and Ava; Codex does not inspect or navigate either UI on the normal path
+queued_followup: after the completion phrase, Codex repeats read-only status, resets this branch and prepares the counter-expiry substage before asking for further clicks
+pending_machine_oracle: terminal machine oracle is already exact; only a final stability status and reset remain after the user's visible confirmation
 stop_phrase: EVENT-SCHEDULERS-001 random-groups UI ready
 ```
 

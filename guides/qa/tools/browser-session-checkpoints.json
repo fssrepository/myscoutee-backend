@@ -47,7 +47,7 @@
       "targetUrl": "http://localhost/admin",
       "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
@@ -56,6 +56,14 @@
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
           "expectedName": "Ava Moderation · Event scheduler observer"
+        },
+        {
+          "actor": "Sophia random-room participant",
+          "sessionKind": "demo",
+          "userId": "0216b1ceb256d6f2c89073b8",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Sophia Lane · random-room Event and Chat observer"
         }
       ]
     },

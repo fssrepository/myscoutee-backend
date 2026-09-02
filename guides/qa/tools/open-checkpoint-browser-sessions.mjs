@@ -32,8 +32,8 @@ if (!checkpoint || !Array.isArray(checkpoint.sessions) || checkpoint.sessions.le
 }
 
 const defaults = configuration.defaults ?? {};
-const targetUrl = `${checkpoint.targetUrl || defaults.targetUrl || 'http://localhost/game'}`;
-const entryUrl = `${checkpoint.entryUrl || defaults.entryUrl || 'http://localhost/entry?redirect=%2Fgame'}`;
+const defaultTargetUrl = `${checkpoint.targetUrl || defaults.targetUrl || 'http://localhost/game'}`;
+const defaultEntryUrl = `${checkpoint.entryUrl || defaults.entryUrl || 'http://localhost/entry?redirect=%2Fgame'}`;
 const storageScope = `${checkpoint.storageScope || defaults.storageScope || 'http'}`.trim();
 const bootstrapEntryConsent = checkpoint.bootstrapEntryConsent
   ?? defaults.bootstrapEntryConsent
@@ -78,6 +78,8 @@ try {
   for (const [index, session] of checkpoint.sessions.entries()) {
     validateSession(session);
     const sessionKind = `${session.sessionKind ?? 'demo'}`.trim().toLowerCase();
+    const targetUrl = `${session.targetUrl || defaultTargetUrl}`;
+    const entryUrl = `${session.entryUrl || defaultEntryUrl}`;
     const actorSlug = `${session.actor}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const userDataDirectory = await mkdtemp(
       path.join(runtimeRoot, `${safeCheckpointId}-${index + 1}-${actorSlug}-`)

@@ -6,13 +6,20 @@ machine-oracle evidence to it.
 
 ## Actor and shared rules
 
-- Perform every visible step in the isolated **Ava admin** window opened by
-  Codex.
+- Perform Admin Job and Metrics steps in the isolated **Ava admin** window
+  opened by Codex.
+- Perform the Automatic room assignment participant checks in the isolated
+  **Sophia** member window opened by Codex. This user is one of the six staged
+  participants.
 - Codex prepares and restores all fixtures. Do not edit Timing, Parameters, or
   job status.
 - Do not select `Run`, even when it is enabled. The already-running scheduler
   picks up the prepared work in these checks.
 - Do not start another backend, scheduler, or browser session.
+- The tester performs and judges every visible check. Codex does not navigate
+  or inspect the UI through CDP during the normal path; CDP is an ad-hoc
+  diagnostic only after the tester reports a mismatch whose time-sensitive
+  state cannot be localized from the persisted oracle, API, or logs.
 - Stop at the first mismatch. Do not repeat the job, add reloads, or repair a
   fixture through the UI.
 
@@ -45,8 +52,8 @@ Display name: `Automatic room assignment`
 
    `Prepare the EVENT-SCHEDULERS-001 random-groups branch.`
 
-2. Wait until Codex confirms the `balanced` fixture and opens Ava's admin
-   window.
+2. Wait until Codex confirms the `balanced` fixture and opens Ava's admin and
+   Sophia's participant windows.
 3. In Ava, open `Configuration → Jobs`.
 4. In the `All` list, find `Automatic room assignment`. Its secondary label
    identifies `event-random-groups`.
@@ -61,6 +68,10 @@ Display name: `Automatic room assignment`
 7. Open Ava's menu, select `Metrics` under `MONITORING`, open
    `Background → Jobs`, record the two shared baseline values, and return to
    this job's detail view.
+   In Sophia's window, record the visible Events and Chats counters. Open
+   `Events → Active Events` and `Chats`; neither list contains a generated
+   `Random Room R1`/`Random Room R2` item yet. Leave both participant lists
+   available for the post-run comparison.
 8. Report both baseline values to Codex and wait until Codex confirms that the
    persisted schedule is armed. Do not select `Run`. Then leave the detail open
    and wait for its normal live refresh.
@@ -72,6 +83,16 @@ Display name: `Automatic room assignment`
    - the top `Runner history` row is one new Completed row with `6` affected
      and a time belonging to this run;
    - no second new history row or error appears.
+
+   In Sophia's window, without creating or joining anything manually, confirm:
+
+   - `Events → Active Events` contains exactly one generated `Random Room`
+     card for Sophia;
+   - `Chats` contains exactly one matching generated room chat;
+   - opening that chat shows exactly one initial MyScoutee system welcome
+     message;
+   - Sophia's visible Events and Chats counters each reflect only the one new
+     generated room/chat and do not keep increasing.
 
 10. Reopen `Metrics → Background → Jobs` once. `Scheduled triggers` and
     `Audit events` remain equal and are each exactly `+2` from their recorded

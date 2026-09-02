@@ -43,6 +43,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
@@ -53,6 +54,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
@@ -95,6 +97,7 @@ public class EventScheduler {
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository;
     private final SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
@@ -124,6 +127,7 @@ public class EventScheduler {
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
+            ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository,
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
@@ -138,6 +142,7 @@ public class EventScheduler {
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.activityMainEventRuntimeRepository = activityMainEventRuntimeRepository;
         this.schedulerPlanMarkersRepository = schedulerPlanMarkersRepository;
         this.activitiesMembersService = activitiesMembersService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
@@ -2078,6 +2083,7 @@ public class EventScheduler {
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
                 if (randomRoomAssignment) {
                     activityEventsRepository.save(randomRoom);
+                    syncRandomRoomMainEventRuntime(randomRoom, tournamentRoomPresentation);
                     String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                     chatService.ensureInitialSystemMessage(
                             randomRoomChatId,
@@ -2117,6 +2123,7 @@ public class EventScheduler {
                                 + " but persisted " + normalizedSyncedUserIds + ".");
             }
             if (randomRoomAssignment) {
+                syncRandomRoomMainEventRuntime(randomRoom, tournamentRoomPresentation);
                 String randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
                 chatService.ensureInitialSystemMessage(
                         randomRoomChatId,
@@ -2399,6 +2406,50 @@ public class EventScheduler {
         room.setUpdatedDate(nowIso);
         room.setUpdatedUser(MARKER_UPDATED_BY);
         return room;
+    }
+
+    private void syncRandomRoomMainEventRuntime(
+            ActivityEvent room,
+            boolean tournamentRoomPresentation) {
+        if (room == null || tournamentRoomPresentation) {
+            return;
+        }
+        String eventId = normalizeId(room.getSourceId());
+        if (!StringUtils.hasText(eventId)) {
+            throw new IllegalStateException("A standalone random room requires a stable runtime event id.");
+        }
+        ActivityMainEventRuntime runtime = activityMainEventRuntimeRepository
+                .findByEventIdAndRuntimeKind(eventId, ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT)
+                .orElseGet(ActivityMainEventRuntime::new);
+        String nowIso = Instant.now().toString();
+        if (!StringUtils.hasText(runtime.getId())) {
+            runtime.setId(new ObjectId().toHexString());
+        }
+        if (!StringUtils.hasText(runtime.getRecordId())) {
+            runtime.setRecordId("main-event:" + eventId);
+        }
+        if (!StringUtils.hasText(runtime.getSyncKey())) {
+            runtime.setSyncKey("scheduler:main-event-runtime:" + eventId);
+        }
+        if (!StringUtils.hasText(runtime.getCreatedDate())) {
+            runtime.setCreatedDate(nowIso);
+            runtime.setCreatedUser(MARKER_UPDATED_BY);
+        }
+        runtime.setStatus(ActivityEvent.STATUS_ACTIVE);
+        runtime.setRuntimeKind(ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT);
+        runtime.setEventId(eventId);
+        runtime.setOwnerId(eventId);
+        runtime.setSubEventId(null);
+        runtime.setTitle(safeText(room.getTitle()));
+        runtime.setDescription(safeText(room.getSubtitle()));
+        runtime.setTimeframe(safeText(room.getTimeframe()));
+        runtime.setStartAtIso(safeText(room.getStartAtIso()));
+        runtime.setEndAtIso(safeText(room.getEndAtIso()));
+        runtime.setLocation(safeText(room.getLocation()));
+        runtime.setCreatedByUserId(normalizeId(room.getCreatorUserId()));
+        runtime.setUpdatedDate(nowIso);
+        runtime.setUpdatedUser(MARKER_UPDATED_BY);
+        activityMainEventRuntimeRepository.save(runtime);
     }
 
     private void notifyChangedRandomRoomAssignments(
