@@ -1667,14 +1667,9 @@ public class ActivitiesEventsService {
 
     private boolean isChildlessMainEventRuntimeOwner(ActivityEvent event) {
         if (event == null
-                || Boolean.TRUE.equals(event.getGenerated())) {
-            return false;
-        }
-        boolean hasSlotDefinitions = event.getSlotTemplates() != null
-                && !event.getSlotTemplates().isEmpty();
-        boolean hasSubEventDefinitions = event.getSubEventDefinitions() != null
-                && !event.getSubEventDefinitions().isEmpty();
-        if (hasSlotDefinitions || hasSubEventDefinitions) {
+                || Boolean.TRUE.equals(event.getGenerated())
+                || !Boolean.FALSE.equals(event.getSlotsEnabled())
+                || !Boolean.FALSE.equals(event.getSubEventsEnabled())) {
             return false;
         }
         String status = safeText(event.getStatus());

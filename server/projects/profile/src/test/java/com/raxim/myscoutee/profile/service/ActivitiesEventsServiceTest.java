@@ -1714,21 +1714,20 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void emptyEnabledSubEventSurfaceStillMaterializesOneMainEventRuntimeItem() {
+    void firstCompleteEventSaveMaterializesAndLoadsMainEventRuntime() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
-        ActivityEvent existing = event("event-1", "host", 0d);
-        existing.setStatus(ActivityEvent.STATUS_DRAFT);
-        existing.setSlotsEnabled(false);
-        existing.setSubEventsEnabled(true);
-        existing.setSlotTemplates(List.of());
-        existing.setSubEventDefinitions(List.of());
+        AtomicReference<ActivityEvent> savedEvent = new AtomicReference<>();
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
-                .thenReturn(Optional.of(existing));
-        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+                .thenReturn(Optional.empty());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> documents = invocation.getArgument(0);
+            savedEvent.set(documents.get(0));
+            return documents;
+        });
 
         EventDto result = service.sync(eventPayload(
                 "sync-event-1",
@@ -1737,10 +1736,20 @@ class ActivitiesEventsServiceTest {
                 false,
                 false,
                 "Public",
-                8,
-                true));
+                8));
 
         assertThat(result).isNotNull();
+        assertThat(savedEvent.get()).satisfies(event -> {
+            assertThat(event.getSourceId()).isEqualTo("event-1");
+            assertThat(event.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
+            assertThat(event.getSlotsEnabled()).isFalse();
+            assertThat(event.getSlotTemplates()).isEmpty();
+            assertThat(event.getSubEventsEnabled()).isFalse();
+            assertThat(event.getSubEventDefinitions()).isEmpty();
+        });
+        verify(accessControlService).canCurrentActorCreateEvent("host", "event-1");
+        verify(accessControlService, never()).canCurrentActorEditEvent("event-1");
+
         ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
                 ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
         verify(mongoTemplate).save(runtimeCaptor.capture());
@@ -1752,6 +1761,29 @@ class ActivitiesEventsServiceTest {
             assertThat(runtime.getSubEventId()).isNull();
             assertThat(runtime.getTitle()).isEqualTo("Draft Event");
         });
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(savedEvent.get()));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class)))
+                .thenReturn(runtimeCaptor.getValue());
+
+        EventSubEventsResultDto subEvents = service.loadSubEventsById(new EventSubEventsQueryDto(
+                "host",
+                "event-1",
+                "upcoming",
+                "day",
+                null,
+                null,
+                null,
+                false));
+
+        assertThat(subEvents).isNotNull();
+        assertThat(subEvents.slots()).singleElement().satisfies(slot ->
+                assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                    assertThat(item.runtimeKind()).isEqualTo("MAIN_EVENT");
+                    assertThat(item.id()).isEqualTo("main-event:event-1");
+                    assertThat(item.eventId()).isEqualTo("event-1");
+                }));
     }
 
     @Test
@@ -2422,26 +2454,6 @@ class ActivitiesEventsServiceTest {
             Boolean ticketing,
             String visibility,
             Integer capacityMax) {
-        return eventPayload(
-                syncKey,
-                id,
-                creatorUserId,
-                published,
-                ticketing,
-                visibility,
-                capacityMax,
-                false);
-    }
-
-    private EventDetailDto eventPayload(
-            String syncKey,
-            String id,
-            String creatorUserId,
-            Boolean published,
-            Boolean ticketing,
-            String visibility,
-            Integer capacityMax,
-            Boolean subEventsEnabled) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2500,7 +2512,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
-                subEventsEnabled,
+                false,
                 List.of(),
                 List.of(),
                 "",
