@@ -81,9 +81,11 @@ Display name: `Automatic room assignment`
    `Events → Active Events` and `Chats`; neither list contains a generated
    `Random Room R1`/`Random Room R2` item yet. Leave both participant lists
    available for the post-run comparison.
-8. Report both baseline values to Codex and wait until Codex confirms that the
-   persisted schedule is armed. Do not select `Run`. Then leave the detail open
-   and wait for its normal live refresh.
+8. Report both baseline values to Codex. At this point Codex changes only
+   `Automatic room assignment` to `Every 1 minute`; every unrelated scheduled
+   job remains isolated. Wait until Codex confirms that the persisted schedule
+   is armed. Do not select `Run`. Then leave the detail open and wait for its
+   normal live refresh.
 9. After the scheduler run, confirm:
 
    - the run is Completed;
@@ -142,9 +144,11 @@ Display name: `Close past events`
 
 16. Record the top Runner history row and the two shared Metrics baseline
     values, then return to Job Detail.
-17. Report both baseline values to Codex and wait until Codex confirms that the
-    persisted schedule is armed. Do not select `Run`; wait for the normal
-    scheduler run and live refresh.
+17. Report both baseline values to Codex. At this point Codex changes only
+    `Close past events` to `Every 1 minute`; every unrelated scheduled job
+    remains isolated. Wait until Codex confirms that the persisted schedule is
+    armed. Do not select `Run`; wait for the normal scheduler run and live
+    refresh.
 18. After the first run, confirm:
 
     - the run is Completed;
@@ -168,10 +172,12 @@ Display name: `Close past events`
 
 21. Wait while Codex makes the same rule due again without changing domain
     data. Do not edit the Event or select `Run`.
-22. Record the two Metrics values after the first run, report them to Codex,
-    and wait until Codex confirms that the persisted zero-work schedule is
-    armed. Return to Job Detail without selecting `Run` and wait for the next
-    normal scheduler pass.
+22. Record the two Metrics values after the first run and report them to Codex.
+    At this point Codex keeps only `Close past events` at `Every 1 minute` for
+    the zero-work pass; every unrelated scheduled job remains isolated. Wait
+    until Codex confirms that the persisted zero-work schedule is armed. Return
+    to Job Detail without selecting `Run` and wait for the next normal
+    scheduler pass.
 23. After the second, zero-work run, confirm:
 
     - the run is Completed;
@@ -230,9 +236,11 @@ user-visible transition is owned by Event Explore and its Basket control.
 
 32. Record the top Runner history row and the two shared Metrics baseline
     values, then return to Job Detail.
-33. Report both baseline values to Codex and wait until Codex confirms that the
-    persisted schedule is armed. Do not select `Run`; wait for the normal
-    scheduler run and live refresh.
+33. Report both baseline values to Codex. At this point Codex changes only
+    `Delete expired baskets` to `Every 1 minute`; every unrelated scheduled job
+    remains isolated. Wait until Codex confirms that the persisted schedule is
+    armed. Do not select `Run`; wait for the normal scheduler run and live
+    refresh.
 34. After the run, confirm in Ava:
 
     - the run is Completed;

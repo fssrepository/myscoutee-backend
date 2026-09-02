@@ -108,16 +108,13 @@
 
   function holdScheduledRules(rules, heldAtIso) {
     for (const rule of rules || []) {
-      const lastRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
-      if (!Number.isFinite(Date.parse(lastRunAtIso))) {
-        fail(`rule '${Q.text(rule.ruleKey)}' has no genuine Last run; it cannot be isolated by frequency without fabricating runtime state.`);
-      }
+      const hasLastRun = Number.isFinite(Date.parse(Q.text(rule.runState && rule.runState.lastRunAtIso)));
       const result = Q.collection("notificationRuleConfigs").updateOne(
         { _id: rule._id, "runState.currentStatus": { $ne: "running" } },
         {
           $set: {
             scheduleSlots: [],
-            "timing.mode": "interval",
+            "timing.mode": hasLastRun ? "interval" : "manual",
             "timing.intervalAmount": ISOLATED_RULE_HOLD_YEARS,
             "timing.intervalUnit": "years",
             "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
@@ -167,10 +164,7 @@
   }
 
   function holdTargetRule(rule, pendingCount, pendingCountUnit, _detail, stagedAtIso) {
-    const lastRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
-    if (!Number.isFinite(Date.parse(lastRunAtIso))) {
-      fail(`rule '${Q.text(rule.ruleKey)}' has no genuine Last run; it cannot be held by frequency without fabricating runtime state.`);
-    }
+    const hasLastRun = Number.isFinite(Date.parse(Q.text(rule.runState && rule.runState.lastRunAtIso)));
     const result = Q.collection("notificationRuleConfigs").updateOne(
       { _id: rule._id, "runState.currentStatus": { $ne: "running" } },
       {
@@ -178,7 +172,7 @@
           enabled: true,
           manualRunEnabled: false,
           scheduleSlots: [],
-          "timing.mode": "interval",
+          "timing.mode": hasLastRun ? "interval" : "manual",
           "timing.intervalAmount": ISOLATED_RULE_HOLD_YEARS,
           "timing.intervalUnit": "years",
           "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
@@ -200,21 +194,29 @@
 
   function scheduleRuleAtOneMinute(ruleKey) {
     const rule = Q.assertRuleNotRunning(ruleKey);
-    const latestRun = (rule.runHistory || [])[0];
-    const latestRunAtIso = Q.text(latestRun && (latestRun.finishedAtIso || latestRun.startedAtIso));
+    const latestRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
     const latestRunAtMs = Date.parse(latestRunAtIso);
-    if (!latestRun || !Number.isFinite(latestRunAtMs)) {
-      fail(`rule '${ruleKey}' requires one real Runner history row before it can be scheduled.`);
-    }
+    const hasLastRun = Number.isFinite(latestRunAtMs);
     const scheduledAt = new Date();
     const intervalSeconds = 60;
-    const dueAt = new Date(latestRunAtMs + intervalSeconds * 1000);
+    const dueAt = hasLastRun
+      ? new Date(Math.floor(latestRunAtMs / intervalSeconds / 1000) * intervalSeconds * 1000 + intervalSeconds * 1000)
+      : scheduledAt;
     const observableFrom = new Date(Math.max(scheduledAt.getTime(), dueAt.getTime()));
+    const lastRunSelector = hasLastRun
+      ? { "runState.lastRunAtIso": latestRunAtIso }
+      : {
+          $or: [
+            { "runState.lastRunAtIso": { $exists: false } },
+            { "runState.lastRunAtIso": null },
+            { "runState.lastRunAtIso": "" }
+          ]
+        };
     const result = Q.collection("notificationRuleConfigs").updateOne(
       {
         _id: rule._id,
         "runState.currentStatus": { $ne: "running" },
-        "runState.lastRunAtIso": latestRunAtIso
+        ...lastRunSelector
       },
       {
         $set: {
@@ -241,7 +243,7 @@
       expectedDueAtIso: dueAt.toISOString(),
       delaySeconds: Math.max(0, Math.ceil((dueAt.getTime() - scheduledAt.getTime()) / 1000)),
       intervalSeconds,
-      preservedLastRunAtIso: latestRunAtIso,
+      preservedLastRunAtIso: hasLastRun ? latestRunAtIso : null,
       expectedRunWindow: {
         earliestIso: observableFrom.toISOString(),
         latestApproxIso: new Date(observableFrom.getTime() + 60000).toISOString()
@@ -1504,7 +1506,7 @@
     const baselineReady = Number(state.scheduleCount) === 0
       && schedulerIsolation.active
       && Boolean(event && event.expired === false)
-      && rule.currentStatus === "idle"
+      && !["running", "failed"].includes(rule.currentStatus)
       && rule.pendingCount === 1
       && participantMembershipValid
       && eventPresentationValid
@@ -1616,7 +1618,7 @@
       && Date.parse(Q.text(sourceEvent.startAtIso)) > Date.now();
     const baselineReady = Number(state.scheduleCount) === 0
       && schedulerIsolation.active
-      && rule.currentStatus === "idle"
+      && !["running", "failed"].includes(rule.currentStatus)
       && rule.pendingCount === 2
       && items.length === 2
       && Boolean(expiredItem && futureItem)
