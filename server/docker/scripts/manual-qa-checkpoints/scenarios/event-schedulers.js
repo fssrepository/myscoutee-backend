@@ -1058,6 +1058,11 @@
     };
   }
 
+  function sameCounterDomainFingerprint(left, right) {
+    const asPlainJson = value => JSON.parse(EJSON.stringify(value, null, 0, { relaxed: true }));
+    return Q.sameJson(asPlainJson(left), asPlainJson(right));
+  }
+
   function counterStatus(state) {
     const event = Q.collection("events").findOne({ _id: COUNTER_EVENT_ID });
     const runtimes = Q.collection("activityEventRuntimeItems").find({
@@ -1118,7 +1123,7 @@
     const zeroWorkDetailValid = Number(state.scheduleCount) !== 2
       || Q.text(rule.progressDetail).includes("No expired event counters");
     const domainUnchangedAfterFirstPass = Number(state.scheduleCount) !== 2
-      || Q.sameJson(domainFingerprint, state.firstPassFingerprint);
+      || sameCounterDomainFingerprint(domainFingerprint, state.firstPassFingerprint);
     const domainOutcomeValid = Boolean(event && event.expired === true)
       && participantMembershipValid
       && eventPresentationValid
