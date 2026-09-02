@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 10:52 CEST
+Updated: 2026-09-02 11:27 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -60,7 +60,7 @@ substage: create-three-type-controls
 next_replay_boundary: Casey performs checklist steps 1-16 and reports `ASSET-LIFE-001 Create ready: three type controls persist`; then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
 fixture_phase: staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
 browser_phase: one managed Casey Asset lifecycle window is open and authenticated
-ledger_status: 81/116 total, Core 81/96; ASSET-LIFE-001 NOT RUN
+ledger_status: 81/118 total, Core 81/98; ASSET-LIFE-001 NOT RUN
 required_resume: keep the staged boundary intact; user follows ASSET-LIFE-001 steps 1-16; after the exact Create phrase run the versioned capture command and continue only from its returned next action
 actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
 pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
@@ -105,6 +105,18 @@ owned by the Asset block instead of duplicating closed Tournament cases.
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
+
+Separate captured dummy-payment follow-up: `EVENT-CHECKOUT-DUMMY-001` owns the
+direct Event Explore `Book Event -> Join -> Demo payment/Payment` journey,
+including resumable/cancelled states, no-freeze/exact-once success, accepted
+Activity Events destination and free/approval/waitlist button controls.
+`ASSET-CHECKOUT-DUMMY-001` owns the scoped Resource/Asset Explore
+`Borrow -> Confirm borrow -> Dummy pay/Pay` journey, including draft/session
+reconstruction, pending owner request, terminal acceptance, availability and
+free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
+stable click guides. Their versioned fixtures/browser-session definitions are
+created only when each row becomes active; they do not change the staged
+`ASSET-LIFE-001` boundary.
 
 ### Efficient resume gate
 

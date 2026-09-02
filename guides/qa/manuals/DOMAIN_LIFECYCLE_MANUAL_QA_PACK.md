@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-08-30
+Last updated: 2026-09-02
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -48,8 +48,10 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
+| Event Explore dummy checkout | One terminal dummy payment, one inactive succeeded basket and one accepted event membership | Event Explore checkout, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute effects only; no external provider, capture or settlement work | `EVENT-CHECKOUT-DUMMY-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
+| Asset Explore dummy checkout | One scoped dummy payment, borrow request, inventory reservation and later owner decision | Resource/Asset Explore basket and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox effects only; no external provider, capture or settlement work | `ASSET-CHECKOUT-DUMMY-001` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
@@ -88,6 +90,10 @@ The principal checkpoint chains are:
 - `EVENT-FEEDBACK-006` is the isolated pending remove/restore branch. Run it
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
+- `EVENT-CHECKOUT-DUMMY-001` is an isolated direct paid-entry journey. It
+  proves the Event Explore review, resumable basket, demo-payment and accepted
+  Activity Events destination without reusing the approval-before-payment or
+  physical-ticket branches in `EVENT-TICKET-005`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
   `EVENT-TICKET-003` -> `EVENT-TICKET-011` -> `EVENT-TICKET-009` ->
   `EVENT-TICKET-004` (Unpublish midpoint) -> `EVENT-TICKET-012` ->
@@ -108,7 +114,8 @@ The principal checkpoint chains are:
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
 - `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
-  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` -> `ASSET-AVAIL-001` ->
+  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` ->
+  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001` ->
   `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
@@ -2902,6 +2909,81 @@ Status: **PASS** on 2026-08-05.
   `1`, vanished immediately after opening the tile, then returned as `1` on the
   next poll. No feedback was submitted, removed or otherwise mutated. Keep this
   as a separate checkpoint from `EVENT-IMPRESSION-001`.
+
+## Event dummy-checkout checkpoint
+
+### `EVENT-CHECKOUT-DUMMY-001` — Event Explore dummy payment reaches accepted participation
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`EVENT-CHECKOUT-DUMMY-001.md`](../checklists/event/EVENT-CHECKOUT-DUMMY-001.md).
+
+This is the direct paid-entry contract. It does not reuse
+`EVENT-TICKET-005`, whose staged Event deliberately requires Admin approval
+before payment and therefore never proves a manual click on the demo-payment
+action.
+
+- Stage one published Public paid Event with Ticketing Off, no approval gate,
+  two selectable Slots, one paid optional item and one required policy. Nova
+  starts outside membership with no Event checkout basket, payment, Activity
+  Events row, chat or counter contribution. Casey is the sole accepted Admin.
+- Stage three read-only controls for the same Nova actor: one free Event, one
+  paid approval-required Event and one full paid Event that enters the
+  waitlist. An adjacent paid Event and Riley's complete state are immutable
+  negative controls.
+- The state-dependent action contract is:
+
+  | State | Required visible actions/status | Forbidden action |
+  | --- | --- | --- |
+  | Fresh paid direct Event | Event Explore `Book Event`; checkout review `Join` | `Continue booking`, `Payment summary` |
+  | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Demo payment` | a second active basket/session |
+  | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
+  | Full paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Free Event | `Join Event`/`Join` | demo-payment step or payment record |
+  | Successful direct dummy payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
+
+- On the fresh paid Event, Slot selection and every required policy gate the
+  first review action. A paid optional item changes the displayed total once.
+  `Join` confirms the basket and opens the demo-payment phase; it is not yet
+  membership or payment success.
+- Close the payment phase once without paying. The basket icon and Event
+  Explore card must expose `Continue booking`. Reopen in place and once after
+  a clean reload; both reconstructions must use the same active basket/session
+  identity and amount without creating membership, payment or counters.
+- Exercise `Cancel payment` from that pre-payment boundary. The current basket
+  becomes one closed audit, the card returns to `Book Event`, and no
+  membership, Activity Events row, chat, ticket or approved payment exists.
+- Start one fresh attempt, return to the payment phase and click `Payment`
+  exactly once. While the request is active the action changes to `Paying...`
+  and is disabled; the rest of the application remains responsive. The
+  checkout closes on success instead of leaving an infinite spinner, frozen
+  overlay or duplicate popup.
+- Immediate write oracle: exactly one `provider=dummy` terminal payment with
+  the selected immutable price/currency and `bookingStatus=joined`; one
+  succeeded, inactive basket; one accepted Nova membership/participation
+  overlay; occupancy `1 -> 2`; and the normal accepted-member chat/counter
+  effects exactly once. Ticketing Off keeps physical tickets and both ticket
+  counters at zero. No capture, settlement, Registry or external provider
+  operation may run.
+- Immediate UI oracle: the paid target is present exactly once under Nova's
+  Activity Events `Active` and `All` buckets. Its menu exposes `View Event`,
+  read-only `Payment summary` and `Leave Event`; the summary returns the exact
+  Slot, optional item, accepted policy IDs, amount, currency, dummy provider
+  and approved/joined result. Merely opening it cannot write.
+- One clean reload must reconstruct the same accepted membership, bucket
+  counters, menu actions and Payment summary from persisted state. The target
+  must not return as a fresh Event Explore payment candidate. Reopening the
+  summary twice and replaying the captured request identity through the
+  machine oracle must retain one payment, basket, membership and chat join
+  effect.
+- Inspect the free, approval-required and waitlist controls without converting
+  them to successful payments. Their labels and forbidden-payment states must
+  match the table, and every control plus Riley remains byte-identical.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
+  execute this row until that harness and its isolated Casey/Nova browser
+  sessions exist.
 
 ## Event ticketing checkpoints
 
@@ -6148,6 +6230,85 @@ is **PASS / CLOSED**.
   role. The accepted asset becomes assignment-eligible only for the exact
   generated-group booking scope; a sibling group remains unchanged.
 
+### `ASSET-CHECKOUT-DUMMY-001` — Asset Explore dummy payment reaches the scoped borrow destination
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`ASSET-CHECKOUT-DUMMY-001.md`](../checklists/asset/ASSET-CHECKOUT-DUMMY-001.md).
+
+This row owns the paid browser flow and its state-dependent actions. The
+generic `ASSET-BORROW-001` branches continue to own independent free/request,
+reject and cancel decisions; they must not replay this row's successful dummy
+payment.
+
+- Stage one Public paid Transport owned by Casey and discoverable by Nova
+  through Resource/Asset Explore under one exact Event/Sub-event runtime. Give
+  it quantity `3`, one required lending policy and a deterministic price for
+  quantity `1`. Nova starts with no request, payment/session, borrow draft,
+  assignment, availability reservation, Asset activity contribution or role
+  change.
+- Stage one free Asset, one zero-availability control and one adjacent paid
+  Asset. A sibling Event/Sub-event using the same type and Riley's state are
+  immutable scope controls.
+- The state-dependent action contract is:
+
+  | State | Required visible actions/status | Forbidden action |
+  | --- | --- | --- |
+  | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
+  | Saved review draft | Borrow Basket `Continue request` | a request/payment write |
+  | Payment-ready paid Asset | payment panel `Dummy pay`/`Ready to pay`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
+  | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
+  | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
+  | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
+  | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
+
+- In review, an invalid or empty timeframe, quantity outside current
+  availability and any unaccepted required policy disable the forward action
+  and create no server write. A valid quantity/time/policy set produces one
+  deterministic line item and total.
+- Select `Confirm borrow` once. This creates one active dummy checkout session
+  and moves to the locked payment phase; it does not yet create the borrow
+  request or assignment. Closing the surface leaves one Borrow Basket item
+  with `Continue request`. In-place reopen and one clean reload must reconstruct
+  the same session, amount, timeframe, quantity and policy set.
+- Use `Back` once, change the quantity or timeframe, and confirm again. The old
+  active session must not be reused with changed content: it becomes a closed
+  or superseded audit and exactly one new active session owns the recalculated
+  payload. No borrow request or inventory delta exists before `Pay`.
+- Click `Pay` exactly once. While active it changes to `Paying...` and is
+  disabled; the application remains responsive. Success closes the checkout
+  instead of leaving a frozen editor, spinner or duplicate payment surface.
+- Immediate write oracle: one terminal `provider=dummy` approved payment for
+  the final session/payload; one exact Event/Sub-event-scoped Nova borrow
+  request with payment-session reference and `Pending` owner decision; one
+  reservation/availability decrement for quantity `1`; and one pending
+  resource projection. The first abandoned/superseded session is not revenue
+  and cannot create entitlement.
+- Immediate UI oracle: the Asset remains once in Explore with availability
+  reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
+  and Casey sees Nova once as the pending borrower on the exact Asset/request.
+  The summary contains the immutable timeframe, quantity, accepted policy,
+  amount/currency and recorded dummy-payment result. Opening it twice is a
+  pure read.
+- Casey accepts that same pending request once through the normal Asset member
+  action. The accepted projection and exact Event/Sub-event resource scope
+  update once; availability stays `2` because payment already reserved the
+  quantity. Nova gains no Event, Tournament-group or global Asset Manager role.
+  The sibling Event/Sub-event, adjacent paid Asset and Riley stay unchanged.
+- One clean reload must reconstruct Casey's accepted request, Nova's scoped
+  resource/Payment summary and the final availability from persisted state.
+  Replaying the final action identity or reopening the summary cannot create a
+  second payment, request, assignment, availability decrement, notification
+  or counter delta.
+- Inspect the free and unavailable controls without submitting them. Their
+  labels and forbidden-payment states must match the table and no control may
+  inherit the target's payment/session identity.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `payment-ready`, `paid-pending` and `accepted` captures, plus exact `reset`.
+  Do not execute this row until that harness and isolated Casey/Nova browser
+  sessions exist.
+
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 
 - Stage two overlapping booking requests against one finite-capacity asset,
@@ -6247,8 +6408,8 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 116 executable journeys after the 2026-08-30 granularity
-audit. All 76 PASS/CLOSED rows remain individually immutable: only their
+The matrix contains 118 executable journeys after the 2026-09-02 dummy-payment
+coverage extension. All 81 passed rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
