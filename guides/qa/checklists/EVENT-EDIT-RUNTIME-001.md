@@ -48,7 +48,7 @@ actually visible.
    - Capacity: minimum `1`, maximum `8`
    - Location: `Austin`
    - Mode: `Casual`
-   - Date: one future two-hour window
+   - Date: one future one-hour window
    - Auto inviter: Off
    - Ticketing: Off
    - Slots: Off
@@ -79,8 +79,8 @@ actually visible.
     `Manage Event` action inside this screen: this `Edit` opens the Event
     definition.
 14. Turn `Slots` On and add exactly two distinct slots inside the Event's date
-    range: one at the Event start and one one hour later. Keep `Sub Events` Off
-    and do not change another Event field.
+    range: one at the Event start and one 30 minutes later. Keep `Sub Events`
+    Off and do not change another Event field.
 15. Select `Save` exactly once, then reopen the Draft card with `Manage Event`.
 16. Confirm that exactly two Slot sections are shown in chronological order.
 17. Confirm that each Slot contains exactly one card labelled `Event`. These
