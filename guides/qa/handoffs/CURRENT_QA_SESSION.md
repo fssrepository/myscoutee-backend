@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 05:15 CEST
+Updated: 2026-09-02 05:36 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,23 +56,23 @@ checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVEN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
 checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
-substage: childless-main-event-recovery — step 23 remains PASS; the first step 24-27 attempt exposed an application defect and only that Save boundary must be repeated
-next_replay_boundary: childless-restored-published — repeat the current Event definition Save once after hot deploy, confirm the captured root MAIN_EVENT returns, then Publish
-fixture_phase: Draft Event h1788317751991 at 1/8 currently persists slotsEnabled=true with an empty slotTemplates list and subEventsEnabled=false; captured root MAIN_EVENT 6a9790503071603425ae103d is retained once with status D; no restage or reset is permitted
-browser_phase: Casey remains in the current managed Event flow after the failed childless restore; Nova remains online and unused
+substage: root-transport-invitation-delete-pass — checklist step 52 PASS
+next_replay_boundary: root-transport-remove — remove the accepted root Transport assignment and prove reopen/reload persistence
+fixture_phase: Published Event h1788317751991 at 2/9 with Casey Admin and fixture-added Nova Member accepted; Slots Off, Sub Events Off, root Transport retained at accepted=1/pending=0 and the original MAIN_EVENT active
+browser_phase: Casey completed the root Transport Invite/Delete journey through Members close/reopen and a full reload; Nova remains an accepted Event Member and does not act
 scenario: Casey creates the Event through the real UI and proves one root MAIN_EVENT. Casey assigns Transport at that root scope, then edits the definition to add exactly two Slots. The runtime screen must show one slot-scoped MAIN_EVENT card in each Slot, not an empty list and not a third root card. Casey assigns Accommodation only to the first Slot and Supplies only to the second, proving independent runtime scopes. Removing both Slots restores the original root MAIN_EVENT and its Transport without leaking either Slot assignment. Casey then publishes and continues through capacity, scoped invite/Delete and root Transport remove/reassign. This is one EVENT-EDIT-RUNTIME-001 transaction with internal replay savepoints, not separate testcase IDs.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: Checklist step 23 is PASS with the exact root/first-Slot/second-Slot resource isolation already captured. Casey then removed the Slot definitions, but the root MAIN_EVENT did not return. The persisted mismatch proved that toggle-only slotsEnabled=true plus slotTemplates=[] incorrectly deactivated the root runtime. Product code now canonicalizes both Slots On + zero Slot definitions and Sub Events On + zero Sub Event definitions to Off, and runtime ownership now depends on actual child definitions rather than toggles alone. Backend compile/hot restart and frontend watch build passed. The current stale Draft is intentionally retained for a one-Save recovery; the testcase is not restaged.
+state: Checklist step 47 first passed with exactly one Nova pending root-Transport invitation, accepted=1/pending=1 and unchanged Event membership 2/9. The user then completed Delete, Members reopen and full reload through step 52. The independent terminal oracle proves Nova's pending Asset request and projection are absent, there is no Transport member row, only Casey's original accepted manual request remains, and the root metric is accepted=1/pending=0/capacityMax=4. The resulting legacy-timed recompute completed at 2026-09-02T03:36:00.514239500Z with empty lastError. Dev timing is now shortened by the demo_db platform configuration itself: Event changed, Event members changed, Asset changed and Asset requests changed are each 15s. No Java behavior branch or production timing was changed. No restage occurred.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Do not restage. In Casey, reopen Edit for the current Draft and Save once with no Slot definitions and no Sub Event definitions. The fixed save normalizes both empty feature toggles to Off and reactivates the same root runtime. Reopen Manage Event, require the original single root MAIN_EVENT and its Transport with neither Slot resource visible, then Publish once and continue through checklist step 30 before stopping.
+required_resume: Do not restage or add a pre-action reload. Continue checklist steps 53-57 in Casey: remove QA Main Event Transport once, require accepted 1 -> 0 with no red counter, close/reopen Transport, perform the checklist's one full reload and confirm the assignment remains absent, then stop.
 event: h1788317751991 — QA EVENT-RUNTIME-001 Draft at 1/8
 actors:
   Casey: authenticated managed document; creates the Event and owns every mutation
   Nova: authenticated managed document; not yet an Event participant
-next_actor: Casey repeats only the failed Save boundary, then continues checklist steps 27-30 without using Nova.
-queued_followup: Codex verifies that Publish reactivated the captured root MAIN_EVENT and preserved only its root Transport presentation, then records the replayable post-create savepoint and prepares Nova accepted at 2/8. Casey reloads once only after that machine-side preparation and continues at checklist step 31.
-pending_machine_oracle: Prove one published active Event with Slots Off/Sub Events Off; reactivate root runtime document 6a9790503071603425ae103d with unchanged recordId and syncKey; retain exactly the root Transport assignment at the root scope; require the UI to hide both Slot resource scopes and show no Slot section or empty state.
-stop_phrase: EVENT-RUNTIME-001 childless restored: original MAIN_EVENT visible and Event published
+next_actor: Casey performs checklist steps 53-57; Nova does not act.
+queued_followup: After the Transport-removed stop phrase, Codex proves that the root assignment/request/projection and accepted metric are absent, confirms the new Asset task used the 15s dev platform value and completed without error, then permits reassignment.
+pending_machine_oracle: Prove the root Transport assignment is absent after reopen/reload, accepted=0/pending=0, no red counter, unchanged Event membership 2/9, and no mutation to the Slot-scoped historical resources.
+stop_phrase: EVENT-RUNTIME-001 Transport removed: 1->0, no red counter
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
