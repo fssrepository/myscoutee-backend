@@ -20,13 +20,19 @@ The live resume point belongs in `handoffs/CURRENT_QA_SESSION.md`. PASS/FAIL
 and machine evidence belong in the QA pack and CSV/XLSX ledger. Those records
 must never overwrite the user-facing checklist.
 
+## Domain directories
+
+- [`event`](event/) — Event lifecycle and scheduler guides.
+- [`identity-access`](identity-access/) — identity, authorization and account
+  lifecycle guides.
+
 ## Available user guides
 
-- [`EVENT-EDIT-RUNTIME-001.md`](EVENT-EDIT-RUNTIME-001.md) — active Event edit,
+- [`EVENT-EDIT-RUNTIME-001.md`](event/EVENT-EDIT-RUNTIME-001.md) — active Event edit,
   MAIN_EVENT resource, pending invite, and Delete reversal journey.
-- [`EVENT-SCHEDULERS-001.md`](EVENT-SCHEDULERS-001.md) — bounded Event scheduler
+- [`EVENT-SCHEDULERS-001.md`](event/EVENT-SCHEDULERS-001.md) — bounded Event scheduler
   and Admin Jobs/Monitoring journey.
-- [`ROLE-TRIAD-CORE-001.md`](ROLE-TRIAD-CORE-001.md) — member/admin/operator
+- [`ROLE-TRIAD-CORE-001.md`](identity-access/ROLE-TRIAD-CORE-001.md) — member/admin/operator
   authorization, moderation, support, block/unblock, and branding journey.
-- [`JOB-PURGE.md`](JOB-PURGE.md) — scheduled deleted-account finalization
+- [`JOB-PURGE.md`](identity-access/JOB-PURGE.md) — scheduled deleted-account finalization
   journey.

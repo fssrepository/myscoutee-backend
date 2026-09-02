@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 08:53 CEST
+Updated: 2026-09-02 10:21 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -15,7 +15,7 @@ file first, then open only the linked active checkpoint section.
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
 - Stable user-facing click guide for the active testcase; execution status and
   machine evidence never belong in this file:
-  [`EVENT-SCHEDULERS-001.md`](../checklists/EVENT-SCHEDULERS-001.md)
+  [`EVENT-SCHEDULERS-001.md`](../checklists/event/EVENT-SCHEDULERS-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -52,24 +52,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SCHEDULERS-001 — active; focused real-scheduler pickup retest complete and reset
-detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
-checklist: ../checklists/EVENT-SCHEDULERS-001.md
-checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#actor-and-shared-rules
-substage: not-staged — the focused scheduler-pickup retest completed and reset
-next_replay_boundary: await the user's next requested scheduler scope; run read-only status before any new stage
-fixture_phase: `status event-schedulers EVENT-SCHEDULERS-001` reports `phase=not-staged`, `prepared=false`. No target timing override or isolated-rule hold remains.
-browser_phase: no managed browser was launched for the focused pickup-only retest; the user observed the existing Ava Job Detail.
-scenario: Scheduler QA must preserve genuine last-run state, set the real persisted target frequency to one minute, and wait for the already-running scheduler and production worker. It must never make a rule due by backdating `lastRunAtIso` or fabricate run/history/telemetry state.
-ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
-state: A focused pickup-only replay staged Automatic room assignment with six real eligible users and no generated artifacts. Arming changed only the persisted timing to `Every 1 minute`; the genuine 06:41:51 CEST last-run value was preserved. The real scheduler picked the rule at 08:49:51 CEST and completed with 6 affected; the required notification-outbox wake-up also ran, and Metrics moved 902/902 to 904/904. Because the one-minute interval remained active until reset, one additional real zero-work run completed at 08:50; it did not duplicate domain work. The fixture was then reset and verified not staged. The run also exposed that Job Detail displayed `pendingCountUpdatedAtIso` under `Eligible before next run`; the frontend now derives that timestamp from genuine last-run plus timing, and the existing frontend watcher compiled successfully.
-baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Run one read-only EVENT-SCHEDULERS-001 status. It must remain not staged. Do not recreate any branch until the user names the next focused scope.
+checkpoint: ASSET-LIFE-001 — next
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
+checklist: ../checklists/asset/ASSET-LIFE-001.md — pending generation
+checklist_section: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
+substage: generate-checkpoint-files
+next_replay_boundary: generate and validate the ASSET-LIFE-001 fixture, checklist and browser-session definition; then stage it once and verify status before opening browsers
+fixture_phase: no Asset checkpoint is staged; EVENT-SCHEDULERS-001 is PASS/CLOSED and reset to `phase=not-staged`, `prepared=false`
+browser_phase: launch ASSET-LIFE-001 managed windows only after its staged status passes
+ledger_status: 81/116 total, Core 81/96; ASSET-LIFE-001 NOT RUN
+required_resume: generate the three ASSET-LIFE-001 checkpoint files, validate them, stage ASSET-LIFE-001 once, verify the persisted baseline, then launch its managed windows
 actors: none active
-next_actor: user chooses the next focused scheduler scope
-queued_followup: none
-pending_machine_oracle: none for the completed pickup-only retest
-stop_phrase: none
+pending_machine_oracle: ASSET-LIFE-001 staged baseline
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -173,21 +167,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The original Tournament lifecycle block and both score-reopen checkpoints are
-PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
-checkpoint and generated-group resource aggregation are also PASS/CLOSED.
-`JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
-idempotency evidence; generic Job Detail/Monitoring presentation is an
-assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
-is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is PASS/CLOSED and reset;
-`JOB-PURGE` is PASS/CLOSED and Identity & access is 8/8 complete after QA
-infrastructure passed 2/2. The consolidated desktop Chat
-flow, actions, rich content and governance journeys plus the closed Chat
-statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
-assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
-build runs on the dedicated production-like VMware host with a verified active
-Firebase revision and a physical phone. Do not stage or send that message
-during local Core execution.
+Next test: `ASSET-LIFE-001`. The next session first generates and validates its
+versioned fixture, user checklist and browser-session definition, then stages
+the checkpoint once. It verifies the persisted baseline before opening the
+managed browser windows.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

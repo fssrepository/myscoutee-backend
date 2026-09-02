@@ -811,7 +811,7 @@ Execution evidence (2026-09-01, PASS):
 ### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
 
 The stable user-facing click guide is
-[`EVENT-EDIT-RUNTIME-001`](../checklists/EVENT-EDIT-RUNTIME-001.md). Its
+[`EVENT-EDIT-RUNTIME-001`](../checklists/event/EVENT-EDIT-RUNTIME-001.md). Its
 complete journey and focused regression remain one testcase transaction. The
 guide never stores live status or machine evidence.
 
@@ -1260,6 +1260,33 @@ Execution and repair evidence (`2026-09-01`):
   group side effect was attributed to the read or Save. Final verdict:
   **PASS**. The fixture was reset. Source checkpoint `EVENT-SLOT-004` and the
   consolidated `EVENT-SLOT-TOURNAMENT-001` journey are **PASS/CLOSED**.
+
+## Event scheduler checkpoint
+
+### `EVENT-SCHEDULERS-001` — isolated Event background-worker lifecycle
+
+Execution evidence (`2026-09-02`):
+
+- `Automatic room assignment` completed through the real scheduler with six
+  affected users. Its required notification-outbox wake-up also ran exactly
+  once; the persisted oracle proved two 3/3 rooms, unique membership, two Event
+  and Chat projections, two main Event runtime cards, welcome messages and
+  exact user-counter deltas. The repaired runtime card was confirmed in the UI.
+- `Close past events` completed once with one affected Event and once with zero
+  work. The second pass preserved the first-pass domain fingerprint. The user
+  confirmed the retained Past card, `1 / 8` badge, main Event runtime and the
+  exact counter transition.
+- `Delete expired baskets` was replayed in isolation. The real scheduler ran
+  once at `2026-09-02T08:18:21.059040243Z`, completed with one affected item
+  and moved Metrics from `1186/1186` to `1187/1187`. The expired basket became
+  `deleted` with reservation/counter tracking cleared; the future-control
+  basket and Event remained byte-identical. Without reloading Explore, the
+  user confirmed the Basket disappeared and the Event menu returned to
+  `Book Event`.
+- No UI `Run`, direct worker endpoint, fabricated runtime/history value or
+  duplicate process was used. The fixture reset restored every target and
+  isolated rule configuration; final status is `phase=not-staged` and
+  `prepared=false`. **PASS/CLOSED.**
 
 ## Event lifecycle and bucket checkpoints
 
@@ -6558,7 +6585,7 @@ assertion references for their consolidated parents, not as microtests.
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
 The stable user-facing click guide for the local Core journey is
-[`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md). Its 22
+[`ROLE-TRIAD-CORE-001.md`](../checklists/identity-access/ROLE-TRIAD-CORE-001.md). Its 22
 top-level sections preserve the repeatable human journey without checkmarks or
 live status; this pack and the ledger remain authoritative for persisted
 evidence and status.
