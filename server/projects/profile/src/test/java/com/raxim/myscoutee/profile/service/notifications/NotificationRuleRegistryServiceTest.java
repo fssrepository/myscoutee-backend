@@ -109,7 +109,7 @@ class NotificationRuleRegistryServiceTest {
                 .isFalse();
         assertThat(service.shouldRunScheduledRule(
                 rule.getRuleKey(),
-                Instant.parse("2026-07-31T10:03:30Z")))
+                Instant.parse("2026-07-31T10:03:00Z")))
                 .isTrue();
     }
 
@@ -133,7 +133,7 @@ class NotificationRuleRegistryServiceTest {
                 mock(AdminTelemetryService.class));
 
         assertThat(service.nextScheduledRunAtIso(rule, Instant.parse("2026-09-02T06:50:00Z")))
-                .isEqualTo("2026-09-02T06:50:51.458Z");
+                .isEqualTo("2026-09-02T06:50:00Z");
     }
 
     @Test

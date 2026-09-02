@@ -109,7 +109,12 @@ public class NotificationRuleRegistryService {
                 return resolvedNow.toString();
             }
             ZoneId zoneId = ZoneId.of(firstNonBlank(timing.getTimezone(), "UTC"));
-            return plusInterval(lastRunAt.atZone(zoneId), intervalSpec(timing)).toInstant().toString();
+            IntervalSpec interval = intervalSpec(timing);
+            ZonedDateTime base = lastRunAt.atZone(zoneId);
+            if (INTERVAL_UNIT_MINUTES.equals(normalizeIntervalUnit(interval.unit()))) {
+                base = base.truncatedTo(ChronoUnit.MINUTES);
+            }
+            return plusInterval(base, interval).toInstant().toString();
         }
         if ("yearly".equals(mode)) {
             Instant occurrence = yearlyOccurrence(timing, resolvedNow);
@@ -775,7 +780,11 @@ public class NotificationRuleRegistryService {
             return true;
         }
         IntervalSpec interval = intervalSpec(timing);
-        ZonedDateTime due = plusInterval(lastRunAt.atZone(zoneId), interval);
+        ZonedDateTime base = lastRunAt.atZone(zoneId);
+        if (INTERVAL_UNIT_MINUTES.equals(normalizeIntervalUnit(interval.unit()))) {
+            base = base.truncatedTo(ChronoUnit.MINUTES);
+        }
+        ZonedDateTime due = plusInterval(base, interval);
         return !zonedNow.isBefore(due);
     }
 
