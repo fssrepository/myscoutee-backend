@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 10:21 CEST
+Updated: 2026-09-02 10:52 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -11,11 +11,11 @@ file first, then open only the linked active checkpoint section.
 
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
-- Active consolidated Event scheduler journey and its execution contract:
+- Consolidated Event scheduler journey and its execution contract:
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
 - Stable user-facing click guide for the active testcase; execution status and
   machine evidence never belong in this file:
-  [`EVENT-SCHEDULERS-001.md`](../checklists/event/EVENT-SCHEDULERS-001.md)
+  [`ASSET-LIFE-001.md`](../checklists/asset/ASSET-LIFE-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -24,7 +24,7 @@ file first, then open only the linked active checkpoint section.
   every CSV/XLSX status change:
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
-  [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+  [`asset-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-domain-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -52,18 +52,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-LIFE-001 — next
+checkpoint: ASSET-LIFE-001 — active
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
-checklist: ../checklists/asset/ASSET-LIFE-001.md — pending generation
-checklist_section: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
-substage: generate-checkpoint-files
-next_replay_boundary: generate and validate the ASSET-LIFE-001 fixture, checklist and browser-session definition; then stage it once and verify status before opening browsers
-fixture_phase: no Asset checkpoint is staged; EVENT-SCHEDULERS-001 is PASS/CLOSED and reset to `phase=not-staged`, `prepared=false`
-browser_phase: launch ASSET-LIFE-001 managed windows only after its staged status passes
+checklist: ../checklists/asset/ASSET-LIFE-001.md
+checklist_section: ../checklists/asset/ASSET-LIFE-001.md#1-create-the-three-type-controls
+substage: create-three-type-controls
+next_replay_boundary: Casey performs checklist steps 1-16 and reports `ASSET-LIFE-001 Create ready: three type controls persist`; then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
+fixture_phase: staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
+browser_phase: one managed Casey Asset lifecycle window is open and authenticated
 ledger_status: 81/116 total, Core 81/96; ASSET-LIFE-001 NOT RUN
-required_resume: generate the three ASSET-LIFE-001 checkpoint files, validate them, stage ASSET-LIFE-001 once, verify the persisted baseline, then launch its managed windows
-actors: none active
-pending_machine_oracle: ASSET-LIFE-001 staged baseline
+required_resume: keep the staged boundary intact; user follows ASSET-LIFE-001 steps 1-16; after the exact Create phrase run the versioned capture command and continue only from its returned next action
+actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
+pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
+known_contract_gap: source inspection found Java `/assets/restore` but no frontend Asset Trash query/filter or restore caller; the checklist owns this as a later explicit FAIL boundary and forbids an API/Mongo substitute
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

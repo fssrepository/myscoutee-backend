@@ -17,8 +17,45 @@
   const EVENT_ID = `${PREFIX}:event`;
   const SUB_EVENT_ID = `${EVENT_ID}:sub-event:transport`;
   const IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, EVENT_ID];
+  const LIFE_CHECKPOINT = "ASSET-LIFE-001";
+  const LIFE_INITIAL_SUBTITLE = "Initial shared-field value";
+  const LIFE_EDITED_SUBTITLE = "Edited shared-field value";
+  const LIFE_ASSETS = {
+    Transport: {
+      title: "QA ASSET-LIFE-001 Transport",
+      category: "Sedan",
+      capacityTotal: 4,
+      quantity: 2,
+      details: "Manual QA Transport lifecycle control.",
+      sourceLink: "https://example.com/qa/asset-life-001/transport"
+    },
+    Accommodation: {
+      title: "QA ASSET-LIFE-001 Accommodation",
+      category: "Apartment",
+      capacityTotal: 6,
+      quantity: 3,
+      details: "Manual QA Accommodation lifecycle control.",
+      sourceLink: "https://example.com/qa/asset-life-001/accommodation"
+    },
+    Supplies: {
+      title: "QA ASSET-LIFE-001 Supplies",
+      category: "Safety",
+      capacityTotal: 12,
+      quantity: 8,
+      details: "Manual QA Supplies lifecycle control.",
+      sourceLink: "https://example.com/qa/asset-life-001/supplies"
+    }
+  };
+  const LIFE_TITLES = Object.values(LIFE_ASSETS).map(value => value.title);
 
   const CHECKPOINTS = {
+    [LIFE_CHECKPOINT]: {
+      stage: "lifecycle-empty",
+      why: "Prove all three Asset type schemas, managed media, one shared-field edit, and Transport Trash/Restore identity in one bounded lifecycle.",
+      action: "As Casey, create the three named Asset controls exactly once through the normal Asset editors, then stop at the Create phrase in the checklist.",
+      expected: "One active Transport, Accommodation and Supplies record exists with distinct stable IDs, exact type fields and managed image URLs; stored type counters each increased by one.",
+      worker: "MUST NOT use a scheduler. Ordinary direct writes and the existing affinity projection may run; no fixture command may fabricate a lifecycle transition."
+    },
     "ASSET-MEMBER-001": {
       stage: "member-empty",
       why: "Prove that an Asset Members invitation creates one asset-scoped pending identity and never an event membership.",
@@ -170,6 +207,277 @@
     };
   }
 
+  function lifecycleAssetSelector() {
+    return {
+      ownerUserId: hostUserId,
+      title: { $in: LIFE_TITLES }
+    };
+  }
+
+  function lifecycleDocuments() {
+    return Q.collection("assets")
+      .find(lifecycleAssetSelector())
+      .sort({ type: 1, assetId: 1 })
+      .toArray();
+  }
+
+  function lifecycleStatusCode(value) {
+    const normalized = Q.text(value).toLowerCase();
+    switch (normalized) {
+      case "active": return "A";
+      case "under-review":
+      case "under review": return "UR";
+      case "blocked": return "B";
+      case "deleted": return "D";
+      case "inactive": return "I";
+      case "trashed":
+      case "trash": return "T";
+      default: return Q.text(value) || "A";
+    }
+  }
+
+  function lifecycleAuthoritativeCounts() {
+    const counts = { Transport: 0, Accommodation: 0, Supplies: 0, Trash: 0 };
+    const suppressed = new Set(["UR", "B", "D", "I", "T"]);
+    const assets = Q.collection("assets").find({ ownerUserId: hostUserId }).toArray();
+    for (const asset of assets) {
+      const status = lifecycleStatusCode(asset.status);
+      if (status === "T") counts.Trash += 1;
+      if (!suppressed.has(status) && Object.prototype.hasOwnProperty.call(counts, Q.text(asset.type))) {
+        counts[Q.text(asset.type)] += 1;
+      }
+    }
+    return counts;
+  }
+
+  function lifecycleStoredCounters() {
+    const user = Q.ensureUser(hostUserId, "Asset lifecycle owner");
+    const activities = user.activities || {};
+    const nested = activities.asset || {};
+    return {
+      legacy: {
+        Transport: Q.number(activities.cars),
+        Accommodation: Q.number(activities.accommodation),
+        Supplies: Q.number(activities.supplies)
+      },
+      nested: {
+        Transport: Q.number(nested.cars),
+        Accommodation: Q.number(nested.accommodation),
+        Supplies: Q.number(nested.supplies)
+      }
+    };
+  }
+
+  function assertLifecycleCounts(expected, label) {
+    const authoritative = lifecycleAuthoritativeCounts();
+    const stored = lifecycleStoredCounters();
+    for (const type of ["Transport", "Accommodation", "Supplies"]) {
+      if (authoritative[type] !== expected[type]) {
+        Q.fail(`${label}: authoritative ${type} count is ${authoritative[type]}, expected ${expected[type]}.`);
+      }
+      if (stored.legacy[type] !== expected[type] || stored.nested[type] !== expected[type]) {
+        Q.fail(`${label}: stored ${type} counters are legacy=${stored.legacy[type]}, nested=${stored.nested[type]}, expected ${expected[type]}.`);
+      }
+    }
+    if (authoritative.Trash !== expected.Trash) {
+      Q.fail(`${label}: authoritative Trash count is ${authoritative.Trash}, expected ${expected.Trash}.`);
+    }
+    return { authoritative, stored };
+  }
+
+  function lifecycleExpectedCounts(state, phase) {
+    const baseline = state.baselineCounts;
+    const allActive = phase === "created" || phase === "edited" || phase === "restored";
+    return {
+      Transport: baseline.Transport + (allActive ? 1 : 0),
+      Accommodation: baseline.Accommodation + (phase === "baseline-ready" ? 0 : 1),
+      Supplies: baseline.Supplies + (phase === "baseline-ready" ? 0 : 1),
+      Trash: baseline.Trash + (phase === "trashed" ? 1 : 0)
+    };
+  }
+
+  function isManagedImageUrl(value) {
+    const imageUrl = Q.text(value);
+    if (!imageUrl.includes("/media/public?key=")) return false;
+    try {
+      return decodeURIComponent(imageUrl).endsWith("/large.webp");
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function lifecycleAssetMap(expectedCount = 3) {
+    const documents = lifecycleDocuments();
+    if (documents.length !== expectedCount) {
+      Q.fail(`ASSET-LIFE-001 expected ${expectedCount} named Asset documents, found ${documents.length}.`);
+    }
+    const result = {};
+    for (const asset of documents) {
+      const type = Q.text(asset.type);
+      if (!Object.prototype.hasOwnProperty.call(LIFE_ASSETS, type)) {
+        Q.fail(`ASSET-LIFE-001 found unexpected Asset type '${type}'.`);
+      }
+      if (result[type]) Q.fail(`ASSET-LIFE-001 found duplicate '${type}' controls.`);
+      result[type] = asset;
+    }
+    for (const type of Object.keys(LIFE_ASSETS)) {
+      if (!result[type]) Q.fail(`ASSET-LIFE-001 is missing its '${type}' control.`);
+    }
+    const logicalIds = Object.values(result).map(asset => Q.text(asset.assetId));
+    const mongoIds = Object.values(result).map(asset => Q.text(asset._id));
+    const syncKeys = Object.values(result).map(asset => Q.text(asset.syncKey));
+    for (const [label, values] of [["assetId", logicalIds], ["Mongo _id", mongoIds], ["syncKey", syncKeys]]) {
+      if (values.some(value => !value) || new Set(values).size !== 3) {
+        Q.fail(`ASSET-LIFE-001 requires three non-empty, distinct ${label} values.`);
+      }
+    }
+    return result;
+  }
+
+  function assertLifecycleAsset(asset, type, subtitle, status) {
+    const expected = LIFE_ASSETS[type];
+    const routes = Array.isArray(asset.routes)
+      ? asset.routes.map(value => Q.text(value)).filter(Boolean)
+      : [];
+    const requests = Array.isArray(asset.requests) ? asset.requests : [];
+    const policies = Array.isArray(asset.policies) ? asset.policies : [];
+    const topics = Array.isArray(asset.topics) ? asset.topics : [];
+    if (Q.text(asset.ownerUserId) !== hostUserId
+        || Q.text(asset.type) !== type
+        || Q.text(asset.title) !== expected.title
+        || Q.text(asset.subtitle) !== subtitle
+        || Q.text(asset.category) !== expected.category
+        || Q.number(asset.capacityTotal) !== expected.capacityTotal
+        || Q.number(asset.quantity) !== expected.quantity
+        || Q.text(asset.details) !== expected.details
+        || Q.text(asset.sourceLink) !== expected.sourceLink
+        || Q.text(asset.visibility) !== "Public"
+        || lifecycleStatusCode(asset.status) !== status) {
+      Q.fail(`ASSET-LIFE-001 ${type} fields do not match the versioned checklist contract.`);
+    }
+    if (!Q.text(asset.assetId) || !Q.text(asset._id) || !Q.text(asset.syncKey)
+        || !Q.text(asset.createdDate) || !Q.text(asset.createdUser) || !Q.text(asset.updatedDate)
+        || Q.text(asset.createdUser) !== hostUserId || Q.text(asset.updatedUser) !== hostUserId) {
+      Q.fail(`ASSET-LIFE-001 ${type} identity/audit fields are incomplete.`);
+    }
+    if (!isManagedImageUrl(asset.imageUrl)) {
+      Q.fail(`ASSET-LIFE-001 ${type} imageUrl is not a canonical managed large.webp URL.`);
+    }
+    if (requests.length !== 0 || topics.length !== 0 || asset.policiesEnabled === true || policies.length !== 0) {
+      Q.fail(`ASSET-LIFE-001 ${type} unexpectedly contains requests, topics or enabled lending policies.`);
+    }
+    if (asset.pricing && asset.pricing.enabled === true) {
+      Q.fail(`ASSET-LIFE-001 ${type} unexpectedly enabled pricing.`);
+    }
+    if (type === "Accommodation") {
+      if (routes.length !== 1 || !Q.text(asset.city) || Q.text(asset.city) !== routes[0]) {
+        Q.fail("ASSET-LIFE-001 Accommodation must persist one required Location identically in city and routes[0].");
+      }
+    } else if (Q.text(asset.city) || routes.length !== 0) {
+      Q.fail(`ASSET-LIFE-001 ${type} must not persist an Accommodation Location.`);
+    }
+    if (status === "T") {
+      if (!Q.text(asset.trashedAtIso) || Q.text(asset.statusBeforeSuppression)) {
+        Q.fail("ASSET-LIFE-001 trashed Transport has incomplete or inconsistent suppression markers.");
+      }
+    } else if (Q.text(asset.trashedAtIso) || Q.text(asset.statusBeforeSuppression)) {
+      Q.fail(`ASSET-LIFE-001 active ${type} unexpectedly retains a suppression marker.`);
+    }
+  }
+
+  function lifecycleStableDomain(asset) {
+    return {
+      mongoId: Q.text(asset._id),
+      syncKey: Q.text(asset.syncKey),
+      assetId: Q.text(asset.assetId),
+      ownerUserId: Q.text(asset.ownerUserId),
+      type: Q.text(asset.type),
+      title: Q.text(asset.title),
+      subtitle: Q.text(asset.subtitle),
+      category: Q.text(asset.category),
+      city: Q.text(asset.city),
+      capacityTotal: Q.number(asset.capacityTotal),
+      quantity: Q.number(asset.quantity),
+      details: Q.text(asset.details),
+      imageUrl: Q.text(asset.imageUrl),
+      sourceLink: Q.text(asset.sourceLink),
+      routes: Array.isArray(asset.routes) ? asset.routes.map(value => Q.text(value)).filter(Boolean) : [],
+      topics: Array.isArray(asset.topics) ? asset.topics.map(value => Q.text(value)).filter(Boolean) : [],
+      policiesEnabled: asset.policiesEnabled === true,
+      policies: Array.isArray(asset.policies) ? asset.policies : [],
+      pricing: asset.pricing || null,
+      requests: Array.isArray(asset.requests) ? asset.requests : [],
+      visibility: Q.text(asset.visibility),
+      createdDate: Q.text(asset.createdDate),
+      createdUser: Q.text(asset.createdUser)
+    };
+  }
+
+  function assertLifecycleStable(actual, expected, label) {
+    if (!Q.sameJson(lifecycleStableDomain(actual), expected)) {
+      Q.fail(`ASSET-LIFE-001 ${label} changed outside the permitted lifecycle field.`);
+    }
+  }
+
+  function assertLifecyclePhase(state, phase) {
+    if (Q.text(state.phase) !== phase) {
+      Q.fail(`ASSET-LIFE-001 is at phase '${Q.text(state.phase)}', expected '${phase}'.`);
+    }
+  }
+
+  function assertLifecycleBaseline(state) {
+    if (lifecycleDocuments().length !== 0) {
+      Q.fail("ASSET-LIFE-001 baseline is not empty; do not delete or overwrite colliding user data.");
+    }
+    return assertLifecycleCounts(lifecycleExpectedCounts(state, "baseline-ready"), "ASSET-LIFE-001 baseline");
+  }
+
+  function assertLifecycleCreated(state, phase = "created") {
+    const byType = lifecycleAssetMap();
+    const transportSubtitle = phase === "created" ? LIFE_INITIAL_SUBTITLE : LIFE_EDITED_SUBTITLE;
+    assertLifecycleAsset(byType.Transport, "Transport", transportSubtitle, phase === "trashed" ? "T" : "A");
+    assertLifecycleAsset(byType.Accommodation, "Accommodation", LIFE_INITIAL_SUBTITLE, "A");
+    assertLifecycleAsset(byType.Supplies, "Supplies", LIFE_INITIAL_SUBTITLE, "A");
+    if (state.createdDomains) {
+      const expectedTransport = phase === "created"
+        ? state.createdDomains.Transport
+        : (state.editedTransportDomain || { ...state.createdDomains.Transport, subtitle: LIFE_EDITED_SUBTITLE });
+      assertLifecycleStable(byType.Transport, expectedTransport, "Transport identity/schema");
+      assertLifecycleStable(byType.Accommodation, state.createdDomains.Accommodation, "Accommodation control");
+      assertLifecycleStable(byType.Supplies, state.createdDomains.Supplies, "Supplies control");
+    }
+    const counts = assertLifecycleCounts(lifecycleExpectedCounts(state, phase), `ASSET-LIFE-001 ${phase}`);
+    return { byType, counts };
+  }
+
+  function lifecycleOracle(state) {
+    const documents = lifecycleDocuments();
+    return {
+      checkpointPhase: Q.text(state.phase),
+      targetAssets: documents.map(asset => ({
+        mongoId: Q.text(asset._id),
+        assetId: Q.text(asset.assetId),
+        syncKey: Q.text(asset.syncKey),
+        type: Q.text(asset.type),
+        title: Q.text(asset.title),
+        subtitle: Q.text(asset.subtitle),
+        category: Q.text(asset.category),
+        city: Q.text(asset.city),
+        routes: Array.isArray(asset.routes) ? asset.routes.map(value => Q.text(value)).filter(Boolean) : [],
+        capacityTotal: Q.number(asset.capacityTotal),
+        quantity: Q.number(asset.quantity),
+        imageUrl: Q.text(asset.imageUrl),
+        status: lifecycleStatusCode(asset.status),
+        trashedAtIso: Q.text(asset.trashedAtIso)
+      })),
+      counts: {
+        authoritative: lifecycleAuthoritativeCounts(),
+        stored: lifecycleStoredCounters()
+      },
+      baselineCounts: state.baselineCounts
+    };
+  }
+
   function selectors() {
     return [
       { collection: "assets", selector: { $or: [{ _id: { $in: IDS } }, { assetId: { $in: IDS } }] } },
@@ -281,7 +589,269 @@
     };
   }
 
+  function stageLifecycle() {
+    const selected = config();
+    Q.assertNotStaged(SCENARIO);
+    Q.assertNoOtherActiveScenario(SCENARIO);
+    Q.ensureUser(hostUserId, "Asset lifecycle owner");
+    if (lifecycleDocuments().length !== 0) {
+      Q.fail("ASSET-LIFE-001 target titles already exist for Casey; refusing to overwrite or clear them.");
+    }
+    const baselineCounts = lifecycleAuthoritativeCounts();
+    assertLifecycleCounts(baselineCounts, "ASSET-LIFE-001 pre-stage");
+    const stagedAtIso = Q.nowIso();
+    const state = {
+      _id: Q.stateId(SCENARIO),
+      scenario: SCENARIO,
+      checkpointId,
+      database: db.getName(),
+      stagedAtIso,
+      phase: "baseline-ready",
+      baselineCounts,
+      context: {
+        hostUserId,
+        targetTitles: LIFE_TITLES,
+        initialSubtitle: LIFE_INITIAL_SUBTITLE,
+        editedSubtitle: LIFE_EDITED_SUBTITLE
+      },
+      snapshots: []
+    };
+    Q.collection(Q.STATE_COLLECTION).insertOne(state);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: state.phase,
+      stagedAtIso,
+      identities: state.context,
+      why: selected.why,
+      workerExpectation: selected.worker,
+      baseline: lifecycleOracle(state),
+      next: selected.action,
+      expectedVisibleResult: selected.expected
+    });
+  }
+
+  function captureLifecycleCreated() {
+    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`capture-lifecycle-created is restricted to ${LIFE_CHECKPOINT}.`);
+    const state = requireMatchingState();
+    assertLifecyclePhase(state, "baseline-ready");
+    const byType = lifecycleAssetMap();
+    assertLifecycleAsset(byType.Transport, "Transport", LIFE_INITIAL_SUBTITLE, "A");
+    assertLifecycleAsset(byType.Accommodation, "Accommodation", LIFE_INITIAL_SUBTITLE, "A");
+    assertLifecycleAsset(byType.Supplies, "Supplies", LIFE_INITIAL_SUBTITLE, "A");
+    const imageUrls = Object.values(byType).map(asset => Q.text(asset.imageUrl));
+    if (new Set(imageUrls).size !== 3) {
+      Q.fail("ASSET-LIFE-001 requires a distinct managed media identity for each created Asset.");
+    }
+    assertLifecycleCounts(lifecycleExpectedCounts(state, "created"), "ASSET-LIFE-001 created");
+    const createdDomains = {};
+    for (const type of Object.keys(LIFE_ASSETS)) createdDomains[type] = lifecycleStableDomain(byType[type]);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "baseline-ready" },
+      {
+        $set: {
+          phase: "created",
+          createdAtIso: Q.nowIso(),
+          createdDomains,
+          "context.assetIds": {
+            Transport: Q.text(byType.Transport.assetId),
+            Accommodation: Q.text(byType.Accommodation.assetId),
+            Supplies: Q.text(byType.Supplies.assetId)
+          }
+        }
+      }
+    );
+    const current = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: current.phase,
+      oracle: lifecycleOracle(current),
+      next: `Edit only Subtitle on ${LIFE_ASSETS.Transport.title} to '${LIFE_EDITED_SUBTITLE}', Save once, close/reopen, then report the Edit phrase.`
+    });
+  }
+
+  function verifyLifecycleEdited() {
+    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-edited is restricted to ${LIFE_CHECKPOINT}.`);
+    const state = requireMatchingState();
+    assertLifecyclePhase(state, "created");
+    const result = assertLifecycleCreated(state, "edited");
+    const editedTransportDomain = lifecycleStableDomain(result.byType.Transport);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "created" },
+      {
+        $set: {
+          phase: "edited",
+          editedAtIso: Q.nowIso(),
+          editedTransportDomain
+        }
+      }
+    );
+    const current = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: current.phase,
+      oracle: lifecycleOracle(current),
+      next: `Delete only ${LIFE_ASSETS.Transport.title} once, confirm once, and wait for its card and Transport counter to disappear before reporting the Trash phrase.`
+    });
+  }
+
+  function verifyLifecycleTrashed() {
+    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-trashed is restricted to ${LIFE_CHECKPOINT}.`);
+    const state = requireMatchingState();
+    assertLifecyclePhase(state, "edited");
+    const result = assertLifecycleCreated(state, "trashed");
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "edited" },
+      {
+        $set: {
+          phase: "trashed",
+          trashedAtIso: Q.text(result.byType.Transport.trashedAtIso)
+        }
+      }
+    );
+    const current = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: current.phase,
+      oracle: lifecycleOracle(current),
+      next: "Use only the product Asset Trash surface and Restore action. If either is absent, report the checklist FAIL boundary; do not use an API or Mongo workaround."
+    });
+  }
+
+  function verifyLifecycleRestored() {
+    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-restored is restricted to ${LIFE_CHECKPOINT}.`);
+    const state = requireMatchingState();
+    assertLifecyclePhase(state, "trashed");
+    const result = assertLifecycleCreated(state, "restored");
+    if (Q.text(result.byType.Transport.trashedAtIso)
+        || Q.text(result.byType.Transport.statusBeforeSuppression)) {
+      Q.fail("ASSET-LIFE-001 restored Transport retained a suppression marker.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "trashed" },
+      { $set: { phase: "restored", restoredAtIso: Q.nowIso() } }
+    );
+    const current = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: current.phase,
+      oracle: lifecycleOracle(current),
+      next: "Reload Casey once and repeat the three type-list identity/counter checks. If they remain exact, report the terminal phrase for the final persisted oracle."
+    });
+  }
+
+  function statusLifecycle() {
+    const selected = config();
+    const state = Q.activeState(SCENARIO, false);
+    if (!state) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "not-staged",
+        why: selected.why,
+        next: `Run stage asset-domain ${checkpointId}.`
+      });
+      return;
+    }
+    if (Q.text(state.checkpointId).toUpperCase() !== checkpointId) {
+      Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
+    }
+    switch (Q.text(state.phase)) {
+      case "baseline-ready": assertLifecycleBaseline(state); break;
+      case "created": assertLifecycleCreated(state, "created"); break;
+      case "edited": assertLifecycleCreated(state, "edited"); break;
+      case "trashed": assertLifecycleCreated(state, "trashed"); break;
+      case "restored": assertLifecycleCreated(state, "restored"); break;
+      default: Q.fail(`ASSET-LIFE-001 has unsupported phase '${Q.text(state.phase)}'.`);
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: state.phase,
+      why: selected.why,
+      workerExpectation: selected.worker,
+      oracle: lifecycleOracle(state),
+      next: lifecycleNextAction(state.phase)
+    });
+  }
+
+  function lifecycleNextAction(phase) {
+    switch (Q.text(phase)) {
+      case "baseline-ready": return config().action;
+      case "created": return `Edit only Subtitle on ${LIFE_ASSETS.Transport.title}, then run verify-lifecycle-edited.`;
+      case "edited": return `Delete only ${LIFE_ASSETS.Transport.title}, then run verify-lifecycle-trashed.`;
+      case "trashed": return "Restore the same Transport only through the product UI; absence of Asset Trash/Restore is a FAIL.";
+      case "restored": return "Run the final reload checks, then status for the terminal persisted oracle.";
+      default: return "Stop and inspect the checkpoint phase.";
+    }
+  }
+
+  function resetLifecycle() {
+    const state = requireMatchingState();
+    const targetAssets = lifecycleDocuments();
+    const assetIds = targetAssets.map(asset => Q.text(asset.assetId)).filter(Boolean);
+    if (assetIds.length > 0) {
+      const resourceResidue = Q.collection("activityResources").countDocuments({
+        $or: [
+          { "assetAssignmentIds.Transport": { $in: assetIds } },
+          { "assetAssignmentIds.Accommodation": { $in: assetIds } },
+          { "assetAssignmentIds.Supplies": { $in: assetIds } }
+        ]
+      });
+      if (resourceResidue !== 0) {
+        Q.fail("ASSET-LIFE-001 reset found an unexpected Event resource assignment; refusing to delete a containing resource document.");
+      }
+      const cleanup = [
+        { collection: "activityMembers", selector: { ownerType: "asset", ownerId: { $in: assetIds } } },
+        { collection: "assetRequests", selector: { assetId: { $in: assetIds } } },
+        { collection: "notificationOutbox", selector: { $or: [
+          { entityId: { $in: assetIds } },
+          { "payload.assetId": { $in: assetIds } }
+        ] } },
+        { collection: "userNotifications", selector: { $or: [
+          { sourceId: { $in: assetIds } },
+          { "payload.assetId": { $in: assetIds } }
+        ] } },
+        { collection: "affinityRecomputeTasks", selector: { targetId: { $in: assetIds } } }
+      ];
+      for (const spec of cleanup) Q.collection(spec.collection).deleteMany(spec.selector);
+    }
+    Q.collection("assets").deleteMany(lifecycleAssetSelector());
+    const update = {
+      $set: {
+        "activities.cars": state.baselineCounts.Transport,
+        "activities.accommodation": state.baselineCounts.Accommodation,
+        "activities.supplies": state.baselineCounts.Supplies,
+        "activities.asset.cars": state.baselineCounts.Transport,
+        "activities.asset.accommodation": state.baselineCounts.Accommodation,
+        "activities.asset.supplies": state.baselineCounts.Supplies
+      }
+    };
+    const userReset = Q.collection("users").updateOne(
+      { $or: [{ _id: hostUserId }, { userId: hostUserId }] },
+      update
+    );
+    if (userReset.matchedCount !== 1) Q.fail("ASSET-LIFE-001 reset could not restore the owner counters.");
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "reset-complete",
+      restoredAtIso: Q.nowIso(),
+      retainedExternalEvidence: "Managed MinIO image objects and operational telemetry are not deleted by the Mongo checkpoint reset.",
+      next: `Run status asset-domain ${checkpointId}; expected phase is not-staged.`
+    });
+  }
+
   function stage() {
+    if (checkpointId === LIFE_CHECKPOINT) {
+      stageLifecycle();
+      return;
+    }
     const selected = config();
     Q.assertNotStaged(SCENARIO);
     Q.assertNoOtherActiveScenario(SCENARIO);
@@ -337,6 +907,19 @@
   }
 
   function next() {
+    if (checkpointId === LIFE_CHECKPOINT) {
+      const state = requireMatchingState();
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: state.phase,
+        why: config().why,
+        action: lifecycleNextAction(state.phase),
+        workerExpectation: config().worker,
+        identities: state.context
+      });
+      return;
+    }
     const selected = config();
     const state = requireMatchingState();
     Q.printObject({
@@ -352,6 +935,10 @@
   }
 
   function status() {
+    if (checkpointId === LIFE_CHECKPOINT) {
+      statusLifecycle();
+      return;
+    }
     const selected = config();
     const state = Q.activeState(SCENARIO, false);
     if (!state) {
@@ -380,6 +967,10 @@
   }
 
   function reset() {
+    if (checkpointId === LIFE_CHECKPOINT) {
+      resetLifecycle();
+      return;
+    }
     config();
     const state = requireMatchingState();
     Q.restoreSnapshots(state.snapshots);
@@ -398,6 +989,10 @@
     case "stage": stage(); break;
     case "next": next(); break;
     case "status": status(); break;
+    case "capture-lifecycle-created": captureLifecycleCreated(); break;
+    case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
+    case "verify-lifecycle-trashed": verifyLifecycleTrashed(); break;
+    case "verify-lifecycle-restored": verifyLifecycleRestored(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

@@ -1147,6 +1147,21 @@
         }
       ]
     },
+    "ASSET-LIFE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset lifecycle owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Asset create, edit, Trash and Restore owner"
+        }
+      ]
+    },
     "AUTH-SESSION-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
