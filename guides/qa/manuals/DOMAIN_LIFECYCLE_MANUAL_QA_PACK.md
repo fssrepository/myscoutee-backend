@@ -810,6 +810,11 @@ Execution evidence (2026-09-01, PASS):
 
 ### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
 
+The stable user-facing click guide is
+[`EVENT-EDIT-RUNTIME-001`](../checklists/EVENT-EDIT-RUNTIME-001.md). Its
+complete journey and focused regression remain one testcase transaction. The
+guide never stores live status or machine evidence.
+
 - Preparation on 2026-09-01: the versioned fixture is staged with one active
   canonical `QA EVENT-RUNTIME-001`, Casey and Nova accepted, capacity `2 / 8`,
   Slots Off, Sub Events Off, zero definitions/slots and zero runtime items.
@@ -884,9 +889,11 @@ Execution evidence (2026-09-01, PASS):
   request persistence. The measured blocking resource POST itself was about
   `275ms`, with indexed lookups and normal projection refresh rather than a
   multi-second query. Both frontend/backend hot-deploy owners compiled and
-  restarted successfully. The terminal retest requires reload persistence at
-  `1 / 0 - 4`, then one remove/reassign cycle with immediate
-  `1 -> 0 -> 1` label convergence from successful save-response signals.
+  restarted successfully. The subsequent terminal retest proved reload
+  persistence at `1 / 0 - 4` and one remove/reassign cycle with immediate
+  `1 -> 0 -> 1` convergence from successful save-response signals. That full
+  tail is retained accepted evidence and is not part of the current focused
+  replay.
 - The assigned Transport's **Members -> Invite** integration then exposed a
   separate scope handoff defect inside this same MAIN_EVENT journey. The Save
   persisted Nova as a global Asset member and mirrored an unscoped `borrow`
@@ -898,14 +905,15 @@ Execution evidence (2026-09-01, PASS):
   global Asset-member rows and Nova's one unscoped request/projection while
   retaining the assigned Transport, its accepted manual scoped request and its
   resource record. The bounded replay begins with one Nova invite, close/reopen
-  and one reload: Nova must remain once as pending, the red Transport resource
-  counter must remain `2` (one assigned/open resource item plus one pending
-  member), and accepted occupancy must remain `1 / 0 - 4`. It now also owns the
+  and one reload: Nova must remain once as pending, the red Transport pending
+  badge must be `1`, and accepted occupancy must remain `1 / 0 - 4`. The
+  assigned/open resource contributes to occupancy, never to the red pending
+  badge. It now also owns the
   causally adjacent **Delete invitation** reversal: delete Nova once, require
   her row and pending header count to disappear immediately, and require the
-  Transport counter to return `2 -> 1` without a list reload. Close/reopen
-  Members and reload once; Nova must remain absent, the counter must remain
-  `1`, occupancy must remain `1 / 0 - 4`, and persisted resource metrics must
+  Transport badge to return `1 -> 0` and disappear without a list reload.
+  Close/reopen Members and reload once; Nova must remain absent, the red badge
+  must remain absent, occupancy must remain `1 / 0 - 4`, and persisted resource metrics must
   be exactly `accepted=1/pending=0`. The Asset keeps only the accepted manual
   owner request in the same Event/MAIN_EVENT scope, its request projection
   stays exactly one, and no global Asset-member row, duplicate affinity enqueue
@@ -6471,10 +6479,11 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
-The active commit-friendly execution checklist for the local Core journey is
+The stable user-facing click guide for the local Core journey is
 [`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md). Its 22
-top-level checkboxes track human visual execution; this pack and the ledger
-remain authoritative for the testcase contract, persisted evidence and status.
+top-level sections preserve the repeatable human journey without checkmarks or
+live status; this pack and the ledger remain authoritative for persisted
+evidence and status.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -6583,7 +6592,9 @@ remain authoritative for the testcase contract, persisted evidence and status.
   chat/message/notification/outbox counts are all `0`, all Ava support buckets
   are `0`, and Kai is unblocked as `host only`. The launcher replaced the old
   profiles and opened fresh isolated Kai, Ava and Deployment Operator windows.
-  Execute the revised 22-step English checklist from step 1; do not restage.
+  At that recorded boundary, execution resumed from section 1 of the English
+  user guide without restaging. This dated evidence does not alter the stable
+  guide.
 
 - **`ROLE-TRIAD-CORE-001` support-row identity and notification-poll ownership
   fix — 2026-08-31 12:22 CEST**: during the third replay the user selected the

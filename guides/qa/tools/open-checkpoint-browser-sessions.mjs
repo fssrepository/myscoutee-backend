@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
-import { readFile, writeFile, mkdir, mkdtemp, rm, readdir } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { chmod, readFile, writeFile, mkdir, mkdtemp, rm, readdir } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -54,7 +55,8 @@ const windowHeight = Math.floor(screenHeight / rows);
 const safeCheckpointId = checkpointId.replace(/[^A-Za-z0-9_.-]+/g, '-');
 const manifestPath = path.join(runtimeRoot, `${safeCheckpointId}.json`);
 
-await mkdir(runtimeRoot, { recursive: true });
+await mkdir(runtimeRoot, { recursive: true, mode: 0o700 });
+await chmod(runtimeRoot, 0o700);
 if (dismissGuidesOnly) {
   const existing = JSON.parse(await readFile(manifestPath, 'utf8'));
   for (const session of existing.sessions ?? []) {
@@ -131,7 +133,7 @@ try {
       position
     };
     manifest.sessions.push(runtimeSession);
-    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    await persistManifest();
 
     const port = await waitForDevToolsPort(userDataDirectory);
     runtimeSession.devToolsPort = port;
@@ -150,11 +152,27 @@ try {
       }
       await waitForAnonymousEntry(port, storageScope, entryUrl);
     } else {
-      await installDemoSession(port, storageScope, session.userId, targetUrl);
+      runtimeSession.sessionId = await registerTrackedDemoSession(port, session.userId);
+      runtimeSession.sessionOrigin = new URL(targetUrl).origin;
+      await persistManifest();
+      await installDemoSession(
+        port,
+        storageScope,
+        session.userId,
+        runtimeSession.sessionId,
+        targetUrl
+      );
       if (bootstrapEntryConsent) {
         await acceptEntryConsent(port, storageScope, targetUrl);
       }
-      await waitForConfiguredSession(port, storageScope, session.userId, targetUrl);
+      await waitForConfiguredSession(
+        port,
+        storageScope,
+        session.userId,
+        runtimeSession.sessionId,
+        targetUrl
+      );
+      runtimeSession.authenticatedAt = new Date().toISOString();
       const autoDismissExplanationGuide = session.autoDismissExplanationGuide
         ?? checkpoint.autoDismissExplanationGuide
         ?? true;
@@ -162,15 +180,30 @@ try {
         await dismissExplanationGuide(port, storageScope);
       }
     }
-    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    await persistManifest();
     process.stdout.write(`${session.actor}: ${session.expectedName} ready.\n`);
   }
 } catch (error) {
-  await closePreviousCheckpointSessions(manifestPath);
+  try {
+    await closePreviousCheckpointSessions(manifestPath);
+  } catch (cleanupError) {
+    const failure = error instanceof Error ? error.message : `${error}`;
+    const cleanupFailure = cleanupError instanceof Error ? cleanupError.message : `${cleanupError}`;
+    fail(`${failure} Cleanup also failed: ${cleanupFailure}`);
+  }
   fail(error instanceof Error ? error.message : `${error}`);
 }
 
 process.stdout.write(`${checkpointId}: ${manifest.sessions.length} isolated browser sessions ready.\n`);
+
+async function persistManifest() {
+  await writeFile(
+    manifestPath,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    { mode: 0o600 }
+  );
+  await chmod(manifestPath, 0o600);
+}
 
 function positiveInteger(raw, fallback) {
   const value = Number.parseInt(`${raw ?? ''}`, 10);
@@ -247,7 +280,13 @@ async function closePreviousCheckpointSessions(filePath) {
   } catch {
     return;
   }
+  let cleanupError = null;
   for (const session of previous.sessions ?? []) {
+    try {
+      await revokeTrackedDemoSession(session);
+    } catch (error) {
+      cleanupError ??= error;
+    }
     const holderPid = Number(session.geolocationHolderPid);
     if (Number.isInteger(holderPid) && holderPid > 1 && ownsGeolocationHolder(holderPid)) {
       try {
@@ -278,6 +317,9 @@ async function closePreviousCheckpointSessions(filePath) {
     }
   }
   await rm(filePath, { force: true });
+  if (cleanupError) {
+    throw cleanupError;
+  }
 }
 
 async function closeOtherManagedCheckpointSessions(currentManifestPath) {
@@ -342,10 +384,81 @@ async function waitForDevToolsPort(userDataDirectory) {
   return port;
 }
 
-async function installDemoSession(port, scope, userId, destinationUrl) {
+async function registerTrackedDemoSession(port, userId) {
+  const sessionId = `session:${randomUUID()}`;
+  const attemptId = `attempt:${randomUUID()}`;
+  const result = await evaluateInOnlyPage(port, `(async () => {
+    try {
+      const response = await fetch('/api/auth/session/login', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-App-Session-Id': ${JSON.stringify(sessionId)},
+          'X-App-Session-Kind': 'demo',
+          'X-Demo-User-Id': ${JSON.stringify(userId)}
+        },
+        body: JSON.stringify({
+          attemptId: ${JSON.stringify(attemptId)},
+          provider: 'demo'
+        })
+      });
+      const body = await response.json().catch(() => null);
+      return {
+        status: response.status,
+        accepted: body?.accepted === true,
+        outcome: typeof body?.outcome === 'string' ? body.outcome : '',
+        message: typeof body?.message === 'string' ? body.message : ''
+      };
+    } catch (error) {
+      return {
+        status: 0,
+        accepted: false,
+        outcome: '',
+        message: error instanceof Error ? error.message : String(error)
+      };
+    }
+  })()`);
+  if (result?.status !== 200 || result?.accepted !== true) {
+    const detail = result?.outcome || result?.message || 'no response body';
+    throw new Error(
+      `Tracked demo login for ${userId} returned HTTP ${result?.status ?? 0} (${detail}).`
+    );
+  }
+  return sessionId;
+}
+
+async function revokeTrackedDemoSession(session) {
+  const sessionId = `${session?.sessionId ?? ''}`.trim();
+  const userId = `${session?.userId ?? ''}`.trim();
+  const sessionOrigin = `${session?.sessionOrigin ?? ''}`.trim();
+  if (`${session?.sessionKind ?? ''}` !== 'demo' || !sessionId || !userId || !sessionOrigin) {
+    return;
+  }
+  const response = await fetch(new URL('/api/auth/me/logout', sessionOrigin), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-App-Session-Id': sessionId,
+      'X-App-Session-Kind': 'demo',
+      'X-Demo-User-Id': userId
+    },
+    body: JSON.stringify({ userId })
+  });
+  if (response.status === 401) {
+    return;
+  }
+  if (!response.ok) {
+    throw new Error(
+      `Unable to revoke the previous managed demo session for ${userId}: HTTP ${response.status}.`
+    );
+  }
+}
+
+async function installDemoSession(port, scope, userId, sessionId, destinationUrl) {
   const sessionKey = `myscoutee.${scope}.session.v1`;
   const activeUserKey = `myscoutee.${scope}.demo.active-user.v1`;
-  const sessionValue = JSON.stringify({ kind: 'demo', userId });
+  const sessionValue = JSON.stringify({ kind: 'demo', userId, sessionId });
   const expression = `(() => {
     localStorage.setItem(${JSON.stringify(sessionKey)}, ${JSON.stringify(sessionValue)});
     localStorage.setItem(${JSON.stringify(activeUserKey)}, ${JSON.stringify(userId)});
@@ -516,23 +629,57 @@ async function dismissExplanationGuide(port, scope) {
   }, 15000, `explanation guide dismissal on DevTools port ${port}`);
 }
 
-async function waitForConfiguredSession(port, scope, userId, destinationUrl) {
+async function waitForConfiguredSession(port, scope, userId, sessionId, destinationUrl) {
   const sessionKey = `myscoutee.${scope}.session.v1`;
   const expectedPath = new URL(destinationUrl).pathname;
   await waitUntil(async () => {
+    let value;
     try {
-      const value = await evaluateInOnlyPage(port, `(() => {
+      value = await evaluateInOnlyPage(port, `(async () => {
         const raw = localStorage.getItem(${JSON.stringify(sessionKey)});
         const session = raw ? JSON.parse(raw) : null;
+        let authentication = { status: 0, userId: '' };
+        try {
+          const response = await fetch(
+            '/api/auth/me?userId=' + encodeURIComponent(${JSON.stringify(userId)}),
+            {
+              cache: 'no-store',
+              headers: {
+                'X-App-Session-Id': ${JSON.stringify(sessionId)},
+                'X-App-Session-Kind': 'demo',
+                'X-Demo-User-Id': ${JSON.stringify(userId)}
+              }
+            }
+          );
+          const body = await response.json().catch(() => null);
+          authentication = {
+            status: response.status,
+            userId: typeof body?.id === 'string' ? body.id : ''
+          };
+        } catch {
+          // Keep polling while the application/backend route is still starting.
+        }
         return {
           userId: session?.kind === 'demo' ? session.userId : '',
+          sessionId: session?.kind === 'demo' ? session.sessionId : '',
+          authStatus: authentication.status,
+          authenticatedUserId: authentication.userId,
           pathname: window.location.pathname
         };
       })()`);
-      return value?.userId === userId && value?.pathname === expectedPath;
     } catch {
       return false;
     }
+    if (value?.authStatus === 401 || value?.authStatus === 403) {
+      throw new Error(
+        `Authenticated readiness for ${userId} returned HTTP ${value.authStatus}.`
+      );
+    }
+    return value?.userId === userId
+      && value?.sessionId === sessionId
+      && value?.authStatus === 200
+      && value?.authenticatedUserId === userId
+      && value?.pathname === expectedPath;
   }, 30000, `MyScoutee session ${userId} on DevTools port ${port}`);
 }
 

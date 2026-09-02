@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-01 11:38 CEST
+Updated: 2026-09-02 03:14 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -13,6 +13,9 @@ file first, then open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Active consolidated Event journey and its ordered source checkpoints:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing)
+- Stable user-facing click guide for the active testcase; execution status and
+  machine evidence never belong in this file:
+  [`EVENT-EDIT-RUNTIME-001.md`](../checklists/EVENT-EDIT-RUNTIME-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -51,19 +54,25 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is IN PROGRESS
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
-checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
-scenario: Continue the partially passed EVENT-EDIT-RUNTIME-001 consolidated journey with its remaining EVENT-RUNTIME-001 source. The scoped invite/reload branch is accepted; its causally adjacent Delete invitation reversal is now an explicit checkpoint branch. The closed recurring-slot journey remains an immutable control and must not be replayed as a substitute.
+checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
+checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#focused-delete-regression
+substage: managed-session-authenticated — awaiting the user's Nova online verdict
+next_replay_boundary: runtime-member-clean — existing guarded restore after the Nova verdict
+fixture_phase: baseline-ready — canonical Event 2/8, accepted Casey/Nova, no runtime/resource/Asset artifact
+browser_phase: managed Casey and Nova processes alive; tracked-session readiness returned 200 for both actors
+scenario: The complete EVENT-EDIT-RUNTIME-001 journey, including the original remove/reassign tail, is retained accepted evidence. Only the focused post-optimization invite-as-precondition -> Delete regression remains. Do not replay the complete journey or the accepted invite/reload microtest.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: EVENT-EDITOR-005 is PASS. In EVENT-RUNTIME-001, Casey completed the owning 8 -> 9 Save, the repaired MAIN_EVENT resource/Event Members read-only check and the exact Transport assignment. The scoped Nova invite now persists through reopen/reload with the expected counter 2, and Casey confirmed Delete invitation is functional but slightly slow. The pre-optimization completed delete trace used about 88ms of backend database time and 52 Mongo boundaries, including a duplicate Asset affinity enqueue and an unrelated Event participation rewrite. Its post-delete oracle is clean: one unchanged MAIN_EVENT runtime, one resource record with Transport accepted=1/pending=0, one accepted manual owner request/projection, no Nova request and no global Asset-member row. The deployed performance repair keeps the owning Asset sync and resource write snapshot, skips the second affinity enqueue, skips MAIN_EVENT sub-event participation work and does not rewrite unchanged Event participation. No definition identity or invite behavior changed.
+state: EVENT-EDITOR-005 and the complete original EVENT-RUNTIME-001 Save/runtime/resource/invite/Delete/remove/reassign journey remain accepted evidence. The fresh stack was restored to one canonical active Event at 2/8 with Casey/Nova accepted, Slots Off, Sub Events Off and no runtime/resource/Asset artifact. The managed-browser replay exposed a launcher mismatch: demo localStorage lacked the tracked session ID required for enrolled Nova, so her API calls returned 401 while the UI reported No network. The launcher now registers and stores a real tracked demo session, requires an authenticated /api/auth/me identity read before ready and revokes only its own tracked sessions. Fresh Casey/Nova managed sessions opened successfully; both actor-specific readiness reads returned 200 and both managed processes remain alive. Nginx has recorded no 401 since that launch; the backend's broad log still contains periodic 401 entries that a count-only check cannot attribute to either managed actor, so the user's Nova visual verdict remains the decisive frontend boundary. After that confirmation, the existing guarded restage-runtime-member-clean action restores the accepted one-assignment/zero-pending boundary for the focused Delete replay. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries. The deployed repair removes the duplicate affinity enqueue, skips meaningless MAIN_EVENT sub-event participation work and avoids rewriting unchanged Event participation.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Against the fresh deployed backend, Casey starts from the already-proven one-assignment boundary: Transport 1 / 0 - 4, red counter 1 and no Nova Asset invitation. Open QA Main Event Transport Members, invite Nova once only as the pending precondition, then choose Nova -> Delete invitation -> Delete. Require Nova and the pending header count to disappear immediately and the Transport red counter to return 2 -> 1 without list reload. Close/reopen Members, reload once and reopen the same path; Nova must remain absent, the counter must remain 1 and occupancy must stay 1 / 0 - 4. Stop and report the exact stop phrase. Codex then runs the scoped persisted oracle and compares the request-thread latency/boundary count with the retained 88ms/52-boundary baseline.
+required_resume: Follow only the linked user checklist. First complete its managed-session check and confirm that No network is absent in the already-open Nova window. After the exact stop phrase, Codex runs the existing guarded restage-runtime-member-clean action and proves the accepted=1/pending=0 Transport boundary. Then continue only steps 3-7 of the checklist's Focused Delete regression. No capacity Save, MAIN_EVENT reconstruction, standalone invite persistence check, or remove/reassign replay follows.
 event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-RUNTIME-001, active and staged
 actors:
-  Casey: active host; exact assignment persisted; perform the scoped invite setup and Delete invitation replay
-  Nova: accepted participant; retained as membership control, no duplicate popup replay
-next_actor: Casey performs one scoped Nova invite only as setup, then the Delete invitation in-place plus reload replay; Codex verifies exact scope, persisted reversal and request latency.
-queued_followup: After the Delete invitation reversal is proved, Casey completes the original one-remove/one-reassign resource signal cycle. Close EVENT-EDIT-RUNTIME-001 only when the stable MAIN_EVENT resource scope ends with one assignment and no leftover invite, synthetic or unrelated write.
-stop_phrase: EVENT-RUNTIME-001 Delete invitation kész: Nova eltűnt és a Transport számláló reload után is 1
+  Casey: active host; fresh authenticated managed document reserved for the focused Delete replay
+  Nova: accepted participant; fresh authenticated managed document ready for the launcher visual reversal
+next_actor: User checks only the freshly opened Nova window and confirms that No network is absent; no domain action yet.
+queued_followup: Codex restores the already-proven one-assignment boundary, then the user performs only the focused Invite -> Delete sequence from the stable checklist. Close after the persisted and latency oracle proves one accepted assignment, zero pending invitations and no foreign write.
+pending_machine_oracle: Compare the optimized Delete request with the retained ~88ms/52-boundary trace and prove accepted=1/pending=0, no Nova scoped/global Asset member, one accepted owner request/projection, no duplicate affinity enqueue and no unchanged Event participation rewrite.
+stop_phrase: EVENT-RUNTIME-001 launcher ready: Nova online
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -217,13 +226,44 @@ removing an in-request readback must never remove the separate QA read oracle.
 
 ### Manual frontend ownership
 
-**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+**The user exclusively performs and judges every manual, visual and
+interaction check. Codex validates the backend/API/persisted oracle after the
+user action and never substitutes a browser-derived verdict for the user's
+frontend PASS/FAIL.**
 
-The user exclusively performs and evaluates frontend manual, visual and
-interaction checks during this campaign. Codex never performs frontend
-validation, including browser automation, screenshots or a second frontend
-walkthrough. Codex guides one requested step at a time and validates only the
-backend/API/persisted oracle after the user has performed the frontend action.
+Codex owns fixture preparation, isolated browser startup and machine-side
+diagnosis. After the user reports a discrepancy, Codex may inspect the managed
+browser through CDP when logs, API state and persistence are insufficient to
+localize the defect. CDP is diagnostic only: it may inspect the failing
+document's console, network and runtime state, but it must not click through
+the test, manufacture the user's visual evidence or independently declare a
+frontend PASS.
+
+### Pair-QA execution and replay contract
+
+1. Select the next testcase from the canonical CSV/XLSX Pair-QA order and open
+   its stable file under `guides/qa/checklists/`.
+2. Before asking for a user action, Codex provides or reuses a versioned
+   harness with guarded `stage`, read-only `status` and exact `reset`. A complex
+   testcase also gets named replay substages at meaningful causal recovery
+   boundaries. Substages remain inside the same testcase ID; they are not new
+   matrix rows and are not created for every click.
+3. Codex stages the selected baseline, proves it with `status`, prepares any
+   required substage snapshots, and opens the configured isolated actor
+   browsers. The user never has to create fixtures, sessions or windows.
+4. The user follows the unchanged checklist and reports its stop phrase. Codex
+   then runs the independent API/backend/persisted oracle and records the
+   result outside the checklist.
+5. On a reported defect, freeze the current boundary, diagnose the smallest
+   owning scope (including targeted CDP when necessary), repair it through the
+   existing dev pipeline, restore the nearest valid named substage and replay
+   only the shortest causal tail. Do not restart the full testcase unless the
+   failure contaminated its earlier shared baseline.
+6. The handoff must always name the active testcase, checklist section,
+   current substage, persisted fixture phase, live actor/browser state, exact
+   next user action, stop phrase and pending machine oracle. A later session
+   starts with one read-only status gate and resumes from that pointer instead
+   of reconstructing the journey from conversation history.
 
 ### 1. One checkpoint, one transition
 
@@ -245,9 +285,9 @@ coarse: 10 Core capability/operations domains plus the Operator, Payment and
 Deployment deferred boundaries. Their numeric priorities preserve the
 authoritative execution order.
 A generated priority overview places the first five Core domains in its first
-hasáb, the remaining five Core domains in its second hasáb, and reserves the
-third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
-hasáb must therefore always sum to the separate
+column, the remaining five Core domains in its second column, and reserves the
+third `EXT / optional` column for Operator, Payment and Deployment. The third
+column must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
@@ -396,6 +436,21 @@ record has been removed.
   in the QA matrix. Treat a stale README summary as an incomplete ledger update.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
+- Files under `guides/qa/checklists/` are stable user-facing click guides, not
+  Codex execution checklists. They contain actors, navigation, actions, visible
+  expectations and stop phrases. Never add live status, checked boxes, dated
+  evidence, backend oracles or working notes to them, and never modify them
+  merely because a run advanced or completed. The handoff points to the current
+  guide and step; the QA pack and ledger own results and machine evidence.
+- Testcase identity and fixture transaction identity are one-to-one. A complex
+  journey may have named internal replay substages when they provide a useful
+  recovery boundary, but those substages remain implementation details of the
+  same testcase and do not become separate matrix rows. Do not create one for
+  every click. Retained PASS evidence stays immutable, and a repair replays
+  only the shortest causal tail from the nearest guarded substage. For example,
+  `EVENT-EDIT-RUNTIME-001` remains one transaction with a
+  `runtime-member-clean` replay boundary, while `EVENT-SCHEDULERS-001` is a
+  separate transaction.
 - One producer action or a short causally continuous sequence may stay in one
   row when it shares a baseline and finishes at one decisive oracle.
 - One test case/matrix row may contain two or more named, short tests or
@@ -887,6 +942,15 @@ controls. Actor identity is verified by the script after session injection;
 do not identify users from Google profiles, window order alone or remembered
 sessions.
 
+A managed demo actor must use the same tracked-login contract as the real demo
+entry: register `/api/auth/session/login`, persist the exact `sessionId` beside
+the demo `userId`, and require an authenticated actor-specific `/api/auth/me`
+read before reporting the window ready. URL plus localStorage identity is not a
+readiness check: an enrolled actor without `X-App-Session-Id` receives `401`,
+which the shell may misleadingly present as `No network`. Replacement revokes
+only the launcher's own session IDs and never touches a personal browser or an
+unrelated active backend session.
+
 This workstation has exactly three usable Google-account/browser slots, so QA
 must never launch more than three managed actor windows concurrently. When one
 checkpoint needs UI evidence from more than three identities, split it into
@@ -1101,7 +1165,7 @@ checkpoint:
    hard-code those aggregate values during a checkpoint close.
 6. Update only the YAML resume pointer and next manual action in this file. Do
    not copy the detailed evidence or ledger row here.
-7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
+7. Give the next exact manual action. State `Next test: <ID> — ...` only
    when the current checkpoint is fully closed and the ledger has been updated.
 
 This order is the session-efficiency rule: persisted oracle first, canonical

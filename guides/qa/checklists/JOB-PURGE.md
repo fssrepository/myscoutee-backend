@@ -1,70 +1,62 @@
-# JOB-PURGE manual execution checklist
+# JOB-PURGE user test guide
 
-## Prepared state
+This file is the tester's stable, repeatable click-by-click guide. It is not an
+execution log: do not check off its steps or add the current status, dates, or
+machine-oracle evidence to it.
 
-- **PASS / CLOSED — 2026-08-31**
-- Variation: `with-reference`
-- Prepared at: `2026-08-31T11:42:32.972Z`
-- Backend completion observed at: `2026-08-31T11:43:17.083601993Z`;
-  the fixture remained snapshot-protected until the visual verdict.
-- Final oracle and reset completed at: `2026-08-31 14:05 CEST`.
-- UI name: **Finalize deleted accounts**; internal rule key:
+## Actor and startup
+
+- Perform every visible step in the isolated **Ava admin** window opened by
+  Codex.
+- The displayed job name is **Finalize deleted accounts**. Its internal key is
   `account-purge`.
-- Codex launches the configured fresh isolated Ava browser after preparation;
-  the user does not stage data, create sessions or launch the browser.
-- The existing scheduler owns execution. Its dev-only outer poll cadence is one
-  minute for this checkpoint; the persisted rule remains the dynamic table row
-  with its normal `86400`-second business interval. Do not press a
-  hidden/manual trigger and do not start another backend, worker or stack.
-- Exact fixture user: `admin-job-fixture:v1:account-purge:user`
-- Exact purge job: `admin-job-fixture:v1:account-purge:purge-job`
+- Codex prepares and resets the `with-reference` fixture. Do not create or
+  delete a replacement account through the UI.
+- The already-running scheduler owns execution. Do not select a hidden or
+  manual trigger, and do not start another backend, worker, or stack.
 
-## Journey
+To start a replay, tell Codex:
 
-1. [x] In the fresh Ava admin session opened by Codex, select
+`Prepare the JOB-PURGE user test with the with-reference fixture.`
+
+Start step 1 only after Codex confirms that the fixture is prepared and a
+fresh Ava admin window is open. Stop at the first mismatch and report the step
+number plus the state that is actually visible.
+
+## Complete user journey
+
+1. In Ava, open:
+
    `Configuration → Jobs → Finalize deleted accounts`
-   (internal key: `account-purge`).
 
-2. [x] Verify the prepared pre-run state:
+2. Confirm the prepared state on Job Detail:
 
-   - the rule is enabled;
-   - manual Run is disabled;
-   - pending/pre-run count is `1`;
-   - the screen identifies the normal scheduled account-purge worker.
+   - the rule is enabled and not suspended;
+   - `Run` is disabled;
+   - `Eligible before next run` shows `1`;
+   - the page identifies the normal scheduled account-purge process;
+   - no Running or Failed state is already present.
 
-3. [x] Leave the screen open for up to one minute and watch the existing
-   scheduler plus the table's normal live poll. Do not reload merely to force a
+3. Record the current `Last run` values and the top `Runner history` row so the
+   next scheduler result can be distinguished from older history.
+4. Leave Job Detail open for up to one minute. Do not reload merely to force a
    result and do not start or trigger another worker.
+5. Wait for the normal live refresh, then confirm:
 
-4. [x] Verify the completed job detail after its normal live refresh/poll:
+   - the new run is Completed;
+   - `Last run` shows `1` affected and a completion time;
+   - `Eligible before next run` returns to `0`;
+   - a duration is present;
+   - the top Runner history row belongs to this run, is Completed, and shows
+     `1` affected;
+   - no error is shown;
+   - `Run` remains disabled.
 
-   - status is Completed;
-   - affected/last-run count is `1`;
-   - pending count returns to `0`;
-   - completion time is present and no error is shown;
-   - manual Run remains disabled.
+6. Report:
 
-5. [x] Report `JOB-PURGE complete`. Codex then runs the persisted fixture
-   oracle. PASS requires the fixture user and its `userRates` reference to be
-   absent, while the exact purge job is Completed, has an empty `userId`, a
-   completion timestamp, retry count `0`, and no error. Codex then resets the
-   fixture and proves `prepared:false`.
+   `JOB-PURGE complete`
 
-The user owns the frontend visual and interaction verdict. Codex owns only the
-backend/API/persisted oracle after the visible scheduler result.
-
-## Closure evidence
-
-- The user accepted the dynamic Jobs table/detail transition from one eligible
-  item to Completed with affected count `1`, pending count `0`, a completion
-  time, no error and manual Run still disabled.
-- The persisted oracle proved `userExists:false`, `relatedRateCount:0`, and the
-  exact purge job Completed with an empty `userId`, completion timestamp,
-  retry count `0` and no error.
-- The snapshot-safe reset restored the original rule state and its
-  `86400`-second interval, removed the fixture namespace and proved
-  `prepared:false`.
-- During the same visual pass, the Timing popup was corrected so `X` restores
-  its opening value, the unchanged green checkmark creates no dirty state, the
-  green checkmark retains immediate server save, the duplicated header Quartz
-  string is absent, and the Timing Edit button has no redundant dirty dot.
+The user portion ends here. Codex then verifies that the controlled user and
+its reference are absent, the exact purge job is Completed without an error,
+and the fixture reset returns to `prepared:false`. PASS/FAIL and that evidence
+belong to the QA ledger, never to this file.
