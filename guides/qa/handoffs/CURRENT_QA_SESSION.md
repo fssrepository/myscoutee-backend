@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 07:17 CEST
+Updated: 2026-09-02 07:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -52,26 +52,26 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SCHEDULERS-001 — active; basket-purge mixed baseline ready
+checkpoint: EVENT-SCHEDULERS-001 — active; basket-purge scheduled once
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
 checklist: ../checklists/EVENT-SCHEDULERS-001.md
 checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#3-mixed-checkout-basket-purge
-substage: basket-purge-held — checklist steps 28-30 are next
-next_replay_boundary: basket-purge-pre-schedule — wait for the user to report the Runner row and both Metrics baseline values before arming
-fixture_phase: basket-purge was staged once at 2026-09-02T05:16:55.605Z. The read-only oracle proves an idle held rule with Eligible=2, one expired active draft, one future active draft, zero quarantined pre-existing due baskets and nine isolated unrelated schedulers. No schedule has been issued. Counter-expiry remains PASS and reset from its exact one-work and zero-work passes.
+substage: basket-purge-scheduled — checklist steps 32-34 follow after the existing scheduler completes
+next_replay_boundary: basket-purge-terminal — do not arm again; wait for the single natural pass and then collect the user UI verdict and terminal machine oracle
+fixture_phase: basket-purge was staged once at 2026-09-02T05:16:55.605Z. The read-only oracle proved an idle held rule with Eligible=2, one expired active draft, one future active draft, zero quarantined pre-existing due baskets and nine isolated unrelated schedulers. The user's Metrics baseline 837/837 matched persistence. The rule was armed exactly once at 2026-09-02T05:20:30.743Z for eligibility at 2026-09-02T05:21:00.743Z; expected Metrics after completion is 838/838.
 browser_phase: one fresh isolated Ava /admin window for EVENT-SCHEDULERS-001-BASKET-PURGE is open. It replaced the prior branch windows. The user exclusively owns every visible assertion and frontend verdict.
 scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
 ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
 state: Automatic room assignment is PASS for this replay. After repairing the missing generated-room MAIN_EVENT runtime projection, the focused replay moved Metrics from 781/781 to 783/783; event-random-groups and its required notification-outbox wake-up each completed exactly once. Two rooms contain 3/3 unique users, two valid MAIN_EVENT runtimes, two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells; each selected user's chats/all/event counters changed by exactly +1. The user confirmed the repaired runtime card is visible. Counter-expiry is also PASS: its one-work and zero-work passes were exact-once, the second pass preserved the first-pass domain fingerprint, and the branch was reset and verified not-staged.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not stage, schedule, reset or inspect the browser. The user performs checklist steps 28-30 and reports the top Runner row plus both shared Metrics baseline values. Codex then rechecks the held persisted baseline and arms the target rule exactly once with the normal scheduler; no UI Run is allowed.
+required_resume: Do not stage, schedule, reset or inspect the browser. Wait for the already-armed natural scheduler pass. The user performs checklist steps 32-34 and reports the stop phrase. Codex then runs the terminal exact-once persisted oracle and resets only after it passes.
 event: none — this branch owns two isolated eventCheckoutBasketItems records only
 actors:
   Ava: authenticated isolated demo admin; observes Delete expired baskets, Runner history and Metrics
-next_actor: the user performs checklist steps 28-30; Codex does not inspect or navigate the UI
-queued_followup: after the user reports both Metrics baselines, verify the held baseline and schedule basket-purge exactly once
-pending_machine_oracle: post-run exact-once oracle is pending; pre-run persisted baseline is proven
-stop_phrase: report the Runner baseline and both Metrics baseline values
+next_actor: the user performs checklist steps 32-34; Codex does not inspect or navigate the UI
+queued_followup: after the basket-purge completion phrase, verify one processed expired draft, the unchanged future draft, exact one-run history, Metrics 838/838 and then reset
+pending_machine_oracle: terminal exact-once/domain oracle is pending; schedule baseline is 837/837
+stop_phrase: EVENT-SCHEDULERS-001 basket-purge UI ready
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
