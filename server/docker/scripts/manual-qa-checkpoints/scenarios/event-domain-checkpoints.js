@@ -1353,11 +1353,12 @@
     }
     assertRuntimeAssetCatalogReady(false);
     const generatedSlotOwnerId = template => {
+      const templateId = Q.text(template && (template.id || template._id));
       const parsed = new Date(template.startAt);
-      if (!Q.text(template.id) || Number.isNaN(parsed.getTime())) {
+      if (!templateId || Number.isNaN(parsed.getTime())) {
         Q.fail("EVENT-RUNTIME-001 contains an invalid Slot template identity or start time.");
       }
-      return `${eventId}:slot:${Q.text(template.id)}:${parsed.toISOString().replace(/\.000Z$/, "Z")}`;
+      return `${eventId}:slot:${templateId}:${parsed.toISOString().replace(/\.000Z$/, "Z")}`;
     };
     const firstSlotOwnerId = generatedSlotOwnerId(templates[0]);
     const secondSlotOwnerId = generatedSlotOwnerId(templates[1]);
@@ -1403,7 +1404,7 @@
       runtimeSlotOverrideEvidence: {
         verifiedAtIso,
         eventId,
-        slotTemplateIds: templates.map(item => Q.text(item.id)),
+        slotTemplateIds: templates.map(item => Q.text(item.id || item._id)),
         slotOwnerIds: [firstSlotOwnerId, secondSlotOwnerId],
         resourceScopes: expectedScopes,
         runtimeDocumentId: Q.text(runtime._id),
