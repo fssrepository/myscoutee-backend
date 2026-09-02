@@ -1668,14 +1668,34 @@ public class ActivitiesEventsService {
     private boolean isChildlessMainEventRuntimeOwner(ActivityEvent event) {
         if (event == null
                 || Boolean.TRUE.equals(event.getGenerated())
-                || !Boolean.FALSE.equals(event.getSlotsEnabled())
-                || !Boolean.FALSE.equals(event.getSubEventsEnabled())) {
+                || hasActiveSlotDefinitions(event)
+                || hasActiveSubEventDefinitions(event)) {
             return false;
         }
         String status = safeText(event.getStatus());
         return !RUNTIME_STATUS_DELETED.equals(status)
                 && !ActivityEvent.STATUS_TRASHED.equals(status)
                 && !ActivityEvent.STATUS_INACTIVE.equals(status);
+    }
+
+    private boolean hasActiveSlotDefinitions(ActivityEvent event) {
+        return event != null
+                && Boolean.TRUE.equals(event.getSlotsEnabled())
+                && event.getSlotTemplates() != null
+                && event.getSlotTemplates().stream()
+                        .filter(Objects::nonNull)
+                        .anyMatch(template -> !Boolean.TRUE.equals(template.closed()));
+    }
+
+    private boolean hasActiveSubEventDefinitions(ActivityEvent event) {
+        if (event == null || !Boolean.TRUE.equals(event.getSubEventsEnabled())) {
+            return false;
+        }
+        boolean hasDefinitions = event.getSubEventDefinitions() != null
+                && event.getSubEventDefinitions().stream().anyMatch(Objects::nonNull);
+        boolean hasRuntimeItems = event.getSubEvents() != null
+                && event.getSubEvents().stream().anyMatch(Objects::nonNull);
+        return hasDefinitions || hasRuntimeItems;
     }
 
     private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
@@ -6563,13 +6583,18 @@ public class ActivitiesEventsService {
         document.setPolicies(publishedManageMode
                 ? clonePolicies(existing == null ? null : existing.getPolicies())
                 : clonePolicies(request.policies()));
-        boolean slotsEnabled = publishedManageMode
+        List<EventSlotTemplateDto> nextSlotTemplates = publishedManageMode
+                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
+                : cloneSlotTemplates(request.slotTemplates());
+        boolean slotsRequested = publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
                 : !slotEvent && Boolean.TRUE.equals(request.slotsEnabled());
+        boolean slotsEnabled = slotsRequested && !nextSlotTemplates.isEmpty();
         document.setSlotsEnabled(slotsEnabled);
-        document.setSlotTemplates(publishedManageMode
-                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
-                : slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : nextSlotTemplates);
+        if (!slotsEnabled) {
+            document.setFrequency("One-time");
+        }
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -6583,12 +6608,13 @@ public class ActivitiesEventsService {
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
-        boolean subEventsEnabled = publishedManageMode
-                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
-                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
         List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
                 : cloneSubEventDefinitions(request.subEventDefinitions());
+        boolean subEventsRequested = publishedManageMode
+                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
+                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
+        boolean subEventsEnabled = subEventsRequested && !nextSubEventDefinitions.isEmpty();
         document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(List.of());

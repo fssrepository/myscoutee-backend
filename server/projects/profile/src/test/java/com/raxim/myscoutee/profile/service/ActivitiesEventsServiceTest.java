@@ -1787,6 +1787,66 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void emptyEnabledChildDefinitionsAreCanonicalizedAndReactivateMainEventRuntime() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setStatus(ActivityEvent.STATUS_DRAFT);
+        existing.setFrequency("Custom");
+        existing.setSlotsEnabled(true);
+        existing.setSlotTemplates(List.of());
+        existing.setSubEventsEnabled(true);
+        existing.setSubEventDefinitions(List.of());
+
+        ActivityMainEventRuntime runtime = new ActivityMainEventRuntime();
+        runtime.setId("runtime-1");
+        runtime.setRecordId("main-event:event-1");
+        runtime.setSyncKey("runtime-sync-1");
+        runtime.setStatus("D");
+        runtime.setRuntimeKind("MAIN_EVENT");
+        runtime.setEventId("event-1");
+        runtime.setOwnerId("event-1");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class))).thenReturn(runtime);
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                false,
+                false,
+                "Public",
+                8,
+                true,
+                true));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getSlotsEnabled()).isFalse();
+            assertThat(saved.getSlotTemplates()).isEmpty();
+            assertThat(saved.getFrequency()).isEqualTo("One-time");
+            assertThat(saved.getSubEventsEnabled()).isFalse();
+            assertThat(saved.getSubEventDefinitions()).isEmpty();
+        });
+
+        ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
+                ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
+        verify(mongoTemplate).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue()).isSameAs(runtime);
+        assertThat(runtimeCaptor.getValue().getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        assertThat(runtimeCaptor.getValue().getRecordId()).isEqualTo("main-event:event-1");
+        assertThat(runtimeCaptor.getValue().getSyncKey()).isEqualTo("runtime-sync-1");
+    }
+
+    @Test
     void eventEditPersistsExplicitlyClearedImage() {
         Users host = new Users();
         host.setId("host");
@@ -2454,6 +2514,28 @@ class ActivitiesEventsServiceTest {
             Boolean ticketing,
             String visibility,
             Integer capacityMax) {
+        return eventPayload(
+                syncKey,
+                id,
+                creatorUserId,
+                published,
+                ticketing,
+                visibility,
+                capacityMax,
+                false,
+                false);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax,
+            Boolean slotsEnabled,
+            Boolean subEventsEnabled) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2496,7 +2578,7 @@ class ActivitiesEventsServiceTest {
                 null,
                 false,
                 List.of(),
-                false,
+                slotsEnabled,
                 List.of(),
                 null,
                 null,
@@ -2512,7 +2594,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
-                false,
+                subEventsEnabled,
                 List.of(),
                 List.of(),
                 "",
