@@ -162,7 +162,8 @@ try {
         storageScope,
         session.userId,
         runtimeSession.sessionId,
-        targetUrl
+        targetUrl,
+        session.localStorage
       );
       if (bootstrapEntryConsent) {
         await acceptEntryConsent(port, storageScope, targetUrl);
@@ -236,6 +237,29 @@ function validateSession(session) {
   if (!session || !`${session.actor ?? ''}`.trim() || !validKind || !hasRequiredIdentity) {
     throw new Error(`Invalid browser-session entry in ${checkpointId}`);
   }
+  normalizeLocalStorageEntries(session.localStorage);
+}
+
+function normalizeLocalStorageEntries(value) {
+  if (value == null) {
+    return [];
+  }
+  if (typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`Invalid localStorage configuration in ${checkpointId}`);
+  }
+  return Object.entries(value).map(([key, entryValue]) => {
+    const normalizedKey = `${key ?? ''}`.trim();
+    if (!normalizedKey) {
+      throw new Error(`Empty localStorage key in ${checkpointId}`);
+    }
+    const serializedValue = typeof entryValue === 'string'
+      ? entryValue
+      : JSON.stringify(entryValue);
+    if (serializedValue === undefined) {
+      throw new Error(`Invalid localStorage value for '${normalizedKey}' in ${checkpointId}`);
+    }
+    return [normalizedKey, serializedValue];
+  });
 }
 
 async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission) {
@@ -457,11 +481,15 @@ async function revokeTrackedDemoSession(session) {
   }
 }
 
-async function installDemoSession(port, scope, userId, sessionId, destinationUrl) {
+async function installDemoSession(port, scope, userId, sessionId, destinationUrl, configuredLocalStorage) {
   const sessionKey = `myscoutee.${scope}.session.v1`;
   const activeUserKey = `myscoutee.${scope}.demo.active-user.v1`;
   const sessionValue = JSON.stringify({ kind: 'demo', userId, sessionId });
+  const localStorageEntries = normalizeLocalStorageEntries(configuredLocalStorage);
   const expression = `(() => {
+    for (const [key, value] of ${JSON.stringify(localStorageEntries)}) {
+      localStorage.setItem(key, value);
+    }
     localStorage.setItem(${JSON.stringify(sessionKey)}, ${JSON.stringify(sessionValue)});
     localStorage.setItem(${JSON.stringify(activeUserKey)}, ${JSON.stringify(userId)});
     window.location.replace(${JSON.stringify(destinationUrl)});

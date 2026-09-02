@@ -31,6 +31,8 @@
   const BASKET_FUTURE_ID = `${PREFIX}:basket-purge:future`;
   const BASKET_USER_ID = "650000000000000000000062";
   const BASKET_SOURCE_ID = `${PREFIX}:basket-purge:event`;
+  const BASKET_FUTURE_SOURCE_ID = `${PREFIX}:basket-purge:future-control-event`;
+  const BASKET_EVENT_TITLE = "Manual QA expiring checkout basket";
   const SECONDARY_RULES = ["notification-outbox", "affinity-recompute"];
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const requestedCheckpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID);
@@ -867,6 +869,15 @@
       fail(`legacy Admin Job fixture '${Q.text(legacyFixture.job)}' is still active; reset it before staging this checkpoint.`);
     }
 
+    const requiredUsers = [BASKET_USER_ID, RANDOM_UI_USER_ID].map(userId => Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    }));
+    if (requiredUsers.some(user => !user
+      || Q.text(user.profileStatus).toLowerCase() !== "public"
+      || Number(user.profileFormVersion) < 2)) {
+      fail("the existing Nova viewer or Sophia host profile is missing or is not a completed public profile.");
+    }
+
     const isolatedRules = scheduledRulesToIsolate(BASKET_RULE);
     for (const rule of isolatedRules) {
       if (rule.runState && rule.runState.currentStatus === "running") {
@@ -875,10 +886,16 @@
     }
     const stagedAtIso = Q.nowIso();
     const quarantineIds = basketQuarantineIds(stagedAtIso);
-    const selectors = [{
-      collection: "eventCheckoutBasketItems",
-      selector: { _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID, ...quarantineIds] } }
-    }];
+    const selectors = [
+      {
+        collection: "eventCheckoutBasketItems",
+        selector: { _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID, ...quarantineIds] } }
+      },
+      {
+        collection: "events",
+        selector: { $or: [{ _id: BASKET_SOURCE_ID }, { sourceId: BASKET_SOURCE_ID }] }
+      }
+    ];
     const snapshots = Q.snapshotSpecs(selectors);
     const primaryRule = Q.requireRule(BASKET_RULE);
     const expiredItem = {
@@ -887,7 +904,7 @@
       userId: BASKET_USER_ID,
       sourceId: BASKET_SOURCE_ID,
       kind: "event",
-      label: "Manual QA expired checkout draft",
+      label: BASKET_EVENT_TITLE,
       amount: 12.5,
       currency: "EUR",
       quantity: 1,
@@ -903,7 +920,7 @@
       _id: BASKET_FUTURE_ID,
       itemId: BASKET_FUTURE_ID,
       userId: BASKET_USER_ID,
-      sourceId: BASKET_SOURCE_ID,
+      sourceId: BASKET_FUTURE_SOURCE_ID,
       kind: "event",
       label: "Manual QA future checkout draft",
       amount: 7.5,
@@ -916,6 +933,103 @@
       createdAtIso: stagedAtIso,
       updatedAtIso: stagedAtIso,
       expiresAtIso: futureIso(60)
+    };
+    const eventStartAtIso = futureIso(180);
+    const eventEndAtIso = futureIso(240);
+    const sourceEvent = {
+      _id: BASKET_SOURCE_ID,
+      sourceId: BASKET_SOURCE_ID,
+      syncKey: BASKET_SOURCE_ID,
+      title: BASKET_EVENT_TITLE,
+      subtitle: "A public paid Event used to verify checkout basket expiry without a page reload.",
+      timeframe: "Manual QA · upcoming",
+      status: "A",
+      published: true,
+      ticketing: true,
+      generated: false,
+      expired: false,
+      isTrashed: false,
+      trashedAtIso: null,
+      ownerUserId: RANDOM_UI_USER_ID,
+      creatorUserId: RANDOM_UI_USER_ID,
+      creatorName: "Sophia Lane",
+      creatorInitials: "SL",
+      creatorGender: "woman",
+      creatorCity: "Miami",
+      admins: [RANDOM_UI_USER_ID],
+      avatar: "QA",
+      visibility: "Public",
+      blindMode: "Open Event",
+      imageUrl: null,
+      sourceLink: "",
+      location: "Austin · manual QA checkout venue",
+      locationCoordinates: {
+        latitude: 30.2672,
+        longitude: -97.7431
+      },
+      locationGeo: {
+        type: "Point",
+        coordinates: [-97.7431, 30.2672]
+      },
+      distanceKm: 0,
+      rating: 0,
+      affinity: 0,
+      boost: 0,
+      unread: 0,
+      activity: 0,
+      capacityMin: 1,
+      capacityMax: 8,
+      capacityTotal: 8,
+      acceptedMembers: 0,
+      pendingMembers: 0,
+      acceptedMemberUserIds: [],
+      pendingMemberUserIds: [],
+      invitedMemberUserIds: [],
+      pendingRequestMemberUserIds: [],
+      autoInviter: false,
+      frequency: "One-time",
+      pricing: {
+        enabled: true,
+        mode: "fixed",
+        basePrice: 12.5,
+        currency: "EUR",
+        taxMode: "included",
+        chargeType: "per_attendee",
+        quantityRulesEnabled: false,
+        quantityRules: [],
+        minPrice: 12.5,
+        maxPrice: 12.5,
+        rounding: "none",
+        demandRulesEnabled: false,
+        demandRules: [],
+        timeRulesEnabled: false,
+        timeRules: [],
+        cancellationPolicy: { enabled: false, rules: [] },
+        slotPricingEnabled: false,
+        slotOverrides: [],
+        audience: {
+          enabled: false,
+          memberPrice: null,
+          vipPrice: null,
+          inviteOnlyDiscountPercent: null,
+          promoCodes: [],
+          soldOutLabel: "Show Sold Out"
+        }
+      },
+      subEventsEnabled: false,
+      subEventDefinitions: [],
+      subEvents: [],
+      slotsEnabled: false,
+      slotTemplates: [],
+      policiesEnabled: false,
+      policies: [],
+      eventType: "main",
+      startAtIso: eventStartAtIso,
+      endAtIso: eventEndAtIso,
+      createdDate: stagedAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: stagedAtIso,
+      updatedUser: Q.ACTOR
     };
     const state = {
       _id: STATE_ID,
@@ -932,9 +1046,11 @@
         futureId: BASKET_FUTURE_ID,
         userId: BASKET_USER_ID,
         sourceId: BASKET_SOURCE_ID,
+        futureSourceId: BASKET_FUTURE_SOURCE_ID,
         quarantineIds,
         expiredBaseline: expiredItem,
-        futureBaseline: futureItem
+        futureBaseline: futureItem,
+        eventBaseline: sourceEvent
       },
       snapshots,
       primaryRuleConfig: primaryRuleConfigSnapshot(primaryRule),
@@ -977,6 +1093,10 @@
       Q.collection("eventCheckoutBasketItems").deleteMany({
         _id: { $in: [BASKET_EXPIRED_ID, BASKET_FUTURE_ID] }
       });
+      Q.collection("events").deleteMany({
+        $or: [{ _id: BASKET_SOURCE_ID }, { sourceId: BASKET_SOURCE_ID }]
+      });
+      Q.collection("events").insertOne(sourceEvent);
       Q.collection("eventCheckoutBasketItems").insertMany([expiredItem, futureItem]);
     } catch (error) {
       fail(`basket-purge stage failed after snapshot: ${Q.text(error && error.message)}. Run reset.`);
@@ -993,12 +1113,14 @@
         eligibleBeforeNextRun: 2,
         currentStatus: "idle",
         expiredDraftCount: 1,
-        futureDraftCount: 1
+        futureDraftCount: 1,
+        novaBasketBadge: 1,
+        eventTitle: BASKET_EVENT_TITLE
       },
       quarantinedPreexistingDueBasketCount: quarantineIds.length,
       isolatedScheduledRuleCount: isolatedRules.length,
       metricsExpectation: "After scheduling, basket-purge must run exactly once and change both Metrics counters by +1.",
-      next: "Open Delete expired baskets, verify step 29, then record the Runner and Metrics baselines."
+      next: "Verify Nova's expiring checkout card and basket badge, then open Delete expired baskets and record the Runner and Metrics baselines."
     });
   }
 
@@ -1384,6 +1506,7 @@
       .toArray();
     const expiredItem = items.find(item => Q.text(item._id) === BASKET_EXPIRED_ID);
     const futureItem = items.find(item => Q.text(item._id) === BASKET_FUTURE_ID);
+    const sourceEvent = Q.collection("events").findOne({ _id: BASKET_SOURCE_ID });
     const rule = Q.ruleSummary(BASKET_RULE);
     const schedulerIsolation = isolatedRulesStatus(state);
     const metrics = monitoringCounters();
@@ -1411,6 +1534,16 @@
       && expiredItem.reservationActive === false;
     const futureUnchanged = Boolean(futureItem)
       && samePlainJson(futureItem, state.context.futureBaseline);
+    const eventUnchanged = Boolean(sourceEvent)
+      && samePlainJson(sourceEvent, state.context.eventBaseline);
+    const eventPresentationValid = Boolean(sourceEvent)
+      && Q.text(sourceEvent.status) === "A"
+      && sourceEvent.published === true
+      && sourceEvent.ticketing === true
+      && Q.text(sourceEvent.visibility) === "Public"
+      && Number(sourceEvent.acceptedMembers) === 0
+      && Number(sourceEvent.capacityTotal) === 8
+      && Date.parse(Q.text(sourceEvent.startAtIso)) > Date.now();
     const baselineReady = Number(state.scheduleCount) === 0
       && schedulerIsolation.active
       && rule.currentStatus === "idle"
@@ -1419,10 +1552,14 @@
       && Boolean(expiredItem && futureItem)
       && Q.text(expiredItem.resultState) === "active"
       && Q.text(futureItem.resultState) === "active"
+      && Q.text(expiredItem.sourceId) === BASKET_SOURCE_ID
+      && Q.text(futureItem.sourceId) === BASKET_FUTURE_SOURCE_ID
       && expiredItem.pendingCounterTracked === true
       && futureItem.pendingCounterTracked === true
       && Date.parse(Q.text(expiredItem.expiresAtIso)) <= Date.now()
-      && Date.parse(Q.text(futureItem.expiresAtIso)) > Date.now();
+      && Date.parse(Q.text(futureItem.expiresAtIso)) > Date.now()
+      && eventPresentationValid
+      && eventUnchanged;
     const detailValid = Q.text(rule.progressDetail)
       .includes("Marked 1 expired checkout basket item(s) as deleted.");
     const exactOutcome = Number(state.scheduleCount) === 1
@@ -1430,11 +1567,13 @@
       && runObservedAfterSchedule
       && rule.currentStatus === "completed"
       && rule.lastRunCount === 1
-      && rule.pendingCount === 0
+      && rule.pendingCount === 1
       && detailValid
       && items.length === 2
       && expiredWasPurged
       && futureUnchanged
+      && eventPresentationValid
+      && eventUnchanged
       && metricsExactOnce;
     const phase = Number(state.scheduleCount) === 0
       ? "baseline-ready"
@@ -1467,6 +1606,16 @@
           updatedAtIso: item.updatedAtIso
         })),
         physicalTargetCount: items.length,
+        event: sourceEvent && {
+          id: sourceEvent._id,
+          title: sourceEvent.title,
+          status: sourceEvent.status,
+          published: sourceEvent.published,
+          ticketing: sourceEvent.ticketing,
+          acceptedMembers: sourceEvent.acceptedMembers,
+          capacityTotal: sourceEvent.capacityTotal,
+          startAtIso: sourceEvent.startAtIso
+        },
         quarantinedPreexistingDueBasketCount: (state.context.quarantineIds || []).length
       },
       validation: {
@@ -1474,6 +1623,8 @@
         runObservedAfterSchedule,
         expiredWasPurged,
         futureUnchanged,
+        eventPresentationValid,
+        eventUnchanged,
         detailValid,
         exactOutcome
       }
@@ -1688,7 +1839,7 @@
         ? "The source Event, rooms, memberships, chats, messages, notifications, selected user counters and held affinity tasks were restored. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
         : state.branch === COUNTER_BRANCH
           ? "The expiry Event, existing Nova participant and Sophia host profiles and counters, and quarantined due-record fields were restored exactly. The target rule's original configuration was restored while its legitimate two-pass run history was retained; every isolated rule's original scheduling control was restored exactly."
-          : "The expired and future checkout drafts plus every quarantined due basket were restored exactly. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
+          : "The checkout Event, expired and future-control drafts, and every quarantined due basket were restored exactly. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
     });
   }
 

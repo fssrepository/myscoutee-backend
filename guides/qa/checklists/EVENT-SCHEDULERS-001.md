@@ -186,27 +186,51 @@ Display name: `Close past events`
 Internal key: `event-checkout-basket-purge`  
 Display name: `Delete expired baskets`
 
+A standalone checkout draft is not an Event membership or an open payment
+join. It therefore does not create an `Activities → Pending` card or counter;
+that already-polled list is not the basket-purge transition target. The
+user-visible transition is owned by Event Explore and its Basket control.
+
 27. Tell Codex:
 
     `Prepare the EVENT-SCHEDULERS-001 basket-purge branch.`
 
-28. After Codex confirms preparation, open
+28. After Codex confirms preparation, use Nova's window to open
+    `Activities → Explore`. Find `Manual QA expiring checkout basket` and
+    confirm that:
+
+    - the Event card is visible exactly once;
+    - its member badge is `0 / 8`, not `0 / 0`;
+    - the green Basket control is visible with counter `1`.
+
+29. Open that Event card's menu. Its actions are in this exact order:
+
+    1. `View Event`;
+    2. `Continue booking`;
+    3. `Ask Organizer`;
+    4. `Share Event`;
+    5. `Report Organizer`.
+
+    Close the card menu, but leave Explore itself open. Do not reload Nova's
+    page for the remainder of this branch.
+30. In Ava's window, open
     `Configuration → Jobs → Delete expired baskets`.
-29. At the prepared `mixed` boundary, confirm:
+31. At the prepared `mixed` boundary, confirm:
 
     - the job is not suspended;
     - `Eligible before next run` is `2 affected`;
     - the job is neither Running nor Failed.
 
-30. Record the top Runner history row and the two shared Metrics baseline
+32. Record the top Runner history row and the two shared Metrics baseline
     values, then return to Job Detail.
-31. Report both baseline values to Codex and wait until Codex confirms that the
+33. Report both baseline values to Codex and wait until Codex confirms that the
     persisted schedule is armed. Do not select `Run`; wait for the normal
     scheduler run and live refresh.
-32. After the run, confirm:
+34. After the run, confirm in Ava:
 
     - the run is Completed;
-    - `Eligible before next run` is `0`;
+    - `Eligible before next run` is `1 affected`, representing the deliberately
+      unexpired negative-control basket;
     - `Last run` shows `1` affected;
     - the top Runner history row is exactly one new Completed row with `1`
       affected;
@@ -214,13 +238,32 @@ Display name: `Delete expired baskets`
       deleted;
     - no error or second new history row appears.
 
-33. In `Metrics → Background → Jobs`, `Scheduled triggers` and `Audit events`
+35. In Nova's still-open Explore view, wait for the normal list poll; do not
+    reload. Within one poll interval, confirm that:
+
+    - the green Basket control and its `1` counter disappear;
+    - `Manual QA expiring checkout basket` remains visible exactly once;
+    - its member badge remains `0 / 8`;
+    - no unrelated Event card or user counter changes, including the
+      `Activities → Pending` counter.
+
+36. Reopen the same Event card menu. It has returned to this exact order:
+
+    1. `View Event`;
+    2. `Book Event`;
+    3. `Ask Organizer`;
+    4. `Share Event`;
+    5. `Report Organizer`.
+
+    `Continue booking` is absent. The Event card did not disappear or move to
+    a different lifecycle list.
+37. In `Metrics → Background → Jobs`, `Scheduled triggers` and `Audit events`
     remain equal and are each exactly `+1` from the baseline.
-34. Report:
+38. Report:
 
     `EVENT-SCHEDULERS-001 basket-purge UI ready`
 
-35. Wait for Codex's persisted oracle and reset confirmation.
+39. Wait for Codex's persisted oracle and reset confirmation.
 
 The user portion ends here. Codex records PASS/FAIL only after its independent
 machine-side oracle. The execution result never gets written into this file.
