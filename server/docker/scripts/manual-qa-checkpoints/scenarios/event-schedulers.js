@@ -170,6 +170,53 @@
     Q.collection("notificationRuleConfigs").updateOne({ _id: saved.ruleId }, update);
   }
 
+  function holdBasketRule(rule, stagedAtIso) {
+    const latestRun = (rule.runHistory || [])[0];
+    const latestRunAtIso = Q.text(latestRun && (latestRun.finishedAtIso || latestRun.startedAtIso));
+    if (!latestRun || !Number.isFinite(Date.parse(latestRunAtIso))) {
+      fail("basket-purge staging requires one real Runner history row to preserve the Last run baseline.");
+    }
+    const detail = "EVENT-SCHEDULERS-001 basket-purge mixed baseline is held; schedule has not been issued.";
+    const result = Q.collection("notificationRuleConfigs").updateOne(
+      { _id: rule._id, "runState.currentStatus": { $ne: "running" } },
+      {
+        $set: {
+          enabled: true,
+          manualRunEnabled: false,
+          scheduleSlots: [],
+          "timing.mode": "interval",
+          "timing.intervalAmount": 7,
+          "timing.intervalUnit": "days",
+          "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
+          "timing.intervalMinutes": ISOLATED_RULE_HOLD_SECONDS / 60,
+          "timing.time": "00:00",
+          "timing.timezone": "UTC",
+          "runState.currentStatus": "idle",
+          "runState.progressPercent": 0,
+          "runState.progressDetail": detail,
+          "runState.lastRunAtIso": latestRunAtIso,
+          "runState.lastRunCount": Number(latestRun.processedCount) || 0,
+          "runState.lastRunStatus": Q.text(latestRun.status),
+          "runState.lastRunDetail": Q.text(latestRun.detail),
+          "runState.lastRunUser": Q.text(latestRun.runnerUser),
+          "runState.pendingCount": 2,
+          "runState.pendingCountUnit": "admin.jobs.table.affected",
+          "runState.pendingCountUpdatedAtIso": stagedAtIso,
+          updatedDate: stagedAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": "",
+          "runState.lastError": ""
+        }
+      }
+    );
+    if (result.matchedCount !== 1) {
+      fail(`rule '${BASKET_RULE}' became running while staging.`);
+    }
+  }
+
   function monitoringCounters() {
     const snapshot = Q.collection("adminMonitoring").findOne({ monitoringKey: "global" }) || {};
     const counters = snapshot.counters || {};
@@ -1061,22 +1108,7 @@
 
     try {
       holdScheduledRules(isolatedRules, stagedAtIso);
-      Q.holdRule(
-        BASKET_RULE,
-        2,
-        "EVENT-SCHEDULERS-001 basket-purge mixed baseline is held; schedule has not been issued.",
-        HOLD_SECONDS
-      );
-      Q.collection("notificationRuleConfigs").updateOne(
-        { ruleKey: BASKET_RULE },
-        {
-          $set: {
-            "runState.pendingCountUnit": "admin.jobs.table.affected",
-            updatedDate: stagedAtIso,
-            updatedUser: Q.ACTOR
-          }
-        }
-      );
+      holdBasketRule(primaryRule, stagedAtIso);
       if (quarantineIds.length > 0) {
         Q.collection("eventCheckoutBasketItems").updateMany(
           { _id: { $in: quarantineIds } },
@@ -1108,7 +1140,7 @@
       branch: BASKET_BRANCH,
       phase: "baseline-ready",
       stagedAtIso,
-      schedulerHoldSeconds: HOLD_SECONDS,
+      schedulerHoldSeconds: ISOLATED_RULE_HOLD_SECONDS,
       expectedVisibleBaseline: {
         eligibleBeforeNextRun: 2,
         currentStatus: "idle",

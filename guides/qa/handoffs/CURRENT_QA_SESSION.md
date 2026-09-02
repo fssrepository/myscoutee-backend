@@ -52,26 +52,26 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SCHEDULERS-001 — active; basket-purge baseline ready
+checkpoint: EVENT-SCHEDULERS-001 — active; basket-purge scheduled
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
 checklist: ../checklists/EVENT-SCHEDULERS-001.md
 checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#3-expired-checkout-draft-purge
-substage: basket-purge-baseline-ready — the user performs checklist steps 28-32, then reports the two Metrics values before Codex arms anything
-next_replay_boundary: basket-purge-scheduled — after the user confirms the Event Explore and Job Detail baselines and reports settled equal Metrics values, arm exactly one natural pass
+substage: basket-purge-scheduled — baseline 894/894 was accepted and exactly one natural scheduler pass was armed at 2026-09-02T06:12:05.593Z
+next_replay_boundary: basket-purge-terminal-oracle — after the user completes checklist steps 34-38 and sends the stop phrase, verify exact-once/domain/poll evidence and reset
 fixture_phase: the basket-purge branch was staged at 2026-09-02T06:07:37.233Z after tracing the real checkout persistence path. The read-only oracle proves an idle held rule with Eligible=2, one expired `confirmed/pending` checkout for the visible Event, one future `draft/pending` negative control on a separate source, a byte-identical public ticketed Event with 0/8 members, zero quarantined pre-existing due baskets and nine isolated unrelated schedulers. No schedule has been issued. The earlier infrastructure-only replay completed one purge pass but could not close user behavior because it had no Event/local draft and placed the future control on the same source; its evidence was retained and the branch was reset before this corrected stage.
 browser_phase: fresh isolated Ava /admin and Nova /game windows for EVENT-SCHEDULERS-001-BASKET-PURGE are open. Nova has exactly one versioned local checkout draft matching the expired server basket. The user exclusively owns every visible assertion and frontend verdict.
 scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
 ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
 state: Automatic room assignment is PASS for this replay. After repairing the missing generated-room MAIN_EVENT runtime projection, the focused replay moved Metrics from 781/781 to 783/783; event-random-groups and its required notification-outbox wake-up each completed exactly once. Two rooms contain 3/3 unique users, two valid MAIN_EVENT runtimes, two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells; each selected user's chats/all/event counters changed by exactly +1. The user confirmed the repaired runtime card is visible. Counter-expiry is also PASS: its one-work and zero-work passes were exact-once, the second pass preserved the first-pass domain fingerprint, and the branch was reset and verified not-staged. Basket-purge remains IN PROGRESS at its held baseline. Event Explore now uses the centrally configured route interval through EventsService/ActivitiesService and the existing SmartList UiTaskScheduler; the HTTP Event record clone preserves `checkoutResultState`, and EventCheckoutDraftStore reconciles an expired local draft only after the same server Event reports `deleted`. A standalone checkout is not an Activities Pending membership and must not alter that list or counter.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not stage, schedule, reset or inspect the browser. The user performs checklist steps 28-32. After the user reports the two equal settled Metrics values, Codex verifies persistence still matches the held baseline and arms exactly one natural scheduler pass. The user then performs steps 34-38 without reloading Nova's still-open Explore view. Codex runs the terminal exact-once/domain oracle and resets only after the stop phrase.
+required_resume: Do not stage, schedule, reset or inspect the browser. Exactly one natural basket-purge pass was armed from the settled 894/894 baseline, due at 2026-09-02T06:12:35.593Z. The user performs checklist steps 34-38 without reloading Nova's still-open Explore view. Codex runs the terminal exact-once/domain oracle and resets only after the stop phrase.
 event: manual-qa-checkpoint:v1:event-schedulers:basket-purge:event — `Manual QA expiring checkout basket`; public, ticketed, 0/8, future, hosted by Sophia and visible to Nova
 actors:
   Ava: authenticated isolated demo admin; observes Delete expired baskets, Runner history and Metrics
   Nova: authenticated isolated demo member; observes the Event Explore Basket 1 -> absent transition and Continue booking -> Book Event restoration through normal SmartList polling
-next_actor: the user performs checklist steps 28-32; Codex does not inspect or navigate the UI
-queued_followup: after the user reports the settled Metrics baseline, verify the held oracle and schedule once; after the completion phrase, verify one processed expired draft, unchanged future-control draft and Event, exact one-run history and Metrics +1/+1, then reset
-pending_machine_oracle: held baseline is proven; schedule and terminal exact-once/domain oracles are pending
+next_actor: the user performs checklist steps 34-38; Codex does not inspect or navigate the UI
+queued_followup: after the completion phrase, verify one processed expired draft, unchanged future-control draft and Event, exact one-run history and Metrics 895/895, then reset
+pending_machine_oracle: held baseline and single schedule arm are proven; terminal exact-once/domain oracle is pending
 stop_phrase: EVENT-SCHEDULERS-001 basket-purge UI ready
 ```
 
