@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 06:34 CEST
+Updated: 2026-09-02 07:03 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -52,26 +52,27 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SCHEDULERS-001 — active; random-groups participant UI confirmation pending
+checkpoint: EVENT-SCHEDULERS-001 — active; counter-expiry baseline prepared
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
 checklist: ../checklists/EVENT-SCHEDULERS-001.md
-checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#1-automatic-room-assignment
-substage: random-groups-participant-ui-pending — the scheduler completed exactly once; checklist steps 9-11 await the user's visible confirmation
-next_replay_boundary: random-groups-terminal — after the user reports the completion phrase, repeat read-only status for stability, reset this branch, verify not-staged and prepare counter-expiry
-fixture_phase: random-groups was staged at 2026-09-02T04:28:08.464Z and armed once at 04:32:47.219Z. The target completed at 04:33:17.874Z with six affected, followed by exactly one required notification-outbox wake-up. Nine unrelated scheduler controls remain held; do not reset before the user finishes the visible checks.
-browser_phase: isolated Ava /admin and Sophia /game windows remain open. Sophia's Chats list is currently open because Codex incorrectly navigated it during a routine CDP check; the user still exclusively owns every visible assertion and frontend verdict.
+checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#2-past-event-expiry-and-zero-work-repeat
+substage: counter-expiry-corrected-baseline-ready — checklist steps 14-16 await the repeated visible baseline confirmation
+next_replay_boundary: counter-expiry-first-pass — after the corrected visible baseline and fresh equal Metrics values are reported, arm exactly one natural scheduler pass
+fixture_phase: the incomplete branch was reset before its earlier arm ran, so it produced no scheduler history or Metrics delta. The corrected branch was staged at 2026-09-02T05:03:05.329Z and mirrors the normal Event creation projection: Nova is an accepted Member at 1/8 and exactly one active root MAIN_EVENT runtime exists. The persisted baseline, authenticated Event-list response and authenticated subevent response all pass; no schedule is armed.
+browser_phase: fresh isolated Ava /admin and Nova /game windows are open. The user exclusively owns every visible assertion and frontend verdict.
 scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
 ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
-state: The focused replay machine oracle is exact: Metrics moved from 777/777 to 779/779; event-random-groups and its causal notification-outbox wake-up each have exactly one Completed history row and no unrelated rule ran. Two generated rooms contain 3/3 unique users; there are two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells. Every selected user's chats/all/event counters changed by exactly +1. Sophia belongs to Random Room R2. These machine facts do not constitute a frontend PASS; the user has not yet reported the visible result.
+state: Automatic room assignment is PASS for this replay. After repairing the missing generated-room MAIN_EVENT runtime projection, the focused replay moved Metrics from 781/781 to 783/783; event-random-groups and its required notification-outbox wake-up each completed exactly once. Two rooms contain 3/3 unique users, two valid MAIN_EVENT runtimes, two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells; each selected user's chats/all/event counters changed by exactly +1. The user confirmed the repaired runtime card is visible. The branch was reset and verified not-staged before preparing counter-expiry.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not schedule again and do not reset. The user checks Sophia's Events -> Active Events and Chats for exactly one matching Random Room, opens the Chat and confirms one MyScoutee welcome message, then checks Ava's Job Detail and Metrics according to steps 9-10. Baseline Metrics was 777/777; the expected stable result is 779/779.
-event: manual-qa-checkpoint:v1:event-schedulers:random-groups:event — participant-visible random-room source
+required_resume: Do not schedule or reset. The user repeats checklist steps 14-16 and confirms the target Event once at 1/8 plus one main Event runtime in View Event, then reports fresh equal Metrics values.
+event: manual-qa-checkpoint:v1:event-schedulers:counter-expiry:event — visible expired-but-still-active baseline Event
 actors:
   Ava: authenticated isolated demo admin; observes Jobs and Monitoring only
-next_actor: the user performs checklist steps 9-11 in Sophia and Ava; Codex does not inspect or navigate either UI on the normal path
-queued_followup: after the completion phrase, Codex repeats read-only status, resets this branch and prepares the counter-expiry substage before asking for further clicks
-pending_machine_oracle: terminal machine oracle is already exact; only a final stability status and reset remain after the user's visible confirmation
-stop_phrase: EVENT-SCHEDULERS-001 random-groups UI ready
+  counter_observer: authenticated isolated Nova demo member; observes the Past Active Events list and visible Events/Active Events counters
+next_actor: the user repeats only checklist steps 14-16 against the corrected Nova baseline
+queued_followup: after the corrected visible baseline is confirmed, Codex captures fresh Metrics and arms the first natural pass exactly once
+pending_machine_oracle: corrected machine baseline is exact; no scheduler pass is armed and the corrected frontend verdict is pending
+stop_phrase: EVENT-SCHEDULERS-001 counter-expiry baseline ready — Scheduled triggers <N>, Audit events <N>
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

@@ -11,6 +11,8 @@ machine-oracle evidence to it.
 - Perform the Automatic room assignment participant checks in the isolated
   **Sophia** member window opened by Codex. This user is one of the six staged
   participants.
+- Perform the Close past events participant checks in the isolated **Nova**
+  member window opened by Codex for that substage.
 - Codex prepares and restores all fixtures. Do not edit Timing, Parameters, or
   job status.
 - Do not select `Run`, even when it is enabled. The already-running scheduler
@@ -88,6 +90,8 @@ Display name: `Automatic room assignment`
 
    - `Events → Active Events` contains exactly one generated `Random Room`
      card for Sophia;
+   - opening that card with `View Event` shows exactly one main Event runtime
+     card in the subevent list; the list is not empty;
    - `Chats` contains exactly one matching generated room chat;
    - opening that chat shows exactly one initial MyScoutee system welcome
      message;
@@ -118,7 +122,11 @@ Display name: `Close past events`
     `Prepare the EVENT-SCHEDULERS-001 counter-expiry branch.`
 
 14. After Codex confirms preparation, open
-    `Configuration → Jobs → Close past events`.
+    `Configuration → Jobs → Close past events` in Ava. In Nova's
+    window, open `Events → Active Events`, switch the time filter to `Past`,
+    and confirm that `Manual QA expired active Event` is visible exactly once
+    with a `1 / 8` member badge. Open it with `View Event`; the subevent panel
+    contains exactly one main Event runtime card and is not empty.
 15. Before the first run, confirm:
 
     - the job is not suspended;
@@ -138,6 +146,12 @@ Display name: `Close past events`
     - the top Runner history row is exactly one new Completed row with `1`
       affected;
     - the detail reports one expired Event source with no error.
+
+   In Nova's window, reopen the same `Past` Active Events view. The historical
+   `Manual QA expired active Event` card remains visible exactly once, while
+   the visible Events and Active Events counters changed from `1` to `0`
+   without another decrement. Its member badge remains `1 / 8`, and `View
+   Event` still contains exactly the same one main Event runtime card.
 
 19. In `Metrics → Background → Jobs`, both shared values remain equal and
     are each exactly `+1` from the first baseline.

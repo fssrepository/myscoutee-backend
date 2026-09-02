@@ -67,6 +67,31 @@
         }
       ]
     },
+    "EVENT-SCHEDULERS-001-COUNTER-EXPIRY": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava counter-expiry observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Close past events observer"
+        },
+        {
+          "actor": "Nova counter-expiry participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Nova Social · expiring Event participant observer"
+        }
+      ]
+    },
     "ROLE-TRIAD-CORE-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

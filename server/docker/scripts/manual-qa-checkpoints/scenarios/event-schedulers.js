@@ -21,7 +21,10 @@
   const COUNTER_BRANCH = "counter-expiry";
   const COUNTER_RULE = "event-counter-expiry";
   const COUNTER_EVENT_ID = `${PREFIX}:counter-expiry:event`;
-  const COUNTER_USER_ID = `${PREFIX}:counter-expiry:user`;
+  const COUNTER_USER_ID = "650000000000000000000062";
+  const COUNTER_OWNER_USER_ID = RANDOM_UI_USER_ID;
+  const COUNTER_MEMBER_ID = `${PREFIX}:counter-expiry:member`;
+  const COUNTER_RUNTIME_ID = `${PREFIX}:counter-expiry:main-event-runtime`;
   const SECONDARY_RULES = ["notification-outbox", "affinity-recompute"];
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const requestedCheckpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID);
@@ -604,7 +607,28 @@
       {
         collection: "users",
         selector: {
-          $or: [{ _id: COUNTER_USER_ID }, { userId: COUNTER_USER_ID }]
+          $or: [
+            { _id: { $in: [COUNTER_USER_ID, COUNTER_OWNER_USER_ID] } },
+            { userId: { $in: [COUNTER_USER_ID, COUNTER_OWNER_USER_ID] } }
+          ]
+        }
+      },
+      {
+        collection: "activityMembers",
+        selector: {
+          $or: [
+            { _id: COUNTER_MEMBER_ID },
+            { ownerType: "event", ownerId: COUNTER_EVENT_ID, userId: COUNTER_USER_ID }
+          ]
+        }
+      },
+      {
+        collection: "activityEventRuntimeItems",
+        selector: {
+          $or: [
+            { _id: COUNTER_RUNTIME_ID },
+            { eventId: COUNTER_EVENT_ID, runtimeKind: "MAIN_EVENT" }
+          ]
         }
       }
     ];
@@ -614,6 +638,15 @@
     Q.assertNotStaged(SCENARIO);
     Q.assertNoOtherActiveScenario(SCENARIO);
     Q.assertRuleNotRunning(COUNTER_RULE);
+
+    const requiredUsers = [COUNTER_USER_ID, COUNTER_OWNER_USER_ID].map(userId => Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    }));
+    if (requiredUsers.some(user => !user
+      || Q.text(user.profileStatus).toLowerCase() !== "public"
+      || Number(user.profileFormVersion) < 2)) {
+      fail("the existing Nova participant or Sophia host profile is missing or is not a completed public profile.");
+    }
 
     const isolatedRules = scheduledRulesToIsolate(COUNTER_RULE);
     for (const rule of isolatedRules) {
@@ -639,6 +672,8 @@
       context: {
         eventId: COUNTER_EVENT_ID,
         userId: COUNTER_USER_ID,
+        ownerUserId: COUNTER_OWNER_USER_ID,
+        memberId: COUNTER_MEMBER_ID,
         quarantineEventIds
       },
       snapshots,
@@ -680,36 +715,53 @@
         );
       }
       Q.collection("events").deleteOne({ _id: COUNTER_EVENT_ID });
-      Q.collection("users").deleteMany({
-        $or: [{ _id: COUNTER_USER_ID }, { userId: COUNTER_USER_ID }]
+      Q.collection("activityEventRuntimeItems").deleteMany({
+        $or: [
+          { _id: COUNTER_RUNTIME_ID },
+          { eventId: COUNTER_EVENT_ID, runtimeKind: "MAIN_EVENT" }
+        ]
       });
-      Q.collection("users").insertOne({
-        _id: COUNTER_USER_ID,
-        userId: COUNTER_USER_ID,
-        syncKey: COUNTER_USER_ID,
-        name: "Manual QA counter owner",
-        initials: "CQ",
-        status: "A",
-        profileStatus: "public",
-        activities: {
-          invitations: 0,
-          events: 99,
-          hosting: 99,
-          event: {
-            all: 99,
-            active: 99,
-            pending: 0,
-            invitations: 0,
-            hosting: 99,
-            drafts: 0,
-            trash: 0
+      Q.collection("activityMembers").deleteMany({
+        $or: [
+          { _id: COUNTER_MEMBER_ID },
+          { ownerType: "event", ownerId: COUNTER_EVENT_ID, userId: COUNTER_USER_ID }
+        ]
+      });
+      Q.collection("users").updateOne(
+        { $or: [{ _id: COUNTER_USER_ID }, { userId: COUNTER_USER_ID }] },
+        {
+          $set: {
+            "activities.invitations": 0,
+            "activities.events": 1,
+            "activities.hosting": 0,
+            "activities.event.all": 1,
+            "activities.event.active": 1,
+            "activities.event.pending": 0,
+            "activities.event.invitations": 0,
+            "activities.event.hosting": 0,
+            "activities.event.drafts": 0,
+            "activities.event.trash": 0,
+            updatedDate: stagedAtIso,
+            updatedUser: Q.ACTOR
           }
-        },
+        }
+      );
+      Q.collection("activityMembers").insertOne({
+        _id: COUNTER_MEMBER_ID,
+        syncKey: COUNTER_MEMBER_ID,
+        ownerType: "event",
+        ownerId: COUNTER_EVENT_ID,
+        userId: COUNTER_USER_ID,
+        role: "Member",
+        status: "accepted",
+        actionAtIso: stagedAtIso,
         createdDate: stagedAtIso,
         createdUser: Q.ACTOR,
         updatedDate: stagedAtIso,
         updatedUser: Q.ACTOR
       });
+      const startAtIso = pastIso(120);
+      const endAtIso = pastIso(60);
       Q.collection("events").insertOne({
         _id: COUNTER_EVENT_ID,
         sourceId: COUNTER_EVENT_ID,
@@ -721,14 +773,48 @@
         generated: false,
         feedbackCountersProjected: true,
         expired: false,
-        ownerUserId: COUNTER_USER_ID,
-        creatorUserId: COUNTER_USER_ID,
-        startAtIso: pastIso(120),
-        endAtIso: pastIso(60),
+        ownerUserId: COUNTER_OWNER_USER_ID,
+        creatorUserId: COUNTER_OWNER_USER_ID,
+        capacityMin: 1,
+        capacityMax: 8,
+        capacityTotal: 8,
+        acceptedMembers: 1,
+        pendingMembers: 0,
+        acceptedMemberUserIds: [COUNTER_USER_ID],
+        pendingMemberUserIds: [],
+        invitedMemberUserIds: [],
+        pendingRequestMemberUserIds: [],
+        subEventsEnabled: false,
+        subEventDefinitions: [],
+        slotsEnabled: false,
+        slotTemplates: [],
+        startAtIso,
+        endAtIso,
         createdDate: stagedAtIso,
         createdUser: Q.ACTOR,
         updatedDate: stagedAtIso,
         updatedUser: Q.ACTOR
+      });
+      Q.collection("activityEventRuntimeItems").insertOne({
+        _id: COUNTER_RUNTIME_ID,
+        recordId: `main-event:${COUNTER_EVENT_ID}`,
+        syncKey: COUNTER_RUNTIME_ID,
+        status: "A",
+        runtimeKind: "MAIN_EVENT",
+        eventId: COUNTER_EVENT_ID,
+        ownerId: COUNTER_EVENT_ID,
+        subEventId: null,
+        title: "Manual QA expired active Event",
+        description: "Counter-expiry participant-visible main Event runtime",
+        timeframe: "",
+        startAtIso,
+        endAtIso,
+        location: "",
+        createdByUserId: COUNTER_OWNER_USER_ID,
+        createdDate: stagedAtIso,
+        createdUser: COUNTER_OWNER_USER_ID,
+        updatedDate: stagedAtIso,
+        updatedUser: COUNTER_OWNER_USER_ID
       });
     } catch (error) {
       fail(`counter-expiry stage failed after snapshot: ${Q.text(error && error.message)}. Run reset.`);
@@ -932,7 +1018,7 @@
     };
   }
 
-  function counterOwnerCounters(user) {
+  function counterParticipantCounters(user) {
     const activities = user && user.activities || {};
     const event = activities.event || {};
     return {
@@ -951,7 +1037,7 @@
     };
   }
 
-  function counterDomainFingerprint(event, user) {
+  function counterDomainFingerprint(event, user, runtime) {
     return {
       event: event && {
         id: event._id,
@@ -960,17 +1046,37 @@
         updatedDate: event.updatedDate,
         updatedUser: event.updatedUser
       },
-      ownerCounters: counterOwnerCounters(user)
+      runtime: runtime && {
+        id: runtime._id,
+        recordId: runtime.recordId,
+        status: runtime.status,
+        runtimeKind: runtime.runtimeKind,
+        eventId: runtime.eventId,
+        ownerId: runtime.ownerId
+      },
+      participantCounters: counterParticipantCounters(user)
     };
   }
 
   function counterStatus(state) {
     const event = Q.collection("events").findOne({ _id: COUNTER_EVENT_ID });
+    const runtimes = Q.collection("activityEventRuntimeItems").find({
+      eventId: COUNTER_EVENT_ID,
+      runtimeKind: "MAIN_EVENT",
+      status: { $ne: "D" }
+    }).toArray();
+    const runtime = runtimes.length === 1 ? runtimes[0] : null;
     const user = Q.collection("users").findOne({
       $or: [{ _id: COUNTER_USER_ID }, { userId: COUNTER_USER_ID }]
     });
-    const ownerCounters = counterOwnerCounters(user);
-    const domainFingerprint = counterDomainFingerprint(event, user);
+    const member = Q.collection("activityMembers").findOne({
+      _id: COUNTER_MEMBER_ID,
+      ownerType: "event",
+      ownerId: COUNTER_EVENT_ID,
+      userId: COUNTER_USER_ID
+    });
+    const participantCounters = counterParticipantCounters(user);
+    const domainFingerprint = counterDomainFingerprint(event, user, runtime);
     const rule = Q.ruleSummary(COUNTER_RULE);
     const schedulerIsolation = isolatedRulesStatus(state);
     const metrics = monitoringCounters();
@@ -992,17 +1098,31 @@
       && Number.isFinite(Date.parse(Q.text(rule.lastRunAtIso)))
       && Date.parse(rule.lastRunAtIso) >= Date.parse(state.scheduledAtIso)
     );
-    const ownerCountersValid = ownerCounters.invitations === 0
-      && ownerCounters.events === 0
-      && ownerCounters.hosting === 0
-      && Object.values(ownerCounters.event).every(value => value === 0);
+    const participantMembershipValid = Boolean(member)
+      && Q.text(member.role) === "Member"
+      && Q.text(member.status) === "accepted";
+    const eventPresentationValid = Boolean(event)
+      && Number(event.acceptedMembers) === 1
+      && Number(event.capacityTotal) === 8
+      && Array.isArray(event.acceptedMemberUserIds)
+      && event.acceptedMemberUserIds.length === 1
+      && Q.text(event.acceptedMemberUserIds[0]) === COUNTER_USER_ID
+      && runtimes.length === 1
+      && Q.text(runtime.recordId) === `main-event:${COUNTER_EVENT_ID}`
+      && Q.text(runtime.ownerId) === COUNTER_EVENT_ID;
+    const participantCountersValid = participantCounters.invitations === 0
+      && participantCounters.events === 0
+      && participantCounters.hosting === 0
+      && Object.values(participantCounters.event).every(value => value === 0);
     const expectedRunCount = Number(state.scheduleCount) === 2 ? 0 : 1;
     const zeroWorkDetailValid = Number(state.scheduleCount) !== 2
       || Q.text(rule.progressDetail).includes("No expired event counters");
     const domainUnchangedAfterFirstPass = Number(state.scheduleCount) !== 2
       || Q.sameJson(domainFingerprint, state.firstPassFingerprint);
     const domainOutcomeValid = Boolean(event && event.expired === true)
-      && ownerCountersValid
+      && participantMembershipValid
+      && eventPresentationValid
+      && participantCountersValid
       && domainUnchangedAfterFirstPass;
     const exactOutcome = Number(state.scheduleCount) > 0
       && schedulerIsolation.active
@@ -1018,9 +1138,11 @@
       && Boolean(event && event.expired === false)
       && rule.currentStatus === "idle"
       && rule.pendingCount === 1
-      && ownerCounters.events === 99
-      && ownerCounters.hosting === 99
-      && ownerCounters.event.all === 99;
+      && participantMembershipValid
+      && eventPresentationValid
+      && participantCounters.events === 1
+      && participantCounters.hosting === 0
+      && participantCounters.event.all === 1;
     const phase = Number(state.scheduleCount) === 0
       ? "baseline-ready"
       : rule.currentStatus === "running"
@@ -1051,14 +1173,25 @@
           expired: event.expired,
           updatedUser: event.updatedUser
         },
-        ownerCounters,
+        participantMembership: member && {
+          role: member.role,
+          status: member.status
+        },
+        eventPresentation: {
+          acceptedMembers: Number(event && event.acceptedMembers) || 0,
+          capacityTotal: Number(event && event.capacityTotal) || 0,
+          mainEventRuntimeCount: runtimes.length
+        },
+        participantCounters,
         quarantinedPotentiallyDueEventCount: (state.context.quarantineEventIds || []).length
       },
       validation: {
         baselineReady,
         runObservedAfterSchedule,
         expectedRunCount,
-        ownerCountersValid,
+        participantMembershipValid,
+        eventPresentationValid,
+        participantCountersValid,
         domainOutcomeValid,
         domainUnchangedAfterFirstPass,
         zeroWorkDetailValid,
@@ -1231,7 +1364,7 @@
       restored: true,
       detail: state.branch === RANDOM_BRANCH
         ? "The source Event, rooms, memberships, chats, messages, notifications, selected user counters and held affinity tasks were restored. The target rule's original configuration was restored while its legitimate run history was retained; every isolated rule's original scheduling control was restored exactly."
-        : "The expiry Event, synthetic owner and quarantined due-record fields were restored exactly. The target rule's original configuration was restored while its legitimate two-pass run history was retained; every isolated rule's original scheduling control was restored exactly."
+        : "The expiry Event, existing Nova participant and Sophia host profiles and counters, and quarantined due-record fields were restored exactly. The target rule's original configuration was restored while its legitimate two-pass run history was retained; every isolated rule's original scheduling control was restored exactly."
     });
   }
 
