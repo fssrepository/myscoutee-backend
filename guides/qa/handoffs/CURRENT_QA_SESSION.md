@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 05:36 CEST
+Updated: 2026-09-02 05:43 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -52,27 +52,27 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is IN PROGRESS
+checkpoint: EVENT-EDIT-RUNTIME-001 — PASS/CLOSED; terminal step 62 oracle captured
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
 checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
-substage: root-transport-invitation-delete-pass — checklist step 52 PASS
-next_replay_boundary: root-transport-remove — remove the accepted root Transport assignment and prove reopen/reload persistence
-fixture_phase: Published Event h1788317751991 at 2/9 with Casey Admin and fixture-added Nova Member accepted; Slots Off, Sub Events Off, root Transport retained at accepted=1/pending=0 and the original MAIN_EVENT active
-browser_phase: Casey completed the root Transport Invite/Delete journey through Members close/reopen and a full reload; Nova remains an accepted Event Member and does not act
+substage: terminal-root-transport-reassigned — checklist steps 53-62 PASS
+next_replay_boundary: none — reset before selecting the next Pair-QA testcase; preserve the current state only if the focused Delete replay is explicitly requested
+fixture_phase: Published Event h1788317751991 at 2/9 with Casey Admin and fixture-added Nova Member accepted; Slots Off, Sub Events Off, the original root MAIN_EVENT active and root Transport restored at accepted=1/pending=0/capacityMax=4
+browser_phase: Casey completed the complete user guide through step 62, including Transport Remove, reopen/reload, Reassign, reopen/reload; Nova remains an accepted Event Member and did not act
 scenario: Casey creates the Event through the real UI and proves one root MAIN_EVENT. Casey assigns Transport at that root scope, then edits the definition to add exactly two Slots. The runtime screen must show one slot-scoped MAIN_EVENT card in each Slot, not an empty list and not a third root card. Casey assigns Accommodation only to the first Slot and Supplies only to the second, proving independent runtime scopes. Removing both Slots restores the original root MAIN_EVENT and its Transport without leaking either Slot assignment. Casey then publishes and continues through capacity, scoped invite/Delete and root Transport remove/reassign. This is one EVENT-EDIT-RUNTIME-001 transaction with internal replay savepoints, not separate testcase IDs.
-ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: Checklist step 47 first passed with exactly one Nova pending root-Transport invitation, accepted=1/pending=1 and unchanged Event membership 2/9. The user then completed Delete, Members reopen and full reload through step 52. The independent terminal oracle proves Nova's pending Asset request and projection are absent, there is no Transport member row, only Casey's original accepted manual request remains, and the root metric is accepted=1/pending=0/capacityMax=4. The resulting legacy-timed recompute completed at 2026-09-02T03:36:00.514239500Z with empty lastError. Dev timing is now shortened by the demo_db platform configuration itself: Event changed, Event members changed, Asset changed and Asset requests changed are each 15s. No Java behavior branch or production timing was changed. No restage occurred.
-baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Do not restage or add a pre-action reload. Continue checklist steps 53-57 in Casey: remove QA Main Event Transport once, require accepted 1 -> 0 with no red counter, close/reopen Transport, perform the checklist's one full reload and confirm the assignment remains absent, then stop.
-event: h1788317751991 — QA EVENT-RUNTIME-001 Draft at 1/8
+ledger_status: PASS/CLOSED — EVENT-EDIT-RUNTIME-001, including EVENT-EDITOR-005 and EVENT-RUNTIME-001
+state: The complete checklist passed through step 62. The final independent oracle proves exactly one root Transport assignment, one Casey accepted manual request/projection, no Nova pending request/projection, no Transport member row, and root metrics accepted=1/pending=0/capacityMax=4. Step 57 no longer has a retained intermediate database snapshot because Reassign overwrote it, but the backend log proves Remove at 05:38:05 deleted the accepted root request and saved the runtime, followed by read requests at 05:38:10 and 05:38:12 before Reassign at 05:38:14; this corroborates the user's manual reopen/reload PASS without overstating it as a retrospective snapshot oracle. The final Asset recompute completed at 2026-09-02T03:39:01.795480583Z with empty lastError. Dev timing uses 15s values in the demo_db platform configuration; no Java behavior branch or production timing changed. No restage occurred.
+baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
+required_resume: Do not replay or mutate the closed transaction. To continue the campaign, reset EVENT-RUNTIME-001 through the versioned harness, verify the reset with read-only status, then select the next Pair-QA row and prepare its own stage/status/reset boundary before opening browsers.
+event: h1788317751991 — QA EVENT-RUNTIME-001 Published at 2/9
 actors:
-  Casey: authenticated managed document; creates the Event and owns every mutation
-  Nova: authenticated managed document; not yet an Event participant
-next_actor: Casey performs checklist steps 53-57; Nova does not act.
-queued_followup: After the Transport-removed stop phrase, Codex proves that the root assignment/request/projection and accepted metric are absent, confirms the new Asset task used the 15s dev platform value and completed without error, then permits reassignment.
-pending_machine_oracle: Prove the root Transport assignment is absent after reopen/reload, accepted=0/pending=0, no red counter, unchanged Event membership 2/9, and no mutation to the Slot-scoped historical resources.
-stop_phrase: EVENT-RUNTIME-001 Transport removed: 1->0, no red counter
+  Casey: authenticated managed document; created the Event and owns every mutation
+  Nova: authenticated managed document; fixture-added accepted Event Member; did not act in the scoped Transport checks
+next_actor: none until the next Pair-QA testcase is selected and staged
+queued_followup: reset the closed EVENT-RUNTIME-001 transaction, then select and prepare the next Pair-QA testcase
+pending_machine_oracle: none
+stop_phrase: none — testcase closed
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

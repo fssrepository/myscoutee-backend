@@ -964,6 +964,37 @@ guide never stores live status or machine evidence.
   backend hot-deploy owner compiled in 2s and restarted successfully. A shortest
   invite-as-precondition -> Delete replay remains available for focused future
   latency checks; the current user-selected run is the complete journey.
+- **Complete replay PASS/CLOSED on 2026-09-02.** Casey created the canonical
+  Draft through the UI and proved the persisted root MAIN_EVENT before any
+  Publish. Two Slot definitions then produced exactly two Slot sections with
+  one slot-scoped MAIN_EVENT card each; first-Slot Accommodation and second-Slot
+  Supplies stayed isolated while the original root runtime remained once at
+  status `D`. Removing both Slots exposed an empty-enabled-toggle defect. The
+  repaired Save canonicalized zero Slot/Sub Event definitions to Off,
+  reactivated the original root runtime and restored only its Transport; the
+  user accepted the corrected presentation and Publish. The captured
+  post-create fixture added Nova as the already-covered Event-membership
+  prerequisite at `2 / 8`; `EVENT-INV-001/003` remain the owners of manual
+  Event invite/accept behavior.
+- The capacity-only Save changed the Event to `2 / 9` without replacing runtime
+  document `6a9790503071603425ae103d`, recordId
+  `main-event:h1788317751991` or syncKey
+  `0e21c605-865c-4e49-bd89-b5288cf3df82`. Event Members showed Casey Admin and
+  Nova Member once each. Root Transport remained `1 / 0 - 4`; Accommodation
+  and Supplies were empty with no red counter. The scoped Nova Transport invite
+  produced exactly pending `0 -> 1`, and Delete removed the pending request,
+  projection, header and red counter immediately and after reopen/reload while
+  preserving accepted occupancy. The final Remove/Reassign round trip passed
+  through the UI and the terminal oracle retained exactly one accepted Casey
+  manual request/projection, zero pending/member rows and the same root
+  resource at accepted `1`, pending `0`, capacityMax `4`.
+- The final Asset recompute completed at
+  `2026-09-02T03:39:01.795480583Z` with empty `lastError`. Manual QA also exposed
+  that the shared dev platform parameters still carried production-length
+  Event/Asset debounce values. The versioned `demo_db` platform seed now uses
+  `15s` for Event changed, Event members changed, Asset changed and Asset
+  requests changed. This changes only dev timing configuration; the Java path
+  and production behavior remain identical.
 - Start from the versioned empty `pre-create` boundary. Casey creates one exact
   normal Casual Draft at capacity `1 / 8`, with Slots Off and Sub Events Off.
   Before the first Save, require no Event or runtime for the reserved title.
