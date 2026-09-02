@@ -90,6 +90,7 @@ public class AssetsService {
     private static final String STATUS_INACTIVE = "I";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
+    private static final String ASSET_REQUEST_KIND_INVITE = "invite";
     private static final String ROLE_ADMIN = "Admin";
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
@@ -1062,7 +1063,8 @@ public class AssetsService {
             String assetId,
             String eventId,
             String subEventId,
-            List<ActivityMemberEntryDto> members) {
+            List<ActivityMemberEntryDto> members,
+            String actorUserId) {
         String normalizedAssetId = normalizeId(assetId);
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -1130,7 +1132,7 @@ public class AssetsService {
         Asset next = cloneAsset(current);
         next.setRequests(deduplicateRequests(nextRequests));
         next.setUpdatedDate(Instant.now().toString());
-        next.setUpdatedUser(ownerUserId);
+        next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), ownerUserId));
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
@@ -1229,7 +1231,9 @@ public class AssetsService {
                 StringUtils.hasText(safeText(member.statusText()))
                         ? safeText(member.statusText())
                         : "pending".equals(status) ? "Awaiting owner confirmation." : "Approved and synced with the plan.",
-                existing != null ? normalizeAssetRequestKind(existing.requestKind()) : "borrow",
+                existing != null
+                        ? normalizeAssetRequestKind(existing.requestKind())
+                        : assetRequestKindForMember(member.requestKind()),
                 existing != null && StringUtils.hasText(existing.requestedAtIso())
                         ? existing.requestedAtIso()
                         : normalizeDateTime(member.actionAtIso(), Instant.now().toString()),
@@ -1423,7 +1427,10 @@ public class AssetsService {
         for (String scope : scopes) {
             String[] parts = scope.split("\n", 2);
             if (parts.length == 2) {
-                activitiesResourcesService.refreshEventSubEventResourceProjection(parts[0], parts[1]);
+                activitiesResourcesService.refreshResourceMetricsForScope(
+                        parts[0],
+                        parts[1],
+                        saved == null ? null : saved.getUpdatedUser());
             }
         }
     }
@@ -2422,7 +2429,9 @@ public class AssetsService {
                 user == null ? "man" : normalizeGender(user.getGender()),
                 status,
                 note,
-                existing != null ? normalizeAssetRequestKind(existing.requestKind()) : "borrow",
+                existing != null
+                        ? normalizeAssetRequestKind(existing.requestKind())
+                        : assetRequestKindForMember(member.getRequestKind()),
                 existing != null
                         ? safeNullableText(existing.requestedAtIso())
                         : safeNullableText(normalizeDateTime(member.getActionAtIso(), Instant.now().toString())),
@@ -3440,7 +3449,20 @@ public class AssetsService {
     }
 
     private String normalizeAssetRequestKind(String kind) {
-        return "manual".equals(safeText(kind)) ? "manual" : "borrow";
+        String normalizedKind = safeText(kind);
+        if ("manual".equals(normalizedKind)) {
+            return "manual";
+        }
+        return ASSET_REQUEST_KIND_INVITE.equals(normalizedKind)
+                ? ASSET_REQUEST_KIND_INVITE
+                : "borrow";
+    }
+
+    private String assetRequestKindForMember(String memberRequestKind) {
+        String normalizedKind = safeText(memberRequestKind);
+        return "invite".equals(normalizedKind) || "waitlist-invite".equals(normalizedKind)
+                ? ASSET_REQUEST_KIND_INVITE
+                : "borrow";
     }
 
     private String normalizeRequestStatus(String status) {

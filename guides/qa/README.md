@@ -4,6 +4,7 @@ This directory keeps QA execution material separate from project plans.
 
 | Directory | Content |
 |---|---|
+| [`checklists`](checklists/) | Stable user-facing click guides; never execution logs or machine-evidence files |
 | [`matrices`](matrices/) | Canonical CSV ledger and its reviewable XLSX workbook |
 | [`manuals`](manuals/) | Manual QA contracts and checkpoint procedures |
 | [`handoffs`](handoffs/) | Minimal resumable session state for an active QA chain |
@@ -17,6 +18,8 @@ Resume an active session from the
 [manual QA plan](manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md), or the
 [domain lifecycle checkpoint pack](manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 only when the active handoff links to the required detail.
+The [checklist policy](checklists/README.md) keeps tester click guides stable
+and separate from status and machine evidence.
 The upload/rendition contract is isolated in the
 [media image variants case](manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md), and the
 bounded-session working correction is recorded in the

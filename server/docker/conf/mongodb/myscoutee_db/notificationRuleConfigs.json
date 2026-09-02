@@ -67,7 +67,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -158,7 +159,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -234,7 +236,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -279,7 +282,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -324,7 +328,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -369,7 +374,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -414,7 +420,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -459,7 +466,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -504,7 +512,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",
@@ -549,7 +558,8 @@
     "runState": {
       "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Ready for the next scheduled slot."
+      "progressDetail": "Ready for the next scheduled slot.",
+      "pendingCount": 0
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",

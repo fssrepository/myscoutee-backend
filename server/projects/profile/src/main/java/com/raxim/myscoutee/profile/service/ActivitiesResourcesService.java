@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadRequestDto;
@@ -95,7 +96,7 @@ public class ActivitiesResourcesService {
             return null;
         }
         Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-        return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
+        return toStateDto(record, eligibleAssets);
     }
 
     public ActivitySubEventResourceScopeDto queryScope(String ownerId, String subEventId, String viewerUserId) {
@@ -119,7 +120,7 @@ public class ActivitiesResourcesService {
                 .sorted(Comparator.comparing(record -> normalizeId(record.getAssetOwnerUserId())))
                 .map(record -> {
                     Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-                    return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
+                    return toStateDto(record, eligibleAssets);
                 })
                 .filter(Objects::nonNull)
                 .toList();
@@ -216,12 +217,14 @@ public class ActivitiesResourcesService {
             SubEventResourceMetricDto accommodation = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_ACCOMMODATION));
             SubEventResourceMetricDto supplies = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_SUPPLIES));
             boolean updated = false;
+            boolean matchedSubEvent = false;
             List<SubEventItem> nextItems = new ArrayList<>();
             for (SubEventItem item : document.getSubEvents()) {
                 if (item == null || !normalizedSubEventId.equals(normalizeId(item.id()))) {
                     nextItems.add(item);
                     continue;
                 }
+                matchedSubEvent = true;
                 SubEventItem next = item.withResourceMetrics(
                         transport.accepted(),
                         transport.pending(),
@@ -238,17 +241,25 @@ public class ActivitiesResourcesService {
                 nextItems.add(next);
                 updated = updated || !next.equals(item);
             }
+            int nextActivity = runtimeActivity(nextItems);
+            if (!matchedSubEvent && isMainEventRuntimeSubEvent(normalizedOwnerId, normalizedSubEventId)) {
+                nextActivity = Math.addExact(nextActivity, pendingResourceCount(aggregate));
+            }
+            updated = updated || normalizeCount(document.getActivity()) != nextActivity;
             if (updated) {
                 document.setSubEvents(nextItems);
+                document.setActivity(nextActivity);
                 changed.add(document);
             }
         }
         if (!changed.isEmpty()) {
             eventSlotReadModelService.refreshForChangedEvents(activityEventsRepository.saveAll(changed));
         }
-        ActivitiesMembersService membersService = activitiesMembersServiceProvider.getIfAvailable();
-        if (membersService != null) {
-            membersService.refreshSubEventParticipationProjection(normalizedOwnerId, normalizedSubEventId);
+        if (!isMainEventRuntimeSubEvent(normalizedOwnerId, normalizedSubEventId)) {
+            ActivitiesMembersService membersService = activitiesMembersServiceProvider.getIfAvailable();
+            if (membersService != null) {
+                membersService.refreshSubEventParticipationProjection(normalizedOwnerId, normalizedSubEventId);
+            }
         }
     }
 
@@ -261,10 +272,8 @@ public class ActivitiesResourcesService {
             if (record == null) {
                 continue;
             }
-            Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-            ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
             for (Map.Entry<String, SubEventResourceMetricDto> entry
-                    : resourceMetricsByType(filtered, eligibleAssets).entrySet()) {
+                    : storedResourceMetricsByType(record).entrySet()) {
                 SubEventResourceMetricDto metric = metricOrEmpty(entry.getValue());
                 int[] totals = totalsByType.computeIfAbsent(entry.getKey(), ignored -> new int[4]);
                 totals[0] += normalizeCount(metric.accepted());
@@ -283,6 +292,35 @@ public class ActivitiesResourcesService {
                     Math.max(totals[2], totals[3])));
         }
         return result;
+    }
+
+    private int runtimeActivity(List<SubEventItem> items) {
+        int pending = 0;
+        for (SubEventItem item : items == null ? List.<SubEventItem>of() : items) {
+            if (item == null) {
+                continue;
+            }
+            if (Boolean.TRUE.equals(item.optional())) {
+                pending = Math.addExact(pending, normalizeCount(item.membersPending()));
+            }
+            pending = Math.addExact(pending, normalizeCount(item.carsPending()));
+            pending = Math.addExact(pending, normalizeCount(item.accommodationPending()));
+            pending = Math.addExact(pending, normalizeCount(item.suppliesPending()));
+            pending = Math.addExact(pending, normalizeCount(item.groupsPending()));
+        }
+        return pending;
+    }
+
+    private int pendingResourceCount(Map<String, SubEventResourceMetricDto> metricsByType) {
+        return (metricsByType == null ? List.<SubEventResourceMetricDto>of() : metricsByType.values()).stream()
+                .filter(Objects::nonNull)
+                .map(SubEventResourceMetricDto::pending)
+                .mapToInt(this::normalizeCount)
+                .sum();
+    }
+
+    private boolean isMainEventRuntimeSubEvent(String ownerId, String subEventId) {
+        return Objects.equals(normalizeId(subEventId), "main-event:" + normalizeId(ownerId));
     }
 
     private SubEventResourceMetricDto metricOrEmpty(SubEventResourceMetricDto value) {
@@ -311,14 +349,57 @@ public class ActivitiesResourcesService {
         if (record == null) {
             return Map.of();
         }
-        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-        ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
-        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(filtered, eligibleAssets);
-        return persistGroupRuntimeResourceMetrics(
-                filtered,
-                metricsByType,
+        Map<String, SubEventResourceMetricDto> metricsByType = persistResourceMetricSnapshot(
+                record,
                 actorUserId,
                 Instant.now().toString());
+        refreshEventSubEventResourceProjection(ownerId, subEventId);
+        refreshEventParticipationProjection(ownerId);
+        return metricsByType;
+    }
+
+    public void refreshResourceMetricsForScope(
+            String ownerId,
+            String subEventId,
+            String actorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        String nowIso = Instant.now().toString();
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        STATUS_DELETED)) {
+            if (record != null) {
+                persistResourceMetricSnapshot(record, actorUserId, nowIso);
+            }
+        }
+        refreshEventSubEventResourceProjection(normalizedOwnerId, normalizedSubEventId);
+    }
+
+    private Map<String, SubEventResourceMetricDto> persistResourceMetricSnapshot(
+            ActivitySubEventResource record,
+            String actorUserId,
+            String nowIso) {
+        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+        ActivitySubEventResource next = filterToAssignableAssets(record, eligibleAssets.keySet());
+        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
+        next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
+        next.setUpdatedDate(normalizeDateTime(nowIso, Instant.now().toString()));
+        next.setUpdatedUser(firstNonBlank(
+                normalizeId(actorUserId),
+                firstNonBlank(
+                        normalizeId(record.getUpdatedUser()),
+                        normalizeId(record.getAssetOwnerUserId()))));
+        ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+        return persistGroupRuntimeResourceMetrics(
+                saved,
+                metricsByType,
+                actorUserId,
+                next.getUpdatedDate());
     }
 
     public SubEventSupplyContributionPageDto querySupplyContributions(
@@ -405,22 +486,22 @@ public class ActivitiesResourcesService {
         next.setAssetAssignmentIds(filterAssignmentIds(request.assetAssignmentIds(), eligibleAssetIds));
         next.setAssetSettingsByType(filterAssetSettings(request.assetSettingsByType(), eligibleAssetIds));
         next.setSupplyContributionEntriesByAssetId(filterSupplyContributionEntries(request.supplyContributionEntriesByAssetId(), eligibleAssetIds));
+        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
+        next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? assetOwnerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(assetOwnerUserId);
 
         ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
-        ActivitySubEventResource filtered = filterToAssignableAssets(saved, eligibleAssetIds);
-        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(filtered, eligibleAssets);
         Map<String, SubEventResourceMetricDto> groupMetricsByType = persistGroupRuntimeResourceMetrics(
-                filtered,
+                saved,
                 metricsByType,
                 actorUserId,
                 nowIso);
         refreshEventSubEventResourceProjection(ownerId, subEventId);
         refreshEventParticipationProjection(ownerId);
-        return toStateDto(filtered, eligibleAssets, groupMetricsByType);
+        return toStateDto(saved, eligibleAssets, groupMetricsByType);
     }
 
     public Set<String> removeManagedResourcesForRemovedEventMembers(
@@ -464,6 +545,12 @@ public class ActivitiesResourcesService {
             next.setAssetAssignmentIds(cleanup.assetAssignmentIds());
             next.setAssetSettingsByType(cleanup.assetSettingsByType());
             next.setSupplyContributionEntriesByAssetId(cleanup.supplyContributionEntriesByAssetId());
+            Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(next);
+            ActivitySubEventResource filtered = filterToAssignableAssets(next, eligibleAssets.keySet());
+            next.setAssetAssignmentIds(filtered.getAssetAssignmentIds());
+            next.setAssetSettingsByType(filtered.getAssetSettingsByType());
+            next.setSupplyContributionEntriesByAssetId(filtered.getSupplyContributionEntriesByAssetId());
+            next.setResourceMetricsByType(toResourceMetricRecords(resourceMetricsByType(next, eligibleAssets)));
             next.setUpdatedDate(effectiveNowIso);
             next.setUpdatedUser(StringUtils.hasText(normalizedActorUserId)
                     ? normalizedActorUserId
@@ -521,6 +608,7 @@ public class ActivitiesResourcesService {
         clone.setAssetAssignmentIds(filterAssignmentIds(source.getAssetAssignmentIds(), null));
         clone.setAssetSettingsByType(filterSettings(source.getAssetSettingsByType(), null));
         clone.setSupplyContributionEntriesByAssetId(filterSupplyEntries(source.getSupplyContributionEntriesByAssetId(), null));
+        clone.setResourceMetricsByType(cloneResourceMetricRecords(source.getResourceMetricsByType()));
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -854,7 +942,7 @@ public class ActivitiesResourcesService {
     private ActivitySubEventResourceStateDto toStateDto(
             ActivitySubEventResource record,
             Map<String, AssetDetailDto> eligibleAssets) {
-        return toStateDto(record, eligibleAssets, resourceMetricsByType(record, eligibleAssets));
+        return toStateDto(record, eligibleAssets, storedResourceMetricsByType(record));
     }
 
     private ActivitySubEventResourceStateDto toStateDto(
@@ -882,6 +970,67 @@ public class ActivitiesResourcesService {
                 base.supplyContributionEntriesByAssetId(),
                 fallbackByType,
                 metricsByType == null ? Map.of() : metricsByType);
+    }
+
+    private Map<String, SubEventResourceMetricDto> storedResourceMetricsByType(
+            ActivitySubEventResource record) {
+        Map<String, SubEventResourceMetricDto> result = new LinkedHashMap<>();
+        for (Map.Entry<String, SubEventResourceMetricRecord> entry : record == null
+                || record.getResourceMetricsByType() == null
+                        ? Map.<String, SubEventResourceMetricRecord>of().entrySet()
+                        : record.getResourceMetricsByType().entrySet()) {
+            String type = safeText(entry.getKey());
+            SubEventResourceMetricRecord metric = entry.getValue();
+            if (!StringUtils.hasText(type) || metric == null) {
+                continue;
+            }
+            result.put(type, new SubEventResourceMetricDto(
+                    normalizeCount(metric.accepted()),
+                    normalizeCount(metric.pending()),
+                    normalizeCount(metric.capacityMin()),
+                    Math.max(normalizeCount(metric.capacityMin()), normalizeCount(metric.capacityMax()))));
+        }
+        return result;
+    }
+
+    private Map<String, SubEventResourceMetricRecord> toResourceMetricRecords(
+            Map<String, SubEventResourceMetricDto> source) {
+        Map<String, SubEventResourceMetricRecord> result = new LinkedHashMap<>();
+        for (Map.Entry<String, SubEventResourceMetricDto> entry : source == null
+                ? Map.<String, SubEventResourceMetricDto>of().entrySet()
+                : source.entrySet()) {
+            String type = safeText(entry.getKey());
+            SubEventResourceMetricDto metric = entry.getValue();
+            if (!StringUtils.hasText(type) || metric == null) {
+                continue;
+            }
+            int capacityMin = normalizeCount(metric.capacityMin());
+            result.put(type, new SubEventResourceMetricRecord(
+                    normalizeCount(metric.accepted()),
+                    normalizeCount(metric.pending()),
+                    capacityMin,
+                    Math.max(capacityMin, normalizeCount(metric.capacityMax()))));
+        }
+        return result;
+    }
+
+    private Map<String, SubEventResourceMetricRecord> cloneResourceMetricRecords(
+            Map<String, SubEventResourceMetricRecord> source) {
+        Map<String, SubEventResourceMetricRecord> result = new LinkedHashMap<>();
+        for (Map.Entry<String, SubEventResourceMetricRecord> entry : source == null
+                ? Map.<String, SubEventResourceMetricRecord>of().entrySet()
+                : source.entrySet()) {
+            String type = safeText(entry.getKey());
+            SubEventResourceMetricRecord metric = entry.getValue();
+            if (StringUtils.hasText(type) && metric != null) {
+                result.put(type, new SubEventResourceMetricRecord(
+                        normalizeCount(metric.accepted()),
+                        normalizeCount(metric.pending()),
+                        normalizeCount(metric.capacityMin()),
+                        Math.max(normalizeCount(metric.capacityMin()), normalizeCount(metric.capacityMax()))));
+            }
+        }
+        return result;
     }
 
     private Map<String, SubEventResourceMetricDto> resourceMetricsByType(
@@ -927,9 +1076,6 @@ public class ActivitiesResourcesService {
         int capacityMin = 0;
         int capacityMax = 0;
         for (String assetId : assetIds) {
-            // Every assigned resource is itself one open group item. Join or
-            // borrow requests add further pending work on top of that item.
-            pending += 1;
             SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
             AssetDetailDto detail = eligibleAssets == null ? null : eligibleAssets.get(assetId);
             capacityMin += normalizeCount(settings == null ? null : settings.capacityMin());

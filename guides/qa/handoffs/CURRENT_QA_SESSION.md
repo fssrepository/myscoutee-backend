@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-31 14:20 CEST
+Updated: 2026-09-02 11:45 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -11,8 +11,11 @@ file first, then open only the linked active checkpoint section.
 
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
-- Active consolidated Event journey and its ordered source checkpoints:
-  [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing)
+- Consolidated Event scheduler journey and its execution contract:
+  [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
+- Stable user-facing click guide for the active testcase; execution status and
+  machine evidence never belong in this file:
+  [`ASSET-LIFE-001.md`](../checklists/asset/ASSET-LIFE-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -21,7 +24,7 @@ file first, then open only the linked active checkpoint section.
   every CSV/XLSX status change:
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
-  [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+  [`asset-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-domain-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -49,20 +52,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-SLOT-TOURNAMENT-001 — selected; first source checkpoint EVENT-EDITOR-004 is not staged
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing
-checklist: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#recurring-slot-and-sub-event-list-checkpoints
-scenario: The next unclosed Core row in canonical matrix order is EVENT-SLOT-TOURNAMENT-001. Execute its source checkpoints in order, beginning with EVENT-EDITOR-004 and then EVENT-SLOT-001 through EVENT-SLOT-004. The previously closed Tournament rows remain immutable controls and must not be replayed as substitutes.
-ledger_status: DESIGN CAPTURED / NOT RUN — EVENT-SLOT-TOURNAMENT-001
-state: Selection only. ROLE-TRIAD-CORE-001 and JOB-PURGE remain PASS/CLOSED and reset. No Event fixture has been staged and no managed Event browser has been launched for this journey.
-baseline_history: ROLE-TRIAD-CORE-001 and JOB-PURGE are closed with their versioned fixtures reset/not-staged. The ledger and workbook now report 77/116 total, Core 77/96 and Identity & access 8/8.
-required_resume: Do not restage ROLE-TRIAD-CORE-001 or JOB-PURGE. Run the read-only event-domain status gate for EVENT-EDITOR-004 first. If it reports phase=not-staged, stage EVENT-EDITOR-004 once and verify the complete baseline before launching its managed host browser. Do not run any already-closed Tournament producer as part of this consolidated Event row.
-event: EVENT-EDITOR-004 selected; no prepared fixture snapshot
-actors:
-  Casey: host/editor; no managed browser is active yet
-next_actor: Read-only EVENT-EDITOR-004 status gate, then one guarded stage if and only if phase=not-staged.
-queued_followup: After EVENT-EDITOR-004, continue EVENT-SLOT-001 through EVENT-SLOT-004 in source order with separate stage/oracle boundaries.
-stop_phrase: None
+checkpoint: ASSET-LIFE-001 — active
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
+checklist: ../checklists/asset/ASSET-LIFE-001.md
+checklist_section: ../checklists/asset/ASSET-LIFE-001.md#1-create-the-three-type-controls
+substage: create-three-type-controls
+next_replay_boundary: Casey performs checklist steps 1-16 and reports `ASSET-LIFE-001 Create ready: three type controls persist`; then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
+fixture_phase: staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
+browser_phase: one managed Casey Asset lifecycle window is open and authenticated
+ledger_status: 81/118 total, Core 81/98; ASSET-LIFE-001 NOT RUN
+required_resume: keep the staged boundary intact; user follows ASSET-LIFE-001 steps 1-16; after the exact Create phrase run the versioned capture command and continue only from its returned next action
+actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
+pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
+known_contract_gap: source inspection found Java `/assets/restore` but no frontend Asset Trash query/filter or restore caller; the checklist owns this as a later explicit FAIL boundary and forbids an API/Mongo substitute
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -85,14 +87,15 @@ score-correction checkpoints are PASS/CLOSED; the late guard was exercised
 through the real Java route and its retained fixture was reset. Do not replay
 their closed Start/Finalize/result producers when preparing another domain.
 
-Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the childless
-normal-Event runtime contract. A normal Event saved with Slots Off and Sub
-Events Off must write exactly one persisted `MAIN_EVENT` runtime item; View
-Event must query and render that real item instead of an empty list or a
-frontend/query fallback. Real stage or slot cases must not duplicate the parent
-card. This is recorded under the Event domain and remains NOT RUN; it does not
-replace the active Tournament checkpoint or authorize implementation before
-the campaign reaches that row.
+Separate captured Event follow-up: `EVENT-RUNTIME-001` owns the normal-Event
+runtime contract. Slots Off with Sub Events Off renders the one persisted root
+`MAIN_EVENT`. With two Slot definitions and no child definitions, the runtime
+surface renders one `MAIN_EVENT` card inside each Slot; those are independent
+resource scopes while the root runtime is retained inactive. Removing all
+Slots restores that same root runtime. The host enters the whole runtime state
+with `Manage Event`; the runtime header's `Edit` action edits the Event
+definition, while a participant enters the same runtime surface with `View
+Event`.
 
 Separate captured Asset follow-up: Tournament-origin asset behavior remains
 owned by the Asset block instead of duplicating closed Tournament cases.
@@ -102,6 +105,31 @@ owned by the Asset block instead of duplicating closed Tournament cases.
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
+
+Separate captured dummy-payment follow-up: `EVENT-CHECKOUT-DUMMY-001` owns the
+direct Event Explore `Book Event -> Join -> Demo payment/Payment` journey,
+including resumable/cancelled states, no-freeze/exact-once success, accepted
+Activity Events destination and free/approval/waitlist button controls.
+`ASSET-CHECKOUT-DUMMY-001` owns the scoped Resource/Asset Explore
+`Borrow -> Confirm borrow -> Dummy pay/Pay` journey, including draft/session
+reconstruction, pending owner request, terminal acceptance, availability and
+free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
+stable click guides. Their versioned fixtures/browser-session definitions are
+created only when each row becomes active; they do not change the staged
+`ASSET-LIFE-001` boundary.
+
+Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
+open consolidated Core Content row and now has a stable click guide. It creates
+inactive Help/Privacy/Terms/Explanation revisions, activates Privacy with
+per-user consent isolation, deletes one inactive revision, exercises the
+implemented newest-remaining fallback after active Privacy deletion, then
+moves a separate managed-media Article through Published -> Trashed -> Draft
+-> Published while comparing admin buckets, fresh public clients and an
+honestly non-live open client. The older unexecuted active-delete-denial
+assertion was corrected to match Java, frontend-local and the administrator
+manual. Its versioned fixture/browser-session definition is created only when
+the row becomes active; it does not change the staged `ASSET-LIFE-001`
+boundary.
 
 ### Efficient resume gate
 
@@ -165,21 +193,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The original Tournament lifecycle block and both score-reopen checkpoints are
-PASS/CLOSED, and their retained fixtures are reset. The later DQ/Reinstate
-checkpoint and generated-group resource aggregation are also PASS/CLOSED.
-`JOB-TOURNAMENT` is Core PASS/CLOSED from its retained real scheduler and
-idempotency evidence; generic Job Detail/Monitoring presentation is an
-assertion inside the Administration journey `ADMIN-MONITORING-001`. Tournament
-is therefore 15/15 complete. `ROLE-TRIAD-CORE-001` is PASS/CLOSED and reset;
-`JOB-PURGE` is PASS/CLOSED and Identity & access is 8/8 complete after QA
-infrastructure passed 2/2. The consolidated desktop Chat
-flow, actions, rich content and governance journeys plus the closed Chat
-statistics row are PASS/CLOSED and reset. Physical-device Chat push is an
-assertion inside external `DEPLOY-FIREBASE-LIFECYCLE-001`, where the production
-build runs on the dedicated production-like VMware host with a verified active
-Firebase revision and a physical phone. Do not stage or send that message
-during local Core execution.
+Next test: `ASSET-LIFE-001`. The next session first generates and validates its
+versioned fixture, user checklist and browser-session definition, then stages
+the checkpoint once. It verifies the persisted baseline before opening the
+managed browser windows.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -216,13 +233,44 @@ removing an in-request readback must never remove the separate QA read oracle.
 
 ### Manual frontend ownership
 
-**KÖTELEZŐ QA-SZABÁLY: CODEX SOHA TÖBBÉ NEM ELLENŐRZI A FRONTENDET. A FRONTEND KÉZI, VIZUÁLIS ÉS INTERAKCIÓS ELLENŐRZÉSÉT KIZÁRÓLAG A FELHASZNÁLÓ VÉGZI. CODEX KIZÁRÓLAG A FELHASZNÁLÓI LÉPÉS UTÁNI BACKEND/API/PERZISZTÁLT ORACLE-T VALIDÁLJA.**
+**The user exclusively performs and judges every manual, visual and
+interaction check. Codex validates the backend/API/persisted oracle after the
+user action and never substitutes a browser-derived verdict for the user's
+frontend PASS/FAIL.**
 
-The user exclusively performs and evaluates frontend manual, visual and
-interaction checks during this campaign. Codex never performs frontend
-validation, including browser automation, screenshots or a second frontend
-walkthrough. Codex guides one requested step at a time and validates only the
-backend/API/persisted oracle after the user has performed the frontend action.
+Codex owns fixture preparation, isolated browser startup and machine-side
+diagnosis. After the user reports a discrepancy, Codex may inspect the managed
+browser through CDP when logs, API state and persistence are insufficient to
+localize the defect. CDP is diagnostic only: it may inspect the failing
+document's console, network and runtime state, but it must not click through
+the test, manufacture the user's visual evidence or independently declare a
+frontend PASS.
+
+### Pair-QA execution and replay contract
+
+1. Select the next testcase from the canonical CSV/XLSX Pair-QA order and open
+   its stable file under `guides/qa/checklists/`.
+2. Before asking for a user action, Codex provides or reuses a versioned
+   harness with guarded `stage`, read-only `status` and exact `reset`. A complex
+   testcase also gets named replay substages at meaningful causal recovery
+   boundaries. Substages remain inside the same testcase ID; they are not new
+   matrix rows and are not created for every click.
+3. Codex stages the selected baseline, proves it with `status`, prepares any
+   required substage snapshots, and opens the configured isolated actor
+   browsers. The user never has to create fixtures, sessions or windows.
+4. The user follows the unchanged checklist and reports its stop phrase. Codex
+   then runs the independent API/backend/persisted oracle and records the
+   result outside the checklist.
+5. On a reported defect, freeze the current boundary, diagnose the smallest
+   owning scope (including targeted CDP when necessary), repair it through the
+   existing dev pipeline, restore the nearest valid named substage and replay
+   only the shortest causal tail. Do not restart the full testcase unless the
+   failure contaminated its earlier shared baseline.
+6. The handoff must always name the active testcase, checklist section,
+   current substage, persisted fixture phase, live actor/browser state, exact
+   next user action, stop phrase and pending machine oracle. A later session
+   starts with one read-only status gate and resumes from that pointer instead
+   of reconstructing the journey from conversation history.
 
 ### 1. One checkpoint, one transition
 
@@ -244,9 +292,9 @@ coarse: 10 Core capability/operations domains plus the Operator, Payment and
 Deployment deferred boundaries. Their numeric priorities preserve the
 authoritative execution order.
 A generated priority overview places the first five Core domains in its first
-hasáb, the remaining five Core domains in its second hasáb, and reserves the
-third `EXT / optional` hasáb for Operator, Payment and Deployment. The third
-hasáb must therefore always sum to the separate
+column, the remaining five Core domains in its second column, and reserves the
+third `EXT / optional` column for Operator, Payment and Deployment. The third
+column must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
@@ -318,6 +366,25 @@ producer action named by the checkpoint. Codex gives one short manual
 instruction at a time, waits for the stated stop phrase, checks the oracle and
 continues the repair/replay loop without handing the failure decision back to
 the user.
+
+### Functional authenticity gate
+
+Manual QA validates real product functionality, never a fixture-authored copy
+of the expected result. Fixtures may prepare only production-reachable source
+data and ordinary persisted development configuration. They must not fabricate
+or backdate runtime state, `lastRunAtIso`, Runner history, counters, Metrics or
+audit events, completion state, notifications, projections, or user-visible
+outcomes. A setup that does so is **NOT EXECUTED / invalid fixture** regardless
+of whether the final screen looks correct; reset it and redesign the same
+checkpoint before accepting evidence.
+
+For scheduler QA, preserve the genuine last-run state, set the real persisted
+target frequency to the documented short development interval (normally one
+minute), and wait for the already-running scheduler and production worker.
+Never make a rule due by rewriting its last-run timestamp, call the worker
+directly, fabricate history/telemetry, or use the manual `Run` action. The
+machine oracle may read persisted state after the user action, but it may not
+perform the business transition being tested.
 
 A deliberate dev-stack restart may run the repository's full seed reset. That
 reset is authoritative and is allowed to remove live manual-QA transactions;
@@ -395,6 +462,21 @@ record has been removed.
   in the QA matrix. Treat a stale README summary as an incomplete ledger update.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
+- Files under `guides/qa/checklists/` are stable user-facing click guides, not
+  Codex execution checklists. They contain actors, navigation, actions, visible
+  expectations and stop phrases. Never add live status, checked boxes, dated
+  evidence, backend oracles or working notes to them, and never modify them
+  merely because a run advanced or completed. The handoff points to the current
+  guide and step; the QA pack and ledger own results and machine evidence.
+- Testcase identity and fixture transaction identity are one-to-one. A complex
+  journey may have named internal replay substages when they provide a useful
+  recovery boundary, but those substages remain implementation details of the
+  same testcase and do not become separate matrix rows. Do not create one for
+  every click. Retained PASS evidence stays immutable, and a repair replays
+  only the shortest causal tail from the nearest guarded substage. For example,
+  `EVENT-EDIT-RUNTIME-001` remains one transaction with a
+  `runtime-member-clean` replay boundary, while `EVENT-SCHEDULERS-001` is a
+  separate transaction.
 - One producer action or a short causally continuous sequence may stay in one
   row when it shares a baseline and finishes at one decisive oracle.
 - One test case/matrix row may contain two or more named, short tests or
@@ -886,6 +968,15 @@ controls. Actor identity is verified by the script after session injection;
 do not identify users from Google profiles, window order alone or remembered
 sessions.
 
+A managed demo actor must use the same tracked-login contract as the real demo
+entry: register `/api/auth/session/login`, persist the exact `sessionId` beside
+the demo `userId`, and require an authenticated actor-specific `/api/auth/me`
+read before reporting the window ready. URL plus localStorage identity is not a
+readiness check: an enrolled actor without `X-App-Session-Id` receives `401`,
+which the shell may misleadingly present as `No network`. Replacement revokes
+only the launcher's own session IDs and never touches a personal browser or an
+unrelated active backend session.
+
 This workstation has exactly three usable Google-account/browser slots, so QA
 must never launch more than three managed actor windows concurrently. When one
 checkpoint needs UI evidence from more than three identities, split it into
@@ -1002,11 +1093,11 @@ checkpoint replay are the active-session verification path.
 Do not wait through production debounce windows merely because a manual QA
 fixture runs against the dev stack. When the delay itself is not the contract
 under test, expose a dev-only configuration override and keep the real worker
-path: the current event-member recompute default is `15s` in `application-dev`
-and remains `5m` in production. Record the override in the checkpoint, verify
-the existing watcher reload, and never patch an individual task ad hoc. Cases
-whose purpose is timing/debounce must override this explicitly and retain their
-own controlled boundary.
+path: the event-change and event-member recompute defaults are both `15s` in
+`application-dev`; they remain `3m` and `5m` respectively in production.
+Record the override in the checkpoint, verify the existing watcher reload, and
+never patch an individual task ad hoc. Cases whose purpose is timing/debounce
+must override this explicitly and retain their own controlled boundary.
 
 For the profile backend, Gradle continuous `classes` may temporarily remove
 compiled outputs before recreating them. Spring DevTools must therefore use a
@@ -1100,7 +1191,7 @@ checkpoint:
    hard-code those aggregate values during a checkpoint close.
 6. Update only the YAML resume pointer and next manual action in this file. Do
    not copy the detailed evidence or ledger row here.
-7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
+7. Give the next exact manual action. State `Next test: <ID> — ...` only
    when the current checkpoint is fully closed and the ledger has been updated.
 
 This order is the session-efficiency rule: persisted oracle first, canonical

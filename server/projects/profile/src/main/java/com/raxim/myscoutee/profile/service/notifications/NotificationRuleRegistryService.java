@@ -93,6 +93,36 @@ public class NotificationRuleRegistryService {
         return isScheduledRuleDue(rule, now);
     }
 
+    public String nextScheduledRunAtIso(NotificationRuleConfig rule, Instant now) {
+        if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
+            return "";
+        }
+        NotificationRuleConfig.Timing timing = rule.getTiming();
+        if (timing == null || !normalizeScheduleSlots(rule.getScheduleSlots(), timing).isEmpty()) {
+            return "";
+        }
+        Instant resolvedNow = now == null ? Instant.now() : now;
+        String mode = safeText(timing.getMode()).toLowerCase();
+        if ("interval".equals(mode)) {
+            Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
+            if (lastRunAt == null) {
+                return resolvedNow.toString();
+            }
+            ZoneId zoneId = ZoneId.of(firstNonBlank(timing.getTimezone(), "UTC"));
+            IntervalSpec interval = intervalSpec(timing);
+            ZonedDateTime base = lastRunAt.atZone(zoneId);
+            if (INTERVAL_UNIT_MINUTES.equals(normalizeIntervalUnit(interval.unit()))) {
+                base = base.truncatedTo(ChronoUnit.MINUTES);
+            }
+            return plusInterval(base, interval).toInstant().toString();
+        }
+        if ("yearly".equals(mode)) {
+            Instant occurrence = yearlyOccurrence(timing, resolvedNow);
+            return occurrence == null ? "" : occurrence.toString();
+        }
+        return "";
+    }
+
     private boolean isScheduledRuleDue(NotificationRuleConfig rule, Instant now) {
         if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
             return false;
@@ -750,7 +780,11 @@ public class NotificationRuleRegistryService {
             return true;
         }
         IntervalSpec interval = intervalSpec(timing);
-        ZonedDateTime due = plusInterval(lastRunAt.atZone(zoneId), interval);
+        ZonedDateTime base = lastRunAt.atZone(zoneId);
+        if (INTERVAL_UNIT_MINUTES.equals(normalizeIntervalUnit(interval.unit()))) {
+            base = base.truncatedTo(ChronoUnit.MINUTES);
+        }
+        ZonedDateTime due = plusInterval(base, interval);
         return !zonedNow.isBefore(due);
     }
 

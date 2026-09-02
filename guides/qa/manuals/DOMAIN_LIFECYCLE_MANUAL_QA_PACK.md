@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-08-30
+Last updated: 2026-09-02
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -40,7 +40,7 @@ the same prerequisite without depending on an earlier human action.
 | Producer | Persisted output | Direct UI projection | Automatic consumers | Required follow-up cases |
 | --- | --- | --- | --- | --- |
 | Event Editor draft save | Canonical draft event, `event.synced` telemetry, event recompute task | Hosting/Draft event card and reopened editor | Statistics worker, Monitoring projection, affinity recompute worker | `EVENT-EDITOR-001`, `GRAPH-006` |
-| Childless Event runtime materialization | One persisted `MAIN_EVENT` runtime item referencing the canonical Event; no synthetic sub-event definition or `:default` identity | View Event shows one main-event runtime card instead of an empty Sub-events list | None on View/reload; only the owning Event save may write or enqueue normal Event recompute | `EVENT-RUNTIME-001` |
+| Event MAIN_EVENT runtime materialization | One persisted root `MAIN_EVENT` when Slots are Off; one scoped MAIN_EVENT view per Slot when Slots are On without child definitions; no synthetic `:default` identity | Manage Event for the admin and View Event for participants show the same runtime state instead of an empty Sub-events list | None on open/reload; only the owning Event save or explicit runtime/resource mutation may write | `EVENT-RUNTIME-001` |
 | Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
@@ -48,8 +48,10 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
+| Event Explore dummy checkout | One terminal dummy payment, one inactive succeeded basket and one accepted event membership | Event Explore checkout, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute effects only; no external provider, capture or settlement work | `EVENT-CHECKOUT-DUMMY-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
+| Asset Explore dummy checkout | One scoped dummy payment, borrow request, inventory reservation and later owner decision | Resource/Asset Explore basket and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox effects only; no external provider, capture or settlement work | `ASSET-CHECKOUT-DUMMY-001` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
@@ -57,6 +59,8 @@ the same prerequisite without depending on an earlier human action.
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement, accepted participation and attendance | Ticket-enabled event overlay, one physical holder credential and event-scoped member attendance | Event checkout/ticket card, scanner and Event Members | Event publish/terminal acceptance owns ticket creation; first valid check-in owns ticket use plus attendance projection; list/open and rejected revoked QR scans are non-producers | `EVENT-TICKET-001` through `EVENT-TICKET-012` |
+| Governed Content revision save/activation/delete | One scoped inactive revision, later one active revision, privacy-consent boundary and immutable content audit | Admin Content revision cards plus Help/Privacy/Terms/Explanation public viewers | Public content cache/read state; Privacy activation makes only older-revision consent stale; active deletion selects the newest remaining fallback | `CONTENT-ADMIN-LIFECYCLE-001` |
+| Article trash/restore/republish | One soft-deleted then restored Draft article with stable identity/media, followed by explicit Publish | Admin Article All/Published/Drafts/Trashed buckets and fresh landing Articles | Public landing inclusion only for published non-trashed state; already-open lists remain honestly non-live | `CONTENT-ADMIN-LIFECYCLE-001` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 | Operator payment credential and network access policy | Server-held payment token revision plus trusted-client-IP allowlist | Masked payment configuration state and explicit access denial | Payment provider calls and immutable operator security audit | `OPERATOR-PAYMENT-001`, `OPERATOR-PAYMENT-IP-001` |
 
@@ -88,6 +92,10 @@ The principal checkpoint chains are:
 - `EVENT-FEEDBACK-006` is the isolated pending remove/restore branch. Run it
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
+- `EVENT-CHECKOUT-DUMMY-001` is an isolated direct paid-entry journey. It
+  proves the Event Explore review, resumable basket, demo-payment and accepted
+  Activity Events destination without reusing the approval-before-payment or
+  physical-ticket branches in `EVENT-TICKET-005`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
   `EVENT-TICKET-003` -> `EVENT-TICKET-011` -> `EVENT-TICKET-009` ->
   `EVENT-TICKET-004` (Unpublish midpoint) -> `EVENT-TICKET-012` ->
@@ -108,10 +116,18 @@ The principal checkpoint chains are:
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
 - `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
-  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` -> `ASSET-AVAIL-001` ->
+  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` ->
+  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001` ->
   `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
+- `CONTENT-ADMIN-LIFECYCLE-001` is one isolated Content transaction: create
+  inactive Help/Privacy/Terms/Explanation revisions, activate Privacy and
+  prove per-user consent, delete one inactive revision, delete the active
+  Privacy revision with newest-remaining fallback, then move one separate
+  published Article through Trashed -> Draft -> Published while preserving
+  identity and managed media. The already-PASS `ARTICLE-EDITOR-001` and
+  `LANDING-ARTICLE-001` records are immutable controls, not fixture inputs.
 - `OPERATOR-PAYMENT-001` and `OPERATOR-PAYMENT-IP-001` are separate future
   operator-security branches: first prove secret lifecycle, then enforce a
   trusted resolved-client-IP allowlist without relying on frontend hiding.
@@ -734,6 +750,46 @@ Execution evidence on 2026-08-04:
 - Start the visible tournament action or arm only the documented persisted job
   schedule, then continue with `TOURNAMENT-001` through `TOURNAMENT-004`.
 
+Repair replay evidence (2026-09-01, PASS):
+
+- Casey's first manual producer saved one DR Tournament event with Qualifier
+  and Final definitions. The independent persisted oracle proved the submitted
+  definition order and settings, zero generated rooms/groups, zero stage
+  runtime/leaderboard state and exactly one pending `EVENT_CHANGED` recompute
+  task. Grouping/review remained unarmed as required.
+- The pre-Save visual boundary failed: accepting a stage form with its green
+  check updated only the editor model; the already-open Sub Events SmartList
+  did not receive a draft update. The repair publishes the complete normalized
+  definition snapshot through `EventSubeventsPopupStore`, updates the existing
+  SmartList through `syncVisibleItems`, preserves matching runtime metrics,
+  removes deleted stage cards through the same full-snapshot path, discards the
+  preview on an unsaved close and retains the existing full-save signal as the
+  sole server-confirmation reload. No polling was added.
+- Save diagnosis measured the backend `/activities/events/sync` request at
+  approximately 170 ms. Runtime Mongo explain used `event_source_lookup` and
+  `activity_member_owner_user`, each examining one key and one document, so no
+  new index was justified. The frontend nevertheless issued an unconditional
+  Event Detail GET immediately after the acknowledged POST. Interactive Save
+  now merges the compact server response into the complete submitted detail
+  DTO and removes that redundant critical-path read; independent QA readback
+  remains unchanged.
+- The running Angular watcher compiled and deployed the repair without errors.
+  The controlled fixture was reset, proved `not-staged`, and restaged at
+  `2026-09-01T03:11:23.190Z`. Because the fixture and bundle changed behind the
+  retained Casey window, the shortest visual replay begins with one explicit
+  reload and must inspect the Sub Events cards after each stage check before
+  the single parent Save.
+- Casey reported the shortest visual replay complete. The final independent
+  oracle proved the exact `Qualifier -> Final` definition order, group capacity
+  `2..4`, Score leaderboards, advancement `1 -> 0`, one unchanged accepted
+  Admin and zero generated group/room/runtime/leaderboard state. Exactly one
+  pending `EVENT_CHANGED` recompute task exists. The Save trace contained no
+  immediate Event Detail GET; the next Detail GET occurred 46 seconds later
+  for the explicit reopen. The owning database request trace narrowed from
+  approximately 170 ms before repair to 123 ms after repair. Source checkpoint
+  `EVENT-EDITOR-004` is **PASS**; the consolidated journey continues with
+  `EVENT-SLOT-001`.
+
 ### `EVENT-EDITOR-005` — edit an active downstream definition
 
 - Change one downstream-relevant field at a time: ticketing, capacity,
@@ -743,19 +799,243 @@ Execution evidence on 2026-08-04:
 - Verify removed definitions are no longer presented as active resources,
   groups or reminders.
 
+Execution evidence (2026-09-01, PASS):
+
+- The isolated active baseline contained Casey and Nova as the two accepted
+  members, maximum/total capacity `8 / 8`, and no lifecycle notification,
+  outbox or recompute artifact.
+- Casey opened `Manage Event`, changed only maximum capacity from `8` to `7`
+  and saved once. The Activities SmartList patched the visible card on the fly
+  from the returned Save DTO; it did not reload the list.
+- The independent persisted oracle retained status `A`, publication, both
+  accepted identities, minimum capacity `1`, the empty legacy
+  frequency/timeframe/location values, null coordinates, Slots Off and Sub
+  Events Off. Only maximum/total capacity changed to `7 / 7`.
+- Exactly one completed `event-definition-changed` task targeted Nova with
+  reason `details`, produced one `event-details-changed` notification/outbox,
+  and exactly one `EVENT_CHANGED` recompute completed on attempt 1 with an
+  empty error. Reopen plus a second Save without changes added no write, task,
+  notification or recompute.
+- The accepted-member count is the published capacity floor; an outstanding
+  invitation does not reserve capacity. Frontend and backend regression
+  sources cover a decrease to the accepted count and the no-op boundary. The
+  running frontend/backend owner builds passed. A capacity-only Manage Save
+  was also narrowed so ticket synchronization, full event-counter projection
+  and stage-reminder reconciliation stay off its response-critical path;
+  ticketing enablement retains those consumers.
+
 ### `EVENT-RUNTIME-001` — childless Event materializes its main runtime card
 
-- Start from one isolated normal Event definition with Slots Off and Sub Events
-  Off. Before the owning Save, require no runtime item for the new identity.
-- Save once through the normal Event write path. The write must persist exactly
+The stable user-facing click guide is
+[`EVENT-EDIT-RUNTIME-001`](../checklists/event/EVENT-EDIT-RUNTIME-001.md). Its
+complete journey and focused regression remain one testcase transaction. The
+guide never stores live status or machine evidence.
+
+- Campaign correction on 2026-09-02: the 2026-08-04 `EVENT-EDITOR-001`
+  create/save/reopen PASS predates persisted MAIN_EVENT support, which entered
+  in commit `2f42d464` on 2026-09-01. Neither that historical create run nor
+  `EVENT-EDITOR-005` therefore proves the current create -> MAIN_EVENT
+  contract. The initial `EVENT-RUNTIME-001` harness also modeled the wrong
+  transaction boundary: it staged an already-created Event with no runtime and
+  allowed a capacity edit to materialize MAIN_EVENT. That made the later tail
+  testable but did not prove creation semantics. The retained evidence below
+  remains valid for the mutations it actually exercised; it is not retroactive
+  create evidence.
+- Corrected complete-run contract: normal `stage` now produces an exact empty
+  `pre-create` Event/runtime boundary plus three active, unassigned Casey-owned
+  fixtures: one Transport, one Accommodation and one Supplies asset. Casey
+  creates and Saves the Draft through the UI with Slots Off/Sub Events Off and
+  proves one root MAIN_EVENT, then assigns the Transport at that root scope.
+  The same Draft is saved with exactly two Slot definitions. The runtime view
+  must then show exactly one slot-scoped MAIN_EVENT card in each Slot; the root
+  runtime remains persisted once with status `D` and must not appear as a third
+  card. Casey assigns Accommodation only to the first Slot and Supplies only to
+  the second and proves that the scopes do not leak. Removing both Slots and
+  turning Slots Off must reactivate the original root runtime document,
+  `recordId` and `syncKey`, restore its Transport, and expose neither Slot
+  assignment. Publish preserves it. Only after those human-visible transitions
+  does Codex prepare Nova as accepted and capture the replayable `post-create`
+  boundary at `2 / 8`. This Slot round trip and the later runtime/resource tail
+  remain one `EVENT-EDIT-RUNTIME-001` transaction.
+- Historical preparation on 2026-09-01: the versioned fixture was staged with one active
+  canonical `QA EVENT-RUNTIME-001`, Casey and Nova accepted, capacity `2 / 8`,
+  Slots Off, Sub Events Off, zero definitions/slots and zero runtime items.
+  The two managed Casey/Nova browser sessions are open. The first bounded
+  mutation is Casey's Max capacity `8 -> 9` Manage Save. Its Activities card
+  must update on the fly from the returned Save DTO; only the subsequently
+  opened View Event/Sub Events surface loads the persisted runtime from the
+  server. This run exposed that the generic three-minute event-change debounce
+  was still inherited in dev. Manual QA must not wait through that production
+  window when debounce timing is not under test, so `application-dev` now uses
+  a `15s` event-change override while production retains `3m`; the already
+  queued task was not patched by the fixture.
+- Casey completed the owning Max capacity `8 -> 9` Save. The persisted oracle
+  contains one unchanged canonical Event identity, accepted Casey/Nova, capacity
+  `2 / 9`, zero definitions/slots and exactly one active runtime with
+  `runtimeKind=MAIN_EVENT`, canonical `eventId=ownerId`, `subEventId=null` and
+  no duplicate Event. The backend request thread ran from its first auth/query
+  at approximately `07:34:39.952 CEST` to its last observed database read at
+  `07:34:40.174 CEST` (about `222ms`), so the perceived Save did not materially
+  improve over the prior roughly `231ms` trace. The removed ticket sync, full
+  counter projection and stage-reminder reconciliation are absent; the
+  remaining synchronous work includes Event/runtime persistence, affinity-task
+  enqueue/admin pending counters and definition-change task scheduling. Actual
+  notification delivery ran on `task-controller`, outside the response thread.
+- A read-only wiring audit of the main runtime card's **Transport**,
+  **Accommodation** and **Supplies** menus found that the list sent the canonical
+  Event as `ownerId` and the persisted `main-event:<eventId>` runtime record ID
+  as a stable physical resource-scope key, but the popup request dropped
+  `runtimeKind/eventId`, reconstructed the target as `optional=true` and derived
+  sub-event member/chat identity. The repair now carries both fields across the
+  popup boundary, reconstructs `MAIN_EVENT` with `optional=false`, keeps the
+  non-null physical scope ID required by the existing resource API, and derives
+  logical `ownerType=event` plus `mainEvent` chat identity. The focused
+  `EVENT-RUNTIME-001` regression and ordinary-subevent negative control passed
+  with the full `activity-resource.builder.spec.ts` source at `8/8`; the running
+  frontend owner build also passed and deployed. Manual popup/reload confirmation
+  remains, and this implementation step did not mutate the retained fixture.
+- Casey reloaded the deployed frontend and manually confirmed the bounded
+  MAIN_EVENT card/resource checklist. The post-read versioned oracle returned
+  `activityResources=[]`, no runtime-scoped member or chat artifact, unchanged
+  Casey Admin plus Nova Member at `2 / 9`, and the same single MAIN_EVENT
+  `recordId`, `syncKey`, created/updated timestamps and canonical owner/event
+  identity. Thus Casey's Transport/Accommodation/Supplies and Event Members
+  inspection is read-only PASS; the terminal real assignment remains.
+- Campaign scope correction: the duplicate Nova popup replay is dropped as
+  low-value microtesting. Casey instead performs one real Transport assignment
+  from the MAIN_EVENT card. The mutation oracle requires exactly one resource
+  record with canonical Event `ownerId`, physical
+  `subEventId=main-event:<eventId>`, Casey as asset owner and exactly one
+  Transport asset ID; the corresponding Asset request is accepted and scoped
+  to the same runtime. Reopen plus full reload must return that same assignment
+  without a synthetic sub-event/member/chat or unrelated lifecycle work.
+- The first Assign popup correctly rendered its empty state because Casey had
+  no Transport asset. The versioned harness command
+  `prepare-runtime-transport` snapshots the deterministic asset selector before
+  inserting Casey's `QA Main Event Transport`; normal checkpoint reset therefore
+  removes/restores it exactly. Since this preparation happened behind an open
+  client, one explicit reload is required before the selector is reopened.
+- Casey assigned the deterministic Transport once. The persisted oracle proved
+  one canonical resource record at `main-event:<eventId>` and one accepted
+  owner Asset request, with the MAIN_EVENT runtime unchanged. The open card menu
+  nevertheless remained `0 / 0 - 0`: the Asset selector first omitted
+  `publishSubEventResourceMetrics`. After signal publication was restored, Casey
+  proved that the client still recomputed accepted occupancy as `0` instead of
+  consuming the successful save DTO's canonical `accepted=1` metric. A full
+  reload independently returned `0 / 0 - 0` because the synthetic list-shaped
+  MAIN_EVENT DTO was initialized with zero resource fields and did not hydrate
+  its stable `eventId + main-event:<eventId>` resource scope. The follow-up
+  repair applies the save DTO before signal publication and loads that same
+  indexed runtime resource scope on MAIN_EVENT reload; no definition identity is
+  involved. It also removes a redundant Asset-detail GET before background
+  request persistence. The measured blocking resource POST itself was about
+  `275ms`, with indexed lookups and normal projection refresh rather than a
+  multi-second query. Both frontend/backend hot-deploy owners compiled and
+  restarted successfully. The subsequent terminal retest proved reload
+  persistence at `1 / 0 - 4` and one remove/reassign cycle with immediate
+  `1 -> 0 -> 1` convergence from successful save-response signals. That full
+  tail is retained accepted evidence. The user later selected a fresh complete
+  replay, so the current run includes it after the corrected create/Slot
+  boundary.
+- The assigned Transport's **Members -> Invite** integration then exposed a
+  separate scope handoff defect inside this same MAIN_EVENT journey. The Save
+  persisted Nova as a global Asset member and mirrored an unscoped `borrow`
+  request, so the immediate client signal briefly showed a red badge but the
+  scoped Members query correctly returned neither row after reopen/reload. The
+  repair forwards canonical Event plus `main-event:<eventId>` into the Asset
+  member replacement and preserves admin `invite` separately from a member's
+  `borrow`. A guarded versioned cleanup removed exactly the leaked Casey/Nova
+  global Asset-member rows and Nova's one unscoped request/projection while
+  retaining the assigned Transport, its accepted manual scoped request and its
+  resource record. The bounded replay begins with one Nova invite, close/reopen
+  and one reload: Nova must remain once as pending, the red Transport pending
+  badge must be `1`, and accepted occupancy must remain `1 / 0 - 4`. The
+  assigned/open resource contributes to occupancy, never to the red pending
+  badge. It now also owns the
+  causally adjacent **Delete invitation** reversal: delete Nova once, require
+  her row and pending header count to disappear immediately, and require the
+  Transport badge to return `1 -> 0` and disappear without a list reload.
+  Close/reopen Members and reload once; Nova must remain absent, the red badge
+  must remain absent, occupancy must remain `1 / 0 - 4`, and persisted resource metrics must
+  be exactly `accepted=1/pending=0`. The Asset keeps only the accepted manual
+  owner request in the same Event/MAIN_EVENT scope, its request projection
+  stays exactly one, and no global Asset-member row, duplicate affinity enqueue
+  or unchanged Event participation rewrite is allowed. This is the MAIN_EVENT
+  integration assertion; the later `ASSET-MEMBER-001/002` cases still own the
+  full generic Asset invitation lifecycle.
+- Casey accepted the scoped invite/reload branch and then confirmed that
+  **Delete invitation** is functionally correct but feels slightly slow. The
+  second complete pre-optimization delete request ran from its first observed
+  backend read at `11:24:10.512 CEST` to its last at `11:24:10.600 CEST`
+  (about `88ms`) and crossed Mongo 52 times: 42 reads/counts, four saves, one
+  remove, three updates and two aggregations. The independent checkpoint status
+  after that delete proves one unchanged MAIN_EVENT runtime, one Transport
+  assignment with persisted `accepted=1/pending=0`, exactly one accepted manual
+  owner request/projection, and no Nova request or global Asset-member row. The
+  trace also proved two avoidable write-path effects: the scoped Asset action
+  enqueued `ASSET_REQUESTS_CHANGED` again after the owning Asset sync had already
+  done so, and resource-only refresh rewrote unchanged Event participation.
+  The performance repair removes only those redundant paths and skips the
+  meaningless childless-MAIN_EVENT sub-event participation lookup. The existing
+  backend hot-deploy owner compiled in 2s and restarted successfully. A shortest
+  invite-as-precondition -> Delete replay remains available for focused future
+  latency checks; the current user-selected run is the complete journey.
+- **Complete replay PASS/CLOSED on 2026-09-02.** Casey created the canonical
+  Draft through the UI and proved the persisted root MAIN_EVENT before any
+  Publish. Two Slot definitions then produced exactly two Slot sections with
+  one slot-scoped MAIN_EVENT card each; first-Slot Accommodation and second-Slot
+  Supplies stayed isolated while the original root runtime remained once at
+  status `D`. Removing both Slots exposed an empty-enabled-toggle defect. The
+  repaired Save canonicalized zero Slot/Sub Event definitions to Off,
+  reactivated the original root runtime and restored only its Transport; the
+  user accepted the corrected presentation and Publish. The captured
+  post-create fixture added Nova as the already-covered Event-membership
+  prerequisite at `2 / 8`; `EVENT-INV-001/003` remain the owners of manual
+  Event invite/accept behavior.
+- The capacity-only Save changed the Event to `2 / 9` without replacing runtime
+  document `6a9790503071603425ae103d`, recordId
+  `main-event:h1788317751991` or syncKey
+  `0e21c605-865c-4e49-bd89-b5288cf3df82`. Event Members showed Casey Admin and
+  Nova Member once each. Root Transport remained `1 / 0 - 4`; Accommodation
+  and Supplies were empty with no red counter. The scoped Nova Transport invite
+  produced exactly pending `0 -> 1`, and Delete removed the pending request,
+  projection, header and red counter immediately and after reopen/reload while
+  preserving accepted occupancy. The final Remove/Reassign round trip passed
+  through the UI and the terminal oracle retained exactly one accepted Casey
+  manual request/projection, zero pending/member rows and the same root
+  resource at accepted `1`, pending `0`, capacityMax `4`.
+- The final Asset recompute completed at
+  `2026-09-02T03:39:01.795480583Z` with empty `lastError`. Manual QA also exposed
+  that the shared dev platform parameters still carried production-length
+  Event/Asset debounce values. The versioned `demo_db` platform seed now uses
+  `15s` for Event changed, Event members changed, Asset changed and Asset
+  requests changed. This changes only dev timing configuration; the Java path
+  and production behavior remain identical.
+- Start from the versioned empty `pre-create` boundary. Casey creates one exact
+  normal Casual Draft at capacity `1 / 8`, with Slots Off and Sub Events Off.
+  Before the first Save, require no Event or runtime for the reserved title.
+- Save once through the normal Event create path. The write must persist exactly
   one runtime item with `runtimeKind=MAIN_EVENT`, the canonical `eventId` and
   runtime owner, and `subEventId=null`. It must not insert a fake sub-event
   definition, copy the full Event into a second canonical Event document or
   create a synthetic `:default` child identity.
-- Open **View Event** as the host. The runtime query must return that persisted
+- Open **Manage Event** as the host. The runtime query must return that persisted
   item and the UI must show exactly one card using the main Event title,
   timeframe and location. The Sub-events surface must not show `No items`, an
   empty child section or a second copy of the same Event.
+- Assign `QA Main Event Transport` to the root MAIN_EVENT. Use the runtime
+  header's **Edit** action to edit that same Draft, enable Slots and add exactly
+  two distinct Slot definitions. After Save, each Slot must contain exactly one
+  MAIN_EVENT card. The root card must not coexist as a third card; its persisted
+  runtime remains one document with status `D`. Assign `QA Slot Accommodation`
+  only to the first Slot and `QA Slot Supplies` only to the second and prove
+  both scopes remain isolated. Edit again, remove both Slots and turn Slots
+  Off. After Save, Manage Event must show the original root MAIN_EVENT again
+  with its original document ID, `recordId`, `syncKey` and Transport assignment,
+  while neither Slot assignment is visible. Publish once; it must preserve that
+  identity. Codex then captures this state as the `post-create` replay boundary
+  and prepares Nova accepted at `2 / 8` without treating that fixture
+  prerequisite as create evidence.
 - Share that Event into one accepted Event/Group chat, then open the shared
   Event card as a participant. It must enter the same canonical **View Event ->
   Sub Events** runtime surface, not a chat-specific read-only form. The same
@@ -765,7 +1045,9 @@ Execution evidence on 2026-08-04:
 - The card is main-Event scoped: the Event-level Members action remains
   available and shows the canonical creator/Admin once with matching accepted,
   pending and capacity counts. Other normal Event-level actions and configured
-  resources remain available under the real Event/runtime owner identity.
+  resources must remain available under the real Event/runtime owner identity.
+  The repaired popup handoff preserves that identity; the retained run still
+  needs the bounded manual Transport/Accommodation/Supplies open/close check.
   Tournament-only Groups, stage, Finalize and leaderboard actions are absent.
 - Every badge is state-driven. With the clean baseline there is no red counter;
   a pending member or resource may add only its documented counter and must not
@@ -773,13 +1055,19 @@ Execution evidence on 2026-08-04:
 - Close and reopen View Event, switch Upcoming/Past where applicable and reload
   once. All reads are `X`: the same one runtime item/card remains, and no Event,
   runtime, member, resource, task, outbox, chat or notification write is added.
-- Independent persisted oracle: one canonical Event, one `MAIN_EVENT` runtime
-  item, zero sub-event definitions/items and zero generated slots. Query and UI
-  identities/counts must match those records exactly.
+- Independent persisted oracle: at the root boundary there is one canonical
+  Event and one active root `MAIN_EVENT`. At the two-Slot boundary there are
+  exactly two active Slot templates and exactly one derived MAIN_EVENT view per
+  Slot, backed by isolated resource owner/subEvent scopes, while the persisted
+  root runtime exists once with status `D`. After Slot removal the same root
+  runtime is active again and only its Transport assignment is visible. Query
+  and UI identities/counts must match those records exactly.
 - Control coverage stays in the existing cases: `EVENT-EDITOR-004` proves that
   real stage definitions do not also receive a `MAIN_EVENT` duplicate, while
-  `EVENT-SLOT-001` proves each real occurrence/definition is returned without a
-  parent main-event card being copied into every slot.
+  `EVENT-SLOT-001` proves occurrence materialization for real child
+  definitions. Those controls do not replace this testcase's explicit root
+  MAIN_EVENT -> two independently scoped Slot MAIN_EVENT cards -> restored root
+  MAIN_EVENT transition.
 
 ## Recurring slot and Sub-event list checkpoints
 
@@ -797,8 +1085,88 @@ Execution evidence on 2026-08-04:
   synthetic `:default` child. Reopen, paging, calendar navigation and
   Upcoming/Past switching are read-only.
 
+First producer and repair evidence (2026-09-01, repair replay pending):
+
+- Casey correctly entered a Weekly parent range from September 2 at 10:00 to
+  October 7 at 12:00 PM, enabled Slots and saved one Wednesday 10:00 template
+  while retaining the exact Tournament Qualifier/Final definitions. Upcoming
+  omitted the October 7 occurrence.
+- The independent oracle ruled out an AM/PM entry error. The parent bounds were
+  stored as `2026-09-02T08:00:00Z` and `2026-10-07T10:00:00Z`, but the template
+  remained timezone-less `2026-09-02T10:00`. The server therefore compared a
+  10:00-12:00 local-looking final slot to a 10:00 UTC-normalized parent end and
+  excluded it. A later raw Mongo read proved the template identity was stable
+  as embedded `_id=slot-1`; the harness had falsely projected only `item.id`
+  and was repaired to accept Mongo's embedded `_id` representation.
+- The save trace showed `/events/sync` followed by `/sub-events` only about five
+  seconds later. The list-owned save effect previously invalidated its query;
+  it did not imperatively invoke the already-mounted SmartList loader.
+- The frontend persistence boundary now converts non-closed template starts to
+  ISO instants together with the parent bounds, without mutating the editor
+  model. The matching save effect now clears its canonical load keys and calls
+  the Sub Events SmartList `reload()` directly, falling back to a query revision
+  only when the list is not mounted. The save still produces one canonical
+  Sub Events GET rather than a duplicate request.
+- The running frontend watcher compiled and deployed the repair without errors
+  in 9.339 seconds at `2026-09-01T03:31:16.836Z`. The repair replay must retain
+  the already-open list, Save once without changing the verified values, and
+  show six unique Wednesday sections from September 2 through October 7, each
+  containing Qualifier then Final exactly once. Persisted/read-side evidence is
+  still required before PASS.
+- First reload repair retest: Saves at 05:34:39, 05:35:44 and 05:36:24 were not
+  followed by a list-owned `/sub-events` request; the only 05:35:17 load came
+  from Casey's manual browser reload. The parent Activities effect consumed and
+  cleared the shared save message before the nested Sub Events effect observed
+  it. Event Editor now emits a dedicated durable, monotonically revisioned
+  event-save reload request through the Sub Events store. The matching open
+  list observes that request directly and invokes its own SmartList loader; no
+  unrelated Activities consumer clears it. The watcher compiled this repair in
+  5.748 seconds and synced it at `2026-09-01T03:38:01Z`.
+- PASS after the dedicated reload repair: Casey extended the parent end to
+  October 14 and saved once. The matching `/events/sync` completed at
+  05:40:24.211 and the already-open Sub Events owner began `/sub-events` at
+  05:40:24.228, 17 ms later, without a browser reload. Casey then restored the
+  required October 7 12:00 PM boundary; the 05:41:29.590 Save was followed by
+  the list load at 05:41:29.605, 15 ms later, and the October 14 section was
+  removed without reopen.
+- The final persisted oracle contains one DR Weekly Tournament parent ending
+  `2026-10-07T10:00:00Z`, one open `slot-1` template at
+  `2026-09-02T08:00:00.000Z`, the exact Qualifier/Final definitions, one
+  accepted Casey Admin and no generated rooms, tournament groups, stage runtime
+  or leaderboard state. The read endpoint returns exactly six unique weekly
+  sections from September 2 through October 7, all under `slot-1`; each section
+  contains Qualifier then Final once with occurrence-scoped times and no
+  `MAIN_EVENT` or `:default` child. Source checkpoint `EVENT-SLOT-001` is
+  **PASS**.
+
 ### `EVENT-SLOT-002` — future occurrence operation gating
 
+- Clean verdict baseline (`2026-09-01T04:07:16.244Z`): independently staged active
+  Public Weekly Tournament `QA EVENT-SLOT-002` with accepted Casey Admin and
+  accepted Nova Member. The read-only harness/API oracle returns future sections
+  September 8 and 15, each with `Qualifiers` then `Final` in
+  `RS`/`awaiting-tournament-start`, and no stage runtime, generated group,
+  leaderboard, recompute-task, outbox or notification state.
+- Exact visible expectation: Casey's event-card menu includes `Manage Event`
+  and `View`; Nova's includes `View` but no `Manage Event` or `Edit Event`.
+  Across both future sections, the Qualifiers and Final runtime menus expose
+  only `Groups` to both actors. `Start Stage`, `Close Stage`,
+  `Finalize Stage`, `Reopen Scores`, `Suspend Tournament` and
+  `Resume Tournament` must all be absent.
+- Retained repair evidence: the first manual inspection left the read-only path
+  by performing Unpublish -> Publish. The local Event Editor sync exposed
+  `Multislot`, but a subsequent list poll could replace it because `EventDto`
+  and the narrow list-card projection omitted `slotsEnabled`. The same local
+  sync also rendered organizer initials when its detail DTO lacked the enriched
+  avatar. The repair adds `mode`/`slotsEnabled` to the backend list contract and
+  projection, preserves organizer/avatar fields in HTTP cloning, and applies
+  one organizer enrichment helper to Create/Save and Publish/Unpublish display
+  sync. Backend and frontend hot-deploy both compiled successfully. The
+  hard-reload publication replay visually passed with the real Casey avatar and
+  structural `Multislot` badge stable in Draft, Active and after polling. That
+  contaminated run was reset; the clean verdict baseline above was restaged and
+  its read-only status confirms zero lifecycle/recompute tasks, outbox,
+  notifications, runtime, generated groups or leaderboard rows.
 - Inspect the controlled future occurrences as host and participant.
 - Verify members, transport, accommodation and supplies actions follow the
   saved definition and actor permission. Structure editing is host-only.
@@ -807,9 +1175,40 @@ Execution evidence on 2026-08-04:
   actions at all.
 - Opening any runtime menu is an `X` write checkpoint: no task, outbox or
   stage-runtime mutation is allowed.
+- Final verdict (`2026-09-01`): **PASS**. Casey and Nova confirmed the expected
+  future-occurrence presentation and operation gating. The post-inspection
+  Docker-backed oracle remained identical to the clean baseline: both accepted
+  memberships and both RS definitions were unchanged, while lifecycle tasks,
+  recompute tasks, outbox, notifications, stage runtime, generated groups and
+  leaderboard rows all remained empty. Source checkpoint `EVENT-SLOT-002` is
+  **PASS**.
 
 ### `EVENT-SLOT-003` — close one past generated stage
 
+- Corrected clean baseline (`2026-09-01T04:19:57.213Z`): active Public Weekly Tournament
+  `QA EVENT-SLOT-003`; recent-past slot start `2026-09-01T01:19:57Z`;
+  only that slot's Qualifiers has an RS `awaiting-tournament-start` runtime,
+  one active Group A with Nova/Riley and leaderboard scores 7/4. The parent
+  definitions and September 8 occurrence are controls. Lifecycle/recompute
+  tasks and outbox are empty before the direct action.
+- Retained fixture-repair evidence: the first Close attempt exposed that the
+  raw Mongo fixture wrote the embedded template key as `id`, while the real
+  Java persistence shape uses `_id`. The sub-events API therefore produced a
+  malformed `:slot::2026-09-01...` owner and the action created a second SR
+  runtime beside the intended RS runtime. This run is ineligible for a product
+  verdict. The fixture now uses `_id`; reset/restage and API identity parity are
+  required before replaying Close. The corrected restage passed that gate: the
+  API returns the full stable template-bearing owner ID, one RS Qualifiers
+  runtime, and zero pre-action task/outbox rows.
+- The corrected UI replay then targeted that one runtime successfully, but
+  exposed a second count mismatch. The first fixture stored only its manual
+  Group A as `groupsCount=1`; an interim fixture matched the then-current
+  production sum at `3`. The following leaderboard checkpoint proved that the
+  generated Group A and persisted manual Group A share the same group ID and
+  are one logical group, so appending and counting both was a product merge
+  defect rather than a canonical third group. The backend now overlays the
+  persisted group by ID and both runtime-count paths count unique IDs. The
+  fixture therefore derives the canonical two groups.
 - Use the helper's exact `recentPastSlotId`, select Past order and locate its
   Qualifier stage.
 - The ended RS/A stage exposes Close Stage; future and unrelated occurrence
@@ -819,6 +1218,16 @@ Execution evidence on 2026-08-04:
   remain unchanged.
 - The direct mutation may enqueue normal event recompute, but it is not proof
   that `event-tournament-review` ran.
+- Final verdict (`2026-09-01`): **PASS**. Casey's clean UI route and the final
+  authenticated HTTP regression replay both targeted the same full
+  template-bearing slot owner. The clean post-fix replay staged at
+  `2026-09-01T04:39:43.360Z`; exactly one runtime changed `RS` -> `SR` with
+  reason `stage-closed`, canonical `groupsCount` remained `2 -> 2`, parent
+  definitions stayed RS, Group A and Nova/Riley scores 7/4 were byte-stable,
+  and no room, generated group or tournament-review state appeared. The direct
+  producer created exactly one pending `EVENT_CHANGED` recompute and two
+  participant notification outbox rows. The fixture was reset and proved
+  `not-staged`. Source checkpoint `EVENT-SLOT-003` is **PASS**.
 
 ### `EVENT-SLOT-004` — slot-scoped leaderboard
 
@@ -831,6 +1240,69 @@ Execution evidence on 2026-08-04:
   its documented tournament-input recompute.
 - Finalize/advance belongs to `TOURNAMENT-003`, so this checkpoint stops at the
   leaderboard boundary instead of combining the whole tournament lifecycle.
+
+Execution and repair evidence (`2026-09-01`):
+
+- The clean baseline staged at `2026-09-01T04:34:10.060Z` as active Public
+  Weekly Tournament `QA EVENT-SLOT-004`. Its recent-past occurrence was
+  `2026-09-01T01:34:10Z`; Qualifiers was `SR`/`stage-closed` with canonical
+  `groupsCount=2`, one persisted Group A membership for Nova/Riley and exact
+  slot-scoped score entries 7/4. The September 8 occurrence, parent
+  definitions, recompute tasks, outbox, rooms and generated groups were clean
+  controls.
+- Read-only preflight found two product defects before the user action. The
+  frontend stage snapshot loaded groups with the slot ID but loaded leaderboard
+  data with the parent event ID. The backend also appended a persisted manual
+  override after the generated group with the same ID, producing duplicate
+  Group A and an inflated runtime count. The frontend now uses the selected
+  slot owner for both snapshot requests; the backend overlays same-ID persisted
+  groups and both runtime-count paths count unique IDs. Focused regression
+  sources cover slot-owner selection and same-ID overlay. The already-running
+  Angular and Java hot-deploy owners compiled and deployed the changes
+  successfully without a parallel build or test process.
+- The clean post-repair API baseline returned exactly Group A once with Nova
+  and Riley, generated empty Group B once, Nova/Riley totals 7/4, and no score
+  entries in the September 8 control occurrence. Casey then completed the
+  manual Groups/Standings/History flow and reported the presentation correct.
+- The single Save at `2026-09-01T04:36:27.142609152Z` inserted exactly one
+  score row under the September 1 slot, Qualifiers, Group A and Nova identity:
+  value `+3`, note `EVENT-SLOT-004`. The reopened API state was Nova total 10
+  with two updates and Riley total 4 with one update; the September 8 control
+  retained zero entries and zero non-zero totals. Runtime status/count, Group
+  A membership, parent definitions and unrelated domain state were unchanged.
+- The producer inserted one slot-targeted tournament-input affinity recompute
+  task immediately after Save. The existing worker processed it at
+  `2026-09-01T04:36:51Z`; no review, lifecycle, notification, room or generated
+  group side effect was attributed to the read or Save. Final verdict:
+  **PASS**. The fixture was reset. Source checkpoint `EVENT-SLOT-004` and the
+  consolidated `EVENT-SLOT-TOURNAMENT-001` journey are **PASS/CLOSED**.
+
+## Event scheduler checkpoint
+
+### `EVENT-SCHEDULERS-001` — isolated Event background-worker lifecycle
+
+Execution evidence (`2026-09-02`):
+
+- `Automatic room assignment` completed through the real scheduler with six
+  affected users. Its required notification-outbox wake-up also ran exactly
+  once; the persisted oracle proved two 3/3 rooms, unique membership, two Event
+  and Chat projections, two main Event runtime cards, welcome messages and
+  exact user-counter deltas. The repaired runtime card was confirmed in the UI.
+- `Close past events` completed once with one affected Event and once with zero
+  work. The second pass preserved the first-pass domain fingerprint. The user
+  confirmed the retained Past card, `1 / 8` badge, main Event runtime and the
+  exact counter transition.
+- `Delete expired baskets` was replayed in isolation. The real scheduler ran
+  once at `2026-09-02T08:18:21.059040243Z`, completed with one affected item
+  and moved Metrics from `1186/1186` to `1187/1187`. The expired basket became
+  `deleted` with reservation/counter tracking cleared; the future-control
+  basket and Event remained byte-identical. Without reloading Explore, the
+  user confirmed the Basket disappeared and the Event menu returned to
+  `Book Event`.
+- No UI `Run`, direct worker endpoint, fabricated runtime/history value or
+  duplicate process was used. The fixture reset restored every target and
+  isolated rule configuration; final status is `phase=not-staged` and
+  `prepared=false`. **PASS/CLOSED.**
 
 ## Event lifecycle and bucket checkpoints
 
@@ -1337,15 +1809,17 @@ Execution evidence in progress on 2026-08-14:
 
 Execution evidence on 2026-08-04:
 
-- PARTIAL UI PASS: Riley could open the invitation card and the event's
+- LOCAL UI PASS / CLOSED: Riley could open the invitation card and the event's
   read-only view. The editor fields were disabled, and no event chat or
   participant-resource action was visible. Invitation-specific View, Accept
   and Reject actions were present.
-- OPEN AUTHORIZATION CHECK: the event uses Open Event member preview, so the
+- The event uses Open Event member preview, so the
   Members affordance is expected to be visible. The demo session bypasses the
-  production authenticated access-policy gate; therefore this UI pass cannot
-  prove the required direct/deep-link server denial. Repeat that half in a
-  Firebase-enabled, non-demo operator configuration.
+  production authenticated access-policy gate. The Firebase-authenticated
+  direct/deep-link denial is therefore migrated as an explicit assertion into
+  `DEPLOY-FIREBASE-LIFECYCLE-001`, where it can be exercised with a verified
+  non-demo identity. It no longer blocks the local Event pass and must not be
+  replayed as an Event microcheck in the demo stack.
 - The Members screenshot also exposed `EVENT-MEMBER-CREATOR-001`; that separate
   canonical-membership failure does not decide this privacy checkpoint.
 
@@ -2444,6 +2918,81 @@ Status: **PASS** on 2026-08-05.
   `1`, vanished immediately after opening the tile, then returned as `1` on the
   next poll. No feedback was submitted, removed or otherwise mutated. Keep this
   as a separate checkpoint from `EVENT-IMPRESSION-001`.
+
+## Event dummy-checkout checkpoint
+
+### `EVENT-CHECKOUT-DUMMY-001` — Event Explore dummy payment reaches accepted participation
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`EVENT-CHECKOUT-DUMMY-001.md`](../checklists/event/EVENT-CHECKOUT-DUMMY-001.md).
+
+This is the direct paid-entry contract. It does not reuse
+`EVENT-TICKET-005`, whose staged Event deliberately requires Admin approval
+before payment and therefore never proves a manual click on the demo-payment
+action.
+
+- Stage one published Public paid Event with Ticketing Off, no approval gate,
+  two selectable Slots, one paid optional item and one required policy. Nova
+  starts outside membership with no Event checkout basket, payment, Activity
+  Events row, chat or counter contribution. Casey is the sole accepted Admin.
+- Stage three read-only controls for the same Nova actor: one free Event, one
+  paid approval-required Event and one full paid Event that enters the
+  waitlist. An adjacent paid Event and Riley's complete state are immutable
+  negative controls.
+- The state-dependent action contract is:
+
+  | State | Required visible actions/status | Forbidden action |
+  | --- | --- | --- |
+  | Fresh paid direct Event | Event Explore `Book Event`; checkout review `Join` | `Continue booking`, `Payment summary` |
+  | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Demo payment` | a second active basket/session |
+  | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
+  | Full paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Free Event | `Join Event`/`Join` | demo-payment step or payment record |
+  | Successful direct dummy payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
+
+- On the fresh paid Event, Slot selection and every required policy gate the
+  first review action. A paid optional item changes the displayed total once.
+  `Join` confirms the basket and opens the demo-payment phase; it is not yet
+  membership or payment success.
+- Close the payment phase once without paying. The basket icon and Event
+  Explore card must expose `Continue booking`. Reopen in place and once after
+  a clean reload; both reconstructions must use the same active basket/session
+  identity and amount without creating membership, payment or counters.
+- Exercise `Cancel payment` from that pre-payment boundary. The current basket
+  becomes one closed audit, the card returns to `Book Event`, and no
+  membership, Activity Events row, chat, ticket or approved payment exists.
+- Start one fresh attempt, return to the payment phase and click `Payment`
+  exactly once. While the request is active the action changes to `Paying...`
+  and is disabled; the rest of the application remains responsive. The
+  checkout closes on success instead of leaving an infinite spinner, frozen
+  overlay or duplicate popup.
+- Immediate write oracle: exactly one `provider=dummy` terminal payment with
+  the selected immutable price/currency and `bookingStatus=joined`; one
+  succeeded, inactive basket; one accepted Nova membership/participation
+  overlay; occupancy `1 -> 2`; and the normal accepted-member chat/counter
+  effects exactly once. Ticketing Off keeps physical tickets and both ticket
+  counters at zero. No capture, settlement, Registry or external provider
+  operation may run.
+- Immediate UI oracle: the paid target is present exactly once under Nova's
+  Activity Events `Active` and `All` buckets. Its menu exposes `View Event`,
+  read-only `Payment summary` and `Leave Event`; the summary returns the exact
+  Slot, optional item, accepted policy IDs, amount, currency, dummy provider
+  and approved/joined result. Merely opening it cannot write.
+- One clean reload must reconstruct the same accepted membership, bucket
+  counters, menu actions and Payment summary from persisted state. The target
+  must not return as a fresh Event Explore payment candidate. Reopening the
+  summary twice and replaying the captured request identity through the
+  machine oracle must retain one payment, basket, membership and chat join
+  effect.
+- Inspect the free, approval-required and waitlist controls without converting
+  them to successful payments. Their labels and forbidden-payment states must
+  match the table, and every control plus Riley remains byte-identical.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
+  execute this row until that harness and its isolated Casey/Nova browser
+  sessions exist.
 
 ## Event ticketing checkpoints
 
@@ -5690,6 +6239,85 @@ is **PASS / CLOSED**.
   role. The accepted asset becomes assignment-eligible only for the exact
   generated-group booking scope; a sibling group remains unchanged.
 
+### `ASSET-CHECKOUT-DUMMY-001` — Asset Explore dummy payment reaches the scoped borrow destination
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`ASSET-CHECKOUT-DUMMY-001.md`](../checklists/asset/ASSET-CHECKOUT-DUMMY-001.md).
+
+This row owns the paid browser flow and its state-dependent actions. The
+generic `ASSET-BORROW-001` branches continue to own independent free/request,
+reject and cancel decisions; they must not replay this row's successful dummy
+payment.
+
+- Stage one Public paid Transport owned by Casey and discoverable by Nova
+  through Resource/Asset Explore under one exact Event/Sub-event runtime. Give
+  it quantity `3`, one required lending policy and a deterministic price for
+  quantity `1`. Nova starts with no request, payment/session, borrow draft,
+  assignment, availability reservation, Asset activity contribution or role
+  change.
+- Stage one free Asset, one zero-availability control and one adjacent paid
+  Asset. A sibling Event/Sub-event using the same type and Riley's state are
+  immutable scope controls.
+- The state-dependent action contract is:
+
+  | State | Required visible actions/status | Forbidden action |
+  | --- | --- | --- |
+  | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
+  | Saved review draft | Borrow Basket `Continue request` | a request/payment write |
+  | Payment-ready paid Asset | payment panel `Dummy pay`/`Ready to pay`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
+  | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
+  | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
+  | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
+  | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
+
+- In review, an invalid or empty timeframe, quantity outside current
+  availability and any unaccepted required policy disable the forward action
+  and create no server write. A valid quantity/time/policy set produces one
+  deterministic line item and total.
+- Select `Confirm borrow` once. This creates one active dummy checkout session
+  and moves to the locked payment phase; it does not yet create the borrow
+  request or assignment. Closing the surface leaves one Borrow Basket item
+  with `Continue request`. In-place reopen and one clean reload must reconstruct
+  the same session, amount, timeframe, quantity and policy set.
+- Use `Back` once, change the quantity or timeframe, and confirm again. The old
+  active session must not be reused with changed content: it becomes a closed
+  or superseded audit and exactly one new active session owns the recalculated
+  payload. No borrow request or inventory delta exists before `Pay`.
+- Click `Pay` exactly once. While active it changes to `Paying...` and is
+  disabled; the application remains responsive. Success closes the checkout
+  instead of leaving a frozen editor, spinner or duplicate payment surface.
+- Immediate write oracle: one terminal `provider=dummy` approved payment for
+  the final session/payload; one exact Event/Sub-event-scoped Nova borrow
+  request with payment-session reference and `Pending` owner decision; one
+  reservation/availability decrement for quantity `1`; and one pending
+  resource projection. The first abandoned/superseded session is not revenue
+  and cannot create entitlement.
+- Immediate UI oracle: the Asset remains once in Explore with availability
+  reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
+  and Casey sees Nova once as the pending borrower on the exact Asset/request.
+  The summary contains the immutable timeframe, quantity, accepted policy,
+  amount/currency and recorded dummy-payment result. Opening it twice is a
+  pure read.
+- Casey accepts that same pending request once through the normal Asset member
+  action. The accepted projection and exact Event/Sub-event resource scope
+  update once; availability stays `2` because payment already reserved the
+  quantity. Nova gains no Event, Tournament-group or global Asset Manager role.
+  The sibling Event/Sub-event, adjacent paid Asset and Riley stay unchanged.
+- One clean reload must reconstruct Casey's accepted request, Nova's scoped
+  resource/Payment summary and the final availability from persisted state.
+  Replaying the final action identity or reopening the summary cannot create a
+  second payment, request, assignment, availability decrement, notification
+  or counter delta.
+- Inspect the free and unavailable controls without submitting them. Their
+  labels and forbidden-payment states must match the table and no control may
+  inherit the target's payment/session identity.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `payment-ready`, `paid-pending` and `accepted` captures, plus exact `reset`.
+  Do not execute this row until that harness and isolated Casey/Nova browser
+  sessions exist.
+
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 
 - Stage two overlapping booking requests against one finite-capacity asset,
@@ -5736,6 +6364,87 @@ is **PASS / CLOSED**.
   after popup close/reopen, after browser reload and after an idempotent
   terminal replay. No read projection or frontend counter fallback may repair
   the persisted result.
+
+## Content cases
+
+### `CONTENT-ADMIN-LIFECYCLE-001` — governed revisions, consent and Article lifecycle
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
+
+This consolidated Core journey replaces four unexecuted microtest rows. It
+does not reopen or rewrite the already-PASS Article Editor and landing
+publication evidence.
+
+- Stage isolated Ava Admin, Kai retained-client and Riley fresh-client
+  sessions. Governed baselines are Help HU `v1`, Terms EN `v1`, Home cards
+  Explanation EN `v1`, Privacy EN `v2`, and inactive Privacy EN `v1` as the
+  fallback. Kai and Riley each retain immutable valid consent for both Privacy
+  `v1` and current `v2`.
+- Stage one separate English published, non-featured disposable Article with a
+  managed image set, plus a featured adjacent control. Preserve
+  `ARTICLE-SRC-002` and every previously passed row as byte-identical controls.
+- The state-dependent action contract is:
+
+  | State | Required actions/status | Forbidden or unchanged state |
+  | --- | --- | --- |
+  | Active governed revision | `Active`, `Edit revision`, `Delete revision`; activation disabled | no second active revision in the same type/language/context |
+  | Inactive governed revision | `Edit revision`, `Activate revision`, `Delete revision` | no public change before activation |
+  | Revision mutation in flight | action-ring; competing Save/Activate/Delete disabled | duplicate revision/audit mutation |
+  | Newly active Privacy revision | fresh clients show the new revision; stale consents require `Approve privacy` | historical consents rewritten or another actor approved |
+  | Active revision deleted | newest remaining revision automatically becomes the one Active fallback | empty public document or silent cross-scope activation |
+  | Published Article | `Read more`, `Edit`, `Unpublish`, `Feature`/`Unfeature`, `Delete` | `Restore`, `Publish` |
+  | Trashed Article | `Restore` only | public inclusion, edit/publish/feature/delete |
+  | Restored Draft Article | `Read more`, `Edit`, `Publish`, `Delete` | public inclusion, `Feature`, `Unpublish`, `Restore` |
+
+- Edit the four active governed controls once, creating inactive Help HU `v2`,
+  Terms EN `v2`, Home cards Explanation EN `v2`, and Privacy EN `v3` with the
+  exact base revision, author, language and context. Save/reopen/reload must
+  retain the new values while all public active content and consents remain
+  unchanged.
+- Privacy `v3` contains one mandatory and one optional section plus a bounded
+  unsafe-HTML probe. Persisted and rendered content must omit scripts and event
+  handler attributes. No preview/open/read operation creates another revision,
+  audit row or consent.
+- Activate Privacy `v3` once. It becomes the only active Privacy EN revision.
+  An already-open separate browser may retain its honest `v2` snapshot; a
+  fresh/reloaded client must show `v3`. Kai approves `v3` exactly once, Riley
+  remains stale, and every `v1`/`v2` historical consent remains immutable.
+- Delete inactive Help `v2` once and prove Help `v1` remains active. Then
+  delete active Privacy `v3` once. The implemented Java and frontend-local
+  contract automatically activates newest remaining Privacy `v2`; public
+  Privacy never becomes empty. Kai and Riley's retained `v2` consents become
+  current again without a new write, while Kai's historical `v3` consent is
+  preserved.
+- This active-delete fallback is the current implemented and administrator-
+  manual contract. It supersedes the earlier unexecuted source assertion that
+  active deletion should fail closed; no production behavior changes in this
+  documentation checkpoint.
+- In the Article branch, move the disposable published record to trash once.
+  The Admin SmartList reconciles the returned record and All/Published/
+  Trashed counts in place; a fresh public landing excludes it. The open landing
+  surface's stale/non-live presentation is recorded instead of being treated
+  as persisted truth.
+- Restore once. The same record becomes an unpublished, unfeatured Draft;
+  All/Drafts/Trashed change once and fresh public clients still exclude it.
+  Publish separately once to return it to Published/public state. Restore is
+  never treated as Publish.
+- Across trash, restore and republish, require the same article/contentKey,
+  creator, canonical managed image URL, image variants and sanitized HTML.
+  Soft lifecycle operations must not delete media. The adjacent featured
+  control, Riley's consent state and every unrelated language/context remain
+  unchanged.
+- Immediate machine oracles compare exact revision/article IDs, active flags,
+  base revision, actor/time, content audit/telemetry counts, consent histories,
+  bucket counts, public query membership and managed-media object hashes.
+  Reload and idempotence probes must not duplicate any mutation.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `drafts-saved`, `privacy-active`, `privacy-fallback`, `article-trashed`,
+  `article-restored` and `article-republished` captures, plus exact `reset`.
+  Do not execute this row until that harness and the isolated Ava/Kai/Riley
+  browser-session definition exist.
 
 ## Operator configuration and security cases
 
@@ -5789,8 +6498,8 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 116 executable journeys after the 2026-08-30 granularity
-audit. All 76 PASS/CLOSED rows remain individually immutable: only their
+The matrix contains 118 executable journeys after the 2026-09-02 dummy-payment
+coverage extension. All 81 passed rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
@@ -5818,6 +6527,11 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### `QA-EXPANSION-CP01` — payment authorization and provider callbacks
 
+Stable consolidated user guides:
+
+- [`PAYMENT-STRIPE-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-STRIPE-LIFECYCLE-001.md)
+- [`PAYMENT-BARION-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-BARION-LIFECYCLE-001.md)
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `PAYMENT-STRIPE-001` | Select Stripe and press the existing Checkout action once. | One stable internal payment creates one manual-capture Checkout/PaymentIntent and redirects to the simulator; basket is `pay/pending`, membership/ticket/counters remain unchanged. |
@@ -5829,6 +6543,12 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 | `PAYMENT-BARION-002` | Exercise direct approval plus bank-challenge approve, decline, cancel and timeout independently. | Each branch maps to the provider-neutral state once; unsuccessful branches create no membership/ticket/capture and callback replay is idempotent. |
 
 ### `QA-EXPANSION-CP02` — payment settlement, compensation and isolation
+
+Stable consolidated user guides:
+
+- [`PAYMENT-SETTLEMENT-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SETTLEMENT-LIFECYCLE-001.md)
+- [`PAYMENT-PROVIDER-ROUTING-001.md`](../checklists/payment/PAYMENT-PROVIDER-ROUTING-001.md)
+- [`PAYMENT-SIMULATOR-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SIMULATOR-LIFECYCLE-001.md)
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -6111,7 +6831,7 @@ assertion references for their consolidated parents, not as microtests.
 | `ADMIN-NOTIFICATION-RUN-001` | Manually run one armed rule with one eligible target. | One named task/outbox/inbox delivery occurs with exact attribution; second unchanged run respects dedupe/idempotency. |
 | `ADMIN-CONTENT-REV-001` | Create and reopen one draft revision for Help/Privacy/Terms/Explanation. | Body, language, version and author persist once while active public content remains unchanged. |
 | `ADMIN-CONTENT-REV-002` | Activate the draft revision once. | Public/landing/settings clients receive exactly the new active revision; Privacy activation invalidates only stale consent and keeps historical consents immutable. |
-| `ADMIN-CONTENT-REV-003` | Delete an inactive revision and attempt to delete the active one. | Inactive revision is removed once; active/bound revision fails closed and public content never disappears. |
+| `ADMIN-CONTENT-REV-003` | Delete one inactive revision, then delete the isolated active Privacy revision. | Inactive deletion leaves its active control unchanged; active deletion automatically activates the newest remaining same-scope revision and public content never disappears. |
 | `ADMIN-IDEA-LIFECYCLE-001` | Trash and restore one idea/article while a public control remains open. | Admin buckets and fresh public inclusion change once per transition; identity/media stay stable and an already-open non-live surface is recorded honestly. |
 | `ADMIN-SUPPORT-SESSION-001` | Open and close one scoped admin support session. | Capability is time/actor/scope bound, sensitive actions remain separately authorized, audit is immutable and expiry/revoke immediately denies reuse. |
 
@@ -6126,10 +6846,11 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
-The active commit-friendly execution checklist for the local Core journey is
-[`ROLE-TRIAD-CORE-001.md`](../checklists/ROLE-TRIAD-CORE-001.md). Its 22
-top-level checkboxes track human visual execution; this pack and the ledger
-remain authoritative for the testcase contract, persisted evidence and status.
+The stable user-facing click guide for the local Core journey is
+[`ROLE-TRIAD-CORE-001.md`](../checklists/identity-access/ROLE-TRIAD-CORE-001.md). Its 22
+top-level sections preserve the repeatable human journey without checkmarks or
+live status; this pack and the ledger remain authoritative for persisted
+evidence and status.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -6238,7 +6959,9 @@ remain authoritative for the testcase contract, persisted evidence and status.
   chat/message/notification/outbox counts are all `0`, all Ava support buckets
   are `0`, and Kai is unblocked as `host only`. The launcher replaced the old
   profiles and opened fresh isolated Kai, Ava and Deployment Operator windows.
-  Execute the revised 22-step English checklist from step 1; do not restage.
+  At that recorded boundary, execution resumed from section 1 of the English
+  user guide without restaging. This dated evidence does not alter the stable
+  guide.
 
 - **`ROLE-TRIAD-CORE-001` support-row identity and notification-poll ownership
   fix — 2026-08-31 12:22 CEST**: during the third replay the user selected the

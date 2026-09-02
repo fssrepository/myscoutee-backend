@@ -36,6 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
@@ -47,6 +48,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
@@ -63,6 +65,8 @@ class EventSchedulerTest {
     private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository;
     @Mock
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
@@ -464,12 +468,36 @@ class EventSchedulerTest {
             assertThat(room2.getTitle()).isEqualTo("Random Room R2");
             assertThat(room2.getEventType()).isEqualTo("random-room");
         });
-        InOrder creationOrder = inOrder(activityEventsRepository, chatService, activitiesMembersService, notificationOutboxService);
+        ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
+                ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
+        verify(activityMainEventRuntimeRepository, times(2)).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getAllValues()).satisfiesExactly(runtime1 -> {
+            assertThat(runtime1.getRecordId()).isEqualTo("main-event:" + room1Id);
+            assertThat(runtime1.getEventId()).isEqualTo(room1Id);
+            assertThat(runtime1.getOwnerId()).isEqualTo(room1Id);
+            assertThat(runtime1.getRuntimeKind()).isEqualTo(ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT);
+            assertThat(runtime1.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+            assertThat(runtime1.getTitle()).isEqualTo("Random Room R1");
+        }, runtime2 -> {
+            assertThat(runtime2.getRecordId()).isEqualTo("main-event:" + room2Id);
+            assertThat(runtime2.getEventId()).isEqualTo(room2Id);
+            assertThat(runtime2.getOwnerId()).isEqualTo(room2Id);
+            assertThat(runtime2.getRuntimeKind()).isEqualTo(ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT);
+            assertThat(runtime2.getTitle()).isEqualTo("Random Room R2");
+        });
+        InOrder creationOrder = inOrder(
+                activityEventsRepository,
+                activityMainEventRuntimeRepository,
+                chatService,
+                activitiesMembersService,
+                notificationOutboxService);
         creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room1Id.equals(room.getSourceId())),
                 "scheduler",
                 List.of("u1", "u2"),
                 anyList());
+        creationOrder.verify(activityMainEventRuntimeRepository).save(
+                argThat(runtime -> room1Id.equals(runtime.getEventId())));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room1Id),
@@ -480,6 +508,8 @@ class EventSchedulerTest {
                 "scheduler",
                 List.of("u3", "u4"),
                 anyList());
+        creationOrder.verify(activityMainEventRuntimeRepository).save(
+                argThat(runtime -> room2Id.equals(runtime.getEventId())));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room2Id),
@@ -651,6 +681,7 @@ class EventSchedulerTest {
             assertThat(room.getImageUrl())
                     .isEqualTo("/media/public?key=images/system/tournament-room/v1/large.webp");
         });
+        verify(activityMainEventRuntimeRepository, never()).save(any(ActivityMainEventRuntime.class));
         verify(chatService, times(2)).ensureInitialSystemMessage(
                 anyString(),
                 eq("Welcome to your tournament group for Tournament stage start. "
@@ -1739,6 +1770,10 @@ class EventSchedulerTest {
                         .toList());
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         lenient().when(activityEventsRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
+        lenient().when(activityMainEventRuntimeRepository.findByEventIdAndRuntimeKind(
+                anyString(),
+                eq(ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT)))
+                .thenReturn(Optional.empty());
         lenient().when(activityEventsRepository.save(any(ActivityEvent.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(activitiesMembersService.syncMaterializedSystemEventMembers(
@@ -1751,6 +1786,7 @@ class EventSchedulerTest {
                 usersRepository,
                 userAffinityEdgesRepository,
                 activityEventsRepository,
+                activityMainEventRuntimeRepository,
                 schedulerPlanMarkersRepository,
                 activitiesMembersService,
                 activitiesEventLeaderboardService,

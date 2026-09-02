@@ -67,6 +67,7 @@ class ActivityEventMapperTest {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setMode("Casual");
+        event.setSlotsEnabled(true);
         event.setActivity(3);
         event.setPendingMembers(45);
 
@@ -74,6 +75,7 @@ class ActivityEventMapperTest {
 
         assertThat(dto.pendingMembers()).isEqualTo(45);
         assertThat(dto.activity()).isEqualTo(3);
+        assertThat(dto.slotsEnabled()).isTrue();
     }
 
     @Test

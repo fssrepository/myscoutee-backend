@@ -37,6 +37,7 @@ trigger another stack or database process.
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
+| `event-schedulers` | Stages one EVENT-SCHEDULERS-001 branch, holds the target baseline and moves all non-target persisted scheduler rules to a reversible seven-day interval | One separately armed real scheduler run with exact Metrics and domain oracles |
 | `chat-domain` | Stages one selected Chat checkpoint with exact row, context, ordering and zero-write oracles | No scheduler; the selected checkpoint uses the normal paged Chat read/write paths |
 | `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
 | `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
@@ -45,6 +46,27 @@ trigger another stack or database process.
 
 Only one manual scenario may be staged at a time. The historical 2026-08-04
 results were **not** rerun while these helpers were added.
+
+The Event scheduler journey uses a separate baseline and arm boundary:
+
+```bash
+bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 random-groups
+bash manual-qa-checkpoints.sh status event-schedulers EVENT-SCHEDULERS-001
+# Only after the tester records the Job Detail and Metrics baselines:
+bash manual-qa-checkpoints.sh schedule event-schedulers EVENT-SCHEDULERS-001 30
+bash manual-qa-checkpoints.sh status event-schedulers EVENT-SCHEDULERS-001
+bash manual-qa-checkpoints.sh reset event-schedulers EVENT-SCHEDULERS-001
+```
+
+`stage` does not make the target rule due. It snapshots the target configuration
+and every unrelated scheduler control, then temporarily gives the latter a
+seven-day interval. `schedule` captures the persisted Metrics baseline and
+arms only the target. The oracle requires exactly one history row for the
+branch-specific primary and reactive rule set. `random-groups` therefore adds
+`+2 / +2`: one primary run and one required notification-outbox wake-up. Any
+further delta is a duplicate or unrelated-run failure. `reset` retains
+legitimate target run history while restoring its original configuration and
+every isolated rule's exact timing control.
 
 ## Event-domain checkpoint runner
 
@@ -58,6 +80,7 @@ snapshot; `status` queries the resulting identities from Mongo.
 Supported checkpoint IDs:
 
 - `EVENT-EDITOR-001` through `EVENT-EDITOR-005`
+- `EVENT-RUNTIME-001`
 - `EVENT-PUBLISH-CHAT-001`
 - `EVENT-SLOT-001` through `EVENT-SLOT-004`
 - `EVENT-INV-001` through `EVENT-INV-006`

@@ -31,7 +31,7 @@
       "targetUrl": "http://localhost/admin",
       "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
@@ -40,6 +40,138 @@
           "userId": "admin-demo-ava",
           "autoDismissExplanationGuide": false,
           "expectedName": "Ava Moderation · scheduled account-purge observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava Event scheduler observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Event scheduler observer"
+        },
+        {
+          "actor": "Sophia random-room participant",
+          "sessionKind": "demo",
+          "userId": "0216b1ceb256d6f2c89073b8",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Sophia Lane · random-room Event and Chat observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001-COUNTER-EXPIRY": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava counter-expiry observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Close past events observer"
+        },
+        {
+          "actor": "Nova counter-expiry participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Nova Social · expiring Event participant observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001-BASKET-PURGE": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava basket-purge observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Delete expired baskets observer"
+        },
+        {
+          "actor": "Nova basket-purge participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Nova Social · expiring checkout basket observer",
+          "localStorage": {
+            "myscoutee.http.event.checkout.drafts.v1": {
+              "650000000000000000000062::manual-qa-checkpoint:v1:event-schedulers:basket-purge:event": {
+                "userId": "650000000000000000000062",
+                "sourceId": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:event",
+                "eventTitle": "Manual QA expiring checkout basket",
+                "eventTimeframe": "Manual QA · upcoming",
+                "slotSourceId": null,
+                "selectedDateKey": null,
+                "optionalSubEventIds": [],
+                "acceptedPolicyIds": [],
+                "appliedPromoCodes": [],
+                "basketItems": [
+                  {
+                    "id": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:expired",
+                    "kind": "event",
+                    "sourceId": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:event",
+                    "slotSourceId": null,
+                    "slotTemplateId": null,
+                    "selectedDateKey": null,
+                    "subEventId": null,
+                    "resourceType": null,
+                    "label": "Manual QA expiring checkout basket",
+                    "detail": "",
+                    "amount": 12.5,
+                    "currency": "EUR",
+                    "quantity": 1,
+                    "status": "confirmed",
+                    "resultState": "pending",
+                    "pricingSummaryRows": [],
+                    "checkoutSessionId": null,
+                    "createdAtIso": "2026-09-02T04:00:00.000Z",
+                    "updatedAtIso": "2026-09-02T04:00:00.000Z",
+                    "expiresAtIso": "2026-09-02T04:15:00.000Z"
+                  }
+                ],
+                "pricingSummaryRows": [],
+                "checkoutState": "confirmed",
+                "lineItems": [
+                  {
+                    "id": "manual-qa-expiring-event",
+                    "kind": "event",
+                    "label": "Manual QA expiring checkout basket",
+                    "detail": "",
+                    "amount": 12.5,
+                    "currency": "EUR"
+                  }
+                ],
+                "totalAmount": 12.5,
+                "currency": "EUR",
+                "checkoutSessionId": null,
+                "expiresAtIso": "2026-09-02T04:15:00.000Z",
+                "pendingReason": null,
+                "basketChanged": false,
+                "updatedAtMs": 1788322500000
+              }
+            }
+          }
         }
       ]
     },
@@ -668,6 +800,103 @@
         }
       ]
     },
+    "EVENT-EDITOR-004": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament-definition host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-EDITOR-005": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey active-event capacity editor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova event-change notification recipient",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-RUNTIME-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey childless-event runtime host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova accepted runtime participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EVENT-SLOT-002": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey future-slot host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova future-slot participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-SLOT-003": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey past-slot host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-SLOT-004": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey slot leaderboard host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
     "EVENT-LIFE-002": {
       "layout": {
         "columns": 2
@@ -915,6 +1144,21 @@
           "actor": "Riley",
           "userId": "650000000000000000000063",
           "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "ASSET-LIFE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset lifecycle owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Asset create, edit, Trash and Restore owner"
         }
       ]
     },

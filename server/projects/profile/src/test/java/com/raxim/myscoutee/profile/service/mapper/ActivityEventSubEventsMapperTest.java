@@ -161,6 +161,42 @@ class ActivityEventSubEventsMapperTest {
                 assertThat(slot.startAt()).isEqualTo("2026-12-01T13:30:00Z"));
     }
 
+    @Test
+    void slotsWithoutSubEventDefinitionsEachExposeTheirOwnMainEventRuntime() {
+        Instant eventStart = Instant.now().plus(1, ChronoUnit.HOURS).truncatedTo(ChronoUnit.SECONDS);
+        ActivityEvent parent = parentEvent(eventStart, List.of(
+                emptySlotTemplate("slot-1", eventStart),
+                emptySlotTemplate("slot-2", eventStart.plus(1, ChronoUnit.HOURS))));
+        parent.setTitle("Runtime Event");
+        parent.setSubtitle("Slot-scoped main runtimes");
+        parent.setLocation("Austin");
+        parent.setCreatorUserId("user-1");
+        parent.setCapacityMin(1);
+        parent.setCapacityMax(8);
+        parent.setAcceptedMembers(1);
+        parent.setPendingMembers(0);
+        parent.setStartAtIso(eventStart.toString());
+        parent.setEndAtIso(eventStart.plus(3, ChronoUnit.HOURS).toString());
+        parent.setFrequency("Custom");
+        parent.setSubEventsEnabled(false);
+
+        List<EventSubEventsSlotDto> slots = mapper.toSlotDtos("event-1", parent, query("upcoming", eventStart));
+
+        assertThat(slots).hasSize(2);
+        assertThat(slots).allSatisfy(slot -> {
+            assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                assertThat(item.id()).isEqualTo("main-event:" + slot.slotSourceId());
+                assertThat(item.runtimeKind()).isEqualTo("MAIN_EVENT");
+                assertThat(item.eventId()).isEqualTo("event-1");
+                assertThat(item.name()).isEqualTo("Runtime Event");
+                assertThat(item.capacityMax()).isEqualTo(8);
+            });
+        });
+        assertThat(slots)
+                .extracting(EventSubEventsSlotDto::slotTemplateId)
+                .containsExactly("slot-1", "slot-2");
+    }
+
     private ActivityEvent parentEvent(Instant now, List<EventSlotTemplateDto> slotTemplates) {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
@@ -183,6 +219,10 @@ class ActivityEventSubEventsMapperTest {
                 null,
                 false,
                 List.of(definition));
+    }
+
+    private EventSlotTemplateDto emptySlotTemplate(String id, Instant startAt) {
+        return new EventSlotTemplateDto(id, startAt.toString(), null, false, List.of());
     }
 
     private EventSubEventsQueryDto query(String order, Instant anchor) {

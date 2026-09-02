@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
@@ -118,6 +119,43 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(state.stages()).singleElement().satisfies(stage -> {
             assertThat(stage.subEventId()).isEqualTo("stage-1");
             assertThat(stage.groups()).hasSize(2);
+        });
+    }
+
+    @Test
+    void persistedManualGroupOverridesGeneratedGroupWithTheSameId() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setId("runtime-1");
+        runtime.setOwnerId("event-1");
+        runtime.setSubEventId("sub-1");
+        ActivitySubEventGroup manualGroup = new ActivitySubEventGroup();
+        manualGroup.setOwnerId("runtime-1");
+        manualGroup.setGroupId("sub-1:group:1");
+        manualGroup.setName("Seeded Group A");
+        manualGroup.setCapacityMin(2);
+        manualGroup.setCapacityMax(2);
+        manualGroup.setStatus("A");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(java.util.Optional.of(runtime));
+        when(activitySubEventGroupsRepository.findByOwnerIdAndStatusNot("runtime-1", "D"))
+                .thenReturn(List.of(manualGroup));
+
+        var groups = service.queryTournamentStageGroups("event-1", null, "sub-1");
+
+        assertThat(groups).hasSize(2);
+        assertThat(groups.getFirst()).satisfies(group -> {
+            assertThat(group.id()).isEqualTo("sub-1:group:1");
+            assertThat(group.name()).isEqualTo("Seeded Group A");
+            assertThat(group.source()).isEqualTo("manual");
         });
     }
 

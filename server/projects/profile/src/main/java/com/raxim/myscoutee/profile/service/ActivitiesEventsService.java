@@ -41,6 +41,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
@@ -141,6 +142,7 @@ public class ActivitiesEventsService {
     private static final String STAGE_ACTION_RESUME = "resume-tournament";
     private static final String TOURNAMENT_SYSTEM_USER_ID = "scheduler";
     private static final String TOURNAMENT_SYSTEM_NAME = "MyScoutee System";
+    private static final String MAIN_EVENT_RUNTIME_KIND = ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT;
     private static final String RUNTIME_STATUS_DELETED = "D";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
@@ -1413,19 +1415,287 @@ public class ActivitiesEventsService {
                 parent,
                 request);
         List<EventSubEventsSlotDto> baseSlots = page.slots();
+        if (baseSlots.isEmpty()) {
+            EventSubEventsSlotDto mainEventRuntimeSlot = mainEventRuntimeSlot(parent);
+            if (mainEventRuntimeSlot != null) {
+                baseSlots = List.of(mainEventRuntimeSlot);
+                page = new EventSubEventsSlotPage(baseSlots, 1, null);
+            }
+        }
         if (Boolean.TRUE.equals(request.participantOnly())) {
-            baseSlots = filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
+            baseSlots = containsMainEventRuntime(baseSlots)
+                    ? filterMainEventRuntimeByAcceptedParticipation(baseSlots, parentEventId, viewer.userId())
+                    : filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
+        Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey =
+                resourceRecordsByKey(lookups.resourceLookups());
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(
                 lookups.stageRuntimeLookups(),
                 viewer.userId());
         List<EventSubEventsSlotDto> slots = activityEventSubEventsMapper.withSubEventStates(
                 baseSlots,
-                Map.of(),
+                resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
         return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
+    }
+
+    private Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey(
+            List<SubEventResourceLookup> lookups) {
+        if (lookups == null || lookups.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> ownerIds = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(SubEventResourceLookup::ownerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> assetOwnerUserIds = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(SubEventResourceLookup::assetOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> requestedKeys = lookups.stream()
+                .filter(Objects::nonNull)
+                .map(lookup -> activityEventSubEventsMapper.subEventResourceRecordKey(
+                        lookup.ownerId(),
+                        lookup.subEventId(),
+                        lookup.assetOwnerUserId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (ownerIds.isEmpty() || assetOwnerUserIds.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, ActivitySubEventResourceStateDto> result = new LinkedHashMap<>();
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        ownerIds,
+                        assetOwnerUserIds,
+                        RUNTIME_STATUS_DELETED)) {
+            ActivitySubEventResourceStateDto state = activitySubEventResourceMapper.toDto(record);
+            if (state == null) {
+                continue;
+            }
+            String key = activityEventSubEventsMapper.subEventResourceRecordKey(
+                    state.ownerId(),
+                    state.subEventId(),
+                    state.assetOwnerUserId());
+            if (requestedKeys.contains(key)) {
+                result.put(key, state);
+            }
+        }
+        return result;
+    }
+
+    private EventSubEventsSlotDto mainEventRuntimeSlot(ActivityEvent parent) {
+        String eventId = normalizeId(parent == null ? null : parent.getSourceId());
+        if (!StringUtils.hasText(eventId) || !isChildlessMainEventRuntimeOwner(parent)) {
+            return null;
+        }
+        ActivityMainEventRuntime runtime = mongoTemplate.findOne(
+                Query.query(Criteria.where("eventId").is(eventId)
+                        .and("runtimeKind").is(MAIN_EVENT_RUNTIME_KIND)
+                        .and("status").ne(RUNTIME_STATUS_DELETED)),
+                ActivityMainEventRuntime.class);
+        if (runtime == null) {
+            return null;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        int acceptedMembers = members == null
+                ? normalizeCount(parent.getAcceptedMembers())
+                : members.acceptedMembers();
+        int pendingMembers = members == null
+                ? normalizeCount(parent.getPendingMembers())
+                : members.pendingMembers();
+        String runtimeId = firstNonBlank(runtime.getRecordId(), runtime.getId());
+        SubEventItemDto item = new SubEventItemDto(
+                runtimeId,
+                firstNonBlank(runtime.getTitle(), parent.getTitle()),
+                firstNonBlank(runtime.getDescription(), parent.getSubtitle()),
+                firstNonBlank(runtime.getStartAtIso(), parent.getStartAtIso()),
+                firstNonBlank(runtime.getEndAtIso(), parent.getEndAtIso()),
+                firstNonBlank(runtime.getLocation(), parent.getLocation()),
+                firstNonBlank(runtime.getCreatedByUserId(), parent.getCreatorUserId()),
+                null,
+                null,
+                null,
+                null,
+                false,
+                parent.getPricing(),
+                parent.getCapacityMin(),
+                parent.getCapacityMax(),
+                acceptedMembers,
+                pendingMembers,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                MAIN_EVENT_RUNTIME_KIND,
+                eventId);
+        return new EventSubEventsSlotDto(
+                runtimeId,
+                eventId,
+                null,
+                null,
+                firstNonBlank(runtime.getTitle(), parent.getTitle()),
+                firstNonBlank(runtime.getTimeframe(), parent.getTimeframe()),
+                firstNonBlank(runtime.getStartAtIso(), parent.getStartAtIso()),
+                firstNonBlank(runtime.getEndAtIso(), parent.getEndAtIso()),
+                List.of(item));
+    }
+
+    private boolean containsMainEventRuntime(List<EventSubEventsSlotDto> slots) {
+        return slots != null && slots.stream()
+                .filter(Objects::nonNull)
+                .flatMap(slot -> slot.subEventItems() == null
+                        ? java.util.stream.Stream.<SubEventItemDto>empty()
+                        : slot.subEventItems().stream())
+                .anyMatch(item -> MAIN_EVENT_RUNTIME_KIND.equals(item == null ? null : item.runtimeKind()));
+    }
+
+    private List<EventSubEventsSlotDto> filterMainEventRuntimeByAcceptedParticipation(
+            List<EventSubEventsSlotDto> slots,
+            String eventId,
+            String userId) {
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(eventId));
+        String normalizedUserId = normalizeId(userId);
+        return members != null
+                && StringUtils.hasText(normalizedUserId)
+                && normalizeIds(members.acceptedMemberUserIds()).contains(normalizedUserId)
+                        ? slots
+                        : List.of();
+    }
+
+    private void syncMainEventRuntimeItem(ActivityEvent event, String actorUserId) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(eventId)) {
+            return;
+        }
+        Query query = Query.query(Criteria.where("eventId").is(eventId)
+                .and("runtimeKind").is(MAIN_EVENT_RUNTIME_KIND));
+        ActivityMainEventRuntime existing = mongoTemplate.findOne(query, ActivityMainEventRuntime.class);
+        String nowIso = Instant.now().toString();
+        if (!isChildlessMainEventRuntimeOwner(event)) {
+            if (existing != null && !RUNTIME_STATUS_DELETED.equals(safeText(existing.getStatus()))) {
+                existing.setStatus(RUNTIME_STATUS_DELETED);
+                existing.setUpdatedDate(nowIso);
+                existing.setUpdatedUser(actorUserId);
+                mongoTemplate.save(existing);
+            }
+            return;
+        }
+        if (matchesMainEventRuntime(existing, event, eventId)) {
+            return;
+        }
+
+        ActivityMainEventRuntime runtime = existing == null ? new ActivityMainEventRuntime() : existing;
+        if (!StringUtils.hasText(runtime.getId())) {
+            runtime.setId(new ObjectId().toHexString());
+        }
+        if (!StringUtils.hasText(runtime.getRecordId())) {
+            runtime.setRecordId("main-event:" + eventId);
+        }
+        if (!StringUtils.hasText(runtime.getSyncKey())) {
+            runtime.setSyncKey(UUID.randomUUID().toString());
+        }
+        if (!StringUtils.hasText(runtime.getCreatedDate())) {
+            runtime.setCreatedDate(nowIso);
+            runtime.setCreatedUser(actorUserId);
+        }
+        runtime.setStatus(ActivityEvent.STATUS_ACTIVE);
+        runtime.setRuntimeKind(MAIN_EVENT_RUNTIME_KIND);
+        runtime.setEventId(eventId);
+        runtime.setOwnerId(eventId);
+        runtime.setSubEventId(null);
+        runtime.setTitle(safeText(event.getTitle()));
+        runtime.setDescription(safeText(event.getSubtitle()));
+        runtime.setTimeframe(safeText(event.getTimeframe()));
+        runtime.setStartAtIso(safeText(event.getStartAtIso()));
+        runtime.setEndAtIso(safeText(event.getEndAtIso()));
+        runtime.setLocation(safeText(event.getLocation()));
+        runtime.setCreatedByUserId(normalizeId(event.getCreatorUserId()));
+        runtime.setUpdatedDate(nowIso);
+        runtime.setUpdatedUser(actorUserId);
+        mongoTemplate.save(runtime);
+    }
+
+    private boolean matchesMainEventRuntime(
+            ActivityMainEventRuntime runtime,
+            ActivityEvent event,
+            String eventId) {
+        return runtime != null
+                && StringUtils.hasText(runtime.getId())
+                && StringUtils.hasText(runtime.getRecordId())
+                && StringUtils.hasText(runtime.getSyncKey())
+                && ActivityEvent.STATUS_ACTIVE.equals(safeText(runtime.getStatus()))
+                && MAIN_EVENT_RUNTIME_KIND.equals(safeText(runtime.getRuntimeKind()))
+                && Objects.equals(eventId, normalizeId(runtime.getEventId()))
+                && Objects.equals(eventId, normalizeId(runtime.getOwnerId()))
+                && !StringUtils.hasText(normalizeId(runtime.getSubEventId()))
+                && Objects.equals(safeText(event.getTitle()), safeText(runtime.getTitle()))
+                && Objects.equals(safeText(event.getSubtitle()), safeText(runtime.getDescription()))
+                && Objects.equals(safeText(event.getTimeframe()), safeText(runtime.getTimeframe()))
+                && Objects.equals(safeText(event.getStartAtIso()), safeText(runtime.getStartAtIso()))
+                && Objects.equals(safeText(event.getEndAtIso()), safeText(runtime.getEndAtIso()))
+                && Objects.equals(safeText(event.getLocation()), safeText(runtime.getLocation()))
+                && Objects.equals(normalizeId(event.getCreatorUserId()), normalizeId(runtime.getCreatedByUserId()));
+    }
+
+    private boolean isChildlessMainEventRuntimeOwner(ActivityEvent event) {
+        if (event == null
+                || Boolean.TRUE.equals(event.getGenerated())
+                || hasActiveSlotDefinitions(event)
+                || hasActiveSubEventDefinitions(event)) {
+            return false;
+        }
+        String status = safeText(event.getStatus());
+        return !RUNTIME_STATUS_DELETED.equals(status)
+                && !ActivityEvent.STATUS_TRASHED.equals(status)
+                && !ActivityEvent.STATUS_INACTIVE.equals(status);
+    }
+
+    private boolean hasActiveSlotDefinitions(ActivityEvent event) {
+        return event != null
+                && Boolean.TRUE.equals(event.getSlotsEnabled())
+                && event.getSlotTemplates() != null
+                && event.getSlotTemplates().stream()
+                        .filter(Objects::nonNull)
+                        .anyMatch(template -> !Boolean.TRUE.equals(template.closed()));
+    }
+
+    private boolean hasActiveSubEventDefinitions(ActivityEvent event) {
+        if (event == null || !Boolean.TRUE.equals(event.getSubEventsEnabled())) {
+            return false;
+        }
+        boolean hasDefinitions = event.getSubEventDefinitions() != null
+                && event.getSubEventDefinitions().stream().anyMatch(Objects::nonNull);
+        boolean hasRuntimeItems = event.getSubEvents() != null
+                && event.getSubEvents().stream().anyMatch(Objects::nonNull);
+        return hasDefinitions || hasRuntimeItems;
     }
 
     private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
@@ -2553,19 +2823,45 @@ public class ActivitiesEventsService {
                 existing,
                 actorUserId);
         if (next != null) {
-            next.setGroupsCount(autoGroupsCount + manualGroupCountForRuntime(next.getId()));
+            next.setGroupsCount(tournamentGroupCountForRuntime(event, stage, next.getId()));
             activitySubEventStageRuntimeRepository.save(next);
         }
     }
 
-    private int manualGroupCountForRuntime(String runtimeRecordId) {
+    private int tournamentGroupCountForRuntime(
+            ActivityEvent event,
+            SubEventItem stage,
+            String runtimeRecordId) {
         String normalizedRuntimeRecordId = normalizeId(runtimeRecordId);
-        if (!StringUtils.hasText(normalizedRuntimeRecordId)) {
-            return 0;
+        List<ActivitySubEventGroup> manualGroups = StringUtils.hasText(normalizedRuntimeRecordId)
+                ? activitySubEventGroupsRepository
+                        .findByOwnerIdAndStatusNot(normalizedRuntimeRecordId, RUNTIME_STATUS_DELETED)
+                : List.of();
+        List<String> manualGroupIds = (manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups)
+                .stream()
+                .map(group -> normalizeId(group == null ? null : group.getGroupId()))
+                .filter(StringUtils::hasText)
+                .toList();
+        return tournamentGroupCount(event, stage, manualGroupIds);
+    }
+
+    private int tournamentGroupCount(
+            ActivityEvent event,
+            SubEventItem stage,
+            Collection<String> manualGroupIds) {
+        LinkedHashSet<String> groupIds = new LinkedHashSet<>();
+        String normalizedStageId = normalizeId(stage == null ? null : stage.id());
+        int autoGroupsCount = autoTournamentGroupCount(event, stage);
+        for (int index = 0; index < autoGroupsCount; index += 1) {
+            groupIds.add(normalizedStageId + ":group:" + (index + 1));
         }
-        List<ActivitySubEventGroup> groups = activitySubEventGroupsRepository
-                .findByOwnerIdAndStatusNot(normalizedRuntimeRecordId, RUNTIME_STATUS_DELETED);
-        return groups == null ? 0 : groups.size();
+        for (String manualGroupId : manualGroupIds == null ? List.<String>of() : manualGroupIds) {
+            String normalizedGroupId = normalizeId(manualGroupId);
+            if (StringUtils.hasText(normalizedGroupId)) {
+                groupIds.add(normalizedGroupId);
+            }
+        }
+        return groupIds.size();
     }
 
     public EventParticipationActionResultDto requestJoin(EventActionRequestDto request) {
@@ -4436,6 +4732,7 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository
                 .findByOwnerUserIdAndSourceId(ownerUserId, sourceId)
                 .orElse(null);
+        boolean publishedManageUpdate = isPublishedEventManageUpdate(existing);
         boolean allowed = existing == null
                 ? accessControlService.canCurrentActorCreateEvent(ownerUserId, sourceId)
                 : accessControlService.canCurrentActorEditEvent(sourceId);
@@ -4443,6 +4740,9 @@ public class ActivitiesEventsService {
             return null;
         }
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, syncedMembersSnapshot);
+        if (isPublishedEventManageNoOp(existing, baseRecord)) {
+            return toEventDto(existing, actor);
+        }
         EventDefinitionChangeSummary definitionChange = eventDefinitionChangeSummary(existing, baseRecord);
         Set<String> preChangeAssignedAudienceUserIds = definitionChange.changed()
                 ? activeSubEventResourceAudienceUserIds(sourceId)
@@ -4456,6 +4756,7 @@ public class ActivitiesEventsService {
         if (!canonicalDocuments.isEmpty()) {
             savedDocuments = canonicalDocuments;
         }
+        syncMainEventRuntimeItem(baseRecord, actorUserId);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         Set<String> removedRuntimeAudienceUserIds = definitionChange.removedSubEventIds().isEmpty()
                 ? Set.of()
@@ -4485,12 +4786,19 @@ public class ActivitiesEventsService {
         }
         telemetryTags.put("eventType", resolveTelemetryEventType(request));
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
-        syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        if (!publishedManageUpdate) {
+            syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        }
         if (definitionChange.changed()) {
             syncStageRuntimeGroupCountsForDefinitions(sourceId, actorUserId);
         }
-        eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
-        userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
+        boolean ticketingEnabled = existing != null
+                && !Boolean.TRUE.equals(existing.getTicketing())
+                && Boolean.TRUE.equals(baseRecord.getTicketing());
+        if (!publishedManageUpdate || ticketingEnabled) {
+            eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
+            userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
+        }
         notifyParticipantsWhenTicketingEnabled(
                 existing,
                 baseRecord,
@@ -4545,7 +4853,9 @@ public class ActivitiesEventsService {
 
         List<String> reasons = new ArrayList<>();
         if (!Objects.equals(safeText(previous.getTitle()), safeText(next.getTitle()))
-                || !Objects.equals(safeText(previous.getLocation()), safeText(next.getLocation()))) {
+                || !Objects.equals(safeText(previous.getLocation()), safeText(next.getLocation()))
+                || normalizeCount(previous.getCapacityMin()) != normalizeCount(next.getCapacityMin())
+                || normalizeCount(previous.getCapacityMax()) != normalizeCount(next.getCapacityMax())) {
             reasons.add("details");
         }
         if (!Objects.equals(safeText(previous.getStartAtIso()), safeText(next.getStartAtIso()))
@@ -4653,16 +4963,19 @@ public class ActivitiesEventsService {
             }
         }
 
-        Map<String, Integer> manualCountsByRuntimeId = new LinkedHashMap<>();
+        Map<String, LinkedHashSet<String>> manualGroupIdsByRuntimeId = new LinkedHashMap<>();
         List<ActivitySubEventGroup> manualGroups = groupOwnerIds.isEmpty()
                 ? List.of()
                 : activitySubEventGroupsRepository.findByOwnerIdInAndStatusNot(groupOwnerIds, RUNTIME_STATUS_DELETED);
         for (ActivitySubEventGroup group : manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups) {
             String groupOwnerId = normalizeId(group == null ? null : group.getOwnerId());
-            if (!StringUtils.hasText(groupOwnerId)) {
+            String groupId = normalizeId(group == null ? null : group.getGroupId());
+            if (!StringUtils.hasText(groupOwnerId) || !StringUtils.hasText(groupId)) {
                 continue;
             }
-            manualCountsByRuntimeId.put(groupOwnerId, manualCountsByRuntimeId.getOrDefault(groupOwnerId, 0) + 1);
+            manualGroupIdsByRuntimeId
+                    .computeIfAbsent(groupOwnerId, ignored -> new LinkedHashSet<>())
+                    .add(groupId);
         }
 
         String nowIso = Instant.now().toString();
@@ -4681,8 +4994,10 @@ public class ActivitiesEventsService {
                 continue;
             }
             String runtimeId = normalizeId(record == null ? null : record.getId());
-            int groupsCount = autoTournamentGroupCount(definitionEvent, stage)
-                    + manualCountsByRuntimeId.getOrDefault(runtimeId, 0);
+            int groupsCount = tournamentGroupCount(
+                    definitionEvent,
+                    stage,
+                    manualGroupIdsByRuntimeId.getOrDefault(runtimeId, new LinkedHashSet<>()));
             if (Objects.equals(record.getGroupsCount(), groupsCount)) {
                 continue;
             }
@@ -6172,6 +6487,31 @@ public class ActivitiesEventsService {
                 ? normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds())
                 : new ArrayList<>(syncedMembersSnapshot.pendingRequestMemberUserIds());
 
+        if (publishedManageMode) {
+            Integer effectiveCapacityMax = resolvePublishedCapacityMax(
+                    existing,
+                    nullableCount(request.capacityMax()),
+                    acceptedMembers);
+            document.setCapacityMax(effectiveCapacityMax);
+            document.setCapacityTotal(resolvePublishedCapacityTotal(effectiveCapacityMax, acceptedMembers));
+            document.setTicketing(existing != null
+                    && (Boolean.TRUE.equals(existing.getTicketing()) || Boolean.TRUE.equals(request.ticketing())));
+            document.setAcceptedMembers(acceptedMembers);
+            document.setPendingMembers(pendingMembers);
+            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
+            document.setPendingMemberUserIds(pendingMemberUserIds);
+            document.setInvitedMemberUserIds(invitedMemberUserIds);
+            document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
+            document.setAdmins(syncedMembersSnapshot == null
+                    ? normalizeIds(existing == null ? null : existing.getAdmins())
+                    : new ArrayList<>(syncedMembersSnapshot.adminUserIds()));
+            document.setFull(directRecordFull(document));
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(actorUserId);
+            document.normalizeLifecycleState();
+            return document;
+        }
+
         document.setId(resolveExistingId(ownerUserId, sourceId, existing));
         document.setSyncKey(resolveExistingSyncKey(ownerUserId, sourceId, existing == null ? request.syncKey() : existing.getSyncKey()));
         document.setSourceId(sourceId);
@@ -6225,7 +6565,7 @@ public class ActivitiesEventsService {
                 : nullableCount(request.capacityMin()));
         document.setCapacityMax(effectiveCapacityMax);
         document.setCapacityTotal(publishedManageMode
-                ? resolvePublishedCapacityTotal(existing, effectiveCapacityMax, acceptedMembers, syncedMembersSnapshot)
+                ? resolvePublishedCapacityTotal(effectiveCapacityMax, acceptedMembers)
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setTicketing(publishedManageMode
@@ -6243,13 +6583,18 @@ public class ActivitiesEventsService {
         document.setPolicies(publishedManageMode
                 ? clonePolicies(existing == null ? null : existing.getPolicies())
                 : clonePolicies(request.policies()));
-        boolean slotsEnabled = publishedManageMode
+        List<EventSlotTemplateDto> nextSlotTemplates = publishedManageMode
+                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
+                : cloneSlotTemplates(request.slotTemplates());
+        boolean slotsRequested = publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
                 : !slotEvent && Boolean.TRUE.equals(request.slotsEnabled());
+        boolean slotsEnabled = slotsRequested && !nextSlotTemplates.isEmpty();
         document.setSlotsEnabled(slotsEnabled);
-        document.setSlotTemplates(publishedManageMode
-                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
-                : slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : nextSlotTemplates);
+        if (!slotsEnabled) {
+            document.setFrequency("One-time");
+        }
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -6263,12 +6608,13 @@ public class ActivitiesEventsService {
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
-        boolean subEventsEnabled = publishedManageMode
-                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
-                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
         List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
                 : cloneSubEventDefinitions(request.subEventDefinitions());
+        boolean subEventsRequested = publishedManageMode
+                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
+                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
+        boolean subEventsEnabled = subEventsRequested && !nextSubEventDefinitions.isEmpty();
         document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(List.of());
@@ -6364,24 +6710,22 @@ public class ActivitiesEventsService {
                 && !ActivityEvent.STATUS_DRAFT.equals(safeText(existing.getStatus()));
     }
 
+    private boolean isPublishedEventManageNoOp(ActivityEvent existing, ActivityEvent next) {
+        return isPublishedEventManageUpdate(existing)
+                && next != null
+                && normalizeCount(existing.getCapacityMax()) == normalizeCount(next.getCapacityMax())
+                && Boolean.TRUE.equals(existing.getTicketing()) == Boolean.TRUE.equals(next.getTicketing());
+    }
+
     private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
         int existingMax = normalizeCount(existing == null ? null : existing.getCapacityMax());
-        int requestedMax = requestedCapacityMax == null ? 0 : Math.max(0, requestedCapacityMax);
-        int nextMax = Math.max(Math.max(existingMax, requestedMax), Math.max(0, acceptedMembers));
+        int requestedMax = requestedCapacityMax == null ? existingMax : Math.max(0, requestedCapacityMax);
+        int nextMax = Math.max(requestedMax, Math.max(0, acceptedMembers));
         return nextMax > 0 ? nextMax : null;
     }
 
-    private int resolvePublishedCapacityTotal(
-            ActivityEvent existing,
-            Integer capacityMax,
-            int acceptedMembers,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        int snapshotCapacity = syncedMembersSnapshot != null && syncedMembersSnapshot.capacityTotal() != null
-                ? Math.max(0, syncedMembersSnapshot.capacityTotal())
-                : 0;
-        return Math.max(
-                Math.max(normalizeCount(existing == null ? null : existing.getCapacityTotal()), snapshotCapacity),
-                Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0));
+    private int resolvePublishedCapacityTotal(Integer capacityMax, int acceptedMembers) {
+        return Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0);
     }
 
     private String resolveExistingId(String ownerUserId, String sourceId, ActivityEvent existing) {
@@ -6742,6 +7086,8 @@ public class ActivitiesEventsService {
                 .include("slotTemplateId")
                 .include("generated")
                 .include("eventType")
+                .include("mode")
+                .include("slotsEnabled")
                 .include("currentStage")
                 .include("acceptedMembers")
                 .include("pendingMembers")

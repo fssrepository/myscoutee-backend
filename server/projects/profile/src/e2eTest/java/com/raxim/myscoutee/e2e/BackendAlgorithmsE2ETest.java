@@ -48,6 +48,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.data.document.Chat;
@@ -343,6 +344,17 @@ class BackendAlgorithmsE2ETest {
             assertThat(room.getImageUrl())
                     .isEqualTo("/media/public?key=images/system/random-room-default.png");
         }
+
+        List<ActivityMainEventRuntime> roomRuntimes = fromDemo(() -> mongoTemplate.find(
+                Query.query(Criteria.where("eventId").in(RANDOM_ROOM_EVENT_IDS)
+                        .and("runtimeKind").is(ActivityMainEventRuntime.RUNTIME_KIND_MAIN_EVENT)),
+                ActivityMainEventRuntime.class));
+        assertThat(roomRuntimes).hasSize(4);
+        assertThat(roomRuntimes).allSatisfy(runtime -> {
+            assertThat(runtime.getOwnerId()).isEqualTo(runtime.getEventId());
+            assertThat(runtime.getRecordId()).isEqualTo("main-event:" + runtime.getEventId());
+            assertThat(runtime.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        });
 
         List<Chat> roomChatViews = fromDemo(() -> mongoTemplate.find(
                 Query.query(Criteria.where("id").in(RANDOM_ROOM_EVENT_IDS)),

@@ -38,6 +38,7 @@ public class EventCheckoutBasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
     private static final List<String> DISPLAY_RESULT_STATES = List.of("pending", "active", "failed", "succeeded");
+    private static final List<String> CARD_RESULT_STATES = List.of("pending", "active", "failed", "succeeded", "deleted");
     private static final List<String> RESERVATION_RESULT_STATES = List.of("pending", "active", "failed");
     private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved");
     private static final String RESULT_STATE_DELETED = "deleted";
@@ -135,7 +136,7 @@ public class EventCheckoutBasketService {
                         normalizedUserId,
                         normalizedSourceIds,
                         ACTIVE_STATUSES,
-                        DISPLAY_RESULT_STATES)
+                        CARD_RESULT_STATES)
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(item -> StringUtils.hasText(normalizeId(item.getSourceId())))
@@ -160,6 +161,9 @@ public class EventCheckoutBasketService {
                 .toList();
         if (resultStates.stream().anyMatch("failed"::equals)) {
             return "failed";
+        }
+        if (!resultStates.isEmpty() && resultStates.stream().allMatch("deleted"::equals)) {
+            return "deleted";
         }
         if (!resultStates.isEmpty() && resultStates.stream().allMatch("succeeded"::equals)) {
             return "succeeded";

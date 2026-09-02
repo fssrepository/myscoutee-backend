@@ -305,7 +305,23 @@ docker logs --since 5m nginx</code></pre>
   </section>
 
   <section id="resume" class="page-break" aria-labelledby="resume-title">
-    <h1 id="resume-title">5. Resume <code>CHAT-LIST-001</code></h1>
+    <h1 id="resume-title">5. Pair-QA Operating Contract and Resume</h1>
+
+    <h2>One testcase, a human click guide, and replayable substages</h2>
+    <p>The CSV/XLSX ledger selects the testcase and execution order. Each selected testcase has one stable English click guide under <code>guides/qa/checklists/</code>. That guide tells the paired human where to click, what to enter, what to observe, and which phrase marks a machine-oracle boundary. It never stores live status, checked boxes, transient fixture IDs, or Codex evidence.</p>
+    <h2>Functional authenticity is mandatory</h2>
+    <p>Pair QA tests the real assembled product behavior, not a fixture-authored imitation of the expected result. A fixture may prepare production-reachable source data and ordinary persisted development configuration. It must never fabricate or backdate runtime state, <code>lastRunAtIso</code>, Runner history, counters, Metrics or audit events, completion state, notifications, projections, or a user-visible outcome. Any attempt that does so is <strong>NOT EXECUTED / invalid fixture</strong> and must be reset and redesigned before evidence is accepted.</p>
+    <p>For scheduler QA, Codex preserves the genuine last-run state, changes the real persisted target frequency to the documented short development interval—normally one minute—and waits for the already-running scheduler and production worker. Direct worker calls, artificial due-state timestamp writes, fabricated history or telemetry, and the manual <code>Run</code> action are forbidden as evidence.</p>
+    <ol>
+      <li>Codex prepares guarded <code>stage</code>, read-only <code>status</code>, and exact <code>reset</code> operations; proves the selected baseline; and opens the isolated actor browsers.</li>
+      <li>Fixture preparation does not replace a product transaction named by the checklist. If creation is under test, the human creates the domain record through the UI and Codex captures its generated identity afterward.</li>
+      <li>A complex testcase may have meaningful named substages such as <code>pre-create</code>, <code>post-create</code>, <code>slot-override</code>, or <code>resource-assigned</code>. They remain inside one testcase ID and are not created around every click.</li>
+      <li>The paired human performs and judges every visual/interaction step. At each named stop, Codex checks the independent API/backend/persisted oracle and records evidence outside the checklist.</li>
+      <li>After a discrepancy, freeze the boundary, repair the smallest owning scope, restore the nearest accepted substage, and replay the shortest causal tail. Run the complete journey when the human explicitly requests it or the failure contaminated an earlier boundary.</li>
+    </ol>
+    <p>The live handoff always identifies the testcase, checklist section, substage, fixture phase, actor/browser state, exact next human action, stop phrase, and pending machine oracle. A new session resumes through one read-only status gate instead of reconstructing the campaign from conversation history.</p>
+
+    <h2>Checkpoint-specific example: resume <code>CHAT-LIST-001</code></h2>
     <p>The commands below define the reproducible operator path that <strong>Codex Pro 20 executes automatically</strong> from the backend repository root. They are included for auditability and exceptional takeover, not as a command list the paired human must learn. The Docker wrapper must reach the already-running <code>mongodb</code> container; it never starts or restarts the stack.</p>
 
     <h2>Read-only continuity gate</h2>
@@ -356,7 +372,7 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
     <h1 id="cdp-and-device-title">6. CDP and Android USB Debugging</h1>
 
     <h2>Chrome DevTools Protocol (CDP)</h2>
-    <p>The managed launcher assigns a loopback-only ephemeral DevTools port and records it in the checkpoint manifest. Codex Pro 20 uses CDP for read-only inspection and checkpoint-specific network/geolocation controls; CDP must not perform the paired human's manual overview action.</p>
+    <p>The managed launcher assigns a loopback-only ephemeral DevTools port and records it in the checkpoint manifest. After the paired human reports a discrepancy, Codex Pro 20 may use targeted CDP inspection when logs, API state and persistence are insufficient to localize it. Checkpoint-specific network/geolocation controls remain permitted only where the checklist requires them. CDP must never click through the test, manufacture visual evidence, or replace the paired human's verdict.</p>
     <pre><code>QA_CDP_PORT=$(jq -r '.sessions[0].devToolsPort' \
   /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json)
 
@@ -404,14 +420,14 @@ adb reverse --list
     <ol class="checklist">
       <li>The paired human accepts the visible result or requests an immediate correction.</li>
       <li>For a correction, Codex uses the existing dev pipeline, replays the checkpoint, reopens the managed browser, and returns it for another human review.</li>
-      <li>After human acceptance, Codex reruns the CDP and Docker oracles and requires exact IDs/order/totals plus a zero-write snapshot. UI alone is not PASS.</li>
+      <li>After human acceptance, Codex runs the required Docker/API/persistence oracles and requires exact IDs/order/totals plus the documented write/no-write boundary. Targeted CDP is used only when diagnosis or a checkpoint-specific control requires it. UI alone is not PASS.</li>
       <li>Codex writes the QA-pack evidence, updates CSV/XLSX and README totals, and moves the live pointer in <code>CURRENT_QA_SESSION.md</code>.</li>
       <li>Only then does Codex reset the fixture and advance to <code>TOURNAMENT-MEMBER-001</code>.</li>
     </ol>
 
     <aside class="callout note">
       <h3>Minimum pair-QA handover</h3>
-      <p>Codex Pro 20 carries forward the checkpoint ID, phase, actor, environment/profile/database, last oracle, remaining manual overview, stop phrase, running processes, and next command. The human only needs the observable task, its PASS conditions, and the ability to request a correction; a new human is not expected to reconstruct the automation workflow.</p>
+      <p>Codex Pro 20 carries forward the testcase/checkpoint ID, checklist path and section, named substage, fixture phase, actor/browser state, environment/profile/database, last oracle, exact next human action, stop phrase, pending machine oracle, and running processes. The human only needs the observable task, its PASS conditions, and the ability to request a correction; a new human is not expected to reconstruct the automation workflow.</p>
     </aside>
 
   </section>

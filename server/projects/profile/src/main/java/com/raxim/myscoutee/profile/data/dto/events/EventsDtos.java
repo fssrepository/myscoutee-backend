@@ -529,6 +529,7 @@ public final class EventsDtos {
             String eventType,
             String mode,
             TournamentCurrentStageDto currentStage,
+            Boolean slotsEnabled,
             Integer acceptedMembers,
             Integer pendingMembers,
             List<String> acceptedMemberUserIds,

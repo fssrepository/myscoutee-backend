@@ -32,6 +32,12 @@ Usage:
   bash manual-qa-checkpoints.sh status stat-012
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
+  bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 random-groups
+  bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 counter-expiry
+  bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 basket-purge
+  bash manual-qa-checkpoints.sh status event-schedulers EVENT-SCHEDULERS-001
+  bash manual-qa-checkpoints.sh schedule event-schedulers EVENT-SCHEDULERS-001 [delay-seconds]
+  bash manual-qa-checkpoints.sh reset event-schedulers EVENT-SCHEDULERS-001
   bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
@@ -45,6 +51,14 @@ Usage:
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
+  bash manual-qa-checkpoints.sh capture-runtime-created event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh verify-runtime-slot-override event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh capture-runtime-post-create event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restore-runtime-post-create event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restage-runtime-post-create event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh prepare-runtime-transport event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restage-runtime-member-clean event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh repair-runtime-transport-invite-scope event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
   bash manual-qa-checkpoints.sh prepare-invitation-admin-approval-retest event-domain EVENT-INV-004
   bash manual-qa-checkpoints.sh hold-auto-inviter event-domain EVENT-EDITOR-003
@@ -134,6 +148,10 @@ Usage:
   bash manual-qa-checkpoints.sh stage asset-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh next asset-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status asset-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh capture-lifecycle-created asset-domain ASSET-LIFE-001
+  bash manual-qa-checkpoints.sh verify-lifecycle-edited asset-domain ASSET-LIFE-001
+  bash manual-qa-checkpoints.sh verify-lifecycle-trashed asset-domain ASSET-LIFE-001
+  bash manual-qa-checkpoints.sh verify-lifecycle-restored asset-domain ASSET-LIFE-001
   bash manual-qa-checkpoints.sh reset asset-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh stage operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh next operator-domain OPERATOR-FIREBASE-001
@@ -216,6 +234,7 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
+    event-schedulers) scenario_script="${SCRIPT_DIR}/scenarios/event-schedulers.js" ;;
     role-triad) scenario_script="${SCRIPT_DIR}/scenarios/role-triad-checkpoints.js" ;;
     chat-domain)
       if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
@@ -366,6 +385,21 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
+  event-schedulers:stage)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
+    ;;
+  event-schedulers:status|event-schedulers:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-schedulers:schedule)
+    [ "$#" -ge 3 ] && [ "$#" -le 4 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" "${4:-30}" "$3"
+    ;;
   event-domain:prepare-tournament-notification-sequence-retest|\
   event-domain:verify-tournament-finalize-sequence|\
   event-domain:verify-tournament-advancement-sequence|\
@@ -379,6 +413,11 @@ case "${scenario}:${command}" in
   event-domain:prepare-tournament-final-completion-retest|\
   event-domain:verify-tournament-final-completion)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:capture-runtime-created|event-domain:verify-runtime-slot-override|event-domain:capture-runtime-post-create|event-domain:restore-runtime-post-create|event-domain:restage-runtime-post-create|event-domain:restage-runtime-member-clean)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-RUNTIME-001" ] || fail "${command} is restricted to EVENT-RUNTIME-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:verify-tournament-card-transition)
@@ -443,8 +482,8 @@ case "${scenario}:${command}" in
     [ "$3" = "TOURNAMENT-SCORE-REOPEN-002" ] || fail "${command} is restricted to TOURNAMENT-SCORE-REOPEN-002."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
-  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:prepare-runtime-transport|event-domain:repair-runtime-transport-invite-scope|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
+  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-trashed|asset-domain:verify-lifecycle-restored|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"

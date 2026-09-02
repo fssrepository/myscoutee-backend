@@ -11,9 +11,11 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 
 @Component
@@ -31,7 +33,8 @@ public class ActivitySubEventResourceMapper {
                 cloneAssignmentIds(record.getAssetAssignmentIds()),
                 toSettingsDtoMap(record.getAssetSettingsByType()),
                 toSupplyContributionDtoMap(record.getSupplyContributionEntriesByAssetId()),
-                Map.of());
+                Map.of(),
+                toResourceMetricDtoMap(record.getResourceMetricsByType()));
     }
 
     private Map<String, List<String>> cloneAssignmentIds(Map<String, List<String>> source) {
@@ -109,6 +112,27 @@ public class ActivitySubEventResourceMapper {
             if (!entries.isEmpty()) {
                 next.put(assetId, entries);
             }
+        }
+        return next;
+    }
+
+    private Map<String, SubEventResourceMetricDto> toResourceMetricDtoMap(
+            Map<String, SubEventResourceMetricRecord> source) {
+        Map<String, SubEventResourceMetricDto> next = new LinkedHashMap<>();
+        for (Map.Entry<String, SubEventResourceMetricRecord> entry : source == null
+                ? Map.<String, SubEventResourceMetricRecord>of().entrySet()
+                : source.entrySet()) {
+            String type = safeText(entry.getKey());
+            SubEventResourceMetricRecord metric = entry.getValue();
+            if (!StringUtils.hasText(type) || metric == null) {
+                continue;
+            }
+            int capacityMin = normalizeCount(metric.capacityMin());
+            next.put(type, new SubEventResourceMetricDto(
+                    normalizeCount(metric.accepted()),
+                    normalizeCount(metric.pending()),
+                    capacityMin,
+                    Math.max(capacityMin, normalizeCount(metric.capacityMax()))));
         }
         return next;
     }

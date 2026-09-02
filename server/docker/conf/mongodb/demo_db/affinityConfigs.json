@@ -10,6 +10,12 @@
     "changedUser": "system",
     "changedSection": "seed",
     "changeSummary": "Initial platform parameter defaults.",
+    "jobs": {
+      "eventChangedDebounceSeconds": 15,
+      "eventMembersChangedDebounceSeconds": 15,
+      "assetChangedDebounceSeconds": 15,
+      "assetRequestsChangedDebounceSeconds": 15
+    },
     "rating": {
       "singleMutual": {
         "multiplier": 10

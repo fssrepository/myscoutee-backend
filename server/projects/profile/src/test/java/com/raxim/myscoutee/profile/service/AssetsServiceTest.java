@@ -456,7 +456,8 @@ class AssetsServiceTest {
                 "asset-1",
                 "event-1:subevent-1:group-a",
                 "subevent-1",
-                List.of(invited));
+                List.of(invited),
+                "u1");
 
         assertThat(assetOwnerUserId).isEqualTo("u1");
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
@@ -470,6 +471,7 @@ class AssetsServiceTest {
                 .singleElement()
                 .satisfies(request -> {
                     assertThat(request.status()).isEqualTo("pending");
+                    assertThat(request.requestKind()).isEqualTo("invite");
                     assertThat(request.booking().eventId()).isEqualTo("event-1:subevent-1:group-a");
                     assertThat(request.booking().subEventId()).isEqualTo("subevent-1");
                 });

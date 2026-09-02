@@ -105,23 +105,27 @@ class EventCheckoutBasketServiceTest {
         EventCheckoutBasketItem succeeded = persistedItem();
         succeeded.setSourceId("event-2");
         succeeded.setResultState("succeeded");
+        EventCheckoutBasketItem deleted = persistedItem();
+        deleted.setSourceId("event-3");
+        deleted.setResultState("deleted");
         when(repository.findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
                 eq("user-1"),
                 eq(List.of("event-1", "event-2")),
                 anyList(),
                 anyList()))
-                .thenReturn(List.of(pending, failed, succeeded));
+                .thenReturn(List.of(pending, failed, succeeded, deleted));
 
         Map<String, String> result = service.loadResultStatesByEvent(
                 " user-1 ",
-                List.of(" event-1 ", "event-2", "event-1"));
+                List.of(" event-1 ", "event-2", "event-3", "event-1"));
 
         assertThat(result).containsExactlyInAnyOrderEntriesOf(Map.of(
                 "event-1", "failed",
-                "event-2", "succeeded"));
+                "event-2", "succeeded",
+                "event-3", "deleted"));
         verify(repository).findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
                 eq("user-1"),
-                eq(List.of("event-1", "event-2")),
+                eq(List.of("event-1", "event-2", "event-3")),
                 anyList(),
                 anyList());
     }

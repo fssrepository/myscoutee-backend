@@ -1141,20 +1141,36 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private List<SubEventGroupItemDto> resolveGroups(String ownerId, ActivityEvent event, SubEventItem subEvent) {
-        List<SubEventGroupItemDto> groups = new ArrayList<>(resolveGeneratedGroups(event, subEvent));
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEvent == null ? null : subEvent.id());
-        if (StringUtils.hasText(normalizedOwnerId) && StringUtils.hasText(normalizedSubEventId)) {
-            activitySubEventStageRuntimeRepository
-                    .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
-                    .map(ActivitySubEventStageRuntime::getId)
-                    .map(this::manualGroupRecords)
-                    .ifPresent(records -> groups.addAll(records.stream()
-                            .map(this::toManualSubEventGroup)
-                            .filter(Objects::nonNull)
-                            .toList()));
+        List<ActivitySubEventGroup> manualGroups = StringUtils.hasText(normalizedOwnerId)
+                && StringUtils.hasText(normalizedSubEventId)
+                ? activitySubEventStageRuntimeRepository
+                        .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
+                        .map(ActivitySubEventStageRuntime::getId)
+                        .map(this::manualGroupRecords)
+                        .orElse(List.of())
+                : List.of();
+        return mergeGroups(resolveGeneratedGroups(event, subEvent), manualGroups);
+    }
+
+    private List<SubEventGroupItemDto> mergeGroups(
+            List<SubEventGroupItemDto> generatedGroups,
+            List<ActivitySubEventGroup> manualGroups) {
+        Map<String, SubEventGroupItemDto> groupsById = new LinkedHashMap<>();
+        for (SubEventGroupItemDto group : generatedGroups == null
+                ? List.<SubEventGroupItemDto>of()
+                : generatedGroups) {
+            String groupId = normalizeId(group == null ? null : group.id());
+            if (StringUtils.hasText(groupId)) {
+                groupsById.put(groupId, group);
+            }
         }
-        return groups;
+        (manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups).stream()
+                .map(this::toManualSubEventGroup)
+                .filter(Objects::nonNull)
+                .forEach(group -> groupsById.put(normalizeId(group.id()), group));
+        return new ArrayList<>(groupsById.values());
     }
 
     private List<SubEventGroupItemDto> resolveGeneratedGroups(ActivityEvent event, SubEventItem subEvent) {
@@ -1226,8 +1242,9 @@ public class ActivitiesEventLeaderboardService {
                 .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
                 .orElseGet(ActivitySubEventStageRuntime::new);
         record.setId(StringUtils.hasText(record.getId()) ? record.getId() : new ObjectId().toHexString());
-        int groupsCount = autoTournamentGroupCount(event, stage)
-                + manualGroupRecords(record.getId()).size();
+        int groupsCount = mergeGroups(
+                resolveGeneratedGroups(event, stage),
+                manualGroupRecords(record.getId())).size();
         record.setSyncKey(StringUtils.hasText(record.getSyncKey()) ? record.getSyncKey() : UUID.randomUUID().toString());
         record.setRecordId(normalizedOwnerId + ":" + normalizedSubEventId);
         record.setStatus(STATUS_ACTIVE);

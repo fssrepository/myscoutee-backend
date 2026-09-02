@@ -822,18 +822,12 @@ public class ActivitiesMembersService {
                         HttpStatus.FORBIDDEN,
                         "Authenticated user is not allowed to replace members for this asset booking.");
             }
-            String assetOwnerUserId = assetsService.syncScopedRequestsFromMemberEntries(
+            assetsService.syncScopedRequestsFromMemberEntries(
                     ownerId,
                     scopedEventId,
                     scopedSubEventId,
-                    safeMembers(request.members()));
-            if (StringUtils.hasText(assetOwnerUserId)) {
-                activitiesResourcesService.refreshGroupRuntimeResourceMetrics(
-                        scopedEventId,
-                        scopedSubEventId,
-                        assetOwnerUserId,
-                        actorUserId);
-            }
+                    safeMembers(request.members()),
+                    actorUserId);
             return;
         }
         String nowIso = Instant.now().toString();
@@ -1062,6 +1056,12 @@ public class ActivitiesMembersService {
                 && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                 && isAdminApprovalMembership(current)
                 && actorCanManageOwner;
+        boolean managingPendingInvitation = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current)
+                && actorCanManageOwner
+                && !actorUserId.equals(targetUserId);
         boolean steppingDownOwnManagedRole = !OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_STEP_DOWN_ADMIN.equals(action)
                 && actorUserId.equals(targetUserId)
@@ -1080,6 +1080,7 @@ public class ActivitiesMembersService {
                 && !rejectingOwnManagedInvitation
                 && !withdrawingOwnApprovalRequest
                 && !managingPendingApproval
+                && !managingPendingInvitation
                 && !steppingDownOwnManagedRole
                 && !leavingOwnManagedMembership
                 && (!actorCanManageOwner
@@ -1092,7 +1093,8 @@ public class ActivitiesMembersService {
                 && isInvitationMembership(current)
                 && !acceptingOwnManagedInvitation
                 && !cancellingOwnManagedInvitation
-                && !rejectingOwnManagedInvitation) {
+                && !rejectingOwnManagedInvitation
+                && !managingPendingInvitation) {
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
 
@@ -1231,7 +1233,7 @@ public class ActivitiesMembersService {
         boolean removingPendingEventMembership = OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_REMOVE.equals(action)
                 && STATUS_PENDING.equals(currentStatus);
-        if (!removingPendingEventMembership) {
+        if (!removingPendingEventMembership && !scopedAssetAction) {
             enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
         }
         adminTelemetryService.record(
@@ -1335,18 +1337,12 @@ public class ActivitiesMembersService {
                 nextEntries.add(nextEntry);
             }
         }
-        String assetOwnerUserId = assetsService.syncScopedRequestsFromMemberEntries(
+        assetsService.syncScopedRequestsFromMemberEntries(
                 assetId,
                 eventId,
                 subEventId,
-                nextEntries);
-        if (StringUtils.hasText(assetOwnerUserId)) {
-            activitiesResourcesService.refreshGroupRuntimeResourceMetrics(
-                    eventId,
-                    subEventId,
-                    assetOwnerUserId,
-                    actorUserId);
-        }
+                nextEntries,
+                actorUserId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {

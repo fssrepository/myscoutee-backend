@@ -34,7 +34,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -216,7 +219,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void subEventReloadUsesEmbeddedCounterProjectionWithoutCounterQueries() {
+    void subEventReloadUsesPersistedResourceWriteState() {
         Users viewer = new Users();
         viewer.setId("host");
         ActivityEvent parent = event("event-1", "host", 0d);
@@ -257,14 +260,14 @@ class ActivitiesEventsServiceTest {
                 16,
                 1,
                 1,
-                2,
-                0,
-                0,
-                2,
                 0,
                 0,
                 0,
-                24,
+                0,
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
@@ -274,6 +277,11 @@ class ActivitiesEventsServiceTest {
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+        when(activitySubEventResourcesRepository.findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                Set.of("event-1"),
+                Set.of("host"),
+                "D"))
+                .thenReturn(List.of(resourceState("event-1", "optional-1", "host", 2, 2, 24)));
 
         EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
                 "host",
@@ -294,11 +302,62 @@ class ActivitiesEventsServiceTest {
                     assertThat(item.carsCapacityMin()).isZero();
                     assertThat(item.carsCapacityMax()).isEqualTo(24);
                 }));
-        verify(activitySubEventResourcesRepository, never())
-                .findByOwnerIdInAndStatusNot(anyCollection(), anyString());
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        Set.of("event-1"), Set.of("host"), "D");
         verify(activitiesResourcesService, never()).queryState(anyString(), anyString(), anyString());
         verify(activitiesMembersService, never())
                 .buildBatchOwnerSnapshots(anyString(), anyCollection());
+    }
+
+    @Test
+    void childlessMainEventReloadUsesItsRuntimeResourceMetricProjection() {
+        Users viewer = new Users();
+        viewer.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setSubEventsEnabled(false);
+        parent.setSlotsEnabled(false);
+        parent.setSubEventDefinitions(List.of());
+
+        ActivityMainEventRuntime runtime = new ActivityMainEventRuntime();
+        runtime.setRecordId("main-event:event-1");
+        runtime.setRuntimeKind("MAIN_EVENT");
+        runtime.setStatus(ActivityEvent.STATUS_ACTIVE);
+        runtime.setEventId("event-1");
+        runtime.setOwnerId("event-1");
+        runtime.setTitle("Event event-1");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class))).thenReturn(runtime);
+        when(activitySubEventResourcesRepository.findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                Set.of("event-1"),
+                Set.of("host"),
+                "D"))
+                .thenReturn(List.of(resourceState("event-1", "main-event:event-1", "host", 1, 1, 4)));
+
+        EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
+                "host",
+                "event-1",
+                "upcoming",
+                "day",
+                null,
+                null,
+                null,
+                false));
+
+        assertThat(result.slots()).singleElement().satisfies(slot ->
+                assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                    assertThat(item.runtimeKind()).isEqualTo("MAIN_EVENT");
+                    assertThat(item.id()).isEqualTo("main-event:event-1");
+                    assertThat(item.carsAccepted()).isEqualTo(1);
+                    assertThat(item.carsPending()).isEqualTo(1);
+                    assertThat(item.carsCapacityMin()).isZero();
+                    assertThat(item.carsCapacityMax()).isEqualTo(4);
+                }));
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        Set.of("event-1"), Set.of("host"), "D");
     }
 
     @Test
@@ -1470,6 +1529,9 @@ class ActivitiesEventsServiceTest {
         existing.setFrequency(null);
         existing.setSlotsEnabled(null);
         existing.setSubEventsEnabled(true);
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(1);
+        existing.setCapacityTotal(1);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
@@ -1500,6 +1562,288 @@ class ActivitiesEventsServiceTest {
                 anyCollection(),
                 anyCollection(),
                 anyString());
+    }
+
+    @Test
+    void publishedCapacityDecreaseNotifiesOtherParticipantsAsDefinitionChange() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                7));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getCapacityMin()).isEqualTo(1);
+            assertThat(saved.getCapacityMax()).isEqualTo(7);
+            assertThat(saved.getCapacityTotal()).isEqualTo(7);
+        });
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> reasonsCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventDefinitionChanged(
+                eq("event-1"),
+                eq("Draft Event"),
+                audienceCaptor.capture(),
+                reasonsCaptor.capture(),
+                eq("host"));
+        assertThat(audienceCaptor.getValue()).containsExactly("member-1");
+        assertThat(reasonsCaptor.getValue()).containsExactly("details");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
+    }
+
+    @Test
+    void publishedCapacityCanDecreaseToAcceptedCountDespiteOutstandingInvitation() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of("invitee"),
+                        List.of("invitee"),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                2));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getCapacityMax()).isEqualTo(2);
+            assertThat(saved.getCapacityTotal()).isEqualTo(2);
+        });
+    }
+
+    @Test
+    void publishedManageNoOpDoesNotWriteNotifyOrEnqueueRecompute() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTitle("Draft Event");
+        existing.setCapacityMin(1);
+        existing.setCapacityMax(8);
+        existing.setCapacityTotal(8);
+        existing.setTicketing(false);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                true,
+                false,
+                "Public",
+                8));
+
+        assertThat(result).isNotNull();
+        assertThat(result.capacityTotal()).isEqualTo(8);
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(activitiesMembersService, never()).ensureEventCreatorAdminMembership(anyString(), anyString());
+        verify(affinityRecomputeTaskService, never()).enqueueEventChanged(anyString(), anyString());
+        verify(scheduledMessageTaskService, never()).scheduleEventDefinitionChanged(
+                anyString(),
+                anyString(),
+                anyCollection(),
+                anyCollection(),
+                anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
+    }
+
+    @Test
+    void firstCompleteEventSaveMaterializesAndLoadsMainEventRuntime() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        AtomicReference<ActivityEvent> savedEvent = new AtomicReference<>();
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.empty());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> documents = invocation.getArgument(0);
+            savedEvent.set(documents.get(0));
+            return documents;
+        });
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                false,
+                false,
+                "Public",
+                8));
+
+        assertThat(result).isNotNull();
+        assertThat(savedEvent.get()).satisfies(event -> {
+            assertThat(event.getSourceId()).isEqualTo("event-1");
+            assertThat(event.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
+            assertThat(event.getSlotsEnabled()).isFalse();
+            assertThat(event.getSlotTemplates()).isEmpty();
+            assertThat(event.getSubEventsEnabled()).isFalse();
+            assertThat(event.getSubEventDefinitions()).isEmpty();
+        });
+        verify(accessControlService).canCurrentActorCreateEvent("host", "event-1");
+        verify(accessControlService, never()).canCurrentActorEditEvent("event-1");
+
+        ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
+                ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
+        verify(mongoTemplate).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue()).satisfies(runtime -> {
+            assertThat(runtime.getRecordId()).isEqualTo("main-event:event-1");
+            assertThat(runtime.getRuntimeKind()).isEqualTo("MAIN_EVENT");
+            assertThat(runtime.getEventId()).isEqualTo("event-1");
+            assertThat(runtime.getOwnerId()).isEqualTo("event-1");
+            assertThat(runtime.getSubEventId()).isNull();
+            assertThat(runtime.getTitle()).isEqualTo("Draft Event");
+        });
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(savedEvent.get()));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class)))
+                .thenReturn(runtimeCaptor.getValue());
+
+        EventSubEventsResultDto subEvents = service.loadSubEventsById(new EventSubEventsQueryDto(
+                "host",
+                "event-1",
+                "upcoming",
+                "day",
+                null,
+                null,
+                null,
+                false));
+
+        assertThat(subEvents).isNotNull();
+        assertThat(subEvents.slots()).singleElement().satisfies(slot ->
+                assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                    assertThat(item.runtimeKind()).isEqualTo("MAIN_EVENT");
+                    assertThat(item.id()).isEqualTo("main-event:event-1");
+                    assertThat(item.eventId()).isEqualTo("event-1");
+                }));
+    }
+
+    @Test
+    void emptyEnabledChildDefinitionsAreCanonicalizedAndReactivateMainEventRuntime() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setStatus(ActivityEvent.STATUS_DRAFT);
+        existing.setFrequency("Custom");
+        existing.setSlotsEnabled(true);
+        existing.setSlotTemplates(List.of());
+        existing.setSubEventsEnabled(true);
+        existing.setSubEventDefinitions(List.of());
+
+        ActivityMainEventRuntime runtime = new ActivityMainEventRuntime();
+        runtime.setId("runtime-1");
+        runtime.setRecordId("main-event:event-1");
+        runtime.setSyncKey("runtime-sync-1");
+        runtime.setStatus("D");
+        runtime.setRuntimeKind("MAIN_EVENT");
+        runtime.setEventId("event-1");
+        runtime.setOwnerId("event-1");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityMainEventRuntime.class))).thenReturn(runtime);
+
+        EventDto result = service.sync(eventPayload(
+                "sync-event-1",
+                "event-1",
+                "host",
+                false,
+                false,
+                "Public",
+                8,
+                true,
+                true));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getSlotsEnabled()).isFalse();
+            assertThat(saved.getSlotTemplates()).isEmpty();
+            assertThat(saved.getFrequency()).isEqualTo("One-time");
+            assertThat(saved.getSubEventsEnabled()).isFalse();
+            assertThat(saved.getSubEventDefinitions()).isEmpty();
+        });
+
+        ArgumentCaptor<ActivityMainEventRuntime> runtimeCaptor =
+                ArgumentCaptor.forClass(ActivityMainEventRuntime.class);
+        verify(mongoTemplate).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue()).isSameAs(runtime);
+        assertThat(runtimeCaptor.getValue().getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        assertThat(runtimeCaptor.getValue().getRecordId()).isEqualTo("main-event:event-1");
+        assertThat(runtimeCaptor.getValue().getSyncKey()).isEqualTo("runtime-sync-1");
     }
 
     @Test
@@ -2044,6 +2388,26 @@ class ActivitiesEventsServiceTest {
         return statuses;
     }
 
+    private ActivitySubEventResource resourceState(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            int accepted,
+            int pending,
+            int capacityMax) {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setStatus("A");
+        resource.setOwnerId(ownerId);
+        resource.setSubEventId(subEventId);
+        resource.setAssetOwnerUserId(assetOwnerUserId);
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("transport-1")));
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        resource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(accepted, pending, 0, capacityMax)));
+        return resource;
+    }
+
     private ActivityEvent event(String sourceId, String creatorUserId, double affinity) {
         ActivityEvent event = new ActivityEvent();
         event.setId(sourceId + "-document");
@@ -2139,6 +2503,39 @@ class ActivitiesEventsServiceTest {
             Boolean published,
             Boolean ticketing,
             String visibility) {
+        return eventPayload(syncKey, id, creatorUserId, published, ticketing, visibility, 1);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax) {
+        return eventPayload(
+                syncKey,
+                id,
+                creatorUserId,
+                published,
+                ticketing,
+                visibility,
+                capacityMax,
+                false,
+                false);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing,
+            String visibility,
+            Integer capacityMax,
+            Boolean slotsEnabled,
+            Boolean subEventsEnabled) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -2170,7 +2567,7 @@ class ActivitiesEventsServiceTest {
                 "",
                 null,
                 1,
-                null,
+                capacityMax,
                 1,
                 1,
                 false,
@@ -2181,7 +2578,7 @@ class ActivitiesEventsServiceTest {
                 null,
                 false,
                 List.of(),
-                false,
+                slotsEnabled,
                 List.of(),
                 null,
                 null,
@@ -2197,7 +2594,7 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
-                true,
+                subEventsEnabled,
                 List.of(),
                 List.of(),
                 "",
