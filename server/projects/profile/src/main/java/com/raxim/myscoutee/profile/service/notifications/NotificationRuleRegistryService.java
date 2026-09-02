@@ -93,6 +93,31 @@ public class NotificationRuleRegistryService {
         return isScheduledRuleDue(rule, now);
     }
 
+    public String nextScheduledRunAtIso(NotificationRuleConfig rule, Instant now) {
+        if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
+            return "";
+        }
+        NotificationRuleConfig.Timing timing = rule.getTiming();
+        if (timing == null || !normalizeScheduleSlots(rule.getScheduleSlots(), timing).isEmpty()) {
+            return "";
+        }
+        Instant resolvedNow = now == null ? Instant.now() : now;
+        String mode = safeText(timing.getMode()).toLowerCase();
+        if ("interval".equals(mode)) {
+            Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
+            if (lastRunAt == null) {
+                return resolvedNow.toString();
+            }
+            ZoneId zoneId = ZoneId.of(firstNonBlank(timing.getTimezone(), "UTC"));
+            return plusInterval(lastRunAt.atZone(zoneId), intervalSpec(timing)).toInstant().toString();
+        }
+        if ("yearly".equals(mode)) {
+            Instant occurrence = yearlyOccurrence(timing, resolvedNow);
+            return occurrence == null ? "" : occurrence.toString();
+        }
+        return "";
+    }
+
     private boolean isScheduledRuleDue(NotificationRuleConfig rule, Instant now) {
         if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
             return false;

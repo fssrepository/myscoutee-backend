@@ -114,6 +114,43 @@ class NotificationRuleRegistryServiceTest {
     }
 
     @Test
+    void nextScheduledRunUsesPersistedIntervalAndLastRun() {
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setEnabled(true);
+        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
+        timing.setMode("interval");
+        timing.setIntervalAmount(1);
+        timing.setIntervalUnit("minutes");
+        timing.setTimezone("UTC");
+        rule.setTiming(timing);
+        NotificationRuleConfig.RunState runState = new NotificationRuleConfig.RunState();
+        runState.setLastRunAtIso("2026-09-02T06:49:51.458Z");
+        rule.setRunState(runState);
+        NotificationRuleRegistryService service = new NotificationRuleRegistryService(
+                mock(NotificationRuleConfigsRepository.class),
+                mock(AdminNotificationSocketSessionRegistry.class),
+                mock(MongoTemplate.class),
+                mock(AdminTelemetryService.class));
+
+        assertThat(service.nextScheduledRunAtIso(rule, Instant.parse("2026-09-02T06:50:00Z")))
+                .isEqualTo("2026-09-02T06:50:51.458Z");
+    }
+
+    @Test
+    void disabledRuleHasNoNextScheduledRun() {
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setEnabled(false);
+        NotificationRuleRegistryService service = new NotificationRuleRegistryService(
+                mock(NotificationRuleConfigsRepository.class),
+                mock(AdminNotificationSocketSessionRegistry.class),
+                mock(MongoTemplate.class),
+                mock(AdminTelemetryService.class));
+
+        assertThat(service.nextScheduledRunAtIso(rule, Instant.parse("2026-09-02T06:50:00Z")))
+                .isEmpty();
+    }
+
+    @Test
     void successfulRunEmitsOneStartAndOneTerminalEventRegardlessOfProcessedCount() {
         NotificationRuleConfigsRepository repository = mock(NotificationRuleConfigsRepository.class);
         AdminNotificationSocketSessionRegistry socketRegistry = mock(AdminNotificationSocketSessionRegistry.class);

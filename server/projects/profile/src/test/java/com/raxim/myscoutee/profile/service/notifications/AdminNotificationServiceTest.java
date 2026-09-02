@@ -239,6 +239,7 @@ class AdminNotificationServiceTest {
                         "2026-07-25T00:00:01Z",
                         1000L,
                         "2026-07-25T00:00:01Z",
+                        "",
                         "completed",
                         "done",
                         4,

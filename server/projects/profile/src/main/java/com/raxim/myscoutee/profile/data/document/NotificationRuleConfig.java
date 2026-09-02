@@ -573,7 +573,7 @@ public class NotificationRuleConfig {
         private String lastRunDetail;
         private Integer lastRunCount;
         private String lastRunUser;
-        private Integer pendingCount;
+        private Integer pendingCount = 0;
         private String pendingCountUnit;
         private String pendingCountUpdatedAtIso;
 

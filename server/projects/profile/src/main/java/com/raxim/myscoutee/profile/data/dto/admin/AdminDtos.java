@@ -148,6 +148,7 @@ public final class AdminDtos {
             String finishedAtIso,
             Long durationMillis,
             String lastRunAtIso,
+            String nextRunAtIso,
             String lastRunStatus,
             String lastRunDetail,
             Integer lastRunCount,

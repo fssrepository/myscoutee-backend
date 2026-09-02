@@ -622,11 +622,12 @@ public class AdminNotificationService {
                         runState.getFinishedAtIso(),
                         runState.getDurationMillis(),
                         runState.getLastRunAtIso(),
+                        notificationRuleRegistryService.nextScheduledRunAtIso(rule, Instant.now()),
                         runState.getLastRunStatus(),
                         runState.getLastRunDetail(),
                         runState.getLastRunCount(),
                         runState.getLastRunUser(),
-                        runState.getPendingCount(),
+                        Math.max(0, runState.getPendingCount() == null ? 0 : runState.getPendingCount()),
                         runState.getPendingCountUnit(),
                         runState.getPendingCountUpdatedAtIso()),
                 rule.getRunHistory() == null ? List.of() : rule.getRunHistory().stream()

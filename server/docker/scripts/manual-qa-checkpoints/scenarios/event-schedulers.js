@@ -8,7 +8,8 @@
   const PREFIX = "manual-qa-checkpoint:v1:event-schedulers";
   const STATE_ID = Q.stateId(SCENARIO);
   const HOLD_SECONDS = 3600;
-  const ISOLATED_RULE_HOLD_SECONDS = 7 * 24 * 60 * 60;
+  const ISOLATED_RULE_HOLD_YEARS = 50;
+  const ISOLATED_RULE_HOLD_SECONDS = ISOLATED_RULE_HOLD_YEARS * 365 * 24 * 60 * 60;
   const RANDOM_BRANCH = "random-groups";
   const RANDOM_RULE = "event-random-groups";
   const RANDOM_UI_USER_ID = "0216b1ceb256d6f2c89073b8";
@@ -37,7 +38,6 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const requestedCheckpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID);
   const requestedBranch = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
-  const requestedDelaySeconds = Number(process.env.MANUAL_QA_DELAY_SECONDS || 30);
 
   function fail(message) {
     Q.fail(`${CHECKPOINT_ID}: ${message}`);
@@ -85,13 +85,11 @@
   }
 
   function schedulerRuleControlSnapshot(rule) {
-    const runState = rule.runState || {};
     return {
       ruleId: rule._id,
       ruleKey: Q.text(rule.ruleKey),
       timing: optionalField(rule, "timing"),
       scheduleSlots: optionalField(rule, "scheduleSlots"),
-      lastRunAtIso: optionalField(runState, "lastRunAtIso"),
       updatedDate: optionalField(rule, "updatedDate"),
       updatedUser: optionalField(rule, "updatedUser")
     };
@@ -110,19 +108,22 @@
 
   function holdScheduledRules(rules, heldAtIso) {
     for (const rule of rules || []) {
+      const lastRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
+      if (!Number.isFinite(Date.parse(lastRunAtIso))) {
+        fail(`rule '${Q.text(rule.ruleKey)}' has no genuine Last run; it cannot be isolated by frequency without fabricating runtime state.`);
+      }
       const result = Q.collection("notificationRuleConfigs").updateOne(
         { _id: rule._id, "runState.currentStatus": { $ne: "running" } },
         {
           $set: {
             scheduleSlots: [],
             "timing.mode": "interval",
-            "timing.intervalAmount": 7,
-            "timing.intervalUnit": "days",
+            "timing.intervalAmount": ISOLATED_RULE_HOLD_YEARS,
+            "timing.intervalUnit": "years",
             "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
             "timing.intervalMinutes": ISOLATED_RULE_HOLD_SECONDS / 60,
             "timing.time": "00:00",
             "timing.timezone": "UTC",
-            "runState.lastRunAtIso": heldAtIso,
             updatedDate: heldAtIso,
             updatedUser: Q.ACTOR
           }
@@ -142,11 +143,6 @@
         const record = saved[field];
         if (record && record.present) setValues[field] = record.value;
         else unsetValues[field] = "";
-      }
-      if (saved.lastRunAtIso && saved.lastRunAtIso.present) {
-        setValues["runState.lastRunAtIso"] = saved.lastRunAtIso.value;
-      } else {
-        unsetValues["runState.lastRunAtIso"] = "";
       }
       const update = {};
       if (Object.keys(setValues).length > 0) update.$set = setValues;
@@ -170,44 +166,35 @@
     Q.collection("notificationRuleConfigs").updateOne({ _id: saved.ruleId }, update);
   }
 
-  function holdBasketRule(rule, stagedAtIso) {
-    const latestRun = (rule.runHistory || [])[0];
-    const latestRunAtIso = Q.text(latestRun && (latestRun.finishedAtIso || latestRun.startedAtIso));
-    if (!latestRun || !Number.isFinite(Date.parse(latestRunAtIso))) {
-      fail("basket-purge staging requires one real Runner history row to preserve the Last run baseline.");
+  function holdTargetRule(rule, pendingCount, pendingCountUnit, _detail, stagedAtIso) {
+    const lastRunAtIso = Q.text(rule.runState && rule.runState.lastRunAtIso);
+    if (!Number.isFinite(Date.parse(lastRunAtIso))) {
+      fail(`rule '${Q.text(rule.ruleKey)}' has no genuine Last run; it cannot be held by frequency without fabricating runtime state.`);
     }
-    const detail = "EVENT-SCHEDULERS-001 basket-purge mixed baseline is held; schedule has not been issued.";
     const result = Q.collection("notificationRuleConfigs").updateOne(
       { _id: rule._id, "runState.currentStatus": { $ne: "running" } },
       {
         $set: {
           enabled: true,
           manualRunEnabled: false,
-          scheduleSlots: rule.scheduleSlots || [],
-          timing: rule.timing,
-          "runState.currentStatus": "idle",
-          "runState.progressPercent": 0,
-          "runState.progressDetail": detail,
-          "runState.lastRunAtIso": latestRunAtIso,
-          "runState.lastRunCount": Number(latestRun.processedCount) || 0,
-          "runState.lastRunStatus": Q.text(latestRun.status),
-          "runState.lastRunDetail": Q.text(latestRun.detail),
-          "runState.lastRunUser": Q.text(latestRun.runnerUser),
-          "runState.pendingCount": 2,
-          "runState.pendingCountUnit": "admin.jobs.table.affected",
+          scheduleSlots: [],
+          "timing.mode": "interval",
+          "timing.intervalAmount": ISOLATED_RULE_HOLD_YEARS,
+          "timing.intervalUnit": "years",
+          "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
+          "timing.intervalMinutes": ISOLATED_RULE_HOLD_SECONDS / 60,
+          "timing.time": "00:00",
+          "timing.timezone": "UTC",
+          "runState.pendingCount": pendingCount,
+          "runState.pendingCountUnit": pendingCountUnit,
           "runState.pendingCountUpdatedAtIso": stagedAtIso,
           updatedDate: stagedAtIso,
           updatedUser: Q.ACTOR
-        },
-        $unset: {
-          "runState.startedAtIso": "",
-          "runState.finishedAtIso": "",
-          "runState.lastError": ""
         }
       }
     );
     if (result.matchedCount !== 1) {
-      fail(`rule '${BASKET_RULE}' became running while staging.`);
+      fail(`rule '${Q.text(rule.ruleKey)}' became running while staging.`);
     }
   }
 
@@ -241,17 +228,8 @@
           "timing.intervalMinutes": 1,
           "timing.time": "00:00",
           "timing.timezone": "UTC",
-          "runState.currentStatus": "idle",
-          "runState.progressPercent": 0,
-          "runState.progressDetail": `Manual QA scheduled: eligible after ${dueAt.toISOString()}.`,
-          "runState.pendingCountUpdatedAtIso": scheduledAt.toISOString(),
           updatedDate: scheduledAt.toISOString(),
           updatedUser: Q.ACTOR
-        },
-        $unset: {
-          "runState.startedAtIso": "",
-          "runState.finishedAtIso": "",
-          "runState.lastError": ""
         }
       }
     );
@@ -287,11 +265,9 @@
     for (const saved of state.isolatedRuleConfigs || []) {
       const rule = Q.collection("notificationRuleConfigs").findOne({ _id: saved.ruleId }) || {};
       const timing = rule.timing || {};
-      const runState = rule.runState || {};
       if ((rule.runState && rule.runState.currentStatus === "running")
           || Number(timing.intervalSeconds) !== ISOLATED_RULE_HOLD_SECONDS
-          || (rule.scheduleSlots || []).length !== 0
-          || Date.parse(Q.text(runState.lastRunAtIso)) < Date.parse(state.stagedAtIso)) {
+          || (rule.scheduleSlots || []).length !== 0) {
         invalidRuleKeys.push(saved.ruleKey);
       }
     }
@@ -529,11 +505,12 @@
         strategyKey: "",
         readOnly: true
       };
-      Q.holdRule(
-        RANDOM_RULE,
+      holdTargetRule(
+        primaryRule,
         6,
+        "admin.jobs.table.users",
         "EVENT-SCHEDULERS-001 baseline is held; schedule has not been issued.",
-        HOLD_SECONDS
+        stagedAtIso
       );
       Q.collection("notificationRuleConfigs").updateOne(
         { ruleKey: RANDOM_RULE },
@@ -664,7 +641,7 @@
       },
       isolatedScheduledRuleCount: isolatedRules.length,
       metricsExpectation: "After scheduling, the branch-specific primary and required reactive rule set must each run exactly once; random-groups therefore changes both Metrics counters by +2 and then remains stable.",
-      next: "Record Job Detail and Metrics baselines; then run schedule event-schedulers EVENT-SCHEDULERS-001 30."
+      next: "Record Job Detail and Metrics baselines; then run schedule event-schedulers EVENT-SCHEDULERS-001."
     });
   }
 
@@ -794,11 +771,12 @@
 
     try {
       holdScheduledRules(isolatedRules, stagedAtIso);
-      Q.holdRule(
-        COUNTER_RULE,
+      holdTargetRule(
+        primaryRule,
         1,
+        "admin.jobs.table.affected",
         "EVENT-SCHEDULERS-001 counter-expiry baseline is held; schedule has not been issued.",
-        HOLD_SECONDS
+        stagedAtIso
       );
       Q.collection("notificationRuleConfigs").updateOne(
         { ruleKey: COUNTER_RULE },
@@ -941,7 +919,7 @@
         eligibleBeforeNextRun: 1,
         currentStatus: "idle"
       },
-      next: "Record Job Detail and Metrics baselines; then run schedule event-schedulers EVENT-SCHEDULERS-001 30."
+      next: "Record Job Detail and Metrics baselines; then run schedule event-schedulers EVENT-SCHEDULERS-001."
     });
   }
 
@@ -1162,7 +1140,13 @@
 
     try {
       holdScheduledRules(isolatedRules, stagedAtIso);
-      holdBasketRule(primaryRule, stagedAtIso);
+      holdTargetRule(
+        primaryRule,
+        2,
+        "admin.jobs.table.affected",
+        "EVENT-SCHEDULERS-001 basket-purge mixed baseline is held; schedule has not been issued.",
+        stagedAtIso
+      );
       if (quarantineIds.length > 0) {
         Q.collection("eventCheckoutBasketItems").updateMany(
           { _id: { $in: quarantineIds } },
