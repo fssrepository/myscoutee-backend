@@ -27,6 +27,8 @@ must never overwrite the user-facing checklist.
 - [`content`](content/) — governed Content and Article lifecycle guides.
 - [`identity-access`](identity-access/) — identity, authorization and account
   lifecycle guides.
+- [`payment`](payment/) — external provider authorization, settlement, routing
+  and simulator-durability guides.
 
 ## Available user guides
 
@@ -47,3 +49,16 @@ must never overwrite the user-facing checklist.
   authorization, moderation, support, block/unblock, and branding journey.
 - [`JOB-PURGE.md`](identity-access/JOB-PURGE.md) — scheduled deleted-account finalization
   journey.
+- [`PAYMENT-STRIPE-LIFECYCLE-001.md`](payment/PAYMENT-STRIPE-LIFECYCLE-001.md) —
+  app-created Stripe redirect, direct/3DS authorization, failures and callback
+  replay journey.
+- [`PAYMENT-BARION-LIFECYCLE-001.md`](payment/PAYMENT-BARION-LIFECYCLE-001.md) —
+  app-created Barion DelayedCapture, direct/3DS authorization, failures and
+  callback identity journey.
+- [`PAYMENT-SETTLEMENT-LIFECYCLE-001.md`](payment/PAYMENT-SETTLEMENT-LIFECYCLE-001.md) —
+  capture, release, compensation, partial amount and hold-lifetime journey.
+- [`PAYMENT-PROVIDER-ROUTING-001.md`](payment/PAYMENT-PROVIDER-ROUTING-001.md) —
+  provider-neutral Stripe/Barion comparison and replacement design-gap gate.
+- [`PAYMENT-SIMULATOR-LIFECYCLE-001.md`](payment/PAYMENT-SIMULATOR-LIFECYCLE-001.md) —
+  app-created simulator state, same-container restart, replay and production
+  isolation journey.

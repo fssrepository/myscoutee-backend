@@ -6527,6 +6527,11 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### `QA-EXPANSION-CP01` — payment authorization and provider callbacks
 
+Stable consolidated user guides:
+
+- [`PAYMENT-STRIPE-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-STRIPE-LIFECYCLE-001.md)
+- [`PAYMENT-BARION-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-BARION-LIFECYCLE-001.md)
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `PAYMENT-STRIPE-001` | Select Stripe and press the existing Checkout action once. | One stable internal payment creates one manual-capture Checkout/PaymentIntent and redirects to the simulator; basket is `pay/pending`, membership/ticket/counters remain unchanged. |
@@ -6538,6 +6543,12 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 | `PAYMENT-BARION-002` | Exercise direct approval plus bank-challenge approve, decline, cancel and timeout independently. | Each branch maps to the provider-neutral state once; unsuccessful branches create no membership/ticket/capture and callback replay is idempotent. |
 
 ### `QA-EXPANSION-CP02` — payment settlement, compensation and isolation
+
+Stable consolidated user guides:
+
+- [`PAYMENT-SETTLEMENT-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SETTLEMENT-LIFECYCLE-001.md)
+- [`PAYMENT-PROVIDER-ROUTING-001.md`](../checklists/payment/PAYMENT-PROVIDER-ROUTING-001.md)
+- [`PAYMENT-SIMULATOR-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SIMULATOR-LIFECYCLE-001.md)
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
