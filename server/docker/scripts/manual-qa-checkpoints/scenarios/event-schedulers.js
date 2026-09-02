@@ -908,8 +908,8 @@
       amount: 12.5,
       currency: "EUR",
       quantity: 1,
-      status: "draft",
-      resultState: "active",
+      status: "confirmed",
+      resultState: "pending",
       reservationActive: true,
       pendingCounterTracked: true,
       createdAtIso: stagedAtIso,
@@ -927,7 +927,7 @@
       currency: "EUR",
       quantity: 1,
       status: "draft",
-      resultState: "active",
+      resultState: "pending",
       reservationActive: true,
       pendingCounterTracked: true,
       createdAtIso: stagedAtIso,
@@ -1550,8 +1550,8 @@
       && rule.pendingCount === 2
       && items.length === 2
       && Boolean(expiredItem && futureItem)
-      && Q.text(expiredItem.resultState) === "active"
-      && Q.text(futureItem.resultState) === "active"
+      && Q.text(expiredItem.resultState) === "pending"
+      && Q.text(futureItem.resultState) === "pending"
       && Q.text(expiredItem.sourceId) === BASKET_SOURCE_ID
       && Q.text(futureItem.sourceId) === BASKET_FUTURE_SOURCE_ID
       && expiredItem.pendingCounterTracked === true

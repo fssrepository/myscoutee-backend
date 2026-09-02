@@ -141,7 +141,7 @@
                     "amount": 12.5,
                     "currency": "EUR",
                     "quantity": 1,
-                    "status": "draft",
+                    "status": "confirmed",
                     "resultState": "pending",
                     "pricingSummaryRows": [],
                     "checkoutSessionId": null,
@@ -151,7 +151,7 @@
                   }
                 ],
                 "pricingSummaryRows": [],
-                "checkoutState": "draft",
+                "checkoutState": "confirmed",
                 "lineItems": [
                   {
                     "id": "manual-qa-expiring-event",
