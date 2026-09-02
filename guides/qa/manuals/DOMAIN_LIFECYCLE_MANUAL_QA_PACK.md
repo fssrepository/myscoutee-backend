@@ -59,6 +59,8 @@ the same prerequisite without depending on an earlier human action.
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement, accepted participation and attendance | Ticket-enabled event overlay, one physical holder credential and event-scoped member attendance | Event checkout/ticket card, scanner and Event Members | Event publish/terminal acceptance owns ticket creation; first valid check-in owns ticket use plus attendance projection; list/open and rejected revoked QR scans are non-producers | `EVENT-TICKET-001` through `EVENT-TICKET-012` |
+| Governed Content revision save/activation/delete | One scoped inactive revision, later one active revision, privacy-consent boundary and immutable content audit | Admin Content revision cards plus Help/Privacy/Terms/Explanation public viewers | Public content cache/read state; Privacy activation makes only older-revision consent stale; active deletion selects the newest remaining fallback | `CONTENT-ADMIN-LIFECYCLE-001` |
+| Article trash/restore/republish | One soft-deleted then restored Draft article with stable identity/media, followed by explicit Publish | Admin Article All/Published/Drafts/Trashed buckets and fresh landing Articles | Public landing inclusion only for published non-trashed state; already-open lists remain honestly non-live | `CONTENT-ADMIN-LIFECYCLE-001` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 | Operator payment credential and network access policy | Server-held payment token revision plus trusted-client-IP allowlist | Masked payment configuration state and explicit access denial | Payment provider calls and immutable operator security audit | `OPERATOR-PAYMENT-001`, `OPERATOR-PAYMENT-IP-001` |
 
@@ -119,6 +121,13 @@ The principal checkpoint chains are:
   `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
+- `CONTENT-ADMIN-LIFECYCLE-001` is one isolated Content transaction: create
+  inactive Help/Privacy/Terms/Explanation revisions, activate Privacy and
+  prove per-user consent, delete one inactive revision, delete the active
+  Privacy revision with newest-remaining fallback, then move one separate
+  published Article through Trashed -> Draft -> Published while preserving
+  identity and managed media. The already-PASS `ARTICLE-EDITOR-001` and
+  `LANDING-ARTICLE-001` records are immutable controls, not fixture inputs.
 - `OPERATOR-PAYMENT-001` and `OPERATOR-PAYMENT-IP-001` are separate future
   operator-security branches: first prove secret lifecycle, then enforce a
   trusted resolved-client-IP allowlist without relying on frontend hiding.
@@ -6356,6 +6365,87 @@ payment.
   terminal replay. No read projection or frontend counter fallback may repair
   the persisted result.
 
+## Content cases
+
+### `CONTENT-ADMIN-LIFECYCLE-001` — governed revisions, consent and Article lifecycle
+
+Status: **DESIGN CAPTURED / NOT RUN**.
+
+Stable user guide:
+[`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
+
+This consolidated Core journey replaces four unexecuted microtest rows. It
+does not reopen or rewrite the already-PASS Article Editor and landing
+publication evidence.
+
+- Stage isolated Ava Admin, Kai retained-client and Riley fresh-client
+  sessions. Governed baselines are Help HU `v1`, Terms EN `v1`, Home cards
+  Explanation EN `v1`, Privacy EN `v2`, and inactive Privacy EN `v1` as the
+  fallback. Kai and Riley each retain immutable valid consent for both Privacy
+  `v1` and current `v2`.
+- Stage one separate English published, non-featured disposable Article with a
+  managed image set, plus a featured adjacent control. Preserve
+  `ARTICLE-SRC-002` and every previously passed row as byte-identical controls.
+- The state-dependent action contract is:
+
+  | State | Required actions/status | Forbidden or unchanged state |
+  | --- | --- | --- |
+  | Active governed revision | `Active`, `Edit revision`, `Delete revision`; activation disabled | no second active revision in the same type/language/context |
+  | Inactive governed revision | `Edit revision`, `Activate revision`, `Delete revision` | no public change before activation |
+  | Revision mutation in flight | action-ring; competing Save/Activate/Delete disabled | duplicate revision/audit mutation |
+  | Newly active Privacy revision | fresh clients show the new revision; stale consents require `Approve privacy` | historical consents rewritten or another actor approved |
+  | Active revision deleted | newest remaining revision automatically becomes the one Active fallback | empty public document or silent cross-scope activation |
+  | Published Article | `Read more`, `Edit`, `Unpublish`, `Feature`/`Unfeature`, `Delete` | `Restore`, `Publish` |
+  | Trashed Article | `Restore` only | public inclusion, edit/publish/feature/delete |
+  | Restored Draft Article | `Read more`, `Edit`, `Publish`, `Delete` | public inclusion, `Feature`, `Unpublish`, `Restore` |
+
+- Edit the four active governed controls once, creating inactive Help HU `v2`,
+  Terms EN `v2`, Home cards Explanation EN `v2`, and Privacy EN `v3` with the
+  exact base revision, author, language and context. Save/reopen/reload must
+  retain the new values while all public active content and consents remain
+  unchanged.
+- Privacy `v3` contains one mandatory and one optional section plus a bounded
+  unsafe-HTML probe. Persisted and rendered content must omit scripts and event
+  handler attributes. No preview/open/read operation creates another revision,
+  audit row or consent.
+- Activate Privacy `v3` once. It becomes the only active Privacy EN revision.
+  An already-open separate browser may retain its honest `v2` snapshot; a
+  fresh/reloaded client must show `v3`. Kai approves `v3` exactly once, Riley
+  remains stale, and every `v1`/`v2` historical consent remains immutable.
+- Delete inactive Help `v2` once and prove Help `v1` remains active. Then
+  delete active Privacy `v3` once. The implemented Java and frontend-local
+  contract automatically activates newest remaining Privacy `v2`; public
+  Privacy never becomes empty. Kai and Riley's retained `v2` consents become
+  current again without a new write, while Kai's historical `v3` consent is
+  preserved.
+- This active-delete fallback is the current implemented and administrator-
+  manual contract. It supersedes the earlier unexecuted source assertion that
+  active deletion should fail closed; no production behavior changes in this
+  documentation checkpoint.
+- In the Article branch, move the disposable published record to trash once.
+  The Admin SmartList reconciles the returned record and All/Published/
+  Trashed counts in place; a fresh public landing excludes it. The open landing
+  surface's stale/non-live presentation is recorded instead of being treated
+  as persisted truth.
+- Restore once. The same record becomes an unpublished, unfeatured Draft;
+  All/Drafts/Trashed change once and fresh public clients still exclude it.
+  Publish separately once to return it to Published/public state. Restore is
+  never treated as Publish.
+- Across trash, restore and republish, require the same article/contentKey,
+  creator, canonical managed image URL, image variants and sanitized HTML.
+  Soft lifecycle operations must not delete media. The adjacent featured
+  control, Riley's consent state and every unrelated language/context remain
+  unchanged.
+- Immediate machine oracles compare exact revision/article IDs, active flags,
+  base revision, actor/time, content audit/telemetry counts, consent histories,
+  bucket counts, public query membership and managed-media object hashes.
+  Reload and idempotence probes must not duplicate any mutation.
+- A versioned fixture must provide guarded `stage`, read-only `status`, named
+  `drafts-saved`, `privacy-active`, `privacy-fallback`, `article-trashed`,
+  `article-restored` and `article-republished` captures, plus exact `reset`.
+  Do not execute this row until that harness and the isolated Ava/Kai/Riley
+  browser-session definition exist.
+
 ## Operator configuration and security cases
 
 ### `OPERATOR-FIREBASE-001` — activate, observe login mode, roll back
@@ -6730,7 +6820,7 @@ assertion references for their consolidated parents, not as microtests.
 | `ADMIN-NOTIFICATION-RUN-001` | Manually run one armed rule with one eligible target. | One named task/outbox/inbox delivery occurs with exact attribution; second unchanged run respects dedupe/idempotency. |
 | `ADMIN-CONTENT-REV-001` | Create and reopen one draft revision for Help/Privacy/Terms/Explanation. | Body, language, version and author persist once while active public content remains unchanged. |
 | `ADMIN-CONTENT-REV-002` | Activate the draft revision once. | Public/landing/settings clients receive exactly the new active revision; Privacy activation invalidates only stale consent and keeps historical consents immutable. |
-| `ADMIN-CONTENT-REV-003` | Delete an inactive revision and attempt to delete the active one. | Inactive revision is removed once; active/bound revision fails closed and public content never disappears. |
+| `ADMIN-CONTENT-REV-003` | Delete one inactive revision, then delete the isolated active Privacy revision. | Inactive deletion leaves its active control unchanged; active deletion automatically activates the newest remaining same-scope revision and public content never disappears. |
 | `ADMIN-IDEA-LIFECYCLE-001` | Trash and restore one idea/article while a public control remains open. | Admin buckets and fresh public inclusion change once per transition; identity/media stay stable and an already-open non-live surface is recorded honestly. |
 | `ADMIN-SUPPORT-SESSION-001` | Open and close one scoped admin support session. | Capability is time/actor/scope bound, sensitive actions remain separately authorized, audit is immutable and expiry/revoke immediately denies reuse. |
 

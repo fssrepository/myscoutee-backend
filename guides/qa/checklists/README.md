@@ -23,6 +23,8 @@ must never overwrite the user-facing checklist.
 ## Domain directories
 
 - [`event`](event/) — Event lifecycle and scheduler guides.
+- [`asset`](asset/) — Asset lifecycle, borrowing and checkout guides.
+- [`content`](content/) — governed Content and Article lifecycle guides.
 - [`identity-access`](identity-access/) — identity, authorization and account
   lifecycle guides.
 
@@ -30,8 +32,17 @@ must never overwrite the user-facing checklist.
 
 - [`EVENT-EDIT-RUNTIME-001.md`](event/EVENT-EDIT-RUNTIME-001.md) — active Event edit,
   MAIN_EVENT resource, pending invite, and Delete reversal journey.
+- [`EVENT-CHECKOUT-DUMMY-001.md`](event/EVENT-CHECKOUT-DUMMY-001.md) — direct paid
+  Event Explore dummy-payment journey and button-state controls.
 - [`EVENT-SCHEDULERS-001.md`](event/EVENT-SCHEDULERS-001.md) — bounded Event scheduler
   and Admin Jobs/Monitoring journey.
+- [`ASSET-LIFE-001.md`](asset/ASSET-LIFE-001.md) — shared Asset type-schema and
+  create/edit/trash/restore lifecycle.
+- [`ASSET-CHECKOUT-DUMMY-001.md`](asset/ASSET-CHECKOUT-DUMMY-001.md) — scoped
+  Resource/Asset Explore dummy-payment, request and acceptance journey.
+- [`CONTENT-ADMIN-LIFECYCLE-001.md`](content/CONTENT-ADMIN-LIFECYCLE-001.md) —
+  governed revisions, Privacy consent/fallback and Article trash/restore/
+  republish journey.
 - [`ROLE-TRIAD-CORE-001.md`](identity-access/ROLE-TRIAD-CORE-001.md) — member/admin/operator
   authorization, moderation, support, block/unblock, and branding journey.
 - [`JOB-PURGE.md`](identity-access/JOB-PURGE.md) — scheduled deleted-account finalization

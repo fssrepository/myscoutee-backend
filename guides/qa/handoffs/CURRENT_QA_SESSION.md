@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 11:27 CEST
+Updated: 2026-09-02 11:45 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -117,6 +117,19 @@ free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
 stable click guides. Their versioned fixtures/browser-session definitions are
 created only when each row becomes active; they do not change the staged
 `ASSET-LIFE-001` boundary.
+
+Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
+open consolidated Core Content row and now has a stable click guide. It creates
+inactive Help/Privacy/Terms/Explanation revisions, activates Privacy with
+per-user consent isolation, deletes one inactive revision, exercises the
+implemented newest-remaining fallback after active Privacy deletion, then
+moves a separate managed-media Article through Published -> Trashed -> Draft
+-> Published while comparing admin buckets, fresh public clients and an
+honestly non-live open client. The older unexecuted active-delete-denial
+assertion was corrected to match Java, frontend-local and the administrator
+manual. Its versioned fixture/browser-session definition is created only when
+the row becomes active; it does not change the staged `ASSET-LIFE-001`
+boundary.
 
 ### Efficient resume gate
 
