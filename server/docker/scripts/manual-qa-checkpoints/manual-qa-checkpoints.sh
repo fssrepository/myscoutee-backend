@@ -45,6 +45,11 @@ Usage:
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
+  bash manual-qa-checkpoints.sh capture-runtime-created event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh verify-runtime-slot-override event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh capture-runtime-post-create event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restore-runtime-post-create event-domain EVENT-RUNTIME-001
+  bash manual-qa-checkpoints.sh restage-runtime-post-create event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh prepare-runtime-transport event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh restage-runtime-member-clean event-domain EVENT-RUNTIME-001
   bash manual-qa-checkpoints.sh repair-runtime-transport-invite-scope event-domain EVENT-RUNTIME-001
@@ -384,7 +389,7 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  event-domain:restage-runtime-member-clean)
+  event-domain:capture-runtime-created|event-domain:verify-runtime-slot-override|event-domain:capture-runtime-post-create|event-domain:restore-runtime-post-create|event-domain:restage-runtime-post-create|event-domain:restage-runtime-member-clean)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-RUNTIME-001" ] || fail "${command} is restricted to EVENT-RUNTIME-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

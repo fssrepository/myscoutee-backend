@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 03:14 CEST
+Updated: 2026-09-02 03:19 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -55,24 +55,24 @@ resume pointer and reusable working method.
 checkpoint: EVENT-EDIT-RUNTIME-001 — active; EVENT-EDITOR-005 is PASS and EVENT-RUNTIME-001 is IN PROGRESS
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
 checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
-checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#focused-delete-regression
-substage: managed-session-authenticated — awaiting the user's Nova online verdict
-next_replay_boundary: runtime-member-clean — existing guarded restore after the Nova verdict
-fixture_phase: baseline-ready — canonical Event 2/8, accepted Casey/Nova, no runtime/resource/Asset artifact
+checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
+substage: baseline-ready — awaiting Casey's capacity Save
+next_replay_boundary: post-save-main-event — capture the persisted Event/runtime boundary after the 2/8 -> 2/9 Save
+fixture_phase: baseline-ready — Event 2/8, accepted Casey/Nova, Slots Off, Sub Events Off, no runtime/resource/Asset artifact
 browser_phase: managed Casey and Nova processes alive; tracked-session readiness returned 200 for both actors
-scenario: The complete EVENT-EDIT-RUNTIME-001 journey, including the original remove/reassign tail, is retained accepted evidence. Only the focused post-optimization invite-as-precondition -> Delete regression remains. Do not replay the complete journey or the accepted invite/reload microtest.
+scenario: The user explicitly selected a complete EVENT-EDIT-RUNTIME-001 replay from the clean 2/8 baseline through the terminal remove/reassign oracle. Follow the stable Complete test journey section in order and stop at its named phrases for machine-side checks.
 ledger_status: IN PROGRESS — EVENT-EDIT-RUNTIME-001; EVENT-EDITOR-005 PASS
-state: EVENT-EDITOR-005 and the complete original EVENT-RUNTIME-001 Save/runtime/resource/invite/Delete/remove/reassign journey remain accepted evidence. The fresh stack was restored to one canonical active Event at 2/8 with Casey/Nova accepted, Slots Off, Sub Events Off and no runtime/resource/Asset artifact. The managed-browser replay exposed a launcher mismatch: demo localStorage lacked the tracked session ID required for enrolled Nova, so her API calls returned 401 while the UI reported No network. The launcher now registers and stores a real tracked demo session, requires an authenticated /api/auth/me identity read before ready and revokes only its own tracked sessions. Fresh Casey/Nova managed sessions opened successfully; both actor-specific readiness reads returned 200 and both managed processes remain alive. Nginx has recorded no 401 since that launch; the backend's broad log still contains periodic 401 entries that a count-only check cannot attribute to either managed actor, so the user's Nova visual verdict remains the decisive frontend boundary. After that confirmation, the existing guarded restage-runtime-member-clean action restores the accepted one-assignment/zero-pending boundary for the focused Delete replay. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries. The deployed repair removes the duplicate affinity enqueue, skips meaningless MAIN_EVENT sub-event participation work and avoids rewriting unchanged Event participation.
+state: EVENT-EDITOR-005 and the earlier complete EVENT-RUNTIME-001 journey remain retained evidence, but the user explicitly requested a fresh full replay. The launcher defect is repaired and the user confirmed that No network is absent in Nova. Codex initially misunderstood the requested scope and restored runtime-member-clean; after correction it immediately used the versioned reset followed by normal stage. Read-only status now proves the exact clean full-run baseline: one canonical Event at 2/8, Casey/Nova accepted, Slots Off, Sub Events Off, zero runtime, resource, Transport Asset/request/member and unrelated artifacts. Both managed browsers remain alive. Because the baseline changed behind Casey's open client, Casey must reload exactly once before opening Manage Event. The retained pre-optimization Delete baseline is about 88ms and 52 Mongo boundaries; the full replay will still stop immediately before Delete so its optimized request can be measured cleanly.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 79/116 total, Core 79/96 and Identity & access 8/8.
-required_resume: Follow only the linked user checklist. First complete its managed-session check and confirm that No network is absent in the already-open Nova window. After the exact stop phrase, Codex runs the existing guarded restage-runtime-member-clean action and proves the accepted=1/pending=0 Transport boundary. Then continue only steps 3-7 of the checklist's Focused Delete regression. No capacity Save, MAIN_EVENT reconstruction, standalone invite persistence check, or remove/reassign replay follows.
+required_resume: Follow the linked Complete test journey from its capacity-edit section. Reload Casey exactly once because the clean 2/8 fixture was staged behind the open client; open Activities -> QA EVENT-RUNTIME-001 -> Manage Event, change only Max capacity 8 -> 9 and Save exactly once. Confirm the same Activities card updates in place to 2/9 without a list reload, then stop with the Save phrase. Codex runs the Event/runtime oracle before allowing the MAIN_EVENT presentation and remaining full journey.
 event: manual-qa-checkpoint:v1:event-domain:event — QA EVENT-RUNTIME-001, active and staged
 actors:
-  Casey: active host; fresh authenticated managed document reserved for the focused Delete replay
-  Nova: accepted participant; fresh authenticated managed document ready for the launcher visual reversal
-next_actor: User checks only the freshly opened Nova window and confirms that No network is absent; no domain action yet.
-queued_followup: Codex restores the already-proven one-assignment boundary, then the user performs only the focused Invite -> Delete sequence from the stable checklist. Close after the persisted and latency oracle proves one accepted assignment, zero pending invitations and no foreign write.
-pending_machine_oracle: Compare the optimized Delete request with the retained ~88ms/52-boundary trace and prove accepted=1/pending=0, no Nova scoped/global Asset member, one accepted owner request/projection, no duplicate affinity enqueue and no unchanged Event participation rewrite.
-stop_phrase: EVENT-RUNTIME-001 launcher ready: Nova online
+  Casey: active host; authenticated managed document; requires exactly one reload before the first 2/8 -> 2/9 action
+  Nova: accepted participant; authenticated managed document; launcher visual reversal passed
+next_actor: Casey reloads exactly once, changes only Max capacity 8 -> 9, saves once and confirms the same Activities card becomes 2/9 without list reload.
+queued_followup: Codex proves one canonical Event at 2/9 and exactly one MAIN_EVENT runtime, then guides the user through the remaining full checklist sections and their stop phrases.
+pending_machine_oracle: After the capacity Save, prove one unchanged canonical Event identity at 2/9, exactly one active MAIN_EVENT runtime with canonical eventId=ownerId and subEventId=null, one attributable Event recompute and no duplicate/synthetic/foreign write.
+stop_phrase: EVENT-RUNTIME-001 Save ready: card changed to 2/9 without reload
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

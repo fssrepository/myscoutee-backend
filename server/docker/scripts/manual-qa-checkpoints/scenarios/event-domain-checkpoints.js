@@ -554,13 +554,16 @@
       worker: "Changed Save MUST RUN one event recompute and the event-definition-change delivery path for the accepted non-actor participant; no-op Save MUST NOT RUN."
     },
     "EVENT-RUNTIME-001": {
-      stage: "runtime-childless-active",
-      why: "Prove that one normal Slots Off/Sub Events Off Event Save materializes one persisted MAIN_EVENT runtime and that every View Event read remains read-only.",
-      action: "As Casey, open the active card in Manage Event, change only Max capacity from 8 to 9 and Save once. Confirm the Activities card updates in place from the returned Save DTO, without a list reload. In View Event inspect the single Event runtime card and Event Members, then open Transport, assign exactly one Casey-owned Transport and Save. Close/reopen Transport and reload once to prove the same assignment returns under the MAIN_EVENT card. From Transport Members invite Nova once as the already-proven precondition, confirm the pending-only Transport badge appears from 0 to 1, then Delete invitation once and prove Nova disappears immediately while the badge returns from 1 to 0 and remains absent after close/reopen plus reload.",
-      expected: "The Event remains one canonical active document with Casey and Nova accepted and capacity 2/9. Exactly one active runtime item exists with runtimeKind MAIN_EVENT, eventId and ownerId equal to the canonical Event, and subEventId null. The Transport save creates exactly one activityResources record under canonical Event ownerId plus the stable main-event runtime resource key, and one accepted owner assignment for the selected Asset. Accepted occupancy is 1/0-4 while the red pending badge is absent. The scoped Nova invitation raises only the Transport pending/member state and badge from 0 to 1; Delete invitation removes that scoped request, returns the badge from 1 to 0 in place and persists accepted=1/pending=0. Reopen/reload returns the same one Transport and no Nova Asset invitation or red pending badge without a synthetic Sub Event, duplicate runtime/member/chat or unrelated write.",
-      worker: "The changed Event Save MUST RUN one normal event recompute and may materialize the single MAIN_EVENT runtime. The Transport Save is one direct resource/Asset assignment mutation. Scoped Asset Invite/Delete may enqueue one deduplicated Asset recompute each, but MUST NOT enqueue the same Asset change twice or rewrite unchanged Event participation. View Event, close/reopen and reload remain read-only.",
+      stage: "runtime-pre-create",
+      why: "Prove the complete normal Event transaction from UI creation through its persisted MAIN_EVENT runtime, then prove that an ordinary Event edit preserves that runtime and every View Event read remains read-only.",
+      action: "As Casey, create and publish one normal Casual Event titled QA EVENT-RUNTIME-001 with capacity 1-8, Slots Off and Sub Events Off. Before any fixture prepares the participant prerequisite, open View Event and prove that the application-created Event already exposes exactly one MAIN_EVENT card. Stop for the post-create oracle and savepoint. After Codex prepares Nova as the accepted participant, continue with the capacity edit, Transport assignment, scoped Invite/Delete, and remove/reassign tail.",
+      expected: "The clean starting boundary contains no QA EVENT-RUNTIME-001 Event or runtime. The UI create/publish transaction produces one canonical Event plus exactly one active runtime item with runtimeKind MAIN_EVENT, eventId and ownerId equal to the new Event, and subEventId null. The captured post-create replay boundary has Casey and Nova accepted at 2/8. The capacity edit changes only the Event to 2/9 and preserves that same runtime identity without creating a duplicate. The Transport save creates exactly one activityResources record and one accepted owner assignment. Accepted occupancy is 1/0-4 while the red pending badge is absent. The scoped Nova invitation raises only the Transport pending badge from 0 to 1; Delete invitation returns it to 0 and remains absent after reopen/reload.",
+      worker: "The initial fixture MUST NOT create the Event or MAIN_EVENT. The first full run uses the real Event create/publish path, and Codex captures its exact generated identity as the post-create savepoint. A later substage replay may restore that accepted boundary without repeating creation. The changed capacity Save MUST RUN one normal event recompute but MUST NOT create, replace or duplicate the runtime. View Event, close/reopen and reload remain read-only.",
       checks: [
-        "Precondition: one assigned Transport, accepted=1/pending=0, no red pending badge, one accepted manual owner request and no scoped Nova invitation.",
+        "Pre-create boundary: no Event, MAIN_EVENT runtime, resource or Asset assignment exists for this testcase.",
+        "Create boundary: the human-created and published Event exists once at 1/8 and already exposes exactly one persisted MAIN_EVENT runtime before Codex prepares Nova.",
+        "Post-create replay boundary: the same Event/runtime identities are retained with Casey and Nova accepted at 2/8 and no resource assignment.",
+        "Edit boundary: the capacity-only Save changes the Event to 2/9 while preserving the same single MAIN_EVENT runtime identity.",
         "Invite precondition: Nova appears once as pending and the red pending badge changes 0 -> 1 while occupancy stays 1/0-4; the already-passed invite/reload branch is not repeated as a microtest.",
         "Delete branch: Delete invitation removes Nova and pending count immediately and returns the red pending badge 1 -> 0 without list reload.",
         "Delete reload/oracle: Members close/reopen plus full reload keeps Nova absent, the red pending badge absent and occupancy 1/0-4; persisted metrics are accepted=1/pending=0 with only the manual owner request/projection and no global Asset member."
@@ -1122,6 +1125,376 @@
       updatedDate: now,
       updatedUser: Q.ACTOR
     };
+  }
+
+  function mainEventRuntimeDocument(event, timestampIso = Q.nowIso()) {
+    const eventId = Q.text(event.sourceId || event._id);
+    return {
+      _id: `${PREFIX}:runtime-member:main-event`,
+      recordId: `main-event:${eventId}`,
+      syncKey: `${PREFIX}:runtime-member:main-event`,
+      status: "A",
+      runtimeKind: "MAIN_EVENT",
+      eventId,
+      ownerId: eventId,
+      subEventId: null,
+      title: event.title,
+      description: event.subtitle,
+      timeframe: Q.text(event.timeframe),
+      startAtIso: event.startAtIso,
+      endAtIso: event.endAtIso,
+      location: Q.text(event.location),
+      createdByUserId: hostUserId,
+      createdDate: timestampIso,
+      createdUser: hostUserId,
+      updatedDate: timestampIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function runtimePostCreateSnapshotSpecs(eventId) {
+    return [
+      { collection: "events", selector: { $or: [
+        { _id: eventId },
+        { sourceId: eventId },
+        { title: EXPECTED_TITLE }
+      ] } },
+      { collection: "activityMembers", selector: { $or: [
+        { ownerType: "event", ownerId: eventId },
+        { ownerType: "asset", ownerId: RUNTIME_TRANSPORT_ASSET_ID }
+      ] } },
+      { collection: "activityEventRuntimeItems", selector: { $or: [
+        { eventId },
+        { ownerId: eventId }
+      ] } },
+      { collection: "activityResources", selector: { ownerId: eventId } },
+      { collection: "assetRequests", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } },
+      { collection: "notificationOutbox", selector: { $or: [
+        { entityId: eventId },
+        { "payload.eventId": eventId }
+      ] } },
+      { collection: "userNotifications", selector: { $or: [
+        { sourceId: eventId },
+        { "payload.eventId": eventId }
+      ] } },
+      { collection: "scheduledMessageTasks", selector: { eventId } },
+      { collection: "affinityRecomputeTasks", selector: { targetId: eventId } },
+      { collection: "schedulerPlanMarkers", selector: { ownerId: eventId } }
+    ];
+  }
+
+  function canonicalRuntimePostCreateBoundary(requiredStatus = "A") {
+    const eventDocuments = Q.collection("events").find({ title: EXPECTED_TITLE }).toArray();
+    if (eventDocuments.length !== 1) {
+      Q.fail(`expected exactly one UI-created '${EXPECTED_TITLE}' Event, found ${eventDocuments.length}.`);
+    }
+    const event = eventDocuments[0];
+    const eventId = Q.text(event.sourceId || event._id);
+    if (!eventId
+        || Q.text(event.ownerUserId) !== hostUserId
+        || Q.text(event.creatorUserId) !== hostUserId
+        || Q.text(event.status) !== requiredStatus
+        || Number(event.capacityMin) !== 1
+        || Number(event.capacityMax) !== 8
+        || Number(event.capacityTotal) !== 8
+        || event.slotsEnabled !== false
+        || event.subEventsEnabled !== false
+        || (event.slotTemplates || []).length !== 0
+        || (event.subEventDefinitions || []).length !== 0) {
+      Q.fail(`the UI-created Event does not match the required '${requiredStatus}' Casual 1-8, Slots Off, Sub Events Off boundary.`);
+    }
+    const runtimes = Q.collection("activityEventRuntimeItems").find({ $or: [
+      { eventId },
+      { ownerId: eventId }
+    ] }).toArray();
+    if (runtimes.length !== 1
+        || Q.text(runtimes[0].status) !== "A"
+        || Q.text(runtimes[0].runtimeKind) !== "MAIN_EVENT"
+        || Q.text(runtimes[0].eventId) !== eventId
+        || Q.text(runtimes[0].ownerId) !== eventId
+        || runtimes[0].subEventId != null
+        || Q.text(runtimes[0].recordId) !== `main-event:${eventId}`) {
+      Q.fail("the UI create/publish transaction did not produce exactly one canonical MAIN_EVENT runtime.");
+    }
+    const members = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      status: { $ne: "D" }
+    }).toArray();
+    if (members.length !== 1
+        || Q.text(members[0].userId) !== hostUserId
+        || Q.text(members[0].role) !== "Admin"
+        || Q.text(members[0].status) !== "accepted") {
+      Q.fail("the UI-created Event must contain exactly Casey as its accepted Admin before the participant prerequisite is prepared.");
+    }
+    if (Q.collection("activityResources").countDocuments({ ownerId: eventId }) !== 0
+        || Q.collection("assets").countDocuments({ assetId: RUNTIME_TRANSPORT_ASSET_ID }) !== 0
+        || Q.collection("assetRequests").countDocuments({ assetId: RUNTIME_TRANSPORT_ASSET_ID }) !== 0) {
+      Q.fail("the UI-created Event unexpectedly contains a resource or controlled Transport artifact.");
+    }
+    return { event, eventId, runtime: runtimes[0] };
+  }
+
+  function captureRuntimeCreated() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("capture-runtime-created is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    if (state.runtimeCreateEvidence && state.runtimeCreateEvidence.capturedAtIso) {
+      Q.fail("the EVENT-RUNTIME-001 UI-create boundary has already been captured.");
+    }
+    const boundary = canonicalRuntimePostCreateBoundary("DR");
+    const capturedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      "context.actualEventSourceId": boundary.eventId,
+      runtimeCreateEvidence: {
+        capturedAtIso,
+        eventId: boundary.eventId,
+        eventDocumentId: Q.text(boundary.event._id),
+        runtimeDocumentId: Q.text(boundary.runtime._id),
+        runtimeRecordId: Q.text(boundary.runtime.recordId),
+        runtimeSyncKey: Q.text(boundary.runtime.syncKey),
+        acceptedMemberUserIds: [hostUserId]
+      }
+    } });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-created-childless-verified",
+      capturedAtIso,
+      createEvidence: refreshedState.runtimeCreateEvidence,
+      oracle: oracle(refreshedState),
+      next: "Edit the same Draft, enable Slots, add one slot, and Save once. View Event must show the slot and no MAIN_EVENT card."
+    });
+  }
+
+  function verifyRuntimeSlotOverride() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("verify-runtime-slot-override is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    const created = state.runtimeCreateEvidence || {};
+    const eventId = Q.text(created.eventId);
+    if (!eventId) {
+      Q.fail("capture the UI-created childless MAIN_EVENT boundary before checking the slot override.");
+    }
+    const eventDocuments = Q.collection("events").find({
+      title: EXPECTED_TITLE,
+      $or: [{ _id: eventId }, { sourceId: eventId }]
+    }).toArray();
+    const event = eventDocuments.length === 1 ? eventDocuments[0] : null;
+    const runtimeDocuments = Q.collection("activityEventRuntimeItems").find({ $or: [
+      { eventId },
+      { ownerId: eventId }
+    ] }).toArray();
+    const runtime = runtimeDocuments.length === 1 ? runtimeDocuments[0] : null;
+    if (!event
+        || Q.text(event.status) !== "DR"
+        || event.slotsEnabled !== true
+        || (event.slotTemplates || []).length < 1
+        || event.subEventsEnabled !== false
+        || !runtime
+        || Q.text(runtime._id) !== Q.text(created.runtimeDocumentId)
+        || Q.text(runtime.recordId) !== Q.text(created.runtimeRecordId)
+        || Q.text(runtime.syncKey) !== Q.text(created.runtimeSyncKey)
+        || Q.text(runtime.runtimeKind) !== "MAIN_EVENT"
+        || Q.text(runtime.status) !== "D") {
+      Q.fail("the slot Save did not replace the childless view while retaining one deactivated MAIN_EVENT identity.");
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      runtimeSlotOverrideEvidence: {
+        verifiedAtIso,
+        eventId,
+        slotTemplateIds: (event.slotTemplates || []).map(item => Q.text(item && item.id)).filter(Boolean),
+        runtimeDocumentId: Q.text(runtime._id),
+        runtimeStatus: Q.text(runtime.status)
+      }
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-slot-override-verified",
+      verifiedAtIso,
+      slotTemplateCount: (event.slotTemplates || []).length,
+      retainedMainEventRuntimeId: Q.text(runtime._id),
+      retainedMainEventRuntimeStatus: Q.text(runtime.status),
+      next: "Edit the same Draft again, remove the slot and turn Slots Off, then Save once. View Event must show the original MAIN_EVENT again."
+    });
+  }
+
+  function captureRuntimePostCreate() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("capture-runtime-post-create is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    if (state.runtimePostCreate && state.runtimePostCreate.capturedAtIso) {
+      Q.fail("the EVENT-RUNTIME-001 post-create boundary has already been captured.");
+    }
+    const created = state.runtimeCreateEvidence || {};
+    if (!created.capturedAtIso || !(state.runtimeSlotOverrideEvidence || {}).verifiedAtIso) {
+      Q.fail("capture the UI create boundary and verify the slot override before capturing the restored childless savepoint.");
+    }
+    const boundary = canonicalRuntimePostCreateBoundary("A");
+    if (boundary.eventId !== Q.text(created.eventId)
+        || Q.text(boundary.runtime._id) !== Q.text(created.runtimeDocumentId)
+        || Q.text(boundary.runtime.recordId) !== Q.text(created.runtimeRecordId)
+        || Q.text(boundary.runtime.syncKey) !== Q.text(created.runtimeSyncKey)) {
+      Q.fail("the childless restoration created or replaced identity instead of reactivating the original MAIN_EVENT runtime.");
+    }
+    const capturedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "context.actualEventSourceId": boundary.eventId,
+        runtimeChildlessRestoreEvidence: {
+          capturedAtIso,
+          eventId: boundary.eventId,
+          runtimeDocumentId: Q.text(boundary.runtime._id),
+          runtimeRecordId: Q.text(boundary.runtime.recordId),
+          runtimeSyncKey: Q.text(boundary.runtime.syncKey),
+          runtimeStatus: Q.text(boundary.runtime.status)
+        }
+      }
+    });
+
+    Q.collection("events").updateOne({ _id: boundary.event._id }, { $set: {
+      acceptedMembers: 2,
+      pendingMembers: 0,
+      acceptedMemberUserIds: [hostUserId, participantUserId],
+      pendingMemberUserIds: [],
+      invitedMemberUserIds: [],
+      pendingRequestMemberUserIds: [],
+      updatedDate: capturedAtIso,
+      updatedUser: Q.ACTOR
+    } });
+    Q.collection("activityMembers").insertOne(
+      memberDocument(boundary.eventId, participantUserId, "Member", "accepted")
+    );
+    synchronizeEventActivityCounters([hostUserId, participantUserId]);
+
+    const postCreateSnapshots = Q.snapshotSpecs(runtimePostCreateSnapshotSpecs(boundary.eventId));
+    const postCreateUserActivitySnapshots = [hostUserId, participantUserId].map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      runtimePostCreate: {
+        capturedAtIso,
+        eventId: boundary.eventId,
+        runtimeDocumentId: Q.text(boundary.runtime._id),
+        runtimeRecordId: Q.text(boundary.runtime.recordId),
+        runtimeSyncKey: Q.text(boundary.runtime.syncKey)
+      },
+      runtimePostCreateSnapshots: postCreateSnapshots,
+      runtimePostCreateUserActivitySnapshots: postCreateUserActivitySnapshots
+    } });
+
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-post-create-ready",
+      capturedAtIso,
+      createEvidence: refreshedState.runtimeCreateEvidence,
+      oracle: oracle(refreshedState),
+      next: "Reload Casey once. The same application-created Event must now show Casey and Nova at 2/8. Continue with the capacity-only 8 -> 9 edit; the MAIN_EVENT identity must remain unchanged."
+    });
+  }
+
+  function restoreRuntimePostCreate() {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("restore-runtime-post-create is restricted to EVENT-RUNTIME-001.");
+    }
+    const state = requireMatchingState();
+    if (!state.runtimePostCreate
+        || !state.runtimePostCreate.capturedAtIso
+        || !(state.runtimePostCreateSnapshots || []).length) {
+      Q.fail("EVENT-RUNTIME-001 has no captured post-create savepoint to restore.");
+    }
+    clearDynamicEventEffects(currentEventIds());
+    Q.collection("assets").deleteMany({ assetId: RUNTIME_TRANSPORT_ASSET_ID });
+    Q.restoreSnapshots(state.runtimePostCreateSnapshots);
+    for (const saved of state.runtimePostCreateUserActivitySnapshots || []) {
+      restoreUserActivities(saved);
+    }
+    const restoredAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { "runtimePostCreate.restoredAtIso": restoredAtIso },
+      $unset: {
+        fixturePreparations: "",
+        fixtureRepairs: ""
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-post-create-restored",
+      restoredAtIso,
+      oracle: oracle(refreshedState),
+      next: "Reload Casey once and resume at the capacity-only 8 -> 9 edit. Do not repeat Event creation."
+    });
+  }
+
+  function installRuntimePostCreateFixture(printResult = true) {
+    const state = requireMatchingState();
+    if (Q.collection("events").findOne(manualEventSelector())) {
+      Q.fail("the deterministic post-create replay requires the clean pre-create boundary.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
+      acceptedUserIds: [participantUserId],
+      startAtIso: dateIso(180),
+      endAtIso: dateIso(300),
+      subEventsEnabled: false,
+      slotsEnabled: false,
+      mode: "Casual"
+    });
+    insertEventWithMembers(event, "accepted");
+    const runtime = mainEventRuntimeDocument(event, capturedAtIso);
+    Q.collection("activityEventRuntimeItems").insertOne(runtime);
+    synchronizeEventActivityCounters([hostUserId, participantUserId]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      "context.actualEventSourceId": EVENT_ID,
+      runtimePostCreate: {
+        capturedAtIso,
+        source: "deterministic-substage-replay",
+        eventId: EVENT_ID,
+        runtimeDocumentId: Q.text(runtime._id),
+        runtimeRecordId: Q.text(runtime.recordId),
+        runtimeSyncKey: Q.text(runtime.syncKey)
+      }
+    } });
+    const postCreateSnapshots = Q.snapshotSpecs(runtimePostCreateSnapshotSpecs(EVENT_ID));
+    const postCreateUserActivitySnapshots = [hostUserId, participantUserId].map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      runtimePostCreateSnapshots: postCreateSnapshots,
+      runtimePostCreateUserActivitySnapshots: postCreateUserActivitySnapshots
+    } });
+    if (!printResult) return;
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "runtime-post-create-replay-ready",
+      capturedAtIso,
+      manualCreateReplayed: false,
+      oracle: oracle(refreshedState),
+      next: "Reload Casey once and resume at the capacity-only 8 -> 9 edit. This substage replay does not replace the already-accepted manual create oracle."
+    });
+  }
+
+  function restageRuntimePostCreate(printResult = true) {
+    if (checkpointId !== "EVENT-RUNTIME-001") {
+      Q.fail("restage-runtime-post-create is restricted to EVENT-RUNTIME-001.");
+    }
+    const active = Q.activeState(SCENARIO, false);
+    if (active) {
+      if (Q.text(active.checkpointId).toUpperCase() !== checkpointId) {
+        Q.fail(`staged checkpoint is '${active.checkpointId}', not '${checkpointId}'.`);
+      }
+      resetState(active);
+    }
+    stage();
+    installRuntimePostCreateFixture(printResult);
   }
 
   function memberDocument(eventId, userId, role, status, requestKind = null, options = {}) {
@@ -1968,6 +2341,7 @@
     const future = { startAtIso: dateIso(180), endAtIso: dateIso(300) };
     const past = { startAtIso: dateIso(-240), endAtIso: dateIso(-120) };
     if (stageKind === "editor-empty") return;
+    if (stageKind === "runtime-pre-create") return;
     if (stageKind === "ticket-isolation") {
       insertTicketIsolationBaseline(stagedAtIso, future, context);
       return;
@@ -7941,6 +8315,17 @@
     if (!event || Q.text(event.sourceId || event._id) !== EVENT_ID) {
       Q.fail("EVENT-RUNTIME-001 clean Event baseline is missing.");
     }
+    const runtimeItems = Q.collection("activityEventRuntimeItems").find({ $or: [
+      { eventId: EVENT_ID },
+      { ownerId: EVENT_ID }
+    ] }).toArray();
+    if (runtimeItems.length !== 1
+        || Q.text(runtimeItems[0].runtimeKind) !== "MAIN_EVENT"
+        || Q.text(runtimeItems[0].eventId) !== EVENT_ID
+        || Q.text(runtimeItems[0].ownerId) !== EVENT_ID
+        || runtimeItems[0].subEventId != null) {
+      Q.fail("EVENT-RUNTIME-001 post-create baseline must contain exactly one canonical MAIN_EVENT runtime.");
+    }
     const runtimeSubEventId = `main-event:${EVENT_ID}`;
     const stagedAtIso = Q.nowIso();
     Q.collection("events").updateOne(
@@ -7952,27 +8337,6 @@
         updatedUser: hostUserId
       } }
     );
-    Q.collection("activityEventRuntimeItems").insertOne({
-      _id: `${PREFIX}:runtime-member:main-event`,
-      recordId: runtimeSubEventId,
-      syncKey: `${PREFIX}:runtime-member:main-event`,
-      status: "A",
-      runtimeKind: "MAIN_EVENT",
-      eventId: EVENT_ID,
-      ownerId: EVENT_ID,
-      subEventId: null,
-      title: event.title,
-      description: event.subtitle,
-      timeframe: Q.text(event.timeframe),
-      startAtIso: event.startAtIso,
-      endAtIso: event.endAtIso,
-      location: Q.text(event.location),
-      createdByUserId: hostUserId,
-      createdDate: stagedAtIso,
-      createdUser: hostUserId,
-      updatedDate: stagedAtIso,
-      updatedUser: hostUserId
-    });
 
     const assetSnapshot = Q.snapshotSpecs([
       { collection: "assets", selector: { assetId: RUNTIME_TRANSPORT_ASSET_ID } }
@@ -8071,14 +8435,7 @@
     if (checkpointId !== "EVENT-RUNTIME-001") {
       Q.fail("restage-runtime-member-clean is restricted to EVENT-RUNTIME-001.");
     }
-    const active = Q.activeState(SCENARIO, false);
-    if (active) {
-      if (Q.text(active.checkpointId).toUpperCase() !== checkpointId) {
-        Q.fail(`staged checkpoint is '${active.checkpointId}', not '${checkpointId}'.`);
-      }
-      resetState(active);
-    }
-    stage();
+    restageRuntimePostCreate(false);
     materializeRuntimeMemberCleanBoundary();
   }
 
@@ -8094,20 +8451,21 @@
       Q.fail("the deterministic EVENT-RUNTIME-001 Transport already exists outside this active preparation.");
     }
     const event = Q.collection("events").findOne(manualEventSelector());
+    const eventId = Q.text(event && (event.sourceId || event._id));
     const runtimeItems = Q.collection("activityEventRuntimeItems").find({ $or: [
-      { eventId: EVENT_ID },
-      { ownerId: EVENT_ID }
+      { eventId },
+      { ownerId: eventId }
     ] }).toArray();
     if (!event
-        || Q.text(event.sourceId || event._id) !== EVENT_ID
+        || !eventId
         || Q.text(event.ownerUserId) !== hostUserId
         || Q.text(event.status) !== "A"
         || runtimeItems.length !== 1
         || Q.text(runtimeItems[0].runtimeKind) !== "MAIN_EVENT"
-        || Q.text(runtimeItems[0].eventId) !== EVENT_ID
-        || Q.text(runtimeItems[0].ownerId) !== EVENT_ID
+        || Q.text(runtimeItems[0].eventId) !== eventId
+        || Q.text(runtimeItems[0].ownerId) !== eventId
         || runtimeItems[0].subEventId != null
-        || Q.collection("activityResources").countDocuments({ ownerId: EVENT_ID }) !== 0) {
+        || Q.collection("activityResources").countDocuments({ ownerId: eventId }) !== 0) {
       Q.fail("EVENT-RUNTIME-001 is no longer at its clean pre-assignment MAIN_EVENT boundary.");
     }
     const assetSnapshot = Q.snapshotSpecs([
@@ -8119,6 +8477,7 @@
       $set: {
         "fixturePreparations.runtimeTransport": {
           preparedAtIso,
+          eventId,
           assetId: RUNTIME_TRANSPORT_ASSET_ID,
           title: RUNTIME_TRANSPORT_ASSET_TITLE
         }
@@ -8151,14 +8510,19 @@
       Q.fail("the EVENT-RUNTIME-001 leaked Asset invite has already been cleaned.");
     }
 
+    const event = Q.collection("events").findOne(manualEventSelector());
+    const eventId = Q.text(event && (event.sourceId || event._id));
+    if (!eventId) {
+      Q.fail("the EVENT-RUNTIME-001 Event is missing while the invite scope is repaired.");
+    }
     const asset = Q.collection("assets").findOne({ assetId: RUNTIME_TRANSPORT_ASSET_ID });
     const requests = asset && Array.isArray(asset.requests) ? asset.requests : [];
     const validManualRequests = requests.filter(request => (
       Q.text(request && request.userId) === hostUserId
       && Q.text(request && request.status) === "accepted"
       && Q.text(request && request.requestKind) === "manual"
-      && Q.text(request && request.booking && request.booking.eventId) === EVENT_ID
-      && Q.text(request && request.booking && request.booking.subEventId) === `main-event:${EVENT_ID}`
+      && Q.text(request && request.booking && request.booking.eventId) === eventId
+      && Q.text(request && request.booking && request.booking.subEventId) === `main-event:${eventId}`
     ));
     const leakedRequests = requests.filter(request => (
       Q.text(request && request.userId) === participantUserId
@@ -10615,7 +10979,7 @@
         : persistedOracle,
       expectedVisibleResult: selected.expected,
       next: checkpointId === "EVENT-RUNTIME-001"
-        ? "From the clean one-assignment boundary, invite Nova once as the prepared pending state, then execute Delete invitation and stop after the in-place plus reload observations for the persisted/latency oracle."
+        ? selected.action
         : "Compare the UI screenshot with this identity-level oracle. If it agrees, record PASS and reset this checkpoint; otherwise retain both as defect evidence."
     });
   }
@@ -12448,6 +12812,11 @@
     case "advance": advance(); break;
     case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
     case "prepare-invitation-admin-approval-retest": prepareInvitationAdminApprovalRetest(); break;
+    case "capture-runtime-created": captureRuntimeCreated(); break;
+    case "verify-runtime-slot-override": verifyRuntimeSlotOverride(); break;
+    case "capture-runtime-post-create": captureRuntimePostCreate(); break;
+    case "restore-runtime-post-create": restoreRuntimePostCreate(); break;
+    case "restage-runtime-post-create": restageRuntimePostCreate(); break;
     case "prepare-runtime-transport": prepareRuntimeTransport(); break;
     case "restage-runtime-member-clean": restageRuntimeMemberClean(); break;
     case "repair-runtime-transport-invite-scope": repairRuntimeTransportInviteScope(); break;
