@@ -43,6 +43,22 @@
         }
       ]
     },
+    "EVENT-SCHEDULERS-001": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava Event scheduler observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Event scheduler observer"
+        }
+      ]
+    },
     "ROLE-TRIAD-CORE-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

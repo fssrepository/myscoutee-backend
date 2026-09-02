@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 05:43 CEST
+Updated: 2026-09-02 06:16 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -11,11 +11,11 @@ file first, then open only the linked active checkpoint section.
 
 - Test definitions, checkpoint order and expected domain effects:
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
-- Active consolidated Event journey and its ordered source checkpoints:
-  [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-editor-004--save-feeds-tournamentgroup-processing)
+- Active consolidated Event scheduler journey and its execution contract:
+  [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
 - Stable user-facing click guide for the active testcase; execution status and
   machine evidence never belong in this file:
-  [`EVENT-EDIT-RUNTIME-001.md`](../checklists/EVENT-EDIT-RUNTIME-001.md)
+  [`EVENT-SCHEDULERS-001.md`](../checklists/EVENT-SCHEDULERS-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -52,27 +52,26 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-EDIT-RUNTIME-001 — PASS/CLOSED; terminal step 62 oracle captured
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-runtime-001--childless-event-materializes-its-main-runtime-card
-checklist: ../checklists/EVENT-EDIT-RUNTIME-001.md
-checklist_section: ../checklists/EVENT-EDIT-RUNTIME-001.md#complete-test-journey
-substage: terminal-root-transport-reassigned — checklist steps 53-62 PASS
-next_replay_boundary: none — reset before selecting the next Pair-QA testcase; preserve the current state only if the focused Delete replay is explicitly requested
-fixture_phase: Published Event h1788317751991 at 2/9 with Casey Admin and fixture-added Nova Member accepted; Slots Off, Sub Events Off, the original root MAIN_EVENT active and root Transport restored at accepted=1/pending=0/capacityMax=4
-browser_phase: Casey completed the complete user guide through step 62, including Transport Remove, reopen/reload, Reassign, reopen/reload; Nova remains an accepted Event Member and did not act
-scenario: Casey creates the Event through the real UI and proves one root MAIN_EVENT. Casey assigns Transport at that root scope, then edits the definition to add exactly two Slots. The runtime screen must show one slot-scoped MAIN_EVENT card in each Slot, not an empty list and not a third root card. Casey assigns Accommodation only to the first Slot and Supplies only to the second, proving independent runtime scopes. Removing both Slots restores the original root MAIN_EVENT and its Transport without leaking either Slot assignment. Casey then publishes and continues through capacity, scoped invite/Delete and root Transport remove/reassign. This is one EVENT-EDIT-RUNTIME-001 transaction with internal replay savepoints, not separate testcase IDs.
-ledger_status: PASS/CLOSED — EVENT-EDIT-RUNTIME-001, including EVENT-EDITOR-005 and EVENT-RUNTIME-001
-state: The complete checklist passed through step 62. The final independent oracle proves exactly one root Transport assignment, one Casey accepted manual request/projection, no Nova pending request/projection, no Transport member row, and root metrics accepted=1/pending=0/capacityMax=4. Step 57 no longer has a retained intermediate database snapshot because Reassign overwrote it, but the backend log proves Remove at 05:38:05 deleted the accepted root request and saved the runtime, followed by read requests at 05:38:10 and 05:38:12 before Reassign at 05:38:14; this corroborates the user's manual reopen/reload PASS without overstating it as a retrospective snapshot oracle. The final Asset recompute completed at 2026-09-02T03:39:01.795480583Z with empty lastError. Dev timing uses 15s values in the demo_db platform configuration; no Java behavior branch or production timing changed. No restage occurred.
+checkpoint: EVENT-SCHEDULERS-001 — active; random-groups terminal UI confirmation pending
+detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
+checklist: ../checklists/EVENT-SCHEDULERS-001.md
+checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#1-automatic-room-assignment
+substage: random-groups-post-run-ui-pending — checklist steps 9-11 await user confirmation
+next_replay_boundary: random-groups-terminal — after the user reports the terminal phrase, repeat read-only status for stability, reset this branch, verify not-staged and prepare counter-expiry
+fixture_phase: manual-qa-checkpoints event-schedulers/EVENT-SCHEDULERS-001 random-groups scheduled at 2026-09-02T04:12:07.611Z; primary completed at 04:13:17.105Z with six affected, followed by one required notification-outbox wake-up completed at 04:13:18.073Z; nine unrelated scheduler controls remain held
+browser_phase: one isolated Ava Event scheduler observer window is open at /admin; the user owns every visible assertion and must not select Run
+scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
+ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
+state: The corrected pre-run baseline was 755/755. The persisted exact oracle now reports scheduler-completed and exactOutcome=true: event-random-groups has exactly one scheduled Completed history row with processedCount=6; its required notification-outbox wake-up has exactly one Completed row; no other rule ran. Metrics is stable at 757/757, the exact expected +2/+2 causal delta. Two generated rooms contain 3/3 unique accepted users, with no duplicates or missing/unexpected users; there are two welcome messages, two markers, two outboxes, six bells, and every selected user's chats/all/event counters changed by exactly +1. Target pendingCount is zero and all nine unrelated timing holds remain active.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not replay or mutate the closed transaction. To continue the campaign, reset EVENT-RUNTIME-001 through the versioned harness, verify the reset with read-only status, then select the next Pair-QA row and prepare its own stage/status/reset boundary before opening browsers.
-event: h1788317751991 — QA EVENT-RUNTIME-001 Published at 2/9
+required_resume: Do not schedule again and do not reset yet. Ava confirms Job Detail is Completed with zero eligible, Last run 6 and exactly one new target history row, then confirms Metrics is 757/757 and remains unchanged after reopening once. The +2/+2 delta is expected: one target rule plus one causal notification-outbox wake-up, not a duplicate target run.
+event: manual-qa-checkpoint:v1:event-schedulers:random-groups:event — isolated balanced scheduler source
 actors:
-  Casey: authenticated managed document; created the Event and owns every mutation
-  Nova: authenticated managed document; fixture-added accepted Event Member; did not act in the scoped Transport checks
-next_actor: none until the next Pair-QA testcase is selected and staged
-queued_followup: reset the closed EVENT-RUNTIME-001 transaction, then select and prepare the next Pair-QA testcase
-pending_machine_oracle: none
-stop_phrase: none — testcase closed
+  Ava: authenticated isolated demo admin; observes Jobs and Monitoring only
+next_actor: Ava performs checklist steps 9-11; no other actor participates
+queued_followup: after the terminal phrase, Codex repeats status to prove no further run, resets this branch, verifies phase=not-staged, then implements/prepares the counter-expiry substage before inviting further clicks
+pending_machine_oracle: terminal oracle already exact; only the final read-only stability check and reset remain after the user's visible confirmation
+stop_phrase: EVENT-SCHEDULERS-001 random-groups UI ready
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

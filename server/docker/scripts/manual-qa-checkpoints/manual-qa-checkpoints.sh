@@ -32,6 +32,10 @@ Usage:
   bash manual-qa-checkpoints.sh status stat-012
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
+  bash manual-qa-checkpoints.sh stage event-schedulers EVENT-SCHEDULERS-001 random-groups
+  bash manual-qa-checkpoints.sh status event-schedulers EVENT-SCHEDULERS-001
+  bash manual-qa-checkpoints.sh schedule event-schedulers EVENT-SCHEDULERS-001 [delay-seconds]
+  bash manual-qa-checkpoints.sh reset event-schedulers EVENT-SCHEDULERS-001
   bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
   bash manual-qa-checkpoints.sh reset chat-domain CHAT-LIST-001
@@ -224,6 +228,7 @@ run_scenario() {
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
+    event-schedulers) scenario_script="${SCRIPT_DIR}/scenarios/event-schedulers.js" ;;
     role-triad) scenario_script="${SCRIPT_DIR}/scenarios/role-triad-checkpoints.js" ;;
     chat-domain)
       if [ "${checkpoint_id}" = "CHAT-GOVERNANCE-001" ]; then
@@ -373,6 +378,21 @@ case "${scenario}:${command}" in
   graph-layout:schedule|stat-020:schedule|stat-012:schedule)
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
+    ;;
+  event-schedulers:stage)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
+    ;;
+  event-schedulers:status|event-schedulers:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-schedulers:schedule)
+    [ "$#" -ge 3 ] && [ "$#" -le 4 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-SCHEDULERS-001" ] || fail "${command} is restricted to EVENT-SCHEDULERS-001."
+    run_scenario "${command}" "${scenario}" "${4:-30}" "$3"
     ;;
   event-domain:prepare-tournament-notification-sequence-retest|\
   event-domain:verify-tournament-finalize-sequence|\

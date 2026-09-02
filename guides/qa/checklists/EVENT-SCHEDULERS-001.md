@@ -23,13 +23,18 @@ For every branch, observe these areas on Job Detail:
 - `Runner history`, including the newest row's time, duration, affected count,
   status, and detail.
 
-Use this path for each Monitoring comparison:
+Use this path for each Metrics comparison:
 
-`Configuration → Monitoring → Background → Jobs`
+`Open Ava's menu → MONITORING section → Metrics → Background → Jobs`
 
 Record `Scheduler / Scheduled triggers` and `Audit trail / Audit events`.
-After one successful scheduler run, both values increase by exactly one. Allow
-up to 75 seconds for Monitoring ingestion, then reopen Monitoring once.
+These are global counters shared by every enabled job. The fixture temporarily
+moves every unrelated scheduler to a long future interval and restores all of
+their original timing controls after the branch. Some target jobs enqueue a
+required reactive downstream job, so use the exact branch-specific delta below.
+The selected Job Detail history and Codex's rule-key oracle independently prove
+that each expected rule ran exactly once. Allow up to 75 seconds for Metrics
+ingestion, then reopen Metrics once.
 
 ## 1. Automatic room assignment
 
@@ -53,10 +58,12 @@ Display name: `Automatic room assignment`
    - the job is neither Running nor Failed;
    - the current top `Runner history` row still predates the fixture.
 
-7. Open Monitoring, record the two shared baseline values, and return to this
-   job's detail view.
-8. Do not select `Run`. Leave the detail open and wait for its normal live
-   refresh.
+7. Open Ava's menu, select `Metrics` under `MONITORING`, open
+   `Background → Jobs`, record the two shared baseline values, and return to
+   this job's detail view.
+8. Report both baseline values to Codex and wait until Codex confirms that the
+   persisted schedule is armed. Do not select `Run`. Then leave the detail open
+   and wait for its normal live refresh.
 9. After the scheduler run, confirm:
 
    - the run is Completed;
@@ -66,9 +73,14 @@ Display name: `Automatic room assignment`
      and a time belonging to this run;
    - no second new history row or error appears.
 
-10. Reopen Monitoring once. `Scheduled triggers` and `Audit events` are each
-    exactly `+1` from the recorded baseline.
-11. Report:
+10. Reopen `Metrics → Background → Jobs` once. `Scheduled triggers` and
+    `Audit events` remain equal and are each exactly `+2` from their recorded
+    baselines: one `event-random-groups` run plus its required reactive
+    `notification-outbox` wake-up. Reopen once more after one scheduler poll and
+    confirm that both values remain unchanged; any further increment is a
+    duplicate or unrelated-run failure.
+11. There is no additional UI check in this step. If steps 9 and 10 both
+    passed, send this completion phrase to Codex:
 
     `EVENT-SCHEDULERS-001 random-groups UI ready`
 
@@ -92,9 +104,11 @@ Display name: `Close past events`
     - `Eligible before next run` is `1 affected`;
     - the job is neither Running nor Failed.
 
-16. Record the top Runner history row and the two shared Monitoring baseline
+16. Record the top Runner history row and the two shared Metrics baseline
     values, then return to Job Detail.
-17. Do not select `Run`. Wait for the normal scheduler run and live refresh.
+17. Report both baseline values to Codex and wait until Codex confirms that the
+    persisted schedule is armed. Do not select `Run`; wait for the normal
+    scheduler run and live refresh.
 18. After the first run, confirm:
 
     - the run is Completed;
@@ -104,16 +118,18 @@ Display name: `Close past events`
       affected;
     - the detail reports one expired Event source with no error.
 
-19. In Monitoring, both shared values are exactly `+1` from the first
-    baseline.
+19. In `Metrics → Background → Jobs`, both shared values remain equal and
+    are each exactly `+1` from the first baseline.
 20. Report:
 
     `EVENT-SCHEDULERS-001 counter-expiry first run ready`
 
 21. Wait while Codex makes the same rule due again without changing domain
     data. Do not edit the Event or select `Run`.
-22. Record the two Monitoring values after the first run, return to Job Detail,
-    and wait for the next normal scheduler pass.
+22. Record the two Metrics values after the first run, report them to Codex,
+    and wait until Codex confirms that the persisted zero-work schedule is
+    armed. Return to Job Detail without selecting `Run` and wait for the next
+    normal scheduler pass.
 23. After the second, zero-work run, confirm:
 
     - the run is Completed;
@@ -122,8 +138,8 @@ Display name: `Close past events`
     - the detail reports that no Event counter or ticket record was due;
     - no error or false positive domain result appears.
 
-24. `Scheduled triggers` and `Audit events` are each exactly `+1` from the
-    values recorded after the first run.
+24. `Scheduled triggers` and `Audit events` remain equal and are each exactly
+    `+1` from the values recorded after the first run.
 25. Report:
 
     `EVENT-SCHEDULERS-001 counter-expiry zero-work ready`
@@ -147,9 +163,11 @@ Display name: `Delete expired baskets`
     - `Eligible before next run` is `2 affected`;
     - the job is neither Running nor Failed.
 
-30. Record the top Runner history row and the two shared Monitoring baseline
+30. Record the top Runner history row and the two shared Metrics baseline
     values, then return to Job Detail.
-31. Do not select `Run`. Wait for the normal scheduler run and live refresh.
+31. Report both baseline values to Codex and wait until Codex confirms that the
+    persisted schedule is armed. Do not select `Run`; wait for the normal
+    scheduler run and live refresh.
 32. After the run, confirm:
 
     - the run is Completed;
@@ -161,8 +179,8 @@ Display name: `Delete expired baskets`
       deleted;
     - no error or second new history row appears.
 
-33. In Monitoring, `Scheduled triggers` and `Audit events` are each exactly
-    `+1` from the baseline.
+33. In `Metrics → Background → Jobs`, `Scheduled triggers` and `Audit events`
+    remain equal and are each exactly `+1` from the baseline.
 34. Report:
 
     `EVENT-SCHEDULERS-001 basket-purge UI ready`
