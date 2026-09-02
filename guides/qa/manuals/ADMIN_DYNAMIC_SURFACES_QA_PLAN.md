@@ -406,6 +406,18 @@ telemetry force-drain endpoint merely to make a browser test deterministic.
 
 ## Test environment and safety
 
+- **Test real functionality, never a fixture simulation of the expected
+  result.** A fixture may create a production-reachable baseline and may change
+  an ordinary persisted development configuration such as a scheduler
+  frequency. It must not write the transition under test, synthesize runtime
+  status, backdate `lastRunAtIso`, manufacture Runner history, counters,
+  telemetry, completion, notifications, or UI result state. If deterministic
+  setup cannot preserve the production causal path, classify the attempt as
+  **NOT EXECUTED / invalid fixture** and redesign the setup before continuing.
+- Scheduler QA shortens the real persisted frequency, normally to one minute,
+  preserves the genuine last-run state, and waits for the already-running
+  scheduler and production worker. Direct worker calls, artificial due-state
+  writes, fabricated run history, and manual `Run` are not valid evidence.
 - Use only `demo_db` or a disposable `e2e_db`; never use a trusted or
   production database.
 - Keep the normal application and its real scheduler running.

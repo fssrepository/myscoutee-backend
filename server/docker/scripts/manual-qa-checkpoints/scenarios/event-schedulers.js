@@ -183,14 +183,8 @@
         $set: {
           enabled: true,
           manualRunEnabled: false,
-          scheduleSlots: [],
-          "timing.mode": "interval",
-          "timing.intervalAmount": 7,
-          "timing.intervalUnit": "days",
-          "timing.intervalSeconds": ISOLATED_RULE_HOLD_SECONDS,
-          "timing.intervalMinutes": ISOLATED_RULE_HOLD_SECONDS / 60,
-          "timing.time": "00:00",
-          "timing.timezone": "UTC",
+          scheduleSlots: rule.scheduleSlots || [],
+          timing: rule.timing,
           "runState.currentStatus": "idle",
           "runState.progressPercent": 0,
           "runState.progressDetail": detail,
@@ -215,6 +209,66 @@
     if (result.matchedCount !== 1) {
       fail(`rule '${BASKET_RULE}' became running while staging.`);
     }
+  }
+
+  function scheduleRuleAtOneMinute(ruleKey) {
+    const rule = Q.assertRuleNotRunning(ruleKey);
+    const latestRun = (rule.runHistory || [])[0];
+    const latestRunAtIso = Q.text(latestRun && (latestRun.finishedAtIso || latestRun.startedAtIso));
+    const latestRunAtMs = Date.parse(latestRunAtIso);
+    if (!latestRun || !Number.isFinite(latestRunAtMs)) {
+      fail(`rule '${ruleKey}' requires one real Runner history row before it can be scheduled.`);
+    }
+    const scheduledAt = new Date();
+    const intervalSeconds = 60;
+    const dueAt = new Date(latestRunAtMs + intervalSeconds * 1000);
+    const observableFrom = new Date(Math.max(scheduledAt.getTime(), dueAt.getTime()));
+    const result = Q.collection("notificationRuleConfigs").updateOne(
+      {
+        _id: rule._id,
+        "runState.currentStatus": { $ne: "running" },
+        "runState.lastRunAtIso": latestRunAtIso
+      },
+      {
+        $set: {
+          enabled: true,
+          manualRunEnabled: false,
+          scheduleSlots: [],
+          "timing.mode": "interval",
+          "timing.intervalAmount": 1,
+          "timing.intervalUnit": "minutes",
+          "timing.intervalSeconds": intervalSeconds,
+          "timing.intervalMinutes": 1,
+          "timing.time": "00:00",
+          "timing.timezone": "UTC",
+          "runState.currentStatus": "idle",
+          "runState.progressPercent": 0,
+          "runState.progressDetail": `Manual QA scheduled: eligible after ${dueAt.toISOString()}.`,
+          "runState.pendingCountUpdatedAtIso": scheduledAt.toISOString(),
+          updatedDate: scheduledAt.toISOString(),
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": "",
+          "runState.lastError": ""
+        }
+      }
+    );
+    if (result.matchedCount !== 1) {
+      fail(`rule '${ruleKey}' changed while scheduling.`);
+    }
+    return {
+      scheduledAtIso: scheduledAt.toISOString(),
+      expectedDueAtIso: dueAt.toISOString(),
+      delaySeconds: Math.max(0, Math.ceil((dueAt.getTime() - scheduledAt.getTime()) / 1000)),
+      intervalSeconds,
+      preservedLastRunAtIso: latestRunAtIso,
+      expectedRunWindow: {
+        earliestIso: observableFrom.toISOString(),
+        latestApproxIso: new Date(observableFrom.getTime() + 60000).toISOString()
+      }
+    };
   }
 
   function monitoringCounters() {
@@ -1140,7 +1194,7 @@
       branch: BASKET_BRANCH,
       phase: "baseline-ready",
       stagedAtIso,
-      schedulerHoldSeconds: ISOLATED_RULE_HOLD_SECONDS,
+      targetTimingPreserved: true,
       expectedVisibleBaseline: {
         eligibleBeforeNextRun: 2,
         currentStatus: "idle",
@@ -1715,7 +1769,7 @@
     if (metricsBaseline.scheduledTriggers !== metricsBaseline.auditEvents) {
       fail(`Metrics is not settled (${metricsBaseline.scheduledTriggers}/${metricsBaseline.auditEvents}); wait for ingestion and retry.`);
     }
-    const scheduleResult = Q.scheduleRule(RANDOM_RULE, requestedDelaySeconds, HOLD_SECONDS);
+    const scheduleResult = scheduleRuleAtOneMinute(RANDOM_RULE);
     Q.collection("notificationRuleConfigs").updateOne(
       { ruleKey: RANDOM_RULE },
       { $set: { manualRunEnabled: true } }
@@ -1765,7 +1819,7 @@
     if (metricsBaseline.scheduledTriggers !== metricsBaseline.auditEvents) {
       fail(`Metrics is not settled (${metricsBaseline.scheduledTriggers}/${metricsBaseline.auditEvents}); wait for ingestion and retry.`);
     }
-    const scheduleResult = Q.scheduleRule(COUNTER_RULE, requestedDelaySeconds, HOLD_SECONDS);
+    const scheduleResult = scheduleRuleAtOneMinute(COUNTER_RULE);
     const nextScheduleCount = scheduleCount + 1;
     const setValues = {
       scheduledAtIso: scheduleResult.scheduledAtIso,
@@ -1813,7 +1867,7 @@
     if (metricsBaseline.scheduledTriggers !== metricsBaseline.auditEvents) {
       fail(`Metrics is not settled (${metricsBaseline.scheduledTriggers}/${metricsBaseline.auditEvents}); wait for ingestion and retry.`);
     }
-    const scheduleResult = Q.scheduleRule(BASKET_RULE, requestedDelaySeconds, HOLD_SECONDS);
+    const scheduleResult = scheduleRuleAtOneMinute(BASKET_RULE);
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: STATE_ID },
       {

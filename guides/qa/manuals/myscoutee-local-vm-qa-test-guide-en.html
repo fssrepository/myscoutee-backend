@@ -309,6 +309,9 @@ docker logs --since 5m nginx</code></pre>
 
     <h2>One testcase, a human click guide, and replayable substages</h2>
     <p>The CSV/XLSX ledger selects the testcase and execution order. Each selected testcase has one stable English click guide under <code>guides/qa/checklists/</code>. That guide tells the paired human where to click, what to enter, what to observe, and which phrase marks a machine-oracle boundary. It never stores live status, checked boxes, transient fixture IDs, or Codex evidence.</p>
+    <h2>Functional authenticity is mandatory</h2>
+    <p>Pair QA tests the real assembled product behavior, not a fixture-authored imitation of the expected result. A fixture may prepare production-reachable source data and ordinary persisted development configuration. It must never fabricate or backdate runtime state, <code>lastRunAtIso</code>, Runner history, counters, Metrics or audit events, completion state, notifications, projections, or a user-visible outcome. Any attempt that does so is <strong>NOT EXECUTED / invalid fixture</strong> and must be reset and redesigned before evidence is accepted.</p>
+    <p>For scheduler QA, Codex preserves the genuine last-run state, changes the real persisted target frequency to the documented short development interval—normally one minute—and waits for the already-running scheduler and production worker. Direct worker calls, artificial due-state timestamp writes, fabricated history or telemetry, and the manual <code>Run</code> action are forbidden as evidence.</p>
     <ol>
       <li>Codex prepares guarded <code>stage</code>, read-only <code>status</code>, and exact <code>reset</code> operations; proves the selected baseline; and opens the isolated actor browsers.</li>
       <li>Fixture preparation does not replace a product transaction named by the checklist. If creation is under test, the human creates the domain record through the UI and Codex captures its generated identity afterward.</li>

@@ -361,6 +361,25 @@ instruction at a time, waits for the stated stop phrase, checks the oracle and
 continues the repair/replay loop without handing the failure decision back to
 the user.
 
+### Functional authenticity gate
+
+Manual QA validates real product functionality, never a fixture-authored copy
+of the expected result. Fixtures may prepare only production-reachable source
+data and ordinary persisted development configuration. They must not fabricate
+or backdate runtime state, `lastRunAtIso`, Runner history, counters, Metrics or
+audit events, completion state, notifications, projections, or user-visible
+outcomes. A setup that does so is **NOT EXECUTED / invalid fixture** regardless
+of whether the final screen looks correct; reset it and redesign the same
+checkpoint before accepting evidence.
+
+For scheduler QA, preserve the genuine last-run state, set the real persisted
+target frequency to the documented short development interval (normally one
+minute), and wait for the already-running scheduler and production worker.
+Never make a rule due by rewriting its last-run timestamp, call the worker
+directly, fabricate history/telemetry, or use the manual `Run` action. The
+machine oracle may read persisted state after the user action, but it may not
+perform the business transition being tested.
+
 A deliberate dev-stack restart may run the repository's full seed reset. That
 reset is authoritative and is allowed to remove live manual-QA transactions;
 do not diagnose or change `mongodb-sync` merely because retained checkpoint

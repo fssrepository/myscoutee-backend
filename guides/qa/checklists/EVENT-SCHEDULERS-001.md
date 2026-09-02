@@ -15,6 +15,13 @@ machine-oracle evidence to it.
   member window opened by Codex for that substage.
 - Codex prepares and restores all fixtures. Do not edit Timing, Parameters, or
   job status.
+- This testcase validates the real product behavior. A fixture may prepare
+  reachable source data and may shorten the real persisted job frequency, but
+  it must never fabricate, backdate, or directly write a runtime transition,
+  `Last run`, Runner history, affected count, Metrics event, completion state,
+  or user-visible result. For scheduler checks, Codex sets the real target job
+  to `Every 1 minute` without changing its genuine last-run state, then waits
+  for the already-running scheduler and worker.
 - Do not select `Run`, even when it is enabled. The already-running scheduler
   picks up the prepared work in these checks.
 - Do not start another backend, scheduler, or browser session.
