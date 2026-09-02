@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 07:03 CEST
+Updated: 2026-09-02 07:07 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,23 +56,23 @@ checkpoint: EVENT-SCHEDULERS-001 — active; counter-expiry baseline prepared
 detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints
 checklist: ../checklists/EVENT-SCHEDULERS-001.md
 checklist_section: ../checklists/EVENT-SCHEDULERS-001.md#2-past-event-expiry-and-zero-work-repeat
-substage: counter-expiry-corrected-baseline-ready — checklist steps 14-16 await the repeated visible baseline confirmation
-next_replay_boundary: counter-expiry-first-pass — after the corrected visible baseline and fresh equal Metrics values are reported, arm exactly one natural scheduler pass
-fixture_phase: the incomplete branch was reset before its earlier arm ran, so it produced no scheduler history or Metrics delta. The corrected branch was staged at 2026-09-02T05:03:05.329Z and mirrors the normal Event creation projection: Nova is an accepted Member at 1/8 and exactly one active root MAIN_EVENT runtime exists. The persisted baseline, authenticated Event-list response and authenticated subevent response all pass; no schedule is armed.
+substage: counter-expiry-first-pass-metrics-ui-pending — machine oracle is exact; checklist step 19 awaits one permitted Metrics reopen
+next_replay_boundary: counter-expiry-first-pass-terminal — do not arm the zero-work pass until the user sees the 817/817 Metrics result and reports the first-run completion phrase
+fixture_phase: the corrected branch was staged at 2026-09-02T05:03:05.329Z. The first pass was armed once and completed at 05:05:52.641Z with one affected source. Exactly one event-counter-expiry history row exists; Metrics moved 816/816 -> 817/817, the Event is expired, Nova's Event counters are zero, and the 1/8 presentation plus single root MAIN_EVENT runtime are unchanged. The exact machine oracle is true and nine unrelated rules remain isolated.
 browser_phase: fresh isolated Ava /admin and Nova /game windows are open. The user exclusively owns every visible assertion and frontend verdict.
 scenario: One EVENT-SCHEDULERS-001 transaction contains three ordered reset-isolated branches: balanced Automatic room assignment, Close past events with one-work then zero-work natural passes, and mixed Delete expired baskets. Each branch uses a held pre-run baseline, a separate persisted schedule arm, the already-running scheduler and its own reset. All non-target persisted schedulers use reversible long intervals during a branch so the target must produce exactly one global trigger/audit delta; no direct worker endpoint, UI Run or duplicate process is allowed.
 ledger_status: PASS/PARTIAL historical evidence retained; consolidated manual UI closure IN PROGRESS
 state: Automatic room assignment is PASS for this replay. After repairing the missing generated-room MAIN_EVENT runtime projection, the focused replay moved Metrics from 781/781 to 783/783; event-random-groups and its required notification-outbox wake-up each completed exactly once. Two rooms contain 3/3 unique users, two valid MAIN_EVENT runtimes, two Event/Chat projections, two welcome messages, two markers, two outboxes and six bells; each selected user's chats/all/event counters changed by exactly +1. The user confirmed the repaired runtime card is visible. The branch was reset and verified not-staged before preparing counter-expiry.
 baseline_history: ROLE-TRIAD-CORE-001, JOB-PURGE, EVENT-SLOT-TOURNAMENT-001, EVENT-EDIT-RUNTIME-001 and the local EVENT-INV-002 UI boundary are closed. The Firebase-authenticated EVENT-INV-002 denial moved to DEPLOY-FIREBASE-LIFECYCLE-001 and does not gate Event/Core. The ledger and workbook report 80/116 total, Core 80/96 and Identity & access 8/8.
-required_resume: Do not schedule or reset. The user repeats checklist steps 14-16 and confirms the target Event once at 1/8 plus one main Event runtime in View Event, then reports fresh equal Metrics values.
+required_resume: Do not schedule or reset. The user closes and reopens Metrics -> Background -> Jobs once and checks for 817/817. If visible, the user reports the first-run completion phrase; otherwise report the still-visible values without extra reloads.
 event: manual-qa-checkpoint:v1:event-schedulers:counter-expiry:event — visible expired-but-still-active baseline Event
 actors:
   Ava: authenticated isolated demo admin; observes Jobs and Monitoring only
   counter_observer: authenticated isolated Nova demo member; observes the Past Active Events list and visible Events/Active Events counters
-next_actor: the user repeats only checklist steps 14-16 against the corrected Nova baseline
-queued_followup: after the corrected visible baseline is confirmed, Codex captures fresh Metrics and arms the first natural pass exactly once
-pending_machine_oracle: corrected machine baseline is exact; no scheduler pass is armed and the corrected frontend verdict is pending
-stop_phrase: EVENT-SCHEDULERS-001 counter-expiry baseline ready — Scheduled triggers <N>, Audit events <N>
+next_actor: the user completes checklist step 19 with one permitted Metrics reopen; Codex does not inspect or navigate the UI
+queued_followup: after the first-run completion phrase, Codex checks the persisted exact-once/domain oracle and prepares the separate zero-work schedule boundary
+pending_machine_oracle: first-pass machine oracle is exact; only the step-19 frontend verdict is pending, and the zero-work pass has not been armed
+stop_phrase: EVENT-SCHEDULERS-001 counter-expiry first run ready
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
