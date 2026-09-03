@@ -1224,12 +1224,13 @@ public class ActivitiesMembersService {
                     targetUserId,
                     existing,
                     next);
-            if (ownerRemovingAcceptedAssetManager) {
+            if (ACTION_REMOVE.equals(action)) {
                 activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
                                 OWNER_TYPE_ASSET,
                                 ownerId,
                                 targetUserId)
-                        .ifPresent(activityMembersRepository::delete);
+                        .map(member -> toDeletedMember(member, actorUserId, nowIso))
+                        .ifPresent(activityMembersRepository::save);
             }
         } else if (OWNER_TYPE_EVENT.equals(ownerType)
                 && STATUS_ACCEPTED.equals(nextStatus)

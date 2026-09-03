@@ -1171,7 +1171,12 @@ class ActivitiesMembersServiceTest {
                 eq(subEventId),
                 argThat(entries -> entries.stream().noneMatch(entry -> "manager-1".equals(entry.userId()))),
                 eq("asset-owner"));
-        verify(activityMembersRepository).delete(storedManager);
+        ArgumentCaptor<ActivityMember> removedManager = ArgumentCaptor.forClass(ActivityMember.class);
+        verify(activityMembersRepository).save(removedManager.capture());
+        assertThat(removedManager.getValue().getId()).isEqualTo(storedManager.getId());
+        assertThat(removedManager.getValue().getStatus()).isEqualTo("deleted");
+        assertThat(removedManager.getValue().getUpdatedUser()).isEqualTo("asset-owner");
+        verify(activityMembersRepository, never()).delete(any(ActivityMember.class));
     }
 
     @Test

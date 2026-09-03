@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -1390,6 +1391,7 @@ class AssetsServiceTest {
         UsersRepository usersRepository = mock(UsersRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
         ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
@@ -1397,6 +1399,7 @@ class AssetsServiceTest {
         Asset asset = asset();
         asset.setRequests(List.of());
         ActivityMember ownerManager = member("asset-1", "u1", "Manager", "accepted");
+        ActivityMember previouslyRemovedMember = member("asset-1", "u2", "Member", "deleted");
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(asset));
         when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
@@ -1404,7 +1407,7 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u1"))
                 .thenReturn(Optional.of(ownerManager));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
-                .thenReturn(List.of(ownerManager));
+                .thenReturn(List.of(ownerManager, previouslyRemovedMember));
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
@@ -1420,7 +1423,7 @@ class AssetsServiceTest {
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
+                notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
                 mock(UserActivityCountersService.class));
@@ -1431,6 +1434,7 @@ class AssetsServiceTest {
         assertThat(card).isNotNull();
         assertThat(card.status()).isEqualTo("UR");
         verify(activitiesResourcesService).removeAssetFromResourceAssignments("asset-1", "u1");
+        verifyNoInteractions(notificationOutboxService);
     }
 
     @Test
