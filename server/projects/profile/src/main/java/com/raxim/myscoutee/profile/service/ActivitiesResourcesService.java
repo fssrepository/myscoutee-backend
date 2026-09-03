@@ -95,8 +95,8 @@ public class ActivitiesResourcesService {
         if (record == null) {
             return null;
         }
-        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-        return toStateDto(record, eligibleAssets);
+        Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(record, assetOwnerUserId);
+        return toStateDto(record, referencedAssets);
     }
 
     public ActivitySubEventResourceScopeDto queryScope(String ownerId, String subEventId, String viewerUserId) {
@@ -119,8 +119,8 @@ public class ActivitiesResourcesService {
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(record -> normalizeId(record.getAssetOwnerUserId())))
                 .map(record -> {
-                    Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-                    return toStateDto(record, eligibleAssets);
+                    Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(record, normalizedViewerUserId);
+                    return toStateDto(record, referencedAssets);
                 })
                 .filter(Objects::nonNull)
                 .toList();
@@ -386,9 +386,9 @@ public class ActivitiesResourcesService {
             String actorUserId,
             String nowIso,
             boolean markActorRead) {
-        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-        ActivitySubEventResource next = filterToAssignableAssets(record, eligibleAssets.keySet());
-        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
+        Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(record, actorUserId);
+        ActivitySubEventResource next = filterToAssignableAssets(record, referencedAssets.keySet());
+        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, referencedAssets);
         next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
         next.setUpdatedDate(normalizeDateTime(nowIso, Instant.now().toString()));
         next.setUpdatedUser(firstNonBlank(
@@ -419,8 +419,8 @@ public class ActivitiesResourcesService {
         if (record == null || !StringUtils.hasText(normalizedAssetId)) {
             return new SubEventSupplyContributionPageDto(List.of(), 0, normalizedPage, normalizedPageSize);
         }
-        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
-        ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
+        Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(record, assetOwnerUserId);
+        ActivitySubEventResource filtered = filterToAssignableAssets(record, referencedAssets.keySet());
         List<SubEventSupplyContributionEntryRecord> entries = new ArrayList<>(
                 filtered.getSupplyContributionEntriesByAssetId().getOrDefault(normalizedAssetId, List.of()));
         entries.sort(Comparator.comparing(
@@ -549,12 +549,12 @@ public class ActivitiesResourcesService {
             next.setAssetAssignmentIds(cleanup.assetAssignmentIds());
             next.setAssetSettingsByType(cleanup.assetSettingsByType());
             next.setSupplyContributionEntriesByAssetId(cleanup.supplyContributionEntriesByAssetId());
-            Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(next);
-            ActivitySubEventResource filtered = filterToAssignableAssets(next, eligibleAssets.keySet());
+            Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(next, actorUserId);
+            ActivitySubEventResource filtered = filterToAssignableAssets(next, referencedAssets.keySet());
             next.setAssetAssignmentIds(filtered.getAssetAssignmentIds());
             next.setAssetSettingsByType(filtered.getAssetSettingsByType());
             next.setSupplyContributionEntriesByAssetId(filtered.getSupplyContributionEntriesByAssetId());
-            next.setResourceMetricsByType(toResourceMetricRecords(resourceMetricsByType(next, eligibleAssets)));
+            next.setResourceMetricsByType(toResourceMetricRecords(resourceMetricsByType(next, referencedAssets)));
             next.setUpdatedDate(effectiveNowIso);
             next.setUpdatedUser(StringUtils.hasText(normalizedActorUserId)
                     ? normalizedActorUserId
@@ -880,14 +880,17 @@ public class ActivitiesResourcesService {
         return next;
     }
 
-    private Map<String, AssetDetailDto> resolveAssignableAssetDetails(ActivitySubEventResource record) {
+    private Map<String, AssetDetailDto> resolveReferencedAssetDetails(
+            ActivitySubEventResource record,
+            String viewerUserId) {
         if (record == null) {
             return Map.of();
         }
-        Map<String, AssetDetailDto> details = assetsService.queryAssignableAssetDetails(
-                record.getAssetOwnerUserId(),
-                authorizationEventId(record.getOwnerId(), record.getSubEventId()),
-                record.getSubEventId(),
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Map<String, AssetDetailDto> details = assetsService.queryReferencedAssetDetails(
+                StringUtils.hasText(normalizedViewerUserId)
+                        ? normalizedViewerUserId
+                        : record.getAssetOwnerUserId(),
                 referencedAssetIds(record));
         return details == null ? Map.of() : details;
     }
@@ -1106,10 +1109,9 @@ public class ActivitiesResourcesService {
                             record == null ? null : record.getOwnerId(),
                             record == null ? null : record.getSubEventId(),
                             managerUserId)) {
-                if (managerUserId.equals(normalizeId(detail.ownerUserId()))) {
+                if (managerUserId.equals(normalizeId(detail.ownerUserId()))
+                        && !StringUtils.hasText(safeText(detail.ownerReleasedAtIso()))) {
                     accepted += 1;
-                } else {
-                    pending += 1;
                 }
             }
         }

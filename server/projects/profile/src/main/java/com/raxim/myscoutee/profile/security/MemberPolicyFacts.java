@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.security;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -173,13 +175,46 @@ public class MemberPolicyFacts {
             return false;
         }
         Asset asset = assetsRepository.findByAssetId(normalizedAssetId).orElse(null);
-        if (asset == null || !ASSET_STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))) {
+        if (asset == null
+                || !ASSET_STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))
+                || !isOwnerResponsibilityReleased(asset)) {
             return false;
         }
-        if (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))) {
-            return !isOwnerResponsibilityReleased(asset);
-        }
-        return hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
+        String releasedOwnerUserId = normalizeId(asset.getOwnerUserId());
+        List<ActivityMember> acceptedActiveMembers = activityMembersRepository
+                .findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, normalizedAssetId)
+                .stream()
+                .filter(member -> member != null
+                        && STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .filter(member -> isActiveUser(normalizeId(member.getUserId())))
+                .filter(member -> !normalizeId(member.getUserId()).equals(releasedOwnerUserId))
+                .toList();
+        Set<String> acceptedActiveUserIds = new LinkedHashSet<>();
+        (asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()).stream()
+                .filter(request -> request != null
+                        && STATUS_ACCEPTED.equals(normalizeStatus(request.status())))
+                .map(Asset.AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(releasedOwnerUserId))
+                .filter(this::isActiveUser)
+                .forEach(acceptedActiveUserIds::add);
+        acceptedActiveMembers.stream()
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(acceptedActiveUserIds::add);
+        boolean hasActiveManager = acceptedActiveMembers.stream()
+                .map(ActivityMember::getRole)
+                .map(this::safeText)
+                .anyMatch(MANAGER_ROLES::contains);
+        boolean actorIsManager = acceptedActiveMembers.stream()
+                .filter(member -> normalizedActorUserId.equals(normalizeId(member.getUserId())))
+                .map(ActivityMember::getRole)
+                .map(this::safeText)
+                .anyMatch(MANAGER_ROLES::contains);
+        return acceptedActiveUserIds.contains(normalizedActorUserId)
+                && (!hasActiveManager || actorIsManager);
     }
 
     private boolean isEventCreatorOrAdmin(String eventId, String userId) {

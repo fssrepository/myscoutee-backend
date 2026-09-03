@@ -214,6 +214,27 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void queryScopeKeepsUnderReviewAssetThatAlreadyBelongsToTheGroupResourceState() {
+        ActivitySubEventResource resource = resourceState("event-1", "sub-1", "u1");
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        AssetDetailDto releasedAsset = assetDetail("asset-1", "Transport", "u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
+                .thenReturn(Optional.of(member("event-1", "u2", "accepted")));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D"))
+                .thenReturn(List.of(resource));
+        when(assetsService.queryReferencedAssetDetails("u2", Set.of("asset-1")))
+                .thenReturn(Map.of("asset-1", releasedAsset));
+
+        var scope = service.queryScope("event-1", "sub-1", "u2");
+
+        assertThat(scope.visibleStates()).singleElement().satisfies(state -> {
+            assertThat(state.assetAssignmentIds()).containsEntry("Transport", List.of("asset-1"));
+            assertThat(state.fallbackAssetCardsByType()).containsEntry("Transport", List.of(releasedAsset));
+        });
+    }
+
+    @Test
     void markResourceTypeReadPersistsOnlyTheSelectedGroupTypeForTheCurrentUser() {
         String ownerId = "event-1:sub-1:sub-1:group:1";
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -435,15 +456,15 @@ class ActivitiesResourcesServiceTest {
                 List.of(),
                 null,
                 null);
-        AssetDetailDto ownedAsset = assetDetail(
+        AssetDetailDto ownedAsset = releasedAssetDetail(
                 "owned-asset",
                 "Transport",
                 "u1",
                 List.of(
                         assetRequest("request-1", "member-1", booking),
                         assetRequest("request-2", "member-2", booking)));
-        when(assetsService.queryAssignableAssetDetails(
-                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+        when(assetsService.queryReferencedAssetDetails(
+                "admin", Set.of("owned-asset")))
                 .thenReturn(Map.of("owned-asset", ownedAsset));
         ActivitySubEventStageRuntime existingRuntime = new ActivitySubEventStageRuntime();
         existingRuntime.setOwnerId(runtimeOwnerId);
@@ -469,6 +490,7 @@ class ActivitiesResourcesServiceTest {
                 "u1",
                 "admin");
 
+        assertThat(metrics.get("Transport").accepted()).isZero();
         assertThat(metrics.get("Transport").pending()).isEqualTo(2);
         ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
                 ActivitySubEventResource.class);
@@ -505,7 +527,7 @@ class ActivitiesResourcesServiceTest {
         resource.setSupplyContributionEntriesByAssetId(Map.of());
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
                 eventId, subEventId, "D")).thenReturn(List.of(resource));
-        when(assetsService.queryAssignableAssetDetails("u1", eventId, subEventId, Set.of()))
+        when(assetsService.queryReferencedAssetDetails("u1", Set.of()))
                 .thenReturn(Map.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -764,6 +786,38 @@ class ActivitiesResourcesServiceTest {
                 requests,
                 null,
                 List.of());
+    }
+
+    private AssetDetailDto releasedAssetDetail(
+            String id,
+            String type,
+            String ownerUserId,
+            List<AssetMemberRequestDto> requests) {
+        AssetDetailDto detail = assetDetail(id, type, ownerUserId, requests);
+        return new AssetDetailDto(
+                detail.id(),
+                detail.type(),
+                detail.title(),
+                detail.subtitle(),
+                detail.category(),
+                detail.city(),
+                detail.capacityTotal(),
+                detail.quantity(),
+                detail.details(),
+                detail.imageUrl(),
+                detail.sourceLink(),
+                detail.routes(),
+                detail.policiesEnabled(),
+                detail.policies(),
+                detail.pricing(),
+                detail.visibility(),
+                "UR",
+                detail.ownerUserId(),
+                detail.ownerName(),
+                detail.requests(),
+                detail.metrics(),
+                detail.menuActions(),
+                "2026-09-03T08:00:00Z");
     }
 
     private AssetMemberRequestDto assetRequest(

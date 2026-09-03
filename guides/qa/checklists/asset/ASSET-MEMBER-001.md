@@ -79,10 +79,13 @@ it is not required in addition to this compact route.
    `Leave asset` and confirm exactly once. Without reload, Casey disappears
    from Asset Members, the accepted total decreases once, every pending red
    counter stays unchanged, and the Asset becomes `Under review` instead of
-   being deleted.
-4. Confirm Nova and Riley each receive exactly one `Asset needs a new owner`
-   notification and no duplicate occurrence. Casey no longer has owner or
-   Manager authority during this handover state.
+   being deleted. The Transport remains a resource of Group A and stays visible
+   in the Group Transport list; only its Asset-member metric changes from
+   `3 / 0 · 4` to `2 / 0 · 4`. The Group's own three-member list is unchanged.
+4. Because Nova is already an accepted Asset Manager, confirm only Nova receives
+   exactly one `Asset needs a new owner` notification and only Nova sees `Take
+   over`. Riley receives neither the takeover notification nor the action.
+   Casey no longer has owner or Manager authority during this handover state.
 5. In Nova, open `My Assets → Transport`. The same target must come from the
    backend query with `Take over`; Riley, as a plain Member, must not receive
    that action. Confirm `Take over` exactly once.
@@ -91,14 +94,38 @@ it is not required in addition to this compact route.
    member-removal authority, and a second actor cannot also take over. Event
    and Group roles remain unchanged.
 7. Casey is not banned. After Nova's takeover, either invite Casey again or
-   let Casey send a fresh Join request. After the normal acceptance, Casey
-   returns as an ordinary Asset Member. Casey may later be promoted to Asset
-   Manager again, but that promotion creates only a normal delegated Manager;
-   it must not restore owner/super-manager authority. Only a later successful
-   `Take over` of a genuinely ownerless Asset can do that.
+   let Casey send a fresh Join request from the unchanged Group Transport
+   resource card. Casey must behave exactly like a fresh user of this Asset:
+   no stale owner privilege, no hidden exclusion and no missing normal action.
+   After the normal acceptance, Casey returns as an ordinary Asset Member.
+   Casey may later be promoted to Asset Manager again, but that promotion
+   creates only a normal delegated Manager; it must not restore owner/super-
+   manager authority. Only a later successful `Take over` of a genuinely
+   ownerless Asset can do that.
 8. Reload the actors once and confirm the new owner, Casey's fresh role, the
    zero pending state after resolution, and the exact-once notifications are
    reconstructed without stale menus or duplicate rows.
+
+### Independent no-manager fallback branch
+
+These assertions may be checked with any isolated state in which an Asset owner
+has left, at least one accepted Asset Member remains, and no accepted active
+Asset Manager remains. They do not have to be replayed in the retained Nova-
+Manager state above.
+
+1. Confirm every accepted active Asset Member receives exactly one owner-
+   handover notification and sees `Take over`; no removed, pending, blocked or
+   inactive user receives either.
+2. Let one accepted Member confirm `Take over`. Confirm that actor becomes the
+   new owner/super-manager and the Asset returns from `Under review` to its
+   previous active status. The other candidates lose `Take over` immediately.
+3. Repeat with an accepted Manager present before takeover. Confirm ordinary
+   Members receive neither the handover notification nor `Take over`; the
+   Manager must still confirm explicitly and is not promoted automatically.
+4. In both variants, confirm the Group-to-Asset resource relationship and its
+   identity never change. Former owners can later rejoin under the complete
+   fresh-user lifecycle, but a later ordinary Manager promotion never restores
+   super-manager authority.
 
 ## 1. Confirm the generated-group baseline
 

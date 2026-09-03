@@ -171,7 +171,7 @@ public class AssetsService {
                         Query.query(Criteria.where("status").is(STATUS_UNDER_REVIEW)),
                         Asset.class)
                 .stream()
-                .filter(asset -> isEligibleAssetManager(asset, normalizedUserId))
+                .filter(asset -> isEligibleAssetTakeOverCandidate(asset, normalizedUserId))
                 .forEach(asset -> assetsById.put(normalizeId(asset.getAssetId()), asset));
         List<Asset> assets = assetsById.values().stream()
                 .sorted(Comparator.comparing(
@@ -249,6 +249,45 @@ public class AssetsService {
                     asset,
                     ownerNamesByUserId,
                     normalizedUserId,
+                    metricsByAssetId.get(assetId));
+            if (StringUtils.hasText(assetId) && detail != null) {
+                detailsByAssetId.put(assetId, detail);
+            }
+        }
+        return detailsByAssetId;
+    }
+
+    /**
+     * Resolves cards for Asset ids that are already part of an Activity resource state.
+     * An owner handover must not erase the Group-to-Asset relationship merely because
+     * the Asset is temporarily under review. New assignments still use the stricter
+     * {@link #queryAssignableAssetDetails(String, String, String, Collection)} path.
+     */
+    public Map<String, AssetDetailDto> queryReferencedAssetDetails(
+            String viewerUserId,
+            Collection<String> assetIds) {
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Set<String> normalizedAssetIds = (assetIds == null ? List.<String>of() : assetIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (!StringUtils.hasText(normalizedViewerUserId) || normalizedAssetIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Asset> referencedAssets = assetsRepository.findByAssetIdIn(normalizedAssetIds).stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> isReferencedResourceVisibleStatus(asset.getStatus()))
+                .toList();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(referencedAssets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(referencedAssets);
+        Map<String, AssetDetailDto> detailsByAssetId = new LinkedHashMap<>();
+        for (Asset asset : referencedAssets) {
+            String assetId = normalizeId(asset.getAssetId());
+            AssetDetailDto detail = toAssetDetailDto(
+                    asset,
+                    ownerNamesByUserId,
+                    normalizedViewerUserId,
                     metricsByAssetId.get(assetId));
             if (StringUtils.hasText(assetId) && detail != null) {
                 detailsByAssetId.put(assetId, detail);
@@ -726,6 +765,7 @@ public class AssetsService {
                         normalizedAssetId,
                         normalizedUserId)
                 .ifPresent(activityMembersRepository::delete);
+        syncAssetRequestProjection(current, next);
 
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentUnavailable(normalizedAssetId, "owner-left");
@@ -787,7 +827,7 @@ public class AssetsService {
         if (current == null || !STATUS_UNDER_REVIEW.equals(safeText(current.getStatus()))) {
             return null;
         }
-        if (!isEligibleAssetManager(current, normalizedUserId)) {
+        if (!isEligibleAssetTakeOverCandidate(current, normalizedUserId)) {
             return null;
         }
         Asset next = cloneAsset(current);
@@ -806,6 +846,7 @@ public class AssetsService {
         if (!updateAssetTakeOverIfSnapshotCurrent(current, next)) {
             return null;
         }
+        syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
@@ -2664,20 +2705,19 @@ public class AssetsService {
             return List.of();
         }
         boolean sameOwner = normalizedViewerUserId.equals(normalizeId(asset.getOwnerUserId()));
-        if (sameOwner && isOwnerResponsibilityReleased(asset)) {
-            return List.of("share");
-        }
-        boolean owner = sameOwner;
+        boolean owner = sameOwner && !isOwnerResponsibilityReleased(asset);
         boolean manager = owner || hasAcceptedAssetManagerRole(asset, normalizedViewerUserId);
         String status = safeText(asset.getStatus());
         if (STATUS_TRASHED.equals(status)) {
             return owner ? List.of("restore") : List.of();
         }
-        if (!manager) {
+        boolean takeOverCandidate = STATUS_UNDER_REVIEW.equals(status)
+                && isEligibleAssetTakeOverCandidate(asset, normalizedViewerUserId);
+        if (!manager && !takeOverCandidate) {
             return List.of("share");
         }
         LinkedHashSet<String> actions = new LinkedHashSet<>();
-        if (STATUS_UNDER_REVIEW.equals(status) && isActiveUser(normalizedViewerUserId)) {
+        if (takeOverCandidate) {
             actions.add("takeOver");
         }
         actions.add("share");
@@ -2695,6 +2735,14 @@ public class AssetsService {
                 || STATUS_DELETED.equals(normalized)
                 || STATUS_INACTIVE.equals(normalized)
                 || STATUS_TRASHED.equals(normalized);
+    }
+
+    private boolean isReferencedResourceVisibleStatus(String status) {
+        String normalized = normalizeLifecycleStatusCode(status);
+        return !STATUS_BLOCKED.equals(normalized)
+                && !STATUS_DELETED.equals(normalized)
+                && !STATUS_INACTIVE.equals(normalized)
+                && !STATUS_TRASHED.equals(normalized);
     }
 
     private String normalizeLifecycleStatusCode(String status) {
@@ -2722,6 +2770,27 @@ public class AssetsService {
             return true;
         }
         return hasAcceptedAssetManagerRole(asset, normalizedUserId);
+    }
+
+    private boolean isEligibleAssetTakeOverCandidate(Asset asset, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (asset == null
+                || !STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))
+                || !isOwnerResponsibilityReleased(asset)
+                || !StringUtils.hasText(normalizedUserId)
+                || !isActiveUser(normalizedUserId)) {
+            return false;
+        }
+        String releasedOwnerUserId = normalizeId(asset.getOwnerUserId());
+        List<String> activeManagerUserIds = activeResponsibleAssetUserIds(asset).stream()
+                .filter(candidateUserId -> !candidateUserId.equals(releasedOwnerUserId))
+                .toList();
+        if (!activeManagerUserIds.isEmpty()) {
+            return activeManagerUserIds.contains(normalizedUserId);
+        }
+        return activeAcceptedAssetMemberUserIds(asset).stream()
+                .filter(candidateUserId -> !candidateUserId.equals(releasedOwnerUserId))
+                .anyMatch(normalizedUserId::equals);
     }
 
     private boolean canManageAssetMembers(Asset asset, String userId) {
@@ -3106,14 +3175,19 @@ public class AssetsService {
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("The Asset owner");
+        boolean managerCandidatesExist = activeResponsibleAssetUserIds(asset).stream()
+                .anyMatch(userId -> !normalizedActorUserId.equals(userId));
         notificationOutboxService.enqueue(new NotificationIntent(
                 "asset-owner-left",
                 "asset",
                 assetId,
-                "asset-members",
+                managerCandidatesExist ? "asset-active-managers" : "asset-members",
                 recipients,
                 "Asset needs a new owner",
-                actorName + " left " + assetTitle(asset) + ". An Asset Manager can take over responsibility.",
+                actorName + " left " + assetTitle(asset) + ". "
+                        + (managerCandidatesExist
+                                ? "An Asset Manager can take over responsibility."
+                                : "An accepted Asset Member can take over responsibility."),
                 "/game",
                 firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
@@ -3127,9 +3201,14 @@ public class AssetsService {
     }
 
     private List<String> assetOwnerReleaseRecipientUserIds(Asset asset, String actorUserId) {
-        LinkedHashSet<String> recipients = new LinkedHashSet<>(acceptedAssetParticipantUserIds(asset));
-        recipients.addAll(activeResponsibleAssetUserIds(asset));
-        recipients.remove(normalizeId(actorUserId));
+        String normalizedActorUserId = normalizeId(actorUserId);
+        LinkedHashSet<String> recipients = activeResponsibleAssetUserIds(asset).stream()
+                .filter(userId -> !normalizedActorUserId.equals(userId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (recipients.isEmpty()) {
+            recipients.addAll(activeAcceptedAssetMemberUserIds(asset));
+            recipients.remove(normalizedActorUserId);
+        }
         return recipients.stream()
                 .filter(StringUtils::hasText)
                 .filter(this::isActiveUser)
@@ -3576,6 +3655,28 @@ public class AssetsService {
                 .filter(StringUtils::hasText)
                 .filter(this::isActiveUser)
                 .distinct()
+                .toList();
+    }
+
+    private List<String> activeAcceptedAssetMemberUserIds(Asset asset) {
+        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
+            return List.of();
+        }
+        LinkedHashSet<String> userIds = new LinkedHashSet<>(acceptedAssetParticipantUserIds(asset));
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerId(
+                OWNER_TYPE_ASSET,
+                normalizeId(asset.getAssetId()))) {
+            if (member == null
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeMemberStatus(member.getStatus()))) {
+                continue;
+            }
+            String userId = normalizeId(member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                userIds.add(userId);
+            }
+        }
+        return userIds.stream()
+                .filter(this::isActiveUser)
                 .toList();
     }
 
