@@ -28,6 +28,9 @@
   const ASSET_TITLE = "QA ASSET-MEMBER-001 Group Transport";
   const SERVICE_CHAT_ID = `c-service-asset-${ASSET_ID}-${STAGE_ID}-${RILEY_ID}`;
   const CONTROLLED_CHAT_MESSAGE = "QA ASSET-MEMBER-001: Riley asks Casey about the assigned Transport.";
+  const ACTIVE_WINDOW_START_OFFSET_MINUTES = -60;
+  const ACTIVE_WINDOW_END_OFFSET_MINUTES = 1440;
+  const ACTIVE_WINDOW_DURATION_MINUTES = ACTIVE_WINDOW_END_OFFSET_MINUTES - ACTIVE_WINDOW_START_OFFSET_MINUTES;
   const NOTIFICATION_TYPES = [
     "asset-member-invite",
     "asset-admin-join-request",
@@ -187,7 +190,7 @@
       description: "Generated-group Asset member lifecycle checkpoint",
       timing: "During",
       offsetMinutes: 0,
-      durationMinutes: 300,
+      durationMinutes: ACTIVE_WINDOW_DURATION_MINUTES,
       startAt: startAtIso,
       endAt: endAtIso,
       optional: false,
@@ -235,6 +238,7 @@
       subtitle: "Generated-group Asset membership lifecycle",
       status: "A",
       published: true,
+      expired: false,
       isTrashed: false,
       ownerUserId: CASEY_ID,
       creatorUserId: CASEY_ID,
@@ -1229,8 +1233,8 @@
     }
 
     const stagedAtIso = Q.nowIso();
-    const startAtIso = dateIso(-60);
-    const endAtIso = dateIso(240);
+    const startAtIso = dateIso(ACTIVE_WINDOW_START_OFFSET_MINUTES);
+    const endAtIso = dateIso(ACTIVE_WINDOW_END_OFFSET_MINUTES);
     const snapshots = Q.snapshotSpecs(selectors());
     const savedUserActivities = USERS.map(userActivities);
     const pendingState = {
@@ -1329,6 +1333,151 @@
       checks,
       oracle: current,
       next: "Open the managed Casey, Nova and Riley sessions. In Group A only, Casey creates one Invite for Nova and Riley creates one Join request."
+    });
+  }
+
+  function refreshRetainedWindow() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== CHECKPOINT) Q.fail(`this fixture is restricted to ${CHECKPOINT}.`);
+    const currentState = state();
+    const event = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    const asset = Q.collection("assets").findOne({ assetId: ASSET_ID });
+    if (!event || !asset) {
+      Q.fail(`${CHECKPOINT} cannot refresh its retained window because the controlled Event or Asset is missing.`);
+    }
+
+    const before = {
+      ownerUserId: Q.text(asset.ownerUserId),
+      requestIds: sorted((asset.requests || []).map(item => Q.text(item && (item.id || item._id || item.requestId)))),
+      membershipFingerprints: Q.collection("activityMembers").find({
+        ownerId: { $in: [EVENT_ID, GROUP_A_ID, GROUP_B_ID, ASSET_ID] }
+      }).toArray().map(item => JSON.stringify(item)).sort(),
+      outboxIds: sorted(Q.collection("notificationOutbox").find(relatedSelector()).toArray().map(item => Q.text(item._id))),
+      inboxIds: sorted(Q.collection("userNotifications").find(relatedSelector()).toArray().map(item => Q.text(item._id))),
+      affinityTaskIds: sorted(Q.collection("affinityRecomputeTasks").find({ targetId: { $in: [ASSET_ID, EVENT_ID] } }).toArray().map(item => Q.text(item._id)))
+    };
+    const refreshedAtIso = Q.nowIso();
+    const startAtIso = dateIso(ACTIVE_WINDOW_START_OFFSET_MINUTES);
+    const endAtIso = dateIso(ACTIVE_WINDOW_END_OFFSET_MINUTES);
+    const refreshStage = item => Q.text(item && item.id) === STAGE_ID
+      ? {
+          ...item,
+          durationMinutes: ACTIVE_WINDOW_DURATION_MINUTES,
+          startAt: startAtIso,
+          endAt: endAtIso,
+          ...(Object.prototype.hasOwnProperty.call(item || {}, "stageStatus")
+            ? {
+                stageStatus: "A",
+                stageStatusReason: "stage-started",
+                stageStatusUpdatedAt: refreshedAtIso
+              }
+            : {})
+        }
+      : item;
+    const refreshBooking = item => {
+      if (Q.text(item && item.booking && item.booking.subEventId) !== STAGE_ID) return item;
+      return {
+        ...item,
+        booking: {
+          ...item.booking,
+          startAtIso,
+          endAtIso
+        }
+      };
+    };
+
+    const eventResult = Q.collection("events").updateOne(
+      { sourceId: EVENT_ID },
+      { $set: {
+        startAtIso,
+        endAtIso,
+        expired: false,
+        subEventDefinitions: (event.subEventDefinitions || []).map(refreshStage),
+        subEvents: (event.subEvents || []).map(refreshStage),
+        currentStage: {
+          ...(event.currentStage || {}),
+          id: STAGE_ID,
+          name: STAGE_TITLE,
+          status: "A"
+        }
+      } }
+    );
+    if (eventResult.matchedCount !== 1) Q.fail(`${CHECKPOINT} Event disappeared during retained-window refresh.`);
+
+    const assetResult = Q.collection("assets").updateOne(
+      { assetId: ASSET_ID },
+      { $set: { requests: (asset.requests || []).map(refreshBooking) } }
+    );
+    if (assetResult.matchedCount !== 1) Q.fail(`${CHECKPOINT} Asset disappeared during retained-window refresh.`);
+    Q.collection("assetRequests").find({ assetId: ASSET_ID }).forEach(request => {
+      Q.collection("assetRequests").updateOne(
+        { _id: request._id },
+        { $set: { booking: refreshBooking(request).booking } }
+      );
+    });
+    Q.collection("activitySubEventStageRuntime").updateMany(
+      { ownerId: EVENT_ID, subEventId: STAGE_ID },
+      { $set: {
+        stageStatus: "A",
+        stageStatusReason: "stage-started",
+        stageStatusUpdatedAt: refreshedAtIso
+      } }
+    );
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      { $set: {
+        "context.startAtIso": startAtIso,
+        "context.endAtIso": endAtIso,
+        retainedWindowRefreshedAtIso: refreshedAtIso
+      } }
+    );
+
+    const nextAsset = Q.collection("assets").findOne({ assetId: ASSET_ID }) || {};
+    const after = {
+      ownerUserId: Q.text(nextAsset.ownerUserId),
+      requestIds: sorted((nextAsset.requests || []).map(item => Q.text(item && (item.id || item._id || item.requestId)))),
+      membershipFingerprints: Q.collection("activityMembers").find({
+        ownerId: { $in: [EVENT_ID, GROUP_A_ID, GROUP_B_ID, ASSET_ID] }
+      }).toArray().map(item => JSON.stringify(item)).sort(),
+      outboxIds: sorted(Q.collection("notificationOutbox").find(relatedSelector()).toArray().map(item => Q.text(item._id))),
+      inboxIds: sorted(Q.collection("userNotifications").find(relatedSelector()).toArray().map(item => Q.text(item._id))),
+      affinityTaskIds: sorted(Q.collection("affinityRecomputeTasks").find({ targetId: { $in: [ASSET_ID, EVENT_ID] } }).toArray().map(item => Q.text(item._id)))
+    };
+    if (!Q.sameJson(before, after)) {
+      Q.fail(`${CHECKPOINT} retained-window refresh changed protected exploratory state: ${JSON.stringify({ before, after })}.`);
+    }
+    const refreshedEvent = Q.collection("events").findOne({ sourceId: EVENT_ID }) || {};
+    const refreshedStage = (refreshedEvent.subEvents || []).find(item => Q.text(item && item.id) === STAGE_ID) || {};
+    const mismatchedBookings = (nextAsset.requests || []).filter(item =>
+      Q.text(item && item.booking && item.booking.subEventId) === STAGE_ID
+      && (Q.text(item.booking.startAtIso) !== startAtIso || Q.text(item.booking.endAtIso) !== endAtIso)
+    );
+    if (Q.text(refreshedEvent.startAtIso) !== startAtIso
+        || Q.text(refreshedEvent.endAtIso) !== endAtIso
+        || refreshedEvent.expired === true
+        || Q.text(refreshedStage.startAt) !== startAtIso
+        || Q.text(refreshedStage.endAt) !== endAtIso
+        || Q.text(refreshedStage.stageStatus) !== "A"
+        || mismatchedBookings.length > 0) {
+      Q.fail(`${CHECKPOINT} retained-window refresh did not converge on one active Event/stage/booking window.`);
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: currentState.phase,
+      action: "retained-window-refreshed",
+      refreshedAtIso,
+      startAtIso,
+      endAtIso,
+      preserved: {
+        ownerUserId: after.ownerUserId,
+        requestIds: after.requestIds,
+        membershipCount: after.membershipFingerprints.length,
+        outboxCount: after.outboxIds.length,
+        inboxCount: after.inboxIds.length,
+        affinityTaskCount: after.affinityTaskIds.length
+      },
+      next: "Reload the existing actor windows once; the controlled Event must be visible again without resetting the retained Asset-member state."
     });
   }
 
@@ -1457,6 +1606,7 @@
     case "next": next(); break;
     case "verify-asset-member-pending": verifyPending(); break;
     case "verify-asset-member-terminal": verifyTerminal(); break;
+    case "refresh-retained-window": refreshRetainedWindow(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
