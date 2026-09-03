@@ -1481,6 +1481,125 @@
     });
   }
 
+  function rollbackOwnerLeave() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== CHECKPOINT) Q.fail(`this fixture is restricted to ${CHECKPOINT}.`);
+    const currentState = state();
+    const asset = Q.collection("assets").findOne({ assetId: ASSET_ID });
+    if (!asset) Q.fail(`${CHECKPOINT} cannot roll back owner leave because the controlled Asset is missing.`);
+
+    const releasedAtIso = Q.text(asset.ownerReleasedAtIso);
+    if (Q.text(asset.ownerUserId) !== CASEY_ID
+        || Q.text(asset.status) !== "UR"
+        || !releasedAtIso) {
+      Q.fail(`${CHECKPOINT} owner-leave rollback requires Casey's released UR Asset.`);
+    }
+    if ((asset.requests || []).some(item => Q.text(item && item.userId) === CASEY_ID)) {
+      Q.fail(`${CHECKPOINT} owner-leave rollback refused to duplicate Casey's accepted owner request.`);
+    }
+
+    const projection = Q.collection("assetRequests").findOne({
+      assetId: ASSET_ID,
+      requestId: MANUAL_REQUEST_ID,
+      userId: CASEY_ID
+    });
+    if (!projection || Q.text(projection.status) !== "accepted") {
+      Q.fail(`${CHECKPOINT} cannot reconstruct Casey's owner baseline from its retained request projection.`);
+    }
+
+    const resourceBefore = resourceSnapshot();
+    const runtimeBefore = runtimeSnapshot();
+    if (resourceBefore.count !== 1
+        || !resourceBefore.assignedTransportIds.includes(ASSET_ID)
+        || !Q.sameJson(resourceBefore.transport, expectedMetric(3, 0))
+        || runtimeBefore.count !== 1
+        || !runtimeBefore.groupAAssetOwnerIds.includes(CASEY_ID)
+        || !Q.sameJson(runtimeBefore.groupATransport, expectedMetric(3, 0))) {
+      Q.fail(`${CHECKPOINT} owner-leave rollback found a non-retained Group/resource baseline.`);
+    }
+
+    const protectedMemberships = normalizedMembershipDocuments().map(item => JSON.stringify(item));
+    const rolledBackAtIso = Q.nowIso();
+    const manualRequest = {
+      _id: MANUAL_REQUEST_ID,
+      userId: CASEY_ID,
+      name: Q.text(projection.name),
+      initials: Q.text(projection.initials),
+      gender: Q.text(projection.gender),
+      status: "accepted",
+      note: Q.text(projection.note),
+      requestKind: "manual",
+      requestedAtIso: Q.text(projection.requestedAtIso),
+      booking: projection.booking
+    };
+    const restoredStatus = Q.text(asset.statusBeforeSuppression) || "A";
+    const result = Q.collection("assets").updateOne(
+      {
+        assetId: ASSET_ID,
+        ownerUserId: CASEY_ID,
+        status: "UR",
+        ownerReleasedAtIso: releasedAtIso
+      },
+      {
+        $set: {
+          status: restoredStatus,
+          requests: [manualRequest, ...(asset.requests || [])],
+          updatedDate: rolledBackAtIso,
+          updatedUser: CASEY_ID
+        },
+        $unset: {
+          statusBeforeSuppression: "",
+          ownerReleasedAtIso: ""
+        }
+      }
+    );
+    if (result.matchedCount !== 1 || result.modifiedCount !== 1) {
+      Q.fail(`${CHECKPOINT} owner-leave rollback lost its exact Asset snapshot.`);
+    }
+    synchronizeAssetCounters(CASEY_ID);
+
+    const restored = Q.collection("assets").findOne({ assetId: ASSET_ID }) || {};
+    const restoredCaseyRequests = (restored.requests || []).filter(item =>
+      Q.text(item && item.userId) === CASEY_ID && Q.text(item.status) === "accepted");
+    const membershipsAfter = normalizedMembershipDocuments().map(item => JSON.stringify(item));
+    if (Q.text(restored.status) !== "A"
+        || Q.text(restored.ownerUserId) !== CASEY_ID
+        || Q.text(restored.ownerReleasedAtIso)
+        || restoredCaseyRequests.length !== 1
+        || !Q.sameJson(protectedMemberships, membershipsAfter)
+        || !Q.sameJson(resourceBefore, resourceSnapshot())
+        || !Q.sameJson(runtimeBefore, runtimeSnapshot())) {
+      Q.fail(`${CHECKPOINT} owner-leave rollback did not restore only Casey's owner baseline.`);
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      { $set: { ownerLeaveRolledBackAtIso: rolledBackAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: currentState.phase,
+      action: "owner-leave-rolled-back",
+      rolledBackAtIso,
+      asset: {
+        ownerUserId: CASEY_ID,
+        status: "A",
+        acceptedUsers: sorted((restored.requests || [])
+          .filter(item => Q.text(item && item.status) === "accepted")
+          .map(item => Q.text(item && item.userId))),
+        ownerReleasedAtIso: null
+      },
+      preserved: {
+        novaManager: assetMemberRows().some(item => item.userId === NOVA_ID
+          && item.role === "Manager" && item.status === "accepted"),
+        groupTransport: resourceSnapshot().transport,
+        runtimeTransport: runtimeSnapshot().groupATransport
+      },
+      next: "Reload Casey once, open the Transport member card and replay Leave asset. Its normal write must change Group/runtime Transport from 3 / 0 to 2 / 0; Take over must not change membership counts."
+    });
+  }
+
   function status() {
     Q.assertDeploymentSafety();
     if (checkpointId !== CHECKPOINT) Q.fail(`this fixture is restricted to ${CHECKPOINT}.`);
@@ -1607,6 +1726,7 @@
     case "verify-asset-member-pending": verifyPending(); break;
     case "verify-asset-member-terminal": verifyTerminal(); break;
     case "refresh-retained-window": refreshRetainedWindow(); break;
+    case "rollback-owner-leave": rollbackOwnerLeave(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

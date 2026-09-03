@@ -1364,7 +1364,7 @@ class AssetsServiceTest {
         assertThat(card.ownerReleasedAtIso()).isNull();
         assertThat(card.menuActions()).contains("edit", "delete");
         verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
-        verify(activitiesResourcesService).refreshResourceMetricsForScope("event-1", "subevent-1", "u2");
+        verify(activitiesResourcesService, never()).refreshResourceMetricsForScope(any(), any(), any());
     }
 
     @Test

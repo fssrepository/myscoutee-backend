@@ -92,7 +92,8 @@ it is not required in addition to this compact route.
 6. Confirm Nova becomes the new Asset owner: the Asset returns to its previous
    active status, Nova retains the Manager label/icon but now has owner-level
    member-removal authority, and a second actor cannot also take over. Event
-   and Group roles remain unchanged.
+   and Group roles remain unchanged. Take Over changes responsibility only:
+   the Asset-member metric must remain `2 / 0 · 4` without another delta.
 7. Casey is not banned. After Nova's takeover, either invite Casey again or
    let Casey send a fresh Join request from the unchanged Group Transport
    resource card. Casey must behave exactly like a fresh user of this Asset:

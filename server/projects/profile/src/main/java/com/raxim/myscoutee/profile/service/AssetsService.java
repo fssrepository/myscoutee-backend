@@ -846,7 +846,6 @@ public class AssetsService {
         if (!updateAssetTakeOverIfSnapshotCurrent(current, next)) {
             return null;
         }
-        syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);

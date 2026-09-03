@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 12:04 CEST
+Updated: 2026-09-03 12:18 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -61,15 +61,15 @@ checkpoint: ASSET-MEMBER-001 — retained partial run; strict replay boundary wa
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
 checklist: ../checklists/asset/ASSET-MEMBER-001.md
 checklist_section: use `Compact retained-run verification`, especially `Owner handover, Take Over and fresh return`; a strict steps 1-46 replay is not required for this user-approved flexible run
-substage: Casey has left only the Asset. The target is ownerless `UR`: its embedded accepted requests are Nova and Riley, Nova retains the only active Asset Manager record, and Casey is no longer an Asset member. Event and Group A memberships are unchanged. The Group-to-Transport relation is retained. Because the live leave preceded the write-side refresh fix, the retained resource/runtime snapshot still says `3 / 0 · 4`; the correct current membership value is `2 / 0 · 4`. The state document still says `baseline-ready`, because the required two-pending oracle was never advanced
-next_replay_boundary: preserve the retained state. Nova is the only valid current `Take over` actor; after that explicit action, verify the new owner and the write-side Group/runtime metric at `2 / 0 · 4`, then let Casey use the unchanged Group Transport card as a completely fresh Join user. Inspect only the transitions actually performed and corroborate them with read-only persisted/background evidence. If the user later requests a strict closure replay, reset this one active scenario through its harness, stage it once from the corrected fixture, verify baseline, then follow the stable guide without skipping the pending phrase/oracle
+substage: Casey's last `Leave asset` was rolled back through the versioned `rollback-owner-leave` fixture action at 12:17 CEST so the corrected leave can be replayed visibly. The target Transport is active and Casey-owned again with Casey, Nova and Riley accepted at `3 / 0 · 4`; Nova remains the only delegated Asset Manager and Riley remains a plain Member. Event and Group A memberships and the Group-to-Transport relation were byte-stable across the rollback. The state document still says `baseline-ready`, because the required two-pending oracle was never advanced
+next_replay_boundary: reload Casey once, open the target Transport member card and replay `Leave asset` exactly once. The Leave write itself—not the later Take Over—must remove Casey's owner membership baseline and change the Group/runtime metric from `3 / 0 · 4` to `2 / 0 · 4` while preserving the Event, Group A membership and Group-to-Transport relation. Then verify Nova alone receives/sees Take Over, let Nova take over without changing `2 / 0 · 4`, and exercise Casey's fresh Join return. Inspect only the transitions actually performed and corroborate them with read-only persisted/background evidence. If the user later requests a strict closure replay, reset this one active scenario through its harness, stage it once from the corrected fixture, verify baseline, then follow the stable guide without skipping the pending phrase/oracle
 fixture_phase: non-terminal exploratory evidence only. The parent Event and generated groups remain intact; the target Transport has Casey, Nova and Riley accepted at 3/4 with zero pending. Notification history contains repeated exploratory Invite/Join cycles and cannot prove terminal exact-once counts
 browser_phase: three fresh managed ASSET-MEMBER sessions were opened and identity-verified at 2026-09-03 06:32 CEST against the repaired bundles; Casey=650000000000000000000061, Nova=650000000000000000000062, Riley=650000000000000000000063
 ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED
-required_resume: preserve the retained state; do not repair its pre-fix `3 / 0 · 4` snapshot with ad-hoc UI or Mongo writes. The user may now click Nova's explicit `Take over`, which uses the normal Asset write path and refreshes the existing Group/runtime resource snapshot; then verify `2 / 0 · 4` before Casey's fresh Join. CDP-authenticated reads at 12:00 proved the same retained Transport card is returned exactly once to Casey, Nova and Riley; only Nova's Asset list/card contains `Take over`, while Casey and Riley receive only the ordinary non-manager card state. The user owns visual/UI verdicts. A future strict verdict still requires the fresh harness reset/replay described above
+required_resume: do not mutate or reset again before the user replays Casey's `Leave asset`. The versioned rollback restored only Casey's active owner baseline and Asset counters; it deliberately preserved Nova/Riley roles, Event/Group documents, the Group resource relation and the `3 / 0 · 4` resource/runtime starting metric. After Leave, require `2 / 0 · 4`; Take Over changes responsibility only and must preserve that count. The user owns visual/UI verdicts. A future strict verdict still requires the fresh harness reset/replay described above
 actors: Casey owns the Asset and is Event Admin plus Group A Member; Nova and Riley are Event and Group A Members; Lina is the sole Group B Member and persisted/UI negative control
 pending_machine_oracle: `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001`; after a fresh staged replay it requires the exact Invite/Join scope, two pending deltas, unchanged root/group documents, the controlled Service chat and the two pending notifications without duplicate occurrences
-last_completed: accepted ordinary Asset Members have no self-leave/manage/report menu and use Ask Organizer; pending Join cancellation remains available. Asset promotion persists `Manager` in the Asset write model, re-queries the existing SmartList for an in-place role/icon/menu update, and never changes the Event role. Owner leave now retains the Group-to-Asset relation, removes only the former owner's Asset membership baseline, refreshes Group/stage/root resource metrics on the write path and exposes the former owner as a fresh Join user. Take Over eligibility and handover notification recipients are Manager-first, with accepted embedded Asset requests as the no-manager fallback; promotion after rejoin never restores owner authority. Take Over also refreshes the same resource snapshots. The compact QA route records these branches. `MOBILE-WEBVIEW-001` now owns the separate Location popup plus Asset `Paste link` cross-popup regression. Backend focused tests are authored but remain unrun because the active continuous Gradle watcher owns the cache; backend/frontend watchers compiled successfully
+last_completed: accepted ordinary Asset Members have no self-leave/manage/report menu and use Ask Organizer; pending Join cancellation remains available. Asset promotion persists `Manager` in the Asset write model, re-queries the existing SmartList for an in-place role/icon/menu update, and never changes the Event role. Owner leave now retains the Group-to-Asset relation, removes only the former owner's Asset membership baseline, refreshes Group/stage/root resource metrics on the write path and exposes the former owner as a fresh Join user. Take Over eligibility and handover notification recipients are Manager-first, with accepted embedded Asset requests as the no-manager fallback; promotion after rejoin never restores owner authority. Take Over changes ownership/status only and does not refresh or alter membership counts. The compact QA route records these branches. `MOBILE-WEBVIEW-001` now owns the separate Location popup plus Asset `Paste link` cross-popup regression. Backend focused tests are authored but remain unrun because the active continuous Gradle watcher owns the cache; backend/frontend watchers compiled successfully
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -201,12 +201,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-001` retains a partial, non-oracleable exploratory run after Casey
-left only the Asset. Nova is the only Asset Manager and valid `Take over`
-candidate; Riley is an accepted plain Member, and Event/Group memberships plus
-the Group-to-Transport relation remain intact. Let Nova take over through the
-normal UI, verify the corrected `2 / 0 · 4` write-side metric, then exercise
-Casey's fresh Join return. Do not represent the retained run as PASS. If strict
+`ASSET-MEMBER-001` retains a partial, non-oracleable exploratory run with
+Casey's last owner leave rolled back for a visible replay. Casey again owns the
+active Transport, Nova is the only delegated Asset Manager, Riley is an
+accepted plain Member, and Event/Group memberships plus the Group-to-Transport
+relation remain intact at `3 / 0 · 4`. Replay Casey's Leave through the normal
+UI and require `2 / 0 · 4`; Nova's later Take Over must preserve that count,
+then exercise Casey's fresh Join return. Do not represent the retained run as PASS. If strict
 manual closure is required, reset only this scenario through its harness and
 run the corrected fixture and steps 1-46 from baseline; the pending
 phrase/oracle must run before any response. `ASSET-VIS-001` is closed and must
