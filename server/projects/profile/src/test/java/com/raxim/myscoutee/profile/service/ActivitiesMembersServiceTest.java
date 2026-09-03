@@ -828,6 +828,14 @@ class ActivitiesMembersServiceTest {
                     assertThat(entry.status()).isEqualTo("accepted");
                     assertThat(entry.revision()).isEqualTo("2026-07-23T01:00:00Z");
                     assertThat(entry.managerGrantedByUserId()).isEqualTo("manager-grantor");
+                    assertThat(entry.involvements())
+                            .singleElement()
+                            .satisfies(involvement -> {
+                                assertThat(involvement.ownerType()).isEqualTo("asset");
+                                assertThat(involvement.ownerId()).isEqualTo("asset-1");
+                                assertThat(involvement.status()).isEqualTo("accepted");
+                                assertThat(involvement.role()).isEqualTo("Manager");
+                            });
                 });
     }
 

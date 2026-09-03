@@ -3895,12 +3895,15 @@ public class ActivitiesMembersService {
             return Map.of();
         }
         String ownerIdRegex = ownerInvolvementOwnerIdRegex(ownerType, ownerId);
-        List<ActivityMember> involvementRecords = activityMembersRepository.findInvolvementRecordsByUserIdsAndOwnerScope(
+        List<ActivityMember> storedInvolvementRecords = activityMembersRepository.findInvolvementRecordsByUserIdsAndOwnerScope(
                 userIds,
                 HIDDEN_MEMBERSHIP_STATUSES,
                 ownerType,
                 ownerId,
                 ownerIdRegex);
+        List<ActivityMember> involvementRecords = new ArrayList<>(
+                storedInvolvementRecords == null ? List.of() : storedInvolvementRecords);
+        involvementRecords.addAll(ownerMembers == null ? List.of() : ownerMembers);
         Map<String, List<ActivityMemberInvolvementDto>> result = new LinkedHashMap<>();
         Map<String, Set<String>> ownerKeysByUserId = new LinkedHashMap<>();
         involvementRecords.stream()
