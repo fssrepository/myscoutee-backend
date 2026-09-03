@@ -1292,6 +1292,7 @@ public class AssetsService {
         }
         assetsRepository.save(saved);
         syncAssetRequestProjection(existing, saved);
+        enqueueAcceptedAssetInviteNotifications(existing, saved, currentActorUserId());
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
@@ -3143,6 +3144,71 @@ public class AssetsService {
                 notificationType + "-" + assetId + "-" + requestId,
                 payload,
                 StringUtils.hasText(actorUserId) ? actorUserId : memberUserId));
+    }
+
+    private void enqueueAcceptedAssetInviteNotifications(
+            Asset previous,
+            Asset next,
+            String actorUserId) {
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return;
+        }
+
+        Map<String, AssetRequestRecord> previousById = requestsById(
+                previous == null ? null : previous.getRequests());
+        for (AssetRequestRecord accepted : safeRequests(next.getRequests())) {
+            String requestId = normalizeId(accepted == null ? null : accepted.id());
+            AssetRequestRecord pending = previousById.get(requestId);
+            if (!StringUtils.hasText(requestId)
+                    || pending == null
+                    || !ASSET_REQUEST_KIND_INVITE.equals(normalizeAssetRequestKind(accepted.requestKind()))
+                    || !"pending".equals(normalizeRequestStatus(pending.status()))
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(accepted.status()))
+                    || !normalizedActorUserId.equals(normalizeId(accepted.userId()))) {
+                continue;
+            }
+
+            List<String> recipients = activeResponsibleAssetUserIds(next).stream()
+                    .filter(userId -> !normalizedActorUserId.equals(userId))
+                    .toList();
+            if (recipients.isEmpty()) {
+                continue;
+            }
+
+            AssetRequestBookingRecord booking = accepted.booking();
+            String memberName = firstNonBlank(accepted.name(), normalizedActorUserId);
+            String acceptedAtIso = Instant.now().toString();
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("assetId", assetId);
+            payload.put("assetTitle", assetTitle(next));
+            payload.put("eventId", safeText(booking == null ? null : booking.eventId()));
+            payload.put("subEventId", safeText(booking == null ? null : booking.subEventId()));
+            payload.put("requestId", requestId);
+            payload.put("requestKind", ASSET_REQUEST_KIND_INVITE);
+            payload.put("memberUserId", normalizedActorUserId);
+            payload.put("memberName", memberName);
+            payload.put("membershipAction", "accepted");
+            payload.put("acceptedAtIso", acceptedAtIso);
+            payload.put("senderUserId", normalizedActorUserId);
+            payload.put("notification_tone", "accent");
+
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "asset-invitation-accepted",
+                    "asset",
+                    assetId,
+                    "asset-responsible-users",
+                    recipients,
+                    "Asset invitation accepted",
+                    memberName + " accepted the invitation to use " + assetTitle(next) + ".",
+                    "/game",
+                    firstNonBlank(next.getImageUrl(), "/assets/logo/heart.webp"),
+                    "/assets/logo/heart.webp",
+                    "asset-invitation-accepted-" + assetId + "-" + requestId,
+                    payload,
+                    normalizedActorUserId));
+        }
     }
 
     private String scopedAssetRequestNotificationKey(

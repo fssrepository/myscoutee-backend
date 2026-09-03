@@ -674,7 +674,7 @@
 
   function outboxRows() {
     return Q.collection("notificationOutbox").find({
-      notificationType: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-manager-promoted"] },
+      notificationType: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-invitation-accepted", "asset-manager-promoted"] },
       entityId: ASSET_ID
     }).sort({ createdDate: 1 }).toArray().map(item => ({
       id: Q.text(item._id),
@@ -699,7 +699,7 @@
 
   function inboxRows() {
     return Q.collection("userNotifications").find({
-      kind: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-manager-promoted"] },
+      kind: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-invitation-accepted", "asset-manager-promoted"] },
       sourceId: ASSET_ID
     }).sort({ createdDate: 1 }).toArray().map(item => ({
       id: Q.text(item._id),
@@ -967,6 +967,8 @@
     const acceptedInvite = requestsByUser.get(NOVA_ID);
     const manager = current.assetMembers[0] || null;
     const task = current.affinityTasks[0] || null;
+    const acceptedOutbox = current.outbox.find(row => row.notificationType === "asset-invitation-accepted") || null;
+    const acceptedInbox = current.inbox.find(row => row.kind === "asset-invitation-accepted") || null;
     const outbox = current.outbox.find(row => row.notificationType === "asset-manager-promoted") || null;
     const inbox = current.inbox.find(row => row.kind === "asset-manager-promoted") || null;
     const inviteOutboxes = current.outbox.filter(row => row.notificationType === "asset-member-invite");
@@ -1007,6 +1009,28 @@
         && joinInboxes[0].recipientUserId === CASEY_ID
         && inviteInboxes[0].occurrenceCount === 1
         && joinInboxes[0].occurrenceCount === 1,
+      exactInviteAcceptedOutbox: current.outbox.length === 4
+        && acceptedOutbox?.entityType === "asset"
+        && acceptedOutbox?.entityId === ASSET_ID
+        && Q.sameJson(acceptedOutbox?.recipients, [CASEY_ID])
+        && acceptedOutbox?.senderUserId === NOVA_ID
+        && acceptedOutbox?.memberUserId === NOVA_ID
+        && acceptedOutbox?.requestId === acceptedInvite?.id
+        && acceptedOutbox?.requestKind === "invite"
+        && acceptedOutbox?.eventId === RESOURCE_OWNER_ID
+        && acceptedOutbox?.subEventId === STAGE_ID
+        && acceptedOutbox?.createdUser === NOVA_ID,
+      exactInviteAcceptedInbox: current.inbox.length === 4
+        && acceptedInbox?.recipientUserId === CASEY_ID
+        && acceptedInbox?.sourceType === "asset"
+        && acceptedInbox?.sourceId === ASSET_ID
+        && acceptedInbox?.senderUserId === NOVA_ID
+        && acceptedInbox?.memberUserId === NOVA_ID
+        && acceptedInbox?.requestId === acceptedInvite?.id
+        && acceptedInbox?.requestKind === "invite"
+        && acceptedInbox?.eventId === RESOURCE_OWNER_ID
+        && acceptedInbox?.subEventId === STAGE_ID
+        && acceptedInbox?.occurrenceCount === 1,
       oneCollapsedLifecycleTask: current.affinityTasks.length === 1
         && task.targetType === "ASSET"
         && task.targetId === ASSET_ID
@@ -1014,7 +1038,7 @@
         && task.reasons.includes("ASSET_CHANGED")
         && ["pending", "running", "done"].includes(task.status)
         && !task.lastError,
-      exactManagerPromotionOutbox: current.outbox.length === 3
+      exactManagerPromotionOutbox: current.outbox.length === 4
         && outbox.notificationType === "asset-manager-promoted"
         && outbox.entityType === "asset"
         && outbox.entityId === ASSET_ID
@@ -1025,7 +1049,7 @@
         && outbox.targetUserId === NOVA_ID
         && outbox.assetId === ASSET_ID
         && outbox.createdUser === CASEY_ID,
-      exactManagerPromotionInbox: current.inbox.length === 3
+      exactManagerPromotionInbox: current.inbox.length === 4
         && inbox.recipientUserId === NOVA_ID
         && inbox.kind === "asset-manager-promoted"
         && inbox.sourceType === "asset"
