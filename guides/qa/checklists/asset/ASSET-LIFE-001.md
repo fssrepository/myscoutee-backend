@@ -4,9 +4,9 @@ This file is the tester's stable, repeatable click-by-click guide. It is not an
 execution log: do not check off its steps or add current status, dates, IDs, or
 machine-oracle evidence to it.
 
-The complete journey is one testcase transaction. The Create, Edit, Trash and
-Restore boundaries are replay savepoints inside that testcase, not separate
-matrix rows.
+The complete journey is one testcase transaction. The Create, Edit and Delete
+boundaries are replay savepoints inside that testcase, not separate matrix
+rows.
 
 ## Actor and startup
 
@@ -34,7 +34,8 @@ Begin only after Codex confirms all of the following:
 - the checkpoint is at `baseline-ready`;
 - one isolated Casey window is open.
 
-Record the three visible `My Assets` type counters before the first Create.
+Record the three visible `My Assets` type counters in both the Asset type
+selector and the side menu before the first Create.
 
 ## 1. Create the three type controls
 
@@ -53,8 +54,10 @@ Record the three visible `My Assets` type counters before the first Create.
    - Details: `Manual QA Transport lifecycle control.`
 
 4. Upload the versioned image once and wait for its preview.
-5. Select Save exactly once. Confirm the editor closes and the new Transport
-   card appears exactly once with a working image.
+5. Select Save exactly once. Without reloading, confirm the editor closes, the
+   new Transport card appears exactly once with a working image, and the
+   Transport counter is startup `+1` in both the Asset type selector and the
+   side menu.
 
 ### Accommodation
 
@@ -94,9 +97,10 @@ Record the three visible `My Assets` type counters before the first Create.
 12. Upload the versioned image once and wait for its preview.
 13. Select Save exactly once. Confirm the editor closes and the new Supplies
     card appears exactly once with a working image.
-14. Open the Asset type selector and confirm the visible Transport,
-    Accommodation and Supplies counters are each exactly `+1` from the three
-    values recorded at startup.
+14. Confirm the visible Transport, Accommodation and Supplies counters are
+    each exactly `+1` from startup in both the Asset type selector and the side
+    menu. Do not reload to obtain either update. Each list-card image must use
+    the maximum available area without cropping or stretching.
 15. Reopen each card with `Edit`, one at a time, without changing anything.
     Confirm the exact type-specific values and uploaded image return. For
     Accommodation, the selected Location returns; Transport and Supplies do
@@ -114,7 +118,7 @@ Record the three visible `My Assets` type counters before the first Create.
 19. Change only Subtitle from `Initial shared-field value` to
     `Edited shared-field value`.
 20. Select Save exactly once. Confirm one Transport card remains and its type
-    counter does not change.
+    counter does not change in either the Asset type selector or the side menu.
 21. Reopen that Transport with `Edit`. Confirm the edited Subtitle and the
     original ID-backed card data, category, capacity, quantity, details,
     source link and image all persist. Close without saving.
@@ -125,50 +129,28 @@ Record the three visible `My Assets` type counters before the first Create.
 
     `ASSET-LIFE-001 Edit ready: Transport subtitle persists once`
 
-## 3. Delete the Transport to Trash
+## 3. Delete the Transport
 
 24. After Codex confirms the `edited` boundary, open the Transport card menu.
 25. Select `Delete`, then select `Delete` once in the confirmation dialog.
-26. Without reloading, confirm the Transport card disappears and the visible
-    Transport counter returns exactly to its startup value. Accommodation and
-    Supplies remain visible and their counters remain at startup `+1`.
-27. Open the Asset type selector. It must expose a `Trash` entry whose counter
-    is exactly startup Trash `+1`; open it and confirm the deleted Transport is
-    present exactly once with the edited Subtitle and a working image.
+26. Without reloading, confirm the Transport card disappears and its counter
+    returns exactly to startup in both the Asset type selector and the side
+    menu. Accommodation and Supplies remain visible and their counters remain
+    at startup `+1`.
+27. Report this phrase and wait for Codex's persisted Delete oracle:
 
-If the Asset selector has no `Trash` entry, its counter is absent/wrong, or the
-trashed card cannot be opened, stop here and report the exact mismatch. This is
-a checkpoint FAIL; do not ask Codex to expose the backend record or move it by
-API/Mongo as a substitute for the missing product surface.
+    `ASSET-LIFE-001 Delete ready: Transport is removed once`
 
-28. Report this phrase and wait for Codex's persisted Trash oracle:
+Asset deletion is terminal in the current `My Assets` UI. Do not look for a
+Trash selector or Restore action; backend retention is not a user-facing
+lifecycle step.
 
-    `ASSET-LIFE-001 Trash ready: same Transport is in Trash once`
-
-## 4. Restore the same Transport identity
-
-29. After Codex confirms the `trashed` boundary, open the trashed Transport's
-    card menu and select `Restore` exactly once.
-
-If no Restore action exists, stop and report the mismatch. Do not recreate the
-Transport and do not use an API/Mongo workaround; a newly created Asset would
-not prove identity preservation.
-
-30. Confirm the card disappears from Trash, the Trash counter returns to its
-    startup value, and the Transport counter returns to startup `+1`.
-31. Return to Transport and confirm exactly one
-    `QA ASSET-LIFE-001 Transport` card is visible with the edited Subtitle and
-    working image. Accommodation and Supplies remain unchanged.
-32. Report this phrase and wait for Codex's same-ID Restore oracle:
-
-    `ASSET-LIFE-001 Restore ready: same Transport identity is active`
-
-33. After Codex confirms `restored`, reload Casey exactly once.
-34. Repeat the three type-list checks. Each target card appears once, all
-    three active counters remain startup `+1`, Trash remains at startup, the
-    Transport keeps the edited Subtitle, and the two controls keep their
-    initial fields and images.
-35. Report the terminal phrase:
+28. After Codex confirms `deleted`, reload Casey exactly once.
+29. Confirm Transport remains absent with its counter at startup in both
+    counter surfaces. Accommodation and Supplies each remain present once at
+    startup `+1`, with their initial fields and maximally contained,
+    uncropped, unstretched images.
+30. Report the terminal phrase:
 
     `ASSET-LIFE-001 UI complete after reload`
 

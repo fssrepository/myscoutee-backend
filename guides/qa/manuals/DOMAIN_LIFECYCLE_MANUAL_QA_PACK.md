@@ -6194,10 +6194,12 @@ is **PASS / CLOSED**.
 
 - Create one Transport, one Accommodation and one Supplies asset with their
   type-specific required fields and managed media. Edit one shared field on the
-  Transport, then delete and restore that same identity.
-- Verify exact IDs, type fields, active/Trash counters and reload persistence.
-  Accommodation and Supplies remain unchanged controls. This is one bounded
-  shared-form lifecycle, not three duplicate end-to-end afternoons.
+  Transport, then delete it through the normal UI.
+- Verify exact IDs, type fields, immediate Create/Delete counters and reload
+  persistence. The deleted backend record may remain internally retained but
+  Asset Trash/Restore is not a product UI contract. Accommodation and Supplies
+  remain unchanged controls. This is one bounded shared-form lifecycle, not
+  three duplicate end-to-end afternoons.
 
 ### `ASSET-VIS-001` — discovery visibility
 

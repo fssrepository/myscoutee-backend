@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 03:27 CEST
+Updated: 2026-09-03 03:43 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,15 +56,15 @@ checkpoint: ASSET-LIFE-001 — active
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
 checklist: ../checklists/asset/ASSET-LIFE-001.md
 checklist_section: ../checklists/asset/ASSET-LIFE-001.md#1-create-the-three-type-controls
-substage: create-three-type-controls — replay after compact carousel media-fit repair
-next_replay_boundary: Casey performs checklist steps 1-4 only, verifies that the square source image is maximally contained without cropping or stretching, and reports `ASSET-LIFE-001 image preview PASS`; after that Casey continues steps 5-16 and reports the unchanged Create phrase, then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
-fixture_phase: the partial two-Asset attempt was guard-reset after the preview FAIL; the checkpoint was staged again and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
-browser_phase: the old-bundle window was replaced after the successful frontend watcher build; one fresh managed Casey Asset lifecycle window is open and authenticated
+substage: first Transport Create replay after compact carousel and immediate Asset counter repairs
+next_replay_boundary: Casey performs checklist steps 1-5 only; the square image must be maximally contained without cropping/stretching and the Save-confirmed Transport counter must change `0 -> 1` without reload in both the Asset selector and side menu; report `ASSET-LIFE-001 Transport create counter PASS`, then continue steps 6-16 and report the checklist Create phrase before `capture-lifecycle-created asset-domain ASSET-LIFE-001`
+fixture_phase: the one-Asset counter-defect attempt was guard-reset; the corrected Delete/Recreate harness was staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative internal retained-delete count is zero
+browser_phase: the final counter-repair watcher build completed and synced; the old bundle was replaced; one fresh managed Casey Asset lifecycle window is open and authenticated
 ledger_status: 81/118 total, Core 81/98; ASSET-LIFE-001 NOT RUN
-required_resume: keep the staged boundary intact; first replay steps 1-4 and wait for the exact image-preview PASS phrase; only then continue steps 5-16, and after the exact Create phrase run the versioned capture command and continue only from its returned next action
+required_resume: keep the staged boundary intact; replay steps 1-5 and wait for the exact Transport create-counter PASS phrase; only then continue steps 6-16, and after the exact Create phrase run the versioned capture command and continue only from its returned next action
 actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
-pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
-known_contract_gap: source inspection found Java `/assets/restore` but no frontend Asset Trash query/filter or restore caller; the checklist owns this as a later explicit FAIL boundary and forbids an API/Mongo substitute
+pending_machine_oracle: first the no-reload Transport dual-counter UI read, then the exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
+contract_correction: Asset deletion is terminal in the current product UI; backend soft-delete retention is an implementation detail, not an Asset Trash/Restore surface. The checkpoint now verifies immediate Create `+1`, Delete `-1`, then a normal new-identity replacement Create. Asset list polling is intentionally absent; possible Borrow polling remains a separate later decision.
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

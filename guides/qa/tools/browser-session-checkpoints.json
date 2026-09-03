@@ -1158,7 +1158,7 @@
           "actor": "Casey Asset lifecycle owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Asset create, edit, Trash and Restore owner"
+          "expectedName": "Casey Bridge · Asset create, edit and delete owner"
         }
       ]
     },

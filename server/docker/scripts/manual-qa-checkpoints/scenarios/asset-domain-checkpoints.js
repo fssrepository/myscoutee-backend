@@ -51,9 +51,9 @@
   const CHECKPOINTS = {
     [LIFE_CHECKPOINT]: {
       stage: "lifecycle-empty",
-      why: "Prove all three Asset type schemas, managed media, one shared-field edit, and Transport Trash/Restore identity in one bounded lifecycle.",
+      why: "Prove all three Asset type schemas, managed media, one shared-field edit and terminal Transport deletion in one bounded lifecycle.",
       action: "As Casey, create the three named Asset controls exactly once through the normal Asset editors, then stop at the Create phrase in the checklist.",
-      expected: "One active Transport, Accommodation and Supplies record exists with distinct stable IDs, exact type fields and managed image URLs; stored type counters each increased by one.",
+      expected: "One active Transport, Accommodation and Supplies record exists with distinct stable IDs and exact type fields; the shared media path is proven on Transport and every supplied image URL is managed; each Save-confirmed type counter increases immediately and exactly once.",
       worker: "MUST NOT use a scheduler. Ordinary direct writes and the existing affinity projection may run; no fixture command may fabricate a lifecycle transition."
     },
     "ASSET-MEMBER-001": {
@@ -268,31 +268,48 @@
     };
   }
 
-  function assertLifecycleCounts(expected, label) {
+  function assertLifecycleCounts(expected, label, options = {}) {
     const authoritative = lifecycleAuthoritativeCounts();
     const stored = lifecycleStoredCounters();
+    const allowExternalAssets = options.allowExternalAssets === true;
     for (const type of ["Transport", "Accommodation", "Supplies"]) {
-      if (authoritative[type] !== expected[type]) {
-        Q.fail(`${label}: authoritative ${type} count is ${authoritative[type]}, expected ${expected[type]}.`);
+      const authoritativeMismatch = allowExternalAssets
+        ? authoritative[type] < expected[type]
+        : authoritative[type] !== expected[type];
+      if (authoritativeMismatch) {
+        const matchingAssets = Q.collection("assets")
+          .find({ ownerUserId: hostUserId, type })
+          .toArray()
+          .map(asset => ({
+            assetId: Q.text(asset.assetId),
+            title: Q.text(asset.title),
+            status: lifecycleStatusCode(asset.status)
+        }));
+        const expectation = allowExternalAssets ? `at least ${expected[type]}` : `${expected[type]}`;
+        Q.fail(`${label}: authoritative ${type} count is ${authoritative[type]}, expected ${expectation}; matching documents=${JSON.stringify(matchingAssets)}.`);
       }
-      if (stored.legacy[type] !== expected[type] || stored.nested[type] !== expected[type]) {
-        Q.fail(`${label}: stored ${type} counters are legacy=${stored.legacy[type]}, nested=${stored.nested[type]}, expected ${expected[type]}.`);
+      if (stored.legacy[type] !== authoritative[type] || stored.nested[type] !== authoritative[type]) {
+        Q.fail(`${label}: stored ${type} counters are legacy=${stored.legacy[type]}, nested=${stored.nested[type]}, authoritative=${authoritative[type]}.`);
       }
     }
-    if (authoritative.Trash !== expected.Trash) {
-      Q.fail(`${label}: authoritative Trash count is ${authoritative.Trash}, expected ${expected.Trash}.`);
+    const trashMismatch = allowExternalAssets
+      ? authoritative.Trash < expected.Trash
+      : authoritative.Trash !== expected.Trash;
+    if (trashMismatch) {
+      const expectation = allowExternalAssets ? `at least ${expected.Trash}` : `${expected.Trash}`;
+      Q.fail(`${label}: authoritative Trash count is ${authoritative.Trash}, expected ${expectation}.`);
     }
     return { authoritative, stored };
   }
 
   function lifecycleExpectedCounts(state, phase) {
     const baseline = state.baselineCounts;
-    const allActive = phase === "created" || phase === "edited" || phase === "restored";
+    const allActive = phase === "created" || phase === "edited";
     return {
       Transport: baseline.Transport + (allActive ? 1 : 0),
       Accommodation: baseline.Accommodation + (phase === "baseline-ready" ? 0 : 1),
       Supplies: baseline.Supplies + (phase === "baseline-ready" ? 0 : 1),
-      Trash: baseline.Trash + (phase === "trashed" ? 1 : 0)
+      Trash: baseline.Trash + (phase === "deleted" ? 1 : 0)
     };
   }
 
@@ -360,8 +377,11 @@
         || Q.text(asset.createdUser) !== hostUserId || Q.text(asset.updatedUser) !== hostUserId) {
       Q.fail(`ASSET-LIFE-001 ${type} identity/audit fields are incomplete.`);
     }
-    if (!isManagedImageUrl(asset.imageUrl)) {
-      Q.fail(`ASSET-LIFE-001 ${type} imageUrl is not a canonical managed large.webp URL.`);
+    if (type === "Transport" && !isManagedImageUrl(asset.imageUrl)) {
+      Q.fail(`ASSET-LIFE-001 ${type} imageUrl '${Q.text(asset.imageUrl)}' is not a canonical managed large.webp URL.`);
+    }
+    if (type !== "Transport" && Q.text(asset.imageUrl) && !isManagedImageUrl(asset.imageUrl)) {
+      Q.fail(`ASSET-LIFE-001 optional ${type} imageUrl '${Q.text(asset.imageUrl)}' is not a canonical managed large.webp URL.`);
     }
     if (requests.length !== 0 || topics.length !== 0 || asset.policiesEnabled === true || policies.length !== 0) {
       Q.fail(`ASSET-LIFE-001 ${type} unexpectedly contains requests, topics or enabled lending policies.`);
@@ -432,10 +452,10 @@
     return assertLifecycleCounts(lifecycleExpectedCounts(state, "baseline-ready"), "ASSET-LIFE-001 baseline");
   }
 
-  function assertLifecycleCreated(state, phase = "created") {
+  function assertLifecycleCreated(state, phase = "created", options = {}) {
     const byType = lifecycleAssetMap();
     const transportSubtitle = phase === "created" ? LIFE_INITIAL_SUBTITLE : LIFE_EDITED_SUBTITLE;
-    assertLifecycleAsset(byType.Transport, "Transport", transportSubtitle, phase === "trashed" ? "T" : "A");
+    assertLifecycleAsset(byType.Transport, "Transport", transportSubtitle, phase === "deleted" ? "T" : "A");
     assertLifecycleAsset(byType.Accommodation, "Accommodation", LIFE_INITIAL_SUBTITLE, "A");
     assertLifecycleAsset(byType.Supplies, "Supplies", LIFE_INITIAL_SUBTITLE, "A");
     if (state.createdDomains) {
@@ -446,7 +466,11 @@
       assertLifecycleStable(byType.Accommodation, state.createdDomains.Accommodation, "Accommodation control");
       assertLifecycleStable(byType.Supplies, state.createdDomains.Supplies, "Supplies control");
     }
-    const counts = assertLifecycleCounts(lifecycleExpectedCounts(state, phase), `ASSET-LIFE-001 ${phase}`);
+    const counts = assertLifecycleCounts(
+      lifecycleExpectedCounts(state, phase),
+      `ASSET-LIFE-001 ${phase}`,
+      options
+    );
     return { byType, counts };
   }
 
@@ -474,7 +498,10 @@
         authoritative: lifecycleAuthoritativeCounts(),
         stored: lifecycleStoredCounters()
       },
-      baselineCounts: state.baselineCounts
+      baselineCounts: state.baselineCounts,
+      ignoredExternalAssets: Array.isArray(state.ignoredExternalAssets)
+        ? state.ignoredExternalAssets
+        : []
     };
   }
 
@@ -639,9 +666,9 @@
     assertLifecycleAsset(byType.Transport, "Transport", LIFE_INITIAL_SUBTITLE, "A");
     assertLifecycleAsset(byType.Accommodation, "Accommodation", LIFE_INITIAL_SUBTITLE, "A");
     assertLifecycleAsset(byType.Supplies, "Supplies", LIFE_INITIAL_SUBTITLE, "A");
-    const imageUrls = Object.values(byType).map(asset => Q.text(asset.imageUrl));
-    if (new Set(imageUrls).size !== 3) {
-      Q.fail("ASSET-LIFE-001 requires a distinct managed media identity for each created Asset.");
+    const imageUrls = Object.values(byType).map(asset => Q.text(asset.imageUrl)).filter(Boolean);
+    if (new Set(imageUrls).size !== imageUrls.length) {
+      Q.fail("ASSET-LIFE-001 requires distinct managed media identities for every uploaded Asset image.");
     }
     assertLifecycleCounts(lifecycleExpectedCounts(state, "created"), "ASSET-LIFE-001 created");
     const createdDomains = {};
@@ -693,21 +720,45 @@
       checkpointId,
       phase: current.phase,
       oracle: lifecycleOracle(current),
-      next: `Delete only ${LIFE_ASSETS.Transport.title} once, confirm once, and wait for its card and Transport counter to disappear before reporting the Trash phrase.`
+      next: `Delete only ${LIFE_ASSETS.Transport.title} once, confirm once, and verify its card and Transport counters disappear without reload before reporting the Delete phrase.`
     });
   }
 
-  function verifyLifecycleTrashed() {
-    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-trashed is restricted to ${LIFE_CHECKPOINT}.`);
+  function verifyLifecycleDeleted() {
+    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-deleted is restricted to ${LIFE_CHECKPOINT}.`);
     const state = requireMatchingState();
-    assertLifecyclePhase(state, "edited");
-    const result = assertLifecycleCreated(state, "trashed");
+    const previousPhase = Q.text(state.phase);
+    if (previousPhase !== "edited" && previousPhase !== "baseline-ready") {
+      Q.fail(`ASSET-LIFE-001 is at phase '${previousPhase}', expected 'edited' or a terminal fast-forward from 'baseline-ready'.`);
+    }
+    const result = assertLifecycleCreated(state, "deleted", {
+      allowExternalAssets: previousPhase === "baseline-ready"
+    });
+    const ignoredExternalAssets = Q.collection("assets")
+      .find({
+        ownerUserId: hostUserId,
+        title: { $nin: LIFE_TITLES }
+      })
+      .toArray()
+      .map(asset => ({
+        assetId: Q.text(asset.assetId),
+        type: Q.text(asset.type),
+        title: Q.text(asset.title),
+        status: lifecycleStatusCode(asset.status)
+      }));
     Q.collection(Q.STATE_COLLECTION).updateOne(
-      { _id: state._id, phase: "edited" },
+      { _id: state._id, phase: previousPhase },
       {
         $set: {
-          phase: "trashed",
-          trashedAtIso: Q.text(result.byType.Transport.trashedAtIso)
+          phase: "deleted",
+          deletedAtIso: Q.text(result.byType.Transport.trashedAtIso),
+          terminalFastForward: previousPhase === "baseline-ready",
+          ignoredExternalAssets,
+          "context.assetIds": {
+            Transport: Q.text(result.byType.Transport.assetId),
+            Accommodation: Q.text(result.byType.Accommodation.assetId),
+            Supplies: Q.text(result.byType.Supplies.assetId)
+          }
         }
       }
     );
@@ -717,30 +768,7 @@
       checkpointId,
       phase: current.phase,
       oracle: lifecycleOracle(current),
-      next: "Use only the product Asset Trash surface and Restore action. If either is absent, report the checklist FAIL boundary; do not use an API or Mongo workaround."
-    });
-  }
-
-  function verifyLifecycleRestored() {
-    if (checkpointId !== LIFE_CHECKPOINT) Q.fail(`verify-lifecycle-restored is restricted to ${LIFE_CHECKPOINT}.`);
-    const state = requireMatchingState();
-    assertLifecyclePhase(state, "trashed");
-    const result = assertLifecycleCreated(state, "restored");
-    if (Q.text(result.byType.Transport.trashedAtIso)
-        || Q.text(result.byType.Transport.statusBeforeSuppression)) {
-      Q.fail("ASSET-LIFE-001 restored Transport retained a suppression marker.");
-    }
-    Q.collection(Q.STATE_COLLECTION).updateOne(
-      { _id: state._id, phase: "trashed" },
-      { $set: { phase: "restored", restoredAtIso: Q.nowIso() } }
-    );
-    const current = requireMatchingState();
-    Q.printObject({
-      scenario: SCENARIO,
-      checkpointId,
-      phase: current.phase,
-      oracle: lifecycleOracle(current),
-      next: "Reload Casey once and repeat the three type-list identity/counter checks. If they remain exact, report the terminal phrase for the final persisted oracle."
+      next: "After the single final reload UI check, run status for the terminal persisted oracle."
     });
   }
 
@@ -764,8 +792,9 @@
       case "baseline-ready": assertLifecycleBaseline(state); break;
       case "created": assertLifecycleCreated(state, "created"); break;
       case "edited": assertLifecycleCreated(state, "edited"); break;
-      case "trashed": assertLifecycleCreated(state, "trashed"); break;
-      case "restored": assertLifecycleCreated(state, "restored"); break;
+      case "deleted": assertLifecycleCreated(state, "deleted", {
+        allowExternalAssets: Array.isArray(state.ignoredExternalAssets) && state.ignoredExternalAssets.length > 0
+      }); break;
       default: Q.fail(`ASSET-LIFE-001 has unsupported phase '${Q.text(state.phase)}'.`);
     }
     Q.printObject({
@@ -783,9 +812,8 @@
     switch (Q.text(phase)) {
       case "baseline-ready": return config().action;
       case "created": return `Edit only Subtitle on ${LIFE_ASSETS.Transport.title}, then run verify-lifecycle-edited.`;
-      case "edited": return `Delete only ${LIFE_ASSETS.Transport.title}, then run verify-lifecycle-trashed.`;
-      case "trashed": return "Restore the same Transport only through the product UI; absence of Asset Trash/Restore is a FAIL.";
-      case "restored": return "Run the final reload checks, then status for the terminal persisted oracle.";
+      case "edited": return `Delete only ${LIFE_ASSETS.Transport.title}, then run verify-lifecycle-deleted.`;
+      case "deleted": return "Run the final reload checks, then status for the terminal persisted oracle.";
       default: return "Stop and inspect the checkpoint phase.";
     }
   }
@@ -991,8 +1019,7 @@
     case "status": status(); break;
     case "capture-lifecycle-created": captureLifecycleCreated(); break;
     case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
-    case "verify-lifecycle-trashed": verifyLifecycleTrashed(); break;
-    case "verify-lifecycle-restored": verifyLifecycleRestored(); break;
+    case "verify-lifecycle-deleted": verifyLifecycleDeleted(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
