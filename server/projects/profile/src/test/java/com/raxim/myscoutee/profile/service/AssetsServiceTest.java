@@ -682,6 +682,13 @@ class AssetsServiceTest {
 
         verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-manager-promoted");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
+        assertThat(notification.getValue().payload())
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("targetUserId", "u2");
     }
 
     @Test
@@ -1543,6 +1550,191 @@ class AssetsServiceTest {
                 .containsEntry("requestKind", "invite")
                 .containsEntry("memberUserId", "u2")
                 .containsEntry("membershipAction", "accepted");
+    }
+
+    @Test
+    void ownerAcceptingAssetJoinRequestNotifiesTheRequester() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset existing = assetWithPendingBorrowRequest();
+        Users owner = user("u1", "Owner One", "OO");
+        Users requester = user("u2", "Member Two", "MT");
+        var authentication = new TestingAuthenticationToken("firebase-principal", null);
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(requester));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorApproveAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("u1");
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            service.upsert(new AssetUpsertRequestDto(
+                    "u1",
+                    assetCard("asset-1", "Camp Kit", 2,
+                            List.of(borrowRequestDto("request-1", "u2", "accepted", "event-1")))));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-member-request-accepted");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
+        assertThat(notification.getValue().payload())
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("membershipAction", "accepted");
+    }
+
+    @Test
+    void ownerDecliningAssetJoinRequestNotifiesTheRequester() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset existing = assetWithPendingBorrowRequest();
+        Users owner = user("u1", "Owner One", "OO");
+        Users requester = user("u2", "Member Two", "MT");
+        var authentication = new TestingAuthenticationToken("firebase-principal", null);
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(requester));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorRejectAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("u1");
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            service.upsert(new AssetUpsertRequestDto(
+                    "u1",
+                    assetCard("asset-1", "Camp Kit", 2, List.of())));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-member-request-declined");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
+        assertThat(notification.getValue().payload())
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("membershipAction", "declined");
+    }
+
+    @Test
+    void acceptedAssetMemberLeavingNotifiesAllRemainingAcceptedMembers() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset existing = assetWithEventRequest();
+        AssetRequestRecord member = existing.getRequests().get(0);
+        existing.setRequests(List.of(
+                member,
+                new AssetRequestRecord(
+                        "request-3",
+                        "u3",
+                        "Member Three",
+                        "M3",
+                        "woman",
+                        "accepted",
+                        "Accepted for this asset.",
+                        "borrow",
+                        member.requestedAtIso(),
+                        member.booking())));
+        AtomicReference<Asset> assetState = new AtomicReference<>(existing);
+
+        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            assetState.set(saved);
+            return saved;
+        });
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Member Three", "M3")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        AssetMemberStatusChangeDto left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                "u2",
+                "leave",
+                null));
+
+        assertThat(left.status()).isEqualTo("deleted");
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-member-left");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1", "u3");
+        assertThat(notification.getValue().payload())
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("membershipAction", "left");
     }
 
     @Test

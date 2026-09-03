@@ -552,6 +552,7 @@ public class AssetsService {
                 eventId,
                 subEventId,
                 actorUserId);
+        enqueueAssetMembershipTransitionNotifications(current, next, actorUserId);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
@@ -1150,6 +1151,10 @@ public class AssetsService {
                 normalizedEventId,
                 normalizedSubEventId,
                 firstNonBlank(normalizeId(actorUserId), ownerUserId));
+        enqueueAssetMembershipTransitionNotifications(
+                current,
+                next,
+                firstNonBlank(normalizeId(actorUserId), ownerUserId));
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedAssetId, ownerUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", normalizedAssetId, ownerUserId);
         return ownerUserId;
@@ -1292,7 +1297,7 @@ public class AssetsService {
         }
         assetsRepository.save(saved);
         syncAssetRequestProjection(existing, saved);
-        enqueueAcceptedAssetInviteNotifications(existing, saved, currentActorUserId());
+        enqueueAssetMembershipTransitionNotifications(existing, saved, currentActorUserId());
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
@@ -3024,6 +3029,7 @@ public class AssetsService {
                 Map.of(
                         "assetId", assetId,
                         "assetTitle", assetTitle(asset),
+                        "memberUserId", normalizedTargetUserId,
                         "targetUserId", normalizedTargetUserId,
                         "actorUserId", normalizedActorUserId),
                 normalizedActorUserId));
@@ -3209,6 +3215,167 @@ public class AssetsService {
                     payload,
                     normalizedActorUserId));
         }
+    }
+
+    private void enqueueAssetMembershipTransitionNotifications(
+            Asset previous,
+            Asset next,
+            String actorUserId) {
+        enqueueAcceptedAssetInviteNotifications(previous, next, actorUserId);
+
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return;
+        }
+
+        Map<String, AssetRequestRecord> nextById = requestsById(next.getRequests());
+        for (AssetRequestRecord previousRequest : safeRequests(previous == null ? null : previous.getRequests())) {
+            String requestId = normalizeId(previousRequest == null ? null : previousRequest.id());
+            String memberUserId = normalizeId(previousRequest == null ? null : previousRequest.userId());
+            if (!StringUtils.hasText(requestId)
+                    || !StringUtils.hasText(memberUserId)
+                    || "manual".equals(normalizeAssetRequestKind(previousRequest.requestKind()))) {
+                continue;
+            }
+
+            String previousStatus = normalizeRequestStatus(previousRequest.status());
+            AssetRequestRecord nextRequest = nextById.get(requestId);
+            if (nextRequest != null
+                    && "pending".equals(previousStatus)
+                    && MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(nextRequest.status()))) {
+                boolean acceptingOwnInvitation = memberUserId.equals(normalizedActorUserId)
+                        && ASSET_REQUEST_KIND_INVITE.equals(normalizeAssetRequestKind(nextRequest.requestKind()));
+                if (!acceptingOwnInvitation && !memberUserId.equals(normalizedActorUserId)) {
+                    enqueueAssetMemberTransitionNotification(
+                            next,
+                            nextRequest,
+                            normalizedActorUserId,
+                            "asset-member-request-accepted",
+                            "asset-member",
+                            List.of(memberUserId),
+                            "Asset request accepted",
+                            "Your request to use " + assetTitle(next) + " was accepted.",
+                            "accepted");
+                }
+                continue;
+            }
+            if (nextRequest != null) {
+                continue;
+            }
+
+            if (memberUserId.equals(normalizedActorUserId)) {
+                if (MEMBER_STATUS_ACCEPTED.equals(previousStatus)) {
+                    LinkedHashSet<String> recipients = new LinkedHashSet<>(activeResponsibleAssetUserIds(previous));
+                    recipients.addAll(acceptedAssetParticipantUserIds(previous));
+                    recipients.remove(normalizedActorUserId);
+                    String memberName = firstNonBlank(previousRequest.name(), memberUserId);
+                    enqueueAssetMemberTransitionNotification(
+                            previous,
+                            previousRequest,
+                            normalizedActorUserId,
+                            "asset-member-left",
+                            "asset-members",
+                            new ArrayList<>(recipients),
+                            "Asset member left",
+                            memberName + " left " + assetTitle(previous) + ".",
+                            "left");
+                }
+                continue;
+            }
+
+            boolean pendingRemoval = "pending".equals(previousStatus);
+            boolean invitation = ASSET_REQUEST_KIND_INVITE.equals(
+                    normalizeAssetRequestKind(previousRequest.requestKind()));
+            String notificationType = pendingRemoval
+                    ? invitation ? "asset-member-invitation-withdrawn" : "asset-member-request-declined"
+                    : "asset-member-removed";
+            String body = pendingRemoval
+                    ? invitation
+                            ? "Your invitation to use " + assetTitle(previous) + " was withdrawn."
+                            : "Your request to use " + assetTitle(previous) + " was declined."
+                    : "You were removed from " + assetTitle(previous) + ".";
+            enqueueAssetMemberTransitionNotification(
+                    previous,
+                    previousRequest,
+                    normalizedActorUserId,
+                    notificationType,
+                    "asset-member",
+                    List.of(memberUserId),
+                    pendingRemoval ? "Asset request updated" : "Asset membership removed",
+                    body,
+                    pendingRemoval ? invitation ? "invitation-withdrawn" : "declined" : "removed");
+        }
+    }
+
+    private void enqueueAssetMemberTransitionNotification(
+            Asset asset,
+            AssetRequestRecord request,
+            String actorUserId,
+            String notificationType,
+            String recipientScope,
+            List<String> recipientUserIds,
+            String title,
+            String body,
+            String membershipAction) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String requestId = normalizeId(request == null ? null : request.id());
+        String memberUserId = normalizeId(request == null ? null : request.userId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        List<String> recipients = (recipientUserIds == null ? List.<String>of() : recipientUserIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(normalizedActorUserId))
+                .filter(this::isActiveUser)
+                .distinct()
+                .toList();
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(requestId)
+                || !StringUtils.hasText(memberUserId)
+                || recipients.isEmpty()) {
+            return;
+        }
+
+        AssetRequestBookingRecord booking = request.booking();
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("eventId", safeText(booking == null ? null : booking.eventId()));
+        payload.put("subEventId", safeText(booking == null ? null : booking.subEventId()));
+        payload.put("requestId", requestId);
+        payload.put("requestKind", normalizeAssetRequestKind(request.requestKind()));
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", firstNonBlank(request.name(), memberUserId));
+        payload.put("membershipAction", membershipAction);
+        payload.put("senderUserId", normalizedActorUserId);
+        payload.put("notification_tone", "accent");
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                notificationType,
+                "asset",
+                assetId,
+                recipientScope,
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                notificationType + "-" + assetId + "-" + requestId,
+                payload,
+                normalizedActorUserId));
+    }
+
+    private List<String> acceptedAssetParticipantUserIds(Asset asset) {
+        return safeRequests(asset == null ? null : asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
+                .map(AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(this::isActiveUser)
+                .distinct()
+                .toList();
     }
 
     private String scopedAssetRequestNotificationKey(
