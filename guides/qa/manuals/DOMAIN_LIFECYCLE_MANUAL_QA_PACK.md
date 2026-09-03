@@ -6281,7 +6281,7 @@ is **PASS / CLOSED**.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
-Status: **DEFECT RETEST IN PROGRESS (2026-09-03)** together with
+Status: **PASS / CLOSED (2026-09-03)** together with
 `ASSET-MEMBER-002` as the single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
 
 - From one asset already assigned through a generated Tournament-group
@@ -6418,8 +6418,14 @@ Status: **DEFECT RETEST IN PROGRESS (2026-09-03)** together with
   signal as exact zero buckets, allowing both the card and parent Group row to
   disappear without reload. The running backend and frontend watchers built
   these corrections successfully. The versioned `3 / 0 · 4` owner-leave
-  savepoint was restored at `2026-09-03T12:06:57.196Z`; final visual and
-  persisted replay verdict remains pending.
+  savepoint was restored at `2026-09-03T12:06:57.196Z`; the user then replayed
+  Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave as
+  `3 -> 2 -> 2 -> 1 -> absent` and confirmed the resource disappeared through
+  the live UI. The terminal read-only Mongo oracle proved Riley's canonical
+  Asset member row is `deleted`, `activityResources` is `D` with no Asset
+  assignment, the generated-group runtime resource map is empty, and no
+  notification was created after Nova's final Leave. This closes the final
+  member-removal regression without a read projection or a frontend-only hide.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
