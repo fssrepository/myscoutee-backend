@@ -48,6 +48,7 @@ ENVIRONMENTS_TITLE = "ENVIRONMENTS"
 DOMAIN_COLUMN = "QA domain"
 DEV_COLUMN = "Dev"
 LOCAL_COLUMN = "Local"
+COMPLEXITY_COLUMN = "Remaining QA complexity (min)"
 DOMAIN_PRIORITY_BLOCK_COUNT = 3
 DOMAIN_PRIORITY_BLOCK_WIDTH = 5
 DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5, 10)
@@ -56,7 +57,7 @@ COMPACT_VISIBLE_COLUMN_WIDTHS = (
     14.0, 16.0, 12.0, 12.0, 14.0,
     12.0, 14.0, 9.0, 12.0, 14.0,
     12.0, 4.0, 4.0, 10.0, 12.0,
-    12.0, 8.0, 16.0, 10.0,
+    12.0, 8.0, 16.0, 10.0, 12.0,
 )
 
 # This is the execution order of whole QA domains. The canonical CSV carries
@@ -229,6 +230,33 @@ def load_rows() -> list[list[str]]:
             raise RuntimeError(
                 f"QA matrix CSV is missing the {environment_column!r} column."
             )
+    if COMPLEXITY_COLUMN not in rows[0]:
+        raise RuntimeError(f"QA matrix CSV is missing the {COMPLEXITY_COLUMN!r} column.")
+
+    headers = rows[0]
+    complexity_index = headers.index(COMPLEXITY_COLUMN)
+    for row in rows[1:]:
+        item = dict(zip(headers, row))
+        identifier = item.get("ID", "").strip()
+        complexity = row[complexity_index].strip()
+        if identifier.startswith("LEGEND-"):
+            if complexity:
+                raise RuntimeError(
+                    f"Legend row {identifier} must not carry remaining QA complexity."
+                )
+            continue
+        status = qa_status_bucket(item)
+        if status == "done":
+            if complexity:
+                raise RuntimeError(
+                    f"Completed testcase {identifier} must have blank remaining QA complexity."
+                )
+            continue
+        if not complexity.isdigit() or int(complexity) <= 0 or int(complexity) % 5:
+            raise RuntimeError(
+                f"Open testcase {identifier} must have a positive five-minute "
+                f"{COMPLEXITY_COLUMN} value, got {complexity!r}."
+            )
     return rows
 
 
@@ -294,11 +322,17 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         done = domain_done[domain]
         total = domain_totals[domain]
         percentage = (done / total) if total else 0
+        remaining_minutes = sum(
+            int(item[COMPLEXITY_COLUMN])
+            for item in (dict(zip(headers, row)) for row in test_rows)
+            if item[DOMAIN_COLUMN] == domain and qa_status_bucket(item) != "done"
+        )
         domain_priority_items.append(
             (
                 domain,
                 str(priority),
-                f"{done} passed / {total} total ({percentage:.0%})",
+                f"{done} passed / {total} total ({percentage:.0%})"
+                f" · {remaining_minutes} min open",
             )
         )
     overview_rows = [compact_row(
@@ -330,7 +364,7 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
                 priority_values = (
                     f"{DOMAIN_COLUMN} (EXT / optional)" if block_index == 2 else DOMAIN_COLUMN,
                     "Priority",
-                    "Progress",
+                    "Progress / remaining",
                 )
             elif priority_row_index <= len(block):
                 priority_values = block[priority_row_index - 1]
@@ -473,6 +507,7 @@ def domain_progress_formula(
     domain_reference: str,
     domain_column: str,
     status_helper_column: str,
+    complexity_column: str,
     first_test_row: int,
     last_test_row: int,
 ) -> str:
@@ -486,9 +521,18 @@ def domain_progress_formula(
         f'COUNTIFS({domain_range},{domain_reference},'
         f'{status_range},"Done")'
     )
+    complexity_range = (
+        f"${complexity_column}${first_test_row}:"
+        f"${complexity_column}${last_test_row}"
+    )
+    remaining_minutes = (
+        f"SUMIFS({complexity_range},{domain_range},{domain_reference},"
+        f'{status_range},"<>Done")'
+    )
     return (
         f'{done}&" passed / "&{total}&" total ("&'
-        f'IF({total}=0,"0%",TEXT({done}/{total},"0%"))&")"'
+        f'IF({total}=0,"0%",TEXT({done}/{total},"0%"))&") · "&'
+        f'{remaining_minutes}&" min open"'
     )
 
 
@@ -766,6 +810,8 @@ def build_sheet(
     id_column = cell_column(headers.index("ID"))
     domain_column_index = headers.index(DOMAIN_COLUMN)
     domain_column = cell_column(domain_column_index)
+    complexity_column_index = headers.index(COMPLEXITY_COLUMN)
+    complexity_column = cell_column(complexity_column_index)
     dev_column_index = headers.index(DEV_COLUMN)
     local_column_index = headers.index(LOCAL_COLUMN)
     if local_column_index != dev_column_index + 1:
@@ -1060,11 +1106,24 @@ def build_sheet(
                         f"{cell_column(block_start)}{row_index}",
                         domain_column,
                         status_helper_column,
+                        complexity_column,
                         first_test_row,
                         last_test_row,
                     )
                     ET.SubElement(cell, f"{{{NS}}}v").text = value
                     continue
+            if (
+                first_test_row <= row_index <= last_test_row
+                and column_index == complexity_column_index
+                and value
+            ):
+                cell = ET.SubElement(row, f"{{{NS}}}c", {
+                    "r": reference,
+                    "s": str(style_indexes[cell_style_key]),
+                    "t": "n",
+                })
+                ET.SubElement(cell, f"{{{NS}}}v").text = value
+                continue
             cell = ET.SubElement(row, f"{{{NS}}}c", {
                 "r": reference,
                 "s": str(style_indexes[cell_style_key]),

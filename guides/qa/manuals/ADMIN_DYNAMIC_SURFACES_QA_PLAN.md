@@ -87,6 +87,10 @@ the campaign from chat history.
 - Recalculate the `Manual QA priority` field with the separate priority model
   when automation or risk changes. Never delete a row merely because its score
   becomes lower.
+- Estimate `Remaining QA complexity (min)` with the separate complexity model.
+  Completed rows keep it blank, and partial rows estimate only their open tail;
+  the generated domain overview sums these minutes independently from risk
+  priority.
 - Add discovered defects as their own retest rows or issue links, then close
   them only with evidence from the affected assembled environment.
 

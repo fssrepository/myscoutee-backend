@@ -39,3 +39,8 @@ The generated workbook colors complete rows green, partial/open rows amber,
 failed or clean-retest-required rows red, and not-run rows gray. Legend rows
 retain their own contextual colors. Merged `LEGEND` and `QA TEST CASES`
 section headers keep the reading guide visually separate from executable rows.
+Every unfinished row also carries a numeric clean-run estimate in
+`Remaining QA complexity (min)`; completed rows keep that cell blank. The
+domain overview aggregates only this unfinished effort next to progress. The
+[complexity model](reference/MANUAL_QA_COMPLEXITY_MODEL.md) is independent of
+the risk-based [priority model](reference/MANUAL_QA_PRIORITY_MODEL.md).

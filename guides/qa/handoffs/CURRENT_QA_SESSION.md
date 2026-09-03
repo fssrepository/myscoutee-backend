@@ -314,8 +314,9 @@ visual grouping. The main testcase table has one normalized, domain-colored
 The workbook's separate `QA domain | Priority | Progress` table is generated
 from the same rows, begins at row 8 as three side-by-side columns above the
 main table, orders whole domains by numeric `Priority DESC`, and shows `passed
-/ total (percentage)` per domain. The generator owns compact A-S widths: all
-19 primary columns remain visible without a default horizontal scroll, long
+/ total (percentage)` plus summed unfinished clean-run minutes per domain. The
+generator owns compact A-T widths: all 20 primary columns remain visible
+without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
 and only the two formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
@@ -468,7 +469,7 @@ record has been removed.
   by those journeys rather than standalone microtests.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
-  workbook totals. Verify the CSV has 19 columns per logical record, including
+  workbook totals. Verify the CSV has 20 columns per logical record, including
   the normalized `QA domain`, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
@@ -487,6 +488,13 @@ record has been removed.
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
+- `Remaining QA complexity (min)` estimates only unfinished clean paired
+  execution. Completed rows are blank; partial rows contain only their open
+  tail. Recalculate it with
+  `guides/qa/reference/MANUAL_QA_COMPLEXITY_MODEL.md` whenever the remaining
+  contract changes. The XLSX domain overview sums these minutes beside
+  progress; never substitute the risk-based `Manual QA priority` score for an
+  effort estimate.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
   passed and remaining counts separately for Core and External/optional, plus
