@@ -1162,6 +1162,33 @@
         }
       ]
     },
+    "ASSET-VIS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset visibility owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · owner control"
+        },
+        {
+          "actor": "Lina Asset visibility friend",
+          "sessionKind": "demo",
+          "userId": "178e8d0cbe164fa3fede5884",
+          "expectedName": "Lina Park · deterministic friend control"
+        },
+        {
+          "actor": "Liam Asset visibility unrelated",
+          "sessionKind": "demo",
+          "userId": "2d520f3c98b0440c1556f4af",
+          "expectedName": "Liam Parker · non-friend control"
+        }
+      ]
+    },
     "AUTH-SESSION-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

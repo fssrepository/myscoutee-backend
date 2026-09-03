@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 04:21 CEST
+Updated: 2026-09-03 04:42 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -13,10 +13,9 @@ file first, then open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Consolidated Event scheduler journey and its execution contract:
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
-- Stable user-facing click guide for the last completed testcase; the next
-  checklist is not yet versioned, and execution status or machine evidence
-  never belong in a checklist:
-  [`ASSET-LIFE-001.md`](../checklists/asset/ASSET-LIFE-001.md)
+- Stable user-facing click guide for the active testcase; execution status or
+  machine evidence never belong in a checklist:
+  [`ASSET-VIS-001.md`](../checklists/asset/ASSET-VIS-001.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -43,6 +42,8 @@ file first, then open only the linked active checkpoint section.
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
   [`browser-session-checkpoints.json`](../tools/browser-session-checkpoints.json)
+- Authenticated Asset visibility/detail read oracle:
+  [`verify-asset-visibility-http.sh`](../tools/verify-asset-visibility-http.sh)
 - Isolated Chrome launcher:
   [`open-checkpoint-browser-sessions.sh`](../tools/open-checkpoint-browser-sessions.sh)
 
@@ -53,18 +54,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-VIS-001 — next, not staged
+checkpoint: ASSET-VIS-001 — active, baseline-ready
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-vis-001--discovery-visibility
-checklist: not yet versioned
-checklist_section: not yet versioned
-substage: ASSET-LIFE-001 is PASS/CLOSED; prepare the next Asset visibility checkpoint before any UI action
-next_replay_boundary: generate and validate the ASSET-VIS-001 fixture, stable user checklist and three-role browser-session definition; stage only after those artifacts agree with the current Public/Friends/Invitation product contract
-fixture_phase: ASSET-LIFE-001 terminal oracle passed, then the three exact QA-title records were reset; a second guard stage proved zero target records and preserved the separate active `ddd` Accommodation with authoritative/legacy/nested Accommodation counts `1/1/1`; checkpoint state was reset again and final status is `not-staged`
-browser_phase: the completed ASSET-LIFE-001 Casey window may show stale pre-reset data and is not evidence for the next checkpoint; the next launcher must replace managed sessions after its own baseline proof
+checklist: ../checklists/asset/ASSET-VIS-001.md
+checklist_section: Visibility journey
+substage: the three stable Casey-owned Public/Friends only/Invitation only Transport controls and the read-only Event/Sub-event navigation scaffold are staged; no user UI action has run
+next_replay_boundary: replace the stale prior managed browser with the versioned Casey/Lina/Liam sessions, prove their identities and authenticated HTTP matrix, then issue checklist step 1 through the single terminal stop phrase
+fixture_phase: baseline-ready at 2026-09-03T02:41:38.553Z; two consecutive harness reads agree on three target Assets, exact Casey/Lina/Liam scaffold membership, authoritative/legacy/nested Transport counts `3/3/3`, zero target request/assignment/outbox/notification/task residue and byte-stable read baseline
+browser_phase: not launched for ASSET-VIS-001 yet; the next launcher replaces the completed stale ASSET-LIFE-001 window, then its active session IDs are required by the authenticated HTTP oracle
 ledger_status: 82/118 total, Core 82/98; ASSET-LIFE-001 PASS/CLOSED
-required_resume: do not restage ASSET-LIFE-001; begin ASSET-VIS-001 preparation from its QA-pack definition, then use the read-only baseline gate before opening its managed browsers
-actors: ASSET-VIS-001 actors are not yet bound in a versioned browser-session definition
-pending_machine_oracle: ASSET-VIS-001 exact owner/friend/unrelated visible-ID sets and denied detail read
+required_resume: do not restage ASSET-LIFE-001 or ASSET-VIS-001; verify the active ASSET-VIS baseline, launch only its versioned managed sessions, then continue from the checklist Visibility journey
+actors: Casey Bridge `650000000000000000000061` owner; Lina Park `178e8d0cbe164fa3fede5884` deterministic friend; Liam Parker `2d520f3c98b0440c1556f4af` unrelated control
+pending_machine_oracle: after session launch, run the authenticated exact owned/Explore/detail matrix; after the user's reads, run it again and `verify-visibility-readonly`
 last_completed: ASSET-LIFE-001 passed Create/Edit/Delete, immediate dual counter reconciliation, type schemas, managed shared-media behavior, reload persistence and terminal/reset Mongo oracles; Asset polling remains intentionally absent and Borrow polling remains a later separate decision
 ```
 

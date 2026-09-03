@@ -175,13 +175,14 @@ public class AssetsService {
     }
 
     public AssetDetailDto queryAssetDetail(String userId, String assetId) {
-        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedUserId = effectiveReadActorUserId(userId);
         String normalizedAssetId = normalizeId(assetId);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
         }
-        return assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
+        return assetsRepository.findByAssetId(normalizedAssetId)
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .filter(asset -> canViewAssetDetail(asset, normalizedUserId))
                 .map(asset -> toAssetDetailDto(
                         asset,
                         resolveOwnerNamesByUserId(List.of(asset)),
@@ -2550,6 +2551,13 @@ public class AssetsService {
         return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(asset.getOwnerUserId()), activeUserId);
     }
 
+    private boolean canViewAssetDetail(Asset asset, String viewerUserId) {
+        return asset != null
+                && StringUtils.hasText(viewerUserId)
+                && (viewerUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || shouldIncludeExploreAsset(asset, viewerUserId));
+    }
+
     private List<String> resolveAssetMenuActions(Asset asset, String viewerUserId) {
         String normalizedViewerUserId = normalizeId(viewerUserId);
         if (asset == null || !StringUtils.hasText(normalizedViewerUserId)) {
@@ -3441,6 +3449,16 @@ public class AssetsService {
     private String effectiveActorUserId(String userId) {
         String normalizedUserId = normalizeId(userId);
         return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
+    }
+
+    private String effectiveReadActorUserId(String requestedUserId) {
+        String authenticatedUserId = currentActorUserId();
+        if (accessControlService.requiresAuthenticatedActor()) {
+            return authenticatedUserId;
+        }
+        return StringUtils.hasText(authenticatedUserId)
+                ? authenticatedUserId
+                : normalizeId(requestedUserId);
     }
 
     private String normalizeAssetType(String type) {

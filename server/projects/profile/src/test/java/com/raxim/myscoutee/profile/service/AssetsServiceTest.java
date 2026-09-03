@@ -62,6 +62,63 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void assetDetailUsesAuthenticatedViewerInsteadOfSpoofedOwnerParameter() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset hiddenAsset = asset();
+        hiddenAsset.setVisibility("Invitation only");
+        hiddenAsset.setDetails("Owner-only detail");
+        var authentication = new TestingAuthenticationToken("unrelated-viewer", null);
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(true);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("unrelated-viewer");
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(hiddenAsset));
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                accessControlService);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            assertThat(service.queryAssetDetail("u1", "asset-1")).isNull();
+            verify(assetsRepository, never()).findByOwnerUserIdAndAssetId(any(), any());
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test
+    void publicAssetDetailIsVisibleToTheRequestingViewer() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset publicAsset = asset();
+        publicAsset.setVisibility("Public");
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(publicAsset));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of());
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                accessControlService);
+
+        AssetDetailDto detail = service.queryAssetDetail("unrelated-viewer", "asset-1");
+
+        assertThat(detail).isNotNull();
+        assertThat(detail.id()).isEqualTo("asset-1");
+        assertThat(detail.ownerUserId()).isEqualTo("u1");
+    }
+
+    @Test
     void ticketSyncReportsRemovedRowsAgainstTheKnownSmartListWindow() {
         EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
@@ -1656,6 +1713,27 @@ class AssetsServiceTest {
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+    }
+
+    private AssetsService assetReadService(
+            AssetsRepository assetsRepository,
+            UsersRepository usersRepository,
+            MongoTemplate mongoTemplate,
+            AccessControlService accessControlService) {
+        return new AssetsService(
+                assetsRepository,
+                usersRepository,
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
                 mock(UserActivityCountersService.class));

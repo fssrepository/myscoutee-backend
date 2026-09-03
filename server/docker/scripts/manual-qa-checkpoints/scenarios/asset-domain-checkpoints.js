@@ -18,6 +18,30 @@
   const SUB_EVENT_ID = `${EVENT_ID}:sub-event:transport`;
   const IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, EVENT_ID];
   const LIFE_CHECKPOINT = "ASSET-LIFE-001";
+  const VISIBILITY_CHECKPOINT = "ASSET-VIS-001";
+  const VISIBILITY_FRIEND_USER_ID = "178e8d0cbe164fa3fede5884";
+  const VISIBILITY_UNRELATED_USER_ID = "2d520f3c98b0440c1556f4af";
+  const VISIBILITY_EVENT_ID = `${PREFIX}:visibility:event`;
+  const VISIBILITY_SUB_EVENT_ID = `${VISIBILITY_EVENT_ID}:sub-event:transport`;
+  const VISIBILITY_ASSETS = {
+    public: {
+      assetId: `${PREFIX}:asset:visibility:public`,
+      title: "QA ASSET-VIS-001 Public Transport",
+      visibility: "Public"
+    },
+    friends: {
+      assetId: `${PREFIX}:asset:visibility:friends`,
+      title: "QA ASSET-VIS-001 Friends Transport",
+      visibility: "Friends only"
+    },
+    invitation: {
+      assetId: `${PREFIX}:asset:visibility:invitation`,
+      title: "QA ASSET-VIS-001 Invitation Transport",
+      visibility: "Invitation only"
+    }
+  };
+  const VISIBILITY_ASSET_IDS = Object.values(VISIBILITY_ASSETS).map(value => value.assetId);
+  const VISIBILITY_TITLES = Object.values(VISIBILITY_ASSETS).map(value => value.title);
   const LIFE_INITIAL_SUBTITLE = "Initial shared-field value";
   const LIFE_EDITED_SUBTITLE = "Edited shared-field value";
   const LIFE_ASSETS = {
@@ -55,6 +79,13 @@
       action: "As Casey, create the three named Asset controls exactly once through the normal Asset editors, then stop at the Create phrase in the checklist.",
       expected: "One active Transport, Accommodation and Supplies record exists with distinct stable IDs and exact type fields; the shared media path is proven on Transport and every supplied image URL is managed; each Save-confirmed type counter increases immediately and exactly once.",
       worker: "MUST NOT use a scheduler. Ordinary direct writes and the existing affinity projection may run; no fixture command may fabricate a lifecycle transition."
+    },
+    [VISIBILITY_CHECKPOINT]: {
+      stage: "visibility-readonly",
+      why: "Prove owner, deterministic friend and unrelated-user Asset discovery boundaries without creating a borrow or assignment.",
+      action: "Compare only the three QA ASSET-VIS-001 target titles in Casey, Lina and Liam My Assets and Resource/Asset Explore surfaces, then report the checklist phrase.",
+      expected: "Casey owns all three and explores none of them; Lina explores Public plus Friends only; Liam explores Public only; Invitation only is never externally discoverable and denied detail reads return no data.",
+      worker: "MUST NOT use a scheduler. Every list/detail read is side-effect free; no borrow, member, assignment, task, outbox or notification write is allowed."
     },
     "ASSET-MEMBER-001": {
       stage: "member-empty",
@@ -115,6 +146,72 @@
       updatedDate: now,
       updatedUser: ownerUserId
     };
+  }
+
+  function visibilityAssetDocument(definition) {
+    const document = assetDocument(definition.assetId, hostUserId, definition.title);
+    document.subtitle = `${definition.visibility} discovery control`;
+    document.category = "Sedan";
+    document.city = "";
+    document.details = `Manual QA ${definition.visibility} Asset visibility control.`;
+    document.routes = [];
+    document.sourceLink = `https://example.com/qa/asset-vis-001/${definition.visibility.toLowerCase().replaceAll(" ", "-")}`;
+    document.visibility = definition.visibility;
+    return document;
+  }
+
+  function visibilityEventDocument() {
+    const now = Q.nowIso();
+    const subEvent = {
+      id: VISIBILITY_SUB_EVENT_ID,
+      name: "QA Visibility Stage",
+      description: "Read-only Transport Explore scaffold",
+      timing: "During",
+      offsetMinutes: 0,
+      durationMinutes: 60,
+      optional: false,
+      capacityMin: 1,
+      capacityMax: 3
+    };
+    return {
+      _id: VISIBILITY_EVENT_ID,
+      sourceId: VISIBILITY_EVENT_ID,
+      syncKey: VISIBILITY_EVENT_ID,
+      title: "QA ASSET-VIS-001 Event",
+      subtitle: "Read-only Asset Explore scaffold",
+      status: "A",
+      published: true,
+      isTrashed: false,
+      ownerUserId: hostUserId,
+      creatorUserId: hostUserId,
+      admins: [hostUserId],
+      visibility: "public",
+      mode: "Casual",
+      subEventsEnabled: true,
+      subEventDefinitions: [subEvent],
+      subEvents: [subEvent],
+      capacityTotal: 3,
+      acceptedMembers: 3,
+      pendingMembers: 0,
+      acceptedMemberUserIds: [hostUserId, VISIBILITY_FRIEND_USER_ID, VISIBILITY_UNRELATED_USER_ID],
+      pendingMemberUserIds: [],
+      invitedMemberUserIds: [],
+      startAtIso: dateIso(180),
+      endAtIso: dateIso(300),
+      createdDate: now,
+      createdUser: hostUserId,
+      updatedDate: now,
+      updatedUser: hostUserId
+    };
+  }
+
+  function visibilityEventMemberDocument(userId, role) {
+    const document = eventMemberDocument(userId, role);
+    document._id = `${PREFIX}:visibility:event-member:${userId}`;
+    document.syncKey = document._id;
+    document.ownerId = VISIBILITY_EVENT_ID;
+    document.metWhere = "QA ASSET-VIS-001 Event";
+    return document;
   }
 
   function memberDocument(assetId, userId, status, invitedByUserId = hostUserId) {
@@ -505,6 +602,261 @@
     };
   }
 
+  function visibilityAssetSelector() {
+    return {
+      $or: [
+        { _id: { $in: VISIBILITY_ASSET_IDS } },
+        { assetId: { $in: VISIBILITY_ASSET_IDS } },
+        { ownerUserId: hostUserId, title: { $in: VISIBILITY_TITLES } }
+      ]
+    };
+  }
+
+  function visibilityEventSelector() {
+    return {
+      $or: [
+        { _id: VISIBILITY_EVENT_ID },
+        { sourceId: VISIBILITY_EVENT_ID },
+        { creatorUserId: hostUserId, title: "QA ASSET-VIS-001 Event" }
+      ]
+    };
+  }
+
+  function visibilityDomainSelectors() {
+    return [
+      { collection: "assets", selector: visibilityAssetSelector() },
+      { collection: "events", selector: visibilityEventSelector() },
+      { collection: "activityMembers", selector: { ownerId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } } },
+      { collection: "assetRequests", selector: { assetId: { $in: VISIBILITY_ASSET_IDS } } },
+      { collection: "activityResources", selector: { $or: [
+        { ownerId: VISIBILITY_EVENT_ID },
+        { "assetAssignmentIds.Transport": { $in: VISIBILITY_ASSET_IDS } }
+      ] } },
+      { collection: "notificationOutbox", selector: { $or: [
+        { entityId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } },
+        { "payload.assetId": { $in: VISIBILITY_ASSET_IDS } },
+        { "payload.eventId": VISIBILITY_EVENT_ID }
+      ] } },
+      { collection: "userNotifications", selector: { $or: [
+        { sourceId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } },
+        { "payload.assetId": { $in: VISIBILITY_ASSET_IDS } },
+        { "payload.eventId": VISIBILITY_EVENT_ID }
+      ] } },
+      { collection: "affinityRecomputeTasks", selector: { targetId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } } }
+    ];
+  }
+
+  function visibilityRestoreSelectors() {
+    return [
+      ...visibilityDomainSelectors(),
+      { collection: "users", selector: { $or: [
+        { _id: { $in: [hostUserId, VISIBILITY_FRIEND_USER_ID, VISIBILITY_UNRELATED_USER_ID] } },
+        { userId: { $in: [hostUserId, VISIBILITY_FRIEND_USER_ID, VISIBILITY_UNRELATED_USER_ID] } }
+      ] } }
+    ];
+  }
+
+  function visibilityHashText(value) {
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      hash = (hash * 31 + value.charCodeAt(index)) % 104729;
+    }
+    return Math.abs(hash);
+  }
+
+  function visibilityUsersAreFriends(leftUserId, rightUserId) {
+    const firstId = leftUserId.localeCompare(rightUserId) <= 0 ? leftUserId : rightUserId;
+    const secondId = leftUserId.localeCompare(rightUserId) <= 0 ? rightUserId : leftUserId;
+    return (visibilityHashText(`friend-pair:${firstId}:${secondId}`) % 100) < 32;
+  }
+
+  function assertVisibilityActors() {
+    const owner = Q.ensureUser(hostUserId, "Asset visibility owner");
+    const friend = Q.ensureUser(VISIBILITY_FRIEND_USER_ID, "Asset visibility friend");
+    const unrelated = Q.ensureUser(VISIBILITY_UNRELATED_USER_ID, "Asset visibility unrelated control");
+    if (!visibilityUsersAreFriends(hostUserId, VISIBILITY_FRIEND_USER_ID)) {
+      Q.fail("ASSET-VIS-001 Lina is no longer a deterministic friend of Casey under the product hash contract.");
+    }
+    if (visibilityUsersAreFriends(hostUserId, VISIBILITY_UNRELATED_USER_ID)) {
+      Q.fail("ASSET-VIS-001 Liam is no longer a deterministic non-friend of Casey under the product hash contract.");
+    }
+    return {
+      owner: { userId: hostUserId, name: Q.text(owner.name) },
+      friend: { userId: VISIBILITY_FRIEND_USER_ID, name: Q.text(friend.name) },
+      unrelated: { userId: VISIBILITY_UNRELATED_USER_ID, name: Q.text(unrelated.name) }
+    };
+  }
+
+  function visibilityDocuments() {
+    return Q.collection("assets")
+      .find(visibilityAssetSelector())
+      .sort({ assetId: 1 })
+      .toArray();
+  }
+
+  function visibilityTargetCounters() {
+    const user = Q.ensureUser(hostUserId, "Asset visibility owner");
+    const activities = user.activities || {};
+    const nested = activities.asset || {};
+    return {
+      legacyTransport: Q.number(activities.cars),
+      nestedTransport: Q.number(nested.cars)
+    };
+  }
+
+  function visibilityExpectedMatrix() {
+    const publicId = VISIBILITY_ASSETS.public.assetId;
+    const friendsId = VISIBILITY_ASSETS.friends.assetId;
+    const invitationId = VISIBILITY_ASSETS.invitation.assetId;
+    return {
+      owner: {
+        ownedTargetIds: [publicId, friendsId, invitationId],
+        exploreTargetIds: [],
+        readableDetailIds: [publicId, friendsId, invitationId]
+      },
+      friend: {
+        ownedTargetIds: [],
+        exploreTargetIds: [publicId, friendsId],
+        readableDetailIds: [publicId, friendsId],
+        deniedDetailIds: [invitationId]
+      },
+      unrelated: {
+        ownedTargetIds: [],
+        exploreTargetIds: [publicId],
+        readableDetailIds: [publicId],
+        deniedDetailIds: [friendsId, invitationId]
+      }
+    };
+  }
+
+  function assertVisibilityFixture(state) {
+    const actors = assertVisibilityActors();
+    const documents = visibilityDocuments();
+    if (documents.length !== 3) {
+      Q.fail(`ASSET-VIS-001 expected three target Assets, found ${documents.length}.`);
+    }
+    const byId = new Map(documents.map(asset => [Q.text(asset.assetId), asset]));
+    for (const definition of Object.values(VISIBILITY_ASSETS)) {
+      const asset = byId.get(definition.assetId);
+      if (!asset
+          || Q.text(asset._id) !== definition.assetId
+          || Q.text(asset.syncKey) !== definition.assetId
+          || Q.text(asset.ownerUserId) !== hostUserId
+          || Q.text(asset.type) !== "Transport"
+          || Q.text(asset.title) !== definition.title
+          || Q.text(asset.category) !== "Sedan"
+          || Q.text(asset.visibility) !== definition.visibility
+          || lifecycleStatusCode(asset.status) !== "A"
+          || Q.number(asset.quantity) !== 1
+          || Q.text(asset.city)
+          || (Array.isArray(asset.routes) && asset.routes.length !== 0)
+          || (Array.isArray(asset.requests) && asset.requests.length !== 0)) {
+        Q.fail(`ASSET-VIS-001 '${definition.visibility}' Asset does not match its stable fixture contract.`);
+      }
+    }
+    const event = Q.collection("events").findOne(visibilityEventSelector());
+    if (!event
+        || Q.text(event._id) !== VISIBILITY_EVENT_ID
+        || Q.text(event.sourceId) !== VISIBILITY_EVENT_ID
+        || Q.text(event.title) !== "QA ASSET-VIS-001 Event"
+        || Q.text(event.status) !== "A"
+        || event.published !== true
+        || event.subEventsEnabled !== true
+        || !Array.isArray(event.subEventDefinitions)
+        || event.subEventDefinitions.length !== 1
+        || Q.text(event.subEventDefinitions[0].id) !== VISIBILITY_SUB_EVENT_ID
+        || Q.text(event.subEventDefinitions[0].name) !== "QA Visibility Stage") {
+      Q.fail("ASSET-VIS-001 Event/Sub-event Explore scaffold is missing or malformed.");
+    }
+    const members = Q.collection("activityMembers")
+      .find({ ownerType: "event", ownerId: VISIBILITY_EVENT_ID })
+      .sort({ userId: 1 })
+      .toArray();
+    const expectedMemberIds = [hostUserId, VISIBILITY_FRIEND_USER_ID, VISIBILITY_UNRELATED_USER_ID].sort();
+    const actualMemberIds = members
+      .filter(member => Q.text(member.status) === "accepted")
+      .map(member => Q.text(member.userId))
+      .sort();
+    if (members.length !== 3 || !Q.sameJson(actualMemberIds, expectedMemberIds)) {
+      Q.fail("ASSET-VIS-001 requires exactly Casey, Lina and Liam as accepted Event scaffold members.");
+    }
+    const counts = visibilityTargetCounters();
+    const expectedTransportCount = Q.number(state.baselineCounts.Transport) + 3;
+    const authoritative = lifecycleAuthoritativeCounts();
+    if (authoritative.Transport !== expectedTransportCount
+        || counts.legacyTransport !== authoritative.Transport
+        || counts.nestedTransport !== authoritative.Transport) {
+      Q.fail(`ASSET-VIS-001 owner Transport counters are authoritative/legacy/nested ${authoritative.Transport}/${counts.legacyTransport}/${counts.nestedTransport}, expected ${expectedTransportCount}/${expectedTransportCount}/${expectedTransportCount}.`);
+    }
+    return { actors, documents, event, members, counters: { authoritative, stored: counts } };
+  }
+
+  function visibilityDomainSnapshot() {
+    const read = (collection, selector) => Q.collection(collection)
+      .find(selector)
+      .sort({ _id: 1 })
+      .toArray();
+    const user = Q.ensureUser(hostUserId, "Asset visibility owner");
+    const activities = user.activities || {};
+    const nested = activities.asset || {};
+    return {
+      assets: read("assets", visibilityAssetSelector()),
+      events: read("events", visibilityEventSelector()),
+      members: read("activityMembers", { ownerId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } }),
+      requests: read("assetRequests", { assetId: { $in: VISIBILITY_ASSET_IDS } }),
+      resources: read("activityResources", { $or: [
+        { ownerId: VISIBILITY_EVENT_ID },
+        { "assetAssignmentIds.Transport": { $in: VISIBILITY_ASSET_IDS } }
+      ] }),
+      outbox: read("notificationOutbox", { $or: [
+        { entityId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } },
+        { "payload.assetId": { $in: VISIBILITY_ASSET_IDS } },
+        { "payload.eventId": VISIBILITY_EVENT_ID }
+      ] }),
+      notifications: read("userNotifications", { $or: [
+        { sourceId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } },
+        { "payload.assetId": { $in: VISIBILITY_ASSET_IDS } },
+        { "payload.eventId": VISIBILITY_EVENT_ID }
+      ] }),
+      tasks: read("affinityRecomputeTasks", { targetId: { $in: [...VISIBILITY_ASSET_IDS, VISIBILITY_EVENT_ID] } }),
+      ownerAssetCounters: [
+        ["cars", String(Q.number(activities.cars))],
+        ["accommodation", String(Q.number(activities.accommodation))],
+        ["supplies", String(Q.number(activities.supplies))],
+        ["nestedCars", String(Q.number(nested.cars))],
+        ["nestedAccommodation", String(Q.number(nested.accommodation))],
+        ["nestedSupplies", String(Q.number(nested.supplies))]
+      ]
+    };
+  }
+
+  function visibilityOracle(state) {
+    const fixture = assertVisibilityFixture(state);
+    const currentSnapshot = visibilityDomainSnapshot();
+    const readOnlyChangedKeys = Object.keys(currentSnapshot)
+      .filter(key => !Q.sameJson(currentSnapshot[key], state.visibilityReadBaseline && state.visibilityReadBaseline[key]));
+    return {
+      actors: fixture.actors,
+      event: {
+        eventId: VISIBILITY_EVENT_ID,
+        title: Q.text(fixture.event.title),
+        subEventId: VISIBILITY_SUB_EVENT_ID,
+        subEventTitle: Q.text(fixture.event.subEventDefinitions[0].name)
+      },
+      assets: fixture.documents.map(asset => ({
+        assetId: Q.text(asset.assetId),
+        title: Q.text(asset.title),
+        visibility: Q.text(asset.visibility),
+        ownerUserId: Q.text(asset.ownerUserId),
+        status: Q.text(asset.status)
+      })),
+      targetMatrix: visibilityExpectedMatrix(),
+      counters: fixture.counters,
+      readOnlyBaselineUnchanged: readOnlyChangedKeys.length === 0,
+      readOnlyChangedKeys
+    };
+  }
+
   function selectors() {
     return [
       { collection: "assets", selector: { $or: [{ _id: { $in: IDS } }, { assetId: { $in: IDS } }] } },
@@ -876,9 +1228,171 @@
     });
   }
 
+  function stageVisibility() {
+    const selected = config();
+    Q.assertNotStaged(SCENARIO);
+    Q.assertNoOtherActiveScenario(SCENARIO);
+    const actors = assertVisibilityActors();
+    for (const spec of visibilityDomainSelectors()) {
+      const collisionCount = Q.collection(spec.collection).countDocuments(spec.selector);
+      if (collisionCount !== 0) {
+        Q.fail(`ASSET-VIS-001 found ${collisionCount} stale target document(s) in '${spec.collection}'; refusing to overwrite them without a recoverable checkpoint state.`);
+      }
+    }
+    const baselineCounts = lifecycleAuthoritativeCounts();
+    assertLifecycleCounts(baselineCounts, "ASSET-VIS-001 pre-stage");
+    const stagedAtIso = Q.nowIso();
+    const state = {
+      _id: Q.stateId(SCENARIO),
+      scenario: SCENARIO,
+      checkpointId,
+      database: db.getName(),
+      stagedAtIso,
+      phase: "staging",
+      baselineCounts,
+      context: {
+        hostUserId,
+        friendUserId: VISIBILITY_FRIEND_USER_ID,
+        unrelatedUserId: VISIBILITY_UNRELATED_USER_ID,
+        eventId: VISIBILITY_EVENT_ID,
+        subEventId: VISIBILITY_SUB_EVENT_ID,
+        assetIds: VISIBILITY_ASSET_IDS
+      },
+      snapshots: Q.snapshotSpecs(visibilityRestoreSelectors())
+    };
+    Q.collection(Q.STATE_COLLECTION).insertOne(state);
+    try {
+      Q.collection("assets").insertMany(Object.values(VISIBILITY_ASSETS).map(visibilityAssetDocument));
+      Q.collection("events").insertOne(visibilityEventDocument());
+      Q.collection("activityMembers").insertMany([
+        visibilityEventMemberDocument(hostUserId, "Admin"),
+        visibilityEventMemberDocument(VISIBILITY_FRIEND_USER_ID, "Member"),
+        visibilityEventMemberDocument(VISIBILITY_UNRELATED_USER_ID, "Member")
+      ]);
+      const authoritative = lifecycleAuthoritativeCounts();
+      const counterUpdate = Q.collection("users").updateOne(
+        { $or: [{ _id: hostUserId }, { userId: hostUserId }] },
+        { $set: {
+          "activities.cars": authoritative.Transport,
+          "activities.accommodation": authoritative.Accommodation,
+          "activities.supplies": authoritative.Supplies,
+          "activities.asset.cars": authoritative.Transport,
+          "activities.asset.accommodation": authoritative.Accommodation,
+          "activities.asset.supplies": authoritative.Supplies
+        } }
+      );
+      if (counterUpdate.matchedCount !== 1) {
+        Q.fail("ASSET-VIS-001 could not synchronize Casey's Asset counters.");
+      }
+      assertVisibilityFixture(state);
+      const visibilityReadBaseline = visibilityDomainSnapshot();
+      Q.collection(Q.STATE_COLLECTION).updateOne(
+        { _id: state._id, phase: "staging" },
+        { $set: { phase: "baseline-ready", visibilityReadBaseline } }
+      );
+    } catch (error) {
+      Q.fail(`ASSET-VIS-001 stage failed after snapshot: ${Q.text(error && error.message)}. Run reset asset-domain ${checkpointId}.`);
+    }
+    const current = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: current.phase,
+      stagedAtIso,
+      identities: current.context,
+      actors,
+      why: selected.why,
+      workerExpectation: selected.worker,
+      baseline: visibilityOracle(current),
+      next: selected.action,
+      expectedVisibleResult: selected.expected
+    });
+  }
+
+  function statusVisibility() {
+    const selected = config();
+    const state = Q.activeState(SCENARIO, false);
+    if (!state) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: "not-staged",
+        why: selected.why,
+        next: `Run stage asset-domain ${checkpointId}.`
+      });
+      return;
+    }
+    if (Q.text(state.checkpointId).toUpperCase() !== checkpointId) {
+      Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
+    }
+    if (!state.visibilityReadBaseline) {
+      Q.fail("ASSET-VIS-001 has no completed read-only baseline; reset the failed stage before continuing.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: Q.text(state.phase),
+      why: selected.why,
+      workerExpectation: selected.worker,
+      oracle: visibilityOracle(state),
+      expectedVisibleResult: selected.expected,
+      next: Q.text(state.phase) === "readonly-verified"
+        ? "Record the browser evidence, close ASSET-VIS-001, then reset the fixture."
+        : "Complete the checklist reads, run the authenticated HTTP matrix, then run verify-visibility-readonly."
+    });
+  }
+
+  function verifyVisibilityReadonly() {
+    if (checkpointId !== VISIBILITY_CHECKPOINT) {
+      Q.fail(`verify-visibility-readonly is restricted to ${VISIBILITY_CHECKPOINT}.`);
+    }
+    const state = requireMatchingState();
+    if (!state.visibilityReadBaseline) {
+      Q.fail("ASSET-VIS-001 has no read-only baseline to verify.");
+    }
+    assertVisibilityFixture(state);
+    const current = visibilityDomainSnapshot();
+    if (!Q.sameJson(current, state.visibilityReadBaseline)) {
+      const changedKeys = Object.keys(current)
+        .filter(key => !Q.sameJson(current[key], state.visibilityReadBaseline[key]));
+      Q.fail(`ASSET-VIS-001 list/detail reads changed persisted state in: ${changedKeys.join(", ")}.`);
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      { $set: { phase: "readonly-verified", verifiedAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "readonly-verified",
+      verifiedAtIso,
+      changedPersistedCollections: [],
+      oracle: visibilityOracle(requireMatchingState()),
+      next: "Record ASSET-VIS-001 PASS only when the three browser target sets and authenticated HTTP visibility/detail matrix also match."
+    });
+  }
+
+  function resetVisibility() {
+    const state = requireMatchingState();
+    Q.restoreSnapshots(state.snapshots);
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "reset-complete",
+      restoredAtIso: Q.nowIso(),
+      next: `Run status asset-domain ${checkpointId}; expected phase is not-staged.`
+    });
+  }
+
   function stage() {
     if (checkpointId === LIFE_CHECKPOINT) {
       stageLifecycle();
+      return;
+    }
+    if (checkpointId === VISIBILITY_CHECKPOINT) {
+      stageVisibility();
       return;
     }
     const selected = config();
@@ -949,6 +1463,21 @@
       });
       return;
     }
+    if (checkpointId === VISIBILITY_CHECKPOINT) {
+      const state = requireMatchingState();
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: state.phase,
+        why: config().why,
+        action: config().action,
+        expectedVisibleResult: config().expected,
+        workerExpectation: config().worker,
+        identities: state.context,
+        targetMatrix: visibilityExpectedMatrix()
+      });
+      return;
+    }
     const selected = config();
     const state = requireMatchingState();
     Q.printObject({
@@ -966,6 +1495,10 @@
   function status() {
     if (checkpointId === LIFE_CHECKPOINT) {
       statusLifecycle();
+      return;
+    }
+    if (checkpointId === VISIBILITY_CHECKPOINT) {
+      statusVisibility();
       return;
     }
     const selected = config();
@@ -1000,6 +1533,10 @@
       resetLifecycle();
       return;
     }
+    if (checkpointId === VISIBILITY_CHECKPOINT) {
+      resetVisibility();
+      return;
+    }
     config();
     const state = requireMatchingState();
     Q.restoreSnapshots(state.snapshots);
@@ -1021,6 +1558,7 @@
     case "capture-lifecycle-created": captureLifecycleCreated(); break;
     case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
     case "verify-lifecycle-deleted": verifyLifecycleDeleted(); break;
+    case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
