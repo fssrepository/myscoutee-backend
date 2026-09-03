@@ -314,11 +314,11 @@ visual grouping. The main testcase table has one normalized, domain-colored
 The workbook's separate `QA domain | Priority | Progress` table is generated
 from the same rows, begins at row 8 as three side-by-side columns above the
 main table, orders whole domains by numeric `Priority DESC`, and shows `passed
-/ total (percentage)` plus summed unfinished clean-run minutes per domain. The
+/ total (percentage)` plus summed unfinished `MIN/MAX` ranges per domain. The
 generator owns compact A-T widths: all 20 primary columns remain visible
 without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
-and only the two formula-helper columns remain hidden. Summary count cells are
+and only the four formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
@@ -494,7 +494,7 @@ record has been removed.
   stage/oracle/reset waiting and the calibrated defect/replay contingency.
   Recalculate both bounds with
   `guides/qa/reference/MANUAL_QA_COMPLEXITY_MODEL.md` whenever the remaining
-  contract changes. The XLSX domain overview sums these minutes beside
+  contract changes. The XLSX domain overview sums both bounds beside
   progress; never substitute the risk-based `Manual QA priority` score for an
   effort estimate. Record any overrun beyond the range separately.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
