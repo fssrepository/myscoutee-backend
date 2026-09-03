@@ -3141,19 +3141,26 @@ public class AssetsService {
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
             return;
         }
-        List<String> recipients = activeResponsibleAssetUserIds(previous == null ? next : previous).stream()
+        Asset handoverState = previous == null ? next : previous;
+        String previousOwnerUserId = normalizeId(previous == null ? null : previous.getOwnerUserId());
+        List<String> recipients = assetOwnerReleaseRecipientUserIds(handoverState, previousOwnerUserId).stream()
                 .filter(userId -> !normalizedActorUserId.equals(userId))
                 .toList();
         if (recipients.isEmpty()) {
             return;
         }
+        String actorName = usersRepository.findByUserId(normalizedActorUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("A member");
         String title = "Asset responsibility changed";
-        String body = assetTitle(next) + " was taken over by an active manager.";
+        String body = actorName + " took over responsibility for " + assetTitle(next) + ".";
         notificationOutboxService.enqueue(new NotificationIntent(
                 "asset-takeover",
                 "asset",
                 assetId,
-                "asset-active-managers",
+                "asset-members",
                 recipients,
                 title,
                 body,

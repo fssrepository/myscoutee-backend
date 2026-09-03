@@ -1418,6 +1418,147 @@ class AssetsServiceTest {
     }
 
     @Test
+    void takeOverNotifiesRemainingMembersWhenTheHandoverHadNoManager() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+
+        Asset asset = assetWithEventRequest();
+        asset.setStatus("UR");
+        asset.setStatusBeforeSuppression("A");
+        asset.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        AssetRequestRecord existingRequest = asset.getRequests().get(0);
+        asset.setRequests(List.of(
+                existingRequest,
+                new AssetRequestRecord(
+                        "request-2",
+                        "u3",
+                        "Member Three",
+                        "M3",
+                        "woman",
+                        "accepted",
+                        "Accepted for this asset.",
+                        "borrow",
+                        "2026-09-03T07:00:00Z",
+                        existingRequest.booking())));
+        Users newOwner = user("u2", "Member Two", "MT");
+        Users remainingMember = user("u3", "Member Three", "M3");
+        ActivityMember newOwnerMember = member("asset-1", "u2", "Member", "accepted");
+        ActivityMember remainingMemberRow = member("asset-1", "u3", "Member", "accepted");
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(newOwner));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(remainingMember));
+        when(usersRepository.findByUserIdIn(List.of("u2"))).thenReturn(List.of(newOwner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(newOwnerMember));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(newOwnerMember, remainingMemberRow));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
+
+        assertThat(card).isNotNull();
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-takeover");
+        assertThat(notification.getValue().recipientScope()).isEqualTo("asset-members");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u3");
+        assertThat(notification.getValue().body())
+                .isEqualTo("Member Two took over responsibility for Camp Kit.");
+        assertThat(notification.getValue().payload())
+                .containsEntry("previousOwnerUserId", "u1")
+                .containsEntry("ownerUserId", "u2")
+                .containsEntry("actorUserId", "u2");
+    }
+
+    @Test
+    void takeOverNotifiesRemainingManagersButNotOrdinaryMembersWhenManagersExist() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+
+        Asset asset = assetWithEventRequest();
+        asset.setStatus("UR");
+        asset.setStatusBeforeSuppression("A");
+        asset.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        AssetRequestRecord existingRequest = asset.getRequests().get(0);
+        asset.setRequests(List.of(
+                existingRequest,
+                new AssetRequestRecord(
+                        "request-2", "u3", "Manager Three", "M3", "woman", "accepted",
+                        "Accepted for this asset.", "borrow", "2026-09-03T07:00:00Z",
+                        existingRequest.booking()),
+                new AssetRequestRecord(
+                        "request-3", "u4", "Member Four", "M4", "man", "accepted",
+                        "Accepted for this asset.", "borrow", "2026-09-03T07:05:00Z",
+                        existingRequest.booking())));
+        Users newOwner = user("u2", "Manager Two", "M2");
+        Users remainingManager = user("u3", "Manager Three", "M3");
+        ActivityMember newOwnerManager = member("asset-1", "u2", "Manager", "accepted");
+        ActivityMember remainingManagerRow = member("asset-1", "u3", "Manager", "accepted");
+        ActivityMember ordinaryMemberRow = member("asset-1", "u4", "Member", "accepted");
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(newOwner));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(remainingManager));
+        when(usersRepository.findByUserIdIn(List.of("u2"))).thenReturn(List.of(newOwner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(newOwnerManager));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(newOwnerManager, remainingManagerRow, ordinaryMemberRow));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
+
+        assertThat(card).isNotNull();
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u3");
+        assertThat(notification.getValue().recipientUserIds()).doesNotContain("u2", "u4");
+    }
+
+    @Test
     void deleteMarksAssetTrashedInsteadOfPhysicallyDeleting() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

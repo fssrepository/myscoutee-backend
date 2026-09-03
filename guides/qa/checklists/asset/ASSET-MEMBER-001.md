@@ -94,6 +94,9 @@ it is not required in addition to this compact route.
    member-removal authority, and a second actor cannot also take over. Event
    and Group roles remain unchanged. Take Over changes responsibility only:
    the Asset-member metric must remain `2 / 0 · 4` without another delta.
+   The completion notification is sent only to the other takeover candidates
+   who received the owner-handover notification. In this single-Manager branch
+   Riley receives neither notification and Nova receives no self-notification.
 7. Casey is not banned. After Nova's takeover, either invite Casey again or
    let Casey send a fresh Join request from the unchanged Group Transport
    resource card. Casey must behave exactly like a fresh user of this Asset:
@@ -119,10 +122,14 @@ Manager state above.
    inactive user receives either.
 2. Let one accepted Member confirm `Take over`. Confirm that actor becomes the
    new owner/super-manager and the Asset returns from `Under review` to its
-   previous active status. The other candidates lose `Take over` immediately.
+   previous active status. The other candidates lose `Take over` immediately
+   and each receives exactly one `Asset responsibility changed` notification
+   naming the new owner. The new owner receives no self-notification.
 3. Repeat with an accepted Manager present before takeover. Confirm ordinary
    Members receive neither the handover notification nor `Take over`; the
    Manager must still confirm explicitly and is not promoted automatically.
+   After takeover, only the other notified Manager candidates receive the
+   completion notification; ordinary Members still receive none.
 4. In both variants, confirm the Group-to-Asset resource relationship and its
    identity never change. Former owners can later rejoin under the complete
    fresh-user lifecycle, but a later ordinary Manager promotion never restores
