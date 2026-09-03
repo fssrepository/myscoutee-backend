@@ -6351,6 +6351,14 @@ is **PASS / CLOSED**.
   and Asset Members with Casey plus Nova and one pending request. The frontend
   watcher compiled and synced the changes; the focused resource builder,
   tournament group converter and activity runtime sync specs passed `26/26`.
+  A subsequent manual close/reopen sequence found that the Join request's
+  signed `+1` remained in the resource signal and a newly mounted Sub Events
+  popup forwarded the same revision to the Activity Event card again, even
+  though the subevent counter itself stayed unchanged. The signed delta remains
+  part of the on-the-fly signal chain, but the store now permits its parent
+  propagation exactly once per resource-metrics revision. The frontend watcher
+  and focused store spec pass; the precise human close/reopen replay remains
+  pending.
   This exploratory state remains non-oracleable and does not change the
   testcase status.
 
