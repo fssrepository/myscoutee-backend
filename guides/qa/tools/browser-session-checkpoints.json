@@ -1243,6 +1243,33 @@
         }
       ]
     },
+    "ASSET-ASSIGNMENT-LIFECYCLE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Event Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · normal and Tournament Event administration"
+        },
+        {
+          "actor": "Nova Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Transport/Accommodation owner and Group A mutation"
+        },
+        {
+          "actor": "Riley Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · Supplies/Accommodation owner and cleanup target"
+        }
+      ]
+    },
     "AUTH-SESSION-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

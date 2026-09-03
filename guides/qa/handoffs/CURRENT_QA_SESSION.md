@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 14:35 CEST
+Updated: 2026-09-03 14:58 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -16,9 +16,9 @@ file first, then open only the linked active checkpoint section.
 - Stable user-facing click guide for the completed Asset membership testcase;
   execution status or machine evidence never belong in a checklist:
   [`ASSET-MEMBER-001.md`](../checklists/asset/ASSET-MEMBER-001.md).
-- Stable user-facing click guide for the active staged Borrow lifecycle;
+- Stable user-facing click guide for the active staged Assignment lifecycle;
   execution status and machine evidence remain in the pack/handoff:
-  [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
+  [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -28,6 +28,9 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`asset-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-domain-checkpoints.js)
+- Isolated normal/Tournament Asset assignment fixture and exact branch
+  oracles:
+  [`asset-assignment-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-assignment-lifecycle-checkpoints.js)
 - Isolated generated-group Asset membership fixture and exact savepoint
   oracles:
   [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
@@ -60,17 +63,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-BORROW-LIFECYCLE-001 — STAGED / NOT STARTED
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-borrow-001--scoped-borrow-lifecycle
-checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: baseline-ready; no Borrow, Cancel, Reject, Approve, browser or other manual action has been performed
-next_replay_boundary: run the exact read-only ASSET-BORROW status command below; if it passes and the retained dates are usable, open the configured browsers only when the user explicitly starts QA
-fixture_phase: ASSET-MEMBER was reset through its versioned harness; ASSET-BORROW was staged at 2026-09-03T12:34:59.706Z and its complete baseline passed a second read-only status
-browser_phase: NOT OPENED for ASSET-BORROW-001; any old ASSET-MEMBER windows are unrelated and must not be used as evidence
+checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — STAGED / NOT STARTED
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-assign-001--eventsub-event-asset-assignment
+checklist: ../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md
+substage: baseline-ready; no normal assignment, capacity edit, unassign, Tournament member removal, browser or other manual action has been performed
+next_replay_boundary: run the exact read-only Assignment status command below; when all eleven baseline checks pass, open the configured browsers only after the user explicitly starts QA
+fixture_phase: the intact ASSET-BORROW baseline was read-only verified and reset through its versioned harness at 2026-09-03T12:56:47.217Z; ASSET-ASSIGNMENT was staged at 2026-09-03T12:56:53.062Z and its complete baseline passed the subsequent read-only status
+browser_phase: NOT OPENED for ASSET-ASSIGNMENT-LIFECYCLE-001; old ASSET-MEMBER/BORROW windows are unrelated and must not be used as evidence
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
-required_resume: load only this resume block plus the linked ASSET-BORROW detail/checklist; run `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status asset-domain ASSET-BORROW-001`; do not reset/restage or launch browsers when the exact baseline passes and its dates are usable; if dates are stale, use only reset -> stage -> status and copy the new times here; when the user explicitly starts QA, launch exactly `guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-BORROW-001`
-actors: Casey=650000000000000000000061 owns all three Assets and is Event Admin/Group A; Nova=650000000000000000000062 is Group A cancel/accept requester; Riley=650000000000000000000063 is Group A reject requester; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B capacity control
-pending_machine_oracle: three exact Public/free Sedan Assets; Capacity quantity=3 with Lina accepted Group B quantity=2, Reject quantity=2 empty, Cancel quantity=2 empty; Group A has no resource/pending state; Group B has one accepted resource and runtime metric; no post-stage outbox. Event window 2026-09-03T11:34:59.706Z..2026-10-03T12:34:59.706Z, overlap ends 2026-09-10T12:34:59.706Z, later non-overlap 2026-09-11T12:34:59.706Z..2026-09-12T12:34:59.706Z
+required_resume: load only this resume block plus the linked Assignment detail/checklist; run `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001`; do not reset/restage or launch browsers when all eleven baseline checks pass; when the user explicitly starts QA, launch exactly `guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-ASSIGNMENT-LIFECYCLE-001`
+actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
+pending_machine_oracle: normal Event has three viewer documents, Casey/Nova/Riley accepted, one pre-existing Nova Member relation to Riley Supplies, two Sub-events and zero resources/counters. Tournament has Casey/Nova/Riley in Group A, Lina in Group B, Group A Nova Transport 1 accepted/1 pending/0-4 plus Riley Accommodation 1 accepted/1 pending/0-3, Group B Lina Transport 1 accepted/0 pending/0-2, stage/root pending 2, and zero controlled notifications. Group B and the normal control Sub-event are immutable controls
 last_completed: `ASSET-MEMBER-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven run plus the final correction replay. The user observed Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave converge as `3 -> 2 -> 2 -> 1 -> absent`. Read-only Mongo at the terminal boundary proved Riley's canonical Asset member row is `deleted`, the controlled `activityResources` row is `D` with no Asset assignment, the generated-group runtime resource map is empty, and no notification was created after Nova's final Leave. The resource card and Group row disappeared through the existing signal chain. The server fix status-deletes scoped removed members; the frontend forwards authoritative empty-scope zero metrics and did not add or modify an aggregation loop. Both running watchers built successfully. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
 ```
 
@@ -115,6 +118,8 @@ while a released non-overlapping window restores it in place and after reload;
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
+Borrow remains prepared but is deliberately deferred while its payment-facing
+interface is being rewritten. Assignment is the active next checkpoint.
 
 Separate captured dummy-payment follow-up: `EVENT-CHECKOUT-DUMMY-001` owns the
 direct Event Explore `Book Event -> Join -> Demo payment/Payment` journey,
@@ -203,12 +208,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED and its retained fixture has been
-reset through the versioned harness. `ASSET-BORROW-LIFECYCLE-001` is staged at
-`baseline-ready`, but its browser was deliberately not opened and the manual
-journey has not started. In the next session, run the resume block's read-only
-status command, load the stable guide, and wait for the user's explicit QA
-start before launching `ASSET-BORROW-001` browser sessions.
+`ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
+was verified and reset through its versioned harness because its
+payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
+is now staged at `baseline-ready`; its browser was deliberately not opened and
+the manual journey has not started. In the next session, run the resume
+block's read-only status command, load the stable guide, and wait for the
+user's explicit QA start before launching its configured browser sessions.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

@@ -116,9 +116,9 @@ The principal checkpoint chains are:
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
 - `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
-  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` ->
-  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001` ->
-  `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
+  `ASSET-MEMBER-002` -> `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` ->
+  `ASSET-ASSIGN-003` -> `ASSET-BORROW-001` ->
+  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
 - `CONTENT-ADMIN-LIFECYCLE-001` is one isolated Content transaction: create
@@ -6429,42 +6429,29 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **STAGED / NOT STARTED**.
+Status: **PREPARED / DEFERRED / NOT STAGED**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
 
-The versioned fixture was staged at `2026-09-03T12:34:59.706Z` and a second
-read-only `status` proved its complete `baseline-ready` oracle. No
-ASSET-BORROW browser session was opened and no manual Borrow action has been
-performed. The retained windows are:
+The versioned fixture was staged at `2026-09-03T12:34:59.706Z`; two read-only
+checks proved its complete baseline and no browser/manual action occurred. It
+was then reset from its own snapshot at `2026-09-03T12:56:47.217Z` because the
+payment-facing interface will be rewritten and Assignment is the selected
+next testcase. The old date windows are intentionally not a resumable
+boundary.
 
-- Event/stage: `2026-09-03T11:34:59.706Z` through
-  `2026-10-03T12:34:59.706Z`;
-- overlapping capacity control: through `2026-09-10T12:34:59.706Z`;
-- later non-overlapping control: `2026-09-11T12:34:59.706Z` through
-  `2026-09-12T12:34:59.706Z`.
-
-The baseline contains three Casey-owned Public/free Sedan Assets. Capacity
-Transport has stored quantity `3` and one accepted Group B reservation for
-Lina with quantity `2`; Reject and Cancel Transport each have quantity `2`
-and no request. Group A contains Casey, Nova and Riley with no resource or
-pending request. Group B contains only Lina and owns the single accepted
-Capacity resource. The Event and both generated-group membership sets are the
-immutable role control. Staging created no notification/outbox effect.
-
-Resume with this read-only command before opening a browser:
+When Borrow becomes active again, stage a fresh baseline and then run its
+read-only status before opening a browser:
 
 ```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage asset-domain ASSET-BORROW-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-domain ASSET-BORROW-001
 ```
 
-If the exact oracle still passes and its time window is usable, continue from
-the stable guide without restaging. If the retained dates have become stale,
-use only the checkpoint's own `reset`, `stage`, `status` sequence and update
-the handoff with the new machine-produced timestamps; never edit the fixture
-documents ad hoc.
+Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 - From Resource Explore under one generated Tournament group, request one
   controlled asset for the exact event/stage/group timeframe and accept it. In
@@ -6572,6 +6559,37 @@ payment.
 
 ### `ASSET-ASSIGN-001` — event/sub-event asset assignment
 
+Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
+Stable user guide:
+[`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
+
+Status: **STAGED / NOT STARTED**.
+
+The fixture was staged at `2026-09-03T12:56:53.062Z`. Its subsequent
+read-only `status` passed all eleven baseline predicates: three zero-valued
+normal Event viewer documents, no normal resource, unchanged second
+Sub-event, exact normal/Asset memberships, exact Tournament/room memberships,
+Group A owner/type metrics, Group B control metric and document snapshot,
+stage/root pending `2`, and zero controlled notifications. No browser or
+manual Assignment action has occurred.
+
+The isolated `asset-assignment` fixture stages the normal and Tournament
+branches together. It is independent from Borrow and Checkout and must start
+only after the active Asset checkpoint has been reset:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+```
+
+Its named savepoint oracles are `verify-normal-assignment`,
+`verify-group-capacity-edit`, `verify-group-unassign`, the guarded
+`restore-group-removal-branch`, and `verify-group-manager-removal`. The restore
+command rewinds only the captured Tournament branch and preserves the verified
+normal branch.
+
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
   capacity/settings and Event Resources UI agree.
@@ -6607,6 +6625,12 @@ payment.
   after popup close/reopen, after browser reload and after an idempotent
   terminal replay. No read projection or frontend counter fallback may repair
   the persisted result.
+- The consolidated fixture makes Group B a byte-identical Lina control and
+  starts Group A/root pending at `2`. The source-Asset capacity mutation keeps
+  it at `2`; Nova's unassign reverses it to `1`. The independent restored
+  branch removes Riley from the Tournament Event and requires the same exact
+  `2 -> 1` write-side reversal while the normal Event still retains Riley and
+  its previously verified assignment state.
 
 ## Content cases
 

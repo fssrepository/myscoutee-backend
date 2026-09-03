@@ -385,6 +385,31 @@ bash manual-qa-checkpoints.sh reset asset-domain ASSET-MEMBER-001
 create the resource linkage; the helper never writes the expected result in
 advance.
 
+The consolidated assignment lifecycle uses its isolated runner and one
+versioned baseline containing both a normal two-Sub-event Event and a
+two-group Tournament:
+
+```bash
+bash manual-qa-checkpoints.sh stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# perform the normal Sub-event assignments from the stable checklist
+bash manual-qa-checkpoints.sh verify-normal-assignment asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# edit only the Group A source Asset capacity 4 -> 5
+bash manual-qa-checkpoints.sh verify-group-capacity-edit asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# unassign only that Group A Transport
+bash manual-qa-checkpoints.sh verify-group-unassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh restore-group-removal-branch asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# remove Riley once from the Tournament Event
+bash manual-qa-checkpoints.sh verify-group-manager-removal asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+```
+
+`restore-group-removal-branch` is the only permitted branch rearm. It restores
+the captured Tournament documents exactly while preserving the already
+verified normal Event branch. The verifiers compare Group B byte-for-byte and
+require persisted owner/type, runtime, stage and root values; no list query or
+frontend fallback is an oracle.
+
 ## Operator-domain checkpoint runner
 
 `OPERATOR-FIREBASE-001` snapshots the exact deployment configuration before
