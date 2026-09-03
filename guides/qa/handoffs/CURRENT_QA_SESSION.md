@@ -57,18 +57,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-MEMBER-001 — PASS/CLOSED row reopened only for the user's requested post-fix spot check
+checkpoint: ASSET-MEMBER-001 — DEFECT RETEST IN PROGRESS
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
 checklist: ../checklists/asset/ASSET-MEMBER-001.md
-substage: optional owner-handover/removal spot check from the versioned three-member savepoint; the ledger PASS remains recorded unless this spot check exposes a mismatch
-next_replay_boundary: reload Casey, Nova and Riley once, then use the normal UI for Casey Leave, Nova Take Over and Nova removing Riley. Require `3 -> 2 -> 2 -> 1`; report any mismatch before another action. After the user's verdict, reset this fixture and proceed to ASSET-BORROW-LIFECYCLE-001 preparation
-fixture_phase: clean stage completed, then `prepare-owner-leave-replay` at 2026-09-03T11:51:37.132Z restored Casey ownership with Casey, Nova and Riley accepted, no delegated Manager, and matching resource/runtime `3 / 0 · 4`
+substage: final-member Leave/resource-removal correction replay from the versioned three-member savepoint
+next_replay_boundary: reload Casey, Nova and Riley once, then use the normal UI for Casey Leave, Nova Take Over, Nova removing Riley and Nova Leave. Require `3 -> 2 -> 2 -> 1 -> absent`; after final Leave Riley receives no owner-handover notification, the Transport card and Group resource row disappear in place, and reload preserves absence
+fixture_phase: `prepare-owner-leave-replay` at 2026-09-03T12:06:57.196Z restored Casey ownership with Casey, Nova and Riley accepted, no delegated Manager, and matching resource/runtime `3 / 0 · 4`
 browser_phase: reuse the existing managed Casey/Nova/Riley ASSET-MEMBER windows after one explicit reload; their demo identities remain Casey=650000000000000000000061, Nova=650000000000000000000062 and Riley=650000000000000000000063
-ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
-required_resume: let the user perform only the requested UI spot check; do not automate, restage or reset while it is in progress. After their verdict, reset ASSET-MEMBER-001 and do not replay it again unless a mismatch reopens the row
+ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED; ASSET-MEMBER-LIFECYCLE-001 reopened
+required_resume: let the user perform the requested four-transition UI replay; do not automate, restage or reset while it is in progress. Read persisted state only after the user's verdict
 actors: Casey is the active Asset owner; Nova and Riley are accepted Asset Members and accepted Event/Group A Members; Lina remains the Group B control
-pending_machine_oracle: after the user's three actions, use read-only persisted/scope evidence only; the final expected owner is Nova and resource/runtime is `1 / 0 · 4`
-last_completed: the accumulated Asset membership run covered Invite/Join pending and resolution/rejection behavior, pending red counters, recipient notifications, Service chat/Ask Organizer, ordinary-member restrictions, owner/delegated Manager grant and revoke rules, role/menu refresh, member removal, Event-role isolation and owner Leave/Take Over. The final authenticated HTTP/Mongo replay proved `3 -> 2 -> 2 -> 1` across Casey Leave, Nova Take Over and Riley removal; the Asset write retained Nova's accepted current-owner row, both resource/runtime snapshots ended at `1 / 0 · 4`, fresh Nova/Riley scope reads agreed, and the expected owner-left/takeover/removal notifications were written. The backend watcher compiled and restarted successfully. That evidence fixture was reset and verified `not-staged`, then a new clean three-member savepoint was staged solely for the user's optional visual spot check. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
+pending_machine_oracle: after the user's four actions, use read-only persisted/scope evidence only; the Asset has no accepted request, Riley's Asset `activityMembers` row is `deleted`, the controlled `activityResources` row is `D` with no Transport assignment, the generated-group runtime has no Transport metric for this Asset, and no final owner-left notification targets Riley
+last_completed: the accumulated Asset membership run covered Invite/Join pending and resolution/rejection behavior, pending red counters, recipient notifications, Service chat/Ask Organizer, ordinary-member restrictions, owner/delegated Manager grant and revoke rules, role/menu refresh, member removal, Event-role isolation and owner Leave/Take Over. A later final-member replay exposed that scoped removal deleted Riley only from the Asset request list while leaving his canonical Asset `activityMembers` row accepted; Nova's final Leave therefore notified removed Riley and retained an empty `0 / 4` Transport assignment. The server now status-deletes the stored Asset member row on scoped removal, and the existing frontend resource-scope signal now publishes authoritative zero metrics instead of returning early for an empty scope. Both running watchers built successfully. The versioned three-member savepoint is staged for the user's correction replay. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -200,12 +200,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED, but its clean three-member
-owner-leave savepoint is temporarily staged for the user's requested post-fix
-spot check. After one reload, replay only Casey Leave, Nova Take Over and Nova
-removing Riley, requiring `3 -> 2 -> 2 -> 1`. Reset after the user's verdict.
-The next Core row remains `ASSET-BORROW-LIFECYCLE-001`; do not prepare or stage
-it while this spot check is open.
+`ASSET-MEMBER-LIFECYCLE-001` is reopened. Its clean three-member owner-leave
+savepoint is staged for the final-member correction replay. After one reload,
+replay Casey Leave, Nova Take Over, Nova removing Riley and Nova Leave,
+requiring `3 -> 2 -> 2 -> 1 -> absent`; Riley must not receive the final
+owner-handover notification, and the Transport card plus Group resource row
+must disappear in place and remain absent after reload. Do not reset while the
+user is replaying. The next Core row remains `ASSET-BORROW-LIFECYCLE-001`.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

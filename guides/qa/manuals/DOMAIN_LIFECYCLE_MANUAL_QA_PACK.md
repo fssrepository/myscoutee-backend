@@ -6281,8 +6281,8 @@ is **PASS / CLOSED**.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
-Status: **PASS / CLOSED (2026-09-03)** together with `ASSET-MEMBER-002` as the
-single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
+Status: **DEFECT RETEST IN PROGRESS (2026-09-03)** together with
+`ASSET-MEMBER-002` as the single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
 
 - From one asset already assigned through a generated Tournament-group
   resource surface, create one manager Invite and one participant Join request.
@@ -6405,6 +6405,21 @@ single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
   owner's scoped row when a later member-list write omits the owner. The
   checkpoint fixture was reset and verified `not-staged` after evidence was
   recorded.
+- A later final-member replay reopened the checkpoint. After Nova took over and
+  removed Riley, Riley disappeared from the scoped Asset request list but his
+  canonical Asset `activityMembers` row remained `accepted`. When Nova then
+  left as the last visible member, the server incorrectly selected removed
+  Riley as a successor, sent him an owner-handover notification and retained an
+  empty `0 / 4` Transport assignment in both the resource popup and Group menu;
+  reload preserved the mismatch. The write path now marks any stored scoped
+  Asset member row `deleted` when that member is removed, so it cannot be a
+  later Take Over candidate or notification recipient. The empty persisted
+  resource scope is also forwarded through the existing resource-metrics
+  signal as exact zero buckets, allowing both the card and parent Group row to
+  disappear without reload. The running backend and frontend watchers built
+  these corrections successfully. The versioned `3 / 0 · 4` owner-leave
+  savepoint was restored at `2026-09-03T12:06:57.196Z`; final visual and
+  persisted replay verdict remains pending.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 

@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-03:** 84/118 passed — core 84/98, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001` and the consolidated `ASSET-MEMBER-LIFECYCLE-001` are PASS/CLOSED after their lifecycle, visibility, scoped membership/manager, notification, Service-chat and owner-handover oracles; the new Core `EVENT-CHECKOUT-DUMMY-001` and `ASSET-CHECKOUT-DUMMY-001` rows capture the complete manual dummy-payment/button-state journeys as NOT RUN; `EVENT-SCHEDULERS-001`, `EVENT-SLOT-TOURNAMENT-001`, `EVENT-EDIT-RUNTIME-001` and `JOB-PURGE` are PASS/CLOSED; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
+**2026-09-03:** 83/118 passed — core 83/98, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001` and `ASSET-VIS-001` are PASS/CLOSED, while the consolidated `ASSET-MEMBER-LIFECYCLE-001` is reopened for the final-member Leave/resource-removal retest; the new Core `EVENT-CHECKOUT-DUMMY-001` and `ASSET-CHECKOUT-DUMMY-001` rows capture the complete manual dummy-payment/button-state journeys as NOT RUN; `EVENT-SCHEDULERS-001`, `EVENT-SLOT-TOURNAMENT-001`, `EVENT-EDIT-RUNTIME-001` and `JOB-PURGE` are PASS/CLOSED; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
