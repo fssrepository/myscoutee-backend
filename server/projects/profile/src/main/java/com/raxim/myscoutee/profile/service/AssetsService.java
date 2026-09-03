@@ -890,7 +890,14 @@ public class AssetsService {
         }
 
         String nowIso = Instant.now().toString();
-        ActivityMember member = existingMember.orElseGet(ActivityMember::new);
+        ActivityMember currentMember = existingMember.orElse(null);
+        ActivityMember member = new ActivityMember();
+        if (currentMember != null) {
+            member.setId(currentMember.getId());
+            member.setSyncKey(currentMember.getSyncKey());
+            member.setCreatedDate(currentMember.getCreatedDate());
+            member.setCreatedUser(currentMember.getCreatedUser());
+        }
         if (!StringUtils.hasText(member.getId())) {
             member.setId(new ObjectId().toHexString());
             member.setSyncKey(UUID.randomUUID().toString());
@@ -912,7 +919,7 @@ public class AssetsService {
         member.setActionAtIso(nowIso);
         member.setUpdatedDate(nowIso);
         member.setUpdatedUser(normalizedUserId);
-        ActivityMember promotedMember = promoteAssetMemberIfSnapshotCurrent(existingMember.orElse(null), member);
+        ActivityMember promotedMember = promoteAssetMemberIfSnapshotCurrent(currentMember, member);
         if (promotedMember == null) {
             return null;
         }

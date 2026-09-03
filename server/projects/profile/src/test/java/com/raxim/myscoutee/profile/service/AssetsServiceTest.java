@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -846,6 +848,74 @@ class AssetsServiceTest {
         assertThat(notification.getValue().payload())
                 .containsEntry("memberUserId", "u2")
                 .containsEntry("targetUserId", "u2");
+    }
+
+    @Test
+    void makeManagerUsesTheUnmodifiedExistingMemberAsItsAtomicSnapshot() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset asset = assetWithEventRequest();
+        Users owner = user("u1", "Owner One", "OO");
+        Users target = user("u2", "Member Two", "MT");
+        ActivityMember existingMember = member("asset-1", "u2", "Member", "accepted");
+        existingMember.setId("member-2");
+        existingMember.setSyncKey("member-sync-2");
+        existingMember.setCreatedDate("2026-09-03T07:00:00Z");
+        existingMember.setCreatedUser("u1");
+        existingMember.setUpdatedDate("2026-09-03T08:00:00Z");
+        existingMember.setUpdatedUser("u1");
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(existingMember));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(existingMember));
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+        when(mongoTemplate.updateFirst(any(), any(), eq(ActivityMember.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+        when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
+
+        assertThat(card).isNotNull();
+        assertThat(existingMember.getRole()).isEqualTo("Member");
+        assertThat(existingMember.getUpdatedDate()).isEqualTo("2026-09-03T08:00:00Z");
+        ArgumentCaptor<Query> memberQuery = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> memberUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(memberQuery.capture(), memberUpdate.capture(), eq(ActivityMember.class));
+        assertThat(memberQuery.getValue().getQueryObject())
+                .containsEntry("_id", "member-2")
+                .containsEntry("role", "Member")
+                .containsEntry("status", "accepted")
+                .containsEntry("updatedDate", "2026-09-03T08:00:00Z");
+        assertThat(memberUpdate.getValue().getUpdateObject().get("$set"))
+                .isInstanceOfSatisfying(org.bson.Document.class, set ->
+                        assertThat(set)
+                                .containsEntry("role", "Manager")
+                                .containsEntry("status", "accepted"));
     }
 
     @Test

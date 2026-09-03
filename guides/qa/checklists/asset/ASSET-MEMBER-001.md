@@ -97,6 +97,11 @@ it is not required in addition to this compact route.
    The completion notification is sent only to the other takeover candidates
    who received the owner-handover notification. In this single-Manager branch
    Riley receives neither notification and Nova receives no self-notification.
+   From Riley, select `Ask Organizer` on the same Asset again. The existing
+   Asset Service conversation and its message history remain, but its organizer
+   changes from Casey to Nova: the header/avatar and member list identify Nova,
+   Nova receives the organizer-side chat, and Casey no longer retains access as
+   the former owner.
 7. Casey is not banned. After Nova's takeover, either invite Casey again or
    let Casey send a fresh Join request from the unchanged Group Transport
    resource card. Casey must behave exactly like a fresh user of this Asset:

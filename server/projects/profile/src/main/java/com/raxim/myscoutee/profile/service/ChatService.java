@@ -466,7 +466,7 @@ public class ChatService {
             if (!StringUtils.hasText(assetId) || !StringUtils.hasText(subEventId)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Asset and sub-event ids are required.");
             }
-            asset = findServiceChatAsset(assetId, requestedTargetUserId);
+            asset = findServiceChatAsset(assetId);
             if (asset == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Asset not found.");
             }
@@ -479,10 +479,13 @@ public class ChatService {
             }
             chatId = "c-service-event-" + eventId + "-" + userId;
         }
-        if (!StringUtils.hasText(targetUserId) || findUser(targetUserId) == null) {
+        Users targetUser = StringUtils.hasText(targetUserId) ? findUser(targetUserId) : null;
+        if (targetUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
         }
-        if (StringUtils.hasText(requestedTargetUserId) && !targetUserId.equals(requestedTargetUserId)) {
+        if (!"asset".equals(serviceContext)
+                && StringUtils.hasText(requestedTargetUserId)
+                && !targetUserId.equals(requestedTargetUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The selected service chat recipient is not the resource owner.");
         }
         if (targetUserId.equals(userId)) {
@@ -499,7 +502,6 @@ public class ChatService {
 
         List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
         if (chatDocuments.isEmpty()) {
-            Users targetUser = findUser(targetUserId);
             Chat baseChat = new Chat();
             baseChat.setMongoId(buildMongoId(userId, chatId));
             baseChat.setChatId(chatId);
@@ -520,18 +522,14 @@ public class ChatService {
             baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
             chatsRepository.save(baseChat);
             chatDocuments = List.of(baseChat);
-        } else if (chatDocuments.stream().anyMatch(chat ->
-                !Objects.equals(chat.getContextStartAtIso(), contextStartAtIso)
-                        || !Objects.equals(chat.getContextEndAtIso(), contextEndAtIso))) {
-            chatDocuments = chatDocuments.stream().map(chat -> {
-                Chat next = copyChat(chat);
-                next.setContextStartAtIso(contextStartAtIso);
-                next.setContextEndAtIso(contextEndAtIso);
-                next.setRevision(nextChatRevision(chat));
-                return next;
-            }).toList();
-            chatsRepository.saveAll(chatDocuments);
-            evictChatOwnerReadCaches(chatDocuments);
+        } else {
+            chatDocuments = reconcileServiceChatParticipants(
+                    chatDocuments,
+                    userId,
+                    targetUserId,
+                    resolveUserInitials(targetUser, targetUserId),
+                    contextStartAtIso,
+                    contextEndAtIso);
         }
         chatDocuments = ensureOwnerCopies(chatDocuments);
         Chat viewerChat = findOwnerChat(chatDocuments, userId);
@@ -558,14 +556,59 @@ public class ChatService {
         return mongoTemplate.findOne(Query.query(identity), ActivityEvent.class);
     }
 
-    private Asset findServiceChatAsset(String assetId, String ownerUserId) {
+    private Asset findServiceChatAsset(String assetId) {
         Criteria identity = new Criteria().orOperator(
                 Criteria.where("_id").is(assetId),
                 Criteria.where("assetId").is(assetId));
-        Criteria criteria = StringUtils.hasText(ownerUserId)
-                ? new Criteria().andOperator(identity, Criteria.where("ownerUserId").is(ownerUserId))
-                : identity;
-        return mongoTemplate.findOne(Query.query(criteria), Asset.class);
+        return mongoTemplate.findOne(Query.query(identity), Asset.class);
+    }
+
+    private List<Chat> reconcileServiceChatParticipants(
+            List<Chat> existingDocuments,
+            String requesterUserId,
+            String targetUserId,
+            String targetAvatar,
+            String contextStartAtIso,
+            String contextEndAtIso) {
+        List<String> memberUserIds = List.of(requesterUserId, targetUserId);
+        List<Chat> activeDocuments = new ArrayList<>();
+        List<Chat> staleDocuments = new ArrayList<>();
+        List<Chat> changedDocuments = new ArrayList<>();
+        for (Chat existing : existingDocuments == null ? List.<Chat>of() : existingDocuments) {
+            if (existing == null) {
+                continue;
+            }
+            if (!memberUserIds.contains(normalizeId(existing.getOwnerUserId()))) {
+                staleDocuments.add(existing);
+                continue;
+            }
+            Chat next = copyChat(existing);
+            boolean changed = !memberUserIds.equals(existing.getMemberIds())
+                    || !Objects.equals(existing.getAvatar(), targetAvatar)
+                    || !Objects.equals(existing.getContextStartAtIso(), contextStartAtIso)
+                    || !Objects.equals(existing.getContextEndAtIso(), contextEndAtIso);
+            next.setMemberIds(new ArrayList<>(memberUserIds));
+            next.setAvatar(targetAvatar);
+            next.setContextStartAtIso(contextStartAtIso);
+            next.setContextEndAtIso(contextEndAtIso);
+            if (changed) {
+                next.setRevision(nextChatRevision(existing));
+                changedDocuments.add(next);
+            }
+            activeDocuments.add(next);
+        }
+        if (!changedDocuments.isEmpty()) {
+            chatsRepository.saveAll(changedDocuments);
+        }
+        if (!staleDocuments.isEmpty()) {
+            chatsRepository.deleteAll(staleDocuments);
+            incrementStoredChatCounters(staleDocuments.stream()
+                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
+                    .toList());
+        }
+        evictChatOwnerReadCaches(changedDocuments);
+        evictChatOwnerReadCaches(staleDocuments);
+        return activeDocuments;
     }
 
     private String serviceChatTitle(
