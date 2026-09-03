@@ -6333,6 +6333,18 @@ is **PASS / CLOSED**.
 - The final Asset contains the owner plus the promoted invitee and no requester
   row. Asset Manager must not silently promote the user to Event Admin, change
   an existing Event membership role or affect another group.
+- Retained partial execution on `2026-09-03` exposed a frontend reconciliation
+  defect after Casey removed the previously accepted Riley: Mongo and the
+  resource-scope API both retained the target Transport at `1 / 4` with Nova's
+  one pending Invite, but the open card could temporarily retain the earlier
+  pending value while the Group Transport row became `0 / 0 - 0`. The resource
+  popup now prefers its freshly queried scoped Asset over an older own-Asset
+  copy, aggregates the authoritative metrics of every visible resource owner,
+  and republishes that absolute scope through the existing resource-metrics
+  signal on initial Asset Members hydration and committed member changes. The
+  frontend watcher compiled and synced the change; the focused
+  `ActivityResourceBuilder` spec passed `11/11`. This exploratory state remains
+  non-oracleable and does not change the testcase status.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
