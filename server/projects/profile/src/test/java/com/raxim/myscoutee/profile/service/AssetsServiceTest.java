@@ -645,6 +645,9 @@ class AssetsServiceTest {
                 null, null, null, 1, null, null, List.of(), null, null);
         asset.setRequests(List.of(
                 new AssetRequestRecord(
+                        "group-a-owner", "u1", "Owner One", "OO", "man", "accepted", "", "borrow",
+                        "2026-05-11T09:00:00Z", groupABooking),
+                new AssetRequestRecord(
                         "group-a-old", "u2", "Old Group A", "OA", "man", "accepted", "", "borrow",
                         "2026-05-11T10:00:00Z", groupABooking),
                 new AssetRequestRecord(
@@ -688,7 +691,7 @@ class AssetsServiceTest {
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getRequests())
                 .extracting(AssetRequestRecord::id)
-                .contains("group-b-kept")
+                .contains("group-a-owner", "group-b-kept")
                 .doesNotContain("group-a-old");
         assertThat(savedAsset.getValue().getRequests())
                 .filteredOn(request -> "u4".equals(request.userId()))

@@ -1267,6 +1267,14 @@ public class AssetsService {
                 continue;
             }
             String requestUserId = normalizeId(existing.userId());
+            // A take-over keeps the successor's accepted scoped membership as the
+            // authoritative occupant of the resource. Member-list updates omit the
+            // current owner, so dropping this row would incorrectly turn 2 -> 0
+            // when the other member is removed instead of the expected 2 -> 1.
+            if (ownerUserId.equals(requestUserId)) {
+                nextRequests.add(existing);
+                continue;
+            }
             ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
             if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
                 continue;
