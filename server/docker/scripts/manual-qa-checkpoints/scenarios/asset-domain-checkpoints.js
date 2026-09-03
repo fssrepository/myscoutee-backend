@@ -23,6 +23,8 @@
   const VISIBILITY_UNRELATED_USER_ID = "2d520f3c98b0440c1556f4af";
   const VISIBILITY_EVENT_ID = `${PREFIX}:visibility:event`;
   const VISIBILITY_SUB_EVENT_ID = `${VISIBILITY_EVENT_ID}:sub-event:transport`;
+  const VISIBILITY_EDITED_VISIBILITY = "Invitation only";
+  const VISIBILITY_FIXTURE_SCHEMA_VERSION = 2;
   const VISIBILITY_ASSETS = {
     public: {
       assetId: `${PREFIX}:asset:visibility:public`,
@@ -81,11 +83,11 @@
       worker: "MUST NOT use a scheduler. Ordinary direct writes and the existing affinity projection may run; no fixture command may fabricate a lifecycle transition."
     },
     [VISIBILITY_CHECKPOINT]: {
-      stage: "visibility-readonly",
-      why: "Prove owner, deterministic friend and unrelated-user Asset discovery boundaries without creating a borrow or assignment.",
-      action: "Compare only the three QA ASSET-VIS-001 target titles in Casey, Lina and Liam My Assets and Resource/Asset Explore surfaces, then report the checklist phrase.",
-      expected: "Casey owns all three and explores none of them; Lina explores Public plus Friends only; Liam explores Public only; Invitation only is never externally discoverable and denied detail reads return no data.",
-      worker: "MUST NOT use a scheduler. Every list/detail read is side-effect free; no borrow, member, assignment, task, outbox or notification write is allowed."
+      stage: "visibility-edit",
+      why: "Prove owner, deterministic friend and unrelated-user Asset discovery boundaries, category filtering and reload reconstruction after one owner visibility edit.",
+      action: "Compare the baseline target sets, exercise the Transport category filter, then change only the Public control to Invitation only as Casey and compare the reloaded three-user matrix.",
+      expected: "Baseline: Casey owns all three and explores none, Lina explores Public plus Friends, and Liam explores Public only. After the Public control becomes Invitation only, Lina explores Friends only and Liam explores no target; denied detail reads expose no hidden data.",
+      worker: "MUST NOT manually trigger a scheduler. List/detail/filter reads are side-effect free; exactly one normal owner visibility Save and its ordinary Asset affinity-recompute task are allowed. No borrow, member, assignment, outbox or notification write is allowed."
     },
     "ASSET-MEMBER-001": {
       stage: "member-empty",
@@ -120,10 +122,40 @@
     return new Date(Date.now() + offsetMinutes * 60000).toISOString();
   }
 
+  function disabledAssetPricingDocument() {
+    return {
+      mode: "fixed",
+      basePrice: 0,
+      currency: "USD",
+      taxMode: "excluded",
+      chargeType: "per_attendee",
+      quantityRulesEnabled: false,
+      quantityRules: [],
+      rounding: "none",
+      demandRulesEnabled: false,
+      demandRules: [],
+      timeRulesEnabled: false,
+      timeRules: [],
+      cancellationPolicy: {
+        enabled: false,
+        rules: []
+      },
+      slotPricingEnabled: false,
+      slotOverrides: [],
+      audience: {
+        enabled: false,
+        promoCodes: [],
+        soldOutLabel: "Show \"Sold Out\""
+      },
+      enabled: false
+    };
+  }
+
   function assetDocument(assetId, ownerUserId, title) {
     const now = Q.nowIso();
     return {
       _id: assetId,
+      _class: "com.raxim.myscoutee.profile.data.document.Asset",
       syncKey: assetId,
       assetId,
       ownerUserId,
@@ -135,9 +167,12 @@
       capacityTotal: 4,
       quantity: 1,
       details: "Controlled manual-QA asset",
+      imageUrl: "",
+      sourceLink: "",
       routes: ["Austin"],
       policiesEnabled: false,
       policies: [],
+      pricing: disabledAssetPricingDocument(),
       requests: [],
       visibility: "Public",
       status: "A",
@@ -704,10 +739,11 @@
     };
   }
 
-  function visibilityExpectedMatrix() {
+  function visibilityExpectedMatrix(phase = "baseline-ready") {
     const publicId = VISIBILITY_ASSETS.public.assetId;
     const friendsId = VISIBILITY_ASSETS.friends.assetId;
     const invitationId = VISIBILITY_ASSETS.invitation.assetId;
+    const edited = phase === "visibility-edited";
     return {
       owner: {
         ownedTargetIds: [publicId, friendsId, invitationId],
@@ -716,20 +752,20 @@
       },
       friend: {
         ownedTargetIds: [],
-        exploreTargetIds: [publicId, friendsId],
-        readableDetailIds: [publicId, friendsId],
-        deniedDetailIds: [invitationId]
+        exploreTargetIds: edited ? [friendsId] : [publicId, friendsId],
+        readableDetailIds: edited ? [friendsId] : [publicId, friendsId],
+        deniedDetailIds: edited ? [publicId, invitationId] : [invitationId]
       },
       unrelated: {
         ownedTargetIds: [],
-        exploreTargetIds: [publicId],
-        readableDetailIds: [publicId],
-        deniedDetailIds: [friendsId, invitationId]
+        exploreTargetIds: edited ? [] : [publicId],
+        readableDetailIds: edited ? [] : [publicId],
+        deniedDetailIds: edited ? [publicId, friendsId, invitationId] : [friendsId, invitationId]
       }
     };
   }
 
-  function assertVisibilityFixture(state) {
+  function assertVisibilityFixture(state, phase = Q.text(state.phase)) {
     const actors = assertVisibilityActors();
     const documents = visibilityDocuments();
     if (documents.length !== 3) {
@@ -738,6 +774,9 @@
     const byId = new Map(documents.map(asset => [Q.text(asset.assetId), asset]));
     for (const definition of Object.values(VISIBILITY_ASSETS)) {
       const asset = byId.get(definition.assetId);
+      const expectedVisibility = phase === "visibility-edited" && definition.assetId === VISIBILITY_ASSETS.public.assetId
+        ? VISIBILITY_EDITED_VISIBILITY
+        : definition.visibility;
       if (!asset
           || Q.text(asset._id) !== definition.assetId
           || Q.text(asset.syncKey) !== definition.assetId
@@ -745,13 +784,13 @@
           || Q.text(asset.type) !== "Transport"
           || Q.text(asset.title) !== definition.title
           || Q.text(asset.category) !== "Sedan"
-          || Q.text(asset.visibility) !== definition.visibility
+          || Q.text(asset.visibility) !== expectedVisibility
           || lifecycleStatusCode(asset.status) !== "A"
           || Q.number(asset.quantity) !== 1
           || Q.text(asset.city)
           || (Array.isArray(asset.routes) && asset.routes.length !== 0)
           || (Array.isArray(asset.requests) && asset.requests.length !== 0)) {
-        Q.fail(`ASSET-VIS-001 '${definition.visibility}' Asset does not match its stable fixture contract.`);
+        Q.fail(`ASSET-VIS-001 '${definition.title}' does not match its '${expectedVisibility}' fixture contract.`);
       }
     }
     const event = Q.collection("events").findOne(visibilityEventSelector());
@@ -830,11 +869,93 @@
     };
   }
 
+  function visibilityStableAssetProjection(asset) {
+    return {
+      _id: Q.text(asset && asset._id),
+      syncKey: Q.text(asset && asset.syncKey),
+      assetId: Q.text(asset && asset.assetId),
+      ownerUserId: Q.text(asset && asset.ownerUserId),
+      type: Q.text(asset && asset.type),
+      title: Q.text(asset && asset.title),
+      subtitle: Q.text(asset && asset.subtitle),
+      category: Q.text(asset && asset.category),
+      city: Q.text(asset && asset.city),
+      capacityTotal: Q.number(asset && asset.capacityTotal),
+      quantity: Q.number(asset && asset.quantity),
+      details: Q.text(asset && asset.details),
+      imageUrl: Q.text(asset && asset.imageUrl),
+      sourceLink: Q.text(asset && asset.sourceLink),
+      routes: Array.isArray(asset && asset.routes) ? asset.routes.map(Q.text) : [],
+      policiesEnabled: asset && asset.policiesEnabled === true,
+      policies: Array.isArray(asset && asset.policies) ? asset.policies : [],
+      pricing: asset && asset.pricing ? asset.pricing : null,
+      requests: Array.isArray(asset && asset.requests) ? asset.requests : [],
+      status: lifecycleStatusCode(asset && asset.status),
+      createdDate: Q.text(asset && asset.createdDate),
+      createdUser: Q.text(asset && asset.createdUser)
+    };
+  }
+
+  function assertVisibilityEditEffects(state, currentSnapshot) {
+    const baseline = state.visibilityReadBaseline;
+    const changedKeys = Object.keys(currentSnapshot)
+      .filter(key => !Q.sameJson(currentSnapshot[key], baseline && baseline[key]))
+      .sort();
+    if (!Q.sameJson(changedKeys, ["assets", "tasks"])) {
+      Q.fail(`ASSET-VIS-001 visibility Edit changed unexpected persisted domains: ${changedKeys.join(", ") || "none"}.`);
+    }
+    const byAssetId = values => new Map((values || []).map(asset => [Q.text(asset.assetId), asset]));
+    const baselineAssets = byAssetId(baseline.assets);
+    const currentAssets = byAssetId(currentSnapshot.assets);
+    const publicId = VISIBILITY_ASSETS.public.assetId;
+    for (const assetId of VISIBILITY_ASSET_IDS) {
+      const before = baselineAssets.get(assetId);
+      const after = currentAssets.get(assetId);
+      if (!before || !after) {
+        Q.fail(`ASSET-VIS-001 visibility Edit lost controlled Asset '${assetId}'.`);
+      }
+      if (assetId === publicId) {
+        const beforeProjection = visibilityStableAssetProjection(before);
+        const afterProjection = visibilityStableAssetProjection(after);
+        const changedStableFields = Object.keys(afterProjection)
+          .filter(key => !Q.sameJson(afterProjection[key], beforeProjection[key]));
+        if (changedStableFields.length > 0) {
+          Q.fail(`ASSET-VIS-001 Public control changed stable field(s) besides Visibility: ${changedStableFields.join(", ")}.`);
+        }
+        if (Q.text(after.visibility) !== VISIBILITY_EDITED_VISIBILITY
+            || Q.text(after.updatedUser) !== hostUserId
+            || Q.text(after.updatedDate) === Q.text(before.updatedDate)) {
+          Q.fail("ASSET-VIS-001 Public control did not persist exactly one owner-authored Invitation only visibility update.");
+        }
+        continue;
+      }
+      if (!Q.sameJson(after, before)) {
+        Q.fail(`ASSET-VIS-001 visibility Edit changed sibling control '${assetId}'.`);
+      }
+    }
+    const tasks = currentSnapshot.tasks || [];
+    if (tasks.length !== 1) {
+      Q.fail(`ASSET-VIS-001 expected one collapsed affinity task for the edited Asset, found ${tasks.length}.`);
+    }
+    const task = tasks[0];
+    const reasons = Array.isArray(task.reasons) ? task.reasons.map(Q.text) : [];
+    const taskStatus = Q.text(task.status).toLowerCase();
+    if (Q.text(task.targetType) !== "ASSET"
+        || Q.text(task.targetId) !== publicId
+        || !reasons.includes("ASSET_CHANGED")
+        || !["pending", "running", "done"].includes(taskStatus)
+        || Q.text(task.lastError)) {
+      Q.fail("ASSET-VIS-001 affinity task does not match the one edited Asset or has failed.");
+    }
+    return { changedKeys, affinityTaskStatus: taskStatus };
+  }
+
   function visibilityOracle(state) {
     const fixture = assertVisibilityFixture(state);
     const currentSnapshot = visibilityDomainSnapshot();
-    const readOnlyChangedKeys = Object.keys(currentSnapshot)
+    const baselineChangedKeys = Object.keys(currentSnapshot)
       .filter(key => !Q.sameJson(currentSnapshot[key], state.visibilityReadBaseline && state.visibilityReadBaseline[key]));
+    const edited = Q.text(state.phase) === "visibility-edited";
     return {
       actors: fixture.actors,
       event: {
@@ -850,10 +971,15 @@
         ownerUserId: Q.text(asset.ownerUserId),
         status: Q.text(asset.status)
       })),
-      targetMatrix: visibilityExpectedMatrix(),
+      targetMatrix: visibilityExpectedMatrix(Q.text(state.phase)),
       counters: fixture.counters,
-      readOnlyBaselineUnchanged: readOnlyChangedKeys.length === 0,
-      readOnlyChangedKeys
+      baselineComparison: {
+        expectedMode: edited ? "single-visibility-edit" : "read-only",
+        matchesExpectedMode: edited
+          ? Q.sameJson([...baselineChangedKeys].sort(), ["assets", "tasks"])
+          : baselineChangedKeys.length === 0,
+        changedKeys: baselineChangedKeys
+      }
     };
   }
 
@@ -1336,9 +1462,11 @@
       workerExpectation: selected.worker,
       oracle: visibilityOracle(state),
       expectedVisibleResult: selected.expected,
-      next: Q.text(state.phase) === "readonly-verified"
+      next: Q.text(state.phase) === "visibility-edited"
         ? "Record the browser evidence, close ASSET-VIS-001, then reset the fixture."
-        : "Complete the checklist reads, run the authenticated HTTP matrix, then run verify-visibility-readonly."
+        : Q.text(state.phase) === "readonly-verified"
+          ? "Complete the single Casey visibility Edit and three-client reload branch, run the edited HTTP matrix, then run verify-visibility-edited."
+          : "Complete the baseline checklist reads, run the authenticated HTTP matrix, then run verify-visibility-readonly."
     });
   }
 
@@ -1352,9 +1480,9 @@
     }
     assertVisibilityFixture(state);
     const current = visibilityDomainSnapshot();
-    if (!Q.sameJson(current, state.visibilityReadBaseline)) {
-      const changedKeys = Object.keys(current)
-        .filter(key => !Q.sameJson(current[key], state.visibilityReadBaseline[key]));
+    const changedKeys = Object.keys(current)
+      .filter(key => !Q.sameJson(current[key], state.visibilityReadBaseline[key]));
+    if (changedKeys.length !== 0) {
       Q.fail(`ASSET-VIS-001 list/detail reads changed persisted state in: ${changedKeys.join(", ")}.`);
     }
     const verifiedAtIso = Q.nowIso();
@@ -1369,7 +1497,36 @@
       verifiedAtIso,
       changedPersistedCollections: [],
       oracle: visibilityOracle(requireMatchingState()),
-      next: "Record ASSET-VIS-001 PASS only when the three browser target sets and authenticated HTTP visibility/detail matrix also match."
+      next: "Change only QA ASSET-VIS-001 Public Transport from Public to Invitation only as Casey, reload all three clients and compare the edited matrix."
+    });
+  }
+
+  function verifyVisibilityEdited() {
+    if (checkpointId !== VISIBILITY_CHECKPOINT) {
+      Q.fail(`verify-visibility-edited is restricted to ${VISIBILITY_CHECKPOINT}.`);
+    }
+    const state = requireMatchingState();
+    if (Q.text(state.phase) !== "readonly-verified") {
+      Q.fail(`ASSET-VIS-001 visibility Edit verification requires phase 'readonly-verified', found '${Q.text(state.phase)}'.`);
+    }
+    const fixture = assertVisibilityFixture(state, "visibility-edited");
+    const current = visibilityDomainSnapshot();
+    const effects = assertVisibilityEditEffects(state, current);
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "readonly-verified" },
+      { $set: { phase: "visibility-edited", visibilityEditedVerifiedAtIso: verifiedAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "visibility-edited",
+      verifiedAtIso,
+      changedPersistedCollections: effects.changedKeys,
+      affinityTaskStatus: effects.affinityTaskStatus,
+      counters: fixture.counters,
+      targetMatrix: visibilityExpectedMatrix("visibility-edited"),
+      next: "Record ASSET-VIS-001 PASS only when the reloaded Casey/Lina/Liam browser sets and edited authenticated HTTP visibility/detail matrix also match."
     });
   }
 
@@ -1474,7 +1631,7 @@
         expectedVisibleResult: config().expected,
         workerExpectation: config().worker,
         identities: state.context,
-        targetMatrix: visibilityExpectedMatrix()
+        targetMatrix: visibilityExpectedMatrix(Q.text(state.phase))
       });
       return;
     }
@@ -1559,6 +1716,7 @@
     case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
     case "verify-lifecycle-deleted": verifyLifecycleDeleted(); break;
     case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
+    case "verify-visibility-edited": verifyVisibilityEdited(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

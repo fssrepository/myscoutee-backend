@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 04:42 CEST
+Updated: 2026-09-03 05:12 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -54,18 +54,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-VIS-001 — active, baseline-ready
+checkpoint: ASSET-VIS-001 — active, browser-ready
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-vis-001--discovery-visibility
 checklist: ../checklists/asset/ASSET-VIS-001.md
 checklist_section: Visibility journey
-substage: the three stable Casey-owned Public/Friends only/Invitation only Transport controls and the read-only Event/Sub-event navigation scaffold are staged; no user UI action has run
-next_replay_boundary: replace the stale prior managed browser with the versioned Casey/Lina/Liam sessions, prove their identities and authenticated HTTP matrix, then issue checklist step 1 through the single terminal stop phrase
-fixture_phase: baseline-ready at 2026-09-03T02:41:38.553Z; two consecutive harness reads agree on three target Assets, exact Casey/Lina/Liam scaffold membership, authoritative/legacy/nested Transport counts `3/3/3`, zero target request/assignment/outbox/notification/task residue and byte-stable read baseline
-browser_phase: not launched for ASSET-VIS-001 yet; the next launcher replaces the completed stale ASSET-LIFE-001 window, then its active session IDs are required by the authenticated HTTP oracle
+substage: Casey/Lina/Liam managed sessions are open and identity-proven; the pre-UI authenticated visibility/detail matrix, Event navigation scaffold and persisted read-only oracle all pass; the user independently observed the category filter working, while the full baseline phrase and single visibility Edit remain pending
+next_replay_boundary: because the Asset Explore owner-avatar/profile fix was hot-deployed behind the open clients, reload all three managed windows once, complete checklist steps 1-19 through the baseline phrase, rerun the baseline oracles, then authorize steps 20-26 for the single Visibility Edit and reload matrix
+fixture_phase: readonly-verified at 2026-09-03T02:46:03.618Z; the active fixture retains three target Assets, exact Casey/Lina/Liam scaffold membership, authoritative/legacy/nested Transport counts `3/3/3`, zero target request/assignment/outbox/notification/task residue and an unchanged read baseline
+browser_phase: three versioned isolated demo sessions launched at 2026-09-03T02:44:13.898Z; Casey is the owner, Lina the deterministic friend and Liam the unrelated control; `/auth/me`, the Event list route and the exact authenticated Asset matrix pass for every session; after the initials-only observation, one explicit reload per window is required to load the 05:11:16 hot-synced public-profile owner-avatar bundle
 ledger_status: 82/118 total, Core 82/98; ASSET-LIFE-001 PASS/CLOSED
-required_resume: do not restage ASSET-LIFE-001 or ASSET-VIS-001; verify the active ASSET-VIS baseline, launch only its versioned managed sessions, then continue from the checklist Visibility journey
+required_resume: do not restage or relaunch ASSET-VIS-001; reload the three existing windows once for the hot-deployed bundle, then continue from checklist step 1
 actors: Casey Bridge `650000000000000000000061` owner; Lina Park `178e8d0cbe164fa3fede5884` deterministic friend; Liam Parker `2d520f3c98b0440c1556f4af` unrelated control
-pending_machine_oracle: after session launch, run the authenticated exact owned/Explore/detail matrix; after the user's reads, run it again and `verify-visibility-readonly`
+pending_machine_oracle: at the baseline phrase repeat `verify-asset-visibility-http.sh baseline` and `verify-visibility-readonly`; after the single Edit/reload terminal phrase run `verify-asset-visibility-http.sh edited` and `verify-visibility-edited`
 last_completed: ASSET-LIFE-001 passed Create/Edit/Delete, immediate dual counter reconciliation, type schemas, managed shared-media behavior, reload persistence and terminal/reset Mongo oracles; Asset polling remains intentionally absent and Borrow polling remains a later separate decision
 ```
 
@@ -103,6 +103,9 @@ Separate captured Asset follow-up: Tournament-origin asset behavior remains
 owned by the Asset block instead of duplicating closed Tournament cases.
 `ASSET-MEMBER-001/002` own generated-group Join/Invite transitions,
 `ASSET-BORROW-001` owns generated-group Resource Explore/borrow, and
+`ASSET-AVAIL-001` owns the multi-day Explore date-range boundary where a
+Public Asset can still be unavailable for an overlapping full-capacity window,
+while a released non-overlapping window restores it in place and after reload;
 `ASSET-ASSIGN-003` now explicitly owns generated-group edit, unassign and
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
@@ -195,10 +198,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Next test: `ASSET-VIS-001`. The next session first generates and validates its
-versioned fixture, user checklist and browser-session definition, then stages
-the checkpoint once. It verifies the persisted baseline before opening the
-managed browser windows.
+Next test: `ASSET-VIS-001`. Its fixture, click guide and three-role browser
+definition are versioned; the active fixture, managed sessions and pre-UI
+machine oracles are ready. Reload each existing managed window once for the
+hot-deployed owner-avatar/profile fix, then continue the baseline/category
+steps. After their internal oracle savepoint, perform the single Public to
+Invitation-only Edit and prove the changed three-client matrix after reload.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

@@ -6235,9 +6235,17 @@ is **PASS / CLOSED**.
 
 - Stage one Public, Friends only and Invitation only asset and compare the
   exact Explore and owned/managed ID sets as owner, friend and unrelated user.
-- A direct denied detail read must expose no hidden asset data. Every list and
-  detail read is side-effect free; borrow and assignment writes are outside
-  this checkpoint.
+- In Explore, verify the existing Transport category filter against the exact
+  target set and verify each owner avatar uses the owner's profile image and
+  opens the same profile/impressions surface as Event Explore.
+- After the read-only baseline, change only the Public control to Invitation
+  only through Casey's normal Asset editor, then reload all three clients. The
+  owner set remains stable, Lina falls back to the Friends-only control, and
+  Liam sees no target Asset.
+- Direct denied detail reads must expose no hidden Asset data before or after
+  the Edit. List/detail/filter reads stay side-effect free; the single Save may
+  create only its normal collapsed Asset affinity task. Borrow, membership and
+  assignment writes remain outside this checkpoint.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
@@ -6355,9 +6363,14 @@ payment.
 - Stage two overlapping booking requests against one finite-capacity asset,
   then move one request outside the overlap without waiting for wall-clock
   time.
+- Use a multi-day Event/Sub-event window and change the Resource Explore date
+  range between the overlapping and released windows. A Public Asset that has
+  no remaining capacity for the selected window must become unavailable or
+  disappear from the availability-filtered result; Public visibility alone
+  must never override timeframe availability.
 - Verify half-open timeframe boundaries, pending/accepted quantities,
-  available capacity and Explore order. Moving one request restores exactly
-  its released capacity in place and after reload.
+  available capacity, date-filter reconstruction and Explore order. Moving one
+  request restores exactly its released capacity in place and after reload.
 
 ### `ASSET-ASSIGN-001` — event/sub-event asset assignment
 

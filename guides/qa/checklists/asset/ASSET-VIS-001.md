@@ -4,6 +4,10 @@ This file is the tester's stable, repeatable click-by-click guide. It is not an
 execution log: do not check off its steps or add current dates, status, IDs or
 machine-oracle evidence to it.
 
+The complete baseline, category-filter and visibility-Edit journey is one
+testcase transaction. The baseline phrase is only a replay savepoint inside
+that testcase, not a separate test or matrix row.
+
 ## Actors and startup
 
 - **Casey** is the owner, **Lina** is Casey's deterministic friend, and
@@ -13,8 +17,10 @@ machine-oracle evidence to it.
   one isolated browser for each actor.
 - Compare only titles beginning `QA ASSET-VIS-001`. Other demo Assets are not
   part of the target set and may remain visible.
-- This checkpoint contains reads only. Do not select Borrow, Share, Contact,
-  Report, Edit, Delete, Add, Invite or any confirmation action.
+- The baseline sections contain reads and category filtering only. After its
+  savepoint, perform exactly the one named owner Visibility Edit. Do not select
+  Borrow, Share, Contact, Report, Delete, Add, Invite or any other confirmation
+  action.
 - Stop at the first mismatch. Do not compensate with another navigation,
   filter, browser profile, API call, fixture change or write action.
 
@@ -28,8 +34,8 @@ Begin only after Codex confirms all of the following:
   Assets: one `Public`, one `Friends only` and one `Invitation only`;
 - Casey owns the Event/Sub-event scaffold and Casey, Lina and Liam are its
   three accepted members;
-- no target borrow request, Asset membership, assignment, notification,
-  outbox item or recompute task exists;
+- no target borrow request, Asset membership, assignment, notification or
+  outbox item exists;
 - the authenticated server baseline agrees with the expected visibility
   matrix;
 - three isolated, identity-verified Casey/Lina/Liam windows are open.
@@ -70,44 +76,73 @@ Begin only after Codex confirms all of the following:
    - `QA ASSET-VIS-001 Friends Transport`
 
 9. Confirm `QA ASSET-VIS-001 Invitation Transport` is absent.
-10. Open each visible target card menu and select `View Asset`, one at a time.
+10. Confirm both target cards show Casey's actual profile image in the owner
+    avatar instead of the `CB` initials fallback. Select the owner avatar on
+    one card, confirm Casey's same profile/impressions surface opens as from
+    Event Explore, then close it.
+11. Open each visible target card menu and select `View Asset`, one at a time.
     Confirm the read-only detail shows the same title, owner Casey, category
     `Sedan` and matching visibility. Close each detail without selecting
     another action.
+12. Open the category selector and choose `Sedan`. Confirm the controlled set
+    remains exactly Public plus Friends. Choose `Van`; confirm the controlled
+    set is empty. Restore `All Transport`; confirm Public plus Friends return
+    exactly once each.
 
 ### 3. Unrelated-user sets and readable detail
 
-11. In **Liam**, open `My Assets → Transport`. Confirm none of the three
+13. In **Liam**, open `My Assets → Transport`. Confirm none of the three
     controlled titles appears in Liam's owned/managed list. Close My Assets.
-12. Open the same Event/Sub-event path in Liam:
+14. Open the same Event/Sub-event path in Liam:
 
     `Activities → Events → Active Events → QA ASSET-VIS-001 Event → View Event → QA Visibility Stage → Transport → Explore`
 
-13. Confirm Liam's controlled Explore title set contains exactly
+15. Confirm Liam's controlled Explore title set contains exactly
     `QA ASSET-VIS-001 Public Transport` once.
-14. Confirm both `QA ASSET-VIS-001 Friends Transport` and
+16. Confirm both `QA ASSET-VIS-001 Friends Transport` and
     `QA ASSET-VIS-001 Invitation Transport` are absent.
-15. Open the Public card menu and select `View Asset`. Confirm its read-only
+17. Confirm the Public card shows Casey's profile image as its interactive
+    owner avatar. Select it, confirm Casey's profile/impressions surface opens,
+    then close it.
+18. Open the Public card menu and select `View Asset`. Confirm its read-only
     detail shows owner Casey, category `Sedan` and visibility `Public`. Close
     the detail and Asset Explore without selecting another action.
 
-### 4. Reload reconstruction
+### 4. Baseline savepoint
 
-16. Reload Casey, Lina and Liam exactly once each.
-17. Reopen only the same My Assets and Event/Sub-event Asset Explore paths.
-    Confirm the controlled sets remain exactly:
+19. Report the intermediate phrase:
 
-    - Casey owned: Public + Friends only + Invitation only; Explore: none;
-    - Lina owned: none; Explore: Public + Friends only;
-    - Liam owned: none; Explore: Public only.
+    `ASSET-VIS-001 baseline ready: category and owner profile match`
 
-18. Confirm no target card changed its visibility, owner, availability or
-    presentation and no success/pending notification appeared merely because
-    of these reads.
-19. Report the terminal phrase:
+Wait for Codex's authenticated baseline/detail-denial and persisted read-only
+oracles before performing the Edit.
 
-    `ASSET-VIS-001 UI complete: owner, friend and unrelated sets persist`
+### 5. One visibility Edit and reload reconstruction
 
-Wait for Codex's authenticated detail-denial and persisted read-only oracles.
-Do not reset or continue to another testcase until Codex records the outcome
-and restores this fixture.
+20. After Codex confirms the baseline savepoint, in **Casey** open
+    `My Assets → Transport` and open only
+    `QA ASSET-VIS-001 Public Transport` with `Edit`.
+21. Change only Visibility from `Public` to `Invitation only`. Select Save
+    exactly once.
+22. Without reloading, confirm the same three Casey-owned cards remain, the
+    edited card now shows `Invitation only`, and the Transport count does not
+    change in either the Asset type selector or side menu.
+23. Reload Casey, Lina and Liam exactly once each.
+24. Reopen only the same My Assets and Event/Sub-event Asset Explore paths.
+    Confirm the controlled sets now remain exactly:
+
+    - Casey owned: all three original titles, with the Public-title control now
+      `Invitation only`; Casey Explore: none;
+    - Lina owned: none; Lina Explore: Friends Transport only;
+    - Liam owned: none; Liam Explore: no controlled target.
+
+25. Confirm Casey remains the owner, the available owner avatar still opens
+    Casey's profile/impressions surface, and no borrow/request/assignment or
+    success/pending notification was created by filtering or viewing.
+26. Report the terminal phrase:
+
+    `ASSET-VIS-001 UI complete: edited visibility matrix persists after reload`
+
+Wait for Codex's edited authenticated detail-denial and exact persisted
+single-write oracles. Do not reset or continue to another testcase until Codex
+records the outcome and restores this fixture.
