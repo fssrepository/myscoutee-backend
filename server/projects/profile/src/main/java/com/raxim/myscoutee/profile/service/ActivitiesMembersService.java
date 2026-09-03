@@ -1069,6 +1069,7 @@ public class ActivitiesMembersService {
                 && MANAGER_ROLES.contains(currentRole)
                 && hasAcceptedManagerSuccessor(existing, targetUserId, ownerType, ownerId);
         boolean leavingOwnManagedMembership = !OWNER_TYPE_EVENT.equals(ownerType)
+                && !OWNER_TYPE_ASSET.equals(ownerType)
                 && ACTION_REMOVE.equals(action)
                 && actorUserId.equals(targetUserId)
                 && STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))

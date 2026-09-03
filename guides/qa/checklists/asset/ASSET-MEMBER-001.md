@@ -21,14 +21,16 @@ savepoint inside that testcase, not a separate matrix row.
   and target `QA ASSET-MEMBER-001 Group Transport`.
 - Use only the three isolated Casey/Nova/Riley windows opened by Codex. Do not
   create another profile or use an API, MongoDB or fixture command to perform
-  an Invite, Join, response or promotion.
+  an Invite, Join, response, removal or promotion.
 - This owned-Asset journey does not use polling. Reload only at the two steps
-  that explicitly require it, and select each Invite, Join, Accept, Reject or
+  that explicitly require it, and select each Invite, Join, Accept, Remove or
   manager-promotion confirmation exactly once.
 - The red `+N` chain and the Asset card's `N pending` badge both represent the
   unresolved request total. Opening or closing Event, stage, Group, Transport
-  or Asset Members must not clear it; only accepting or rejecting a request may
-  reduce it.
+  or Asset Members must not clear it. It decreases only when a pending request
+  is accepted, rejected or cancelled. Resolved membership changes use the
+  recipient's Notifications unread counter instead of retaining or creating a
+  pending red counter on the Event/stage/Group/Asset chain.
 - Stop at the first mismatch. Do not compensate with a second click, another
   actor, a different group, an unrelated Asset or an ad-hoc fixture change.
 
@@ -115,6 +117,8 @@ Begin only after Codex confirms all of the following:
     and select `Send join request` exactly once.
 18. Without reloading Riley, confirm the card no longer offers another Join and
     the Group A Transport pending counter has increased by exactly one to `2`.
+    Riley's own pending member row may offer `Cancel join request`; it must not
+    say `Leave asset`. Do not select it.
 19. Reload **Casey** exactly once. Confirm the persisted pending chain is now
     exactly red `+2` from the parent Activity/Event card through the stage and
     Group A. Opening Transport must not consume that pending chain, and its
@@ -141,50 +145,83 @@ with byte-identical parent Event and both generated-group memberships. It must
 also prove exactly one Casey-to-Nova Asset Invite notification and exactly one
 Riley-to-Casey Asset Join-request notification, with no duplicate occurrence.
 
-## 3. Resolve independently and promote only the Asset role
+## 3. Resolve the two requests and keep member actions role-gated
 
 23. After Codex confirms the pending savepoint, in **Nova** reopen the same
     Event, stage Groups, Group A and Transport path without another reload,
     then open the target card's `Open member requests` badge.
-24. On Nova's own pending Invite row select `Accept`, then confirm `Accept`
-    exactly once. Close Asset Members. In **Casey**, confirm exactly one new
-    controlled Asset invitation-accepted notification from Nova for the target
-    Transport; it must not duplicate after reopening Notifications.
-25. In **Casey**, open `My Assets → Transport` and locate only
+24. Record Casey's Notifications unread counter. On Nova's own pending Invite
+    row select `Accept`, then confirm `Accept` exactly once. Confirm Nova is now
+    a plain accepted Asset Member and no member-card action menu is available
+    to her. Close Asset Members.
+25. Without reloading Casey, confirm the red pending chain decreases from `+2`
+    to `+1`, because only Riley's request remains unresolved. Confirm Casey's
+    Notifications unread counter increased by exactly one and exactly one new
+    controlled Asset invitation-accepted notification from Nova exists for the
+    target Transport; it must not duplicate after reopening Notifications.
+26. In **Casey**, open `My Assets → Transport` and locate only
     `QA ASSET-MEMBER-001 Group Transport`. Select its interactive availability
     count badge (or the card menu's `Availability` action).
-26. On Riley's still-pending row select `Reject`, then confirm `Reject` exactly
-    once.
-27. On Nova's accepted row select `Make Manager`, then confirm `Make Manager`
-    exactly once.
-28. Without reloading Casey, confirm Riley's row is gone, Nova appears once as
+27. Record Riley's Notifications unread counter. On Riley's still-pending row
+    select `Accept`, then confirm `Accept` exactly once. Confirm the target is
+    now `3 / 4`, its pending count is zero and the complete Event → stage →
+    Group A → Transport → Asset-card red pending chain is zero. No replacement
+    red counter may appear for the resolved Accept transition.
+28. Without reloading Riley, confirm his Notifications unread counter increases
+    by exactly one and exactly one controlled Asset request-accepted
+    notification from Casey exists. Reopen the target Asset Members popup and
+    confirm Riley is a plain accepted Member: neither Riley's own card nor
+    Casey's card has a member action menu. In particular, there is no `Leave
+    asset`, `Promote to admin` or `Report User` action.
+29. Record Riley's current Notifications unread counter. In Casey, reopen the
+    target Asset Members surface, select Riley's accepted row `Remove member`
+    and confirm `Remove` exactly once. Confirm Riley's row disappears, the
+    target returns to `2 / 4`, and every pending red counter remains zero.
+30. In Riley, confirm the Notifications unread counter increases by exactly one
+    from the step-29 baseline and exactly one controlled Asset membership-
+    removed notification from Casey exists. Riley may still use the target
+    card's `Ask Organizer` Service chat, but he cannot remove himself.
+31. Record Nova's Notifications unread counter. On Nova's accepted row in
+    Casey's Asset Members surface select `Make Manager`, then confirm `Make
+    Manager` exactly once. Confirm Nova's Notifications unread counter increases
+    by exactly one and exactly one controlled Asset manager-promotion
+    notification from Casey exists.
+32. Without reloading Casey, confirm Riley's row is gone, Nova appears once as
     Asset Manager, the target Transport is `2 / 4`, and its pending count is
     zero. The My Assets Transport count itself must not change.
-29. In Casey's Event path, reopen the same Group A Transport and confirm the
+33. In Casey's Event path, reopen the same Group A Transport and confirm the
     same `2 / 4`, zero-pending state appears immediately. Confirm Group B still
     has no controlled Transport or pending state.
-30. Confirm the Event membership surface still shows Casey as Event Admin and
+34. Confirm the Event membership surface still shows Casey as Event Admin and
     Nova and Riley as Event Members. Nova must not become Event Admin, and no
     one moves between Group A and Group B.
 
 ## 4. Reload reconstruction and notification
 
-31. Reload Casey, Nova and Riley exactly once each.
-32. Reopen the same Event/Group A Transport path in all three windows. Confirm
+35. Reload Casey, Nova and Riley exactly once each.
+36. Reopen the same Event/Group A Transport path in all three windows. Confirm
     `2 / 4`, zero pending and the same target identity persist. Nova can see
     the Asset as its manager but remains only an Event Member; Riley has no
     active Asset request and cannot see a stale pending row.
-33. In Casey's `Chats → Service` list, confirm the Riley Asset Service channel
-    and its one controlled message still exist after reload without a duplicate.
-34. In Nova's notification history, confirm exactly one controlled Asset Invite
+37. In Riley, reopen Asset Members and confirm accepted-member menus did not
+    reappear after reload. Riley has no direct leave/remove control; Casey still
+    owns the member-removal operation.
+38. In Casey's `Chats → Service` list, confirm exactly one row for the Riley
+    Asset Service channel and exactly one occurrence of the controlled message
+    still exist after reload. Unrelated messages manually sent during an
+    exploratory run do not count as duplicates of the controlled message.
+39. In Nova's notification history, confirm exactly one controlled Asset Invite
     and exactly one Asset manager-promotion notification from Casey. In Casey's
     history, confirm exactly one controlled Riley Join-request notification and
     exactly one controlled Asset invitation-accepted notification from Nova.
-    None of these four occurrences may be duplicated. Do not expect an extra
-    generic notification for the Reject transition.
-35. In Casey, confirm Group B and the parent Event membership roles remain
+    In Riley's history, confirm exactly one controlled request-accepted and one
+    membership-removed notification from Casey. None of these six controlled
+    occurrences may be duplicated. These resolved notifications use only the
+    relevant Notifications unread counter; they must not recreate the pending
+    red Event/stage/Group/Asset chain.
+40. In Casey, confirm Group B and the parent Event membership roles remain
     unchanged after reload.
-36. Report the terminal phrase:
+41. Report the terminal phrase:
 
     `ASSET-MEMBER-001 terminal complete: Nova Manager, Riley removed, Event and Group B unchanged`
 

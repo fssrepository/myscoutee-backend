@@ -419,7 +419,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void scopedAssetMemberManagementRequiresOwnerOrAcceptedBorrower() {
+    void scopedAssetMemberManagementRequiresOwnerOrExplicitManagerRole() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         Asset asset = assetWithEventRequest();
@@ -443,7 +443,7 @@ class AssetsServiceTest {
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u1")).isTrue();
         assertThat(service.canManageScopedAssetMembers(
-                "asset-1", "event-1", "subevent-1", "u2")).isTrue();
+                "asset-1", "event-1", "subevent-1", "u2")).isFalse();
 
         asset.setRequests(assetWithPendingBorrowRequest().getRequests());
         assertThat(service.canManageScopedAssetMembers(
@@ -1668,49 +1668,21 @@ class AssetsServiceTest {
     }
 
     @Test
-    void acceptedAssetMemberLeavingNotifiesAllRemainingAcceptedMembers() {
+    void acceptedAssetMemberCannotLeaveWithoutManagerRemoval() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
-        UsersRepository usersRepository = mock(UsersRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
-        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset existing = assetWithEventRequest();
-        AssetRequestRecord member = existing.getRequests().get(0);
-        existing.setRequests(List.of(
-                member,
-                new AssetRequestRecord(
-                        "request-3",
-                        "u3",
-                        "Member Three",
-                        "M3",
-                        "woman",
-                        "accepted",
-                        "Accepted for this asset.",
-                        "borrow",
-                        member.requestedAtIso(),
-                        member.booking())));
-        AtomicReference<Asset> assetState = new AtomicReference<>(existing);
-
-        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
-        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
-            Asset saved = invocation.getArgument(0);
-            assetState.set(saved);
-            return saved;
-        });
-        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
-        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Member Three", "M3")));
-        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
-        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
-        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(existing));
 
         AssetsService service = new AssetsService(
                 assetsRepository,
-                usersRepository,
+                mock(UsersRepository.class),
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
-                mongoTemplate,
+                mock(MongoTemplate.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -1719,7 +1691,7 @@ class AssetsServiceTest {
                 accessControlService,
                 mock(UserActivityCountersService.class));
 
-        AssetMemberStatusChangeDto left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                 "asset-1",
                 "event-1",
                 "subevent-1",
@@ -1727,14 +1699,9 @@ class AssetsServiceTest {
                 "leave",
                 null));
 
-        assertThat(left.status()).isEqualTo("deleted");
-        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
-        assertThat(notification.getValue().type()).isEqualTo("asset-member-left");
-        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1", "u3");
-        assertThat(notification.getValue().payload())
-                .containsEntry("memberUserId", "u2")
-                .containsEntry("membershipAction", "left");
+        assertThat(left).isNull();
+        verify(assetsRepository, never()).save(any(Asset.class));
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
     @Test

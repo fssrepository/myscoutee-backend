@@ -6301,19 +6301,32 @@ is **PASS / CLOSED**.
   recipient. The Join request must create exactly one Asset join-request
   notification for the owner/responsible managers, excluding the requester.
   Neither producer may duplicate its outbox or inbox occurrence.
+- Before joining, the requester can open `Ask Organizer` and send one
+  controlled message through the standard Asset Service chat. The same one
+  owner-copy per participant and one canonical controlled message must survive
+  reload without duplication. While the request is pending, the requester's
+  own member-row action is labelled `Cancel join request`, not `Leave asset`.
 
 ### `ASSET-MEMBER-002` — accept/reject and role isolation
 
-- Accept one of the group-scoped Invite/Join requests and reject the other
-  independently.
-- Verify accepted Asset request state and rejected cleanup independently in the
-  same generated-group booking scope, then explicitly promote the accepted
-  invitee to Asset Manager. Exactly one manager-promotion notification is
-  expected in addition to the retained single Invite and Join-request
-  notifications; the Accept and Reject transitions do not fabricate extra
-  generic notifications. Asset Manager must not silently promote the user to
-  Event Admin, change an existing Event membership role or affect another
-  group.
+- Accept the group-scoped Invite, then have the Asset owner accept the
+  independent Join request. The unresolved red Event/stage/Group/Asset chain
+  drops `2 -> 1 -> 0`; it exists only for pending work and must not be retained
+  or recreated for resolved membership changes.
+- An accepted ordinary Asset Member has no member-card management menu and
+  cannot leave/remove itself. The member contacts the owner through `Ask
+  Organizer`; only the owner or an explicit Asset Manager/Admin can remove an
+  accepted ordinary member. A still-pending requester may cancel only its own
+  request.
+- Have the owner remove the newly accepted requester, then explicitly promote
+  the accepted invitee to Asset Manager. The invite acceptance notifies the
+  responsible owner; Join acceptance and later removal each notify the affected
+  requester; promotion notifies the promoted invitee. Each transition adds the
+  relevant Notifications unread delta and one exact outbox/inbox occurrence,
+  but no resolved transition adds an Asset-card pending counter.
+- The final Asset contains the owner plus the promoted invitee and no requester
+  row. Asset Manager must not silently promote the user to Event Admin, change
+  an existing Event membership role or affect another group.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 

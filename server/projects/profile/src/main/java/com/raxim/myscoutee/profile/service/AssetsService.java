@@ -492,6 +492,9 @@ public class AssetsService {
         if ("leave".equals(action) && previous == null) {
             return null;
         }
+        if ("leave".equals(action) && !"pending".equals(previousStatus)) {
+            return null;
+        }
         if ("join".equals(action) && previous != null) {
             return memberStatusChange(
                     assetId,
@@ -1184,24 +1187,7 @@ public class AssetsService {
                 || hasAcceptedAssetManagerRole(asset, normalizedUserId)) {
             return true;
         }
-        String normalizedAuthorizationEventId = authorizationEventId(normalizedEventId, normalizedSubEventId);
-        return safeRequests(asset.getRequests()).stream()
-                .filter(Objects::nonNull)
-                .filter(request -> "borrow".equals(normalizeAssetRequestKind(request.requestKind())))
-                .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
-                .filter(request -> normalizedUserId.equals(normalizeId(request.userId())))
-                .anyMatch(request -> {
-                    AssetRequestBookingRecord booking = request.booking();
-                    if (booking == null
-                            || !normalizedSubEventId.equals(normalizeId(booking.subEventId()))) {
-                        return false;
-                    }
-                    String bookingEventId = normalizeId(booking.eventId());
-                    return normalizedEventId.equals(bookingEventId)
-                            || normalizedAuthorizationEventId.equals(authorizationEventId(
-                                    bookingEventId,
-                                    normalizedSubEventId));
-                });
+        return false;
     }
 
     private boolean isRequestInScope(AssetRequestRecord request, String eventId, String subEventId) {

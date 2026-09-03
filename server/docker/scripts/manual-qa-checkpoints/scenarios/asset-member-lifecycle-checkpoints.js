@@ -26,6 +26,16 @@
   const EVENT_TITLE = "QA ASSET-MEMBER-001 Tournament";
   const STAGE_TITLE = "QA Membership Stage";
   const ASSET_TITLE = "QA ASSET-MEMBER-001 Group Transport";
+  const SERVICE_CHAT_ID = `c-service-asset-${ASSET_ID}-${STAGE_ID}-${RILEY_ID}`;
+  const CONTROLLED_CHAT_MESSAGE = "QA ASSET-MEMBER-001: Riley asks Casey about the assigned Transport.";
+  const NOTIFICATION_TYPES = [
+    "asset-member-invite",
+    "asset-admin-join-request",
+    "asset-invitation-accepted",
+    "asset-member-request-accepted",
+    "asset-member-removed",
+    "asset-manager-promoted"
+  ];
 
   function state(required = true) {
     const value = Q.collection(Q.STATE_COLLECTION).findOne({ _id: STATE_ID });
@@ -286,7 +296,7 @@
   function requestRecord(id, userId, status, requestKind, note, requestedAtIso, startAtIso, endAtIso) {
     const user = Q.ensureUser(userId, `${CHECKPOINT} request user`);
     return {
-      id,
+      _id: id,
       userId,
       name: Q.text(user.name),
       initials: Q.text(user.initials),
@@ -340,9 +350,10 @@
   }
 
   function requestProjection(request, stagedAtIso) {
+    const requestId = Q.text(request._id || request.id);
     return {
-      _id: `${ASSET_ID}:request:${request.id}`,
-      requestId: request.id,
+      _id: `${ASSET_ID}:request:${requestId}`,
+      requestId,
       assetId: ASSET_ID,
       ownerUserId: CASEY_ID,
       ownerKey: `asset:${ASSET_ID}`,
@@ -459,6 +470,8 @@
       ] } },
       { collection: "assets", selector: { $or: [{ _id: ASSET_ID }, { assetId: ASSET_ID }] } },
       { collection: "assetRequests", selector: { assetId: ASSET_ID } },
+      { collection: "chats", selector: { id: SERVICE_CHAT_ID } },
+      { collection: "chatMessages", selector: { chatId: SERVICE_CHAT_ID } },
       { collection: "notificationOutbox", selector: relatedSelector() },
       { collection: "userNotifications", selector: relatedSelector() },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: [ASSET_ID, EVENT_ID] } } }
@@ -674,7 +687,7 @@
 
   function outboxRows() {
     return Q.collection("notificationOutbox").find({
-      notificationType: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-invitation-accepted", "asset-manager-promoted"] },
+      notificationType: { $in: NOTIFICATION_TYPES },
       entityId: ASSET_ID
     }).sort({ createdDate: 1 }).toArray().map(item => ({
       id: Q.text(item._id),
@@ -693,13 +706,14 @@
       eventId: Q.text(item.payload && item.payload.eventId),
       subEventId: Q.text(item.payload && item.payload.subEventId),
       assetId: Q.text(item.payload && item.payload.assetId),
+      membershipAction: Q.text(item.payload && item.payload.membershipAction),
       createdUser: Q.text(item.createdUser)
     }));
   }
 
   function inboxRows() {
     return Q.collection("userNotifications").find({
-      kind: { $in: ["asset-member-invite", "asset-admin-join-request", "asset-invitation-accepted", "asset-manager-promoted"] },
+      kind: { $in: NOTIFICATION_TYPES },
       sourceId: ASSET_ID
     }).sort({ createdDate: 1 }).toArray().map(item => ({
       id: Q.text(item._id),
@@ -716,8 +730,35 @@
       eventId: Q.text(item.payload && item.payload.eventId),
       subEventId: Q.text(item.payload && item.payload.subEventId),
       assetId: Q.text(item.payload && item.payload.assetId),
+      membershipAction: Q.text(item.payload && item.payload.membershipAction),
       occurrenceCount: Q.number(item.occurrenceCount)
     }));
+  }
+
+  function serviceChatSnapshot() {
+    const rows = Q.collection("chats").find({ id: SERVICE_CHAT_ID })
+      .sort({ ownerUserId: 1 }).toArray().map(item => ({
+        id: Q.text(item.id),
+        ownerUserId: Q.text(item.ownerUserId),
+        title: Q.text(item.title),
+        channelType: Q.text(item.channelType),
+        ownerId: Q.text(item.ownerId),
+        eventId: Q.text(item.eventId),
+        subEventId: Q.text(item.subEventId),
+        memberIds: sorted(item.memberIds || [])
+      }));
+    const controlledMessages = Q.collection("chatMessages").find({
+      chatId: SERVICE_CHAT_ID,
+      text: CONTROLLED_CHAT_MESSAGE
+    }).sort({ sentAtIso: 1 }).toArray().map(item => ({
+      id: Q.text(item.id),
+      clientId: Q.text(item.clientId),
+      chatId: Q.text(item.chatId),
+      senderUserId: Q.text(item.senderAvatar && item.senderAvatar.id),
+      text: Q.text(item.text),
+      attachmentCount: (item.attachments || []).length
+    }));
+    return { rows, controlledMessages };
   }
 
   function taskRows() {
@@ -755,6 +796,7 @@
       assetMembers: assetMemberRows(),
       resource: resourceSnapshot(),
       runtime: runtimeSnapshot(),
+      serviceChat: serviceChatSnapshot(),
       outbox: outboxRows(),
       inbox: inboxRows(),
       affinityTasks: taskRows()
@@ -795,6 +837,25 @@
       && projection.bookingEventId === RESOURCE_OWNER_ID
       && projection.bookingSubEventId === STAGE_ID
       && projection.bookingSlotKey === STAGE_ID;
+  }
+
+  function exactControlledServiceChat(current) {
+    const chatRows = current.serviceChat.rows;
+    const controlled = current.serviceChat.controlledMessages;
+    return chatRows.length === 2
+      && Q.sameJson(chatRows.map(row => row.ownerUserId), sorted([CASEY_ID, RILEY_ID]))
+      && chatRows.every(row => row.id === SERVICE_CHAT_ID
+        && row.title === `Asset Service · ${ASSET_TITLE}`
+        && row.channelType === "serviceEvent"
+        && row.ownerId === EVENT_ID
+        && row.eventId === EVENT_ID
+        && row.subEventId === STAGE_ID
+        && Q.sameJson(row.memberIds, sorted([CASEY_ID, RILEY_ID])))
+      && controlled.length === 1
+      && controlled[0].chatId === SERVICE_CHAT_ID
+      && controlled[0].senderUserId === RILEY_ID
+      && controlled[0].text === CONTROLLED_CHAT_MESSAGE
+      && controlled[0].attachmentCount === 0;
   }
 
   function commonChecks(currentState, current, accepted, pending) {
@@ -877,6 +938,8 @@
       exactManualProjection: current.requestProjections.length === 1
         && exactProjection(manual, projection),
       noAssetManagerYet: current.assetMembers.length === 0,
+      noPrematureServiceChat: current.serviceChat.rows.length === 0
+        && current.serviceChat.controlledMessages.length === 0,
       noPrematureNotifications: current.outbox.length === 0 && current.inbox.length === 0,
       noPrematureAffinityTask: current.affinityTasks.length === 0
     };
@@ -913,6 +976,7 @@
         && exactProjection(manual, projectionsByUser.get(CASEY_ID))
         && exactProjection(invite, projectionsByUser.get(NOVA_ID))
         && exactProjection(join, projectionsByUser.get(RILEY_ID)),
+      exactControlledServiceChat: exactControlledServiceChat(current),
       noPhysicalAssetMemberBeforePromotion: current.assetMembers.length === 0,
       exactScopedPendingNotifications: current.outbox.length === 2
         && inviteOutbox?.entityType === "asset"
@@ -969,6 +1033,10 @@
     const task = current.affinityTasks[0] || null;
     const acceptedOutbox = current.outbox.find(row => row.notificationType === "asset-invitation-accepted") || null;
     const acceptedInbox = current.inbox.find(row => row.kind === "asset-invitation-accepted") || null;
+    const requestAcceptedOutbox = current.outbox.find(row => row.notificationType === "asset-member-request-accepted") || null;
+    const requestAcceptedInbox = current.inbox.find(row => row.kind === "asset-member-request-accepted") || null;
+    const removedOutbox = current.outbox.find(row => row.notificationType === "asset-member-removed") || null;
+    const removedInbox = current.inbox.find(row => row.kind === "asset-member-removed") || null;
     const outbox = current.outbox.find(row => row.notificationType === "asset-manager-promoted") || null;
     const inbox = current.inbox.find(row => row.kind === "asset-manager-promoted") || null;
     const inviteOutboxes = current.outbox.filter(row => row.notificationType === "asset-member-invite");
@@ -977,7 +1045,7 @@
     const joinInboxes = current.inbox.filter(row => row.kind === "asset-admin-join-request");
     return {
       ...common,
-      acceptedInviteAndRejectedJoinAreIndependent: current.asset.requestRows.length === 2
+      acceptedInviteAndRemovedJoinAreIndependent: current.asset.requestRows.length === 2
         && manual?.status === "accepted"
         && manual?.requestKind === "manual"
         && acceptedInvite?.status === "accepted"
@@ -990,6 +1058,7 @@
         && exactProjection(manual, projectionsByUser.get(CASEY_ID))
         && exactProjection(acceptedInvite, projectionsByUser.get(NOVA_ID))
         && !projectionsByUser.has(RILEY_ID),
+      exactControlledServiceChat: exactControlledServiceChat(current),
       exactAssetManagerOnly: current.assetMembers.length === 1
         && manager.userId === NOVA_ID
         && manager.role === "Manager"
@@ -1009,7 +1078,7 @@
         && joinInboxes[0].recipientUserId === CASEY_ID
         && inviteInboxes[0].occurrenceCount === 1
         && joinInboxes[0].occurrenceCount === 1,
-      exactInviteAcceptedOutbox: current.outbox.length === 4
+      exactInviteAcceptedOutbox: current.outbox.length === 6
         && acceptedOutbox?.entityType === "asset"
         && acceptedOutbox?.entityId === ASSET_ID
         && Q.sameJson(acceptedOutbox?.recipients, [CASEY_ID])
@@ -1017,10 +1086,11 @@
         && acceptedOutbox?.memberUserId === NOVA_ID
         && acceptedOutbox?.requestId === acceptedInvite?.id
         && acceptedOutbox?.requestKind === "invite"
+        && acceptedOutbox?.membershipAction === "accepted"
         && acceptedOutbox?.eventId === RESOURCE_OWNER_ID
         && acceptedOutbox?.subEventId === STAGE_ID
         && acceptedOutbox?.createdUser === NOVA_ID,
-      exactInviteAcceptedInbox: current.inbox.length === 4
+      exactInviteAcceptedInbox: current.inbox.length === 6
         && acceptedInbox?.recipientUserId === CASEY_ID
         && acceptedInbox?.sourceType === "asset"
         && acceptedInbox?.sourceId === ASSET_ID
@@ -1028,9 +1098,47 @@
         && acceptedInbox?.memberUserId === NOVA_ID
         && acceptedInbox?.requestId === acceptedInvite?.id
         && acceptedInbox?.requestKind === "invite"
+        && acceptedInbox?.membershipAction === "accepted"
         && acceptedInbox?.eventId === RESOURCE_OWNER_ID
         && acceptedInbox?.subEventId === STAGE_ID
         && acceptedInbox?.occurrenceCount === 1,
+      exactRileyAcceptedNotification: requestAcceptedOutbox?.entityType === "asset"
+        && requestAcceptedOutbox?.entityId === ASSET_ID
+        && Q.sameJson(requestAcceptedOutbox?.recipients, [RILEY_ID])
+        && requestAcceptedOutbox?.senderUserId === CASEY_ID
+        && requestAcceptedOutbox?.memberUserId === RILEY_ID
+        && requestAcceptedOutbox?.requestKind === "borrow"
+        && requestAcceptedOutbox?.eventId === RESOURCE_OWNER_ID
+        && requestAcceptedOutbox?.subEventId === STAGE_ID
+        && requestAcceptedOutbox?.membershipAction === "accepted"
+        && requestAcceptedOutbox?.createdUser === CASEY_ID
+        && requestAcceptedInbox?.recipientUserId === RILEY_ID
+        && requestAcceptedInbox?.sourceType === "asset"
+        && requestAcceptedInbox?.sourceId === ASSET_ID
+        && requestAcceptedInbox?.senderUserId === CASEY_ID
+        && requestAcceptedInbox?.memberUserId === RILEY_ID
+        && requestAcceptedInbox?.requestId === requestAcceptedOutbox?.requestId
+        && requestAcceptedInbox?.membershipAction === "accepted"
+        && requestAcceptedInbox?.occurrenceCount === 1,
+      exactRileyRemovedNotification: removedOutbox?.entityType === "asset"
+        && removedOutbox?.entityId === ASSET_ID
+        && Q.sameJson(removedOutbox?.recipients, [RILEY_ID])
+        && removedOutbox?.senderUserId === CASEY_ID
+        && removedOutbox?.memberUserId === RILEY_ID
+        && removedOutbox?.requestId === requestAcceptedOutbox?.requestId
+        && removedOutbox?.requestKind === "borrow"
+        && removedOutbox?.eventId === RESOURCE_OWNER_ID
+        && removedOutbox?.subEventId === STAGE_ID
+        && removedOutbox?.membershipAction === "removed"
+        && removedOutbox?.createdUser === CASEY_ID
+        && removedInbox?.recipientUserId === RILEY_ID
+        && removedInbox?.sourceType === "asset"
+        && removedInbox?.sourceId === ASSET_ID
+        && removedInbox?.senderUserId === CASEY_ID
+        && removedInbox?.memberUserId === RILEY_ID
+        && removedInbox?.requestId === removedOutbox?.requestId
+        && removedInbox?.membershipAction === "removed"
+        && removedInbox?.occurrenceCount === 1,
       oneCollapsedLifecycleTask: current.affinityTasks.length === 1
         && task.targetType === "ASSET"
         && task.targetId === ASSET_ID
@@ -1038,7 +1146,7 @@
         && task.reasons.includes("ASSET_CHANGED")
         && ["pending", "running", "done"].includes(task.status)
         && !task.lastError,
-      exactManagerPromotionOutbox: current.outbox.length === 4
+      exactManagerPromotionOutbox: current.outbox.length === 6
         && outbox.notificationType === "asset-manager-promoted"
         && outbox.entityType === "asset"
         && outbox.entityId === ASSET_ID
@@ -1047,9 +1155,10 @@
         && outbox.tag === `asset-manager-promoted-${ASSET_ID}`
         && outbox.actorUserId === CASEY_ID
         && outbox.targetUserId === NOVA_ID
+        && outbox.memberUserId === NOVA_ID
         && outbox.assetId === ASSET_ID
         && outbox.createdUser === CASEY_ID,
-      exactManagerPromotionInbox: current.inbox.length === 4
+      exactManagerPromotionInbox: current.inbox.length === 6
         && inbox.recipientUserId === NOVA_ID
         && inbox.kind === "asset-manager-promoted"
         && inbox.sourceType === "asset"
@@ -1057,6 +1166,7 @@
         && inbox.senderUserId === CASEY_ID
         && inbox.actorUserId === CASEY_ID
         && inbox.targetUserId === NOVA_ID
+        && inbox.memberUserId === NOVA_ID
         && inbox.assetId === ASSET_ID
         && inbox.occurrenceCount === 1
     };
@@ -1215,7 +1325,7 @@
       return "Group A: Casey invites Nova once; Riley submits Join once; then report the pending savepoint phrase.";
     }
     if (phase === "pending-verified") {
-      return "Reload Nova once, accept Nova's Invite, then Casey rejects Riley and promotes Nova to Asset Manager; reload the three actors once and report the terminal phrase.";
+      return "Accept Nova's Invite, then Casey accepts and removes Riley before promoting Nova to Asset Manager. Verify the recipient notifications, zero pending counters and role-gated member menus; reload the three actors once and report the terminal phrase.";
     }
     if (phase === "terminal-verified") {
       return "The consolidated ASSET-MEMBER-001/002 transaction is terminally verified and ready to record/reset.";
@@ -1282,6 +1392,7 @@
   function reset() {
     Q.assertDeploymentSafety();
     const currentState = state();
+    clearFixture();
     Q.restoreSnapshots(currentState.snapshots || []);
     for (const saved of currentState.savedUserActivities || []) restoreUserActivities(saved);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: STATE_ID });

@@ -1067,6 +1067,69 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void acceptedScopedAssetMemberCannotRemoveSelf() {
+        String eventId = "event-1:subevent-1:group-a";
+        String subEventId = "subevent-1";
+        Asset acceptedAsset = new Asset();
+        acceptedAsset.setAssetId("asset-1");
+        acceptedAsset.setOwnerUserId("asset-owner");
+        acceptedAsset.setTitle("Group transport");
+        acceptedAsset.setStatus("A");
+        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "member-1",
+                "Accepted Member",
+                "AM",
+                "man",
+                "accepted",
+                "Approved and synced with the plan.",
+                "borrow",
+                "2026-09-03T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Tournament",
+                        subEventId,
+                        "Group stage",
+                        "group-a",
+                        "Group A",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+
+        when(homeUserProfileService.resolveSelectedUserId("member-1")).thenReturn("member-1");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(acceptedAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(acceptedAsset));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "member-1",
+                "member-1",
+                "remove",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result)
+                .filteredOn(entry -> "member-1".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        verify(assetsService, never()).syncScopedRequestsFromMemberEntries(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyList(),
+                anyString());
+    }
+
+    @Test
     void acceptPendingMemberUsesPolicyAndSavesAcceptedMember() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
