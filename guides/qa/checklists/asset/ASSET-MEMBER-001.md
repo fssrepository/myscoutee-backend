@@ -127,6 +127,13 @@ Manager state above.
    identity never change. Former owners can later rejoin under the complete
    fresh-user lifecycle, but a later ordinary Manager promotion never restores
    super-manager authority.
+5. Continue only in an isolated replay by letting every remaining accepted
+   participant successively take over and then leave. While at least one
+   accepted participant remains, the Group Transport card stays available for
+   takeover. After the final participant leaves, the Asset has no successor:
+   its `activityResources` record is logically deleted (`D`), its Group runtime
+   metric entry is removed, and the Transport card must be absent after reopen
+   and reload rather than remaining as an empty `0 / 4` card.
 
 ## 1. Confirm the generated-group baseline
 

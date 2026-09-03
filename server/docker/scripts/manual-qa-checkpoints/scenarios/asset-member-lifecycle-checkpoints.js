@@ -123,6 +123,28 @@
     if (result.matchedCount !== 1) Q.fail(`${CHECKPOINT} counter user '${userId}' disappeared.`);
   }
 
+  function synchronizeControlledEventCounter(currentState, userId, hosting) {
+    const saved = (currentState.savedUserActivities || []).find(item => item.userId === userId);
+    const baseline = saved && saved.present ? (saved.value || {}) : {};
+    const baselineEvent = baseline.event || {};
+    const lowerBounds = hosting
+      ? {
+          "activities.hosting": Q.number(baseline.hosting) + 1,
+          "activities.event.all": Q.number(baselineEvent.all) + 1,
+          "activities.event.hosting": Q.number(baselineEvent.hosting) + 1
+        }
+      : {
+          "activities.events": Q.number(baseline.events) + 1,
+          "activities.event.all": Q.number(baselineEvent.all) + 1,
+          "activities.event.active": Q.number(baselineEvent.active) + 1
+        };
+    const result = Q.collection("users").updateOne(
+      { $or: [{ _id: userId }, { userId }] },
+      { $max: lowerBounds }
+    );
+    if (result.matchedCount !== 1) Q.fail(`${CHECKPOINT} counter user '${userId}' disappeared during retained-window refresh.`);
+  }
+
   function statusCode(value) {
     switch (Q.text(value).toLowerCase()) {
       case "active": return "A";
@@ -1403,6 +1425,9 @@
       } }
     );
     if (eventResult.matchedCount !== 1) Q.fail(`${CHECKPOINT} Event disappeared during retained-window refresh.`);
+    synchronizeControlledEventCounter(currentState, CASEY_ID, true);
+    [NOVA_ID, RILEY_ID, LINA_ID].forEach(userId =>
+      synchronizeControlledEventCounter(currentState, userId, false));
 
     const assetResult = Q.collection("assets").updateOne(
       { assetId: ASSET_ID },
@@ -1478,6 +1503,131 @@
         affinityTaskCount: after.affinityTaskIds.length
       },
       next: "Reload the existing actor windows once; the controlled Event must be visible again without resetting the retained Asset-member state."
+    });
+  }
+
+  function prepareOwnerLeaveReplay() {
+    Q.assertDeploymentSafety();
+    if (checkpointId !== CHECKPOINT) Q.fail(`${CHECKPOINT} owner-leave replay is restricted to this checkpoint.`);
+    const currentState = state();
+    const currentEvent = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    const currentAsset = Q.collection("assets").findOne({ assetId: ASSET_ID });
+    if (!currentEvent || !currentAsset) {
+      Q.fail(`${CHECKPOINT} cannot prepare owner-leave replay because its controlled Event or Asset is missing.`);
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const startAtIso = Q.text(currentState.context && currentState.context.startAtIso) || dateIso(ACTIVE_WINDOW_START_OFFSET_MINUTES);
+    const endAtIso = Q.text(currentState.context && currentState.context.endAtIso) || dateIso(ACTIVE_WINDOW_END_OFFSET_MINUTES);
+    const replayAsset = assetDocument(preparedAtIso, startAtIso, endAtIso);
+    const novaRequest = requestRecord(
+      `${PREFIX}:request:owner-leave-replay:nova`,
+      NOVA_ID,
+      "accepted",
+      "invite",
+      "Invitation accepted.",
+      preparedAtIso,
+      startAtIso,
+      endAtIso
+    );
+    const rileyRequest = requestRecord(
+      `${PREFIX}:request:owner-leave-replay:riley`,
+      RILEY_ID,
+      "accepted",
+      "borrow",
+      "Borrow request approved by the owner.",
+      preparedAtIso,
+      startAtIso,
+      endAtIso
+    );
+    replayAsset.requests = [replayAsset.requests[0], novaRequest, rileyRequest];
+    const assetResult = Q.collection("assets").replaceOne({ assetId: ASSET_ID }, replayAsset);
+    if (assetResult.matchedCount !== 1) {
+      Q.fail(`${CHECKPOINT} controlled Asset disappeared during owner-leave replay preparation.`);
+    }
+
+    Q.collection("activityMembers").deleteMany({ ownerType: "asset", ownerId: ASSET_ID });
+    Q.collection("activityMembers").insertMany([
+      eventMember("asset", ASSET_ID, NOVA_ID, "Member", preparedAtIso, "asset-replay"),
+      eventMember("asset", ASSET_ID, RILEY_ID, "Member", preparedAtIso, "asset-replay")
+    ]);
+    Q.collection("assetRequests").deleteMany({ assetId: ASSET_ID });
+    Q.collection("assetRequests").insertMany(replayAsset.requests.map(request =>
+      requestProjection(request, preparedAtIso)));
+
+    Q.collection("activityResources").replaceOne(
+      { _id: `${PREFIX}:resource:casey` },
+      resourceDocument(preparedAtIso, 3, 0),
+      { upsert: true }
+    );
+    const replayRuntime = runtimeDocument(preparedAtIso);
+    replayRuntime.groupResourceMetricsByAssetOwnerId[GROUP_A_ID][CASEY_ID].Transport = resourceMetric(3, 0);
+    Q.collection("activitySubEventStageRuntime").replaceOne(
+      { ownerId: EVENT_ID, subEventId: STAGE_ID },
+      replayRuntime,
+      { upsert: true }
+    );
+
+    const nextStages = (currentEvent.subEvents || []).map(item =>
+      Q.text(item && item.id) === STAGE_ID
+        ? {
+            ...item,
+            carsAccepted: 3,
+            carsPending: 0,
+            carsCapacityMin: 0,
+            carsCapacityMax: 4,
+            groupsPending: 0
+          }
+        : item);
+    Q.collection("events").updateOne(
+      { sourceId: EVENT_ID },
+      { $set: {
+        subEvents: nextStages,
+        activity: 0,
+        updatedDate: preparedAtIso,
+        updatedUser: CASEY_ID
+      } }
+    );
+
+    [CASEY_ID, NOVA_ID, RILEY_ID].forEach(synchronizeAssetCounters);
+    synchronizeControlledEventCounter(currentState, CASEY_ID, true);
+    [NOVA_ID, RILEY_ID, LINA_ID].forEach(userId =>
+      synchronizeControlledEventCounter(currentState, userId, false));
+
+    const preparedAsset = Q.collection("assets").findOne({ assetId: ASSET_ID }) || {};
+    const preparedMembers = assetMemberRows();
+    const preparedResource = resourceSnapshot();
+    const preparedRuntime = runtimeSnapshot();
+    if (Q.text(preparedAsset.ownerUserId) !== CASEY_ID
+        || Q.text(preparedAsset.status) !== "A"
+        || Q.text(preparedAsset.ownerReleasedAtIso)
+        || (preparedAsset.requests || []).filter(item => Q.text(item && item.status) === "accepted").length !== 3
+        || preparedMembers.length !== 2
+        || preparedMembers.some(item => item.role !== "Member" || item.status !== "accepted")
+        || !Q.sameJson(preparedResource.transport, expectedMetric(3, 0))
+        || !Q.sameJson(preparedRuntime.groupATransport, expectedMetric(3, 0))) {
+      Q.fail(`${CHECKPOINT} owner-leave replay did not converge on the three-member no-manager baseline.`);
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      { $set: { ownerLeaveReplayPreparedAtIso: preparedAtIso } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: currentState.phase,
+      action: "owner-leave-replay-prepared",
+      preparedAtIso,
+      asset: {
+        ownerUserId: CASEY_ID,
+        status: "A",
+        acceptedUsers: [CASEY_ID, NOVA_ID, RILEY_ID],
+        delegatedManagers: []
+      },
+      resource: preparedResource.transport,
+      runtime: preparedRuntime.groupATransport,
+      next: "Reload Casey, Nova and Riley once. Casey leaves the Asset; Nova and Riley must both receive and see Take Over while the resource remains 2 / 0."
     });
   }
 
@@ -1726,6 +1876,7 @@
     case "verify-asset-member-pending": verifyPending(); break;
     case "verify-asset-member-terminal": verifyTerminal(); break;
     case "refresh-retained-window": refreshRetainedWindow(); break;
+    case "prepare-owner-leave-replay": prepareOwnerLeaveReplay(); break;
     case "rollback-owner-leave": rollbackOwnerLeave(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

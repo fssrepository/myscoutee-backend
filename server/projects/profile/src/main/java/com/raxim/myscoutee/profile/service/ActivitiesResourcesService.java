@@ -575,6 +575,132 @@ public class ActivitiesResourcesService {
         return removedAssignedAssetIds;
     }
 
+    public void removeAssetFromResourceAssignments(String assetId, String actorUserId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return;
+        }
+
+        Criteria referencedAsset = new Criteria().orOperator(
+                Criteria.where("assetAssignmentIds." + AssetCatalog.TYPE_TRANSPORT).is(normalizedAssetId),
+                Criteria.where("assetAssignmentIds." + AssetCatalog.TYPE_ACCOMMODATION).is(normalizedAssetId),
+                Criteria.where("assetAssignmentIds." + AssetCatalog.TYPE_SUPPLIES).is(normalizedAssetId),
+                Criteria.where("assetSettingsByType." + AssetCatalog.TYPE_TRANSPORT + "." + normalizedAssetId).exists(true),
+                Criteria.where("assetSettingsByType." + AssetCatalog.TYPE_ACCOMMODATION + "." + normalizedAssetId).exists(true),
+                Criteria.where("assetSettingsByType." + AssetCatalog.TYPE_SUPPLIES + "." + normalizedAssetId).exists(true),
+                Criteria.where("supplyContributionEntriesByAssetId." + normalizedAssetId).exists(true));
+        Query query = Query.query(new Criteria().andOperator(
+                Criteria.where("status").ne(STATUS_DELETED),
+                referencedAsset));
+        List<ActivitySubEventResource> records = mongoTemplate.find(query, ActivitySubEventResource.class);
+        if (records.isEmpty()) {
+            return;
+        }
+
+        String normalizedActorUserId = normalizeId(actorUserId);
+        String nowIso = Instant.now().toString();
+        Set<String> changedScopes = new LinkedHashSet<>();
+        Set<String> changedOwnerIds = new LinkedHashSet<>();
+        for (ActivitySubEventResource record : records) {
+            if (record == null || !referencedAssetIds(record).contains(normalizedAssetId)) {
+                continue;
+            }
+            ActivitySubEventResource next = cloneRecord(record);
+            Map<String, List<String>> assignmentIds = filterAssignmentIds(next.getAssetAssignmentIds(), null);
+            assignmentIds.replaceAll((type, ids) -> ids.stream()
+                    .filter(id -> !normalizedAssetId.equals(normalizeId(id)))
+                    .toList());
+            assignmentIds.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            next.setAssetAssignmentIds(assignmentIds);
+
+            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
+                    filterSettings(next.getAssetSettingsByType(), null);
+            settingsByType.values().forEach(settings -> settings.remove(normalizedAssetId));
+            settingsByType.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            next.setAssetSettingsByType(settingsByType);
+
+            Map<String, List<SubEventSupplyContributionEntryRecord>> supplyEntries =
+                    filterSupplyEntries(next.getSupplyContributionEntriesByAssetId(), null);
+            supplyEntries.remove(normalizedAssetId);
+            next.setSupplyContributionEntriesByAssetId(supplyEntries);
+
+            Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(next, normalizedActorUserId);
+            next.setResourceMetricsByType(toResourceMetricRecords(resourceMetricsByType(next, referencedAssets)));
+            boolean resourceBecameEmpty = referencedAssetIds(next).isEmpty();
+            if (resourceBecameEmpty) {
+                next.setStatus(STATUS_DELETED);
+            }
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(StringUtils.hasText(normalizedActorUserId)
+                    ? normalizedActorUserId
+                    : firstNonBlank(record.getUpdatedUser(), record.getAssetOwnerUserId()));
+            ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+            if (resourceBecameEmpty) {
+                removeGroupRuntimeResourceMetrics(saved, normalizedActorUserId, nowIso);
+            } else {
+                persistGroupRuntimeResourceMetrics(
+                        saved,
+                        resourceMetricsByType(saved, referencedAssets),
+                        normalizedActorUserId,
+                        nowIso,
+                        false);
+            }
+
+            String ownerId = normalizeId(saved.getOwnerId());
+            String subEventId = normalizeId(saved.getSubEventId());
+            if (StringUtils.hasText(ownerId) && StringUtils.hasText(subEventId)) {
+                changedScopes.add(ownerId + "\n" + subEventId);
+                changedOwnerIds.add(ownerId);
+            }
+        }
+        for (String scope : changedScopes) {
+            String[] parts = scope.split("\n", 2);
+            refreshEventSubEventResourceProjection(parts[0], parts[1]);
+        }
+        changedOwnerIds.forEach(this::refreshEventParticipationProjection);
+    }
+
+    private void removeGroupRuntimeResourceMetrics(
+            ActivitySubEventResource resource,
+            String actorUserId,
+            String nowIso) {
+        GroupRuntimeScope scope = groupRuntimeScope(resource == null ? null : resource.getOwnerId(),
+                resource == null ? null : resource.getSubEventId());
+        String assetOwnerUserId = normalizeId(resource == null ? null : resource.getAssetOwnerUserId());
+        if (scope == null || !StringUtils.hasText(assetOwnerUserId)) {
+            return;
+        }
+        ActivitySubEventStageRuntime runtime = activitySubEventStageRuntimeRepository
+                .findByOwnerIdAndSubEventId(scope.runtimeOwnerId(), scope.subEventId())
+                .orElse(null);
+        if (runtime == null) {
+            return;
+        }
+
+        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> byGroup =
+                cloneGroupRuntimeMetrics(runtime.getGroupResourceMetricsByAssetOwnerId());
+        Map<String, Map<String, GroupResourceMetricRecord>> byAssetOwner = new LinkedHashMap<>(
+                byGroup.getOrDefault(scope.groupId(), Map.of()));
+        Map<String, GroupResourceMetricRecord> removedMetrics = byAssetOwner.remove(assetOwnerUserId);
+        if (removedMetrics == null) {
+            return;
+        }
+        if (byAssetOwner.isEmpty()) {
+            byGroup.remove(scope.groupId());
+        } else {
+            byGroup.put(scope.groupId(), byAssetOwner);
+        }
+        runtime.setGroupResourceMetricsByAssetOwnerId(byGroup);
+        runtime.setGroupResourceReadAtByUserId(clearGroupResourceReads(
+                runtime.getGroupResourceReadAtByUserId(),
+                scope.groupId(),
+                removedMetrics.keySet()));
+        runtime.setUpdatedDate(nowIso);
+        runtime.setUpdatedUser(normalizeId(actorUserId));
+        activitySubEventStageRuntimeRepository.save(runtime);
+        tournamentGroupCounterService.syncParent(scope.runtimeOwnerId(), scope.subEventId());
+    }
+
     private ActivitySubEventResource resolveRecord(String ownerId, String subEventId, String assetOwnerUserId) {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);

@@ -691,6 +691,57 @@ class ActivitiesResourcesServiceTest {
         verify(activitySubEventResourcesRepository, never()).findByOwnerIdAndStatusNot(anyString(), anyString());
     }
 
+    @Test
+    void removingTheFinalAssignedAssetLogicallyDeletesTheResourceAndItsGroupRuntimeBucket() {
+        String eventId = "event-1";
+        String subEventId = "sub-1";
+        String groupId = "group-1";
+        String groupOwnerId = eventId + ":" + subEventId + ":" + groupId;
+        ActivitySubEventResource resource = resourceState(groupOwnerId, subEventId, "u1");
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        resource.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 4, 1, "u1", false, List.of()))));
+        resource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(1, 0, 0, 4)));
+
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setOwnerId(eventId);
+        runtime.setSubEventId(subEventId);
+        runtime.setGroupResourceMetricsByAssetOwnerId(Map.of(
+                groupId,
+                Map.of("u1", Map.of("Transport", new GroupResourceMetricRecord(1, 0, 0, 4)))));
+        runtime.setGroupResourceReadAtByUserId(Map.of(
+                groupId,
+                Map.of("u2", Map.of("Transport", "2026-09-03T10:00:00Z"))));
+
+        when(mongoTemplate.find(any(), eq(ActivitySubEventResource.class))).thenReturn(List.of(resource));
+        when(assetsService.queryReferencedAssetDetails("u1", Set.of())).thenReturn(Map.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(eventId, subEventId))
+                .thenReturn(Optional.of(runtime));
+        when(activitySubEventStageRuntimeRepository.save(any(ActivitySubEventStageRuntime.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.removeAssetFromResourceAssignments("asset-1", "u1");
+
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getStatus()).isEqualTo("D");
+        assertThat(resourceCaptor.getValue().getAssetAssignmentIds()).isEmpty();
+        assertThat(resourceCaptor.getValue().getAssetSettingsByType()).isEmpty();
+
+        ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventStageRuntime.class);
+        verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue().getGroupResourceMetricsByAssetOwnerId()).isEmpty();
+        assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId()).isEmpty();
+        verify(tournamentGroupCounterService).syncParent(eventId, subEventId);
+    }
+
     private void authenticateAs(String userId) {
         SecurityContextHolder.getContext().setAuthentication(new FirebaseAuthenticationToken(
                 new FirebasePrincipal(userId, userId + "@example.test", "U"),

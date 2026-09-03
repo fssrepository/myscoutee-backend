@@ -767,12 +767,20 @@ public class AssetsService {
                 .ifPresent(activityMembersRepository::delete);
         syncAssetRequestProjection(current, next);
 
+        List<String> successorCandidateUserIds = assetOwnerReleaseRecipientUserIds(next, normalizedUserId);
+        if (successorCandidateUserIds.isEmpty() && activitiesResourcesServiceProvider != null) {
+            ActivitiesResourcesService activitiesResourcesService = activitiesResourcesServiceProvider.getIfAvailable();
+            if (activitiesResourcesService != null) {
+                activitiesResourcesService.removeAssetFromResourceAssignments(normalizedAssetId, normalizedUserId);
+            }
+        }
+
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentUnavailable(normalizedAssetId, "owner-left");
         enqueueAssetOwnerReleasedNotification(next, normalizedUserId);
         adminTelemetryService.record("asset.owner.left", "assets", normalizedAssetId, normalizedUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        for (String recipientUserId : assetOwnerReleaseRecipientUserIds(next, normalizedUserId)) {
+        for (String recipientUserId : successorCandidateUserIds) {
             userActivityCountersService.refreshAssetCountersForUser(recipientUserId);
         }
         return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
