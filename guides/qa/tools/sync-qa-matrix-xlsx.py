@@ -48,7 +48,7 @@ ENVIRONMENTS_TITLE = "ENVIRONMENTS"
 DOMAIN_COLUMN = "QA domain"
 DEV_COLUMN = "Dev"
 LOCAL_COLUMN = "Local"
-COMPLEXITY_COLUMN = "Remaining QA complexity (min)"
+COMPLEXITY_COLUMN = "Remaining QA complexity (min/max)"
 DOMAIN_PRIORITY_BLOCK_COUNT = 3
 DOMAIN_PRIORITY_BLOCK_WIDTH = 5
 DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5, 10)
@@ -252,12 +252,29 @@ def load_rows() -> list[list[str]]:
                     f"Completed testcase {identifier} must have blank remaining QA complexity."
                 )
             continue
-        if not complexity.isdigit() or int(complexity) <= 0 or int(complexity) % 5:
+        try:
+            minimum, maximum = parse_complexity(complexity)
+        except ValueError as error:
             raise RuntimeError(
                 f"Open testcase {identifier} must have a positive five-minute "
-                f"{COMPLEXITY_COLUMN} value, got {complexity!r}."
+                f"MIN/MAX {COMPLEXITY_COLUMN} value, got {complexity!r}."
+            ) from error
+        if minimum > maximum:
+            raise RuntimeError(
+                f"Open testcase {identifier} has minimum complexity greater than "
+                f"maximum: {complexity!r}."
             )
     return rows
+
+
+def parse_complexity(value: str) -> tuple[int, int]:
+    parts = value.split("/")
+    if len(parts) != 2 or any(not part.isdigit() for part in parts):
+        raise ValueError("complexity must use MIN/MAX numeric form")
+    minimum, maximum = (int(part) for part in parts)
+    if minimum <= 0 or maximum <= 0 or minimum % 5 or maximum % 5:
+        raise ValueError("complexity bounds must be positive five-minute values")
+    return minimum, maximum
 
 
 def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
@@ -322,17 +339,19 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         done = domain_done[domain]
         total = domain_totals[domain]
         percentage = (done / total) if total else 0
-        remaining_minutes = sum(
-            int(item[COMPLEXITY_COLUMN])
+        open_complexities = [
+            parse_complexity(item[COMPLEXITY_COLUMN])
             for item in (dict(zip(headers, row)) for row in test_rows)
             if item[DOMAIN_COLUMN] == domain and qa_status_bucket(item) != "done"
-        )
+        ]
+        remaining_minimum = sum(value[0] for value in open_complexities)
+        remaining_maximum = sum(value[1] for value in open_complexities)
         domain_priority_items.append(
             (
                 domain,
                 str(priority),
                 f"{done} passed / {total} total ({percentage:.0%})"
-                f" · {remaining_minutes} min open",
+                f" · {remaining_minimum}/{remaining_maximum}",
             )
         )
     overview_rows = [compact_row(
@@ -364,7 +383,7 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
                 priority_values = (
                     f"{DOMAIN_COLUMN} (EXT / optional)" if block_index == 2 else DOMAIN_COLUMN,
                     "Priority",
-                    "Progress / remaining",
+                    "Progress / remaining min/max",
                 )
             elif priority_row_index <= len(block):
                 priority_values = block[priority_row_index - 1]
@@ -507,7 +526,8 @@ def domain_progress_formula(
     domain_reference: str,
     domain_column: str,
     status_helper_column: str,
-    complexity_column: str,
+    complexity_min_helper_column: str,
+    complexity_max_helper_column: str,
     first_test_row: int,
     last_test_row: int,
 ) -> str:
@@ -521,19 +541,43 @@ def domain_progress_formula(
         f'COUNTIFS({domain_range},{domain_reference},'
         f'{status_range},"Done")'
     )
-    complexity_range = (
-        f"${complexity_column}${first_test_row}:"
-        f"${complexity_column}${last_test_row}"
+    complexity_min_range = (
+        f"${complexity_min_helper_column}${first_test_row}:"
+        f"${complexity_min_helper_column}${last_test_row}"
     )
-    remaining_minutes = (
-        f"SUMIFS({complexity_range},{domain_range},{domain_reference},"
+    complexity_max_range = (
+        f"${complexity_max_helper_column}${first_test_row}:"
+        f"${complexity_max_helper_column}${last_test_row}"
+    )
+    remaining_minimum = (
+        f"SUMIFS({complexity_min_range},{domain_range},{domain_reference},"
+        f'{status_range},"<>Done")'
+    )
+    remaining_maximum = (
+        f"SUMIFS({complexity_max_range},{domain_range},{domain_reference},"
         f'{status_range},"<>Done")'
     )
     return (
         f'{done}&" passed / "&{total}&" total ("&'
         f'IF({total}=0,"0%",TEXT({done}/{total},"0%"))&") · "&'
-        f'{remaining_minutes}&" min open"'
+        f'{remaining_minimum}&"/"&{remaining_maximum}'
     )
+
+
+def complexity_bound_formula(
+    row_index: int,
+    complexity_column: str,
+    bound: str,
+) -> str:
+    reference = f"{complexity_column}{row_index}"
+    separator = f'SEARCH("/",{reference})'
+    if bound == "minimum":
+        value = f"LEFT({reference},{separator}-1)"
+    elif bound == "maximum":
+        value = f"MID({reference},{separator}+1,LEN({reference}))"
+    else:
+        raise ValueError(f"Unsupported complexity bound: {bound}")
+    return f'IF({reference}="","",VALUE({value}))'
 
 
 def request_full_workbook_recalculation(existing: bytes) -> bytes:
@@ -795,6 +839,10 @@ def build_sheet(
     status_helper_column = cell_column(status_helper_column_index)
     scope_helper_column_index = len(rows[0]) + 1
     scope_helper_column = cell_column(scope_helper_column_index)
+    complexity_min_helper_column_index = len(rows[0]) + 2
+    complexity_min_helper_column = cell_column(complexity_min_helper_column_index)
+    complexity_max_helper_column_index = len(rows[0]) + 3
+    complexity_max_helper_column = cell_column(complexity_max_helper_column_index)
     headers = next((row for row in rows if row and row[0] == "ID"), None)
     if headers is None:
         raise RuntimeError("QA workbook rows do not contain the column header.")
@@ -817,7 +865,7 @@ def build_sheet(
     if local_column_index != dev_column_index + 1:
         raise RuntimeError("Dev and Local columns must remain adjacent.")
     environment_header_row_index = header_row_index - 1
-    dimension.set("ref", f"A1:{scope_helper_column}{len(rows)}")
+    dimension.set("ref", f"A1:{complexity_max_helper_column}{len(rows)}")
     sheet_data.clear()
 
     columns = root.find(f"{{{NS}}}cols")
@@ -841,7 +889,12 @@ def build_sheet(
                 "customWidth": "true",
             },
         )
-    for helper_column_index in (status_helper_column_index, scope_helper_column_index):
+    for helper_column_index in (
+        status_helper_column_index,
+        scope_helper_column_index,
+        complexity_min_helper_column_index,
+        complexity_max_helper_column_index,
+    ):
         ET.SubElement(
             columns,
             f"{{{NS}}}col",
@@ -1106,24 +1159,13 @@ def build_sheet(
                         f"{cell_column(block_start)}{row_index}",
                         domain_column,
                         status_helper_column,
-                        complexity_column,
+                        complexity_min_helper_column,
+                        complexity_max_helper_column,
                         first_test_row,
                         last_test_row,
                     )
                     ET.SubElement(cell, f"{{{NS}}}v").text = value
                     continue
-            if (
-                first_test_row <= row_index <= last_test_row
-                and column_index == complexity_column_index
-                and value
-            ):
-                cell = ET.SubElement(row, f"{{{NS}}}c", {
-                    "r": reference,
-                    "s": str(style_indexes[cell_style_key]),
-                    "t": "n",
-                })
-                ET.SubElement(cell, f"{{{NS}}}v").text = value
-                continue
             cell = ET.SubElement(row, f"{{{NS}}}c", {
                 "r": reference,
                 "s": str(style_indexes[cell_style_key]),
@@ -1165,6 +1207,30 @@ def build_sheet(
                 domain_column,
             )
             ET.SubElement(scope_cell, f"{{{NS}}}v").text = "External" if scope == "external" else "Core"
+
+            item = dict(zip(headers, values))
+            complexity = item[COMPLEXITY_COLUMN]
+            complexity_bounds = parse_complexity(complexity) if complexity else ("", "")
+            for helper_column, bound_name, cached_value in (
+                (complexity_min_helper_column, "minimum", complexity_bounds[0]),
+                (complexity_max_helper_column, "maximum", complexity_bounds[1]),
+            ):
+                complexity_cell = ET.SubElement(
+                    row,
+                    f"{{{NS}}}c",
+                    {
+                        "r": f"{helper_column}{row_index}",
+                        "s": str(style_indexes["default"]),
+                    },
+                )
+                ET.SubElement(complexity_cell, f"{{{NS}}}f").text = (
+                    complexity_bound_formula(
+                        row_index,
+                        complexity_column,
+                        bound_name,
+                    )
+                )
+                ET.SubElement(complexity_cell, f"{{{NS}}}v").text = str(cached_value)
 
     merges = ET.Element(f"{{{NS}}}mergeCells", {"count": str(len(merged_ranges))})
     for merged_range in merged_ranges:

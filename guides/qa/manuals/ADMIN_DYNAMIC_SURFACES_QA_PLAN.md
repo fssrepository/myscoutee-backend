@@ -87,10 +87,11 @@ the campaign from chat history.
 - Recalculate the `Manual QA priority` field with the separate priority model
   when automation or risk changes. Never delete a row merely because its score
   becomes lower.
-- Estimate `Remaining QA complexity (min)` with the separate complexity model.
-  Completed rows keep it blank, and partial rows estimate only their open tail;
-  the generated domain overview sums these minutes independently from risk
-  priority.
+- Estimate `Remaining QA complexity (min/max)` with the separate complexity
+  model. Completed rows keep it blank, and partial rows estimate only their
+  open tail. The minimum is a clean prepared run; the maximum adds normal Codex
+  stage/oracle/reset waiting and the calibrated defect/replay contingency. The
+  generated domain overview sums both bounds independently from risk priority.
 - Add discovered defects as their own retest rows or issue links, then close
   them only with evidence from the affected assembled environment.
 

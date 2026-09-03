@@ -488,13 +488,15 @@ record has been removed.
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
-- `Remaining QA complexity (min)` estimates only unfinished clean paired
-  execution. Completed rows are blank; partial rows contain only their open
-  tail. Recalculate it with
+- `Remaining QA complexity (min/max)` estimates only unfinished work.
+  Completed rows are blank; partial rows contain only their open tail. The
+  minimum is the clean prepared run; the maximum adds normal Codex
+  stage/oracle/reset waiting and the calibrated defect/replay contingency.
+  Recalculate both bounds with
   `guides/qa/reference/MANUAL_QA_COMPLEXITY_MODEL.md` whenever the remaining
   contract changes. The XLSX domain overview sums these minutes beside
   progress; never substitute the risk-based `Manual QA priority` score for an
-  effort estimate.
+  effort estimate. Record any overrun beyond the range separately.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
   passed and remaining counts separately for Core and External/optional, plus
