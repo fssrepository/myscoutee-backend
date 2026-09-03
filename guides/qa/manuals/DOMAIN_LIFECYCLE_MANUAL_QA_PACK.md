@@ -6281,6 +6281,9 @@ is **PASS / CLOSED**.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
+Status: **PASS / CLOSED (2026-09-03)** together with `ASSET-MEMBER-002` as the
+single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
+
 - From one asset already assigned through a generated Tournament-group
   resource surface, create one manager Invite and one participant Join request.
 - Verify the two pending rows keep distinct request kinds and are linked to the
@@ -6354,7 +6357,7 @@ is **PASS / CLOSED**.
 - `Participation` remains a role-independent, read-only involvement list. It
   is visible to every viewer only when the selected member has at least one
   involvement row; an empty list hides the item for Members and Managers alike.
-- Retained partial execution on `2026-09-03` exposed a frontend reconciliation
+- Flexible user-driven execution on `2026-09-03` exposed a frontend reconciliation
   defect after Casey removed the previously accepted Riley: Mongo and the
   resource-scope API both retained the target Transport at `1 / 4` with Nova's
   one pending Invite, but the open card could temporarily retain the earlier
@@ -6379,9 +6382,29 @@ is **PASS / CLOSED**.
   part of the on-the-fly signal chain, but the store now permits its parent
   propagation exactly once per resource-metrics revision. The frontend watcher
   and focused store spec pass; the precise human close/reopen replay remains
-  pending.
-  This exploratory state remains non-oracleable and does not change the
-  testcase status.
+  covered by the user's later repeated popup close/reopen observations.
+- The same flexible run covered the distinct Invite and Join paths, pending
+  red-counter propagation and resolution, Invite rejection, Invite/Join
+  acceptance notifications, ordinary-member menus, owner and delegated
+  Manager promotion/revocation authority, role/icon/menu refresh, member
+  removal, Event-role isolation, Service chat/Ask Organizer continuity and
+  owner Leave/Take Over behavior. The user explicitly accepted closure from
+  the accumulated observations instead of repeating the complete deterministic
+  46-step route in one order.
+- A final focused real-route replay started from the versioned three-member
+  checkpoint and proved the formerly failing owner-removal sequence as
+  `3 / 0 · 4 -> 2 / 0 · 4 -> 2 / 0 · 4 -> 1 / 0 · 4` for Casey Leave, Nova
+  Take Over and Nova removing Riley. HTTP responses were successful; the Asset
+  write retained Nova's accepted scoped membership, and both the persisted
+  `activityResources` snapshot and generated-group runtime ended at `1 / 0 ·
+  4`. Fresh Nova and Riley scope reads returned that same value. The replay
+  produced one owner-left notification for the two no-manager candidates, one
+  takeover-completion notification for the remaining candidate and one
+  removal notification for Riley. The existing backend watcher compiled and
+  restarted successfully. A focused regression now preserves the successor
+  owner's scoped row when a later member-list write omits the owner. The
+  checkpoint fixture was reset and verified `not-staged` after evidence was
+  recorded.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 

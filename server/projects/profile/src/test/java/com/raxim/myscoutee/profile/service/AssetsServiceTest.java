@@ -628,7 +628,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void syncScopedMembersOnlyChangesRequestsForTheSelectedGroup() {
+    void syncScopedMembersPreserveCurrentOwnerAndOnlyChangeRequestsForTheSelectedGroup() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
