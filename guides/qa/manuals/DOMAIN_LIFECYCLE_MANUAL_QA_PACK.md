@@ -6429,6 +6429,43 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
+Status: **STAGED / NOT STARTED**.
+
+Stable user guide:
+[`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
+
+The versioned fixture was staged at `2026-09-03T12:34:59.706Z` and a second
+read-only `status` proved its complete `baseline-ready` oracle. No
+ASSET-BORROW browser session was opened and no manual Borrow action has been
+performed. The retained windows are:
+
+- Event/stage: `2026-09-03T11:34:59.706Z` through
+  `2026-10-03T12:34:59.706Z`;
+- overlapping capacity control: through `2026-09-10T12:34:59.706Z`;
+- later non-overlapping control: `2026-09-11T12:34:59.706Z` through
+  `2026-09-12T12:34:59.706Z`.
+
+The baseline contains three Casey-owned Public/free Sedan Assets. Capacity
+Transport has stored quantity `3` and one accepted Group B reservation for
+Lina with quantity `2`; Reject and Cancel Transport each have quantity `2`
+and no request. Group A contains Casey, Nova and Riley with no resource or
+pending request. Group B contains only Lina and owns the single accepted
+Capacity resource. The Event and both generated-group membership sets are the
+immutable role control. Staging created no notification/outbox effect.
+
+Resume with this read-only command before opening a browser:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-domain ASSET-BORROW-001
+```
+
+If the exact oracle still passes and its time window is usable, continue from
+the stable guide without restaging. If the retained dates have become stale,
+use only the checkpoint's own `reset`, `stage`, `status` sequence and update
+the handoff with the new machine-produced timestamps; never edit the fixture
+documents ad hoc.
+
 - From Resource Explore under one generated Tournament group, request one
   controlled asset for the exact event/stage/group timeframe and accept it. In
   two independent reset branches, reject and cancel controlled requests.

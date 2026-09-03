@@ -14,11 +14,18 @@
   const PREFIX = "manual-qa-checkpoint:v1:asset-domain";
   const PRIMARY_ASSET_ID = `${PREFIX}:asset:primary`;
   const SECONDARY_ASSET_ID = `${PREFIX}:asset:secondary`;
+  const TERTIARY_ASSET_ID = `${PREFIX}:asset:tertiary`;
   const EVENT_ID = `${PREFIX}:event`;
   const SUB_EVENT_ID = `${EVENT_ID}:sub-event:transport`;
-  const IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, EVENT_ID];
+  const GROUP_A_ID = `${SUB_EVENT_ID}:group:1`;
+  const GROUP_B_ID = `${SUB_EVENT_ID}:group:2`;
+  const GROUP_A_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_A_ID}`;
+  const GROUP_B_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_B_ID}`;
+  const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID];
+  const IDS = [...ASSET_IDS, EVENT_ID, GROUP_A_ID, GROUP_B_ID];
   const LIFE_CHECKPOINT = "ASSET-LIFE-001";
   const VISIBILITY_CHECKPOINT = "ASSET-VIS-001";
+  const BORROW_CHECKPOINT = "ASSET-BORROW-001";
   const VISIBILITY_FRIEND_USER_ID = "178e8d0cbe164fa3fede5884";
   const VISIBILITY_UNRELATED_USER_ID = "2d520f3c98b0440c1556f4af";
   const VISIBILITY_EVENT_ID = `${PREFIX}:visibility:event`;
@@ -109,6 +116,13 @@
       action: "As event host, open Manual QA Asset Assignment Event, edit the Transport sub-event resources and assign Manual QA Primary Transport once with capacity 4.",
       expected: "Event Resources and the persisted record agree on event, sub-event, asset owner, asset ID and capacity; event and asset membership counts do not duplicate.",
       worker: "MUST NOT use a scheduler unless the UI explicitly reports a named availability consumer; direct resource recompute/outbox effects are conditional."
+    },
+    [BORROW_CHECKPOINT]: {
+      stage: "borrow-empty",
+      why: "Prove free scoped Borrow cancel, reject and accept branches plus overlap-aware quantity and Asset Statistics without changing Event or generated-group membership.",
+      action: "Do not start yet. On the next QA session, use Group A Resource Explore and follow the stable ASSET-BORROW-001 checklist with Nova, Riley and Casey.",
+      expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation as the immutable sibling control.",
+      worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-DUMMY-001."
     }
   };
 
@@ -342,6 +356,380 @@
       updatedDate: now,
       updatedUser: hostUserId
     };
+  }
+
+  function borrowAssetDocument(assetId, title, quantity, stagedAtIso, requests = []) {
+    const document = assetDocument(assetId, hostUserId, title);
+    return {
+      ...document,
+      category: "Sedan",
+      city: "Austin",
+      capacityTotal: 4,
+      quantity,
+      details: "Controlled free Asset borrow lifecycle.",
+      sourceLink: `https://example.com/qa/asset-borrow-001/${assetId.split(":").pop()}`,
+      routes: ["Austin"],
+      requests,
+      createdDate: stagedAtIso,
+      updatedDate: stagedAtIso
+    };
+  }
+
+  function borrowBooking(eventId, startAtIso, endAtIso, quantity, timeframe) {
+    return {
+      eventId,
+      eventTitle: "QA ASSET-BORROW-001 Tournament",
+      subEventId: SUB_EVENT_ID,
+      subEventTitle: "QA Borrow Stage",
+      slotKey: SUB_EVENT_ID,
+      slotLabel: "QA Borrow Stage",
+      timeframe,
+      startAtIso,
+      endAtIso,
+      quantity,
+      totalAmount: 0,
+      previousTotalAmount: null,
+      currency: "USD",
+      acceptedPolicyIds: [],
+      paymentSessionId: null,
+      inventoryApplied: false
+    };
+  }
+
+  function borrowRequestRecord(id, userId, status, eventId, startAtIso, endAtIso, quantity, timeframe) {
+    const user = Q.ensureUser(userId, `${BORROW_CHECKPOINT} borrower`);
+    return {
+      _id: id,
+      userId,
+      name: Q.text(user.name),
+      initials: Q.text(user.initials),
+      gender: Q.text(user.gender),
+      status,
+      note: status === "accepted" ? "Borrow request approved by the owner." : "Awaiting owner confirmation.",
+      requestKind: "borrow",
+      requestedAtIso: startAtIso,
+      booking: borrowBooking(eventId, startAtIso, endAtIso, quantity, timeframe)
+    };
+  }
+
+  function borrowRequestProjection(assetId, request, stagedAtIso, assetCapacity = 4) {
+    const requestId = Q.text(request._id || request.id || request.requestId);
+    return {
+      _id: `${assetId}:request:${requestId}`,
+      requestId,
+      assetId,
+      ownerUserId: hostUserId,
+      ownerKey: `asset:${assetId}`,
+      assetCapacity,
+      userId: request.userId,
+      name: request.name,
+      initials: request.initials,
+      gender: request.gender,
+      status: request.status,
+      note: request.note,
+      requestKind: request.requestKind,
+      requestedAtIso: request.requestedAtIso,
+      booking: request.booking,
+      menuActions: [],
+      createdDate: stagedAtIso,
+      updatedDate: stagedAtIso
+    };
+  }
+
+  function borrowMemberDocument(assetId, userId, stagedAtIso) {
+    const id = `${PREFIX}:borrow-member:${assetId.split(":").pop()}:${userId}`;
+    return {
+      _id: id,
+      syncKey: id,
+      ownerType: "asset",
+      ownerId: assetId,
+      userId,
+      role: "Member",
+      status: "accepted",
+      pendingSource: null,
+      requestKind: null,
+      invitedByUserId: null,
+      actionAtIso: stagedAtIso,
+      metAtIso: stagedAtIso,
+      metWhere: "QA ASSET-BORROW-001 Tournament",
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function borrowActivityMemberDocument(ownerType, ownerId, userId, role, stagedAtIso, suffix) {
+    const id = `${PREFIX}:borrow-${suffix}:${userId}`;
+    return {
+      _id: id,
+      syncKey: id,
+      ownerType,
+      ownerId,
+      userId,
+      role,
+      status: "accepted",
+      pendingSource: null,
+      requestKind: null,
+      invitedByUserId: null,
+      actionAtIso: stagedAtIso,
+      metAtIso: stagedAtIso,
+      metWhere: "QA ASSET-BORROW-001 Tournament",
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function borrowEventDocument(stagedAtIso, startAtIso, endAtIso) {
+    const stage = {
+      id: SUB_EVENT_ID,
+      name: "QA Borrow Stage",
+      description: "Generated-group free Asset borrow lifecycle",
+      timing: "During",
+      offsetMinutes: 0,
+      durationMinutes: Math.max(1, Math.round((new Date(endAtIso).getTime() - new Date(startAtIso).getTime()) / 60000)),
+      optional: false,
+      capacityMin: 4,
+      capacityMax: 4,
+      tournamentGroupCapacityMin: 1,
+      tournamentGroupCapacityMax: 3,
+      tournamentLeaderboardType: "Score",
+      tournamentAdvancePerGroup: 1,
+      startAt: startAtIso,
+      endAt: endAtIso,
+      stageStatus: "A",
+      stageStatusReason: "stage-started",
+      stageStatusUpdatedAt: stagedAtIso,
+      membersAccepted: 4,
+      membersPending: 0,
+      groupsPending: 0,
+      carsAccepted: 1,
+      carsPending: 0,
+      carsCapacityMin: 0,
+      carsCapacityMax: 4,
+      accommodationAccepted: 0,
+      accommodationPending: 0,
+      accommodationCapacityMin: 0,
+      accommodationCapacityMax: 0,
+      suppliesAccepted: 0,
+      suppliesPending: 0,
+      suppliesCapacityMin: 0,
+      suppliesCapacityMax: 0
+    };
+    const definition = { ...stage };
+    for (const key of [
+      "stageStatus", "stageStatusReason", "stageStatusUpdatedAt", "membersAccepted", "membersPending",
+      "groupsPending", "carsAccepted", "carsPending", "carsCapacityMin", "carsCapacityMax",
+      "accommodationAccepted", "accommodationPending", "accommodationCapacityMin", "accommodationCapacityMax",
+      "suppliesAccepted", "suppliesPending", "suppliesCapacityMin", "suppliesCapacityMax"
+    ]) delete definition[key];
+    return {
+      _id: EVENT_ID,
+      sourceId: EVENT_ID,
+      syncKey: EVENT_ID,
+      title: "QA ASSET-BORROW-001 Tournament",
+      subtitle: "Free Borrow, overlap and Statistics control",
+      status: "A",
+      published: true,
+      expired: false,
+      isTrashed: false,
+      ownerUserId: hostUserId,
+      creatorUserId: hostUserId,
+      organizerUserId: hostUserId,
+      admins: [hostUserId],
+      visibility: "Invitation only",
+      blindMode: "Open Event",
+      autoInviter: false,
+      ticketing: false,
+      approvalRequired: false,
+      mode: "Tournament",
+      capacityMin: 4,
+      capacityMax: 4,
+      capacityTotal: 4,
+      full: true,
+      acceptedMembers: 4,
+      pendingMembers: 0,
+      acceptedMemberUserIds: [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID],
+      pendingMemberUserIds: [],
+      invitedMemberUserIds: [],
+      pendingRequestMemberUserIds: [],
+      subEventsEnabled: true,
+      subEventDefinitions: [definition],
+      subEvents: [stage],
+      currentStage: { id: SUB_EVENT_ID, name: stage.name, stageNumber: 1, totalStages: 1, status: "A" },
+      eventType: "event",
+      topics: ["Manual QA", "Asset", "Borrow"],
+      startAtIso,
+      endAtIso,
+      activity: 0,
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function zeroResourceMetric() {
+    return { accepted: 0, pending: 0, capacityMin: 0, capacityMax: 0 };
+  }
+
+  function transportResourceMetric(accepted, pending) {
+    return { accepted, pending, capacityMin: 0, capacityMax: 4 };
+  }
+
+  function borrowGroupBResourceDocument(stagedAtIso) {
+    return {
+      _id: `${PREFIX}:borrow-resource:group-b:lina`,
+      syncKey: `${PREFIX}:borrow-resource:group-b:lina`,
+      recordId: `${VISIBILITY_FRIEND_USER_ID}:${GROUP_B_RESOURCE_OWNER_ID}:${SUB_EVENT_ID}`,
+      ownerKey: `${VISIBILITY_FRIEND_USER_ID}:${GROUP_B_RESOURCE_OWNER_ID}`,
+      status: "A",
+      ownerId: GROUP_B_RESOURCE_OWNER_ID,
+      subEventId: SUB_EVENT_ID,
+      assetOwnerUserId: VISIBILITY_FRIEND_USER_ID,
+      assetAssignmentIds: { Transport: [PRIMARY_ASSET_ID] },
+      assetSettingsByType: {
+        Transport: {
+          [PRIMARY_ASSET_ID]: {
+            capacityMin: 0,
+            capacityMax: 4,
+            quantity: 2,
+            addedByUserId: VISIBILITY_FRIEND_USER_ID,
+            routeEnabled: true,
+            routes: ["Austin"]
+          }
+        }
+      },
+      supplyContributionEntriesByAssetId: {},
+      resourceMetricsByType: {
+        Transport: transportResourceMetric(1, 0),
+        Accommodation: zeroResourceMetric(),
+        Supplies: zeroResourceMetric()
+      },
+      createdDate: stagedAtIso,
+      createdUser: VISIBILITY_FRIEND_USER_ID,
+      updatedDate: stagedAtIso,
+      updatedUser: VISIBILITY_FRIEND_USER_ID
+    };
+  }
+
+  function borrowRuntimeDocument(stagedAtIso) {
+    return {
+      _id: `${PREFIX}:borrow-runtime`,
+      syncKey: `${PREFIX}:borrow-runtime`,
+      recordId: `${EVENT_ID}:${SUB_EVENT_ID}`,
+      status: "A",
+      ownerId: EVENT_ID,
+      subEventId: SUB_EVENT_ID,
+      stageStatus: "A",
+      stageStatusReason: "stage-started",
+      stageStatusUpdatedAt: stagedAtIso,
+      groupsCount: 2,
+      groupResourceMetricsByAssetOwnerId: {
+        [GROUP_B_ID]: {
+          [VISIBILITY_FRIEND_USER_ID]: {
+            Transport: transportResourceMetric(1, 0),
+            Accommodation: zeroResourceMetric(),
+            Supplies: zeroResourceMetric()
+          }
+        }
+      },
+      groupResourceReadAtByUserId: {},
+      createdDate: stagedAtIso,
+      createdUser: hostUserId,
+      updatedDate: stagedAtIso,
+      updatedUser: hostUserId
+    };
+  }
+
+  function borrowLeaderboardRows(stagedAtIso) {
+    const groupAUsers = [hostUserId, participantUserId, thirdUserId];
+    return [
+      ...groupAUsers.map((userId, index) => ({
+        _id: `${PREFIX}:borrow-score:group-a:${userId}`,
+        syncKey: `${PREFIX}:borrow-score:group-a:${userId}`,
+        eventId: EVENT_ID,
+        subEventId: SUB_EVENT_ID,
+        groupId: GROUP_A_ID,
+        entryType: "score",
+        memberId: userId,
+        scoreValue: 3 - index,
+        note: `${BORROW_CHECKPOINT} Group A control`,
+        createdAtIso: stagedAtIso,
+        createdUser: hostUserId,
+        updatedDate: stagedAtIso,
+        updatedUser: hostUserId
+      })),
+      {
+        _id: `${PREFIX}:borrow-score:group-b:${VISIBILITY_FRIEND_USER_ID}`,
+        syncKey: `${PREFIX}:borrow-score:group-b:${VISIBILITY_FRIEND_USER_ID}`,
+        eventId: EVENT_ID,
+        subEventId: SUB_EVENT_ID,
+        groupId: GROUP_B_ID,
+        entryType: "score",
+        memberId: VISIBILITY_FRIEND_USER_ID,
+        scoreValue: 1,
+        note: `${BORROW_CHECKPOINT} Group B negative control`,
+        createdAtIso: stagedAtIso,
+        createdUser: hostUserId,
+        updatedDate: stagedAtIso,
+        updatedUser: hostUserId
+      }
+    ];
+  }
+
+  function borrowUserActivities(userId) {
+    const user = Q.ensureUser(userId, `${BORROW_CHECKPOINT} user`);
+    return {
+      userId,
+      present: Object.prototype.hasOwnProperty.call(user, "activities"),
+      value: user.activities || {}
+    };
+  }
+
+  function restoreBorrowUserActivities(saved) {
+    const selector = { $or: [{ _id: saved.userId }, { userId: saved.userId }] };
+    if (saved.present) {
+      Q.collection("users").updateOne(selector, { $set: { activities: saved.value } });
+    } else {
+      Q.collection("users").updateOne(selector, { $unset: { activities: "" } });
+    }
+  }
+
+  function applyBorrowEventCounterDelta(userId, hosting) {
+    const increments = hosting
+      ? { "activities.hosting": 1, "activities.event.all": 1, "activities.event.hosting": 1 }
+      : { "activities.events": 1, "activities.event.all": 1, "activities.event.active": 1 };
+    const result = Q.collection("users").updateOne(
+      { $or: [{ _id: userId }, { userId }] },
+      { $inc: increments }
+    );
+    if (result.matchedCount !== 1) Q.fail(`${BORROW_CHECKPOINT} counter user '${userId}' disappeared.`);
+  }
+
+  function synchronizeBorrowOwnerAssetCounters() {
+    const activeAssets = Q.collection("assets").find({ ownerUserId: hostUserId }).toArray();
+    const counts = { Transport: 0, Accommodation: 0, Supplies: 0 };
+    for (const asset of activeAssets) {
+      const type = Q.text(asset.type);
+      if (lifecycleStatusCode(asset.status) === "A" && Object.prototype.hasOwnProperty.call(counts, type)) {
+        counts[type] += 1;
+      }
+    }
+    const result = Q.collection("users").updateOne(
+      { $or: [{ _id: hostUserId }, { userId: hostUserId }] },
+      { $set: {
+        "activities.cars": counts.Transport,
+        "activities.accommodation": counts.Accommodation,
+        "activities.supplies": counts.Supplies,
+        "activities.asset.cars": counts.Transport,
+        "activities.asset.accommodation": counts.Accommodation,
+        "activities.asset.supplies": counts.Supplies
+      } }
+    );
+    if (result.matchedCount !== 1) Q.fail(`${BORROW_CHECKPOINT} could not synchronize Casey's Asset counters.`);
   }
 
   function lifecycleAssetSelector() {
@@ -990,19 +1378,24 @@
 
   function selectors() {
     return [
-      { collection: "assets", selector: { $or: [{ _id: { $in: IDS } }, { assetId: { $in: IDS } }] } },
+      { collection: "assets", selector: { $or: [{ _id: { $in: ASSET_IDS } }, { assetId: { $in: ASSET_IDS } }] } },
       { collection: "events", selector: { $or: [{ _id: EVENT_ID }, { sourceId: EVENT_ID }] } },
       { collection: "activityMembers", selector: { ownerId: { $in: IDS } } },
-      { collection: "assetRequests", selector: { assetId: { $in: IDS } } },
-      { collection: "activityResources", selector: { $or: [{ ownerId: EVENT_ID }, { "assetAssignmentIds.Transport": { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] } }] } },
+      { collection: "assetRequests", selector: { assetId: { $in: ASSET_IDS } } },
+      { collection: "activitySubEventStageRuntime", selector: { ownerId: EVENT_ID, subEventId: SUB_EVENT_ID } },
+      { collection: "eventLeaderboardEntries", selector: { eventId: EVENT_ID, subEventId: SUB_EVENT_ID } },
+      { collection: "activityResources", selector: { $or: [
+        { ownerId: { $in: [EVENT_ID, GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID] } },
+        { "assetAssignmentIds.Transport": { $in: ASSET_IDS } }
+      ] } },
       { collection: "notificationOutbox", selector: { $or: [
         { entityId: { $in: IDS } },
-        { "payload.assetId": { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] } },
+        { "payload.assetId": { $in: ASSET_IDS } },
         { "payload.eventId": EVENT_ID }
       ] } },
       { collection: "userNotifications", selector: { $or: [
         { sourceId: { $in: IDS } },
-        { "payload.assetId": { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] } },
+        { "payload.assetId": { $in: ASSET_IDS } },
         { "payload.eventId": EVENT_ID }
       ] } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: IDS } } }
@@ -1013,7 +1406,7 @@
     for (const spec of selectors()) Q.collection(spec.collection).deleteMany(spec.selector);
   }
 
-  function stageData(stageKind) {
+  function stageData(stageKind, state) {
     if (stageKind === "member-empty") {
       Q.collection("assets").insertOne(assetDocument(
         PRIMARY_ASSET_ID,
@@ -1044,22 +1437,78 @@
         eventMemberDocument(hostUserId, "Admin"),
         eventMemberDocument(participantUserId, "Member")
       ]);
+      return;
+    }
+    if (stageKind === "borrow-empty") {
+      const stagedAtIso = Q.text(state.stagedAtIso);
+      const context = state.context || {};
+      const controlRequest = borrowRequestRecord(
+        `${PREFIX}:borrow-request:group-b:lina`,
+        VISIBILITY_FRIEND_USER_ID,
+        "accepted",
+        GROUP_B_RESOURCE_OWNER_ID,
+        Q.text(context.startAtIso),
+        Q.text(context.overlapEndAtIso),
+        2,
+        "Group B overlapping capacity control"
+      );
+      Q.collection("assets").insertMany([
+        borrowAssetDocument(PRIMARY_ASSET_ID, "QA ASSET-BORROW-001 Capacity Transport", 3, stagedAtIso, [controlRequest]),
+        borrowAssetDocument(SECONDARY_ASSET_ID, "QA ASSET-BORROW-001 Reject Transport", 2, stagedAtIso),
+        borrowAssetDocument(TERTIARY_ASSET_ID, "QA ASSET-BORROW-001 Cancel Transport", 2, stagedAtIso)
+      ]);
+      Q.collection("assetRequests").insertOne(
+        borrowRequestProjection(PRIMARY_ASSET_ID, controlRequest, stagedAtIso)
+      );
+      Q.collection("events").insertOne(
+        borrowEventDocument(stagedAtIso, Q.text(context.startAtIso), Q.text(context.endAtIso))
+      );
+      Q.collection("activityMembers").insertMany([
+        borrowActivityMemberDocument("event", EVENT_ID, hostUserId, "Admin", stagedAtIso, "event"),
+        borrowActivityMemberDocument("event", EVENT_ID, participantUserId, "Member", stagedAtIso, "event"),
+        borrowActivityMemberDocument("event", EVENT_ID, thirdUserId, "Member", stagedAtIso, "event"),
+        borrowActivityMemberDocument("event", EVENT_ID, VISIBILITY_FRIEND_USER_ID, "Member", stagedAtIso, "event"),
+        borrowActivityMemberDocument("group", GROUP_A_ID, hostUserId, "Member", stagedAtIso, "group-a"),
+        borrowActivityMemberDocument("group", GROUP_A_ID, participantUserId, "Member", stagedAtIso, "group-a"),
+        borrowActivityMemberDocument("group", GROUP_A_ID, thirdUserId, "Member", stagedAtIso, "group-a"),
+        borrowActivityMemberDocument("group", GROUP_B_ID, VISIBILITY_FRIEND_USER_ID, "Member", stagedAtIso, "group-b"),
+        borrowMemberDocument(PRIMARY_ASSET_ID, VISIBILITY_FRIEND_USER_ID, stagedAtIso)
+      ]);
+      Q.collection("eventLeaderboardEntries").insertMany(borrowLeaderboardRows(stagedAtIso));
+      Q.collection("activityResources").insertOne(borrowGroupBResourceDocument(stagedAtIso));
+      Q.collection("activitySubEventStageRuntime").insertOne(borrowRuntimeDocument(stagedAtIso));
+      synchronizeBorrowOwnerAssetCounters();
+      applyBorrowEventCounterDelta(hostUserId, true);
+      [participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID]
+        .forEach(userId => applyBorrowEventCounterDelta(userId, false));
     }
   }
 
   function oracle(state) {
-    const assets = Q.collection("assets").find({ assetId: { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] } }).toArray();
+    const assets = Q.collection("assets").find({ assetId: { $in: ASSET_IDS } }).sort({ assetId: 1 }).toArray();
     const assetMembers = Q.collection("activityMembers").find({
       ownerType: "asset",
-      ownerId: { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] }
-    }).toArray();
-    const eventMembers = Q.collection("activityMembers").find({ ownerType: "event", ownerId: EVENT_ID }).toArray();
-    const resources = Q.collection("activityResources").find({ ownerId: EVENT_ID }).toArray();
+      ownerId: { $in: ASSET_IDS }
+    }).sort({ ownerId: 1, userId: 1 }).toArray();
+    const activityMembers = Q.collection("activityMembers")
+      .find({ ownerId: { $in: [EVENT_ID, GROUP_A_ID, GROUP_B_ID] } })
+      .sort({ ownerType: 1, ownerId: 1, userId: 1 })
+      .toArray();
+    const requests = Q.collection("assetRequests")
+      .find({ assetId: { $in: ASSET_IDS } })
+      .sort({ assetId: 1, userId: 1 })
+      .toArray();
+    const resources = Q.collection("activityResources")
+      .find({ ownerId: { $in: [EVENT_ID, GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID] } })
+      .sort({ ownerId: 1, assetOwnerUserId: 1 })
+      .toArray();
+    const runtime = Q.collection("activitySubEventStageRuntime")
+      .findOne({ ownerId: EVENT_ID, subEventId: SUB_EVENT_ID }) || {};
     const outboxCount = Q.collection("notificationOutbox").countDocuments({
       $and: [
         { $or: [
           { entityId: { $in: IDS } },
-          { "payload.assetId": { $in: [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID] } },
+          { "payload.assetId": { $in: ASSET_IDS } },
           { "payload.eventId": EVENT_ID }
         ] },
         { createdDate: { $gt: state.stagedAtIso } }
@@ -1072,6 +1521,21 @@
         type: Q.text(asset.type),
         title: Q.text(asset.title),
         capacityTotal: asset.capacityTotal,
+        quantity: asset.quantity,
+        category: Q.text(asset.category),
+        visibility: Q.text(asset.visibility),
+        requests: (asset.requests || []).map(request => ({
+          id: Q.text(request && (request.id || request._id || request.requestId)),
+          userId: Q.text(request && request.userId),
+          status: Q.text(request && request.status),
+          requestKind: Q.text(request && request.requestKind),
+          eventId: Q.text(request && request.booking && request.booking.eventId),
+          subEventId: Q.text(request && request.booking && request.booking.subEventId),
+          startAtIso: Q.text(request && request.booking && request.booking.startAtIso),
+          endAtIso: Q.text(request && request.booking && request.booking.endAtIso),
+          quantity: Q.number(request && request.booking && request.booking.quantity),
+          inventoryApplied: request && request.booking && request.booking.inventoryApplied === true
+        })),
         status: Q.text(asset.status)
       })),
       assetMembers: assetMembers.map(member => ({
@@ -1082,20 +1546,150 @@
         requestKind: Q.text(member.requestKind),
         invitedByUserId: Q.text(member.invitedByUserId)
       })),
-      eventMembers: eventMembers.map(member => ({
-        eventId: Q.text(member.ownerId),
+      activityMembers: activityMembers.map(member => ({
+        ownerType: Q.text(member.ownerType),
+        ownerId: Q.text(member.ownerId),
         userId: Q.text(member.userId),
         role: Q.text(member.role),
         status: Q.text(member.status)
       })),
+      requestProjections: requests.map(request => ({
+        id: Q.text(request._id),
+        requestId: Q.text(request.requestId),
+        assetId: Q.text(request.assetId),
+        ownerUserId: Q.text(request.ownerUserId),
+        userId: Q.text(request.userId),
+        status: Q.text(request.status),
+        requestKind: Q.text(request.requestKind),
+        eventId: Q.text(request.booking && request.booking.eventId),
+        subEventId: Q.text(request.booking && request.booking.subEventId),
+        startAtIso: Q.text(request.booking && request.booking.startAtIso),
+        endAtIso: Q.text(request.booking && request.booking.endAtIso),
+        quantity: Q.number(request.booking && request.booking.quantity),
+        inventoryApplied: request.booking && request.booking.inventoryApplied === true
+      })),
       resources: resources.map(resource => ({
         eventId: Q.text(resource.ownerId),
+        status: Q.text(resource.status),
         subEventId: Q.text(resource.subEventId),
         assetOwnerUserId: Q.text(resource.assetOwnerUserId),
         transportAssetIds: ((resource.assetAssignmentIds || {}).Transport || []),
-        transportSettings: ((resource.assetSettingsByType || {}).Transport || {})
+        transportSettings: ((resource.assetSettingsByType || {}).Transport || {}),
+        transportMetric: ((resource.resourceMetricsByType || {}).Transport || {})
       })),
+      runtime: {
+        count: Q.collection("activitySubEventStageRuntime").countDocuments({ ownerId: EVENT_ID, subEventId: SUB_EVENT_ID }),
+        status: Q.text(runtime.status),
+        groupsCount: Q.number(runtime.groupsCount),
+        groupResourceMetricsByAssetOwnerId: runtime.groupResourceMetricsByAssetOwnerId || {}
+      },
       afterStageOutboxCount: outboxCount
+    };
+  }
+
+  function assertBorrowBaseline(state, current) {
+    const byAssetId = new Map(current.assets.map(asset => [asset.assetId, asset]));
+    const capacity = byAssetId.get(PRIMARY_ASSET_ID);
+    const reject = byAssetId.get(SECONDARY_ASSET_ID);
+    const cancel = byAssetId.get(TERTIARY_ASSET_ID);
+    const expectedEventUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
+    const expectedGroupAUsers = [hostUserId, participantUserId, thirdUserId].sort();
+    const eventUsers = current.activityMembers
+      .filter(member => member.ownerType === "event" && member.ownerId === EVENT_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupAUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_A_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupBUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_B_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const control = capacity && capacity.requests[0];
+    const projection = current.requestProjections[0];
+    const groupBResource = current.resources.find(resource => resource.eventId === GROUP_B_RESOURCE_OWNER_ID);
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const groupBMetric = (((runtimeGroups[GROUP_B_ID] || {})[VISIBILITY_FRIEND_USER_ID] || {}).Transport) || {};
+    const failures = [];
+    if (current.assets.length !== 3
+        || !capacity || capacity.title !== "QA ASSET-BORROW-001 Capacity Transport" || capacity.quantity !== 3
+        || !reject || reject.title !== "QA ASSET-BORROW-001 Reject Transport" || reject.quantity !== 2
+        || !cancel || cancel.title !== "QA ASSET-BORROW-001 Cancel Transport" || cancel.quantity !== 2
+        || current.assets.some(asset => asset.ownerUserId !== hostUserId
+          || asset.type !== "Transport"
+          || asset.category !== "Sedan"
+          || asset.visibility !== "Public"
+          || lifecycleStatusCode(asset.status) !== "A")) {
+      failures.push("exactThreePublicFreeTransportControls");
+    }
+    if (!control
+        || capacity.requests.length !== 1
+        || control.userId !== VISIBILITY_FRIEND_USER_ID
+        || control.status !== "accepted"
+        || control.requestKind !== "borrow"
+        || control.eventId !== GROUP_B_RESOURCE_OWNER_ID
+        || control.subEventId !== SUB_EVENT_ID
+        || control.startAtIso !== Q.text(state.context.startAtIso)
+        || control.endAtIso !== Q.text(state.context.overlapEndAtIso)
+        || control.quantity !== 2
+        || control.inventoryApplied) {
+      failures.push("exactOverlappingGroupBControlRequest");
+    }
+    if (current.requestProjections.length !== 1
+        || !projection
+        || projection.assetId !== PRIMARY_ASSET_ID
+        || projection.userId !== VISIBILITY_FRIEND_USER_ID
+        || projection.status !== "accepted"
+        || projection.eventId !== GROUP_B_RESOURCE_OWNER_ID
+        || projection.quantity !== 2
+        || projection.inventoryApplied) {
+      failures.push("exactControlRequestProjection");
+    }
+    if (current.assetMembers.length !== 1
+        || current.assetMembers[0].assetId !== PRIMARY_ASSET_ID
+        || current.assetMembers[0].userId !== VISIBILITY_FRIEND_USER_ID
+        || current.assetMembers[0].status !== "accepted") {
+      failures.push("exactControlAssetMembership");
+    }
+    if (!Q.sameJson(eventUsers, expectedEventUsers)
+        || !Q.sameJson(groupAUsers, expectedGroupAUsers)
+        || !Q.sameJson(groupBUsers, [VISIBILITY_FRIEND_USER_ID])) {
+      failures.push("exactEventAndGeneratedGroupRoles");
+    }
+    if (current.resources.length !== 1
+        || !groupBResource
+        || groupBResource.status !== "A"
+        || !Q.sameJson(groupBResource.transportAssetIds, [PRIMARY_ASSET_ID])
+        || Q.number(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 2
+        || Q.number(groupBResource.transportMetric.accepted) !== 1
+        || Q.number(groupBResource.transportMetric.pending) !== 0) {
+      failures.push("exactGroupBResourceControl");
+    }
+    if (current.runtime.count !== 1
+        || current.runtime.status !== "A"
+        || current.runtime.groupsCount !== 2
+        || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
+        || Q.number(groupBMetric.accepted) !== 1
+        || Q.number(groupBMetric.pending) !== 0) {
+      failures.push("exactGeneratedGroupRuntimeControl");
+    }
+    if (current.afterStageOutboxCount !== 0) {
+      failures.push("noPrematureNotification");
+    }
+    if (failures.length > 0) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "baseline-diagnostic", failures, oracle: current });
+      Q.fail(`${BORROW_CHECKPOINT} baseline checks failed: ${failures.join(", ")}.`);
+    }
+    return {
+      exactThreePublicFreeTransportControls: true,
+      exactOverlappingGroupBControlRequest: true,
+      exactControlRequestProjection: true,
+      exactControlAssetMembership: true,
+      exactEventAndGeneratedGroupRoles: true,
+      exactGroupBResourceControl: true,
+      exactGeneratedGroupRuntimeControl: true,
+      noPrematureNotification: true
     };
   }
 
@@ -1649,31 +2243,59 @@
     Q.ensureUser(hostUserId, "asset owner/event host");
     Q.ensureUser(participantUserId, "asset participant");
     if (selected.stage === "member-two-pending") Q.ensureUser(thirdUserId, "asset rejection target");
+    if (checkpointId === BORROW_CHECKPOINT) {
+      Q.ensureUser(thirdUserId, "Asset Borrow rejection requester");
+      Q.ensureUser(VISIBILITY_FRIEND_USER_ID, "Asset Borrow sibling-group capacity control");
+    }
     const stagedAtIso = Q.nowIso();
+    const borrowWindow = checkpointId === BORROW_CHECKPOINT
+      ? {
+          startAtIso: dateIso(-60),
+          overlapEndAtIso: dateIso(10080),
+          nonOverlapStartAtIso: dateIso(11520),
+          nonOverlapEndAtIso: dateIso(12960),
+          endAtIso: dateIso(43200)
+        }
+      : {};
     const state = {
       _id: Q.stateId(SCENARIO),
       scenario: SCENARIO,
       checkpointId,
       database: db.getName(),
+      phase: "baseline-ready",
       stagedAtIso,
       context: {
         hostUserId,
         participantUserId,
         thirdUserId,
+        siblingControlUserId: checkpointId === BORROW_CHECKPOINT ? VISIBILITY_FRIEND_USER_ID : null,
         primaryAssetId: PRIMARY_ASSET_ID,
         secondaryAssetId: SECONDARY_ASSET_ID,
+        tertiaryAssetId: checkpointId === BORROW_CHECKPOINT ? TERTIARY_ASSET_ID : null,
         eventId: EVENT_ID,
-        subEventId: SUB_EVENT_ID
+        subEventId: SUB_EVENT_ID,
+        groupAId: checkpointId === BORROW_CHECKPOINT ? GROUP_A_ID : null,
+        groupBId: checkpointId === BORROW_CHECKPOINT ? GROUP_B_ID : null,
+        groupAResourceOwnerId: checkpointId === BORROW_CHECKPOINT ? GROUP_A_RESOURCE_OWNER_ID : null,
+        groupBResourceOwnerId: checkpointId === BORROW_CHECKPOINT ? GROUP_B_RESOURCE_OWNER_ID : null,
+        ...borrowWindow
       },
-      snapshots: Q.snapshotSpecs(selectors())
+      snapshots: Q.snapshotSpecs(selectors()),
+      savedUserActivities: checkpointId === BORROW_CHECKPOINT
+        ? [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].map(borrowUserActivities)
+        : []
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {
       clearFixture();
-      stageData(selected.stage);
+      stageData(selected.stage, state);
     } catch (error) {
       Q.fail(`stage failed after snapshot: ${Q.text(error && error.message)}. Run reset asset-domain ${checkpointId}.`);
     }
+    const baseline = oracle(state);
+    const baselineChecks = checkpointId === BORROW_CHECKPOINT
+      ? assertBorrowBaseline(state, baseline)
+      : null;
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
@@ -1682,7 +2304,8 @@
       identities: state.context,
       why: selected.why,
       workerExpectation: selected.worker,
-      baseline: oracle(state),
+      baseline,
+      baselineChecks,
       next: selected.action,
       expectedVisibleResult: selected.expected
     });
@@ -1730,7 +2353,7 @@
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
-      phase: "awaiting-manual-action",
+      phase: Q.text(state.phase) || "awaiting-manual-action",
       why: selected.why,
       action: selected.action,
       expectedVisibleResult: selected.expected,
@@ -1763,15 +2386,23 @@
     if (Q.text(state.checkpointId).toUpperCase() !== checkpointId) {
       Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
     }
+    const current = oracle(state);
+    const baselineChecks = checkpointId === BORROW_CHECKPOINT && Q.text(state.phase) === "baseline-ready"
+      ? assertBorrowBaseline(state, current)
+      : null;
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
-      phase: "inspect-manual-checkpoint",
+      phase: Q.text(state.phase) || "inspect-manual-checkpoint",
       why: selected.why,
       workerExpectation: selected.worker,
-      oracle: oracle(state),
+      identities: state.context,
+      oracle: current,
+      baselineChecks,
       expectedVisibleResult: selected.expected,
-      next: "Compare the UI screenshot with this identity-level oracle. Record PASS only when asset and event roles remain independently correct."
+      next: checkpointId === BORROW_CHECKPOINT
+        ? "Fixture only: do not perform a manual action until the next QA session loads the stable ASSET-BORROW-001 checklist."
+        : "Compare the UI screenshot with this identity-level oracle. Record PASS only when asset and event roles remain independently correct."
     });
   }
 
@@ -1787,6 +2418,7 @@
     config();
     const state = requireMatchingState();
     Q.restoreSnapshots(state.snapshots);
+    for (const saved of state.savedUserActivities || []) restoreBorrowUserActivities(saved);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     Q.printObject({
       scenario: SCENARIO,
