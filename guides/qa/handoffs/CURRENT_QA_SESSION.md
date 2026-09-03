@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 05:12 CEST
+Updated: 2026-09-03 05:23 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -13,9 +13,10 @@ file first, then open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Consolidated Event scheduler journey and its execution contract:
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
-- Stable user-facing click guide for the active testcase; execution status or
-  machine evidence never belong in a checklist:
-  [`ASSET-VIS-001.md`](../checklists/asset/ASSET-VIS-001.md)
+- Stable user-facing click guide for the last closed testcase; execution status
+  or machine evidence never belong in a checklist:
+  [`ASSET-VIS-001.md`](../checklists/asset/ASSET-VIS-001.md). The next
+  `ASSET-MEMBER-001` guide must be versioned before that checkpoint is staged.
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -54,19 +55,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-VIS-001 — active, browser-ready
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-vis-001--discovery-visibility
-checklist: ../checklists/asset/ASSET-VIS-001.md
-checklist_section: Visibility journey
-substage: Casey/Lina/Liam managed sessions are open and identity-proven; the pre-UI authenticated visibility/detail matrix, Event navigation scaffold and persisted read-only oracle all pass; the user independently observed the category filter working, while the full baseline phrase and single visibility Edit remain pending
-next_replay_boundary: because the Asset Explore owner-avatar/profile fix was hot-deployed behind the open clients, reload all three managed windows once, complete checklist steps 1-19 through the baseline phrase, rerun the baseline oracles, then authorize steps 20-26 for the single Visibility Edit and reload matrix
-fixture_phase: readonly-verified at 2026-09-03T02:46:03.618Z; the active fixture retains three target Assets, exact Casey/Lina/Liam scaffold membership, authoritative/legacy/nested Transport counts `3/3/3`, zero target request/assignment/outbox/notification/task residue and an unchanged read baseline
-browser_phase: three versioned isolated demo sessions launched at 2026-09-03T02:44:13.898Z; Casey is the owner, Lina the deterministic friend and Liam the unrelated control; `/auth/me`, the Event list route and the exact authenticated Asset matrix pass for every session; after the initials-only observation, one explicit reload per window is required to load the 05:11:16 hot-synced public-profile owner-avatar bundle
-ledger_status: 82/118 total, Core 82/98; ASSET-LIFE-001 PASS/CLOSED
-required_resume: do not restage or relaunch ASSET-VIS-001; reload the three existing windows once for the hot-deployed bundle, then continue from checklist step 1
-actors: Casey Bridge `650000000000000000000061` owner; Lina Park `178e8d0cbe164fa3fede5884` deterministic friend; Liam Parker `2d520f3c98b0440c1556f4af` unrelated control
-pending_machine_oracle: at the baseline phrase repeat `verify-asset-visibility-http.sh baseline` and `verify-visibility-readonly`; after the single Edit/reload terminal phrase run `verify-asset-visibility-http.sh edited` and `verify-visibility-edited`
-last_completed: ASSET-LIFE-001 passed Create/Edit/Delete, immediate dual counter reconciliation, type schemas, managed shared-media behavior, reload persistence and terminal/reset Mongo oracles; Asset polling remains intentionally absent and Borrow polling remains a later separate decision
+checkpoint: ASSET-MEMBER-001 — next, preparation required
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
+checklist: not yet versioned; create the stable ASSET-MEMBER-001 guide before staging
+checklist_section: not applicable until the consolidated generated-group membership contract is reconciled
+substage: ASSET-VIS-001 is PASS/CLOSED; its evidence is recorded in the pack and ledger, and its versioned fixture was restored to `not-staged`
+next_replay_boundary: reconcile the older generic member-empty harness with the current QA-pack requirement that Invite and Join originate from one exact generated Tournament-group resource scope; then version the bounded guide, exact persisted oracle and isolated browser definition before any fixture mutation
+fixture_phase: ASSET-VIS-001 terminal oracle passed at 2026-09-03T03:20:18.902Z and reset completed at 2026-09-03T03:22:53.462Z; final status is `not-staged`; no ASSET-MEMBER fixture is active
+browser_phase: the former ASSET-VIS Casey/Lina/Liam windows are closed evidence only and may still be physically open; do not reuse their stale projection as ASSET-MEMBER evidence, and replace only through the future checkpoint browser definition
+ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED
+required_resume: do not restage ASSET-VIS-001; begin with read-only ASSET-MEMBER contract/harness review and prepare its versioned guide/oracles before staging or launching browsers
+actors: ASSET-MEMBER actor IDs and exact generated-group roles remain to be fixed by the versioned fixture; do not infer them from the closed visibility trio
+pending_machine_oracle: none for ASSET-VIS-001; define ASSET-MEMBER-001 baseline, exact Invite/Join scope, no-Event-role mutation and reset oracles before execution
+last_completed: ASSET-VIS-001 passed representative three-role UI coverage, category filtering, real interactive owner avatar/impressions, baseline and edited visibility/detail-denial matrices, strict single-visibility-write persistence, reload reconstruction and reset; the fixture now uses the real default Asset schema rather than normalizing away missing fields
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -120,8 +121,8 @@ Activity Events destination and free/approval/waitlist button controls.
 reconstruction, pending owner request, terminal acceptance, availability and
 free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
 stable click guides. Their versioned fixtures/browser-session definitions are
-created only when each row becomes active; they do not change the staged
-`ASSET-LIFE-001` boundary.
+  created only when each row becomes active; they do not create an active
+  fixture at the current post-`ASSET-VIS-001` boundary.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Core Content row and now has a stable click guide. It creates
@@ -198,12 +199,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Next test: `ASSET-VIS-001`. Its fixture, click guide and three-role browser
-definition are versioned; the active fixture, managed sessions and pre-UI
-machine oracles are ready. Reload each existing managed window once for the
-hot-deployed owner-avatar/profile fix, then continue the baseline/category
-steps. After their internal oracle savepoint, perform the single Public to
-Invitation-only Edit and prove the changed three-client matrix after reload.
+Next test: `ASSET-MEMBER-001`, but it is not execution-ready. First reconcile
+the generic `member-empty` harness with the QA pack's current generated-group
+resource scope and combined Invite/Join ownership, then create the stable user
+guide, exact machine oracles and browser-session definition. Do not stage a
+fixture or ask for UI clicks until those artifacts agree. `ASSET-VIS-001` is
+closed and must not be replayed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

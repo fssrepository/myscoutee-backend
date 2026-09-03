@@ -151,6 +151,11 @@
     };
   }
 
+  function sameRelaxedPlainJson(left, right) {
+    const plain = value => JSON.parse(EJSON.stringify(value, null, 0, { relaxed: true }));
+    return Q.sameJson(plain(left), plain(right));
+  }
+
   function assetDocument(assetId, ownerUserId, title) {
     const now = Q.nowIso();
     return {
@@ -1375,6 +1380,7 @@
       database: db.getName(),
       stagedAtIso,
       phase: "staging",
+      visibilityFixtureSchemaVersion: VISIBILITY_FIXTURE_SCHEMA_VERSION,
       baselineCounts,
       context: {
         hostUserId,
@@ -1498,6 +1504,90 @@
       changedPersistedCollections: [],
       oracle: visibilityOracle(requireMatchingState()),
       next: "Change only QA ASSET-VIS-001 Public Transport from Public to Invitation only as Casey, reload all three clients and compare the edited matrix."
+    });
+  }
+
+  function repairVisibilityFixtureSchema() {
+    if (checkpointId !== VISIBILITY_CHECKPOINT) {
+      Q.fail(`repair-visibility-fixture is restricted to ${VISIBILITY_CHECKPOINT}.`);
+    }
+    const state = requireMatchingState();
+    if (Q.number(state.visibilityFixtureSchemaVersion) >= VISIBILITY_FIXTURE_SCHEMA_VERSION) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId,
+        phase: state.phase,
+        visibilityFixtureSchemaVersion: state.visibilityFixtureSchemaVersion,
+        changedPersistedCollections: [],
+        result: "fixture-already-current"
+      });
+      return;
+    }
+    if (Q.text(state.phase) !== "readonly-verified" || !state.visibilityReadBaseline) {
+      Q.fail(`ASSET-VIS-001 legacy fixture repair requires phase 'readonly-verified', found '${Q.text(state.phase)}'.`);
+    }
+    const baselineAssets = new Map((state.visibilityReadBaseline.assets || [])
+      .map(asset => [Q.text(asset.assetId), asset]));
+    const currentAssets = new Map(visibilityDocuments().map(asset => [Q.text(asset.assetId), asset]));
+    const expectedPricing = disabledAssetPricingDocument();
+    const assetClass = "com.raxim.myscoutee.profile.data.document.Asset";
+    for (const assetId of VISIBILITY_ASSET_IDS) {
+      const before = baselineAssets.get(assetId);
+      const after = currentAssets.get(assetId);
+      if (!before || !after) {
+        Q.fail(`ASSET-VIS-001 cannot repair missing legacy fixture Asset '${assetId}'.`);
+      }
+      const conflicts = [];
+      if (before.pricing && !sameRelaxedPlainJson(before.pricing, expectedPricing)) conflicts.push("baseline pricing");
+      if (after.pricing && !sameRelaxedPlainJson(after.pricing, expectedPricing)) conflicts.push("current pricing");
+      if (Q.text(before._class) && Q.text(before._class) !== assetClass) conflicts.push("baseline _class");
+      if (Q.text(after._class) && Q.text(after._class) !== assetClass) conflicts.push("current _class");
+      if (Q.text(before.imageUrl)) conflicts.push("baseline imageUrl");
+      if (Q.text(after.imageUrl)) conflicts.push("current imageUrl");
+      if (conflicts.length > 0) {
+        Q.fail(`ASSET-VIS-001 legacy fixture '${assetId}' contains non-default schema values in ${conflicts.join(", ")}; refusing repair.`);
+      }
+    }
+    const repairResult = Q.collection("assets").updateMany(
+      { assetId: { $in: VISIBILITY_ASSET_IDS } },
+      { $set: {
+        _class: assetClass,
+        imageUrl: "",
+        pricing: expectedPricing
+      } }
+    );
+    if (repairResult.matchedCount !== VISIBILITY_ASSET_IDS.length) {
+      Q.fail(`ASSET-VIS-001 legacy fixture repair matched ${repairResult.matchedCount} Assets instead of ${VISIBILITY_ASSET_IDS.length}.`);
+    }
+    const repairedBaseline = {
+      ...state.visibilityReadBaseline,
+      assets: state.visibilityReadBaseline.assets.map(asset => VISIBILITY_ASSET_IDS.includes(Q.text(asset.assetId))
+        ? {
+            ...asset,
+            _class: assetClass,
+            imageUrl: "",
+            pricing: disabledAssetPricingDocument()
+          }
+        : asset)
+    };
+    const repairedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id, phase: "readonly-verified" },
+      { $set: {
+        visibilityFixtureSchemaVersion: VISIBILITY_FIXTURE_SCHEMA_VERSION,
+        visibilityFixtureRepairedAtIso: repairedAtIso,
+        visibilityReadBaseline: repairedBaseline
+      } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "readonly-verified",
+      repairedAtIso,
+      visibilityFixtureSchemaVersion: VISIBILITY_FIXTURE_SCHEMA_VERSION,
+      changedPersistedCollections: ["assets", Q.STATE_COLLECTION],
+      repair: "Added the normal Asset _class, empty imageUrl and disabled default pricing to the legacy staged controls and their checkpoint baseline.",
+      next: `Run verify-visibility-edited asset-domain ${checkpointId}.`
     });
   }
 
@@ -1716,6 +1806,7 @@
     case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
     case "verify-lifecycle-deleted": verifyLifecycleDeleted(); break;
     case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
+    case "repair-visibility-fixture": repairVisibilityFixtureSchema(); break;
     case "verify-visibility-edited": verifyVisibilityEdited(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

@@ -6246,6 +6246,38 @@ is **PASS / CLOSED**.
   the Edit. List/detail/filter reads stay side-effect free; the single Save may
   create only its normal collapsed Asset affinity task. Borrow, membership and
   assignment writes remain outside this checkpoint.
+- Executed **PASS / CLOSED** on 2026-09-03. The user exercised the three-role
+  discovery journey with representative rather than mechanically repeated card
+  openings, independently confirmed the Sedan/Van/All Transport category
+  filter, and confirmed that the final Asset Explore owner avatar showed
+  Casey's real profile image instead of `CB`. That interactive avatar uses the
+  same existing profile/impressions store path as Event Explore.
+- The authenticated baseline matrix returned Public plus Friends to Lina,
+  Public only to Liam and no owned controls through Casey's Explore; every
+  forbidden direct detail read was denied. Casey then changed only
+  `QA ASSET-VIS-001 Public Transport` from Public to Invitation only. After the
+  reload boundary, the authenticated terminal matrix returned Friends only to
+  Lina and no controlled Asset to Liam, while Casey retained all three owned
+  controls and no owned control leaked into Casey's Explore.
+- The terminal Mongo oracle at `2026-09-03T03:20:18.902Z` proved that the
+  single Save changed only the target Asset domain plus one collapsed
+  `ASSET_CHANGED` affinity task, which completed without error. The edited
+  Asset retained every stable field except Visibility and update audit; both
+  sibling Assets were byte-identical. Authoritative and stored Transport
+  counts remained `3/3/3`, and no target borrow request, Asset membership,
+  assignment, outbox item or notification was created.
+- The run exposed and corrected a fixture-schema defect rather than accepting
+  it as product normalization: directly inserted control Assets had omitted
+  the normal Asset `_class`, empty `imageUrl` and disabled default `pricing`
+  object. The versioned fixture now stages the real persisted schema, and the
+  in-flight baseline was repaired under a guarded schema-version migration
+  before the strict edit oracle was rerun. The oracle was not weakened.
+- During the checkpoint, hidden Asset detail authorization was aligned with
+  discovery visibility, local/server viewer identity propagation was aligned,
+  and Asset Explore owner resolution was routed through the existing public
+  contact profile plus `UserProfileStore`/impressions flow. The existing
+  backend and frontend watchers compiled the fixes successfully; no duplicate
+  build or test process was started.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
 
