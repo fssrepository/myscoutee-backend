@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 11:45 CEST
+Updated: 2026-09-03 03:27 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -56,12 +56,12 @@ checkpoint: ASSET-LIFE-001 — active
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
 checklist: ../checklists/asset/ASSET-LIFE-001.md
 checklist_section: ../checklists/asset/ASSET-LIFE-001.md#1-create-the-three-type-controls
-substage: create-three-type-controls
-next_replay_boundary: Casey performs checklist steps 1-16 and reports `ASSET-LIFE-001 Create ready: three type controls persist`; then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
-fixture_phase: staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
-browser_phase: one managed Casey Asset lifecycle window is open and authenticated
+substage: create-three-type-controls — replay after compact carousel media-fit repair
+next_replay_boundary: Casey performs checklist steps 1-4 only, verifies that the square source image is maximally contained without cropping or stretching, and reports `ASSET-LIFE-001 image preview PASS`; after that Casey continues steps 5-16 and reports the unchanged Create phrase, then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
+fixture_phase: the partial two-Asset attempt was guard-reset after the preview FAIL; the checkpoint was staged again and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
+browser_phase: the old-bundle window was replaced after the successful frontend watcher build; one fresh managed Casey Asset lifecycle window is open and authenticated
 ledger_status: 81/118 total, Core 81/98; ASSET-LIFE-001 NOT RUN
-required_resume: keep the staged boundary intact; user follows ASSET-LIFE-001 steps 1-16; after the exact Create phrase run the versioned capture command and continue only from its returned next action
+required_resume: keep the staged boundary intact; first replay steps 1-4 and wait for the exact image-preview PASS phrase; only then continue steps 5-16, and after the exact Create phrase run the versioned capture command and continue only from its returned next action
 actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
 pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
 known_contract_gap: source inspection found Java `/assets/restore` but no frontend Asset Trash query/filter or restore caller; the checklist owns this as a later explicit FAIL boundary and forbids an API/Mongo substitute
