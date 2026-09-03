@@ -31,6 +31,10 @@ savepoint inside that testcase, not a separate matrix row.
   is accepted, rejected or cancelled. Resolved membership changes use the
   recipient's Notifications unread counter instead of retaining or creating a
   pending red counter on the Event/stage/Group/Asset chain.
+- `Participation` is a read-only involvement list, not a management right. Any
+  viewer may open it on a member card when that member has at least one
+  involvement row. An empty involvement list renders no `Participation` item;
+  the member's `Member`/`Manager` role must not change that rule.
 - Stop at the first mismatch. Do not compensate with a second click, another
   actor, a different group, an unrelated Asset or an ad-hoc fixture change.
 
@@ -50,6 +54,51 @@ Begin only after Codex confirms all of the following:
   exact unchanged-state comparison;
 - no controlled Asset notification, outbox item or affinity task exists;
 - three isolated, identity-verified Casey/Nova/Riley windows are open.
+
+## Compact retained-run verification
+
+Use this shorter route when the already-retained exploratory state has Casey,
+Nova and Riley accepted on the target Asset and Nova is already an Asset
+Manager. Its assertions may be visited in a convenient order, except that
+owner leave must precede takeover and takeover must precede Casey's fresh
+return. The long replay below remains the deterministic clean-fixture route;
+it is not required in addition to this compact route.
+
+1. Open Asset Members from any actor. On a member with a non-empty involvement
+   list, confirm `Participation` opens the same read-only list for an ordinary
+   Member and for a Manager viewer. On a member with no involvement rows,
+   confirm the item is absent rather than replaced by a role-specific action.
+2. In Casey, confirm Casey's own Asset-owner card offers `Leave asset` plus
+   `Participation` only when its list is non-empty. It must not offer a
+   self-promotion or self-revocation action. An accepted ordinary Member still
+   has no direct self-leave or management action.
+
+### Owner handover, Take Over and fresh return
+
+3. Record Nova's and Riley's Notifications unread counters, then select Casey's
+   `Leave asset` and confirm exactly once. Without reload, Casey disappears
+   from Asset Members, the accepted total decreases once, every pending red
+   counter stays unchanged, and the Asset becomes `Under review` instead of
+   being deleted.
+4. Confirm Nova and Riley each receive exactly one `Asset needs a new owner`
+   notification and no duplicate occurrence. Casey no longer has owner or
+   Manager authority during this handover state.
+5. In Nova, open `My Assets → Transport`. The same target must come from the
+   backend query with `Take over`; Riley, as a plain Member, must not receive
+   that action. Confirm `Take over` exactly once.
+6. Confirm Nova becomes the new Asset owner: the Asset returns to its previous
+   active status, Nova retains the Manager label/icon but now has owner-level
+   member-removal authority, and a second actor cannot also take over. Event
+   and Group roles remain unchanged.
+7. Casey is not banned. After Nova's takeover, either invite Casey again or
+   let Casey send a fresh Join request. After the normal acceptance, Casey
+   returns as an ordinary Asset Member. Casey may later be promoted to Asset
+   Manager again, but that promotion creates only a normal delegated Manager;
+   it must not restore owner/super-manager authority. Only a later successful
+   `Take over` of a genuinely ownerless Asset can do that.
+8. Reload the actors once and confirm the new owner, Casey's fresh role, the
+   zero pending state after resolution, and the exact-once notifications are
+   reconstructed without stale menus or duplicate rows.
 
 ## 1. Confirm the generated-group baseline
 

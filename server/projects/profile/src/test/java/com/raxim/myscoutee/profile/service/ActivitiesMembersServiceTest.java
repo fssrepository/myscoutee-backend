@@ -832,6 +832,51 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryScopedAssetOmitsOwnerAfterResponsibilityWasReleased() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        scopedAsset.setTitle("City-to-Lake SUV");
+        scopedAsset.setStatus("UR");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "manager-1",
+                "Asset Manager",
+                "AM",
+                "woman",
+                "accepted",
+                "Promoted to asset manager.",
+                "invite",
+                "2026-07-23T00:00:00Z",
+                null)));
+        ActivityMember storedManager = member("asset-manager-sync", "asset-1", "manager-1", "Manager", "accepted");
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(storedManager));
+        when(usersRepository.findByUserId("manager-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("manager-1");
+        assertThat(result.getFirst().role()).isEqualTo("Manager");
+        verify(usersRepository, never()).findByUserId("owner-1");
+    }
+
+    @Test
     void queryScopedAssetBorrowRequestShowsPendingBorrowerInsteadOfInvitation() {
         Asset scopedAsset = new Asset();
         scopedAsset.setAssetId("asset-1");

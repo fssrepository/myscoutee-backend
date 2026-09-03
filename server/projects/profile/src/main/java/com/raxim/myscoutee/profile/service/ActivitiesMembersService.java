@@ -349,7 +349,9 @@ public class ActivitiesMembersService {
     private ActivityMember scopedAssetOwnerMember(Asset asset, String eventId, String subEventId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
-        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId)) {
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(ownerUserId)
+                || StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             return null;
         }
         ActivityMember member = new ActivityMember();

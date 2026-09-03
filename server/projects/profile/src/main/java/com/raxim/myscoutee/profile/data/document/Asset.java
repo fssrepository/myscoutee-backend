@@ -52,6 +52,7 @@ public class Asset {
     private String visibility;
     private String status;
     private String statusBeforeSuppression;
+    private String ownerReleasedAtIso;
     private String trashedAtIso;
     private Double affinity;
     private Double boost;
@@ -234,6 +235,14 @@ public class Asset {
 
     public void setStatusBeforeSuppression(String statusBeforeSuppression) {
         this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatus(statusBeforeSuppression) : null;
+    }
+
+    public String getOwnerReleasedAtIso() {
+        return ownerReleasedAtIso;
+    }
+
+    public void setOwnerReleasedAtIso(String ownerReleasedAtIso) {
+        this.ownerReleasedAtIso = hasText(ownerReleasedAtIso) ? ownerReleasedAtIso.trim() : null;
     }
 
     public String getTrashedAtIso() {

@@ -775,6 +775,19 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void releasedFormerOwnerCannotRetakeOrMutateTheAssetAsOwner() {
+        authenticateAs("u1");
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1")));
+        Asset released = asset("asset-1", "u1", "UR");
+        released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(released));
+
+        assertThat(service.canCurrentActorTakeOverAsset("u1", "asset-1")).isFalse();
+        assertThat(service.canCurrentActorDeleteAsset("u1", "asset-1")).isFalse();
+        assertThat(service.canCurrentActorPromoteAssetManager("u1", "asset-1")).isFalse();
+    }
+
+    @Test
     void assetTakeoverRejectsActiveAssetEvenForManager() {
         authenticateAs("u2");
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));

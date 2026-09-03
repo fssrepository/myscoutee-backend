@@ -158,8 +158,10 @@ public class MemberPolicyFacts {
         if (asset == null || ASSET_STATUS_TRASHED.equals(safeText(asset.getStatus()))) {
             return false;
         }
-        return normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))
-                || hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
+        if (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+            return !isOwnerResponsibilityReleased(asset);
+        }
+        return hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
     }
 
     public boolean canTakeOverAsset(String assetId, String actorUserId) {
@@ -171,10 +173,13 @@ public class MemberPolicyFacts {
             return false;
         }
         Asset asset = assetsRepository.findByAssetId(normalizedAssetId).orElse(null);
-        return asset != null
-                && ASSET_STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))
-                && (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))
-                        || hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId));
+        if (asset == null || !ASSET_STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))) {
+            return false;
+        }
+        if (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+            return !isOwnerResponsibilityReleased(asset);
+        }
+        return hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
     }
 
     private boolean isEventCreatorOrAdmin(String eventId, String userId) {
@@ -220,8 +225,13 @@ public class MemberPolicyFacts {
             return false;
         }
         return assetsRepository.findByAssetId(normalizedAssetId)
+                .filter(asset -> !isOwnerResponsibilityReleased(asset))
                 .filter(asset -> normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
                 .isPresent();
+    }
+
+    private boolean isOwnerResponsibilityReleased(Asset asset) {
+        return asset != null && StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()));
     }
 
     private boolean hasAcceptedManagerRole(String ownerType, String ownerId, String userId) {

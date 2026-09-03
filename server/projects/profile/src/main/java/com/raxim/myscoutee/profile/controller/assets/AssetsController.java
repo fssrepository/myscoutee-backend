@@ -183,6 +183,16 @@ public class AssetsController {
         assetsService.delete(request);
     }
 
+    @PostMapping("/leave-ownership")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_DELETE,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
+    public AssetDto leaveOwnership(@RequestBody AssetDeleteRequestDto request) {
+        return assetsService.leaveOwnership(request);
+    }
+
     @PostMapping("/restore")
     @RequiresPolicy(
             key = AccessPolicyKeys.ASSET_RESTORE,

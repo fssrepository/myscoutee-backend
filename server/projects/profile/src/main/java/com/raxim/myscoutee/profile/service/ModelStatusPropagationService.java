@@ -250,6 +250,9 @@ public class ModelStatusPropagationService {
         if (asset == null) {
             return false;
         }
+        if (StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
+            return true;
+        }
         String currentStatus = safeText(asset.getStatus());
         if (suppressionStatus.equals(currentStatus)
                 && StringUtils.hasText(safeText(asset.getStatusBeforeSuppression()))) {
@@ -271,6 +274,9 @@ public class ModelStatusPropagationService {
 
     private boolean restoreAssetIfSuppressed(Asset asset, AdminStatusSnapshot responsibleStatus) {
         if (asset == null) {
+            return true;
+        }
+        if (StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             return true;
         }
         String currentStatus = safeText(asset.getStatus());
@@ -558,6 +564,7 @@ public class ModelStatusPropagationService {
 
     private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<Asset> assets) {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
+        LinkedHashMap<String, Asset> assetsByAssetId = new LinkedHashMap<>();
         LinkedHashSet<String> assetIds = new LinkedHashSet<>();
         for (Asset asset : assets == null ? List.<Asset>of() : assets) {
             if (asset == null) {
@@ -568,9 +575,11 @@ public class ModelStatusPropagationService {
                 continue;
             }
             assetIds.add(assetId);
+            assetsByAssetId.put(assetId, asset);
             Set<String> userIds = result.computeIfAbsent(assetId, ignored -> new LinkedHashSet<>());
             String ownerUserId = normalizeId(asset.getOwnerUserId());
-            if (StringUtils.hasText(ownerUserId)) {
+            if (StringUtils.hasText(ownerUserId)
+                    && !StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
                 userIds.add(ownerUserId);
             }
         }
@@ -585,7 +594,11 @@ public class ModelStatusPropagationService {
                 }
                 String assetId = normalizeId(member.getOwnerId());
                 String userId = normalizeId(member.getUserId());
-                if (StringUtils.hasText(assetId) && StringUtils.hasText(userId)) {
+                Asset asset = assetsByAssetId.get(assetId);
+                boolean releasedOwner = asset != null
+                        && StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))
+                        && userId.equals(normalizeId(asset.getOwnerUserId()));
+                if (StringUtils.hasText(assetId) && StringUtils.hasText(userId) && !releasedOwner) {
                     result.computeIfAbsent(assetId, ignored -> new LinkedHashSet<>()).add(userId);
                 }
             }
@@ -603,7 +616,8 @@ public class ModelStatusPropagationService {
         }
         LinkedHashSet<String> candidateIds = new LinkedHashSet<>();
         String ownerUserId = normalizeId(asset.getOwnerUserId());
-        if (StringUtils.hasText(ownerUserId)) {
+        if (StringUtils.hasText(ownerUserId)
+                && !StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             candidateIds.add(ownerUserId);
         }
         List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
@@ -614,7 +628,9 @@ public class ModelStatusPropagationService {
                 continue;
             }
             String userId = normalizeId(member.getUserId());
-            if (StringUtils.hasText(userId)) {
+            if (StringUtils.hasText(userId)
+                    && !(StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))
+                        && userId.equals(ownerUserId))) {
                 candidateIds.add(userId);
             }
         }

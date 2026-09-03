@@ -6340,6 +6340,20 @@ is **PASS / CLOSED**.
 - The final Asset contains the owner plus the promoted invitee and no requester
   row. Asset Manager must not silently promote the user to Event Admin, change
   an existing Event membership role or affect another group.
+- The retained flexible branch also covers owner handover. The current owner
+  may leave the Asset once; that removes the former owner's Asset membership,
+  leaves the Asset `Under review`, preserves pending counts, and notifies every
+  other accepted participant exactly once that a new owner is required. Only
+  an already accepted Asset Manager sees `Take over`; the first successful
+  takeover atomically becomes the actual Asset owner, restores the previous
+  active status and gains owner-level removal authority without changing any
+  Event or Group role. The former owner is not banned: after the takeover they
+  may submit a fresh Join request or accept a fresh Invite, return as a plain
+  Member, and later receive a delegated Manager role. That later promotion is
+  not a second takeover and must not grant owner/super-manager authority.
+- `Participation` remains a role-independent, read-only involvement list. It
+  is visible to every viewer only when the selected member has at least one
+  involvement row; an empty list hides the item for Members and Managers alike.
 - Retained partial execution on `2026-09-03` exposed a frontend reconciliation
   defect after Casey removed the previously accepted Riley: Mongo and the
   resource-scope API both retained the target Transport at `1 / 4` with Nova's
