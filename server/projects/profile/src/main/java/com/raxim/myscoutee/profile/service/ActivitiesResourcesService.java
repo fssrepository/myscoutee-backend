@@ -352,7 +352,8 @@ public class ActivitiesResourcesService {
         Map<String, SubEventResourceMetricDto> metricsByType = persistResourceMetricSnapshot(
                 record,
                 actorUserId,
-                Instant.now().toString());
+                Instant.now().toString(),
+                false);
         refreshEventSubEventResourceProjection(ownerId, subEventId);
         refreshEventParticipationProjection(ownerId);
         return metricsByType;
@@ -374,7 +375,7 @@ public class ActivitiesResourcesService {
                         normalizedSubEventId,
                         STATUS_DELETED)) {
             if (record != null) {
-                persistResourceMetricSnapshot(record, actorUserId, nowIso);
+                persistResourceMetricSnapshot(record, actorUserId, nowIso, false);
             }
         }
         refreshEventSubEventResourceProjection(normalizedOwnerId, normalizedSubEventId);
@@ -383,7 +384,8 @@ public class ActivitiesResourcesService {
     private Map<String, SubEventResourceMetricDto> persistResourceMetricSnapshot(
             ActivitySubEventResource record,
             String actorUserId,
-            String nowIso) {
+            String nowIso,
+            boolean markActorRead) {
         Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
         ActivitySubEventResource next = filterToAssignableAssets(record, eligibleAssets.keySet());
         Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
@@ -399,7 +401,8 @@ public class ActivitiesResourcesService {
                 saved,
                 metricsByType,
                 actorUserId,
-                next.getUpdatedDate());
+                next.getUpdatedDate(),
+                markActorRead);
     }
 
     public SubEventSupplyContributionPageDto querySupplyContributions(
@@ -498,7 +501,8 @@ public class ActivitiesResourcesService {
                 saved,
                 metricsByType,
                 actorUserId,
-                nowIso);
+                nowIso,
+                true);
         refreshEventSubEventResourceProjection(ownerId, subEventId);
         refreshEventParticipationProjection(ownerId);
         return toStateDto(saved, eligibleAssets, groupMetricsByType);
@@ -1187,7 +1191,8 @@ public class ActivitiesResourcesService {
             ActivitySubEventResource resource,
             Map<String, SubEventResourceMetricDto> metricsByType,
             String actorUserId,
-            String nowIso) {
+            String nowIso,
+            boolean markActorRead) {
         GroupRuntimeScope scope = groupRuntimeScope(resource == null ? null : resource.getOwnerId(),
                 resource == null ? null : resource.getSubEventId());
         String assetOwnerUserId = normalizeId(resource == null ? null : resource.getAssetOwnerUserId());
@@ -1236,12 +1241,14 @@ public class ActivitiesResourcesService {
                     runtime.getGroupResourceReadAtByUserId(),
                     scope.groupId(),
                     changedResourceTypes);
-            runtime.setGroupResourceReadAtByUserId(markGroupResourceTypesRead(
-                    readsByGroup,
-                    scope.groupId(),
-                    actorUserId,
-                    changedResourceTypes,
-                    nowIso));
+            runtime.setGroupResourceReadAtByUserId(markActorRead
+                    ? markGroupResourceTypesRead(
+                            readsByGroup,
+                            scope.groupId(),
+                            actorUserId,
+                            changedResourceTypes,
+                            nowIso)
+                    : readsByGroup);
         }
         runtime.setCreatedDate(StringUtils.hasText(runtime.getCreatedDate()) ? runtime.getCreatedDate() : nowIso);
         runtime.setCreatedUser(StringUtils.hasText(runtime.getCreatedUser()) ? runtime.getCreatedUser() : normalizeId(actorUserId));

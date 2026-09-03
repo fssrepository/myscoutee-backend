@@ -1114,6 +1114,7 @@ public class ActivitiesMembersService {
         }
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
+                && !scopedAssetAction
                 && !canManageOwnerMembers(
                     ownerType,
                     ownerId,

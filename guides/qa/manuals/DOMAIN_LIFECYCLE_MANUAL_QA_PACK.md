@@ -50,7 +50,7 @@ the same prerequisite without depending on an earlier human action.
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
 | Event Explore dummy checkout | One terminal dummy payment, one inactive succeeded basket and one accepted event membership | Event Explore checkout, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute effects only; no external provider, capture or settlement work | `EVENT-CHECKOUT-DUMMY-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
-| Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
+| Asset member invite or Join request | Pending asset-scoped membership plus one recipient notification | Asset Members pending row, full parent pending-counter chain and recipient bell | Asset acceptance/rejection and Asset-role notification | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Asset Explore dummy checkout | One scoped dummy payment, borrow request, inventory reservation and later owner decision | Resource/Asset Explore basket and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox effects only; no external provider, capture or settlement work | `ASSET-CHECKOUT-DUMMY-001` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
@@ -6287,16 +6287,30 @@ is **PASS / CLOSED**.
   exact asset owner/type/id plus event, stage/sub-event and generated-group
   booking scope. The other generated group and the parent event membership
   remain unchanged.
-- Verify recipient/requester projections name the same asset and actor once.
+- Without reload, verify the owner's Invite delta reaches the target Asset card,
+  Group action, stage selector and parent Activity/Event card exactly once.
+  Reload the owner and prove the same pending chain is reconstructed from the
+  persisted resource runtime instead of being cleared as already read.
+- Verify the invitee sees the assigned target Asset card itself exactly once,
+  not only parent counters. Verify recipient/requester projections name the
+  same asset and actor once.
+- The Invite must create exactly one Asset invitation notification for its
+  recipient. The Join request must create exactly one Asset join-request
+  notification for the owner/responsible managers, excluding the requester.
+  Neither producer may duplicate its outbox or inbox occurrence.
 
 ### `ASSET-MEMBER-002` — accept/reject and role isolation
 
 - Accept one of the group-scoped Invite/Join requests and reject the other
   independently.
-- Verify accepted asset membership/role, resolved notification and rejected
-  cleanup in the same generated-group booking scope. Asset Manager must not
-  silently promote the user to Event Admin, change an existing event
-  membership role or affect another group.
+- Verify accepted Asset request state and rejected cleanup independently in the
+  same generated-group booking scope, then explicitly promote the accepted
+  invitee to Asset Manager. Exactly one manager-promotion notification is
+  expected in addition to the retained single Invite and Join-request
+  notifications; the Accept and Reject transitions do not fabricate extra
+  generic notifications. Asset Manager must not silently promote the user to
+  Event Admin, change an existing Event membership role or affect another
+  group.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 

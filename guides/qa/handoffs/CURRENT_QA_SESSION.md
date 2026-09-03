@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 05:23 CEST
+Updated: 2026-09-03 06:36 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -13,10 +13,9 @@ file first, then open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Consolidated Event scheduler journey and its execution contract:
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
-- Stable user-facing click guide for the last closed testcase; execution status
-  or machine evidence never belong in a checklist:
-  [`ASSET-VIS-001.md`](../checklists/asset/ASSET-VIS-001.md). The next
-  `ASSET-MEMBER-001` guide must be versioned before that checkpoint is staged.
+- Stable user-facing click guide for the active consolidated testcase;
+  execution status or machine evidence never belong in a checklist:
+  [`ASSET-MEMBER-001.md`](../checklists/asset/ASSET-MEMBER-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -26,6 +25,9 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`asset-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-domain-checkpoints.js)
+- Isolated generated-group Asset membership fixture and exact savepoint
+  oracles:
+  [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -55,19 +57,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-MEMBER-001 — next, preparation required
+checkpoint: ASSET-MEMBER-001 — active at generated-group baseline
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
-checklist: not yet versioned; create the stable ASSET-MEMBER-001 guide before staging
-checklist_section: not applicable until the consolidated generated-group membership contract is reconciled
-substage: ASSET-VIS-001 is PASS/CLOSED; its evidence is recorded in the pack and ledger, and its versioned fixture was restored to `not-staged`
-next_replay_boundary: reconcile the older generic member-empty harness with the current QA-pack requirement that Invite and Join originate from one exact generated Tournament-group resource scope; then version the bounded guide, exact persisted oracle and isolated browser definition before any fixture mutation
-fixture_phase: ASSET-VIS-001 terminal oracle passed at 2026-09-03T03:20:18.902Z and reset completed at 2026-09-03T03:22:53.462Z; final status is `not-staged`; no ASSET-MEMBER fixture is active
-browser_phase: the former ASSET-VIS Casey/Lina/Liam windows are closed evidence only and may still be physically open; do not reuse their stale projection as ASSET-MEMBER evidence, and replace only through the future checkpoint browser definition
+checklist: ../checklists/asset/ASSET-MEMBER-001.md
+checklist_section: #1 Confirm the generated-group baseline, then #2 Create the distinct Invite and Join requests through step 19
+substage: consolidated ASSET-MEMBER-001/002 transaction is staged at `baseline-ready`; no user mutation has occurred
+next_replay_boundary: Casey invites Nova exactly once, proves the full +1 counter chain without reload and again after one reload; Nova proves its top-down pending chain, assigned Transport card and Invite notification; Riley submits Join exactly once; Casey reloads once to prove the full +2 chain and Riley notification, then the user reports the pending savepoint phrase and Codex runs `verify-asset-member-pending`
+fixture_phase: `baseline-ready` since 2026-09-03T04:31:45.811Z; stage plus repeated read-only status proved all twelve baseline predicates, including exact expected Event/Group roles, canonical full-membership fingerprints, one manual assignment, Group A resource metrics 1 accepted/0 pending, Group B isolation and zero notifications/tasks
+browser_phase: three fresh managed ASSET-MEMBER sessions were opened and identity-verified at 2026-09-03 06:32 CEST against the repaired bundles; Casey=650000000000000000000061, Nova=650000000000000000000062, Riley=650000000000000000000063
 ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED
-required_resume: do not restage ASSET-VIS-001; begin with read-only ASSET-MEMBER contract/harness review and prepare its versioned guide/oracles before staging or launching browsers
-actors: ASSET-MEMBER actor IDs and exact generated-group roles remain to be fixed by the versioned fixture; do not infer them from the closed visibility trio
-pending_machine_oracle: none for ASSET-VIS-001; define ASSET-MEMBER-001 baseline, exact Invite/Join scope, no-Event-role mutation and reset oracles before execution
-last_completed: ASSET-VIS-001 passed representative three-role UI coverage, category filtering, real interactive owner avatar/impressions, baseline and edited visibility/detail-denial matrices, strict single-visibility-write persistence, reload reconstruction and reset; the fixture now uses the real default Asset schema rather than normalizing away missing fields
+required_resume: do not restage or relaunch browsers while status remains `baseline-ready`; direct the user through checklist steps 1-19 only, including only the two explicit Casey reloads and one explicit Nova reload, then run the pending oracle after the exact phrase
+actors: Casey owns the Asset and is Event Admin plus Group A Member; Nova and Riley are Event and Group A Members; Lina is the sole Group B Member and persisted/UI negative control
+pending_machine_oracle: `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001`; it requires exactly one Nova Invite and one Riley Join in the same generated Group A booking scope, two pending deltas, unchanged root/group documents, one Casey-to-Nova Asset Invite notification and one Riley-to-Casey Asset Join-request notification without duplicate occurrences
+last_completed: the failing pre-fix branch isolated three independent defects: the generated-Group resource-member signal skipped Tournament Groups, Asset-request metric refresh marked Casey's new write read and therefore erased reload counters, and Nova's asynchronously hydrated assigned card could miss the SmartList ready boundary. Those paths plus exact pending notifications were repaired, including the distinct `/assets/members/action` write used by Riley's Join; both existing hot-deploy owners built successfully, the contaminated old-bundle transaction was reset, and the strict corrected baseline was restaged before fresh browsers were opened
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -199,12 +201,14 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Next test: `ASSET-MEMBER-001`, but it is not execution-ready. First reconcile
-the generic `member-empty` harness with the QA pack's current generated-group
-resource scope and combined Invite/Join ownership, then create the stable user
-guide, exact machine oracles and browser-session definition. Do not stage a
-fixture or ask for UI clicks until those artifacts agree. `ASSET-VIS-001` is
-closed and must not be replayed.
+`ASSET-MEMBER-001` is staged at `baseline-ready`. Follow the versioned guide
+through step 19 only: in Group A, Casey invites Nova once and proves the live
+and reload +1 chains; Nova proves the target card plus Invite notification;
+Riley submits Join once; Casey then proves the reload +2 chain plus Join-request
+notification and reports the exact pending savepoint phrase. Use only the
+explicit reloads in those steps. Do not accept, reject, promote, poll, restage
+or relaunch before the pending Mongo oracle advances the transaction.
+`ASSET-VIS-001` is closed and must not be replayed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

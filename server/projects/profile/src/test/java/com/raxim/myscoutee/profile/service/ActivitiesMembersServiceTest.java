@@ -972,6 +972,101 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void inviteeCanAcceptScopedAssetInvitationAfterReloadWithoutPersistedInviterMetadata() {
+        String eventId = "event-1:subevent-1:group-a";
+        String subEventId = "subevent-1";
+        Asset pendingAsset = new Asset();
+        pendingAsset.setAssetId("asset-1");
+        pendingAsset.setOwnerUserId("asset-owner");
+        pendingAsset.setTitle("Group transport");
+        pendingAsset.setStatus("A");
+        pendingAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "invitee",
+                "Invited User",
+                "IU",
+                "woman",
+                "pending",
+                "Awaiting invitation response.",
+                "invite",
+                "2026-09-03T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Tournament",
+                        subEventId,
+                        "Group stage",
+                        "group-a",
+                        "Group A",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+        Asset acceptedAsset = new Asset();
+        acceptedAsset.setAssetId("asset-1");
+        acceptedAsset.setOwnerUserId("asset-owner");
+        acceptedAsset.setTitle("Group transport");
+        acceptedAsset.setStatus("A");
+        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "invitee",
+                "Invited User",
+                "IU",
+                "woman",
+                "accepted",
+                "Approved and synced with the plan.",
+                "invite",
+                "2026-09-03T08:00:00Z",
+                pendingAsset.getRequests().getFirst().booking())));
+
+        when(homeUserProfileService.resolveSelectedUserId("invitee")).thenReturn("invitee");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("invitee");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                anyList(),
+                eq("invitee")))
+                .thenReturn("asset-owner");
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "invitee",
+                "invitee",
+                "accept",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result)
+                .filteredOn(entry -> "invitee".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.pendingSource()).isNull();
+                    assertThat(entry.requestKind()).isNull();
+                });
+        verify(assetsService).syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                argThat(entries -> entries.stream().anyMatch(entry ->
+                        "invitee".equals(entry.userId())
+                                && "accepted".equals(entry.status())
+                                && entry.pendingSource() == null
+                                && entry.requestKind() == null)),
+                eq("invitee"));
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
     void acceptPendingMemberUsesPolicyAndSavesAcceptedMember() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");

@@ -546,6 +546,12 @@ public class AssetsService {
         assetsRepository.save(next);
         syncAssetRequestProjection(current, next);
         syncAssetRequestPayments(current, next);
+        enqueueScopedAssetPendingRequestNotifications(
+                current,
+                next,
+                eventId,
+                subEventId,
+                actorUserId);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
@@ -1138,6 +1144,12 @@ public class AssetsService {
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
         syncAssetRequestProjection(current, next);
+        enqueueScopedAssetPendingRequestNotifications(
+                current,
+                next,
+                normalizedEventId,
+                normalizedSubEventId,
+                firstNonBlank(normalizeId(actorUserId), ownerUserId));
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedAssetId, ownerUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", normalizedAssetId, ownerUserId);
         return ownerUserId;
@@ -3014,6 +3026,138 @@ public class AssetsService {
                         "targetUserId", normalizedTargetUserId,
                         "actorUserId", normalizedActorUserId),
                 normalizedActorUserId));
+    }
+
+    private void enqueueScopedAssetPendingRequestNotifications(
+            Asset previous,
+            Asset next,
+            String eventId,
+            String subEventId,
+            String actorUserId) {
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+
+        Set<String> previousPendingKeys = safeRequests(previous == null ? null : previous.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> "pending".equals(normalizeRequestStatus(request.status())))
+                .filter(request -> !"manual".equals(normalizeAssetRequestKind(request.requestKind())))
+                .map(request -> scopedAssetRequestNotificationKey(request, normalizedEventId, normalizedSubEventId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        safeRequests(next.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> "pending".equals(normalizeRequestStatus(request.status())))
+                .filter(request -> !"manual".equals(normalizeAssetRequestKind(request.requestKind())))
+                .filter(request -> !previousPendingKeys.contains(
+                        scopedAssetRequestNotificationKey(request, normalizedEventId, normalizedSubEventId)))
+                .forEach(request -> enqueueScopedAssetPendingRequestNotification(
+                        next,
+                        request,
+                        normalizedEventId,
+                        normalizedSubEventId,
+                        normalizedActorUserId));
+    }
+
+    private void enqueueScopedAssetPendingRequestNotification(
+            Asset asset,
+            AssetRequestRecord request,
+            String eventId,
+            String subEventId,
+            String actorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String memberUserId = normalizeId(request == null ? null : request.userId());
+        String requestKind = normalizeAssetRequestKind(request == null ? null : request.requestKind());
+        boolean invitation = ASSET_REQUEST_KIND_INVITE.equals(requestKind);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(memberUserId)) {
+            return;
+        }
+
+        List<String> recipients;
+        String notificationType;
+        String recipientScope;
+        String body;
+        if (invitation) {
+            recipients = memberUserId.equals(actorUserId) || !isActiveUser(memberUserId)
+                    ? List.of()
+                    : List.of(memberUserId);
+            notificationType = "asset-member-invite";
+            recipientScope = "asset-invitee";
+            body = "You were invited to use " + assetTitle(asset) + ".";
+        } else {
+            recipients = activeResponsibleAssetUserIds(asset).stream()
+                    .filter(userId -> !userId.equals(actorUserId))
+                    .filter(userId -> !userId.equals(memberUserId))
+                    .toList();
+            notificationType = "asset-admin-join-request";
+            recipientScope = "asset-responsible-users";
+            String memberName = firstNonBlank(request.name(), memberUserId);
+            body = memberName + " requested to use " + assetTitle(asset) + ".";
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+
+        String requestId = firstNonBlank(
+                normalizeId(request.id()),
+                scopedAssetRequestNotificationKey(request, eventId, subEventId));
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("eventId", eventId);
+        payload.put("subEventId", subEventId);
+        payload.put("requestId", requestId);
+        payload.put("requestKind", requestKind);
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", firstNonBlank(request.name(), memberUserId));
+        payload.put("membershipAction", invitation ? "invited" : "requested");
+        payload.put("notification_tone", "accent");
+        payload.put("notification_status_badge_fallback", "Pending");
+        payload.put("notification_status_badge_tone", "accent");
+        if (StringUtils.hasText(actorUserId)) {
+            payload.put("senderUserId", actorUserId);
+        }
+        if (StringUtils.hasText(safeText(request.requestedAtIso()))) {
+            payload.put("requestedAtIso", safeText(request.requestedAtIso()));
+        }
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                notificationType,
+                "asset",
+                assetId,
+                recipientScope,
+                recipients,
+                assetTitle(asset),
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                notificationType + "-" + assetId + "-" + requestId,
+                payload,
+                StringUtils.hasText(actorUserId) ? actorUserId : memberUserId));
+    }
+
+    private String scopedAssetRequestNotificationKey(
+            AssetRequestRecord request,
+            String eventId,
+            String subEventId) {
+        String requestId = normalizeId(request == null ? null : request.id());
+        if (StringUtils.hasText(requestId)) {
+            return requestId;
+        }
+        return String.join(":",
+                normalizeAssetRequestKind(request == null ? null : request.requestKind()),
+                normalizeId(request == null ? null : request.userId()),
+                normalizeId(eventId),
+                normalizeId(subEventId));
     }
 
     private List<String> activeResponsibleAssetUserIds(Asset asset) {

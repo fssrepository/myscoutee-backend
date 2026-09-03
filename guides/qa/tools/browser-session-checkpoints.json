@@ -1189,6 +1189,33 @@
         }
       ]
     },
+    "ASSET-MEMBER-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Group A Asset owner and inviter"
+        },
+        {
+          "actor": "Nova invited member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Group A invitation recipient"
+        },
+        {
+          "actor": "Riley join requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · Group A Join requester"
+        }
+      ]
+    },
     "AUTH-SESSION-001": {
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

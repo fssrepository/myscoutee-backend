@@ -469,7 +469,7 @@ class ActivitiesResourcesServiceTest {
                 "u1",
                 "admin");
 
-        assertThat(metrics.get("Transport").pending()).isZero();
+        assertThat(metrics.get("Transport").pending()).isEqualTo(2);
         ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
                 ActivitySubEventResource.class);
         verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
@@ -484,11 +484,9 @@ class ActivitiesResourcesServiceTest {
                 .get("Transport")
                 .pending()).isEqualTo(2);
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId))
-                .containsOnlyKeys("u1", "admin");
+                .containsOnlyKeys("u1");
         assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("u1"))
                 .containsExactlyEntriesOf(Map.of("Accommodation", "read-2"));
-        assertThat(runtimeCaptor.getValue().getGroupResourceReadAtByUserId().get(groupId).get("admin"))
-                .containsOnlyKeys("Transport");
         verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
     }
 

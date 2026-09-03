@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -335,15 +336,22 @@ class AssetsServiceTest {
     @Test
     void resourceMemberActionsReturnOnlyStatusTransitionsAndCounterDeltas() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset asset = asset();
-        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        AtomicReference<Asset> assetState = new AtomicReference<>(asset);
+        when(assetsRepository.findByAssetId("asset-1"))
+                .thenAnswer(invocation -> Optional.of(assetState.get()));
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
             Asset saved = invocation.getArgument(0);
-            asset.setRequests(saved.getRequests());
+            assetState.set(saved);
             return saved;
         });
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
         when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
         when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
         var authentication = new TestingAuthenticationToken("firebase-principal", null);
@@ -352,15 +360,15 @@ class AssetsServiceTest {
 
         AssetsService service = new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
-                mock(ActivityMembersRepository.class),
+                usersRepository,
+                activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
+                notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
                 mock(UserActivityCountersService.class));
@@ -379,6 +387,18 @@ class AssetsServiceTest {
             assertThat(joined.previousStatus()).isNull();
             assertThat(joined.acceptedMemberDelta()).isZero();
             assertThat(joined.pendingMemberDelta()).isEqualTo(1);
+            ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+            verify(notificationOutboxService).enqueue(notification.capture());
+            assertThat(notification.getValue().type()).isEqualTo("asset-admin-join-request");
+            assertThat(notification.getValue().recipientUserIds()).containsExactly("u1");
+            assertThat(notification.getValue().payload())
+                    .containsEntry("assetId", "asset-1")
+                    .containsEntry("eventId", "event-1")
+                    .containsEntry("subEventId", "subevent-1")
+                    .containsEntry("requestId", "request-2")
+                    .containsEntry("memberUserId", "u2")
+                    .containsEntry("requestKind", "borrow")
+                    .containsEntry("senderUserId", "u2");
 
             var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                     "asset-1",
@@ -392,6 +412,7 @@ class AssetsServiceTest {
             assertThat(left.previousStatus()).isEqualTo("pending");
             assertThat(left.acceptedMemberDelta()).isZero();
             assertThat(left.pendingMemberDelta()).isEqualTo(-1);
+            verify(notificationOutboxService, times(1)).enqueue(any(NotificationIntent.class));
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -468,6 +489,7 @@ class AssetsServiceTest {
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset asset = asset();
         AssetRequestBookingRecord groupABooking = new AssetRequestBookingRecord(
@@ -504,7 +526,7 @@ class AssetsServiceTest {
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
+                notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
                 mock(UserActivityCountersService.class));
@@ -532,6 +554,71 @@ class AssetsServiceTest {
                     assertThat(request.booking().eventId()).isEqualTo("event-1:subevent-1:group-a");
                     assertThat(request.booking().subEventId()).isEqualTo("subevent-1");
                 });
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-member-invite");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u4");
+        assertThat(notification.getValue().payload())
+                .containsEntry("assetId", "asset-1")
+                .containsEntry("eventId", "event-1:subevent-1:group-a")
+                .containsEntry("subEventId", "subevent-1")
+                .containsEntry("memberUserId", "u4")
+                .containsEntry("requestKind", "invite")
+                .containsEntry("senderUserId", "u1");
+    }
+
+    @Test
+    void syncScopedJoinRequestNotifiesTheAssetOwnerButNotTheRequester() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset asset = asset();
+        asset.setRequests(List.of());
+        ActivityMemberEntryDto joining = new ActivityMemberEntryDto(
+                null, "u5", "Joining User", "JU", "man", "", "Waiting", "Member", "pending",
+                "member", "join", null, true, "2026-05-12T11:00:00Z", "2026-05-12T11:00:00Z",
+                "", null, null, List.of(), "2026-05-12T11:00:00Z", null, null, null, null);
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
+        when(usersRepository.findByUserId("u5")).thenReturn(Optional.of(user("u5", "Joining User", "JU")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        service.syncScopedRequestsFromMemberEntries(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                List.of(joining),
+                "u5");
+
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-admin-join-request");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1");
+        assertThat(notification.getValue().recipientUserIds()).doesNotContain("u5");
+        assertThat(notification.getValue().payload())
+                .containsEntry("memberUserId", "u5")
+                .containsEntry("requestKind", "borrow")
+                .containsEntry("senderUserId", "u5");
     }
 
     @Test
