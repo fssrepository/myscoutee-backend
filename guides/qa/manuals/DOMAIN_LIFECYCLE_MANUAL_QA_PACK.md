@@ -6339,12 +6339,20 @@ is **PASS / CLOSED**.
   one pending Invite, but the open card could temporarily retain the earlier
   pending value while the Group Transport row became `0 / 0 - 0`. The resource
   popup now prefers its freshly queried scoped Asset over an older own-Asset
-  copy, aggregates the authoritative metrics of every visible resource owner,
-  and republishes that absolute scope through the existing resource-metrics
-  signal on initial Asset Members hydration and committed member changes. The
-  frontend watcher compiled and synced the change; the focused
-  `ActivityResourceBuilder` spec passed `11/11`. This exploratory state remains
-  non-oracleable and does not change the testcase status.
+  copy and aggregates the authoritative metrics of every visible resource
+  owner for every resource type. This prevents Riley's Join signal from
+  recalculating Casey's visible Transport from Riley's empty own-assignment
+  maps, and a pending delta can no longer synthesize an absent zero-capacity
+  metric. The Asset Members callback also publishes the full backend member
+  list through the existing absolute member-sync signal before scope hydration;
+  after Casey rejects Riley, the card therefore changes from stale pending `2`
+  to canonical pending `1` just as the Group row applies its `-1` delta.
+  Read-only CDP observed Group A pending `1`, Transport `1 / 4` with red `1`,
+  and Asset Members with Casey plus Nova and one pending request. The frontend
+  watcher compiled and synced the changes; the focused resource builder,
+  tournament group converter and activity runtime sync specs passed `26/26`.
+  This exploratory state remains non-oracleable and does not change the
+  testcase status.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
