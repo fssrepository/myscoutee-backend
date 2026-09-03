@@ -849,14 +849,15 @@
       for (const spec of cleanup) Q.collection(spec.collection).deleteMany(spec.selector);
     }
     Q.collection("assets").deleteMany(lifecycleAssetSelector());
+    const remainingCounts = lifecycleAuthoritativeCounts();
     const update = {
       $set: {
-        "activities.cars": state.baselineCounts.Transport,
-        "activities.accommodation": state.baselineCounts.Accommodation,
-        "activities.supplies": state.baselineCounts.Supplies,
-        "activities.asset.cars": state.baselineCounts.Transport,
-        "activities.asset.accommodation": state.baselineCounts.Accommodation,
-        "activities.asset.supplies": state.baselineCounts.Supplies
+        "activities.cars": remainingCounts.Transport,
+        "activities.accommodation": remainingCounts.Accommodation,
+        "activities.supplies": remainingCounts.Supplies,
+        "activities.asset.cars": remainingCounts.Transport,
+        "activities.asset.accommodation": remainingCounts.Accommodation,
+        "activities.asset.supplies": remainingCounts.Supplies
       }
     };
     const userReset = Q.collection("users").updateOne(

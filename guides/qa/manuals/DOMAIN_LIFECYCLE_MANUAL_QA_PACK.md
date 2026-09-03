@@ -6200,6 +6200,36 @@ is **PASS / CLOSED**.
   Asset Trash/Restore is not a product UI contract. Accommodation and Supplies
   remain unchanged controls. This is one bounded shared-form lifecycle, not
   three duplicate end-to-end afternoons.
+- Executed **PASS / CLOSED** on 2026-09-03. Casey completed the normal
+  Create/Edit/Delete UI journey and reported no remaining material Asset UI
+  issue after one reload. The square shared image was maximally contained in
+  both the editor carousel and the owned-Asset list card without cropping or
+  stretching. Create and Delete reconciled the Asset selector and side-menu
+  counters in place; no Asset list polling was added.
+- The terminal persisted oracle retained three distinct target identities:
+  Transport `asset-1788401138449` was `T` with Subtitle
+  `Edited shared-field value`, Sedan `4/2`, no Location and its managed
+  `large.webp`; Accommodation `asset-1788401224102` remained active with the
+  initial Subtitle, Apartment `6/3`, identical `city/routes=Austin` and its own
+  managed `large.webp`; Supplies `asset-1788401283920` remained active with
+  the initial Subtitle, Safety `12/8`, no Location and no optional duplicate
+  image upload. The shared media path was already proven on Transport and
+  Accommodation.
+- Final authoritative and stored legacy/nested counts matched exactly:
+  Transport `0/0/0`, Accommodation `2/2/2`, Supplies `1/1/1`; internal retained
+  Delete count was `1`. The second active Accommodation was the explicitly
+  out-of-scope test record `asset-1788401751580` / `ddd`; it was neither
+  attributed to this checkpoint nor removed. The versioned reset preserves
+  such external records and recomputes retained counters after deleting only
+  the three QA-title targets.
+- During the run, the shared compact carousel and owned-Asset InfoCard media
+  paths were corrected to `contain`, and successful owned-Asset Create/Delete
+  now publish an absolute type count through `ActivityStore` to both legacy
+  and nested counter shapes. The existing frontend watcher compiled and synced
+  the final bundle successfully; no duplicate build/test process was started.
+- The originally drafted Asset Trash/Restore and replacement-Create steps were
+  removed: neither is a current user-facing Asset contract, and repeating
+  Create after terminal Delete would add no independent coverage.
 
 ### `ASSET-VIS-001` — discovery visibility
 
