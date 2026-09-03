@@ -14,7 +14,7 @@ class ActivitySubEventStageRuntimeMapperTest {
     private final ActivitySubEventStageRuntimeMapper mapper = new ActivitySubEventStageRuntimeMapper();
 
     @Test
-    void calculatesOnlyTheQueryingUsersPersistedResourceReads() {
+    void keepsPendingWorkflowCountersIndependentFromPersistedResourceReads() {
         ActivitySubEventStageRuntime record = new ActivitySubEventStageRuntime();
         record.setOwnerId("event-1");
         record.setSubEventId("stage-1");
@@ -34,7 +34,7 @@ class ActivitySubEventStageRuntimeMapperTest {
         ActivitySubEventStageRuntimeStateDto result = mapper.toDto(record, "user-1");
 
         assertEquals(4, result.groupsCount());
-        assertEquals(1, result.groupsResourcePendingRead());
+        assertEquals(0, result.groupsResourcePendingRead());
         assertEquals(0, mapper.toDto(record, "user-3").groupsResourcePendingRead());
     }
 }

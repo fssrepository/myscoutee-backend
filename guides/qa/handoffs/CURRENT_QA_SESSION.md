@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 06:36 CEST
+Updated: 2026-09-03 06:47 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -57,19 +57,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-MEMBER-001 — active at generated-group baseline
+checkpoint: ASSET-MEMBER-001 — active after Nova Invite, before Riley Join
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
 checklist: ../checklists/asset/ASSET-MEMBER-001.md
-checklist_section: #1 Confirm the generated-group baseline, then #2 Create the distinct Invite and Join requests through step 19
-substage: consolidated ASSET-MEMBER-001/002 transaction is staged at `baseline-ready`; no user mutation has occurred
-next_replay_boundary: Casey invites Nova exactly once, proves the full +1 counter chain without reload and again after one reload; Nova proves its top-down pending chain, assigned Transport card and Invite notification; Riley submits Join exactly once; Casey reloads once to prove the full +2 chain and Riley notification, then the user reports the pending savepoint phrase and Codex runs `verify-asset-member-pending`
-fixture_phase: `baseline-ready` since 2026-09-03T04:31:45.811Z; stage plus repeated read-only status proved all twelve baseline predicates, including exact expected Event/Group roles, canonical full-membership fingerprints, one manual assignment, Group A resource metrics 1 accepted/0 pending, Group B isolation and zero notifications/tasks
+checklist_section: #2 Create the distinct Invite and Join requests, resume at Nova verification in step 11 and continue through step 19
+substage: Casey submitted the Nova Invite exactly once; persisted target state is `1 / 4` plus one pending Invite, while Riley Join has not been submitted
+next_replay_boundary: load the pending-counter and scoped-list repair deployed after Nova's first step-11 attempt, then use one exceptional technical Nova reload to prove the assigned Transport card, the persistent +1 chain and Invite notification; Casey verifies Group menu → Transport can open, close and reopen without clearing +1; Riley then submits Join exactly once; Casey reloads once to prove the full +2 pending chain and Riley notification, then the user reports the pending savepoint phrase and Codex runs `verify-asset-member-pending`
+fixture_phase: active post-Invite transaction; the write-side Group A resource state remains 1 accepted/1 pending and exactly one Nova Invite notification exists. Legacy Casey/Nova resource read receipts are retained but must have no effect on any unresolved-request counter; the +1 chain persists until Nova accepts or rejects the Invite
 browser_phase: three fresh managed ASSET-MEMBER sessions were opened and identity-verified at 2026-09-03 06:32 CEST against the repaired bundles; Casey=650000000000000000000061, Nova=650000000000000000000062, Riley=650000000000000000000063
 ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED
-required_resume: do not restage or relaunch browsers while status remains `baseline-ready`; direct the user through checklist steps 1-19 only, including only the two explicit Casey reloads and one explicit Nova reload, then run the pending oracle after the exact phrase
+required_resume: do not restage, relaunch or repeat Casey's Invite. Use one explicitly recorded exceptional technical reload in Nova to load the repaired bundle, verify the +1 chain, target card and notification, and verify the repaired close/reopen interaction once. Continue with Riley step 13 only after that result. Run the pending oracle only after the exact step-19 phrase
 actors: Casey owns the Asset and is Event Admin plus Group A Member; Nova and Riley are Event and Group A Members; Lina is the sole Group B Member and persisted/UI negative control
 pending_machine_oracle: `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001`; it requires exactly one Nova Invite and one Riley Join in the same generated Group A booking scope, two pending deltas, unchanged root/group documents, one Casey-to-Nova Asset Invite notification and one Riley-to-Casey Asset Join-request notification without duplicate occurrences
-last_completed: the failing pre-fix branch isolated three independent defects: the generated-Group resource-member signal skipped Tournament Groups, Asset-request metric refresh marked Casey's new write read and therefore erased reload counters, and Nova's asynchronously hydrated assigned card could miss the SmartList ready boundary. Those paths plus exact pending notifications were repaired, including the distinct `/assets/members/action` write used by Riley's Join; both existing hot-deploy owners built successfully, the contaminated old-bundle transaction was reset, and the strict corrected baseline was restaged before fresh browsers were opened
+last_completed: Casey's Invite persisted once and its write-side +1 survived the first reload. The later red-counter disappearance exposed an invalid read-receipt projection: unresolved Asset Invite/Join counts must not be consumed by opening a surface. Nova's empty Transport list was a separate scoped SmartList reuse/hydration race while read-only scope HTTP already contained Casey's assigned card. The Invite picker was aligned with the Member two-column contain layout, and the repeated Group-menu Resource open race was repaired by publishing popup context before consuming its host request
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -201,13 +201,14 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-001` is staged at `baseline-ready`. Follow the versioned guide
-through step 19 only: in Group A, Casey invites Nova once and proves the live
-and reload +1 chains; Nova proves the target card plus Invite notification;
-Riley submits Join once; Casey then proves the reload +2 chain plus Join-request
-notification and reports the exact pending savepoint phrase. Use only the
-explicit reloads in those steps. Do not accept, reject, promote, poll, restage
-or relaunch before the pending Mongo oracle advances the transaction.
+`ASSET-MEMBER-001` is active after Casey's single Nova Invite. Do not repeat
+that Invite. Use one exceptional technical Nova reload against the repaired
+bundle, prove the persistent +1 chain plus target card and Invite notification,
+and verify one close/reopen cycle from the Group menu without clearing +1.
+Riley then submits Join once; Casey proves the reload +2 pending chain plus durable card pending total and
+Join-request notification, then reports the exact pending savepoint phrase.
+Do not accept, reject, promote, poll, restage or relaunch before the pending
+Mongo oracle advances the transaction.
 `ASSET-VIS-001` is closed and must not be replayed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B

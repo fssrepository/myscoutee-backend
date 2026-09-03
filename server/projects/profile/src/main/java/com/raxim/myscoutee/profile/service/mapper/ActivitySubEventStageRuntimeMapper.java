@@ -36,7 +36,7 @@ public class ActivitySubEventStageRuntimeMapper {
                 safeText(record.getStageFinalizedByUserId()),
                 normalizeCount(record.getStageResultRevision()),
                 normalizeCount(record.getGroupsCount()),
-                resourcePendingRead(record, viewerUserId));
+                0);
     }
 
     public ActivitySubEventStageRuntime toRecord(
@@ -128,33 +128,7 @@ public class ActivitySubEventStageRuntimeMapper {
     }
 
     public int resourcePendingRead(ActivitySubEventStageRuntime record, String viewerUserId) {
-        String normalizedViewerUserId = normalizeId(viewerUserId);
-        if (record == null || !StringUtils.hasText(normalizedViewerUserId)) {
-            return 0;
-        }
-        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> metricsByGroup =
-                record.getGroupResourceMetricsByAssetOwnerId() == null
-                        ? Map.of()
-                        : record.getGroupResourceMetricsByAssetOwnerId();
-        Map<String, Map<String, Map<String, String>>> readsByGroup =
-                record.getGroupResourceReadAtByUserId() == null
-                        ? Map.of()
-                        : record.getGroupResourceReadAtByUserId();
-        int total = 0;
-        for (Map.Entry<String, Map<String, Map<String, String>>> groupEntry : readsByGroup.entrySet()) {
-            Map<String, String> readAtByType = groupEntry.getValue() == null
-                    ? Map.of()
-                    : groupEntry.getValue().getOrDefault(normalizedViewerUserId, Map.of());
-            Map<String, Map<String, GroupResourceMetricRecord>> metricsByOwner =
-                    metricsByGroup.getOrDefault(groupEntry.getKey(), Map.of());
-            for (String resourceType : readAtByType.keySet()) {
-                for (Map<String, GroupResourceMetricRecord> metricsByType : metricsByOwner.values()) {
-                    GroupResourceMetricRecord metric = metricsByType == null ? null : metricsByType.get(resourceType);
-                    total = Math.addExact(total, normalizeCount(metric == null ? null : metric.pending()));
-                }
-            }
-        }
-        return total;
+        return 0;
     }
 
     private Map<String, Map<String, Map<String, String>>> cloneGroupResourceReadAt(

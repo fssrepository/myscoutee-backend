@@ -6290,7 +6290,10 @@ is **PASS / CLOSED**.
 - Without reload, verify the owner's Invite delta reaches the target Asset card,
   Group action, stage selector and parent Activity/Event card exactly once.
   Reload the owner and prove the same pending chain is reconstructed from the
-  persisted resource runtime instead of being cleared as already read.
+  persisted resource runtime instead of being cleared by the Invite write.
+  The red chain and the Asset card badge are both projections of the unresolved
+  request total: opening or closing the exact Transport branch must not consume
+  either, and only request resolution may reduce them.
 - Verify the invitee sees the assigned target Asset card itself exactly once,
   not only parent counters. Verify recipient/requester projections name the
   same asset and actor once.

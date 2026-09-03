@@ -25,6 +25,10 @@ savepoint inside that testcase, not a separate matrix row.
 - This owned-Asset journey does not use polling. Reload only at the two steps
   that explicitly require it, and select each Invite, Join, Accept, Reject or
   manager-promotion confirmation exactly once.
+- The red `+N` chain and the Asset card's `N pending` badge both represent the
+  unresolved request total. Opening or closing Event, stage, Group, Transport
+  or Asset Members must not clear it; only accepting or rejecting a request may
+  reduce it.
 - Stop at the first mismatch. Do not compensate with a second click, another
   actor, a different group, an unrelated Asset or an ad-hoc fixture change.
 
@@ -77,16 +81,17 @@ Begin only after Codex confirms all of the following:
    selected stage trigger/menu item, `QA Membership Stage`, and the parent
    Activity/Event card each show one pending change. Group B remains zero.
 10. Reload **Casey** exactly once. Starting again from the Activity/Event card,
-    confirm the same one-pending chain is reconstructed top-down through the
-    stage and Group A. Reopen Transport and confirm the target card still
-    appears exactly once with `1 / 4` and `1` pending. This is the independent
-    server-write/reload check, not a repeat of the live signal assertion.
+    confirm the same red `+1` pending chain is reconstructed top-down through
+    the stage and Group A. Reopen Transport and confirm that opening the path
+    does not clear any level: the target card must still appear exactly once
+    with `1 / 4` and `1` pending. This is the independent server-write/reload
+    check, not a repeat of the live signal assertion.
 11. Reload **Nova** exactly once. From the Activity/Event card, follow the same
-    stage → Group A → Transport path and confirm the one-pending counters remain
-    visible at every level. In the Transport list, the target Transport card
-    itself must appear exactly once before opening Asset Members; it must show
-    `1 / 4` with Nova's one pending Invite. Open Asset Members and confirm only
-    Nova's own row is pending for her response.
+    stage → Group A → Transport path and confirm the red `+1` pending marker at
+    each level. In the Transport list, the target Transport card itself must
+    appear exactly once and show `1 / 4` with Nova's one pending Invite. Open
+    Asset Members and confirm only Nova's own row is pending for her response;
+    the complete red `+1` chain must still remain after these reads.
 12. In Nova, open Notifications. Confirm exactly one controlled Asset Invite
     notification from Casey for the target Transport, with no duplicate row.
     It may move from `New` to notification history after opening; do not expect
@@ -98,10 +103,11 @@ Begin only after Codex confirms all of the following:
 15. Without reloading Riley, confirm the card no longer offers another Join and
     the Group A Transport pending counter has increased by exactly one to `2`.
 16. Reload **Casey** exactly once. Confirm the persisted pending chain is now
-    exactly `2` from the parent Activity/Event card through the stage, Group A
-    and Transport. Open Notifications and confirm exactly one controlled Asset
-    Join-request notification from Riley for the target Transport, with no
-    duplicate row.
+    exactly red `+2` from the parent Activity/Event card through the stage and
+    Group A. Opening Transport must not consume that pending chain, and its
+    target card must show the same `2` pending total. Open Notifications and confirm exactly one
+    controlled Asset Join-request notification from Riley for the target
+    Transport, with no duplicate row.
 17. In Casey, reopen the target card's `Open member requests` badge.
     Confirm exactly these three rows:
 

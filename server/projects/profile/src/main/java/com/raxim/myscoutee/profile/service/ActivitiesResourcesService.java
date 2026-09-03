@@ -1256,11 +1256,7 @@ public class ActivitiesResourcesService {
         runtime.setUpdatedUser(normalizeId(actorUserId));
         activitySubEventStageRuntimeRepository.save(runtime);
         tournamentGroupCounterService.syncParent(scope.runtimeOwnerId(), scope.subEventId());
-        return applyResourceReads(
-                aggregateGroupRuntimeMetrics(byAssetOwner),
-                runtime.getGroupResourceReadAtByUserId()
-                        .getOrDefault(scope.groupId(), Map.of())
-                        .getOrDefault(normalizeId(actorUserId), Map.of()));
+        return aggregateGroupRuntimeMetrics(byAssetOwner);
     }
 
     private Map<String, SubEventResourceMetricDto> aggregateGroupRuntimeMetrics(
@@ -1384,22 +1380,6 @@ public class ActivitiesResourcesService {
         }
         byUser.put(normalizedActorUserId, byType);
         result.put(groupId, byUser);
-        return result;
-    }
-
-    private Map<String, SubEventResourceMetricDto> applyResourceReads(
-            Map<String, SubEventResourceMetricDto> metricsByType,
-            Map<String, String> readAtByType) {
-        Map<String, SubEventResourceMetricDto> result = new LinkedHashMap<>();
-        for (Map.Entry<String, SubEventResourceMetricDto> entry :
-                (metricsByType == null ? Map.<String, SubEventResourceMetricDto>of() : metricsByType).entrySet()) {
-            SubEventResourceMetricDto metric = metricOrEmpty(entry.getValue());
-            result.put(entry.getKey(), new SubEventResourceMetricDto(
-                    metric.accepted(),
-                    readAtByType != null && readAtByType.containsKey(entry.getKey()) ? 0 : metric.pending(),
-                    metric.capacityMin(),
-                    metric.capacityMax()));
-        }
         return result;
     }
 

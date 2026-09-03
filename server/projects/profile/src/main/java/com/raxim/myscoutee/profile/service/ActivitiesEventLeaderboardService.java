@@ -560,18 +560,12 @@ public class ActivitiesEventLeaderboardService {
                 totals[3] += safeCount(metric.capacityMax());
             }
         }
-        Map<String, String> readAtByType = runtime == null
-                || runtime.getGroupResourceReadAtByUserId() == null
-                ? Map.of()
-                : runtime.getGroupResourceReadAtByUserId()
-                        .getOrDefault(normalizeId(groupId), Map.of())
-                        .getOrDefault(normalizeId(userId), Map.of());
         Map<String, EventTournamentResourceMetricDto> result = new LinkedHashMap<>();
         for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
             int[] totals = entry.getValue();
             result.put(entry.getKey(), new EventTournamentResourceMetricDto(
                     totals[0],
-                    readAtByType.containsKey(entry.getKey()) ? 0 : totals[1],
+                    totals[1],
                     totals[2],
                     Math.max(totals[2], totals[3])));
         }
