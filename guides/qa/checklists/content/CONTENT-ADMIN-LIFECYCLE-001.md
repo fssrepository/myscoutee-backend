@@ -39,8 +39,9 @@ Begin only after Codex confirms this exact baseline:
 - `QA CONTENT-ADMIN-LIFECYCLE-001 Article` is one English, published,
   non-featured article with a canonical managed image set and is visible once
   publicly; its exact All/Featured/Published/Drafts/Trashed counts are reported;
-- `QA CONTENT-ADMIN-LIFECYCLE-001 Featured Control`, the previously proven
-  `ARTICLE-SRC-002` record and all non-fixture content are unchanged controls;
+- `QA CONTENT-ADMIN-LIFECYCLE-001 Featured Control`, the pre-stage presence or
+  absence of the previously proven `ARTICLE-SRC-002` record, and all
+  non-fixture content are unchanged controls;
 - isolated Ava, Kai and Riley windows are open and identity-verified.
 
 ## Complete test journey
@@ -234,9 +235,9 @@ Begin only after Codex confirms this exact baseline:
     renders the same body with the same managed large image.
 64. Reload Ava and Riley exactly once each. Recheck governed-content Active
     versions, Article admin buckets and fresh public inclusion.
-65. Confirm Riley owns no Kai consent, the adjacent Featured Control and
-    `ARTICLE-SRC-002` are unchanged, and no Help/Terms/Explanation draft became
-    public accidentally.
+65. Confirm Riley owns no Kai consent, the adjacent Featured Control and the
+    pre-stage `ARTICLE-SRC-002` state are unchanged, and no Help/Terms/
+    Explanation draft became public accidentally.
 66. Report the terminal phrase:
 
     `CONTENT-ADMIN-LIFECYCLE-001 UI complete: revisions, consent, fallback and article lifecycle persist`

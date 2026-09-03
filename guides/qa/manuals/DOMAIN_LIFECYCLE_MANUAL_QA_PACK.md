@@ -2923,7 +2923,7 @@ Status: **PASS** on 2026-08-05.
 
 ### `EVENT-CHECKOUT-DUMMY-001` — Event Explore dummy payment reaches accepted participation
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **PREPARED / NOT STAGED / NOT RUN**.
 
 Stable user guide:
 [`EVENT-CHECKOUT-DUMMY-001.md`](../checklists/event/EVENT-CHECKOUT-DUMMY-001.md).
@@ -6641,6 +6641,46 @@ Status: **DESIGN CAPTURED / NOT RUN**.
 Stable user guide:
 [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 
+Prepared runner sequence (do not stage while another checkpoint is active):
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-drafts-saved content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset content-admin CONTENT-ADMIN-LIFECYCLE-001
+```
+
+The runner and Ava/Kai/Riley browser definition were prepared on 2026-09-03.
+They were deliberately not staged or opened because
+`ASSET-ASSIGNMENT-LIFECYCLE-001` still owns the live fixture boundary. After
+that checkpoint is recorded and reset, Content must be staged once and its
+read-only `baseline-ready` status must pass before opening the browsers.
+The two distinct managed-image controls were read-only verified over the
+running HTTP stack before staging:
+
+- `idea-register-value/v1/large.webp`: HTTP 200, `image/webp`, 98012 bytes,
+  SHA-256 `8fe226b45db5c299ca10c71fa1be3b766ff0ff5bd67d125f957ca207479f9fae`;
+- `idea-why-priority-matching/v1/large.webp`: HTTP 200, `image/webp`, 82400
+  bytes, SHA-256
+  `159043edf1734fdea38e1a348284dca4ae0d39db1425137e227998c67cca9fa1`.
+
+Recheck those values at the Article savepoints; a Mongo URL match alone is not
+the media-retention oracle.
+
 This consolidated Core journey replaces four unexecuted microtest rows. It
 does not reopen or rewrite the already-PASS Article Editor and landing
 publication evidence.
@@ -6707,11 +6747,12 @@ publication evidence.
   base revision, actor/time, content audit/telemetry counts, consent histories,
   bucket counts, public query membership and managed-media object hashes.
   Reload and idempotence probes must not duplicate any mutation.
-- A versioned fixture must provide guarded `stage`, read-only `status`, named
+- The versioned fixture provides guarded `stage`, read-only `status`, named
   `drafts-saved`, `privacy-active`, `privacy-fallback`, `article-trashed`,
   `article-restored` and `article-republished` captures, plus exact `reset`.
-  Do not execute this row until that harness and the isolated Ava/Kai/Riley
-  browser-session definition exist.
+  Its Mongo savepoints prove the revision, audit, consent and Article-bucket
+  contract. Capture the existing admin telemetry stream separately at the
+  matching UI savepoints; do not infer Redis telemetry from Mongo state.
 
 ## Operator configuration and security cases
 

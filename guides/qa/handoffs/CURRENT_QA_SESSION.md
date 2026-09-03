@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 14:58 CEST
+Updated: 2026-09-03 15:22 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -19,6 +19,8 @@ file first, then open only the linked active checkpoint section.
 - Stable user-facing click guide for the active staged Assignment lifecycle;
   execution status and machine evidence remain in the pack/handoff:
   [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
+- Stable user-facing click guide for the prepared, queued Content lifecycle:
+  [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -31,6 +33,8 @@ file first, then open only the linked active checkpoint section.
 - Isolated normal/Tournament Asset assignment fixture and exact branch
   oracles:
   [`asset-assignment-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-assignment-lifecycle-checkpoints.js)
+- Isolated governed-content, consent and Article lifecycle fixture:
+  [`content-admin-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/content-admin-lifecycle-checkpoints.js)
 - Isolated generated-group Asset membership fixture and exact savepoint
   oracles:
   [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
@@ -71,6 +75,7 @@ next_replay_boundary: run the exact read-only Assignment status command below; w
 fixture_phase: the intact ASSET-BORROW baseline was read-only verified and reset through its versioned harness at 2026-09-03T12:56:47.217Z; ASSET-ASSIGNMENT was staged at 2026-09-03T12:56:53.062Z and its complete baseline passed the subsequent read-only status
 browser_phase: NOT OPENED for ASSET-ASSIGNMENT-LIFECYCLE-001; old ASSET-MEMBER/BORROW windows are unrelated and must not be used as evidence
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
+queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
 required_resume: load only this resume block plus the linked Assignment detail/checklist; run `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001`; do not reset/restage or launch browsers when all eleven baseline checks pass; when the user explicitly starts QA, launch exactly `guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-ASSIGNMENT-LIFECYCLE-001`
 actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
 pending_machine_oracle: normal Event has three viewer documents, Casey/Nova/Riley accepted, one pre-existing Nova Member relation to Riley Supplies, two Sub-events and zero resources/counters. Tournament has Casey/Nova/Riley in Group A, Lina in Group B, Group A Nova Transport 1 accepted/1 pending/0-4 plus Riley Accommodation 1 accepted/1 pending/0-3, Group B Lina Transport 1 accepted/0 pending/0-2, stage/root pending 2, and zero controlled notifications. Group B and the normal control Sub-event are immutable controls
@@ -142,9 +147,16 @@ moves a separate managed-media Article through Published -> Trashed -> Draft
 -> Published while comparing admin buckets, fresh public clients and an
 honestly non-live open client. The older unexecuted active-delete-denial
 assertion was corrected to match Java, frontend-local and the administrator
-manual. Its versioned fixture/browser-session definition is created only when
-the row becomes active; it does not change the staged `ASSET-LIFE-001`
-boundary.
+manual. Its versioned fixture, six savepoint oracles, exact reset and
+Ava/Kai/Riley browser-session definition are prepared. It remains explicitly
+not staged and no Content browser was opened, so it did not alter the active
+Asset Assignment boundary. After Assignment is recorded and reset, stage
+Content once, require `baseline-ready`, and only then open its configured
+browsers. The Mongo harness proves revision, audit, consent and Article-bucket
+state; the existing admin telemetry stream is a separate savepoint oracle.
+Both distinct managed-image controls returned HTTP 200 and their pre-stage
+sizes/SHA-256 values are recorded in the Content pack section for tomorrow's
+retention comparison.
 
 ### Efficient resume gate
 
@@ -214,7 +226,11 @@ payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
 is now staged at `baseline-ready`; its browser was deliberately not opened and
 the manual journey has not started. In the next session, run the resume
 block's read-only status command, load the stable guide, and wait for the
-user's explicit QA start before launching its configured browser sessions.
+user’s explicit QA start before launching its configured browser sessions.
+After Assignment is completed, recorded and reset, the prepared
+`CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
+it early: its guarded runner intentionally refuses to coexist with another
+active manual-QA snapshot.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

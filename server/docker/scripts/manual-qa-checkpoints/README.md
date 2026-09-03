@@ -410,6 +410,42 @@ verified normal Event branch. The verifiers compare Group B byte-for-byte and
 require persisted owner/type, runtime, stage and root values; no list query or
 frontend fallback is an oracle.
 
+## Content administration lifecycle runner
+
+`CONTENT-ADMIN-LIFECYCLE-001` uses an isolated Content runner. It replaces
+only the four controlled governed-content scopes while staged, gives Ava, Kai
+and Riley exact Privacy v1/v2 consent histories, and creates one disposable
+published Article plus one featured negative control. The runner snapshots and
+restores the original scope records, audits, actor consents and controlled
+Article IDs. It refuses to stage while another manual-QA scenario is active.
+
+```bash
+bash manual-qa-checkpoints.sh stage content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash manual-qa-checkpoints.sh status content-admin CONTENT-ADMIN-LIFECYCLE-001
+# save the four inactive revisions from the stable checklist
+bash manual-qa-checkpoints.sh verify-drafts-saved content-admin CONTENT-ADMIN-LIFECYCLE-001
+# activate Privacy v3 and approve it only as Kai
+bash manual-qa-checkpoints.sh verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
+# delete Help v2 and active Privacy v3
+bash manual-qa-checkpoints.sh verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
+# move the controlled published Article to trash
+bash manual-qa-checkpoints.sh verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
+# restore it as a Draft, without publishing
+bash manual-qa-checkpoints.sh verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
+# publish the restored Draft once
+bash manual-qa-checkpoints.sh verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash manual-qa-checkpoints.sh reset content-admin CONTENT-ADMIN-LIFECYCLE-001
+```
+
+Every savepoint reads the persisted revisions, exact audit rows, per-user
+consents and Article bucket state. Unrelated revisions are compared through a
+semantic normalization that permits the service's canonical empty context and
+language-label normalization but no content, version, actor, timestamp or
+active-state drift. Unrelated Articles and other users' consents remain exact
+negative controls. The two staged Articles use distinct, already-managed
+system image sets; the lifecycle verifiers require their URLs and HTML
+references to remain unchanged.
+
 ## Operator-domain checkpoint runner
 
 `OPERATOR-FIREBASE-001` snapshots the exact deployment configuration before
