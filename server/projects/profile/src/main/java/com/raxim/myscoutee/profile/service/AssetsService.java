@@ -3266,6 +3266,20 @@ public class AssetsService {
                             "Asset member left",
                             memberName + " left " + assetTitle(previous) + ".",
                             "left");
+                } else if ("pending".equals(previousStatus)
+                        && ASSET_REQUEST_KIND_INVITE.equals(
+                                normalizeAssetRequestKind(previousRequest.requestKind()))) {
+                    String memberName = firstNonBlank(previousRequest.name(), memberUserId);
+                    enqueueAssetMemberTransitionNotification(
+                            previous,
+                            previousRequest,
+                            normalizedActorUserId,
+                            "asset-invitation-declined",
+                            "asset-responsible-users",
+                            activeResponsibleAssetUserIds(previous),
+                            "Asset invitation declined",
+                            memberName + " declined the invitation to use " + assetTitle(previous) + ".",
+                            "declined");
                 }
                 continue;
             }

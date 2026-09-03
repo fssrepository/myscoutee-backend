@@ -1553,6 +1553,78 @@ class AssetsServiceTest {
     }
 
     @Test
+    void decliningOwnAssetInvitationNotifiesTheAssetOwner() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset existing = assetWithEventRequest();
+        AssetRequestRecord pending = existing.getRequests().get(0);
+        existing.setRequests(List.of(new AssetRequestRecord(
+                pending.id(),
+                pending.userId(),
+                pending.name(),
+                pending.initials(),
+                pending.gender(),
+                "pending",
+                "Awaiting invitation response.",
+                "invite",
+                pending.requestedAtIso(),
+                pending.booking())));
+        Users owner = user("u1", "Owner One", "OO");
+        var authentication = new TestingAuthenticationToken("firebase-principal", null);
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            service.upsert(new AssetUpsertRequestDto(
+                    "u1",
+                    assetCard("asset-1", "Camp Kit", 2, List.of())));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-invitation-declined");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1");
+        assertThat(notification.getValue().createdUser()).isEqualTo("u2");
+        assertThat(notification.getValue().payload())
+                .containsEntry("assetId", "asset-1")
+                .containsEntry("eventId", "event-1")
+                .containsEntry("subEventId", "subevent-1")
+                .containsEntry("requestId", "request-1")
+                .containsEntry("requestKind", "invite")
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("membershipAction", "declined");
+    }
+
+    @Test
     void ownerAcceptingAssetJoinRequestNotifiesTheRequester() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

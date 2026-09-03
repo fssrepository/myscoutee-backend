@@ -32,6 +32,7 @@
     "asset-member-invite",
     "asset-admin-join-request",
     "asset-invitation-accepted",
+    "asset-invitation-declined",
     "asset-member-request-accepted",
     "asset-member-removed",
     "asset-manager-promoted"

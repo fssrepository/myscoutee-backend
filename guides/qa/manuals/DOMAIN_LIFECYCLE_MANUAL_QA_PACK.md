@@ -6324,6 +6324,12 @@ is **PASS / CLOSED**.
   requester; promotion notifies the promoted invitee. Each transition adds the
   relevant Notifications unread delta and one exact outbox/inbox occurrence,
   but no resolved transition adds an Asset-card pending counter.
+- In the independent reset branch where the invitee rejects instead of accepts
+  the Invite, the request disappears, the unresolved pending chain decreases
+  once, no Asset membership is created, and the Asset owner/responsible manager
+  receives exactly one `asset-invitation-declined` notification naming the
+  invitee and request. This is a Notifications unread event, not a retained red
+  Event/stage/Group/Asset pending counter.
 - The final Asset contains the owner plus the promoted invitee and no requester
   row. Asset Manager must not silently promote the user to Event Admin, change
   an existing Event membership role or affect another group.
