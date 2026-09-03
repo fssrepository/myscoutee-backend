@@ -105,9 +105,9 @@ Begin only after Codex confirms all of the following:
 16. Reload **Casey** exactly once. Confirm the persisted pending chain is now
     exactly red `+2` from the parent Activity/Event card through the stage and
     Group A. Opening Transport must not consume that pending chain, and its
-    target card must show the same `2` pending total. Open Notifications and confirm exactly one
-    controlled Asset Join-request notification from Riley for the target
-    Transport, with no duplicate row.
+    target card must show the same `2` pending total. Open Notifications and
+    confirm exactly one controlled Asset Join-request notification from Riley
+    for the target Transport, with no duplicate row.
 17. In Casey, reopen the target card's `Open member requests` badge.
     Confirm exactly these three rows:
 
