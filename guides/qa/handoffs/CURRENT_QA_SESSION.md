@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 08:49 CEST
+Updated: 2026-09-03 10:25 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -60,16 +60,16 @@ resume pointer and reusable working method.
 checkpoint: ASSET-MEMBER-001 — retained partial run; strict replay boundary was crossed without its pending oracle
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-member-001--asset-invite-and-pending-linkage
 checklist: ../checklists/asset/ASSET-MEMBER-001.md
-checklist_section: no further UI mutation in the retained run; the stable guide now owns a fresh replay through steps 1-41
-substage: persisted target is `1 / 4`, one pending, with Casey's manual assignment and Nova's pending Invite; Riley is absent after Casey removed the previously accepted member. The state document still says `baseline-ready`, because the required two-pending oracle was never advanced
+checklist_section: no further UI mutation in the retained run; the stable guide now owns a fresh replay through steps 1-46
+substage: persisted target is `3 / 4`, zero pending, with Casey, Nova and Riley accepted. Nova has a legacy Asset Manager record created by Casey before the explicit grantor field was deployed; Riley is a plain Asset Member. The state document still says `baseline-ready`, because the required two-pending oracle was never advanced
 next_replay_boundary: do not coerce the retained run into pending-verified or terminal-verified. If the user requests a strict closure replay, reset this one active scenario through its harness, stage it once from the corrected fixture, verify baseline, then follow the stable guide without skipping the pending phrase/oracle
-fixture_phase: non-terminal partial evidence only. The parent Event and generated groups remain intact; the target Transport has Casey accepted and Nova pending, so its current absolute metrics are 1 accepted/1 pending/4 capacity. Exactly the original Nova Invite and Riley Join-request notifications exist; the later Nova/Riley response transitions occurred before the repaired transition producers were deployed and therefore cannot prove those producers live
+fixture_phase: non-terminal exploratory evidence only. The parent Event and generated groups remain intact; the target Transport has Casey, Nova and Riley accepted at 3/4 with zero pending. Notification history contains repeated exploratory Invite/Join cycles and cannot prove terminal exact-once counts
 browser_phase: three fresh managed ASSET-MEMBER sessions were opened and identity-verified at 2026-09-03 06:32 CEST against the repaired bundles; Casey=650000000000000000000061, Nova=650000000000000000000062, Riley=650000000000000000000063
 ledger_status: 83/118 total, Core 83/98; ASSET-LIFE-001 and ASSET-VIS-001 PASS/CLOSED
-required_resume: preserve the retained state until the user chooses reset/replay. Do not add, accept, reject or remove another Asset member through ad-hoc UI/Mongo repair. An 08:38 read-only status intentionally failed baseline checks and recorded the exact divergent oracle. At 09:00 read-only CDP on the already-open Casey window confirmed Group A with one pending, Transport 1/4 with red 1, and Asset Members with Casey plus Nova. A later manual observation proved the Join request's retained +1 could be forwarded again from a remounted Sub Events popup to the Activity Event card, producing 2 -> 3 -> 4 while the subevent stayed stable. The resource activity delta now has a store-owned one-consumption revision gate; its focused store test and the frontend watcher pass, but the exact close/reopen human replay is still pending. A future strict verdict still requires the fresh harness reset/replay described above
+required_resume: preserve the retained state until the user chooses reset/replay. Do not repair it with ad-hoc UI or Mongo writes. A 10:24 read-only status intentionally failed baseline checks and recorded the exact 3/4, zero-pending exploratory state. Read-only CDP proved Event roles remain Casey Admin, Nova/Riley Member while Asset roles are Casey/Nova Manager and Riley Member. A future strict verdict still requires the fresh harness reset/replay described above
 actors: Casey owns the Asset and is Event Admin plus Group A Member; Nova and Riley are Event and Group A Members; Lina is the sole Group B Member and persisted/UI negative control
 pending_machine_oracle: `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001`; after a fresh staged replay it requires the exact Invite/Join scope, two pending deltas, unchanged root/group documents, the controlled Service chat and the two pending notifications without duplicate occurrences
-last_completed: accepted-borrower management was removed from both frontend and backend authorization. Pending Join cancellation is labelled Cancel join request; after owner acceptance an ordinary Asset Member has no leave/manage/report menu and must use Ask Organizer so the owner can remove it. The generic Activity-member action route now also rejects accepted Asset-member self-removal while retaining pending Join cancellation. CDP verified the reloaded Riley Members popup has zero card menus. The standard chat message menu gained Resend after the existing Reply/Edit/Unsend/Pin actions, and the selected timed-out bubble no longer stretches. Transition notification producers now cover invitation acceptance/rejection, owner acceptance, owner removal and manager promotion; Invite rejection sends exactly one asset-invitation-declined notification to the responsible owner and creates no retained pending counter. Resolved transitions use Notifications unread state and never the Event/stage/Group/Asset pending chain. Focused AssetsServiceTest passed before the rejection branch was added; existing frontend/backend watchers compiled successfully. The focused ActivitiesMembersServiceTest and new rejection test are authored but remain unrun because the running dev `:projects:profile:classes --continuous` watcher owns the project Gradle cache lock; no second cache/build was started and the healthy watcher was preserved. The global Notifications popup is now eagerly bundled with the already-loaded SideMenu, and its launcher no longer depends on online/profile-load readiness, so the popup shell opens during a server hot-deploy without a server or lazy-chunk request. The retained Casey run then exposed a separate resource-metric reconciliation defect: the scope API and Mongo both returned Transport 1/4 with one Nova pending request, while stale own-asset precedence and delta-only popup hydration could render a duplicate card count and zero the Group resource row. The exact Join defect was viewer-relative aggregation: Riley's Join signal recalculated the group rows only from Riley's own assignment maps even though Casey's visible Transport owned the membership. The resource popup now prefers the fresh scoped card and aggregates every visible owner's authoritative scope metrics for all resource types; a pending delta cannot synthesize an absent zero-capacity metric. Separately, the Asset Members callback now writes its full backend member snapshot through the existing absolute member-sync signal before scope hydration, so Casey's rejection replaces a stale card pending count of 2 with the canonical 1 while the Group row applies its -1 delta. The frontend watcher compiled and synced the fixes; read-only CDP observed Transport 1/4, red 1 and one pending member. The focused ActivityResourceBuilder, tournament group converter and activity runtime sync specs pass 26/26. The corrected fixture stores nested request identity as `_id` and snapshots/cleans the Service chat; its terminal success oracle expects six exact notification occurrences while the independent rejection branch owns the seventh notification type
+last_completed: accepted ordinary Asset Members have no self-leave/manage/report menu and use Ask Organizer; pending Join cancellation remains available. The standard Service chat and Resend behavior, notification-shell hot-deploy behavior, absolute resource/member synchronization and one-consumption runtime delta gate are retained. Asset promotion now persists `Manager` in the Asset write model, re-queries the existing SmartList for an in-place role/icon/menu update, and never changes the Event role. The write model has an explicit `managerGrantedByUserId`: the Asset owner may revoke or remove every non-owner Manager, while a delegated Manager may revoke only a Manager they appointed and may not remove a Manager. Promotion and revocation notify the target plus other responsible managers excluding the actor. Read-only CDP proved Casey Event Admin/Asset Manager and Nova Event Member/Asset Manager remain separate scopes. The terminal oracle expects eight outbox transitions and ten inbox occurrences; the independent Invite-rejection branch remains a separate reset route. Backend focused tests for scoped role reads, owner removal and grantor authorization are authored but remain unrun because the active continuous Gradle watcher owns the cache; backend/frontend watchers compiled successfully
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -201,20 +201,15 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-001` retains a partial, non-oracleable run at `1 / 4`, one
-pending: Casey's manual assignment plus Nova's pending Invite, with Riley absent
-after Casey's owner removal. Do not mutate it further
-or represent it as PASS. The accepted-member menu authorization and Service
-chat were verified live. Focused AssetsService permission/notification coverage
-passed; the generic Activity-member regression is written but remains unrun
-because the active dev watcher owns the Gradle cache lock. If strict manual closure is required,
-reset only this scenario through its harness and run the corrected fixture and
-guide from baseline; the pending phrase/oracle must run before any response.
-The 08:48 resource reconciliation fix is compiled and may be checked after one
-Casey reload: the retained Event -> stage -> Group A -> Transport path must show
-one pending request both on the Group resource action and target card, with
-`1 / 4` accepted capacity and no intermediate `0 / 0 - 0` publication.
-`ASSET-VIS-001` is closed and must not be replayed.
+`ASSET-MEMBER-001` retains a partial, non-oracleable exploratory run at `3 / 4`,
+zero pending: Casey and Nova are Asset Managers and Riley is an accepted plain
+Member. Nova's retained Manager record predates the explicit grantor field; a
+new Nova-to-Riley promotion is the first live path that can prove delegated
+grant/revoke ownership. Do not represent the retained run as PASS. If strict
+manual closure is required, reset only this scenario through its harness and
+run the corrected fixture and steps 1-46 from baseline; the pending
+phrase/oracle must run before any response. `ASSET-VIS-001` is closed and must
+not be replayed.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

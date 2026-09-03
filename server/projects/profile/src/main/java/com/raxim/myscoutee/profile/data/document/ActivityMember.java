@@ -34,6 +34,7 @@ public class ActivityMember {
     private String pendingSource;
     private String requestKind;
     private String invitedByUserId;
+    private String managerGrantedByUserId;
     private String metAtIso;
     private String actionAtIso;
     private String metWhere;
@@ -148,6 +149,14 @@ public class ActivityMember {
 
     public void setInvitedByUserId(String invitedByUserId) {
         this.invitedByUserId = invitedByUserId;
+    }
+
+    public String getManagerGrantedByUserId() {
+        return managerGrantedByUserId;
+    }
+
+    public void setManagerGrantedByUserId(String managerGrantedByUserId) {
+        this.managerGrantedByUserId = managerGrantedByUserId;
     }
 
     public String getMetAtIso() {

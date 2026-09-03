@@ -796,6 +796,7 @@ public class AssetsService {
         member.setPendingSource(null);
         member.setRequestKind(null);
         member.setInvitedByUserId(null);
+        member.setManagerGrantedByUserId(normalizedUserId);
         member.setActionAtIso(nowIso);
         member.setUpdatedDate(nowIso);
         member.setUpdatedUser(normalizedUserId);
@@ -824,12 +825,25 @@ public class AssetsService {
         String actorId = normalizeId(request.userId());
         String assetId = normalizeId(request.assetId());
         String targetId = normalizeId(request.targetUserId());
+        if (!StringUtils.hasText(actorId)
+                || !StringUtils.hasText(assetId)
+                || !StringUtils.hasText(targetId)
+                || actorId.equals(targetId)) {
+            return null;
+        }
         Asset current = findAssetByAssetId(assetId).orElse(null);
         Optional<ActivityMember> member = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, assetId, targetId);
+        boolean actorOwnsAsset = current != null && actorId.equals(normalizeId(current.getOwnerUserId()));
+        boolean actorGrantedManagerRole = member
+                .map(ActivityMember::getManagerGrantedByUserId)
+                .map(this::normalizeId)
+                .filter(actorId::equals)
+                .isPresent();
         if (current == null || !canManageAssetMembers(current, actorId)
                 || !accessControlService.canCurrentActorPromoteAssetManager(actorId, assetId)
-                || !isAcceptedAssetManagerMember(member.orElse(null))) return null;
+                || !isAcceptedAssetManagerMember(member.orElse(null))
+                || (!actorOwnsAsset && !actorGrantedManagerRole)) return null;
         Asset next = cloneAsset(current);
         next.setRequests(safeRequests(current.getRequests()).stream().map(item ->
                 targetId.equals(normalizeId(item.userId()))
@@ -842,6 +856,8 @@ public class AssetsService {
         if (!updateAssetManagerRequestsIfSnapshotCurrent(current, next)) return null;
         member.ifPresent(activityMembersRepository::delete);
         syncAssetRequestProjection(current, next);
+        affinityRecomputeTaskService.enqueueAssetChanged(assetId, actorId);
+        enqueueAssetManagerRevokedNotification(next, actorId, targetId);
         return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), actorId);
     }
 
@@ -901,6 +917,7 @@ public class AssetsService {
                 .unset("pendingSource")
                 .unset("requestKind")
                 .unset("invitedByUserId")
+                .set("managerGrantedByUserId", normalizeId(next.getManagerGrantedByUserId()))
                 .set("actionAtIso", safeText(next.getActionAtIso()))
                 .set("updatedDate", safeText(next.getUpdatedDate()))
                 .set("updatedUser", safeText(next.getUpdatedUser()));
@@ -3011,7 +3028,51 @@ public class AssetsService {
                 "/game",
                 firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
-                "asset-manager-promoted-" + assetId,
+                "asset-manager-promoted-" + assetId + "-" + normalizedTargetUserId,
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "memberUserId", normalizedTargetUserId,
+                        "targetUserId", normalizedTargetUserId,
+                        "actorUserId", normalizedActorUserId),
+                normalizedActorUserId));
+    }
+
+    private void enqueueAssetManagerRevokedNotification(Asset asset, String actorUserId, String targetUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        recipients.add(normalizedTargetUserId);
+        recipients.addAll(activeResponsibleAssetUserIds(asset));
+        recipients.remove(normalizedActorUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        String targetName = usersRepository.findByUserId(normalizedTargetUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("A member");
+        String title = "Asset manager updated";
+        String body = targetName + " is no longer a manager of " + assetTitle(asset) + ".";
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-manager-revoked",
+                "asset",
+                assetId,
+                "asset-active-managers",
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-manager-revoked-" + assetId + "-" + normalizedTargetUserId,
                 Map.of(
                         "assetId", assetId,
                         "assetTitle", assetTitle(asset),

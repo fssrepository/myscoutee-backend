@@ -6318,12 +6318,19 @@ is **PASS / CLOSED**.
   Organizer`; only the owner or an explicit Asset Manager/Admin can remove an
   accepted ordinary member. A still-pending requester may cancel only its own
   request.
-- Have the owner remove the newly accepted requester, then explicitly promote
-  the accepted invitee to Asset Manager. The invite acceptance notifies the
-  responsible owner; Join acceptance and later removal each notify the affected
-  requester; promotion notifies the promoted invitee. Each transition adds the
-  relevant Notifications unread delta and one exact outbox/inbox occurrence,
-  but no resolved transition adds an Asset-card pending counter.
+- Explicitly promote the accepted invitee to Asset Manager, then prove the
+  delegated role by having that new Manager promote the accepted requester.
+  The promotion action disappears from a Manager card and is replaced for
+  the granting Manager by `Revoke Manager`; a non-owner Manager cannot revoke a
+  Manager appointed by somebody else and cannot remove any Manager, while the
+  Asset owner can revoke or remove every non-owner Manager. Have the new Manager
+  revoke the requester's Manager role back to plain Member, then have the owner
+  remove that requester. The invite acceptance notifies the responsible owner;
+  Join acceptance and later removal each notify the affected requester; each
+  promotion and revocation notifies its target, and delegated role changes also
+  notify the responsible owner. Each transition adds only its relevant
+  Notifications unread delta; no resolved transition adds an Asset-card pending
+  counter. Event `Admin` and Asset `Manager` remain separate scoped roles.
 - In the independent reset branch where the invitee rejects instead of accepts
   the Invite, the request disappears, the unresolved pending chain decreases
   once, no Asset membership is created, and the Asset owner/responsible manager

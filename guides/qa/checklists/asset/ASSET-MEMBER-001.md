@@ -24,7 +24,7 @@ savepoint inside that testcase, not a separate matrix row.
   an Invite, Join, response, removal or promotion.
 - This owned-Asset journey does not use polling. Reload only at the two steps
   that explicitly require it, and select each Invite, Join, Accept, Remove or
-  manager-promotion confirmation exactly once.
+  manager-promotion or manager-revocation confirmation exactly once.
 - The red `+N` chain and the Asset card's `N pending` badge both represent the
   unresolved request total. Opening or closing Event, stage, Group, Transport
   or Asset Members must not clear it. It decreases only when a pending request
@@ -173,55 +173,92 @@ Riley-to-Casey Asset Join-request notification, with no duplicate occurrence.
     confirm Riley is a plain accepted Member: neither Riley's own card nor
     Casey's card has a member action menu. In particular, there is no `Leave
     asset`, `Promote to admin` or `Report User` action.
-29. Record Riley's current Notifications unread counter. In Casey, reopen the
+29. Record Nova's Notifications unread counter. On Nova's accepted row in
+    Casey's Asset Members surface select `Make Manager`, then confirm `Make
+    Manager` exactly once.
+30. Without reloading Casey, confirm Nova's card changes in place from Member to
+    Asset Manager, with the Manager label and icon. `Make Manager` must
+    disappear. Casey is the Asset owner, so Nova's menu must now contain both
+    `Revoke Manager` and `Remove member`. The target remains `3 / 4`, every
+    pending counter remains zero, and the My Assets Transport count itself does
+    not change.
+31. In Nova, confirm her Notifications unread counter increases by exactly one
+    and exactly one controlled Asset manager-promotion notification from Casey
+    exists.
+32. Still without reloading Nova, reopen the same Event → stage → Group A →
+    Transport → Asset Members path. Confirm Nova is an Asset Manager, can open
+    the Invite control, and Riley's accepted Member card exposes `Make Manager`.
+    Nova's own card must not offer `Make Manager` or a self-revocation action.
+    Casey remains the Asset owner/Manager; his Event `Admin` role must not leak
+    into this Asset-membership card.
+33. Record Riley's and Casey's Notifications unread counters. In Nova select
+    Riley's `Make Manager` action and confirm it exactly once.
+34. Confirm Riley's card changes in place from Member to Asset Manager in
+    Nova's still-open SmartList, with the Manager label and icon. `Make Manager`
+    disappears; because Nova granted this role, `Revoke Manager` replaces it,
+    while `Remove member` is absent for Nova. In Riley, confirm Nova's Manager
+    card has no `Revoke Manager`: Riley did not grant Nova's role. In Casey,
+    confirm the Asset owner may revoke or remove either non-owner Manager. The
+    target remains `3 / 4`, every pending counter remains zero, and Nova and
+    Riley remain Event Members with no Event or Group role change.
+35. Confirm Riley's Notifications unread counter and Casey's Notifications
+    unread counter each increase by exactly one. Riley receives exactly one
+    controlled Asset manager-promotion notification from Nova; Casey receives
+    exactly one notification for Nova's delegated Riley promotion. Reopening
+    Notifications must not duplicate either occurrence.
+36. Record Riley's and Casey's Notifications unread counters. In Nova select
+    Riley's `Revoke Manager` action and confirm it exactly once. Confirm Riley
+    remains on the Asset as an accepted plain Member, his card updates in
+    place, `Revoke Manager` disappears and `Make Manager` becomes available
+    again. Riley's and Casey's Notifications unread counters each increase by
+    exactly one, with one controlled manager-revocation notification from Nova
+    and no duplicate occurrence. Capacity, pending counters, Event membership
+    and Group membership remain unchanged.
+37. Record Riley's current Notifications unread counter. In Casey, reopen the
     target Asset Members surface, select Riley's accepted row `Remove member`
     and confirm `Remove` exactly once. Confirm Riley's row disappears, the
     target returns to `2 / 4`, and every pending red counter remains zero.
-30. In Riley, confirm the Notifications unread counter increases by exactly one
-    from the step-29 baseline and exactly one controlled Asset membership-
+38. In Riley, confirm the Notifications unread counter increases by exactly one
+    from the step-37 baseline and exactly one controlled Asset membership-
     removed notification from Casey exists. Riley may still use the target
     card's `Ask Organizer` Service chat, but he cannot remove himself.
-31. Record Nova's Notifications unread counter. On Nova's accepted row in
-    Casey's Asset Members surface select `Make Manager`, then confirm `Make
-    Manager` exactly once. Confirm Nova's Notifications unread counter increases
-    by exactly one and exactly one controlled Asset manager-promotion
-    notification from Casey exists.
-32. Without reloading Casey, confirm Riley's row is gone, Nova appears once as
-    Asset Manager, the target Transport is `2 / 4`, and its pending count is
-    zero. The My Assets Transport count itself must not change.
-33. In Casey's Event path, reopen the same Group A Transport and confirm the
+39. In Casey's Event path, reopen the same Group A Transport and confirm the
     same `2 / 4`, zero-pending state appears immediately. Confirm Group B still
-    has no controlled Transport or pending state.
-34. Confirm the Event membership surface still shows Casey as Event Admin and
-    Nova and Riley as Event Members. Nova must not become Event Admin, and no
-    one moves between Group A and Group B.
+    has no controlled Transport or pending state. Confirm the Event membership
+    surface still shows Casey as Event Admin and Nova and Riley as Event
+    Members. Nova must not become Event Admin, and no one moves between Group A
+    and Group B.
 
 ## 4. Reload reconstruction and notification
 
-35. Reload Casey, Nova and Riley exactly once each.
-36. Reopen the same Event/Group A Transport path in all three windows. Confirm
+40. Reload Casey, Nova and Riley exactly once each.
+41. Reopen the same Event/Group A Transport path in all three windows. Confirm
     `2 / 4`, zero pending and the same target identity persist. Nova can see
     the Asset as its manager but remains only an Event Member; Riley has no
     active Asset request and cannot see a stale pending row.
-37. In Riley, reopen Asset Members and confirm accepted-member menus did not
+42. In Riley, reopen Asset Members and confirm accepted-member menus did not
     reappear after reload. Riley has no direct leave/remove control; Casey still
     owns the member-removal operation.
-38. In Casey's `Chats → Service` list, confirm exactly one row for the Riley
+43. In Casey's `Chats → Service` list, confirm exactly one row for the Riley
     Asset Service channel and exactly one occurrence of the controlled message
     still exist after reload. Unrelated messages manually sent during an
     exploratory run do not count as duplicates of the controlled message.
-39. In Nova's notification history, confirm exactly one controlled Asset Invite
+44. In Nova's notification history, confirm exactly one controlled Asset Invite
     and exactly one Asset manager-promotion notification from Casey. In Casey's
-    history, confirm exactly one controlled Riley Join-request notification and
-    exactly one controlled Asset invitation-accepted notification from Nova.
-    In Riley's history, confirm exactly one controlled request-accepted and one
-    membership-removed notification from Casey. None of these six controlled
-    occurrences may be duplicated. These resolved notifications use only the
-    relevant Notifications unread counter; they must not recreate the pending
-    red Event/stage/Group/Asset chain.
-40. In Casey, confirm Group B and the parent Event membership roles remain
+    history, confirm exactly one controlled Riley Join-request notification,
+    exactly one controlled Asset invitation-accepted notification from Nova,
+    exactly one delegated Riley manager-promotion notification from Nova, and
+    exactly one delegated Riley manager-revocation notification from Nova.
+    In Riley's history, confirm exactly one controlled request-accepted
+    notification from Casey, one manager-promotion and one manager-revocation
+    notification from Nova, and one membership-removed notification from
+    Casey. None of these ten
+    controlled occurrences may be duplicated. These resolved notifications
+    use only the relevant Notifications unread counter; they must not recreate
+    the pending red Event/stage/Group/Asset chain.
+45. In Casey, confirm Group B and the parent Event membership roles remain
     unchanged after reload.
-41. Report the terminal phrase:
+46. Report the terminal phrase:
 
     `ASSET-MEMBER-001 terminal complete: Nova Manager, Riley removed, Event and Group B unchanged`
 

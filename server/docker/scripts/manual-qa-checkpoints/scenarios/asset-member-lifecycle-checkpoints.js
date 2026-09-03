@@ -35,7 +35,8 @@
     "asset-invitation-declined",
     "asset-member-request-accepted",
     "asset-member-removed",
-    "asset-manager-promoted"
+    "asset-manager-promoted",
+    "asset-manager-revoked"
   ];
 
   function state(required = true) {
@@ -681,6 +682,7 @@
         pendingSource: member.pendingSource == null ? null : Q.text(member.pendingSource),
         requestKind: member.requestKind == null ? null : Q.text(member.requestKind),
         invitedByUserId: member.invitedByUserId == null ? null : Q.text(member.invitedByUserId),
+        managerGrantedByUserId: member.managerGrantedByUserId == null ? null : Q.text(member.managerGrantedByUserId),
         createdUser: Q.text(member.createdUser),
         updatedUser: Q.text(member.updatedUser)
       }));
@@ -1038,8 +1040,14 @@
     const requestAcceptedInbox = current.inbox.find(row => row.kind === "asset-member-request-accepted") || null;
     const removedOutbox = current.outbox.find(row => row.notificationType === "asset-member-removed") || null;
     const removedInbox = current.inbox.find(row => row.kind === "asset-member-removed") || null;
-    const outbox = current.outbox.find(row => row.notificationType === "asset-manager-promoted") || null;
-    const inbox = current.inbox.find(row => row.kind === "asset-manager-promoted") || null;
+    const promotionOutboxes = current.outbox.filter(row => row.notificationType === "asset-manager-promoted");
+    const promotionInboxes = current.inbox.filter(row => row.kind === "asset-manager-promoted");
+    const novaPromotionOutbox = promotionOutboxes.find(row => row.targetUserId === NOVA_ID) || null;
+    const rileyPromotionOutbox = promotionOutboxes.find(row => row.targetUserId === RILEY_ID) || null;
+    const novaPromotionInbox = promotionInboxes.find(row => row.targetUserId === NOVA_ID && row.recipientUserId === NOVA_ID) || null;
+    const rileyPromotionInboxes = promotionInboxes.filter(row => row.targetUserId === RILEY_ID);
+    const revocationOutbox = current.outbox.find(row => row.notificationType === "asset-manager-revoked") || null;
+    const revocationInboxes = current.inbox.filter(row => row.kind === "asset-manager-revoked");
     const inviteOutboxes = current.outbox.filter(row => row.notificationType === "asset-member-invite");
     const joinOutboxes = current.outbox.filter(row => row.notificationType === "asset-admin-join-request");
     const inviteInboxes = current.inbox.filter(row => row.kind === "asset-member-invite");
@@ -1067,6 +1075,7 @@
         && manager.pendingSource === null
         && manager.requestKind === null
         && manager.invitedByUserId === null
+        && manager.managerGrantedByUserId === CASEY_ID
         && manager.createdUser === CASEY_ID
         && manager.updatedUser === CASEY_ID,
       pendingNotificationsRemainSingleOccurrences: inviteOutboxes.length === 1
@@ -1079,7 +1088,7 @@
         && joinInboxes[0].recipientUserId === CASEY_ID
         && inviteInboxes[0].occurrenceCount === 1
         && joinInboxes[0].occurrenceCount === 1,
-      exactInviteAcceptedOutbox: current.outbox.length === 6
+      exactInviteAcceptedOutbox: current.outbox.length === 8
         && acceptedOutbox?.entityType === "asset"
         && acceptedOutbox?.entityId === ASSET_ID
         && Q.sameJson(acceptedOutbox?.recipients, [CASEY_ID])
@@ -1091,7 +1100,7 @@
         && acceptedOutbox?.eventId === RESOURCE_OWNER_ID
         && acceptedOutbox?.subEventId === STAGE_ID
         && acceptedOutbox?.createdUser === NOVA_ID,
-      exactInviteAcceptedInbox: current.inbox.length === 6
+      exactInviteAcceptedInbox: current.inbox.length === 10
         && acceptedInbox?.recipientUserId === CASEY_ID
         && acceptedInbox?.sourceType === "asset"
         && acceptedInbox?.sourceId === ASSET_ID
@@ -1147,29 +1156,64 @@
         && task.reasons.includes("ASSET_CHANGED")
         && ["pending", "running", "done"].includes(task.status)
         && !task.lastError,
-      exactManagerPromotionOutbox: current.outbox.length === 6
-        && outbox.notificationType === "asset-manager-promoted"
-        && outbox.entityType === "asset"
-        && outbox.entityId === ASSET_ID
-        && Q.sameJson(outbox.recipients, [NOVA_ID])
-        && ["pending", "running", "sent"].includes(outbox.status)
-        && outbox.tag === `asset-manager-promoted-${ASSET_ID}`
-        && outbox.actorUserId === CASEY_ID
-        && outbox.targetUserId === NOVA_ID
-        && outbox.memberUserId === NOVA_ID
-        && outbox.assetId === ASSET_ID
-        && outbox.createdUser === CASEY_ID,
-      exactManagerPromotionInbox: current.inbox.length === 6
-        && inbox.recipientUserId === NOVA_ID
-        && inbox.kind === "asset-manager-promoted"
-        && inbox.sourceType === "asset"
-        && inbox.sourceId === ASSET_ID
-        && inbox.senderUserId === CASEY_ID
-        && inbox.actorUserId === CASEY_ID
-        && inbox.targetUserId === NOVA_ID
-        && inbox.memberUserId === NOVA_ID
-        && inbox.assetId === ASSET_ID
-        && inbox.occurrenceCount === 1
+      exactManagerPromotionOutboxes: promotionOutboxes.length === 2
+        && novaPromotionOutbox?.entityType === "asset"
+        && novaPromotionOutbox?.entityId === ASSET_ID
+        && Q.sameJson(novaPromotionOutbox?.recipients, [NOVA_ID])
+        && ["pending", "running", "sent"].includes(novaPromotionOutbox?.status)
+        && novaPromotionOutbox?.tag === `asset-manager-promoted-${ASSET_ID}-${NOVA_ID}`
+        && novaPromotionOutbox?.actorUserId === CASEY_ID
+        && novaPromotionOutbox?.targetUserId === NOVA_ID
+        && novaPromotionOutbox?.memberUserId === NOVA_ID
+        && novaPromotionOutbox?.assetId === ASSET_ID
+        && novaPromotionOutbox?.createdUser === CASEY_ID
+        && rileyPromotionOutbox?.entityType === "asset"
+        && rileyPromotionOutbox?.entityId === ASSET_ID
+        && Q.sameJson(rileyPromotionOutbox?.recipients, [CASEY_ID, RILEY_ID])
+        && ["pending", "running", "sent"].includes(rileyPromotionOutbox?.status)
+        && rileyPromotionOutbox?.tag === `asset-manager-promoted-${ASSET_ID}-${RILEY_ID}`
+        && rileyPromotionOutbox?.actorUserId === NOVA_ID
+        && rileyPromotionOutbox?.targetUserId === RILEY_ID
+        && rileyPromotionOutbox?.memberUserId === RILEY_ID
+        && rileyPromotionOutbox?.assetId === ASSET_ID
+        && rileyPromotionOutbox?.createdUser === NOVA_ID,
+      exactManagerPromotionInboxes: promotionInboxes.length === 3
+        && novaPromotionInbox?.sourceType === "asset"
+        && novaPromotionInbox?.sourceId === ASSET_ID
+        && novaPromotionInbox?.senderUserId === CASEY_ID
+        && novaPromotionInbox?.actorUserId === CASEY_ID
+        && novaPromotionInbox?.memberUserId === NOVA_ID
+        && novaPromotionInbox?.assetId === ASSET_ID
+        && novaPromotionInbox?.occurrenceCount === 1
+        && Q.sameJson(rileyPromotionInboxes.map(row => row.recipientUserId).sort(), [CASEY_ID, RILEY_ID])
+        && rileyPromotionInboxes.every(row => row.sourceType === "asset"
+          && row.sourceId === ASSET_ID
+          && row.senderUserId === NOVA_ID
+          && row.actorUserId === NOVA_ID
+          && row.targetUserId === RILEY_ID
+          && row.memberUserId === RILEY_ID
+          && row.assetId === ASSET_ID
+          && row.occurrenceCount === 1),
+      exactManagerRevocation: revocationOutbox?.entityType === "asset"
+        && revocationOutbox?.entityId === ASSET_ID
+        && Q.sameJson(revocationOutbox?.recipients, [CASEY_ID, RILEY_ID])
+        && ["pending", "running", "sent"].includes(revocationOutbox?.status)
+        && revocationOutbox?.tag === `asset-manager-revoked-${ASSET_ID}-${RILEY_ID}`
+        && revocationOutbox?.actorUserId === NOVA_ID
+        && revocationOutbox?.targetUserId === RILEY_ID
+        && revocationOutbox?.memberUserId === RILEY_ID
+        && revocationOutbox?.assetId === ASSET_ID
+        && revocationOutbox?.createdUser === NOVA_ID
+        && revocationInboxes.length === 2
+        && Q.sameJson(revocationInboxes.map(row => row.recipientUserId).sort(), [CASEY_ID, RILEY_ID])
+        && revocationInboxes.every(row => row.sourceType === "asset"
+          && row.sourceId === ASSET_ID
+          && row.senderUserId === NOVA_ID
+          && row.actorUserId === NOVA_ID
+          && row.targetUserId === RILEY_ID
+          && row.memberUserId === RILEY_ID
+          && row.assetId === ASSET_ID
+          && row.occurrenceCount === 1)
     };
   }
 
