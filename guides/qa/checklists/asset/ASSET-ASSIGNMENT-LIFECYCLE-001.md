@@ -198,22 +198,34 @@ a missing red `2` is a fixture failure; do not continue the manual sequence.
 
     `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A capacity complete: Nova Transport 4 to 5 only`
 
-Codex must run `verify-group-capacity-edit` before unassigning.
+Codex must run `verify-group-capacity-edit`, then
+`stage-step-16-boundary`, before unassigning. Continue only after Codex reports
+`step-16-ready`. If steps 16-20 must be replayed, Codex runs
+`rollback-step-16-boundary`, which restores the verified capacity-5 state
+without repeating steps 1-15.
 
 ## 3. Group A unassign and exact counter reversal
 
-16. After Codex confirms `group-capacity-verified`, open Group A's Transport
+16. After Codex confirms `step-16-ready`, open Group A's Transport
     resource editor and unassign only `QA Group A Nova Transport`. Confirm the
     destructive prompt exactly once.
 17. Without reload, confirm Nova's Transport card/assignment disappears from
     Group A and its owner/type runtime value is zero. The source Asset itself
-    remains active with capacity `5`.
+    remains active with capacity `5`; its accepted and pending Asset-member
+    records remain unchanged. Casey and Riley each receive exactly one
+    `Asset assignment removed` notification with the neutral second line
+    `Assignment ended · QA Group A Nova Transport`. Casey is also the pending
+    Asset member and must still receive only one notification. Nova receives
+    no notification for her own action, while Lina and every outside/control
+    user receive none. This is the common rule for every assignment scope:
+    notify its active Group/Sub-event/Event participants plus the assigned
+    Asset's scope-matching pending members, with duplicate recipients merged.
 18. Confirm the Tournament stage/root pending chain changes exactly `2 → 1`.
     It must not become `0`, because Riley's Group A Accommodation is still
     pending.
 19. Confirm Riley's Group A resource, every Group B document/counter, the
-    normal Event branch, all memberships and user activity counters remain
-    unchanged.
+    normal Event branch, all memberships, Asset-member request statuses and
+    user activity counters remain unchanged.
 20. Close/reopen and reload once. The removed assignment must not return and
     no read path may repair the persisted counter.
 21. Report and wait:

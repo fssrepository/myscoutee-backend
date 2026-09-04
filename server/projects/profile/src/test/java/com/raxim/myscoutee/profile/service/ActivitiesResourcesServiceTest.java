@@ -641,6 +641,76 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replaceUnassignNotifiesActiveParticipantsAndScopedPendingAssetMembers() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(notificationOutboxServiceProvider.getIfAvailable()).thenReturn(notificationOutboxService);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("u1", "u2"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("u1"),
+                        6));
+
+        ActivitySubEventResource current = resourceState("event-1", "sub-1", "u1");
+        current.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        current.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 5, 1, "u1", false, List.of()))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.of(current));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(current));
+
+        AssetRequestBookingDto scopedBooking = new AssetRequestBookingDto(
+                "event-1", "Assignment Event", "sub-1", "Assignment Stage",
+                null, null, null, null, null, 1, null, null, List.of(), null, null);
+        AssetRequestBookingDto otherBooking = new AssetRequestBookingDto(
+                "event-1", "Assignment Event", "sub-2", "Other Stage",
+                null, null, null, null, null, 1, null, null, List.of(), null, null);
+        List<AssetMemberRequestDto> requests = List.of(
+                assetRequest("request-active", "u2", scopedBooking, "accepted"),
+                assetRequest("request-pending", "u3", scopedBooking, "pending"),
+                assetRequest("request-actor", "u1", scopedBooking, "pending"),
+                assetRequest("request-inactive-accepted", "u4", scopedBooking, "accepted"),
+                assetRequest("request-other-scope", "u5", otherBooking, "pending"),
+                assetRequest("request-rejected", "u6", scopedBooking, "rejected"));
+        AssetDetailDto asset = assetDetail("asset-1", "Transport", "u1", 5, requests);
+        when(assetsService.queryReferencedAssetDetails("u1", Set.of("asset-1")))
+                .thenReturn(Map.of("asset-1", asset));
+        when(assetsService.queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of()))
+                .thenReturn(Map.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setTitle("Assignment Event");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        service.replace(new ActivitySubEventResourceStateDto(
+                "event-1", "sub-1", "u1", Map.of(), Map.of(), Map.of(), Map.of()));
+
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-asset-assignment-removed");
+        assertThat(notification.recipientUserIds()).containsExactly("u2", "u3");
+        assertThat(notification.title()).isEqualTo("Asset assignment removed");
+        assertThat(notification.body()).isEqualTo("Assignment ended · Borrowed asset");
+        assertThat(notification.payload())
+                .containsEntry("assetId", "asset-1")
+                .containsEntry("resourceType", "Transport");
+        assertThat(asset.requests()).isEqualTo(requests);
+    }
+
+    @Test
     void replaceNotifiesOtherAcceptedParticipantsWhenSuppliesAreFirstAssignedAndContributed() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -723,7 +793,7 @@ class ActivitiesResourcesServiceTest {
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
         AssetRequestBookingDto booking = new AssetRequestBookingDto(
-                groupOwnerId,
+                "event-1",
                 "Group A",
                 "sub-1",
                 "Kickoff",
@@ -1195,13 +1265,21 @@ class ActivitiesResourcesServiceTest {
             String requestId,
             String userId,
             AssetRequestBookingDto booking) {
+        return assetRequest(requestId, userId, booking, "pending");
+    }
+
+    private AssetMemberRequestDto assetRequest(
+            String requestId,
+            String userId,
+            AssetRequestBookingDto booking,
+            String status) {
         return new AssetMemberRequestDto(
                 requestId,
                 userId,
                 userId,
                 "M",
                 "unknown",
-                "pending",
+                status,
                 "",
                 "borrow",
                 "2026-07-22T23:26:50Z",

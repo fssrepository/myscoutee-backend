@@ -1563,6 +1563,7 @@
     const allowedPhases = [
       "step-10-ready",
       "group-capacity-verified",
+      "step-16-ready",
       "group-unassign-verified",
       "group-removal-ready",
       "complete"
@@ -1638,6 +1639,93 @@
       next: "Unassign only QA Group A Nova Transport from Group A through the resource editor, then close/reopen and reload once." });
   }
 
+  function stageStep16Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    if (!["group-capacity-verified", "step-16-ready"].includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} requires phase 'group-capacity-verified', found '${currentPhase || "not-staged"}'.`);
+    }
+    const asset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
+    const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
+    const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
+    const checks = {
+      capacityBoundaryRetained: Q.number(asset.capacityTotal) === 5
+        && recordMatches(nova, "Transport", GROUP_A_TRANSPORT_ID, 4, NOVA_ID)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 5)),
+      rileyBoundaryRetained: recordMatches(riley, "Accommodation", GROUP_A_ACCOMMODATION_ID, 3, RILEY_ID)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), metric(1, 1, 3)),
+      exactPendingBoundary: Q.sameJson(stageCounters(), { activity: 2, groupsCount: 2, groupsPending: 2 }),
+      unrelatedScopesUnchanged: assertGroupControls(currentState),
+      membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
+    };
+    failChecks("step-16-stage", checks, { asset, nova, riley, stage: stageCounters() });
+    const capturedAtIso = Q.nowIso();
+    const boundary = {
+      capturedAtIso,
+      group: groupBranchDocuments(),
+      notificationOutbox: read("notificationOutbox", relatedSelector()),
+      userNotifications: read("userNotifications", relatedSelector()),
+      affinityRecomputeTasks: read("affinityRecomputeTasks", relatedSelector())
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-16-ready",
+      step16Boundary: boundary
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-16-ready",
+      capturedAtIso,
+      checks,
+      next: "Start checklist step 16. Run rollback-step-16-boundary to replay from capacity 5 without repeating steps 1-15."
+    });
+  }
+
+  function rollbackStep16Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    const allowedPhases = ["step-16-ready", "group-unassign-verified", "group-removal-ready", "complete"];
+    if (!allowedPhases.includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} step 16 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
+    }
+    const boundary = currentState.step16Boundary || {};
+    if (!boundary.group || !Array.isArray(boundary.notificationOutbox)
+        || !Array.isArray(boundary.userNotifications) || !Array.isArray(boundary.affinityRecomputeTasks)) {
+      Q.fail(`${CHECKPOINT} step 16 rollback boundary is missing.`);
+    }
+    if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
+      Q.fail(`${CHECKPOINT} refuses to roll back step 16 because the verified normal Event branch changed.`);
+    }
+    restoreTournamentDocuments(boundary.group);
+    restoreDocuments("notificationOutbox", relatedSelector(), boundary.notificationOutbox);
+    restoreDocuments("userNotifications", relatedSelector(), boundary.userNotifications);
+    restoreDocuments("affinityRecomputeTasks", relatedSelector(), boundary.affinityRecomputeTasks);
+    USERS.forEach(synchronizeNotificationCounter);
+    const checks = {
+      exactTournamentRestore: sameDomain(groupBranchDocuments(), boundary.group),
+      exactNormalBranchPreserved: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
+      exactOutboxRestore: sameDomain(read("notificationOutbox", relatedSelector()), boundary.notificationOutbox),
+      exactInboxRestore: sameDomain(read("userNotifications", relatedSelector()), boundary.userNotifications),
+      exactAffinityTaskRestore: sameDomain(read("affinityRecomputeTasks", relatedSelector()), boundary.affinityRecomputeTasks)
+    };
+    failChecks("step-16-rollback", checks, { currentPhase, boundaryCapturedAtIso: boundary.capturedAtIso });
+    const rolledBackAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-16-ready",
+      step16RolledBackAtIso: rolledBackAtIso
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-16-ready",
+      rolledBackAtIso,
+      checks,
+      next: "Replay checklist step 16; steps 1-15 remain preserved."
+    });
+  }
+
   function emptyOrZeroResource(resource, type, assetId) {
     return resource
       && !idsFor(resource, type).includes(assetId)
@@ -1648,19 +1736,48 @@
   function verifyGroupUnassign() {
     Q.assertDeploymentSafety();
     const currentState = state();
-    requirePhase(currentState, "group-capacity-verified");
+    requirePhase(currentState, "step-16-ready");
     const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
     const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
+    const sourceAsset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
+    const expectedSourceAsset = (((currentState.step16Boundary || {}).group || {}).assets || [])
+      .find(asset => Q.text(asset && asset.assetId) === GROUP_A_TRANSPORT_ID);
+    const removedOutbox = read("notificationOutbox", {
+      notificationType: "event-asset-assignment-removed",
+      entityId: TOURNAMENT_EVENT_ID,
+      "payload.ownerId": GROUP_A_RESOURCE_OWNER_ID,
+      "payload.subEventId": TOURNAMENT_STAGE_ID,
+      "payload.assetId": GROUP_A_TRANSPORT_ID
+    });
+    const removedInbox = read("userNotifications", {
+      kind: "event-asset-assignment-removed",
+      sourceId: TOURNAMENT_EVENT_ID,
+      "payload.ownerId": GROUP_A_RESOURCE_OWNER_ID,
+      "payload.subEventId": TOURNAMENT_STAGE_ID,
+      "payload.assetId": GROUP_A_TRANSPORT_ID
+    });
     const checks = {
       novaAssignmentCleared: emptyOrZeroResource(nova, "Transport", GROUP_A_TRANSPORT_ID),
       novaRuntimeCleared: Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), zeroMetric()),
       exactPendingReversal: Q.sameJson(stageCounters(), { activity: 1, groupsCount: 2, groupsPending: 1 }),
+      sourceAssetAndMemberRequestsUnchanged: !!expectedSourceAsset && sameDomain(sourceAsset, expectedSourceAsset),
+      removalNotificationExactOnce: removedOutbox.length === 1
+        && Q.sameJson(sorted(removedOutbox[0].recipientUserIds), sorted([CASEY_ID, RILEY_ID]))
+        && Q.text(removedOutbox[0].createdUser) === NOVA_ID
+        && Q.text(removedOutbox[0].title) === "Asset assignment removed"
+        && Q.text(removedOutbox[0].body) === "Assignment ended · QA Group A Nova Transport"
+        && Q.text(removedOutbox[0].payload.resourceType) === "Transport"
+        && removedInbox.length === 2
+        && Q.sameJson(sorted(removedInbox.map(recipientId)), sorted([CASEY_ID, RILEY_ID]))
+        && removedInbox.every(item => Q.number(item.occurrenceCount) === 1),
       rileyResourceUnchanged: recordMatches(riley, "Accommodation", GROUP_A_ACCOMMODATION_ID, 3, RILEY_ID)
         && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), metric(1, 1, 3)),
       unrelatedScopesByteIdentical: assertGroupControls(currentState),
       membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
     };
-    failChecks("group-unassign", checks, { nova, riley, stage: stageCounters(), runtime: runtime() });
+    failChecks("group-unassign", checks, {
+      nova, riley, sourceAsset, stage: stageCounters(), runtime: runtime(), removedOutbox, removedInbox
+    });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "group-unassign-verified",
       groupUnassignVerifiedAtIso: Q.nowIso()
@@ -1794,6 +1911,10 @@
       step10Boundary: currentState.step10Boundary ? {
         capturedAtIso: currentState.step10Boundary.capturedAtIso,
         available: true
+      } : null,
+      step16Boundary: currentState.step16Boundary ? {
+        capturedAtIso: currentState.step16Boundary.capturedAtIso,
+        available: true
       } : null
     });
   }
@@ -1878,6 +1999,8 @@
     case "stage-step-10-boundary": stageStep10Boundary(); break;
     case "rollback-step-10-boundary": rollbackStep10Boundary(); break;
     case "verify-group-capacity-edit": verifyGroupCapacityEdit(); break;
+    case "stage-step-16-boundary": stageStep16Boundary(); break;
+    case "rollback-step-16-boundary": rollbackStep16Boundary(); break;
     case "verify-group-unassign": verifyGroupUnassign(); break;
     case "restore-group-removal-branch": restoreGroupRemovalBranch(); break;
     case "verify-group-manager-removal": verifyGroupManagerRemoval(); break;

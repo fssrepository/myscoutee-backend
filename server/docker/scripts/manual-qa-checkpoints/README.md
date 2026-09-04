@@ -400,6 +400,9 @@ bash manual-qa-checkpoints.sh stage-step-10-boundary asset-assignment ASSET-ASSI
 bash manual-qa-checkpoints.sh rollback-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # edit only the Group A source Asset capacity 4 -> 5
 bash manual-qa-checkpoints.sh verify-group-capacity-edit asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever checklist step 16 must be replayed from the verified capacity-5 state
+bash manual-qa-checkpoints.sh rollback-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # unassign only that Group A Transport
 bash manual-qa-checkpoints.sh verify-group-unassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 bash manual-qa-checkpoints.sh restore-group-removal-branch asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
@@ -411,7 +414,9 @@ bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-
 `stage-step-10-boundary` records the exact entry state for the Group branch,
 its scoped notifications and related queued work. `rollback-step-10-boundary`
 restores that boundary without changing the verified normal Event branch, so
-step 10 can be replayed without repeating steps 1-9. The later
+step 10 can be replayed without repeating steps 1-9. After the capacity edit
+passes, `stage-step-16-boundary` captures that exact capacity-5 state and
+`rollback-step-16-boundary` restores it without repeating steps 1-15. The later
 `restore-group-removal-branch` rearms only the independent manager-removal
 branch. The verifiers compare Group B byte-for-byte and require persisted
 owner/type, runtime, stage and root values; no list query or frontend fallback

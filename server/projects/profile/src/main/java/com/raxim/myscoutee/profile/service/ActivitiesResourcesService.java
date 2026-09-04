@@ -621,6 +621,7 @@ public class ActivitiesResourcesService {
                 AssetCatalog.TYPE_SUPPLIES);
         List<SupplyContributionAddition> addedSupplyContributions = addedSupplyContributions(current, next);
         List<SupplyContributionRemoval> removedSupplyContributions = removedSupplyContributions(current, next);
+        List<AssetAssignmentRemoval> removedAssetAssignments = removedAssetAssignments(current, next);
         Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
         next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
@@ -658,6 +659,13 @@ public class ActivitiesResourcesService {
                 actorUserId,
                 removedSupplyContributions,
                 eligibleAssets);
+        enqueueAssetAssignmentRemovedNotifications(
+                ownerId,
+                subEventId,
+                actorUserId,
+                assetOwnerUserId,
+                nowIso,
+                removedAssetAssignments);
         refreshEventParticipationProjection(ownerId);
         return toStateDto(saved, eligibleAssets, commonMetrics);
     }
@@ -680,6 +688,21 @@ public class ActivitiesResourcesService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    private List<AssetAssignmentRemoval> removedAssetAssignments(
+            ActivitySubEventResource previous,
+            ActivitySubEventResource next) {
+        List<AssetAssignmentRemoval> removals = new ArrayList<>();
+        for (String type : List.of(
+                AssetCatalog.TYPE_TRANSPORT,
+                AssetCatalog.TYPE_ACCOMMODATION,
+                AssetCatalog.TYPE_SUPPLIES)) {
+            Set<String> removedIds = assignmentIds(previous, type);
+            removedIds.removeAll(assignmentIds(next, type));
+            removedIds.forEach(assetId -> removals.add(new AssetAssignmentRemoval(assetId, type)));
+        }
+        return removals;
     }
 
     private List<SupplyContributionAddition> addedSupplyContributions(
@@ -936,6 +959,101 @@ public class ActivitiesResourcesService {
                     payload,
                     normalizeId(actorUserId)));
         }
+    }
+
+    private void enqueueAssetAssignmentRemovedNotifications(
+            String ownerId,
+            String subEventId,
+            String actorUserId,
+            String assetOwnerUserId,
+            String removedAtIso,
+            List<AssetAssignmentRemoval> removals) {
+        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+                ? null
+                : notificationOutboxServiceProvider.getIfAvailable();
+        if (notificationOutboxService == null || removals == null || removals.isEmpty()) {
+            return;
+        }
+        Set<String> removedAssetIds = removals.stream()
+                .map(AssetAssignmentRemoval::assetId)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, AssetDetailDto> resolvedAssetDetails = assetsService.queryReferencedAssetDetails(
+                assetOwnerUserId,
+                removedAssetIds);
+        Map<String, AssetDetailDto> assetDetails = resolvedAssetDetails == null
+                ? Map.of()
+                : resolvedAssetDetails;
+        String eventId = authorizationEventId(ownerId, subEventId);
+        ActivityEvent event = activityEventsRepository.findBySourceId(eventId).stream()
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "Event");
+        String iconUrl = firstNonBlank(event == null ? null : event.getImageUrl(), "/assets/logo/heart.webp");
+        List<String> activeParticipantUserIds = resourceNotificationRecipientUserIds(
+                ownerId,
+                subEventId,
+                actorUserId);
+        for (AssetAssignmentRemoval removal : removals) {
+            AssetDetailDto asset = assetDetails == null ? null : assetDetails.get(removal.assetId());
+            LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(activeParticipantUserIds);
+            recipientUserIds.addAll(pendingAssetMemberUserIds(
+                    asset,
+                    ownerId,
+                    subEventId,
+                    actorUserId));
+            if (recipientUserIds.isEmpty()) {
+                continue;
+            }
+            String assetTitle = firstNonBlank(asset == null ? null : asset.title(), "Asset");
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("eventId", eventId);
+            payload.put("eventTitle", eventTitle);
+            payload.put("ownerId", normalizeId(ownerId));
+            payload.put("subEventId", normalizeId(subEventId));
+            payload.put("assetId", removal.assetId());
+            payload.put("assetTitle", assetTitle);
+            payload.put("resourceType", removal.resourceType());
+            payload.put("removedAtIso", removedAtIso);
+            payload.put("notification_tone", "info");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-asset-assignment-removed",
+                    "event",
+                    eventId,
+                    "asset-members",
+                    List.copyOf(recipientUserIds),
+                    "Asset assignment removed",
+                    "Assignment ended · " + assetTitle,
+                    "/game",
+                    iconUrl,
+                    "/assets/logo/heart.webp",
+                    "event-asset-assignment-removed-" + normalizeId(ownerId) + "-"
+                            + normalizeId(subEventId) + "-" + removal.assetId() + "-" + removedAtIso,
+                    payload,
+                    normalizeId(actorUserId)));
+        }
+    }
+
+    private List<String> pendingAssetMemberUserIds(
+            AssetDetailDto asset,
+            String ownerId,
+            String subEventId,
+            String actorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        return (asset == null || asset.requests() == null
+                ? List.<AssetMemberRequestDto>of()
+                : asset.requests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isScopedAssetRequest(request, normalizedOwnerId, normalizedSubEventId))
+                .filter(request -> "pending".equals(safeText(request.status()).toLowerCase(Locale.ROOT)))
+                .map(AssetMemberRequestDto::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(normalizedActorUserId))
+                .distinct()
+                .toList();
     }
 
     private List<String> resourceNotificationRecipientUserIds(
@@ -1729,13 +1847,9 @@ public class ActivitiesResourcesService {
             List<AssetMemberRequestDto> requests,
             String ownerId,
             String subEventId) {
-        String normalizedOwnerId = normalizeId(ownerId);
-        String normalizedSubEventId = normalizeId(subEventId);
         Map<String, String> statusByIdentity = new LinkedHashMap<>();
         for (AssetMemberRequestDto request : requests == null ? List.<AssetMemberRequestDto>of() : requests) {
-            if (request == null || request.booking() == null
-                    || !Objects.equals(normalizedOwnerId, normalizeId(request.booking().eventId()))
-                    || !Objects.equals(normalizedSubEventId, normalizeId(request.booking().subEventId()))) {
+            if (!isScopedAssetRequest(request, ownerId, subEventId)) {
                 continue;
             }
             String status = safeText(request.status()).toLowerCase(Locale.ROOT);
@@ -1770,16 +1884,27 @@ public class ActivitiesResourcesService {
         }
         return (requests == null ? List.<AssetMemberRequestDto>of() : requests).stream()
                 .filter(Objects::nonNull)
-                .filter(request -> request.booking() != null)
-                .filter(request -> Objects.equals(
-                        normalizedOwnerId,
-                        normalizeId(request.booking().eventId())))
-                .filter(request -> Objects.equals(
-                        normalizedSubEventId,
-                        normalizeId(request.booking().subEventId())))
+                .filter(request -> isScopedAssetRequest(request, normalizedOwnerId, normalizedSubEventId))
                 .filter(request -> Objects.equals(normalizedUserId, normalizeId(request.userId())))
                 .map(request -> safeText(request.status()).toLowerCase(Locale.ROOT))
                 .anyMatch(status -> "accepted".equals(status) || "pending".equals(status));
+    }
+
+    private boolean isScopedAssetRequest(
+            AssetMemberRequestDto request,
+            String ownerId,
+            String subEventId) {
+        if (request == null || request.booking() == null) {
+            return false;
+        }
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String bookingOwnerId = normalizeId(request.booking().eventId());
+        return Objects.equals(normalizedSubEventId, normalizeId(request.booking().subEventId()))
+                && (Objects.equals(normalizedOwnerId, bookingOwnerId)
+                        || Objects.equals(
+                                authorizationEventId(normalizedOwnerId, normalizedSubEventId),
+                                bookingOwnerId));
     }
 
     private Map<String, SubEventResourceMetricDto> persistGroupRuntimeResourceMetrics(
@@ -2202,5 +2327,10 @@ public class ActivitiesResourcesService {
             String entryId,
             String contributorUserId,
             int quantity) {
+    }
+
+    private record AssetAssignmentRemoval(
+            String assetId,
+            String resourceType) {
     }
 }

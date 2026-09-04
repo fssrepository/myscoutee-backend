@@ -6563,7 +6563,7 @@ Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 Stable user guide:
 [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 
-Status: **ACTIVE / STEPS 1-9 PASS; STEP 10 READY**.
+Status: **ACTIVE / STEPS 1-15 PASS; STEP 16 READY**.
 
 The first manual steps 1-9 exposed persistence, shared-counter and remaining-
 quantity defects and were not accepted as evidence. The checkpoint's guarded
@@ -6645,6 +6645,7 @@ Its named savepoint oracles are `verify-normal-assignment`,
 `restore-normal-assignment-branch`, `repair-tournament-group-ids`,
 `stage-step-10-boundary`,
 `rollback-step-10-boundary`, `verify-group-capacity-edit`,
+`stage-step-16-boundary`, `rollback-step-16-boundary`,
 `verify-group-unassign`, the guarded `restore-group-removal-branch`, and
 `verify-group-manager-removal`. The normal restore puts back the exact verified
 Nova `2` plus Riley `3` contribution state and removes only temporary delete or
@@ -6669,6 +6670,26 @@ normalizes Spring's `_class` metadata out of the otherwise unchanged Group B
 runtime metrics. Group A retained both pending requests, Riley Accommodation
 remained `1 accepted / 1 pending / 0-3`, Group B and the normal branch remained
 unchanged, and the phase advanced to `group-capacity-verified`.
+The guarded `stage-step-16-boundary` then captured that exact capacity-5
+Tournament state, its scoped inbox/outbox and related queued work. An immediate
+`rollback-step-16-boundary` proof restored all five domains exactly while
+preserving the verified normal Event branch, so the live phase is
+`step-16-ready` and steps 1-15 do not need to be replayed.
+
+Unassign now emits one neutral `event-asset-assignment-removed` notification.
+Recipients are resolved by the existing assignment scope: active members of
+the relevant generated Group or Event/Sub-event, plus scope-matching pending
+members of the assigned Asset. The actor is excluded and duplicate recipients
+are merged. A main-Event assignment uses the Event membership; every Sub-event
+assignment is identified by its exact `subEventId`, independently of whether
+the UI displays that Sub-event inside a slot. The Asset request may carry the
+concrete generated-Group owner ID or its base Event ID. The notification says
+only `Asset assignment removed` /
+`Assignment ended · <Asset title>` because unassign does not change accepted
+or pending Asset-member records. The step-16 oracle requires Casey and Riley
+exactly once for Nova's Group A Transport removal, confirms Nova/Lina receive
+nothing, and compares the source Asset plus its member requests byte-for-byte
+with the step-16 boundary.
 The later Tournament restore rewinds only the independent manager-removal
 branch and preserves the verified normal branch.
 
