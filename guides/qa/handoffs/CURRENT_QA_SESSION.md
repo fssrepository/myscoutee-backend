@@ -73,7 +73,7 @@ checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
 substage: phase is `baseline-ready`; no Content mutation step has run
 next_replay_boundary: open the isolated Ava/Kai/Riley sessions without Codex-driven browser actions, complete checklist steps 1-19 once, then run `verify-drafts-saved`
 fixture_phase: staged once at `2026-09-04T06:50:59.887Z`; read-only status proved the exact actor/revision/article identities, five controlled consents, zero new audits, Article buckets `7 / 5 / 7 / 0 / 0` and stable controls
-browser_phase: the old Casey/Nova/Riley Assignment windows may still be open but no longer own a live continuation boundary; no Content browser has been opened
+browser_phase: Ava/Kai/Riley isolated CONTENT-ADMIN-LIFECYCLE-001 sessions are OPEN, authenticated and identity-verified; `/tmp/myscoutee-qa-browser-sessions/CONTENT-ADMIN-LIFECYCLE-001.json` is the active launcher manifest; begin at checklist step 1
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 85/118 total, Core 85/98, External/optional 0/20; ASSET-ASSIGNMENT-LIFECYCLE-001 is PASS/CLOSED
 queued_next: none; Content now owns the active fixture boundary

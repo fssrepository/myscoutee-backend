@@ -94,8 +94,9 @@ Begin only after Codex confirms this exact baseline:
 
     `<p onclick="qaUnsafe()"><strong>QA privacy v3</strong></p><script>qaUnsafe()</script>`
 
-14. Add one section, rename it `QA research choice`, set its HTML to
-    `<p>Optional QA research consent.</p>`, and mark it `Optional`.
+14. Edit the existing second section: rename it `QA research choice`, set its
+    HTML to `<p>Optional QA research consent.</p>`, and keep it `Optional`. Do
+    not add a third section.
 15. Switch both sections to Preview once. Confirm no script, alert, navigation
     or other active content executes and the mandatory/optional presentation is
     distinct.
