@@ -1616,7 +1616,7 @@
       "group-unassign-verified",
       "step-22-ready",
       "group-reassign-verified",
-      "group-removal-ready",
+      "step-29-ready",
       "complete"
     ];
     if (!allowedPhases.includes(currentPhase)) {
@@ -1742,7 +1742,7 @@
       "group-unassign-verified",
       "step-22-ready",
       "group-reassign-verified",
-      "group-removal-ready",
+      "step-29-ready",
       "complete"
     ];
     if (!allowedPhases.includes(currentPhase)) {
@@ -1924,7 +1924,7 @@
         normalBranchPreserved: true,
         groupBControlPreserved: sameDomain(groupBControlSnapshot(), currentState.groupBControl)
       },
-      next: "Assign QA Group A Nova Transport again as a new lifecycle generation, then invite Casey once. Use rollback-step-22-boundary to replay only this branch."
+      next: "Assign QA Group A Nova Transport again as a new lifecycle generation, invite Riley once, then have Riley accept once. Use rollback-step-22-boundary to replay only this branch."
     });
   }
 
@@ -1932,7 +1932,7 @@
     Q.assertDeploymentSafety();
     const currentState = state();
     const currentPhase = Q.text(currentState.phase);
-    if (!["step-22-ready", "group-reassign-verified"].includes(currentPhase)) {
+    if (!["step-22-ready", "group-reassign-verified", "step-29-ready"].includes(currentPhase)) {
       Q.fail(`${CHECKPOINT} step 22 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
     }
     const boundary = currentState.step22Boundary || {};
@@ -1957,17 +1957,27 @@
     };
     failChecks("step-22-rollback", checks, { currentPhase, boundaryCapturedAtIso: boundary.capturedAtIso });
     const rolledBackAtIso = Q.nowIso();
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
-      phase: "step-22-ready",
-      step22RolledBackAtIso: rolledBackAtIso
-    } });
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, {
+      $set: {
+        phase: "step-22-ready",
+        step22RolledBackAtIso: rolledBackAtIso
+      },
+      $unset: {
+        step29Boundary: "",
+        step29RolledBackAtIso: "",
+        removalReadyAtIso: "",
+        removalNotificationBaseline: "",
+        completedAtIso: "",
+        terminalSnapshot: ""
+      }
+    });
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "step-22-ready",
       rolledBackAtIso,
       checks,
-      next: "Replay only the reassign branch; steps 1-20 remain preserved."
+      next: "Replay only the reassign branch; steps 1-21 remain preserved."
     });
   }
 
@@ -2002,8 +2012,10 @@
     const currentDeletedStoredIds = sorted(storedGroupATransportRequests(true).map(requestId));
     const activeStoredRequests = storedGroupATransportRequests(false);
     const activeStoredIds = sorted(activeStoredRequests.map(requestId));
-    const caseyPending = activeEmbeddedRequests.filter(request => (
-      Q.text(request && request.userId) === CASEY_ID && Q.text(request && request.status) === "pending"
+    const rileyAccepted = activeEmbeddedRequests.filter(request => (
+      Q.text(request && request.userId) === RILEY_ID
+      && Q.text(request && request.status) === "accepted"
+      && Q.text(request && request.requestKind) === "invite"
     ));
     const novaAccepted = activeEmbeddedRequests.filter(request => (
       Q.text(request && request.userId) === NOVA_ID
@@ -2033,15 +2045,17 @@
       deletedStoredRequestsNotReused: boundaryDeletedStoredIds.length > 0
         && boundaryDeletedStoredIds.every(id => currentDeletedStoredIds.includes(id))
         && activeStoredIds.every(id => !boundaryDeletedStoredIds.includes(id)),
-      freshActiveMemberRequests: caseyPending.length === 1
+      freshActiveMemberRequests: rileyAccepted.length === 1
         && novaAccepted.length === 1
         && activeEmbeddedRequests.length === 2
         && Q.sameJson(activeStoredIds, activeEmbeddedIds),
       exactReassignedMetric: Q.sameJson(
         normalizedMetric((activeResource && activeResource.resourceMetricsByType || {}).Transport),
-        metric(1, 1, 5))
-        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 5)),
-      exactPendingReturn: Q.sameJson(stageCounters(), { activity: 2, groupsCount: 2, groupsPending: 2 }),
+        metric(2, 0, 5))
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(2, 0, 5)),
+      exactInviteAcceptPendingLifecycle: Q.sameJson(
+        stageCounters(),
+        { activity: 1, groupsCount: 2, groupsPending: 1 }),
       rileyResourceUnchanged: recordMatches(
         groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID),
         "Accommodation",
@@ -2066,18 +2080,116 @@
     });
     const verifiedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
-      phase: "group-removal-ready",
+      phase: "group-reassign-verified",
       groupReassignVerifiedAtIso: verifiedAtIso,
-      groupAReassignedResource: clone(activeResource),
-      removalReadyAtIso: verifiedAtIso,
+      groupAReassignedResource: clone(activeResource)
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "group-reassign-verified",
+      checks,
+      next: `Run stage-step-29-boundary asset-assignment ${CHECKPOINT} before removing Riley.`
+    });
+  }
+
+  function stageStep29Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "group-reassign-verified");
+    const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
+    const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
+    const checks = {
+      exactAcceptedReassignState: recordMatches(
+        nova, "Transport", GROUP_A_TRANSPORT_ID, 5, NOVA_ID)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(2, 0, 5)),
+      exactRileyAccommodationState: recordMatches(
+        riley, "Accommodation", GROUP_A_ACCOMMODATION_ID, 3, RILEY_ID)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), metric(1, 1, 3)),
+      exactPendingState: Q.sameJson(stageCounters(), { activity: 1, groupsCount: 2, groupsPending: 1 }),
+      exactNormalBranchPreserved: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
+      exactGroupBControlPreserved: sameDomain(groupBControlSnapshot(), currentState.groupBControl),
+      exactMembershipsPreserved: sameDomain(
+        tournamentMembershipSnapshot(),
+        currentState.baselineTournamentMemberships)
+    };
+    failChecks("step-29-boundary", checks, { nova, riley, stage: stageCounters() });
+    const capturedAtIso = Q.nowIso();
+    const boundary = {
+      capturedAtIso,
+      group: groupBranchDocuments(),
+      notificationOutbox: read("notificationOutbox", relatedSelector()),
+      userNotifications: read("userNotifications", relatedSelector()),
+      affinityRecomputeTasks: read("affinityRecomputeTasks", relatedSelector()),
+      userActivities: USERS.map(userActivities)
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-29-ready",
+      step29Boundary: boundary,
+      removalReadyAtIso: capturedAtIso,
       removalNotificationBaseline: notificationCounts()
     } });
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
-      phase: "group-removal-ready",
+      phase: "step-29-ready",
+      capturedAtIso,
       checks,
-      next: "As Casey, remove Riley once from the Tournament Event members. Do not remove Riley from the normal Event or edit an Asset membership."
+      next: "As Casey, remove Riley once from the Tournament Event members. Use rollback-step-29-boundary to replay only steps 29 onward."
+    });
+  }
+
+  function rollbackStep29Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    if (!["step-29-ready", "complete"].includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} step 29 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
+    }
+    const boundary = currentState.step29Boundary || {};
+    if (!boundary.group || !Array.isArray(boundary.notificationOutbox)
+        || !Array.isArray(boundary.userNotifications)
+        || !Array.isArray(boundary.affinityRecomputeTasks)
+        || !Array.isArray(boundary.userActivities)) {
+      Q.fail(`${CHECKPOINT} step 29 rollback boundary is missing.`);
+    }
+    if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
+      Q.fail(`${CHECKPOINT} refuses to roll back step 29 because the verified normal Event branch changed.`);
+    }
+    restoreTournamentDocuments(boundary.group);
+    restoreDocuments("notificationOutbox", relatedSelector(), boundary.notificationOutbox);
+    restoreDocuments("userNotifications", relatedSelector(), boundary.userNotifications);
+    restoreDocuments("affinityRecomputeTasks", relatedSelector(), boundary.affinityRecomputeTasks);
+    for (const saved of boundary.userActivities) restoreUserActivities(saved);
+    const checks = {
+      exactGroupBranchRestore: sameDomain(groupBranchDocuments(), boundary.group),
+      exactNormalBranchPreserved: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
+      exactOutboxRestore: sameDomain(read("notificationOutbox", relatedSelector()), boundary.notificationOutbox),
+      exactInboxRestore: sameDomain(read("userNotifications", relatedSelector()), boundary.userNotifications),
+      exactAffinityTaskRestore: sameDomain(read("affinityRecomputeTasks", relatedSelector()), boundary.affinityRecomputeTasks),
+      exactUserActivityRestore: sameDomain(USERS.map(userActivities), boundary.userActivities)
+    };
+    failChecks("step-29-rollback", checks, { currentPhase, boundaryCapturedAtIso: boundary.capturedAtIso });
+    const rolledBackAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, {
+      $set: {
+        phase: "step-29-ready",
+        step29RolledBackAtIso: rolledBackAtIso,
+        removalReadyAtIso: rolledBackAtIso,
+        removalNotificationBaseline: notificationCounts()
+      },
+      $unset: {
+        completedAtIso: "",
+        terminalSnapshot: ""
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-29-ready",
+      rolledBackAtIso,
+      checks,
+      next: "Replay only steps 29 onward; steps 1-28 remain preserved."
     });
   }
 
@@ -2089,7 +2201,7 @@
   function verifyGroupManagerRemoval() {
     Q.assertDeploymentSafety();
     const currentState = state();
-    requirePhase(currentState, "group-removal-ready");
+    requirePhase(currentState, "step-29-ready");
     const memberships = tournamentMembershipSnapshot();
     const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
     const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
@@ -2105,6 +2217,7 @@
       RILEY_ID,
       expectedRiley && expectedRiley.recordId);
     const accommodationAsset = Q.collection("assets").findOne({ assetId: GROUP_A_ACCOMMODATION_ID }) || {};
+    const transportAsset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
     const expectedAccommodation = ((((currentState.step22Boundary || {}).group || {}).assets) || [])
       .find(asset => Q.text(asset && asset.assetId) === GROUP_A_ACCOMMODATION_ID);
     const expectedAccommodationRequestIds = sorted((expectedAccommodation && expectedAccommodation.requests || [])
@@ -2113,6 +2226,18 @@
       .map(requestId));
     const currentAccommodationRequests = (accommodationAsset.requests || [])
       .filter(requestMatchesAssignmentScope);
+    const expectedTransportRileyRequestIds = sorted((((currentState.step29Boundary || {}).group || {}).assets || [])
+      .filter(asset => Q.text(asset && asset.assetId) === GROUP_A_TRANSPORT_ID)
+      .flatMap(asset => (asset.requests || []))
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => Q.text(request && request.userId) === RILEY_ID)
+      .filter(request => !requestIsDeleted(request))
+      .map(requestId));
+    const currentTransportRileyRequests = (transportAsset.requests || [])
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => Q.text(request && request.userId) === RILEY_ID);
+    const currentStoredTransportRileyRequests = storedGroupATransportRequests(null)
+      .filter(request => Q.text(request && request.userId) === RILEY_ID);
     const assignmentOutbox = read("notificationOutbox", {
       notificationType: "event-asset-assignment-removed",
       entityId: TOURNAMENT_EVENT_ID,
@@ -2150,11 +2275,18 @@
         && expectedAccommodationRequestIds.every(id => currentAccommodationRequests
           .some(request => requestId(request) === id && requestIsDeleted(request)))
         && currentAccommodationRequests.every(request => requestIsDeleted(request)),
+      scopedTransportMemberRequestStatusDeleted: expectedTransportRileyRequestIds.length === 1
+        && expectedTransportRileyRequestIds.every(id => currentTransportRileyRequests
+          .some(request => requestId(request) === id && requestIsDeleted(request)))
+        && expectedTransportRileyRequestIds.every(id => currentStoredTransportRileyRequests
+          .some(request => requestId(request) === id && requestIsDeleted(request))),
       removedManagerRuntimeCleared: Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), zeroMetric()),
-      novaResourceUnchanged: sameDomain(nova, currentState.groupAReassignedResource)
-        && recordMatches(nova, "Transport", GROUP_A_TRANSPORT_ID, 5, NOVA_ID)
-        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 5)),
-      exactPendingReversal: Q.sameJson(stageCounters(), { activity: 1, groupsCount: 2, groupsPending: 1 }),
+      novaResourcePreservedWithoutRiley: recordMatches(nova, "Transport", GROUP_A_TRANSPORT_ID, 5, NOVA_ID)
+        && Q.text(nova && nova._id) === Q.text(currentState.groupAReassignedResource && currentState.groupAReassignedResource._id)
+        && Q.text(nova && nova.recordId) === Q.text(currentState.groupAReassignedResource && currentState.groupAReassignedResource.recordId)
+        && Q.text(nova && nova.syncKey) === Q.text(currentState.groupAReassignedResource && currentState.groupAReassignedResource.syncKey)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 0, 5)),
+      exactPendingReversal: Q.sameJson(stageCounters(), { activity: 0, groupsCount: 2, groupsPending: 0 }),
       groupBByteIdentical: sameDomain(groupBControlSnapshot(), currentState.groupBControl),
       normalBranchByteIdentical: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
       sourceAssetRetained: Q.collection("assets").countDocuments({ assetId: GROUP_A_ACCOMMODATION_ID, status: "A" }) === 1,
@@ -2170,8 +2302,12 @@
       deletedRiley,
       nova,
       accommodationAsset,
+      transportAsset,
       expectedAccommodationRequestIds,
       currentAccommodationRequests,
+      expectedTransportRileyRequestIds,
+      currentTransportRileyRequests,
+      currentStoredTransportRileyRequests,
       stage: stageCounters(),
       assignmentRecipients,
       assignmentOutbox,
@@ -2244,6 +2380,10 @@
       } : null,
       step22Boundary: currentState.step22Boundary ? {
         capturedAtIso: currentState.step22Boundary.capturedAtIso,
+        available: true
+      } : null,
+      step29Boundary: currentState.step29Boundary ? {
+        capturedAtIso: currentState.step29Boundary.capturedAtIso,
         available: true
       } : null
     });
@@ -2335,6 +2475,8 @@
     case "stage-step-22-boundary": stageStep22Boundary(); break;
     case "rollback-step-22-boundary": rollbackStep22Boundary(); break;
     case "verify-group-reassign": verifyGroupReassign(); break;
+    case "stage-step-29-boundary": stageStep29Boundary(); break;
+    case "rollback-step-29-boundary": rollbackStep29Boundary(); break;
     case "verify-group-manager-removal": verifyGroupManagerRemoval(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

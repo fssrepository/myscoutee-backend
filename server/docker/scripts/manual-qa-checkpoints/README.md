@@ -405,7 +405,12 @@ bash manual-qa-checkpoints.sh stage-step-16-boundary asset-assignment ASSET-ASSI
 bash manual-qa-checkpoints.sh rollback-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # unassign only that Group A Transport
 bash manual-qa-checkpoints.sh verify-group-unassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
-bash manual-qa-checkpoints.sh restore-group-removal-branch asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-22-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# reassign the same Asset as a fresh generation, invite Riley and have Riley accept
+bash manual-qa-checkpoints.sh verify-group-reassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever steps 29 onward must be replayed without repeating steps 1-28
+bash manual-qa-checkpoints.sh rollback-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # remove Riley once from the Tournament Event
 bash manual-qa-checkpoints.sh verify-group-manager-removal asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
@@ -417,10 +422,12 @@ restores that boundary without changing the verified normal Event branch, so
 step 10 can be replayed without repeating steps 1-9. After the capacity edit
 passes, `stage-step-16-boundary` captures that exact capacity-5 state and
 `rollback-step-16-boundary` restores it without repeating steps 1-15. The later
-`restore-group-removal-branch` rearms only the independent manager-removal
-branch. The verifiers compare Group B byte-for-byte and require persisted
-owner/type, runtime, stage and root values; no list query or frontend fallback
-is an oracle.
+`stage-step-29-boundary` records the exact accepted-Riley reassign state, and
+`rollback-step-29-boundary` restores the Group branch, related notifications,
+queued work and user activity counters without repeating steps 1-28. The
+verifiers compare Group B byte-for-byte and require persisted owner/type,
+runtime, stage and root values; no list query or frontend fallback is an
+oracle.
 
 `repair-tournament-group-ids` is the guarded migration for an already-staged
 Assignment checkpoint created with the obsolete `group:a/b` fixture IDs. It

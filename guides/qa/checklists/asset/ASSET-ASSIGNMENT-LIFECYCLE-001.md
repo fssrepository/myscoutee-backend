@@ -243,7 +243,7 @@ without repeating steps 1-15.
 Codex must run `verify-group-unassign`, then `stage-step-22-boundary`. Continue
 only after Codex reports `step-22-ready`. If the following reassign branch must
 be replayed, Codex runs `rollback-step-22-boundary`, which restores the exact
-persisted post-unassign state without repeating steps 1-20.
+persisted post-unassign state without repeating steps 1-21.
 
 ## 4. New-generation reassign
 
@@ -253,25 +253,29 @@ persisted post-unassign state without repeating steps 1-20.
 23. Confirm a new active `activityResources` row appears with new `_id`,
     `recordId` and `syncKey` values. The old `D` resource row remains only as
     audit history. It must not be reactivated or overwritten.
-24. Before adding Casey, confirm Nova Transport shows one accepted owner,
+24. Before inviting Riley, confirm Nova Transport shows one accepted owner,
     zero pending and capacity `0-5`. The stage/root pending chain remains `1`:
     the old `D` Casey request must not reappear automatically.
-25. From Nova Transport's member menu, invite Casey once to this exact Group A
+25. From Nova Transport's member menu, invite Riley once to this exact Group A
     scope. Confirm the new pending row has a new request ID; the old `D` Casey
     row remains hidden audit history and is not reused.
 26. Confirm Nova Transport is now exactly `1 / 1 · 0-5` and the stage/root
     pending chain changes exactly `1 → 2`. Riley Accommodation remains
     `1 / 1 · 0-3`.
-27. Close/reopen the Group A Transport list and reload Nova once. Confirm only
-    the new active resource and new active member rows return; the old `D`
-    generation remains hidden and every Group B/normal Event value is
-    unchanged.
+27. In **Riley**, accept that Asset invitation exactly once. Confirm Nova
+    Transport becomes exactly `2 / 0 · 0-5` and the stage/root pending chain
+    changes exactly `2 → 1`. Then close/reopen the Group A Transport list and
+    reload Nova once. Confirm only the new active resource and new active
+    member rows return; the old `D` generation remains hidden and every Group
+    B/normal Event value is unchanged.
 28. Report and wait:
 
-    `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A reassign complete: new resource and member IDs, pending 1 to 2`
+    `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A reassign complete: new resource and member IDs, Riley accepted, pending 1 to 2 to 1`
 
-Codex must run `verify-group-reassign`. Continue only after Codex reports
-phase `group-removal-ready`.
+Codex must run `verify-group-reassign`, then `stage-step-29-boundary`. Continue
+only after Codex reports phase `step-29-ready`. If steps 29 onward must be
+replayed, Codex runs `rollback-step-29-boundary`; it restores the exact
+persisted post-reassign state without repeating steps 1-28.
 
 ## 5. Independent removed-manager cleanup
 
@@ -285,8 +289,10 @@ phase `group-removal-ready`.
     runtime metric is zero. The source Accommodation Asset remains active;
     every accepted or pending Asset-member request in the removed assignment
     scope changes to a hidden terminal status and remains as audit history.
-32. Confirm Nova's new Group A Transport generation remains exactly
-    `1 / 1 · 0-5`. The stage/root pending chain changes exactly `2 → 1`.
+32. Confirm Nova's new Group A Transport generation remains active with the
+    same `_id`, `recordId` and `syncKey`, and becomes exactly `1 / 0 · 0-5`
+    after Riley's accepted Asset-member row changes to hidden terminal status.
+    The stage/root pending chain changes exactly `1 → 0`.
 33. Confirm all Group B records/counters are byte-identical and the normal
     Event still contains Casey, Nova and Riley with the previously verified
     assignments.
