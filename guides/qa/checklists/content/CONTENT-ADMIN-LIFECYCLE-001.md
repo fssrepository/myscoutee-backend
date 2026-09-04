@@ -228,6 +228,12 @@ steps 1-31.
 
     `CONTENT-ADMIN-LIFECYCLE-001 article restored: same identity and media, Draft only`
 
+Replay point: `rollback-step-59-boundary` restores the exact post-step-58
+state without repeating steps 1-58. It preserves the verified governed-content,
+audit and consent branches, restores all exploratory Article controls, and
+places only the lifecycle target in Draft. After this rollback, reload Ava
+once and continue at step 59.
+
 59. After Codex confirms `article-restored`, in Ava select `Publish` on the
     restored Draft, then confirm `Publish` exactly once.
 60. Confirm the target leaves the already-open Drafts list, Drafts decrements
@@ -252,4 +258,7 @@ steps 1-31.
 
 Wait for Codex's final persisted/audit/media/idempotence oracle. Do not reset
 or continue to another testcase until Codex records the result and restores
-the fixture.
+the fixture. The final oracle must also prove that the target's `contentKey`
+and `contentHtml` stayed byte-for-byte unchanged; together with the step-53
+Restore confirmation and persisted Draft result, these close the three
+regressions found during this run.

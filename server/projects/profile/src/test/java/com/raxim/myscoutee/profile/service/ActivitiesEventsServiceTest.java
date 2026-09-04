@@ -276,7 +276,7 @@ class ActivitiesEventsServiceTest {
                 60).withResourceMetrics(
                         3, 1, 0, 4,
                         1, 0, 0, 3,
-                        3, 0, 0, 6))));
+                        3, 0, 0, 6)));
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));

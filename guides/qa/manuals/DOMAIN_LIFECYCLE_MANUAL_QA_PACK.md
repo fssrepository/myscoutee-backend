@@ -6790,7 +6790,7 @@ Together with the accepted user-driven UI journey through step 29, this closes
 
 ### `CONTENT-ADMIN-LIFECYCLE-001` — governed revisions, consent and Article lifecycle
 
-Status: **IN PROGRESS / STEP 32 READY**.
+Status: **PASS / CLOSED**.
 
 Stable user guide:
 [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
@@ -6817,6 +6817,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-step-59-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   reset content-admin CONTENT-ADMIN-LIFECYCLE-001
@@ -6842,6 +6844,30 @@ and the audit sequence contained exactly four creates, one activation and two
 deletes. Terms, Explanation, the controlled Article pair and Article buckets
 remained unchanged. Ava's own additional consent records are outside the
 Kai/Riley isolation assertion and do not invalidate this boundary.
+The guarded `rollback-step-59-boundary` completed at
+`2026-09-04T11:03:14.489Z`. It restored the five Article records moved during
+the user's exploratory checks from the captured fixture baseline, retained the
+already-proven governed-content, seven-audit and consent branches, and placed
+only the lifecycle target in Draft. The read-only status oracle then proved
+exact Article buckets `7 / 5 / 6 / 1 / 0` and stable controls. Continue with
+one user-driven Publish at step 59; do not replay steps 1-58.
+The terminal republish oracle passed at `2026-09-04T11:05:31.941Z` after the
+user's single final Publish. Article buckets returned exactly to
+`7 / 5 / 7 / 0 / 0`; the lifecycle Article retained its exact identity,
+`contentKey`, `contentHtml` and managed-image references; the adjacent and
+unrelated controls remained unchanged. The governed branch retained exactly
+seven audits, Kai's `v3` consent and Riley's absent `v3` consent. Final HTTP
+media checks returned the original `200 image/webp` values: 98012 bytes /
+`8fe226b45db5c299ca10c71fa1be3b766ff0ff5bd67d125f957ca207479f9fae`
+for the lifecycle image and 82400 bytes /
+`159043edf1734fdea38e1a348284dca4ae0d39db1425137e227998c67cca9fa1`
+for the featured control. The accumulated user-driven Restore confirmations,
+persisted Draft evidence and final stable-field oracle close the three
+regressions discovered during this run; steps 1-66 are accepted without
+another replay.
+After recording that verdict, the versioned reset completed at
+`2026-09-04T11:08:01.897Z`; the following read-only status returned
+`phase=not-staged`, `activeScenario=null` and no retained fixture artifacts.
 The two distinct managed-image controls were read-only verified over the
 running HTTP stack before staging:
 

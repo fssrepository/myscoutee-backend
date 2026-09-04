@@ -236,7 +236,9 @@ public class IdeaPostsService {
         if (!StringUtils.hasText(post.getId()) && StringUtils.hasText(normalizedId)) {
             post.setId(normalizedId);
         }
-        String contentKey = text(requestedContentKey, contentKeyFromId(StringUtils.hasText(normalizedId) ? normalizedId : post.getId()));
+        String contentKey = text(
+                requestedContentKey,
+                text(post.getContentKey(), contentKeyFromId(StringUtils.hasText(normalizedId) ? normalizedId : post.getId())));
         if (!StringUtils.hasText(contentKey)) {
             contentKey = "idea-" + Instant.now().toEpochMilli();
         }
@@ -252,9 +254,12 @@ public class IdeaPostsService {
                 post,
                 requestedImageUrls,
                 request == null ? null : request.removedImageUrls());
-        String html = sanitizeHtml(removeManagedImageReferences(
-                request == null ? null : request.contentHtml(),
-                removedManagedImages.keySet()));
+        String requestedHtml = request == null ? null : request.contentHtml();
+        String html = removedManagedImages.isEmpty()
+                && requestedHtml != null
+                && requestedHtml.equals(post.getContentHtml())
+                        ? post.getContentHtml()
+                        : sanitizeHtml(removeManagedImageReferences(requestedHtml, removedManagedImages.keySet()));
         String title = text(request == null ? null : request.title(), "Untitled idea");
         post.setContentKey(contentKey);
         post.setLang(language);

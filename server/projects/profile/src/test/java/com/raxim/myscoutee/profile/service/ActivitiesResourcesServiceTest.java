@@ -1009,14 +1009,14 @@ class ActivitiesResourcesServiceTest {
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
         assertThat(savedCaptor.getValue()).hasSize(2).allSatisfy(saved ->
-                assertThat(saved.getSubEvents()).singleElement().satisfies(subEvent -> {
-                    assertThat(subEvent.carsAccepted()).isEqualTo(3);
-                    assertThat(subEvent.carsPending()).isEqualTo(3);
-                    assertThat(subEvent.carsCapacityMin()).isZero();
-                    assertThat(subEvent.carsCapacityMax()).isEqualTo(28);
-                    assertThat(subEvent.suppliesAccepted()).isEqualTo(5);
-                    assertThat(subEvent.suppliesPending()).isZero();
-                    assertThat(subEvent.suppliesCapacityMax()).isEqualTo(6);
+                assertThat(saved.getSubEvents()).singleElement().satisfies(savedSubEvent -> {
+                    assertThat(savedSubEvent.carsAccepted()).isEqualTo(3);
+                    assertThat(savedSubEvent.carsPending()).isEqualTo(3);
+                    assertThat(savedSubEvent.carsCapacityMin()).isZero();
+                    assertThat(savedSubEvent.carsCapacityMax()).isEqualTo(28);
+                    assertThat(savedSubEvent.suppliesAccepted()).isEqualTo(5);
+                    assertThat(savedSubEvent.suppliesPending()).isZero();
+                    assertThat(savedSubEvent.suppliesCapacityMax()).isEqualTo(6);
                 }));
         assertThat(savedCaptor.getValue()).allSatisfy(saved ->
                 assertThat(saved.getActivity()).isEqualTo(19));

@@ -38,6 +38,13 @@
   const ARTICLE_IDS = [ARTICLE_ID, FEATURED_CONTROL_ID];
   const ARTICLE_CONTENT_KEY = "qa-content-admin-lifecycle-001-article";
   const FEATURED_CONTROL_CONTENT_KEY = "qa-content-admin-lifecycle-001-featured-control";
+  const STEP_59_EXPLORATORY_ARTICLE_IDS = [
+    ARTICLE_ID,
+    FEATURED_CONTROL_ID,
+    "idea-host-use-case",
+    "idea-social-first-dating",
+    "idea-why-priority-matching"
+  ];
   const ARTICLE_IMAGE_URL = "/media/public?key=images/system/idea-posts/idea-register-value/v1/large.webp";
   const FEATURED_CONTROL_IMAGE_URL = "/media/public?key=images/system/idea-posts/idea-why-priority-matching/v1/large.webp";
 
@@ -1304,6 +1311,114 @@
     });
   }
 
+  function rollbackStep59Boundary() {
+    config();
+    const currentState = state();
+    assertContentAfterFallback(currentState);
+    if (!sameDomain(controlledRevisions(), currentState.fallbackRevisions)) {
+      Q.fail("the verified governed-content fallback branch changed before the step 59 rollback.");
+    }
+    const consents = actorConsents();
+    const baselineConsentIds = assertBaselineConsentsPreserved(currentState, consents);
+    const kaiV3 = consents.find(value => Q.text(value._id) === Q.text(currentState.kaiV3ConsentId));
+    if (!assertConsent(kaiV3, KAI_ID, Q.text(currentState.privacyV3Id), 3)
+        || unexpectedKaiRileyConsents(consents, [...baselineConsentIds, kaiV3 && kaiV3._id]).length !== 0
+        || newAudits(currentState).length !== 7) {
+      Q.fail("the verified consent or audit branch changed before the step 59 rollback.");
+    }
+
+    const baselineArticles = [
+      ...(currentState.unrelatedIdeas || []),
+      ...(currentState.baselineArticles || [])
+    ];
+    const baselineById = new Map(baselineArticles.map(row => [Q.text(row._id), row]));
+    const currentArticles = Q.collection("ideaPosts").find({}).sort({ _id: 1 }).toArray();
+    const currentIds = sorted(currentArticles.map(row => row._id));
+    const baselineIds = sorted(baselineArticles.map(row => row._id));
+    if (!sameDomain(currentIds, baselineIds)) {
+      Q.fail("step 59 rollback refuses to add or remove Article records.");
+    }
+    for (const article of currentArticles) {
+      const id = Q.text(article._id);
+      const baseline = baselineById.get(id);
+      if (!STEP_59_EXPLORATORY_ARTICLE_IDS.includes(id) && !sameDomain(article, baseline)) {
+        Q.fail(`step 59 rollback found an unexpected changed Article '${id}'.`);
+      }
+    }
+    for (const id of STEP_59_EXPLORATORY_ARTICLE_IDS) {
+      if (!baselineById.has(id)) {
+        Q.fail(`step 59 rollback baseline is missing Article '${id}'.`);
+      }
+    }
+
+    const restoredAtIso = Q.nowIso();
+    for (const id of STEP_59_EXPLORATORY_ARTICLE_IDS.filter(value => value !== ARTICLE_ID)) {
+      Q.collection("ideaPosts").replaceOne({ _id: id }, clone(baselineById.get(id)));
+    }
+    const restoredDraft = clone(baselineById.get(ARTICLE_ID));
+    restoredDraft.published = false;
+    restoredDraft.featured = false;
+    restoredDraft.trashed = false;
+    restoredDraft.trashedAtIso = null;
+    restoredDraft.trashedByUserId = null;
+    restoredDraft.updatedDate = restoredAtIso;
+    restoredDraft.updatedUser = AVA_ID;
+    Q.collection("ideaPosts").replaceOne({ _id: ARTICLE_ID }, restoredDraft);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      {
+        $set: {
+          phase: "article-restored",
+          articleRestoredAtIso: restoredAtIso,
+          restoredArticle: restoredDraft,
+          step59Boundary: {
+            capturedAtIso: restoredAtIso,
+            article: restoredDraft,
+            ideaCounts: {
+              ...currentState.baselineIdeaCounts,
+              published: Q.number(currentState.baselineIdeaCounts.published) - 1,
+              drafts: Q.number(currentState.baselineIdeaCounts.drafts) + 1
+            }
+          }
+        },
+        $unset: {
+          articleTrashedAtIso: "",
+          trashedArticle: "",
+          verifiedAtIso: "",
+          republishedArticle: ""
+        }
+      }
+    );
+
+    const restoredState = state();
+    assertFallbackBranchStable(restoredState);
+    const target = Q.collection("ideaPosts").findOne({ _id: ARTICLE_ID });
+    const baselineTarget = baselineById.get(ARTICLE_ID);
+    assertStableArticleIdentity(target, baselineTarget);
+    if (!target || target.trashed !== false || target.published !== false || target.featured !== false
+        || Q.text(target.trashedAtIso) || Q.text(target.trashedByUserId)
+        || Q.text(target.updatedUser) !== AVA_ID) {
+      Q.fail("step 59 rollback did not restore the target as an exact Draft.");
+    }
+    if (!sameDomain(ideaCounts(), restoredState.step59Boundary.ideaCounts)) {
+      Q.fail("step 59 rollback did not restore the exact Draft bucket counts.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "article-restored",
+      replayBoundary: "step-59-ready",
+      restoredAtIso,
+      articleId: ARTICLE_ID,
+      stableContentKey: Q.text(target.contentKey),
+      stableContentHtml: Q.text(target.contentHtml),
+      controlsRestored: STEP_59_EXPLORATORY_ARTICLE_IDS.filter(id => id !== ARTICLE_ID),
+      ideaCounts: restoredState.step59Boundary.ideaCounts,
+      browserAction: "Reload Ava once, then continue at checklist step 59; do not relaunch browsers.",
+      next: "Publish only the controlled Draft once, then run verify-article-republished."
+    });
+  }
+
   function verifyArticleRepublished() {
     config();
     const currentState = state();
@@ -1398,6 +1513,7 @@
     case "verify-privacy-fallback": verifyPrivacyFallback(); break;
     case "verify-article-trashed": verifyArticleTrashed(); break;
     case "verify-article-restored": verifyArticleRestored(); break;
+    case "rollback-step-59-boundary": rollbackStep59Boundary(); break;
     case "verify-article-republished": verifyArticleRepublished(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

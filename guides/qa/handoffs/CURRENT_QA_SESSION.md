@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-04 08:54 CEST
+Updated: 2026-09-04 13:06 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -67,20 +67,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CONTENT-ADMIN-LIFECYCLE-001 — ACTIVE / STEP 42 READY
+checkpoint: none — CONTENT-ADMIN-LIFECYCLE-001 PASS / CLOSED
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#content-admin-lifecycle-001--governed-revisions-consent-and-article-lifecycle
 checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
-substage: phase is `privacy-fallback`; the step-41 delete/fallback/consent/audit oracle passed
-next_replay_boundary: continue directly at checklist step 42; if the delete/fallback branch must be repeated, run `rollback-step-32-boundary`, reload the existing pages once and repeat only steps 32-41
-fixture_phase: step-41 oracle passed at `2026-09-04T08:26:17.445Z`; Help `v2` and Privacy `v3` are absent, Privacy `v2` is solely active, Kai `v3` history remains, Riley has no `v3` consent, exactly seven audits exist, Article buckets remain `7 / 5 / 7 / 0 / 0`, and all controls are stable
-browser_phase: Ava/Kai/Riley isolated CONTENT-ADMIN-LIFECYCLE-001 sessions remain OPEN; `/tmp/myscoutee-qa-browser-sessions/CONTENT-ADMIN-LIFECYCLE-001.json` remains the launcher manifest; do not relaunch browsers; continue with Kai at checklist step 42
+substage: terminal `article-republished` oracle passed at `2026-09-04T11:05:31.941Z`; steps 1-66 are accepted
+next_replay_boundary: none; do not replay this closed testcase unless its owning behavior changes
+fixture_phase: terminal evidence was recorded, then reset completed at `2026-09-04T11:08:01.897Z`; read-only status is `phase=not-staged`, `activeScenario=null` with no retained fixture artifacts
+browser_phase: Ava/Kai/Riley isolated browser windows may be closed; no further Content action is required
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 85/118 total, Core 85/98, External/optional 0/20; ASSET-ASSIGNMENT-LIFECYCLE-001 is PASS/CLOSED
-queued_next: none; Content now owns the active fixture boundary
-required_resume: load only this block and the linked Content section/checklist. Require `privacy-fallback` with `step32Boundary`; continue at step 42. Use the named rollback only to repeat steps 32-41, and never repeat steps 1-31. Do not reconstruct or replay any closed Asset branch
+ledger_status: 86/118 total, Core 86/98, External/optional 0/20; CONTENT-ADMIN-LIFECYCLE-001 is PASS/CLOSED
+queued_next: none selected
+required_resume: the Content evidence is complete. Confirm the fixture reset reports `phase=not-staged`; select the next testcase from the matrix instead of replaying Content
 actors: Ava performs Admin Content and Article writes; Kai is the retained public/member consent actor; Riley is the fresh public/member control
-pending_machine_oracle: after checklist steps 42-51, run `verify-article-trashed`; it requires one soft-delete with stable identity/content/media, cleared publish/feature flags, exact Article buckets and unchanged governed-content state
-last_completed: Content step 41 PASS. Both requested revision deletions and fallback are persisted with exactly seven audit rows; Kai/Riley consent isolation and all negative controls passed. Ava's additional self-consents created while reopening the admin flow are allowed and do not alter the Kai/Riley contract
+pending_machine_oracle: none
+last_completed: CONTENT-ADMIN-LIFECYCLE-001 PASS/CLOSED. The terminal republish and media oracles passed, including all three regressions found during the run
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
