@@ -210,59 +210,96 @@ without repeating steps 1-15.
     resource editor and unassign only `QA Group A Nova Transport`. Confirm the
     destructive prompt exactly once.
 17. Without reload, confirm Nova's Transport card/assignment disappears from
-    Group A and its owner/type runtime value is zero. The source Asset itself
-    remains active with capacity `5`; its accepted and pending Asset-member
-    records remain unchanged. Casey and Riley each receive exactly one
+    Group A and its owner/type runtime value is zero. The removed resource row
+    is retained with status `D` and is hidden from every active read. The
+    source Asset itself remains active with capacity `5`, but every accepted
+    or pending Asset-member request in this exact assignment scope is also
+    retained with status `D` and hidden from the active member list. Those
+    resource/request IDs are audit-only and must never be reused by a later
+    assignment. Casey and Riley each receive exactly one
     `Asset assignment removed` notification with the neutral second line
     `Assignment ended · QA Group A Nova Transport`. Casey is also the pending
     Asset member and must still receive only one notification. Nova receives
     no notification for her own action, while Lina and every outside/control
     user receive none. This is the common rule for every assignment scope:
-    notify its active Group/Sub-event/Event participants plus the assigned
-    Asset's scope-matching pending members, with duplicate recipients merged.
+    notify its active Group/Sub-event/Event participants, the Asset owner, and
+    the assigned Asset's scope-matching accepted/pending members, with the
+    actor excluded and duplicate recipients merged.
 18. Confirm the Tournament stage/root pending chain changes exactly `2 → 1`.
     It must not become `0`, because Riley's Group A Accommodation is still
     pending.
 19. Confirm Riley's Group A resource, every Group B document/counter, the
-    normal Event branch, all memberships, Asset-member request statuses and
-    user activity counters remain unchanged.
+    normal Event branch, all unrelated Asset-member request statuses, all
+    memberships and user activity counters remain unchanged. The only request
+    status changes are the rows belonging to Nova Transport's removed Group A
+    assignment scope.
 20. Close/reopen and reload once. The removed assignment must not return and
-    no read path may repair the persisted counter.
+    neither its old accepted nor pending Asset-member row may return. No read
+    path may repair the persisted counter.
 21. Report and wait:
 
     `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A unassign complete: pending 2 to 1`
 
-Codex must run `verify-group-unassign`, then the versioned
-`restore-group-removal-branch` command. That command restores only the
-Tournament branch to its exact staged state; it does not erase or fabricate
-the completed normal branch.
+Codex must run `verify-group-unassign`, then `stage-step-22-boundary`. Continue
+only after Codex reports `step-22-ready`. If the following reassign branch must
+be replayed, Codex runs `rollback-step-22-boundary`, which restores the exact
+persisted post-unassign state without repeating steps 1-20.
 
-## 4. Independent removed-manager cleanup
+## 4. New-generation reassign
 
-22. Continue only after Codex reports phase `group-removal-ready`, Group A
-    pending `2`, and the normal branch preserved.
-23. In **Casey**, open the **Tournament Event** Members surface and remove
+22. In **Nova**, assign the same active `QA Group A Nova Transport` Asset to
+    **QA ASSET-ASSIGNMENT-LIFECYCLE-001 Tournament → QA Assignment Groups →
+    Group A** exactly once.
+23. Confirm a new active `activityResources` row appears with new `_id`,
+    `recordId` and `syncKey` values. The old `D` resource row remains only as
+    audit history. It must not be reactivated or overwritten.
+24. Before adding Casey, confirm Nova Transport shows one accepted owner,
+    zero pending and capacity `0-5`. The stage/root pending chain remains `1`:
+    the old `D` Casey request must not reappear automatically.
+25. From Nova Transport's member menu, invite Casey once to this exact Group A
+    scope. Confirm the new pending row has a new request ID; the old `D` Casey
+    row remains hidden audit history and is not reused.
+26. Confirm Nova Transport is now exactly `1 / 1 · 0-5` and the stage/root
+    pending chain changes exactly `1 → 2`. Riley Accommodation remains
+    `1 / 1 · 0-3`.
+27. Close/reopen the Group A Transport list and reload Nova once. Confirm only
+    the new active resource and new active member rows return; the old `D`
+    generation remains hidden and every Group B/normal Event value is
+    unchanged.
+28. Report and wait:
+
+    `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A reassign complete: new resource and member IDs, pending 1 to 2`
+
+Codex must run `verify-group-reassign`. Continue only after Codex reports
+phase `group-removal-ready`.
+
+## 5. Independent removed-manager cleanup
+
+29. In **Casey**, open the **Tournament Event** Members surface and remove
     Riley exactly once. Do not remove Riley from the normal Event and do not
     use an Asset-member menu.
-24. Confirm Riley leaves the Tournament parent and generated Group A member
+30. Confirm Riley leaves the Tournament parent and generated Group A member
     tree. Casey and Nova remain in Group A; Lina remains alone in Group B.
-25. Confirm Riley's manager-owned Group A Accommodation assignment/settings
-    are cleared and its runtime metric is zero. The source Accommodation Asset
-    remains active.
-26. Confirm Nova's restored Group A Transport remains exactly
-    `1 / 1 · 0-4`. The stage/root pending chain changes exactly `2 → 1`.
-27. Confirm all Group B records/counters are byte-identical and the normal
+31. Confirm Riley's manager-owned Group A Accommodation assignment/settings
+    disappear from active reads, its resource row changes to `D`, and its
+    runtime metric is zero. The source Accommodation Asset remains active;
+    every accepted or pending Asset-member request in the removed assignment
+    scope changes to a hidden terminal status and remains as audit history.
+32. Confirm Nova's new Group A Transport generation remains exactly
+    `1 / 1 · 0-5`. The stage/root pending chain changes exactly `2 → 1`.
+33. Confirm all Group B records/counters are byte-identical and the normal
     Event still contains Casey, Nova and Riley with the previously verified
     assignments.
-28. Confirm Riley receives at most the documented Event-removal notification;
-    Assignment cleanup must not notify Casey, Nova, Lina or a former/outside
-    participant as an unrelated recipient.
-29. Close/reopen the Tournament and reload all three sessions once. Confirm
+34. Confirm the removal notification reaches the active participants of the
+    affected Group A assignment plus its scope-matching accepted/pending Asset
+    members, excluding the actor and merging duplicate recipients. Lina and
+    every outside/control participant receive none.
+35. Close/reopen the Tournament and reload all three sessions once. Confirm
     the terminal state persists without duplicate removal, notification,
     resource, membership or counter deltas.
-30. Report the terminal phrase:
+36. Report the terminal phrase:
 
-    `ASSET-ASSIGNMENT-LIFECYCLE-001 UI complete: normal aggregation, Group A mutation, unassign and manager cleanup persist`
+    `ASSET-ASSIGNMENT-LIFECYCLE-001 UI complete: normal aggregation, Group A mutation, unassign, reassign and manager cleanup persist`
 
 Wait for Codex's final exact persisted oracle. Do not reset or start another
 checkpoint until its matrix result and next resume boundary are saved.

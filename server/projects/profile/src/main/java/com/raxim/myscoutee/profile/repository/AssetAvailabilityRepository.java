@@ -21,7 +21,10 @@ public class AssetAvailabilityRepository {
         if (!StringUtils.hasText(normalizedOwnerUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return List.of();
         }
-        return assetRequestsRepository.findByOwnerUserIdAndAssetId(normalizedOwnerUserId, normalizedAssetId);
+        return assetRequestsRepository.findByOwnerUserIdAndAssetIdAndStatusNot(
+                normalizedOwnerUserId,
+                normalizedAssetId,
+                "D");
     }
 
     private String normalizeId(String value) {

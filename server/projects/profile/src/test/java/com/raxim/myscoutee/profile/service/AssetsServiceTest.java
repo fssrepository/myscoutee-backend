@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -547,7 +548,27 @@ class AssetsServiceTest {
             assertThat(left.previousStatus()).isEqualTo("pending");
             assertThat(left.acceptedMemberDelta()).isZero();
             assertThat(left.pendingMemberDelta()).isEqualTo(-1);
-            verify(notificationOutboxService, times(1)).enqueue(any(NotificationIntent.class));
+            assertThat(assetState.get().getRequests()).singleElement().satisfies(request -> {
+                assertThat(request.id()).isEqualTo("request-2");
+                assertThat(request.status()).isEqualTo("D");
+            });
+
+            var rejoined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                    "asset-1",
+                    "event-1",
+                    "subevent-1",
+                    "u2",
+                    "join",
+                    borrowRequestDto("request-3", "u2", "pending", "event-1")));
+
+            assertThat(rejoined.previousStatus()).isNull();
+            assertThat(rejoined.status()).isEqualTo("pending");
+            assertThat(assetState.get().getRequests())
+                    .extracting(AssetRequestRecord::id, AssetRequestRecord::status)
+                    .containsExactlyInAnyOrder(
+                            tuple("request-2", "D"),
+                            tuple("request-3", "pending"));
+            verify(notificationOutboxService, times(2)).enqueue(any(NotificationIntent.class));
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -2577,7 +2598,8 @@ class AssetsServiceTest {
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
-        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        assertThat(savedAsset.getValue().getRequests()).singleElement()
+                .satisfies(request -> assertThat(request.status()).isEqualTo("D"));
         verify(accessControlService).canCurrentActorRejectAssetBorrow("u2", "asset-1");
     }
 
@@ -2610,7 +2632,8 @@ class AssetsServiceTest {
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
-        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        assertThat(savedAsset.getValue().getRequests()).singleElement()
+                .satisfies(request -> assertThat(request.status()).isEqualTo("D"));
         verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
     }
 

@@ -6646,7 +6646,8 @@ Its named savepoint oracles are `verify-normal-assignment`,
 `stage-step-10-boundary`,
 `rollback-step-10-boundary`, `verify-group-capacity-edit`,
 `stage-step-16-boundary`, `rollback-step-16-boundary`,
-`verify-group-unassign`, the guarded `restore-group-removal-branch`, and
+`verify-group-unassign`, `stage-step-22-boundary`,
+`rollback-step-22-boundary`, `verify-group-reassign`, and
 `verify-group-manager-removal`. The normal restore puts back the exact verified
 Nova `2` plus Riley `3` contribution state and removes only temporary delete or
 exploratory contribution notifications. At
@@ -6675,23 +6676,33 @@ Tournament state, its scoped inbox/outbox and related queued work. An immediate
 `rollback-step-16-boundary` proof restored all five domains exactly while
 preserving the verified normal Event branch, so the live phase is
 `step-16-ready` and steps 1-15 do not need to be replayed.
+After the exploratory unassign observations, the same guarded rollback ran
+again at `2026-09-04T05:50:17.360Z`; all five exact-restore checks passed and
+the live fixture is again `step-16-ready` for the user's step-16 replay.
 
 Unassign now emits one neutral `event-asset-assignment-removed` notification.
 Recipients are resolved by the existing assignment scope: active members of
-the relevant generated Group or Event/Sub-event, plus scope-matching pending
-members of the assigned Asset. The actor is excluded and duplicate recipients
-are merged. A main-Event assignment uses the Event membership; every Sub-event
-assignment is identified by its exact `subEventId`, independently of whether
-the UI displays that Sub-event inside a slot. The Asset request may carry the
-concrete generated-Group owner ID or its base Event ID. The notification says
-only `Asset assignment removed` /
-`Assignment ended · <Asset title>` because unassign does not change accepted
-or pending Asset-member records. The step-16 oracle requires Casey and Riley
-exactly once for Nova's Group A Transport removal, confirms Nova/Lina receive
-nothing, and compares the source Asset plus its member requests byte-for-byte
-with the step-16 boundary.
-The later Tournament restore rewinds only the independent manager-removal
-branch and preserves the verified normal branch.
+the relevant generated Group or Event/Sub-event, the Asset owner, and every
+scope-matching accepted or pending Asset member. The actor is excluded and
+duplicate recipients are merged. A main-Event assignment uses the Event
+membership; every Sub-event assignment is identified by its exact
+`subEventId`, independently of whether the UI displays that Sub-event inside a
+slot. The Asset request may carry the concrete generated-Group owner ID or its
+base Event ID. The notification says only `Asset assignment removed` /
+`Assignment ended · <Asset title>`.
+
+The unassign write never physically deletes the resource or its scoped Asset
+member rows. The resource and every accepted/pending request in the removed
+scope change to `D` and disappear from active reads while remaining audit
+history. Reassigning the same source Asset creates a new resource generation
+and new member/request IDs; no `D` ID can be restored or reused. The step-16
+oracle verifies the status changes, exact `2 -> 1` counter reversal and Casey
+plus Riley notification. After step 20, `stage-step-22-boundary` captures the
+post-unassign state. The reassign oracle requires a fresh Nova resource, a
+fresh Nova owner request, a fresh Casey pending request, `1 / 1 · 0-5`, and
+the exact `1 -> 2` pending return while all prior `D` rows remain hidden. The
+same lifecycle and recipient rules apply when manager removal later clears
+Riley's Accommodation assignment.
 
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
@@ -6727,15 +6738,18 @@ branch and preserves the verified normal branch.
 - The unrelated sub-event and all membership roles remain unchanged. Generated
   Tournament-group aggregation belongs to `TOURNAMENT-RESOURCE-001`.
 
-### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
+### `ASSET-ASSIGN-003` — mutation, unassign, reassign and removed-manager cleanup
 
 - Start from two generated Tournament groups. Group A contains at least two
   owner-scoped resource assignments; Group B is the unchanged negative
   control. Edit the capacity of one Group A asset and require the owning save
   to refresh only that exact event/stage/group/owner/type materialization. Do
   not reconstruct the answer in the list query.
-- Unassign that resource, then in an independent reset branch remove one
-  separate Group A asset manager from the event. The writes must subtract the
+- Unassign that resource, verify the old resource and its scoped accepted and
+  pending requests changed to hidden `D` audit rows, then reassign the same
+  source Asset as a new generation with fresh resource/member/request IDs.
+  After that, remove one separate Group A asset manager from the event. The
+  writes must subtract the
   exact removed owner/type contribution from Group A runtime metrics, the
   stage `groupsPending` aggregate and the root Event activity aggregate. Only
   settings/contributions owned by the removed manager are cleaned up;
@@ -6748,10 +6762,10 @@ branch and preserves the verified normal branch.
   the persisted result.
 - The consolidated fixture makes Group B a byte-identical Lina control and
   starts Group A/root pending at `2`. The source-Asset capacity mutation keeps
-  it at `2`; Nova's unassign reverses it to `1`. The independent restored
-  branch removes Riley from the Tournament Event and requires the same exact
-  `2 -> 1` write-side reversal while the normal Event still retains Riley and
-  its previously verified assignment state.
+  it at `2`; Nova's unassign reverses it to `1`; the fresh assignment plus new
+  Casey request returns it to `2`. Riley's later Tournament removal requires
+  the same exact `2 -> 1` write-side reversal while the normal Event still
+  retains Riley and its previously verified assignment state.
 
 ## Content cases
 

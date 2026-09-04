@@ -694,8 +694,28 @@ class ActivitiesResourcesServiceTest {
         event.setTitle("Assignment Event");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
-        service.replace(new ActivitySubEventResourceStateDto(
+        ActivitySubEventResourceStateDto savedState = service.replace(new ActivitySubEventResourceStateDto(
                 "event-1", "sub-1", "u1", Map.of(), Map.of(), Map.of(), Map.of()));
+
+        assertThat(savedState).isNotNull();
+        assertThat(savedState.ownerId()).isEqualTo("event-1");
+        assertThat(savedState.subEventId()).isEqualTo("sub-1");
+        assertThat(savedState.assetOwnerUserId()).isEqualTo("u1");
+        assertThat(savedState.assetAssignmentIds()).isEmpty();
+        assertThat(savedState.assetSettingsByType()).isEmpty();
+        assertThat(savedState.supplyContributionEntriesByAssetId()).isEmpty();
+
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getStatus()).isEqualTo("D");
+        verify(assetsService).statusDeleteAssignmentScopeRequests(
+                eq("u1"),
+                eq(Set.of("asset-1")),
+                eq("event-1"),
+                eq("event-1"),
+                eq("sub-1"),
+                eq("u1"),
+                anyString());
 
         ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(notificationCaptor.capture());

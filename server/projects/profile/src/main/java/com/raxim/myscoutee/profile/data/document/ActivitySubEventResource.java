@@ -13,7 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "activityResources")
 @CompoundIndexes({
         @CompoundIndex(name = "activity_resource_record_id", def = "{'recordId': 1}", unique = true),
-        @CompoundIndex(name = "activity_resource_owner_subevent_asset_owner", def = "{'ownerId': 1, 'subEventId': 1, 'assetOwnerUserId': 1}", unique = true),
+        @CompoundIndex(
+                name = "activity_resource_active_owner_subevent_asset_owner",
+                def = "{'ownerId': 1, 'subEventId': 1, 'assetOwnerUserId': 1}",
+                unique = true,
+                partialFilter = "{'status': 'A'}"),
         @CompoundIndex(name = "activity_resource_owner_key", def = "{'assetOwnerUserId': 1, 'ownerId': 1}")
 })
 public class ActivitySubEventResource {

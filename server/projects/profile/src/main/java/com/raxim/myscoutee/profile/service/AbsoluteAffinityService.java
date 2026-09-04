@@ -230,7 +230,12 @@ public class AbsoluteAffinityService {
         AffinityConfig config = activeConfig();
         AffinityConfig.AssetBoostMultipliers multipliers = config.getBoost().getAsset();
         int acceptedRequests = 0;
+        int activeRequestCount = 0;
         for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+            if (request == null || "d".equals(normalizeKey(request.status())) || "deleted".equals(normalizeKey(request.status()))) {
+                continue;
+            }
+            activeRequestCount += 1;
             if (request != null && "accepted".equals(normalizeKey(request.status()))) {
                 acceptedRequests += 1;
             }
@@ -238,7 +243,7 @@ public class AbsoluteAffinityService {
         int capacityAvailable = Math.max(0, normalizeCount(asset.getCapacityTotal(), 0) - acceptedRequests);
         double score = capacityAvailable * multiplier(multipliers.getCapacityAvailable(), 7d)
                 + Math.max(0, normalizeCount(asset.getQuantity(), 0)) * multiplier(multipliers.getQuantity(), 11d)
-                + Math.max(0, asset.getRequests() == null ? 0 : asset.getRequests().size())
+                + activeRequestCount
                 * multiplier(multipliers.getRequestCount(), 13d)
                 + freshnessScore(asset.getUpdatedDate(), asset.getCreatedDate(), null)
                 * multiplier(multipliers.getFreshness(), 3d)

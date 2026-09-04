@@ -745,6 +745,53 @@
     }) || null;
   }
 
+  function deletedGroupResource(ownerId, userId, recordId = "") {
+    const selector = {
+      ownerId,
+      subEventId: TOURNAMENT_STAGE_ID,
+      assetOwnerUserId: userId,
+      status: "D"
+    };
+    if (Q.text(recordId)) selector.recordId = Q.text(recordId);
+    return Q.collection("activityResources").findOne(selector) || null;
+  }
+
+  function requestId(request) {
+    return Q.text(request && (request.requestId || request.id || request._id));
+  }
+
+  function requestIsDeleted(request) {
+    const status = Q.text(request && request.status).toLowerCase();
+    return status === "d" || status === "deleted";
+  }
+
+  function requestMatchesAssignmentScope(request) {
+    const bookingValue = (request && request.booking) || {};
+    const bookingOwnerId = Q.text(bookingValue.eventId);
+    return Q.text(bookingValue.subEventId) === TOURNAMENT_STAGE_ID
+      && [GROUP_A_RESOURCE_OWNER_ID, TOURNAMENT_EVENT_ID].includes(bookingOwnerId);
+  }
+
+  function embeddedGroupATransportRequests(asset, deleted = null) {
+    return (asset && Array.isArray(asset.requests) ? asset.requests : [])
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => deleted === null || requestIsDeleted(request) === deleted);
+  }
+
+  function storedGroupATransportRequests(deleted = null) {
+    return read("assetRequests", { assetId: GROUP_A_TRANSPORT_ID })
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => deleted === null || requestIsDeleted(request) === deleted);
+  }
+
+  function sourceAssetWithoutRequestLifecycle(asset) {
+    const value = clone(asset || {});
+    delete value.requests;
+    delete value.updatedDate;
+    delete value.updatedUser;
+    return value;
+  }
+
   function stageCounters() {
     const root = tournamentRoot();
     const stage = (root.subEvents || []).find(item => Q.text(item && item.id) === TOURNAMENT_STAGE_ID) || {};
@@ -1565,6 +1612,8 @@
       "group-capacity-verified",
       "step-16-ready",
       "group-unassign-verified",
+      "step-22-ready",
+      "group-reassign-verified",
       "group-removal-ready",
       "complete"
     ];
@@ -1686,7 +1735,14 @@
     Q.assertDeploymentSafety();
     const currentState = state();
     const currentPhase = Q.text(currentState.phase);
-    const allowedPhases = ["step-16-ready", "group-unassign-verified", "group-removal-ready", "complete"];
+    const allowedPhases = [
+      "step-16-ready",
+      "group-unassign-verified",
+      "step-22-ready",
+      "group-reassign-verified",
+      "group-removal-ready",
+      "complete"
+    ];
     if (!allowedPhases.includes(currentPhase)) {
       Q.fail(`${CHECKPOINT} step 16 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
     }
@@ -1740,8 +1796,30 @@
     const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
     const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
     const sourceAsset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
-    const expectedSourceAsset = (((currentState.step16Boundary || {}).group || {}).assets || [])
+    const boundaryGroup = ((currentState.step16Boundary || {}).group || {});
+    const expectedSourceAsset = (boundaryGroup.assets || [])
       .find(asset => Q.text(asset && asset.assetId) === GROUP_A_TRANSPORT_ID);
+    const expectedResource = (boundaryGroup.resources || []).find(resource => (
+      Q.text(resource && resource.ownerId) === GROUP_A_RESOURCE_OWNER_ID
+      && Q.text(resource && resource.subEventId) === TOURNAMENT_STAGE_ID
+      && Q.text(resource && resource.assetOwnerUserId) === NOVA_ID
+      && !requestIsDeleted(resource)
+    ));
+    const deletedResource = deletedGroupResource(
+      GROUP_A_RESOURCE_OWNER_ID,
+      NOVA_ID,
+      expectedResource && expectedResource.recordId);
+    const expectedEmbeddedRequests = embeddedGroupATransportRequests(expectedSourceAsset, false);
+    const expectedEmbeddedRequestIds = sorted(expectedEmbeddedRequests.map(requestId));
+    const deletedEmbeddedRequestIds = sorted(embeddedGroupATransportRequests(sourceAsset, true).map(requestId));
+    const activeEmbeddedRequests = embeddedGroupATransportRequests(sourceAsset, false);
+    const expectedStoredRequests = (boundaryGroup.requests || [])
+      .filter(request => Q.text(request && request.assetId) === GROUP_A_TRANSPORT_ID)
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => !requestIsDeleted(request));
+    const expectedStoredRequestIds = sorted(expectedStoredRequests.map(requestId));
+    const deletedStoredRequestIds = sorted(storedGroupATransportRequests(true).map(requestId));
+    const activeStoredRequests = storedGroupATransportRequests(false);
     const removedOutbox = read("notificationOutbox", {
       notificationType: "event-asset-assignment-removed",
       entityId: TOURNAMENT_EVENT_ID,
@@ -1757,10 +1835,26 @@
       "payload.assetId": GROUP_A_TRANSPORT_ID
     });
     const checks = {
-      novaAssignmentCleared: emptyOrZeroResource(nova, "Transport", GROUP_A_TRANSPORT_ID),
+      novaAssignmentStatusDeleted: nova === null
+        && !!expectedResource
+        && !!deletedResource
+        && Q.text(deletedResource._id) === Q.text(expectedResource._id)
+        && Q.text(deletedResource.recordId) === Q.text(expectedResource.recordId)
+        && emptyOrZeroResource(deletedResource, "Transport", GROUP_A_TRANSPORT_ID),
       novaRuntimeCleared: Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), zeroMetric()),
       exactPendingReversal: Q.sameJson(stageCounters(), { activity: 1, groupsCount: 2, groupsPending: 1 }),
-      sourceAssetAndMemberRequestsUnchanged: !!expectedSourceAsset && sameDomain(sourceAsset, expectedSourceAsset),
+      sourceAssetDefinitionUnchanged: !!expectedSourceAsset
+        && Q.text(sourceAsset.status) === "A"
+        && Q.number(sourceAsset.capacityTotal) === 5
+        && sameDomain(
+          sourceAssetWithoutRequestLifecycle(sourceAsset),
+          sourceAssetWithoutRequestLifecycle(expectedSourceAsset)),
+      scopedEmbeddedRequestsStatusDeleted: expectedEmbeddedRequestIds.length > 0
+        && Q.sameJson(deletedEmbeddedRequestIds, expectedEmbeddedRequestIds)
+        && activeEmbeddedRequests.length === 0,
+      scopedStoredRequestsStatusDeleted: expectedStoredRequestIds.length > 0
+        && Q.sameJson(deletedStoredRequestIds, expectedStoredRequestIds)
+        && activeStoredRequests.length === 0,
       removalNotificationExactOnce: removedOutbox.length === 1
         && Q.sameJson(sorted(removedOutbox[0].recipientUserIds), sorted([CASEY_ID, RILEY_ID]))
         && Q.text(removedOutbox[0].createdUser) === NOVA_ID
@@ -1776,44 +1870,211 @@
       membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
     };
     failChecks("group-unassign", checks, {
-      nova, riley, sourceAsset, stage: stageCounters(), runtime: runtime(), removedOutbox, removedInbox
+      nova,
+      deletedResource,
+      riley,
+      sourceAsset,
+      expectedEmbeddedRequestIds,
+      deletedEmbeddedRequestIds,
+      activeEmbeddedRequests,
+      expectedStoredRequestIds,
+      deletedStoredRequestIds,
+      activeStoredRequests,
+      stage: stageCounters(),
+      runtime: runtime(),
+      removedOutbox,
+      removedInbox
     });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "group-unassign-verified",
       groupUnassignVerifiedAtIso: Q.nowIso()
     } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "group-unassign-verified", checks,
-      next: `Run restore-group-removal-branch asset-assignment ${CHECKPOINT}; this restores only the versioned Tournament branch.` });
+      next: `Run stage-step-22-boundary asset-assignment ${CHECKPOINT}; then the same Asset can be assigned as a new lifecycle generation.` });
   }
 
-  function restoreGroupRemovalBranch() {
+  function stageStep22Boundary() {
     Q.assertDeploymentSafety();
     const currentState = state();
     requirePhase(currentState, "group-unassign-verified");
     if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
-      Q.fail(`${CHECKPOINT} refuses to restore the Tournament branch because the verified normal branch changed.`);
+      Q.fail(`${CHECKPOINT} refuses to stage step 22 because the verified normal Event branch changed.`);
     }
-    const baseline = currentState.groupBranchBaseline || {};
-    restoreTournamentDocuments(baseline);
-    if (!sameDomain(groupBranchDocuments(), baseline)) {
-      Q.fail(`${CHECKPOINT} Tournament removal branch did not restore exactly.`);
+    const capturedAtIso = Q.nowIso();
+    const boundary = {
+      capturedAtIso,
+      group: groupBranchDocuments(),
+      notificationOutbox: read("notificationOutbox", relatedSelector()),
+      userNotifications: read("userNotifications", relatedSelector()),
+      affinityRecomputeTasks: read("affinityRecomputeTasks", relatedSelector())
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-22-ready",
+      step22Boundary: boundary
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-22-ready",
+      capturedAtIso,
+      checks: {
+        exactUnassignedStateCaptured: true,
+        normalBranchPreserved: true,
+        groupBControlPreserved: sameDomain(groupBControlSnapshot(), currentState.groupBControl)
+      },
+      next: "Assign QA Group A Nova Transport again as a new lifecycle generation, then invite Casey once. Use rollback-step-22-boundary to replay only this branch."
+    });
+  }
+
+  function rollbackStep22Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    if (!["step-22-ready", "group-reassign-verified"].includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} step 22 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
     }
-    const removalReadyAtIso = Q.nowIso();
+    const boundary = currentState.step22Boundary || {};
+    if (!boundary.group || !Array.isArray(boundary.notificationOutbox)
+        || !Array.isArray(boundary.userNotifications) || !Array.isArray(boundary.affinityRecomputeTasks)) {
+      Q.fail(`${CHECKPOINT} step 22 rollback boundary is missing.`);
+    }
+    if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
+      Q.fail(`${CHECKPOINT} refuses to roll back step 22 because the verified normal Event branch changed.`);
+    }
+    restoreTournamentDocuments(boundary.group);
+    restoreDocuments("notificationOutbox", relatedSelector(), boundary.notificationOutbox);
+    restoreDocuments("userNotifications", relatedSelector(), boundary.userNotifications);
+    restoreDocuments("affinityRecomputeTasks", relatedSelector(), boundary.affinityRecomputeTasks);
+    USERS.forEach(synchronizeNotificationCounter);
+    const checks = {
+      exactUnassignedStateRestore: sameDomain(groupBranchDocuments(), boundary.group),
+      exactNormalBranchPreserved: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
+      exactOutboxRestore: sameDomain(read("notificationOutbox", relatedSelector()), boundary.notificationOutbox),
+      exactInboxRestore: sameDomain(read("userNotifications", relatedSelector()), boundary.userNotifications),
+      exactAffinityTaskRestore: sameDomain(read("affinityRecomputeTasks", relatedSelector()), boundary.affinityRecomputeTasks)
+    };
+    failChecks("step-22-rollback", checks, { currentPhase, boundaryCapturedAtIso: boundary.capturedAtIso });
+    const rolledBackAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-22-ready",
+      step22RolledBackAtIso: rolledBackAtIso
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-22-ready",
+      rolledBackAtIso,
+      checks,
+      next: "Replay only the reassign branch; steps 1-20 remain preserved."
+    });
+  }
+
+  function verifyGroupReassign() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "step-22-ready");
+    const boundaryGroup = ((currentState.step22Boundary || {}).group || {});
+    const oldResource = (boundaryGroup.resources || []).find(resource => (
+      Q.text(resource && resource.ownerId) === GROUP_A_RESOURCE_OWNER_ID
+      && Q.text(resource && resource.subEventId) === TOURNAMENT_STAGE_ID
+      && Q.text(resource && resource.assetOwnerUserId) === NOVA_ID
+      && requestIsDeleted(resource)
+    ));
+    const activeResource = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
+    const retainedDeletedResource = deletedGroupResource(
+      GROUP_A_RESOURCE_OWNER_ID,
+      NOVA_ID,
+      oldResource && oldResource.recordId);
+    const sourceAsset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
+    const boundaryAsset = (boundaryGroup.assets || [])
+      .find(asset => Q.text(asset && asset.assetId) === GROUP_A_TRANSPORT_ID);
+    const boundaryDeletedEmbeddedIds = sorted(embeddedGroupATransportRequests(boundaryAsset, true).map(requestId));
+    const currentDeletedEmbeddedIds = sorted(embeddedGroupATransportRequests(sourceAsset, true).map(requestId));
+    const activeEmbeddedRequests = embeddedGroupATransportRequests(sourceAsset, false);
+    const activeEmbeddedIds = sorted(activeEmbeddedRequests.map(requestId));
+    const boundaryDeletedStoredIds = sorted((boundaryGroup.requests || [])
+      .filter(request => Q.text(request && request.assetId) === GROUP_A_TRANSPORT_ID)
+      .filter(requestMatchesAssignmentScope)
+      .filter(requestIsDeleted)
+      .map(requestId));
+    const currentDeletedStoredIds = sorted(storedGroupATransportRequests(true).map(requestId));
+    const activeStoredRequests = storedGroupATransportRequests(false);
+    const activeStoredIds = sorted(activeStoredRequests.map(requestId));
+    const caseyPending = activeEmbeddedRequests.filter(request => (
+      Q.text(request && request.userId) === CASEY_ID && Q.text(request && request.status) === "pending"
+    ));
+    const novaAccepted = activeEmbeddedRequests.filter(request => (
+      Q.text(request && request.userId) === NOVA_ID
+      && Q.text(request && request.status) === "accepted"
+      && Q.text(request && request.requestKind) === "manual"
+    ));
+    const checks = {
+      newActiveResourceGeneration: !!oldResource
+        && !!activeResource
+        && !!retainedDeletedResource
+        && Q.text(activeResource._id) !== Q.text(oldResource._id)
+        && Q.text(activeResource.recordId) !== Q.text(oldResource.recordId)
+        && Q.text(activeResource.syncKey) !== Q.text(oldResource.syncKey)
+        && recordMatches(activeResource, "Transport", GROUP_A_TRANSPORT_ID, 5, NOVA_ID),
+      deletedResourceRetainedForAudit: Q.text(retainedDeletedResource._id) === Q.text(oldResource && oldResource._id)
+        && Q.text(retainedDeletedResource.recordId) === Q.text(oldResource && oldResource.recordId)
+        && emptyOrZeroResource(retainedDeletedResource, "Transport", GROUP_A_TRANSPORT_ID),
+      sourceAssetDefinitionUnchanged: !!boundaryAsset
+        && Q.text(sourceAsset.status) === "A"
+        && Q.number(sourceAsset.capacityTotal) === 5
+        && sameDomain(
+          sourceAssetWithoutRequestLifecycle(sourceAsset),
+          sourceAssetWithoutRequestLifecycle(boundaryAsset)),
+      deletedEmbeddedRequestsNotReused: boundaryDeletedEmbeddedIds.length > 0
+        && boundaryDeletedEmbeddedIds.every(id => currentDeletedEmbeddedIds.includes(id))
+        && activeEmbeddedIds.every(id => !boundaryDeletedEmbeddedIds.includes(id)),
+      deletedStoredRequestsNotReused: boundaryDeletedStoredIds.length > 0
+        && boundaryDeletedStoredIds.every(id => currentDeletedStoredIds.includes(id))
+        && activeStoredIds.every(id => !boundaryDeletedStoredIds.includes(id)),
+      freshActiveMemberRequests: caseyPending.length === 1
+        && novaAccepted.length === 1
+        && activeEmbeddedRequests.length === 2
+        && Q.sameJson(activeStoredIds, activeEmbeddedIds),
+      exactReassignedMetric: Q.sameJson(
+        normalizedMetric((activeResource && activeResource.resourceMetricsByType || {}).Transport),
+        metric(1, 1, 5))
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 5)),
+      exactPendingReturn: Q.sameJson(stageCounters(), { activity: 2, groupsCount: 2, groupsPending: 2 }),
+      rileyResourceUnchanged: recordMatches(
+        groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID),
+        "Accommodation",
+        GROUP_A_ACCOMMODATION_ID,
+        3,
+        RILEY_ID),
+      unrelatedScopesByteIdentical: assertGroupControls(currentState),
+      membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
+    };
+    failChecks("group-reassign", checks, {
+      oldResource,
+      activeResource,
+      retainedDeletedResource,
+      sourceAsset,
+      boundaryDeletedEmbeddedIds,
+      currentDeletedEmbeddedIds,
+      activeEmbeddedRequests,
+      boundaryDeletedStoredIds,
+      currentDeletedStoredIds,
+      activeStoredRequests,
+      stage: stageCounters()
+    });
+    const verifiedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "group-removal-ready",
-      removalReadyAtIso,
+      groupReassignVerifiedAtIso: verifiedAtIso,
+      groupAReassignedResource: clone(activeResource),
+      removalReadyAtIso: verifiedAtIso,
       removalNotificationBaseline: notificationCounts()
     } });
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "group-removal-ready",
-      removalReadyAtIso,
-      checks: {
-        exactTournamentRestore: true,
-        normalBranchPreserved: true,
-        groupBControlPreserved: sameDomain(groupBControlSnapshot(), currentState.groupBControl)
-      },
+      checks,
       next: "As Casey, remove Riley once from the Tournament Event members. Do not remove Riley from the normal Event or edit an Asset membership."
     });
   }
@@ -1830,27 +2091,90 @@
     const memberships = tournamentMembershipSnapshot();
     const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
     const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
+    const expectedRiley = ((((currentState.step22Boundary || {}).group || {}).resources) || [])
+      .find(resource => (
+        Q.text(resource && resource.ownerId) === GROUP_A_RESOURCE_OWNER_ID
+        && Q.text(resource && resource.subEventId) === TOURNAMENT_STAGE_ID
+        && Q.text(resource && resource.assetOwnerUserId) === RILEY_ID
+        && !requestIsDeleted(resource)
+      ));
+    const deletedRiley = deletedGroupResource(
+      GROUP_A_RESOURCE_OWNER_ID,
+      RILEY_ID,
+      expectedRiley && expectedRiley.recordId);
+    const accommodationAsset = Q.collection("assets").findOne({ assetId: GROUP_A_ACCOMMODATION_ID }) || {};
+    const expectedAccommodation = ((((currentState.step22Boundary || {}).group || {}).assets) || [])
+      .find(asset => Q.text(asset && asset.assetId) === GROUP_A_ACCOMMODATION_ID);
+    const expectedAccommodationRequestIds = sorted((expectedAccommodation && expectedAccommodation.requests || [])
+      .filter(requestMatchesAssignmentScope)
+      .filter(request => !requestIsDeleted(request))
+      .map(requestId));
+    const currentAccommodationRequests = (accommodationAsset.requests || [])
+      .filter(requestMatchesAssignmentScope);
+    const assignmentOutbox = read("notificationOutbox", {
+      notificationType: "event-asset-assignment-removed",
+      entityId: TOURNAMENT_EVENT_ID,
+      "payload.ownerId": GROUP_A_RESOURCE_OWNER_ID,
+      "payload.subEventId": TOURNAMENT_STAGE_ID,
+      "payload.assetId": GROUP_A_ACCOMMODATION_ID,
+      createdDate: { $gt: currentState.removalReadyAtIso }
+    });
+    const assignmentInbox = read("userNotifications", {
+      kind: "event-asset-assignment-removed",
+      sourceId: TOURNAMENT_EVENT_ID,
+      "payload.ownerId": GROUP_A_RESOURCE_OWNER_ID,
+      "payload.subEventId": TOURNAMENT_STAGE_ID,
+      "payload.assetId": GROUP_A_ACCOMMODATION_ID,
+      createdDate: { $gt: currentState.removalReadyAtIso }
+    });
     const newOutbox = read("notificationOutbox", {
       $and: [relatedSelector(), { createdDate: { $gt: currentState.removalReadyAtIso } }]
     });
-    const recipients = sorted(newOutbox.map(recipientId));
+    const assignmentRecipients = assignmentOutbox.length === 1
+      ? sorted(assignmentOutbox[0].recipientUserIds)
+      : [];
     const checks = {
       rileyRemovedFromTournamentTree: !exactActiveMembers(memberships, TOURNAMENT_EVENT_ID, USERS)
         && exactActiveMembers(memberships, TOURNAMENT_EVENT_ID, [CASEY_ID, NOVA_ID, LINA_ID])
         && exactActiveMembers(memberships, ROOM_A_ID, [CASEY_ID, NOVA_ID]),
       groupBMembershipUnchanged: exactActiveMembers(memberships, ROOM_B_ID, [LINA_ID]),
-      removedManagerAssignmentCleared: emptyOrZeroResource(riley, "Accommodation", GROUP_A_ACCOMMODATION_ID),
+      removedManagerAssignmentStatusDeleted: riley === null
+        && !!expectedRiley
+        && !!deletedRiley
+        && Q.text(deletedRiley._id) === Q.text(expectedRiley._id)
+        && Q.text(deletedRiley.recordId) === Q.text(expectedRiley.recordId)
+        && emptyOrZeroResource(deletedRiley, "Accommodation", GROUP_A_ACCOMMODATION_ID),
+      scopedAccommodationRequestsStatusDeleted: expectedAccommodationRequestIds.length > 0
+        && expectedAccommodationRequestIds.every(id => currentAccommodationRequests
+          .some(request => requestId(request) === id && requestIsDeleted(request)))
+        && currentAccommodationRequests.every(request => requestIsDeleted(request)),
       removedManagerRuntimeCleared: Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), zeroMetric()),
-      novaResourceUnchanged: recordMatches(nova, "Transport", GROUP_A_TRANSPORT_ID, 4, NOVA_ID)
-        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 4)),
+      novaResourceUnchanged: sameDomain(nova, currentState.groupAReassignedResource)
+        && recordMatches(nova, "Transport", GROUP_A_TRANSPORT_ID, 5, NOVA_ID)
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 5)),
       exactPendingReversal: Q.sameJson(stageCounters(), { activity: 1, groupsCount: 2, groupsPending: 1 }),
       groupBByteIdentical: sameDomain(groupBControlSnapshot(), currentState.groupBControl),
       normalBranchByteIdentical: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
       sourceAssetRetained: Q.collection("assets").countDocuments({ assetId: GROUP_A_ACCOMMODATION_ID, status: "A" }) === 1,
-      noUnrelatedNotificationRecipient: recipients.every(userId => !userId || userId === RILEY_ID)
+      assignmentNotificationExactOnce: assignmentOutbox.length === 1
+        && Q.sameJson(assignmentRecipients, sorted([NOVA_ID, RILEY_ID]))
+        && assignmentInbox.length === 2
+        && Q.sameJson(sorted(assignmentInbox.map(recipientId)), sorted([NOVA_ID, RILEY_ID]))
+        && assignmentInbox.every(item => Q.number(item.occurrenceCount) === 1)
     };
     failChecks("group-manager-removal", checks, {
-      memberships, riley, nova, stage: stageCounters(), recipients, newOutbox
+      memberships,
+      riley,
+      deletedRiley,
+      nova,
+      accommodationAsset,
+      expectedAccommodationRequestIds,
+      currentAccommodationRequests,
+      stage: stageCounters(),
+      assignmentRecipients,
+      assignmentOutbox,
+      assignmentInbox,
+      newOutbox
     });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "complete",
@@ -1860,7 +2184,7 @@
         memberships,
         stage: stageCounters(),
         groupB: groupBControlSnapshot(),
-        notificationRecipients: recipients
+        notificationRecipients: assignmentRecipients
       }
     } });
     Q.printObject({
@@ -1870,8 +2194,8 @@
       checks,
       notificationObservation: {
         outboxDelta: newOutbox.length,
-        recipients,
-        rule: "Riley may receive the documented Event-removal notification; no unrelated Assignment recipient is allowed."
+        assignmentRecipients,
+        rule: "Only the affected Group A participants and scoped active Asset members receive the assignment-removal notification; the actor and outside controls are excluded."
       },
       next: "Reload Casey, Nova and Riley once, confirm the same terminal UI, then report the terminal checklist phrase."
     });
@@ -1914,6 +2238,10 @@
       } : null,
       step16Boundary: currentState.step16Boundary ? {
         capturedAtIso: currentState.step16Boundary.capturedAtIso,
+        available: true
+      } : null,
+      step22Boundary: currentState.step22Boundary ? {
+        capturedAtIso: currentState.step22Boundary.capturedAtIso,
         available: true
       } : null
     });
@@ -2002,7 +2330,9 @@
     case "stage-step-16-boundary": stageStep16Boundary(); break;
     case "rollback-step-16-boundary": rollbackStep16Boundary(); break;
     case "verify-group-unassign": verifyGroupUnassign(); break;
-    case "restore-group-removal-branch": restoreGroupRemovalBranch(); break;
+    case "stage-step-22-boundary": stageStep22Boundary(); break;
+    case "rollback-step-22-boundary": rollbackStep22Boundary(); break;
+    case "verify-group-reassign": verifyGroupReassign(); break;
     case "verify-group-manager-removal": verifyGroupManagerRemoval(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);

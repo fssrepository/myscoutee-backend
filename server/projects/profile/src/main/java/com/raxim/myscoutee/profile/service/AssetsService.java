@@ -545,6 +545,7 @@ public class AssetsService {
         }
         AssetRequestRecord previous = safeRequests(current.getRequests()).stream()
                 .filter(Objects::nonNull)
+                .filter(item -> !isDeletedAssetRequest(item))
                 .filter(item -> !"manual".equals(normalizeAssetRequestKind(item.requestKind())))
                 .filter(item -> actorUserId.equals(normalizeId(item.userId())))
                 .filter(item -> isRequestInScope(item, eventId, subEventId))
@@ -590,7 +591,13 @@ public class AssetsService {
 
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         for (AssetRequestRecord item : safeRequests(current.getRequests())) {
-            if (item == null || item == previous) {
+            if (item == null) {
+                continue;
+            }
+            if (item == previous) {
+                if ("leave".equals(action)) {
+                    nextRequests.add(withAssetRequestStatus(item, STATUS_DELETED));
+                }
                 continue;
             }
             nextRequests.add(item);
@@ -1139,6 +1146,8 @@ public class AssetsService {
         List<Document> requestConditions = new ArrayList<>();
         requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
+        requestConditions.add(new Document("$ne", List.of("$$request.status", STATUS_DELETED)));
+        requestConditions.add(new Document("$ne", List.of("$$request.status", "deleted")));
         if (StringUtils.hasText(normalizedRequestStatus)) {
             requestConditions.add(new Document("$eq", List.of("$$request.status", normalizedRequestStatus)));
         }
@@ -1189,6 +1198,10 @@ public class AssetsService {
             if (existing == null) {
                 continue;
             }
+            if (isDeletedAssetRequest(existing)) {
+                nextRequests.add(existing);
+                continue;
+            }
             if ("manual".equals(normalizeAssetRequestKind(existing.requestKind()))) {
                 nextRequests.add(existing);
                 continue;
@@ -1205,6 +1218,8 @@ public class AssetsService {
                 if (updated != null) {
                     nextRequests.add(updated);
                 }
+            } else {
+                nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
             }
         }
         for (Map.Entry<String, ActivityMember> entry : suppliedMembersByUserId.entrySet()) {
@@ -1274,6 +1289,10 @@ public class AssetsService {
                 }
                 continue;
             }
+            if (isDeletedAssetRequest(existing)) {
+                nextRequests.add(existing);
+                continue;
+            }
             if ("manual".equals(normalizeAssetRequestKind(existing.requestKind()))) {
                 nextRequests.add(existing);
                 continue;
@@ -1289,6 +1308,7 @@ public class AssetsService {
             }
             ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
             if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
+                nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
                 continue;
             }
             retainedUserIds.add(requestUserId);
@@ -1433,6 +1453,9 @@ public class AssetsService {
         Asset proposed = toDocument(assetDto, ownerUserId, existing);
         if (proposed == null) {
             return null;
+        }
+        if (existing != null) {
+            proposed.setRequests(preserveRequestAudits(existing.getRequests(), proposed.getRequests()));
         }
         Asset saved = proposed;
         if (existing != null) {
@@ -2267,6 +2290,8 @@ public class AssetsService {
                 .append("input", new Document("$ifNull", List.of("$requests", List.of())))
                 .append("as", "request")
                 .append("cond", new Document("$and", List.of(
+                        new Document("$ne", List.of("$$request.status", STATUS_DELETED)),
+                        new Document("$ne", List.of("$$request.status", "deleted")),
                         new Document("$or", List.of(
                                 new Document("$eq", List.of("$$request.status", MEMBER_STATUS_ACCEPTED)),
                                 new Document("$eq", List.of("$$request.requestKind", "manual")))),
@@ -2382,7 +2407,8 @@ public class AssetsService {
             return Map.of();
         }
         List<AssetRequest> requests = mongoTemplate.find(
-                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())),
+                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())
+                        .and("status").nin(STATUS_DELETED, "deleted")),
                 AssetRequest.class);
         Map<String, List<AssetRequest>> requestsByAssetId = new LinkedHashMap<>();
         for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
@@ -2616,7 +2642,9 @@ public class AssetsService {
 
     private List<AssetMemberRequestDto> toAssetRequestDtos(Asset asset, String viewerUserId) {
         List<AssetMemberRequestDto> next = new ArrayList<>();
-        List<AssetRequestRecord> requests = deduplicateRequests(asset.getRequests());
+        List<AssetRequestRecord> requests = deduplicateRequests(asset.getRequests()).stream()
+                .filter(request -> !isDeletedAssetRequest(request))
+                .toList();
         Set<String> managerUserIds = acceptedAssetManagerUserIds(asset);
         for (int index = 0; index < requests.size(); index += 1) {
             AssetMemberRequestDto dto = toAssetRequestDto(
@@ -2633,8 +2661,16 @@ public class AssetsService {
 
     private List<AssetRequestRecord> deduplicateRequests(List<AssetRequestRecord> requests) {
         Map<String, AssetRequestRecord> byScope = new LinkedHashMap<>();
+        Map<String, AssetRequestRecord> deletedById = new LinkedHashMap<>();
         for (AssetRequestRecord request : safeRequests(requests)) {
             if (request == null) {
+                continue;
+            }
+            if (isDeletedAssetRequest(request)) {
+                String requestId = normalizeId(request.id());
+                if (StringUtils.hasText(requestId)) {
+                    deletedById.put(requestId, request);
+                }
                 continue;
             }
             String scopeKey = requestScopeKey(request);
@@ -2645,7 +2681,119 @@ public class AssetsService {
                 byScope.put(scopeKey, request);
             }
         }
-        return new ArrayList<>(byScope.values());
+        List<AssetRequestRecord> result = new ArrayList<>(deletedById.values());
+        result.addAll(byScope.values());
+        return result;
+    }
+
+    private List<AssetRequestRecord> preserveRequestAudits(
+            List<AssetRequestRecord> existing,
+            List<AssetRequestRecord> proposed) {
+        List<AssetRequestRecord> merged = new ArrayList<>(safeRequests(proposed));
+        Set<String> proposedIds = merged.stream()
+                .filter(Objects::nonNull)
+                .map(AssetRequestRecord::id)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        safeRequests(existing).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> !proposedIds.contains(normalizeId(request.id())))
+                .map(request -> isDeletedAssetRequest(request)
+                        ? request
+                        : withAssetRequestStatus(request, STATUS_DELETED))
+                .forEach(merged::add);
+        return deduplicateRequests(merged);
+    }
+
+    public void statusDeleteAssignmentScopeRequests(
+            String assetOwnerUserId,
+            Collection<String> assetIds,
+            String ownerId,
+            String authorizationEventId,
+            String subEventId,
+            String actorUserId,
+            String deletedAtIso) {
+        String normalizedAssetOwnerUserId = normalizeId(assetOwnerUserId);
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedAuthorizationEventId = normalizeId(authorizationEventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedAssetOwnerUserId)
+                || !StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
+        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            Asset current = assetsRepository
+                    .findByOwnerUserIdAndAssetId(normalizedAssetOwnerUserId, assetId)
+                    .orElse(null);
+            if (current == null) {
+                continue;
+            }
+            boolean changed = false;
+            List<AssetRequestRecord> nextRequests = new ArrayList<>();
+            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+                if (!isDeletedAssetRequest(request)
+                        && isAssignmentScopeRequest(
+                                request,
+                                normalizedOwnerId,
+                                normalizedAuthorizationEventId,
+                                normalizedSubEventId)) {
+                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
+                    changed = true;
+                } else if (request != null) {
+                    nextRequests.add(request);
+                }
+            }
+            if (!changed) {
+                continue;
+            }
+            Asset next = cloneAsset(current);
+            next.setRequests(nextRequests);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizedAssetOwnerUserId));
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
+            userActivityCountersService.refreshAssetCountersForUser(normalizedAssetOwnerUserId);
+        }
+    }
+
+    private boolean isAssignmentScopeRequest(
+            AssetRequestRecord request,
+            String ownerId,
+            String authorizationEventId,
+            String subEventId) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        String bookingOwnerId = normalizeId(booking == null ? null : booking.eventId());
+        return Objects.equals(subEventId, normalizeId(booking == null ? null : booking.subEventId()))
+                && (Objects.equals(ownerId, bookingOwnerId)
+                        || (StringUtils.hasText(authorizationEventId)
+                                && Objects.equals(authorizationEventId, bookingOwnerId)));
+    }
+
+    private AssetRequestRecord withAssetRequestStatus(AssetRequestRecord request, String status) {
+        return new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                status,
+                request.note(),
+                request.requestKind(),
+                request.requestedAtIso(),
+                cloneRequestBooking(request.booking()));
+    }
+
+    private boolean isDeletedAssetRequest(AssetRequestRecord request) {
+        String status = safeText(request == null ? null : request.status());
+        return STATUS_DELETED.equalsIgnoreCase(status) || "deleted".equalsIgnoreCase(status);
     }
 
     private String requestScopeKey(AssetRequestRecord request) {
@@ -2875,6 +3023,7 @@ public class AssetsService {
         }
         return safeRequests(asset == null ? null : asset.getRequests()).stream()
                 .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
                 .anyMatch(request -> normalizedUserId.equals(normalizeId(request.userId())));
     }
 
@@ -2915,6 +3064,10 @@ public class AssetsService {
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         boolean promotedExistingRequest = false;
         for (AssetRequestRecord request : safeRequests(current == null ? null : current.getRequests())) {
+            if (isDeletedAssetRequest(request)) {
+                nextRequests.add(request);
+                continue;
+            }
             if (targetUserId.equals(normalizeId(request == null ? null : request.userId()))) {
                 nextRequests.add(promotedAssetRequest(current, request, member));
                 promotedExistingRequest = true;
@@ -3548,6 +3701,9 @@ public class AssetsService {
 
             String previousStatus = normalizeRequestStatus(previousRequest.status());
             AssetRequestRecord nextRequest = nextById.get(requestId);
+            if (isDeletedAssetRequest(nextRequest)) {
+                nextRequest = null;
+            }
             if (nextRequest != null
                     && "pending".equals(previousStatus)
                     && MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(nextRequest.status()))) {
@@ -3690,6 +3846,7 @@ public class AssetsService {
     private List<String> acceptedAssetParticipantUserIds(Asset asset) {
         return safeRequests(asset == null ? null : asset.getRequests()).stream()
                 .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
                 .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
                 .map(AssetRequestRecord::userId)
                 .map(this::normalizeId)
@@ -3773,6 +3930,7 @@ public class AssetsService {
         String ownerUserId = normalizeId(asset.getOwnerUserId());
         return asset.getRequests().stream()
                 .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
                 .map(AssetRequestRecord::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -4204,7 +4362,11 @@ public class AssetsService {
     }
 
     private String normalizeRequestStatus(String status) {
-        return "accepted".equals(safeText(status)) ? "accepted" : "pending";
+        String normalized = safeText(status);
+        if (STATUS_DELETED.equalsIgnoreCase(normalized) || "deleted".equalsIgnoreCase(normalized)) {
+            return "deleted";
+        }
+        return "accepted".equals(normalized) ? "accepted" : "pending";
     }
 
     private String normalizeMode(String value) {
