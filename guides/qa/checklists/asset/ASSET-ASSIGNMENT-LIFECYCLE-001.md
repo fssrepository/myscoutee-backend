@@ -279,9 +279,10 @@ persisted post-reassign state without repeating steps 1-28.
 
 ## 5. Independent removed-manager cleanup
 
-29. In **Casey**, open the **Tournament Event** Members surface and remove
-    Riley exactly once. Do not remove Riley from the normal Event and do not
-    use an Asset-member menu.
+29. In **Casey**, open the parent **QA ASSET-ASSIGNMENT-LIFECYCLE-001
+    Tournament Event → Members** surface and remove Riley exactly once from
+    the **entire Tournament Event**. Do not remove Riley directly from Group A,
+    from the normal Event, or from an Asset-member menu.
 30. Confirm Riley leaves the Tournament parent and generated Group A member
     tree. Casey and Nova remain in Group A; Lina remains alone in Group B.
 31. Confirm Riley's manager-owned Group A Accommodation assignment/settings
