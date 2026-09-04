@@ -494,15 +494,11 @@ public class EventInviteNotificationService {
     }
 
     private String buildBody(ActivityEvent event) {
-        String title = safeText(event.getTitle());
         String location = safeText(event.getLocation());
-        if (StringUtils.hasText(title) && StringUtils.hasText(location)) {
-            return "You were invited to " + title + " at " + location + ".";
+        if (StringUtils.hasText(location)) {
+            return "Invitation · " + location;
         }
-        if (StringUtils.hasText(title)) {
-            return "You were invited to " + title + ".";
-        }
-        return "You have a new event invitation.";
+        return "Event invitation";
     }
 
     private String resolveImageUrl(ActivityEvent event) {

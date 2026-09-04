@@ -84,8 +84,8 @@ Begin only after Codex runs the read-only status and confirms:
    must show the actual remaining range `0-4` (`6` capacity minus Nova's `2`),
    accept `3`, and reject values above `4`. Reopening it after Riley's save
    must show remaining range `0-1`.
-   After each successful contribution, the shared card and menu counter must
-   update immediately through the Signal Store (for example, the first added
+   After each successful contribution, the saved response must update the
+   shared card and menu counter immediately (for example, the first added
    quantity `1` is `1 / 0 · 0-6`) and a reload must reconstruct that same
    persisted value. A row visible only until reload is a failure. Each newly
    persisted contribution row sends exactly one contribution-added
@@ -112,8 +112,9 @@ Begin only after Codex runs the read-only status and confirms:
    menu counter or a result that appears only after opening and recomputing
    the list in the frontend.
 6. Close and reopen the resource popup once, then reload Casey, Nova and Riley
-   once each. The same identities, routes, settings and quantities must
-   reconstruct.
+   once each. The same identities, routes, settings, quantities and common
+   counters must reconstruct. Opening, hydrating or closing the popup must not
+   publish a resource-counter change or reset any common counter to zero.
 7. Confirm all three normal Event roles are unchanged, Riley's existing shared
    Supplies membership still exists exactly once, and no second Asset member
    record appeared.
@@ -147,11 +148,14 @@ Codex must run `verify-supply-contribution-delete`, then the versioned
 `restore-normal-assignment-branch` command. That command restores only the
 verified normal Event branch to Nova `2` plus Riley `3`, removes only the
 branch's temporary notification rows, and reconciles unread notification
-counters. Continue only after Codex reports phase `normal-verified` again.
+counters. Codex then runs `stage-step-10-boundary`; continue only after it
+reports phase `step-10-ready`. If step 10 or a later Group action must be
+replayed, Codex runs `rollback-step-10-boundary`, which restores this exact
+boundary without repeating steps 1-9.
 
 ## 2. Group A source-Asset capacity mutation
 
-10. After Codex confirms `normal-verified`, use **Nova** to prove the exact
+10. After Codex confirms `step-10-ready`, use **Nova** to prove the exact
     Group boundary once before mutating anything:
 
     - Group A is Nova's accepted Group, so its resource surface exposes the

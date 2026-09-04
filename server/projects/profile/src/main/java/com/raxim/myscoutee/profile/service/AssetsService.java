@@ -3405,7 +3405,7 @@ public class AssetsService {
                     : List.of(memberUserId);
             notificationType = "asset-member-invite";
             recipientScope = "asset-invitee";
-            body = "You were invited to use " + assetTitle(asset) + ".";
+            body = "Asset invitation";
         } else {
             recipients = activeResponsibleAssetUserIds(asset).stream()
                     .filter(userId -> !userId.equals(actorUserId))
@@ -3414,7 +3414,7 @@ public class AssetsService {
             notificationType = "asset-admin-join-request";
             recipientScope = "asset-responsible-users";
             String memberName = firstNonBlank(request.name(), memberUserId);
-            body = memberName + " requested to use " + assetTitle(asset) + ".";
+            body = memberName + " requested access.";
         }
         if (recipients.isEmpty()) {
             return;

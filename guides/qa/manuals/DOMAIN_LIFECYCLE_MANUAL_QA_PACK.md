@@ -6563,7 +6563,7 @@ Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 Stable user guide:
 [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 
-Status: **ACTIVE / NORMAL ASSIGNMENT VERIFIED; SUPPLIES DELETE FIX READY FOR UI CHECK**.
+Status: **ACTIVE / STEPS 1-9 PASS; STEP 10 READY**.
 
 The first manual steps 1-9 exposed persistence, shared-counter and remaining-
 quantity defects and were not accepted as evidence. The checkpoint's guarded
@@ -6607,8 +6607,27 @@ row. Successful deletion emits one
 participant under the same recipient rule as addition. A separate row directly
 below the popup header actions shows the stored minimum and
 `capacityMax - accepted` as a compact `Required · Remaining` badge. These
-corrections are compiled but the new
-manual delete branch is not yet accepted as evidence.
+corrections were covered by the accumulated user-driven run and the exact
+stored-state checks. The user additionally confirmed that deleting the owned
+Supplies item works after the correction. At the user's direction, the
+complete 1-9 interaction sequence was not replayed again after these focused
+corrections.
+
+A later close/reopen check exposed that popup hydration itself emitted a
+common-counter update from the already-open sub-event context. If that context
+was stale, closing the popup merely revealed the zero values it had already
+sent to the parent menu. The hydration-time counter emission has been removed:
+only a successful resource write may publish a common counter change. The
+normal sub-event reload endpoint now returns the counters already stored on
+the ActivityEvent documents; a read-only Riley request returned Transport
+`1/4`, Accommodation `1/3` and Supplies `4/6` for the current exploratory
+branch while the control sub-event remained zero. The frontend watcher built
+and synced this correction at `2026-09-04T05:59:42+02:00`. The accumulated
+1-9 run, the exact `normal-verified` savepoint, the user's successful owned-row
+delete, the persisted reload response and successful running watcher builds
+are accepted together as the normal-branch evidence. The guarded normal
+restore then recovered Nova `2` plus Riley `3` and common Supplies `5/6`
+exactly.
 
 The isolated `asset-assignment` fixture stages the normal and Tournament
 branches together. It is independent from Borrow and Checkout and must start
@@ -6623,12 +6642,19 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 
 Its named savepoint oracles are `verify-normal-assignment`,
 `verify-supply-contribution-delete`, the guarded
-`restore-normal-assignment-branch`, `verify-group-capacity-edit`,
+`restore-normal-assignment-branch`, `stage-step-10-boundary`,
+`rollback-step-10-boundary`, `verify-group-capacity-edit`,
 `verify-group-unassign`, the guarded `restore-group-removal-branch`, and
 `verify-group-manager-removal`. The normal restore puts back the exact verified
 Nova `2` plus Riley `3` contribution state and removes only temporary delete or
-exploratory contribution notifications. The Tournament restore rewinds only
-the captured Tournament branch and preserves the verified normal branch.
+exploratory contribution notifications. At
+`2026-09-04T04:10:02.153Z`, `stage-step-10-boundary` accepted the exact normal
+savepoint and byte-identical Tournament baseline. Its immediate rollback proof
+restored the Tournament documents, scoped inbox/outbox, related queued work and
+notification counters exactly while preserving the normal branch. Phase is
+`step-10-ready`; checklist step 10 can now be replayed without repeating 1-9.
+The later Tournament restore rewinds only the independent manager-removal
+branch and preserves the verified normal branch.
 
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
@@ -6658,6 +6684,9 @@ the captured Tournament branch and preserves the verified normal branch.
 - Compare every per-owner record with aggregate accepted/pending/capacity
   min/max values in Event Resources, the sub-event badges and parent
   navigation, both in place and after reload.
+- Opening, hydrating or closing a resource popup must not emit a common
+  resource-counter mutation. Closing clears only popup-local transient state;
+  parent menu counters remain at the last saved values.
 - The unrelated sub-event and all membership roles remain unchanged. Generated
   Tournament-group aggregation belongs to `TOURNAMENT-RESOURCE-001`.
 

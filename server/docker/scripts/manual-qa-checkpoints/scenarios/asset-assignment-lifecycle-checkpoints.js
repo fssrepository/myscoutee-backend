@@ -1285,6 +1285,102 @@
     });
   }
 
+  function stageStep10Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "normal-verified");
+    if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
+      Q.fail(`${CHECKPOINT} refuses to stage step 10 because the verified normal Event branch changed.`);
+    }
+    if (!sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline)) {
+      Q.fail(`${CHECKPOINT} refuses to stage step 10 because the Tournament branch is not at its exact baseline.`);
+    }
+    const capturedAtIso = Q.nowIso();
+    const boundary = {
+      capturedAtIso,
+      group: groupBranchDocuments(),
+      notificationOutbox: read("notificationOutbox", relatedSelector()),
+      userNotifications: read("userNotifications", relatedSelector()),
+      affinityRecomputeTasks: read("affinityRecomputeTasks", relatedSelector())
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-10-ready",
+      step10Boundary: boundary
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-10-ready",
+      capturedAtIso,
+      checks: {
+        exactVerifiedNormalBranch: true,
+        exactTournamentBaseline: true,
+        notificationBoundaryCaptured: true
+      },
+      next: "Start checklist step 10. Run rollback-step-10-boundary to replay from this exact boundary without repeating steps 1-9."
+    });
+  }
+
+  function restoreTournamentDocuments(documents) {
+    restoreDocuments("events", { $or: [{ sourceId: TOURNAMENT_EVENT_ID }, { sourceId: { $in: [ROOM_A_ID, ROOM_B_ID] } }] }, documents.events);
+    restoreDocuments("activityMembers", { ownerId: { $in: [TOURNAMENT_EVENT_ID, ROOM_A_ID, ROOM_B_ID] } }, documents.members);
+    restoreDocuments("activityResources", { ownerId: { $in: GROUP_RESOURCE_OWNER_IDS } }, documents.resources);
+    restoreDocuments("activitySubEventStageRuntime", { ownerId: TOURNAMENT_EVENT_ID, subEventId: TOURNAMENT_STAGE_ID }, documents.runtime);
+    restoreDocuments("eventLeaderboardEntries", { eventId: TOURNAMENT_EVENT_ID }, documents.scores);
+    restoreDocuments("assets", { assetId: { $in: [GROUP_A_TRANSPORT_ID, GROUP_A_ACCOMMODATION_ID, GROUP_B_TRANSPORT_ID] } }, documents.assets);
+    restoreDocuments("assetRequests", { assetId: { $in: [GROUP_A_TRANSPORT_ID, GROUP_A_ACCOMMODATION_ID, GROUP_B_TRANSPORT_ID] } }, documents.requests);
+  }
+
+  function rollbackStep10Boundary() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    const allowedPhases = [
+      "step-10-ready",
+      "group-capacity-verified",
+      "group-unassign-verified",
+      "group-removal-ready",
+      "complete"
+    ];
+    if (!allowedPhases.includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} step 10 rollback is not allowed from phase '${currentPhase || "not-staged"}'.`);
+    }
+    const boundary = currentState.step10Boundary || {};
+    if (!boundary.group || !Array.isArray(boundary.notificationOutbox)
+        || !Array.isArray(boundary.userNotifications) || !Array.isArray(boundary.affinityRecomputeTasks)) {
+      Q.fail(`${CHECKPOINT} step 10 rollback boundary is missing.`);
+    }
+    if (!sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment)) {
+      Q.fail(`${CHECKPOINT} refuses to roll back step 10 because the verified normal Event branch changed.`);
+    }
+    restoreTournamentDocuments(boundary.group);
+    restoreDocuments("notificationOutbox", relatedSelector(), boundary.notificationOutbox);
+    restoreDocuments("userNotifications", relatedSelector(), boundary.userNotifications);
+    restoreDocuments("affinityRecomputeTasks", relatedSelector(), boundary.affinityRecomputeTasks);
+    USERS.forEach(synchronizeNotificationCounter);
+    const checks = {
+      exactTournamentRestore: sameDomain(groupBranchDocuments(), boundary.group),
+      exactNormalBranchPreserved: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
+      exactOutboxRestore: sameDomain(read("notificationOutbox", relatedSelector()), boundary.notificationOutbox),
+      exactInboxRestore: sameDomain(read("userNotifications", relatedSelector()), boundary.userNotifications),
+      exactAffinityTaskRestore: sameDomain(read("affinityRecomputeTasks", relatedSelector()), boundary.affinityRecomputeTasks)
+    };
+    failChecks("step-10-rollback", checks, { currentPhase, boundaryCapturedAtIso: boundary.capturedAtIso });
+    const rolledBackAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-10-ready",
+      step10RolledBackAtIso: rolledBackAtIso
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-10-ready",
+      rolledBackAtIso,
+      checks,
+      next: "Replay checklist step 10; steps 1-9 remain preserved."
+    });
+  }
+
   function assertGroupControls(currentState) {
     return sameDomain(groupBControlSnapshot(), currentState.groupBControl)
       && sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment);
@@ -1293,7 +1389,7 @@
   function verifyGroupCapacityEdit() {
     Q.assertDeploymentSafety();
     const currentState = state();
-    requirePhase(currentState, "normal-verified");
+    requirePhase(currentState, "step-10-ready");
     const asset = Q.collection("assets").findOne({ assetId: GROUP_A_TRANSPORT_ID }) || {};
     const nova = groupResource(GROUP_A_RESOURCE_OWNER_ID, NOVA_ID);
     const riley = groupResource(GROUP_A_RESOURCE_OWNER_ID, RILEY_ID);
@@ -1356,13 +1452,7 @@
       Q.fail(`${CHECKPOINT} refuses to restore the Tournament branch because the verified normal branch changed.`);
     }
     const baseline = currentState.groupBranchBaseline || {};
-    restoreDocuments("events", { $or: [{ sourceId: TOURNAMENT_EVENT_ID }, { sourceId: { $in: [ROOM_A_ID, ROOM_B_ID] } }] }, baseline.events);
-    restoreDocuments("activityMembers", { ownerId: { $in: [TOURNAMENT_EVENT_ID, ROOM_A_ID, ROOM_B_ID] } }, baseline.members);
-    restoreDocuments("activityResources", { ownerId: { $in: GROUP_RESOURCE_OWNER_IDS } }, baseline.resources);
-    restoreDocuments("activitySubEventStageRuntime", { ownerId: TOURNAMENT_EVENT_ID, subEventId: TOURNAMENT_STAGE_ID }, baseline.runtime);
-    restoreDocuments("eventLeaderboardEntries", { eventId: TOURNAMENT_EVENT_ID }, baseline.scores);
-    restoreDocuments("assets", { assetId: { $in: [GROUP_A_TRANSPORT_ID, GROUP_A_ACCOMMODATION_ID, GROUP_B_TRANSPORT_ID] } }, baseline.assets);
-    restoreDocuments("assetRequests", { assetId: { $in: [GROUP_A_TRANSPORT_ID, GROUP_A_ACCOMMODATION_ID, GROUP_B_TRANSPORT_ID] } }, baseline.requests);
+    restoreTournamentDocuments(baseline);
     if (!sameDomain(groupBranchDocuments(), baseline)) {
       Q.fail(`${CHECKPOINT} Tournament removal branch did not restore exactly.`);
     }
@@ -1475,7 +1565,11 @@
         groupBLinaTransport: normalizedMetric(groupMetric(GROUP_B_ID, LINA_ID, "Transport")),
         groupBMatchesControl: sameDomain(groupBControlSnapshot(), currentState.groupBControl)
       },
-      notifications: notificationCounts()
+      notifications: notificationCounts(),
+      step10Boundary: currentState.step10Boundary ? {
+        capturedAtIso: currentState.step10Boundary.capturedAtIso,
+        available: true
+      } : null
     });
   }
 
@@ -1554,6 +1648,8 @@
     case "verify-normal-assignment": verifyNormalAssignment(); break;
     case "verify-supply-contribution-delete": verifySupplyContributionDelete(); break;
     case "restore-normal-assignment-branch": restoreNormalAssignmentBranch(); break;
+    case "stage-step-10-boundary": stageStep10Boundary(); break;
+    case "rollback-step-10-boundary": rollbackStep10Boundary(); break;
     case "verify-group-capacity-edit": verifyGroupCapacityEdit(); break;
     case "verify-group-unassign": verifyGroupUnassign(); break;
     case "restore-group-removal-branch": restoreGroupRemovalBranch(); break;

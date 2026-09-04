@@ -394,6 +394,9 @@ bash manual-qa-checkpoints.sh stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-
 bash manual-qa-checkpoints.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # perform the normal Sub-event assignments from the stable checklist
 bash manual-qa-checkpoints.sh verify-normal-assignment asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever checklist step 10 must be replayed without repeating steps 1-9
+bash manual-qa-checkpoints.sh rollback-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # edit only the Group A source Asset capacity 4 -> 5
 bash manual-qa-checkpoints.sh verify-group-capacity-edit asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # unassign only that Group A Transport
@@ -404,11 +407,14 @@ bash manual-qa-checkpoints.sh verify-group-manager-removal asset-assignment ASSE
 bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 ```
 
-`restore-group-removal-branch` is the only permitted branch rearm. It restores
-the captured Tournament documents exactly while preserving the already
-verified normal Event branch. The verifiers compare Group B byte-for-byte and
-require persisted owner/type, runtime, stage and root values; no list query or
-frontend fallback is an oracle.
+`stage-step-10-boundary` records the exact entry state for the Group branch,
+its scoped notifications and related queued work. `rollback-step-10-boundary`
+restores that boundary without changing the verified normal Event branch, so
+step 10 can be replayed without repeating steps 1-9. The later
+`restore-group-removal-branch` rearms only the independent manager-removal
+branch. The verifiers compare Group B byte-for-byte and require persisted
+owner/type, runtime, stage and root values; no list query or frontend fallback
+is an oracle.
 
 ## Content administration lifecycle runner
 
