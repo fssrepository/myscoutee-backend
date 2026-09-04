@@ -8,21 +8,17 @@ Load this card whenever a task creates or materially changes a popup, dialog,
 drawer, page surface, or nested section that contains a list, SmartList,
 pageable collection, or periodically refreshed collection.
 
-## Mandatory optional-capability checkpoint
+## Optional-capability boundary
 
-Before behavior-affecting implementation, ask the user in their language:
+Do not ask about scheduled background polling unless the user requested live
+refresh behavior or polling is necessary to resolve the reported defect. For a
+narrow implementation or bug fix, preserve the existing refresh behavior and
+continue without introducing an unrelated product decision. If the user chose
+an exact reference flow and explicitly requested full behavior parity, include
+its established polling behavior without a separate generic question.
 
-> Do you want scheduled background polling for this list as well? If yes, what
-> freshness target should it have, or should I follow the nearest established
-> interval?
-
-This is a real question, not an internal checkbox. Ask it whenever polling has
-not already been explicitly accepted or rejected in the current request. If the
-user already chose an exact reference flow, confirm whether its polling behavior
-is part of the requested parity instead of silently copying it.
-
-Polling is the mandatory checkpoint. Do not turn the following capabilities
-into a generic "what else do you want?" questionnaire:
+Do not turn the following capabilities into a generic "what else do you want?"
+questionnaire:
 
 - initial-load and background-refresh progress visibility;
 - search, filtering, sorting, grouping, views, pagination, or infinite loading;

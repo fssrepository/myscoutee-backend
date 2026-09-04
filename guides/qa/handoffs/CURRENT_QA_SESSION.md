@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-03 15:22 CEST
+Updated: 2026-09-04 03:40 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -67,16 +67,16 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — STAGED / NOT STARTED
+checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — ACTIVE / NORMAL ASSIGNMENT NEXT
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-assign-001--eventsub-event-asset-assignment
 checklist: ../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md
-substage: baseline-ready; no normal assignment, capacity edit, unassign, Tournament member removal, browser or other manual action has been performed
-next_replay_boundary: run the exact read-only Assignment status command below; when all eleven baseline checks pass, open the configured browsers only after the user explicitly starts QA
-fixture_phase: the intact ASSET-BORROW baseline was read-only verified and reset through its versioned harness at 2026-09-03T12:56:47.217Z; ASSET-ASSIGNMENT was staged at 2026-09-03T12:56:53.062Z and its complete baseline passed the subsequent read-only status
-browser_phase: NOT OPENED for ASSET-ASSIGNMENT-LIFECYCLE-001; old ASSET-MEMBER/BORROW windows are unrelated and must not be used as evidence
+substage: baseline-ready with Casey/Nova/Riley isolated browsers open; no normal assignment, capacity edit, unassign, Tournament member removal or other manual action has been performed
+next_replay_boundary: the user performs checklist steps 1-9 and stops at the exact `normal assignment complete` phrase; Codex then runs `verify-normal-assignment`
+fixture_phase: after the saved fixture was found incomplete, its own guarded reset restored only its controlled snapshots; ASSET-ASSIGNMENT was freshly staged at 2026-09-04T01:39:33.114Z and all eleven baseline checks passed both stage and the subsequent read-only status
+browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions are OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
 queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
-required_resume: load only this resume block plus the linked Assignment detail/checklist; run `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001`; do not reset/restage or launch browsers when all eleven baseline checks pass; when the user explicitly starts QA, launch exactly `guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-ASSIGNMENT-LIFECYCLE-001`
+required_resume: load only this resume block plus the linked Assignment detail/checklist; if the active browser manifest and its managed processes still exist, do not relaunch them; confirm the saved phase with the read-only Assignment status command, then continue checklist steps 1-9. Relaunch only when the managed sessions are no longer alive
 actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
 pending_machine_oracle: normal Event has three viewer documents, Casey/Nova/Riley accepted, one pre-existing Nova Member relation to Riley Supplies, two Sub-events and zero resources/counters. Tournament has Casey/Nova/Riley in Group A, Lina in Group B, Group A Nova Transport 1 accepted/1 pending/0-4 plus Riley Accommodation 1 accepted/1 pending/0-3, Group B Lina Transport 1 accepted/0 pending/0-2, stage/root pending 2, and zero controlled notifications. Group B and the normal control Sub-event are immutable controls
 last_completed: `ASSET-MEMBER-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven run plus the final correction replay. The user observed Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave converge as `3 -> 2 -> 2 -> 1 -> absent`. Read-only Mongo at the terminal boundary proved Riley's canonical Asset member row is `deleted`, the controlled `activityResources` row is `D` with no Asset assignment, the generated-group runtime resource map is empty, and no notification was created after Nova's final Leave. The resource card and Group row disappeared through the existing signal chain. The server fix status-deletes scoped removed members; the frontend forwards authoritative empty-scope zero metrics and did not add or modify an aggregation loop. Both running watchers built successfully. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
