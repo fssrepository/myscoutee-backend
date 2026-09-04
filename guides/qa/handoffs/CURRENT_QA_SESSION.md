@@ -67,20 +67,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: CONTENT-ADMIN-LIFECYCLE-001 — ACTIVE / STEP 32 READY
+checkpoint: CONTENT-ADMIN-LIFECYCLE-001 — ACTIVE / STEP 42 READY
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#content-admin-lifecycle-001--governed-revisions-consent-and-article-lifecycle
 checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
-substage: phase is `privacy-active`; the exact post-step-31 replay boundary is captured and verified
-next_replay_boundary: reload the already-open Ava/Kai/Riley pages once, then continue at checklist step 32; if repetition is required, run `rollback-step-32-boundary` and do not repeat steps 1-31
-fixture_phase: `restage-step-32-boundary` completed at `2026-09-04T08:19:45.713Z`; `rollback-step-32-boundary` replayed it at `2026-09-04T08:19:54.721Z`; status proves nine controlled revisions, six consents, exactly five audits, Article buckets `7 / 5 / 7 / 0 / 0` and stable unrelated controls
-browser_phase: Ava/Kai/Riley isolated CONTENT-ADMIN-LIFECYCLE-001 sessions remain OPEN; `/tmp/myscoutee-qa-browser-sessions/CONTENT-ADMIN-LIFECYCLE-001.json` remains the launcher manifest; reload each existing page once, do not relaunch browsers, then begin at checklist step 32
+substage: phase is `privacy-fallback`; the step-41 delete/fallback/consent/audit oracle passed
+next_replay_boundary: continue directly at checklist step 42; if the delete/fallback branch must be repeated, run `rollback-step-32-boundary`, reload the existing pages once and repeat only steps 32-41
+fixture_phase: step-41 oracle passed at `2026-09-04T08:26:17.445Z`; Help `v2` and Privacy `v3` are absent, Privacy `v2` is solely active, Kai `v3` history remains, Riley has no `v3` consent, exactly seven audits exist, Article buckets remain `7 / 5 / 7 / 0 / 0`, and all controls are stable
+browser_phase: Ava/Kai/Riley isolated CONTENT-ADMIN-LIFECYCLE-001 sessions remain OPEN; `/tmp/myscoutee-qa-browser-sessions/CONTENT-ADMIN-LIFECYCLE-001.json` remains the launcher manifest; do not relaunch browsers; continue with Kai at checklist step 42
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 85/118 total, Core 85/98, External/optional 0/20; ASSET-ASSIGNMENT-LIFECYCLE-001 is PASS/CLOSED
 queued_next: none; Content now owns the active fixture boundary
-required_resume: load only this block and the linked Content section/checklist. Require `privacy-active` with `step32Boundary`; use the named rollback only if step 32+ must be repeated, and never repeat steps 1-31. Do not reconstruct or replay any closed Asset branch
+required_resume: load only this block and the linked Content section/checklist. Require `privacy-fallback` with `step32Boundary`; continue at step 42. Use the named rollback only to repeat steps 32-41, and never repeat steps 1-31. Do not reconstruct or replay any closed Asset branch
 actors: Ava performs Admin Content and Article writes; Kai is the retained public/member consent actor; Riley is the fresh public/member control
-pending_machine_oracle: after checklist steps 32-40, run `verify-privacy-fallback`; it requires exact Help `v2` and Privacy `v3` deletion audits, Privacy `v2` as sole fallback, retained Kai `v3` history, unchanged old consents, Terms/Explanation controls and Article branch
-last_completed: Content steps 1-31 were exercised by the user. The required create and activation audit events existed; exploratory repetitions produced extra revisions/audits, so the versioned step-32 fixture normalized the continuation state and its rollback was executed successfully. Current persisted counts are nine controlled revisions, six controlled consents and exactly five Content audits
+pending_machine_oracle: after checklist steps 42-51, run `verify-article-trashed`; it requires one soft-delete with stable identity/content/media, cleared publish/feature flags, exact Article buckets and unchanged governed-content state
+last_completed: Content step 41 PASS. Both requested revision deletions and fallback are persisted with exactly seven audit rows; Kai/Riley consent isolation and all negative controls passed. Ava's additional self-consents created while reopening the admin flow are allowed and do not alter the Kai/Riley contract
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

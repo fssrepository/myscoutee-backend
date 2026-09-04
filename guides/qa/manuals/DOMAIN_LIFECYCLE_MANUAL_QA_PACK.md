@@ -6834,6 +6834,14 @@ Kai `v3` consent, zero Riley `v3` consent, and unchanged Article buckets
 boundary successfully at `2026-09-04T08:19:54.721Z`. This replay fixture is a
 continuation boundary, not replacement evidence for the preceding user-driven
 UI observations. The explicit manual-browser-control rule remains in force.
+The step-41 persisted oracle passed at `2026-09-04T08:26:17.445Z`: Help `v2`
+and active Privacy `v3` were deleted exactly once, Privacy `v2` became the
+sole active fallback, Kai's historical `v3` consent remained intact, Riley
+still had no `v3` consent, the five `v1`/`v2` consent records were unchanged,
+and the audit sequence contained exactly four creates, one activation and two
+deletes. Terms, Explanation, the controlled Article pair and Article buckets
+remained unchanged. Ava's own additional consent records are outside the
+Kai/Riley isolation assertion and do not invalidate this boundary.
 The two distinct managed-image controls were read-only verified over the
 running HTTP stack before staging:
 

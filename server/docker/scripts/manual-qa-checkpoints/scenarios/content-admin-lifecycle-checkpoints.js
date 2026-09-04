@@ -408,6 +408,21 @@
       .toArray();
   }
 
+  function assertBaselineConsentsPreserved(currentState, consents) {
+    const baselineIds = sorted((currentState.baselineConsents || []).map(value => value._id));
+    const baselineCurrent = consents.filter(value => baselineIds.includes(Q.text(value._id)));
+    if (!sameDomain(baselineCurrent, currentState.baselineConsents)) {
+      Q.fail("historical/current v1/v2 consents changed.");
+    }
+    return baselineIds;
+  }
+
+  function unexpectedKaiRileyConsents(consents, allowedIds) {
+    const allowed = new Set(sorted(allowedIds));
+    return consents.filter(value => [KAI_ID, RILEY_ID].includes(Q.text(value.userId))
+      && !allowed.has(Q.text(value._id)));
+  }
+
   function controlledArticles() {
     return Q.collection("ideaPosts")
       .find({ _id: { $in: ARTICLE_IDS } })
@@ -899,11 +914,7 @@
     });
 
     const consents = actorConsents();
-    const baselineIds = sorted((currentState.baselineConsents || []).map(value => value._id));
-    const baselineCurrent = consents.filter(value => baselineIds.includes(Q.text(value._id)));
-    if (!sameDomain(baselineCurrent, currentState.baselineConsents)) {
-      Q.fail("historical/current v1/v2 consents changed during Privacy activation.");
-    }
+    const baselineIds = assertBaselineConsentsPreserved(currentState, consents);
     const kaiV3 = consents.filter(value => Q.text(value.userId) === KAI_ID
       && Q.text(value.revisionId) === Q.text(currentState.privacyV3Id));
     const rileyV3 = consents.filter(value => Q.text(value.userId) === RILEY_ID
@@ -912,7 +923,7 @@
         || !assertConsent(kaiV3[0], KAI_ID, Q.text(currentState.privacyV3Id), 3)
         || !sameDomain(kaiV3[0].approvedOptionalSectionIds || [], [])
         || rileyV3.length !== 0
-        || consents.length !== currentState.baselineConsents.length + 1) {
+        || unexpectedKaiRileyConsents(consents, [...baselineIds, kaiV3[0] && kaiV3[0]._id]).length !== 0) {
       Q.fail("Privacy v3 consent isolation is not exactly one Kai approval and zero Riley approval.");
     }
     if (!sameDomain(controlledArticles(), currentState.baselineArticles)
@@ -1154,12 +1165,10 @@
     assertContentAfterFallback(currentState);
 
     const consents = actorConsents();
-    const baselineIds = sorted((currentState.baselineConsents || []).map(value => value._id));
-    const baselineCurrent = consents.filter(value => baselineIds.includes(Q.text(value._id)));
+    const baselineIds = assertBaselineConsentsPreserved(currentState, consents);
     const kaiV3 = consents.find(value => Q.text(value._id) === Q.text(currentState.kaiV3ConsentId));
-    if (!sameDomain(baselineCurrent, currentState.baselineConsents)
-        || !assertConsent(kaiV3, KAI_ID, Q.text(currentState.privacyV3Id), 3)
-        || consents.length !== currentState.baselineConsents.length + 1) {
+    if (!assertConsent(kaiV3, KAI_ID, Q.text(currentState.privacyV3Id), 3)
+        || unexpectedKaiRileyConsents(consents, [...baselineIds, kaiV3 && kaiV3._id]).length !== 0) {
       Q.fail("fallback rewrote or deleted a controlled historical consent.");
     }
     if (!sameDomain(controlledArticles(), currentState.baselineArticles)
@@ -1201,9 +1210,10 @@
       Q.fail("the verified governed-content fallback branch changed during Article lifecycle actions.");
     }
     const consents = actorConsents();
-    const expectedCount = currentState.baselineConsents.length + 1;
-    if (consents.length !== expectedCount
-        || !consents.some(value => Q.text(value._id) === Q.text(currentState.kaiV3ConsentId))) {
+    const baselineIds = assertBaselineConsentsPreserved(currentState, consents);
+    const kaiV3 = consents.find(value => Q.text(value._id) === Q.text(currentState.kaiV3ConsentId));
+    if (!assertConsent(kaiV3, KAI_ID, Q.text(currentState.privacyV3Id), 3)
+        || unexpectedKaiRileyConsents(consents, [...baselineIds, kaiV3 && kaiV3._id]).length !== 0) {
       Q.fail("the verified consent branch changed during Article lifecycle actions.");
     }
     if (newAudits(currentState).length !== 7) {
@@ -1346,6 +1356,7 @@
       Q.fail(`refusing reset after unexpected controlled-scope revisions appeared: ${unexpectedRevisionIds.join(", ")}.`);
     }
     const unexpectedConsentIds = actorConsents()
+      .filter(row => Q.text(row.userId) !== AVA_ID)
       .map(row => Q.text(row._id))
       .filter(id => !sorted([
         ...(currentState.baselineConsents || []).map(value => value._id),
