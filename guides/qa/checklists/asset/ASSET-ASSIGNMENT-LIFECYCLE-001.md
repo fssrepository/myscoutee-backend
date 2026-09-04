@@ -155,8 +155,14 @@ boundary without repeating steps 1-9.
 
 ## 2. Group A source-Asset capacity mutation
 
-10. After Codex confirms `step-10-ready`, use **Nova** to prove the exact
-    Group boundary once before mutating anything:
+10. After Codex confirms `step-10-ready`, use **Nova** and open:
+
+    `Events → Active Events → QA ASSET-ASSIGNMENT-LIFECYCLE-001 Tournament → View Event → QA Assignment Groups → Groups`
+
+    This branch belongs to the
+    `QA ASSET-ASSIGNMENT-LIFECYCLE-001 Tournament` Event and its
+    `QA Assignment Groups` tournament Sub-event/stage. Prove the exact Group
+    boundary once before mutating anything:
 
     - Group A is Nova's accepted Group, so its resource surface exposes the
       green `+` and the applicable Asset actions;
