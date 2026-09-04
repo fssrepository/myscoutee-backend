@@ -112,6 +112,7 @@ public class ActivitiesResourcesService {
         if (!accessControlService.canAssignEventResourcesForSubject(eventId, normalizedViewerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to view resources.");
         }
+        requireAcceptedGroupMember(normalizedOwnerId, normalizedSubEventId, normalizedViewerUserId);
 
         List<ActivitySubEventResourceStateDto> visibleStates = activitySubEventResourcesRepository
                 .findByOwnerIdAndSubEventIdAndStatusNot(normalizedOwnerId, normalizedSubEventId, STATUS_DELETED)
@@ -167,6 +168,7 @@ public class ActivitiesResourcesService {
         if (!accessControlService.canAssignEventResourcesForSubject(eventId, userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to read group resources.");
         }
+        requireAcceptedGroupMember(ownerId, subEventId, userId);
 
         String nowIso = Instant.now().toString();
         Query runtimeQuery = Query.query(Criteria.where("ownerId").is(scope.runtimeOwnerId())
@@ -200,19 +202,12 @@ public class ActivitiesResourcesService {
                         normalizedOwnerId,
                         normalizedSubEventId,
                         STATUS_DELETED);
+        Map<String, SubEventResourceMetricDto> aggregate = aggregateResourceMetrics(records);
         List<ActivityEvent> changed = new ArrayList<>();
         for (ActivityEvent document : activityEventsRepository.findBySourceId(normalizedOwnerId)) {
             if (document == null || document.getSubEvents() == null) {
                 continue;
             }
-            String projectionUserId = firstNonBlank(
-                    normalizeId(document.getOwnerUserId()),
-                    normalizeId(document.getCreatorUserId()));
-            Map<String, SubEventResourceMetricDto> aggregate = aggregateResourceMetrics(
-                    records.stream()
-                            .filter(Objects::nonNull)
-                            .filter(record -> projectionUserId.equals(normalizeId(record.getAssetOwnerUserId())))
-                            .toList());
             SubEventResourceMetricDto transport = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_TRANSPORT));
             SubEventResourceMetricDto accommodation = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_ACCOMMODATION));
             SubEventResourceMetricDto supplies = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_SUPPLIES));
@@ -466,6 +461,8 @@ public class ActivitiesResourcesService {
         if (!accessControlService.canAssignEventResourcesForSubject(authorizationEventId, assetOwnerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to assign resources.");
         }
+        requireAcceptedGroupMember(ownerId, subEventId, actorUserId);
+        requireAcceptedGroupMember(ownerId, subEventId, assetOwnerUserId);
 
         String recordId = recordId(ownerId, subEventId, assetOwnerUserId);
         ActivitySubEventResource current = resolveRecord(ownerId, subEventId, assetOwnerUserId);
@@ -1535,6 +1532,40 @@ public class ActivitiesResourcesService {
         return StringUtils.hasText(runtimeOwnerId) && StringUtils.hasText(groupId)
                 ? new GroupRuntimeScope(runtimeOwnerId, normalizedSubEventId, groupId)
                 : null;
+    }
+
+    private void requireAcceptedGroupMember(String ownerId, String subEventId, String userId) {
+        GroupRuntimeScope scope = groupRuntimeScope(ownerId, subEventId);
+        if (scope == null) {
+            return;
+        }
+        String normalizedUserId = normalizeId(userId);
+        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        if (!StringUtils.hasText(normalizedUserId) || activitiesMembersService == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accepted group membership is required.");
+        }
+
+        String randomRoomOwnerId = "random-room:"
+                + scope.runtimeOwnerId()
+                + ":"
+                + scope.subEventId()
+                + ":"
+                + scope.groupId();
+        if (activitiesMembersService.hasStoredOwnerMembers("event", randomRoomOwnerId)) {
+            requireAcceptedMembership("event", randomRoomOwnerId, normalizedUserId);
+            return;
+        }
+        if (activitiesMembersService.hasStoredOwnerMembers("group", ownerId)) {
+            requireAcceptedMembership("group", ownerId, normalizedUserId);
+            return;
+        }
+        requireAcceptedMembership("group", scope.groupId(), normalizedUserId);
+    }
+
+    private void requireAcceptedMembership(String ownerType, String ownerId, String userId) {
+        if (!accessControlService.hasAcceptedParticipation(ownerType, ownerId, userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accepted group membership is required.");
+        }
     }
 
     private String recordId(String ownerId, String subEventId, String assetOwnerUserId) {

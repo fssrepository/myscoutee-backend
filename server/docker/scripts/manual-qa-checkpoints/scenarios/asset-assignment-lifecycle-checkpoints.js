@@ -834,7 +834,7 @@
         && Q.sameJson(item.control, subEventMetrics({})) && item.activity === 0),
       normalRoles: exactActiveMembers(normal.members.map(item => ({ ...item, ownerId: NORMAL_EVENT_ID })), NORMAL_EVENT_ID, [CASEY_ID, NOVA_ID, RILEY_ID]),
       suppliesMembershipPreexists: normal.assetMembers.length === 1
-        && normal.assetMembers[0].userId === NOVA_ID
+        && normal.assetMembers[0].userId === RILEY_ID
         && normal.assetMembers[0].role === "Member"
         && normal.assetMembers[0].status === "accepted",
       tournamentRoles: exactActiveMembers(memberships, TOURNAMENT_EVENT_ID, USERS)
@@ -875,7 +875,7 @@
     const assetDefinitions = [
       { id: NORMAL_TRANSPORT_ID, ownerId: NOVA_ID, type: "Transport", capacity: 4, title: "QA Assignment Nova Shuttle" },
       { id: NORMAL_ACCOMMODATION_ID, ownerId: NOVA_ID, type: "Accommodation", capacity: 3, title: "QA Assignment Nova Lodge" },
-      { id: NORMAL_SUPPLIES_ID, ownerId: RILEY_ID, type: "Supplies", capacity: 6, title: "QA Assignment Shared Supplies" },
+      { id: NORMAL_SUPPLIES_ID, ownerId: NOVA_ID, type: "Supplies", capacity: 6, title: "QA Assignment Shared Supplies" },
       { id: GROUP_A_TRANSPORT_ID, ownerId: NOVA_ID, type: "Transport", capacity: 4, title: "QA Group A Nova Transport" },
       { id: GROUP_A_ACCOMMODATION_ID, ownerId: RILEY_ID, type: "Accommodation", capacity: 3, title: "QA Group A Riley Accommodation" },
       { id: GROUP_B_TRANSPORT_ID, ownerId: LINA_ID, type: "Transport", capacity: 2, title: "QA Group B Lina Control" }
@@ -895,7 +895,7 @@
         member(NORMAL_EVENT_ID, CASEY_ID, "Admin", stagedAtIso),
         member(NORMAL_EVENT_ID, NOVA_ID, "Member", stagedAtIso),
         member(NORMAL_EVENT_ID, RILEY_ID, "Member", stagedAtIso),
-        member(NORMAL_SUPPLIES_ID, NOVA_ID, "Member", stagedAtIso, "asset"),
+        member(NORMAL_SUPPLIES_ID, RILEY_ID, "Member", stagedAtIso, "asset"),
         member(TOURNAMENT_EVENT_ID, CASEY_ID, "Admin", stagedAtIso),
         member(TOURNAMENT_EVENT_ID, NOVA_ID, "Member", stagedAtIso),
         member(TOURNAMENT_EVENT_ID, RILEY_ID, "Member", stagedAtIso),
@@ -985,24 +985,13 @@
     });
   }
 
-  function expectedEventMetric(ownerUserId) {
-    if (ownerUserId === NOVA_ID) {
-      return {
-        carsAccepted: 1, carsPending: 0, carsCapacityMin: 0, carsCapacityMax: 4,
-        accommodationAccepted: 1, accommodationPending: 0, accommodationCapacityMin: 0, accommodationCapacityMax: 3,
-        suppliesAccepted: 2, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 6,
-        groupsPending: 0
-      };
-    }
-    if (ownerUserId === RILEY_ID) {
-      return {
-        carsAccepted: 0, carsPending: 0, carsCapacityMin: 0, carsCapacityMax: 0,
-        accommodationAccepted: 0, accommodationPending: 0, accommodationCapacityMin: 0, accommodationCapacityMax: 0,
-        suppliesAccepted: 3, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 6,
-        groupsPending: 0
-      };
-    }
-    return subEventMetrics({});
+  function expectedCommonEventMetric() {
+    return {
+      carsAccepted: 1, carsPending: 0, carsCapacityMin: 0, carsCapacityMax: 4,
+      accommodationAccepted: 1, accommodationPending: 0, accommodationCapacityMin: 0, accommodationCapacityMax: 3,
+      suppliesAccepted: 5, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 12,
+      groupsPending: 0
+    };
   }
 
   function verifyNormalAssignment() {
@@ -1027,15 +1016,15 @@
         && Q.sameJson(normalizedMetric(novaMetrics.Accommodation), metric(1, 0, 3))
         && Q.sameJson(normalizedMetric(novaMetrics.Supplies), metric(2, 0, 6))
         && Q.sameJson(normalizedMetric(rileyMetrics.Supplies), metric(3, 0, 6)),
-      exactViewerMaterialization: normal.events.length === 3
-        && normal.events.every(event => Q.sameJson(event.target, expectedEventMetric(event.ownerUserId)))
+      exactCommonMaterialization: normal.events.length === 3
+        && normal.events.every(event => Q.sameJson(event.target, expectedCommonEventMetric()))
         && normal.events.every(event => event.activity === 0),
       controlSubEventUnchanged: normal.controlResources === 0
         && normal.events.every(event => Q.sameJson(event.control, subEventMetrics({}))),
       membershipIsolation: normal.members.length === 3
         && normal.members.every(member => member.status === "accepted")
         && normal.assetMembers.length === 1
-        && normal.assetMembers[0].userId === NOVA_ID
+        && normal.assetMembers[0].userId === RILEY_ID
         && normal.assetMembers[0].status === "accepted",
       tournamentUntouched: sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline),
       countersUntouched: sameDomain(counterSnapshot(), currentState.baselineCounters)
@@ -1259,6 +1248,63 @@
     });
   }
 
+  function repairNormalSuppliesOwner() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "baseline-ready");
+    const asset = Q.collection("assets").findOne({ assetId: NORMAL_SUPPLIES_ID });
+    if (!asset) Q.fail(`${CHECKPOINT} shared Supplies Asset is missing.`);
+    const assignedCount = Q.collection("activityResources").countDocuments({
+      ownerId: NORMAL_EVENT_ID,
+      subEventId: NORMAL_TARGET_ID,
+      "assetAssignmentIds.Supplies": NORMAL_SUPPLIES_ID
+    });
+    if (assignedCount !== 0) {
+      Q.fail(`${CHECKPOINT} shared Supplies owner repair must run before its first assignment.`);
+    }
+    const existingMembers = read("activityMembers", { ownerType: "asset", ownerId: NORMAL_SUPPLIES_ID });
+    const validRepairSource = existingMembers.length === 1
+      && [NOVA_ID, RILEY_ID].includes(Q.text(existingMembers[0].userId))
+      && Q.text(existingMembers[0].role) === "Member"
+      && Q.text(existingMembers[0].status) === "accepted";
+    if (!validRepairSource) {
+      Q.fail(`${CHECKPOINT} shared Supplies membership is not in a repairable fixture state.`);
+    }
+    const repairedAtIso = Q.nowIso();
+    const assetUpdate = Q.collection("assets").updateOne(
+      { assetId: NORMAL_SUPPLIES_ID },
+      { $set: {
+        ownerUserId: NOVA_ID,
+        createdUser: NOVA_ID,
+        updatedUser: NOVA_ID,
+        updatedDate: repairedAtIso
+      } }
+    );
+    if (assetUpdate.matchedCount !== 1) {
+      Q.fail(`${CHECKPOINT} shared Supplies Asset owner repair matched ${assetUpdate.matchedCount} records.`);
+    }
+    Q.collection("activityMembers").deleteMany({ ownerType: "asset", ownerId: NORMAL_SUPPLIES_ID });
+    Q.collection("activityMembers").insertOne(member(
+      NORMAL_SUPPLIES_ID,
+      RILEY_ID,
+      "Member",
+      repairedAtIso,
+      "asset"
+    ));
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: currentState.phase,
+      repairedAtIso,
+      checks: {
+        novaOwnsSharedSupplies: true,
+        rileyAcceptedAssetMember: true,
+        existingNormalTransportAndAccommodationPreserved: true
+      },
+      next: "Close and reopen Nova's Supplies Assign popup; QA Assignment Shared Supplies must be listed."
+    });
+  }
+
   function reset() {
     Q.assertDeploymentSafety();
     const currentState = state();
@@ -1273,6 +1319,7 @@
   switch (command) {
     case "stage": stageFixture(); break;
     case "status": status(); break;
+    case "repair-normal-supplies-owner": repairNormalSuppliesOwner(); break;
     case "verify-normal-assignment": verifyNormalAssignment(); break;
     case "verify-group-capacity-edit": verifyGroupCapacityEdit(); break;
     case "verify-group-unassign": verifyGroupUnassign(); break;

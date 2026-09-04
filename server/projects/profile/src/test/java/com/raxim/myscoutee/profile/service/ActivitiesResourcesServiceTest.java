@@ -235,10 +235,29 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void queryScopeRejectsAcceptedEventMemberOutsideTheRequestedGroup() {
+        String groupOwnerId = "event-1:sub-1:group-b";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitiesMembersService.hasStoredOwnerMembers("group", groupOwnerId)).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("group", groupOwnerId, "u1"))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.queryScope(groupOwnerId, "sub-1", "u1"))
+                .isInstanceOfSatisfying(ResponseStatusException.class, exception ->
+                        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+
+        verify(activitySubEventResourcesRepository, never())
+                .findByOwnerIdAndSubEventIdAndStatusNot(anyString(), anyString(), anyString());
+    }
+
+    @Test
     void markResourceTypeReadPersistsOnlyTheSelectedGroupTypeForTheCurrentUser() {
         String ownerId = "event-1:sub-1:sub-1:group:1";
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        allowGroupMember(ownerId, "u1");
         when(mongoTemplate.updateFirst(any(), any(), eq(ActivitySubEventStageRuntime.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
@@ -320,7 +339,7 @@ class ActivitiesResourcesServiceTest {
         String groupOwnerId = slotOwnerId + ":sub-1:sub-1:group:1";
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
-        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        allowGroupMember(groupOwnerId, "u1");
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
@@ -371,7 +390,7 @@ class ActivitiesResourcesServiceTest {
         String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
-        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        allowGroupMember(groupOwnerId, "u1");
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
         AssetDetailDto ownedAsset = assetDetail("owned-asset", "Transport", "u1");
@@ -544,7 +563,7 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
-    void refreshEventProjectionPersistsCanonicalRangeAndPendingBadgeCount() {
+    void refreshEventProjectionPersistsTheSameCommonMetricsForEveryEventViewer() {
         ActivitySubEventResource resource = new ActivitySubEventResource();
         resource.setStatus("A");
         resource.setOwnerId("event-1");
@@ -567,8 +586,15 @@ class ActivitiesResourcesServiceTest {
         resource.setSupplyContributionEntriesByAssetId(Map.of());
         resource.setResourceMetricsByType(Map.of(
                 "Transport", new SubEventResourceMetricRecord(2, 2, 0, 24)));
-        ActivityEvent event = event("event-1", "u1", "u1");
-        event.setSubEvents(List.of(new SubEventItem(
+        ActivitySubEventResource otherResource = new ActivitySubEventResource();
+        otherResource.setStatus("A");
+        otherResource.setOwnerId("event-1");
+        otherResource.setSubEventId("sub-1");
+        otherResource.setAssetOwnerUserId("u2");
+        otherResource.setResourceMetricsByType(Map.of(
+                "Transport", new SubEventResourceMetricRecord(1, 1, 0, 4)));
+
+        SubEventItem subEvent = new SubEventItem(
                 "sub-1",
                 "Optional activity",
                 "",
@@ -599,11 +625,15 @@ class ActivitiesResourcesServiceTest {
                 0,
                 0,
                 null,
-                null)));
+                null);
+        ActivityEvent firstViewer = event("event-1", "u1", "u1");
+        firstViewer.setSubEvents(List.of(subEvent));
+        ActivityEvent secondViewer = event("event-1", "u2", "u2");
+        secondViewer.setSubEvents(List.of(subEvent));
 
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
-                "event-1", "sub-1", "D")).thenReturn(List.of(resource));
-        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+                "event-1", "sub-1", "D")).thenReturn(List.of(resource, otherResource));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(firstViewer, secondViewer));
         when(activityEventsRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
 
@@ -611,15 +641,15 @@ class ActivitiesResourcesServiceTest {
 
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
-        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+        assertThat(savedCaptor.getValue()).hasSize(2).allSatisfy(saved ->
                 assertThat(saved.getSubEvents()).singleElement().satisfies(subEvent -> {
-                    assertThat(subEvent.carsAccepted()).isEqualTo(2);
-                    assertThat(subEvent.carsPending()).isEqualTo(2);
+                    assertThat(subEvent.carsAccepted()).isEqualTo(3);
+                    assertThat(subEvent.carsPending()).isEqualTo(3);
                     assertThat(subEvent.carsCapacityMin()).isZero();
-                    assertThat(subEvent.carsCapacityMax()).isEqualTo(24);
+                    assertThat(subEvent.carsCapacityMax()).isEqualTo(28);
                 }));
-        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
-                assertThat(saved.getActivity()).isEqualTo(18));
+        assertThat(savedCaptor.getValue()).allSatisfy(saved ->
+                assertThat(saved.getActivity()).isEqualTo(19));
         verify(activitiesMembersService).refreshSubEventParticipationProjection("event-1", "sub-1");
     }
 
@@ -747,6 +777,15 @@ class ActivitiesResourcesServiceTest {
                 new FirebasePrincipal(userId, userId + "@example.test", "U"),
                 null,
                 List.of(new SimpleGrantedAuthority("U"))));
+    }
+
+    private void allowGroupMember(String ownerId, String userId) {
+        ActivityMember groupMember = member(ownerId, userId, "accepted");
+        groupMember.setOwnerType("group");
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitiesMembersService.hasStoredOwnerMembers("group", ownerId)).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("group", ownerId, userId))
+                .thenReturn(Optional.of(groupMember));
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {

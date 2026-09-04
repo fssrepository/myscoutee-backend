@@ -492,6 +492,7 @@ public class ActivitiesEventLeaderboardService {
                     membership.pending(),
                     membership.ownerType(),
                     membership.ownerId(),
+                    membership.acceptedMemberUserIds().contains(normalizeId(userId)),
                     groupResourceMetrics(stageRuntime, groupId, userId)));
         }
         return result;
@@ -531,7 +532,8 @@ public class ActivitiesEventLeaderboardService {
                 ownerType,
                 ownerId,
                 snapshot == null ? 0 : snapshot.acceptedMemberUserIds().size(),
-                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size());
+                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size(),
+                snapshot == null ? Set.of() : snapshot.acceptedMemberUserIds());
     }
 
     private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
@@ -1058,7 +1060,12 @@ public class ActivitiesEventLeaderboardService {
                 + normalizedGroupId;
     }
 
-    private record GroupMembershipScope(String ownerType, String ownerId, int accepted, int pending) {
+    private record GroupMembershipScope(
+            String ownerType,
+            String ownerId,
+            int accepted,
+            int pending,
+            Set<String> acceptedMemberUserIds) {
     }
 
     private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {

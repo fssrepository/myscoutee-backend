@@ -13,14 +13,14 @@ transaction savepoints, not separate matrix rows.
 - **Casey** is Admin of both controlled Events. Casey performs only the Event
   administration action explicitly assigned to Casey.
 - **Nova** is an accepted member of both Events and Group A. Nova owns the
-  normal Transport and Accommodation Assets and the separate Group A
-  Transport.
+  normal Transport, Accommodation and shared Supplies Assets and the separate
+  Group A Transport.
 - **Riley** is an accepted member of both Events and Group A. Riley owns the
-  shared normal Supplies Asset and the separate Group A Accommodation.
+  separate Group A Accommodation.
 - **Lina** is the sole Group B member and owns its preconfigured Transport
   control. Lina is browserless; every Group B document and counter is an
   immutable negative control.
-- Nova already has one accepted **Member** relation to Riley's shared Supplies
+- Riley already has one accepted **Member** relation to Nova's shared Supplies
   Asset. Assignment must not create a duplicate Asset membership or change an
   Event/Group role.
 - Use only the isolated Casey/Nova/Riley browser sessions configured for this
@@ -70,21 +70,22 @@ Begin only after Codex runs the read-only status and confirms:
 4. In **Riley's** owner-scoped resource editor, add exactly one Supplies
    contribution of quantity `3` to the same `QA Assignment Shared Supplies`
    Asset. Do not create another Asset.
-5. Confirm the visible owner/type cards and badges show:
+5. Confirm the shared resource list and its menu counters show the same totals
+   for every viewer:
 
-   | Viewer/owner scope | Transport | Accommodation | Supplies |
+   | Viewer | Transport | Accommodation | Supplies |
    | --- | --- | --- | --- |
-   | Nova | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `2 / 0 · 0-6` |
-   | Riley | `0 / 0 · 0-0` | `0 / 0 · 0-0` | `3 / 0 · 0-6` |
-   | Casey | `0 / 0 · 0-0` | `0 / 0 · 0-0` | `0 / 0 · 0-0` |
+   | Nova | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
+   | Riley | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
+   | Casey | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
 
-   These are persisted viewer values. Do not accept a result that appears
-   only after opening a list, recomputing it in the frontend or copying
-   another viewer's aggregate.
+   These are persisted common-table values. Do not accept a viewer-specific
+   menu counter or a result that appears only after opening and recomputing
+   the list in the frontend.
 6. Close and reopen the resource popup once, then reload Casey, Nova and Riley
    once each. The same identities, routes, settings and quantities must
    reconstruct.
-7. Confirm all three normal Event roles are unchanged, Nova's existing shared
+7. Confirm all three normal Event roles are unchanged, Riley's existing shared
    Supplies membership still exists exactly once, and no second Asset member
    record appeared.
 8. Confirm `QA Unchanged Control Stage` remains all-zero and no Tournament
@@ -97,8 +98,19 @@ Codex must run `verify-normal-assignment` before the next branch.
 
 ## 2. Group A source-Asset capacity mutation
 
-10. After Codex confirms `normal-verified`, in **Nova** open the ordinary Asset
-    editor for `QA Group A Nova Transport`.
+10. After Codex confirms `normal-verified`, use **Nova** to prove the exact
+    Group boundary once before mutating anything:
+
+    - Group A is Nova's accepted Group, so its resource surface exposes the
+      green `+` and the applicable Asset actions;
+    - Group B is not Nova's Group, so none of its Transport, Accommodation or
+      Supplies surfaces expose `+`, `Join` or any other mutation action;
+    - attempting the same Group B write through a direct request must be
+      rejected by the server and must leave every Group B document/counter
+      byte-identical.
+
+    Then in **Nova** open the ordinary Asset editor for
+    `QA Group A Nova Transport`.
 11. Change only its source Asset capacity from `4` to `5` and select **Save**
     exactly once. Do not edit the normal Nova Shuttle.
 12. Without opening Group B, confirm Group A Nova Transport updates in place
