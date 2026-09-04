@@ -6661,6 +6661,14 @@ after the extra Supplies delete check, and recaptured the step-10 boundary.
 Exact checks passed for Group A's three members and pending `2`, Group B's one
 member and pending `0`, all four leaderboard rows, the unchanged normal branch
 and the new savepoint.
+At `2026-09-04T06:50:00+02:00`, `verify-group-capacity-edit` passed all eight
+checks after Nova changed only `QA Group A Nova Transport` from capacity `4`
+to `5`. The oracle now reads the durable `groupsCount` from the stage runtime,
+compares embedded membership snapshots independent of BSON field order, and
+normalizes Spring's `_class` metadata out of the otherwise unchanged Group B
+runtime metrics. Group A retained both pending requests, Riley Accommodation
+remained `1 accepted / 1 pending / 0-3`, Group B and the normal branch remained
+unchanged, and the phase advanced to `group-capacity-verified`.
 The later Tournament restore rewinds only the independent manager-removal
 branch and preserves the verified normal branch.
 

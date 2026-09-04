@@ -750,18 +750,24 @@
     const stage = (root.subEvents || []).find(item => Q.text(item && item.id) === TOURNAMENT_STAGE_ID) || {};
     return {
       activity: Q.number(root.activity),
-      groupsCount: Q.number(stage.groupsCount),
+      groupsCount: Q.number(runtime().groupsCount),
       groupsPending: Q.number(stage.groupsPending)
     };
   }
 
   function groupBControlSnapshot() {
     const currentRuntime = runtime();
+    const groupBMetrics = ((((currentRuntime.groupResourceMetricsByAssetOwnerId || {})[GROUP_B_ID]) || {})[LINA_ID]) || {};
     return {
       room: read("events", { sourceId: ROOM_B_ID }),
       members: read("activityMembers", { ownerType: "event", ownerId: ROOM_B_ID }),
       resource: read("activityResources", { ownerId: GROUP_B_RESOURCE_OWNER_ID, subEventId: TOURNAMENT_STAGE_ID }),
-      runtime: clone(((currentRuntime.groupResourceMetricsByAssetOwnerId || {})[GROUP_B_ID]) || {}),
+      runtime: {
+        [LINA_ID]: metrics(
+          normalizedMetric(groupBMetrics.Transport),
+          normalizedMetric(groupBMetrics.Accommodation),
+          normalizedMetric(groupBMetrics.Supplies))
+      },
       reads: clone(((currentRuntime.groupResourceReadAtByUserId || {})[GROUP_B_ID]) || {}),
       scores: read("eventLeaderboardEntries", { eventId: TOURNAMENT_EVENT_ID, groupId: GROUP_B_ID })
     };
@@ -1621,7 +1627,7 @@
         && recordMatches(riley, "Accommodation", GROUP_A_ACCOMMODATION_ID, 3, RILEY_ID),
       pendingCountersUnchanged: Q.sameJson(stageCounters(), { activity: 2, groupsCount: 2, groupsPending: 2 }),
       unrelatedScopesByteIdentical: assertGroupControls(currentState),
-      membershipsUnchanged: Q.sameJson(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
+      membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
     };
     failChecks("group-capacity-edit", checks, { asset, nova, riley, stage: stageCounters() });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
@@ -1652,7 +1658,7 @@
       rileyResourceUnchanged: recordMatches(riley, "Accommodation", GROUP_A_ACCOMMODATION_ID, 3, RILEY_ID)
         && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), metric(1, 1, 3)),
       unrelatedScopesByteIdentical: assertGroupControls(currentState),
-      membershipsUnchanged: Q.sameJson(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
+      membershipsUnchanged: sameDomain(tournamentMembershipSnapshot(), currentState.baselineTournamentMemberships)
     };
     failChecks("group-unassign", checks, { nova, riley, stage: stageCounters(), runtime: runtime() });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
