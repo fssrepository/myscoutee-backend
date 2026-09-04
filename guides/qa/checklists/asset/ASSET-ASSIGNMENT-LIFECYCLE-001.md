@@ -187,9 +187,13 @@ a missing red `2` is a fixture failure; do not continue the manual sequence.
 13. Close/reopen the Group A resource popup and reload Nova once. Confirm the
     persisted owner-scoped resource and Group A runtime still show capacity
     `5`.
-14. Confirm Riley's Group A Accommodation remains `1 / 1 · 0-3`, the
-    stage/root pending chain remains exactly `2`, the completed normal branch
-    is unchanged, and all Group B state remains byte-identical.
+14. Open Group A's three-dot menu and confirm the unchanged Accommodation row
+    shows `1 / 0-3` plus a red `1` badge: one accepted member, capacity range
+    `0-3`, and one pending request. The Transport row must likewise show one
+    red pending request after its capacity changed to `5`. Those two pending
+    requests add up to the red `2` shown on both the Group A three-dot trigger
+    and the `QA Assignment Groups` stage selector. The completed normal branch
+    must remain unchanged, and every Group B value must remain unchanged.
 15. Report and wait:
 
     `ASSET-ASSIGNMENT-LIFECYCLE-001 Group A capacity complete: Nova Transport 4 to 5 only`
