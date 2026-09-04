@@ -171,8 +171,9 @@ a missing red `2` is a fixture failure; do not continue the manual sequence.
 
     - Group A is Nova's accepted Group, so its resource surface exposes the
       green `+` and the applicable Asset actions;
-    - Group B is not Nova's Group, so none of its Transport, Accommodation or
-      Supplies surfaces expose `+`, `Join` or any other mutation action;
+    - Group B is not Nova's Group: Nova can still open and read its shared
+      Transport, Accommodation and Supplies lists, but none of those surfaces
+      expose `+`, `Join` or any other mutation action;
     - attempting the same Group B write through a direct request must be
       rejected by the server and must leave every Group B document/counter
       byte-identical.

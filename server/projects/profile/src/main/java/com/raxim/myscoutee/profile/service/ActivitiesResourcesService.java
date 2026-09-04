@@ -122,7 +122,6 @@ public class ActivitiesResourcesService {
         if (!accessControlService.canAssignEventResourcesForSubject(eventId, normalizedViewerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to view resources.");
         }
-        requireAcceptedGroupMember(normalizedOwnerId, normalizedSubEventId, normalizedViewerUserId);
 
         List<ActivitySubEventResourceStateDto> visibleStates = activitySubEventResourcesRepository
                 .findByOwnerIdAndSubEventIdAndStatusNot(normalizedOwnerId, normalizedSubEventId, STATUS_DELETED)

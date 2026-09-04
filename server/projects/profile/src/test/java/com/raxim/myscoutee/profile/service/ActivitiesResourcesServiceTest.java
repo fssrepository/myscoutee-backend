@@ -277,21 +277,22 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
-    void queryScopeRejectsAcceptedEventMemberOutsideTheRequestedGroup() {
+    void queryScopeLetsAcceptedEventMemberReadAnotherGroupsSharedResourceTable() {
         String groupOwnerId = "event-1:sub-1:group-b";
+        ActivitySubEventResource groupResource = resourceState(groupOwnerId, "sub-1", "u2");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
-        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitiesMembersService.hasStoredOwnerMembers("group", groupOwnerId)).thenReturn(true);
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("group", groupOwnerId, "u1"))
-                .thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                groupOwnerId, "sub-1", "D"))
+                .thenReturn(List.of(groupResource));
 
-        assertThatThrownBy(() -> service.queryScope(groupOwnerId, "sub-1", "u1"))
-                .isInstanceOfSatisfying(ResponseStatusException.class, exception ->
-                        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+        var scope = service.queryScope(groupOwnerId, "sub-1", "u1");
 
-        verify(activitySubEventResourcesRepository, never())
-                .findByOwnerIdAndSubEventIdAndStatusNot(anyString(), anyString(), anyString());
+        assertThat(scope.viewerState().assetOwnerUserId()).isEqualTo("u1");
+        assertThat(scope.visibleStates())
+                .extracting(ActivitySubEventResourceStateDto::assetOwnerUserId)
+                .containsExactly("u2");
+        verify(activitiesMembersService, never()).hasStoredOwnerMembers(anyString(), anyString());
     }
 
     @Test
