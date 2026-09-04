@@ -74,6 +74,7 @@ substage: phase is `step-10-ready`; the guarded normal restore recovered the ret
 next_replay_boundary: begin checklist step 10 in Nova's existing session. Prove Group A exposes the applicable mutation actions while non-member Group B exposes no `+`, Join or other write action; the direct Group B write denial must leave its stored state byte-identical. Then edit only `QA Group A Nova Transport` capacity 4 to 5. If any part must be replayed, run the guarded `rollback-step-10-boundary`; it returns directly to the start of step 10 without repeating steps 1-9
 fixture_phase: `verify-normal-assignment` passed exact owner records, persisted 1/4 Transport, 1/3 Accommodation, common 5/6 Supplies for all viewers, exact open notification, unchanged control Sub-event, roles, Tournament branch and all non-bell counters; the oracle's earlier full-bell-counter comparison was corrected because expected and unrelated notifications legitimately change that global counter
 browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions remain OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest; use Nova's existing window for step 10 and do not relaunch browsers
+browser_control: the user exclusively controls all current browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare or position a test, inspect ahead, navigate, click, submit, derive a new rule or perform any part of the user's manual sequence
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
 queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
 required_resume: load only this resume block plus the linked Assignment detail/checklist; do not relaunch living browser sessions; first read status and require `step-10-ready`. Continue at checklist step 10. Use `rollback-step-10-boundary` whenever the Group branch must be replayed; never restage or repeat steps 1-9 for that purpose
@@ -223,11 +224,11 @@ the checkpoint says otherwise.
 `ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
 was verified and reset through its versioned harness because its
 payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
-is freshly staged at `baseline-ready`; its three managed browser sessions were
-relaunched after restage and are ready. In the next session, run the resume
-block's read-only status command, load the stable guide, and wait for the
-user's explicit QA start without reloading or launching duplicate sessions.
-After Assignment is completed, recorded and reset, the prepared
+steps 1-9 are PASS and its guarded phase is `step-10-ready`. The user now owns
+all browser interaction; Codex waits for the user's step-10 observation and
+then checks only the named persisted oracle. If replay is needed, use
+`rollback-step-10-boundary` instead of repeating steps 1-9. After Assignment
+is completed, recorded and reset, the prepared
 `CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
 it early: its guarded runner intentionally refuses to coexist with another
 active manual-QA snapshot.
@@ -272,13 +273,21 @@ interaction check. Codex validates the backend/API/persisted oracle after the
 user action and never substitutes a browser-derived verdict for the user's
 frontend PASS/FAIL.**
 
-Codex owns fixture preparation, isolated browser startup and machine-side
-diagnosis. After the user reports a discrepancy, Codex may inspect the managed
-browser through CDP when logs, API state and persistence are insufficient to
-localize the defect. CDP is diagnostic only: it may inspect the failing
-document's console, network and runtime state, but it must not click through
-the test, manufacture the user's visual evidence or independently declare a
-frontend PASS.
+Codex owns fixture preparation, explicitly requested isolated browser startup
+and machine-side diagnosis. During a manual run, CDP may be used only after the
+user reports a concrete observed defect, and only to diagnose that defect. It
+must never prepare or position the test, inspect ahead, navigate, click,
+reposition, submit, manufacture evidence or perform any part of the user's
+manual sequence. Prefer source, logs, API and persisted state. CDP-dependent
+versioned infrastructure may run only when the stable checklist explicitly
+requires it and the user has started that checkpoint; it never performs or
+replaces a manual action.
+
+Codex must not invent eligibility, role, menu, counter, notification or
+lifecycle rules while executing a checkpoint. The only acceptance rules are
+the stable checklist and explicit user corrections. If implementation evidence
+conflicts with them, record the mismatch and repair the owning code or fixture;
+do not silently redefine the expected behavior or expand the current test.
 
 ### Pair-QA execution and replay contract
 
@@ -296,7 +305,7 @@ frontend PASS.
    then runs the independent API/backend/persisted oracle and records the
    result outside the checklist.
 5. On a reported defect, freeze the current boundary, diagnose the smallest
-   owning scope (including targeted CDP when necessary), repair it through the
+   owning scope from source, logs, API and persisted state, repair it through the
    existing dev pipeline, restore the nearest valid named substage and replay
    only the shortest causal tail. Do not restart the full testcase unless the
    failure contaminated its earlier shared baseline.
@@ -748,20 +757,22 @@ record has been removed.
   producer action only when Codex's latest explicit manual instruction named
   that same action and asked for that phrase. Never bind a bare `megvan` to an
   unissued resume action from the file or from remembered conversation state.
-- Before handing a producer action to the user, verify the exact actionable
-  surface from the implementation and, when the current UI is ambiguous, from
-  the managed browser's read-only DOM. Name the complete interaction path,
-  including row/menu identity and any confirmation button.
+- Before handing a producer action to the user, verify the expected actionable
+  surface from the stable checklist and implementation. When the current UI is
+  ambiguous, use the user's screenshot or description; do not inspect the live
+  browser. Name only the interaction path already defined by the checklist or
+  explicitly corrected by the user.
 - When an editable input and its later Review/summary disagree, do not infer
   which display is wrong. Capture the live DOM `value`/typed value, the owning
   component draft/store value and the summary formatter output separately.
   Copy/paste is its own input-event branch: a browser number input may display
   a normalized number while the raw pasted string remains different in the
   application draft. Diagnose and replay that exact event path before Save.
-- Read-only CDP inspection must close only its temporary WebSocket connection.
-  Never call Playwright/CDP `browser.close()` or a browser-level close command
-  against a managed QA Chrome merely to detach an inspector; that terminates
-  the user's checkpoint window and discards in-memory evidence.
+- Ad-hoc CDP inspection is forbidden until the user reports a concrete defect.
+  After that report it may inspect only the failing state, must remain
+  diagnostic/read-only, and must close only its temporary WebSocket
+  connection. Never call a browser-level close command against a managed QA
+  Chrome merely to detach an inspector.
 - In the Chrome build used by this campaign, CDP
   `Emulation.setGeolocationOverride` and `Browser.setPermission` must both be
   treated as session-scoped: closing their connections can silently restore
@@ -878,9 +889,10 @@ record has been removed.
   is unchanged, classify the observation as **NOT EXECUTED**. In particular,
   an AI-triggered restart or setup failure belongs to Codex's repair evidence,
   never to the user's manual action.
-- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
-  read-only managed-session tool for resolving an ambiguous current surface;
-  it must never be used to perform the user's manual producer action.
+- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` may be
+  used only after the user reports a concrete defect, and only to diagnose
+  that defect. It must never resolve a test rule, prepare or navigate the UI,
+  or perform a manual producer action.
 
 ### 1.3 Context-dependent frontend-local parity
 
