@@ -32,6 +32,7 @@ public final class EventLeaderboardDtos {
             Integer membersPending,
             String memberOwnerType,
             String memberOwnerId,
+            Boolean viewerAccepted,
             Map<String, EventTournamentResourceMetricDto> resourceMetricsByType) {
         public EventTournamentGroupDto(
                 String id,
@@ -41,7 +42,7 @@ public final class EventLeaderboardDtos {
                 Integer capacityMax,
                 Integer membersAccepted,
                 Integer membersPending) {
-            this(id, name, source, capacityMin, capacityMax, membersAccepted, membersPending, "group", "", Map.of());
+            this(id, name, source, capacityMin, capacityMax, membersAccepted, membersPending, "group", "", false, Map.of());
         }
     }
 

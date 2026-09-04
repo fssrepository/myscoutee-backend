@@ -1158,7 +1158,147 @@
           "actor": "Casey Asset lifecycle owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · Asset create, edit, Trash and Restore owner"
+          "expectedName": "Casey Bridge · Asset create, edit and delete owner"
+        }
+      ]
+    },
+    "ASSET-VIS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset visibility owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · owner control"
+        },
+        {
+          "actor": "Lina Asset visibility friend",
+          "sessionKind": "demo",
+          "userId": "178e8d0cbe164fa3fede5884",
+          "expectedName": "Lina Park · deterministic friend control"
+        },
+        {
+          "actor": "Liam Asset visibility unrelated",
+          "sessionKind": "demo",
+          "userId": "2d520f3c98b0440c1556f4af",
+          "expectedName": "Liam Parker · non-friend control"
+        }
+      ]
+    },
+    "ASSET-MEMBER-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Group A Asset owner and inviter"
+        },
+        {
+          "actor": "Nova invited member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Group A invitation recipient"
+        },
+        {
+          "actor": "Riley join requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · Group A Join requester"
+        }
+      ]
+    },
+    "ASSET-BORROW-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · owner decisions and Statistics"
+        },
+        {
+          "actor": "Nova Borrow requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · cancel and accepted-capacity branches"
+        },
+        {
+          "actor": "Riley Borrow requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · owner-reject branch"
+        }
+      ]
+    },
+    "ASSET-ASSIGNMENT-LIFECYCLE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Event Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · normal and Tournament Event administration"
+        },
+        {
+          "actor": "Nova Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Transport/Accommodation owner and Group A mutation"
+        },
+        {
+          "actor": "Riley Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · Supplies/Accommodation owner and cleanup target"
+        }
+      ]
+    },
+    "CONTENT-ADMIN-LIFECYCLE-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Ava Content administrator",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · governed revisions and Article lifecycle"
+        },
+        {
+          "actor": "Kai retained Content client",
+          "sessionKind": "demo",
+          "userId": "7822c5f99eff99d63abe8933",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Kai Morgan · retained public snapshot and Privacy approval"
+        },
+        {
+          "actor": "Riley fresh Content control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Riley Outside · fresh public and unapproved Privacy control"
         }
       ]
     },

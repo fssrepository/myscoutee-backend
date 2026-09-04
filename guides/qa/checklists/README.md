@@ -39,7 +39,10 @@ must never overwrite the user-facing checklist.
 - [`EVENT-SCHEDULERS-001.md`](event/EVENT-SCHEDULERS-001.md) — bounded Event scheduler
   and Admin Jobs/Monitoring journey.
 - [`ASSET-LIFE-001.md`](asset/ASSET-LIFE-001.md) — shared Asset type-schema and
-  create/edit/trash/restore lifecycle.
+  create/edit/delete lifecycle.
+- [`ASSET-VIS-001.md`](asset/ASSET-VIS-001.md) — owner, friend and unrelated
+  Asset discovery/detail visibility, owner profile, category filter and
+  single-Edit reload boundary.
 - [`ASSET-CHECKOUT-DUMMY-001.md`](asset/ASSET-CHECKOUT-DUMMY-001.md) — scoped
   Resource/Asset Explore dummy-payment, request and acceptance journey.
 - [`CONTENT-ADMIN-LIFECYCLE-001.md`](content/CONTENT-ADMIN-LIFECYCLE-001.md) —

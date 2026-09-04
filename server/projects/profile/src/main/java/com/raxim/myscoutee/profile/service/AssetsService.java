@@ -163,8 +163,20 @@ public class AssetsService {
             return List.of();
         }
 
-        List<Asset> assets = queryOwnerAssets(normalizedUserId).stream()
+        Map<String, Asset> assetsById = new LinkedHashMap<>();
+        queryOwnerAssets(normalizedUserId).stream()
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .forEach(asset -> assetsById.put(normalizeId(asset.getAssetId()), asset));
+        mongoTemplate.find(
+                        Query.query(Criteria.where("status").is(STATUS_UNDER_REVIEW)),
+                        Asset.class)
+                .stream()
+                .filter(asset -> isEligibleAssetTakeOverCandidate(asset, normalizedUserId))
+                .forEach(asset -> assetsById.put(normalizeId(asset.getAssetId()), asset));
+        List<Asset> assets = assetsById.values().stream()
+                .sorted(Comparator.comparing(
+                        asset -> normalizeDateTime(asset.getUpdatedDate(), ""),
+                        Comparator.reverseOrder()))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
@@ -175,13 +187,14 @@ public class AssetsService {
     }
 
     public AssetDetailDto queryAssetDetail(String userId, String assetId) {
-        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedUserId = effectiveReadActorUserId(userId);
         String normalizedAssetId = normalizeId(assetId);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
         }
-        return assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
+        return assetsRepository.findByAssetId(normalizedAssetId)
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .filter(asset -> canViewAssetDetail(asset, normalizedUserId))
                 .map(asset -> toAssetDetailDto(
                         asset,
                         resolveOwnerNamesByUserId(List.of(asset)),
@@ -220,11 +233,23 @@ public class AssetsService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> memberAssetIds = activityMembersRepository
+                .findAcceptedByOwnerTypeOwnerIdInAndUserId(
+                        OWNER_TYPE_ASSET,
+                        normalizedAssetIds,
+                        normalizedUserId,
+                        MEMBER_STATUS_ACCEPTED)
+                .stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         List<Asset> eligibleAssets = assetsRepository.findByAssetIdIn(normalizedAssetIds).stream()
                 .filter(Objects::nonNull)
                 .filter(asset -> !isSuppressedLifecycleStatus(asset.getStatus()))
                 .filter(asset -> normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || memberAssetIds.contains(normalizeId(asset.getAssetId()))
                         || borrowedAssetIds.contains(normalizeId(asset.getAssetId())))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(eligibleAssets);
@@ -236,6 +261,45 @@ public class AssetsService {
                     asset,
                     ownerNamesByUserId,
                     normalizedUserId,
+                    metricsByAssetId.get(assetId));
+            if (StringUtils.hasText(assetId) && detail != null) {
+                detailsByAssetId.put(assetId, detail);
+            }
+        }
+        return detailsByAssetId;
+    }
+
+    /**
+     * Resolves cards for Asset ids that are already part of an Activity resource state.
+     * An owner handover must not erase the Group-to-Asset relationship merely because
+     * the Asset is temporarily under review. New assignments still use the stricter
+     * {@link #queryAssignableAssetDetails(String, String, String, Collection)} path.
+     */
+    public Map<String, AssetDetailDto> queryReferencedAssetDetails(
+            String viewerUserId,
+            Collection<String> assetIds) {
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Set<String> normalizedAssetIds = (assetIds == null ? List.<String>of() : assetIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (!StringUtils.hasText(normalizedViewerUserId) || normalizedAssetIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Asset> referencedAssets = assetsRepository.findByAssetIdIn(normalizedAssetIds).stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> isReferencedResourceVisibleStatus(asset.getStatus()))
+                .toList();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(referencedAssets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(referencedAssets);
+        Map<String, AssetDetailDto> detailsByAssetId = new LinkedHashMap<>();
+        for (Asset asset : referencedAssets) {
+            String assetId = normalizeId(asset.getAssetId());
+            AssetDetailDto detail = toAssetDetailDto(
+                    asset,
+                    ownerNamesByUserId,
+                    normalizedViewerUserId,
                     metricsByAssetId.get(assetId));
             if (StringUtils.hasText(assetId) && detail != null) {
                 detailsByAssetId.put(assetId, detail);
@@ -481,6 +545,7 @@ public class AssetsService {
         }
         AssetRequestRecord previous = safeRequests(current.getRequests()).stream()
                 .filter(Objects::nonNull)
+                .filter(item -> !isDeletedAssetRequest(item))
                 .filter(item -> !"manual".equals(normalizeAssetRequestKind(item.requestKind())))
                 .filter(item -> actorUserId.equals(normalizeId(item.userId())))
                 .filter(item -> isRequestInScope(item, eventId, subEventId))
@@ -489,6 +554,9 @@ public class AssetsService {
         String previousStatus = previous == null ? null : normalizeRequestStatus(previous.status());
 
         if ("leave".equals(action) && previous == null) {
+            return null;
+        }
+        if ("leave".equals(action) && !"pending".equals(previousStatus)) {
             return null;
         }
         if ("join".equals(action) && previous != null) {
@@ -523,7 +591,13 @@ public class AssetsService {
 
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         for (AssetRequestRecord item : safeRequests(current.getRequests())) {
-            if (item == null || item == previous) {
+            if (item == null) {
+                continue;
+            }
+            if (item == previous) {
+                if ("leave".equals(action)) {
+                    nextRequests.add(withAssetRequestStatus(item, STATUS_DELETED));
+                }
                 continue;
             }
             nextRequests.add(item);
@@ -545,6 +619,13 @@ public class AssetsService {
         assetsRepository.save(next);
         syncAssetRequestProjection(current, next);
         syncAssetRequestPayments(current, next);
+        enqueueScopedAssetPendingRequestNotifications(
+                current,
+                next,
+                eventId,
+                subEventId,
+                actorUserId);
+        enqueueAssetMembershipTransitionNotifications(current, next, actorUserId);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
@@ -655,6 +736,7 @@ public class AssetsService {
             return;
         }
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
+                .filter(asset -> !isOwnerResponsibilityReleased(asset))
                 .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
                 .map(asset -> toTrashedAsset(asset, normalizedUserId, Instant.now().toString()))
                 .ifPresent(trashed -> {
@@ -662,6 +744,65 @@ public class AssetsService {
                     handleAssetTrashed(trashed, normalizedUserId);
                     userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
                 });
+    }
+
+    public AssetDto leaveOwnership(AssetDeleteRequestDto request) {
+        if (request == null) {
+            return null;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        String normalizedAssetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorDeleteAsset(normalizedUserId, normalizedAssetId)) {
+            return null;
+        }
+        Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
+        if (current == null
+                || isOwnerResponsibilityReleased(current)
+                || isSuppressedLifecycleStatus(current.getStatus())) {
+            return null;
+        }
+
+        String nowIso = Instant.now().toString();
+        Asset next = cloneAsset(current);
+        next.setStatusBeforeSuppression(safeText(current.getStatus()));
+        next.setStatus(STATUS_UNDER_REVIEW);
+        next.setOwnerReleasedAtIso(nowIso);
+        next.setRequests(safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(memberRequest -> !normalizedUserId.equals(normalizeId(memberRequest.userId())))
+                .toList());
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(normalizedUserId);
+        if (!updateAssetOwnerReleaseIfSnapshotCurrent(current, next)) {
+            return null;
+        }
+        activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                        OWNER_TYPE_ASSET,
+                        normalizedAssetId,
+                        normalizedUserId)
+                .ifPresent(activityMembersRepository::delete);
+        syncAssetRequestProjection(current, next);
+
+        List<String> successorCandidateUserIds = assetOwnerReleaseRecipientUserIds(next, normalizedUserId);
+        if (successorCandidateUserIds.isEmpty() && activitiesResourcesServiceProvider != null) {
+            ActivitiesResourcesService activitiesResourcesService = activitiesResourcesServiceProvider.getIfAvailable();
+            if (activitiesResourcesService != null) {
+                activitiesResourcesService.removeAssetFromResourceAssignments(normalizedAssetId, normalizedUserId);
+            }
+        }
+
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
+        markAssetAttachmentUnavailable(normalizedAssetId, "owner-left");
+        enqueueAssetOwnerReleasedNotification(next, normalizedUserId);
+        adminTelemetryService.record("asset.owner.left", "assets", normalizedAssetId, normalizedUserId);
+        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
+        for (String recipientUserId : successorCandidateUserIds) {
+            userActivityCountersService.refreshAssetCountersForUser(recipientUserId);
+        }
+        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetDto restore(AssetDeleteRequestDto request) {
@@ -713,7 +854,7 @@ public class AssetsService {
         if (current == null || !STATUS_UNDER_REVIEW.equals(safeText(current.getStatus()))) {
             return null;
         }
-        if (!isEligibleAssetManager(current, normalizedUserId)) {
+        if (!isEligibleAssetTakeOverCandidate(current, normalizedUserId)) {
             return null;
         }
         Asset next = cloneAsset(current);
@@ -724,6 +865,7 @@ public class AssetsService {
         next.setOwnerUserId(normalizedUserId);
         next.setStatus(restoredStatus);
         next.setStatusBeforeSuppression(null);
+        next.setOwnerReleasedAtIso(null);
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(normalizedUserId);
         next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
@@ -767,7 +909,14 @@ public class AssetsService {
         }
 
         String nowIso = Instant.now().toString();
-        ActivityMember member = existingMember.orElseGet(ActivityMember::new);
+        ActivityMember currentMember = existingMember.orElse(null);
+        ActivityMember member = new ActivityMember();
+        if (currentMember != null) {
+            member.setId(currentMember.getId());
+            member.setSyncKey(currentMember.getSyncKey());
+            member.setCreatedDate(currentMember.getCreatedDate());
+            member.setCreatedUser(currentMember.getCreatedUser());
+        }
         if (!StringUtils.hasText(member.getId())) {
             member.setId(new ObjectId().toHexString());
             member.setSyncKey(UUID.randomUUID().toString());
@@ -785,10 +934,11 @@ public class AssetsService {
         member.setPendingSource(null);
         member.setRequestKind(null);
         member.setInvitedByUserId(null);
+        member.setManagerGrantedByUserId(normalizedUserId);
         member.setActionAtIso(nowIso);
         member.setUpdatedDate(nowIso);
         member.setUpdatedUser(normalizedUserId);
-        ActivityMember promotedMember = promoteAssetMemberIfSnapshotCurrent(existingMember.orElse(null), member);
+        ActivityMember promotedMember = promoteAssetMemberIfSnapshotCurrent(currentMember, member);
         if (promotedMember == null) {
             return null;
         }
@@ -813,12 +963,25 @@ public class AssetsService {
         String actorId = normalizeId(request.userId());
         String assetId = normalizeId(request.assetId());
         String targetId = normalizeId(request.targetUserId());
+        if (!StringUtils.hasText(actorId)
+                || !StringUtils.hasText(assetId)
+                || !StringUtils.hasText(targetId)
+                || actorId.equals(targetId)) {
+            return null;
+        }
         Asset current = findAssetByAssetId(assetId).orElse(null);
         Optional<ActivityMember> member = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, assetId, targetId);
+        boolean actorOwnsAsset = current != null && actorId.equals(normalizeId(current.getOwnerUserId()));
+        boolean actorGrantedManagerRole = member
+                .map(ActivityMember::getManagerGrantedByUserId)
+                .map(this::normalizeId)
+                .filter(actorId::equals)
+                .isPresent();
         if (current == null || !canManageAssetMembers(current, actorId)
                 || !accessControlService.canCurrentActorPromoteAssetManager(actorId, assetId)
-                || !isAcceptedAssetManagerMember(member.orElse(null))) return null;
+                || !isAcceptedAssetManagerMember(member.orElse(null))
+                || (!actorOwnsAsset && !actorGrantedManagerRole)) return null;
         Asset next = cloneAsset(current);
         next.setRequests(safeRequests(current.getRequests()).stream().map(item ->
                 targetId.equals(normalizeId(item.userId()))
@@ -831,6 +994,8 @@ public class AssetsService {
         if (!updateAssetManagerRequestsIfSnapshotCurrent(current, next)) return null;
         member.ifPresent(activityMembersRepository::delete);
         syncAssetRequestProjection(current, next);
+        affinityRecomputeTaskService.enqueueAssetChanged(assetId, actorId);
+        enqueueAssetManagerRevokedNotification(next, actorId, targetId);
         return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), actorId);
     }
 
@@ -839,10 +1004,22 @@ public class AssetsService {
                 .set("ownerUserId", normalizeId(next.getOwnerUserId()))
                 .set("status", safeText(next.getStatus()))
                 .unset("statusBeforeSuppression")
+                .unset("ownerReleasedAtIso")
                 .set("updatedDate", safeText(next.getUpdatedDate()))
                 .set("updatedUser", safeText(next.getUpdatedUser()))
                 .set("affinity", next.getAffinity())
                 .set("boost", next.getBoost());
+        return updateAssetIfSnapshotCurrent(current, update);
+    }
+
+    private boolean updateAssetOwnerReleaseIfSnapshotCurrent(Asset current, Asset next) {
+        Update update = new Update()
+                .set("status", STATUS_UNDER_REVIEW)
+                .set("statusBeforeSuppression", safeText(next.getStatusBeforeSuppression()))
+                .set("ownerReleasedAtIso", safeText(next.getOwnerReleasedAtIso()))
+                .set("requests", safeRequests(next.getRequests()))
+                .set("updatedDate", safeText(next.getUpdatedDate()))
+                .set("updatedUser", safeText(next.getUpdatedUser()));
         return updateAssetIfSnapshotCurrent(current, update);
     }
 
@@ -890,6 +1067,7 @@ public class AssetsService {
                 .unset("pendingSource")
                 .unset("requestKind")
                 .unset("invitedByUserId")
+                .set("managerGrantedByUserId", normalizeId(next.getManagerGrantedByUserId()))
                 .set("actionAtIso", safeText(next.getActionAtIso()))
                 .set("updatedDate", safeText(next.getUpdatedDate()))
                 .set("updatedUser", safeText(next.getUpdatedUser()));
@@ -968,6 +1146,8 @@ public class AssetsService {
         List<Document> requestConditions = new ArrayList<>();
         requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
+        requestConditions.add(new Document("$ne", List.of("$$request.status", STATUS_DELETED)));
+        requestConditions.add(new Document("$ne", List.of("$$request.status", "deleted")));
         if (StringUtils.hasText(normalizedRequestStatus)) {
             requestConditions.add(new Document("$eq", List.of("$$request.status", normalizedRequestStatus)));
         }
@@ -1018,6 +1198,10 @@ public class AssetsService {
             if (existing == null) {
                 continue;
             }
+            if (isDeletedAssetRequest(existing)) {
+                nextRequests.add(existing);
+                continue;
+            }
             if ("manual".equals(normalizeAssetRequestKind(existing.requestKind()))) {
                 nextRequests.add(existing);
                 continue;
@@ -1034,6 +1218,8 @@ public class AssetsService {
                 if (updated != null) {
                     nextRequests.add(updated);
                 }
+            } else {
+                nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
             }
         }
         for (Map.Entry<String, ActivityMember> entry : suppliedMembersByUserId.entrySet()) {
@@ -1103,13 +1289,26 @@ public class AssetsService {
                 }
                 continue;
             }
+            if (isDeletedAssetRequest(existing)) {
+                nextRequests.add(existing);
+                continue;
+            }
             if ("manual".equals(normalizeAssetRequestKind(existing.requestKind()))) {
                 nextRequests.add(existing);
                 continue;
             }
             String requestUserId = normalizeId(existing.userId());
+            // A take-over keeps the successor's accepted scoped membership as the
+            // authoritative occupant of the resource. Member-list updates omit the
+            // current owner, so dropping this row would incorrectly turn 2 -> 0
+            // when the other member is removed instead of the expected 2 -> 1.
+            if (ownerUserId.equals(requestUserId)) {
+                nextRequests.add(existing);
+                continue;
+            }
             ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
             if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
+                nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
                 continue;
             }
             retainedUserIds.add(requestUserId);
@@ -1137,6 +1336,16 @@ public class AssetsService {
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
         syncAssetRequestProjection(current, next);
+        enqueueScopedAssetPendingRequestNotifications(
+                current,
+                next,
+                normalizedEventId,
+                normalizedSubEventId,
+                firstNonBlank(normalizeId(actorUserId), ownerUserId));
+        enqueueAssetMembershipTransitionNotifications(
+                current,
+                next,
+                firstNonBlank(normalizeId(actorUserId), ownerUserId));
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedAssetId, ownerUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", normalizedAssetId, ownerUserId);
         return ownerUserId;
@@ -1166,24 +1375,7 @@ public class AssetsService {
                 || hasAcceptedAssetManagerRole(asset, normalizedUserId)) {
             return true;
         }
-        String normalizedAuthorizationEventId = authorizationEventId(normalizedEventId, normalizedSubEventId);
-        return safeRequests(asset.getRequests()).stream()
-                .filter(Objects::nonNull)
-                .filter(request -> "borrow".equals(normalizeAssetRequestKind(request.requestKind())))
-                .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
-                .filter(request -> normalizedUserId.equals(normalizeId(request.userId())))
-                .anyMatch(request -> {
-                    AssetRequestBookingRecord booking = request.booking();
-                    if (booking == null
-                            || !normalizedSubEventId.equals(normalizeId(booking.subEventId()))) {
-                        return false;
-                    }
-                    String bookingEventId = normalizeId(booking.eventId());
-                    return normalizedEventId.equals(bookingEventId)
-                            || normalizedAuthorizationEventId.equals(authorizationEventId(
-                                    bookingEventId,
-                                    normalizedSubEventId));
-                });
+        return false;
     }
 
     private boolean isRequestInScope(AssetRequestRecord request, String eventId, String subEventId) {
@@ -1262,6 +1454,9 @@ public class AssetsService {
         if (proposed == null) {
             return null;
         }
+        if (existing != null) {
+            proposed.setRequests(preserveRequestAudits(existing.getRequests(), proposed.getRequests()));
+        }
         Asset saved = proposed;
         if (existing != null) {
             if (!fullAssetWriteAllowed) {
@@ -1279,6 +1474,7 @@ public class AssetsService {
         }
         assetsRepository.save(saved);
         syncAssetRequestProjection(existing, saved);
+        enqueueAssetMembershipTransitionNotifications(existing, saved, currentActorUserId());
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
@@ -1409,10 +1605,10 @@ public class AssetsService {
                     .and("_id").in(removedProjectionIds));
             mongoTemplate.remove(staleQuery, AssetRequest.class);
         }
-        refreshEventSubEventResourceProjections(existing, saved);
+        refreshEventSubEventResourceCounters(existing, saved);
     }
 
-    private void refreshEventSubEventResourceProjections(Asset existing, Asset saved) {
+    private void refreshEventSubEventResourceCounters(Asset existing, Asset saved) {
         if (activitiesResourcesServiceProvider == null) {
             return;
         }
@@ -1770,6 +1966,7 @@ public class AssetsService {
         clone.setVisibility(source.getVisibility());
         clone.setStatus(source.getStatus());
         clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
+        clone.setOwnerReleasedAtIso(source.getOwnerReleasedAtIso());
         clone.setTrashedAtIso(source.getTrashedAtIso());
         clone.setAffinity(source.getAffinity());
         clone.setBoost(source.getBoost());
@@ -2093,6 +2290,8 @@ public class AssetsService {
                 .append("input", new Document("$ifNull", List.of("$requests", List.of())))
                 .append("as", "request")
                 .append("cond", new Document("$and", List.of(
+                        new Document("$ne", List.of("$$request.status", STATUS_DELETED)),
+                        new Document("$ne", List.of("$$request.status", "deleted")),
                         new Document("$or", List.of(
                                 new Document("$eq", List.of("$$request.status", MEMBER_STATUS_ACCEPTED)),
                                 new Document("$eq", List.of("$$request.requestKind", "manual")))),
@@ -2208,7 +2407,8 @@ public class AssetsService {
             return Map.of();
         }
         List<AssetRequest> requests = mongoTemplate.find(
-                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())),
+                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())
+                        .and("status").nin(STATUS_DELETED, "deleted")),
                 AssetRequest.class);
         Map<String, List<AssetRequest>> requestsByAssetId = new LinkedHashMap<>();
         for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
@@ -2333,7 +2533,8 @@ public class AssetsService {
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
                 normalizeAssetRequestMetrics(metrics),
-                resolveAssetMenuActions(asset, viewerUserId));
+                resolveAssetMenuActions(asset, viewerUserId),
+                safeText(asset.getOwnerReleasedAtIso()));
     }
 
     private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
@@ -2377,7 +2578,8 @@ public class AssetsService {
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
                 normalizeAssetRequestMetrics(metrics),
-                resolveAssetMenuActions(asset, viewerUserId));
+                resolveAssetMenuActions(asset, viewerUserId),
+                safeText(asset.getOwnerReleasedAtIso()));
     }
 
     private String assetLocationLabel(Asset asset, String type) {
@@ -2440,7 +2642,9 @@ public class AssetsService {
 
     private List<AssetMemberRequestDto> toAssetRequestDtos(Asset asset, String viewerUserId) {
         List<AssetMemberRequestDto> next = new ArrayList<>();
-        List<AssetRequestRecord> requests = deduplicateRequests(asset.getRequests());
+        List<AssetRequestRecord> requests = deduplicateRequests(asset.getRequests()).stream()
+                .filter(request -> !isDeletedAssetRequest(request))
+                .toList();
         Set<String> managerUserIds = acceptedAssetManagerUserIds(asset);
         for (int index = 0; index < requests.size(); index += 1) {
             AssetMemberRequestDto dto = toAssetRequestDto(
@@ -2457,8 +2661,16 @@ public class AssetsService {
 
     private List<AssetRequestRecord> deduplicateRequests(List<AssetRequestRecord> requests) {
         Map<String, AssetRequestRecord> byScope = new LinkedHashMap<>();
+        Map<String, AssetRequestRecord> deletedById = new LinkedHashMap<>();
         for (AssetRequestRecord request : safeRequests(requests)) {
             if (request == null) {
+                continue;
+            }
+            if (isDeletedAssetRequest(request)) {
+                String requestId = normalizeId(request.id());
+                if (StringUtils.hasText(requestId)) {
+                    deletedById.put(requestId, request);
+                }
                 continue;
             }
             String scopeKey = requestScopeKey(request);
@@ -2469,7 +2681,185 @@ public class AssetsService {
                 byScope.put(scopeKey, request);
             }
         }
-        return new ArrayList<>(byScope.values());
+        List<AssetRequestRecord> result = new ArrayList<>(deletedById.values());
+        result.addAll(byScope.values());
+        return result;
+    }
+
+    private List<AssetRequestRecord> preserveRequestAudits(
+            List<AssetRequestRecord> existing,
+            List<AssetRequestRecord> proposed) {
+        List<AssetRequestRecord> merged = new ArrayList<>(safeRequests(proposed));
+        Set<String> proposedIds = merged.stream()
+                .filter(Objects::nonNull)
+                .map(AssetRequestRecord::id)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        safeRequests(existing).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> !proposedIds.contains(normalizeId(request.id())))
+                .map(request -> isDeletedAssetRequest(request)
+                        ? request
+                        : withAssetRequestStatus(request, STATUS_DELETED))
+                .forEach(merged::add);
+        return deduplicateRequests(merged);
+    }
+
+    public void statusDeleteAssignmentScopeRequests(
+            String assetOwnerUserId,
+            Collection<String> assetIds,
+            String ownerId,
+            String authorizationEventId,
+            String subEventId,
+            String actorUserId,
+            String deletedAtIso) {
+        String normalizedAssetOwnerUserId = normalizeId(assetOwnerUserId);
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedAuthorizationEventId = normalizeId(authorizationEventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedAssetOwnerUserId)
+                || !StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
+        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            Asset current = assetsRepository
+                    .findByOwnerUserIdAndAssetId(normalizedAssetOwnerUserId, assetId)
+                    .orElse(null);
+            if (current == null) {
+                continue;
+            }
+            boolean changed = false;
+            List<AssetRequestRecord> nextRequests = new ArrayList<>();
+            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+                if (!isDeletedAssetRequest(request)
+                        && isAssignmentScopeRequest(
+                                request,
+                                normalizedOwnerId,
+                                normalizedAuthorizationEventId,
+                                normalizedSubEventId)) {
+                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
+                    changed = true;
+                } else if (request != null) {
+                    nextRequests.add(request);
+                }
+            }
+            if (!changed) {
+                continue;
+            }
+            Asset next = cloneAsset(current);
+            next.setRequests(nextRequests);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizedAssetOwnerUserId));
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
+            userActivityCountersService.refreshAssetCountersForUser(normalizedAssetOwnerUserId);
+        }
+    }
+
+    public Set<String> statusDeleteEventAssignmentRequestsForUsers(
+            Collection<String> assetIds,
+            Collection<String> userIds,
+            String eventId,
+            String actorUserId,
+            String deletedAtIso) {
+        Set<String> normalizedUserIds = (userIds == null ? List.<String>of() : userIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String normalizedEventId = normalizeId(eventId);
+        if (normalizedUserIds.isEmpty() || !StringUtils.hasText(normalizedEventId)) {
+            return Set.of();
+        }
+
+        String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
+        Set<String> changedAssetIds = new LinkedHashSet<>();
+        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            Asset current = findAssetByAssetId(assetId).orElse(null);
+            if (current == null) {
+                continue;
+            }
+
+            boolean changed = false;
+            List<AssetRequestRecord> nextRequests = new ArrayList<>();
+            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+                if (!isDeletedAssetRequest(request)
+                        && normalizedUserIds.contains(normalizeId(request == null ? null : request.userId()))
+                        && requestBelongsToEvent(request, normalizedEventId)) {
+                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
+                    changed = true;
+                } else if (request != null) {
+                    nextRequests.add(request);
+                }
+            }
+            if (!changed) {
+                continue;
+            }
+
+            Asset next = cloneAsset(current);
+            next.setRequests(nextRequests);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizeId(current.getOwnerUserId())));
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
+            userActivityCountersService.refreshAssetCountersForUser(normalizeId(next.getOwnerUserId()));
+            changedAssetIds.add(assetId);
+        }
+        return Set.copyOf(changedAssetIds);
+    }
+
+    private boolean requestBelongsToEvent(AssetRequestRecord request, String eventId) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        if (booking == null) {
+            return false;
+        }
+        return Objects.equals(
+                normalizeId(eventId),
+                authorizationEventId(booking.eventId(), booking.subEventId()));
+    }
+
+    private boolean isAssignmentScopeRequest(
+            AssetRequestRecord request,
+            String ownerId,
+            String authorizationEventId,
+            String subEventId) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        String bookingOwnerId = normalizeId(booking == null ? null : booking.eventId());
+        return Objects.equals(subEventId, normalizeId(booking == null ? null : booking.subEventId()))
+                && (Objects.equals(ownerId, bookingOwnerId)
+                        || (StringUtils.hasText(authorizationEventId)
+                                && Objects.equals(authorizationEventId, bookingOwnerId)));
+    }
+
+    private AssetRequestRecord withAssetRequestStatus(AssetRequestRecord request, String status) {
+        return new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                status,
+                request.note(),
+                request.requestKind(),
+                request.requestedAtIso(),
+                cloneRequestBooking(request.booking()));
+    }
+
+    private boolean isDeletedAssetRequest(AssetRequestRecord request) {
+        String status = safeText(request == null ? null : request.status());
+        return STATUS_DELETED.equalsIgnoreCase(status) || "deleted".equalsIgnoreCase(status);
     }
 
     private String requestScopeKey(AssetRequestRecord request) {
@@ -2550,22 +2940,32 @@ public class AssetsService {
         return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(asset.getOwnerUserId()), activeUserId);
     }
 
+    private boolean canViewAssetDetail(Asset asset, String viewerUserId) {
+        return asset != null
+                && StringUtils.hasText(viewerUserId)
+                && (viewerUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || shouldIncludeExploreAsset(asset, viewerUserId));
+    }
+
     private List<String> resolveAssetMenuActions(Asset asset, String viewerUserId) {
         String normalizedViewerUserId = normalizeId(viewerUserId);
         if (asset == null || !StringUtils.hasText(normalizedViewerUserId)) {
             return List.of();
         }
-        boolean owner = normalizedViewerUserId.equals(normalizeId(asset.getOwnerUserId()));
+        boolean sameOwner = normalizedViewerUserId.equals(normalizeId(asset.getOwnerUserId()));
+        boolean owner = sameOwner && !isOwnerResponsibilityReleased(asset);
         boolean manager = owner || hasAcceptedAssetManagerRole(asset, normalizedViewerUserId);
         String status = safeText(asset.getStatus());
         if (STATUS_TRASHED.equals(status)) {
             return owner ? List.of("restore") : List.of();
         }
-        if (!manager) {
+        boolean takeOverCandidate = STATUS_UNDER_REVIEW.equals(status)
+                && isEligibleAssetTakeOverCandidate(asset, normalizedViewerUserId);
+        if (!manager && !takeOverCandidate) {
             return List.of("share");
         }
         LinkedHashSet<String> actions = new LinkedHashSet<>();
-        if (STATUS_UNDER_REVIEW.equals(status) && isActiveUser(normalizedViewerUserId)) {
+        if (takeOverCandidate) {
             actions.add("takeOver");
         }
         actions.add("share");
@@ -2583,6 +2983,14 @@ public class AssetsService {
                 || STATUS_DELETED.equals(normalized)
                 || STATUS_INACTIVE.equals(normalized)
                 || STATUS_TRASHED.equals(normalized);
+    }
+
+    private boolean isReferencedResourceVisibleStatus(String status) {
+        String normalized = normalizeLifecycleStatusCode(status);
+        return !STATUS_BLOCKED.equals(normalized)
+                && !STATUS_DELETED.equals(normalized)
+                && !STATUS_INACTIVE.equals(normalized)
+                && !STATUS_TRASHED.equals(normalized);
     }
 
     private String normalizeLifecycleStatusCode(String status) {
@@ -2604,9 +3012,33 @@ public class AssetsService {
             return false;
         }
         if (normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+            if (isOwnerResponsibilityReleased(asset)) {
+                return false;
+            }
             return true;
         }
         return hasAcceptedAssetManagerRole(asset, normalizedUserId);
+    }
+
+    private boolean isEligibleAssetTakeOverCandidate(Asset asset, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (asset == null
+                || !STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))
+                || !isOwnerResponsibilityReleased(asset)
+                || !StringUtils.hasText(normalizedUserId)
+                || !isActiveUser(normalizedUserId)) {
+            return false;
+        }
+        String releasedOwnerUserId = normalizeId(asset.getOwnerUserId());
+        List<String> activeManagerUserIds = activeResponsibleAssetUserIds(asset).stream()
+                .filter(candidateUserId -> !candidateUserId.equals(releasedOwnerUserId))
+                .toList();
+        if (!activeManagerUserIds.isEmpty()) {
+            return activeManagerUserIds.contains(normalizedUserId);
+        }
+        return activeAcceptedAssetMemberUserIds(asset).stream()
+                .filter(candidateUserId -> !candidateUserId.equals(releasedOwnerUserId))
+                .anyMatch(normalizedUserId::equals);
     }
 
     private boolean canManageAssetMembers(Asset asset, String userId) {
@@ -2617,13 +3049,23 @@ public class AssetsService {
                 || STATUS_TRASHED.equals(safeText(asset.getStatus()))) {
             return false;
         }
-        return normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
-                || hasAcceptedAssetManagerRole(asset, normalizedUserId);
+        if (normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+            return !isOwnerResponsibilityReleased(asset);
+        }
+        return hasAcceptedAssetManagerRole(asset, normalizedUserId);
+    }
+
+    private boolean isOwnerResponsibilityReleased(Asset asset) {
+        return asset != null && StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()));
     }
 
     private boolean hasAcceptedAssetManagerRole(Asset asset, String userId) {
         String normalizedUserId = normalizeId(userId);
         if (asset == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
+                && isOwnerResponsibilityReleased(asset)) {
             return false;
         }
         return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
@@ -2647,6 +3089,7 @@ public class AssetsService {
         }
         return safeRequests(asset == null ? null : asset.getRequests()).stream()
                 .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
                 .anyMatch(request -> normalizedUserId.equals(normalizeId(request.userId())));
     }
 
@@ -2663,6 +3106,7 @@ public class AssetsService {
         }
         List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
+        String ownerUserId = normalizeId(asset.getOwnerUserId());
         for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
             if (member == null
                     || !MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus()))
@@ -2670,7 +3114,8 @@ public class AssetsService {
                 continue;
             }
             String userId = normalizeId(member.getUserId());
-            if (StringUtils.hasText(userId)) {
+            if (StringUtils.hasText(userId)
+                    && !(isOwnerResponsibilityReleased(asset) && userId.equals(ownerUserId))) {
                 userIds.add(userId);
             }
         }
@@ -2685,6 +3130,10 @@ public class AssetsService {
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         boolean promotedExistingRequest = false;
         for (AssetRequestRecord request : safeRequests(current == null ? null : current.getRequests())) {
+            if (isDeletedAssetRequest(request)) {
+                nextRequests.add(request);
+                continue;
+            }
             if (targetUserId.equals(normalizeId(request == null ? null : request.userId()))) {
                 nextRequests.add(promotedAssetRequest(current, request, member));
                 promotedExistingRequest = true;
@@ -2938,19 +3387,26 @@ public class AssetsService {
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
             return;
         }
-        List<String> recipients = activeResponsibleAssetUserIds(previous == null ? next : previous).stream()
+        Asset handoverState = previous == null ? next : previous;
+        String previousOwnerUserId = normalizeId(previous == null ? null : previous.getOwnerUserId());
+        List<String> recipients = assetOwnerReleaseRecipientUserIds(handoverState, previousOwnerUserId).stream()
                 .filter(userId -> !normalizedActorUserId.equals(userId))
                 .toList();
         if (recipients.isEmpty()) {
             return;
         }
+        String actorName = usersRepository.findByUserId(normalizedActorUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("A member");
         String title = "Asset responsibility changed";
-        String body = assetTitle(next) + " was taken over by an active manager.";
+        String body = actorName + " took over responsibility for " + assetTitle(next) + ".";
         notificationOutboxService.enqueue(new NotificationIntent(
                 "asset-takeover",
                 "asset",
                 assetId,
-                "asset-active-managers",
+                "asset-members",
                 recipients,
                 title,
                 body,
@@ -2965,6 +3421,58 @@ public class AssetsService {
                         "ownerUserId", safeText(next.getOwnerUserId()),
                         "actorUserId", normalizedActorUserId),
                 normalizedActorUserId));
+    }
+
+    private void enqueueAssetOwnerReleasedNotification(Asset asset, String actorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        List<String> recipients = assetOwnerReleaseRecipientUserIds(asset, normalizedActorUserId);
+        if (!StringUtils.hasText(assetId) || recipients.isEmpty()) {
+            return;
+        }
+        String actorName = usersRepository.findByUserId(normalizedActorUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("The Asset owner");
+        boolean managerCandidatesExist = activeResponsibleAssetUserIds(asset).stream()
+                .anyMatch(userId -> !normalizedActorUserId.equals(userId));
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-owner-left",
+                "asset",
+                assetId,
+                managerCandidatesExist ? "asset-active-managers" : "asset-members",
+                recipients,
+                "Asset needs a new owner",
+                actorName + " left " + assetTitle(asset) + ". "
+                        + (managerCandidatesExist
+                                ? "An Asset Manager can take over responsibility."
+                                : "An accepted Asset Member can take over responsibility."),
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-owner-left-" + assetId + "-" + safeText(asset.getOwnerReleasedAtIso()),
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "previousOwnerUserId", normalizedActorUserId,
+                        "assetStatus", STATUS_UNDER_REVIEW),
+                normalizedActorUserId));
+    }
+
+    private List<String> assetOwnerReleaseRecipientUserIds(Asset asset, String actorUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        LinkedHashSet<String> recipients = activeResponsibleAssetUserIds(asset).stream()
+                .filter(userId -> !normalizedActorUserId.equals(userId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (recipients.isEmpty()) {
+            recipients.addAll(activeAcceptedAssetMemberUserIds(asset));
+            recipients.remove(normalizedActorUserId);
+        }
+        return recipients.stream()
+                .filter(StringUtils::hasText)
+                .filter(this::isActiveUser)
+                .toList();
     }
 
     private void enqueueAssetManagerPromotedNotification(Asset asset, String actorUserId, String targetUserId) {
@@ -2999,13 +3507,456 @@ public class AssetsService {
                 "/game",
                 firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
-                "asset-manager-promoted-" + assetId,
+                "asset-manager-promoted-" + assetId + "-" + normalizedTargetUserId,
                 Map.of(
                         "assetId", assetId,
                         "assetTitle", assetTitle(asset),
+                        "memberUserId", normalizedTargetUserId,
                         "targetUserId", normalizedTargetUserId,
                         "actorUserId", normalizedActorUserId),
                 normalizedActorUserId));
+    }
+
+    private void enqueueAssetManagerRevokedNotification(Asset asset, String actorUserId, String targetUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        recipients.add(normalizedTargetUserId);
+        recipients.addAll(activeResponsibleAssetUserIds(asset));
+        recipients.remove(normalizedActorUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        String targetName = usersRepository.findByUserId(normalizedTargetUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("A member");
+        String title = "Asset manager updated";
+        String body = targetName + " is no longer a manager of " + assetTitle(asset) + ".";
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-manager-revoked",
+                "asset",
+                assetId,
+                "asset-active-managers",
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-manager-revoked-" + assetId + "-" + normalizedTargetUserId,
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "memberUserId", normalizedTargetUserId,
+                        "targetUserId", normalizedTargetUserId,
+                        "actorUserId", normalizedActorUserId),
+                normalizedActorUserId));
+    }
+
+    private void enqueueScopedAssetPendingRequestNotifications(
+            Asset previous,
+            Asset next,
+            String eventId,
+            String subEventId,
+            String actorUserId) {
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+
+        Set<String> previousPendingKeys = safeRequests(previous == null ? null : previous.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> "pending".equals(normalizeRequestStatus(request.status())))
+                .filter(request -> !"manual".equals(normalizeAssetRequestKind(request.requestKind())))
+                .map(request -> scopedAssetRequestNotificationKey(request, normalizedEventId, normalizedSubEventId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        safeRequests(next.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> "pending".equals(normalizeRequestStatus(request.status())))
+                .filter(request -> !"manual".equals(normalizeAssetRequestKind(request.requestKind())))
+                .filter(request -> !previousPendingKeys.contains(
+                        scopedAssetRequestNotificationKey(request, normalizedEventId, normalizedSubEventId)))
+                .forEach(request -> enqueueScopedAssetPendingRequestNotification(
+                        next,
+                        request,
+                        normalizedEventId,
+                        normalizedSubEventId,
+                        normalizedActorUserId));
+    }
+
+    private void enqueueScopedAssetPendingRequestNotification(
+            Asset asset,
+            AssetRequestRecord request,
+            String eventId,
+            String subEventId,
+            String actorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String memberUserId = normalizeId(request == null ? null : request.userId());
+        String requestKind = normalizeAssetRequestKind(request == null ? null : request.requestKind());
+        boolean invitation = ASSET_REQUEST_KIND_INVITE.equals(requestKind);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(memberUserId)) {
+            return;
+        }
+
+        List<String> recipients;
+        String notificationType;
+        String recipientScope;
+        String body;
+        if (invitation) {
+            recipients = memberUserId.equals(actorUserId) || !isActiveUser(memberUserId)
+                    ? List.of()
+                    : List.of(memberUserId);
+            notificationType = "asset-member-invite";
+            recipientScope = "asset-invitee";
+            body = "Asset invitation";
+        } else {
+            recipients = activeResponsibleAssetUserIds(asset).stream()
+                    .filter(userId -> !userId.equals(actorUserId))
+                    .filter(userId -> !userId.equals(memberUserId))
+                    .toList();
+            notificationType = "asset-admin-join-request";
+            recipientScope = "asset-responsible-users";
+            String memberName = firstNonBlank(request.name(), memberUserId);
+            body = memberName + " requested access.";
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+
+        String requestId = firstNonBlank(
+                normalizeId(request.id()),
+                scopedAssetRequestNotificationKey(request, eventId, subEventId));
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("eventId", eventId);
+        payload.put("subEventId", subEventId);
+        payload.put("requestId", requestId);
+        payload.put("requestKind", requestKind);
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", firstNonBlank(request.name(), memberUserId));
+        payload.put("membershipAction", invitation ? "invited" : "requested");
+        payload.put("notification_tone", "accent");
+        payload.put("notification_status_badge_fallback", "Pending");
+        payload.put("notification_status_badge_tone", "accent");
+        if (StringUtils.hasText(actorUserId)) {
+            payload.put("senderUserId", actorUserId);
+        }
+        if (StringUtils.hasText(safeText(request.requestedAtIso()))) {
+            payload.put("requestedAtIso", safeText(request.requestedAtIso()));
+        }
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                notificationType,
+                "asset",
+                assetId,
+                recipientScope,
+                recipients,
+                assetTitle(asset),
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                notificationType + "-" + assetId + "-" + requestId,
+                payload,
+                StringUtils.hasText(actorUserId) ? actorUserId : memberUserId));
+    }
+
+    private void enqueueAcceptedAssetInviteNotifications(
+            Asset previous,
+            Asset next,
+            String actorUserId) {
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return;
+        }
+
+        Map<String, AssetRequestRecord> previousById = requestsById(
+                previous == null ? null : previous.getRequests());
+        for (AssetRequestRecord accepted : safeRequests(next.getRequests())) {
+            String requestId = normalizeId(accepted == null ? null : accepted.id());
+            AssetRequestRecord pending = previousById.get(requestId);
+            if (!StringUtils.hasText(requestId)
+                    || pending == null
+                    || !ASSET_REQUEST_KIND_INVITE.equals(normalizeAssetRequestKind(accepted.requestKind()))
+                    || !"pending".equals(normalizeRequestStatus(pending.status()))
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(accepted.status()))
+                    || !normalizedActorUserId.equals(normalizeId(accepted.userId()))) {
+                continue;
+            }
+
+            List<String> recipients = activeResponsibleAssetUserIds(next).stream()
+                    .filter(userId -> !normalizedActorUserId.equals(userId))
+                    .toList();
+            if (recipients.isEmpty()) {
+                continue;
+            }
+
+            AssetRequestBookingRecord booking = accepted.booking();
+            String memberName = firstNonBlank(accepted.name(), normalizedActorUserId);
+            String acceptedAtIso = Instant.now().toString();
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("assetId", assetId);
+            payload.put("assetTitle", assetTitle(next));
+            payload.put("eventId", safeText(booking == null ? null : booking.eventId()));
+            payload.put("subEventId", safeText(booking == null ? null : booking.subEventId()));
+            payload.put("requestId", requestId);
+            payload.put("requestKind", ASSET_REQUEST_KIND_INVITE);
+            payload.put("memberUserId", normalizedActorUserId);
+            payload.put("memberName", memberName);
+            payload.put("membershipAction", "accepted");
+            payload.put("acceptedAtIso", acceptedAtIso);
+            payload.put("senderUserId", normalizedActorUserId);
+            payload.put("notification_tone", "accent");
+
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "asset-invitation-accepted",
+                    "asset",
+                    assetId,
+                    "asset-responsible-users",
+                    recipients,
+                    "Asset invitation accepted",
+                    memberName + " accepted the invitation to use " + assetTitle(next) + ".",
+                    "/game",
+                    firstNonBlank(next.getImageUrl(), "/assets/logo/heart.webp"),
+                    "/assets/logo/heart.webp",
+                    "asset-invitation-accepted-" + assetId + "-" + requestId,
+                    payload,
+                    normalizedActorUserId));
+        }
+    }
+
+    private void enqueueAssetMembershipTransitionNotifications(
+            Asset previous,
+            Asset next,
+            String actorUserId) {
+        enqueueAcceptedAssetInviteNotifications(previous, next, actorUserId);
+
+        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return;
+        }
+
+        Map<String, AssetRequestRecord> nextById = requestsById(next.getRequests());
+        for (AssetRequestRecord previousRequest : safeRequests(previous == null ? null : previous.getRequests())) {
+            String requestId = normalizeId(previousRequest == null ? null : previousRequest.id());
+            String memberUserId = normalizeId(previousRequest == null ? null : previousRequest.userId());
+            if (!StringUtils.hasText(requestId)
+                    || !StringUtils.hasText(memberUserId)
+                    || "manual".equals(normalizeAssetRequestKind(previousRequest.requestKind()))) {
+                continue;
+            }
+
+            String previousStatus = normalizeRequestStatus(previousRequest.status());
+            AssetRequestRecord nextRequest = nextById.get(requestId);
+            if (isDeletedAssetRequest(nextRequest)) {
+                nextRequest = null;
+            }
+            if (nextRequest != null
+                    && "pending".equals(previousStatus)
+                    && MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(nextRequest.status()))) {
+                boolean acceptingOwnInvitation = memberUserId.equals(normalizedActorUserId)
+                        && ASSET_REQUEST_KIND_INVITE.equals(normalizeAssetRequestKind(nextRequest.requestKind()));
+                if (!acceptingOwnInvitation && !memberUserId.equals(normalizedActorUserId)) {
+                    enqueueAssetMemberTransitionNotification(
+                            next,
+                            nextRequest,
+                            normalizedActorUserId,
+                            "asset-member-request-accepted",
+                            "asset-member",
+                            List.of(memberUserId),
+                            "Asset request accepted",
+                            "Your request to use " + assetTitle(next) + " was accepted.",
+                            "accepted");
+                }
+                continue;
+            }
+            if (nextRequest != null) {
+                continue;
+            }
+
+            if (memberUserId.equals(normalizedActorUserId)) {
+                if (MEMBER_STATUS_ACCEPTED.equals(previousStatus)) {
+                    LinkedHashSet<String> recipients = new LinkedHashSet<>(activeResponsibleAssetUserIds(previous));
+                    recipients.addAll(acceptedAssetParticipantUserIds(previous));
+                    recipients.remove(normalizedActorUserId);
+                    String memberName = firstNonBlank(previousRequest.name(), memberUserId);
+                    enqueueAssetMemberTransitionNotification(
+                            previous,
+                            previousRequest,
+                            normalizedActorUserId,
+                            "asset-member-left",
+                            "asset-members",
+                            new ArrayList<>(recipients),
+                            "Asset member left",
+                            memberName + " left " + assetTitle(previous) + ".",
+                            "left");
+                } else if ("pending".equals(previousStatus)
+                        && ASSET_REQUEST_KIND_INVITE.equals(
+                                normalizeAssetRequestKind(previousRequest.requestKind()))) {
+                    String memberName = firstNonBlank(previousRequest.name(), memberUserId);
+                    enqueueAssetMemberTransitionNotification(
+                            previous,
+                            previousRequest,
+                            normalizedActorUserId,
+                            "asset-invitation-declined",
+                            "asset-responsible-users",
+                            activeResponsibleAssetUserIds(previous),
+                            "Asset invitation declined",
+                            memberName + " declined the invitation to use " + assetTitle(previous) + ".",
+                            "declined");
+                }
+                continue;
+            }
+
+            boolean pendingRemoval = "pending".equals(previousStatus);
+            boolean invitation = ASSET_REQUEST_KIND_INVITE.equals(
+                    normalizeAssetRequestKind(previousRequest.requestKind()));
+            String notificationType = pendingRemoval
+                    ? invitation ? "asset-member-invitation-withdrawn" : "asset-member-request-declined"
+                    : "asset-member-removed";
+            String body = pendingRemoval
+                    ? invitation
+                            ? "Your invitation to use " + assetTitle(previous) + " was withdrawn."
+                            : "Your request to use " + assetTitle(previous) + " was declined."
+                    : "You were removed from " + assetTitle(previous) + ".";
+            enqueueAssetMemberTransitionNotification(
+                    previous,
+                    previousRequest,
+                    normalizedActorUserId,
+                    notificationType,
+                    "asset-member",
+                    List.of(memberUserId),
+                    pendingRemoval ? "Asset request updated" : "Asset membership removed",
+                    body,
+                    pendingRemoval ? invitation ? "invitation-withdrawn" : "declined" : "removed");
+        }
+    }
+
+    private void enqueueAssetMemberTransitionNotification(
+            Asset asset,
+            AssetRequestRecord request,
+            String actorUserId,
+            String notificationType,
+            String recipientScope,
+            List<String> recipientUserIds,
+            String title,
+            String body,
+            String membershipAction) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String requestId = normalizeId(request == null ? null : request.id());
+        String memberUserId = normalizeId(request == null ? null : request.userId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        List<String> recipients = (recipientUserIds == null ? List.<String>of() : recipientUserIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(normalizedActorUserId))
+                .filter(this::isActiveUser)
+                .distinct()
+                .toList();
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(requestId)
+                || !StringUtils.hasText(memberUserId)
+                || recipients.isEmpty()) {
+            return;
+        }
+
+        AssetRequestBookingRecord booking = request.booking();
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("eventId", safeText(booking == null ? null : booking.eventId()));
+        payload.put("subEventId", safeText(booking == null ? null : booking.subEventId()));
+        payload.put("requestId", requestId);
+        payload.put("requestKind", normalizeAssetRequestKind(request.requestKind()));
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", firstNonBlank(request.name(), memberUserId));
+        payload.put("membershipAction", membershipAction);
+        payload.put("senderUserId", normalizedActorUserId);
+        payload.put("notification_tone", "accent");
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                notificationType,
+                "asset",
+                assetId,
+                recipientScope,
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                notificationType + "-" + assetId + "-" + requestId,
+                payload,
+                normalizedActorUserId));
+    }
+
+    private List<String> acceptedAssetParticipantUserIds(Asset asset) {
+        return safeRequests(asset == null ? null : asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
+                .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
+                .map(AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(this::isActiveUser)
+                .distinct()
+                .toList();
+    }
+
+    private List<String> activeAcceptedAssetMemberUserIds(Asset asset) {
+        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
+            return List.of();
+        }
+        LinkedHashSet<String> userIds = new LinkedHashSet<>(acceptedAssetParticipantUserIds(asset));
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerId(
+                OWNER_TYPE_ASSET,
+                normalizeId(asset.getAssetId()))) {
+            if (member == null
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeMemberStatus(member.getStatus()))) {
+                continue;
+            }
+            String userId = normalizeId(member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                userIds.add(userId);
+            }
+        }
+        return userIds.stream()
+                .filter(this::isActiveUser)
+                .toList();
+    }
+
+    private String scopedAssetRequestNotificationKey(
+            AssetRequestRecord request,
+            String eventId,
+            String subEventId) {
+        String requestId = normalizeId(request == null ? null : request.id());
+        if (StringUtils.hasText(requestId)) {
+            return requestId;
+        }
+        return String.join(":",
+                normalizeAssetRequestKind(request == null ? null : request.requestKind()),
+                normalizeId(request == null ? null : request.userId()),
+                normalizeId(eventId),
+                normalizeId(subEventId));
     }
 
     private List<String> activeResponsibleAssetUserIds(Asset asset) {
@@ -3018,7 +3969,7 @@ public class AssetsService {
         }
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
         String ownerUserId = normalizeId(asset.getOwnerUserId());
-        if (StringUtils.hasText(ownerUserId)) {
+        if (StringUtils.hasText(ownerUserId) && !isOwnerResponsibilityReleased(asset)) {
             userIds.add(ownerUserId);
         }
         List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
@@ -3045,6 +3996,7 @@ public class AssetsService {
         String ownerUserId = normalizeId(asset.getOwnerUserId());
         return asset.getRequests().stream()
                 .filter(Objects::nonNull)
+                .filter(request -> !isDeletedAssetRequest(request))
                 .map(AssetRequestRecord::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -3443,6 +4395,16 @@ public class AssetsService {
         return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
     }
 
+    private String effectiveReadActorUserId(String requestedUserId) {
+        String authenticatedUserId = currentActorUserId();
+        if (accessControlService.requiresAuthenticatedActor()) {
+            return authenticatedUserId;
+        }
+        return StringUtils.hasText(authenticatedUserId)
+                ? authenticatedUserId
+                : normalizeId(requestedUserId);
+    }
+
     private String normalizeAssetType(String type) {
         String normalizedType = safeText(type);
         return AssetCatalog.ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
@@ -3466,7 +4428,11 @@ public class AssetsService {
     }
 
     private String normalizeRequestStatus(String status) {
-        return "accepted".equals(safeText(status)) ? "accepted" : "pending";
+        String normalized = safeText(status);
+        if (STATUS_DELETED.equalsIgnoreCase(normalized) || "deleted".equalsIgnoreCase(normalized)) {
+            return "deleted";
+        }
+        return "accepted".equals(normalized) ? "accepted" : "pending";
     }
 
     private String normalizeMode(String value) {

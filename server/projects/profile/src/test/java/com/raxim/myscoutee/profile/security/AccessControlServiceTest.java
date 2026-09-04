@@ -764,14 +764,73 @@ class AccessControlServiceTest {
     @Test
     void assetTakeoverAllowsAcceptedManagerForUnderReviewAsset() {
         authenticateAs("u2");
+        Asset released = asset("asset-1", "u1", "UR");
+        released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
-        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "UR")));
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
-                .thenReturn(Optional.of(member("asset-1", "u2", "accepted", "Manager")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(released));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(member("asset-1", "u2", "accepted", "Manager")));
 
         boolean allowed = service.canCurrentActorTakeOverAsset("u2", "asset-1");
 
         assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetTakeoverAllowsEmbeddedAcceptedMemberWhenNoActiveManagerExists() {
+        authenticateAs("u2");
+        Asset released = asset("asset-1", "u1", "UR");
+        released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        released.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "u2",
+                "Member Two",
+                "MT",
+                "",
+                "accepted",
+                "",
+                "borrow",
+                "2026-09-03T07:00:00Z",
+                null)));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(released));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of());
+
+        boolean allowed = service.canCurrentActorTakeOverAsset("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetTakeoverHidesFallbackFromMembersWhenAnActiveManagerExists() {
+        authenticateAs("u2");
+        Asset released = asset("asset-1", "u1", "UR");
+        released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(released));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(
+                        member("asset-1", "u2", "accepted", "Member"),
+                        member("asset-1", "u3", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorTakeOverAsset("u2", "asset-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void releasedFormerOwnerCannotRetakeOrMutateTheAssetAsOwner() {
+        authenticateAs("u1");
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1")));
+        Asset released = asset("asset-1", "u1", "UR");
+        released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(released));
+
+        assertThat(service.canCurrentActorTakeOverAsset("u1", "asset-1")).isFalse();
+        assertThat(service.canCurrentActorDeleteAsset("u1", "asset-1")).isFalse();
+        assertThat(service.canCurrentActorPromoteAssetManager("u1", "asset-1")).isFalse();
     }
 
     @Test

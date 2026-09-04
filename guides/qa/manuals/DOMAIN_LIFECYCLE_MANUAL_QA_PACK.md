@@ -50,7 +50,7 @@ the same prerequisite without depending on an earlier human action.
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
 | Event Explore dummy checkout | One terminal dummy payment, one inactive succeeded basket and one accepted event membership | Event Explore checkout, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute effects only; no external provider, capture or settlement work | `EVENT-CHECKOUT-DUMMY-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
-| Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
+| Asset member invite or Join request | Pending asset-scoped membership plus one recipient notification | Asset Members pending row, full parent pending-counter chain and recipient bell | Asset acceptance/rejection and Asset-role notification | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Asset Explore dummy checkout | One scoped dummy payment, borrow request, inventory reservation and later owner decision | Resource/Asset Explore basket and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox effects only; no external provider, capture or settlement work | `ASSET-CHECKOUT-DUMMY-001` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
@@ -116,9 +116,9 @@ The principal checkpoint chains are:
 - `EVENT-SLOT-003` -> `EVENT-SLOT-004`: one generated past occurrence owns its
   own close state, groups and leaderboard evidence.
 - `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
-  `ASSET-MEMBER-002` -> `ASSET-BORROW-001` ->
-  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001` ->
-  `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` -> `ASSET-ASSIGN-003`: canonical
+  `ASSET-MEMBER-002` -> `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` ->
+  `ASSET-ASSIGN-003` -> `ASSET-BORROW-001` ->
+  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
 - `CONTENT-ADMIN-LIFECYCLE-001` is one isolated Content transaction: create
@@ -2923,7 +2923,7 @@ Status: **PASS** on 2026-08-05.
 
 ### `EVENT-CHECKOUT-DUMMY-001` — Event Explore dummy payment reaches accepted participation
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **PREPARED / NOT STAGED / NOT RUN**.
 
 Stable user guide:
 [`EVENT-CHECKOUT-DUMMY-001.md`](../checklists/event/EVENT-CHECKOUT-DUMMY-001.md).
@@ -6194,20 +6194,95 @@ is **PASS / CLOSED**.
 
 - Create one Transport, one Accommodation and one Supplies asset with their
   type-specific required fields and managed media. Edit one shared field on the
-  Transport, then delete and restore that same identity.
-- Verify exact IDs, type fields, active/Trash counters and reload persistence.
-  Accommodation and Supplies remain unchanged controls. This is one bounded
-  shared-form lifecycle, not three duplicate end-to-end afternoons.
+  Transport, then delete it through the normal UI.
+- Verify exact IDs, type fields, immediate Create/Delete counters and reload
+  persistence. The deleted backend record may remain internally retained but
+  Asset Trash/Restore is not a product UI contract. Accommodation and Supplies
+  remain unchanged controls. This is one bounded shared-form lifecycle, not
+  three duplicate end-to-end afternoons.
+- Executed **PASS / CLOSED** on 2026-09-03. Casey completed the normal
+  Create/Edit/Delete UI journey and reported no remaining material Asset UI
+  issue after one reload. The square shared image was maximally contained in
+  both the editor carousel and the owned-Asset list card without cropping or
+  stretching. Create and Delete reconciled the Asset selector and side-menu
+  counters in place; no Asset list polling was added.
+- The terminal persisted oracle retained three distinct target identities:
+  Transport `asset-1788401138449` was `T` with Subtitle
+  `Edited shared-field value`, Sedan `4/2`, no Location and its managed
+  `large.webp`; Accommodation `asset-1788401224102` remained active with the
+  initial Subtitle, Apartment `6/3`, identical `city/routes=Austin` and its own
+  managed `large.webp`; Supplies `asset-1788401283920` remained active with
+  the initial Subtitle, Safety `12/8`, no Location and no optional duplicate
+  image upload. The shared media path was already proven on Transport and
+  Accommodation.
+- Final authoritative and stored legacy/nested counts matched exactly:
+  Transport `0/0/0`, Accommodation `2/2/2`, Supplies `1/1/1`; internal retained
+  Delete count was `1`. The second active Accommodation was the explicitly
+  out-of-scope test record `asset-1788401751580` / `ddd`; it was neither
+  attributed to this checkpoint nor removed. The versioned reset preserves
+  such external records and recomputes retained counters after deleting only
+  the three QA-title targets.
+- During the run, the shared compact carousel and owned-Asset InfoCard media
+  paths were corrected to `contain`, and successful owned-Asset Create/Delete
+  now publish an absolute type count through `ActivityStore` to both legacy
+  and nested counter shapes. The existing frontend watcher compiled and synced
+  the final bundle successfully; no duplicate build/test process was started.
+- The originally drafted Asset Trash/Restore and replacement-Create steps were
+  removed: neither is a current user-facing Asset contract, and repeating
+  Create after terminal Delete would add no independent coverage.
 
 ### `ASSET-VIS-001` — discovery visibility
 
 - Stage one Public, Friends only and Invitation only asset and compare the
   exact Explore and owned/managed ID sets as owner, friend and unrelated user.
-- A direct denied detail read must expose no hidden asset data. Every list and
-  detail read is side-effect free; borrow and assignment writes are outside
-  this checkpoint.
+- In Explore, verify the existing Transport category filter against the exact
+  target set and verify each owner avatar uses the owner's profile image and
+  opens the same profile/impressions surface as Event Explore.
+- After the read-only baseline, change only the Public control to Invitation
+  only through Casey's normal Asset editor, then reload all three clients. The
+  owner set remains stable, Lina falls back to the Friends-only control, and
+  Liam sees no target Asset.
+- Direct denied detail reads must expose no hidden Asset data before or after
+  the Edit. List/detail/filter reads stay side-effect free; the single Save may
+  create only its normal collapsed Asset affinity task. Borrow, membership and
+  assignment writes remain outside this checkpoint.
+- Executed **PASS / CLOSED** on 2026-09-03. The user exercised the three-role
+  discovery journey with representative rather than mechanically repeated card
+  openings, independently confirmed the Sedan/Van/All Transport category
+  filter, and confirmed that the final Asset Explore owner avatar showed
+  Casey's real profile image instead of `CB`. That interactive avatar uses the
+  same existing profile/impressions store path as Event Explore.
+- The authenticated baseline matrix returned Public plus Friends to Lina,
+  Public only to Liam and no owned controls through Casey's Explore; every
+  forbidden direct detail read was denied. Casey then changed only
+  `QA ASSET-VIS-001 Public Transport` from Public to Invitation only. After the
+  reload boundary, the authenticated terminal matrix returned Friends only to
+  Lina and no controlled Asset to Liam, while Casey retained all three owned
+  controls and no owned control leaked into Casey's Explore.
+- The terminal Mongo oracle at `2026-09-03T03:20:18.902Z` proved that the
+  single Save changed only the target Asset domain plus one collapsed
+  `ASSET_CHANGED` affinity task, which completed without error. The edited
+  Asset retained every stable field except Visibility and update audit; both
+  sibling Assets were byte-identical. Authoritative and stored Transport
+  counts remained `3/3/3`, and no target borrow request, Asset membership,
+  assignment, outbox item or notification was created.
+- The run exposed and corrected a fixture-schema defect rather than accepting
+  it as product normalization: directly inserted control Assets had omitted
+  the normal Asset `_class`, empty `imageUrl` and disabled default `pricing`
+  object. The versioned fixture now stages the real persisted schema, and the
+  in-flight baseline was repaired under a guarded schema-version migration
+  before the strict edit oracle was rerun. The oracle was not weakened.
+- During the checkpoint, hidden Asset detail authorization was aligned with
+  discovery visibility, local/server viewer identity propagation was aligned,
+  and Asset Explore owner resolution was routed through the existing public
+  contact profile plus `UserProfileStore`/impressions flow. The existing
+  backend and frontend watchers compiled the fixes successfully; no duplicate
+  build or test process was started.
 
 ### `ASSET-MEMBER-001` — asset invite and pending linkage
+
+Status: **PASS / CLOSED (2026-09-03)** together with
+`ASSET-MEMBER-002` as the single `ASSET-MEMBER-LIFECYCLE-001` matrix journey.
 
 - From one asset already assigned through a generated Tournament-group
   resource surface, create one manager Invite and one participant Join request.
@@ -6215,18 +6290,168 @@ is **PASS / CLOSED**.
   exact asset owner/type/id plus event, stage/sub-event and generated-group
   booking scope. The other generated group and the parent event membership
   remain unchanged.
-- Verify recipient/requester projections name the same asset and actor once.
+- Without reload, verify the owner's Invite delta reaches the target Asset card,
+  Group action, stage selector and parent Activity/Event card exactly once.
+  Reload the owner and prove the same pending chain is reconstructed from the
+  persisted resource runtime instead of being cleared by the Invite write.
+  The red chain and the Asset card badge are both projections of the unresolved
+  request total: opening or closing the exact Transport branch must not consume
+  either, and only request resolution may reduce them.
+- Verify the invitee sees the assigned target Asset card itself exactly once,
+  not only parent counters. Verify recipient/requester projections name the
+  same asset and actor once.
+- The Invite must create exactly one Asset invitation notification for its
+  recipient. The Join request must create exactly one Asset join-request
+  notification for the owner/responsible managers, excluding the requester.
+  Neither producer may duplicate its outbox or inbox occurrence.
+- Before joining, the requester can open `Ask Organizer` and send one
+  controlled message through the standard Asset Service chat. The same one
+  owner-copy per participant and one canonical controlled message must survive
+  reload without duplication. While the request is pending, the requester's
+  own member-row action is labelled `Cancel join request`, not `Leave asset`.
 
 ### `ASSET-MEMBER-002` — accept/reject and role isolation
 
-- Accept one of the group-scoped Invite/Join requests and reject the other
-  independently.
-- Verify accepted asset membership/role, resolved notification and rejected
-  cleanup in the same generated-group booking scope. Asset Manager must not
-  silently promote the user to Event Admin, change an existing event
-  membership role or affect another group.
+- Accept the group-scoped Invite, then have the Asset owner accept the
+  independent Join request. The unresolved red Event/stage/Group/Asset chain
+  drops `2 -> 1 -> 0`; it exists only for pending work and must not be retained
+  or recreated for resolved membership changes.
+- An accepted ordinary Asset Member has no member-card management menu and
+  cannot leave/remove itself. The member contacts the owner through `Ask
+  Organizer`; only the owner or an explicit Asset Manager/Admin can remove an
+  accepted ordinary member. A still-pending requester may cancel only its own
+  request.
+- Explicitly promote the accepted invitee to Asset Manager, then prove the
+  delegated role by having that new Manager promote the accepted requester.
+  The promotion action disappears from a Manager card and is replaced for
+  the granting Manager by `Revoke Manager`; a non-owner Manager cannot revoke a
+  Manager appointed by somebody else and cannot remove any Manager, while the
+  Asset owner can revoke or remove every non-owner Manager. Have the new Manager
+  revoke the requester's Manager role back to plain Member, then have the owner
+  remove that requester. The invite acceptance notifies the responsible owner;
+  Join acceptance and later removal each notify the affected requester; each
+  promotion and revocation notifies its target, and delegated role changes also
+  notify the responsible owner. Each transition adds only its relevant
+  Notifications unread delta; no resolved transition adds an Asset-card pending
+  counter. Event `Admin` and Asset `Manager` remain separate scoped roles.
+- In the independent reset branch where the invitee rejects instead of accepts
+  the Invite, the request disappears, the unresolved pending chain decreases
+  once, no Asset membership is created, and the Asset owner/responsible manager
+  receives exactly one `asset-invitation-declined` notification naming the
+  invitee and request. This is a Notifications unread event, not a retained red
+  Event/stage/Group/Asset pending counter.
+- The final Asset contains the owner plus the promoted invitee and no requester
+  row. Asset Manager must not silently promote the user to Event Admin, change
+  an existing Event membership role or affect another group.
+- The retained flexible branch also covers owner handover. The current owner
+  may leave the Asset once; that removes the former owner's Asset membership,
+  leaves the Asset `Under review`, preserves pending counts, and notifies every
+  other accepted participant exactly once that a new owner is required. Only
+  an already accepted Asset Manager sees `Take over`; the first successful
+  takeover atomically becomes the actual Asset owner, restores the previous
+  active status and gains owner-level removal authority without changing any
+  Event or Group role. The former owner is not banned: after the takeover they
+  may submit a fresh Join request or accept a fresh Invite, return as a plain
+  Member, and later receive a delegated Manager role. That later promotion is
+  not a second takeover and must not grant owner/super-manager authority.
+- `Participation` remains a role-independent, read-only involvement list. It
+  is visible to every viewer only when the selected member has at least one
+  involvement row; an empty list hides the item for Members and Managers alike.
+- Flexible user-driven execution on `2026-09-03` exposed a frontend reconciliation
+  defect after Casey removed the previously accepted Riley: Mongo and the
+  resource-scope API both retained the target Transport at `1 / 4` with Nova's
+  one pending Invite, but the open card could temporarily retain the earlier
+  pending value while the Group Transport row became `0 / 0 - 0`. The resource
+  popup now prefers its freshly queried scoped Asset over an older own-Asset
+  copy and aggregates the authoritative metrics of every visible resource
+  owner for every resource type. This prevents Riley's Join signal from
+  recalculating Casey's visible Transport from Riley's empty own-assignment
+  maps, and a pending delta can no longer synthesize an absent zero-capacity
+  metric. The Asset Members callback also publishes the full backend member
+  list through the existing absolute member-sync signal before scope hydration;
+  after Casey rejects Riley, the card therefore changes from stale pending `2`
+  to canonical pending `1` just as the Group row applies its `-1` delta.
+  Read-only CDP observed Group A pending `1`, Transport `1 / 4` with red `1`,
+  and Asset Members with Casey plus Nova and one pending request. The frontend
+  watcher compiled and synced the changes; the focused resource builder,
+  tournament group converter and activity runtime sync specs passed `26/26`.
+  A subsequent manual close/reopen sequence found that the Join request's
+  signed `+1` remained in the resource signal and a newly mounted Sub Events
+  popup forwarded the same revision to the Activity Event card again, even
+  though the subevent counter itself stayed unchanged. The signed delta remains
+  part of the on-the-fly signal chain, but the store now permits its parent
+  propagation exactly once per resource-metrics revision. The frontend watcher
+  and focused store spec pass; the precise human close/reopen replay remains
+  covered by the user's later repeated popup close/reopen observations.
+- The same flexible run covered the distinct Invite and Join paths, pending
+  red-counter propagation and resolution, Invite rejection, Invite/Join
+  acceptance notifications, ordinary-member menus, owner and delegated
+  Manager promotion/revocation authority, role/icon/menu refresh, member
+  removal, Event-role isolation, Service chat/Ask Organizer continuity and
+  owner Leave/Take Over behavior. The user explicitly accepted closure from
+  the accumulated observations instead of repeating the complete deterministic
+  46-step route in one order.
+- A final focused real-route replay started from the versioned three-member
+  checkpoint and proved the formerly failing owner-removal sequence as
+  `3 / 0 · 4 -> 2 / 0 · 4 -> 2 / 0 · 4 -> 1 / 0 · 4` for Casey Leave, Nova
+  Take Over and Nova removing Riley. HTTP responses were successful; the Asset
+  write retained Nova's accepted scoped membership, and both the persisted
+  `activityResources` snapshot and generated-group runtime ended at `1 / 0 ·
+  4`. Fresh Nova and Riley scope reads returned that same value. The replay
+  produced one owner-left notification for the two no-manager candidates, one
+  takeover-completion notification for the remaining candidate and one
+  removal notification for Riley. The existing backend watcher compiled and
+  restarted successfully. A focused regression now preserves the successor
+  owner's scoped row when a later member-list write omits the owner. The
+  checkpoint fixture was reset and verified `not-staged` after evidence was
+  recorded.
+- A later final-member replay reopened the checkpoint. After Nova took over and
+  removed Riley, Riley disappeared from the scoped Asset request list but his
+  canonical Asset `activityMembers` row remained `accepted`. When Nova then
+  left as the last visible member, the server incorrectly selected removed
+  Riley as a successor, sent him an owner-handover notification and retained an
+  empty `0 / 4` Transport assignment in both the resource popup and Group menu;
+  reload preserved the mismatch. The write path now marks any stored scoped
+  Asset member row `deleted` when that member is removed, so it cannot be a
+  later Take Over candidate or notification recipient. The empty persisted
+  resource scope is also forwarded through the existing resource-metrics
+  signal as exact zero buckets, allowing both the card and parent Group row to
+  disappear without reload. The running backend and frontend watchers built
+  these corrections successfully. The versioned `3 / 0 · 4` owner-leave
+  savepoint was restored at `2026-09-03T12:06:57.196Z`; the user then replayed
+  Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave as
+  `3 -> 2 -> 2 -> 1 -> absent` and confirmed the resource disappeared through
+  the live UI. The terminal read-only Mongo oracle proved Riley's canonical
+  Asset member row is `deleted`, `activityResources` is `D` with no Asset
+  assignment, the generated-group runtime resource map is empty, and no
+  notification was created after Nova's final Leave. This closes the final
+  member-removal regression without a read projection or a frontend-only hide.
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
+
+Status: **PREPARED / DEFERRED / NOT STAGED**.
+
+Stable user guide:
+[`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
+
+The versioned fixture was staged at `2026-09-03T12:34:59.706Z`; two read-only
+checks proved its complete baseline and no browser/manual action occurred. It
+was then reset from its own snapshot at `2026-09-03T12:56:47.217Z` because the
+payment-facing interface will be rewritten and Assignment is the selected
+next testcase. The old date windows are intentionally not a resumable
+boundary.
+
+When Borrow becomes active again, stage a fresh baseline and then run its
+read-only status before opening a browser:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage asset-domain ASSET-BORROW-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-domain ASSET-BORROW-001
+```
+
+Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 - From Resource Explore under one generated Tournament group, request one
   controlled asset for the exact event/stage/group timeframe and accept it. In
@@ -6241,7 +6466,7 @@ is **PASS / CLOSED**.
 
 ### `ASSET-CHECKOUT-DUMMY-001` — Asset Explore dummy payment reaches the scoped borrow destination
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **ACTIVE / BASELINE READY**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-DUMMY-001.md`](../checklists/asset/ASSET-CHECKOUT-DUMMY-001.md).
@@ -6323,11 +6548,180 @@ payment.
 - Stage two overlapping booking requests against one finite-capacity asset,
   then move one request outside the overlap without waiting for wall-clock
   time.
+- Use a multi-day Event/Sub-event window and change the Resource Explore date
+  range between the overlapping and released windows. A Public Asset that has
+  no remaining capacity for the selected window must become unavailable or
+  disappear from the availability-filtered result; Public visibility alone
+  must never override timeframe availability.
 - Verify half-open timeframe boundaries, pending/accepted quantities,
-  available capacity and Explore order. Moving one request restores exactly
-  its released capacity in place and after reload.
+  available capacity, date-filter reconstruction and Explore order. Moving one
+  request restores exactly its released capacity in place and after reload.
 
 ### `ASSET-ASSIGN-001` — event/sub-event asset assignment
+
+Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
+Stable user guide:
+[`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
+
+Status: **PASS / CLOSED**.
+
+The first manual steps 1-9 exposed persistence, shared-counter and remaining-
+quantity defects and were not accepted as evidence. The checkpoint's guarded
+reset restored its snapshots, then the fixture was freshly staged at
+`2026-09-04T03:19:45.794Z`. Its subsequent read-only `status` passed all eleven
+baseline predicates: three zero-valued normal Event viewer documents, no
+normal resource, unchanged second Sub-event, exact normal/Asset memberships,
+exact Tournament/room memberships, Group A owner/type metrics, Group B control
+metric and document snapshot, stage/root pending `2`, and zero controlled
+notifications. The three managed browsers were freshly relaunched after the
+restage. The user then replayed steps 1-9. `verify-normal-assignment` initially
+exposed a harness-only false negative: it compared the complete bell counter
+with the pre-notification baseline even though the expected Supplies-open
+notification legitimately changes it. The corrected oracle verifies the
+fixture's exact inbox/outbox rows separately and keeps every other activity
+counter byte-identical. Its rerun reached `normal-verified` with all checks
+true: exact Nova and Riley owner records, `1/4` Transport, `1/3`
+Accommodation, shared `5/6` Supplies, common values for all three viewers,
+unchanged control Sub-event, memberships, Tournament branch and non-bell
+counters.
+
+After that replay, a generic contribution-added notification was implemented
+for server and frontend-local writes. Every newly persisted Supplies row sends
+exactly once to all other accepted participants in the relevant Event or
+generated Group, regardless of whether Nova, Riley or another participant is
+the contributor; the contributor and outside/control users are excluded. This
+new notification was deliberately not replayed manually in the already
+verified 1-9 transaction. It is recorded in the stable checklist and the
+future `verify-normal-assignment` oracle, which expects Nova `2` to reach Casey
+and Riley and Riley `3` to reach Casey and Nova.
+
+The subsequent exploratory Supplies-row deletion exposed two additional
+defects. The paged shared list could render Nova as `Unknown member, 0` because
+the row response did not carry its display-safe contributor fields, and Riley's
+own delete was rejected as no longer available because the popup built the
+outgoing write from a shared display cache instead of Riley's stored
+owner-scoped state. The list endpoint now batch-enriches the current page with
+name/initials/gender/age/city; the popup mutates only the active user's stored
+row. Successful deletion emits one
+`event-supplies-contribution-removed` notification to every other accepted
+participant under the same recipient rule as addition. A separate row directly
+below the popup header actions shows the stored minimum and
+`capacityMax - accepted` as a compact `Required · Remaining` badge. These
+corrections were covered by the accumulated user-driven run and the exact
+stored-state checks. The user additionally confirmed that deleting the owned
+Supplies item works after the correction. At the user's direction, the
+complete 1-9 interaction sequence was not replayed again after these focused
+corrections.
+
+A later close/reopen check exposed that popup hydration itself emitted a
+common-counter update from the already-open sub-event context. If that context
+was stale, closing the popup merely revealed the zero values it had already
+sent to the parent menu. The hydration-time counter emission has been removed:
+only a successful resource write may publish a common counter change. The
+normal sub-event reload endpoint now returns the counters already stored on
+the ActivityEvent documents; a read-only Riley request returned Transport
+`1/4`, Accommodation `1/3` and Supplies `4/6` for the current exploratory
+branch while the control sub-event remained zero. The frontend watcher built
+and synced this correction at `2026-09-04T05:59:42+02:00`. The accumulated
+1-9 run, the exact `normal-verified` savepoint, the user's successful owned-row
+delete, the persisted reload response and successful running watcher builds
+are accepted together as the normal-branch evidence. The guarded normal
+restore then recovered Nova `2` plus Riley `3` and common Supplies `5/6`
+exactly.
+
+The isolated `asset-assignment` fixture stages the normal and Tournament
+branches together. It is independent from Borrow and Checkout and must start
+only after the active Asset checkpoint has been reset:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+```
+
+Its named savepoint oracles are `verify-normal-assignment`,
+`verify-supply-contribution-delete`, the guarded
+`restore-normal-assignment-branch`, `repair-tournament-group-ids`,
+`stage-step-10-boundary`,
+`rollback-step-10-boundary`, `verify-group-capacity-edit`,
+`stage-step-16-boundary`, `rollback-step-16-boundary`,
+`verify-group-unassign`, `stage-step-22-boundary`,
+`rollback-step-22-boundary`, `verify-group-reassign`, and
+`verify-group-manager-removal`. The normal restore puts back the exact verified
+Nova `2` plus Riley `3` contribution state and removes only temporary delete or
+exploratory contribution notifications. At
+`2026-09-04T04:10:02.153Z`, `stage-step-10-boundary` accepted the exact normal
+savepoint and byte-identical Tournament baseline. Its immediate rollback proof
+restored the Tournament documents, scoped inbox/outbox, related queued work and
+notification counters exactly while preserving the normal branch. Phase is
+`step-10-ready`; checklist step 10 can now be replayed without repeating 1-9.
+At `2026-09-04T04:31:12.888Z`, the guarded Group-ID repair replaced the
+incorrect fixture-only `group:a/b` IDs with the server-generated `group:1/2`
+IDs, removed all legacy Group documents, restored the accepted normal branch
+after the extra Supplies delete check, and recaptured the step-10 boundary.
+Exact checks passed for Group A's three members and pending `2`, Group B's one
+member and pending `0`, all four leaderboard rows, the unchanged normal branch
+and the new savepoint.
+At `2026-09-04T06:50:00+02:00`, `verify-group-capacity-edit` passed all eight
+checks after Nova changed only `QA Group A Nova Transport` from capacity `4`
+to `5`. The oracle now reads the durable `groupsCount` from the stage runtime,
+compares embedded membership snapshots independent of BSON field order, and
+normalizes Spring's `_class` metadata out of the otherwise unchanged Group B
+runtime metrics. Group A retained both pending requests, Riley Accommodation
+remained `1 accepted / 1 pending / 0-3`, Group B and the normal branch remained
+unchanged, and the phase advanced to `group-capacity-verified`.
+The guarded `stage-step-16-boundary` then captured that exact capacity-5
+Tournament state, its scoped inbox/outbox and related queued work. An immediate
+`rollback-step-16-boundary` proof restored all five domains exactly while
+preserving the verified normal Event branch, so the live phase is
+`step-16-ready` and steps 1-15 do not need to be replayed.
+After the exploratory unassign observations, the same guarded rollback ran
+again at `2026-09-04T05:50:17.360Z`; all five exact-restore checks passed and
+the live fixture is again `step-16-ready` for the user's step-16 replay.
+
+Unassign now emits one neutral `event-asset-assignment-removed` notification.
+Recipients are resolved by the existing assignment scope: active members of
+the relevant generated Group or Event/Sub-event, the Asset owner, and every
+scope-matching accepted or pending Asset member. The actor is excluded and
+duplicate recipients are merged. A main-Event assignment uses the Event
+membership; every Sub-event assignment is identified by its exact
+`subEventId`, independently of whether the UI displays that Sub-event inside a
+slot. The Asset request may carry the concrete generated-Group owner ID or its
+base Event ID. The notification says only `Asset assignment removed` /
+`Assignment ended · <Asset title>`.
+
+The unassign write never physically deletes the resource or its scoped Asset
+member rows. The resource and every accepted/pending request in the removed
+scope change to `D` and disappear from active reads while remaining audit
+history. Reassigning the same source Asset creates a new resource generation
+and new member/request IDs; no `D` ID can be restored or reused. The step-16
+oracle verifies the status changes, exact `2 -> 1` counter reversal and Casey
+plus Riley notification. After step 20, `stage-step-22-boundary` captures the
+post-unassign state. The reassign oracle requires a fresh Nova resource, a
+fresh Nova owner request, a fresh Casey pending request, `1 / 1 · 0-5`, and
+the exact `1 -> 2` pending return while all prior `D` rows remain hidden. The
+same lifecycle and recipient rules apply when manager removal later clears
+Riley's Accommodation assignment.
+
+At `2026-09-04T08:46:00+02:00`, the guarded step-29 rollback restored the
+exact accepted steps 1-28 state. The real authenticated Event-member removal
+HTTP route then removed Riley from the complete Tournament tree once. The
+terminal `verify-group-manager-removal` oracle passed all thirteen checks:
+Riley left only the Tournament and Group A tree; the removed Accommodation
+resource and every affected active request became hidden `D` audit history;
+Nova's Transport generation retained its IDs/settings/routes and converged to
+`1 / 0 · 0-5`; the stage/root pending chain converged to `0`; Group B and the
+normal Event branch remained unchanged; and the scoped removal notification
+was emitted exactly once to Nova and Riley while excluding Casey and Lina.
+The server document model now preserves the generated room's
+`parentSubEventId` and `groupId` during membership-counter saves, and the
+member-removal write discovers assigned resources throughout the complete
+Event hierarchy before updating request statuses and affected resource
+metrics. The running backend watcher compiled and restarted successfully.
+Together with the accepted user-driven UI journey through step 29, this closes
+`ASSET-ASSIGNMENT-LIFECYCLE-001` as **PASS / CLOSED** without replaying steps
+1-28.
 
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
@@ -6339,40 +6733,152 @@ payment.
 
 - Assign Transport and Accommodation from one eligible owner plus Supplies
   contributions from two accepted users to the same normal sub-event.
+- Keep the shared Supplies assignment and its capacity only on Nova's resource
+  record; Riley persists only Riley's contribution row for that same Asset.
+- Treat every newly persisted Supplies contribution row identically regardless
+  of contributor: notify every other accepted participant in the relevant
+  Event or generated Group exactly once, exclude the contributor and all
+  outside/control participants, and do not resend for the same row. The first
+  Supplies assignment still emits its separate contribution-open notification.
+- List every shared contribution with the contributor's real display identity.
+  Only the contributor can delete that contributor's row. A successful delete
+  immediately and durably subtracts its exact quantity, retains the shared
+  Asset assignment/capacity, and notifies all other accepted participants once
+  while excluding the actor and outsiders.
+- Show `Required <capacityMin> · Remaining <capacityMax-accepted>` in a
+  separate row directly below the contribution popup header actions and update
+  it with the same persisted common quantity as the card/menu counter.
 - Compare every per-owner record with aggregate accepted/pending/capacity
   min/max values in Event Resources, the sub-event badges and parent
   navigation, both in place and after reload.
+- Opening, hydrating or closing a resource popup must not emit a common
+  resource-counter mutation. Closing clears only popup-local transient state;
+  parent menu counters remain at the last saved values.
 - The unrelated sub-event and all membership roles remain unchanged. Generated
   Tournament-group aggregation belongs to `TOURNAMENT-RESOURCE-001`.
 
-### `ASSET-ASSIGN-003` — mutation, unassign and removed-manager cleanup
+### `ASSET-ASSIGN-003` — mutation, unassign, reassign and removed-manager cleanup
 
 - Start from two generated Tournament groups. Group A contains at least two
   owner-scoped resource assignments; Group B is the unchanged negative
   control. Edit the capacity of one Group A asset and require the owning save
   to refresh only that exact event/stage/group/owner/type materialization. Do
   not reconstruct the answer in the list query.
-- Unassign that resource, then in an independent reset branch remove one
-  separate Group A asset manager from the event. The writes must subtract the
+- Unassign that resource, verify the old resource and its scoped accepted and
+  pending requests changed to hidden `D` audit rows, then reassign the same
+  source Asset as a new generation with fresh resource/member/request IDs.
+  After that, remove one separate Group A asset manager from the event. The
+  writes must subtract the
   exact removed owner/type contribution from Group A runtime metrics, the
   stage `groupsPending` aggregate and the root Event activity aggregate. Only
   settings/contributions owned by the removed manager are cleaned up;
-  unrelated Group A owners/types and every Group B record/counter remain
-  byte-identical.
+  unrelated Group A owners/types and every Group B domain record/counter remain
+  unchanged; server-maintained normalization fields are validated separately.
 - Verify the source asset, assignment/settings/contributions, materialized
   group/stage/root counters, Event and Tournament-group roles after each write,
   after popup close/reopen, after browser reload and after an idempotent
   terminal replay. No read projection or frontend counter fallback may repair
   the persisted result.
+- The consolidated fixture makes Group B an unchanged Lina domain control and
+  starts Group A/root pending at `2`. The source-Asset capacity mutation keeps
+  it at `2`; Nova's unassign reverses it to `1`; the fresh assignment plus new
+  Casey request returns it to `2`. Riley's later Tournament removal requires
+  the same exact `2 -> 1` write-side reversal while the normal Event still
+  retains Riley and its previously verified assignment state.
 
 ## Content cases
 
 ### `CONTENT-ADMIN-LIFECYCLE-001` — governed revisions, consent and Article lifecycle
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **PASS / CLOSED**.
 
 Stable user guide:
 [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
+
+Prepared runner sequence (do not stage while another checkpoint is active):
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-drafts-saved content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  restage-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-step-59-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset content-admin CONTENT-ADMIN-LIFECYCLE-001
+```
+
+The runner and Ava/Kai/Riley browser definition were prepared on 2026-09-03.
+After the user completed the governed-revision and Privacy activation branch,
+extra exploratory clicks left additional revisions and activation audits. The
+versioned `restage-step-32-boundary` command normalized only fixture-owned
+records at `2026-09-04T08:19:45.713Z` and captured the exact post-step-31
+boundary: nine controlled revisions, six controlled consents, four create
+audits plus one Privacy `v3` activation audit, sole active Privacy `v3`, one
+Kai `v3` consent, zero Riley `v3` consent, and unchanged Article buckets
+`7 / 5 / 7 / 0 / 0`. `rollback-step-32-boundary` then replayed the captured
+boundary successfully at `2026-09-04T08:19:54.721Z`. This replay fixture is a
+continuation boundary, not replacement evidence for the preceding user-driven
+UI observations. The explicit manual-browser-control rule remains in force.
+The step-41 persisted oracle passed at `2026-09-04T08:26:17.445Z`: Help `v2`
+and active Privacy `v3` were deleted exactly once, Privacy `v2` became the
+sole active fallback, Kai's historical `v3` consent remained intact, Riley
+still had no `v3` consent, the five `v1`/`v2` consent records were unchanged,
+and the audit sequence contained exactly four creates, one activation and two
+deletes. Terms, Explanation, the controlled Article pair and Article buckets
+remained unchanged. Ava's own additional consent records are outside the
+Kai/Riley isolation assertion and do not invalidate this boundary.
+The guarded `rollback-step-59-boundary` completed at
+`2026-09-04T11:03:14.489Z`. It restored the five Article records moved during
+the user's exploratory checks from the captured fixture baseline, retained the
+already-proven governed-content, seven-audit and consent branches, and placed
+only the lifecycle target in Draft. The read-only status oracle then proved
+exact Article buckets `7 / 5 / 6 / 1 / 0` and stable controls. Continue with
+one user-driven Publish at step 59; do not replay steps 1-58.
+The terminal republish oracle passed at `2026-09-04T11:05:31.941Z` after the
+user's single final Publish. Article buckets returned exactly to
+`7 / 5 / 7 / 0 / 0`; the lifecycle Article retained its exact identity,
+`contentKey`, `contentHtml` and managed-image references; the adjacent and
+unrelated controls remained unchanged. The governed branch retained exactly
+seven audits, Kai's `v3` consent and Riley's absent `v3` consent. Final HTTP
+media checks returned the original `200 image/webp` values: 98012 bytes /
+`8fe226b45db5c299ca10c71fa1be3b766ff0ff5bd67d125f957ca207479f9fae`
+for the lifecycle image and 82400 bytes /
+`159043edf1734fdea38e1a348284dca4ae0d39db1425137e227998c67cca9fa1`
+for the featured control. The accumulated user-driven Restore confirmations,
+persisted Draft evidence and final stable-field oracle close the three
+regressions discovered during this run; steps 1-66 are accepted without
+another replay.
+After recording that verdict, the versioned reset completed at
+`2026-09-04T11:08:01.897Z`; the following read-only status returned
+`phase=not-staged`, `activeScenario=null` and no retained fixture artifacts.
+The two distinct managed-image controls were read-only verified over the
+running HTTP stack before staging:
+
+- `idea-register-value/v1/large.webp`: HTTP 200, `image/webp`, 98012 bytes,
+  SHA-256 `8fe226b45db5c299ca10c71fa1be3b766ff0ff5bd67d125f957ca207479f9fae`;
+- `idea-why-priority-matching/v1/large.webp`: HTTP 200, `image/webp`, 82400
+  bytes, SHA-256
+  `159043edf1734fdea38e1a348284dca4ae0d39db1425137e227998c67cca9fa1`.
+
+Recheck those values at the Article savepoints; a Mongo URL match alone is not
+the media-retention oracle.
 
 This consolidated Core journey replaces four unexecuted microtest rows. It
 does not reopen or rewrite the already-PASS Article Editor and landing
@@ -6440,11 +6946,12 @@ publication evidence.
   base revision, actor/time, content audit/telemetry counts, consent histories,
   bucket counts, public query membership and managed-media object hashes.
   Reload and idempotence probes must not duplicate any mutation.
-- A versioned fixture must provide guarded `stage`, read-only `status`, named
+- The versioned fixture provides guarded `stage`, read-only `status`, named
   `drafts-saved`, `privacy-active`, `privacy-fallback`, `article-trashed`,
   `article-restored` and `article-republished` captures, plus exact `reset`.
-  Do not execute this row until that harness and the isolated Ava/Kai/Riley
-  browser-session definition exist.
+  Its Mongo savepoints prove the revision, audit, consent and Article-bucket
+  contract. Capture the existing admin telemetry stream separately at the
+  matching UI savepoints; do not infer Redis telemetry from Mongo state.
 
 ## Operator configuration and security cases
 
@@ -6839,7 +7346,7 @@ assertion references for their consolidated parents, not as microtests.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `MOBILE-WEBVIEW-001` | Cold-start after a frontend version change with the previous shell/cache installed. | Service worker/WebView serves a coherent single build, promotes the new cache only after success and never mixes old HTML with new chunk names. |
+| `MOBILE-WEBVIEW-001` | Cold-start after a frontend version change with the previous shell/cache installed; open, close and reopen the Location popup, then exercise the Asset Source link `Paste link` button and reopen Location plus another available popup. | Service worker/WebView serves a coherent single build, promotes the new cache only after success and never mixes old HTML with new chunk names; each popup keeps its normal dimensions, content, scrolling and close behavior, and the Asset clipboard action cannot stretch, clip, blank or leak overlay state into later popups. |
 | `MOBILE-WEBVIEW-002` | Background during a server-side mutation, then resume without manual refresh. | App-state/resume path reconciles user, counters and the open surface once; a stale WebView snapshot cannot overwrite the newer server revision. |
 | `MOBILE-WEBVIEW-003` | Logout/account-switch with populated ticket, image and notification caches. | User-scoped data/QR/counters disappear before the next identity renders; shared public assets may remain, but no authenticated cache crosses users. |
 | `MOBILE-ADB-001` | Use ADB to inspect connectivity, reverse tunnel, WebView console/network and one deliberate offline/online cycle. | Device route and certificate state are explicit, errors identify cache versus transport, offline mode exposes only its supported contract and reconnect converges without app-data clearing. |

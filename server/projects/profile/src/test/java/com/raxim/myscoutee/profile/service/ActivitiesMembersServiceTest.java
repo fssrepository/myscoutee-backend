@@ -766,6 +766,125 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryScopedAssetMemberUsesPersistedAssetManagerRole() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("City-to-Lake SUV");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "manager-1",
+                "Asset Manager",
+                "AM",
+                "woman",
+                "accepted",
+                "Promoted to asset manager.",
+                "invite",
+                "2026-07-23T00:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        "event-1",
+                        "Seattle Wildflower Meetup",
+                        "subevent-1",
+                        "Kickoff",
+                        "city-to-lake-suv:1",
+                        "City-to-Lake SUV",
+                        "Jul 23",
+                        "2026-07-23T13:30:00Z",
+                        "2026-07-23T14:15:00Z",
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        false))));
+        ActivityMember storedManager = member("asset-manager-sync", "asset-1", "manager-1", "Manager", "accepted");
+        storedManager.setActionAtIso("2026-07-23T01:00:00Z");
+        storedManager.setUpdatedDate("2026-07-23T01:00:00Z");
+        storedManager.setManagerGrantedByUserId("manager-grantor");
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(storedManager));
+        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId("manager-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result)
+                .filteredOn(entry -> "manager-1".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.role()).isEqualTo("Manager");
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.revision()).isEqualTo("2026-07-23T01:00:00Z");
+                    assertThat(entry.managerGrantedByUserId()).isEqualTo("manager-grantor");
+                    assertThat(entry.involvements())
+                            .singleElement()
+                            .satisfies(involvement -> {
+                                assertThat(involvement.ownerType()).isEqualTo("asset");
+                                assertThat(involvement.ownerId()).isEqualTo("asset-1");
+                                assertThat(involvement.status()).isEqualTo("accepted");
+                                assertThat(involvement.role()).isEqualTo("Manager");
+                            });
+                });
+    }
+
+    @Test
+    void queryScopedAssetOmitsOwnerAfterResponsibilityWasReleased() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
+        scopedAsset.setTitle("City-to-Lake SUV");
+        scopedAsset.setStatus("UR");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "manager-1",
+                "Asset Manager",
+                "AM",
+                "woman",
+                "accepted",
+                "Promoted to asset manager.",
+                "invite",
+                "2026-07-23T00:00:00Z",
+                null)));
+        ActivityMember storedManager = member("asset-manager-sync", "asset-1", "manager-1", "Manager", "accepted");
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(storedManager));
+        when(usersRepository.findByUserId("manager-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("manager-1");
+        assertThat(result.getFirst().role()).isEqualTo("Manager");
+        verify(usersRepository, never()).findByUserId("owner-1");
+    }
+
+    @Test
     void queryScopedAssetBorrowRequestShowsPendingBorrowerInsteadOfInvitation() {
         Asset scopedAsset = new Asset();
         scopedAsset.setAssetId("asset-1");
@@ -969,6 +1088,253 @@ class ActivitiesMembersServiceTest {
                 eq("asset-owner"));
         verify(affinityRecomputeTaskService, never())
                 .enqueueAssetRequestsChanged(anyString(), anyString());
+    }
+
+    @Test
+    void assetOwnerCanRemoveAcceptedScopedAssetManager() {
+        String eventId = "event-1";
+        String subEventId = "subevent-1";
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("asset-owner");
+        scopedAsset.setTitle("Owner transport");
+        scopedAsset.setStatus("A");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "manager-1",
+                "Asset Manager",
+                "AM",
+                "woman",
+                "accepted",
+                "Promoted to asset manager.",
+                "invite",
+                "2026-09-03T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Event",
+                        subEventId,
+                        "Stage",
+                        subEventId,
+                        "Stage",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+        Asset clearedAsset = new Asset();
+        clearedAsset.setAssetId("asset-1");
+        clearedAsset.setOwnerUserId("asset-owner");
+        clearedAsset.setTitle("Owner transport");
+        clearedAsset.setStatus("A");
+        clearedAsset.setRequests(List.of());
+        ActivityMember storedManager = member(
+                "asset-manager-sync",
+                "asset-1",
+                "manager-1",
+                "Manager",
+                "accepted");
+
+        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(storedManager));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "manager-1"))
+                .thenReturn(Optional.of(storedManager));
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                anyList(),
+                eq("asset-owner")))
+                .thenReturn("asset-owner");
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "asset-owner",
+                "manager-1",
+                "remove",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result).noneMatch(entry -> "manager-1".equals(entry.userId()));
+        verify(assetsService).syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                argThat(entries -> entries.stream().noneMatch(entry -> "manager-1".equals(entry.userId()))),
+                eq("asset-owner"));
+        ArgumentCaptor<ActivityMember> removedManager = ArgumentCaptor.forClass(ActivityMember.class);
+        verify(activityMembersRepository).save(removedManager.capture());
+        assertThat(removedManager.getValue().getId()).isEqualTo(storedManager.getId());
+        assertThat(removedManager.getValue().getStatus()).isEqualTo("deleted");
+        assertThat(removedManager.getValue().getUpdatedUser()).isEqualTo("asset-owner");
+        verify(activityMembersRepository, never()).delete(any(ActivityMember.class));
+    }
+
+    @Test
+    void inviteeCanAcceptScopedAssetInvitationAfterReloadWithoutPersistedInviterMetadata() {
+        String eventId = "event-1:subevent-1:group-a";
+        String subEventId = "subevent-1";
+        Asset pendingAsset = new Asset();
+        pendingAsset.setAssetId("asset-1");
+        pendingAsset.setOwnerUserId("asset-owner");
+        pendingAsset.setTitle("Group transport");
+        pendingAsset.setStatus("A");
+        pendingAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "invitee",
+                "Invited User",
+                "IU",
+                "woman",
+                "pending",
+                "Awaiting invitation response.",
+                "invite",
+                "2026-09-03T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Tournament",
+                        subEventId,
+                        "Group stage",
+                        "group-a",
+                        "Group A",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+        Asset acceptedAsset = new Asset();
+        acceptedAsset.setAssetId("asset-1");
+        acceptedAsset.setOwnerUserId("asset-owner");
+        acceptedAsset.setTitle("Group transport");
+        acceptedAsset.setStatus("A");
+        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "invitee",
+                "Invited User",
+                "IU",
+                "woman",
+                "accepted",
+                "Approved and synced with the plan.",
+                "invite",
+                "2026-09-03T08:00:00Z",
+                pendingAsset.getRequests().getFirst().booking())));
+
+        when(homeUserProfileService.resolveSelectedUserId("invitee")).thenReturn("invitee");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("invitee");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                anyList(),
+                eq("invitee")))
+                .thenReturn("asset-owner");
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "invitee",
+                "invitee",
+                "accept",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result)
+                .filteredOn(entry -> "invitee".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.pendingSource()).isNull();
+                    assertThat(entry.requestKind()).isNull();
+                });
+        verify(assetsService).syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                argThat(entries -> entries.stream().anyMatch(entry ->
+                        "invitee".equals(entry.userId())
+                                && "accepted".equals(entry.status())
+                                && entry.pendingSource() == null
+                                && entry.requestKind() == null)),
+                eq("invitee"));
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void acceptedScopedAssetMemberCannotRemoveSelf() {
+        String eventId = "event-1:subevent-1:group-a";
+        String subEventId = "subevent-1";
+        Asset acceptedAsset = new Asset();
+        acceptedAsset.setAssetId("asset-1");
+        acceptedAsset.setOwnerUserId("asset-owner");
+        acceptedAsset.setTitle("Group transport");
+        acceptedAsset.setStatus("A");
+        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "member-1",
+                "Accepted Member",
+                "AM",
+                "man",
+                "accepted",
+                "Approved and synced with the plan.",
+                "borrow",
+                "2026-09-03T08:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        eventId,
+                        "Tournament",
+                        subEventId,
+                        "Group stage",
+                        "group-a",
+                        "Group A",
+                        null,
+                        null,
+                        null,
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        null))));
+
+        when(homeUserProfileService.resolveSelectedUserId("member-1")).thenReturn("member-1");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(acceptedAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(acceptedAsset));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "member-1",
+                "member-1",
+                "remove",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result)
+                .filteredOn(entry -> "member-1".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        verify(assetsService, never()).syncScopedRequestsFromMemberEntries(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyList(),
+                anyString());
     }
 
     @Test

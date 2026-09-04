@@ -85,7 +85,7 @@ public class ActivityEventMapper {
                 safeText(record.getSubtitle()),
                 safeText(record.getTimeframe()),
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
-                Math.max(0, aggregateRuntimeActivity(record) - resourcePendingRead(record, context)),
+                aggregateRuntimeActivity(record),
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
                 safeText(record.getCreatorInitials()),
@@ -184,13 +184,6 @@ public class ActivityEventMapper {
             pending += normalizeCount(item.suppliesPending());
         }
         return Math.max(normalizeCount(record == null ? null : record.getActivity()), pending);
-    }
-
-    private int resourcePendingRead(ActivityEvent record, MappingContext context) {
-        String sourceId = normalizeId(record == null ? null : record.getSourceId());
-        return context == null || !StringUtils.hasText(sourceId)
-                ? 0
-                : normalizeCount(context.resourcePendingReadBySourceId().get(sourceId));
     }
 
     private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {

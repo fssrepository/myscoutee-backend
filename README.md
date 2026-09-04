@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-02:** 81/118 passed — core 81/98, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; the new Core `EVENT-CHECKOUT-DUMMY-001` and `ASSET-CHECKOUT-DUMMY-001` rows capture the complete manual dummy-payment/button-state journeys as NOT RUN; `EVENT-SCHEDULERS-001`, `EVENT-SLOT-TOURNAMENT-001`, `EVENT-EDIT-RUNTIME-001` and `JOB-PURGE` are PASS/CLOSED; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
+**2026-09-04:** 86/118 passed — core 86/98, external/optional 0/20; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001` and `CONTENT-ADMIN-LIFECYCLE-001` are PASS/CLOSED; Borrow remains deferred and not staged during the payment-interface rewrite; the Core `EVENT-CHECKOUT-DUMMY-001` and `ASSET-CHECKOUT-DUMMY-001` rows capture the complete manual dummy-payment/button-state journeys as NOT RUN; `EVENT-SCHEDULERS-001`, `EVENT-SLOT-TOURNAMENT-001`, `EVENT-EDIT-RUNTIME-001` and `JOB-PURGE` are PASS/CLOSED; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|

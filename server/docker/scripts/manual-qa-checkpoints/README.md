@@ -385,6 +385,92 @@ bash manual-qa-checkpoints.sh reset asset-domain ASSET-MEMBER-001
 create the resource linkage; the helper never writes the expected result in
 advance.
 
+The consolidated assignment lifecycle uses its isolated runner and one
+versioned baseline containing both a normal two-Sub-event Event and a
+two-group Tournament:
+
+```bash
+bash manual-qa-checkpoints.sh stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# perform the normal Sub-event assignments from the stable checklist
+bash manual-qa-checkpoints.sh verify-normal-assignment asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh repair-tournament-group-ids asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever checklist step 10 must be replayed without repeating steps 1-9
+bash manual-qa-checkpoints.sh rollback-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# edit only the Group A source Asset capacity 4 -> 5
+bash manual-qa-checkpoints.sh verify-group-capacity-edit asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever checklist step 16 must be replayed from the verified capacity-5 state
+bash manual-qa-checkpoints.sh rollback-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# unassign only that Group A Transport
+bash manual-qa-checkpoints.sh verify-group-unassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-22-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# reassign the same Asset as a fresh generation, invite Riley and have Riley accept
+bash manual-qa-checkpoints.sh verify-group-reassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh stage-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# use this whenever steps 29 onward must be replayed without repeating steps 1-28
+bash manual-qa-checkpoints.sh rollback-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+# remove Riley once from the Tournament Event
+bash manual-qa-checkpoints.sh verify-group-manager-removal asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+```
+
+`stage-step-10-boundary` records the exact entry state for the Group branch,
+its scoped notifications and related queued work. `rollback-step-10-boundary`
+restores that boundary without changing the verified normal Event branch, so
+step 10 can be replayed without repeating steps 1-9. After the capacity edit
+passes, `stage-step-16-boundary` captures that exact capacity-5 state and
+`rollback-step-16-boundary` restores it without repeating steps 1-15. The later
+`stage-step-29-boundary` records the exact accepted-Riley reassign state, and
+`rollback-step-29-boundary` restores the Group branch, related notifications,
+queued work and user activity counters without repeating steps 1-28. The
+verifiers compare Group B byte-for-byte and require persisted owner/type,
+runtime, stage and root values; no list query or frontend fallback is an
+oracle.
+
+`repair-tournament-group-ids` is the guarded migration for an already-staged
+Assignment checkpoint created with the obsolete `group:a/b` fixture IDs. It
+restores the verified normal branch, rebuilds only the Tournament branch with
+the generated `group:1/2` IDs, rejects legacy leftovers and recaptures the
+step-10 boundary.
+
+## Content administration lifecycle runner
+
+`CONTENT-ADMIN-LIFECYCLE-001` uses an isolated Content runner. It replaces
+only the four controlled governed-content scopes while staged, gives Ava, Kai
+and Riley exact Privacy v1/v2 consent histories, and creates one disposable
+published Article plus one featured negative control. The runner snapshots and
+restores the original scope records, audits, actor consents and controlled
+Article IDs. It refuses to stage while another manual-QA scenario is active.
+
+```bash
+bash manual-qa-checkpoints.sh stage content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash manual-qa-checkpoints.sh status content-admin CONTENT-ADMIN-LIFECYCLE-001
+# save the four inactive revisions from the stable checklist
+bash manual-qa-checkpoints.sh verify-drafts-saved content-admin CONTENT-ADMIN-LIFECYCLE-001
+# activate Privacy v3 and approve it only as Kai
+bash manual-qa-checkpoints.sh verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
+# delete Help v2 and active Privacy v3
+bash manual-qa-checkpoints.sh verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
+# move the controlled published Article to trash
+bash manual-qa-checkpoints.sh verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
+# restore it as a Draft, without publishing
+bash manual-qa-checkpoints.sh verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
+# publish the restored Draft once
+bash manual-qa-checkpoints.sh verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash manual-qa-checkpoints.sh reset content-admin CONTENT-ADMIN-LIFECYCLE-001
+```
+
+Every savepoint reads the persisted revisions, exact audit rows, per-user
+consents and Article bucket state. Unrelated revisions are compared through a
+semantic normalization that permits the service's canonical empty context and
+language-label normalization but no content, version, actor, timestamp or
+active-state drift. Unrelated Articles and other users' consents remain exact
+negative controls. The two staged Articles use distinct, already-managed
+system image sets; the lifecycle verifiers require their URLs and HTML
+references to remain unchanged.
+
 ## Operator-domain checkpoint runner
 
 `OPERATOR-FIREBASE-001` snapshots the exact deployment configuration before

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-02 11:45 CEST
+Updated: 2026-09-04 13:06 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -13,9 +13,14 @@ file first, then open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Consolidated Event scheduler journey and its execution contract:
   [`ADMIN_DYNAMIC_SURFACES_QA_PLAN.md`](../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#manual-scheduler-checkpoints)
-- Stable user-facing click guide for the active testcase; execution status and
-  machine evidence never belong in this file:
-  [`ASSET-LIFE-001.md`](../checklists/asset/ASSET-LIFE-001.md)
+- Stable user-facing click guide for the completed Asset membership testcase;
+  execution status or machine evidence never belong in a checklist:
+  [`ASSET-MEMBER-001.md`](../checklists/asset/ASSET-MEMBER-001.md).
+- Stable user-facing click guide for the active staged Assignment lifecycle;
+  execution status and machine evidence remain in the pack/handoff:
+  [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
+- Stable user-facing click guide for the prepared, queued Content lifecycle:
+  [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -25,6 +30,14 @@ file first, then open only the linked active checkpoint section.
   [`README.md`](../../../README.md#manual-qa-status)
 - Replayable Mongo fixture/checkpoint implementation:
   [`asset-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-domain-checkpoints.js)
+- Isolated normal/Tournament Asset assignment fixture and exact branch
+  oracles:
+  [`asset-assignment-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-assignment-lifecycle-checkpoints.js)
+- Isolated governed-content, consent and Article lifecycle fixture:
+  [`content-admin-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/content-admin-lifecycle-checkpoints.js)
+- Isolated generated-group Asset membership fixture and exact savepoint
+  oracles:
+  [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -42,6 +55,8 @@ file first, then open only the linked active checkpoint section.
   [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
 - Browser actor/layout configuration:
   [`browser-session-checkpoints.json`](../tools/browser-session-checkpoints.json)
+- Authenticated Asset visibility/detail read oracle:
+  [`verify-asset-visibility-http.sh`](../tools/verify-asset-visibility-http.sh)
 - Isolated Chrome launcher:
   [`open-checkpoint-browser-sessions.sh`](../tools/open-checkpoint-browser-sessions.sh)
 
@@ -52,19 +67,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-LIFE-001 — active
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-life-001--shared-type-schemas-and-lifecycle
-checklist: ../checklists/asset/ASSET-LIFE-001.md
-checklist_section: ../checklists/asset/ASSET-LIFE-001.md#1-create-the-three-type-controls
-substage: create-three-type-controls
-next_replay_boundary: Casey performs checklist steps 1-16 and reports `ASSET-LIFE-001 Create ready: three type controls persist`; then run `capture-lifecycle-created asset-domain ASSET-LIFE-001`
-fixture_phase: staged and independently rechecked at `phase=baseline-ready`; zero matching target Assets; authoritative, legacy and nested Transport/Accommodation/Supplies counts are all zero; authoritative Trash count is zero
-browser_phase: one managed Casey Asset lifecycle window is open and authenticated
-ledger_status: 81/118 total, Core 81/98; ASSET-LIFE-001 NOT RUN
-required_resume: keep the staged boundary intact; user follows ASSET-LIFE-001 steps 1-16; after the exact Create phrase run the versioned capture command and continue only from its returned next action
-actors: Casey Bridge (`650000000000000000000061`) — Asset lifecycle owner
-pending_machine_oracle: exact three-ID/type-schema/managed-media/counter capture after the user Create phrase
-known_contract_gap: source inspection found Java `/assets/restore` but no frontend Asset Trash query/filter or restore caller; the checklist owns this as a later explicit FAIL boundary and forbids an API/Mongo substitute
+checkpoint: none — CONTENT-ADMIN-LIFECYCLE-001 PASS / CLOSED
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#content-admin-lifecycle-001--governed-revisions-consent-and-article-lifecycle
+checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
+substage: terminal `article-republished` oracle passed at `2026-09-04T11:05:31.941Z`; steps 1-66 are accepted
+next_replay_boundary: none; do not replay this closed testcase unless its owning behavior changes
+fixture_phase: terminal evidence was recorded, then reset completed at `2026-09-04T11:08:01.897Z`; read-only status is `phase=not-staged`, `activeScenario=null` with no retained fixture artifacts
+browser_phase: Ava/Kai/Riley isolated browser windows may be closed; no further Content action is required
+browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
+ledger_status: 86/118 total, Core 86/98, External/optional 0/20; CONTENT-ADMIN-LIFECYCLE-001 is PASS/CLOSED
+queued_next: none selected
+required_resume: the Content evidence is complete. Confirm the fixture reset reports `phase=not-staged`; select the next testcase from the matrix instead of replaying Content
+actors: Ava performs Admin Content and Article writes; Kai is the retained public/member consent actor; Riley is the fresh public/member control
+pending_machine_oracle: none
+last_completed: CONTENT-ADMIN-LIFECYCLE-001 PASS/CLOSED. The terminal republish and media oracles passed, including all three regressions found during the run
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -101,10 +117,15 @@ Separate captured Asset follow-up: Tournament-origin asset behavior remains
 owned by the Asset block instead of duplicating closed Tournament cases.
 `ASSET-MEMBER-001/002` own generated-group Join/Invite transitions,
 `ASSET-BORROW-001` owns generated-group Resource Explore/borrow, and
+`ASSET-AVAIL-001` owns the multi-day Explore date-range boundary where a
+Public Asset can still be unavailable for an overlapping full-capacity window,
+while a released non-overlapping window restores it in place and after reload;
 `ASSET-ASSIGN-003` now explicitly owns generated-group edit, unassign and
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
+Borrow remains prepared but is deliberately deferred while its payment-facing
+interface is being rewritten. Assignment is the active next checkpoint.
 
 Separate captured dummy-payment follow-up: `EVENT-CHECKOUT-DUMMY-001` owns the
 direct Event Explore `Book Event -> Join -> Demo payment/Payment` journey,
@@ -115,8 +136,8 @@ Activity Events destination and free/approval/waitlist button controls.
 reconstruction, pending owner request, terminal acceptance, availability and
 free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
 stable click guides. Their versioned fixtures/browser-session definitions are
-created only when each row becomes active; they do not change the staged
-`ASSET-LIFE-001` boundary.
+  created only when each row becomes active; they do not create an active
+  fixture at the current post-`ASSET-VIS-001` boundary.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Core Content row and now has a stable click guide. It creates
@@ -127,9 +148,16 @@ moves a separate managed-media Article through Published -> Trashed -> Draft
 -> Published while comparing admin buckets, fresh public clients and an
 honestly non-live open client. The older unexecuted active-delete-denial
 assertion was corrected to match Java, frontend-local and the administrator
-manual. Its versioned fixture/browser-session definition is created only when
-the row becomes active; it does not change the staged `ASSET-LIFE-001`
-boundary.
+manual. Its versioned fixture, six savepoint oracles, exact reset and
+Ava/Kai/Riley browser-session definition are prepared. It remains explicitly
+not staged and no Content browser was opened, so it did not alter the active
+Asset Assignment boundary. After Assignment is recorded and reset, stage
+Content once, require `baseline-ready`, and only then open its configured
+browsers. The Mongo harness proves revision, audit, consent and Article-bucket
+state; the existing admin telemetry stream is a separate savepoint oracle.
+Both distinct managed-image controls returned HTTP 200 and their pre-stage
+sizes/SHA-256 values are recorded in the Content pack section for tomorrow's
+retention comparison.
 
 ### Efficient resume gate
 
@@ -193,10 +221,17 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Next test: `ASSET-LIFE-001`. The next session first generates and validates its
-versioned fixture, user checklist and browser-session definition, then stages
-the checkpoint once. It verifies the persisted baseline before opening the
-managed browser windows.
+`ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
+was verified and reset through its versioned harness because its
+payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
+steps 1-28 are PASS and its guarded phase is `step-29-ready`. The user now owns
+all browser interaction and continues at step 29 in Casey. If replay is needed,
+`rollback-step-29-boundary` restores the exact post-reassign state without
+repeating steps 1-28. After Assignment is
+completed, recorded and reset, the prepared
+`CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
+it early: its guarded runner intentionally refuses to coexist with another
+active manual-QA snapshot.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -238,13 +273,21 @@ interaction check. Codex validates the backend/API/persisted oracle after the
 user action and never substitutes a browser-derived verdict for the user's
 frontend PASS/FAIL.**
 
-Codex owns fixture preparation, isolated browser startup and machine-side
-diagnosis. After the user reports a discrepancy, Codex may inspect the managed
-browser through CDP when logs, API state and persistence are insufficient to
-localize the defect. CDP is diagnostic only: it may inspect the failing
-document's console, network and runtime state, but it must not click through
-the test, manufacture the user's visual evidence or independently declare a
-frontend PASS.
+Codex owns fixture preparation, explicitly requested isolated browser startup
+and machine-side diagnosis. During a manual run, CDP may be used only after the
+user reports a concrete observed defect, and only to diagnose that defect. It
+must never prepare or position the test, inspect ahead, navigate, click,
+reposition, submit, manufacture evidence or perform any part of the user's
+manual sequence. Prefer source, logs, API and persisted state. CDP-dependent
+versioned infrastructure may run only when the stable checklist explicitly
+requires it and the user has started that checkpoint; it never performs or
+replaces a manual action.
+
+Codex must not invent eligibility, role, menu, counter, notification or
+lifecycle rules while executing a checkpoint. The only acceptance rules are
+the stable checklist and explicit user corrections. If implementation evidence
+conflicts with them, record the mismatch and repair the owning code or fixture;
+do not silently redefine the expected behavior or expand the current test.
 
 ### Pair-QA execution and replay contract
 
@@ -262,7 +305,7 @@ frontend PASS.
    then runs the independent API/backend/persisted oracle and records the
    result outside the checklist.
 5. On a reported defect, freeze the current boundary, diagnose the smallest
-   owning scope (including targeted CDP when necessary), repair it through the
+   owning scope from source, logs, API and persisted state, repair it through the
    existing dev pipeline, restore the nearest valid named substage and replay
    only the shortest causal tail. Do not restart the full testcase unless the
    failure contaminated its earlier shared baseline.
@@ -280,10 +323,11 @@ visual grouping. The main testcase table has one normalized, domain-colored
 The workbook's separate `QA domain | Priority | Progress` table is generated
 from the same rows, begins at row 8 as three side-by-side columns above the
 main table, orders whole domains by numeric `Priority DESC`, and shows `passed
-/ total (percentage)` per domain. The generator owns compact A-S widths: all
-19 primary columns remain visible without a default horizontal scroll, long
+/ total (percentage)` plus summed unfinished `MIN/MAX` ranges per domain. The
+generator owns compact A-T widths: all 20 primary columns remain visible
+without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
-and only the two formula-helper columns remain hidden. Summary count cells are
+and only the four formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
@@ -434,7 +478,7 @@ record has been removed.
   by those journeys rather than standalone microtests.
 - After appending matrix rows, run the repository's versioned
   `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
-  workbook totals. Verify the CSV has 19 columns per logical record, including
+  workbook totals. Verify the CSV has 20 columns per logical record, including
   the normalized `QA domain`, unique
   testcase IDs, the locked pre-existing logical-row prefix/hash, and the
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
@@ -453,6 +497,15 @@ record has been removed.
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
+- `Remaining QA complexity (min/max)` estimates only unfinished work.
+  Completed rows are blank; partial rows contain only their open tail. The
+  minimum is the clean prepared run; the maximum adds normal Codex
+  stage/oracle/reset waiting and the calibrated defect/replay contingency.
+  Recalculate both bounds with
+  `guides/qa/reference/MANUAL_QA_COMPLEXITY_MODEL.md` whenever the remaining
+  contract changes. The XLSX domain overview sums both bounds beside
+  progress; never substitute the risk-based `Manual QA priority` score for an
+  effort estimate. Record any overrun beyond the range separately.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
   passed and remaining counts separately for Core and External/optional, plus
@@ -704,20 +757,22 @@ record has been removed.
   producer action only when Codex's latest explicit manual instruction named
   that same action and asked for that phrase. Never bind a bare `megvan` to an
   unissued resume action from the file or from remembered conversation state.
-- Before handing a producer action to the user, verify the exact actionable
-  surface from the implementation and, when the current UI is ambiguous, from
-  the managed browser's read-only DOM. Name the complete interaction path,
-  including row/menu identity and any confirmation button.
+- Before handing a producer action to the user, verify the expected actionable
+  surface from the stable checklist and implementation. When the current UI is
+  ambiguous, use the user's screenshot or description; do not inspect the live
+  browser. Name only the interaction path already defined by the checklist or
+  explicitly corrected by the user.
 - When an editable input and its later Review/summary disagree, do not infer
   which display is wrong. Capture the live DOM `value`/typed value, the owning
   component draft/store value and the summary formatter output separately.
   Copy/paste is its own input-event branch: a browser number input may display
   a normalized number while the raw pasted string remains different in the
   application draft. Diagnose and replay that exact event path before Save.
-- Read-only CDP inspection must close only its temporary WebSocket connection.
-  Never call Playwright/CDP `browser.close()` or a browser-level close command
-  against a managed QA Chrome merely to detach an inspector; that terminates
-  the user's checkpoint window and discards in-memory evidence.
+- Ad-hoc CDP inspection is forbidden until the user reports a concrete defect.
+  After that report it may inspect only the failing state, must remain
+  diagnostic/read-only, and must close only its temporary WebSocket
+  connection. Never call a browser-level close command against a managed QA
+  Chrome merely to detach an inspector.
 - In the Chrome build used by this campaign, CDP
   `Emulation.setGeolocationOverride` and `Browser.setPermission` must both be
   treated as session-scoped: closing their connections can silently restore
@@ -834,9 +889,10 @@ record has been removed.
   is unchanged, classify the observation as **NOT EXECUTED**. In particular,
   an AI-triggered restart or setup failure belongs to Codex's repair evidence,
   never to the user's manual action.
-- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
-  read-only managed-session tool for resolving an ambiguous current surface;
-  it must never be used to perform the user's manual producer action.
+- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` may be
+  used only after the user reports a concrete defect, and only to diagnose
+  that defect. It must never resolve a test rule, prepare or navigate the UI,
+  or perform a manual producer action.
 
 ### 1.3 Context-dependent frontend-local parity
 

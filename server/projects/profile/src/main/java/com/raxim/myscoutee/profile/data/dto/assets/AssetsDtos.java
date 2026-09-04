@@ -63,7 +63,38 @@ public final class AssetsDtos {
             String ownerName,
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
-            List<String> menuActions) {
+            List<String> menuActions,
+            String ownerReleasedAtIso) {
+        public AssetDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String description,
+                String imageUrl,
+                String sourceLink,
+                String locationLabel,
+                String priceLabel,
+                Boolean policiesEnabled,
+                Integer policyCount,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                AssetRequestMetricsDto metrics,
+                List<String> menuActions) {
+            this(
+                    id, type, title, subtitle, category, city, capacityTotal, quantity,
+                    description, imageUrl, sourceLink, locationLabel, priceLabel,
+                    policiesEnabled, policyCount, visibility, status, ownerUserId, ownerName,
+                    requests, metrics, menuActions, null);
+        }
+
         public AssetDto(
                 String id,
                 String type,
@@ -108,7 +139,8 @@ public final class AssetsDtos {
                     ownerName,
                     requests,
                     null,
-                    menuActions);
+                    menuActions,
+                    null);
         }
     }
 
@@ -140,7 +172,37 @@ public final class AssetsDtos {
             String ownerName,
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
-            List<String> menuActions) {
+            List<String> menuActions,
+            String ownerReleasedAtIso) {
+        public AssetDetailDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String details,
+                String imageUrl,
+                String sourceLink,
+                List<String> routes,
+                Boolean policiesEnabled,
+                List<PolicyItemDto> policies,
+                PricingConfigDto pricing,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                AssetRequestMetricsDto metrics,
+                List<String> menuActions) {
+            this(
+                    id, type, title, subtitle, category, city, capacityTotal, quantity,
+                    details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null);
+        }
+
         public AssetDetailDto(
                 String id,
                 String type,
@@ -185,7 +247,8 @@ public final class AssetsDtos {
                     ownerName,
                     requests,
                     null,
-                    menuActions);
+                    menuActions,
+                    null);
         }
 
         public AssetDto toAssetDto() {
@@ -213,7 +276,8 @@ public final class AssetsDtos {
                     ownerName,
                     requests,
                     metrics,
-                    menuActions);
+                    menuActions,
+                    ownerReleasedAtIso);
         }
     }
 

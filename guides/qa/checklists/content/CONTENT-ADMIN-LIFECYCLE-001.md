@@ -39,8 +39,9 @@ Begin only after Codex confirms this exact baseline:
 - `QA CONTENT-ADMIN-LIFECYCLE-001 Article` is one English, published,
   non-featured article with a canonical managed image set and is visible once
   publicly; its exact All/Featured/Published/Drafts/Trashed counts are reported;
-- `QA CONTENT-ADMIN-LIFECYCLE-001 Featured Control`, the previously proven
-  `ARTICLE-SRC-002` record and all non-fixture content are unchanged controls;
+- `QA CONTENT-ADMIN-LIFECYCLE-001 Featured Control`, the pre-stage presence or
+  absence of the previously proven `ARTICLE-SRC-002` record, and all
+  non-fixture content are unchanged controls;
 - isolated Ava, Kai and Riley windows are open and identity-verified.
 
 ## Complete test journey
@@ -93,8 +94,9 @@ Begin only after Codex confirms this exact baseline:
 
     `<p onclick="qaUnsafe()"><strong>QA privacy v3</strong></p><script>qaUnsafe()</script>`
 
-14. Add one section, rename it `QA research choice`, set its HTML to
-    `<p>Optional QA research consent.</p>`, and mark it `Optional`.
+14. Edit the existing second section: rename it `QA research choice`, set its
+    HTML to `<p>Optional QA research consent.</p>`, and keep it `Optional`. Do
+    not add a third section.
 15. Switch both sections to Preview once. Confirm no script, alert, navigation
     or other active content executes and the mandatory/optional presentation is
     distinct.
@@ -142,6 +144,13 @@ Begin only after Codex confirms this exact baseline:
     `CONTENT-ADMIN-LIFECYCLE-001 privacy active: v3 public, Kai approved once, Riley still stale`
 
 ### 3. Delete an inactive revision, then exercise active fallback
+
+Replay point: `rollback-step-32-boundary` restores the exact post-step-31
+state: four saved revisions, Privacy `v3` solely Active, one Kai `v3`
+consent, zero Riley `v3` consent, exactly four create audits plus one
+activation audit, and the untouched Article branch. After a rollback, reload
+the already-open Ava/Kai/Riley pages once and continue here; do not repeat
+steps 1-31.
 
 32. After Codex confirms `privacy-active`, in Ava open Content -> Help ->
     Magyar and locate inactive Help `v2`.
@@ -219,6 +228,12 @@ Begin only after Codex confirms this exact baseline:
 
     `CONTENT-ADMIN-LIFECYCLE-001 article restored: same identity and media, Draft only`
 
+Replay point: `rollback-step-59-boundary` restores the exact post-step-58
+state without repeating steps 1-58. It preserves the verified governed-content,
+audit and consent branches, restores all exploratory Article controls, and
+places only the lifecycle target in Draft. After this rollback, reload Ava
+once and continue at step 59.
+
 59. After Codex confirms `article-restored`, in Ava select `Publish` on the
     restored Draft, then confirm `Publish` exactly once.
 60. Confirm the target leaves the already-open Drafts list, Drafts decrements
@@ -234,13 +249,16 @@ Begin only after Codex confirms this exact baseline:
     renders the same body with the same managed large image.
 64. Reload Ava and Riley exactly once each. Recheck governed-content Active
     versions, Article admin buckets and fresh public inclusion.
-65. Confirm Riley owns no Kai consent, the adjacent Featured Control and
-    `ARTICLE-SRC-002` are unchanged, and no Help/Terms/Explanation draft became
-    public accidentally.
+65. Confirm Riley owns no Kai consent, the adjacent Featured Control and the
+    pre-stage `ARTICLE-SRC-002` state are unchanged, and no Help/Terms/
+    Explanation draft became public accidentally.
 66. Report the terminal phrase:
 
     `CONTENT-ADMIN-LIFECYCLE-001 UI complete: revisions, consent, fallback and article lifecycle persist`
 
 Wait for Codex's final persisted/audit/media/idempotence oracle. Do not reset
 or continue to another testcase until Codex records the result and restores
-the fixture.
+the fixture. The final oracle must also prove that the target's `contentKey`
+and `contentHtml` stayed byte-for-byte unchanged; together with the step-53
+Restore confirmation and persisted Draft result, these close the three
+regressions found during this run.

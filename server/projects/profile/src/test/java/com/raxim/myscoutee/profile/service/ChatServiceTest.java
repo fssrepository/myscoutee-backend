@@ -47,6 +47,7 @@ import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -224,6 +225,83 @@ class ChatServiceTest {
                 .containsExactly("user-1", "user-2");
         verify(chatsRepository).saveAll(anyList());
         verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
+    }
+
+    @Test
+    void ensureAssetServiceChatMovesTheExistingConversationToTheCurrentTakeOverOwner() {
+        String requesterUserId = "riley";
+        String previousOwnerUserId = "casey";
+        String currentOwnerUserId = "nova";
+        String eventId = "event-1";
+        String subEventId = "sub-event-1";
+        String assetId = "asset-1";
+        String chatId = "c-service-asset-" + assetId + "-" + subEventId + "-" + requesterUserId;
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId(eventId);
+        event.setStartAtIso("2026-09-03T10:00:00Z");
+        event.setEndAtIso("2026-09-03T11:00:00Z");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        Asset asset = new Asset();
+        asset.setAssetId(assetId);
+        asset.setOwnerUserId(currentOwnerUserId);
+        asset.setTitle("Group Transport");
+
+        Chat requesterChat = chat(chatId, requesterUserId, 0, "2026-09-03T09:00:00Z", "serviceEvent");
+        requesterChat.setMemberIds(List.of(requesterUserId, previousOwnerUserId));
+        requesterChat.setContextStartAtIso(event.getStartAtIso());
+        requesterChat.setContextEndAtIso(event.getEndAtIso());
+        Chat previousOwnerChat = chat(chatId, previousOwnerUserId, 0, "2026-09-03T09:00:00Z", "serviceEvent");
+        previousOwnerChat.setMemberIds(List.of(requesterUserId, previousOwnerUserId));
+        previousOwnerChat.setContextStartAtIso(event.getStartAtIso());
+        previousOwnerChat.setContextEndAtIso(event.getEndAtIso());
+
+        when(homeUserProfileService.resolveSelectedUserId(requesterUserId)).thenReturn(requesterUserId);
+        when(mongoTemplate.findOne(any(Query.class), eq(ActivityEvent.class))).thenReturn(event);
+        when(mongoTemplate.findOne(any(Query.class), eq(Asset.class))).thenReturn(asset);
+        when(usersRepository.findByUserId(currentOwnerUserId))
+                .thenReturn(Optional.of(user(currentOwnerUserId, "Nova Social", "NS")));
+        when(usersRepository.findByUserIdIn(any()))
+                .thenReturn(List.of(
+                        user(requesterUserId, "Riley Outside", "RO"),
+                        user(currentOwnerUserId, "Nova Social", "NS")));
+        when(chatsRepository.findByChatId(chatId)).thenReturn(List.of(requesterChat, previousOwnerChat));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.ensureServiceChat(new ChatServiceEnsureRequestDto(
+                "asset",
+                eventId,
+                subEventId,
+                assetId,
+                previousOwnerUserId,
+                "Asset Service · Group Transport",
+                "Ask the organizer"), requesterUserId);
+
+        assertThat(result.memberIds()).containsExactly(requesterUserId, currentOwnerUserId);
+        assertThat(result.avatar()).isEqualTo("NS");
+        ArgumentCaptor<Query> assetQuery = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).findOne(assetQuery.capture(), eq(Asset.class));
+        assertThat(assetQuery.getValue().getQueryObject()).doesNotContainKey("ownerUserId");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Chat>> savedChats = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository, times(2)).saveAll(savedChats.capture());
+        assertThat(savedChats.getAllValues().stream().flatMap(List::stream).toList())
+                .anySatisfy(chat -> {
+                    assertThat(chat.getOwnerUserId()).isEqualTo(requesterUserId);
+                    assertThat(chat.getMemberIds()).containsExactly(requesterUserId, currentOwnerUserId);
+                    assertThat(chat.getAvatar()).isEqualTo("NS");
+                })
+                .anySatisfy(chat -> {
+                    assertThat(chat.getOwnerUserId()).isEqualTo(currentOwnerUserId);
+                    assertThat(chat.getMemberIds()).containsExactly(requesterUserId, currentOwnerUserId);
+                });
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Iterable<Chat>> removedChats = ArgumentCaptor.forClass(Iterable.class);
+        verify(chatsRepository).deleteAll(removedChats.capture());
+        assertThat(removedChats.getValue()).extracting(Chat::getOwnerUserId)
+                .containsExactly(previousOwnerUserId);
     }
 
     @Test

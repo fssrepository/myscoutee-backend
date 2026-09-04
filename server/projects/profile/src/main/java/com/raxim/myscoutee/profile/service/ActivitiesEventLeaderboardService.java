@@ -492,6 +492,7 @@ public class ActivitiesEventLeaderboardService {
                     membership.pending(),
                     membership.ownerType(),
                     membership.ownerId(),
+                    membership.acceptedMemberUserIds().contains(normalizeId(userId)),
                     groupResourceMetrics(stageRuntime, groupId, userId)));
         }
         return result;
@@ -531,7 +532,8 @@ public class ActivitiesEventLeaderboardService {
                 ownerType,
                 ownerId,
                 snapshot == null ? 0 : snapshot.acceptedMemberUserIds().size(),
-                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size());
+                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size(),
+                snapshot == null ? Set.of() : Set.copyOf(snapshot.acceptedMemberUserIds()));
     }
 
     private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
@@ -560,18 +562,12 @@ public class ActivitiesEventLeaderboardService {
                 totals[3] += safeCount(metric.capacityMax());
             }
         }
-        Map<String, String> readAtByType = runtime == null
-                || runtime.getGroupResourceReadAtByUserId() == null
-                ? Map.of()
-                : runtime.getGroupResourceReadAtByUserId()
-                        .getOrDefault(normalizeId(groupId), Map.of())
-                        .getOrDefault(normalizeId(userId), Map.of());
         Map<String, EventTournamentResourceMetricDto> result = new LinkedHashMap<>();
         for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
             int[] totals = entry.getValue();
             result.put(entry.getKey(), new EventTournamentResourceMetricDto(
                     totals[0],
-                    readAtByType.containsKey(entry.getKey()) ? 0 : totals[1],
+                    totals[1],
                     totals[2],
                     Math.max(totals[2], totals[3])));
         }
@@ -1064,7 +1060,12 @@ public class ActivitiesEventLeaderboardService {
                 + normalizedGroupId;
     }
 
-    private record GroupMembershipScope(String ownerType, String ownerId, int accepted, int pending) {
+    private record GroupMembershipScope(
+            String ownerType,
+            String ownerId,
+            int accepted,
+            int pending,
+            Set<String> acceptedMemberUserIds) {
     }
 
     private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {

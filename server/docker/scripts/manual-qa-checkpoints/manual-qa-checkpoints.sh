@@ -150,9 +150,48 @@ Usage:
   bash manual-qa-checkpoints.sh status asset-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh capture-lifecycle-created asset-domain ASSET-LIFE-001
   bash manual-qa-checkpoints.sh verify-lifecycle-edited asset-domain ASSET-LIFE-001
-  bash manual-qa-checkpoints.sh verify-lifecycle-trashed asset-domain ASSET-LIFE-001
-  bash manual-qa-checkpoints.sh verify-lifecycle-restored asset-domain ASSET-LIFE-001
+  bash manual-qa-checkpoints.sh verify-lifecycle-deleted asset-domain ASSET-LIFE-001
+  bash manual-qa-checkpoints.sh verify-visibility-readonly asset-domain ASSET-VIS-001
+  bash manual-qa-checkpoints.sh repair-visibility-fixture asset-domain ASSET-VIS-001
+  bash manual-qa-checkpoints.sh verify-visibility-edited asset-domain ASSET-VIS-001
+  bash manual-qa-checkpoints.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001
+  bash manual-qa-checkpoints.sh verify-asset-member-terminal asset-domain ASSET-MEMBER-001
+  bash manual-qa-checkpoints.sh refresh-retained-window asset-domain ASSET-MEMBER-001
+  bash manual-qa-checkpoints.sh prepare-owner-leave-replay asset-domain ASSET-MEMBER-001
+  bash manual-qa-checkpoints.sh rollback-owner-leave asset-domain ASSET-MEMBER-001
   bash manual-qa-checkpoints.sh reset asset-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh repair-normal-supplies-owner asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-normal-assignment asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-supply-contribution-delete asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh restore-normal-assignment-branch asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh repair-tournament-group-ids asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-group-capacity-edit asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-16-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-group-unassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage-step-22-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-22-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-group-reassign asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-29-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-group-manager-removal asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh reset asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh stage content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh status content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-drafts-saved content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh restage-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-article-restored content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh rollback-step-59-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh verify-article-republished content-admin CONTENT-ADMIN-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh reset content-admin CONTENT-ADMIN-LIFECYCLE-001
   bash manual-qa-checkpoints.sh stage operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh next operator-domain OPERATOR-FIREBASE-001
   bash manual-qa-checkpoints.sh status operator-domain OPERATOR-FIREBASE-001
@@ -258,7 +297,15 @@ run_scenario() {
         scenario_script="${SCRIPT_DIR}/scenarios/event-domain-checkpoints.js"
       fi
       ;;
-    asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
+    asset-domain)
+      if [ "${checkpoint_id}" = "ASSET-MEMBER-001" ] || [ "${checkpoint_id}" = "ASSET-MEMBER-002" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/asset-member-lifecycle-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js"
+      fi
+      ;;
+    asset-assignment) scenario_script="${SCRIPT_DIR}/scenarios/asset-assignment-lifecycle-checkpoints.js" ;;
+    content-admin) scenario_script="${SCRIPT_DIR}/scenarios/content-admin-lifecycle-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     auth-session) scenario_script="${SCRIPT_DIR}/scenarios/auth-session-checkpoints.js" ;;
     entry-domain) scenario_script="${SCRIPT_DIR}/scenarios/entry-domain-checkpoints.js" ;;
@@ -483,9 +530,17 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:prepare-runtime-transport|event-domain:repair-runtime-transport-invite-scope|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
-  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-trashed|asset-domain:verify-lifecycle-restored|asset-domain:reset|\
+  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
+  asset-assignment:stage|asset-assignment:status|asset-assignment:repair-normal-supplies-owner|asset-assignment:verify-normal-assignment|asset-assignment:verify-supply-contribution-delete|asset-assignment:restore-normal-assignment-branch|asset-assignment:repair-tournament-group-ids|asset-assignment:stage-step-10-boundary|asset-assignment:rollback-step-10-boundary|asset-assignment:verify-group-capacity-edit|asset-assignment:stage-step-16-boundary|asset-assignment:rollback-step-16-boundary|asset-assignment:verify-group-unassign|asset-assignment:stage-step-22-boundary|asset-assignment:rollback-step-22-boundary|asset-assignment:verify-group-reassign|asset-assignment:stage-step-29-boundary|asset-assignment:rollback-step-29-boundary|asset-assignment:verify-group-manager-removal|asset-assignment:reset|\
+  content-admin:stage|content-admin:status|content-admin:verify-drafts-saved|content-admin:verify-privacy-active|content-admin:restage-step-32-boundary|content-admin:rollback-step-32-boundary|content-admin:verify-privacy-fallback|content-admin:verify-article-trashed|content-admin:verify-article-restored|content-admin:rollback-step-59-boundary|content-admin:verify-article-republished|content-admin:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    if [ "${scenario}" = "asset-assignment" ] && [ "$3" != "ASSET-ASSIGNMENT-LIFECYCLE-001" ]; then
+      fail "${command} is restricted to ASSET-ASSIGNMENT-LIFECYCLE-001."
+    fi
+    if [ "${scenario}" = "content-admin" ] && [ "$3" != "CONTENT-ADMIN-LIFECYCLE-001" ]; then
+      fail "${command} is restricted to CONTENT-ADMIN-LIFECYCLE-001."
+    fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)

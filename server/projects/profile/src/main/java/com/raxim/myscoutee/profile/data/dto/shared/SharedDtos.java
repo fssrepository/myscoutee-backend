@@ -638,7 +638,60 @@ public final class SharedDtos {
             String attendanceStatus,
             String checkedInAtIso,
             String checkedInByUserId,
-            String checkedInTicketId) {
+            String checkedInTicketId,
+            String managerGrantedByUserId) {
+        public ActivityMemberEntryDto(
+                String id,
+                String userId,
+                String name,
+                String initials,
+                String gender,
+                String city,
+                String statusText,
+                String role,
+                String status,
+                String pendingSource,
+                String requestKind,
+                String invitedByUserId,
+                Boolean invitedByActiveUser,
+                String metAtIso,
+                String actionAtIso,
+                String metWhere,
+                String avatarUrl,
+                UserDto profile,
+                List<ActivityMemberInvolvementDto> involvements,
+                String revision,
+                String attendanceStatus,
+                String checkedInAtIso,
+                String checkedInByUserId,
+                String checkedInTicketId) {
+            this(
+                    id,
+                    userId,
+                    name,
+                    initials,
+                    gender,
+                    city,
+                    statusText,
+                    role,
+                    status,
+                    pendingSource,
+                    requestKind,
+                    invitedByUserId,
+                    invitedByActiveUser,
+                    metAtIso,
+                    actionAtIso,
+                    metWhere,
+                    avatarUrl,
+                    profile,
+                    involvements,
+                    revision,
+                    attendanceStatus,
+                    checkedInAtIso,
+                    checkedInByUserId,
+                    checkedInTicketId,
+                    null);
+        }
     }
 
     public record ActivityMembersSummaryDto(
@@ -664,7 +717,19 @@ public final class SharedDtos {
             String id,
             String userId,
             Integer quantity,
-            String addedAtIso) {
+            String addedAtIso,
+            String name,
+            String initials,
+            String gender,
+            Integer age,
+            String city) {
+        public SubEventSupplyContributionEntryDto(
+                String id,
+                String userId,
+                Integer quantity,
+                String addedAtIso) {
+            this(id, userId, quantity, addedAtIso, null, null, null, null, null);
+        }
     }
 
     public record SubEventSupplyContributionPageDto(

@@ -256,6 +256,37 @@ class IdeaPostsServiceTest {
     }
 
     @Test
+    void savePostPreservesExistingContentKeyAndHtmlDuringStatusOnlyUpdate() {
+        String html = "<p>Article</p><figure><img src=\"/media/public?key=stable\" alt=\"Stable\"></figure>";
+        IdeaPost existing = post("article-a", "en", "2026-07-20T10:00:00Z");
+        existing.setContentKey("stable-content-key");
+        existing.setContentHtml(html);
+        existing.setImageUrl("/media/public?key=stable");
+        existing.setImageUrls(List.of("/media/public?key=stable"));
+        when(ideaPostsRepository.findById("article-a")).thenReturn(Optional.of(existing));
+        when(ideaPostsRepository.save(existing)).thenReturn(existing);
+
+        var result = service.savePost(new IdeaPostSaveRequestDto(
+                "admin",
+                "article-a",
+                null,
+                "en",
+                existing.getTitle(),
+                existing.getExcerpt(),
+                html,
+                existing.getImageUrl(),
+                existing.getImageUrls(),
+                List.of(),
+                false,
+                false,
+                existing.getSubmittedAtIso()));
+
+        assertThat(result.contentKey()).isEqualTo("stable-content-key");
+        assertThat(result.contentHtml()).isEqualTo(html);
+        assertThat(result.published()).isFalse();
+    }
+
+    @Test
     void savePostRemovesManagedImageReferencesThenDeletesTheStoredSet() {
         String imageUrl = "/api/media/public?key=images%2Fadmin%2Fimage%2Fupload-1%2Flarge.webp";
         String retainedImageUrl = "/api/media/public?key=images%2Fadmin%2Fimage%2Fupload-2%2Flarge.webp";
