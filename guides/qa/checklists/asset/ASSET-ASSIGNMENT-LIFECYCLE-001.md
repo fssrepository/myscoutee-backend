@@ -55,7 +55,10 @@ Begin only after Codex runs the read-only status and confirms:
    `Activities → Events → Active Events → QA ASSET-ASSIGNMENT-LIFECYCLE-001 Event → View Event → QA Assignment Stage → Resources`
 
 2. Confirm the target identifies the exact Event and Sub-event. Confirm the
-   adjacent `QA Unchanged Control Stage` remains empty.
+   adjacent `QA Unchanged Control Stage` remains empty. The control is not
+   application-locked and may expose the same Assign action; do not use it.
+   Its only purpose is to prove that Assignment Stage writes do not leak into
+   a sibling Sub-event.
 3. In **Nova's** owner-scoped resource editor, assign exactly once:
 
    - `QA Assignment Nova Shuttle`, Transport, route `Austin`, capacity `4`;
