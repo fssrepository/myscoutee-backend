@@ -145,6 +145,13 @@ Begin only after Codex confirms this exact baseline:
 
 ### 3. Delete an inactive revision, then exercise active fallback
 
+Replay point: `rollback-step-32-boundary` restores the exact post-step-31
+state: four saved revisions, Privacy `v3` solely Active, one Kai `v3`
+consent, zero Riley `v3` consent, exactly four create audits plus one
+activation audit, and the untouched Article branch. After a rollback, reload
+the already-open Ava/Kai/Riley pages once and continue here; do not repeat
+steps 1-31.
+
 32. After Codex confirms `privacy-active`, in Ava open Content -> Help ->
     Magyar and locate inactive Help `v2`.
 33. Select its `Delete revision` action. Confirm the dialog title is

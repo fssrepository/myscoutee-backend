@@ -20,6 +20,11 @@
   const EXPLANATION_V1_ID = `${PREFIX}:revision:explanation:home.game:en:v1`;
   const PRIVACY_V1_ID = `${PREFIX}:revision:privacy:en:v1`;
   const PRIVACY_V2_ID = `${PREFIX}:revision:privacy:en:v2`;
+  const STEP_32_HELP_V2_ID = `${PREFIX}:revision:help:hu:v2:step-32`;
+  const STEP_32_TERMS_V2_ID = `${PREFIX}:revision:terms:en:v2:step-32`;
+  const STEP_32_EXPLANATION_V2_ID = `${PREFIX}:revision:explanation:home.game:en:v2:step-32`;
+  const STEP_32_PRIVACY_V3_ID = `${PREFIX}:revision:privacy:en:v3:step-32`;
+  const STEP_32_KAI_V3_CONSENT_ID = `${PREFIX}:consent:${KAI_ID}:3:step-32`;
   const BASELINE_REVISION_IDS = [
     HELP_V1_ID,
     TERMS_V1_ID,
@@ -94,6 +99,7 @@
   }
 
   function revisionDocument(options, stagedAtIso) {
+    const actorUserId = options.actorUserId || Q.ACTOR;
     return {
       _id: options.id,
       documentType: options.documentType,
@@ -108,9 +114,9 @@
       headerColor: options.headerColor,
       sections: options.sections,
       createdDate: stagedAtIso,
-      createdUser: Q.ACTOR,
+      createdUser: actorUserId,
       updatedDate: stagedAtIso,
-      updatedUser: Q.ACTOR
+      updatedUser: actorUserId
     };
   }
 
@@ -217,6 +223,116 @@
       consentDocument(RILEY_ID, PRIVACY_V1_ID, 1, stagedAtIso),
       consentDocument(RILEY_ID, PRIVACY_V2_ID, 2, stagedAtIso)
     ];
+  }
+
+  function auditDocument(id, revision, action, message, createdDate) {
+    return {
+      _id: id,
+      revisionId: Q.text(revision._id),
+      documentType: Q.text(revision.documentType),
+      lang: Q.text(revision.lang),
+      languageLabel: Q.text(revision.languageLabel),
+      version: Q.number(revision.version),
+      action,
+      actorUserId: AVA_ID,
+      createdDate,
+      message
+    };
+  }
+
+  function step32DraftRevisions(currentState, restagedAtIso) {
+    const baseline = clone(currentState.baselineRevisions || []);
+    const privacyV2 = baseline.find(row => Q.text(row._id) === PRIVACY_V2_ID);
+    if (!privacyV2) Q.fail("the staged Privacy v2 baseline is unavailable.");
+    privacyV2.active = true;
+    return [
+      ...baseline,
+      revisionDocument({
+        id: STEP_32_HELP_V2_ID,
+        documentType: "help",
+        lang: "hu",
+        version: 2,
+        active: false,
+        title: "QA CONTENT Help HU v2",
+        summary: "QA Content súgó",
+        description: "QA only Help draft",
+        headerColor: "amber",
+        actorUserId: AVA_ID,
+        sections: [section("qa-help-baseline", "help", "QA súgó szakasz", "<p>QA help draft HU.</p>")]
+      }, restagedAtIso),
+      revisionDocument({
+        id: STEP_32_TERMS_V2_ID,
+        documentType: "terms",
+        lang: "en",
+        version: 2,
+        active: false,
+        title: "QA CONTENT Terms EN v2",
+        summary: "QA Content terms",
+        description: "QA only Terms draft",
+        headerColor: "slate",
+        actorUserId: AVA_ID,
+        sections: [section("qa-terms-baseline", "gavel", "QA terms section", "<p>QA terms draft EN.</p>")]
+      }, restagedAtIso),
+      revisionDocument({
+        id: STEP_32_EXPLANATION_V2_ID,
+        documentType: "explanation",
+        lang: "en",
+        contextKey: "home.game",
+        version: 2,
+        active: false,
+        title: "QA CONTENT Home cards EN v2",
+        summary: "QA Content explanation",
+        description: "QA only Home cards draft",
+        headerColor: "violet",
+        actorUserId: AVA_ID,
+        sections: [section(
+          "qa-home-baseline",
+          "home",
+          "QA home-card explanation",
+          "<p>QA explanation draft EN.</p>",
+          false,
+          "span-2"
+        )]
+      }, restagedAtIso),
+      revisionDocument({
+        id: STEP_32_PRIVACY_V3_ID,
+        documentType: "privacy",
+        lang: "en",
+        version: 3,
+        active: false,
+        title: "QA CONTENT Privacy EN v3",
+        summary: "QA Content privacy update",
+        description: "QA privacy consent boundary",
+        headerColor: "blue",
+        actorUserId: AVA_ID,
+        sections: [
+          section("qa-privacy-v2-required", "policy", "Required QA notice", "<p><strong>QA privacy v3</strong></p>"),
+          section("qa-privacy-v2-optional", "science", "QA research choice", "<p>Optional QA research consent.</p>", true)
+        ]
+      }, restagedAtIso)
+    ];
+  }
+
+  function step32CreateAudits(revisions, restagedAtIso) {
+    const byId = new Map(revisions.map(row => [Q.text(row._id), row]));
+    const definitions = [
+      ["help", STEP_32_HELP_V2_ID, `Created v2 from ${HELP_V1_ID}.`],
+      ["terms", STEP_32_TERMS_V2_ID, `Created v2 from ${TERMS_V1_ID}.`],
+      ["explanation", STEP_32_EXPLANATION_V2_ID, `Created v2 from ${EXPLANATION_V1_ID}.`],
+      ["privacy", STEP_32_PRIVACY_V3_ID, `Created v3 from ${PRIVACY_V2_ID}.`]
+    ];
+    return definitions.map(([kind, revisionId, message], index) => auditDocument(
+      `${PREFIX}:audit:${kind}:create:step-32`,
+      byId.get(revisionId),
+      "create",
+      message,
+      new Date(Date.parse(restagedAtIso) + index).toISOString()
+    ));
+  }
+
+  function restoreDocuments(collection, selector, documents) {
+    collection.deleteMany(selector);
+    if ((documents || []).length > 0) collection.insertMany(clone(documents));
   }
 
   function articleDocument(options, stagedAtIso) {
@@ -331,6 +447,16 @@
     })).sort((left, right) => left.id.localeCompare(right.id));
   }
 
+  function normalizeRevisionControlSummary(rows) {
+    return (rows || []).map(row => ({
+      ...clone(row),
+      sections: (row.sections || []).map(value => ({
+        ...clone(value),
+        imageUrls: clone(value.imageUrls || [])
+      }))
+    }));
+  }
+
   function newAudits(currentState) {
     return Q.collection("helpCenterAudit")
       .find({ actorUserId: AVA_ID, createdDate: { $gte: Q.text(currentState.stagedAtIso) } })
@@ -367,7 +493,10 @@
       .toArray()
       .filter(row => !belongsToControlledScope(row));
     const expectedUnrelatedRevisionSummary = currentState.unrelatedRevisionSummary || [];
-    if (!sameDomain(revisionControlSummary(unrelatedRevisions), expectedUnrelatedRevisionSummary)) {
+    if (!sameDomain(
+      normalizeRevisionControlSummary(revisionControlSummary(unrelatedRevisions)),
+      normalizeRevisionControlSummary(expectedUnrelatedRevisionSummary)
+    )) {
       Q.fail("an unrelated governed-content revision changed.");
     }
 
@@ -757,10 +886,7 @@
     });
   }
 
-  function verifyPrivacyActive() {
-    config();
-    const currentState = state();
-    requirePhase(currentState, "drafts-saved");
+  function assertPrivacyActiveState(currentState) {
     const privacyV3 = findVersion("privacyEn", 3);
     if (Q.text(privacyV3._id) !== Q.text(currentState.privacyV3Id) || privacyV3.active !== true) {
       Q.fail("Privacy v3 is not the expected sole active revision.");
@@ -800,22 +926,224 @@
         || !auditMatches(audits, privacyV3, "activate", "Activated v3.")) {
       Q.fail("Privacy activation did not add exactly one matching audit after the four draft audits.");
     }
+    return { privacyV3, kaiV3: kaiV3[0], audits };
+  }
+
+  function verifyPrivacyActive() {
+    config();
+    const currentState = state();
+    requirePhase(currentState, "drafts-saved");
+    const verified = assertPrivacyActiveState(currentState);
     const capturedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: STATE_ID },
-      { $set: { phase: "privacy-active", privacyActiveAtIso: capturedAtIso, kaiV3ConsentId: Q.text(kaiV3[0]._id) } }
+      { $set: { phase: "privacy-active", privacyActiveAtIso: capturedAtIso, kaiV3ConsentId: Q.text(verified.kaiV3._id) } }
     );
     Q.printObject({
       scenario: SCENARIO,
       checkpointId,
       phase: "privacy-active",
       capturedAtIso,
-      activePrivacyRevisionId: Q.text(privacyV3._id),
-      kaiV3ConsentId: Q.text(kaiV3[0]._id),
+      activePrivacyRevisionId: Q.text(verified.privacyV3._id),
+      kaiV3ConsentId: Q.text(verified.kaiV3._id),
       rileyV3ConsentCount: 0,
       historicalConsentsStable: true,
       exactAuditCount: 5,
       next: "Delete inactive Help v2, then active Privacy v3, reload Kai/Riley and run verify-privacy-fallback."
+    });
+  }
+
+  function step32StateFields(verifiedDraft, verifiedActive, capturedAtIso) {
+    return {
+      phase: "privacy-active",
+      draftsSavedAtIso: capturedAtIso,
+      helpV2Id: Q.text(verifiedDraft.helpV2._id),
+      termsV2Id: Q.text(verifiedDraft.termsV2._id),
+      explanationV2Id: Q.text(verifiedDraft.explanationV2._id),
+      privacyV3Id: Q.text(verifiedDraft.privacyV3._id),
+      draftsSavedRevisions: [
+        verifiedDraft.helpV2,
+        verifiedDraft.termsV2,
+        verifiedDraft.explanationV2,
+        verifiedDraft.privacyV3
+      ],
+      controlledRevisionIds: sorted([
+        ...BASELINE_REVISION_IDS,
+        verifiedDraft.helpV2._id,
+        verifiedDraft.termsV2._id,
+        verifiedDraft.explanationV2._id,
+        verifiedDraft.privacyV3._id
+      ]),
+      draftAuditIds: sorted(verifiedDraft.audits.map(audit => audit._id)),
+      privacyActiveAtIso: capturedAtIso,
+      kaiV3ConsentId: Q.text(verifiedActive.kaiV3._id)
+    };
+  }
+
+  function clearPostStep32State() {
+    return {
+      privacyFallbackAtIso: "",
+      fallbackRevisions: "",
+      articleTrashedAtIso: "",
+      trashedArticle: "",
+      articleRestoredAtIso: "",
+      restoredArticle: "",
+      verifiedAtIso: "",
+      republishedArticle: ""
+    };
+  }
+
+  function restageStep32Boundary() {
+    config();
+    const currentState = state();
+    assertUsers();
+    assertControls(currentState);
+    if (!(currentState.originalSnapshots || []).length
+        || !(currentState.baselineRevisions || []).length
+        || !(currentState.baselineConsents || []).length
+        || !(currentState.baselineArticles || []).length) {
+      Q.fail("the original staged Content snapshots required for step 32 are unavailable.");
+    }
+
+    const restagedAtIso = Q.nowIso();
+    const draftRevisions = step32DraftRevisions(currentState, restagedAtIso);
+    const createAudits = step32CreateAudits(draftRevisions, restagedAtIso);
+    for (const scope of SCOPES) Q.collection("helpCenterRevisions").deleteMany(scope.selector);
+    Q.collection("helpCenterRevisions").insertMany(draftRevisions);
+    const currentAuditIds = newAudits(currentState).map(row => row._id);
+    if (currentAuditIds.length > 0) {
+      Q.collection("helpCenterAudit").deleteMany({ _id: { $in: currentAuditIds } });
+    }
+    Q.collection("helpCenterAudit").insertMany(createAudits);
+    restoreDocuments(
+      Q.collection("privacyConsents"),
+      { userId: { $in: CONSENT_USER_IDS } },
+      currentState.baselineConsents
+    );
+    restoreDocuments(
+      Q.collection("ideaPosts"),
+      { _id: { $in: ARTICLE_IDS } },
+      currentState.baselineArticles
+    );
+
+    const verifiedDraft = assertDraftState(currentState);
+    Q.collection("helpCenterRevisions").updateOne({ _id: PRIVACY_V2_ID }, { $set: { active: false } });
+    Q.collection("helpCenterRevisions").updateOne({ _id: STEP_32_PRIVACY_V3_ID }, { $set: { active: true } });
+    const kaiV3Consent = consentDocument(KAI_ID, STEP_32_PRIVACY_V3_ID, 3, restagedAtIso);
+    kaiV3Consent._id = STEP_32_KAI_V3_CONSENT_ID;
+    Q.collection("privacyConsents").insertOne(kaiV3Consent);
+    const activePrivacy = Q.collection("helpCenterRevisions").findOne({ _id: STEP_32_PRIVACY_V3_ID });
+    Q.collection("helpCenterAudit").insertOne(auditDocument(
+      `${PREFIX}:audit:privacy:activate:step-32`,
+      activePrivacy,
+      "activate",
+      "Activated v3.",
+      new Date(Date.parse(restagedAtIso) + createAudits.length).toISOString()
+    ));
+
+    const verificationState = {
+      ...currentState,
+      privacyV3Id: STEP_32_PRIVACY_V3_ID
+    };
+    const verifiedActive = assertPrivacyActiveState(verificationState);
+    const stateFields = step32StateFields(verifiedDraft, verifiedActive, restagedAtIso);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      {
+        $set: stateFields,
+        $unset: clearPostStep32State()
+      }
+    );
+
+    const boundary = {
+      capturedAtIso: restagedAtIso,
+      revisions: controlledRevisions(),
+      audits: newAudits(state()),
+      consents: actorConsents(),
+      articles: controlledArticles(),
+      ideaCounts: ideaCounts(),
+      stateFields
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      { $set: { step32Boundary: boundary } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "privacy-active",
+      replayBoundary: "step-32-ready",
+      restagedAtIso,
+      controlledRevisionCount: boundary.revisions.length,
+      controlledConsentCount: boundary.consents.length,
+      exactAuditCount: boundary.audits.length,
+      articleStateRestored: true,
+      unrelatedControlsStable: true,
+      browserAction: "Reload the already-open Ava/Kai/Riley pages once; do not relaunch the browsers.",
+      next: "Continue at checklist step 32."
+    });
+  }
+
+  function rollbackStep32Boundary() {
+    config();
+    const currentState = state();
+    const boundary = currentState.step32Boundary;
+    if (!boundary || !(boundary.revisions || []).length || !(boundary.stateFields)) {
+      Q.fail("step 32 replay boundary is not staged.");
+    }
+    assertControls(currentState);
+
+    for (const scope of SCOPES) {
+      restoreDocuments(
+        Q.collection("helpCenterRevisions"),
+        scope.selector,
+        (boundary.revisions || []).filter(row => Object.entries(scope.selector).every(
+          ([key, value]) => Q.text(row && row[key]) === Q.text(value)
+        ))
+      );
+    }
+    const currentAuditIds = newAudits(currentState).map(row => row._id);
+    if (currentAuditIds.length > 0) {
+      Q.collection("helpCenterAudit").deleteMany({ _id: { $in: currentAuditIds } });
+    }
+    if ((boundary.audits || []).length > 0) {
+      Q.collection("helpCenterAudit").insertMany(clone(boundary.audits));
+    }
+    restoreDocuments(
+      Q.collection("privacyConsents"),
+      { userId: { $in: CONSENT_USER_IDS } },
+      boundary.consents
+    );
+    restoreDocuments(
+      Q.collection("ideaPosts"),
+      { _id: { $in: ARTICLE_IDS } },
+      boundary.articles
+    );
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: STATE_ID },
+      {
+        $set: clone(boundary.stateFields),
+        $unset: clearPostStep32State()
+      }
+    );
+
+    const restoredState = state();
+    assertPrivacyActiveState(restoredState);
+    if (!sameDomain(ideaCounts(), boundary.ideaCounts)) {
+      Q.fail("step 32 rollback did not restore the exact Article bucket counts.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "privacy-active",
+      replayBoundary: "step-32-ready",
+      restoredAtIso: Q.nowIso(),
+      exactAuditCount: newAudits(restoredState).length,
+      exactConsentCount: actorConsents().length,
+      exactRevisionCount: controlledRevisions().length,
+      articleStateRestored: true,
+      unrelatedControlsStable: true,
+      next: "Continue at checklist step 32."
     });
   }
 
@@ -1054,6 +1382,8 @@
     case "status": status(); break;
     case "verify-drafts-saved": verifyDraftsSaved(); break;
     case "verify-privacy-active": verifyPrivacyActive(); break;
+    case "restage-step-32-boundary": restageStep32Boundary(); break;
+    case "rollback-step-32-boundary": rollbackStep32Boundary(); break;
     case "verify-privacy-fallback": verifyPrivacyFallback(); break;
     case "verify-article-trashed": verifyArticleTrashed(); break;
     case "verify-article-restored": verifyArticleRestored(); break;

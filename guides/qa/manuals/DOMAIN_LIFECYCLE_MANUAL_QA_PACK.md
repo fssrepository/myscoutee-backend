@@ -6790,7 +6790,7 @@ Together with the accepted user-driven UI journey through step 29, this closes
 
 ### `CONTENT-ADMIN-LIFECYCLE-001` — governed revisions, consent and Article lifecycle
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **IN PROGRESS / STEP 32 READY**.
 
 Stable user guide:
 [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
@@ -6807,6 +6807,10 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-privacy-active content-admin CONTENT-ADMIN-LIFECYCLE-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  restage-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-step-32-boundary content-admin CONTENT-ADMIN-LIFECYCLE-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-privacy-fallback content-admin CONTENT-ADMIN-LIFECYCLE-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-article-trashed content-admin CONTENT-ADMIN-LIFECYCLE-001
@@ -6819,13 +6823,17 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 The runner and Ava/Kai/Riley browser definition were prepared on 2026-09-03.
-After `ASSET-ASSIGNMENT-LIFECYCLE-001` was recorded, reset and closed, Content
-was staged once at `2026-09-04T06:50:59.887Z`. Its read-only status returned
-`baseline-ready` with the exact Ava/Kai/Riley identities, five controlled
-revision IDs, five controlled consents, zero new audits, stable controls and
-Article buckets `7 / 5 / 7 / 0 / 0`. No Content mutation step has run and no
-Content browser has been opened by Codex; the explicit manual-browser-control
-rule remains in force.
+After the user completed the governed-revision and Privacy activation branch,
+extra exploratory clicks left additional revisions and activation audits. The
+versioned `restage-step-32-boundary` command normalized only fixture-owned
+records at `2026-09-04T08:19:45.713Z` and captured the exact post-step-31
+boundary: nine controlled revisions, six controlled consents, four create
+audits plus one Privacy `v3` activation audit, sole active Privacy `v3`, one
+Kai `v3` consent, zero Riley `v3` consent, and unchanged Article buckets
+`7 / 5 / 7 / 0 / 0`. `rollback-step-32-boundary` then replayed the captured
+boundary successfully at `2026-09-04T08:19:54.721Z`. This replay fixture is a
+continuation boundary, not replacement evidence for the preceding user-driven
+UI observations. The explicit manual-browser-control rule remains in force.
 The two distinct managed-image controls were read-only verified over the
 running HTTP stack before staging:
 
