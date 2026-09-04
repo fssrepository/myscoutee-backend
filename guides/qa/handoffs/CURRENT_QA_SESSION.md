@@ -67,19 +67,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — ACTIVE / STEPS 1-15 PASS / STEP 16 READY
+checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — ACTIVE / STEPS 1-21 PASS / STEP 22 READY
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-assign-001--eventsub-event-asset-assignment
 checklist: ../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md
-substage: phase is `step-16-ready`; `verify-group-capacity-edit` passed all eight checks after Nova changed only `QA Group A Nova Transport` capacity 4 to 5. The latest `rollback-step-16-boundary` completed at `2026-09-04T05:55:17.059Z` with all five exact-restore checks true, preserving the verified normal branch
-next_replay_boundary: begin checklist step 16 in Nova's existing session. Unassign only `QA Group A Nova Transport` from Group A through the resource editor, then close/reopen the Group A Transport list and reload Nova once. Do not touch Riley Accommodation or Group B. If this branch must be replayed, use `rollback-step-16-boundary`; it returns directly to the verified capacity-5 state without repeating steps 1-15
+substage: phase is `step-22-ready`; `verify-group-unassign` passed all ten checks after Nova removed only `QA Group A Nova Transport`. The exact persisted post-unassign boundary was captured at `2026-09-04T05:59:38.376Z`; the old resource and scoped requests are hidden `D` audit rows, the stage pending chain is `1`, Riley Accommodation is unchanged and Group B remains identical
+next_replay_boundary: begin checklist step 22 in Nova's existing session. Assign the same active `QA Group A Nova Transport` to Group A exactly once, confirm the fresh resource generation, then invite Casey once and complete steps 23-28. If this branch must be replayed, use `rollback-step-22-boundary`; it returns directly to the verified post-unassign state without repeating steps 1-21
 fixture_phase: `verify-normal-assignment` passed exact owner records, persisted 1/4 Transport, 1/3 Accommodation, common 5/6 Supplies for all viewers, exact open notification, unchanged control Sub-event, roles, Tournament branch and all non-bell counters; the oracle's earlier full-bell-counter comparison was corrected because expected and unrelated notifications legitimately change that global counter
-browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions remain OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest; use Nova's existing window for step 16 and do not relaunch browsers
+browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions remain OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest; use Nova's existing window for step 22 and do not relaunch browsers
 browser_control: the user exclusively controls all current browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare or position a test, inspect ahead, navigate, click, submit, derive a new rule or perform any part of the user's manual sequence
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
 queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
-required_resume: load only this resume block plus the linked Assignment detail/checklist; do not relaunch living browser sessions; first read status and require `step-16-ready`. Continue at checklist step 16. Use `rollback-step-16-boundary` whenever steps 16-20 must be replayed; never restage or repeat steps 1-15 for that purpose. After step 20, verify the unassign and capture `step-22-ready`; `rollback-step-22-boundary` replays only the new-generation reassign branch
+required_resume: load only this resume block plus the linked Assignment detail/checklist; do not relaunch living browser sessions; first read status and require `step-22-ready`. Continue at checklist step 22. Use `rollback-step-22-boundary` whenever steps 22-27 must be replayed; never restage or repeat steps 1-21 for that purpose
 actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
-pending_machine_oracle: steps 1-15 are accepted and the exact step-16 rollback boundary is proven. The next oracle is `verify-group-unassign` after the user's step 16-20 actions; it requires pending `2 -> 1`, the old resource plus every scoped accepted/pending Asset-member request retained as hidden `D` audit rows, the source Asset active at capacity 5, and exactly one neutral assignment-removal notification for Casey and Riley while Nova/Lina receive none. Group B remains the unchanged control. The following reassign must create a new active resource and new member/request IDs; no `D` row may be reused
+pending_machine_oracle: steps 1-21 are accepted and the exact step-22 rollback boundary is proven. The next oracle is `verify-group-reassign` after the user's steps 22-27; it requires a new active resource with fresh `_id`, `recordId` and `syncKey`, fresh active Asset-member request IDs, pending `1 -> 2`, and retention of every old `D` row without reuse. Riley Accommodation, Group B, the normal Event branch and memberships must remain unchanged. The unassign oracle excludes request lifecycle fields, update audit fields and scheduler-owned affinity/boost values from the source Asset definition comparison
 last_completed: `ASSET-MEMBER-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven run plus the final correction replay. The user observed Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave converge as `3 -> 2 -> 2 -> 1 -> absent`. Read-only Mongo at the terminal boundary proved Riley's canonical Asset member row is `deleted`, the controlled `activityResources` row is `D` with no Asset assignment, the generated-group runtime resource map is empty, and no notification was created after Nova's final Leave. The resource card and Group row disappeared through the existing signal chain. The server fix status-deletes scoped removed members; the frontend forwards authoritative empty-scope zero metrics and did not add or modify an aggregation loop. Both running watchers built successfully. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
 ```
 
@@ -224,12 +224,11 @@ the checkpoint says otherwise.
 `ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
 was verified and reset through its versioned harness because its
 payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
-steps 1-15 are PASS and its guarded phase is `step-16-ready`. The user now owns
-all browser interaction; Codex waits for the user's step-16 observation and
-then checks only `verify-group-unassign`. If replay is needed, use
-`rollback-step-16-boundary` instead of repeating steps 1-15. After Assignment
-step 20, capture `step-22-ready` before the new-generation reassign branch;
-never restore or reuse the old `D` resource/request IDs. After Assignment is
+steps 1-21 are PASS and its guarded phase is `step-22-ready`. The user now owns
+all browser interaction; Codex waits for the user's steps 22-28 observation and
+then checks only `verify-group-reassign`. If replay is needed, use
+`rollback-step-22-boundary` instead of repeating steps 1-21. The new generation
+must never restore or reuse the old `D` resource/request IDs. After Assignment is
 completed, recorded and reset, the prepared
 `CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
 it early: its guarded runner intentionally refuses to coexist with another

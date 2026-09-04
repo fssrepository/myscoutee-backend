@@ -787,6 +787,8 @@
   function sourceAssetWithoutRequestLifecycle(asset) {
     const value = clone(asset || {});
     delete value.requests;
+    delete value.affinity;
+    delete value.boost;
     delete value.updatedDate;
     delete value.updatedUser;
     return value;
