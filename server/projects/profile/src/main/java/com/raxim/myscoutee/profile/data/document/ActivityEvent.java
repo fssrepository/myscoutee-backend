@@ -105,6 +105,8 @@ public class ActivityEvent {
     private Boolean slotsEnabled;
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
     private String parentEventId;
+    private String parentSubEventId;
+    private String groupId;
     private String slotTemplateId;
     private Boolean generated;
     private String eventType;
@@ -262,6 +264,10 @@ public class ActivityEvent {
     }
     public String getParentEventId() { return parentEventId; }
     public void setParentEventId(String parentEventId) { this.parentEventId = parentEventId; }
+    public String getParentSubEventId() { return parentSubEventId; }
+    public void setParentSubEventId(String parentSubEventId) { this.parentSubEventId = parentSubEventId; }
+    public String getGroupId() { return groupId; }
+    public void setGroupId(String groupId) { this.groupId = groupId; }
     public String getSlotTemplateId() { return slotTemplateId; }
     public void setSlotTemplateId(String slotTemplateId) { this.slotTemplateId = slotTemplateId; }
     public Boolean getGenerated() { return generated; }

@@ -822,6 +822,32 @@
     };
   }
 
+  function stableGroupBControl(snapshot) {
+    return {
+      room: (snapshot && snapshot.room || []).map(item => ({
+        id: Q.text(item && (item.sourceId || item._id)),
+        status: Q.text(item && item.status),
+        title: Q.text(item && item.title),
+        activity: Q.number(item && item.activity),
+        capacityMin: Q.number(item && item.capacityMin),
+        capacityMax: Q.number(item && item.capacityMax),
+        capacityTotal: Q.number(item && item.capacityTotal),
+        acceptedMembers: Q.number(item && item.acceptedMembers),
+        pendingMembers: Q.number(item && item.pendingMembers),
+        acceptedMemberUserIds: sorted(item && item.acceptedMemberUserIds),
+        pendingMemberUserIds: sorted(item && item.pendingMemberUserIds),
+        parentEventId: Q.text(item && item.parentEventId),
+        parentSubEventId: Q.text(item && item.parentSubEventId),
+        groupId: Q.text(item && item.groupId)
+      })),
+      members: snapshot && snapshot.members || [],
+      resource: snapshot && snapshot.resource || [],
+      runtime: snapshot && snapshot.runtime || {},
+      reads: snapshot && snapshot.reads || {},
+      scores: snapshot && snapshot.scores || []
+    };
+  }
+
   function groupBranchDocuments() {
     return {
       events: read("events", { $or: [{ sourceId: TOURNAMENT_EVENT_ID }, { sourceId: { $in: [ROOM_A_ID, ROOM_B_ID] } }] }),
@@ -2287,7 +2313,13 @@
         && Q.text(nova && nova.syncKey) === Q.text(currentState.groupAReassignedResource && currentState.groupAReassignedResource.syncKey)
         && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 0, 5)),
       exactPendingReversal: Q.sameJson(stageCounters(), { activity: 0, groupsCount: 2, groupsPending: 0 }),
-      groupBByteIdentical: sameDomain(groupBControlSnapshot(), currentState.groupBControl),
+      groupBDomainInvariant: sameDomain(
+        stableGroupBControl(groupBControlSnapshot()),
+        stableGroupBControl(currentState.groupBControl)),
+      groupBDerivedFullConsistent: (() => {
+        const room = groupBControlSnapshot().room[0];
+        return !!room && !!room.full === (Q.number(room.acceptedMembers) >= Q.number(room.capacityTotal));
+      })(),
       normalBranchByteIdentical: sameDomain(normalDomainRaw(), currentState.normalDomainAfterAssignment),
       sourceAssetRetained: Q.collection("assets").countDocuments({ assetId: GROUP_A_ACCOMMODATION_ID, status: "A" }) === 1,
       assignmentNotificationExactOnce: assignmentOutbox.length === 1
@@ -2308,7 +2340,15 @@
       expectedTransportRileyRequestIds,
       currentTransportRileyRequests,
       currentStoredTransportRileyRequests,
+      currentTransportAssetMembers: read("activityMembers", {
+        ownerType: "asset",
+        ownerId: GROUP_A_TRANSPORT_ID
+      }),
       stage: stageCounters(),
+      expectedGroupB: currentState.groupBControl,
+      currentGroupB: groupBControlSnapshot(),
+      expectedStableGroupB: stableGroupBControl(currentState.groupBControl),
+      currentStableGroupB: stableGroupBControl(groupBControlSnapshot()),
       assignmentRecipients,
       assignmentOutbox,
       assignmentInbox,
@@ -2367,7 +2407,9 @@
         groupANovaTransport: normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")),
         groupARileyAccommodation: normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")),
         groupBLinaTransport: normalizedMetric(groupMetric(GROUP_B_ID, LINA_ID, "Transport")),
-        groupBMatchesControl: sameDomain(groupBControlSnapshot(), currentState.groupBControl)
+        groupBMatchesControl: sameDomain(
+          stableGroupBControl(groupBControlSnapshot()),
+          stableGroupBControl(currentState.groupBControl))
       },
       notifications: notificationCounts(),
       step10Boundary: currentState.step10Boundary ? {

@@ -2764,6 +2764,72 @@ public class AssetsService {
         }
     }
 
+    public Set<String> statusDeleteEventAssignmentRequestsForUsers(
+            Collection<String> assetIds,
+            Collection<String> userIds,
+            String eventId,
+            String actorUserId,
+            String deletedAtIso) {
+        Set<String> normalizedUserIds = (userIds == null ? List.<String>of() : userIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String normalizedEventId = normalizeId(eventId);
+        if (normalizedUserIds.isEmpty() || !StringUtils.hasText(normalizedEventId)) {
+            return Set.of();
+        }
+
+        String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
+        Set<String> changedAssetIds = new LinkedHashSet<>();
+        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            Asset current = findAssetByAssetId(assetId).orElse(null);
+            if (current == null) {
+                continue;
+            }
+
+            boolean changed = false;
+            List<AssetRequestRecord> nextRequests = new ArrayList<>();
+            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+                if (!isDeletedAssetRequest(request)
+                        && normalizedUserIds.contains(normalizeId(request == null ? null : request.userId()))
+                        && requestBelongsToEvent(request, normalizedEventId)) {
+                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
+                    changed = true;
+                } else if (request != null) {
+                    nextRequests.add(request);
+                }
+            }
+            if (!changed) {
+                continue;
+            }
+
+            Asset next = cloneAsset(current);
+            next.setRequests(nextRequests);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizeId(current.getOwnerUserId())));
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
+            userActivityCountersService.refreshAssetCountersForUser(normalizeId(next.getOwnerUserId()));
+            changedAssetIds.add(assetId);
+        }
+        return Set.copyOf(changedAssetIds);
+    }
+
+    private boolean requestBelongsToEvent(AssetRequestRecord request, String eventId) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        if (booking == null) {
+            return false;
+        }
+        return Objects.equals(
+                normalizeId(eventId),
+                authorizationEventId(booking.eventId(), booking.subEventId()));
+    }
+
     private boolean isAssignmentScopeRequest(
             AssetRequestRecord request,
             String ownerId,

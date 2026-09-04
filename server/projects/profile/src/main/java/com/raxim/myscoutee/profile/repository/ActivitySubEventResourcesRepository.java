@@ -17,6 +17,8 @@ public interface ActivitySubEventResourcesRepository extends MongoRepository<Act
 
     List<ActivitySubEventResource> findByOwnerIdAndStatusNot(String ownerId, String status);
 
+    List<ActivitySubEventResource> findByOwnerIdStartingWithAndStatusNot(String ownerIdPrefix, String status);
+
     List<ActivitySubEventResource> findByOwnerIdAndSubEventIdAndStatusNot(
             String ownerId,
             String subEventId,

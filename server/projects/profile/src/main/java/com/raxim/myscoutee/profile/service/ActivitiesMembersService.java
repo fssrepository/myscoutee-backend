@@ -3440,10 +3440,22 @@ public class ActivitiesMembersService {
             return;
         }
 
-        Set<String> assignedAssetIds = resolveAssignedAssetIdsForEvent(eventId);
+        List<ActivitySubEventResource> eventResourceRecords = loadEventResourceRecordsIncludingDescendants(eventId);
+        Set<String> assignedAssetIds = resolveAssignedAssetIds(eventResourceRecords);
         if (assignedAssetIds.isEmpty()) {
             return;
         }
+
+        Set<String> changedRequestAssetIds = assetsService.statusDeleteEventAssignmentRequestsForUsers(
+                assignedAssetIds,
+                removedUserIds,
+                eventId,
+                actorUserId,
+                nowIso);
+        refreshResourceScopesReferencingAssets(
+                eventResourceRecords,
+                changedRequestAssetIds,
+                actorUserId);
 
         Map<String, String> assetOwnerUserIdByAssetId = new LinkedHashMap<>();
         for (String assetId : assignedAssetIds) {
@@ -3555,9 +3567,26 @@ public class ActivitiesMembersService {
         }
     }
 
-    private Set<String> resolveAssignedAssetIdsForEvent(String eventId) {
+    private List<ActivitySubEventResource> loadEventResourceRecordsIncludingDescendants(String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return List.of();
+        }
+        List<ActivitySubEventResource> records = new ArrayList<>(
+                activitySubEventResourcesRepository.findByOwnerIdAndStatusNot(
+                        normalizedEventId,
+                        RESOURCE_STATUS_DELETED));
+        records.addAll(activitySubEventResourcesRepository.findByOwnerIdStartingWithAndStatusNot(
+                normalizedEventId + ":",
+                RESOURCE_STATUS_DELETED));
+        return records.stream().filter(Objects::nonNull).toList();
+    }
+
+    private Set<String> resolveAssignedAssetIds(Collection<ActivitySubEventResource> records) {
         LinkedHashSet<String> assignedAssetIds = new LinkedHashSet<>();
-        for (ActivitySubEventResource resource : loadEventResourceRecords(eventId)) {
+        for (ActivitySubEventResource resource : records == null
+                ? List.<ActivitySubEventResource>of()
+                : records) {
             if (resource == null) {
                 continue;
             }
@@ -3594,6 +3623,36 @@ public class ActivitiesMembersService {
             }
         }
         return assignedAssetIds;
+    }
+
+    private void refreshResourceScopesReferencingAssets(
+            Collection<ActivitySubEventResource> records,
+            Set<String> changedAssetIds,
+            String actorUserId) {
+        if (changedAssetIds == null || changedAssetIds.isEmpty()) {
+            return;
+        }
+        Set<String> refreshedScopes = new LinkedHashSet<>();
+        for (ActivitySubEventResource record : records == null
+                ? List.<ActivitySubEventResource>of()
+                : records) {
+            if (record == null
+                    || resolveAssignedAssetIds(List.of(record)).stream().noneMatch(changedAssetIds::contains)) {
+                continue;
+            }
+            String ownerId = normalizeId(record.getOwnerId());
+            String subEventId = normalizeId(record.getSubEventId());
+            String scope = ownerId + "\n" + subEventId;
+            if (!StringUtils.hasText(ownerId)
+                    || !StringUtils.hasText(subEventId)
+                    || !refreshedScopes.add(scope)) {
+                continue;
+            }
+            activitiesResourcesService.refreshResourceMetricsForScope(
+                    ownerId,
+                    subEventId,
+                    actorUserId);
+        }
     }
 
     private void finalizeAcceptedEventReservations(

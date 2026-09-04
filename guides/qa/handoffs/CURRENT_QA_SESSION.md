@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-04 07:00 CEST
+Updated: 2026-09-04 08:54 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -67,20 +67,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — ACTIVE / STEPS 1-28 PASS / STEP 29 READY
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-assign-001--eventsub-event-asset-assignment
-checklist: ../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md
-substage: phase is `step-29-ready`; `verify-group-reassign` passed all eleven checks with a fresh resource generation, fresh Nova-manual and Riley-invite request IDs, Riley accepted, metric `2 / 0 · 0-5`, pending `1 -> 2 -> 1`, every old row retained as hidden `D`, and the source Asset route preserved as exactly `["Austin"]`. The exact post-reassign rollback boundary was captured at `2026-09-04T06:20:20.961Z`
-next_replay_boundary: begin checklist step 29 in Casey's existing session and remove Riley once from the Tournament Event Members surface. If this branch must be replayed, use `rollback-step-29-boundary`; it restores the exact persisted post-reassign state without repeating steps 1-28
-fixture_phase: `verify-normal-assignment` passed exact owner records, persisted 1/4 Transport, 1/3 Accommodation, common 5/6 Supplies for all viewers, exact open notification, unchanged control Sub-event, roles, Tournament branch and all non-bell counters; the oracle's earlier full-bell-counter comparison was corrected because expected and unrelated notifications legitimately change that global counter
-browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions remain OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest; use Casey's existing window for step 29 and do not relaunch browsers
-browser_control: the user exclusively controls all current browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare or position a test, inspect ahead, navigate, click, submit, derive a new rule or perform any part of the user's manual sequence
-ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
-queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
-required_resume: load only this resume block plus the linked Assignment detail/checklist; do not relaunch living browser sessions; first read status and require `step-29-ready`. Continue at checklist step 29. Use `rollback-step-29-boundary` whenever steps 29 onward must be replayed; never restage or repeat steps 1-28 for that purpose
-actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
-pending_machine_oracle: steps 1-28 are accepted. The next oracle is `verify-group-manager-removal` after steps 29-35. It requires Riley to leave only the Tournament/Group A tree; Riley Accommodation and its scoped accepted/pending requests must become hidden `D`; Riley's accepted Nova Transport request must also become hidden `D`; Nova Transport must retain the same active resource IDs and become `1 / 0 · 0-5`; pending must change `1 -> 0`; Group B and the normal Event branch must remain unchanged; and the exact scoped removal notification recipients must be produced once. The exact step-29 boundary includes the Group branch, related notifications, queued work and all four user activity counters
-last_completed: `ASSET-MEMBER-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven run plus the final correction replay. The user observed Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave converge as `3 -> 2 -> 2 -> 1 -> absent`. Read-only Mongo at the terminal boundary proved Riley's canonical Asset member row is `deleted`, the controlled `activityResources` row is `D` with no Asset assignment, the generated-group runtime resource map is empty, and no notification was created after Nova's final Leave. The resource card and Group row disappeared through the existing signal chain. The server fix status-deletes scoped removed members; the frontend forwards authoritative empty-scope zero metrics and did not add or modify an aggregation loop. Both running watchers built successfully. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
+checkpoint: CONTENT-ADMIN-LIFECYCLE-001 — ACTIVE / BASELINE READY
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#content-admin-lifecycle-001--governed-revisions-consent-and-article-lifecycle
+checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
+substage: phase is `baseline-ready`; no Content mutation step has run
+next_replay_boundary: open the isolated Ava/Kai/Riley sessions without Codex-driven browser actions, complete checklist steps 1-19 once, then run `verify-drafts-saved`
+fixture_phase: staged once at `2026-09-04T06:50:59.887Z`; read-only status proved the exact actor/revision/article identities, five controlled consents, zero new audits, Article buckets `7 / 5 / 7 / 0 / 0` and stable controls
+browser_phase: the old Casey/Nova/Riley Assignment windows may still be open but no longer own a live continuation boundary; no Content browser has been opened
+browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
+ledger_status: 85/118 total, Core 85/98, External/optional 0/20; ASSET-ASSIGNMENT-LIFECYCLE-001 is PASS/CLOSED
+queued_next: none; Content now owns the active fixture boundary
+required_resume: load only this block and the linked Content section/checklist. Require `baseline-ready`, do not restage, and begin at checklist step 1. Do not reconstruct or replay any closed Asset branch
+actors: Ava performs Admin Content and Article writes; Kai is the retained public/member consent actor; Riley is the fresh public/member control
+pending_machine_oracle: after checklist steps 1-19, run `verify-drafts-saved`; it requires exactly four inactive revisions with correct base/version/author and sanitized HTML, exact audits, unchanged active public content and no new consent boundary yet
+last_completed: `ASSET-ASSIGNMENT-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven UI journey and bounded persisted oracles. At the terminal branch Riley left only the Tournament/Group A tree; affected active requests and the removed Accommodation resource became hidden `D` audit history; Nova Transport retained its generation and became `1 / 0 · 0-5`; pending became zero; Group B and the normal Event remained unchanged; and the exact scoped notification was emitted once. Generated-room parent/stage/group identity is now preserved on Event saves, and hierarchical cleanup refreshes only affected resource scopes. The running backend watcher built and restarted successfully
 ```
 
 Resolved admission decision: first-stage admission locks on the successful

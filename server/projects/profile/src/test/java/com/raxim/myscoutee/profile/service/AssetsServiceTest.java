@@ -70,6 +70,101 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void removedEventMemberOnlyStatusDeletesRequestsFromThatEventAssignment() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset existing = assetWithEventRequest();
+        AssetRequestRecord original = existing.getRequests().getFirst();
+        AssetRequestBookingRecord groupBooking = new AssetRequestBookingRecord(
+                "event-1:subevent-1:group-a",
+                original.booking().eventTitle(),
+                "subevent-1",
+                original.booking().subEventTitle(),
+                original.booking().slotKey(),
+                original.booking().slotLabel(),
+                original.booking().timeframe(),
+                original.booking().startAtIso(),
+                original.booking().endAtIso(),
+                original.booking().quantity(),
+                original.booking().totalAmount(),
+                original.booking().currency(),
+                original.booking().acceptedPolicyIds(),
+                original.booking().paymentSessionId(),
+                original.booking().inventoryApplied());
+        AssetRequestRecord removedScopeRequest = new AssetRequestRecord(
+                "request-removed",
+                "u2",
+                original.name(),
+                original.initials(),
+                original.gender(),
+                "accepted",
+                original.note(),
+                "manual",
+                original.requestedAtIso(),
+                groupBooking);
+        AssetRequestRecord retainedOtherEventRequest = new AssetRequestRecord(
+                "request-retained",
+                "u2",
+                original.name(),
+                original.initials(),
+                original.gender(),
+                "pending",
+                original.note(),
+                "manual",
+                original.requestedAtIso(),
+                new AssetRequestBookingRecord(
+                        "event-2",
+                        original.booking().eventTitle(),
+                        "subevent-2",
+                        original.booking().subEventTitle(),
+                        original.booking().slotKey(),
+                        original.booking().slotLabel(),
+                        original.booking().timeframe(),
+                        original.booking().startAtIso(),
+                        original.booking().endAtIso(),
+                        original.booking().quantity(),
+                        original.booking().totalAmount(),
+                        original.booking().currency(),
+                        original.booking().acceptedPolicyIds(),
+                        original.booking().paymentSessionId(),
+                        original.booking().inventoryApplied()));
+        existing.setRequests(List.of(removedScopeRequest, retainedOtherEventRequest));
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(existing));
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        service.statusDeleteEventAssignmentRequestsForUsers(
+                List.of("asset-1"),
+                List.of("u2"),
+                "event-1",
+                "admin",
+                "2026-09-04T08:00:00Z");
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getRequests())
+                .extracting(AssetRequestRecord::id, AssetRequestRecord::status)
+                .containsExactlyInAnyOrder(
+                        tuple("request-removed", "D"),
+                        tuple("request-retained", "pending"));
+    }
+
+    @Test
     void acceptedAssetMemberCanPersistTheSharedAssetInAnEventAssignment() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

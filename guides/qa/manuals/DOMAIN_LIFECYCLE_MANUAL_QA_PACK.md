@@ -6466,7 +6466,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-DUMMY-001` — Asset Explore dummy payment reaches the scoped borrow destination
 
-Status: **DESIGN CAPTURED / NOT RUN**.
+Status: **ACTIVE / BASELINE READY**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-DUMMY-001.md`](../checklists/asset/ASSET-CHECKOUT-DUMMY-001.md).
@@ -6563,7 +6563,7 @@ Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 Stable user guide:
 [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 
-Status: **ACTIVE / STEPS 1-15 PASS; STEP 16 READY**.
+Status: **PASS / CLOSED**.
 
 The first manual steps 1-9 exposed persistence, shared-counter and remaining-
 quantity defects and were not accepted as evidence. The checkpoint's guarded
@@ -6704,6 +6704,25 @@ the exact `1 -> 2` pending return while all prior `D` rows remain hidden. The
 same lifecycle and recipient rules apply when manager removal later clears
 Riley's Accommodation assignment.
 
+At `2026-09-04T08:46:00+02:00`, the guarded step-29 rollback restored the
+exact accepted steps 1-28 state. The real authenticated Event-member removal
+HTTP route then removed Riley from the complete Tournament tree once. The
+terminal `verify-group-manager-removal` oracle passed all thirteen checks:
+Riley left only the Tournament and Group A tree; the removed Accommodation
+resource and every affected active request became hidden `D` audit history;
+Nova's Transport generation retained its IDs/settings/routes and converged to
+`1 / 0 · 0-5`; the stage/root pending chain converged to `0`; Group B and the
+normal Event branch remained unchanged; and the scoped removal notification
+was emitted exactly once to Nova and Riley while excluding Casey and Lina.
+The server document model now preserves the generated room's
+`parentSubEventId` and `groupId` during membership-counter saves, and the
+member-removal write discovers assigned resources throughout the complete
+Event hierarchy before updating request statuses and affected resource
+metrics. The running backend watcher compiled and restarted successfully.
+Together with the accepted user-driven UI journey through step 29, this closes
+`ASSET-ASSIGNMENT-LIFECYCLE-001` as **PASS / CLOSED** without replaying steps
+1-28.
+
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
   capacity/settings and Event Resources UI agree.
@@ -6753,14 +6772,14 @@ Riley's Accommodation assignment.
   exact removed owner/type contribution from Group A runtime metrics, the
   stage `groupsPending` aggregate and the root Event activity aggregate. Only
   settings/contributions owned by the removed manager are cleaned up;
-  unrelated Group A owners/types and every Group B record/counter remain
-  byte-identical.
+  unrelated Group A owners/types and every Group B domain record/counter remain
+  unchanged; server-maintained normalization fields are validated separately.
 - Verify the source asset, assignment/settings/contributions, materialized
   group/stage/root counters, Event and Tournament-group roles after each write,
   after popup close/reopen, after browser reload and after an idempotent
   terminal replay. No read projection or frontend counter fallback may repair
   the persisted result.
-- The consolidated fixture makes Group B a byte-identical Lina control and
+- The consolidated fixture makes Group B an unchanged Lina domain control and
   starts Group A/root pending at `2`. The source-Asset capacity mutation keeps
   it at `2`; Nova's unassign reverses it to `1`; the fresh assignment plus new
   Casey request returns it to `2`. Riley's later Tournament removal requires
@@ -6800,10 +6819,13 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 The runner and Ava/Kai/Riley browser definition were prepared on 2026-09-03.
-They were deliberately not staged or opened because
-`ASSET-ASSIGNMENT-LIFECYCLE-001` still owns the live fixture boundary. After
-that checkpoint is recorded and reset, Content must be staged once and its
-read-only `baseline-ready` status must pass before opening the browsers.
+After `ASSET-ASSIGNMENT-LIFECYCLE-001` was recorded, reset and closed, Content
+was staged once at `2026-09-04T06:50:59.887Z`. Its read-only status returned
+`baseline-ready` with the exact Ava/Kai/Riley identities, five controlled
+revision IDs, five controlled consents, zero new audits, stable controls and
+Article buckets `7 / 5 / 7 / 0 / 0`. No Content mutation step has run and no
+Content browser has been opened by Codex; the explicit manual-browser-control
+rule remains in force.
 The two distinct managed-image controls were read-only verified over the
 running HTTP stack before staging:
 

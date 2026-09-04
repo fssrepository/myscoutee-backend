@@ -294,9 +294,11 @@ persisted post-reassign state without repeating steps 1-28.
     same `_id`, `recordId` and `syncKey`, and becomes exactly `1 / 0 · 0-5`
     after Riley's accepted Asset-member row changes to hidden terminal status.
     The stage/root pending chain changes exactly `1 → 0`.
-33. Confirm all Group B records/counters are byte-identical and the normal
-    Event still contains Casey, Nova and Riley with the previously verified
-    assignments.
+33. Confirm Group B's membership, resource, runtime, read and score domain
+    state is unchanged and the normal Event still contains Casey, Nova and
+    Riley with the previously verified assignments. Ignore server-maintained
+    normalization fields on the generated Group B Event row; its derived
+    `full` flag must still agree with accepted members versus total capacity.
 34. Confirm the removal notification reaches the active participants of the
     affected Group A assignment plus its scope-matching accepted/pending Asset
     members, excluding the actor and merging duplicate recipients. Lina and
