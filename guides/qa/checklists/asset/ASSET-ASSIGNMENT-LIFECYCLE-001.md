@@ -4,9 +4,10 @@ This is the stable, repeatable guide for the consolidated Asset assignment
 testcase. It is not an execution log: do not add current status, timestamps or
 machine evidence to this file.
 
-The normal Sub-event, generated-group mutation/unassign and independent
-removed-manager cleanup branches are one testcase. The report phrases are
-transaction savepoints, not separate matrix rows.
+The normal Sub-event, Supplies contribution deletion, generated-group
+mutation/unassign and independent removed-manager cleanup branches are one
+testcase. The report phrases are transaction savepoints, not separate matrix
+rows.
 
 ## Actors and startup
 
@@ -70,7 +71,10 @@ Begin only after Codex runs the read-only status and confirms:
    When the Supplies Asset is first added, Casey and Riley receive one
    contribution-open notification; Nova does not receive her own action and
    no outside/control participant is notified. A later contribution must not
-   resend the assignment notification.
+   resend the assignment notification. Nova's quantity `2` also creates one
+   contribution-added notification for Casey and Riley. This is the same
+   actor-independent rule used for every accepted contributor; there is no
+   Nova-specific behavior.
 
 4. In **Riley's** owner-scoped resource editor, add exactly one Supplies
    contribution of quantity `3` to the same `QA Assignment Shared Supplies`
@@ -83,7 +87,18 @@ Begin only after Codex runs the read-only status and confirms:
    After each successful contribution, the shared card and menu counter must
    update immediately through the Signal Store (for example, the first added
    quantity `1` is `1 / 0 · 0-6`) and a reload must reconstruct that same
-   persisted value. A row visible only until reload is a failure.
+   persisted value. A row visible only until reload is a failure. Each newly
+   persisted contribution row sends exactly one contribution-added
+   notification to every other accepted participant in the relevant Event or
+   generated Group, excludes the contributor, and never reaches an
+   outside/control participant. Therefore Riley's quantity `3` notifies Casey
+   and Nova but not Riley. Re-saving the same contribution row must not resend
+   it.
+   In the contribution popup, the separate badge row directly below the header
+   actions must show `Required 0 · Remaining 1` after both rows are saved (`5`
+   of maximum `6` supplied). The
+   required value is the stored assignment minimum; remaining is maximum minus
+   the persisted common supplied quantity.
 5. Confirm the shared resource list and its menu counters show the same totals
    for every viewer:
 
@@ -109,6 +124,30 @@ Begin only after Codex runs the read-only status and confirms:
    `ASSET-ASSIGNMENT-LIFECYCLE-001 normal assignment complete: Nova T+A+2 Supplies, Riley 3 Supplies`
 
 Codex must run `verify-normal-assignment` before the next branch.
+
+## 1A. Supplies contribution deletion and exact restore
+
+9a. Still in **Riley**, open `QA Assignment Shared Supplies`. The two rows must
+    identify `Nova Social` with `2 items` and `Riley Outside` with `3 items`;
+    `Unknown member` is a failure. Riley's row exposes Delete, while Nova's row
+    does not.
+9b. Delete only Riley's own quantity `3` row and confirm exactly once. The
+    delete must not be blocked as unavailable.
+9c. Without reload, confirm Riley's row disappears, Nova's row remains, the
+    shared card/menu becomes `2 / 0 · 0-6`, and the badge row directly below
+    the popup header actions becomes `Required 0 · Remaining 4`.
+9d. Casey and Nova each receive exactly one contribution-removed notification.
+    Riley does not receive his own action and Lina receives none. Closing,
+    reopening and one reload must preserve the same row and counter state.
+9e. Report and wait:
+
+    `ASSET-ASSIGNMENT-LIFECYCLE-001 Supplies delete complete: Riley 3 removed, Nova 2 retained`
+
+Codex must run `verify-supply-contribution-delete`, then the versioned
+`restore-normal-assignment-branch` command. That command restores only the
+verified normal Event branch to Nova `2` plus Riley `3`, removes only the
+branch's temporary notification rows, and reconciles unread notification
+counters. Continue only after Codex reports phase `normal-verified` again.
 
 ## 2. Group A source-Asset capacity mutation
 

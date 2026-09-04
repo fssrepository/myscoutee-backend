@@ -31,6 +31,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
@@ -48,6 +49,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
@@ -61,6 +63,7 @@ public class ActivitiesResourcesService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final UsersRepository usersRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final AccessControlService accessControlService;
@@ -74,6 +77,7 @@ public class ActivitiesResourcesService {
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityEventsRepository activityEventsRepository,
+            UsersRepository usersRepository,
             AssetsService assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             AccessControlService accessControlService,
@@ -85,6 +89,7 @@ public class ActivitiesResourcesService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.usersRepository = usersRepository;
         this.assetsService = assetsService;
         this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
         this.accessControlService = accessControlService;
@@ -514,13 +519,34 @@ public class ActivitiesResourcesService {
         long requestedStart = (long) normalizedPage * normalizedPageSize;
         int start = (int) Math.min(total, requestedStart);
         int end = Math.min(total, start + normalizedPageSize);
-        List<SubEventSupplyContributionEntryDto> items = entries.subList(start, end).stream()
+        List<SubEventSupplyContributionEntryRecord> pageEntries = entries.subList(start, end);
+        Set<String> contributorUserIds = pageEntries.stream()
+                .map(SubEventSupplyContributionEntryRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, Users> contributorsById = (contributorUserIds.isEmpty()
+                ? List.<Users>of()
+                : usersRepository.findByUserIdIn(contributorUserIds)).stream()
                 .filter(Objects::nonNull)
-                .map(entry -> new SubEventSupplyContributionEntryDto(
-                        safeText(entry.id()),
-                        safeText(entry.userId()),
-                        Math.max(0, entry.quantity() == null ? 0 : entry.quantity()),
-                        normalizeDateTime(entry.addedAtIso(), "")))
+                .collect(LinkedHashMap::new,
+                        (target, user) -> target.put(normalizeId(user.getId()), user),
+                        Map::putAll);
+        List<SubEventSupplyContributionEntryDto> items = pageEntries.stream()
+                .filter(Objects::nonNull)
+                .map(entry -> {
+                    Users contributor = contributorsById.get(normalizeId(entry.userId()));
+                    return new SubEventSupplyContributionEntryDto(
+                            safeText(entry.id()),
+                            safeText(entry.userId()),
+                            Math.max(0, entry.quantity() == null ? 0 : entry.quantity()),
+                            normalizeDateTime(entry.addedAtIso(), ""),
+                            safeText(contributor == null ? null : contributor.getName()),
+                            safeText(contributor == null ? null : contributor.getInitials()),
+                            safeText(contributor == null ? null : contributor.getGender()),
+                            normalizeCount(contributor == null ? null : contributor.getAge()),
+                            safeText(contributor == null ? null : contributor.getCity()));
+                })
                 .toList();
         return new SubEventSupplyContributionPageDto(items, total, normalizedPage, normalizedPageSize);
     }
@@ -594,6 +620,8 @@ public class ActivitiesResourcesService {
                 current,
                 next,
                 AssetCatalog.TYPE_SUPPLIES);
+        List<SupplyContributionAddition> addedSupplyContributions = addedSupplyContributions(current, next);
+        List<SupplyContributionRemoval> removedSupplyContributions = removedSupplyContributions(current, next);
         Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
         next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
@@ -619,6 +647,18 @@ public class ActivitiesResourcesService {
                 actorUserId,
                 addedSupplyAssetIds,
                 eligibleAssets);
+        enqueueSupplyContributionAddedNotifications(
+                ownerId,
+                subEventId,
+                actorUserId,
+                addedSupplyContributions,
+                eligibleAssets);
+        enqueueSupplyContributionRemovedNotifications(
+                ownerId,
+                subEventId,
+                actorUserId,
+                removedSupplyContributions,
+                eligibleAssets);
         refreshEventParticipationProjection(ownerId);
         return toStateDto(saved, eligibleAssets, commonMetrics);
     }
@@ -641,6 +681,98 @@ public class ActivitiesResourcesService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    private List<SupplyContributionAddition> addedSupplyContributions(
+            ActivitySubEventResource previous,
+            ActivitySubEventResource next) {
+        Map<String, Set<String>> previousEntryIdsByAsset = new LinkedHashMap<>();
+        if (previous != null && previous.getSupplyContributionEntriesByAssetId() != null) {
+            previous.getSupplyContributionEntriesByAssetId().forEach((rawAssetId, entries) -> {
+                String assetId = normalizeId(rawAssetId);
+                if (!StringUtils.hasText(assetId)) {
+                    return;
+                }
+                Set<String> entryIds = (entries == null ? List.<SubEventSupplyContributionEntryRecord>of() : entries)
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(SubEventSupplyContributionEntryRecord::id)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
+                previousEntryIdsByAsset.put(assetId, entryIds);
+            });
+        }
+        List<SupplyContributionAddition> additions = new ArrayList<>();
+        if (next == null || next.getSupplyContributionEntriesByAssetId() == null) {
+            return additions;
+        }
+        next.getSupplyContributionEntriesByAssetId().forEach((rawAssetId, entries) -> {
+            String assetId = normalizeId(rawAssetId);
+            Set<String> previousEntryIds = previousEntryIdsByAsset.getOrDefault(assetId, Set.of());
+            for (SubEventSupplyContributionEntryRecord entry : entries == null
+                    ? List.<SubEventSupplyContributionEntryRecord>of()
+                    : entries) {
+                String entryId = normalizeId(entry == null ? null : entry.id());
+                if (StringUtils.hasText(assetId)
+                        && StringUtils.hasText(entryId)
+                        && !previousEntryIds.contains(entryId)
+                        && normalizeCount(entry.quantity()) > 0) {
+                    additions.add(new SupplyContributionAddition(
+                            assetId,
+                            entryId,
+                            normalizeId(entry.userId()),
+                            normalizeCount(entry.quantity())));
+                }
+            }
+        });
+        return additions;
+    }
+
+    private List<SupplyContributionRemoval> removedSupplyContributions(
+            ActivitySubEventResource previous,
+            ActivitySubEventResource next) {
+        Map<String, Set<String>> nextEntryIdsByAsset = new LinkedHashMap<>();
+        if (next != null && next.getSupplyContributionEntriesByAssetId() != null) {
+            next.getSupplyContributionEntriesByAssetId().forEach((rawAssetId, entries) -> {
+                String assetId = normalizeId(rawAssetId);
+                if (!StringUtils.hasText(assetId)) {
+                    return;
+                }
+                Set<String> entryIds = (entries == null ? List.<SubEventSupplyContributionEntryRecord>of() : entries)
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(SubEventSupplyContributionEntryRecord::id)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
+                nextEntryIdsByAsset.put(assetId, entryIds);
+            });
+        }
+        List<SupplyContributionRemoval> removals = new ArrayList<>();
+        if (previous == null || previous.getSupplyContributionEntriesByAssetId() == null) {
+            return removals;
+        }
+        previous.getSupplyContributionEntriesByAssetId().forEach((rawAssetId, entries) -> {
+            String assetId = normalizeId(rawAssetId);
+            Set<String> nextEntryIds = nextEntryIdsByAsset.getOrDefault(assetId, Set.of());
+            for (SubEventSupplyContributionEntryRecord entry : entries == null
+                    ? List.<SubEventSupplyContributionEntryRecord>of()
+                    : entries) {
+                String entryId = normalizeId(entry == null ? null : entry.id());
+                if (StringUtils.hasText(assetId)
+                        && StringUtils.hasText(entryId)
+                        && !nextEntryIds.contains(entryId)
+                        && normalizeCount(entry.quantity()) > 0) {
+                    removals.add(new SupplyContributionRemoval(
+                            assetId,
+                            entryId,
+                            normalizeId(entry.userId()),
+                            normalizeCount(entry.quantity())));
+                }
+            }
+        });
+        return removals;
     }
 
     private void enqueueSupplyContributionOpenNotifications(
@@ -690,6 +822,118 @@ public class ActivitiesResourcesService {
                     iconUrl,
                     "/assets/logo/heart.webp",
                     "event-supplies-open-" + normalizeId(ownerId) + "-" + normalizeId(subEventId) + "-" + assetId,
+                    payload,
+                    normalizeId(actorUserId)));
+        }
+    }
+
+    private void enqueueSupplyContributionAddedNotifications(
+            String ownerId,
+            String subEventId,
+            String actorUserId,
+            List<SupplyContributionAddition> additions,
+            Map<String, AssetDetailDto> assetDetails) {
+        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+                ? null
+                : notificationOutboxServiceProvider.getIfAvailable();
+        if (notificationOutboxService == null || additions == null || additions.isEmpty()) {
+            return;
+        }
+        List<String> recipients = resourceNotificationRecipientUserIds(ownerId, subEventId, actorUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        String eventId = authorizationEventId(ownerId, subEventId);
+        ActivityEvent event = activityEventsRepository.findBySourceId(eventId).stream()
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "Event");
+        String iconUrl = firstNonBlank(event == null ? null : event.getImageUrl(), "/assets/logo/heart.webp");
+        for (SupplyContributionAddition addition : additions) {
+            AssetDetailDto asset = assetDetails == null ? null : assetDetails.get(addition.assetId());
+            String assetTitle = firstNonBlank(asset == null ? null : asset.title(), "Supplies");
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("eventId", eventId);
+            payload.put("eventTitle", eventTitle);
+            payload.put("ownerId", normalizeId(ownerId));
+            payload.put("subEventId", normalizeId(subEventId));
+            payload.put("assetId", addition.assetId());
+            payload.put("assetTitle", assetTitle);
+            payload.put("contributionEntryId", addition.entryId());
+            payload.put("contributorUserId", firstNonBlank(addition.contributorUserId(), normalizeId(actorUserId)));
+            payload.put("quantity", Integer.toString(addition.quantity()));
+            payload.put("resourceType", AssetCatalog.TYPE_SUPPLIES);
+            payload.put("notification_tone", "info");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-supplies-contribution-added",
+                    "event",
+                    eventId,
+                    "event-resource-participants",
+                    recipients,
+                    "Supplies contribution added",
+                    addition.quantity() + " item(s) were added to " + assetTitle + " in " + eventTitle + ".",
+                    "/game",
+                    iconUrl,
+                    "/assets/logo/heart.webp",
+                    "event-supplies-contribution-added-" + normalizeId(ownerId) + "-"
+                            + normalizeId(subEventId) + "-" + addition.assetId() + "-" + addition.entryId(),
+                    payload,
+                    normalizeId(actorUserId)));
+        }
+    }
+
+    private void enqueueSupplyContributionRemovedNotifications(
+            String ownerId,
+            String subEventId,
+            String actorUserId,
+            List<SupplyContributionRemoval> removals,
+            Map<String, AssetDetailDto> assetDetails) {
+        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+                ? null
+                : notificationOutboxServiceProvider.getIfAvailable();
+        if (notificationOutboxService == null || removals == null || removals.isEmpty()) {
+            return;
+        }
+        List<String> recipients = resourceNotificationRecipientUserIds(ownerId, subEventId, actorUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        String eventId = authorizationEventId(ownerId, subEventId);
+        ActivityEvent event = activityEventsRepository.findBySourceId(eventId).stream()
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "Event");
+        String iconUrl = firstNonBlank(event == null ? null : event.getImageUrl(), "/assets/logo/heart.webp");
+        for (SupplyContributionRemoval removal : removals) {
+            AssetDetailDto asset = assetDetails == null ? null : assetDetails.get(removal.assetId());
+            String assetTitle = firstNonBlank(asset == null ? null : asset.title(), "Supplies");
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("eventId", eventId);
+            payload.put("eventTitle", eventTitle);
+            payload.put("ownerId", normalizeId(ownerId));
+            payload.put("subEventId", normalizeId(subEventId));
+            payload.put("assetId", removal.assetId());
+            payload.put("assetTitle", assetTitle);
+            payload.put("contributionEntryId", removal.entryId());
+            payload.put("contributorUserId", firstNonBlank(removal.contributorUserId(), normalizeId(actorUserId)));
+            payload.put("quantity", Integer.toString(removal.quantity()));
+            payload.put("resourceType", AssetCatalog.TYPE_SUPPLIES);
+            payload.put("notification_tone", "info");
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-supplies-contribution-removed",
+                    "event",
+                    eventId,
+                    "event-resource-participants",
+                    recipients,
+                    "Supplies contribution removed",
+                    removal.quantity() + " item(s) were removed from " + assetTitle + " in " + eventTitle + ".",
+                    "/game",
+                    iconUrl,
+                    "/assets/logo/heart.webp",
+                    "event-supplies-contribution-removed-" + normalizeId(ownerId) + "-"
+                            + normalizeId(subEventId) + "-" + removal.assetId() + "-" + removal.entryId(),
                     payload,
                     normalizeId(actorUserId)));
         }
@@ -1945,5 +2189,19 @@ public class ActivitiesResourcesService {
             String runtimeOwnerId,
             String subEventId,
             String groupId) {
+    }
+
+    private record SupplyContributionAddition(
+            String assetId,
+            String entryId,
+            String contributorUserId,
+            int quantity) {
+    }
+
+    private record SupplyContributionRemoval(
+            String assetId,
+            String entryId,
+            String contributorUserId,
+            int quantity) {
     }
 }

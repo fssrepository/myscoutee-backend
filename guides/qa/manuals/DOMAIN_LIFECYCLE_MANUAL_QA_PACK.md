@@ -6563,7 +6563,7 @@ Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 Stable user guide:
 [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 
-Status: **RESTAGED / REPLAY READY**.
+Status: **ACTIVE / NORMAL ASSIGNMENT VERIFIED; SUPPLIES DELETE FIX READY FOR UI CHECK**.
 
 The first manual steps 1-9 exposed persistence, shared-counter and remaining-
 quantity defects and were not accepted as evidence. The checkpoint's guarded
@@ -6573,8 +6573,42 @@ baseline predicates: three zero-valued normal Event viewer documents, no
 normal resource, unchanged second Sub-event, exact normal/Asset memberships,
 exact Tournament/room memberships, Group A owner/type metrics, Group B control
 metric and document snapshot, stage/root pending `2`, and zero controlled
-notifications. The three managed browsers remain open and each requires one
-reload before replaying steps 1-9.
+notifications. The three managed browsers were freshly relaunched after the
+restage. The user then replayed steps 1-9. `verify-normal-assignment` initially
+exposed a harness-only false negative: it compared the complete bell counter
+with the pre-notification baseline even though the expected Supplies-open
+notification legitimately changes it. The corrected oracle verifies the
+fixture's exact inbox/outbox rows separately and keeps every other activity
+counter byte-identical. Its rerun reached `normal-verified` with all checks
+true: exact Nova and Riley owner records, `1/4` Transport, `1/3`
+Accommodation, shared `5/6` Supplies, common values for all three viewers,
+unchanged control Sub-event, memberships, Tournament branch and non-bell
+counters.
+
+After that replay, a generic contribution-added notification was implemented
+for server and frontend-local writes. Every newly persisted Supplies row sends
+exactly once to all other accepted participants in the relevant Event or
+generated Group, regardless of whether Nova, Riley or another participant is
+the contributor; the contributor and outside/control users are excluded. This
+new notification was deliberately not replayed manually in the already
+verified 1-9 transaction. It is recorded in the stable checklist and the
+future `verify-normal-assignment` oracle, which expects Nova `2` to reach Casey
+and Riley and Riley `3` to reach Casey and Nova.
+
+The subsequent exploratory Supplies-row deletion exposed two additional
+defects. The paged shared list could render Nova as `Unknown member, 0` because
+the row response did not carry its display-safe contributor fields, and Riley's
+own delete was rejected as no longer available because the popup built the
+outgoing write from a shared display cache instead of Riley's stored
+owner-scoped state. The list endpoint now batch-enriches the current page with
+name/initials/gender/age/city; the popup mutates only the active user's stored
+row. Successful deletion emits one
+`event-supplies-contribution-removed` notification to every other accepted
+participant under the same recipient rule as addition. A separate row directly
+below the popup header actions shows the stored minimum and
+`capacityMax - accepted` as a compact `Required · Remaining` badge. These
+corrections are compiled but the new
+manual delete branch is not yet accepted as evidence.
 
 The isolated `asset-assignment` fixture stages the normal and Tournament
 branches together. It is independent from Borrow and Checkout and must start
@@ -6588,10 +6622,13 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 Its named savepoint oracles are `verify-normal-assignment`,
-`verify-group-capacity-edit`, `verify-group-unassign`, the guarded
-`restore-group-removal-branch`, and `verify-group-manager-removal`. The restore
-command rewinds only the captured Tournament branch and preserves the verified
-normal branch.
+`verify-supply-contribution-delete`, the guarded
+`restore-normal-assignment-branch`, `verify-group-capacity-edit`,
+`verify-group-unassign`, the guarded `restore-group-removal-branch`, and
+`verify-group-manager-removal`. The normal restore puts back the exact verified
+Nova `2` plus Riley `3` contribution state and removes only temporary delete or
+exploratory contribution notifications. The Tournament restore rewinds only
+the captured Tournament branch and preserves the verified normal branch.
 
 - Assign an eligible accepted user's Transport to one normal event sub-event.
 - Verify event ID, sub-event ID, asset owner, asset ID, route,
@@ -6605,6 +6642,19 @@ normal branch.
   contributions from two accepted users to the same normal sub-event.
 - Keep the shared Supplies assignment and its capacity only on Nova's resource
   record; Riley persists only Riley's contribution row for that same Asset.
+- Treat every newly persisted Supplies contribution row identically regardless
+  of contributor: notify every other accepted participant in the relevant
+  Event or generated Group exactly once, exclude the contributor and all
+  outside/control participants, and do not resend for the same row. The first
+  Supplies assignment still emits its separate contribution-open notification.
+- List every shared contribution with the contributor's real display identity.
+  Only the contributor can delete that contributor's row. A successful delete
+  immediately and durably subtracts its exact quantity, retains the shared
+  Asset assignment/capacity, and notifies all other accepted participants once
+  while excluding the actor and outsiders.
+- Show `Required <capacityMin> · Remaining <capacityMax-accepted>` in a
+  separate row directly below the contribution popup header actions and update
+  it with the same persisted common quantity as the card/menu counter.
 - Compare every per-owner record with aggregate accepted/pending/capacity
   min/max values in Event Resources, the sub-event badges and parent
   navigation, both in place and after reload.

@@ -717,7 +717,19 @@ public final class SharedDtos {
             String id,
             String userId,
             Integer quantity,
-            String addedAtIso) {
+            String addedAtIso,
+            String name,
+            String initials,
+            String gender,
+            Integer age,
+            String city) {
+        public SubEventSupplyContributionEntryDto(
+                String id,
+                String userId,
+                Integer quantity,
+                String addedAtIso) {
+            this(id, userId, quantity, addedAtIso, null, null, null, null, null);
+        }
     }
 
     public record SubEventSupplyContributionPageDto(

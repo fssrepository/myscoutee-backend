@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -89,13 +90,13 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private UsersRepository usersRepository;
+    @Mock
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock
     private ChatsRepository chatsRepository;
     @Mock
     private AssetsRepository assetsRepository;
-    @Mock
-    private UsersRepository usersRepository;
     @Mock
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
@@ -132,6 +133,7 @@ class ActivitiesResourcesServiceTest {
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 activityEventsRepository,
+                usersRepository,
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,
@@ -240,6 +242,37 @@ class ActivitiesResourcesServiceTest {
         assertThat(scope.visibleStates()).singleElement().satisfies(state -> {
             assertThat(state.assetAssignmentIds()).containsEntry("Transport", List.of("asset-1"));
             assertThat(state.fallbackAssetCardsByType()).containsEntry("Transport", List.of(releasedAsset));
+        });
+    }
+
+    @Test
+    void querySupplyContributionsIncludesContributorDisplayFields() {
+        ActivitySubEventResource resource = resourceState("event-1", "sub-1", "u1");
+        resource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-u2", "u2", 2, "2026-09-04T02:01:00Z"))));
+        Users contributor = new Users();
+        contributor.setId("u2");
+        contributor.setName("Nova Social");
+        contributor.setInitials("NS");
+        contributor.setGender("woman");
+        contributor.setAge(27);
+        contributor.setCity("Austin");
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(resource));
+        when(usersRepository.findByUserIdIn(Set.of("u2"))).thenReturn(List.of(contributor));
+
+        var page = service.querySupplyContributions(
+                "event-1", "sub-1", "u1", "shared-supplies", 0, 12);
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.items()).singleElement().satisfies(item -> {
+            assertThat(item.userId()).isEqualTo("u2");
+            assertThat(item.name()).isEqualTo("Nova Social");
+            assertThat(item.initials()).isEqualTo("NS");
+            assertThat(item.gender()).isEqualTo("woman");
+            assertThat(item.age()).isEqualTo(27);
+            assertThat(item.city()).isEqualTo("Austin");
         });
     }
 
@@ -455,6 +488,18 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
                 .thenReturn(Optional.of(member("event-1", "u2", "accepted")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(notificationOutboxServiceProvider.getIfAvailable()).thenReturn(notificationOutboxService);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("u1", "u2", "u3"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("u1"),
+                        6));
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u2", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssignableAssetDetails(
@@ -486,6 +531,9 @@ class ActivitiesResourcesServiceTest {
                 .thenReturn(List.of(ownerResource, contributorResource));
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setTitle("Assignment Event");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
         ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
                 "event-1",
@@ -511,10 +559,88 @@ class ActivitiesResourcesServiceTest {
         assertThat(persisted.getResourceMetricsByType().get("Supplies").capacityMax()).isZero();
         assertThat(saved.resourceMetricsByType().get("Supplies").accepted()).isEqualTo(5);
         assertThat(saved.resourceMetricsByType().get("Supplies").capacityMax()).isEqualTo(6);
+
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-supplies-contribution-added");
+        assertThat(notification.recipientUserIds()).containsExactly("u1", "u3");
+        assertThat(notification.createdUser()).isEqualTo("u2");
+        assertThat(notification.payload())
+                .containsEntry("assetId", "shared-supplies")
+                .containsEntry("contributionEntryId", "entry-u2")
+                .containsEntry("contributorUserId", "u2")
+                .containsEntry("quantity", "2");
     }
 
     @Test
-    void replaceNotifiesOtherAcceptedParticipantsWhenSuppliesAreFirstAssigned() {
+    void replaceRemovesOwnSupplyContributionAndNotifiesOtherAcceptedParticipants() {
+        authenticateAs("u2");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
+                .thenReturn(Optional.of(member("event-1", "u2", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(notificationOutboxServiceProvider.getIfAvailable()).thenReturn(notificationOutboxService);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("u1", "u2", "u3"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("u1"),
+                        6));
+
+        ActivitySubEventResource ownerResource = resourceState("event-1", "sub-1", "u1");
+        ownerResource.setAssetAssignmentIds(Map.of("Supplies", List.of("shared-supplies")));
+        ActivitySubEventResource contributorResource = resourceState("event-1", "sub-1", "u2");
+        contributorResource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-u2", "u2", 2, "2026-09-04T02:01:00Z"))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u2", "D")).thenReturn(Optional.of(contributorResource));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(ownerResource, contributorResource));
+        when(assetsService.queryAssignableAssetDetails(
+                "u2", "event-1", "sub-1", Set.of("shared-supplies")))
+                .thenReturn(Map.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setTitle("Assignment Event");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "sub-1",
+                "u2",
+                Map.of(),
+                Map.of(),
+                Map.of("shared-supplies", List.of()),
+                Map.of());
+
+        service.replace(request);
+
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getSupplyContributionEntriesByAssetId()
+                .getOrDefault("shared-supplies", List.of())).isEmpty();
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-supplies-contribution-removed");
+        assertThat(notification.recipientUserIds()).containsExactly("u1", "u3");
+        assertThat(notification.createdUser()).isEqualTo("u2");
+        assertThat(notification.payload())
+                .containsEntry("assetId", "shared-supplies")
+                .containsEntry("contributionEntryId", "entry-u2")
+                .containsEntry("contributorUserId", "u2")
+                .containsEntry("quantity", "2");
+    }
+
+    @Test
+    void replaceNotifiesOtherAcceptedParticipantsWhenSuppliesAreFirstAssignedAndContributed() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
@@ -551,19 +677,29 @@ class ActivitiesResourcesServiceTest {
                 Map.of("Supplies", List.of("shared-supplies")),
                 Map.of("Supplies", Map.of("shared-supplies", new SubEventAssignedAssetSettingsDto(
                         0, 6, 1, "u1", false, List.of()))),
-                Map.of(),
+                Map.of("shared-supplies", List.of(new SubEventSupplyContributionEntryDto(
+                        "entry-u1", "u1", 2, "2026-09-04T02:00:00Z"))),
                 Map.of());
 
         service.replace(request);
 
         ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
-        NotificationIntent notification = notificationCaptor.getValue();
-        assertThat(notification.type()).isEqualTo("event-supplies-open");
-        assertThat(notification.recipientUserIds()).containsExactly("u2", "u3");
-        assertThat(notification.payload())
+        verify(notificationOutboxService, times(2)).enqueue(notificationCaptor.capture());
+        Map<String, NotificationIntent> notificationsByType = notificationCaptor.getAllValues().stream()
+                .collect(java.util.stream.Collectors.toMap(NotificationIntent::type, notification -> notification));
+        NotificationIntent openNotification = notificationsByType.get("event-supplies-open");
+        assertThat(openNotification.recipientUserIds()).containsExactly("u2", "u3");
+        assertThat(openNotification.payload())
                 .containsEntry("assetId", "shared-supplies")
                 .containsEntry("subEventId", "sub-1");
+        NotificationIntent contributionNotification = notificationsByType.get("event-supplies-contribution-added");
+        assertThat(contributionNotification.recipientUserIds()).containsExactly("u2", "u3");
+        assertThat(contributionNotification.createdUser()).isEqualTo("u1");
+        assertThat(contributionNotification.payload())
+                .containsEntry("assetId", "shared-supplies")
+                .containsEntry("contributionEntryId", "entry-u1")
+                .containsEntry("contributorUserId", "u1")
+                .containsEntry("quantity", "2");
     }
 
     @Test

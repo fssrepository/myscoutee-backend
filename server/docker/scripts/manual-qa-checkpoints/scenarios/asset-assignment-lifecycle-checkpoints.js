@@ -776,10 +776,45 @@
     };
   }
 
+  function synchronizeNotificationCounter(userId) {
+    const unreadNotifications = Q.collection("userNotifications").countDocuments({
+      $and: [
+        { $or: [{ recipientUserId: userId }, { userId }] },
+        { $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }] }
+      ]
+    });
+    const result = Q.collection("users").updateOne(
+      { $or: [{ _id: userId }, { userId }] },
+      { $set: { "activities.notifications": unreadNotifications } }
+    );
+    if (result.matchedCount !== 1) {
+      Q.fail(`${CHECKPOINT} notification counter user '${userId}' disappeared.`);
+    }
+  }
+
+  function expectedNormalContributionRows(currentState) {
+    return (((currentState.normalDomainAfterAssignment || {}).resources) || [])
+      .flatMap(resource => ((((resource || {}).supplyContributionEntriesByAssetId || {})[NORMAL_SUPPLIES_ID]) || [])
+        .map(entry => ({
+          id: Q.text(entry && (entry.id || entry._id)),
+          userId: Q.text(entry && entry.userId),
+          quantity: Q.number(entry && entry.quantity)
+        })))
+      .filter(entry => entry.id);
+  }
+
   function counterSnapshot() {
     return USERS.map(userId => {
       const activities = (Q.ensureUser(userId, `${CHECKPOINT} counter user`).activities || {});
       return { userId, activities: clone(activities) };
+    });
+  }
+
+  function countersWithoutNotifications(snapshot) {
+    return (snapshot || []).map(item => {
+      const activities = clone((item && item.activities) || {});
+      delete activities.notifications;
+      return { userId: Q.text(item && item.userId), activities };
     });
   }
 
@@ -1014,6 +1049,24 @@
       sourceId: NORMAL_EVENT_ID,
       "payload.assetId": NORMAL_SUPPLIES_ID
     });
+    const supplyContributionOutbox = read("notificationOutbox", {
+      notificationType: "event-supplies-contribution-added",
+      entityId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID
+    });
+    const supplyContributionInbox = read("userNotifications", {
+      kind: "event-supplies-contribution-added",
+      sourceId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID
+    });
+    const novaContributionOutbox = supplyContributionOutbox.filter(item =>
+      Q.text(item && item.payload && item.payload.contributorUserId) === NOVA_ID);
+    const rileyContributionOutbox = supplyContributionOutbox.filter(item =>
+      Q.text(item && item.payload && item.payload.contributorUserId) === RILEY_ID);
+    const novaContributionInbox = supplyContributionInbox.filter(item =>
+      Q.text(item && item.payload && item.payload.contributorUserId) === NOVA_ID);
+    const rileyContributionInbox = supplyContributionInbox.filter(item =>
+      Q.text(item && item.payload && item.payload.contributorUserId) === RILEY_ID);
     const checks = {
       exactOwnerRecords: normal.resources.length === 2 && !!nova && !!riley,
       novaTransport: recordMatches(nova, "Transport", NORMAL_TRANSPORT_ID, 4, NOVA_ID),
@@ -1034,6 +1087,19 @@
         && Q.sameJson(sorted(supplyOpenOutbox[0].recipientUserIds), sorted([CASEY_ID, RILEY_ID]))
         && supplyOpenInbox.length === 2
         && Q.sameJson(sorted(supplyOpenInbox.map(recipientId)), sorted([CASEY_ID, RILEY_ID])),
+      suppliesContributionNotificationsExactOnce: supplyContributionOutbox.length === 2
+        && novaContributionOutbox.length === 1
+        && Q.sameJson(sorted(novaContributionOutbox[0].recipientUserIds), sorted([CASEY_ID, RILEY_ID]))
+        && Q.number(novaContributionOutbox[0].payload.quantity) === 2
+        && rileyContributionOutbox.length === 1
+        && Q.sameJson(sorted(rileyContributionOutbox[0].recipientUserIds), sorted([CASEY_ID, NOVA_ID]))
+        && Q.number(rileyContributionOutbox[0].payload.quantity) === 3
+        && supplyContributionInbox.length === 4
+        && novaContributionInbox.length === 2
+        && Q.sameJson(sorted(novaContributionInbox.map(recipientId)), sorted([CASEY_ID, RILEY_ID]))
+        && rileyContributionInbox.length === 2
+        && Q.sameJson(sorted(rileyContributionInbox.map(recipientId)), sorted([CASEY_ID, NOVA_ID]))
+        && supplyContributionInbox.every(item => Q.number(item.occurrenceCount) === 1),
       controlSubEventUnchanged: normal.controlResources === 0
         && normal.events.every(event => Q.sameJson(event.control, subEventMetrics({}))),
       membershipIsolation: normal.members.length === 3
@@ -1042,9 +1108,20 @@
         && normal.assetMembers[0].userId === RILEY_ID
         && normal.assetMembers[0].status === "accepted",
       tournamentUntouched: sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline),
-      countersUntouched: sameDomain(counterSnapshot(), currentState.baselineCounters)
+      nonNotificationCountersUntouched: sameDomain(
+        countersWithoutNotifications(counterSnapshot()),
+        countersWithoutNotifications(currentState.baselineCounters)
+      )
     };
-    failChecks("normal-assignment", checks, { normal, supplyOpenOutbox, supplyOpenInbox });
+    failChecks("normal-assignment", checks, {
+      normal,
+      supplyOpenOutbox,
+      supplyOpenInbox,
+      supplyContributionOutbox,
+      supplyContributionInbox,
+      currentCounters: counterSnapshot(),
+      baselineCounters: currentState.baselineCounters
+    });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "normal-verified",
       normalVerifiedAtIso: Q.nowIso(),
@@ -1067,6 +1144,145 @@
       resources: read("activityResources", { ownerId: NORMAL_EVENT_ID }),
       assets: read("assets", { assetId: { $in: [NORMAL_TRANSPORT_ID, NORMAL_ACCOMMODATION_ID, NORMAL_SUPPLIES_ID] } })
     };
+  }
+
+  function verifySupplyContributionDelete() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "normal-verified");
+    const expectedRows = expectedNormalContributionRows(currentState);
+    const expectedRileyRows = expectedRows.filter(entry => entry.userId === RILEY_ID);
+    if (expectedRileyRows.length !== 1) {
+      Q.fail(`${CHECKPOINT} expected one verified Riley Supplies row, found ${expectedRileyRows.length}.`);
+    }
+    const removedRow = expectedRileyRows[0];
+    const normal = normalSnapshot();
+    const byOwner = Object.fromEntries(normal.resources.map(resource => [resource.assetOwnerUserId, resource]));
+    const nova = byOwner[NOVA_ID];
+    const riley = byOwner[RILEY_ID];
+    const removedOutbox = read("notificationOutbox", {
+      notificationType: "event-supplies-contribution-removed",
+      entityId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID,
+      "payload.contributionEntryId": removedRow.id
+    });
+    const removedInbox = read("userNotifications", {
+      kind: "event-supplies-contribution-removed",
+      sourceId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID,
+      "payload.contributionEntryId": removedRow.id
+    });
+    const expectedAfterDeleteMetric = {
+      carsAccepted: 1, carsPending: 0, carsCapacityMin: 0, carsCapacityMax: 4,
+      accommodationAccepted: 1, accommodationPending: 0, accommodationCapacityMin: 0, accommodationCapacityMax: 3,
+      suppliesAccepted: 2, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 6,
+      groupsPending: 0
+    };
+    const checks = {
+      novaAssignmentAndQuantityRetained: recordMatches(nova, "Transport", NORMAL_TRANSPORT_ID, 4, NOVA_ID)
+        && recordMatches(nova, "Accommodation", NORMAL_ACCOMMODATION_ID, 3, NOVA_ID)
+        && Q.sameJson(idsFor(nova, "Supplies"), [NORMAL_SUPPLIES_ID])
+        && contributionTotal(nova, NORMAL_SUPPLIES_ID, NOVA_ID) === 2,
+      onlyRileyContributionRemoved: !!riley
+        && Q.sameJson(idsFor(riley, "Supplies"), [])
+        && settingsFor(riley, "Supplies", NORMAL_SUPPLIES_ID) === null
+        && contributionTotal(riley, NORMAL_SUPPLIES_ID, RILEY_ID) === 0
+        && Q.sameJson(normalizedMetric((riley.resourceMetricsByType || {}).Supplies), zeroMetric()),
+      exactCommonCounter: normal.events.length === 3
+        && normal.events.every(event => Q.sameJson(event.target, expectedAfterDeleteMetric)),
+      removedNotificationExactOnce: removedOutbox.length === 1
+        && Q.sameJson(sorted(removedOutbox[0].recipientUserIds), sorted([CASEY_ID, NOVA_ID]))
+        && Q.text(removedOutbox[0].payload.contributorUserId) === RILEY_ID
+        && Q.number(removedOutbox[0].payload.quantity) === removedRow.quantity
+        && removedInbox.length === 2
+        && Q.sameJson(sorted(removedInbox.map(recipientId)), sorted([CASEY_ID, NOVA_ID]))
+        && removedInbox.every(item => Q.number(item.occurrenceCount) === 1),
+      controlSubEventUnchanged: normal.controlResources === 0
+        && normal.events.every(event => Q.sameJson(event.control, subEventMetrics({}))),
+      membershipsUnchanged: normal.members.length === 3
+        && normal.members.every(member => member.status === "accepted")
+        && normal.assetMembers.length === 1
+        && normal.assetMembers[0].userId === RILEY_ID
+        && normal.assetMembers[0].status === "accepted",
+      tournamentUntouched: sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline),
+      nonNotificationCountersUntouched: sameDomain(
+        countersWithoutNotifications(counterSnapshot()),
+        countersWithoutNotifications(currentState.baselineCounters)
+      )
+    };
+    failChecks("supply-contribution-delete", checks, {
+      removedRow, normal, removedOutbox, removedInbox, currentCounters: counterSnapshot()
+    });
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "supply-delete-verified",
+      supplyDeleteVerifiedAtIso: Q.nowIso()
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "supply-delete-verified",
+      checks,
+      next: `Run restore-normal-assignment-branch asset-assignment ${CHECKPOINT}; it restores only the verified normal Event branch.`
+    });
+  }
+
+  function restoreNormalAssignmentBranch() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    const currentPhase = Q.text(currentState.phase);
+    if (!["normal-verified", "supply-delete-verified"].includes(currentPhase)) {
+      Q.fail(`${CHECKPOINT} normal restore requires phase 'normal-verified' or 'supply-delete-verified', found '${currentPhase}'.`);
+    }
+    const baseline = currentState.normalDomainAfterAssignment || {};
+    if (!Array.isArray(baseline.events) || !Array.isArray(baseline.resources)) {
+      Q.fail(`${CHECKPOINT} verified normal branch snapshot is missing.`);
+    }
+    const expectedEntryIds = expectedNormalContributionRows(currentState).map(entry => entry.id);
+    restoreDocuments("events", { sourceId: NORMAL_EVENT_ID }, baseline.events);
+    restoreDocuments("activityMembers", { ownerId: { $in: [NORMAL_EVENT_ID, NORMAL_SUPPLIES_ID] } }, baseline.members);
+    restoreDocuments("activityResources", { ownerId: NORMAL_EVENT_ID }, baseline.resources);
+    restoreDocuments("assets", { assetId: { $in: [NORMAL_TRANSPORT_ID, NORMAL_ACCOMMODATION_ID, NORMAL_SUPPLIES_ID] } }, baseline.assets);
+    Q.collection("notificationOutbox").deleteMany({
+      entityId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID,
+      $or: [
+        { notificationType: "event-supplies-contribution-removed" },
+        {
+          notificationType: "event-supplies-contribution-added",
+          "payload.contributionEntryId": { $nin: expectedEntryIds }
+        }
+      ]
+    });
+    Q.collection("userNotifications").deleteMany({
+      sourceId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID,
+      $or: [
+        { kind: "event-supplies-contribution-removed" },
+        {
+          kind: "event-supplies-contribution-added",
+          "payload.contributionEntryId": { $nin: expectedEntryIds }
+        }
+      ]
+    });
+    USERS.forEach(synchronizeNotificationCounter);
+    if (!sameDomain(normalDomainRaw(), baseline)) {
+      Q.fail(`${CHECKPOINT} verified normal Event branch did not restore exactly.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "normal-verified",
+      normalBranchRestoredAtIso: Q.nowIso()
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "normal-verified",
+      checks: {
+        exactNormalRestore: true,
+        tournamentUntouched: sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline),
+        notificationCountersReconciled: true
+      },
+      next: "Continue with the Group A capacity branch; the normal Event is back at Nova 2 plus Riley 3 Supplies."
+    });
   }
 
   function assertGroupControls(currentState) {
@@ -1336,6 +1552,8 @@
     case "status": status(); break;
     case "repair-normal-supplies-owner": repairNormalSuppliesOwner(); break;
     case "verify-normal-assignment": verifyNormalAssignment(); break;
+    case "verify-supply-contribution-delete": verifySupplyContributionDelete(); break;
+    case "restore-normal-assignment-branch": restoreNormalAssignmentBranch(); break;
     case "verify-group-capacity-edit": verifyGroupCapacityEdit(); break;
     case "verify-group-unassign": verifyGroupUnassign(); break;
     case "restore-group-removal-branch": restoreGroupRemovalBranch(); break;
