@@ -67,17 +67,31 @@ Begin only after Codex runs the read-only status and confirms:
    - `QA Assignment Shared Supplies`, Supplies contribution quantity `2` for
      Nova.
 
+   When the Supplies Asset is first added, Casey and Riley receive one
+   contribution-open notification; Nova does not receive her own action and
+   no outside/control participant is notified. A later contribution must not
+   resend the assignment notification.
+
 4. In **Riley's** owner-scoped resource editor, add exactly one Supplies
    contribution of quantity `3` to the same `QA Assignment Shared Supplies`
-   Asset. Do not create another Asset.
+   Asset. Do not create another Asset and do not copy Nova's assignment or its
+   capacity into Riley's resource record; Riley owns only Riley's contribution
+   row. Before saving, the Bring Items control
+   must show the actual remaining range `0-4` (`6` capacity minus Nova's `2`),
+   accept `3`, and reject values above `4`. Reopening it after Riley's save
+   must show remaining range `0-1`.
+   After each successful contribution, the shared card and menu counter must
+   update immediately through the Signal Store (for example, the first added
+   quantity `1` is `1 / 0 · 0-6`) and a reload must reconstruct that same
+   persisted value. A row visible only until reload is a failure.
 5. Confirm the shared resource list and its menu counters show the same totals
    for every viewer:
 
    | Viewer | Transport | Accommodation | Supplies |
    | --- | --- | --- | --- |
-   | Nova | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
-   | Riley | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
-   | Casey | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-12` |
+   | Nova | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-6` |
+   | Riley | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-6` |
+   | Casey | `1 / 0 · 0-4` | `1 / 0 · 0-3` | `5 / 0 · 0-6` |
 
    These are persisted common-table values. Do not accept a viewer-specific
    menu counter or a result that appears only after opening and recomputing

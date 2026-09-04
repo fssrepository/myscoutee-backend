@@ -40,6 +40,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -51,6 +52,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequest
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
@@ -66,6 +68,8 @@ import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
 import com.raxim.myscoutee.profile.security.ChatPolicyFacts;
 import com.raxim.myscoutee.profile.security.MemberPolicyFacts;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 import com.mongodb.client.result.UpdateResult;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,6 +105,10 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityTournamentGroupCounterService tournamentGroupCounterService;
     @Mock
+    private ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
+    @Mock
     private MongoTemplate mongoTemplate;
 
     private ActivitiesResourcesService service;
@@ -130,6 +138,7 @@ class ActivitiesResourcesServiceTest {
                 new ActivitySubEventResourceMapper(),
                 eventSlotReadModelService,
                 tournamentGroupCounterService,
+                notificationOutboxServiceProvider,
                 mongoTemplate);
     }
 
@@ -441,6 +450,123 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replacePersistsParticipantContributionToAnotherMembersAssignedSupplyAsset() {
+        authenticateAs("u2");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
+                .thenReturn(Optional.of(member("event-1", "u2", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u2", "D")).thenReturn(Optional.empty());
+        when(assetsService.queryAssignableAssetDetails(
+                "u2", "event-1", "sub-1", Set.of("shared-supplies")))
+                .thenReturn(Map.of());
+
+        ActivitySubEventResource ownerResource = resourceState("event-1", "sub-1", "u1");
+        ownerResource.setRecordId("owner-resource");
+        ownerResource.setAssetAssignmentIds(Map.of("Supplies", List.of("shared-supplies")));
+        ownerResource.setAssetSettingsByType(Map.of(
+                "Supplies",
+                Map.of("shared-supplies", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 6, 1, "u1", false, List.of()))));
+        ownerResource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-u1", "u1", 3, "2026-09-04T02:00:00Z"))));
+        ownerResource.setResourceMetricsByType(Map.of(
+                "Supplies", new SubEventResourceMetricRecord(3, 0, 0, 6)));
+
+        ActivitySubEventResource contributorResource = resourceState("event-1", "sub-1", "u2");
+        contributorResource.setRecordId("contributor-resource");
+        contributorResource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-u2", "u2", 2, "2026-09-04T02:01:00Z"))));
+        contributorResource.setResourceMetricsByType(Map.of(
+                "Supplies", new SubEventResourceMetricRecord(2, 0, 0, 0)));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D"))
+                .thenReturn(List.of(ownerResource, contributorResource));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "sub-1",
+                "u2",
+                Map.of(),
+                Map.of(),
+                Map.of("shared-supplies", List.of(new SubEventSupplyContributionEntryDto(
+                        "entry-u2", "u2", 2, "2026-09-04T02:01:00Z"))),
+                Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.replace(request);
+
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        ActivitySubEventResource persisted = resourceCaptor.getValue();
+        assertThat(persisted.getAssetAssignmentIds()).isEmpty();
+        assertThat(persisted.getSupplyContributionEntriesByAssetId().get("shared-supplies"))
+                .extracting(SubEventSupplyContributionEntryRecord::quantity)
+                .containsExactly(2);
+        assertThat(persisted.getResourceMetricsByType().get("Supplies").accepted()).isEqualTo(2);
+        assertThat(persisted.getResourceMetricsByType().get("Supplies").capacityMax()).isZero();
+        assertThat(saved.resourceMetricsByType().get("Supplies").accepted()).isEqualTo(5);
+        assertThat(saved.resourceMetricsByType().get("Supplies").capacityMax()).isEqualTo(6);
+    }
+
+    @Test
+    void replaceNotifiesOtherAcceptedParticipantsWhenSuppliesAreFirstAssigned() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(notificationOutboxServiceProvider.getIfAvailable()).thenReturn(notificationOutboxService);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("u1", "u2", "u3"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("u1"),
+                        6));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        AssetDetailDto supplies = assetDetail("shared-supplies", "Supplies", "u1", 6, List.of());
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("shared-supplies")))
+                .thenReturn(Map.of("shared-supplies", supplies));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setTitle("Assignment Event");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "sub-1",
+                "u1",
+                Map.of("Supplies", List.of("shared-supplies")),
+                Map.of("Supplies", Map.of("shared-supplies", new SubEventAssignedAssetSettingsDto(
+                        0, 6, 1, "u1", false, List.of()))),
+                Map.of(),
+                Map.of());
+
+        service.replace(request);
+
+        ArgumentCaptor<NotificationIntent> notificationCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        NotificationIntent notification = notificationCaptor.getValue();
+        assertThat(notification.type()).isEqualTo("event-supplies-open");
+        assertThat(notification.recipientUserIds()).containsExactly("u2", "u3");
+        assertThat(notification.payload())
+                .containsEntry("assetId", "shared-supplies")
+                .containsEntry("subEventId", "sub-1");
+    }
+
+    @Test
     void refreshGroupRuntimeResourceMetricsPersistsCountAndInvalidatesOnlyChangedTypeReads() {
         String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
         String groupId = "sub-1:group:1";
@@ -563,7 +689,7 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
-    void refreshEventProjectionPersistsTheSameCommonMetricsForEveryEventViewer() {
+    void updateEventCountersPersistsTheSameCommonMetricsForEveryEventViewer() {
         ActivitySubEventResource resource = new ActivitySubEventResource();
         resource.setStatus("A");
         resource.setOwnerId("event-1");
@@ -571,7 +697,9 @@ class ActivitiesResourcesServiceTest {
         resource.setAssetOwnerUserId("u1");
         resource.setAssetAssignmentIds(Map.of(
                 "Transport",
-                List.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")));
+                List.of("owned-1", "owned-2", "borrowed-1", "borrowed-2"),
+                "Supplies",
+                List.of("shared-supplies")));
         resource.setAssetSettingsByType(Map.of(
                 "Transport",
                 Map.of(
@@ -582,17 +710,29 @@ class ActivitiesResourcesServiceTest {
                         "borrowed-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
                                 0, 4, 2, "u1", false, List.of()),
                         "borrowed-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
-                                0, 4, 2, "u1", false, List.of()))));
-        resource.setSupplyContributionEntriesByAssetId(Map.of());
+                                0, 4, 2, "u1", false, List.of())),
+                "Supplies",
+                Map.of("shared-supplies", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 6, 1, "u1", false, List.of()))));
+        resource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-1", "u1", 2, "2026-09-04T02:00:00Z"))));
         resource.setResourceMetricsByType(Map.of(
-                "Transport", new SubEventResourceMetricRecord(2, 2, 0, 24)));
+                "Transport", new SubEventResourceMetricRecord(2, 2, 0, 24),
+                "Supplies", new SubEventResourceMetricRecord(2, 0, 0, 6)));
         ActivitySubEventResource otherResource = new ActivitySubEventResource();
         otherResource.setStatus("A");
         otherResource.setOwnerId("event-1");
         otherResource.setSubEventId("sub-1");
         otherResource.setAssetOwnerUserId("u2");
+        otherResource.setAssetAssignmentIds(Map.of());
+        otherResource.setAssetSettingsByType(Map.of());
+        otherResource.setSupplyContributionEntriesByAssetId(Map.of(
+                "shared-supplies", List.of(new SubEventSupplyContributionEntryRecord(
+                        "entry-2", "u2", 3, "2026-09-04T02:01:00Z"))));
         otherResource.setResourceMetricsByType(Map.of(
-                "Transport", new SubEventResourceMetricRecord(1, 1, 0, 4)));
+                "Transport", new SubEventResourceMetricRecord(1, 1, 0, 4),
+                "Supplies", new SubEventResourceMetricRecord(3, 0, 0, 0)));
 
         SubEventItem subEvent = new SubEventItem(
                 "sub-1",
@@ -637,7 +777,7 @@ class ActivitiesResourcesServiceTest {
         when(activityEventsRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
 
-        service.refreshEventSubEventResourceProjection("event-1", "sub-1");
+        service.updateEventSubEventResourceCounters("event-1", "sub-1");
 
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
@@ -647,9 +787,13 @@ class ActivitiesResourcesServiceTest {
                     assertThat(subEvent.carsPending()).isEqualTo(3);
                     assertThat(subEvent.carsCapacityMin()).isZero();
                     assertThat(subEvent.carsCapacityMax()).isEqualTo(28);
+                    assertThat(subEvent.suppliesAccepted()).isEqualTo(5);
+                    assertThat(subEvent.suppliesPending()).isZero();
+                    assertThat(subEvent.suppliesCapacityMax()).isEqualTo(6);
                 }));
         assertThat(savedCaptor.getValue()).allSatisfy(saved ->
                 assertThat(saved.getActivity()).isEqualTo(19));
+        verify(eventSlotReadModelService).refreshForChangedEvents(savedCaptor.getValue());
         verify(activitiesMembersService).refreshSubEventParticipationProjection("event-1", "sub-1");
     }
 

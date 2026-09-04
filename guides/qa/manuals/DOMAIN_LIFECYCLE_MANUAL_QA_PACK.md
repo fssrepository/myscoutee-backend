@@ -6563,15 +6563,18 @@ Consolidated execution row: `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 Stable user guide:
 [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 
-Status: **STAGED / NOT STARTED**.
+Status: **RESTAGED / REPLAY READY**.
 
-The fixture was staged at `2026-09-03T12:56:53.062Z`. Its subsequent
-read-only `status` passed all eleven baseline predicates: three zero-valued
-normal Event viewer documents, no normal resource, unchanged second
-Sub-event, exact normal/Asset memberships, exact Tournament/room memberships,
-Group A owner/type metrics, Group B control metric and document snapshot,
-stage/root pending `2`, and zero controlled notifications. No browser or
-manual Assignment action has occurred.
+The first manual steps 1-9 exposed persistence, shared-counter and remaining-
+quantity defects and were not accepted as evidence. The checkpoint's guarded
+reset restored its snapshots, then the fixture was freshly staged at
+`2026-09-04T03:19:45.794Z`. Its subsequent read-only `status` passed all eleven
+baseline predicates: three zero-valued normal Event viewer documents, no
+normal resource, unchanged second Sub-event, exact normal/Asset memberships,
+exact Tournament/room memberships, Group A owner/type metrics, Group B control
+metric and document snapshot, stage/root pending `2`, and zero controlled
+notifications. The three managed browsers remain open and each requires one
+reload before replaying steps 1-9.
 
 The isolated `asset-assignment` fixture stages the normal and Tournament
 branches together. It is independent from Borrow and Checkout and must start
@@ -6600,6 +6603,8 @@ normal branch.
 
 - Assign Transport and Accommodation from one eligible owner plus Supplies
   contributions from two accepted users to the same normal sub-event.
+- Keep the shared Supplies assignment and its capacity only on Nova's resource
+  record; Riley persists only Riley's contribution row for that same Asset.
 - Compare every per-owner record with aggregate accepted/pending/capacity
   min/max values in Event Resources, the sub-event badges and parent
   navigation, both in place and after reload.

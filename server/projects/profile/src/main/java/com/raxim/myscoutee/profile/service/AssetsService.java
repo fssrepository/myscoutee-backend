@@ -233,11 +233,23 @@ public class AssetsService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> memberAssetIds = activityMembersRepository
+                .findAcceptedByOwnerTypeOwnerIdInAndUserId(
+                        OWNER_TYPE_ASSET,
+                        normalizedAssetIds,
+                        normalizedUserId,
+                        MEMBER_STATUS_ACCEPTED)
+                .stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         List<Asset> eligibleAssets = assetsRepository.findByAssetIdIn(normalizedAssetIds).stream()
                 .filter(Objects::nonNull)
                 .filter(asset -> !isSuppressedLifecycleStatus(asset.getStatus()))
                 .filter(asset -> normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || memberAssetIds.contains(normalizeId(asset.getAssetId()))
                         || borrowedAssetIds.contains(normalizeId(asset.getAssetId())))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(eligibleAssets);
@@ -1570,10 +1582,10 @@ public class AssetsService {
                     .and("_id").in(removedProjectionIds));
             mongoTemplate.remove(staleQuery, AssetRequest.class);
         }
-        refreshEventSubEventResourceProjections(existing, saved);
+        refreshEventSubEventResourceCounters(existing, saved);
     }
 
-    private void refreshEventSubEventResourceProjections(Asset existing, Asset saved) {
+    private void refreshEventSubEventResourceCounters(Asset existing, Asset saved) {
         if (activitiesResourcesServiceProvider == null) {
             return;
         }

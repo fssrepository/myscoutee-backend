@@ -989,7 +989,7 @@
     return {
       carsAccepted: 1, carsPending: 0, carsCapacityMin: 0, carsCapacityMax: 4,
       accommodationAccepted: 1, accommodationPending: 0, accommodationCapacityMin: 0, accommodationCapacityMax: 3,
-      suppliesAccepted: 5, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 12,
+      suppliesAccepted: 5, suppliesPending: 0, suppliesCapacityMin: 0, suppliesCapacityMax: 6,
       groupsPending: 0
     };
   }
@@ -1004,21 +1004,36 @@
     const riley = byOwner[RILEY_ID];
     const novaMetrics = (nova && nova.resourceMetricsByType) || {};
     const rileyMetrics = (riley && riley.resourceMetricsByType) || {};
+    const supplyOpenOutbox = read("notificationOutbox", {
+      notificationType: "event-supplies-open",
+      entityId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID
+    });
+    const supplyOpenInbox = read("userNotifications", {
+      kind: "event-supplies-open",
+      sourceId: NORMAL_EVENT_ID,
+      "payload.assetId": NORMAL_SUPPLIES_ID
+    });
     const checks = {
       exactOwnerRecords: normal.resources.length === 2 && !!nova && !!riley,
       novaTransport: recordMatches(nova, "Transport", NORMAL_TRANSPORT_ID, 4, NOVA_ID),
       novaAccommodation: recordMatches(nova, "Accommodation", NORMAL_ACCOMMODATION_ID, 3, NOVA_ID),
       novaSupplies: Q.sameJson(idsFor(nova, "Supplies"), [NORMAL_SUPPLIES_ID])
         && contributionTotal(nova, NORMAL_SUPPLIES_ID, NOVA_ID) === 2,
-      rileySupplies: Q.sameJson(idsFor(riley, "Supplies"), [NORMAL_SUPPLIES_ID])
+      rileySupplies: Q.sameJson(idsFor(riley, "Supplies"), [])
+        && settingsFor(riley, "Supplies", NORMAL_SUPPLIES_ID) === null
         && contributionTotal(riley, NORMAL_SUPPLIES_ID, RILEY_ID) === 3,
       exactStoredMetrics: Q.sameJson(normalizedMetric(novaMetrics.Transport), metric(1, 0, 4))
         && Q.sameJson(normalizedMetric(novaMetrics.Accommodation), metric(1, 0, 3))
         && Q.sameJson(normalizedMetric(novaMetrics.Supplies), metric(2, 0, 6))
-        && Q.sameJson(normalizedMetric(rileyMetrics.Supplies), metric(3, 0, 6)),
+        && Q.sameJson(normalizedMetric(rileyMetrics.Supplies), metric(3, 0, 0)),
       exactCommonMaterialization: normal.events.length === 3
         && normal.events.every(event => Q.sameJson(event.target, expectedCommonEventMetric()))
         && normal.events.every(event => event.activity === 0),
+      suppliesOpenNotificationExactOnce: supplyOpenOutbox.length === 1
+        && Q.sameJson(sorted(supplyOpenOutbox[0].recipientUserIds), sorted([CASEY_ID, RILEY_ID]))
+        && supplyOpenInbox.length === 2
+        && Q.sameJson(sorted(supplyOpenInbox.map(recipientId)), sorted([CASEY_ID, RILEY_ID])),
       controlSubEventUnchanged: normal.controlResources === 0
         && normal.events.every(event => Q.sameJson(event.control, subEventMetrics({}))),
       membershipIsolation: normal.members.length === 3
@@ -1029,7 +1044,7 @@
       tournamentUntouched: sameDomain(groupBranchDocuments(), currentState.groupBranchBaseline),
       countersUntouched: sameDomain(counterSnapshot(), currentState.baselineCounters)
     };
-    failChecks("normal-assignment", checks, normal);
+    failChecks("normal-assignment", checks, { normal, supplyOpenOutbox, supplyOpenInbox });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
       phase: "normal-verified",
       normalVerifiedAtIso: Q.nowIso(),

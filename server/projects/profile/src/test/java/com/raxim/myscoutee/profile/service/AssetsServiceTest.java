@@ -69,6 +69,45 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void acceptedAssetMemberCanPersistTheSharedAssetInAnEventAssignment() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset asset = asset();
+        ActivityMember member = member("asset-1", "u2", "Member", "accepted");
+
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(activityMembersRepository.findAcceptedByOwnerTypeOwnerIdInAndUserId(
+                "asset", Set.of("asset-1"), "u2", "accepted")).thenReturn(List.of(member));
+        when(assetsRepository.findByAssetIdIn(Set.of("asset-1"))).thenReturn(List.of(asset));
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(user("u1", "Owner One", "OO")));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Member Two", "MT")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(member));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        Map<String, AssetDetailDto> details = service.queryAssignableAssetDetails(
+                "u2", "event-1", "sub-1", Set.of("asset-1"));
+
+        assertThat(details).containsKey("asset-1");
+    }
+
+    @Test
     void acceptedManagerSeesReleasedAssetWithTakeOverAction() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

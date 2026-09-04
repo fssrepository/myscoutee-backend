@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-04 03:40 CEST
+Updated: 2026-09-04 05:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -70,15 +70,15 @@ resume pointer and reusable working method.
 checkpoint: ASSET-ASSIGNMENT-LIFECYCLE-001 — ACTIVE / NORMAL ASSIGNMENT NEXT
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-assign-001--eventsub-event-asset-assignment
 checklist: ../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md
-substage: baseline-ready with Casey/Nova/Riley isolated browsers open; no normal assignment, capacity edit, unassign, Tournament member removal or other manual action has been performed
-next_replay_boundary: the user performs checklist steps 1-9 and stops at the exact `normal assignment complete` phrase; Codex then runs `verify-normal-assignment`
-fixture_phase: after the saved fixture was found incomplete, its own guarded reset restored only its controlled snapshots; ASSET-ASSIGNMENT was freshly staged at 2026-09-04T01:39:33.114Z and all eleven baseline checks passed both stage and the subsequent read-only status
-browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions are OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest
+substage: baseline-ready after the failed first 1-9 attempt was reset; no normal assignment, capacity edit, unassign, Tournament member removal or other manual action exists in the fresh fixture
+next_replay_boundary: first reload each already-open Casey/Nova/Riley window once, then the user performs checklist steps 1-9 and stops at the exact `normal assignment complete` phrase; Codex then runs `verify-normal-assignment`
+fixture_phase: the checkpoint's guarded reset restored the pre-test snapshots, ASSET-ASSIGNMENT was freshly staged at 2026-09-04T03:19:45.794Z, and all eleven baseline checks passed both stage and the subsequent read-only status
+browser_phase: Casey/Nova/Riley isolated ASSET-ASSIGNMENT-LIFECYCLE-001 sessions remain OPEN and authenticated; `/tmp/myscoutee-qa-browser-sessions/ASSET-ASSIGNMENT-LIFECYCLE-001.json` is the active launcher manifest; because the fixture was restaged behind them, each window requires exactly one explicit reload before the replay
 ledger_status: 84/118 total, Core 84/98; ASSET-LIFE-001, ASSET-VIS-001 and ASSET-MEMBER-LIFECYCLE-001 PASS/CLOSED
 queued_next: CONTENT-ADMIN-LIFECYCLE-001 is PREPARED / NOT STAGED / NOT RUN for the next day after Assignment completes; its harness and Ava/Kai/Riley browser definition exist, but it must not be staged or opened while Assignment owns this boundary
 required_resume: load only this resume block plus the linked Assignment detail/checklist; if the active browser manifest and its managed processes still exist, do not relaunch them; confirm the saved phase with the read-only Assignment status command, then continue checklist steps 1-9. Relaunch only when the managed sessions are no longer alive
 actors: Casey=650000000000000000000061 is Admin of both Events; Nova=650000000000000000000062 owns normal Transport+Accommodation and Group A Transport; Riley=650000000000000000000063 owns normal Supplies and Group A Accommodation; Lina=178e8d0cbe164fa3fede5884 is the browserless Group B control
-pending_machine_oracle: normal Event has three viewer documents, Casey/Nova/Riley accepted, one pre-existing Nova Member relation to Riley Supplies, two Sub-events and zero resources/counters. Tournament has Casey/Nova/Riley in Group A, Lina in Group B, Group A Nova Transport 1 accepted/1 pending/0-4 plus Riley Accommodation 1 accepted/1 pending/0-3, Group B Lina Transport 1 accepted/0 pending/0-2, stage/root pending 2, and zero controlled notifications. Group B and the normal control Sub-event are immutable controls
+pending_machine_oracle: normal Event has three viewer documents, Casey/Nova/Riley accepted, one pre-existing Riley Member relation to Nova's shared Supplies, two Sub-events and zero resources/counters. Tournament has Casey/Nova/Riley in Group A, Lina in Group B, Group A Nova Transport 1 accepted/1 pending/0-4 plus Riley Accommodation 1 accepted/1 pending/0-3, Group B Lina Transport 1 accepted/0 pending/0-2, stage/root pending 2, and zero controlled notifications. Group B and the normal control Sub-event are immutable controls
 last_completed: `ASSET-MEMBER-LIFECYCLE-001` PASS/CLOSED from the accumulated user-driven run plus the final correction replay. The user observed Casey Leave, Nova Take Over, Nova removing Riley and Nova's final Leave converge as `3 -> 2 -> 2 -> 1 -> absent`. Read-only Mongo at the terminal boundary proved Riley's canonical Asset member row is `deleted`, the controlled `activityResources` row is `D` with no Asset assignment, the generated-group runtime resource map is empty, and no notification was created after Nova's final Leave. The resource card and Group row disappeared through the existing signal chain. The server fix status-deletes scoped removed members; the frontend forwards authoritative empty-scope zero metrics and did not add or modify an aggregation loop. Both running watchers built successfully. `MOBILE-WEBVIEW-001` owns the separate Location popup plus Asset `Paste link` cross-popup regression
 ```
 
@@ -223,10 +223,11 @@ the checkpoint says otherwise.
 `ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
 was verified and reset through its versioned harness because its
 payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
-is now staged at `baseline-ready`; its browser was deliberately not opened and
-the manual journey has not started. In the next session, run the resume
-block's read-only status command, load the stable guide, and wait for the
-user’s explicit QA start before launching its configured browser sessions.
+is freshly staged at `baseline-ready`; its three managed browser sessions
+remain open, but their pre-restage views are stale. In the next session, run
+the resume block's read-only status command, reload each existing window once,
+load the stable guide, and wait for the user's explicit QA start without
+launching duplicate browser sessions.
 After Assignment is completed, recorded and reset, the prepared
 `CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
 it early: its guarded runner intentionally refuses to coexist with another

@@ -533,7 +533,7 @@ public class ActivitiesEventLeaderboardService {
                 ownerId,
                 snapshot == null ? 0 : snapshot.acceptedMemberUserIds().size(),
                 snapshot == null ? 0 : snapshot.pendingMemberUserIds().size(),
-                snapshot == null ? Set.of() : snapshot.acceptedMemberUserIds());
+                snapshot == null ? Set.of() : Set.copyOf(snapshot.acceptedMemberUserIds()));
     }
 
     private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(

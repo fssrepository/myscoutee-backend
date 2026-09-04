@@ -1165,6 +1165,9 @@ public class ActivityEventSubEventsMapper {
         if (item == null) {
             return null;
         }
+        if (!"MAIN_EVENT".equalsIgnoreCase(safeText(item.runtimeKind()))) {
+            return item;
+        }
         ResourceMetric transport = resourceMetric(
                 resourceRecord,
                 AssetCatalog.TYPE_TRANSPORT,

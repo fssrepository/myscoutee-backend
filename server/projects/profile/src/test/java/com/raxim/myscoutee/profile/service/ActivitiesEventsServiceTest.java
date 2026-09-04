@@ -219,7 +219,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void subEventReloadUsesPersistedResourceWriteState() {
+    void subEventReloadKeepsStoredCommonCountersWhenViewerResourceStateDiffers() {
         Users viewer = new Users();
         viewer.setId("host");
         ActivityEvent parent = event("event-1", "host", 0d);
@@ -273,7 +273,10 @@ class ActivitiesEventsServiceTest {
                 0,
                 0,
                 0,
-                60)));
+                60).withResourceMetrics(
+                        3, 1, 0, 4,
+                        1, 0, 0, 3,
+                        3, 0, 0, 6))));
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
@@ -297,10 +300,14 @@ class ActivitiesEventsServiceTest {
                 assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
                     assertThat(item.membersAccepted()).isEqualTo(1);
                     assertThat(item.membersPending()).isEqualTo(1);
-                    assertThat(item.carsAccepted()).isEqualTo(2);
-                    assertThat(item.carsPending()).isEqualTo(2);
+                    assertThat(item.carsAccepted()).isEqualTo(3);
+                    assertThat(item.carsPending()).isEqualTo(1);
                     assertThat(item.carsCapacityMin()).isZero();
-                    assertThat(item.carsCapacityMax()).isEqualTo(24);
+                    assertThat(item.carsCapacityMax()).isEqualTo(4);
+                    assertThat(item.accommodationAccepted()).isEqualTo(1);
+                    assertThat(item.accommodationCapacityMax()).isEqualTo(3);
+                    assertThat(item.suppliesAccepted()).isEqualTo(3);
+                    assertThat(item.suppliesCapacityMax()).isEqualTo(6);
                 }));
         verify(activitySubEventResourcesRepository)
                 .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
