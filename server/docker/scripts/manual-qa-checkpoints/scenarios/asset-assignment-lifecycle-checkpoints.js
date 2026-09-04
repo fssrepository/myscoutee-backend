@@ -23,12 +23,18 @@
   const NORMAL_CONTROL_ID = `${NORMAL_EVENT_ID}:sub-event:control`;
   const TOURNAMENT_EVENT_ID = `${PREFIX}:tournament:event`;
   const TOURNAMENT_STAGE_ID = `${TOURNAMENT_EVENT_ID}:stage:assignment`;
-  const GROUP_A_ID = `${TOURNAMENT_STAGE_ID}:group:a`;
-  const GROUP_B_ID = `${TOURNAMENT_STAGE_ID}:group:b`;
+  const LEGACY_GROUP_A_ID = `${TOURNAMENT_STAGE_ID}:group:a`;
+  const LEGACY_GROUP_B_ID = `${TOURNAMENT_STAGE_ID}:group:b`;
+  const GROUP_A_ID = `${TOURNAMENT_STAGE_ID}:group:1`;
+  const GROUP_B_ID = `${TOURNAMENT_STAGE_ID}:group:2`;
   const ROOM_A_ID = `random-room:${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${GROUP_A_ID}`;
   const ROOM_B_ID = `random-room:${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${GROUP_B_ID}`;
+  const LEGACY_ROOM_A_ID = `random-room:${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${LEGACY_GROUP_A_ID}`;
+  const LEGACY_ROOM_B_ID = `random-room:${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${LEGACY_GROUP_B_ID}`;
   const GROUP_A_RESOURCE_OWNER_ID = `${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${GROUP_A_ID}`;
   const GROUP_B_RESOURCE_OWNER_ID = `${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${GROUP_B_ID}`;
+  const LEGACY_GROUP_A_RESOURCE_OWNER_ID = `${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${LEGACY_GROUP_A_ID}`;
+  const LEGACY_GROUP_B_RESOURCE_OWNER_ID = `${TOURNAMENT_EVENT_ID}:${TOURNAMENT_STAGE_ID}:${LEGACY_GROUP_B_ID}`;
 
   const NORMAL_TRANSPORT_ID = `${PREFIX}:asset:normal:nova-transport`;
   const NORMAL_ACCOMMODATION_ID = `${PREFIX}:asset:normal:nova-accommodation`;
@@ -45,15 +51,29 @@
     GROUP_B_TRANSPORT_ID
   ];
 
-  const EVENT_IDS = [NORMAL_EVENT_ID, TOURNAMENT_EVENT_ID, ROOM_A_ID, ROOM_B_ID];
+  const EVENT_IDS = [
+    NORMAL_EVENT_ID,
+    TOURNAMENT_EVENT_ID,
+    ROOM_A_ID,
+    ROOM_B_ID,
+    LEGACY_ROOM_A_ID,
+    LEGACY_ROOM_B_ID
+  ];
   const MEMBER_OWNER_IDS = [
     NORMAL_EVENT_ID,
     TOURNAMENT_EVENT_ID,
     ROOM_A_ID,
     ROOM_B_ID,
+    LEGACY_ROOM_A_ID,
+    LEGACY_ROOM_B_ID,
     NORMAL_SUPPLIES_ID
   ];
   const GROUP_RESOURCE_OWNER_IDS = [GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID];
+  const ALL_GROUP_RESOURCE_OWNER_IDS = [
+    ...GROUP_RESOURCE_OWNER_IDS,
+    LEGACY_GROUP_A_RESOURCE_OWNER_ID,
+    LEGACY_GROUP_B_RESOURCE_OWNER_ID
+  ];
 
   function state(required = true) {
     const value = Q.collection(Q.STATE_COLLECTION).findOne({ _id: STATE_ID });
@@ -565,10 +585,10 @@
     return { $or: [
       { sourceId: { $in: EVENT_IDS } },
       { parentEventId: TOURNAMENT_EVENT_ID },
-      { eventId: { $in: [NORMAL_EVENT_ID, TOURNAMENT_EVENT_ID, ...GROUP_RESOURCE_OWNER_IDS] } },
-      { ownerId: { $in: [...EVENT_IDS, ...MEMBER_OWNER_IDS, ...GROUP_RESOURCE_OWNER_IDS] } },
+      { eventId: { $in: [NORMAL_EVENT_ID, TOURNAMENT_EVENT_ID, ...ALL_GROUP_RESOURCE_OWNER_IDS] } },
+      { ownerId: { $in: [...EVENT_IDS, ...MEMBER_OWNER_IDS, ...ALL_GROUP_RESOURCE_OWNER_IDS] } },
       { entityId: { $in: [...EVENT_IDS, ...ASSET_IDS] } },
-      { "payload.eventId": { $in: [NORMAL_EVENT_ID, TOURNAMENT_EVENT_ID, ...GROUP_RESOURCE_OWNER_IDS] } },
+      { "payload.eventId": { $in: [NORMAL_EVENT_ID, TOURNAMENT_EVENT_ID, ...ALL_GROUP_RESOURCE_OWNER_IDS] } },
       { "payload.assetId": { $in: ASSET_IDS } },
       { ownerId: { $regex: `^${PREFIX}` } },
       { entityId: { $regex: `^${PREFIX}` } }
@@ -581,7 +601,7 @@
       { collection: "events", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { parentEventId: TOURNAMENT_EVENT_ID }] } },
       { collection: "activityMembers", selector: { ownerId: { $in: MEMBER_OWNER_IDS } } },
       { collection: "assetRequests", selector: { assetId: { $in: ASSET_IDS } } },
-      { collection: "activityResources", selector: { ownerId: { $in: [NORMAL_EVENT_ID, ...GROUP_RESOURCE_OWNER_IDS] } } },
+      { collection: "activityResources", selector: { ownerId: { $in: [NORMAL_EVENT_ID, ...ALL_GROUP_RESOURCE_OWNER_IDS] } } },
       { collection: "activitySubEventStageRuntime", selector: { ownerId: TOURNAMENT_EVENT_ID, subEventId: TOURNAMENT_STAGE_ID } },
       { collection: "eventLeaderboardEntries", selector: { eventId: TOURNAMENT_EVENT_ID } },
       { collection: "notificationOutbox", selector: relatedSelector() },
@@ -1285,6 +1305,205 @@
     });
   }
 
+  function repairTournamentGroupIds() {
+    Q.assertDeploymentSafety();
+    const currentState = state();
+    requirePhase(currentState, "step-10-ready");
+    const normalBaseline = currentState.normalDomainAfterAssignment || {};
+    if (!Array.isArray(normalBaseline.events) || !Array.isArray(normalBaseline.resources)) {
+      Q.fail(`${CHECKPOINT} verified normal branch snapshot is missing.`);
+    }
+    if (!sameDomain(normalDomainRaw(), normalBaseline)) {
+      const expectedEntryIds = expectedNormalContributionRows(currentState).map(entry => entry.id);
+      restoreDocuments("events", { sourceId: NORMAL_EVENT_ID }, normalBaseline.events);
+      restoreDocuments(
+        "activityMembers",
+        { ownerId: { $in: [NORMAL_EVENT_ID, NORMAL_SUPPLIES_ID] } },
+        normalBaseline.members);
+      restoreDocuments("activityResources", { ownerId: NORMAL_EVENT_ID }, normalBaseline.resources);
+      restoreDocuments(
+        "assets",
+        { assetId: { $in: [NORMAL_TRANSPORT_ID, NORMAL_ACCOMMODATION_ID, NORMAL_SUPPLIES_ID] } },
+        normalBaseline.assets);
+      Q.collection("notificationOutbox").deleteMany({
+        entityId: NORMAL_EVENT_ID,
+        "payload.assetId": NORMAL_SUPPLIES_ID,
+        $or: [
+          { notificationType: "event-supplies-contribution-removed" },
+          {
+            notificationType: "event-supplies-contribution-added",
+            "payload.contributionEntryId": { $nin: expectedEntryIds }
+          }
+        ]
+      });
+      Q.collection("userNotifications").deleteMany({
+        sourceId: NORMAL_EVENT_ID,
+        "payload.assetId": NORMAL_SUPPLIES_ID,
+        $or: [
+          { kind: "event-supplies-contribution-removed" },
+          {
+            kind: "event-supplies-contribution-added",
+            "payload.contributionEntryId": { $nin: expectedEntryIds }
+          }
+        ]
+      });
+      USERS.forEach(synchronizeNotificationCounter);
+    }
+    if (!sameDomain(normalDomainRaw(), normalBaseline)) {
+      Q.fail(`${CHECKPOINT} verified normal Event branch did not restore exactly.`);
+    }
+
+    const root = tournamentRoot();
+    const stagedAtIso = Q.text(currentState.stagedAtIso) || Q.nowIso();
+    const startAtIso = Q.text(root.startAtIso);
+    const endAtIso = Q.text(root.endAtIso);
+    if (!startAtIso || !endAtIso) {
+      Q.fail(`${CHECKPOINT} Tournament fixture has no stable time window.`);
+    }
+
+    const groupATransportRequest = request(
+      `${PREFIX}:request:group-a:nova-transport:casey`, CASEY_ID,
+      GROUP_A_RESOURCE_OWNER_ID, TOURNAMENT_STAGE_ID, "pending", stagedAtIso,
+      startAtIso, endAtIso);
+    const groupAAccommodationRequest = request(
+      `${PREFIX}:request:group-a:riley-accommodation:casey`, CASEY_ID,
+      GROUP_A_RESOURCE_OWNER_ID, TOURNAMENT_STAGE_ID, "pending", stagedAtIso,
+      startAtIso, endAtIso);
+    const groupAssetDefinitions = [
+      { id: GROUP_A_TRANSPORT_ID, ownerId: NOVA_ID, capacity: 4 },
+      { id: GROUP_A_ACCOMMODATION_ID, ownerId: RILEY_ID, capacity: 3 }
+    ];
+
+    Q.collection("events").deleteMany({ sourceId: { $in: [
+      ROOM_A_ID,
+      ROOM_B_ID,
+      LEGACY_ROOM_A_ID,
+      LEGACY_ROOM_B_ID
+    ] } });
+    Q.collection("events").insertMany(
+      tournamentEventDocuments(stagedAtIso, startAtIso, endAtIso).filter(item => item.sourceId !== TOURNAMENT_EVENT_ID));
+
+    Q.collection("activityMembers").deleteMany({ ownerId: { $in: [
+      ROOM_A_ID,
+      ROOM_B_ID,
+      LEGACY_ROOM_A_ID,
+      LEGACY_ROOM_B_ID
+    ] } });
+    Q.collection("activityMembers").insertMany([
+      member(ROOM_A_ID, CASEY_ID, "Member", stagedAtIso),
+      member(ROOM_A_ID, NOVA_ID, "Member", stagedAtIso),
+      member(ROOM_A_ID, RILEY_ID, "Member", stagedAtIso),
+      member(ROOM_B_ID, LINA_ID, "Member", stagedAtIso)
+    ]);
+
+    Q.collection("activityResources").deleteMany({ ownerId: { $in: ALL_GROUP_RESOURCE_OWNER_IDS } });
+    Q.collection("activityResources").insertMany([
+      groupResourceDocument({
+        group: "a", ownerId: GROUP_A_RESOURCE_OWNER_ID, subjectUserId: NOVA_ID,
+        managerUserId: NOVA_ID, type: "Transport", assetId: GROUP_A_TRANSPORT_ID,
+        capacity: 4, accepted: 1, pending: 1
+      }, stagedAtIso),
+      groupResourceDocument({
+        group: "a", ownerId: GROUP_A_RESOURCE_OWNER_ID, subjectUserId: RILEY_ID,
+        managerUserId: RILEY_ID, type: "Accommodation", assetId: GROUP_A_ACCOMMODATION_ID,
+        capacity: 3, accepted: 1, pending: 1
+      }, stagedAtIso),
+      groupResourceDocument({
+        group: "b", ownerId: GROUP_B_RESOURCE_OWNER_ID, subjectUserId: LINA_ID,
+        managerUserId: LINA_ID, type: "Transport", assetId: GROUP_B_TRANSPORT_ID,
+        capacity: 2, accepted: 1, pending: 0
+      }, stagedAtIso)
+    ]);
+
+    Q.collection("assets").updateOne(
+      { assetId: GROUP_A_TRANSPORT_ID },
+      { $set: { requests: [groupATransportRequest] } });
+    Q.collection("assets").updateOne(
+      { assetId: GROUP_A_ACCOMMODATION_ID },
+      { $set: { requests: [groupAAccommodationRequest] } });
+    Q.collection("assetRequests").deleteMany({ assetId: { $in: [
+      GROUP_A_TRANSPORT_ID,
+      GROUP_A_ACCOMMODATION_ID,
+      GROUP_B_TRANSPORT_ID
+    ] } });
+    Q.collection("assetRequests").insertMany([
+      requestProjection(groupAssetDefinitions[0], groupATransportRequest, stagedAtIso),
+      requestProjection(groupAssetDefinitions[1], groupAAccommodationRequest, stagedAtIso)
+    ]);
+
+    restoreDocuments(
+      "activitySubEventStageRuntime",
+      { ownerId: TOURNAMENT_EVENT_ID, subEventId: TOURNAMENT_STAGE_ID },
+      [runtimeDocument(stagedAtIso)]);
+    restoreDocuments(
+      "eventLeaderboardEntries",
+      { eventId: TOURNAMENT_EVENT_ID },
+      leaderboardRows(stagedAtIso));
+
+    const capturedAtIso = Q.nowIso();
+    const groupBControl = groupBControlSnapshot();
+    const groupBranchBaseline = groupBranchDocuments();
+    const step10Boundary = {
+      capturedAtIso,
+      group: groupBranchBaseline,
+      notificationOutbox: read("notificationOutbox", relatedSelector()),
+      userNotifications: read("userNotifications", relatedSelector()),
+      affinityRecomputeTasks: read("affinityRecomputeTasks", relatedSelector())
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: STATE_ID }, { $set: {
+      phase: "step-10-ready",
+      baselineTournamentMemberships: tournamentMembershipSnapshot(),
+      groupBControl,
+      groupBranchBaseline,
+      step10Boundary,
+      "identities.groupAId": GROUP_A_ID,
+      "identities.groupBId": GROUP_B_ID,
+      "identities.groupAResourceOwnerId": GROUP_A_RESOURCE_OWNER_ID,
+      "identities.groupBResourceOwnerId": GROUP_B_RESOURCE_OWNER_ID,
+      tournamentGroupIdsRepairedAtIso: capturedAtIso
+    } });
+
+    const repairedState = state();
+    const memberships = tournamentMembershipSnapshot();
+    const checks = {
+      exactVerifiedNormalBranch: sameDomain(normalDomainRaw(), repairedState.normalDomainAfterAssignment),
+      canonicalTournamentRoles: exactActiveMembers(memberships, TOURNAMENT_EVENT_ID, USERS)
+        && exactActiveMembers(memberships, ROOM_A_ID, [CASEY_ID, NOVA_ID, RILEY_ID])
+        && exactActiveMembers(memberships, ROOM_B_ID, [LINA_ID]),
+      exactStageCounters: Q.sameJson(stageCounters(), { activity: 2, groupsCount: 2, groupsPending: 2 }),
+      exactGroupAMetrics: Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, NOVA_ID, "Transport")), metric(1, 1, 4))
+        && Q.sameJson(normalizedMetric(groupMetric(GROUP_A_ID, RILEY_ID, "Accommodation")), metric(1, 1, 3)),
+      exactGroupBMetric: Q.sameJson(normalizedMetric(groupMetric(GROUP_B_ID, LINA_ID, "Transport")), metric(1, 0, 2)),
+      noLegacyGroupDocuments: Q.collection("events").countDocuments({ sourceId: { $in: [LEGACY_ROOM_A_ID, LEGACY_ROOM_B_ID] } }) === 0
+        && Q.collection("activityMembers").countDocuments({ ownerId: { $in: [LEGACY_ROOM_A_ID, LEGACY_ROOM_B_ID] } }) === 0
+        && Q.collection("activityResources").countDocuments({ ownerId: { $in: [
+          LEGACY_GROUP_A_RESOURCE_OWNER_ID,
+          LEGACY_GROUP_B_RESOURCE_OWNER_ID
+        ] } }) === 0,
+      canonicalLeaderboardRows: Q.collection("eventLeaderboardEntries").countDocuments({
+        eventId: TOURNAMENT_EVENT_ID,
+        groupId: { $in: [GROUP_A_ID, GROUP_B_ID] }
+      }) === 4,
+      step10BoundaryRecaptured: sameDomain(repairedState.step10Boundary.group, groupBranchDocuments())
+    };
+    failChecks("tournament-group-id-repair", checks, {
+      normal: normalSnapshot(),
+      memberships,
+      stage: stageCounters(),
+      groupB: groupBControlSnapshot()
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "step-10-ready",
+      repairedAtIso: capturedAtIso,
+      groupAId: GROUP_A_ID,
+      groupBId: GROUP_B_ID,
+      checks,
+      next: "Reload the already-open Tournament Groups popup. Group A must show 3 members, Group B 1 member and the stage pending total must remain 2."
+    });
+  }
+
   function stageStep10Boundary() {
     Q.assertDeploymentSafety();
     const currentState = state();
@@ -1633,6 +1852,7 @@
   function reset() {
     Q.assertDeploymentSafety();
     const currentState = state();
+    clearFixture();
     Q.restoreSnapshots(currentState.snapshots || []);
     for (const saved of currentState.savedUserActivities || []) restoreUserActivities(saved);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: STATE_ID });
@@ -1648,6 +1868,7 @@
     case "verify-normal-assignment": verifyNormalAssignment(); break;
     case "verify-supply-contribution-delete": verifySupplyContributionDelete(); break;
     case "restore-normal-assignment-branch": restoreNormalAssignmentBranch(); break;
+    case "repair-tournament-group-ids": repairTournamentGroupIds(); break;
     case "stage-step-10-boundary": stageStep10Boundary(); break;
     case "rollback-step-10-boundary": rollbackStep10Boundary(); break;
     case "verify-group-capacity-edit": verifyGroupCapacityEdit(); break;

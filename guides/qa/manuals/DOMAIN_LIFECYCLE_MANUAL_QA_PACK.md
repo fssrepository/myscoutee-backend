@@ -6642,7 +6642,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 
 Its named savepoint oracles are `verify-normal-assignment`,
 `verify-supply-contribution-delete`, the guarded
-`restore-normal-assignment-branch`, `stage-step-10-boundary`,
+`restore-normal-assignment-branch`, `repair-tournament-group-ids`,
+`stage-step-10-boundary`,
 `rollback-step-10-boundary`, `verify-group-capacity-edit`,
 `verify-group-unassign`, the guarded `restore-group-removal-branch`, and
 `verify-group-manager-removal`. The normal restore puts back the exact verified
@@ -6653,6 +6654,13 @@ savepoint and byte-identical Tournament baseline. Its immediate rollback proof
 restored the Tournament documents, scoped inbox/outbox, related queued work and
 notification counters exactly while preserving the normal branch. Phase is
 `step-10-ready`; checklist step 10 can now be replayed without repeating 1-9.
+At `2026-09-04T04:31:12.888Z`, the guarded Group-ID repair replaced the
+incorrect fixture-only `group:a/b` IDs with the server-generated `group:1/2`
+IDs, removed all legacy Group documents, restored the accepted normal branch
+after the extra Supplies delete check, and recaptured the step-10 boundary.
+Exact checks passed for Group A's three members and pending `2`, Group B's one
+member and pending `0`, all four leaderboard rows, the unchanged normal branch
+and the new savepoint.
 The later Tournament restore rewinds only the independent manager-removal
 branch and preserves the verified normal branch.
 

@@ -153,6 +153,11 @@ reports phase `step-10-ready`. If step 10 or a later Group action must be
 replayed, Codex runs `rollback-step-10-boundary`, which restores this exact
 boundary without repeating steps 1-9.
 
+At the step-10 boundary, the Groups popup must already show Group A with `3
+members`, Group B with `1 member`, the four named leaderboard rows, and Group
+A's red `2` pending counter on its action menu. A `0 members`/blank-row view or
+a missing red `2` is a fixture failure; do not continue the manual sequence.
+
 ## 2. Group A source-Asset capacity mutation
 
 10. After Codex confirms `step-10-ready`, use **Nova** and open:

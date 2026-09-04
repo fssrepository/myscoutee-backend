@@ -394,6 +394,7 @@ bash manual-qa-checkpoints.sh stage asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-
 bash manual-qa-checkpoints.sh status asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # perform the normal Sub-event assignments from the stable checklist
 bash manual-qa-checkpoints.sh verify-normal-assignment asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
+bash manual-qa-checkpoints.sh repair-tournament-group-ids asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 bash manual-qa-checkpoints.sh stage-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
 # use this whenever checklist step 10 must be replayed without repeating steps 1-9
 bash manual-qa-checkpoints.sh rollback-step-10-boundary asset-assignment ASSET-ASSIGNMENT-LIFECYCLE-001
@@ -415,6 +416,12 @@ step 10 can be replayed without repeating steps 1-9. The later
 branch. The verifiers compare Group B byte-for-byte and require persisted
 owner/type, runtime, stage and root values; no list query or frontend fallback
 is an oracle.
+
+`repair-tournament-group-ids` is the guarded migration for an already-staged
+Assignment checkpoint created with the obsolete `group:a/b` fixture IDs. It
+restores the verified normal branch, rebuilds only the Tournament branch with
+the generated `group:1/2` IDs, rejects legacy leftovers and recaptures the
+step-10 boundary.
 
 ## Content administration lifecycle runner
 
