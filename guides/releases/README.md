@@ -11,3 +11,9 @@ updated for the GitHub Release and its published assets.
 
 Every Debian QA release attaches the package, the Operator client-tools
 archive, and the separate `.sha256` file generated beside each artifact.
+
+The reusable build, install, verification, pair-QA boundary, and release
+sequence is documented separately in
+[`PRERELEASE_DEPLOYMENT_QUALIFICATION.md`](PRERELEASE_DEPLOYMENT_QUALIFICATION.md).
+Release-note files record candidate-specific evidence; they do not redefine
+that method.

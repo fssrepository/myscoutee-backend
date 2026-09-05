@@ -133,24 +133,11 @@ the HTTP verifier, or any manual-QA checkpoint.
 
 ## Repeatable prerelease qualification
 
-For every candidate intended for a prerelease, run the package's own host
-qualification first, then the 13-check HTTP verifier, then this short browser
-render check. A local build is not a release. After QA selects the commit, tag
-that commit; create the GitHub Release afterward and attach artifacts whose
-results belong to that exact tagged release. Do not reuse results from an
-earlier candidate build.
-
-On the local VMware target, preserve the canonical localhost `80` and `443`
-forwards. Give the HTTP verifier the exported public bootstrap certificate via
-`NODE_EXTRA_CA_CERTS`; never disable TLS validation. Use
-`--allow-insecure-localhost` only for the isolated browser profile and only
-against a loopback URL.
-
-On an Aruba or other Internet-hosted target, use its direct public HTTPS
-origin and omit both the SSH tunnel and the localhost certificate option. The
-public certificate chain, hostname and HSTS are then part of the same smoke.
-Target addresses and access credentials remain in ignored local operator
-configuration, not in source control.
+The canonical build, install, verification, pair-QA boundary, and release
+sequence is in
+[`guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md`](../../guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md).
+This directory owns only the external HTTP verifier and isolated browser-render
+steps of that method. Do not reuse their results for a rebuilt candidate.
 
 For a custom HTTPS port, provide the separate public HTTP listener if the
 redirect and Nginx health exceptions should also be checked. It must use the

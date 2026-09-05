@@ -1,9 +1,9 @@
 # Current manual QA session
 
-Updated: 2026-09-05 16:40 CEST
+Updated: 2026-09-06 01:48 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
-It stores one minimal live resume pointer plus reusable execution lessons. It
+It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
 is not the transactional evidence ledger or a backup of the QA pack. Read this
 file first, then open only the linked active checkpoint section.
 
@@ -74,10 +74,10 @@ resume pointer and reusable working method.
 checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; the current application and simulator source is installed and machine-qualified on VMware; the package refresh reset the earlier staged payment-ui fixture; no manual step has run
+substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; the installed runtime contains the prepared application source; the prior deployment refresh reset the earlier staged payment-ui fixture; no manual step has run
 next_replay_boundary: do not build or install again; stage payment-ui once, require a read-only `phase=baseline-ready` / Cash-only status proof, then the user opens only the configured Ava/Alex sessions and starts checklist step 1
 fixture_phase: read-only installed-node status at `2026-09-05 16:40 CEST` is `phase=not-staged`; the simulator is currently `stripe`, connected, requires3ds=false
-browser_phase: no Payment pair-QA browser was opened; the user exclusively controls browser actions. Canonical key-authenticated loopback SSH forwards are active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`; no Nginx or deployment URL override was applied. One separate temporary headless profile performed only the documented read-only root render smoke and was removed afterward
+browser_phase: no Payment pair-QA browser was opened; the user exclusively controls browser actions. Canonical key-authenticated loopback SSH forwards are active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is not staged
 queued_next: PAYMENT-METHODS-HISTORY-001
@@ -85,10 +85,8 @@ required_resume: do not rebuild/reinstall; run `stage payment-ui PAYMENT-METHODS
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
-package_preflight: the installed unsigned local candidate `myscoutee_1.0.0_amd64.deb` has SHA-256 `9b7478c4cb4483c42b2ab57653a10dd876247dd648c61432d37702ec69ed74a4` and contains all six managed images, including payment-simulator and registry-demo. This local build is not a release. It was installed as a same-version `1.0.0` refresh through the official VMware client helper. Package-owned qualification passed with MongoDB, Redis, MinIO, registry-demo, payment-simulator, API and Nginx healthy. Canonical localhost 80/443 forwarding then passed the external verifier at 13 passed / 0 failed / 0 skipped through the explicit Explore/demo data route. The isolated read-only Chrome smoke passed with main document 200, Angular bootstrapped, matching build `4be4a1c596e2-20260905140310` / version `1.0.0`, rendered landing content, no uncaught exception and no unexpected browser error. Its three expected local diagnostics are the self-signed localhost Service Worker certificate rejection and the unavailable demo Firebase configuration. No Nginx, port or deployment URL was changed
-standalone_registry: `/home/raxim/workspace/myscoutee-registry` is clean at `0a0d366`, which is already tagged `v1.0.0-qa.1`; there is no standalone Registry source change to build for QA.2. The package's internal Explore `registry-demo` image remains a separate managed component
-latest_source_only: after packaging, only release tooling and documentation changed: the explicit HTTP `--demo-session` route, the isolated read-only CDP smoke, automatic `.sha256` sidecar generation in the release-build wrapper, and the QA.1/QA.2 repository release notes. The current candidate checksum sidecars were generated and verified without rebuilding the application. The deployed frontend/backend/payment-simulator application code already matches the prepared pair-QA source. After pair QA selects a commit, that commit is tagged `v1.0.0-qa.2`; the GitHub Release is created only afterward. Its attached artifacts must be rebuilt and requalified so the client-tools archive contains the new verifier script
-last_completed: implementation preparation plus an earlier exact payment-ui stage and read-only baseline proof, current-source Debian build and VMware same-version installation, package qualification, 13/13 external HTTP verification and the isolated browser render smoke. The reinstall reset the payment fixture; the current read-only status is therefore `not-staged`. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
+last_completed: implementation preparation plus an earlier exact payment-ui stage and read-only baseline proof. The deployment refresh reset the payment fixture, so its last known phase is `not-staged`. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -276,37 +274,6 @@ has an exact idempotent delta). Keep the independent post-request oracle strict;
 removing an in-request readback must never remove the separate QA read oracle.
 
 ## QA working method
-
-### Post-build deployment qualification
-
-Use the same evidence sequence for every candidate intended for a future QA
-prerelease. A local build is not itself a release:
-
-1. Build the release artifact once and record its SHA-256.
-2. Install or same-version reinstall it through the supported installer.
-3. Run the installed package qualification and require every managed service,
-   including the Explore payment simulator, to be healthy.
-4. Run all 13 read-only external HTTP verifier checks with normal certificate
-   validation and the expected package version.
-5. Run the isolated read-only browser smoke; require HTTP 200, completed Angular
-   rendering, matching build metadata, no uncaught exception and no unexpected
-   browser error. This smoke never replaces or drives pair QA.
-6. After pair QA selects the candidate commit, tag that commit. Create the
-   GitHub Release afterward and record only the observed final-artifact results,
-   limitations and digests in [`guides/releases`](../../releases/README.md).
-
-For the local VMware node, use only the canonical loopback forwards
-`localhost:80 -> VM:80` and `localhost:443 -> VM:443`. Extend Node trust with
-the public localhost bootstrap certificate for the HTTP verifier; never disable
-TLS verification. The isolated browser smoke may use its loopback-only
-bootstrap-certificate option and must report the expected Service Worker TLS
-diagnostic separately from unexpected errors.
-
-For a later Aruba or other Internet-hosted node, run the same qualification
-directly against its public HTTPS origin. Do not use the VMware tunnel or the
-localhost certificate option; DNS, the public certificate chain, hostname and
-HSTS must validate normally. Environment-specific access details belong in a
-local ignored operator config, never in the repository or release note.
 
 ### Manual frontend ownership
 
@@ -1234,33 +1201,6 @@ work. Re-read the current HEAD/file contents and continue from the persisted QA
 resume pointer; never reconstruct or reapply already-backed-up changes merely
 because the worktree became clean. Treat a backup as incorrect or reverted
 only when the user explicitly says so.
-
-### 5.2 Release qualification during a QA pause
-
-A production-package or deployment qualification performed while the manual
-QA campaign is paused is a separate runtime boundary. Do not advance, reset or
-rewrite the active QA checkpoint merely because a Debian package was built or
-installed on an isolated VM. On return, use the saved read-only resume gate
-against the development stack and continue only from the persisted checkpoint
-oracle; never infer that the VM's state replaced the QA fixture.
-
-The packaged Explore database is deliberately disposable. Every successful
-install or reinstall must rebuild exactly `demo_db` from the current packaged
-seed and refresh only the package-owned `images/demo-assets`,
-`images/demo-events` and `images/demo-profiles` MinIO prefixes. This is needed
-even on a same-version reinstall: otherwise old demo records can keep external
-or obsolete media URLs while the package already contains a newer generated
-image set. Guard the destructive path to the literal demo database, reject it
-when the configured production database has the same name, and retain a retry
-marker until Mongo import, MinIO seed and the demo oracle all succeed.
-
-Production data is the opposite contract: package install/reinstall preserves
-the production database and operator/user uploads byte-for-byte except for an
-explicit, versioned migration or narrowly allow-listed system-seed sync. A
-release replay must capture a read-only production control snapshot before the
-install and prove it unchanged afterward, independently from the clean demo
-oracle. Do not generalize the demo reset helper into a caller-selected database
-drop command, and do not clear the complete MinIO volume to refresh demo media.
 
 ### 6. Recording and communication
 
