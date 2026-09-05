@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 16:34 CEST
+Updated: 2026-09-05 16:40 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -71,23 +71,24 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
+checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; the exact payment-ui baseline is staged; the current application and simulator source is installed and machine-qualified on VMware; no manual step has run
-next_replay_boundary: do not build, install or stage again; run one read-only payment-ui status gate, then the user opens only the configured Ava/Alex sessions and starts checklist step 1
-fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
+substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; the current application and simulator source is installed and machine-qualified on VMware; the package refresh reset the earlier staged payment-ui fixture; no manual step has run
+next_replay_boundary: do not build or install again; stage payment-ui once, require a read-only `phase=baseline-ready` / Cash-only status proof, then the user opens only the configured Ava/Alex sessions and starts checklist step 1
+fixture_phase: read-only installed-node status at `2026-09-05 16:40 CEST` is `phase=not-staged`; the simulator is currently `stripe`, connected, requires3ds=false
 browser_phase: no Payment pair-QA browser was opened; the user exclusively controls browser actions. Canonical key-authenticated loopback SSH forwards are active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`; no Nginx or deployment URL override was applied. One separate temporary headless profile performed only the documented read-only root render smoke and was removed afterward
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
+ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is not staged
 queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: do not rebuild/reinstall; run one read-only `status payment-ui PAYMENT-METHODS-HISTORY-001`. If it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
+required_resume: do not rebuild/reinstall; run `stage payment-ui PAYMENT-METHODS-HISTORY-001` exactly once, then require read-only `status` to report `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false before the user opens the configured Ava/Alex sessions
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
 package_preflight: the installed unsigned local candidate `myscoutee_1.0.0_amd64.deb` has SHA-256 `9b7478c4cb4483c42b2ab57653a10dd876247dd648c61432d37702ec69ed74a4` and contains all six managed images, including payment-simulator and registry-demo. This local build is not a release. It was installed as a same-version `1.0.0` refresh through the official VMware client helper. Package-owned qualification passed with MongoDB, Redis, MinIO, registry-demo, payment-simulator, API and Nginx healthy. Canonical localhost 80/443 forwarding then passed the external verifier at 13 passed / 0 failed / 0 skipped through the explicit Explore/demo data route. The isolated read-only Chrome smoke passed with main document 200, Angular bootstrapped, matching build `4be4a1c596e2-20260905140310` / version `1.0.0`, rendered landing content, no uncaught exception and no unexpected browser error. Its three expected local diagnostics are the self-signed localhost Service Worker certificate rejection and the unavailable demo Firebase configuration. No Nginx, port or deployment URL was changed
+standalone_registry: `/home/raxim/workspace/myscoutee-registry` is clean at `0a0d366`, which is already tagged `v1.0.0-qa.1`; there is no standalone Registry source change to build for QA.2. The package's internal Explore `registry-demo` image remains a separate managed component
 latest_source_only: after packaging, only release tooling and documentation changed: the explicit HTTP `--demo-session` route, the isolated read-only CDP smoke, automatic `.sha256` sidecar generation in the release-build wrapper, and the QA.1/QA.2 repository release notes. The current candidate checksum sidecars were generated and verified without rebuilding the application. The deployed frontend/backend/payment-simulator application code already matches the prepared pair-QA source. After pair QA selects a commit, that commit is tagged `v1.0.0-qa.2`; the GitHub Release is created only afterward. Its attached artifacts must be rebuilt and requalified so the client-tools archive contains the new verifier script
-last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof, current-source Debian build and VMware same-version installation, package qualification, 13/13 external HTTP verification and the isolated browser render smoke. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+last_completed: implementation preparation plus an earlier exact payment-ui stage and read-only baseline proof, current-source Debian build and VMware same-version installation, package qualification, 13/13 external HTTP verification and the isolated browser render smoke. The reinstall reset the payment fixture; the current read-only status is therefore `not-staged`. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -144,8 +145,9 @@ manual runs remain for later pair QA.
 
 `PAYMENT-METHODS-HISTORY-001` is the one new Core side-menu journey and the
 selected next testcase. Its versioned fixture, exact reset, savepoint oracles
-and Ava/Alex browser definition are prepared, and its runtime fixture is now
-staged at the proven `baseline-ready` / Cash-only boundary. The independent
+and Ava/Alex browser definition are prepared. Its baseline was proven earlier,
+but the package refresh reset the runtime fixture; the current read-only state
+is `not-staged` with the simulator on Stripe. The independent
 real scheduler smoke already proved active expired card -> `expired` -> one
 outbox -> one in-app notification, including duplicate suppression. It also
 exposed and repaired the null-version duplicate-ID write by replacing the
@@ -234,11 +236,11 @@ the checkpoint says otherwise.
 ### Next manual action
 
 Do not open a browser yet. When the user starts pair QA, do not rebuild or
-reinstall: the current application source is already on VMware. First run the
-read-only `status payment-ui PAYMENT-METHODS-HISTORY-001` gate. If it reports
-`phase=not-staged`, stage it once, require `phase=baseline-ready` with simulator
-provider `none` (`Cash only`), and only then prepare the configured Ava/Alex
-sessions. Begin at checklist step 1. The first stop phrase is
+reinstall: the current application source is already on VMware. The current
+read-only status is `phase=not-staged`, so stage payment-ui once, require
+`phase=baseline-ready` with simulator provider `none` (`Cash only`), and only
+then prepare the configured Ava/Alex sessions. Begin at checklist step 1. The
+first stop phrase is
 `PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`.
 The fixture is exact-reset capable and no manual Payment verdict exists yet.
 
