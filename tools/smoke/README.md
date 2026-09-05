@@ -49,3 +49,16 @@ bash tools/smoke/event-payment-ready.sh reset
 The helper verifies the deployment marker, accepts only `demo_db` or `e2e_db`,
 requires an already-running MongoDB container, and never starts or restarts the
 application, MongoDB, a watcher or a build.
+
+## Payment method expiry
+
+`payment-method-expiry.sh` is a machine-owned integration check for the real
+scheduled card-expiry path. It snapshots the target user and affected job
+rules, inserts one expired active card, makes the daily rule due, waits for the
+already-running scheduler, verifies exactly one expired card, outbox record and
+in-app notification, then restores the fixture scope. It does not need a
+browser smoke.
+
+```bash
+bash tools/smoke/payment-method-expiry.sh run
+```
