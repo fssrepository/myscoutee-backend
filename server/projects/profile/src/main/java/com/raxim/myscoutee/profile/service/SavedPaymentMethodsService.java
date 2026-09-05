@@ -383,10 +383,16 @@ public class SavedPaymentMethodsService {
     }
 
     private PaymentHistoryItemDto toHistoryDto(Payment payment) {
+        String paymentMethodId = normalizeId(payment.getPaymentMethodId());
+        String userId = normalizeId(payment.getUserId());
+        SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
+                ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
+                : null;
         return new PaymentHistoryItemDto(
                 payment.getId(), payment.getSourceId(), payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(),
                 payment.getAmount(), payment.getCurrency(), payment.getBookingStatus(),
-                payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate());
+                payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate(),
+                paymentMethod);
     }
 
     private Map<String, Double> spendingTotals(String userId) {

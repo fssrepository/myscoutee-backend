@@ -20,6 +20,14 @@ Manual smoke sequence:
 5. Run `status` to inspect the recorded `paymentMethodId`, payment result and
    membership assignment.
 
+For a 3DS round, first select Stripe or Barion and enable `Require 3DS` in the
+admin Payment simulator screen. The member payment then keeps the simulator's
+read-only waiting surface open. In a separate admin session, open the adjacent
+3DS screen and approve or decline the pending payment there. The admin screen
+loads once and checks the simulator status every second; unchanged responses do
+not re-render the page. Run `replay` before each new round. Cash only skips card
+selection and external confirmation.
+
 ```bash
 bash tools/smoke/event-payment-ready.sh prepare
 bash tools/smoke/event-payment-ready.sh status

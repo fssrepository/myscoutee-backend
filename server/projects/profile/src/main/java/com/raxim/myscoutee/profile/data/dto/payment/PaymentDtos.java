@@ -56,7 +56,8 @@ public final class PaymentDtos {
             String auditKind,
             String fulfillmentKind,
             String checkoutSessionId,
-            String createdAtIso) {}
+            String createdAtIso,
+            SavedPaymentMethodDto paymentMethod) {}
 
     public record PaymentHistoryPageDto(
             List<PaymentHistoryItemDto> items,

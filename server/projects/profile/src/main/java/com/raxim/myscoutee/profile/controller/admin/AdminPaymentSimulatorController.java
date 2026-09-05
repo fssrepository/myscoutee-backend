@@ -22,4 +22,10 @@ public class AdminPaymentSimulatorController {
     public GatewayConfigurationAccess createConfigurationAccess() {
         return simulatorClient.createConfigurationAccess();
     }
+
+    @PostMapping("/authorization-access")
+    @PreAuthorize("hasAuthority('A')")
+    public GatewayConfigurationAccess createAuthorizationAccess() {
+        return simulatorClient.createAuthorizationAccess();
+    }
 }

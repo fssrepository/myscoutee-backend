@@ -130,6 +130,22 @@ public class PaymentSimulatorRegistrationClient {
         return access;
     }
 
+    public GatewayConfigurationAccess createAuthorizationAccess() {
+        requireConfigured();
+        ResponseEntity<GatewayConfigurationAccess> response = restTemplate.exchange(
+                baseUrl + "/myscoutee/v1/authorization-access",
+                HttpMethod.POST,
+                new HttpEntity<>(Map.of(), headers()),
+                GatewayConfigurationAccess.class);
+        GatewayConfigurationAccess access = response.getBody();
+        if (access == null || !StringUtils.hasText(access.url()) || !StringUtils.hasText(access.expiresAt())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Payment simulator returned an invalid authorization access response.");
+        }
+        return access;
+    }
+
     public boolean authorizesCallback(String authorization) {
         String supplied = safeText(authorization);
         if (supplied.startsWith("Bearer ")) {

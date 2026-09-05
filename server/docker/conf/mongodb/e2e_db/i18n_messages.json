@@ -1794,6 +1794,48 @@
     "value": "Payment simulator"
   },
   {
+    "_id": "i18n-message-en-admin-payment-simulator-3ds",
+    "key": "admin.payment.simulator.3ds",
+    "lang": "en",
+    "value": "3DS"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization",
+    "key": "admin.payment.simulator.authorization",
+    "lang": "en",
+    "value": "3DS confirmations"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization-loading",
+    "key": "admin.payment.simulator.authorization.loading",
+    "lang": "en",
+    "value": "Opening the protected 3DS simulator session..."
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization-open",
+    "key": "admin.payment.simulator.authorization.open",
+    "lang": "en",
+    "value": "Open simulated 3DS confirmations"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization-subtitle",
+    "key": "admin.payment.simulator.authorization.subtitle",
+    "lang": "en",
+    "value": "External confirmations waiting in the payment simulator"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization-timeout",
+    "key": "admin.payment.simulator.authorization.timeout",
+    "lang": "en",
+    "value": "Opening the 3DS simulator timed out."
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-authorization-unavailable",
+    "key": "admin.payment.simulator.authorization.unavailable",
+    "lang": "en",
+    "value": "The 3DS simulator is unavailable."
+  },
+  {
     "_id": "i18n-message-en-admin-payment-simulator-open",
     "key": "admin.payment.simulator.open",
     "lang": "en",
@@ -12312,6 +12354,18 @@
     "value": "Bank approval timed out. No charge was completed."
   },
   {
+    "_id": "i18n-message-en-payment-authorization-waiting-subtitle",
+    "key": "payment.authorization.waiting.subtitle",
+    "lang": "en",
+    "value": "Waiting for confirmation in the external payment application"
+  },
+  {
+    "_id": "i18n-message-en-payment-authorization-waiting-title",
+    "key": "payment.authorization.waiting.title",
+    "lang": "en",
+    "value": "Payment confirmation"
+  },
+  {
     "_id": "i18n-message-en-payment-card-actions-open",
     "key": "payment.card.actions.open",
     "lang": "en",
@@ -21022,6 +21076,48 @@
     "key": "admin.payment.simulator",
     "lang": "hu",
     "value": "Fizetési szimulátor"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-3ds",
+    "key": "admin.payment.simulator.3ds",
+    "lang": "hu",
+    "value": "3DS"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization",
+    "key": "admin.payment.simulator.authorization",
+    "lang": "hu",
+    "value": "3DS jóváhagyások"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization-loading",
+    "key": "admin.payment.simulator.authorization.loading",
+    "lang": "hu",
+    "value": "A védett 3DS szimulátorsession megnyitása..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization-open",
+    "key": "admin.payment.simulator.authorization.open",
+    "lang": "hu",
+    "value": "Szimulált 3DS jóváhagyások megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization-subtitle",
+    "key": "admin.payment.simulator.authorization.subtitle",
+    "lang": "hu",
+    "value": "A fizetési szimulátorban külső jóváhagyásra váró tranzakciók"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization-timeout",
+    "key": "admin.payment.simulator.authorization.timeout",
+    "lang": "hu",
+    "value": "A 3DS szimulátor megnyitása túllépte az időkorlátot."
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-authorization-unavailable",
+    "key": "admin.payment.simulator.authorization.unavailable",
+    "lang": "hu",
+    "value": "A 3DS szimulátor nem érhető el."
   },
   {
     "_id": "i18n-message-hu-admin-payment-simulator-open",
@@ -31540,6 +31636,18 @@
     "key": "payment.authorization.error.timeout",
     "lang": "hu",
     "value": "A banki jóváhagyás időtúllépéssel megszakadt. Terhelés nem történt."
+  },
+  {
+    "_id": "i18n-message-hu-payment-authorization-waiting-subtitle",
+    "key": "payment.authorization.waiting.subtitle",
+    "lang": "hu",
+    "value": "Várakozás a külső fizetési alkalmazás jóváhagyására"
+  },
+  {
+    "_id": "i18n-message-hu-payment-authorization-waiting-title",
+    "key": "payment.authorization.waiting.title",
+    "lang": "hu",
+    "value": "Fizetés jóváhagyása"
   },
   {
     "_id": "i18n-message-hu-payment-card-actions-open",
