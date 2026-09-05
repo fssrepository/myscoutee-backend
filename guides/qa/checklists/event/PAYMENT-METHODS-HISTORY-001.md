@@ -98,7 +98,7 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 17. In **Alex**, close and reopen `Cards`. Confirm every still-active
     Stripe-tokenized card now keeps its original artwork under the same strong
     white overlay as an expired card, cannot be selected, and replaces the
-    three-dot trigger with the vivid `Retokenize >` badge. Open one badge and
+    three-dot trigger with the vivid blue `Reconnect >` badge. Open one badge and
     confirm the menu offers exactly `Retokenize card` and `Delete card`; close
     the menu without changing that card. No background configuration poll is
     required: reopening the surface uses the current configuration.

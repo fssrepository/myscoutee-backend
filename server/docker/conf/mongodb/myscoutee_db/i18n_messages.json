@@ -12408,6 +12408,18 @@
     "value": "Retokenize"
   },
   {
+    "_id": "i18n-message-en-payment-card-reconnect",
+    "key": "payment.card.reconnect",
+    "lang": "en",
+    "value": "Reconnect"
+  },
+  {
+    "_id": "i18n-message-en-payment-card-update-needed",
+    "key": "payment.card.update.needed",
+    "lang": "en",
+    "value": "Update needed"
+  },
+  {
     "_id": "i18n-message-en-notification-payment-card-expired-title",
     "key": "notification.payment.card.expired.title",
     "lang": "en",
@@ -31750,6 +31762,18 @@
     "key": "payment.card.retokenize",
     "lang": "hu",
     "value": "Újratokenizálás"
+  },
+  {
+    "_id": "i18n-message-hu-payment-card-reconnect",
+    "key": "payment.card.reconnect",
+    "lang": "hu",
+    "value": "Újracsatlakoztatás"
+  },
+  {
+    "_id": "i18n-message-hu-payment-card-update-needed",
+    "key": "payment.card.update.needed",
+    "lang": "hu",
+    "value": "Frissítés szükséges"
   },
   {
     "_id": "i18n-message-hu-notification-payment-card-expired-title",

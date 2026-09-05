@@ -1138,9 +1138,9 @@ public class PaymentService {
                 paymentMethodId,
                 null);
         if (enablePay && !safeText(provider).equalsIgnoreCase(safeText(method.getProvider()))) {
-            throw new ResponseStatusException(
+            throw new PaymentProviderChangedException(
                     HttpStatus.CONFLICT,
-                    "Payment provider changed. Retokenize your card.");
+                    provider);
         }
         return method;
     }

@@ -151,7 +151,16 @@ Begin only after Codex confirms this exact baseline:
     payment/3DS session already returned by the provider remains pinned to that
     provider and may finish even if the operator changes the provider used by
     later payments. A later new or periodic payment must reject the old token
-    with the short `Payment provider changed. Retokenize your card.` message.
+    with the short provider-specific message, for example `Payment provider
+    changed to Barion. Retokenize your card.`; Cash-only instead reports
+    `Payment provider changed to Cash only. Start payment again.` The same
+    response carries the current provider id and updates the shared provider
+    badge directly, without a second configuration request or a background
+    poll. The selected card remains visible with a static blue `Update needed`
+    badge; the badge itself is not clickable, while the card still opens the
+    picker. The UI must not silently clear the selection, and Payment remains
+    unavailable until a provider-compatible card is selected. In Cards/assign,
+    `Reconnect >` opens exactly `Retokenize card` and `Delete card`.
 
 37. Confirm the checkout closes once on success and no stale overlay blocks
     the application.

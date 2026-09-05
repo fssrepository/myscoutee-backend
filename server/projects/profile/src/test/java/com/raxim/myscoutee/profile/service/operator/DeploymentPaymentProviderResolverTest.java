@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.profile.service.PaymentProviderChangedException;
 
 class DeploymentPaymentProviderResolverTest {
     @Test
@@ -36,12 +37,14 @@ class DeploymentPaymentProviderResolverTest {
         assertThatThrownBy(
                 () -> fixture.resolver().resolveActiveProvider("stripe"))
                 .isInstanceOfSatisfying(
-                        ResponseStatusException.class,
+                        PaymentProviderChangedException.class,
                         exception -> {
                             assertThat(exception.getStatusCode())
                                     .isEqualTo(HttpStatus.BAD_REQUEST);
                             assertThat(exception.getReason())
-                                    .isEqualTo("Payment provider changed. Retokenize your card.");
+                                    .isEqualTo("Payment provider changed to Barion. Retokenize your card.");
+                            assertThat(exception.getCurrentProvider())
+                                    .isEqualTo("barion");
                         });
     }
 

@@ -177,11 +177,14 @@ public class SavedPaymentMethodsService {
         PaymentSimulatorRegistrationClient.GatewayConfiguration configuration = simulatorClient.configuration();
         String configuredValue = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
         if ("none".equals(configuredValue)) {
+            if (!registration) {
+                throw new PaymentProviderChangedException(
+                        HttpStatus.BAD_REQUEST,
+                        null);
+            }
             throw new ResponseStatusException(
-                    registration ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.BAD_REQUEST,
-                    registration
-                            ? "Card registration is unavailable while the demo payment simulator is Cash only."
-                            : "Payment provider changed. Retokenize your card.");
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Card registration is unavailable while the demo payment simulator is Cash only.");
         }
         String configured = normalizeProvider(configuredValue);
         if (!configuration.connected()) {
@@ -191,9 +194,9 @@ public class SavedPaymentMethodsService {
         }
         String requested = normalizeId(requestedProvider);
         if (StringUtils.hasText(requested) && !configured.equalsIgnoreCase(requested)) {
-            throw new ResponseStatusException(
+            throw new PaymentProviderChangedException(
                     HttpStatus.BAD_REQUEST,
-                    "Payment provider changed. Retokenize your card.");
+                    configured);
         }
         return configured;
     }
@@ -267,9 +270,9 @@ public class SavedPaymentMethodsService {
         }
         String provider = normalizeId(expectedProvider);
         if (StringUtils.hasText(provider) && !provider.equalsIgnoreCase(method.getProvider())) {
-            throw new ResponseStatusException(
+            throw new PaymentProviderChangedException(
                     HttpStatus.CONFLICT,
-                    "Payment provider changed. Retokenize your card.");
+                    provider);
         }
         return method;
     }
