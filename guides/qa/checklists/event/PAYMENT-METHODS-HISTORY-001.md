@@ -99,10 +99,12 @@ Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 ## 4. Verify and clean up the expired card
 
 19. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
-    artwork and original color remain visible and it has no three-dot action.
+    artwork remains identifiable beneath the stronger white expired overlay
+    and it has no three-dot action.
 20. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
-    Select the badge once. The opened menu must contain only `Delete card`; it
-    must not offer Replace or selection.
+    The overlay must not whiten or disable this badge. Select it once. The
+    opened menu must contain only `Delete card`; it must not offer Replace or
+    selection.
 21. Select `Delete card`, confirm once, and verify the expired card disappears
     without changing active cards or Payment History.
 22. Open Alex's notifications and confirm the controlled translated expired
