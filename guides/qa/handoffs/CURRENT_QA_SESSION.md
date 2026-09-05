@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-04 13:06 CEST
+Updated: 2026-09-05 12:36 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -21,6 +21,8 @@ file first, then open only the linked active checkpoint section.
   [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared, queued Content lifecycle:
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
+- Stable user-facing click guide for the prepared side-menu Payment journey:
+  [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/payment/PAYMENT-METHODS-HISTORY-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -38,6 +40,8 @@ file first, then open only the linked active checkpoint section.
 - Isolated generated-group Asset membership fixture and exact savepoint
   oracles:
   [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
+- Isolated side-menu Payment history, registration and expired-card fixture:
+  [`payment-ui-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/payment-ui-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -67,20 +71,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: none — CONTENT-ADMIN-LIFECYCLE-001 PASS / CLOSED
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#content-admin-lifecycle-001--governed-revisions-consent-and-article-lifecycle
-checklist: ../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md
-substage: terminal `article-republished` oracle passed at `2026-09-04T11:05:31.941Z`; steps 1-66 are accepted
-next_replay_boundary: none; do not replay this closed testcase unless its owning behavior changes
-fixture_phase: terminal evidence was recorded, then reset completed at `2026-09-04T11:08:01.897Z`; read-only status is `phase=not-staged`, `activeScenario=null` with no retained fixture artifacts
-browser_phase: Ava/Kai/Riley isolated browser windows may be closed; no further Content action is required
+checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
+checklist: ../checklists/payment/PAYMENT-METHODS-HISTORY-001.md
+substage: implementation and versioned fixture preparation complete; no manual step has run
+next_replay_boundary: stage the payment-ui fixture exactly once when pair-QA begins; require `phase=baseline-ready` and simulator provider `none`
+fixture_phase: read-only status at `2026-09-05 12:34 CEST` is `phase=not-staged`, provider `none` (Cash only), connected=true, requires3ds=false
+browser_phase: no Payment browser was opened; the user exclusively controls browser actions
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/118 total, Core 86/98, External/optional 0/20; CONTENT-ADMIN-LIFECYCLE-001 is PASS/CLOSED
-queued_next: none selected
-required_resume: the Content evidence is complete. Confirm the fixture reset reports `phase=not-staged`; select the next testcase from the matrix instead of replaying Content
-actors: Ava performs Admin Content and Article writes; Kai is the retained public/member consent actor; Riley is the fresh public/member control
-pending_machine_oracle: none
-last_completed: CONTENT-ADMIN-LIFECYCLE-001 PASS/CLOSED. The terminal republish and media oracles passed, including all three regressions found during the run
+ledger_status: 86/114 total, Core 86/96, External/optional 0/18; PAYMENT-METHODS-HISTORY-001 is PREPARED / NOT STAGED
+queued_next: PAYMENT-METHODS-HISTORY-001
+required_resume: run one read-only payment-ui status; if it remains not-staged, stage once, prove baseline-ready/Cash only, then open only the configured Ava/Alex sessions
+actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
+pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
+last_completed: implementation preparation only. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -124,20 +128,24 @@ while a released non-overlapping window restores it in place and after reload;
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
-Borrow remains prepared but is deliberately deferred while its payment-facing
-interface is being rewritten. Assignment is the active next checkpoint.
+Borrow remains prepared but is deliberately deferred while the payment-facing
+journeys are verified. It is not the active checkpoint.
 
-Separate captured dummy-payment follow-up: `EVENT-CHECKOUT-DUMMY-001` owns the
-direct Event Explore `Book Event -> Join -> Demo payment/Payment` journey,
-including resumable/cancelled states, no-freeze/exact-once success, accepted
-Activity Events destination and free/approval/waitlist button controls.
-`ASSET-CHECKOUT-DUMMY-001` owns the scoped Resource/Asset Explore
-`Borrow -> Confirm borrow -> Dummy pay/Pay` journey, including draft/session
-reconstruction, pending owner request, terminal acceptance, availability and
-free/unavailable controls. Both are Core `DESIGN CAPTURED / NOT RUN` rows with
-stable click guides. Their versioned fixtures/browser-session definitions are
-  created only when each row becomes active; they do not create an active
-  fixture at the current post-`ASSET-VIS-001` boundary.
+The three existing Event/Asset cases divide checkout coverage without a
+separate External Payment row: `EVENT-CHECKOUT-DUMMY-001` owns Stripe plus the
+Cash-only paid control and card assignment; `ASSET-CHECKOUT-DUMMY-001` owns
+Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
+`ASSET-BORROW-LIFECYCLE-001` remains the genuinely free/no-payment control.
+Their stable guides have been expanded for these combinations; their full
+manual runs remain for later pair QA.
+
+`PAYMENT-METHODS-HISTORY-001` is the one new Core side-menu journey and the
+selected next testcase. Its versioned fixture, exact reset, savepoint oracles
+and Ava/Alex browser definition are prepared but not staged. The independent
+real scheduler smoke already proved active expired card -> `expired` -> one
+outbox -> one in-app notification, including duplicate suppression. It also
+exposed and repaired the null-version duplicate-ID write by replacing the
+read-modify-save expiry transition with one guarded atomic update.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Core Content row and now has a stable click guide. It creates
@@ -221,17 +229,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`ASSET-MEMBER-LIFECYCLE-001` is PASS/CLOSED. The intact staged Borrow baseline
-was verified and reset through its versioned harness because its
-payment-facing interface will be rewritten. `ASSET-ASSIGNMENT-LIFECYCLE-001`
-steps 1-28 are PASS and its guarded phase is `step-29-ready`. The user now owns
-all browser interaction and continues at step 29 in Casey. If replay is needed,
-`rollback-step-29-boundary` restores the exact post-reassign state without
-repeating steps 1-28. After Assignment is
-completed, recorded and reset, the prepared
-`CONTENT-ADMIN-LIFECYCLE-001` is the queued next-day checkpoint. Do not stage
-it early: its guarded runner intentionally refuses to coexist with another
-active manual-QA snapshot.
+Do not open a browser yet. When the user starts pair QA, run the read-only
+`status payment-ui PAYMENT-METHODS-HISTORY-001` gate. If it still reports
+`phase=not-staged`, stage it once, require `phase=baseline-ready` with simulator
+provider `none` (`Cash only`), and only then prepare the configured Ava/Alex
+sessions. Begin at checklist step 1. The first stop phrase is
+`PAYMENT-METHODS-HISTORY-001 stripe registered: one connected provider card`.
+The fixture is exact-reset capable and no manual Payment verdict exists yet.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -332,12 +336,12 @@ right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
 and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus the Operator, Payment and
-Deployment deferred boundaries. Their numeric priorities preserve the
+coarse: 11 Core capability/operations domains plus the Operator and Deployment
+deferred boundaries. Their numeric priorities preserve the
 authoritative execution order.
 A generated priority overview places the first five Core domains in its first
-column, the remaining five Core domains in its second column, and reserves the
-third `EXT / optional` column for Operator, Payment and Deployment. The third
+column, the remaining six Core domains in its second column, and reserves the
+third `EXT / optional` column for Operator and Deployment. The third
 column must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
 A browser surface, device type, test technique or one-off checkpoint name is
@@ -351,8 +355,10 @@ work is Core and is distributed by the state it reads or mutates: authorization
 and moderation belong to Identity & access, revisions to Content, notification
 rules to Notifications, statistics and monitoring to Administration, and so
 on. The route or shell does not manufacture a separate Admin domain.
-Operator, Registry, payment and deployment cases remain deferred external
-boundaries. Row-level Manual QA priority orders risk inside a scope; it does
+Operator, Registry and deployment cases remain deferred external boundaries.
+Member payment history and saved-card behavior is Core; provider checkout
+variants are owned by the Core Event and Asset journeys. Row-level Manual QA
+priority orders risk inside a scope; it does
 not change capability ownership.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
@@ -489,7 +495,7 @@ record has been removed.
   `Total`. The four status rows and the Done percentage are filtered to Core
   tests only, so they partition the displayed Core total instead of mixing the
   deferred scope into product progress. Stable IDs beginning `OPERATOR-`,
-  `PAYMENT-` or `DEPLOY-` remain teal `EXT / optional` without renaming
+  `OPERATOR-` or `DEPLOY-` remain teal `EXT / optional` without renaming
   testcase IDs; that scope is a separate count and `Total` is
   the final Core+deferred count. The generator also adds `EXT` to the left
   overview legend. Scope is orthogonal to
@@ -1311,5 +1317,5 @@ The former Firebase registration, role activation/deactivation and physical
 Chat-push microcases are assertions inside external
 `DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
 by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
-the Core Identity & access gate. Only the Operator, Payment and Deployment
-sequences stay deferred under Core-first execution.
+the Core Identity & access gate. Only the Operator and Deployment sequences
+stay deferred under Core-first execution; Payment is Core.

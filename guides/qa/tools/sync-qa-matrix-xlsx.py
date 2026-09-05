@@ -74,13 +74,12 @@ DOMAIN_METADATA = (
     ("Notifications", 7, "FFE2F0D9", "BELL"),
     ("Client platform", 6, "FFD9E1F2", "MOBILE"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
+    ("Payment", 4, "FF76A5AF", "PAYMENT"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
-    ("Payment", 2, "FF76A5AF", "PAYMENT"),
     ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
 EXTERNAL_OPTIONAL_DOMAINS = frozenset({
     "Operator",
-    "Payment",
     "Deployment",
 })
 DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
@@ -461,7 +460,7 @@ def qa_scope_bucket(item: dict[str, str]) -> str:
     domain = item.get(DOMAIN_COLUMN, "").strip()
     return "external" if (
         domain in EXTERNAL_OPTIONAL_DOMAINS
-        or identifier.startswith(("OPERATOR-", "PAYMENT-", "DEPLOY-"))
+        or identifier.startswith(("OPERATOR-", "DEPLOY-"))
     ) else "core"
 
 
@@ -517,7 +516,6 @@ def qa_scope_formula(row_index: int, id_column: str, domain_column: str) -> str:
     domain_reference = f"{domain_column}{row_index}"
     return (
         f'IF(OR(LEFT({reference},9)="OPERATOR-",'
-        f'LEFT({reference},8)="PAYMENT-",'
         f'LEFT({reference},7)="DEPLOY-"),"External","Core")'
     )
 

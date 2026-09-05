@@ -54,23 +54,26 @@ Open the configured Ava/Alex windows only after the read-only status reports
    status rectangles are green, the correct provider/payment method is shown,
    and read-only cards retain their original hue while appearing lightly
    faded.
-7. Open the failed Barion row. Confirm its status rectangle is red and the
+7. Open the captured Cash income row. Confirm its summary opens, has a green
+   status rectangle and `Cash only`, and does not manufacture a card selector
+   or tokenized-card surface.
+8. Open the failed Barion row. Confirm its status rectangle is red and the
    summary shows `Bank confirmation was declined.` rather than a generic
    exception or an empty status detail. Close it with X.
 
 ## 2. Register one Stripe card
 
-8. In **Ava**, select `Stripe`, keep 3DS Off, and select
+9. In **Ava**, select `Stripe`, keep 3DS Off, and select
    `Save test configuration`. Confirm Stripe reports connected; saving itself
    generates the test connection, so no separate Generate button is expected.
-9. In **Alex**, open `Cards`, then `Add card`. Confirm the embedded page is the
+10. In **Alex**, open `Cards`, then `Add card`. Confirm the embedded page is the
    Stripe payment-simulator registration surface, not a MyScoutee card form.
-10. Select the Stripe test card, enter `ALEX TURNER`, and select
+11. Select the Stripe test card, enter `ALEX TURNER`, and select
     `Tokenize and save card` exactly once.
-11. Confirm the provider result is visible briefly, the popup returns without
+12. Confirm the provider result is visible briefly, the popup returns without
     a page reload, and exactly one new active Stripe card appears with artwork,
     masked number, cardholder and expiry.
-12. Report and wait for the machine oracle:
+13. Report and wait for the machine oracle:
 
     `PAYMENT-METHODS-HISTORY-001 stripe registered: one connected provider card`
 
@@ -78,16 +81,16 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 3. Register one Barion card
 
-13. In **Ava**, change the same demo configuration to `Barion`, keep 3DS Off,
+14. In **Ava**, change the same demo configuration to `Barion`, keep 3DS Off,
     and save. Confirm Barion reports connected.
-14. In **Alex**, close and reopen `Cards`, then select `Add card`. The backend
+15. In **Alex**, close and reopen `Cards`, then select `Add card`. The backend
     must use the currently configured provider; no background configuration
     poll is required.
-15. Confirm the embedded registration surface is Barion, select its test card,
+16. Confirm the embedded registration surface is Barion, select its test card,
     enter `ALEX TURNER`, and select `Tokenize and save card` exactly once.
-16. Confirm exactly one new active Barion card appears and the earlier cards
+17. Confirm exactly one new active Barion card appears and the earlier cards
     remain unchanged.
-17. Report and wait:
+18. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 barion registered: one connected provider card`
 
@@ -95,17 +98,17 @@ Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 4. Verify and clean up the expired card
 
-18. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
+19. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
     artwork and original color remain visible and it has no three-dot action.
-19. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
+20. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
     Select the badge once. The opened menu must contain only `Delete card`; it
     must not offer Replace or selection.
-20. Select `Delete card`, confirm once, and verify the expired card disappears
+21. Select `Delete card`, confirm once, and verify the expired card disappears
     without changing active cards or Payment History.
-21. Open Alex's notifications and confirm the controlled translated expired
+22. Open Alex's notifications and confirm the controlled translated expired
     card notification names card ending `0008`. Reading it may mark that one
     notification read; do not delete or mutate another notification.
-22. Report and wait:
+23. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 expired cleaned: badge menu removed 0008 once`
 
@@ -113,14 +116,14 @@ Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 5. Terminal reload and read-only proof
 
-23. Reload Alex exactly once. Reopen Payment history and Cards.
-24. Confirm the four original history rows, both exact totals, all three
+24. Reload Alex exactly once. Reopen Payment history and Cards.
+25. Confirm the four original history rows, both exact totals, all three
     filters, failure reason and day groups reconstruct unchanged.
-25. Confirm one new Stripe and one new Barion card remain, baseline active
+26. Confirm one new Stripe and one new Barion card remain, baseline active
     cards remain, and expired `0008` does not return.
-26. Confirm no payment, membership, Asset request, basket or checkout was
+27. Confirm no payment, membership, Asset request, basket or checkout was
     created merely by filtering history or managing cards.
-27. Report the terminal phrase:
+28. Report the terminal phrase:
 
     `PAYMENT-METHODS-HISTORY-001 UI complete: history, registrations and expired cleanup persist`
 
