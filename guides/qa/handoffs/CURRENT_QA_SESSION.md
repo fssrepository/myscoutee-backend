@@ -76,7 +76,7 @@ detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-jo
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
 substage: implementation and versioned fixture preparation complete; the exact payment-ui baseline is staged; no manual step has run
 next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
-fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false
+fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
 browser_phase: no Payment browser was opened; the user exclusively controls browser actions
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
@@ -235,7 +235,7 @@ Do not open a browser yet. When the user starts pair QA, run the read-only
 `phase=not-staged`, stage it once, require `phase=baseline-ready` with simulator
 provider `none` (`Cash only`), and only then prepare the configured Ava/Alex
 sessions. Begin at checklist step 1. The first stop phrase is
-`PAYMENT-METHODS-HISTORY-001 stripe registered: one connected provider card`.
+`PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`.
 The fixture is exact-reset capable and no manual Payment verdict exists yet.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B

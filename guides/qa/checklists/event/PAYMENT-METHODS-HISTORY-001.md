@@ -64,8 +64,9 @@ Open the configured Ava/Alex windows only after the read-only status reports
 ## 2. Register one Stripe card
 
 9. In **Ava**, select `Stripe`, keep 3DS Off, and select
-   `Save test configuration`. Confirm Stripe reports connected; saving itself
-   generates the test connection, so no separate Generate button is expected.
+   `Save test configuration`. Confirm the Save response reports success; saving
+   itself generates the test connection, so no separate Generate button or
+   persistent connection-status badge is expected.
 10. In **Alex**, open `Cards`, then `Add card`. Confirm the embedded page is the
    Stripe payment-simulator registration surface, not a MyScoutee card form.
    Its header shows the Stripe logo instead of a duplicate text provider name.
@@ -78,14 +79,14 @@ Open the configured Ava/Alex windows only after the read-only status reports
     masked number, cardholder and expiry.
 13. Report and wait for the machine oracle:
 
-    `PAYMENT-METHODS-HISTORY-001 stripe registered: one connected provider card`
+    `PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`
 
 Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 3. Register one Barion card
 
 14. In **Ava**, change the same demo configuration to `Barion`, keep 3DS Off,
-    and save. Confirm Barion reports connected.
+    and save. Confirm the Save response reports success.
 15. In **Alex**, close and reopen `Cards`, then select `Add card`. The backend
     must use the currently configured provider; no background configuration
     poll is required.
@@ -98,7 +99,7 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
     remain unchanged.
 18. Report and wait:
 
-    `PAYMENT-METHODS-HISTORY-001 barion registered: one connected provider card`
+    `PAYMENT-METHODS-HISTORY-001 barion registered: one tokenized provider card`
 
 Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 
