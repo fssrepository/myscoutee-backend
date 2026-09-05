@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.HttpStatus;
 
 @Service
@@ -80,6 +81,23 @@ public class PaymentSimulatorRegistrationClient {
                 new HttpEntity<>(headers()),
                 GatewayRegistration.class);
         return requireBody(response.getBody());
+    }
+
+    public void revoke(String provider, String providerToken) {
+        requireConfigured();
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .pathSegment(
+                        "myscoutee", "v1", "payment-methods",
+                        required(provider, "payment provider"),
+                        required(providerToken, "provider payment method reference"))
+                .build()
+                .encode()
+                .toUriString();
+        restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                new HttpEntity<>(headers()),
+                Void.class);
     }
 
     public GatewayConfiguration configuration() {

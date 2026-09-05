@@ -283,9 +283,12 @@ public class SavedPaymentMethodsService {
         if (!ACTIVE.equals(method.getStatus())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
         }
-        method.setStatus("deleted");
-        method.setUpdatedAtIso(Instant.now().toString());
-        paymentMethodsRepository.save(method);
+        if (simulatorClient.isEnabled()) {
+            simulatorClient.revoke(method.getProvider(), method.getProviderPaymentMethodRef());
+        }
+        if (paymentMethodsRepository.markDeleted(method.getId(), ownerId, Instant.now().toString()) != 1) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
+        }
     }
 
     private SavedPaymentMethod completeRegistration(
@@ -329,10 +332,10 @@ public class SavedPaymentMethodsService {
             return paymentMethodsRepository.findByRegistrationId(registration.getId()).orElseThrow(() -> duplicate);
         }
         if (replaced != null) {
-            replaced.setStatus("replaced");
-            replaced.setReplacedByPaymentMethodId(method.getId());
-            replaced.setUpdatedAtIso(now);
-            paymentMethodsRepository.save(replaced);
+            if (paymentMethodsRepository.markReplaced(
+                    replaced.getId(), registration.getUserId(), method.getId(), now) != 1) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
+            }
         }
         return method;
     }
