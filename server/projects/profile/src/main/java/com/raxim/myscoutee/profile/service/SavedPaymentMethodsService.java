@@ -163,6 +163,14 @@ public class SavedPaymentMethodsService {
     }
 
     public String resolveActiveProvider(String requestedProvider) {
+        return resolveActiveProvider(requestedProvider, true);
+    }
+
+    public String resolvePaymentProvider(String requestedProvider) {
+        return resolveActiveProvider(requestedProvider, false);
+    }
+
+    private String resolveActiveProvider(String requestedProvider, boolean registration) {
         if (!isDemoSimulatorMode()) {
             return normalizeProvider(paymentProviderResolver.resolveActiveProvider(requestedProvider));
         }
@@ -170,8 +178,10 @@ public class SavedPaymentMethodsService {
         String configuredValue = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
         if ("none".equals(configuredValue)) {
             throw new ResponseStatusException(
-                    HttpStatus.SERVICE_UNAVAILABLE,
-                    "Card registration is unavailable while the demo payment simulator is Cash only.");
+                    registration ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.BAD_REQUEST,
+                    registration
+                            ? "Card registration is unavailable while the demo payment simulator is Cash only."
+                            : "Payment provider changed. Retokenize your card.");
         }
         String configured = normalizeProvider(configuredValue);
         if (!configuration.connected()) {

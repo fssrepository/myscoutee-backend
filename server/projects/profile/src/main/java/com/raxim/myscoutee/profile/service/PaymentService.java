@@ -1282,7 +1282,7 @@ public class PaymentService {
         }
         return savedPaymentMethodsService == null
                 ? paymentProviderResolver.resolveActiveProvider(requestedProvider)
-                : savedPaymentMethodsService.resolveActiveProvider(requestedProvider);
+                : savedPaymentMethodsService.resolvePaymentProvider(requestedProvider);
     }
 
     private String safeCurrency(String currency) {

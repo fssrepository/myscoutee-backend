@@ -34,6 +34,11 @@ public class DeploymentPaymentProviderResolver {
         String activeProvider = normalize(
                 payment == null ? null : payment.getProviderId());
         if (!StringUtils.hasText(activeProvider)) {
+            if (StringUtils.hasText(normalize(requestedProvider))) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Payment provider changed. Retokenize your card.");
+            }
             throw unavailable(
                     "The operator has not selected a payment provider.");
         }
