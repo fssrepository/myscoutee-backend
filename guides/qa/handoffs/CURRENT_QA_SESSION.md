@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 13:37 CEST
+Updated: 2026-09-05 15:26 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -74,7 +74,7 @@ resume pointer and reusable working method.
 checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete; the exact payment-ui baseline is staged; no manual step has run
+substage: implementation and versioned fixture preparation complete, including provider-change recovery; the exact payment-ui baseline is staged; no manual step has run
 next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
 fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
 browser_phase: no Payment browser was opened; the user exclusively controls browser actions
@@ -84,7 +84,9 @@ queued_next: PAYMENT-METHODS-HISTORY-001
 required_resume: run one read-only payment-ui status; if it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
-last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
+package_preflight: fresh unsigned local `myscoutee_1.0.0_amd64.deb` built with all six managed images, including payment simulator and registry-demo; package-content, deployment-qualification, registry-packaging and client-tools regression tests passed. VMware deployment was not performed because the reachable guest rejected the existing dedicated SSH key for every documented/plausible account; no guest state was changed
+last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; focused backend tests, production/development frontend builds, i18n synchronization and local release-package checks passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
