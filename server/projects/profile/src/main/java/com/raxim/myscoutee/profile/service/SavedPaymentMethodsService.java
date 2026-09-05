@@ -260,6 +260,19 @@ public class SavedPaymentMethodsService {
                 spendingTotals(ownerId));
     }
 
+    public synchronized void delete(String userId, String paymentMethodId) {
+        String ownerId = requiredId(userId, "Current user");
+        SavedPaymentMethod method = paymentMethodsRepository
+                .findByIdAndUserId(requiredId(paymentMethodId, "Payment method"), ownerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment card was not found."));
+        if (!ACTIVE.equals(method.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
+        }
+        method.setStatus("deleted");
+        method.setUpdatedAtIso(Instant.now().toString());
+        paymentMethodsRepository.save(method);
+    }
+
     private SavedPaymentMethod completeRegistration(
             PaymentMethodRegistration registration,
             GatewayRegistration gateway) {

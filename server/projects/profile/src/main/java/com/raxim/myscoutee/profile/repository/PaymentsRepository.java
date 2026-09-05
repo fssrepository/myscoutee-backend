@@ -17,6 +17,10 @@ public interface PaymentsRepository extends MongoRepository<Payment, String> {
     java.util.List<Payment> findByUserIdOrderByCreatedDateDesc(String userId);
     java.util.List<Payment> findByRevisionRootSessionId(String revisionRootSessionId);
     java.util.List<Payment> findByStatusAndBookingStatus(String status, String bookingStatus);
+    java.util.List<Payment> findByStatusAndFulfillmentStatusAndFulfillmentKind(
+            String status,
+            String fulfillmentStatus,
+            String fulfillmentKind);
 
     /**
      * Narrow candidate read for the local revenue ruleset. The service still

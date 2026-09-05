@@ -918,9 +918,6 @@
       "notifications": 1
     },
     "affinity": 443988,
-    "paymentSpentTotals": {
-      "HUF": 17400
-    },
     "age": 32,
     "birthday": "1993-12-28",
     "city": "Boston",
@@ -2952,6 +2949,9 @@
       "longitude": -71.0625
     },
     "name": "Alex Turner",
+    "paymentSpentTotals": {
+      "HUF": 17400
+    },
     "physique": "Average",
     "profileStatus": "friends only",
     "statusText": "Recently Active",

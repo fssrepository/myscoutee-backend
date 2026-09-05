@@ -43,7 +43,6 @@ public class PaymentAuthorizationCoordinator {
         }
 
         if (PaymentService.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())) {
-            paymentService.markGatewayFulfillment(payment.getId(), true, null);
             return transition;
         }
 

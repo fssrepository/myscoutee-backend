@@ -12300,6 +12300,36 @@
     "value": "Close payment cards"
   },
   {
+    "_id": "i18n-message-en-payment-cards-delete",
+    "key": "payment.cards.delete",
+    "lang": "en",
+    "value": "Delete card"
+  },
+  {
+    "_id": "i18n-message-en-payment-cards-delete-busy",
+    "key": "payment.cards.delete.busy",
+    "lang": "en",
+    "value": "Deleting..."
+  },
+  {
+    "_id": "i18n-message-en-payment-cards-delete-error",
+    "key": "payment.cards.delete.error",
+    "lang": "en",
+    "value": "Unable to delete the payment card."
+  },
+  {
+    "_id": "i18n-message-en-payment-cards-delete-message",
+    "key": "payment.cards.delete.message",
+    "lang": "en",
+    "value": "{brand} ending {last4} will be removed from your saved cards."
+  },
+  {
+    "_id": "i18n-message-en-payment-cards-delete-title",
+    "key": "payment.cards.delete.title",
+    "lang": "en",
+    "value": "Delete saved card?"
+  },
+  {
     "_id": "i18n-message-en-payment-cards-empty",
     "key": "payment.cards.empty",
     "lang": "en",
@@ -12346,6 +12376,12 @@
     "key": "payment.cards.select.aria",
     "lang": "en",
     "value": "Select a payment card"
+  },
+  {
+    "_id": "i18n-message-en-payment-cards-select-confirm",
+    "key": "payment.cards.select.confirm",
+    "lang": "en",
+    "value": "Use selected payment card"
   },
   {
     "_id": "i18n-message-en-payment-cards-select-title",
@@ -12456,6 +12492,12 @@
     "value": "Open payment history"
   },
   {
+    "_id": "i18n-message-en-payment-history-spent",
+    "key": "payment.history.spent",
+    "lang": "en",
+    "value": "Total spent"
+  },
+  {
     "_id": "i18n-message-en-payment-history-subtitle",
     "key": "payment.history.subtitle",
     "lang": "en",
@@ -12486,6 +12528,12 @@
     "value": "Card registration ended with status: {status}."
   },
   {
+    "_id": "i18n-message-en-payment-registration-error-expired",
+    "key": "payment.registration.error.expired",
+    "lang": "en",
+    "value": "Card registration expired. Start it again to add the card."
+  },
+  {
     "_id": "i18n-message-en-payment-registration-error-page",
     "key": "payment.registration.error.page",
     "lang": "en",
@@ -12508,6 +12556,12 @@
     "key": "payment.registration.frame.title",
     "lang": "en",
     "value": "External payment provider card registration"
+  },
+  {
+    "_id": "i18n-message-en-payment-registration-pending",
+    "key": "payment.registration.pending",
+    "lang": "en",
+    "value": "Registering card…"
   },
   {
     "_id": "i18n-message-en-payment-registration-subtitle",
@@ -12534,6 +12588,12 @@
     "value": "Authorized"
   },
   {
+    "_id": "i18n-message-en-payment-status-authorization-pending",
+    "key": "payment.status.authorization_pending",
+    "lang": "en",
+    "value": "Authorization pending"
+  },
+  {
     "_id": "i18n-message-en-payment-status-cancelled",
     "key": "payment.status.cancelled",
     "lang": "en",
@@ -12544,6 +12604,12 @@
     "key": "payment.status.captured",
     "lang": "en",
     "value": "Captured"
+  },
+  {
+    "_id": "i18n-message-en-payment-status-customer-action-required",
+    "key": "payment.status.customer_action_required",
+    "lang": "en",
+    "value": "Customer approval required"
   },
   {
     "_id": "i18n-message-en-payment-status-created",
@@ -12592,6 +12658,24 @@
     "key": "payment.status.requires_capture",
     "lang": "en",
     "value": "Authorized, awaiting capture"
+  },
+  {
+    "_id": "i18n-message-en-payment-summary-error-asset-unavailable",
+    "key": "payment.summary.error.asset.unavailable",
+    "lang": "en",
+    "value": "The asset payment summary is no longer available."
+  },
+  {
+    "_id": "i18n-message-en-payment-summary-error-open",
+    "key": "payment.summary.error.open",
+    "lang": "en",
+    "value": "The payment summary could not be opened."
+  },
+  {
+    "_id": "i18n-message-en-payment-summary-error-source-unavailable",
+    "key": "payment.summary.error.source.unavailable",
+    "lang": "en",
+    "value": "The event for this payment is no longer available."
   },
   {
     "_id": "i18n-message-en-update",
@@ -31326,6 +31410,36 @@
     "value": "Fizetési kártyák bezárása"
   },
   {
+    "_id": "i18n-message-hu-payment-cards-delete",
+    "key": "payment.cards.delete",
+    "lang": "hu",
+    "value": "Kártya törlése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cards-delete-busy",
+    "key": "payment.cards.delete.busy",
+    "lang": "hu",
+    "value": "Törlés..."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cards-delete-error",
+    "key": "payment.cards.delete.error",
+    "lang": "hu",
+    "value": "A fizetési kártya nem törölhető."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cards-delete-message",
+    "key": "payment.cards.delete.message",
+    "lang": "hu",
+    "value": "A(z) {brand}, {last4} végződésű kártya törlődik a mentett kártyák közül."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cards-delete-title",
+    "key": "payment.cards.delete.title",
+    "lang": "hu",
+    "value": "Törlöd a mentett kártyát?"
+  },
+  {
     "_id": "i18n-message-hu-payment-cards-empty",
     "key": "payment.cards.empty",
     "lang": "hu",
@@ -31372,6 +31486,12 @@
     "key": "payment.cards.select.aria",
     "lang": "hu",
     "value": "Fizetési kártya kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cards-select-confirm",
+    "key": "payment.cards.select.confirm",
+    "lang": "hu",
+    "value": "Kiválasztott fizetési kártya használata"
   },
   {
     "_id": "i18n-message-hu-payment-cards-select-title",
@@ -31482,6 +31602,12 @@
     "value": "Fizetési előzmények megnyitása"
   },
   {
+    "_id": "i18n-message-hu-payment-history-spent",
+    "key": "payment.history.spent",
+    "lang": "hu",
+    "value": "Összes költés"
+  },
+  {
     "_id": "i18n-message-hu-payment-history-subtitle",
     "key": "payment.history.subtitle",
     "lang": "hu",
@@ -31512,6 +31638,12 @@
     "value": "A kártyaregisztráció ezzel az állapottal zárult: {status}."
   },
   {
+    "_id": "i18n-message-hu-payment-registration-error-expired",
+    "key": "payment.registration.error.expired",
+    "lang": "hu",
+    "value": "A kártyaregisztráció időtúllépéssel lezárult. A kártya hozzáadásához indítsd újra."
+  },
+  {
     "_id": "i18n-message-hu-payment-registration-error-page",
     "key": "payment.registration.error.page",
     "lang": "hu",
@@ -31534,6 +31666,12 @@
     "key": "payment.registration.frame.title",
     "lang": "hu",
     "value": "Kártyaregisztráció a külső fizetési szolgáltatónál"
+  },
+  {
+    "_id": "i18n-message-hu-payment-registration-pending",
+    "key": "payment.registration.pending",
+    "lang": "hu",
+    "value": "Kártya regisztrálása…"
   },
   {
     "_id": "i18n-message-hu-payment-registration-subtitle",
@@ -31560,6 +31698,12 @@
     "value": "Engedélyezve"
   },
   {
+    "_id": "i18n-message-hu-payment-status-authorization-pending",
+    "key": "payment.status.authorization_pending",
+    "lang": "hu",
+    "value": "Engedélyezés folyamatban"
+  },
+  {
     "_id": "i18n-message-hu-payment-status-cancelled",
     "key": "payment.status.cancelled",
     "lang": "hu",
@@ -31570,6 +31714,12 @@
     "key": "payment.status.captured",
     "lang": "hu",
     "value": "Terhelve"
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-customer-action-required",
+    "key": "payment.status.customer_action_required",
+    "lang": "hu",
+    "value": "Felhasználói jóváhagyás szükséges"
   },
   {
     "_id": "i18n-message-hu-payment-status-created",
@@ -31618,6 +31768,24 @@
     "key": "payment.status.requires_capture",
     "lang": "hu",
     "value": "Engedélyezve, terhelésre vár"
+  },
+  {
+    "_id": "i18n-message-hu-payment-summary-error-asset-unavailable",
+    "key": "payment.summary.error.asset.unavailable",
+    "lang": "hu",
+    "value": "Az eszközfizetés összegzése már nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-payment-summary-error-open",
+    "key": "payment.summary.error.open",
+    "lang": "hu",
+    "value": "A fizetési összegzés nem nyitható meg."
+  },
+  {
+    "_id": "i18n-message-hu-payment-summary-error-source-unavailable",
+    "key": "payment.summary.error.source.unavailable",
+    "lang": "hu",
+    "value": "A fizetéshez tartozó esemény már nem érhető el."
   },
   {
     "_id": "i18n-message-hu-update",

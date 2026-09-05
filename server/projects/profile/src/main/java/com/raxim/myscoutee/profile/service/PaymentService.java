@@ -208,10 +208,6 @@ public class PaymentService {
                             selectedPaymentMethod.getProviderPaymentMethodRef());
             validateGatewayResult(payment, authorization);
             applyGatewayResult(payment, authorization);
-            if (FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind)
-                    && authorization.status() == AuthorizationStatus.AUTHORIZED) {
-                payment.setFulfillmentStatus(FULFILLMENT_SUCCEEDED);
-            }
             payment = saveAndProjectSpending(payment);
             eventCheckoutBasketService.saveBasket(withCheckoutState(
                     authoritativeRequest,
@@ -340,8 +336,22 @@ public class PaymentService {
             String sourceId,
             String slotSourceId,
             String bookingStartAtIso,
+            String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
-        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, null, cancellationPolicy);
+        Payment payment = recordBooking(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                bookingEndAtIso,
+                cancellationPolicy);
+        if (payment != null
+                && FULFILLMENT_KIND_CLIENT.equals(safeText(payment.getFulfillmentKind()))
+                && statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))
+                && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
+            markGatewayFulfillment(payment.getId(), true, null);
+        }
     }
 
     public EventCheckoutPaymentAuditDto loadPaymentAudit(
@@ -463,7 +473,7 @@ public class PaymentService {
         cancelBooking(payment, fallbackBookingStartAtIso, fallbackCancellationPolicy);
     }
 
-    private void recordBooking(
+    private Payment recordBooking(
             String paymentSessionId,
             String userId,
             String sourceId,
@@ -473,13 +483,13 @@ public class PaymentService {
             PricingCancellationPolicyDto cancellationPolicy) {
         Payment payment = findByAnySessionId(paymentSessionId).orElse(null);
         if (payment == null) {
-            return;
+            return null;
         }
 
         String normalizedUserId = normalizeId(userId);
         String normalizedSourceId = normalizeId(sourceId);
         if (!hasText(normalizedSourceId)) {
-            return;
+            return null;
         }
 
         if (hasText(normalizedUserId)) {
@@ -497,7 +507,7 @@ public class PaymentService {
         if (!hasText(payment.getRefundStatus())) {
             payment.setRefundStatus(REFUND_STATUS_NONE);
         }
-        saveAndProjectSpending(payment);
+        return saveAndProjectSpending(payment);
     }
 
     public void cancelEventBooking(
