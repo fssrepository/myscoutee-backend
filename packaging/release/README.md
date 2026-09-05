@@ -4,7 +4,8 @@ These helpers operate on a MyScoutee source checkout to build, inspect, and
 sign production release artifacts:
 
 - `build-production.sh` builds frontend/backend artifacts and production images;
-- `build-debian-release.sh` builds the Debian package and Operator bundle;
+- `build-debian-release.sh` builds the Debian package and Operator bundle and
+  writes a separate `.sha256` checksum file beside each artifact;
 - `package-production.sh` stages and creates those release archives;
 - `audit-package-credentials.sh` and its Python helpers reject credentials and
   private key material from staged package content;

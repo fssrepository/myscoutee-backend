@@ -24,4 +24,29 @@ if [ -z "${latest_deb}" ]; then
   exit 1
 fi
 
+package_version="$(dpkg-deb -f "${latest_deb}" Version)"
+client_tools="${DIST_DIR}/myscoutee-client-tools_${package_version}.tar.gz"
+if [ ! -f "${client_tools}" ]; then
+  echo "Operator helper bundle was not found: ${client_tools}" >&2
+  exit 1
+fi
+
+write_checksum() {
+  artifact="$1"
+  artifact_dir="$(dirname "${artifact}")"
+  artifact_name="$(basename "${artifact}")"
+  checksum_file="${artifact}.sha256"
+  checksum_tmp="$(mktemp "${checksum_file}.tmp.XXXXXX")"
+  if ! (cd "${artifact_dir}" && sha256sum "${artifact_name}") > "${checksum_tmp}"; then
+    rm -f -- "${checksum_tmp}"
+    return 1
+  fi
+  chmod 0644 "${checksum_tmp}"
+  mv -f -- "${checksum_tmp}" "${checksum_file}"
+  echo "SHA-256 ready: ${checksum_file}"
+}
+
+write_checksum "${latest_deb}"
+write_checksum "${client_tools}"
+
 echo "Debian package ready: ${latest_deb}"
