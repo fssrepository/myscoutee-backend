@@ -13404,12 +13404,6 @@
     "value": "CVC"
   },
   {
-    "_id": "i18n-message-en-event-editor-payment-gateway",
-    "key": "event.editor.payment.gateway",
-    "lang": "en",
-    "value": "Gateway"
-  },
-  {
     "_id": "i18n-message-en-event-editor-payment-demo",
     "key": "event.editor.payment.demo",
     "lang": "en",
@@ -13420,6 +13414,36 @@
     "key": "event.editor.payment.recorded",
     "lang": "en",
     "value": "Recorded payment"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-cash-only",
+    "key": "event.editor.payment.cash.only",
+    "lang": "en",
+    "value": "Cash only"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-cash-status",
+    "key": "event.editor.payment.cash.status",
+    "lang": "en",
+    "value": "Pay in cash"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-cash-confirm",
+    "key": "event.editor.payment.cash.confirm",
+    "lang": "en",
+    "value": "Confirm cash payment"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-cash-confirming",
+    "key": "event.editor.payment.cash.confirming",
+    "lang": "en",
+    "value": "Confirming..."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-cash-confirm-warning",
+    "key": "event.editor.payment.cash.confirm.warning",
+    "lang": "en",
+    "value": "The booking will be confirmed for cash payment. No card will be charged."
   },
   {
     "_id": "i18n-message-en-event-editor-payment-ready-redirect",
@@ -15550,6 +15574,12 @@
     "key": "asset.borrow.note.payment.approved",
     "lang": "en",
     "value": "Payment approved. Awaiting owner confirmation."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-note-cash-payment",
+    "key": "asset.borrow.note.cash.payment",
+    "lang": "en",
+    "value": "Cash payment. Awaiting owner confirmation."
   },
   {
     "_id": "i18n-message-en-asset-borrow-note-awaiting-owner",
@@ -18006,10 +18036,10 @@
     "value": "Available provider"
   },
   {
-    "_id": "i18n-message-en-operator-configuration-payment-provider-none",
-    "key": "operator.configuration.payment.provider.none",
+    "_id": "i18n-message-en-operator-configuration-payment-provider-cash-only",
+    "key": "operator.configuration.payment.provider.cash.only",
     "lang": "en",
-    "value": "No payment provider"
+    "value": "Cash only"
   },
   {
     "_id": "i18n-message-en-operator-configuration-payment-public-url",
@@ -32604,12 +32634,6 @@
     "value": "CVC"
   },
   {
-    "_id": "i18n-message-hu-event-editor-payment-gateway",
-    "key": "event.editor.payment.gateway",
-    "lang": "hu",
-    "value": "Fizetési szolgáltató"
-  },
-  {
     "_id": "i18n-message-hu-event-editor-payment-demo",
     "key": "event.editor.payment.demo",
     "lang": "hu",
@@ -32620,6 +32644,36 @@
     "key": "event.editor.payment.recorded",
     "lang": "hu",
     "value": "Rögzített fizetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-cash-only",
+    "key": "event.editor.payment.cash.only",
+    "lang": "hu",
+    "value": "Csak készpénz"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-cash-status",
+    "key": "event.editor.payment.cash.status",
+    "lang": "hu",
+    "value": "Készpénzes fizetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-cash-confirm",
+    "key": "event.editor.payment.cash.confirm",
+    "lang": "hu",
+    "value": "Készpénzes fizetés megerősítése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-cash-confirming",
+    "key": "event.editor.payment.cash.confirming",
+    "lang": "hu",
+    "value": "Megerősítés..."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-cash-confirm-warning",
+    "key": "event.editor.payment.cash.confirm.warning",
+    "lang": "hu",
+    "value": "A foglalást készpénzes fizetéssel erősíted meg. Kártyaterhelés nem történik."
   },
   {
     "_id": "i18n-message-hu-event-editor-payment-ready-redirect",
@@ -34750,6 +34804,12 @@
     "key": "asset.borrow.note.payment.approved",
     "lang": "hu",
     "value": "A fizetés jóváhagyva. Tulajdonosi megerősítésre vár."
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-note-cash-payment",
+    "key": "asset.borrow.note.cash.payment",
+    "lang": "hu",
+    "value": "Készpénzes fizetés. Tulajdonosi megerősítésre vár."
   },
   {
     "_id": "i18n-message-hu-asset-borrow-note-awaiting-owner",
@@ -37206,10 +37266,10 @@
     "value": "Elérhető szolgáltató"
   },
   {
-    "_id": "i18n-message-hu-operator-configuration-payment-provider-none",
-    "key": "operator.configuration.payment.provider.none",
+    "_id": "i18n-message-hu-operator-configuration-payment-provider-cash-only",
+    "key": "operator.configuration.payment.provider.cash.only",
     "lang": "hu",
-    "value": "Nincs fizetési szolgáltató"
+    "value": "Csak készpénz"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-payment-public-url",

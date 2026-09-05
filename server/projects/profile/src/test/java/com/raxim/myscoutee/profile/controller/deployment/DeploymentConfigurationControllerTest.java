@@ -5,6 +5,7 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,13 +19,45 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
+import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient.GatewayConfiguration;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
 
 class DeploymentConfigurationControllerTest {
     @Test
+    void publicRouteUsesSimulatorProviderWhenSimulatorIsEnabled() {
+        OperatorConfigurationService service =
+                mock(OperatorConfigurationService.class);
+        PaymentSimulatorRegistrationClient simulatorClient =
+                mock(PaymentSimulatorRegistrationClient.class);
+        when(service.publicConfiguration()).thenReturn(
+                new DeploymentPublicConfigurationDto(
+                        "Community",
+                        2,
+                        "Welcome home",
+                        null,
+                        DeploymentThemePreset.FOREST,
+                        7L,
+                        "stripe",
+                        List.of(),
+                        new DeploymentPrivacyContactDto(false, "", "")));
+        when(simulatorClient.isEnabled()).thenReturn(true);
+        when(simulatorClient.configuration()).thenReturn(
+                new GatewayConfiguration("none", false));
+
+        DeploymentPublicConfigurationDto result =
+                new DeploymentConfigurationController(service, simulatorClient)
+                        .configuration();
+
+        assertThat(result.paymentProviderId()).isNull();
+    }
+
+    @Test
     void publicRouteReturnsBrandingSocialAndPrivacyStateWithoutOperatorSecrets()
             throws Exception {
         OperatorConfigurationService service = mock(OperatorConfigurationService.class);
+        PaymentSimulatorRegistrationClient simulatorClient =
+                mock(PaymentSimulatorRegistrationClient.class);
         when(service.publicConfiguration()).thenReturn(
                 new DeploymentPublicConfigurationDto(
                         "Community",
@@ -45,7 +78,9 @@ class DeploymentConfigurationControllerTest {
                                 "Community Cooperative",
                                 "privacy@community.example")));
         var mockMvc = MockMvcBuilders
-                .standaloneSetup(new DeploymentConfigurationController(service))
+                .standaloneSetup(new DeploymentConfigurationController(
+                        service,
+                        simulatorClient))
                 .build();
 
         mockMvc.perform(get("/deployment/configuration"))
@@ -88,6 +123,8 @@ class DeploymentConfigurationControllerTest {
             throws Exception {
         OperatorConfigurationService service =
                 mock(OperatorConfigurationService.class);
+        PaymentSimulatorRegistrationClient simulatorClient =
+                mock(PaymentSimulatorRegistrationClient.class);
         when(service.publicFirebaseConfiguration()).thenReturn(
                 new FirebasePublicConfigurationDto(
                         4L,
@@ -101,7 +138,9 @@ class DeploymentConfigurationControllerTest {
                         "public-vapid-key"));
         var mockMvc = MockMvcBuilders
                 .standaloneSetup(
-                        new DeploymentConfigurationController(service))
+                        new DeploymentConfigurationController(
+                                service,
+                                simulatorClient))
                 .build();
 
         mockMvc.perform(get(
