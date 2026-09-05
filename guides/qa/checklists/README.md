@@ -27,9 +27,6 @@ must never overwrite the user-facing checklist.
 - [`content`](content/) — governed Content and Article lifecycle guides.
 - [`identity-access`](identity-access/) — identity, authorization and account
   lifecycle guides.
-- [`payment`](payment/) — the member side-menu Payment history, saved-card and
-  expired-card cleanup guide. Provider checkout variants are owned by their
-  Event/Asset journeys.
 
 ## Available user guides
 
@@ -53,10 +50,6 @@ must never overwrite the user-facing checklist.
   authorization, moderation, support, block/unblock, and branding journey.
 - [`JOB-PURGE.md`](identity-access/JOB-PURGE.md) — scheduled deleted-account finalization
   journey.
-- [`PAYMENT-METHODS-HISTORY-001.md`](payment/PAYMENT-METHODS-HISTORY-001.md) —
+- [`PAYMENT-METHODS-HISTORY-001.md`](event/PAYMENT-METHODS-HISTORY-001.md) —
   one side-menu journey covering Payment History filters/summaries, Stripe and
   Barion card registration, and expired-card notification/cleanup.
-
-The older provider-lifecycle files in `payment/` are retained only as source
-oracle archives. They are not current matrix rows or separately scheduled
-pair-QA tests.

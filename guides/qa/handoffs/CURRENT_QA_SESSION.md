@@ -22,7 +22,7 @@ file first, then open only the linked active checkpoint section.
 - Stable user-facing click guide for the prepared, queued Content lifecycle:
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared side-menu Payment journey:
-  [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/payment/PAYMENT-METHODS-HISTORY-001.md).
+  [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -73,7 +73,7 @@ resume pointer and reusable working method.
 ```yaml
 checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
-checklist: ../checklists/payment/PAYMENT-METHODS-HISTORY-001.md
+checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
 substage: implementation and versioned fixture preparation complete; no manual step has run
 next_replay_boundary: stage the payment-ui fixture exactly once when pair-QA begins; require `phase=baseline-ready` and simulator provider `none`
 fixture_phase: read-only status at `2026-09-05 12:34 CEST` is `phase=not-staged`, provider `none` (Cash only), connected=true, requires3ds=false

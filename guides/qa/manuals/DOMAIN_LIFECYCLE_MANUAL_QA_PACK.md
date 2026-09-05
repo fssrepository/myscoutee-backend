@@ -7040,11 +7040,9 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 These former External Payment cases are not current matrix rows or separately
 scheduled pair-QA tests. Their product-visible requirements moved to
 `EVENT-CHECKOUT-DUMMY-001` (Stripe), `ASSET-CHECKOUT-DUMMY-001` (Barion/3DS)
-and `PAYMENT-METHODS-HISTORY-001` (side-menu history/cards). The old guides are
-retained only as implementation-oracle history:
-
-- [`PAYMENT-STRIPE-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-STRIPE-LIFECYCLE-001.md)
-- [`PAYMENT-BARION-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-BARION-LIFECYCLE-001.md)
+and `PAYMENT-METHODS-HISTORY-001` (side-menu history/cards). The obsolete
+standalone checkpoint guides were removed; the table below retains their
+implementation-oracle history.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7058,12 +7056,9 @@ retained only as implementation-oracle history:
 
 ### Retired source archive — payment settlement, compensation and isolation
 
-These old guides likewise have no current executable row. They remain source
-notes only; they must not be run as a second payment suite:
-
-- [`PAYMENT-SETTLEMENT-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SETTLEMENT-LIFECYCLE-001.md)
-- [`PAYMENT-PROVIDER-ROUTING-001.md`](../checklists/payment/PAYMENT-PROVIDER-ROUTING-001.md)
-- [`PAYMENT-SIMULATOR-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SIMULATOR-LIFECYCLE-001.md)
+These obsolete standalone checkpoint guides likewise have no current
+executable row and were removed. The table remains source-oracle history and
+must not be run as a second payment suite.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7081,7 +7076,7 @@ The current free/no-payment control is `ASSET-BORROW-LIFECYCLE-001`; the
 Cash-only paid control is part of `EVENT-CHECKOUT-DUMMY-001`. Provider
 registration, expired-card notification/cleanup and Payment History are one
 Core checkpoint:
-[`PAYMENT-METHODS-HISTORY-001.md`](../checklists/payment/PAYMENT-METHODS-HISTORY-001.md).
+[`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
 
