@@ -76,6 +76,8 @@ public class WebSecurityConfig {
                             "/health",
                             "/error",
                             "/auth/eligibility",
+                            "/auth/demo-users",
+                            "/api/auth/demo-users",
                             OperatorBootstrapRequestSupport.LOGIN_PATH,
                             OperatorBootstrapRequestSupport.API_LOGIN_PATH,
                             "/auth/facebook/data-deletion",
