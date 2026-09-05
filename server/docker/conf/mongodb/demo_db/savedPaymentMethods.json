@@ -30,5 +30,22 @@
     "status": "active",
     "createdAtIso": "2026-07-20T10:00:00.000Z",
     "updatedAtIso": "2026-07-20T10:00:00.000Z"
+  },
+  {
+    "_id": "pm_demo_alex_expired_0008",
+    "userId": "af0436815ab38f4864dd1e24",
+    "provider": "stripe",
+    "providerPaymentMethodRef": "pm_sim_seed_alex_expired_0008",
+    "brand": "Visa",
+    "last4": "0008",
+    "expiryMonth": 8,
+    "expiryYear": 2026,
+    "expiryKey": 202608,
+    "cardholderName": "ALEX TURNER",
+    "artworkKey": "ruby",
+    "status": "expired",
+    "expiredNotifiedAtIso": "2026-09-01T02:15:00.000Z",
+    "createdAtIso": "2026-06-01T10:00:00.000Z",
+    "updatedAtIso": "2026-09-01T02:15:00.000Z"
   }
 ]

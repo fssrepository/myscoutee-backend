@@ -2,6 +2,7 @@
   {
     "_id": "payment-demo-alex-event",
     "userId": "af0436815ab38f4864dd1e24",
+    "recipientUserId": "bf057de7c586eede7e84bdc7",
     "sourceId": "21746c9aacc985817e31cf9f",
     "paymentMethodId": "pm_demo_alex_visa_4242",
     "provider": "stripe",
@@ -71,6 +72,7 @@
   {
     "_id": "payment-demo-alex-asset",
     "userId": "af0436815ab38f4864dd1e24",
+    "recipientUserId": "ed4924c22a5240a54e48c0b5",
     "sourceId": "15d3049967690e9c3abcf0df",
     "paymentMethodId": "pm_demo_alex_visa_1881",
     "provider": "stripe",

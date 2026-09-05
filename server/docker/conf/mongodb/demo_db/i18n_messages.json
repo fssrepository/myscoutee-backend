@@ -12402,6 +12402,18 @@
     "value": "Expired"
   },
   {
+    "_id": "i18n-message-en-notification-payment-card-expired-title",
+    "key": "notification.payment.card.expired.title",
+    "lang": "en",
+    "value": "Payment card expired"
+  },
+  {
+    "_id": "i18n-message-en-notification-payment-card-expired-message",
+    "key": "notification.payment.card.expired.message",
+    "lang": "en",
+    "value": "Your saved card ending in {last4} has expired."
+  },
+  {
     "_id": "i18n-message-en-payment-card-select",
     "key": "payment.card.select",
     "lang": "en",
@@ -31720,6 +31732,18 @@
     "key": "payment.card.expired",
     "lang": "hu",
     "value": "Lejárt"
+  },
+  {
+    "_id": "i18n-message-hu-notification-payment-card-expired-title",
+    "key": "notification.payment.card.expired.title",
+    "lang": "hu",
+    "value": "Lejárt a fizetési kártya"
+  },
+  {
+    "_id": "i18n-message-hu-notification-payment-card-expired-message",
+    "key": "notification.payment.card.expired.message",
+    "lang": "hu",
+    "value": "A(z) {last4} végződésű mentett kártyád lejárt."
   },
   {
     "_id": "i18n-message-hu-payment-card-select",
