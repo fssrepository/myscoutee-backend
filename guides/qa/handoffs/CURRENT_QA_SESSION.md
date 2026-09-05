@@ -79,7 +79,7 @@ next_replay_boundary: stage the payment-ui fixture exactly once when pair-QA beg
 fixture_phase: read-only status at `2026-09-05 12:34 CEST` is `phase=not-staged`, provider `none` (Cash only), connected=true, requires3ds=false
 browser_phase: no Payment browser was opened; the user exclusively controls browser actions
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/96, External/optional 0/18; PAYMENT-METHODS-HISTORY-001 is PREPARED / NOT STAGED
+ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PREPARED / NOT STAGED and owned by Event
 queued_next: PAYMENT-METHODS-HISTORY-001
 required_resume: run one read-only payment-ui status; if it remains not-staged, stage once, prove baseline-ready/Cash only, then open only the configured Ava/Alex sessions
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
@@ -336,11 +336,11 @@ right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
 and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 11 Core capability/operations domains plus the Operator and Deployment
+coarse: 10 Core capability/operations domains plus the Operator and Deployment
 deferred boundaries. Their numeric priorities preserve the
 authoritative execution order.
 A generated priority overview places the first five Core domains in its first
-column, the remaining six Core domains in its second column, and reserves the
+column, the remaining five Core domains in its second column, and reserves the
 third `EXT / optional` column for Operator and Deployment. The third
 column must therefore always sum to the separate
 External/optional count rather than being mixed into the Core execution queue.
@@ -1318,4 +1318,5 @@ Chat-push microcases are assertions inside external
 `DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
 by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
 the Core Identity & access gate. Only the Operator and Deployment sequences
-stay deferred under Core-first execution; Payment is Core.
+stay deferred under Core-first execution. Member payment history and saved
+cards are Core behavior owned by Event; Payment is not a separate QA domain.

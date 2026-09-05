@@ -19,9 +19,10 @@ matrix rows.
   observation.
 - **Casey** owns the Events and performs only the final Event Members check.
 - **Ava** selects the demo provider branch before each declared control.
-- Codex stages all Events, checkout controls and sessions, opens the isolated
-  Casey/Nova windows and runs the independent machine oracles. Do not create a
-  replacement Event, user, payment or browser profile.
+- Codex stages all Events, checkout controls and sessions and runs the
+  independent machine oracles. The user exclusively opens and controls the
+  configured Casey/Nova/Ava browser sessions. Do not create a replacement
+  Event, user, payment or browser profile.
 - Ava first selects connected **Stripe** with 3DS Off. Saving the simulator
   configuration generates the test connection automatically. Before the
   declared Cash-only control, Ava selects **Cash only**. No real provider
@@ -42,6 +43,7 @@ Begin only after Codex confirms this exact baseline:
 - Nova has no target membership, Activity Events row, basket, payment, chat or
   Event/Ticket counter contribution;
 - the Free, Approval and Waitlist controls are present in their declared
+  baseline states;
 - a separate paid Cash-only Event control is present for the final negative
   branch;
 - isolated Casey, Nova and Ava windows are open and identity-verified.

@@ -19,9 +19,10 @@ separate matrix rows.
 - **Casey** owns the paid Asset and performs only the owner request decision.
 - **Ava** selects connected Barion and the requested 3DS branch in the demo
   Payment simulator.
-- Codex stages the exact Event/Sub-event resource scope, Assets, actors,
-  checkout controls and browser sessions, then runs the independent machine
-  oracles. Do not create replacement data or browser profiles.
+- Codex stages the exact Event/Sub-event resource scope, Assets, actors and
+  checkout controls, then runs the independent machine oracles. The user
+  exclusively opens and controls the configured Casey/Nova/Ava browser
+  sessions. Do not create replacement data or browser profiles.
 - This Core Asset checkpoint uses connected **Barion**. Its provider-owned 3DS
   presentation is driven by the already-running payment simulator; no real
   provider credential or card data is used.

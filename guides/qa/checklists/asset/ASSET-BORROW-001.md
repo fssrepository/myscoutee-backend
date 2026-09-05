@@ -23,9 +23,9 @@ by `EVENT-CHECKOUT-DUMMY-001`; Barion is owned by
 - **Lina** is the sole Group B control. Her already-accepted quantity `2`
   reservation on the Capacity Asset must remain unchanged; no fourth browser
   is required.
-- Use only the isolated Casey/Nova/Riley browser sessions opened for this
-  checkpoint. Do not reuse old ASSET-MEMBER windows as evidence and do not
-  create replacement data or profiles.
+- The user exclusively opens and controls the configured isolated
+  Casey/Nova/Riley browser sessions. Do not reuse old ASSET-MEMBER windows as
+  evidence and do not create replacement data or profiles.
 - This checkpoint exercises free Borrow only. It must not create a checkout
   session, payment, payment summary or inventory-applied reservation. The paid
   flow belongs to `ASSET-CHECKOUT-DUMMY-001`.

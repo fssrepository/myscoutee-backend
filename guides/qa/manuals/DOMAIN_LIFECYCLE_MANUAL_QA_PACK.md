@@ -7008,7 +7008,7 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 
 The matrix contains 114 executable journeys after provider behavior was moved
 into its owning Event/Asset rows and the five obsolete External Payment rows
-were replaced by one Core side-menu Payment checkpoint. All 81 passed rows remain individually immutable: only their
+were replaced by one Event-owned Core side-menu Payment checkpoint. All 86 passed rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
