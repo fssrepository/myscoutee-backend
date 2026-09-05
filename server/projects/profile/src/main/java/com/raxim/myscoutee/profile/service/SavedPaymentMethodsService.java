@@ -30,6 +30,8 @@ import com.raxim.myscoutee.profile.repository.SavedPaymentMethodsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient.GatewayRegistration;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class SavedPaymentMethodsService {
@@ -81,13 +83,18 @@ public class SavedPaymentMethodsService {
                 all.subList(from, to).stream().map(this::toDto).toList(),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                all.size() < MAX_ACTIVE_PAYMENT_METHODS && simulatorClient.isEnabled() && pending == null,
+                all.size() < MAX_ACTIVE_PAYMENT_METHODS && isDemoSimulatorMode() && pending == null,
                 pending == null ? null : toRegistrationDto(pending, null));
     }
 
     public synchronized PaymentMethodRegistrationDto beginRegistration(
             String userId,
             PaymentMethodRegistrationRequestDto request) {
+        if (!isDemoSimulatorMode()) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Demo payment-card registration is unavailable outside a demo session.");
+        }
         String ownerId = requiredId(userId, "Current user");
         reconcilePendingRegistrations(ownerId);
         if (!registrationsRepository.findByUserIdAndStatusOrderByCreatedAtIsoDesc(ownerId, "pending").isEmpty()) {
@@ -152,10 +159,16 @@ public class SavedPaymentMethodsService {
     }
 
     public String resolveActiveProvider(String requestedProvider) {
-        if (!simulatorClient.isEnabled()) {
+        if (!isDemoSimulatorMode()) {
             return normalizeProvider(paymentProviderResolver.resolveActiveProvider(requestedProvider));
         }
-        String configured = normalizeProvider(simulatorClient.configuration().provider());
+        PaymentSimulatorRegistrationClient.GatewayConfiguration configuration = simulatorClient.configuration();
+        String configured = normalizeProvider(configuration.provider());
+        if (!configuration.connected()) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "The selected demo payment provider is not connected.");
+        }
         String requested = normalizeId(requestedProvider);
         if (StringUtils.hasText(requested) && !configured.equalsIgnoreCase(requested)) {
             throw new ResponseStatusException(
@@ -208,7 +221,7 @@ public class SavedPaymentMethodsService {
     }
 
     private void reconcilePendingRegistrations(String userId) {
-        if (!simulatorClient.isEnabled()) {
+        if (!isDemoSimulatorMode()) {
             return;
         }
         for (PaymentMethodRegistration registration : registrationsRepository
@@ -283,7 +296,7 @@ public class SavedPaymentMethodsService {
         if (!ACTIVE.equals(method.getStatus())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
         }
-        if (simulatorClient.isEnabled()) {
+        if (isDemoSimulatorMode()) {
             simulatorClient.revoke(method.getProvider(), method.getProviderPaymentMethodRef());
         }
         if (paymentMethodsRepository.markDeleted(method.getId(), ownerId, Instant.now().toString()) != 1) {
@@ -354,6 +367,11 @@ public class SavedPaymentMethodsService {
         return registrationTtl == null || registrationTtl.isZero() || registrationTtl.isNegative()
                 ? DEFAULT_REGISTRATION_TTL
                 : registrationTtl;
+    }
+
+    private boolean isDemoSimulatorMode() {
+        return MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO
+                && simulatorClient.isEnabled();
     }
 
     private boolean isExpired(SavedPaymentMethod method) {

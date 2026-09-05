@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.mockito.InOrder;
 
 import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
@@ -18,11 +19,19 @@ import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.repository.SavedPaymentMethodsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 class SavedPaymentMethodsServiceTest {
 
+    @AfterEach
+    void clearMode() {
+        MongoSessionModeContext.clear();
+    }
+
     @Test
     void deleteRevokesProviderTokenBeforeKeepingTheCardAsInactiveAuditData() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
         SavedPaymentMethod method = new SavedPaymentMethod();
@@ -56,6 +65,7 @@ class SavedPaymentMethodsServiceTest {
 
     @Test
     void providerFailureLeavesTheLocalSavedCardActive() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
         SavedPaymentMethod method = new SavedPaymentMethod();

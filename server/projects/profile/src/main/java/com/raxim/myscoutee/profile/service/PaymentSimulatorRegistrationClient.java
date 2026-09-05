@@ -114,6 +114,23 @@ public class PaymentSimulatorRegistrationClient {
         return configuration;
     }
 
+    public String credentialFor(String provider) {
+        String requestedProvider = safeText(provider).toLowerCase(java.util.Locale.ROOT);
+        GatewayConfiguration configuration = configuration();
+        String configuredProvider = safeText(configuration.provider()).toLowerCase(java.util.Locale.ROOT);
+        if (!requestedProvider.equals(configuredProvider)) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "The demo payment provider is not active in the payment simulator.");
+        }
+        if (!configuration.connected() || !StringUtils.hasText(configuration.credential())) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Generate the demo provider connection in the payment simulator before starting payment.");
+        }
+        return configuration.credential().trim();
+    }
+
     public GatewayConfigurationAccess createConfigurationAccess() {
         requireConfigured();
         ResponseEntity<GatewayConfigurationAccess> response = restTemplate.exchange(
@@ -214,7 +231,11 @@ public class PaymentSimulatorRegistrationClient {
             String cardholderName,
             String expiresAt) {}
 
-    public record GatewayConfiguration(String provider, boolean requires3ds) {}
+    public record GatewayConfiguration(
+            String provider,
+            boolean requires3ds,
+            boolean connected,
+            String credential) {}
 
     public record GatewayConfigurationAccess(String url, String expiresAt) {}
 }

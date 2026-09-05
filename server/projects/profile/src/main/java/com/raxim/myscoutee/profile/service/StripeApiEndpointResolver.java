@@ -6,11 +6,13 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class StripeApiEndpointResolver {
@@ -34,14 +36,17 @@ public class StripeApiEndpointResolver {
     }
 
     public String resolve(String apiKey) {
-        String baseUrl = trim(configuredBaseUrl);
-        if (!StringUtils.hasText(baseUrl)) {
+        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
             return null;
         }
-        if (!testGatewayEnabled
-                || !environment.acceptsProfiles(Profiles.of("dev"))) {
+        String baseUrl = trim(configuredBaseUrl);
+        if (!StringUtils.hasText(baseUrl)) {
             throw unavailable(
-                    "A custom Stripe API endpoint is restricted to the explicit development simulator profile.");
+                    "The demo Stripe payment simulator endpoint is not configured.");
+        }
+        if (!testGatewayEnabled) {
+            throw unavailable(
+                    "The demo Stripe payment simulator is disabled.");
         }
         if (!StringUtils.hasText(apiKey)
                 || !apiKey.trim().startsWith("sk_test_")
@@ -61,12 +66,12 @@ public class StripeApiEndpointResolver {
                     || uri.getQuery() != null
                     || uri.getFragment() != null) {
                 throw unavailable(
-                        "The development Stripe simulator URL is invalid or uses a non-local host.");
+                        "The demo Stripe simulator URL is invalid or uses a non-local host.");
             }
             return baseUrl.replaceAll("/+$", "");
         } catch (URISyntaxException exception) {
             throw unavailable(
-                    "The development Stripe simulator URL is invalid.");
+                    "The demo Stripe simulator URL is invalid.");
         }
     }
 

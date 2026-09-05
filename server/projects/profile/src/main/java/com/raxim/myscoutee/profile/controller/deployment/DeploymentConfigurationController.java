@@ -12,6 +12,8 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @RestController
 @RequestMapping("/deployment/configuration")
@@ -30,11 +32,17 @@ public class DeploymentConfigurationController {
     public DeploymentPublicConfigurationDto configuration() {
         DeploymentPublicConfigurationDto configuration =
                 service.publicConfiguration();
-        if (!simulatorClient.isEnabled()) {
+        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
             return configuration;
         }
-        String provider = simulatorClient.configuration().provider();
+        PaymentSimulatorRegistrationClient.GatewayConfiguration simulatorConfiguration =
+                simulatorClient.isEnabled() ? simulatorClient.configuration() : null;
+        String provider = simulatorConfiguration == null
+                ? "none"
+                : simulatorConfiguration.provider();
         String paymentProviderId = "none".equalsIgnoreCase(provider)
+                || simulatorConfiguration == null
+                || !simulatorConfiguration.connected()
                 ? null
                 : provider.trim().toLowerCase(Locale.ROOT);
         return new DeploymentPublicConfigurationDto(

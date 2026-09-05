@@ -52,6 +52,10 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
             }
             return MongoSessionMode.REAL;
         }
+        if (DemoSessionRequestSupport.isDemoSessionRequest(request)
+                && isAdminRequest(requestUri)) {
+            return MongoSessionMode.DEMO;
+        }
         if (DemoSessionRequestSupport.isAllowedDemoSessionRequest(request)) {
             return MongoSessionMode.DEMO;
         }
@@ -61,5 +65,11 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
         return DemoSessionRequestSupport.isDemoSessionRequest(request)
                 ? MongoSessionMode.DEMO
                 : MongoSessionMode.REAL;
+    }
+
+    private boolean isAdminRequest(String requestUri) {
+        return requestUri != null
+                && (requestUri.startsWith("/admin")
+                        || requestUri.startsWith("/api/admin"));
     }
 }

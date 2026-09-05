@@ -64,10 +64,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
             continueIfSessionActive(request, response, filterChain);
             return;
         }
-        if (DemoSessionRequestSupport.isOperatorRequest(request)
-                && (DemoSessionRequestSupport.isDemoSessionRequest(request)
-                        || !configProperties.isFirebaseEnabled())) {
-            authenticateDemoOperator(request);
+        if (DemoSessionRequestSupport.isDemoSessionRequest(request)) {
+            if (DemoSessionRequestSupport.isOperatorRequest(request)) {
+                authenticateDemoOperator(request);
+            } else {
+                authenticateDemoUser(request);
+            }
             continueIfSessionActive(request, response, filterChain);
             return;
         }
@@ -131,6 +133,14 @@ public class FirebaseFilter extends OncePerRequestFilter {
             return;
         }
         setAuthentication(userDetails, null);
+    }
+
+    private void authenticateDemoUser(HttpServletRequest request) {
+        String requestedUserId = request == null ? null : request.getHeader(DEMO_USER_ID);
+        if (!StringUtils.hasText(requestedUserId)) {
+            return;
+        }
+        setAuthentication(firebaseService.loadUserById(requestedUserId.trim()), null);
     }
 
     private String normalizeRequestUserId(HttpServletRequest request) {

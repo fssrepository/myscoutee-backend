@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
@@ -22,10 +23,18 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.F
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient.GatewayConfiguration;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 class DeploymentConfigurationControllerTest {
+    @AfterEach
+    void clearMode() {
+        MongoSessionModeContext.clear();
+    }
+
     @Test
     void publicRouteUsesSimulatorProviderWhenSimulatorIsEnabled() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
         OperatorConfigurationService service =
                 mock(OperatorConfigurationService.class);
         PaymentSimulatorRegistrationClient simulatorClient =
@@ -43,7 +52,7 @@ class DeploymentConfigurationControllerTest {
                         new DeploymentPrivacyContactDto(false, "", "")));
         when(simulatorClient.isEnabled()).thenReturn(true);
         when(simulatorClient.configuration()).thenReturn(
-                new GatewayConfiguration("none", false));
+                new GatewayConfiguration("none", false, true, ""));
 
         DeploymentPublicConfigurationDto result =
                 new DeploymentConfigurationController(service, simulatorClient)

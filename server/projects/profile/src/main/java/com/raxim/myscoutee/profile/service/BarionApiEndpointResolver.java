@@ -6,11 +6,13 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class BarionApiEndpointResolver {
@@ -35,13 +37,17 @@ public class BarionApiEndpointResolver {
     }
 
     public String resolve() {
-        String baseUrl = trim(configuredBaseUrl);
-        if (!StringUtils.hasText(baseUrl)) {
+        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
             return PRODUCTION_API_BASE_URL;
         }
-        if (!testGatewayEnabled || !environment.acceptsProfiles(Profiles.of("dev"))) {
+        String baseUrl = trim(configuredBaseUrl);
+        if (!StringUtils.hasText(baseUrl)) {
             throw unavailable(
-                    "A custom Barion API endpoint is restricted to the explicit development simulator profile.");
+                    "The demo Barion payment simulator endpoint is not configured.");
+        }
+        if (!testGatewayEnabled) {
+            throw unavailable(
+                    "The demo Barion payment simulator is disabled.");
         }
         try {
             URI uri = new URI(baseUrl);
@@ -54,11 +60,11 @@ public class BarionApiEndpointResolver {
                     || uri.getQuery() != null
                     || uri.getFragment() != null) {
                 throw unavailable(
-                        "The development Barion simulator URL is invalid or uses a non-local host.");
+                        "The demo Barion simulator URL is invalid or uses a non-local host.");
             }
             return baseUrl.replaceAll("/+$", "");
         } catch (URISyntaxException exception) {
-            throw unavailable("The development Barion simulator URL is invalid.");
+            throw unavailable("The demo Barion simulator URL is invalid.");
         }
     }
 
