@@ -11,6 +11,15 @@ Turner with an already-confirmed HUF 4,900 basket and no payment session or
 assigned payment method. Opening the record therefore exercises only the saved
 card assignment and payment boundary.
 
+Manual smoke sequence:
+
+1. Enter the demo workspace as Alex Turner.
+2. Open Event Explore and choose `SMOKE · Event payment ready`.
+3. Continue the existing booking. The checkout opens directly on payment.
+4. Select a saved card, then submit the payment.
+5. Run `status` to inspect the recorded `paymentMethodId`, payment result and
+   membership assignment.
+
 ```bash
 bash tools/smoke/event-payment-ready.sh prepare
 bash tools/smoke/event-payment-ready.sh status
