@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 15:26 CEST
+Updated: 2026-09-05 15:36 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -85,8 +85,8 @@ required_resume: run one read-only payment-ui status; if it remains baseline-rea
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
-package_preflight: fresh unsigned local `myscoutee_1.0.0_amd64.deb` built with all six managed images, including payment simulator and registry-demo; package-content, deployment-qualification, registry-packaging and client-tools regression tests passed. VMware deployment was not performed because the reachable guest rejected the existing dedicated SSH key for every documented/plausible account; no guest state was changed
-last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; focused backend tests, production/development frontend builds, i18n synchronization and local release-package checks passed; no Payment manual verdict is recorded
+package_preflight: fresh unsigned local `myscoutee_1.0.0_amd64.deb` built with all six managed images, including payment simulator and registry-demo; package-content, deployment-qualification, registry-packaging and client-tools regression tests passed. The dedicated VMware SSH connection was restored, the package was installed as a same-version `1.0.0` refresh, and package-owned deployment qualification passed with MongoDB, Redis, MinIO, registry-demo, payment-simulator, API and Nginx healthy. The uploaded temporary DEB and local temporary credential configuration were removed after qualification
+last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; focused backend tests, production/development frontend builds, i18n synchronization, local release-package checks and VMware installation qualification passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
