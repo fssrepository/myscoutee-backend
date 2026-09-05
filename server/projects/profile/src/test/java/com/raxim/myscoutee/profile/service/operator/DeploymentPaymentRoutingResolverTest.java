@@ -56,6 +56,28 @@ class DeploymentPaymentRoutingResolverTest {
                 .hasMessageContaining("not configured for barion");
     }
 
+    @Test
+    void usesIsolatedRoutingOnlyWhenPaymentSimulatorIsEnabled() {
+        DeploymentConfigurationRepository repository =
+                mock(DeploymentConfigurationRepository.class);
+        DeploymentPaymentRoutingResolver resolver =
+                new DeploymentPaymentRoutingResolver(
+                        repository,
+                        true,
+                        "http://localhost/",
+                        "merchant@myscoutee.local");
+
+        var stripe = resolver.require("stripe");
+        var barion = resolver.require("barion");
+
+        assertThat(stripe.successUrl("stripe"))
+                .isEqualTo("http://localhost/game?payment=success&session_id={CHECKOUT_SESSION_ID}");
+        assertThat(barion.callbackUrl("barion"))
+                .isEqualTo("http://localhost/api/payment/webhooks/barion");
+        assertThat(barion.merchantAccount())
+                .isEqualTo("merchant@myscoutee.local");
+    }
+
     private DeploymentConfiguration configuration(
             String provider,
             String publicBaseUrl,

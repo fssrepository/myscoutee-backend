@@ -9,6 +9,7 @@ usage() {
 Usage:
   bash tools/smoke/event-payment-ready.sh prepare
   bash tools/smoke/event-payment-ready.sh status
+  bash tools/smoke/event-payment-ready.sh refresh-display
   bash tools/smoke/event-payment-ready.sh replay
   bash tools/smoke/event-payment-ready.sh reset
 
@@ -20,6 +21,7 @@ Environment overrides:
   EVENT_PAYMENT_SMOKE_DB=demo_db
   EVENT_PAYMENT_SMOKE_USER_ID=af0436815ab38f4864dd1e24
   EVENT_PAYMENT_SMOKE_HOST_ID=0216b1ceb256d6f2c89073b8
+  EVENT_PAYMENT_SMOKE_TIME_ZONE=Europe/Bratislava
   EVENT_PAYMENT_SMOKE_MONGO_CONTAINER=mongodb
   EVENT_PAYMENT_SMOKE_MONGO_USERNAME=guest
   EVENT_PAYMENT_SMOKE_MONGO_PASSWORD=guest
@@ -33,7 +35,7 @@ fail() {
 
 command_name="${1:-}"
 case "${command_name}" in
-  prepare|status|replay|reset) ;;
+  prepare|status|refresh-display|replay|reset) ;;
   -h|--help|help)
     usage
     exit 0
@@ -50,6 +52,7 @@ mongo_username="${EVENT_PAYMENT_SMOKE_MONGO_USERNAME:-${MONGO_APP_USERNAME:-gues
 mongo_password="${EVENT_PAYMENT_SMOKE_MONGO_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 target_user_id="${EVENT_PAYMENT_SMOKE_USER_ID:-af0436815ab38f4864dd1e24}"
 host_user_id="${EVENT_PAYMENT_SMOKE_HOST_ID:-0216b1ceb256d6f2c89073b8}"
+display_time_zone="${EVENT_PAYMENT_SMOKE_TIME_ZONE:-Europe/Bratislava}"
 
 case "${target_db}" in
   demo_db|e2e_db) ;;
@@ -68,6 +71,7 @@ docker exec -i \
   -e "SMOKE_DB=${target_db}" \
   -e "SMOKE_USER_ID=${target_user_id}" \
   -e "SMOKE_HOST_ID=${host_user_id}" \
+  -e "SMOKE_TIME_ZONE=${display_time_zone}" \
   "${mongo_container}" \
   mongosh \
     --quiet \

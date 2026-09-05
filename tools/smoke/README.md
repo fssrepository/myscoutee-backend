@@ -23,6 +23,7 @@ Manual smoke sequence:
 ```bash
 bash tools/smoke/event-payment-ready.sh prepare
 bash tools/smoke/event-payment-ready.sh status
+bash tools/smoke/event-payment-ready.sh refresh-display
 bash tools/smoke/event-payment-ready.sh replay
 bash tools/smoke/event-payment-ready.sh reset
 ```
@@ -31,6 +32,8 @@ bash tools/smoke/event-payment-ready.sh reset
   and spending fields, then inserts the payment-ready event and basket.
 - `status` is read-only and shows the selected `paymentMethodId`, payment state,
   basket state and resulting membership after the manual click sequence.
+- `refresh-display` updates only the fixture event and basket display timeframe;
+  it preserves the current payment, basket state and failure evidence.
 - `replay` restores the snapshot, removes only event-scoped side effects, and
   prepares a fresh six-hour basket.
 - `reset` restores the snapshot and removes the smoke fixture.

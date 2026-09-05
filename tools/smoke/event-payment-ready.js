@@ -16,6 +16,7 @@
   const requestedDb = text(process.env.SMOKE_DB);
   const targetUserId = text(process.env.SMOKE_USER_ID);
   const hostUserId = text(process.env.SMOKE_HOST_ID);
+  const displayTimeZone = text(process.env.SMOKE_TIME_ZONE) || "Europe/Bratislava";
 
   function text(value) {
     return value == null ? "" : String(value).trim();
@@ -31,6 +32,26 @@
 
   function printObject(value) {
     print(EJSON.stringify(value, null, 2, { relaxed: true }));
+  }
+
+  function displayTimeframe(start, end) {
+    const dateFormatter = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: displayTimeZone
+    });
+    const timeFormatter = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: displayTimeZone
+    });
+    const startDate = dateFormatter.format(start);
+    const endDate = dateFormatter.format(end);
+    const startTime = timeFormatter.format(start);
+    const endTime = timeFormatter.format(end);
+    return startDate === endDate
+      ? `${startDate} · ${startTime} - ${endTime}`
+      : `${startDate} · ${startTime} - ${endDate} · ${endTime}`;
   }
 
   function assertDeploymentSafety() {
@@ -227,7 +248,7 @@
     const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
     const expires = new Date(now.getTime() + 6 * 60 * 60 * 1000);
     const nowIso = now.toISOString();
-    const timeframe = `${start.toISOString()} – ${end.toISOString()}`;
+    const timeframe = displayTimeframe(start, end);
     const hostName = text(hostUser.name) || hostUserId;
     const hostInitials = text(hostUser.initials)
       || hostName.split(/\s+/).slice(0, 2).map(part => part.slice(0, 1)).join("").toUpperCase();
@@ -469,6 +490,34 @@
     });
   }
 
+  function refreshDisplay() {
+    const event = collection("events").findOne({ sourceId: EVENT_ID, ownerUserId: hostUserId });
+    if (!event) {
+      fail("fixture event does not exist; run 'prepare' first.");
+    }
+    const start = new Date(text(event.startAtIso));
+    const end = new Date(text(event.endAtIso));
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      fail("fixture event start/end timestamps are invalid.");
+    }
+    const timeframe = displayTimeframe(start, end);
+    collection("events").updateOne(
+      { sourceId: EVENT_ID, ownerUserId: hostUserId },
+      { $set: { timeframe, updatedDate: new Date().toISOString(), updatedUser: PREFIX } }
+    );
+    const basketUpdate = collection("eventCheckoutBasketItems").updateMany(
+      { sourceId: EVENT_ID, userId: targetUserId },
+      { $set: { detail: timeframe } }
+    );
+    printObject({
+      smoke: PREFIX,
+      phase: "display-refreshed",
+      database: db.getName(),
+      timeframe,
+      basketItemsUpdated: basketUpdate.modifiedCount
+    });
+  }
+
   function reset() {
     const snapshot = collection(SNAPSHOT_COLLECTION).findOne({ _id: SNAPSHOT_ID });
     if (!snapshot) {
@@ -492,6 +541,8 @@
     prepare();
   } else if (command === "status") {
     status();
+  } else if (command === "refresh-display") {
+    refreshDisplay();
   } else if (command === "reset") {
     reset();
   } else if (command === "replay") {

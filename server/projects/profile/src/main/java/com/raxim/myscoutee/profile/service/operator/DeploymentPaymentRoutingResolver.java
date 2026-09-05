@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.service.operator;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,14 +16,45 @@ import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 @Service
 public class DeploymentPaymentRoutingResolver {
     private final DeploymentConfigurationRepository repository;
+    private final boolean simulatorEnabled;
+    private final String simulatorApplicationBaseUrl;
+    private final String simulatorBarionMerchantAccount;
 
+    @Autowired
     public DeploymentPaymentRoutingResolver(
-            DeploymentConfigurationRepository repository) {
+            DeploymentConfigurationRepository repository,
+            @Value("${payment.simulator.enabled:false}") boolean simulatorEnabled,
+            @Value("${payment.simulator.applicationBaseUrl:}") String simulatorApplicationBaseUrl,
+            @Value("${payment.simulator.barionMerchantAccount:}") String simulatorBarionMerchantAccount) {
         this.repository = Objects.requireNonNull(repository);
+        this.simulatorEnabled = simulatorEnabled;
+        this.simulatorApplicationBaseUrl = trimTrailingSlashes(simulatorApplicationBaseUrl);
+        this.simulatorBarionMerchantAccount = trim(simulatorBarionMerchantAccount);
+    }
+
+    DeploymentPaymentRoutingResolver(
+            DeploymentConfigurationRepository repository) {
+        this(repository, false, "", "");
     }
 
     public PaymentRouting require(String providerId) {
         String normalizedProvider = normalize(providerId);
+        if (simulatorEnabled) {
+            if (!StringUtils.hasText(simulatorApplicationBaseUrl)) {
+                throw unavailable(
+                        "The payment simulator application URL is not configured.");
+            }
+            if ("barion".equals(normalizedProvider)
+                    && !StringUtils.hasText(simulatorBarionMerchantAccount)) {
+                throw unavailable(
+                        "The payment simulator Barion merchant account is not configured.");
+            }
+            return new PaymentRouting(
+                    simulatorApplicationBaseUrl,
+                    "barion".equals(normalizedProvider)
+                            ? simulatorBarionMerchantAccount
+                            : null);
+        }
         DeploymentConfiguration configuration = repository
                 .findById(DeploymentConfiguration.SINGLETON_ID)
                 .orElseThrow(() -> unavailable(
@@ -57,6 +90,14 @@ public class DeploymentPaymentRoutingResolver {
 
     private String trim(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String trimTrailingSlashes(String value) {
+        String normalized = trim(value);
+        while (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
     }
 
     private ResponseStatusException unavailable(String message) {

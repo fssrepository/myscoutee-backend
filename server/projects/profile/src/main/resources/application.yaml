@@ -56,6 +56,8 @@ payment:
     baseUrl: ${PAYMENT_SIMULATOR_BASE_URL:}
     apiKey: ${PAYMENT_SIMULATOR_API_KEY:}
     registrationCallbackUrl: ${PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL:}
+    applicationBaseUrl: ${PAYMENT_SIMULATOR_APPLICATION_BASE_URL:}
+    barionMerchantAccount: ${PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT:}
   settlement:
     pollDelay: ${PAYMENT_SETTLEMENT_POLL_DELAY:PT1M}
   operations:
