@@ -63,6 +63,10 @@ the client-side scripts are not unpacked on the deployment host.
 Development-only checkout and datastore-reset helpers are deliberately
 excluded.
 
+That verifier directory also contains an optional, isolated read-only Chrome
+render smoke. It is a manual post-install check and never drives the pair-QA
+browser session.
+
 `MYSCOUTEE_VERSION` is always the plain SemVer core (`1.0.0`). Image purpose
 is expressed once in the derived tags (`1.0.0-base`, `1.0.0-dev`, and
 `1.0.0-prod`); do not use `1.0.0-prod` as the package/base version.

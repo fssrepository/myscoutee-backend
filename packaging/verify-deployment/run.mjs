@@ -64,6 +64,9 @@ async function main() {
 
   console.log('Verify deployment');
   console.log(`target: ${context.baseUrl}`);
+  if (options.demoSession) {
+    console.log('data route: Explore/demo');
+  }
   if (context.expectedVersion) {
     console.log(`expected version: ${context.expectedVersion}`);
   }
@@ -133,7 +136,13 @@ async function main() {
 function createContext(options) {
   const baseUrl = parseRootUrl(options.url);
   const timeoutMs = numericTimeout(options.timeoutMs);
-  const client = createHttpClient({ baseUrl, timeoutMs });
+  const client = createHttpClient({
+    baseUrl,
+    timeoutMs,
+    headers: options.demoSession
+      ? { 'X-App-Session-Kind': 'demo' }
+      : undefined
+  });
   const rawRoot = () => client.getCached('/', { maxBodyBytes: 4 * 1024 * 1024 });
   let effectiveOriginPromise;
   const effectiveOrigin = () => {
@@ -257,6 +266,7 @@ function parseArgs(argv) {
   const options = {
     allowHttp: process.env.VERIFY_DEPLOYMENT_ALLOW_HTTP === 'true',
     caseFilter: '',
+    demoSession: process.env.VERIFY_DEPLOYMENT_DEMO_SESSION === 'true',
     expectedVersion: process.env.VERIFY_DEPLOYMENT_EXPECTED_VERSION ?? '',
     help: false,
     httpUrl: process.env.VERIFY_DEPLOYMENT_HTTP_URL ?? '',
@@ -273,6 +283,8 @@ function parseArgs(argv) {
       options.list = true;
     } else if (argument === '--allow-http') {
       options.allowHttp = true;
+    } else if (argument === '--demo-session') {
+      options.demoSession = true;
     } else if (argument === '--url') {
       options.url = requiredValue(argv, ++index, '--url');
     } else if (argument.startsWith('--url=')) {
@@ -336,6 +348,7 @@ Options:
   --expected-version X.Y.Z  Require app-version.json to match the package version
   --timeout-ms MS           Per-request timeout, 250-30000 (default: 5000)
   --case FILTER             Run checks whose id or name contains FILTER
+  --demo-session            Verify public data through the Explore/demo route
   --allow-http              Local-only: permit a final HTTP application URL
   --list                    List checks without requiring a URL
   --help                    Show this help

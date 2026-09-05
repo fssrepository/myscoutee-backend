@@ -44,6 +44,7 @@ export function createHttpClient(options) {
     : parseRootUrl(options.baseUrl);
   const timeoutMs = Number(options.timeoutMs ?? 5000);
   const maxBodyBytes = Number(options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES);
+  const defaultHeaders = { ...(options.headers ?? {}) };
   const cache = new Map();
 
   if (!Number.isFinite(timeoutMs) || timeoutMs < 250 || timeoutMs > 30000) {
@@ -96,6 +97,7 @@ export function createHttpClient(options) {
           Accept: 'application/json, text/html;q=0.9, text/plain;q=0.8, */*;q=0.7',
           'Cache-Control': 'no-cache',
           'User-Agent': 'myscoutee-installed-deployment-verifier/1',
+          ...defaultHeaders,
           ...(requestOptions.headers ?? {})
         },
         signal: controller.signal
