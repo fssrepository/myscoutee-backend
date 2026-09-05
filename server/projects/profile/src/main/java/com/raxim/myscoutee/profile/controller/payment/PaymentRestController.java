@@ -92,4 +92,11 @@ public class PaymentRestController {
             @RequestParam(value = "provider", required = false) String provider) {
         return activitiesEventsService.payEventCheckout(request, provider);
     }
+
+    @PostMapping("/checkout/authorize")
+    public EventCheckoutSessionDto authorizeCheckout(
+            @RequestBody EventCheckoutRequestDto request,
+            @RequestParam(value = "provider", required = false) String provider) {
+        return paymentService.authorizeClientCheckout(request, provider);
+    }
 }

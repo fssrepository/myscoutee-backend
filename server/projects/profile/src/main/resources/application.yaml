@@ -49,6 +49,11 @@ operator:
 
 payment:
   enablePay: ${PAYMENT_ENABLE_PAY:false}
+  simulator:
+    enabled: ${PAYMENT_SIMULATOR_ENABLED:false}
+    baseUrl: ${PAYMENT_SIMULATOR_BASE_URL:}
+    apiKey: ${PAYMENT_SIMULATOR_API_KEY:}
+    registrationCallbackUrl: ${PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL:}
   settlement:
     pollDelay: ${PAYMENT_SETTLEMENT_POLL_DELAY:PT1M}
   operations:

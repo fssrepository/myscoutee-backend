@@ -66,6 +66,13 @@ public interface PaymentGateway {
             EventCheckoutRequestDto request,
             String internalPaymentSessionId);
 
+    default AuthorizationResult prepareAuthorization(
+            EventCheckoutRequestDto request,
+            String internalPaymentSessionId,
+            String providerPaymentMethodReference) {
+        return prepareAuthorization(request, internalPaymentSessionId);
+    }
+
     AuthorizationResult retrieveAuthorization(
             String gatewayCheckoutId,
             String gatewayAuthorizationId);

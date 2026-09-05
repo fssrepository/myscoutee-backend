@@ -90,6 +90,8 @@ public class WebSecurityConfig {
                             "/api/payment/webhooks/stripe",
                             "/payment/webhooks/barion",
                             "/api/payment/webhooks/barion",
+                            "/payment-methods/registrations/callback",
+                            "/api/payment-methods/registrations/callback",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",

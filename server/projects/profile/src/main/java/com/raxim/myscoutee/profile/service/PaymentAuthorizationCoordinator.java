@@ -42,6 +42,11 @@ public class PaymentAuthorizationCoordinator {
             return transition;
         }
 
+        if (PaymentService.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())) {
+            paymentService.markGatewayFulfillment(payment.getId(), true, null);
+            return transition;
+        }
+
         try {
             EventParticipationActionResultDto fulfillment = activitiesEventsService.finalizeAuthorizedPayment(payment);
             boolean accepted = fulfillment != null

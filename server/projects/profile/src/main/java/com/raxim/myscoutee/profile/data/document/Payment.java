@@ -31,6 +31,7 @@ public class Payment {
     private Long version;
     private String userId;
     private String sourceId;
+    private String paymentMethodId;
     private String provider;
     private String status;
     private Double amount;
@@ -48,6 +49,7 @@ public class Payment {
     private String releasedAtIso;
     private String failedAtIso;
     private String fulfillmentStatus;
+    private String fulfillmentKind;
     private String lastGatewayError;
     private String predecessorPaymentId;
     private String successorPaymentId;
@@ -76,6 +78,7 @@ public class Payment {
     private Integer revisionNumber;
     private Double adjustmentAmount;
     private Integer bookingQuantity;
+    private Double accountedSpentAmount;
     private String gatewayApprovedAtIso;
     private List<String> processedGatewayEventIds = new ArrayList<>();
     private String createdDate;
@@ -91,6 +94,9 @@ public class Payment {
 
     public String getSourceId() { return sourceId; }
     public void setSourceId(String sourceId) { this.sourceId = sourceId; }
+
+    public String getPaymentMethodId() { return paymentMethodId; }
+    public void setPaymentMethodId(String paymentMethodId) { this.paymentMethodId = paymentMethodId; }
 
     public String getProvider() { return provider; }
     public void setProvider(String provider) { this.provider = provider; }
@@ -133,6 +139,9 @@ public class Payment {
 
     public String getFulfillmentStatus() { return fulfillmentStatus; }
     public void setFulfillmentStatus(String fulfillmentStatus) { this.fulfillmentStatus = fulfillmentStatus; }
+
+    public String getFulfillmentKind() { return fulfillmentKind; }
+    public void setFulfillmentKind(String fulfillmentKind) { this.fulfillmentKind = fulfillmentKind; }
 
     public String getLastGatewayError() { return lastGatewayError; }
     public void setLastGatewayError(String lastGatewayError) { this.lastGatewayError = lastGatewayError; }
@@ -229,6 +238,9 @@ public class Payment {
 
     public Integer getBookingQuantity() { return bookingQuantity; }
     public void setBookingQuantity(Integer bookingQuantity) { this.bookingQuantity = bookingQuantity; }
+
+    public Double getAccountedSpentAmount() { return accountedSpentAmount; }
+    public void setAccountedSpentAmount(Double accountedSpentAmount) { this.accountedSpentAmount = accountedSpentAmount; }
 
     public String getGatewayApprovedAtIso() { return gatewayApprovedAtIso; }
     public void setGatewayApprovedAtIso(String gatewayApprovedAtIso) { this.gatewayApprovedAtIso = gatewayApprovedAtIso; }

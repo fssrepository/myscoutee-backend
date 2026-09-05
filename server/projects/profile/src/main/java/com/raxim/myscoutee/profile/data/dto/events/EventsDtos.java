@@ -772,7 +772,41 @@ public final class EventsDtos {
             Double totalAmount,
             String currency,
             String pendingReason,
-            List<String> appliedPromoCodes) {
+            List<String> appliedPromoCodes,
+            String paymentMethodId) {
+        public EventCheckoutRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                String checkoutState,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency,
+                String pendingReason,
+                List<String> appliedPromoCodes) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    basketItems,
+                    pricingSummaryRows,
+                    checkoutState,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    pendingReason,
+                    appliedPromoCodes,
+                    null);
+        }
+
         public EventCheckoutRequestDto(
                 String userId,
                 String sourceId,
@@ -801,6 +835,7 @@ public final class EventsDtos {
                     totalAmount,
                     currency,
                     pendingReason,
+                    null,
                     null);
         }
     }

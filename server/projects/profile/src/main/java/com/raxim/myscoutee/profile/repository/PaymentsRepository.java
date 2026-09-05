@@ -13,6 +13,8 @@ public interface PaymentsRepository extends MongoRepository<Payment, String> {
     Optional<Payment> findByGatewayAuthorizationId(String gatewayAuthorizationId);
     java.util.List<Payment> findByUserIdAndSourceId(String userId, String sourceId);
     java.util.List<Payment> findByUserIdAndSourceIdIn(String userId, Collection<String> sourceIds);
+    java.util.List<Payment> findByUserIdAndPaymentMethodIdOrderByCreatedDateDesc(String userId, String paymentMethodId);
+    java.util.List<Payment> findByUserIdOrderByCreatedDateDesc(String userId);
     java.util.List<Payment> findByRevisionRootSessionId(String revisionRootSessionId);
     java.util.List<Payment> findByStatusAndBookingStatus(String status, String bookingStatus);
 
