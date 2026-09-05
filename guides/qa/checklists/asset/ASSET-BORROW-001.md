@@ -10,8 +10,8 @@ matrix rows.
 This is the third Event/Asset payment-control combination: all three staged
 Assets are genuinely free, so no Payment block, provider badge, Cash-only
 recording action or card selector may appear. Cash-only paid behavior is owned
-by `EVENT-CHECKOUT-DUMMY-001`; Barion is owned by
-`ASSET-CHECKOUT-DUMMY-001`; Stripe is owned by the Event checkout journey.
+by `EVENT-CHECKOUT-001`; Barion is owned by
+`ASSET-CHECKOUT-001`; Stripe is owned by the Event checkout journey.
 
 ## Actors and startup
 
@@ -28,7 +28,7 @@ by `EVENT-CHECKOUT-DUMMY-001`; Barion is owned by
   evidence and do not create replacement data or profiles.
 - This checkpoint exercises free Borrow only. It must not create a checkout
   session, payment, payment summary or inventory-applied reservation. The paid
-  flow belongs to `ASSET-CHECKOUT-DUMMY-001`.
+  flow belongs to `ASSET-CHECKOUT-001`.
 - Select each Send, Cancel, Reject and Approve confirmation exactly once. Stop
   at the first mismatch; do not compensate with a second action, an ad-hoc
   reload or an API/Mongo write.

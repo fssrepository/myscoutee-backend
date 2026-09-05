@@ -1,9 +1,8 @@
-# EVENT-CHECKOUT-DUMMY-001 user test guide
+# EVENT-CHECKOUT-001 user test guide
 
-The ID is retained for ledger stability, but this is no longer a dummy-only
-checkout. This Event-owned journey carries the Stripe direct-payment branch,
-the saved-card assignment/expired-card guard, and a separate Cash-only
-negative control. There is no separate External Payment row.
+This Event-owned journey carries the Stripe direct-payment branch, the
+saved-card assignment/expired-card guard, and a separate Cash-only negative
+control. There is no separate External Payment row.
 
 This file is the tester's stable, repeatable click-by-click guide. It is not an
 execution log: do not check off its steps or add current dates, IDs, status or
@@ -32,11 +31,11 @@ matrix rows.
 
 To start a complete replay, tell Codex:
 
-`Prepare the EVENT-CHECKOUT-DUMMY-001 user test.`
+`Prepare the EVENT-CHECKOUT-001 user test.`
 
 Begin only after Codex confirms this exact baseline:
 
-- `QA EVENT-CHECKOUT-DUMMY-001 Paid` is Public, published, Ticketing Off,
+- `QA EVENT-CHECKOUT-001 Paid` is Public, published, Ticketing Off,
   directly joinable and visible once to Nova in Event Explore;
 - it has two named Slots, one paid optional item, one required policy and
   capacity `1 / 6`, with Casey as the sole accepted Admin;
@@ -53,7 +52,7 @@ Begin only after Codex confirms this exact baseline:
 ### 1. Verify the fresh paid action and review gates
 
 1. In **Nova**, open `Activities → Events → Explore`.
-2. Find `QA EVENT-CHECKOUT-DUMMY-001 Paid` exactly once.
+2. Find `QA EVENT-CHECKOUT-001 Paid` exactly once.
 3. Open its menu. Confirm `Book Event` is present and that `Continue booking`
    and `Payment summary` are absent.
 4. Select `Book Event` once.
@@ -91,7 +90,7 @@ Begin only after Codex confirms this exact baseline:
 17. Report this phrase and wait for Codex to capture the basket/session and
     zero-membership boundary:
 
-    `EVENT-CHECKOUT-DUMMY-001 payment ready: Stripe card assigned, expired blocked, no membership yet`
+    `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired blocked, no membership yet`
 
 ### 2. Resume the payment phase, then cancel it
 
@@ -115,9 +114,9 @@ Begin only after Codex confirms this exact baseline:
 28. Report this phrase and wait for Codex to prove one closed basket audit and
     zero successful payment/membership effects:
 
-    `EVENT-CHECKOUT-DUMMY-001 cancelled: Book Event restored, no participation`
+    `EVENT-CHECKOUT-001 cancelled: Book Event restored, no participation`
 
-### 3. Complete one fresh dummy payment and prove there is no freeze
+### 3. Complete one fresh Stripe payment and prove there is no freeze
 
 29. After Codex confirms `cancelled`, return to Event Explore and open the
     target's `Book Event` action once.
@@ -144,7 +143,7 @@ Begin only after Codex confirms this exact baseline:
     the application.
 38. Do not click another target action. Report:
 
-    `EVENT-CHECKOUT-DUMMY-001 paid: checkout closed once and UI stayed responsive`
+    `EVENT-CHECKOUT-001 paid: checkout closed once and UI stayed responsive`
 
 39. Wait for Codex to prove exactly one approved Stripe payment, one succeeded
     inactive basket, one accepted Nova membership and no duplicate write.
@@ -152,7 +151,7 @@ Begin only after Codex confirms this exact baseline:
 ### 4. Verify where the successful Event checkout goes
 
 40. After Codex confirms `paid`, open `Activities → Events → Active Events`.
-41. Confirm `QA EVENT-CHECKOUT-DUMMY-001 Paid` appears exactly once.
+41. Confirm `QA EVENT-CHECKOUT-001 Paid` appears exactly once.
 42. Open its menu and confirm these actions are present:
 
     - `View Event`;
@@ -176,7 +175,7 @@ Begin only after Codex confirms this exact baseline:
     is Off.
 51. Report:
 
-    `EVENT-CHECKOUT-DUMMY-001 destination ready: Active/All, Payment summary and 2/6 membership`
+    `EVENT-CHECKOUT-001 destination ready: Active/All, Payment summary and 2/6 membership`
 
 ### 5. Verify reload reconstruction and the action variants
 
@@ -199,7 +198,7 @@ Begin only after Codex confirms this exact baseline:
 58. Confirm the adjacent paid Event and every Riley control remain unchanged.
 59. Report the terminal phrase:
 
-    `EVENT-CHECKOUT-DUMMY-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
+    `EVENT-CHECKOUT-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result and restores the fixture.

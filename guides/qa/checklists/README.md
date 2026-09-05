@@ -32,8 +32,8 @@ must never overwrite the user-facing checklist.
 
 - [`EVENT-EDIT-RUNTIME-001.md`](event/EVENT-EDIT-RUNTIME-001.md) — active Event edit,
   MAIN_EVENT resource, pending invite, and Delete reversal journey.
-- [`EVENT-CHECKOUT-DUMMY-001.md`](event/EVENT-CHECKOUT-DUMMY-001.md) — direct paid
-  Event Explore dummy-payment journey and button-state controls.
+- [`EVENT-CHECKOUT-001.md`](event/EVENT-CHECKOUT-001.md) — direct paid Event
+  Explore Stripe journey, Cash-only control and button-state coverage.
 - [`EVENT-SCHEDULERS-001.md`](event/EVENT-SCHEDULERS-001.md) — bounded Event scheduler
   and Admin Jobs/Monitoring journey.
 - [`ASSET-LIFE-001.md`](asset/ASSET-LIFE-001.md) — shared Asset type-schema and
@@ -41,8 +41,8 @@ must never overwrite the user-facing checklist.
 - [`ASSET-VIS-001.md`](asset/ASSET-VIS-001.md) — owner, friend and unrelated
   Asset discovery/detail visibility, owner profile, category filter and
   single-Edit reload boundary.
-- [`ASSET-CHECKOUT-DUMMY-001.md`](asset/ASSET-CHECKOUT-DUMMY-001.md) — scoped
-  Resource/Asset Explore dummy-payment, request and acceptance journey.
+- [`ASSET-CHECKOUT-001.md`](asset/ASSET-CHECKOUT-001.md) — scoped
+  Resource/Asset Explore Barion/3DS payment, request and acceptance journey.
 - [`CONTENT-ADMIN-LIFECYCLE-001.md`](content/CONTENT-ADMIN-LIFECYCLE-001.md) —
   governed revisions, Privacy consent/fallback and Article trash/restore/
   republish journey.

@@ -1240,7 +1240,7 @@
         }
       ]
     },
-    "EVENT-CHECKOUT-DUMMY-001": {
+    "EVENT-CHECKOUT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
@@ -1270,7 +1270,7 @@
         }
       ]
     },
-    "ASSET-CHECKOUT-DUMMY-001": {
+    "ASSET-CHECKOUT-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {

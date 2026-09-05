@@ -132,8 +132,8 @@ Borrow remains prepared but is deliberately deferred while the payment-facing
 journeys are verified. It is not the active checkpoint.
 
 The three existing Event/Asset cases divide checkout coverage without a
-separate External Payment row: `EVENT-CHECKOUT-DUMMY-001` owns Stripe plus the
-Cash-only paid control and card assignment; `ASSET-CHECKOUT-DUMMY-001` owns
+separate External Payment row: `EVENT-CHECKOUT-001` owns Stripe plus the
+Cash-only paid control and card assignment; `ASSET-CHECKOUT-001` owns
 Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
 `ASSET-BORROW-LIFECYCLE-001` remains the genuinely free/no-payment control.
 Their stable guides have been expanded for these combinations; their full

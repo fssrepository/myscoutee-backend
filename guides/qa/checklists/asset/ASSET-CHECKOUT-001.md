@@ -1,8 +1,8 @@
-# ASSET-CHECKOUT-DUMMY-001 user test guide
+# ASSET-CHECKOUT-001 user test guide
 
-The ID is retained for ledger stability, but this Asset-owned journey now
-carries the Barion switch plus 3DS approve, decline and timeout branches. The
-provider lifecycle is not a separate External Payment row.
+This Asset-owned journey carries the Barion switch plus 3DS approve, decline
+and timeout branches. The provider lifecycle is not a separate External
+Payment row.
 
 This file is the tester's stable, repeatable click-by-click guide. It is not an
 execution log: do not check off its steps or add current dates, IDs, status or
@@ -31,14 +31,14 @@ separate matrix rows.
 
 To start a complete replay, tell Codex:
 
-`Prepare the ASSET-CHECKOUT-DUMMY-001 user test.`
+`Prepare the ASSET-CHECKOUT-001 user test.`
 
 Begin only after Codex confirms this exact baseline:
 
 - Nova is an accepted Event participant with access to
-  `QA ASSET-CHECKOUT-DUMMY-001 Event → QA Borrow Stage`;
+  `QA ASSET-CHECKOUT-001 Event → QA Borrow Stage`;
 - Resource/Asset Explore shows one Public paid Transport named
-  `QA ASSET-CHECKOUT-DUMMY-001 Paid Transport`, owned by Casey, with quantity
+  `QA ASSET-CHECKOUT-001 Paid Transport`, owned by Casey, with quantity
   `3`, deterministic unit price and one required policy;
 - Nova has no target borrow request, payment/session, basket draft,
   reservation, resource assignment, Asset activity contribution or Asset
@@ -53,9 +53,9 @@ Begin only after Codex confirms this exact baseline:
 
 1. In **Nova**, open:
 
-   `Activities → Events → Active Events → QA ASSET-CHECKOUT-DUMMY-001 Event → View Event → QA Borrow Stage → Transport → Explore`
+   `Activities → Events → Active Events → QA ASSET-CHECKOUT-001 Event → View Event → QA Borrow Stage → Transport → Explore`
 
-2. Find `QA ASSET-CHECKOUT-DUMMY-001 Paid Transport` exactly once with
+2. Find `QA ASSET-CHECKOUT-001 Paid Transport` exactly once with
    availability `3`.
 3. Open its menu. Confirm `Borrow` is present and `Payment summary` is absent.
 4. Select `Borrow` once.
@@ -89,7 +89,7 @@ Begin only after Codex confirms this exact baseline:
 18. Report this phrase and wait for Codex to capture exactly one active Barion
     session and zero request/assignment effects:
 
-    `ASSET-CHECKOUT-DUMMY-001 payment ready: Barion card assigned, no borrow request yet`
+    `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
 
 ### 2. Resume the same payment state and invalidate it through Back
 
@@ -117,7 +117,7 @@ mismatch; do not build a new attempt over the orphaned state.
     total. The superseded session must not remain selectable.
 29. Report:
 
-    `ASSET-CHECKOUT-DUMMY-001 revised payment ready: one final session owns quantity 1`
+    `ASSET-CHECKOUT-001 revised payment ready: one final session owns quantity 1`
 
 30. Wait for Codex to prove that changed content did not reuse the old active
     session and that no request, reservation or assignment exists yet.
@@ -149,7 +149,7 @@ mismatch; do not build a new attempt over the orphaned state.
     Resource/Asset Explore surface.
 37. Do not start another Borrow. Report:
 
-    `ASSET-CHECKOUT-DUMMY-001 paid pending: checkout closed once and UI stayed responsive`
+    `ASSET-CHECKOUT-001 paid pending: checkout closed once and UI stayed responsive`
 
 38. Wait for Codex to prove one approved Barion payment, one exact pending
     borrow request/payment-session reference, one quantity reservation and no
@@ -172,13 +172,13 @@ mismatch; do not build a new attempt over the orphaned state.
     has one pending borrower/resource contribution, not an accepted or global
     assignment under another scope.
 45. In **Casey**, open
-    `My Assets → Transport → QA ASSET-CHECKOUT-DUMMY-001 Paid Transport → Members`.
+    `My Assets → Transport → QA ASSET-CHECKOUT-001 Paid Transport → Members`.
 46. Confirm Nova appears exactly once as a pending borrow request with the
     exact Event/Sub-event timeframe, quantity and payment context.
 47. Confirm no Riley row and no request for the sibling Sub-event exists.
 48. Report:
 
-    `ASSET-CHECKOUT-DUMMY-001 request destination ready: Nova pending once, availability 2`
+    `ASSET-CHECKOUT-001 request destination ready: Nova pending once, availability 2`
 
 ### 5. Accept the paid request once and verify the terminal scope
 
@@ -196,7 +196,7 @@ mismatch; do not build a new attempt over the orphaned state.
     Asset Manager or ownership of Casey's Asset.
 55. Report:
 
-    `ASSET-CHECKOUT-DUMMY-001 accepted: exact scoped resource, availability stays 2`
+    `ASSET-CHECKOUT-001 accepted: exact scoped resource, availability stays 2`
 
 56. Wait for Codex to capture the `accepted` oracle and exact unchanged sibling
     controls.
@@ -208,7 +208,7 @@ mismatch; do not build a new attempt over the orphaned state.
     Confirm the same request identity, accepted state, payment values and
     availability `2` return.
 59. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
-    forward action is `Send borrow request` and no `Dummy pay`, `Pay`, session
+    forward action is `Send borrow request` and no provider badge, `Pay`, session
     or payment summary is presented. Close without submitting.
 60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
     for the selected window, or is absent from the availability-filtered
@@ -226,7 +226,7 @@ mismatch; do not build a new attempt over the orphaned state.
     remain unchanged and own no target session/payment identity.
 64. Report the terminal phrase:
 
-    `ASSET-CHECKOUT-DUMMY-001 UI complete: Barion approve, decline and timeout remain isolated`
+    `ASSET-CHECKOUT-001 UI complete: Barion approve, decline and timeout remain isolated`
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result and restores the fixture.
