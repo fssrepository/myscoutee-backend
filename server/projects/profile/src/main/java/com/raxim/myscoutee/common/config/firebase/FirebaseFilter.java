@@ -54,9 +54,6 @@ public class FirebaseFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // These endpoints are the public entry bootstrap itself. Ignore any
-        // stale browser credentials here so an expired app session cannot
-        // turn an otherwise reachable server into the offline landing state.
         if (isPublicEntryBootstrapRequest(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -175,8 +172,6 @@ public class FirebaseFilter extends OncePerRequestFilter {
         String requestUri = request == null ? "" : request.getRequestURI();
         return requestUri.equals("/deployment/configuration")
                 || requestUri.equals("/api/deployment/configuration")
-                || requestUri.equals("/deployment/configuration/firebase-config")
-                || requestUri.equals("/api/deployment/configuration/firebase-config")
                 || requestUri.equals("/i18n/bundle")
                 || requestUri.equals("/api/i18n/bundle")
                 || requestUri.equals("/auth/eligibility")
