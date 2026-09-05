@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -119,6 +120,55 @@ class PaymentServiceTest {
         assertThat(barion.checkoutCalls()).isEqualTo(1);
         assertThat(stripe.checkoutCalls()).isZero();
         verify(resolver).resolveActiveProvider(null);
+    }
+
+    @Test
+    void knownStartedAuthorizationKeepsItsProviderWhenDeploymentConfigurationChanges() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        Payment started = new Payment();
+        started.setId("payment-started");
+        started.setCheckoutSessionId("pay_started");
+        started.setGatewaySessionId("pi_started");
+        started.setGatewayActionUrl("/payment-wait/stripe/pay_started");
+        started.setUserId("user-started");
+        started.setSourceId("event-started");
+        started.setPaymentMethodId("card-stripe");
+        started.setProvider("stripe");
+        started.setStatus("customer_action_required");
+        started.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_EVENT_JOIN);
+        started.setFulfillmentStatus("pending");
+        started.setBookingStatus("initiated");
+        started.setAmount(31.5d);
+        started.setCurrency("HUF");
+        started.setOptionalSubEventIds(List.of("sub-event-1"));
+        started.setCreatedDate(Instant.now().toString());
+        savePayment(paymentsBySession, started);
+        when(repository.findByUserIdAndSourceId("user-started", "event-started"))
+                .thenReturn(List.of(started));
+
+        DeploymentPaymentProviderResolver resolver =
+                org.mockito.Mockito.mock(DeploymentPaymentProviderResolver.class);
+        EventCheckoutPricingService pricingService =
+                org.mockito.Mockito.mock(EventCheckoutPricingService.class);
+        EventCheckoutRequestDto request = withPaymentMethod(
+                checkoutRequest("user-started", "event-started", 31.5d, "HUF"),
+                "card-stripe");
+        when(pricingService.reprice(request)).thenReturn(request);
+        PaymentService service = new PaymentService(
+                List.of(new RecordingPaymentProcessor("stripe"), new RecordingPaymentProcessor("barion")),
+                repository,
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class),
+                pricingService,
+                resolver);
+        ReflectionTestUtils.setField(service, "enablePay", true);
+
+        EventCheckoutSessionDto result = service.payCheckout(request, "stripe", "pay_started");
+
+        assertThat(result.id()).isEqualTo("pay_started");
+        assertThat(result.provider()).isEqualTo("stripe");
+        assertThat(result.status()).isEqualTo("requires_action");
+        verifyNoInteractions(resolver);
     }
 
     @Test
@@ -501,6 +551,8 @@ class PaymentServiceTest {
         payment.setCreatedDate("2026-08-12T18:00:00Z");
         when(repository.findByUserIdAndSourceId("user-1", "event-1"))
                 .thenReturn(List.of(payment));
+        when(repository.save(any(Payment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0, Payment.class));
         PaymentService service =
                 paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
 
@@ -604,6 +656,27 @@ class PaymentServiceTest {
                 request.currency(),
                 request.pendingReason(),
                 appliedPromoCodes);
+    }
+
+    private EventCheckoutRequestDto withPaymentMethod(
+            EventCheckoutRequestDto request,
+            String paymentMethodId) {
+        return new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                request.slotSourceId(),
+                request.optionalSubEventIds(),
+                request.assetSelections(),
+                request.acceptedPolicyIds(),
+                request.basketItems(),
+                request.pricingSummaryRows(),
+                request.checkoutState(),
+                request.lineItems(),
+                request.totalAmount(),
+                request.currency(),
+                request.pendingReason(),
+                request.appliedPromoCodes(),
+                paymentMethodId);
     }
 
     private Payment joinedPayment(

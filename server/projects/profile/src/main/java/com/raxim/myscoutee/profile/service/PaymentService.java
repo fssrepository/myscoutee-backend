@@ -179,18 +179,38 @@ public class PaymentService {
     }
 
     public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
-        return payCheckout(request, provider, FULFILLMENT_KIND_EVENT_JOIN);
+        return payCheckout(request, provider, null, FULFILLMENT_KIND_EVENT_JOIN);
+    }
+
+    public EventCheckoutSessionDto payCheckout(
+            EventCheckoutRequestDto request,
+            String provider,
+            String startedPaymentSessionId) {
+        return payCheckout(request, provider, startedPaymentSessionId, FULFILLMENT_KIND_EVENT_JOIN);
     }
 
     public EventCheckoutSessionDto authorizeClientCheckout(EventCheckoutRequestDto request, String provider) {
-        return payCheckout(request, provider, FULFILLMENT_KIND_CLIENT);
+        return payCheckout(request, provider, null, FULFILLMENT_KIND_CLIENT);
     }
 
     private EventCheckoutSessionDto payCheckout(
             EventCheckoutRequestDto request,
             String provider,
+            String startedPaymentSessionId,
             String fulfillmentKind) {
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
+        Optional<Payment> startedPayment = findReusableAuthorization(
+                authoritativeRequest,
+                null,
+                fulfillmentKind).filter(payment -> paymentSessionMatches(payment, startedPaymentSessionId));
+        if (startedPayment.isPresent()) {
+            Payment payment = startedPayment.get();
+            eventCheckoutBasketService.saveBasket(withCheckoutState(
+                    authoritativeRequest,
+                    "pay",
+                    payment.getCheckoutSessionId()));
+            return toCheckoutSession(payment);
+        }
         String normalizedProvider = resolveConfiguredProvider(provider);
         SavedPaymentMethod selectedPaymentMethod = validateSelectedPaymentMethod(authoritativeRequest, normalizedProvider);
         if (!enablePay) {
@@ -714,7 +734,8 @@ public class PaymentService {
                 statusValue(AuthorizationStatus.AUTHORIZED));
         return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
                 .filter(Objects::nonNull)
-                .filter(item -> provider.equals(safeText(item.getProvider())))
+                .filter(item -> !hasText(provider)
+                        || safeText(provider).equals(safeText(item.getProvider())))
                 .filter(item -> safeText(fulfillmentKind).equals(safeText(item.getFulfillmentKind())))
                 .filter(item -> Objects.equals(
                         normalizeId(item.getPaymentMethodId()),
@@ -728,6 +749,13 @@ public class PaymentService {
                 .filter(item -> safeCurrency(item.getCurrency()).equals(safeCurrency(request.currency())))
                 .filter(item -> roundMoney(safeAmount(item.getAmount())) == roundMoney(safeAmount(request.totalAmount())))
                 .max(Comparator.comparing(item -> sortableIso(item.getCreatedDate())));
+    }
+
+    private boolean paymentSessionMatches(Payment payment, String paymentSessionId) {
+        String expected = normalizeId(paymentSessionId);
+        return hasText(expected) && (expected.equals(normalizeId(payment.getCheckoutSessionId()))
+                || expected.equals(normalizeId(payment.getGatewaySessionId()))
+                || expected.equals(normalizeId(payment.getId())));
     }
 
     private Optional<Payment> findGatewayPayment(
@@ -1105,10 +1133,16 @@ public class PaymentService {
         if (savedPaymentMethodsService == null) {
             throw new IllegalStateException("Saved payment methods are not configured.");
         }
-        return savedPaymentMethodsService.requireActive(
+        SavedPaymentMethod method = savedPaymentMethodsService.requireActive(
                 normalizeId(request.userId()),
                 paymentMethodId,
-                enablePay ? provider : null);
+                null);
+        if (enablePay && !safeText(provider).equalsIgnoreCase(safeText(method.getProvider()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Payment provider changed. Retokenize your card.");
+        }
+        return method;
     }
 
     private void ensurePaymentRequestCompatible(Payment payment, EventCheckoutRequestDto request) {

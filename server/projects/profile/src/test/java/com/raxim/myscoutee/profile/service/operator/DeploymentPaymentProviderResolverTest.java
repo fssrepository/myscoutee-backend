@@ -41,7 +41,7 @@ class DeploymentPaymentProviderResolverTest {
                             assertThat(exception.getStatusCode())
                                     .isEqualTo(HttpStatus.BAD_REQUEST);
                             assertThat(exception.getReason())
-                                    .contains("deployment uses barion");
+                                    .isEqualTo("Payment provider changed. Retokenize your card.");
                         });
     }
 

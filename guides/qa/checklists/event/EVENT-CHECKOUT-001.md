@@ -26,6 +26,9 @@ matrix rows.
   configuration generates the test connection automatically. Before the
   declared Cash-only control, Ava selects **Cash only**. No real provider
   credential or card data is used.
+- The saved-card fixture includes one active card tokenized for the other
+  provider solely to prove the assign-screen recovery menu. It is never used
+  to start the controlled Stripe payment.
 - Stop at the first mismatch. Do not compensate with a second click, another
   checkout attempt, an unlisted reload or an API/Mongo action.
 
@@ -85,8 +88,13 @@ Begin only after Codex confirms this exact baseline:
     multiply.
 16. Open the card picker. Confirm expired `0008` keeps its artwork, shows the
     red Expired badge, has no hover/press selection state and cannot be
-    selected. Select one active Stripe card and confirm the blue selection
-    outline does not widen or clip the card; the checkmark is sufficient.
+    selected. Confirm the provider-mismatched active card has the same white
+    overlay, cannot be selected, and exposes `Retokenize >` instead of a
+    three-dot trigger. Open that badge once and confirm `Retokenize card` and
+    `Delete card` are available without closing or resetting the checkout;
+    close its menu without mutating the card. Select one active Stripe card and
+    confirm the blue selection outline does not widen or clip the card; the
+    checkmark is sufficient.
 17. Report this phrase and wait for Codex to capture the basket/session and
     zero-membership boundary:
 
@@ -138,6 +146,12 @@ Begin only after Codex confirms this exact baseline:
     - the browser, popup or page stops responding;
     - a second checkout/payment popup appears;
     - an error is hidden while the UI claims success.
+
+    The provider is authoritative only when this new payment starts. A known
+    payment/3DS session already returned by the provider remains pinned to that
+    provider and may finish even if the operator changes the provider used by
+    later payments. A later new or periodic payment must reject the old token
+    with the short `Payment provider changed. Retokenize your card.` message.
 
 37. Confirm the checkout closes once on success and no stale overlay blocks
     the application.

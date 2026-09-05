@@ -95,18 +95,23 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 16. In **Ava**, change the same demo configuration to `Barion`, turn 3DS Off,
     and save. Confirm the Save response reports success.
-17. In **Alex**, close and reopen `Cards`, then select `Add card`. The backend
-    must use the currently configured provider; no background configuration
-    poll is required.
-18. Confirm the embedded registration surface shows the Barion logo. Select
+17. In **Alex**, close and reopen `Cards`. Confirm every still-active
+    Stripe-tokenized card now keeps its original artwork under the same strong
+    white overlay as an expired card, cannot be selected, and replaces the
+    three-dot trigger with the vivid `Retokenize >` badge. Open one badge and
+    confirm the menu offers exactly `Retokenize card` and `Delete card`; close
+    the menu without changing that card. No background configuration poll is
+    required: reopening the surface uses the current configuration.
+18. Select `Add card`. The backend must use the currently configured provider.
+19. Confirm the embedded registration surface shows the Barion logo. Select
     its header-level `Generate test card` action exactly once and confirm all
     fields are filled together with the accepted Barion number, meaningful
     `Barion Test User 001` cardholder, future month/year and a three-digit CVC.
     Select `Tokenize and save card` exactly once.
-19. Confirm the provider success result is visible briefly without a 3DS wait,
+20. Confirm the provider success result is visible briefly without a 3DS wait,
     then exactly one new active Barion card appears and the earlier cards
     remain unchanged.
-20. Report and wait:
+21. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 barion registered: one tokenized provider card`
 
@@ -114,19 +119,19 @@ Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 4. Verify and clean up the expired card
 
-21. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
+22. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
     artwork remains identifiable beneath the stronger white expired overlay
     and it has no three-dot action.
-22. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
+23. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
     The overlay must not whiten or disable this badge. Select it once. The
     opened menu must contain only `Delete card`; it must not offer Replace or
     selection.
-23. Select `Delete card`, confirm once, and verify the expired card disappears
+24. Select `Delete card`, confirm once, and verify the expired card disappears
     without changing active cards or Payment History.
-24. Open Alex's notifications and confirm the controlled translated expired
+25. Open Alex's notifications and confirm the controlled translated expired
     card notification names card ending `0008`. Reading it may mark that one
     notification read; do not delete or mutate another notification.
-25. Report and wait:
+26. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 expired cleaned: badge menu removed 0008 once`
 
@@ -134,14 +139,14 @@ Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 5. Terminal reload and read-only proof
 
-26. Reload Alex exactly once. Reopen Payment history and Cards.
-27. Confirm the four original history rows, both exact totals, all three
+27. Reload Alex exactly once. Reopen Payment history and Cards.
+28. Confirm the four original history rows, both exact totals, all three
     filters, failure reason and day groups reconstruct unchanged.
-28. Confirm one new Stripe and one new Barion card remain, baseline active
+29. Confirm one new Stripe and one new Barion card remain, baseline active
     cards remain, and expired `0008` does not return.
-29. Confirm no payment, membership, Asset request, basket or checkout was
+30. Confirm no payment, membership, Asset request, basket or checkout was
     created merely by filtering history or managing cards.
-30. Report the terminal phrase:
+31. Report the terminal phrase:
 
     `PAYMENT-METHODS-HISTORY-001 UI complete: history, registrations and expired cleanup persist`
 

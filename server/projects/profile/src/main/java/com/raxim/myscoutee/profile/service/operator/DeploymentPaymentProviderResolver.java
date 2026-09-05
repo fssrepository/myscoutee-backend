@@ -59,8 +59,7 @@ public class DeploymentPaymentProviderResolver {
                 && !activeProvider.equals(requested)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Payment provider is controlled by the deployment operator; "
-                            + "this deployment uses " + activeProvider + ".");
+                    "Payment provider changed. Retokenize your card.");
         }
         return activeProvider;
     }

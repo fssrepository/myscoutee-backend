@@ -183,7 +183,7 @@ public class SavedPaymentMethodsService {
         if (StringUtils.hasText(requested) && !configured.equalsIgnoreCase(requested)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Payment provider is controlled by the development simulator; this stack uses " + configured + ".");
+                    "Payment provider changed. Retokenize your card.");
         }
         return configured;
     }
@@ -257,7 +257,9 @@ public class SavedPaymentMethodsService {
         }
         String provider = normalizeId(expectedProvider);
         if (StringUtils.hasText(provider) && !provider.equalsIgnoreCase(method.getProvider())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card belongs to a different payment provider.");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Payment provider changed. Retokenize your card.");
         }
         return method;
     }

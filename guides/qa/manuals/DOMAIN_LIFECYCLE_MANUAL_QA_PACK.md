@@ -2969,6 +2969,13 @@ action.
   and is disabled; the rest of the application remains responsive. The
   checkout closes on success instead of leaving an infinite spinner, frozen
   overlay or duplicate popup.
+- The assign surface keeps expired and provider-mismatched cards visible but
+  unselectable. Both retain their artwork beneath the same white overlay. The
+  provider-mismatched card exposes `Retokenize >` with Retokenize/Delete while
+  keeping the checkout open. Provider authority is checked before a new
+  payment starts; an already identified in-flight payment/3DS session stays
+  pinned to its original provider, while any later new or periodic use of that
+  provider token fails with the short retokenization message.
 - Immediate write oracle: exactly one `provider=stripe`, terminal authorized
   payment with the selected immutable price/currency and
   `bookingStatus=joined`; one
