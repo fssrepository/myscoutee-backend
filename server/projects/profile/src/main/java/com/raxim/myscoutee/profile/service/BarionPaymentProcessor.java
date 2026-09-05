@@ -87,6 +87,14 @@ public class BarionPaymentProcessor implements PaymentProcessor {
     public AuthorizationResult prepareAuthorization(
             EventCheckoutRequestDto request,
             String internalPaymentSessionId) {
+        return prepareAuthorization(request, internalPaymentSessionId, null);
+    }
+
+    @Override
+    public AuthorizationResult prepareAuthorization(
+            EventCheckoutRequestDto request,
+            String internalPaymentSessionId,
+            String providerPaymentMethodReference) {
         String paymentSessionId = required(internalPaymentSessionId, "internal payment session id");
         String posKey = requirePosKey();
         PaymentRouting routing = routingResolver.require(getType());
@@ -115,23 +123,31 @@ public class BarionPaymentProcessor implements PaymentProcessor {
                 "Items", items)));
         barionRequest.put("RedirectUrl", routing.successUrl(getType()));
         barionRequest.put("CallbackUrl", routing.callbackUrl(getType()));
+        if (StringUtils.hasText(providerPaymentMethodReference)) {
+            barionRequest.put("RecurrenceType", "OneClickPayment");
+            barionRequest.put("TraceId", providerPaymentMethodReference.trim());
+        }
 
         Map<String, Object> response = post("/v2/Payment/Start", barionRequest);
         String paymentId = paymentId(response.get("PaymentId"));
         String gatewayUrl = text(response.get("GatewayUrl"));
-        if (!StringUtils.hasText(gatewayUrl)) {
+        String providerStatus = text(response.get("Status"));
+        AuthorizationStatus status = "authorized".equalsIgnoreCase(providerStatus)
+                ? AuthorizationStatus.AUTHORIZED
+                : AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
+        if (status == AuthorizationStatus.CUSTOMER_ACTION_REQUIRED && !StringUtils.hasText(gatewayUrl)) {
             throw new RuntimeException("Barion delayed-capture start failed: " + sanitizedProviderError(response));
         }
         return new AuthorizationResult(
                 getType(),
                 paymentId,
                 paymentId,
-                AuthorizationStatus.CUSTOMER_ACTION_REQUIRED,
+                status,
                 BigDecimal.valueOf(request.totalAmount()),
                 request.currency(),
                 gatewayUrl,
                 null,
-                text(response.get("Status")));
+                providerStatus);
     }
 
     @Override

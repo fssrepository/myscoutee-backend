@@ -65,6 +65,30 @@ class PaymentAuthorizationCoordinatorTest {
         verify(operations).enqueueRelease(payment, "fulfillment-compensation");
     }
 
+    @Test
+    void clientAuthorizationWaitsForTheAssetWriteToFulfillThePayment() {
+        PaymentService paymentService = mock(PaymentService.class);
+        ActivitiesEventsService activitiesEventsService = mock(ActivitiesEventsService.class);
+        PaymentGatewayOperationService operations = mock(PaymentGatewayOperationService.class);
+        Payment payment = authorizedPayment("pending");
+        payment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
+        AuthorizationResult authorization = authorization();
+        GatewayTransition transition = new GatewayTransition(payment, true, false);
+        when(paymentService.applyGatewayAuthorization("pay-1", authorization, "stripe:event-1"))
+                .thenReturn(transition);
+
+        PaymentAuthorizationCoordinator coordinator = new PaymentAuthorizationCoordinator(
+                paymentService,
+                activitiesEventsService,
+                operations);
+
+        assertThat(coordinator.apply("pay-1", authorization, "stripe:event-1")).isSameAs(transition);
+        verify(activitiesEventsService, never()).finalizeAuthorizedPayment(payment);
+        verify(paymentService, never()).markGatewayFulfillment(anyString(), org.mockito.ArgumentMatchers.anyBoolean(),
+                org.mockito.ArgumentMatchers.any());
+        verify(operations, never()).enqueueRelease(payment, "fulfillment-compensation");
+    }
+
     private Payment authorizedPayment(String fulfillmentStatus) {
         Payment payment = new Payment();
         payment.setId("payment-1");

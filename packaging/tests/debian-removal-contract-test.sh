@@ -53,6 +53,7 @@ myscoutee-nginx:0.9.0-base
 myscoutee-nginx:1.0.0-prod
 myscoutee-minio:audit-final
 myscoutee-registry:1.0.0-prod
+myscoutee-payment-simulator:1.0.0-prod
 mongo:8.0.4
 redis:8.6.1-alpine
 unrelated-api:1.0.0-prod
@@ -73,6 +74,7 @@ ENV_FILE="${TEST_ROOT}/myscoutee.env"
 cat > "${ENV_FILE}" <<'ENV'
 REGISTRY_DEMO_VOLUME_NAME="custom-registry-demo-data-v2"
 REGISTRY_DEMO_CLIENT_VOLUME_NAME='custom-registry-demo-client-v2'
+PAYMENT_SIMULATOR_VOLUME_NAME=custom-payment-simulator-v2
 ENV
 
 run_postrm() {
@@ -97,7 +99,8 @@ run_postrm purge
 
 for volume in \
   custom-registry-demo-data-v2 \
-  custom-registry-demo-client-v2; do
+  custom-registry-demo-client-v2 \
+  custom-payment-simulator-v2; do
   grep -Fqx "docker	volume inspect ${volume}" "${COMMAND_LOG}" \
     || fail "purge did not inspect configured volume ${volume}"
   grep -Fqx "docker	volume rm -f ${volume}" "${COMMAND_LOG}" \
@@ -110,7 +113,8 @@ for image in \
   myscoutee-nginx:0.9.0-base \
   myscoutee-nginx:1.0.0-prod \
   myscoutee-minio:audit-final \
-  myscoutee-registry:1.0.0-prod; do
+  myscoutee-registry:1.0.0-prod \
+  myscoutee-payment-simulator:1.0.0-prod; do
   grep -Fqx "docker	image rm -f ${image}" "${COMMAND_LOG}" \
     || fail "purge left stale managed image ${image}"
 done

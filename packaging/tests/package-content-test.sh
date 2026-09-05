@@ -86,6 +86,7 @@ assert_admin_job_seed_defaults() {
       "event-counter-expiry",
       "event-checkout-basket-purge",
       "notification-outbox",
+      "payment-method-expiry",
       "affinity-recompute",
       "affinity-graph-layout",
       "scheduled-messages",
@@ -457,11 +458,36 @@ grep -Fxq \
   || fail "fresh installation does not allow its HTTPS loopback origins"
 grep -Fxq 'EMAIL_BASE_URL=https://localhost' "${PACKAGED_ENV}" \
   || fail "fresh installation embeds a public deployment URL before Operator setup"
+grep -Fxq 'PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not use the bootstrap origin for simulator pages"
+grep -Fxq 'PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not use the bootstrap application origin for demo payments"
+grep -Fxq 'PAYMENT_SIMULATOR_VOLUME_NAME=myscoutee-payment-simulator-data-v1' "${PACKAGED_ENV}" \
+  || fail "fresh installation omits the persistent simulator volume name"
 grep -Fq 'DOMAIN: ${DOMAIN:-localhost}' "${PACKAGED_COMPOSE}" \
   || fail "packaged Nginx does not use the neutral bootstrap domain fallback"
 grep -Fq 'EMAIL_BASE_URL: "${EMAIL_BASE_URL:-https://localhost}"' \
   "${PACKAGED_COMPOSE}" \
   || fail "packaged API does not receive the dynamic deployment base URL"
+grep -Fq 'PAYMENT_SIMULATOR_ENABLED: "true"' "${PACKAGED_COMPOSE}" \
+  || fail "packaged API does not enable the Explore payment simulator"
+grep -Fq 'PAYMENT_SIMULATOR_BASE_URL: "http://payment-simulator:18082"' \
+  "${PACKAGED_COMPOSE}" \
+  || fail "packaged API does not use the private simulator provider endpoint"
+grep -Fq 'PAYMENT_SIMULATOR_PUBLIC_BASE_URL: "${PAYMENT_SIMULATOR_PUBLIC_BASE_URL:-https://localhost}"' \
+  "${PACKAGED_COMPOSE}" \
+  || fail "packaged simulator does not receive the public deployment origin"
+grep -Fxq 'PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:1.0.0-prod' \
+  "${PACKAGED_ENV}" \
+  || fail "packaged environment omits the versioned payment simulator image"
+if awk '
+    /^  payment-simulator:/ { in_simulator = 1; next }
+    /^  [[:alnum:]_-]+:/ { in_simulator = 0 }
+    in_simulator && /^[[:space:]]+ports:/ { found = 1 }
+    END { exit !found }
+  ' "${PACKAGED_COMPOSE}"; then
+  fail "packaged payment simulator unexpectedly publishes a host port"
+fi
 grep -Fxq 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256=' \
   "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.secrets.env" \
   || fail "package contains a bootstrap password digest instead of an empty placeholder"
@@ -558,6 +584,18 @@ for external_key in \
   )"
   [[ -z "${external_value}" ]] \
     || fail "${external_key} must be supplied after installation, not embedded in the package"
+done
+for generated_internal_key in \
+  PAYMENT_SIMULATOR_API_KEY \
+  PAYMENT_SIMULATOR_WEBHOOK_SECRET \
+  PAYMENT_SIMULATOR_BARION_POS_KEY; do
+  generated_value="$(
+    sed -n "s/^${generated_internal_key}=//p" "${SECRETS_TEMPLATE}" | tail -n 1
+  )"
+  [[ -z "${generated_value}" ]] \
+    || fail "${generated_internal_key} must be generated during installation"
+  grep -Fq "${generated_internal_key}" "${CONTROL_EXTRACTED}/postinst" \
+    || fail "postinst does not provision ${generated_internal_key}"
 done
 if grep -RIl \
   --exclude='*.example' \

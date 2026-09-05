@@ -48,7 +48,8 @@ NGIN_ID="sha256:$(printf '2%.0s' {1..64})"
 API_ID="sha256:$(printf '3%.0s' {1..64})"
 MINIO_ID="sha256:$(printf '4%.0s' {1..64})"
 REGISTRY_DEMO_ID="sha256:$(printf '5%.0s' {1..64})"
-API_RUNTIME_ID="sha256:$(printf '6%.0s' {1..64})"
+PAYMENT_SIMULATOR_ID="sha256:$(printf '6%.0s' {1..64})"
+API_RUNTIME_ID="sha256:$(printf '7%.0s' {1..64})"
 BAD_API_ID="sha256:$(printf '0%.0s' {1..64})"
 
 mkdir -p \
@@ -94,6 +95,7 @@ printf '%s\n' \
   '    "${UPDATE_TEST_API_RUNTIME_ID}") fixture="${UPDATE_TEST_API_RUNTIME_INSPECT}" ;;' \
   '    "${UPDATE_TEST_MINIO_ID}") fixture="${UPDATE_TEST_MINIO_INSPECT}" ;;' \
   '    "${UPDATE_TEST_REGISTRY_DEMO_ID}") fixture="${UPDATE_TEST_REGISTRY_DEMO_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_PAYMENT_SIMULATOR_ID}") fixture="${UPDATE_TEST_PAYMENT_SIMULATOR_INSPECT}" ;;' \
   '    "${UPDATE_TEST_BAD_API_ID}") fixture="${UPDATE_TEST_BAD_API_INSPECT}" ;;' \
   '    *) exit 1 ;;' \
   '  esac' \
@@ -110,6 +112,7 @@ printf '%s\n' \
   '      myscoutee) printf "%s\n" "myscoutee-api:999.0.0-prod" ;;' \
   '      minio) printf "%s\n" "myscoutee-minio:999.0.0-prod" ;;' \
   '      registry-demo) printf "%s\n" "myscoutee-registry:999.0.0-prod" ;;' \
+  '      payment-simulator) printf "%s\n" "myscoutee-payment-simulator:999.0.0-prod" ;;' \
   '      *) exit 1 ;;' \
   '    esac' \
   '    ;;' \
@@ -122,6 +125,7 @@ printf '%s\n' \
   '        myscoutee) printf "%s\n" "${UPDATE_TEST_API_RUNTIME_ID}" ;;' \
   '        minio) printf "%s\n" "${UPDATE_TEST_MINIO_ID}" ;;' \
   '        registry-demo) printf "%s\n" "${UPDATE_TEST_REGISTRY_DEMO_ID}" ;;' \
+  '        payment-simulator) printf "%s\n" "${UPDATE_TEST_PAYMENT_SIMULATOR_ID}" ;;' \
   '        *) exit 1 ;;' \
   '      esac' \
   '    fi' \
@@ -226,6 +230,8 @@ write_image_fixture \
 write_image_fixture \
   "registry-demo" "${REGISTRY_DEMO_ID}" "registry-demo" "10002:10002"
 write_image_fixture \
+  "payment-simulator" "${PAYMENT_SIMULATOR_ID}" "payment-simulator" "65532:65532"
+write_image_fixture \
   "bad-api" "${BAD_API_ID}" "tampered-profilemanagement" "10001:10001"
 
 export UPDATE_TEST_VERSION_FILE="${VERSION_FILE}"
@@ -238,6 +244,7 @@ export UPDATE_TEST_API_ID="${API_ID}"
 export UPDATE_TEST_API_RUNTIME_ID="${API_RUNTIME_ID}"
 export UPDATE_TEST_MINIO_ID="${MINIO_ID}"
 export UPDATE_TEST_REGISTRY_DEMO_ID="${REGISTRY_DEMO_ID}"
+export UPDATE_TEST_PAYMENT_SIMULATOR_ID="${PAYMENT_SIMULATOR_ID}"
 export UPDATE_TEST_BAD_API_ID="${BAD_API_ID}"
 export UPDATE_TEST_NGINX_BASE_INSPECT="${IMAGE_INSPECT_DIR}/nginx-base-inspect.json"
 export UPDATE_TEST_NGINX_INSPECT="${IMAGE_INSPECT_DIR}/nginx-inspect.json"
@@ -245,6 +252,7 @@ export UPDATE_TEST_API_INSPECT="${IMAGE_INSPECT_DIR}/api-inspect.json"
 export UPDATE_TEST_API_RUNTIME_INSPECT="${IMAGE_INSPECT_DIR}/api-runtime-inspect.json"
 export UPDATE_TEST_MINIO_INSPECT="${IMAGE_INSPECT_DIR}/minio-inspect.json"
 export UPDATE_TEST_REGISTRY_DEMO_INSPECT="${IMAGE_INSPECT_DIR}/registry-demo-inspect.json"
+export UPDATE_TEST_PAYMENT_SIMULATOR_INSPECT="${IMAGE_INSPECT_DIR}/payment-simulator-inspect.json"
 export UPDATE_TEST_BAD_API_INSPECT="${IMAGE_INSPECT_DIR}/bad-api-inspect.json"
 export PATH="${FAKE_BIN}:${PATH}"
 
@@ -273,6 +281,9 @@ MINIO_FINGERPRINT="$(
 REGISTRY_DEMO_FINGERPRINT="$(
   fingerprint_config "${IMAGE_INSPECT_DIR}/registry-demo-config.json"
 )"
+PAYMENT_SIMULATOR_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/payment-simulator-config.json"
+)"
 
 [[ "$("${FINGERPRINT_HELPER}" docker "${API_RUNTIME_ID}")" \
   == "${API_FINGERPRINT}" ]] \
@@ -285,11 +296,13 @@ jq -n \
   --arg apiId "${API_ID}" \
   --arg minioId "${MINIO_ID}" \
   --arg registryDemoId "${REGISTRY_DEMO_ID}" \
+  --arg paymentSimulatorId "${PAYMENT_SIMULATOR_ID}" \
   --arg nginxBaseFingerprint "${NGIN_BASE_FINGERPRINT}" \
   --arg nginxFingerprint "${NGIN_FINGERPRINT}" \
   --arg apiFingerprint "${API_FINGERPRINT}" \
   --arg minioFingerprint "${MINIO_FINGERPRINT}" \
   --arg registryDemoFingerprint "${REGISTRY_DEMO_FINGERPRINT}" \
+  --arg paymentSimulatorFingerprint "${PAYMENT_SIMULATOR_FINGERPRINT}" \
   '{
     schemaVersion: 1,
     releaseVersion: $version,
@@ -329,6 +342,13 @@ jq -n \
         reference: ("myscoutee-registry:" + $version + "-prod"),
         imageId: $registryDemoId,
         contentFingerprint: $registryDemoFingerprint
+      },
+      {
+        service: "payment-simulator",
+        container: "payment-simulator",
+        reference: ("myscoutee-payment-simulator:" + $version + "-prod"),
+        imageId: $paymentSimulatorId,
+        contentFingerprint: $paymentSimulatorFingerprint
       }
     ]
   }' > "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"

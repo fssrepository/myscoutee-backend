@@ -122,7 +122,7 @@
       why: "Prove free scoped Borrow cancel, reject and accept branches plus overlap-aware quantity and Asset Statistics without changing Event or generated-group membership.",
       action: "Do not start yet. On the next QA session, use Group A Resource Explore and follow the stable ASSET-BORROW-001 checklist with Nova, Riley and Casey.",
       expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation as the immutable sibling control.",
-      worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-DUMMY-001."
+      worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-001."
     }
   };
 

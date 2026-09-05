@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +59,29 @@ class PaymentSettlementTaskServiceTest {
         new PaymentSettlementTaskService(payments, operations, true).captureCompletedBookings();
 
         verify(operations).enqueueCapture(ended, BigDecimal.valueOf(8d), "event-settlement");
+    }
+
+    @Test
+    void releasesOnlyClientAuthorizationsWhoseFulfillmentWaitExceededTenMinutes() {
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        PaymentGatewayOperationService operations = mock(PaymentGatewayOperationService.class);
+        Payment expired = payment("expired-client", "initiated", "pending");
+        expired.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
+        expired.setCreatedDate(Instant.now().minusSeconds(11 * 60).toString());
+        Payment current = payment("current-client", "initiated", "pending");
+        current.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
+        current.setCreatedDate(Instant.now().minusSeconds(9 * 60).toString());
+        when(payments.findByStatusAndFulfillmentStatusAndFulfillmentKind("authorized", "pending", "client"))
+                .thenReturn(List.of(expired, current));
+        when(payments.findByStatusAndBookingStatus("authorized", "joined")).thenReturn(List.of());
+        when(payments.findByStatusAndBookingStatus("authorized", "cancelled")).thenReturn(List.of());
+        when(payments.save(expired)).thenReturn(expired);
+
+        new PaymentSettlementTaskService(payments, operations, true).captureCompletedBookings();
+
+        verify(payments).save(expired);
+        verify(payments, never()).save(current);
+        verify(operations).enqueueRelease(expired, "client-fulfillment-timeout");
     }
 
     private Payment payment(String id, String bookingStatus, String fulfillmentStatus) {

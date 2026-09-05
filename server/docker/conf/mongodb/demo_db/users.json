@@ -167,6 +167,15 @@
       "longitude": -97.7479
     },
     "name": "Farkas Anna",
+    "paymentIncomeTotals": {
+      "HUF": 4900
+    },
+    "paymentSpentTotals": {
+      "HUF": 8400
+    },
+    "paymentAllTotals": {
+      "HUF": 13300
+    },
     "physique": "Athletic",
     "profileStatus": "public",
     "statusText": "Recently Active",
@@ -2448,6 +2457,12 @@
       "longitude": -87.6346
     },
     "name": "Elijah Brooks",
+    "paymentIncomeTotals": {
+      "HUF": 12500
+    },
+    "paymentAllTotals": {
+      "HUF": 12500
+    },
     "physique": "Lean",
     "profileStatus": "friends only",
     "statusText": "Recently Active",
@@ -2949,6 +2964,15 @@
       "longitude": -71.0625
     },
     "name": "Alex Turner",
+    "paymentSpentTotals": {
+      "HUF": 17400
+    },
+    "paymentIncomeTotals": {
+      "HUF": 8400
+    },
+    "paymentAllTotals": {
+      "HUF": 25800
+    },
     "physique": "Average",
     "profileStatus": "friends only",
     "statusText": "Recently Active",

@@ -131,8 +131,10 @@ class OperatorConfigurationMapperTest {
                         "logoUrl",
                         "themePreset",
                         "revision",
+                        "paymentProviderId",
                         "socialLinks",
                         "privacyContact");
+        assertThat(json.path("paymentProviderId").isNull()).isTrue();
         assertThat(json.path("socialLinks").get(0).propertyNames())
                 .containsExactlyInAnyOrder(
                         "provider",
@@ -160,7 +162,7 @@ class OperatorConfigurationMapperTest {
                 .doesNotContain("adminEmails")
                 .doesNotContain("credential")
                 .doesNotContain("firebase")
-                .doesNotContain("payment");
+                .doesNotContain("\"payment\":");
     }
 
     @Test

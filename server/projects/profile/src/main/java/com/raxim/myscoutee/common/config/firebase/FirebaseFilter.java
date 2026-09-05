@@ -54,16 +54,22 @@ public class FirebaseFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (isPublicEntryBootstrapRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         Authentication existing =
                 SecurityContextHolder.getContext().getAuthentication();
         if (existing != null && existing.isAuthenticated()) {
             continueIfSessionActive(request, response, filterChain);
             return;
         }
-        if (DemoSessionRequestSupport.isOperatorRequest(request)
-                && (DemoSessionRequestSupport.isDemoSessionRequest(request)
-                        || !configProperties.isFirebaseEnabled())) {
-            authenticateDemoOperator(request);
+        if (DemoSessionRequestSupport.isDemoSessionRequest(request)) {
+            if (DemoSessionRequestSupport.isOperatorRequest(request)) {
+                authenticateDemoOperator(request);
+            } else {
+                authenticateDemoUser(request);
+            }
             continueIfSessionActive(request, response, filterChain);
             return;
         }
@@ -129,6 +135,14 @@ public class FirebaseFilter extends OncePerRequestFilter {
         setAuthentication(userDetails, null);
     }
 
+    private void authenticateDemoUser(HttpServletRequest request) {
+        String requestedUserId = request == null ? null : request.getHeader(DEMO_USER_ID);
+        if (!StringUtils.hasText(requestedUserId)) {
+            return;
+        }
+        setAuthentication(firebaseService.loadUserById(requestedUserId.trim()), null);
+    }
+
     private String normalizeRequestUserId(HttpServletRequest request) {
         String requestedUserId = request.getParameter("userId");
         if (!StringUtils.hasText(requestedUserId)
@@ -162,6 +176,22 @@ public class FirebaseFilter extends OncePerRequestFilter {
         String requestUri = request == null ? "" : request.getRequestURI();
         return requestUri.endsWith("/activities/chats/ws")
                 || requestUri.endsWith("/admin/notifications/ws");
+    }
+
+    private boolean isPublicEntryBootstrapRequest(HttpServletRequest request) {
+        String requestUri = request == null ? "" : request.getRequestURI();
+        return requestUri.equals("/deployment/configuration")
+                || requestUri.equals("/api/deployment/configuration")
+                || requestUri.equals("/i18n/bundle")
+                || requestUri.equals("/api/i18n/bundle")
+                || requestUri.equals("/auth/eligibility")
+                || requestUri.equals("/api/auth/eligibility")
+                || requestUri.equals("/auth/demo-users")
+                || requestUri.equals("/api/auth/demo-users")
+                || requestUri.equals("/landing")
+                || requestUri.equals("/api/landing")
+                || requestUri.startsWith("/landing/")
+                || requestUri.startsWith("/api/landing/");
     }
 
     private void continueIfSessionActive(

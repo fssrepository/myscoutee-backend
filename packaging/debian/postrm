@@ -35,10 +35,15 @@ if [[ "${1:-}" = "purge" ]]; then
     )"
     registry_demo_volume="${registry_demo_volume:-myscoutee-registry-demo-data-v1}"
     registry_demo_client_volume="${registry_demo_client_volume:-myscoutee-registry-demo-client-data-v1}"
+    payment_simulator_volume="$(
+      read_env_file_value PAYMENT_SIMULATOR_VOLUME_NAME "${env_file}" || true
+    )"
+    payment_simulator_volume="${payment_simulator_volume:-myscoutee-payment-simulator-data-v1}"
 
     for registry_volume in \
       "${registry_demo_volume}" \
-      "${registry_demo_client_volume}"; do
+      "${registry_demo_client_volume}" \
+      "${payment_simulator_volume}"; do
       if docker volume inspect "${registry_volume}" >/dev/null 2>&1 \
           && ! docker volume rm -f "${registry_volume}" >/dev/null 2>&1; then
         echo "Warning: could not remove MyScoutee volume ${registry_volume}." >&2
@@ -52,6 +57,9 @@ if [[ "${1:-}" = "purge" ]]; then
             /^myscoutee-nginx:/ ||
             /^myscoutee-minio:/ ||
             /^myscoutee-registry:/ {
+              print
+            }
+            /^myscoutee-payment-simulator:/ {
               print
             }
           ' \

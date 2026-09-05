@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.auth;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
@@ -235,6 +236,12 @@ public final class AuthDtos {
         }
     }
 
+    public record UserPaymentTotalsDto(
+            Map<String, Double> outgoing,
+            Map<String, Double> incoming,
+            Map<String, Double> all) {
+    }
+
     public record UserGameFilterPreferencesDto(
             Integer ageMin,
             Integer ageMax,
@@ -446,6 +453,7 @@ public final class AuthDtos {
             UserRealtimeCountersDto counters,
             UserImpressionsDto impressions,
             AssetTicketsPageDto offlineTicketSnapshot,
+            UserPaymentTotalsDto paymentTotals,
             String cursor,
             String serverTsIso) {
     }

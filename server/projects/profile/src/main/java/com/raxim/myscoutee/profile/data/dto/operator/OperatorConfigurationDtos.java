@@ -59,6 +59,7 @@ public final class OperatorConfigurationDtos {
             String logoUrl,
             DeploymentThemePreset themePreset,
             long revision,
+            String paymentProviderId,
             List<DeploymentSocialLinkDto> socialLinks,
             DeploymentPrivacyContactDto privacyContact) {
     }

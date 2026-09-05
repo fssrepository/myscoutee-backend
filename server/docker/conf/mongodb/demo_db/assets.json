@@ -2488,6 +2488,34 @@
           "endAtIso": "2026-05-16T12:30:00.000Z",
           "quantity": 1
         }
+      },
+      {
+        "_id": "payment-demo-alex-asset-request",
+        "userId": "af0436815ab38f4864dd1e24",
+        "name": "Alex Turner",
+        "initials": "AT",
+        "gender": "man",
+        "status": "accepted",
+        "note": "Paid demo booking.",
+        "requestKind": "borrow",
+        "requestedAtIso": "2026-08-17T09:14:00.000Z",
+        "booking": {
+          "eventId": "21746c9aacc985817e31cf9f",
+          "eventTitle": "Snowline Shuttle Briefing",
+          "subEventId": "gear-shuttle-subevent",
+          "subEventTitle": "Gear Shuttle",
+          "slotKey": "payment-demo-alex-asset",
+          "slotLabel": "Trail Access 4x4",
+          "timeframe": "Aug 17, 2026 · 11:15 AM - 2:15 PM",
+          "startAtIso": "2026-08-17T09:15:00.000Z",
+          "endAtIso": "2026-08-17T12:15:00.000Z",
+          "quantity": 1,
+          "totalAmount": 12500,
+          "currency": "HUF",
+          "acceptedPolicyIds": [],
+          "paymentSessionId": "pay_demo_alex_asset",
+          "inventoryApplied": true
+        }
       }
     ],
     "visibility": "Public",

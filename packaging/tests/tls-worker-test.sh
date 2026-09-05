@@ -32,6 +32,8 @@ printf '%s\n' \
   'LETSENCRYPT_ENABLED=false' \
   'WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://localhost' \
   'EMAIL_BASE_URL=https://localhost' \
+  'PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://localhost' \
+  'PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://localhost' \
   > "${MYSCOUTEE_TLS_ENV_FILE}"
 
 # shellcheck source=../scripts/myscoutee-tls-worker.sh
@@ -131,6 +133,12 @@ grep -Fxq \
 grep -Fxq 'EMAIL_BASE_URL=https://app.example.test' \
   "${MYSCOUTEE_TLS_ENV_FILE}" \
   || fail "manual mode did not derive application links from the selected domain"
+grep -Fxq 'PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://app.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not derive the simulator public origin"
+grep -Fxq 'PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://app.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not derive the simulator application origin"
 [[ "$(stat -c '%a' "${MANUAL_CERT}")" == "644" ]] \
   || fail "the operator certificate mode is not 0644"
 [[ "$(stat -c '%a' "${MANUAL_KEY}")" == "600" ]] \
@@ -193,6 +201,12 @@ grep -Fxq 'LETSENCRYPT_ENABLED=true' "${MYSCOUTEE_TLS_ENV_FILE}" \
 grep -Fxq 'EMAIL_BASE_URL=https://auto.example.test' \
   "${MYSCOUTEE_TLS_ENV_FILE}" \
   || fail "automatic mode did not update application links"
+grep -Fxq 'PAYMENT_SIMULATOR_PUBLIC_BASE_URL=https://auto.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "automatic mode did not update the simulator public origin"
+grep -Fxq 'PAYMENT_SIMULATOR_APPLICATION_BASE_URL=https://auto.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "automatic mode did not update the simulator application origin"
 jq -e '
   .enabled == true
   and .mode == "AUTOMATIC"

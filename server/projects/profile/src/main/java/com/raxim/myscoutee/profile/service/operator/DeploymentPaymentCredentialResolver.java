@@ -3,11 +3,15 @@ package com.raxim.myscoutee.profile.service.operator;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
 
 @Service
 public class DeploymentPaymentCredentialResolver {
@@ -16,12 +20,24 @@ public class DeploymentPaymentCredentialResolver {
 
     private final DeploymentConfigurationRepository repository;
     private final DeploymentConfigurationCrypto crypto;
+    private final PaymentSimulatorRegistrationClient simulatorClient;
 
+    @Autowired
     public DeploymentPaymentCredentialResolver(
+            DeploymentConfigurationRepository repository,
+            DeploymentConfigurationCrypto crypto,
+            PaymentSimulatorRegistrationClient simulatorClient) {
+        this.repository = Objects.requireNonNull(repository);
+        this.crypto = Objects.requireNonNull(crypto);
+        this.simulatorClient = Objects.requireNonNull(simulatorClient);
+    }
+
+    DeploymentPaymentCredentialResolver(
             DeploymentConfigurationRepository repository,
             DeploymentConfigurationCrypto crypto) {
         this.repository = Objects.requireNonNull(repository);
         this.crypto = Objects.requireNonNull(crypto);
+        this.simulatorClient = null;
     }
 
     /**
@@ -31,6 +47,11 @@ public class DeploymentPaymentCredentialResolver {
      */
     public String resolve(String providerId, String environmentFallback) {
         String normalizedProvider = normalize(providerId);
+        if (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO) {
+            return simulatorClient != null && simulatorClient.isEnabled()
+                    ? simulatorClient.credentialFor(normalizedProvider)
+                    : "";
+        }
         DeploymentConfiguration configuration = repository
                 .findById(DeploymentConfiguration.SINGLETON_ID)
                 .orElse(null);

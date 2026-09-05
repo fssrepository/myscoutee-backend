@@ -4,13 +4,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,6 +24,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDt
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.profile.service.EventCheckoutPricingService;
+import com.raxim.myscoutee.profile.service.PaymentProviderChangedException;
 import com.raxim.myscoutee.profile.service.PaymentService;
 
 class PaymentRestControllerTest {
@@ -39,6 +41,7 @@ class PaymentRestControllerTest {
                 mock(EventCheckoutBasketService.class),
                 pricingService,
                 mock(ActivitiesEventsService.class)))
+                .setControllerAdvice(new PaymentProviderChangedExceptionHandler())
                 .build();
     }
 
@@ -136,5 +139,41 @@ class PaymentRestControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Ez a promóciós kód nem érvényes ehhez az eseményhez."))
                 .andExpect(jsonPath("$.messageKey").value("event.checkout.promo.invalid"));
+    }
+
+    @Test
+    void providerChangeResponseCarriesTheCurrentProviderWithoutAnotherLookup() throws Exception {
+        when(paymentService.checkout(any(), any()))
+                .thenThrow(new PaymentProviderChangedException(
+                        HttpStatus.BAD_REQUEST,
+                        "barion"));
+
+        mockMvc.perform(post("/activities/events/checkout")
+                        .param("provider", "stripe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("PAYMENT_PROVIDER_CHANGED"))
+                .andExpect(jsonPath("$.message")
+                        .value("Payment provider changed to Barion. Reconnect your card."))
+                .andExpect(jsonPath("$.currentProvider").value("barion"));
+    }
+
+    @Test
+    void cashOnlyProviderChangeResponseKeepsTheMachineFieldAndNamesTheMode() throws Exception {
+        when(paymentService.checkout(any(), any()))
+                .thenThrow(new PaymentProviderChangedException(
+                        HttpStatus.BAD_REQUEST,
+                        null));
+
+        mockMvc.perform(post("/activities/events/checkout")
+                        .param("provider", "stripe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("PAYMENT_PROVIDER_CHANGED"))
+                .andExpect(jsonPath("$.message")
+                        .value("Payment provider changed to Cash only. Start payment again."))
+                .andExpect(jsonPath("$.currentProvider").isEmpty());
     }
 }

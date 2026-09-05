@@ -48,10 +48,11 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Event Explore dummy checkout | One terminal dummy payment, one inactive succeeded basket and one accepted event membership | Event Explore checkout, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute effects only; no external provider, capture or settlement work | `EVENT-CHECKOUT-DUMMY-001` |
+| Event Explore payment checkout | One terminal Stripe payment, one inactive succeeded basket and one accepted event membership; separate Cash-only control remains unsubmitted | Event Explore checkout, active-card assignment and expired-card guard, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute plus the selected demo-provider callback; Cash only has no card selector | `EVENT-CHECKOUT-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite or Join request | Pending asset-scoped membership plus one recipient notification | Asset Members pending row, full parent pending-counter chain and recipient bell | Asset acceptance/rejection and Asset-role notification | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
-| Asset Explore dummy checkout | One scoped dummy payment, borrow request, inventory reservation and later owner decision | Resource/Asset Explore basket and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox effects only; no external provider, capture or settlement work | `ASSET-CHECKOUT-DUMMY-001` |
+| Asset Explore payment checkout | One scoped Barion payment, borrow request, inventory reservation and later owner decision; isolated 3DS decline/timeout create no entitlement | Resource/Asset Explore basket, provider-owned 3DS wait/result and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox plus selected simulator callback work | `ASSET-CHECKOUT-001` |
+| Member side-menu Payment surfaces | Payment records remain immutable; one Stripe and one Barion registration create tokenized cards; expired-card cleanup changes only that card | Payment History filters/totals/summaries, Cards, provider registration, translated expiry notification | No Event/Asset producer; expiry job generation is proven separately by the scheduler integration smoke | `PAYMENT-METHODS-HISTORY-001` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources, sub-event badges and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` through `ASSET-ASSIGN-003` |
 | Tournament group resource assignment | Generated-group resource record and persisted group-runtime metrics | Group, stage/View Event and root-event aggregate counters | Parent tournament counter synchronization | `TOURNAMENT-RESOURCE-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
@@ -92,8 +93,8 @@ The principal checkpoint chains are:
 - `EVENT-FEEDBACK-006` is the isolated pending remove/restore branch. Run it
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
-- `EVENT-CHECKOUT-DUMMY-001` is an isolated direct paid-entry journey. It
-  proves the Event Explore review, resumable basket, demo-payment and accepted
+- `EVENT-CHECKOUT-001` is an isolated direct paid-entry journey. It proves the
+  Event Explore review, resumable basket, Stripe payment and accepted
   Activity Events destination without reusing the approval-before-payment or
   physical-ticket branches in `EVENT-TICKET-005`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
@@ -118,7 +119,7 @@ The principal checkpoint chains are:
 - `ASSET-LIFE-001` -> `ASSET-VIS-001` -> `ASSET-MEMBER-001` ->
   `ASSET-MEMBER-002` -> `ASSET-ASSIGN-001` -> `ASSET-ASSIGN-002` ->
   `ASSET-ASSIGN-003` -> `ASSET-BORROW-001` ->
-  `ASSET-CHECKOUT-DUMMY-001` -> `ASSET-AVAIL-001`: canonical
+  `ASSET-CHECKOUT-001` -> `ASSET-AVAIL-001`: canonical
   asset lifecycle, discovery, manager membership, borrowing, availability and
   normal sub-event assignment/cleanup are separate bounded branches.
 - `CONTENT-ADMIN-LIFECYCLE-001` is one isolated Content transaction: create
@@ -2919,18 +2920,18 @@ Status: **PASS** on 2026-08-05.
   next poll. No feedback was submitted, removed or otherwise mutated. Keep this
   as a separate checkpoint from `EVENT-IMPRESSION-001`.
 
-## Event dummy-checkout checkpoint
+## Event checkout checkpoint
 
-### `EVENT-CHECKOUT-DUMMY-001` — Event Explore dummy payment reaches accepted participation
+### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
 Status: **PREPARED / NOT STAGED / NOT RUN**.
 
 Stable user guide:
-[`EVENT-CHECKOUT-DUMMY-001.md`](../checklists/event/EVENT-CHECKOUT-DUMMY-001.md).
+[`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
 
 This is the direct paid-entry contract. It does not reuse
 `EVENT-TICKET-005`, whose staged Event deliberately requires Admin approval
-before payment and therefore never proves a manual click on the demo-payment
+before payment and therefore never proves a manual click on the Payment
 action.
 
 - Stage one published Public paid Event with Ticketing Off, no approval gate,
@@ -2946,15 +2947,15 @@ action.
   | State | Required visible actions/status | Forbidden action |
   | --- | --- | --- |
   | Fresh paid direct Event | Event Explore `Book Event`; checkout review `Join` | `Continue booking`, `Payment summary` |
-  | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Demo payment` | a second active basket/session |
+  | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Stripe` | a second active basket/session |
   | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
   | Full paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
-  | Free Event | `Join Event`/`Join` | demo-payment step or payment record |
-  | Successful direct dummy payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
+  | Free Event | `Join Event`/`Join` | payment step or payment record |
+  | Successful direct Stripe payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
 
 - On the fresh paid Event, Slot selection and every required policy gate the
   first review action. A paid optional item changes the displayed total once.
-  `Join` confirms the basket and opens the demo-payment phase; it is not yet
+  `Join` confirms the basket and opens the Stripe payment phase; it is not yet
   membership or payment success.
 - Close the payment phase once without paying. The basket icon and Event
   Explore card must expose `Continue booking`. Reopen in place and once after
@@ -2968,18 +2969,27 @@ action.
   and is disabled; the rest of the application remains responsive. The
   checkout closes on success instead of leaving an infinite spinner, frozen
   overlay or duplicate popup.
-- Immediate write oracle: exactly one `provider=dummy` terminal payment with
-  the selected immutable price/currency and `bookingStatus=joined`; one
+- The assign surface keeps expired and provider-mismatched cards visible but
+  unselectable. Both retain their artwork beneath the same white overlay. The
+  provider-mismatched card exposes `Retokenize >` with Retokenize/Delete while
+  keeping the checkout open. Provider authority is checked before a new
+  payment starts; an already identified in-flight payment/3DS session stays
+  pinned to its original provider, while any later new or periodic use of that
+  provider token fails with the short retokenization message.
+- Immediate write oracle: exactly one `provider=stripe`, terminal authorized
+  payment with the selected immutable price/currency and
+  `bookingStatus=joined`; one
   succeeded, inactive basket; one accepted Nova membership/participation
   overlay; occupancy `1 -> 2`; and the normal accepted-member chat/counter
   effects exactly once. Ticketing Off keeps physical tickets and both ticket
-  counters at zero. No capture, settlement, Registry or external provider
-  operation may run.
+  counters at zero. The Stripe simulator authorization belongs to this branch;
+  capture/settlement and Registry work are outside this checkpoint.
 - Immediate UI oracle: the paid target is present exactly once under Nova's
   Activity Events `Active` and `All` buckets. Its menu exposes `View Event`,
   read-only `Payment summary` and `Leave Event`; the summary returns the exact
-  Slot, optional item, accepted policy IDs, amount, currency, dummy provider
-  and approved/joined result. Merely opening it cannot write.
+  Slot, optional item, accepted policy IDs, amount, currency, Stripe provider,
+  selected payment method and authorized/joined result. Merely opening it
+  cannot write.
 - One clean reload must reconstruct the same accepted membership, bucket
   counters, menu actions and Payment summary from persisted state. The target
   must not return as a fresh Event Explore payment candidate. Reopening the
@@ -6464,16 +6474,16 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
   role. The accepted asset becomes assignment-eligible only for the exact
   generated-group booking scope; a sibling group remains unchanged.
 
-### `ASSET-CHECKOUT-DUMMY-001` — Asset Explore dummy payment reaches the scoped borrow destination
+### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **ACTIVE / BASELINE READY**.
+Status: **PREPARED / NOT STAGED / NOT RUN**.
 
 Stable user guide:
-[`ASSET-CHECKOUT-DUMMY-001.md`](../checklists/asset/ASSET-CHECKOUT-DUMMY-001.md).
+[`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
-reject and cancel decisions; they must not replay this row's successful dummy
+reject and cancel decisions; they must not replay this row's successful Barion
 payment.
 
 - Stage one Public paid Transport owned by Casey and discoverable by Nova
@@ -6491,7 +6501,7 @@ payment.
   | --- | --- | --- |
   | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
   | Saved review draft | Borrow Basket `Continue request` | a request/payment write |
-  | Payment-ready paid Asset | payment panel `Dummy pay`/`Ready to pay`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
+  | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
@@ -6501,7 +6511,7 @@ payment.
   availability and any unaccepted required policy disable the forward action
   and create no server write. A valid quantity/time/policy set produces one
   deterministic line item and total.
-- Select `Confirm borrow` once. This creates one active dummy checkout session
+- Select `Confirm borrow` once. This creates one active Barion checkout session
   and moves to the locked payment phase; it does not yet create the borrow
   request or assignment. Closing the surface leaves one Borrow Basket item
   with `Continue request`. In-place reopen and one clean reload must reconstruct
@@ -6513,7 +6523,7 @@ payment.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
-- Immediate write oracle: one terminal `provider=dummy` approved payment for
+- Immediate write oracle: one terminal `provider=barion` authorized payment for
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
   reservation/availability decrement for quantity `1`; and one pending
@@ -6523,7 +6533,7 @@ payment.
   reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
   and Casey sees Nova once as the pending borrower on the exact Asset/request.
   The summary contains the immutable timeframe, quantity, accepted policy,
-  amount/currency and recorded dummy-payment result. Opening it twice is a
+  amount/currency and recorded Barion/payment-method result. Opening it twice is a
   pure read.
 - Casey accepts that same pending request once through the normal Asset member
   action. The accepted projection and exact Event/Sub-event resource scope
@@ -7005,8 +7015,9 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 118 executable journeys after the 2026-09-02 dummy-payment
-coverage extension. All 81 passed rows remain individually immutable: only their
+The matrix contains 114 executable journeys after provider behavior was moved
+into its owning Event/Asset rows and the five obsolete External Payment rows
+were replaced by one Event-owned Core side-menu Payment checkpoint. All 86 passed rows remain individually immutable: only their
 owning `QA domain` may move, while ID, status, contract and evidence stay
 unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
@@ -7020,7 +7031,8 @@ most three browser identities at once; mobile observations replace, rather
 than add to, one desktop phase when three desktop accounts are already active.
 
 The XLSX uses the teal `EXT / optional` scope marker only for journeys whose
-stable ID starts with `OPERATOR-`, `PAYMENT-` or `DEPLOY-`. Local Admin work is
+stable ID starts with `OPERATOR-` or `DEPLOY-`. The Core
+`PAYMENT-METHODS-HISTORY-001` row is deliberately not External. Local Admin work is
 distributed to its actual Core owner; there is no separate Admin-optional
 execution bucket. Scope and execution status remain independent, and the overview reports
 separate Core and External/optional totals.
@@ -7032,12 +7044,14 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 -> QA-EXPANSION-CP10 -> QA-EXPANSION-CP11
 ```
 
-### `QA-EXPANSION-CP01` — payment authorization and provider callbacks
+### Retired source archive — payment authorization and provider callbacks
 
-Stable consolidated user guides:
-
-- [`PAYMENT-STRIPE-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-STRIPE-LIFECYCLE-001.md)
-- [`PAYMENT-BARION-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-BARION-LIFECYCLE-001.md)
+These former External Payment cases are not current matrix rows or separately
+scheduled pair-QA tests. Their product-visible requirements moved to
+`EVENT-CHECKOUT-001` (Stripe), `ASSET-CHECKOUT-001` (Barion/3DS)
+and `PAYMENT-METHODS-HISTORY-001` (side-menu history/cards). The obsolete
+standalone checkpoint guides were removed; the table below retains their
+implementation-oracle history.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7049,13 +7063,11 @@ Stable consolidated user guides:
 | `PAYMENT-BARION-001` | Select Barion, start DelayedCapture and authorize once; separately call the public callback with a malformed `PaymentId`. | Valid callback contains only a GUID `PaymentId`; MyScoutee reads v4 PaymentState, persists `Authorized`, fulfills once and retains provider-local transaction IDs without capture. Malformed IDs fail before credential resolution or provider traffic. |
 | `PAYMENT-BARION-002` | Exercise direct approval plus bank-challenge approve, decline, cancel and timeout independently. | Each branch maps to the provider-neutral state once; unsuccessful branches create no membership/ticket/capture and callback replay is idempotent. |
 
-### `QA-EXPANSION-CP02` — payment settlement, compensation and isolation
+### Retired source archive — payment settlement, compensation and isolation
 
-Stable consolidated user guides:
-
-- [`PAYMENT-SETTLEMENT-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SETTLEMENT-LIFECYCLE-001.md)
-- [`PAYMENT-PROVIDER-ROUTING-001.md`](../checklists/payment/PAYMENT-PROVIDER-ROUTING-001.md)
-- [`PAYMENT-SIMULATOR-LIFECYCLE-001.md`](../checklists/payment/PAYMENT-SIMULATOR-LIFECYCLE-001.md)
+These obsolete standalone checkpoint guides likewise have no current
+executable row and were removed. The table remains source-oracle history and
+must not be run as a second payment suite.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7068,6 +7080,12 @@ Stable consolidated user guides:
 | `PAYMENT-SIMULATOR-001` | Restart only the future simulator container between authorization and callback replay. | SQLite restores sessions, intents, Barion payments, event order and delivery audit; the same idempotency key returns the same resource and a changed request conflicts. |
 | `PAYMENT-SIMULATOR-SEC-001` | Inspect dev and production-resolved payment configuration and call test controls without capabilities. | Simulator accepts only test credentials, protects outcome/audit controls, binds only as configured in dev, is absent from production topology and production rejects custom API bases. |
 | `PAYMENT-PROVIDER-ROUTING-001` | Repeat equivalent checkout once with Stripe and once with Barion through operator selection. | The user action remains provider-neutral while provider resource IDs, callbacks and operations remain separate; changing selection never reuses the other provider's authorization. |
+
+The current free/no-payment control is `ASSET-BORROW-LIFECYCLE-001`; the
+Cash-only paid control is part of `EVENT-CHECKOUT-001`. Provider
+registration, expired-card notification/cleanup and Payment History are one
+Core checkpoint:
+[`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
 

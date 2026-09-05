@@ -64,6 +64,25 @@ class SessionMongoRoutingFilterTest {
                 .isEqualTo(MongoSessionMode.DEMO);
     }
 
+    @Test
+    void demoAdminRoutesToDemoButRealAdminStaysReal() throws Exception {
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(true);
+        SessionMongoRoutingFilter filter =
+                new SessionMongoRoutingFilter(properties);
+
+        MockHttpServletRequest demo = new MockHttpServletRequest(
+                "GET",
+                "/admin/payment-simulator/configuration-access");
+        demo.addHeader(DemoSessionRequestSupport.SESSION_KIND_HEADER, "demo");
+        assertThat(modeInside(filter, demo)).isEqualTo(MongoSessionMode.DEMO);
+
+        MockHttpServletRequest real = new MockHttpServletRequest(
+                "GET",
+                "/admin/payment-simulator/configuration-access");
+        assertThat(modeInside(filter, real)).isEqualTo(MongoSessionMode.REAL);
+    }
+
     private MongoSessionMode modeInside(
             SessionMongoRoutingFilter filter,
             MockHttpServletRequest request) throws Exception {

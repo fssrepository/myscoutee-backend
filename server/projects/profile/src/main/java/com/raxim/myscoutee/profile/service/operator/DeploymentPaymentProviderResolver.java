@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.profile.service.PaymentProviderChangedException;
 
 @Service
 public class DeploymentPaymentProviderResolver {
@@ -34,6 +35,11 @@ public class DeploymentPaymentProviderResolver {
         String activeProvider = normalize(
                 payment == null ? null : payment.getProviderId());
         if (!StringUtils.hasText(activeProvider)) {
+            if (StringUtils.hasText(normalize(requestedProvider))) {
+                throw new PaymentProviderChangedException(
+                        HttpStatus.BAD_REQUEST,
+                        null);
+            }
             throw unavailable(
                     "The operator has not selected a payment provider.");
         }
@@ -57,10 +63,9 @@ public class DeploymentPaymentProviderResolver {
         String requested = normalize(requestedProvider);
         if (StringUtils.hasText(requested)
                 && !activeProvider.equals(requested)) {
-            throw new ResponseStatusException(
+            throw new PaymentProviderChangedException(
                     HttpStatus.BAD_REQUEST,
-                    "Payment provider is controlled by the deployment operator; "
-                            + "this deployment uses " + activeProvider + ".");
+                    activeProvider);
         }
         return activeProvider;
     }

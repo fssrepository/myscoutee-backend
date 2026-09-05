@@ -1814,6 +1814,7 @@ public class AssetsService {
                         normalizeId(saved.getAssetId()),
                         assetRequestBookingSlotSourceId(nextRequest),
                         assetRequestBookingStartAtIso(nextRequest),
+                        safeNullableText(nextRequest.booking().endAtIso()),
                         nextCancellationPolicy);
             } else if (hasAssetBookingPriceRevision(previousRequest, nextRequest)) {
                 paymentService.recordAssetBookingPriceRevision(

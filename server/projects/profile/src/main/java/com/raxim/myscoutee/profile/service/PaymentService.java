@@ -17,18 +17,27 @@ import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
@@ -48,28 +57,81 @@ public class PaymentService {
     private static final String FULFILLMENT_PENDING = "pending";
     private static final String FULFILLMENT_SUCCEEDED = "succeeded";
     private static final String FULFILLMENT_FAILED = "failed";
+    public static final String FULFILLMENT_KIND_EVENT_JOIN = "event_join";
+    public static final String FULFILLMENT_KIND_CLIENT = "client";
 
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final EventCheckoutPricingService eventCheckoutPricingService;
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
+    private final SavedPaymentMethodsService savedPaymentMethodsService;
+    private final MongoTemplate mongoTemplate;
+    private final ActivityEventsRepository activityEventsRepository;
+    private final AssetsRepository assetsRepository;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
 
+    @Autowired
     public PaymentService(
             List<PaymentProcessor> processorList,
             PaymentsRepository paymentsRepository,
             EventCheckoutBasketService eventCheckoutBasketService,
             EventCheckoutPricingService eventCheckoutPricingService,
-            DeploymentPaymentProviderResolver paymentProviderResolver) {
+            DeploymentPaymentProviderResolver paymentProviderResolver,
+            SavedPaymentMethodsService savedPaymentMethodsService,
+            MongoTemplate mongoTemplate,
+            ActivityEventsRepository activityEventsRepository,
+            AssetsRepository assetsRepository) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.eventCheckoutPricingService = eventCheckoutPricingService;
         this.paymentProviderResolver = paymentProviderResolver;
+        this.savedPaymentMethodsService = savedPaymentMethodsService;
+        this.mongoTemplate = mongoTemplate;
+        this.activityEventsRepository = activityEventsRepository;
+        this.assetsRepository = assetsRepository;
+    }
+
+    PaymentService(
+            List<PaymentProcessor> processorList,
+            PaymentsRepository paymentsRepository,
+            EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService,
+            DeploymentPaymentProviderResolver paymentProviderResolver,
+            SavedPaymentMethodsService savedPaymentMethodsService,
+            MongoTemplate mongoTemplate) {
+        this(
+                processorList,
+                paymentsRepository,
+                eventCheckoutBasketService,
+                eventCheckoutPricingService,
+                paymentProviderResolver,
+                savedPaymentMethodsService,
+                mongoTemplate,
+                null,
+                null);
+    }
+
+    PaymentService(
+            List<PaymentProcessor> processorList,
+            PaymentsRepository paymentsRepository,
+            EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService,
+            DeploymentPaymentProviderResolver paymentProviderResolver) {
+        this(
+                processorList,
+                paymentsRepository,
+                eventCheckoutBasketService,
+                eventCheckoutPricingService,
+                paymentProviderResolver,
+                null,
+                null,
+                null,
+                null);
     }
 
     public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request, String provider) {
@@ -90,7 +152,7 @@ public class PaymentService {
         payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
-        paymentsRepository.save(payment);
+        saveAndProjectSpending(payment);
         eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "confirmed", sessionDto.id()));
         return sessionDto;
     }
@@ -111,19 +173,52 @@ public class PaymentService {
         payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
-        paymentsRepository.save(payment);
+        saveAndProjectSpending(payment);
         eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
         return sessionDto;
     }
 
     public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
+        return payCheckout(request, provider, null, FULFILLMENT_KIND_EVENT_JOIN);
+    }
+
+    public EventCheckoutSessionDto payCheckout(
+            EventCheckoutRequestDto request,
+            String provider,
+            String startedPaymentSessionId) {
+        return payCheckout(request, provider, startedPaymentSessionId, FULFILLMENT_KIND_EVENT_JOIN);
+    }
+
+    public EventCheckoutSessionDto authorizeClientCheckout(EventCheckoutRequestDto request, String provider) {
+        return payCheckout(request, provider, null, FULFILLMENT_KIND_CLIENT);
+    }
+
+    private EventCheckoutSessionDto payCheckout(
+            EventCheckoutRequestDto request,
+            String provider,
+            String startedPaymentSessionId,
+            String fulfillmentKind) {
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
+        Optional<Payment> startedPayment = findReusableAuthorization(
+                authoritativeRequest,
+                null,
+                fulfillmentKind).filter(payment -> paymentSessionMatches(payment, startedPaymentSessionId));
+        if (startedPayment.isPresent()) {
+            Payment payment = startedPayment.get();
+            eventCheckoutBasketService.saveBasket(withCheckoutState(
+                    authoritativeRequest,
+                    "pay",
+                    payment.getCheckoutSessionId()));
+            return toCheckoutSession(payment);
+        }
         String normalizedProvider = resolveConfiguredProvider(provider);
+        SavedPaymentMethod selectedPaymentMethod = validateSelectedPaymentMethod(authoritativeRequest, normalizedProvider);
         if (!enablePay) {
             EventCheckoutSessionDto sessionDto = createDummySession(authoritativeRequest, null);
             Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
             ensurePaymentRequestCompatible(payment, authoritativeRequest);
             hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
+            payment.setFulfillmentKind(fulfillmentKind);
             String sessionId = normalizeId(sessionDto.id());
             payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : sessionId);
             payment.setGatewaySessionId(sessionId);
@@ -132,12 +227,12 @@ public class PaymentService {
             payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
             payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
             payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
-            paymentsRepository.save(payment);
+            saveAndProjectSpending(payment);
             eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
             return sessionDto;
         }
 
-        Optional<Payment> reusable = findReusableAuthorization(authoritativeRequest, normalizedProvider);
+        Optional<Payment> reusable = findReusableAuthorization(authoritativeRequest, normalizedProvider, fulfillmentKind);
         if (reusable.isPresent()) {
             Payment payment = reusable.get();
             eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
@@ -146,20 +241,24 @@ public class PaymentService {
 
         Payment payment = new Payment();
         hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
+        payment.setFulfillmentKind(fulfillmentKind);
         payment.setCheckoutSessionId("pay_" + UUID.randomUUID());
         payment.setStatus(statusValue(AuthorizationStatus.AUTHORIZATION_PENDING));
         payment.setFulfillmentStatus(FULFILLMENT_PENDING);
         payment.setBookingStatus(BOOKING_STATUS_INITIATED);
         payment.setRefundStatus(REFUND_STATUS_NONE);
         payment.setCreatedDate(nowIso());
-        payment = paymentsRepository.save(payment);
+        payment = saveAndProjectSpending(payment);
 
         try {
             AuthorizationResult authorization = resolveProcessor(normalizedProvider)
-                    .prepareAuthorization(authoritativeRequest, payment.getCheckoutSessionId());
+                    .prepareAuthorization(
+                            authoritativeRequest,
+                            payment.getCheckoutSessionId(),
+                            selectedPaymentMethod.getProviderPaymentMethodRef());
             validateGatewayResult(payment, authorization);
             applyGatewayResult(payment, authorization);
-            payment = paymentsRepository.save(payment);
+            payment = saveAndProjectSpending(payment);
             eventCheckoutBasketService.saveBasket(withCheckoutState(
                     authoritativeRequest,
                     "pay",
@@ -170,7 +269,7 @@ public class PaymentService {
             payment.setFailedAtIso(nowIso());
             payment.setFulfillmentStatus(FULFILLMENT_FAILED);
             payment.setLastGatewayError(safeGatewayError(exception));
-            paymentsRepository.save(payment);
+            saveAndProjectSpending(payment);
             throw exception;
         }
     }
@@ -200,7 +299,7 @@ public class PaymentService {
                     ? eventIds
                     : eventIds.subList(eventIds.size() - 100, eventIds.size()));
         }
-        Payment saved = paymentsRepository.save(payment);
+        Payment saved = saveAndProjectSpending(payment);
         boolean newlyAuthorized = authorization.status() == AuthorizationStatus.AUTHORIZED
                 && !statusValue(AuthorizationStatus.AUTHORIZED).equals(previousStatus);
         return new GatewayTransition(saved, newlyAuthorized, false);
@@ -211,14 +310,14 @@ public class PaymentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment was not found."));
         payment.setFulfillmentStatus(succeeded ? FULFILLMENT_SUCCEEDED : FULFILLMENT_FAILED);
         payment.setLastGatewayError(succeeded ? null : safeText(failureReason));
-        return paymentsRepository.save(payment);
+        return saveAndProjectSpending(payment);
     }
 
     public Payment recordGatewayOperationFailure(String paymentId, RuntimeException failure) {
         Payment payment = paymentsRepository.findById(normalizeId(paymentId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment was not found."));
         payment.setLastGatewayError(safeGatewayError(failure));
-        return paymentsRepository.save(payment);
+        return saveAndProjectSpending(payment);
     }
 
     public AuthorizationResult releaseGatewayAuthorization(Payment payment, String operationKey) {
@@ -287,8 +386,22 @@ public class PaymentService {
             String sourceId,
             String slotSourceId,
             String bookingStartAtIso,
+            String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
-        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, null, cancellationPolicy);
+        Payment payment = recordBooking(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                bookingEndAtIso,
+                cancellationPolicy);
+        if (payment != null
+                && FULFILLMENT_KIND_CLIENT.equals(safeText(payment.getFulfillmentKind()))
+                && statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))
+                && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
+            markGatewayFulfillment(payment.getId(), true, null);
+        }
     }
 
     public EventCheckoutPaymentAuditDto loadPaymentAudit(
@@ -350,6 +463,7 @@ public class PaymentService {
         String rootSessionId = revisionRootSessionId(previous);
         Payment revision = new Payment();
         revision.setUserId(normalizedUserId);
+        revision.setRecipientUserId(previous.getRecipientUserId());
         revision.setSourceId(normalizedSourceId);
         revision.setProvider(hasText(previous.getProvider()) ? previous.getProvider() : "audit");
         revision.setStatus(hasText(previous.getStatus()) ? previous.getStatus() : "approved");
@@ -396,7 +510,7 @@ public class PaymentService {
         revision.setAdjustmentAmount(roundMoney(nextTotal - previousTotal));
         revision.setBookingQuantity(normalizedNextQuantity);
         revision.setCreatedDate(nowIso());
-        return toPaymentAudit(paymentsRepository.save(revision));
+        return toPaymentAudit(saveAndProjectSpending(revision));
     }
 
     public void cancelAssetBooking(
@@ -410,7 +524,7 @@ public class PaymentService {
         cancelBooking(payment, fallbackBookingStartAtIso, fallbackCancellationPolicy);
     }
 
-    private void recordBooking(
+    private Payment recordBooking(
             String paymentSessionId,
             String userId,
             String sourceId,
@@ -420,13 +534,13 @@ public class PaymentService {
             PricingCancellationPolicyDto cancellationPolicy) {
         Payment payment = findByAnySessionId(paymentSessionId).orElse(null);
         if (payment == null) {
-            return;
+            return null;
         }
 
         String normalizedUserId = normalizeId(userId);
         String normalizedSourceId = normalizeId(sourceId);
         if (!hasText(normalizedSourceId)) {
-            return;
+            return null;
         }
 
         if (hasText(normalizedUserId)) {
@@ -444,7 +558,7 @@ public class PaymentService {
         if (!hasText(payment.getRefundStatus())) {
             payment.setRefundStatus(REFUND_STATUS_NONE);
         }
-        paymentsRepository.save(payment);
+        return saveAndProjectSpending(payment);
     }
 
     public void cancelEventBooking(
@@ -487,7 +601,7 @@ public class PaymentService {
         if (!hasText(payment.getRefundStatus())) {
             payment.setRefundStatus(REFUND_STATUS_NONE);
         }
-        paymentsRepository.save(payment);
+        saveAndProjectSpending(payment);
         return true;
     }
 
@@ -551,7 +665,7 @@ public class PaymentService {
             payment.setRefundedAtIso(null);
             payment.setRefundRuleId(null);
             payment.setRefundNote("Authorization release pending.");
-            paymentsRepository.save(payment);
+            saveAndProjectSpending(payment);
             return;
         }
         String bookingStartAtIso = hasText(payment.getBookingStartAtIso())
@@ -579,7 +693,7 @@ public class PaymentService {
             payment.setRefundedAtIso(cancellationTimeIso);
             payment.setStatus(REFUND_STATUS_FULL.equals(refund.status()) ? "refunded" : "partially_refunded");
         }
-        paymentsRepository.save(payment);
+        saveAndProjectSpending(payment);
     }
 
     private Optional<Payment> findLatestOpenEventPayment(String userId, String sourceId) {
@@ -607,7 +721,8 @@ public class PaymentService {
 
     private Optional<Payment> findReusableAuthorization(
             EventCheckoutRequestDto request,
-            String provider) {
+            String provider,
+            String fulfillmentKind) {
         String userId = normalizeId(request == null ? null : request.userId());
         String sourceId = normalizeId(request == null ? null : request.sourceId());
         if (!hasText(userId) || !hasText(sourceId)) {
@@ -619,7 +734,12 @@ public class PaymentService {
                 statusValue(AuthorizationStatus.AUTHORIZED));
         return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
                 .filter(Objects::nonNull)
-                .filter(item -> provider.equals(safeText(item.getProvider())))
+                .filter(item -> !hasText(provider)
+                        || safeText(provider).equals(safeText(item.getProvider())))
+                .filter(item -> safeText(fulfillmentKind).equals(safeText(item.getFulfillmentKind())))
+                .filter(item -> Objects.equals(
+                        normalizeId(item.getPaymentMethodId()),
+                        normalizeId(request.paymentMethodId())))
                 .filter(item -> reusableStatuses.contains(safeText(item.getStatus())))
                 .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !FULFILLMENT_FAILED.equals(safeText(item.getFulfillmentStatus())))
@@ -629,6 +749,13 @@ public class PaymentService {
                 .filter(item -> safeCurrency(item.getCurrency()).equals(safeCurrency(request.currency())))
                 .filter(item -> roundMoney(safeAmount(item.getAmount())) == roundMoney(safeAmount(request.totalAmount())))
                 .max(Comparator.comparing(item -> sortableIso(item.getCreatedDate())));
+    }
+
+    private boolean paymentSessionMatches(Payment payment, String paymentSessionId) {
+        String expected = normalizeId(paymentSessionId);
+        return hasText(expected) && (expected.equals(normalizeId(payment.getCheckoutSessionId()))
+                || expected.equals(normalizeId(payment.getGatewaySessionId()))
+                || expected.equals(normalizeId(payment.getId())));
     }
 
     private Optional<Payment> findGatewayPayment(
@@ -746,16 +873,26 @@ public class PaymentService {
     }
 
     private String safeGatewayError(RuntimeException exception) {
-        if (exception instanceof ResponseStatusException responseStatusException
-                && hasText(responseStatusException.getReason())) {
-            return responseStatusException.getReason();
+        Throwable current = exception;
+        String firstMessage = null;
+        while (current != null) {
+            if (current instanceof ResponseStatusException responseStatusException
+                    && hasText(responseStatusException.getReason())) {
+                return responseStatusException.getReason();
+            }
+            if (!hasText(firstMessage) && hasText(current.getMessage())) {
+                firstMessage = current.getMessage().trim();
+            }
+            current = current.getCause();
         }
-        return exception == null ? "Payment provider failure." : exception.getClass().getSimpleName();
+        return hasText(firstMessage) ? firstMessage : "Payment provider failure.";
     }
 
     private void hydratePaymentRequest(Payment payment, EventCheckoutRequestDto request, String provider) {
         payment.setUserId(normalizeId(request == null ? null : request.userId()));
         payment.setSourceId(normalizeId(request == null ? null : request.sourceId()));
+        payment.setRecipientUserId(resolvePaymentRecipientUserId(payment));
+        payment.setPaymentMethodId(normalizeId(request == null ? null : request.paymentMethodId()));
         payment.setProvider(provider);
         payment.setAmount(request == null ? 0D : safeAmount(request.totalAmount()));
         payment.setCurrency(request == null ? "USD" : safeCurrency(request.currency()));
@@ -808,6 +945,92 @@ public class PaymentService {
                         .comparingInt(this::revisionNumber)
                         .thenComparing(payment -> sortableIso(payment.getCreatedDate())))
                 .orElse(anchor);
+    }
+
+    private Payment saveAndProjectSpending(Payment payment) {
+        double previousAccounted = roundMoney(safeAmount(payment == null ? null : payment.getAccountedSpentAmount()));
+        double nextAccounted = accountedSpentAmount(payment);
+        if (payment != null) {
+            payment.setAccountedSpentAmount(nextAccounted);
+        }
+        Payment saved = paymentsRepository.save(payment);
+        double delta = roundMoney(nextAccounted - previousAccounted);
+        String userId = normalizeId(saved.getUserId());
+        String recipientUserId = normalizeId(saved.getRecipientUserId());
+        String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
+        if (mongoTemplate != null
+                && currency.matches("[A-Z]{3}")
+                && Math.abs(delta) >= 0.005D) {
+            incrementPaymentTotal(userId, "paymentSpentTotals", currency, delta);
+            incrementPaymentTotal(userId, "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(recipientUserId, "paymentIncomeTotals", currency, delta);
+            incrementPaymentTotal(recipientUserId, "paymentAllTotals", currency, delta);
+        }
+        return saved;
+    }
+
+    private void incrementPaymentTotal(String userId, String field, String currency, double delta) {
+        if (!hasText(userId)) return;
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(userId)),
+                new Update().inc(field + "." + currency, delta),
+                Users.class);
+    }
+
+    private String resolvePaymentRecipientUserId(Payment payment) {
+        String existing = normalizeId(payment == null ? null : payment.getRecipientUserId());
+        if (hasText(existing)) return existing;
+        String sourceId = normalizeId(payment == null ? null : payment.getSourceId());
+        if (!hasText(sourceId)) return null;
+        if (activityEventsRepository != null) {
+            String eventRecipient = activityEventsRepository.findBySourceId(sourceId).stream()
+                    .filter(Objects::nonNull)
+                    .map(event -> firstText(
+                            event.getOrganizerUserId(),
+                            event.getCreatorUserId(),
+                            event.getOwnerUserId()))
+                    .filter(this::hasText)
+                    .findFirst()
+                    .orElse(null);
+            if (hasText(eventRecipient)) return eventRecipient;
+        }
+        if (assetsRepository != null) {
+            String assetRecipient = assetsRepository.findByAssetId(sourceId)
+                    .map(asset -> normalizeId(asset.getOwnerUserId()))
+                    .orElse(null);
+            if (!hasText(assetRecipient) && sourceId.contains(":")) {
+                String assetId = sourceId.substring(sourceId.lastIndexOf(':') + 1);
+                assetRecipient = assetsRepository.findByAssetId(assetId)
+                        .map(asset -> normalizeId(asset.getOwnerUserId()))
+                        .orElse(null);
+            }
+            if (hasText(assetRecipient)) return assetRecipient;
+        }
+        return null;
+    }
+
+    private String firstText(String... values) {
+        if (values == null) return null;
+        for (String value : values) {
+            String normalized = normalizeId(value);
+            if (hasText(normalized)) return normalized;
+        }
+        return null;
+    }
+
+    private double accountedSpentAmount(Payment payment) {
+        if (payment == null || !AUDIT_KIND_PAYMENT.equals(safeText(payment.getAuditKind()))) {
+            return 0D;
+        }
+        String status = safeText(payment.getStatus());
+        if (!Set.of("captured", "approved", "partially_refunded", "refunded").contains(status)) {
+            return 0D;
+        }
+        double gross = safeAmount(payment.getAmount());
+        double refunded = "refunded".equals(status)
+                ? gross
+                : Math.min(gross, safeAmount(payment.getRefundedAmount()));
+        return roundMoney(Math.max(0D, gross - refunded));
     }
 
     private String revisionRootSessionId(Payment payment) {
@@ -898,7 +1121,28 @@ public class PaymentService {
                 request.totalAmount(),
                 request.currency(),
                 request.pendingReason(),
-                normalizePromoCodes(request.appliedPromoCodes()));
+                normalizePromoCodes(request.appliedPromoCodes()),
+                request.paymentMethodId());
+    }
+
+    private SavedPaymentMethod validateSelectedPaymentMethod(EventCheckoutRequestDto request, String provider) {
+        String paymentMethodId = normalizeId(request == null ? null : request.paymentMethodId());
+        if (!hasText(paymentMethodId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select a saved payment card.");
+        }
+        if (savedPaymentMethodsService == null) {
+            throw new IllegalStateException("Saved payment methods are not configured.");
+        }
+        SavedPaymentMethod method = savedPaymentMethodsService.requireActive(
+                normalizeId(request.userId()),
+                paymentMethodId,
+                null);
+        if (enablePay && !safeText(provider).equalsIgnoreCase(safeText(method.getProvider()))) {
+            throw new PaymentProviderChangedException(
+                    HttpStatus.CONFLICT,
+                    provider);
+        }
+        return method;
     }
 
     private void ensurePaymentRequestCompatible(Payment payment, EventCheckoutRequestDto request) {
@@ -1033,9 +1277,12 @@ public class PaymentService {
     }
 
     private String resolveConfiguredProvider(String requestedProvider) {
-        return enablePay
+        if (!enablePay) {
+            return normalizeProvider(requestedProvider);
+        }
+        return savedPaymentMethodsService == null
                 ? paymentProviderResolver.resolveActiveProvider(requestedProvider)
-                : normalizeProvider(requestedProvider);
+                : savedPaymentMethodsService.resolvePaymentProvider(requestedProvider);
     }
 
     private String safeCurrency(String currency) {

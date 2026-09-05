@@ -248,11 +248,16 @@ main() {
     docker_compose up -d
   else
     require_existing_container_running mongodb
+    require_existing_container_running payment-simulator
     require_existing_container_running myscoutee
   fi
 
   wait_for_health mongodb healthy
+  wait_for_health payment-simulator healthy
   wait_for_health myscoutee healthy
+
+  docker exec payment-simulator /payment-simulator healthcheck >/dev/null
+  status_line ok "payment simulator internal health"
 
   local version fcv
   version="$(mongo_eval_root 'print(db.version())' | tail -n 1 | tr -d '\r')"

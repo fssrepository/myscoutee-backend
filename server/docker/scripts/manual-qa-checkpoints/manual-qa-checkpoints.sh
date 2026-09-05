@@ -216,6 +216,13 @@ Usage:
   bash manual-qa-checkpoints.sh repair-stage entry-consent ENTRY-CONSENT-003
   bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-003
   bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-003
+  bash manual-qa-checkpoints.sh stage payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh status payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-barion payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh reset payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
@@ -250,6 +257,48 @@ fail() {
   exit 2
 }
 
+payment_simulator_state() {
+  local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
+  local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
+  local response
+  response="$(curl --fail --silent --show-error \
+    -H "Authorization: Bearer ${api_key}" \
+    "${base_url}/myscoutee/v1/configuration")" \
+    || fail "The already-running payment simulator configuration is unavailable."
+  python3 -c 'import json,sys; value=json.load(sys.stdin); print(value.get("provider", ""), str(bool(value.get("requires3ds"))).lower(), str(bool(value.get("connected"))).lower())' <<<"${response}"
+}
+
+set_payment_simulator_cash_only() {
+  local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
+  local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
+  local temp_dir access_response access_url session_url result provider
+  temp_dir="$(mktemp -d)"
+  access_response="$(curl --fail --silent --show-error -X POST \
+    -H "Authorization: Bearer ${api_key}" \
+    "${base_url}/myscoutee/v1/configuration-access")" \
+    || { rm -r -- "${temp_dir}"; fail "Could not create a payment simulator configuration session."; }
+  access_url="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("url", ""))' <<<"${access_response}")"
+  [ -n "${access_url}" ] \
+    || { rm -r -- "${temp_dir}"; fail "Payment simulator returned no configuration URL."; }
+  session_url="$(python3 -c 'import sys,urllib.parse; value=urllib.parse.urlsplit(sys.argv[1]); print(urllib.parse.urlunsplit((value.scheme, value.netloc, "/configuration-session", "", "")))' "${access_url}")"
+  [ -n "${session_url}" ] \
+    || { rm -r -- "${temp_dir}"; fail "Payment simulator returned an invalid configuration URL."; }
+  curl --fail --silent --show-error --location \
+    --cookie-jar "${temp_dir}/cookies" \
+    --output /dev/null \
+    "${access_url}" \
+    || { rm -r -- "${temp_dir}"; fail "Could not exchange the payment simulator configuration ticket."; }
+  result="$(curl --fail --silent --show-error -X PUT \
+    --cookie "${temp_dir}/cookies" \
+    -H 'Content-Type: application/json' \
+    --data '{"provider":"none","requires3ds":false}' \
+    "${session_url}")" \
+    || { rm -r -- "${temp_dir}"; fail "Could not restore Cash only in the payment simulator."; }
+  rm -r -- "${temp_dir}"
+  provider="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("provider", ""))' <<<"${result}")"
+  [ "${provider}" = "none" ] || fail "Payment simulator did not restore Cash only."
+}
+
 run_scenario() {
   local command="$1"
   local scenario="$2"
@@ -264,6 +313,9 @@ run_scenario() {
   local mongo_host="${MANUAL_QA_MONGO_HOST:-127.0.0.1}"
   local mongo_port="${MANUAL_QA_MONGO_PORT:-27017}"
   local scenario_script=""
+  local payment_provider=""
+  local payment_requires_3ds="false"
+  local payment_provider_connected="false"
 
   case "${scenario}" in
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
@@ -318,8 +370,13 @@ run_scenario() {
         scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-checkpoints.js"
       fi
       ;;
+    payment-ui) scenario_script="${SCRIPT_DIR}/scenarios/payment-ui-checkpoints.js" ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
+
+  if [ "${scenario}" = "payment-ui" ]; then
+    read -r payment_provider payment_requires_3ds payment_provider_connected < <(payment_simulator_state)
+  fi
 
   case "${target_db}" in
     demo_db|e2e_db) ;;
@@ -362,6 +419,9 @@ run_scenario() {
       -e "MANUAL_QA_EVENT_IMAGE_URL=${MANUAL_QA_EVENT_IMAGE_URL:-}" \
       -e "MANUAL_QA_CHECKPOINT_ID=${checkpoint_id}" \
       -e "MANUAL_QA_SOURCE_CHECKPOINT_ID=${source_checkpoint_id}" \
+      -e "MANUAL_QA_PAYMENT_PROVIDER=${payment_provider}" \
+      -e "MANUAL_QA_PAYMENT_REQUIRES_3DS=${payment_requires_3ds}" \
+      -e "MANUAL_QA_PAYMENT_PROVIDER_CONNECTED=${payment_provider_connected}" \
       "${mongo_container}" \
       mongosh \
         --quiet \
@@ -391,6 +451,9 @@ run_scenario() {
     MANUAL_QA_EVENT_IMAGE_URL="${MANUAL_QA_EVENT_IMAGE_URL:-}" \
     MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" \
     MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
+    MANUAL_QA_PAYMENT_PROVIDER="${payment_provider}" \
+    MANUAL_QA_PAYMENT_REQUIRES_3DS="${payment_requires_3ds}" \
+    MANUAL_QA_PAYMENT_PROVIDER_CONNECTED="${payment_provider_connected}" \
     mongosh \
       --quiet \
       --host "${mongo_host}" \
@@ -553,6 +616,24 @@ case "${scenario}:${command}" in
   entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:repair-stage|entry-consent:verify|entry-consent:preview-v5|entry-consent:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  payment-ui:stage)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    set_payment_simulator_cash_only
+    run_scenario "status" "${scenario}" 30 "$3"
+    ;;
+  payment-ui:status|payment-ui:verify-stripe|payment-ui:verify-barion|payment-ui:verify-expired-cleanup|payment-ui:verify)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  payment-ui:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    set_payment_simulator_cash_only
     ;;
   event-domain:advance)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }

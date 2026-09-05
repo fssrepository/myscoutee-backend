@@ -22,5 +22,6 @@ export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSI
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
+export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
 
 MYSCOUTEE_SERVER_DIR="${SERVER_DIR}" "${SCRIPT_DIR}/myscoutee-compose.sh" up -d

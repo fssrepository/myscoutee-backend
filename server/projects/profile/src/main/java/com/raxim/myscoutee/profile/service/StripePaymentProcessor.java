@@ -16,6 +16,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.PaymentIntentCancelParams;
 import com.stripe.param.PaymentIntentCaptureParams;
+import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import java.math.BigDecimal;
@@ -143,6 +144,43 @@ public class StripePaymentProcessor implements PaymentProcessor {
                     session.getStatus());
         } catch (Exception e) {
             throw new RuntimeException("Failed to create Stripe session", e);
+        }
+    }
+
+    @Override
+    public AuthorizationResult prepareAuthorization(
+            EventCheckoutRequestDto request,
+            String paymentSessionId,
+            String providerPaymentMethodReference) {
+        String normalizedPaymentSessionId = normalizedRequired(
+                paymentSessionId,
+                "internal payment session id");
+        String paymentMethodReference = normalizedRequired(
+                providerPaymentMethodReference,
+                "Stripe PaymentMethod id");
+        String apiKey = requireApiKey();
+        PaymentRouting routing = routingResolver.require(getType());
+        String returnUrl = routing.successUrl(getType())
+                .replace("{CHECKOUT_SESSION_ID}", normalizedPaymentSessionId);
+        try {
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setAmount(toMinorUnits(request.totalAmount(), request.currency()))
+                    .setCurrency(request.currency().toLowerCase(Locale.ROOT))
+                    .setCaptureMethod(PaymentIntentCreateParams.CaptureMethod.MANUAL)
+                    .setPaymentMethod(paymentMethodReference)
+                    .addPaymentMethodType("card")
+                    .setConfirm(true)
+                    .setReturnUrl(returnUrl)
+                    .putMetadata("checkout_session_id", normalizedPaymentSessionId)
+                    .putMetadata("source_id", request.sourceId())
+                    .putMetadata("user_id", request.userId())
+                    .build();
+            PaymentIntent intent = PaymentIntent.create(
+                    params,
+                    requestOptions(apiKey, "myscoutee:authorization:" + normalizedPaymentSessionId));
+            return toAuthorizationResult(intent.getId(), intent);
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to authorize the saved Stripe payment method", exception);
         }
     }
 

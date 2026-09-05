@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.profile.data.document;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -86,6 +88,9 @@ public class Users {
     private Integer homeGameRateProjectionVersion;
     private String homeGameRateProjectionUpdatedAtIso;
     private Long homeGameLastRateActivityMs;
+    private Map<String, Double> paymentSpentTotals = new LinkedHashMap<>();
+    private Map<String, Double> paymentIncomeTotals = new LinkedHashMap<>();
+    private Map<String, Double> paymentAllTotals = new LinkedHashMap<>();
 
     public String getMongoId() {
         return mongoId;
@@ -469,6 +474,36 @@ public class Users {
 
     public void setHomeGameLastRateActivityMs(Long homeGameLastRateActivityMs) {
         this.homeGameLastRateActivityMs = homeGameLastRateActivityMs;
+    }
+
+    public Map<String, Double> getPaymentSpentTotals() {
+        return paymentSpentTotals;
+    }
+
+    public void setPaymentSpentTotals(Map<String, Double> paymentSpentTotals) {
+        this.paymentSpentTotals = paymentSpentTotals == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(paymentSpentTotals);
+    }
+
+    public Map<String, Double> getPaymentIncomeTotals() {
+        return paymentIncomeTotals;
+    }
+
+    public void setPaymentIncomeTotals(Map<String, Double> paymentIncomeTotals) {
+        this.paymentIncomeTotals = paymentIncomeTotals == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(paymentIncomeTotals);
+    }
+
+    public Map<String, Double> getPaymentAllTotals() {
+        return paymentAllTotals;
+    }
+
+    public void setPaymentAllTotals(Map<String, Double> paymentAllTotals) {
+        this.paymentAllTotals = paymentAllTotals == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(paymentAllTotals);
     }
 
     public record LocationCoordinatesRecord(

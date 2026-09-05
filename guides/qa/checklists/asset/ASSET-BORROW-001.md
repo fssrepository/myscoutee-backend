@@ -7,6 +7,12 @@ The cancel, reject and accept/capacity branches are one consolidated testcase.
 The report phrases below are savepoints inside that testcase, not separate
 matrix rows.
 
+This is the third Event/Asset payment-control combination: all three staged
+Assets are genuinely free, so no Payment block, provider badge, Cash-only
+recording action or card selector may appear. Cash-only paid behavior is owned
+by `EVENT-CHECKOUT-001`; Barion is owned by
+`ASSET-CHECKOUT-001`; Stripe is owned by the Event checkout journey.
+
 ## Actors and startup
 
 - **Casey** owns all three controlled Public/free Transport Assets and is the
@@ -17,12 +23,12 @@ matrix rows.
 - **Lina** is the sole Group B control. Her already-accepted quantity `2`
   reservation on the Capacity Asset must remain unchanged; no fourth browser
   is required.
-- Use only the isolated Casey/Nova/Riley browser sessions opened for this
-  checkpoint. Do not reuse old ASSET-MEMBER windows as evidence and do not
-  create replacement data or profiles.
+- The user exclusively opens and controls the configured isolated
+  Casey/Nova/Riley browser sessions. Do not reuse old ASSET-MEMBER windows as
+  evidence and do not create replacement data or profiles.
 - This checkpoint exercises free Borrow only. It must not create a checkout
   session, payment, payment summary or inventory-applied reservation. The paid
-  flow belongs to `ASSET-CHECKOUT-DUMMY-001`.
+  flow belongs to `ASSET-CHECKOUT-001`.
 - Select each Send, Cancel, Reject and Approve confirmation exactly once. Stop
   at the first mismatch; do not compensate with a second action, an ad-hoc
   reload or an API/Mongo write.

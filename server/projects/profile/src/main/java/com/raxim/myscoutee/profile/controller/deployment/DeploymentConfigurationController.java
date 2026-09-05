@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.controller.deployment;
 
+import java.util.Locale;
+
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,20 +10,51 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @RestController
 @RequestMapping("/deployment/configuration")
 public class DeploymentConfigurationController {
     private final OperatorConfigurationService service;
+    private final PaymentSimulatorRegistrationClient simulatorClient;
 
-    public DeploymentConfigurationController(OperatorConfigurationService service) {
+    public DeploymentConfigurationController(
+            OperatorConfigurationService service,
+            PaymentSimulatorRegistrationClient simulatorClient) {
         this.service = service;
+        this.simulatorClient = simulatorClient;
     }
 
     @GetMapping
     public DeploymentPublicConfigurationDto configuration() {
-        return service.publicConfiguration();
+        DeploymentPublicConfigurationDto configuration =
+                service.publicConfiguration();
+        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
+            return configuration;
+        }
+        PaymentSimulatorRegistrationClient.GatewayConfiguration simulatorConfiguration =
+                simulatorClient.isEnabled() ? simulatorClient.configuration() : null;
+        String provider = simulatorConfiguration == null
+                ? "none"
+                : simulatorConfiguration.provider();
+        String paymentProviderId = "none".equalsIgnoreCase(provider)
+                || simulatorConfiguration == null
+                || !simulatorConfiguration.connected()
+                ? null
+                : provider.trim().toLowerCase(Locale.ROOT);
+        return new DeploymentPublicConfigurationDto(
+                configuration.productName(),
+                configuration.logoCharacterIndex(),
+                configuration.homeLabel(),
+                configuration.logoUrl(),
+                configuration.themePreset(),
+                configuration.revision(),
+                paymentProviderId,
+                configuration.socialLinks(),
+                configuration.privacyContact());
     }
 
     @GetMapping("/firebase-config")

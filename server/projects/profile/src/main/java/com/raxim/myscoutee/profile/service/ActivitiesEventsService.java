@@ -3058,7 +3058,10 @@ public class ActivitiesEventsService {
                     null);
         }
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
-        EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
+        EventCheckoutSessionDto session = paymentService.payCheckout(
+                paymentRequest,
+                provider,
+                request.checkoutSessionId());
         if (session != null
                 && "gateway".equals(safeText(session.mode()))
                 && !Set.of("authorized", "captured", "approved").contains(safeText(session.status()))) {
@@ -3352,7 +3355,10 @@ public class ActivitiesEventsService {
                 basket.totalAmount(),
                 basket.currency(),
                 null,
-                basket.appliedPromoCodes());
+                basket.appliedPromoCodes(),
+                request.checkoutRequest() == null
+                        ? null
+                        : request.checkoutRequest().paymentMethodId());
     }
 
     private EventParticipationActionResultDto toParticipationActionResult(

@@ -252,7 +252,8 @@ public class EventCheckoutPricingService {
                 totalAmount,
                 currency,
                 request.pendingReason(),
-                appliedPromoCodes);
+                appliedPromoCodes,
+                request.paymentMethodId());
     }
 
     private MainQuote quoteMainItem(
