@@ -139,11 +139,7 @@ public class PaymentMethodExpiryTaskService {
                 "payment-card-expired-" + method.getId(),
                 payload,
                 SYSTEM_USER));
-        method.setStatus("expired");
-        method.setUpdatedAtIso(now);
-        method.setExpiredNotifiedAtIso(now);
-        repository.save(method);
-        return true;
+        return repository.markExpired(method.getId(), method.getUserId(), now) == 1;
     }
 
     private String safeText(String value) {

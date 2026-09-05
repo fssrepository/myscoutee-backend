@@ -135,6 +135,7 @@
 
     collection('savedPaymentMethods').insertOne({
       _id: CARD_ID,
+      version: 0,
       userId: targetUserId,
       provider: 'stripe',
       providerPaymentMethodRef: `${PREFIX}:provider-card`,
@@ -144,7 +145,7 @@
       expiryYear,
       expiryKey: expiryYear * 100 + expiryMonth,
       cardholderName: 'EXPIRY CHECKPOINT',
-      artworkKey: 'ruby',
+      artworkKey: 'coral',
       status: 'active',
       createdAtIso: preparedAtIso,
       updatedAtIso: preparedAtIso,

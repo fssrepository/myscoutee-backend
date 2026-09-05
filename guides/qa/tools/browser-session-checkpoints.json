@@ -1216,6 +1216,90 @@
         }
       ]
     },
+    "PAYMENT-METHODS-HISTORY-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · demo provider configuration"
+        },
+        {
+          "actor": "Alex payment member",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner · Payment history and Cards"
+        }
+      ]
+    },
+    "EVENT-CHECKOUT-DUMMY-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Event checkout owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · Event membership oracle"
+        },
+        {
+          "actor": "Nova Event checkout member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Stripe and Cash-only checkout"
+        },
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Stripe and Cash-only configuration"
+        }
+      ]
+    },
+    "ASSET-CHECKOUT-DUMMY-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset checkout owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · paid Asset request owner"
+        },
+        {
+          "actor": "Nova Asset checkout member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · Barion and 3DS checkout"
+        },
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation · Barion and 3DS configuration"
+        }
+      ]
+    },
     "ASSET-BORROW-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",

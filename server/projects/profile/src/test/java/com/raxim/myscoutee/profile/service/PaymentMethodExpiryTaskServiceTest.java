@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -54,11 +55,12 @@ class PaymentMethodExpiryTaskServiceTest {
         when(repository.findTop100ByStatusAndExpiryKeyLessThanAndExpiredNotifiedAtIsoIsNullOrderByExpiryKeyAsc(
                 eq("active"),
                 any(Integer.class))).thenReturn(List.of(method));
+        when(repository.markExpired(eq("payment-method-1"), eq("user-1"), anyString())).thenReturn(1L);
 
         service.markExpiredAndNotify();
 
         verify(outbox).enqueue(any(NotificationOutboxService.NotificationIntent.class));
-        verify(repository).save(method);
+        verify(repository).markExpired(eq("payment-method-1"), eq("user-1"), anyString());
         verify(registry).recordRun(
                 eq(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY),
                 eq(1),

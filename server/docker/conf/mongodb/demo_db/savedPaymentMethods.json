@@ -1,6 +1,7 @@
 [
   {
     "_id": "pm_demo_alex_visa_4242",
+    "version": 0,
     "userId": "af0436815ab38f4864dd1e24",
     "provider": "stripe",
     "providerPaymentMethodRef": "pm_sim_seed_alex_4242",
@@ -17,6 +18,7 @@
   },
   {
     "_id": "pm_demo_alex_visa_1881",
+    "version": 0,
     "userId": "af0436815ab38f4864dd1e24",
     "provider": "stripe",
     "providerPaymentMethodRef": "pm_sim_seed_alex_1881",
@@ -33,6 +35,7 @@
   },
   {
     "_id": "pm_demo_alex_expired_0008",
+    "version": 0,
     "userId": "af0436815ab38f4864dd1e24",
     "provider": "stripe",
     "providerPaymentMethodRef": "pm_sim_seed_alex_expired_0008",
@@ -42,7 +45,7 @@
     "expiryYear": 2026,
     "expiryKey": 202608,
     "cardholderName": "ALEX TURNER",
-    "artworkKey": "ruby",
+    "artworkKey": "coral",
     "status": "expired",
     "expiredNotifiedAtIso": "2026-09-01T02:15:00.000Z",
     "createdAtIso": "2026-06-01T10:00:00.000Z",

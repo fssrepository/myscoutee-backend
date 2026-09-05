@@ -22,6 +22,9 @@ public interface SavedPaymentMethodsRepository extends MongoRepository<SavedPaym
     @Query("{ '_id': ?0, 'userId': ?1, 'status': 'active' }")
     @Update("{ '$set': { 'status': 'replaced', 'replacedByPaymentMethodId': ?2, 'updatedAtIso': ?3 }, '$inc': { 'version': 1 } }")
     long markReplaced(String id, String userId, String replacementId, String updatedAtIso);
+    @Query("{ '_id': ?0, 'userId': ?1, 'status': 'active', 'expiredNotifiedAtIso': null }")
+    @Update("{ '$set': { 'status': 'expired', 'expiredNotifiedAtIso': ?2, 'updatedAtIso': ?2 }, '$inc': { 'version': 1 } }")
+    long markExpired(String id, String userId, String updatedAtIso);
     List<SavedPaymentMethod> findTop100ByStatusAndExpiryKeyLessThanAndExpiredNotifiedAtIsoIsNullOrderByExpiryKeyAsc(
             String status,
             Integer expiryKey);

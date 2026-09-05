@@ -170,8 +170,11 @@
     "paymentIncomeTotals": {
       "HUF": 4900
     },
+    "paymentSpentTotals": {
+      "HUF": 8400
+    },
     "paymentAllTotals": {
-      "HUF": 4900
+      "HUF": 13300
     },
     "physique": "Athletic",
     "profileStatus": "public",
@@ -2964,8 +2967,11 @@
     "paymentSpentTotals": {
       "HUF": 17400
     },
+    "paymentIncomeTotals": {
+      "HUF": 8400
+    },
     "paymentAllTotals": {
-      "HUF": 17400
+      "HUF": 25800
     },
     "physique": "Average",
     "profileStatus": "friends only",

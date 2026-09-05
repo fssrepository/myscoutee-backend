@@ -7,6 +7,12 @@ The cancel, reject and accept/capacity branches are one consolidated testcase.
 The report phrases below are savepoints inside that testcase, not separate
 matrix rows.
 
+This is the third Event/Asset payment-control combination: all three staged
+Assets are genuinely free, so no Payment block, provider badge, Cash-only
+recording action or card selector may appear. Cash-only paid behavior is owned
+by `EVENT-CHECKOUT-DUMMY-001`; Barion is owned by
+`ASSET-CHECKOUT-DUMMY-001`; Stripe is owned by the Event checkout journey.
+
 ## Actors and startup
 
 - **Casey** owns all three controlled Public/free Transport Assets and is the

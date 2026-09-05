@@ -1,5 +1,9 @@
 # ASSET-CHECKOUT-DUMMY-001 user test guide
 
+The ID is retained for ledger stability, but this Asset-owned journey now
+carries the Barion switch plus 3DS approve, decline and timeout branches. The
+provider lifecycle is not a separate External Payment row.
+
 This file is the tester's stable, repeatable click-by-click guide. It is not an
 execution log: do not check off its steps or add current dates, IDs, status or
 machine evidence to it.
@@ -13,11 +17,14 @@ separate matrix rows.
 - **Nova** performs the Resource/Asset Explore borrow checkout and every
   borrower-side observation.
 - **Casey** owns the paid Asset and performs only the owner request decision.
+- **Ava** selects connected Barion and the requested 3DS branch in the demo
+  Payment simulator.
 - Codex stages the exact Event/Sub-event resource scope, Assets, actors,
   checkout controls and browser sessions, then runs the independent machine
   oracles. Do not create replacement data or browser profiles.
-- This Core Asset checkpoint uses the in-product dummy payment path only. It
-  does not start Stripe, Barion, a payment simulator or another runtime.
+- This Core Asset checkpoint uses connected **Barion**. Its provider-owned 3DS
+  presentation is driven by the already-running payment simulator; no real
+  provider credential or card data is used.
 - Stop at the first mismatch. Do not compensate with another Pay, Confirm,
   Approve, reload or an API/Mongo action.
 
@@ -37,7 +44,7 @@ Begin only after Codex confirms this exact baseline:
   role;
 - the Free, unavailable and adjacent paid controls are staged, and the sibling
   Sub-event plus Riley are unchanged negative controls;
-- isolated Casey and Nova windows are open and identity-verified.
+- isolated Casey, Nova and Ava windows are open and identity-verified.
 
 ## Complete test journey
 
@@ -70,28 +77,29 @@ Begin only after Codex confirms this exact baseline:
 15. Confirm the checkout changes to a locked payment phase with all of the
     following:
 
-    - `Dummy pay` and `Ready to pay` presentation;
+    - the contextual Barion provider badge and `Ready to redirect` status;
     - the same timeframe, quantity, required policy, total and currency;
-    - `Back` and `Pay` actions;
+    - active-card selection, `Back` and `Pay` actions;
     - no pending/accepted borrower success yet.
 
 16. Confirm that the timeframe, quantity, policy and price controls are locked
     in the payment phase.
-17. Report this phrase and wait for Codex to capture exactly one active dummy
+17. Select one active Barion card. Confirm an expired card cannot be selected.
+18. Report this phrase and wait for Codex to capture exactly one active Barion
     session and zero request/assignment effects:
 
-    `ASSET-CHECKOUT-DUMMY-001 payment ready: Dummy pay visible, no borrow request yet`
+    `ASSET-CHECKOUT-DUMMY-001 payment ready: Barion card assigned, no borrow request yet`
 
 ### 2. Resume the same payment state and invalidate it through Back
 
-18. After Codex confirms `payment-ready`, close the checkout with its normal
+19. After Codex confirms `payment-ready`, close the checkout with its normal
     close control. Do not select Back or Pay.
-19. In the still-open Asset Explore surface, confirm the Borrow Basket shows
+20. In the still-open Asset Explore surface, confirm the Borrow Basket shows
     exactly one target item with `Continue request`.
-20. Open `Continue request`. Confirm the same payment phase returns with the
+21. Open `Continue request`. Confirm the same payment phase returns with the
     same session-owned timeframe, quantity, policy and total.
-21. Close it again and reload Nova exactly once.
-22. Return to the same Resource/Asset Explore scope. Confirm the Borrow Basket
+22. Close it again and reload Nova exactly once.
+23. Return to the same Resource/Asset Explore scope. Confirm the Borrow Basket
     still contains exactly one target item and `Continue request` reconstructs
     the same payment-ready state.
 
@@ -99,27 +107,28 @@ If the draft disappears, restarts at an empty review, changes amount, or
 creates another session merely because of reload, stop here. Report the exact
 mismatch; do not build a new attempt over the orphaned state.
 
-23. Select `Back` once.
-24. Confirm the editable review returns and `Pay` disappears.
-25. Change quantity from `1` to `2`, confirm the total changes, then change it
+24. Select `Back` once.
+25. Confirm the editable review returns and `Pay` disappears.
+26. Change quantity from `1` to `2`, confirm the total changes, then change it
     back to `1`. Keep the same valid timeframe and policy.
-26. Select `Confirm borrow` exactly once.
-27. Confirm `Dummy pay` returns with the final quantity `1` and original exact
+27. Select `Confirm borrow` exactly once.
+28. Confirm Barion returns with the final quantity `1` and original exact
     total. The superseded session must not remain selectable.
-28. Report:
+29. Report:
 
     `ASSET-CHECKOUT-DUMMY-001 revised payment ready: one final session owns quantity 1`
 
-29. Wait for Codex to prove that changed content did not reuse the old active
+30. Wait for Codex to prove that changed content did not reuse the old active
     session and that no request, reservation or assignment exists yet.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
-30. Select `Pay` **exactly once**.
-31. While the request is active, confirm the action changes to `Paying...` and
+31. In Ava, enable 3DS for Barion and save. In Nova, select `Pay` **exactly
+    once**.
+32. While the request is active, confirm the action changes to `Paying...` and
     cannot be selected again. The loading indication and surrounding page
     continue to render and respond.
-32. Wait for the normal request to finish. The following are immediate FAIL
+33. Wait for the normal request to finish. The following are immediate FAIL
     conditions:
 
     - `Paying...` remains indefinitely with no terminal response;
@@ -127,79 +136,96 @@ mismatch; do not build a new attempt over the orphaned state.
     - another payment/editor surface appears;
     - the UI claims success while showing an error or unchanged server state.
 
-33. Confirm the checkout closes once and the stale overlay does not block the
+34. Confirm MyScoutee keeps its waiting popup open while the provider-owned
+    confirmation remains pending. The popup shows a three-minute countdown,
+    can always be closed with X, and polls status without reloading the whole
+    MyScoutee popup.
+35. In Ava's always-visible `3DS` simulator menu, open the pending list and
+    approve Nova's exact transaction once. Confirm the provider view changes
+    from waiting to an animated success check, remains visible briefly, and
+    closes/returns automatically.
+36. Confirm the checkout closes once and the stale overlay does not block the
     Resource/Asset Explore surface.
-34. Do not start another Borrow. Report:
+37. Do not start another Borrow. Report:
 
     `ASSET-CHECKOUT-DUMMY-001 paid pending: checkout closed once and UI stayed responsive`
 
-35. Wait for Codex to prove one approved dummy payment, one exact pending
+38. Wait for Codex to prove one approved Barion payment, one exact pending
     borrow request/payment-session reference, one quantity reservation and no
     duplicate write.
 
 ### 4. Verify where the paid Asset request goes
 
-36. After Codex confirms `paid-pending`, inspect the same target card without
+39. After Codex confirms `paid-pending`, inspect the same target card without
     reloading.
-37. Confirm its availability changed exactly `3 → 2` and no duplicate card
+40. Confirm its availability changed exactly `3 → 2` and no duplicate card
     appeared.
-38. Open its menu. Confirm `Payment summary` is present and another same-scope
+41. Open its menu. Confirm `Payment summary` is present and another same-scope
     `Pay` action is absent.
-39. Open `Payment summary` once. Confirm it is read-only and contains the exact
+42. Open `Payment summary` once. Confirm it is read-only and contains the exact
     Event/Sub-event, timeframe, quantity `1`, required policy, amount/currency
-    and recorded dummy-payment result.
-40. Close and reopen `Payment summary`. The values remain identical and the
+    and recorded Barion/payment-method result.
+43. Close and reopen `Payment summary`. The values remain identical and the
     read creates no second request/payment/reservation.
-41. Open the exact Event/Sub-event resource view and confirm the paid Transport
+44. Open the exact Event/Sub-event resource view and confirm the paid Transport
     has one pending borrower/resource contribution, not an accepted or global
     assignment under another scope.
-42. In **Casey**, open
+45. In **Casey**, open
     `My Assets → Transport → QA ASSET-CHECKOUT-DUMMY-001 Paid Transport → Members`.
-43. Confirm Nova appears exactly once as a pending borrow request with the
+46. Confirm Nova appears exactly once as a pending borrow request with the
     exact Event/Sub-event timeframe, quantity and payment context.
-44. Confirm no Riley row and no request for the sibling Sub-event exists.
-45. Report:
+47. Confirm no Riley row and no request for the sibling Sub-event exists.
+48. Report:
 
     `ASSET-CHECKOUT-DUMMY-001 request destination ready: Nova pending once, availability 2`
 
 ### 5. Accept the paid request once and verify the terminal scope
 
-46. After Codex confirms the pending destination, open Nova's request menu in
+49. After Codex confirms the pending destination, open Nova's request menu in
     Casey's Asset Members surface.
-47. Select `Approve`, then confirm `Approve` exactly once.
-48. Without reloading, confirm Nova changes from pending to accepted exactly
+50. Select `Approve`, then confirm `Approve` exactly once.
+51. Without reloading, confirm Nova changes from pending to accepted exactly
     once and the pending indicator disappears.
-49. Confirm the Asset availability remains `2`; approval must not reserve the
+52. Confirm the Asset availability remains `2`; approval must not reserve the
     already paid quantity a second time.
-50. In Nova, reopen the exact Event/Sub-event resource view. Confirm the paid
+53. In Nova, reopen the exact Event/Sub-event resource view. Confirm the paid
     Transport is accepted/available in that scope and `Payment summary`
     remains read-only with the original payment values.
-51. Confirm Nova did not gain Event Admin, Tournament-group membership, global
+54. Confirm Nova did not gain Event Admin, Tournament-group membership, global
     Asset Manager or ownership of Casey's Asset.
-52. Report:
+55. Report:
 
     `ASSET-CHECKOUT-DUMMY-001 accepted: exact scoped resource, availability stays 2`
 
-53. Wait for Codex to capture the `accepted` oracle and exact unchanged sibling
+56. Wait for Codex to capture the `accepted` oracle and exact unchanged sibling
     controls.
 
 ### 6. Verify reload reconstruction and the action variants
 
-54. Reload Casey and Nova exactly once each.
-55. Reopen Casey's Asset Members and Nova's scoped resource/Payment summary.
+57. Reload Casey and Nova exactly once each.
+58. Reopen Casey's Asset Members and Nova's scoped resource/Payment summary.
     Confirm the same request identity, accepted state, payment values and
     availability `2` return.
-56. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
+59. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
     forward action is `Send borrow request` and no `Dummy pay`, `Pay`, session
     or payment summary is presented. Close without submitting.
-57. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
+60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
     for the selected window, or is absent from the availability-filtered
     Explore list. Do not change filters or dates to make it eligible.
-58. Confirm the adjacent paid Asset, sibling Sub-event and every Riley control
+61. From independent clean staged attempts, repeat only the provider terminal
+    controls: decline one 3DS request and let one request reach the three-minute
+    timeout without approval. In each case the waiting text must change to the
+    provider-owned animated X or timeout icon, remain visible briefly, then
+    close automatically; no request, reservation or entitlement may be
+    created. The user can still close either waiting popup early with X.
+62. Confirm Ava's 3DS list shows all concurrently pending member transactions
+    separately, or translated `nothing pending` when empty; selecting one row
+    opens only that user's confirmation surface.
+63. Confirm the adjacent paid Asset, sibling Sub-event and every Riley control
     remain unchanged and own no target session/payment identity.
-59. Report the terminal phrase:
+64. Report the terminal phrase:
 
-    `ASSET-CHECKOUT-DUMMY-001 UI complete: payment, request, acceptance and button variants persist`
+    `ASSET-CHECKOUT-DUMMY-001 UI complete: Barion approve, decline and timeout remain isolated`
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result and restores the fixture.
