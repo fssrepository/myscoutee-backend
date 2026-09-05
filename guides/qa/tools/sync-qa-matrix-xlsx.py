@@ -74,7 +74,6 @@ DOMAIN_METADATA = (
     ("Notifications", 7, "FFE2F0D9", "BELL"),
     ("Client platform", 6, "FFD9E1F2", "MOBILE"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
-    ("Payment", 4, "FF76A5AF", "PAYMENT"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
     ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
@@ -106,6 +105,7 @@ EXACT_DOMAIN_OVERRIDES = {
     "JOB-TOURNAMENT": "Tournament",
     "JOB-MESSAGES": "Notifications",
     "JOB-PURGE": "Identity & access",
+    "PAYMENT-METHODS-HISTORY-001": "Event",
 }
 
 ET.register_namespace("", NS)
@@ -145,7 +145,6 @@ def expected_domain(identifier: str) -> str:
             ("ADMIN", "BASE", "STAT", "MON", "GRAPH", "PARAM", "JOB", "STATIC"),
         ),
         ("Operator", ("OPERATOR",)),
-        ("Payment", ("PAYMENT",)),
         ("Deployment", ("DEPLOY",)),
     )
     for domain, prefixes in domain_prefixes:
@@ -922,9 +921,15 @@ def build_sheet(
         if values[0] == DOMAIN_PRIORITY_TITLE
     )
     domain_priority_header_row = domain_priority_title_row + 1
-    domain_priority_block_size = (
-        len(DOMAIN_METADATA) + DOMAIN_PRIORITY_BLOCK_COUNT - 1
-    ) // DOMAIN_PRIORITY_BLOCK_COUNT
+    core_domain_count = sum(
+        domain not in EXTERNAL_OPTIONAL_DOMAINS
+        for domain, _, _, _ in DOMAIN_METADATA
+    )
+    external_domain_count = len(DOMAIN_METADATA) - core_domain_count
+    domain_priority_block_size = max(
+        (core_domain_count + 1) // 2,
+        external_domain_count,
+    )
     domain_priority_last_row = domain_priority_header_row + domain_priority_block_size
     domain_priority_column_indexes = tuple(
         column_index
