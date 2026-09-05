@@ -1782,6 +1782,12 @@
     "value": "What it does"
   },
   {
+    "_id": "i18n-message-en-admin-testing",
+    "key": "admin.testing",
+    "lang": "en",
+    "value": "Testing"
+  },
+  {
     "_id": "i18n-message-en-admin-payment-simulator",
     "key": "admin.payment.simulator",
     "lang": "en",
@@ -20974,6 +20980,12 @@
     "key": "admin.jobs.what.it.does",
     "lang": "hu",
     "value": "Mit csinál"
+  },
+  {
+    "_id": "i18n-message-hu-admin-testing",
+    "key": "admin.testing",
+    "lang": "hu",
+    "value": "Tesztelés"
   },
   {
     "_id": "i18n-message-hu-admin-payment-simulator",
