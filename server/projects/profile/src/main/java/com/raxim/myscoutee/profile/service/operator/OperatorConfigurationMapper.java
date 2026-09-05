@@ -50,6 +50,7 @@ public class OperatorConfigurationMapper {
                 safeText(branding.getLogoUrl()),
                 theme(branding.getThemePreset()),
                 branding.getRevision(),
+                blankToNull(configuration.getPayment().getProviderId()),
                 toSocialLinks(configuration),
                 toPrivacyContact(configuration));
     }

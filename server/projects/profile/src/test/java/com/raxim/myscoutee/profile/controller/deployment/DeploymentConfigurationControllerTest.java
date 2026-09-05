@@ -33,6 +33,7 @@ class DeploymentConfigurationControllerTest {
                         "/media/public?key=images%2Fbranding%2Fmedium",
                         DeploymentThemePreset.FOREST,
                         7L,
+                        "stripe",
                         List.of(new DeploymentSocialLinkDto(
                                 "discord",
                                 "Discord",
@@ -56,6 +57,7 @@ class DeploymentConfigurationControllerTest {
                         .value("/media/public?key=images%2Fbranding%2Fmedium"))
                 .andExpect(jsonPath("$.themePreset").value("FOREST"))
                 .andExpect(jsonPath("$.revision").value(7))
+                .andExpect(jsonPath("$.paymentProviderId").value("stripe"))
                 .andExpect(jsonPath("$.socialLinks[0].provider")
                         .value("discord"))
                 .andExpect(jsonPath("$.socialLinks[0].label")
