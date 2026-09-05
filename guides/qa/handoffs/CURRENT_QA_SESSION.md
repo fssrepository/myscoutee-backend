@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 15:48 CEST
+Updated: 2026-09-05 15:54 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -74,19 +74,20 @@ resume pointer and reusable working method.
 checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery; the exact payment-ui baseline is staged; no manual step has run
-next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
+substage: implementation and versioned fixture preparation complete, including provider-change recovery and the final source-only Cash-only simulator logo cleanup; the exact payment-ui baseline is staged; no manual step has run
+next_replay_boundary: package and install the current source once because the final Cash-only simulator logo cleanup was deliberately not deployed, then do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
 fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
 browser_phase: no Payment browser was opened; the user exclusively controls browser actions. Canonical key-authenticated loopback SSH forwards are active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`; no Nginx or deployment URL override was applied
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
 queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: run one read-only payment-ui status; if it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
+required_resume: first build/install the current source without an Nginx, port or deployment-URL override; then run one read-only payment-ui status. If it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
-package_preflight: fresh unsigned local `myscoutee_1.0.0_amd64.deb` built with all six managed images, including payment simulator and registry-demo; package-content, deployment-qualification, registry-packaging and client-tools regression tests passed. The dedicated VMware SSH connection was restored, the package was installed as a same-version `1.0.0` refresh, and package-owned deployment qualification passed with MongoDB, Redis, MinIO, registry-demo, payment-simulator, API and Nginx healthy. The uploaded temporary DEB and local temporary credential configuration were removed after qualification
-last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; focused backend tests, production/development frontend builds, i18n synchronization, local release-package checks and VMware installation qualification passed; no Payment manual verdict is recorded
+package_preflight: the last installed unsigned local `myscoutee_1.0.0_amd64.deb` contained all six managed images, including payment simulator and registry-demo; package-content, deployment-qualification, registry-packaging and client-tools regression tests passed. The dedicated VMware SSH connection was restored, the package was installed as a same-version `1.0.0` refresh, and package-owned deployment qualification passed with MongoDB, Redis, MinIO, registry-demo, payment-simulator, API and Nginx healthy. The uploaded temporary DEB and local temporary credential configuration were removed after qualification. This installed package predates only the final source-only Cash-only logo/header cleanup described below
+latest_source_only: the payment simulator configuration page now has a dedicated `cash-only.svg` wordmark in both the active-provider header position and the Cash-only selector row, while its misplaced `TEST ONLY` header badge is removed. The SVG is served by the existing simulator asset route; JavaScript syntax, repository diff whitespace and dockerized `go test ./internal/simulator` checks pass. Per the user's instruction this tail change was not packaged or installed on VMware
+last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof, followed by the source-only Cash-only simulator logo/header cleanup. The real expiry scheduler -> outbox -> notification smoke passed; focused backend tests, production/development frontend builds, i18n synchronization, local release-package checks and VMware installation qualification passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -232,7 +233,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Do not open a browser yet. When the user starts pair QA, run the read-only
+Do not open a browser yet. When the user starts pair QA, first build and install
+the current source once so the deliberately source-only Cash-only simulator
+logo/header cleanup is present; preserve canonical ports and do not add an
+Nginx or deployment-URL override. Then run the read-only
 `status payment-ui PAYMENT-METHODS-HISTORY-001` gate. If it still reports
 `phase=not-staged`, stage it once, require `phase=baseline-ready` with simulator
 provider `none` (`Cash only`), and only then prepare the configured Ava/Alex
