@@ -3352,7 +3352,10 @@ public class ActivitiesEventsService {
                 basket.totalAmount(),
                 basket.currency(),
                 null,
-                basket.appliedPromoCodes());
+                basket.appliedPromoCodes(),
+                request.checkoutRequest() == null
+                        ? null
+                        : request.checkoutRequest().paymentMethodId());
     }
 
     private EventParticipationActionResultDto toParticipationActionResult(
