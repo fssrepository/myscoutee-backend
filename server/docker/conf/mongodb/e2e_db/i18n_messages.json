@@ -12396,6 +12396,12 @@
     "value": "Expires"
   },
   {
+    "_id": "i18n-message-en-payment-card-expired",
+    "key": "payment.card.expired",
+    "lang": "en",
+    "value": "Expired"
+  },
+  {
     "_id": "i18n-message-en-payment-card-select",
     "key": "payment.card.select",
     "lang": "en",
@@ -12618,6 +12624,30 @@
     "value": "Completed and pending payments will appear here."
   },
   {
+    "_id": "i18n-message-en-payment-history-filter-all",
+    "key": "payment.history.filter.all",
+    "lang": "en",
+    "value": "All"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-filter-expenses",
+    "key": "payment.history.filter.expenses",
+    "lang": "en",
+    "value": "Expenses"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-filter-income",
+    "key": "payment.history.filter.income",
+    "lang": "en",
+    "value": "Income"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-filter-title",
+    "key": "payment.history.filter.title",
+    "lang": "en",
+    "value": "Filter payment history"
+  },
+  {
     "_id": "i18n-message-en-payment-history-menu",
     "key": "payment.history.menu",
     "lang": "en",
@@ -12639,13 +12669,19 @@
     "_id": "i18n-message-en-payment-history-subtitle",
     "key": "payment.history.subtitle",
     "lang": "en",
-    "value": "Your payments and authorizations"
+    "value": "Expenses and income"
   },
   {
     "_id": "i18n-message-en-payment-history-title",
     "key": "payment.history.title",
     "lang": "en",
     "value": "Payment history"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-totals",
+    "key": "payment.history.totals",
+    "lang": "en",
+    "value": "Total expenses and income"
   },
   {
     "_id": "i18n-message-en-payment-registration-aria",
@@ -31680,6 +31716,12 @@
     "value": "Lejárat"
   },
   {
+    "_id": "i18n-message-hu-payment-card-expired",
+    "key": "payment.card.expired",
+    "lang": "hu",
+    "value": "Lejárt"
+  },
+  {
     "_id": "i18n-message-hu-payment-card-select",
     "key": "payment.card.select",
     "lang": "hu",
@@ -31902,6 +31944,30 @@
     "value": "A befejezett és függő fizetések itt jelennek meg."
   },
   {
+    "_id": "i18n-message-hu-payment-history-filter-all",
+    "key": "payment.history.filter.all",
+    "lang": "hu",
+    "value": "Összes"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-filter-expenses",
+    "key": "payment.history.filter.expenses",
+    "lang": "hu",
+    "value": "Kiadások"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-filter-income",
+    "key": "payment.history.filter.income",
+    "lang": "hu",
+    "value": "Bevételek"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-filter-title",
+    "key": "payment.history.filter.title",
+    "lang": "hu",
+    "value": "Fizetési előzmények szűrése"
+  },
+  {
     "_id": "i18n-message-hu-payment-history-menu",
     "key": "payment.history.menu",
     "lang": "hu",
@@ -31923,13 +31989,19 @@
     "_id": "i18n-message-hu-payment-history-subtitle",
     "key": "payment.history.subtitle",
     "lang": "hu",
-    "value": "Fizetéseid és engedélyezéseid"
+    "value": "Kiadások és bevételek"
   },
   {
     "_id": "i18n-message-hu-payment-history-title",
     "key": "payment.history.title",
     "lang": "hu",
     "value": "Fizetési előzmények"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-totals",
+    "key": "payment.history.totals",
+    "lang": "hu",
+    "value": "Összes kiadás és bevétel"
   },
   {
     "_id": "i18n-message-hu-payment-registration-aria",

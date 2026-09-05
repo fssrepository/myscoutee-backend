@@ -7,10 +7,12 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,7 +71,7 @@ public class SavedPaymentMethodsService {
     public synchronized SavedPaymentMethodsPageDto queryPage(String userId, Integer page, Integer size) {
         String ownerId = requiredId(userId, "Current user");
         reconcilePendingRegistrations(ownerId);
-        List<SavedPaymentMethod> all = activeMethods(ownerId);
+        List<SavedPaymentMethod> all = visibleMethods(ownerId);
         int pageSize = Math.min(MAX_ACTIVE_PAYMENT_METHODS, Math.max(1, size == null ? MAX_ACTIVE_PAYMENT_METHODS : size));
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
@@ -83,7 +85,9 @@ public class SavedPaymentMethodsService {
                 all.subList(from, to).stream().map(this::toDto).toList(),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                all.size() < MAX_ACTIVE_PAYMENT_METHODS && isDemoSimulatorMode() && pending == null,
+                activeMethods(ownerId).size() < MAX_ACTIVE_PAYMENT_METHODS
+                        && isDemoSimulatorMode()
+                        && pending == null,
                 pending == null ? null : toRegistrationDto(pending, null));
     }
 
@@ -252,7 +256,7 @@ public class SavedPaymentMethodsService {
         return method;
     }
 
-    public PaymentHistoryPageDto queryHistory(
+    public PaymentHistoryPageDto queryPaymentMethodHistory(
             String userId,
             String paymentMethodId,
             Integer page,
@@ -271,21 +275,40 @@ public class SavedPaymentMethodsService {
                 items,
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                spendingTotals(ownerId));
+                spendingTotals(ownerId),
+                incomeTotals(ownerId));
     }
 
     public PaymentHistoryPageDto queryHistory(String userId, Integer page, Integer size) {
+        return queryHistory(userId, "all", page, size);
+    }
+
+    public PaymentHistoryPageDto queryHistory(
+            String userId,
+            String direction,
+            Integer page,
+            Integer size) {
         String ownerId = requiredId(userId, "Current user");
-        List<Payment> all = paymentsRepository.findByUserIdOrderByCreatedDateDesc(ownerId);
+        String normalizedDirection = normalizeHistoryDirection(direction);
+        List<Payment> expenses = paymentsRepository.findByUserIdOrderByCreatedDateDesc(ownerId);
+        List<Payment> income = paymentsRepository.findByRecipientUserIdOrderByCreatedDateDesc(ownerId).stream()
+                .filter(payment -> !ownerId.equals(normalizeId(payment.getUserId())))
+                .toList();
+        List<Payment> all = switch (normalizedDirection) {
+            case "expenses" -> expenses;
+            case "income" -> income;
+            default -> mergeHistory(expenses, income);
+        };
         int pageSize = Math.min(50, Math.max(1, size == null ? 20 : size));
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
         int to = Math.min(all.size(), from + pageSize);
         return new PaymentHistoryPageDto(
-                all.subList(from, to).stream().map(this::toHistoryDto).toList(),
+                all.subList(from, to).stream().map(payment -> toHistoryDto(payment, ownerId)).toList(),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                spendingTotals(ownerId));
+                spendingTotals(ownerId),
+                incomeTotals(ownerId));
     }
 
     public synchronized void delete(String userId, String paymentMethodId) {
@@ -293,7 +316,7 @@ public class SavedPaymentMethodsService {
         SavedPaymentMethod method = paymentMethodsRepository
                 .findByIdAndUserId(requiredId(paymentMethodId, "Payment method"), ownerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment card was not found."));
-        if (!ACTIVE.equals(method.getStatus())) {
+        if (!ACTIVE.equals(method.getStatus()) && !"expired".equals(method.getStatus())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
         }
         if (isDemoSimulatorMode()) {
@@ -363,6 +386,12 @@ public class SavedPaymentMethodsService {
         return paymentMethodsRepository.findByUserIdAndStatusOrderByCreatedAtIsoDesc(userId, ACTIVE);
     }
 
+    private List<SavedPaymentMethod> visibleMethods(String userId) {
+        return paymentMethodsRepository.findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
+                userId,
+                List.of(ACTIVE, "expired"));
+    }
+
     private Duration effectiveRegistrationTtl() {
         return registrationTtl == null || registrationTtl.isZero() || registrationTtl.isNegative()
                 ? DEFAULT_REGISTRATION_TTL
@@ -401,16 +430,56 @@ public class SavedPaymentMethodsService {
     }
 
     private PaymentHistoryItemDto toHistoryDto(Payment payment) {
+        return toHistoryDto(payment, normalizeId(payment.getUserId()));
+    }
+
+    private PaymentHistoryItemDto toHistoryDto(Payment payment, String viewerUserId) {
         String paymentMethodId = normalizeId(payment.getPaymentMethodId());
         String userId = normalizeId(payment.getUserId());
         SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
                 ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
                 : null;
         return new PaymentHistoryItemDto(
-                payment.getId(), payment.getSourceId(), payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(),
+                payment.getId(), payment.getSourceId(),
+                normalizeId(payment.getUserId()).equals(normalizeId(viewerUserId)) ? "expense" : "income",
+                payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(),
                 payment.getAmount(), payment.getCurrency(), payment.getBookingStatus(),
                 payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate(),
                 paymentMethod);
+    }
+
+    private List<Payment> mergeHistory(List<Payment> expenses, List<Payment> income) {
+        Map<String, Payment> byId = new LinkedHashMap<>();
+        java.util.stream.Stream.concat(expenses.stream(), income.stream())
+                .filter(Objects::nonNull)
+                .forEach(payment -> byId.putIfAbsent(
+                        StringUtils.hasText(payment.getId()) ? payment.getId() : Integer.toHexString(System.identityHashCode(payment)),
+                        payment));
+        return byId.values().stream()
+                .sorted(Comparator.comparing(
+                        payment -> safeText(payment.getCreatedDate()),
+                        Comparator.reverseOrder()))
+                .toList();
+    }
+
+    private Map<String, Double> normalizedTotals(Map<String, Double> source) {
+        Map<String, Double> normalized = new LinkedHashMap<>();
+        (source == null ? Map.<String, Double>of() : source).entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> normalized.put(
+                        entry.getKey(),
+                        Math.round(Math.max(0D, entry.getValue() == null ? 0D : entry.getValue()) * 100D) / 100D));
+        return Map.copyOf(normalized);
+    }
+
+    private String normalizeHistoryDirection(String value) {
+        String direction = safeText(value).toLowerCase(Locale.ROOT);
+        if (!Set.of("all", "expenses", "income").contains(direction)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Payment history direction must be all, expenses, or income.");
+        }
+        return direction;
     }
 
     private Map<String, Double> spendingTotals(String userId) {
@@ -428,6 +497,13 @@ public class SavedPaymentMethodsService {
                     }
                 });
         return Map.copyOf(normalized);
+    }
+
+    private Map<String, Double> incomeTotals(String userId) {
+        Map<String, Double> stored = usersRepository.findByUserId(userId)
+                .map(com.raxim.myscoutee.profile.data.document.Users::getPaymentIncomeTotals)
+                .orElse(Map.of());
+        return normalizedTotals(stored);
     }
 
     private String normalizeProvider(String value) {

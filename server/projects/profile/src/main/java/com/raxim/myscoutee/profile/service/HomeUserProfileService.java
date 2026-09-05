@@ -69,6 +69,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserNotificationPreferencesDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPaymentTotalsDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPersonalityTraitDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
@@ -512,6 +513,7 @@ public class HomeUserProfileService {
                 counters,
                 impressions,
                 offlineTicketSnapshot,
+                paymentTotalsDto(user),
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString());
     }
@@ -2622,8 +2624,9 @@ public class HomeUserProfileService {
             String requestCursor) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 38
-                ? 36
+        int fingerprintOffset = cursorPartCount >= 39
+                ? 37
+                : cursorPartCount >= 38 ? 36
                 : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
@@ -2708,8 +2711,35 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
                 String.valueOf(normalizeCount(counters.notifications())),
+                paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()));
+    }
+
+    private UserPaymentTotalsDto paymentTotalsDto(Users user) {
+        return new UserPaymentTotalsDto(
+                normalizedPaymentTotals(user == null ? null : user.getPaymentSpentTotals()),
+                normalizedPaymentTotals(user == null ? null : user.getPaymentIncomeTotals()),
+                normalizedPaymentTotals(user == null ? null : user.getPaymentAllTotals()));
+    }
+
+    private Map<String, Double> normalizedPaymentTotals(Map<String, Double> source) {
+        Map<String, Double> normalized = new LinkedHashMap<>();
+        (source == null ? Map.<String, Double>of() : source).entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> {
+                    String currency = safeText(entry.getKey()).toUpperCase(Locale.ROOT);
+                    double amount = entry.getValue() == null ? 0D : Math.max(0D, entry.getValue());
+                    if (currency.matches("[A-Z]{3}")) {
+                        normalized.put(currency, Math.round(amount * 100D) / 100D);
+                    }
+                });
+        return Map.copyOf(normalized);
+    }
+
+    private String paymentTotalsFingerprint(Users user) {
+        UserPaymentTotalsDto totals = paymentTotalsDto(user);
+        return Integer.toHexString(Objects.hash(totals.outgoing(), totals.incoming(), totals.all()));
     }
 
     private void recordSessionAction(String userId, String action, String metadata) {

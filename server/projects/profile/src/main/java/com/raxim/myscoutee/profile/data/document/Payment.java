@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 @Document(collection = "payments")
 @CompoundIndexes({
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
+    @CompoundIndex(name = "payment_recipient_created", def = "{'recipientUserId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_revision_root", def = "{'revisionRootSessionId': 1, 'revisionNumber': -1, 'createdDate': -1}"),
     @CompoundIndex(
@@ -30,6 +31,7 @@ public class Payment {
     @Version
     private Long version;
     private String userId;
+    private String recipientUserId;
     private String sourceId;
     private String paymentMethodId;
     private String provider;
@@ -91,6 +93,9 @@ public class Payment {
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
+    public String getRecipientUserId() { return recipientUserId; }
+    public void setRecipientUserId(String recipientUserId) { this.recipientUserId = recipientUserId; }
 
     public String getSourceId() { return sourceId; }
     public void setSourceId(String sourceId) { this.sourceId = sourceId; }

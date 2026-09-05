@@ -89,6 +89,8 @@ public class Users {
     private String homeGameRateProjectionUpdatedAtIso;
     private Long homeGameLastRateActivityMs;
     private Map<String, Double> paymentSpentTotals = new LinkedHashMap<>();
+    private Map<String, Double> paymentIncomeTotals = new LinkedHashMap<>();
+    private Map<String, Double> paymentAllTotals = new LinkedHashMap<>();
 
     public String getMongoId() {
         return mongoId;
@@ -482,6 +484,26 @@ public class Users {
         this.paymentSpentTotals = paymentSpentTotals == null
                 ? new LinkedHashMap<>()
                 : new LinkedHashMap<>(paymentSpentTotals);
+    }
+
+    public Map<String, Double> getPaymentIncomeTotals() {
+        return paymentIncomeTotals;
+    }
+
+    public void setPaymentIncomeTotals(Map<String, Double> paymentIncomeTotals) {
+        this.paymentIncomeTotals = paymentIncomeTotals == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(paymentIncomeTotals);
+    }
+
+    public Map<String, Double> getPaymentAllTotals() {
+        return paymentAllTotals;
+    }
+
+    public void setPaymentAllTotals(Map<String, Double> paymentAllTotals) {
+        this.paymentAllTotals = paymentAllTotals == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(paymentAllTotals);
     }
 
     public record LocationCoordinatesRecord(

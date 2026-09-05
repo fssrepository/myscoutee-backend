@@ -36,6 +36,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutReque
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
@@ -65,6 +67,8 @@ public class PaymentService {
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
     private final SavedPaymentMethodsService savedPaymentMethodsService;
     private final MongoTemplate mongoTemplate;
+    private final ActivityEventsRepository activityEventsRepository;
+    private final AssetsRepository assetsRepository;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
@@ -77,7 +81,9 @@ public class PaymentService {
             EventCheckoutPricingService eventCheckoutPricingService,
             DeploymentPaymentProviderResolver paymentProviderResolver,
             SavedPaymentMethodsService savedPaymentMethodsService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            ActivityEventsRepository activityEventsRepository,
+            AssetsRepository assetsRepository) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
@@ -86,6 +92,28 @@ public class PaymentService {
         this.paymentProviderResolver = paymentProviderResolver;
         this.savedPaymentMethodsService = savedPaymentMethodsService;
         this.mongoTemplate = mongoTemplate;
+        this.activityEventsRepository = activityEventsRepository;
+        this.assetsRepository = assetsRepository;
+    }
+
+    PaymentService(
+            List<PaymentProcessor> processorList,
+            PaymentsRepository paymentsRepository,
+            EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService,
+            DeploymentPaymentProviderResolver paymentProviderResolver,
+            SavedPaymentMethodsService savedPaymentMethodsService,
+            MongoTemplate mongoTemplate) {
+        this(
+                processorList,
+                paymentsRepository,
+                eventCheckoutBasketService,
+                eventCheckoutPricingService,
+                paymentProviderResolver,
+                savedPaymentMethodsService,
+                mongoTemplate,
+                null,
+                null);
     }
 
     PaymentService(
@@ -100,6 +128,8 @@ public class PaymentService {
                 eventCheckoutBasketService,
                 eventCheckoutPricingService,
                 paymentProviderResolver,
+                null,
+                null,
                 null,
                 null);
     }
@@ -413,6 +443,7 @@ public class PaymentService {
         String rootSessionId = revisionRootSessionId(previous);
         Payment revision = new Payment();
         revision.setUserId(normalizedUserId);
+        revision.setRecipientUserId(previous.getRecipientUserId());
         revision.setSourceId(normalizedSourceId);
         revision.setProvider(hasText(previous.getProvider()) ? previous.getProvider() : "audit");
         revision.setStatus(hasText(previous.getStatus()) ? previous.getStatus() : "approved");
@@ -824,6 +855,7 @@ public class PaymentService {
     private void hydratePaymentRequest(Payment payment, EventCheckoutRequestDto request, String provider) {
         payment.setUserId(normalizeId(request == null ? null : request.userId()));
         payment.setSourceId(normalizeId(request == null ? null : request.sourceId()));
+        payment.setRecipientUserId(resolvePaymentRecipientUserId(payment));
         payment.setPaymentMethodId(normalizeId(request == null ? null : request.paymentMethodId()));
         payment.setProvider(provider);
         payment.setAmount(request == null ? 0D : safeAmount(request.totalAmount()));
@@ -888,17 +920,66 @@ public class PaymentService {
         Payment saved = paymentsRepository.save(payment);
         double delta = roundMoney(nextAccounted - previousAccounted);
         String userId = normalizeId(saved.getUserId());
+        String recipientUserId = normalizeId(saved.getRecipientUserId());
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
         if (mongoTemplate != null
-                && hasText(userId)
                 && currency.matches("[A-Z]{3}")
                 && Math.abs(delta) >= 0.005D) {
-            mongoTemplate.updateFirst(
-                    Query.query(Criteria.where("userId").is(userId)),
-                    new Update().inc("paymentSpentTotals." + currency, delta),
-                    Users.class);
+            incrementPaymentTotal(userId, "paymentSpentTotals", currency, delta);
+            incrementPaymentTotal(userId, "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(recipientUserId, "paymentIncomeTotals", currency, delta);
+            incrementPaymentTotal(recipientUserId, "paymentAllTotals", currency, delta);
         }
         return saved;
+    }
+
+    private void incrementPaymentTotal(String userId, String field, String currency, double delta) {
+        if (!hasText(userId)) return;
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(userId)),
+                new Update().inc(field + "." + currency, delta),
+                Users.class);
+    }
+
+    private String resolvePaymentRecipientUserId(Payment payment) {
+        String existing = normalizeId(payment == null ? null : payment.getRecipientUserId());
+        if (hasText(existing)) return existing;
+        String sourceId = normalizeId(payment == null ? null : payment.getSourceId());
+        if (!hasText(sourceId)) return null;
+        if (activityEventsRepository != null) {
+            String eventRecipient = activityEventsRepository.findBySourceId(sourceId).stream()
+                    .filter(Objects::nonNull)
+                    .map(event -> firstText(
+                            event.getOrganizerUserId(),
+                            event.getCreatorUserId(),
+                            event.getOwnerUserId()))
+                    .filter(this::hasText)
+                    .findFirst()
+                    .orElse(null);
+            if (hasText(eventRecipient)) return eventRecipient;
+        }
+        if (assetsRepository != null) {
+            String assetRecipient = assetsRepository.findByAssetId(sourceId)
+                    .map(asset -> normalizeId(asset.getOwnerUserId()))
+                    .orElse(null);
+            if (!hasText(assetRecipient) && sourceId.contains(":")) {
+                String assetId = sourceId.substring(sourceId.lastIndexOf(':') + 1);
+                assetRecipient = assetsRepository.findByAssetId(assetId)
+                        .map(asset -> normalizeId(asset.getOwnerUserId()))
+                        .orElse(null);
+            }
+            if (hasText(assetRecipient)) return assetRecipient;
+        }
+        return null;
+    }
+
+    private String firstText(String... values) {
+        if (values == null) return null;
+        for (String value : values) {
+            String normalized = normalizeId(value);
+            if (hasText(normalized)) return normalized;
+        }
+        return null;
     }
 
     private double accountedSpentAmount(Payment payment) {

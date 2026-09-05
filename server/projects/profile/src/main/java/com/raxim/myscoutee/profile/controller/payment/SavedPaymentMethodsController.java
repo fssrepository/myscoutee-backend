@@ -74,12 +74,12 @@ public class SavedPaymentMethodsController {
     }
 
     @GetMapping("/{paymentMethodId}/history")
-    public PaymentHistoryPageDto history(
+    public PaymentHistoryPageDto paymentMethodHistory(
             @PathVariable String paymentMethodId,
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size) {
-        return service.queryHistory(resolveCurrentUserId(userId), paymentMethodId, page, size);
+        return service.queryPaymentMethodHistory(resolveCurrentUserId(userId), paymentMethodId, page, size);
     }
 
     @DeleteMapping("/{paymentMethodId}")
@@ -93,9 +93,10 @@ public class SavedPaymentMethodsController {
     @GetMapping("/history")
     public PaymentHistoryPageDto history(
             @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "direction", required = false, defaultValue = "all") String direction,
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size) {
-        return service.queryHistory(resolveCurrentUserId(userId), page, size);
+        return service.queryHistory(resolveCurrentUserId(userId), direction, page, size);
     }
 
     private String resolveCurrentUserId(String requestedUserId) {

@@ -11,9 +11,12 @@ import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
 
 public interface SavedPaymentMethodsRepository extends MongoRepository<SavedPaymentMethod, String> {
     List<SavedPaymentMethod> findByUserIdAndStatusOrderByCreatedAtIsoDesc(String userId, String status);
+    List<SavedPaymentMethod> findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
+            String userId,
+            List<String> statuses);
     Optional<SavedPaymentMethod> findByIdAndUserId(String id, String userId);
     Optional<SavedPaymentMethod> findByRegistrationId(String registrationId);
-    @Query("{ '_id': ?0, 'userId': ?1, 'status': 'active' }")
+    @Query("{ '_id': ?0, 'userId': ?1, 'status': { '$in': ['active', 'expired'] } }")
     @Update("{ '$set': { 'status': 'deleted', 'updatedAtIso': ?2 }, '$inc': { 'version': 1 } }")
     long markDeleted(String id, String userId, String updatedAtIso);
     @Query("{ '_id': ?0, 'userId': ?1, 'status': 'active' }")

@@ -47,6 +47,7 @@ public final class PaymentDtos {
     public record PaymentHistoryItemDto(
             String id,
             String sourceId,
+            String direction,
             String paymentMethodId,
             String provider,
             String status,
@@ -63,5 +64,6 @@ public final class PaymentDtos {
             List<PaymentHistoryItemDto> items,
             long total,
             String nextCursor,
-            Map<String, Double> spendingTotals) {}
+            Map<String, Double> spendingTotals,
+            Map<String, Double> incomeTotals) {}
 }
