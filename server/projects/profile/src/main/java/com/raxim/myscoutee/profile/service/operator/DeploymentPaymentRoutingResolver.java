@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class DeploymentPaymentRoutingResolver {
@@ -39,7 +41,8 @@ public class DeploymentPaymentRoutingResolver {
 
     public PaymentRouting require(String providerId) {
         String normalizedProvider = normalize(providerId);
-        if (simulatorEnabled) {
+        if (simulatorEnabled
+                && MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO) {
             if (!StringUtils.hasText(simulatorApplicationBaseUrl)) {
                 throw unavailable(
                         "The payment simulator application URL is not configured.");

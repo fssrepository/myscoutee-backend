@@ -58,6 +58,7 @@ payment:
     registrationCallbackUrl: ${PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL:}
     applicationBaseUrl: ${PAYMENT_SIMULATOR_APPLICATION_BASE_URL:}
     barionMerchantAccount: ${PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT:}
+    stripeWebhookSecret: ${PAYMENT_SIMULATOR_WEBHOOK_SECRET:}
   settlement:
     pollDelay: ${PAYMENT_SETTLEMENT_POLL_DELAY:PT1M}
   operations:

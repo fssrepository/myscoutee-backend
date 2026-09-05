@@ -194,6 +194,7 @@ ensure_bootstrap_tls_pair() {
 install_generated_secrets_file() {
   local target template tmp
   local mongo_root_password mongo_app_password minio_root_password
+  local simulator_api_key simulator_webhook_secret simulator_barion_pos_key
 
   target="/etc/myscoutee/myscoutee.secrets.env"
   template="/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
@@ -201,6 +202,9 @@ install_generated_secrets_file() {
   mongo_root_password="$(generate_secret)"
   mongo_app_password="$(generate_secret)"
   minio_root_password="$(generate_secret)"
+  simulator_api_key="sk_test_$(generate_secret)"
+  simulator_webhook_secret="whsec_$(generate_secret)"
+  simulator_barion_pos_key="$(generate_guid)"
 
   tmp="$(mktemp "${target}.XXXXXX")"
   chmod 0600 "${tmp}"
@@ -209,10 +213,25 @@ install_generated_secrets_file() {
     -e "s/^MONGO_INITDB_ROOT_PASSWORD=.*/MONGO_INITDB_ROOT_PASSWORD=${mongo_root_password}/" \
     -e "s/^MONGO_APP_PASSWORD=.*/MONGO_APP_PASSWORD=${mongo_app_password}/" \
     -e "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${minio_root_password}/" \
+    -e "s/^PAYMENT_SIMULATOR_API_KEY=.*/PAYMENT_SIMULATOR_API_KEY=${simulator_api_key}/" \
+    -e "s/^PAYMENT_SIMULATOR_WEBHOOK_SECRET=.*/PAYMENT_SIMULATOR_WEBHOOK_SECRET=${simulator_webhook_secret}/" \
+    -e "s/^PAYMENT_SIMULATOR_BARION_POS_KEY=.*/PAYMENT_SIMULATOR_BARION_POS_KEY=${simulator_barion_pos_key}/" \
     "${template}" > "${tmp}"
 
   install -m 0600 "${tmp}" "${target}"
   rm -f "${tmp}"
+}
+
+generate_guid() {
+  local random
+
+  random="$(generate_secret)"
+  printf '%s-%s-4%s-8%s-%s' \
+    "${random:0:8}" \
+    "${random:8:4}" \
+    "${random:13:3}" \
+    "${random:17:3}" \
+    "${random:20:12}"
 }
 
 read_env_file_value() {
@@ -271,6 +290,18 @@ ensure_env_default() {
   fi
 }
 
+ensure_generated_secret() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+  local current
+
+  current="$(read_env_file_value "${key}" "${file}" || true)"
+  if [[ -z "${current}" ]]; then
+    upsert_env_value "${file}" "${key}" "${value}"
+  fi
+}
+
 ensure_mongo_seed_allow_list() {
   local file current updated required_collections collection
 
@@ -318,6 +349,8 @@ normalize_packaged_image_values() {
     "myscoutee-minio:${packaged_version}-prod"
   upsert_env_value "${env_file}" REGISTRY_DEMO_IMAGE \
     "myscoutee-registry:${packaged_version}-prod"
+  upsert_env_value "${env_file}" PAYMENT_SIMULATOR_IMAGE \
+    "myscoutee-payment-simulator:${packaged_version}-prod"
   upsert_env_value "${env_file}" MYSCOUTEE_VERSION "${packaged_version}"
 }
 
@@ -374,9 +407,9 @@ verify_packaged_image_manifest() {
       .schemaVersion == 1
       and .releaseVersion == $version
       and .bundled == true
-      and (.images | type == "array" and length == 5)
+      and (.images | type == "array" and length == 6)
       and ([.images[].service] | sort
-        == ["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"])
+        == ["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
       and all(.images[];
         (.reference | type == "string")
         and (.imageId | test("^sha256:[0-9a-f]{64}$"))
@@ -432,6 +465,10 @@ ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_ALLOW_INSECURE_HTT
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS registry
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_VOLUME_NAME myscoutee-registry-demo-data-v1
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_CLIENT_VOLUME_NAME myscoutee-registry-demo-client-data-v1
+ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_PUBLIC_BASE_URL https://localhost
+ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_APPLICATION_BASE_URL https://localhost
+ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT merchant@myscoutee.invalid
+ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_VOLUME_NAME myscoutee-payment-simulator-data-v1
 ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_MASTER_KEY_PATH /etc/myscoutee/configuration/deployment-master-key
 ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_KEY_DIR_HOST /etc/myscoutee/configuration
 ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_ENABLED false
@@ -483,6 +520,20 @@ fi
 if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
   install_generated_secrets_file
 fi
+
+ensure_generated_secret \
+  /etc/myscoutee/myscoutee.secrets.env \
+  PAYMENT_SIMULATOR_API_KEY \
+  "sk_test_$(generate_secret)"
+ensure_generated_secret \
+  /etc/myscoutee/myscoutee.secrets.env \
+  PAYMENT_SIMULATOR_WEBHOOK_SECRET \
+  "whsec_$(generate_secret)"
+ensure_generated_secret \
+  /etc/myscoutee/myscoutee.secrets.env \
+  PAYMENT_SIMULATOR_BARION_POS_KEY \
+  "$(generate_guid)"
+chmod 0600 /etc/myscoutee/myscoutee.secrets.env
 
 MYSCOUTEE_BOOTSTRAP_ENV_FILE=/etc/myscoutee/myscoutee.env \
 MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=/etc/myscoutee/myscoutee.secrets.env \

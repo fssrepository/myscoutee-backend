@@ -161,9 +161,9 @@ jq -e \
     .schemaVersion == 1
     and .releaseVersion == $version
     and .bundled == true
-    and (.images | length) == 5
+    and (.images | length) == 6
     and ([.images[].service] | sort)
-      == (["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"] | sort)
+      == (["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"] | sort)
     and all(.images[];
       (.imageId | test("^sha256:[0-9a-f]{64}$"))
       and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$"))
@@ -245,6 +245,17 @@ while IFS='|' read -r service expected_reference archive_name; do
     echo "Managed image ${expected_reference} does not match the candidate platform." >&2
     exit 1
   }
+  if [[ "${service}" == "payment-simulator" ]]; then
+    jq -e '
+      .config.User == "65532:65532"
+      and .config.Entrypoint == ["/payment-simulator"]
+      and ((.config.ExposedPorts | keys) == ["18082/tcp"])
+      and .config.WorkingDir == "/data"
+    ' <<< "${image_config}" >/dev/null || {
+      echo "Payment simulator image does not match its unprivileged scratch-runtime contract." >&2
+      exit 1
+    }
+  fi
   archive_sha256="$(sha256sum "${image_archive}" | awk '{print $1}')"
   archive_size="$(stat -c '%s' "${image_archive}")"
   jq -nc \
@@ -274,6 +285,7 @@ nginx|myscoutee-nginx:${candidate_version}-prod|myscoutee-nginx-${candidate_vers
 profilemanagement|myscoutee-api:${candidate_version}-prod|myscoutee-api-${candidate_version}-prod
 minio|myscoutee-minio:${candidate_version}-prod|myscoutee-minio-${candidate_version}-prod
 registry-demo|myscoutee-registry:${candidate_version}-prod|myscoutee-registry-${candidate_version}-prod
+payment-simulator|myscoutee-payment-simulator:${candidate_version}-prod|myscoutee-payment-simulator-${candidate_version}-prod
 EOF
 managed_images_json="${work_dir}/managed-images.json"
 jq -s '.' "${managed_images_jsonl}" > "${managed_images_json}"
@@ -299,6 +311,10 @@ grep -Fq "myscoutee-registry:${candidate_version}-prod" "${candidate_compose}" |
   echo "Candidate package does not bind Explore to the matching registry image." >&2
   exit 1
 }
+grep -Fq "myscoutee-payment-simulator:${candidate_version}-prod" "${candidate_compose}" || {
+  echo "Candidate package does not bind Explore payments to the matching simulator image." >&2
+  exit 1
+}
 if awk '
     /^  registry:/ { in_registry = 1; next }
     /^  [[:alnum:]_-]+:/ { in_registry = 0 }
@@ -306,6 +322,15 @@ if awk '
     END { exit !found }
   ' "${candidate_compose}"; then
   echo "Packaged Explore registry unexpectedly publishes a host port." >&2
+  exit 1
+fi
+if awk '
+    /^  payment-simulator:/ { in_simulator = 1; next }
+    /^  [[:alnum:]_-]+:/ { in_simulator = 0 }
+    in_simulator && /^[[:space:]]+ports:/ { found = 1 }
+    END { exit !found }
+  ' "${candidate_compose}"; then
+  echo "Packaged payment simulator unexpectedly publishes a host port." >&2
   exit 1
 fi
 

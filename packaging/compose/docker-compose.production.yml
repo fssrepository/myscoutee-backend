@@ -171,6 +171,15 @@ services:
       REGISTRY_DEMO_STATE_DIR: "/var/lib/myscoutee/registry-demo/state"
       REGISTRY_DEMO_ALLOW_INSECURE_HTTP: "true"
       REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS: "registry"
+      PAYMENT_SIMULATOR_ENABLED: "true"
+      PAYMENT_SIMULATOR_BASE_URL: "http://payment-simulator:18082"
+      PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL: "http://profilemanagement:8080/payment-methods/registrations/callback"
+      PAYMENT_SIMULATOR_APPLICATION_BASE_URL: "${PAYMENT_SIMULATOR_APPLICATION_BASE_URL:-https://localhost}"
+      PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT: "${PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT:-merchant@myscoutee.invalid}"
+      PAYMENT_STRIPE_API_BASE_URL: "http://payment-simulator:18082"
+      PAYMENT_STRIPE_TEST_GATEWAY_ENABLED: "true"
+      PAYMENT_BARION_API_BASE_URL: "http://payment-simulator:18082"
+      PAYMENT_BARION_TEST_GATEWAY_ENABLED: "true"
       OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
       OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
       OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
@@ -206,6 +215,8 @@ services:
         condition: service_healthy
       registry:
         condition: service_started
+      payment-simulator:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health | grep -q UP"]
       interval: 10s
@@ -249,8 +260,48 @@ services:
       start_period: 5s
     stop_grace_period: 15s
 
+  # Internal demo payment provider. Its browser surfaces are published only
+  # through the deployment nginx origin; provider APIs stay on the Compose
+  # network and are selected only for DEMO sessions by profilemanagement.
+  payment-simulator:
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.0.0-prod}
+    pull_policy: never
+    container_name: payment-simulator
+    hostname: payment-simulator
+    restart: unless-stopped
+    env_file:
+      - .env.secrets
+    environment:
+      PAYMENT_SIMULATOR_LISTEN_ADDR: ":18082"
+      PAYMENT_SIMULATOR_ALLOW_NON_LOOPBACK: "true"
+      PAYMENT_SIMULATOR_PUBLIC_BASE_URL: "${PAYMENT_SIMULATOR_PUBLIC_BASE_URL:-https://localhost}"
+      PAYMENT_SIMULATOR_DATABASE_PATH: "/data/payment-simulator.db"
+      PAYMENT_SIMULATOR_WEBHOOK_URL: "http://profilemanagement:8080/payment/webhooks/stripe"
+      PAYMENT_SIMULATOR_BARION_CALLBACK_URL: "http://profilemanagement:8080/payment/webhooks/barion"
+      PAYMENT_SIMULATOR_REQUIRE_IDEMPOTENCY: "true"
+    volumes:
+      - payment-simulator-data:/data
+    networks:
+      - myscoutee
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "/payment-simulator", "healthcheck"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    stop_grace_period: 15s
+
 volumes:
   registry-demo-data:
     name: "${REGISTRY_DEMO_VOLUME_NAME:-myscoutee-registry-demo-data-v1}"
   registry-demo-client-data:
     name: "${REGISTRY_DEMO_CLIENT_VOLUME_NAME:-myscoutee-registry-demo-client-data-v1}"
+  payment-simulator-data:
+    name: "${PAYMENT_SIMULATOR_VOLUME_NAME:-myscoutee-payment-simulator-data-v1}"

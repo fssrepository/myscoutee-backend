@@ -7,13 +7,21 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 
 class DeploymentPaymentRoutingResolverTest {
+    @AfterEach
+    void clearSessionMode() {
+        MongoSessionModeContext.clear();
+    }
+
     @Test
     void resolvesDeploymentOwnedUrlsWithoutVendorFallbacks() {
         DeploymentConfigurationRepository repository =
@@ -66,6 +74,7 @@ class DeploymentPaymentRoutingResolverTest {
                         true,
                         "http://localhost/",
                         "merchant@myscoutee.local");
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
 
         var stripe = resolver.require("stripe");
         var barion = resolver.require("barion");
@@ -76,6 +85,31 @@ class DeploymentPaymentRoutingResolverTest {
                 .isEqualTo("http://localhost/api/payment/webhooks/barion");
         assertThat(barion.merchantAccount())
                 .isEqualTo("merchant@myscoutee.local");
+    }
+
+    @Test
+    void keepsRealRoutingIsolatedWhenPaymentSimulatorIsEnabled() {
+        DeploymentConfigurationRepository repository =
+                mock(DeploymentConfigurationRepository.class);
+        when(repository.findById(DeploymentConfiguration.SINGLETON_ID))
+                .thenReturn(Optional.of(configuration(
+                        "stripe",
+                        "https://live.example.test",
+                        null)));
+        DeploymentPaymentRoutingResolver resolver =
+                new DeploymentPaymentRoutingResolver(
+                        repository,
+                        true,
+                        "https://demo.example.test",
+                        "merchant@demo.invalid");
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+
+        var routing = resolver.require("stripe");
+
+        assertThat(routing.successUrl())
+                .isEqualTo("https://live.example.test/payment/success");
+        assertThat(routing.callbackUrl())
+                .isEqualTo("https://live.example.test/api/payment/callback");
     }
 
     private DeploymentConfiguration configuration(

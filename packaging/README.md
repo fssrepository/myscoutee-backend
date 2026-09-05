@@ -11,6 +11,8 @@ The current packaging path builds and runs the production Docker stack from the 
 - MongoDB
 - Redis
 - MinIO
+- isolated Explore registry
+- isolated Explore payment simulator
 
 It intentionally does not add Java, Mongo, or Redis memory caps. Optional small/medium/large presets can be added later as explicit production profiles.
 
@@ -47,7 +49,7 @@ BUILD_ARTIFACTS=false PACKAGE_IMAGES=false \
   bash packaging/release/package-production.sh
 ```
 
-`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. During install, `postinst` checks Docker and prepares MongoDB, Redis, and MinIO images by pulling them if they are missing. Set `PACKAGE_OFFICIAL_IMAGES=true` only when you want a larger offline-style bundle that also includes those official service image archives.
+`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and bundles the MyScoutee Nginx, API, MinIO, Explore Registry, and Explore payment-simulator images. During install, `postinst` checks Docker and prepares MongoDB and Redis images by pulling them if they are missing. Set `PACKAGE_OFFICIAL_IMAGES=true` only when you want a larger offline-style bundle that also includes those official service image archives.
 
 The same build also creates
 `packaging/dist/myscoutee-client-tools_<version>.tar.gz`. It contains only
@@ -356,8 +358,8 @@ Actual image content changes still fail closed.
 The package separates locally generated deployment secrets from external
 provider credentials:
 
-- Mongo and MinIO passwords, the deployment configuration encryption key, and
-  local node/demo-registry signing keys are internal. They are generated on the
+- Mongo and MinIO passwords, payment-simulator control/webhook credentials, the
+  deployment configuration encryption key, and local node/demo-registry signing keys are internal. They are generated on the
   installed host or first runtime and are never shipped as reusable fixed
   secrets.
 - Firebase service accounts, payment-provider tokens, email/social/community
@@ -626,10 +628,12 @@ cryptographic state.
 
 `apt remove myscoutee` stops and removes the Compose containers but preserves
 deployment configuration, bind-mounted data, the two isolated Explore
-registry volumes, and the package-managed image tags for a later reinstall.
+registry volumes, the Explore payment-simulator volume, and the package-managed
+image tags for a later reinstall.
 `apt purge myscoutee` deliberately removes `/etc/myscoutee`,
-`/var/lib/myscoutee`, `/var/log/myscoutee`, the Explore registry volumes, and
-the MyScoutee-managed API, Nginx, MinIO, and demo-registry image tags. It does
+`/var/lib/myscoutee`, `/var/log/myscoutee`, the Explore registry and
+payment-simulator volumes, and the MyScoutee-managed API, Nginx, MinIO,
+demo-registry, and payment-simulator image tags. It does
 not delete shared upstream MongoDB or Redis images, and it preserves
 `/var/backups/myscoutee`. Back up the deployment identity and registry state
 before purging; without that backup, the deployment cannot recover its signing
@@ -642,6 +646,9 @@ Production:
 ```text
 myscoutee-nginx:1.0.0-prod
 myscoutee-api:1.0.0-prod
+myscoutee-minio:1.0.0-prod
+myscoutee-registry:1.0.0-prod
+myscoutee-payment-simulator:1.0.0-prod
 ```
 
 Development:
@@ -661,7 +668,7 @@ myscoutee-nginx:1.0.0-base
 
 The Debian package installs a prepared bundle under `/opt/myscoutee`, with configuration under `/etc/myscoutee` and persistent data linked through `/var/lib/myscoutee`. The package declares Docker Engine and Docker Compose v2 as dependencies.
 
-On first install, `postinst` creates `/etc/myscoutee/myscoutee.secrets.env` with generated values for `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_APP_PASSWORD`, and `MINIO_ROOT_PASSWORD`, and generates the dedicated operator-configuration master key. It does not create a deployment identity or contact a registry. Existing secrets, configuration keys, and deployment keys are never overwritten, so package upgrades do not rotate live credentials or change the registered deployment by surprise.
+On first install, `postinst` creates `/etc/myscoutee/myscoutee.secrets.env` with generated values for `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_APP_PASSWORD`, `MINIO_ROOT_PASSWORD`, and the internal payment-simulator credentials, and generates the dedicated operator-configuration master key. It does not create a deployment identity or contact a registry. Existing secrets, configuration keys, and deployment keys are never overwritten, so package upgrades do not rotate live credentials or change the registered deployment by surprise.
 
 The package should avoid aggressive system upgrades. Server convenience tools should be installed only when missing, and only in the smallest useful set.
 

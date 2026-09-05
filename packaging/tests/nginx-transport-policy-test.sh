@@ -37,11 +37,19 @@ PROD_HTTP_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/http-transport-policy.prod.
 PROD_HTTPS_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/https-response-policy.prod.conf"
 DEV_HTTP_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/http-transport-policy.conf"
 DEV_HTTPS_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/https-response-policy.conf"
+ROUTING="${NGINX_ROOT}/conf/nginx/conf/http/routing.conf"
 
 grep -Fq 'COPY --chmod=0755 images/nginx/prod/nginx-entrypoint.sh' "${DOCKERFILE}" \
   || fail "production image does not install its TLS-aware entrypoint"
 grep -Fq 'CMD ["/scripts/nginx-production-entrypoint.sh"]' "${DOCKERFILE}" \
   || fail "production image does not execute its TLS-aware entrypoint"
+grep -Fq 'location ^~ /simulator-ui/' "${ROUTING}" \
+  || fail "nginx does not expose the simulator browser assets"
+grep -Fq 'proxy_pass http://payment-simulator:18082;' "${ROUTING}" \
+  || fail "nginx does not route simulator browser surfaces to the internal service"
+if grep -Eq 'location.*(/myscoutee/v1|/v1/|/v2/|/v4/|/healthz)' "${ROUTING}"; then
+  fail "nginx exposes a private payment simulator provider/control route"
+fi
 
 mkdir -p \
   "${TEST_ROOT}/keys" \
@@ -73,6 +81,7 @@ docker_args() {
 
   printf '%s\n' \
     --add-host profilemanagement:127.0.0.1 \
+    --add-host payment-simulator:127.0.0.1 \
     --add-host mongodb:127.0.0.1 \
     -e DOMAIN=transport.test \
     -v "${NGINX_ROOT}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \

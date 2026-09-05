@@ -10,8 +10,8 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-${REPO_ROOT}/server}"
 FRONTEND_DIR="${MYSCOUTEE_FRONTEND_DIR:-${REPO_ROOT}/frontend}"
 
-PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio)
-PRIVATE_RELOAD_SERVICES=(profilemanagement nginx minio)
+PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio payment-simulator)
+PRIVATE_RELOAD_SERVICES=(profilemanagement nginx minio payment-simulator)
 BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
 BUILD_IMAGES="${BUILD_IMAGES:-true}"
@@ -30,14 +30,15 @@ This targets only project-owned production services:
   - profilemanagement
   - nginx
   - minio
+  - payment-simulator
 
 It intentionally does not build or reload:
   - nginx base image
   - mongodb
   - redis
 
-It builds and reloads the layered MinIO image alongside profilemanagement and
-nginx. MongoDB and Redis are not touched.
+It builds and reloads the layered MinIO image and the isolated Explore payment
+simulator alongside profilemanagement and nginx. MongoDB and Redis are not touched.
 
 Usage:
   packaging/release/rebuild-production-services.sh [options]
@@ -60,6 +61,7 @@ Environment:
   NGINX_PRODUCTION_IMAGE     Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-prod.
   MYSCOUTEE_PRODUCTION_IMAGE Defaults to myscoutee-api:${MYSCOUTEE_VERSION}-prod.
   MINIO_PRODUCTION_IMAGE     Defaults to myscoutee-minio:${MYSCOUTEE_VERSION}-prod.
+  PAYMENT_SIMULATOR_IMAGE    Defaults to myscoutee-payment-simulator:${MYSCOUTEE_VERSION}-prod.
   FRONTEND_BUILD_SCRIPT      Defaults to build:prod.
   BUILD_FRONTEND             Defaults to true.
   BUILD_BACKEND              Defaults to true.
@@ -128,6 +130,7 @@ export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
 export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
+export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
 
 if [[ ! -f "${SERVER_DIR}/docker-compose-prod.yml" ]]; then
   echo "Missing compose file: ${SERVER_DIR}/docker-compose-prod.yml" >&2
@@ -140,6 +143,7 @@ echo "Private production images:"
 echo "  ${NGINX_PRODUCTION_IMAGE}"
 echo "  ${MYSCOUTEE_PRODUCTION_IMAGE}"
 echo "  ${MINIO_PRODUCTION_IMAGE}"
+echo "  ${PAYMENT_SIMULATOR_IMAGE}"
 
 if [[ "${BUILD_FRONTEND}" == "true" ]]; then
   echo "Building frontend with npm script: ${FRONTEND_BUILD_SCRIPT}"

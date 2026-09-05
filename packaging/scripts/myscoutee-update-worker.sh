@@ -419,9 +419,9 @@ validate_image_manifest() {
     and .schemaVersion == 1
     and .releaseVersion == $version
     and .bundled == true
-    and (.images | type == "array" and length == 5)
+    and (.images | type == "array" and length == 6)
     and ([.images[].service] | sort
-      == ["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"])
+      == ["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
     and all(.images[];
       type == "object"
       and ((keys | sort) == ([
@@ -449,6 +449,10 @@ validate_image_manifest() {
       .service == "registry-demo"
       and .container == "registry-demo"
       and .reference == ("myscoutee-registry:" + $version + "-prod"))
+    and any(.images[];
+      .service == "payment-simulator"
+      and .container == "payment-simulator"
+      and .reference == ("myscoutee-payment-simulator:" + $version + "-prod"))
   ' "${manifest}" >/dev/null
 }
 
@@ -656,7 +660,7 @@ verify_running_release() {
     jq -r '.images[] | select(.container != null)
       | [.container, .reference, .contentFingerprint] | @tsv' "${manifest}"
   )
-  [[ "${#runtime_images[@]}" == "4" ]] || return 1
+  [[ "${#runtime_images[@]}" == "5" ]] || return 1
   for image in "${runtime_images[@]}"; do
     IFS=$'\t' read -r \
       container reference expected_content_fingerprint <<< "${image}"

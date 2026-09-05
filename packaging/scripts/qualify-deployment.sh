@@ -154,7 +154,7 @@ wait_for_container_health() {
 wait_for_deployment_containers() {
   local container
 
-  for container in mongodb redis minio registry-demo myscoutee nginx; do
+  for container in mongodb redis minio registry-demo payment-simulator myscoutee nginx; do
     wait_for_container_health "${container}"
   done
 }

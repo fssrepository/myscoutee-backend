@@ -18,6 +18,8 @@ import com.raxim.myscoutee.profile.service.BarionPaymentProcessor;
 import com.raxim.myscoutee.profile.service.PaymentAuthorizationCoordinator;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
 import com.raxim.myscoutee.profile.service.StripePaymentProcessor;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
@@ -31,28 +33,32 @@ public class PaymentGatewayWebhookController {
     private final BarionPaymentProcessor barion;
     private final PaymentAuthorizationCoordinator coordinator;
     private final String stripeWebhookSecret;
+    private final String simulatorStripeWebhookSecret;
 
     public PaymentGatewayWebhookController(
             StripePaymentProcessor stripe,
             BarionPaymentProcessor barion,
             PaymentAuthorizationCoordinator coordinator,
-            @Value("${payment.stripe.webhookSecret:}") String stripeWebhookSecret) {
+            @Value("${payment.stripe.webhookSecret:}") String stripeWebhookSecret,
+            @Value("${payment.simulator.stripeWebhookSecret:}") String simulatorStripeWebhookSecret) {
         this.stripe = stripe;
         this.barion = barion;
         this.coordinator = coordinator;
         this.stripeWebhookSecret = stripeWebhookSecret;
+        this.simulatorStripeWebhookSecret = simulatorStripeWebhookSecret;
     }
 
     @PostMapping("/stripe")
     public ResponseEntity<Void> stripe(
             @RequestBody String rawBody,
             @RequestHeader(value = "Stripe-Signature", required = false) String signature) {
-        if (!StringUtils.hasText(stripeWebhookSecret) || !StringUtils.hasText(signature)) {
+        String webhookSecret = resolveStripeWebhookSecret();
+        if (!StringUtils.hasText(webhookSecret) || !StringUtils.hasText(signature)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Stripe webhook signature is required.");
         }
         final Event event;
         try {
-            event = Webhook.constructEvent(rawBody, signature, stripeWebhookSecret.trim());
+            event = Webhook.constructEvent(rawBody, signature, webhookSecret.trim());
         } catch (SignatureVerificationException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Stripe webhook signature is invalid.");
         }
@@ -66,6 +72,12 @@ public class PaymentGatewayWebhookController {
                 : intent.getMetadata().get("checkout_session_id");
         coordinator.apply(internalSessionId, authorization, "stripe:" + event.getId());
         return ResponseEntity.ok().build();
+    }
+
+    String resolveStripeWebhookSecret() {
+        return MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO
+                ? simulatorStripeWebhookSecret
+                : stripeWebhookSecret;
     }
 
     @PostMapping("/barion")
