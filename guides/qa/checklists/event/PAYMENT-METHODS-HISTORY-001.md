@@ -68,8 +68,11 @@ Open the configured Ava/Alex windows only after the read-only status reports
    generates the test connection, so no separate Generate button is expected.
 10. In **Alex**, open `Cards`, then `Add card`. Confirm the embedded page is the
    Stripe payment-simulator registration surface, not a MyScoutee card form.
-11. Select the Stripe test card, enter `ALEX TURNER`, and select
-    `Tokenize and save card` exactly once.
+   Its header shows the Stripe logo instead of a duplicate text provider name.
+11. Select the header-level `Generate test card` action exactly once. Confirm
+    it fills every field together: the accepted Stripe number, meaningful
+    `Stripe Test User 001` cardholder, future month/year and a three-digit CVC.
+    Then select `Tokenize and save card` exactly once.
 12. Confirm the provider result is visible briefly, the popup returns without
     a page reload, and exactly one new active Stripe card appears with artwork,
     masked number, cardholder and expiry.
@@ -86,8 +89,11 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 15. In **Alex**, close and reopen `Cards`, then select `Add card`. The backend
     must use the currently configured provider; no background configuration
     poll is required.
-16. Confirm the embedded registration surface is Barion, select its test card,
-    enter `ALEX TURNER`, and select `Tokenize and save card` exactly once.
+16. Confirm the embedded registration surface shows the Barion logo. Select
+    its header-level `Generate test card` action exactly once and confirm all
+    fields are filled together with the accepted Barion number, meaningful
+    `Barion Test User 001` cardholder, future month/year and a three-digit CVC.
+    Select `Tokenize and save card` exactly once.
 17. Confirm exactly one new active Barion card appears and the earlier cards
     remain unchanged.
 18. Report and wait:
