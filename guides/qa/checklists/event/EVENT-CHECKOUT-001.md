@@ -152,7 +152,7 @@ Begin only after Codex confirms this exact baseline:
     provider and may finish even if the operator changes the provider used by
     later payments. A later new or periodic payment must reject the old token
     with the short provider-specific message, for example `Payment provider
-    changed to Barion. Retokenize your card.`; Cash-only instead reports
+    changed to Barion. Reconnect your card.`; Cash-only instead reports
     `Payment provider changed to Cash only. Start payment again.` The same
     response carries the current provider id and updates the shared provider
     badge directly, without a second configuration request or a background

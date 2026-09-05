@@ -155,7 +155,7 @@ class PaymentRestControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("PAYMENT_PROVIDER_CHANGED"))
                 .andExpect(jsonPath("$.message")
-                        .value("Payment provider changed to Barion. Retokenize your card."))
+                        .value("Payment provider changed to Barion. Reconnect your card."))
                 .andExpect(jsonPath("$.currentProvider").value("barion"));
     }
 

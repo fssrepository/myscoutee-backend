@@ -25,7 +25,7 @@ public final class PaymentProviderChangedException extends ResponseStatusExcepti
         if (!StringUtils.hasText(provider) || "none".equals(provider)) {
             return "Payment provider changed to Cash only. Start payment again.";
         }
-        return "Payment provider changed to " + label(provider) + ". Retokenize your card.";
+        return "Payment provider changed to " + label(provider) + ". Reconnect your card.";
     }
 
     private static String label(String provider) {
