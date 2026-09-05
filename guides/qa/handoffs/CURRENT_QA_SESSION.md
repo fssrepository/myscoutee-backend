@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 15:38 CEST
+Updated: 2026-09-05 15:44 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -77,7 +77,7 @@ checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
 substage: implementation and versioned fixture preparation complete, including provider-change recovery; the exact payment-ui baseline is staged; no manual step has run
 next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
 fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
-browser_phase: no Payment browser was opened; the user exclusively controls browser actions. A key-authenticated loopback-only SSH tunnel is active at `https://localhost:18443/` to the qualified VMware deployment; its certificate is self-signed
+browser_phase: no Payment browser was opened; the user exclusively controls browser actions. No SSH application tunnel is currently active; use only the canonical loopback mappings `localhost:80 -> VM:80` and `localhost:443 -> VM:443` when the user requests browser access
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
 queued_next: PAYMENT-METHODS-HISTORY-001
