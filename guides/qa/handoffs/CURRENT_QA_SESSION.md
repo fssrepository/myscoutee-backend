@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 01:48 CEST
+Updated: 2026-09-06 01:50 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -71,22 +71,22 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED / NOT RUN
+checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; the installed runtime contains the prepared application source; the prior deployment refresh reset the earlier staged payment-ui fixture; no manual step has run
-next_replay_boundary: do not build or install again; stage payment-ui once, require a read-only `phase=baseline-ready` / Cash-only status proof, then the user opens only the configured Ava/Alex sessions and starts checklist step 1
-fixture_phase: read-only installed-node status at `2026-09-05 16:40 CEST` is `phase=not-staged`; the simulator is currently `stripe`, connected, requires3ds=false
+substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; a fresh read-only resume gate proved the exact payment-ui baseline; no manual step has run
+next_replay_boundary: do not build, install, or stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
+fixture_phase: read-only status at `2026-09-06 01:50 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false, with the exact three cards, four history rows, totals, expiry notification, and zero registrations
 browser_phase: no Payment pair-QA browser was opened; the user exclusively controls browser actions. Canonical key-authenticated loopback SSH forwards are active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is not staged
+ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
 queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: do not rebuild/reinstall; run `stage payment-ui PAYMENT-METHODS-HISTORY-001` exactly once, then require read-only `status` to report `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false before the user opens the configured Ava/Alex sessions
+required_resume: do not rebuild, reinstall, or stage; preserve the proven baseline and let the user open the configured Ava/Alex sessions before checklist step 1
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: implementation preparation plus an earlier exact payment-ui stage and read-only baseline proof. The deployment refresh reset the payment fixture, so its last known phase is `not-staged`. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+last_completed: implementation preparation plus the fresh exact payment-ui baseline proof after the deployment refresh. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -233,12 +233,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Do not open a browser yet. When the user starts pair QA, do not rebuild or
-reinstall: the current application source is already on VMware. The current
-read-only status is `phase=not-staged`, so stage payment-ui once, require
-`phase=baseline-ready` with simulator provider `none` (`Cash only`), and only
-then prepare the configured Ava/Alex sessions. Begin at checklist step 1. The
-first stop phrase is
+Do not rebuild, reinstall, or stage again. The read-only resume gate proved
+`phase=baseline-ready` with simulator provider `none` (`Cash only`) and 3DS Off.
+The user opens the configured Ava/Alex sessions, then begins at checklist step
+1. The first stop phrase is
 `PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`.
 The fixture is exact-reset capable and no manual Payment verdict exists yet.
 
