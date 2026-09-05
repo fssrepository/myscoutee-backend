@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-05 12:36 CEST
+Updated: 2026-09-05 13:37 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -71,20 +71,20 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — PREPARED / NOT STAGED
+checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete; no manual step has run
-next_replay_boundary: stage the payment-ui fixture exactly once when pair-QA begins; require `phase=baseline-ready` and simulator provider `none`
-fixture_phase: read-only status at `2026-09-05 12:34 CEST` is `phase=not-staged`, provider `none` (Cash only), connected=true, requires3ds=false
+substage: implementation and versioned fixture preparation complete; the exact payment-ui baseline is staged; no manual step has run
+next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
+fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false
 browser_phase: no Payment browser was opened; the user exclusively controls browser actions
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PREPARED / NOT STAGED and owned by Event
+ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
 queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: run one read-only payment-ui status; if it remains not-staged, stage once, prove baseline-ready/Cash only, then open only the configured Ava/Alex sessions
+required_resume: run one read-only payment-ui status; if it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
-last_completed: implementation preparation only. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -141,7 +141,8 @@ manual runs remain for later pair QA.
 
 `PAYMENT-METHODS-HISTORY-001` is the one new Core side-menu journey and the
 selected next testcase. Its versioned fixture, exact reset, savepoint oracles
-and Ava/Alex browser definition are prepared but not staged. The independent
+and Ava/Alex browser definition are prepared, and its runtime fixture is now
+staged at the proven `baseline-ready` / Cash-only boundary. The independent
 real scheduler smoke already proved active expired card -> `expired` -> one
 outbox -> one in-app notification, including duplicate suppression. It also
 exposed and repaired the null-version duplicate-ID write by replacing the

@@ -271,7 +271,7 @@ payment_simulator_state() {
 set_payment_simulator_cash_only() {
   local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
   local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
-  local temp_dir access_response access_url result provider
+  local temp_dir access_response access_url session_url result provider
   temp_dir="$(mktemp -d)"
   access_response="$(curl --fail --silent --show-error -X POST \
     -H "Authorization: Bearer ${api_key}" \
@@ -280,6 +280,9 @@ set_payment_simulator_cash_only() {
   access_url="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("url", ""))' <<<"${access_response}")"
   [ -n "${access_url}" ] \
     || { rm -r -- "${temp_dir}"; fail "Payment simulator returned no configuration URL."; }
+  session_url="$(python3 -c 'import sys,urllib.parse; value=urllib.parse.urlsplit(sys.argv[1]); print(urllib.parse.urlunsplit((value.scheme, value.netloc, "/configuration-session", "", "")))' "${access_url}")"
+  [ -n "${session_url}" ] \
+    || { rm -r -- "${temp_dir}"; fail "Payment simulator returned an invalid configuration URL."; }
   curl --fail --silent --show-error --location \
     --cookie-jar "${temp_dir}/cookies" \
     --output /dev/null \
@@ -289,7 +292,7 @@ set_payment_simulator_cash_only() {
     --cookie "${temp_dir}/cookies" \
     -H 'Content-Type: application/json' \
     --data '{"provider":"none","requires3ds":false}' \
-    "${base_url}/configuration-session")" \
+    "${session_url}")" \
     || { rm -r -- "${temp_dir}"; fail "Could not restore Cash only in the payment simulator."; }
   rm -r -- "${temp_dir}"
   provider="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("provider", ""))' <<<"${result}")"
