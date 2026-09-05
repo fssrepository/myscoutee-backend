@@ -12531,7 +12531,13 @@
     "_id": "i18n-message-en-payment-registration-error-expired",
     "key": "payment.registration.error.expired",
     "lang": "en",
-    "value": "Card registration expired. Start it again to add the card."
+    "value": "The card-registration time limit expired. Start it again to add the card."
+  },
+  {
+    "_id": "i18n-message-en-payment-registration-error-failed",
+    "key": "payment.registration.error.failed",
+    "lang": "en",
+    "value": "Card registration failed. Start it again to add the card."
   },
   {
     "_id": "i18n-message-en-payment-registration-error-page",
@@ -31641,7 +31647,13 @@
     "_id": "i18n-message-hu-payment-registration-error-expired",
     "key": "payment.registration.error.expired",
     "lang": "hu",
-    "value": "A kártyaregisztráció időtúllépéssel lezárult. A kártya hozzáadásához indítsd újra."
+    "value": "A kártyaregisztráció időkorlátja lejárt. A kártya hozzáadásához indítsd újra."
+  },
+  {
+    "_id": "i18n-message-hu-payment-registration-error-failed",
+    "key": "payment.registration.error.failed",
+    "lang": "hu",
+    "value": "A kártyaregisztráció sikertelen. A kártya hozzáadásához indítsd újra."
   },
   {
     "_id": "i18n-message-hu-payment-registration-error-page",
