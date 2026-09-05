@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -7,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -94,5 +96,38 @@ class SavedPaymentMethodsServiceTest {
                 org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString());
+    }
+
+    @Test
+    void cardsCanBeAddedOnlyWhenAnExternalDemoProviderIsActive() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
+        PaymentMethodRegistrationsRepository registrations = mock(PaymentMethodRegistrationsRepository.class);
+        PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
+        when(simulator.isEnabled()).thenReturn(true);
+        when(registrations.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "pending"))
+                .thenReturn(List.of());
+        when(methods.findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
+                "user-1", List.of("active", "expired")))
+                .thenReturn(List.of());
+        when(methods.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "active"))
+                .thenReturn(List.of());
+
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                methods,
+                registrations,
+                mock(PaymentsRepository.class),
+                simulator,
+                mock(DeploymentPaymentProviderResolver.class),
+                mock(UsersRepository.class));
+
+        when(simulator.configuration()).thenReturn(
+                new PaymentSimulatorRegistrationClient.GatewayConfiguration("none", false, true, ""));
+        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isFalse();
+
+        when(simulator.configuration()).thenReturn(
+                new PaymentSimulatorRegistrationClient.GatewayConfiguration(
+                        "stripe", true, true, "sk_test_generated"));
+        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isTrue();
     }
 }

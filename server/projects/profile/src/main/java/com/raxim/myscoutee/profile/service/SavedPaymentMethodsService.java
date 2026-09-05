@@ -86,7 +86,7 @@ public class SavedPaymentMethodsService {
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 activeMethods(ownerId).size() < MAX_ACTIVE_PAYMENT_METHODS
-                        && isDemoSimulatorMode()
+                        && activeDemoProviderAllowsRegistration()
                         && pending == null,
                 pending == null ? null : toRegistrationDto(pending, null));
     }
@@ -167,7 +167,13 @@ public class SavedPaymentMethodsService {
             return normalizeProvider(paymentProviderResolver.resolveActiveProvider(requestedProvider));
         }
         PaymentSimulatorRegistrationClient.GatewayConfiguration configuration = simulatorClient.configuration();
-        String configured = normalizeProvider(configuration.provider());
+        String configuredValue = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
+        if ("none".equals(configuredValue)) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Card registration is unavailable while the demo payment simulator is Cash only.");
+        }
+        String configured = normalizeProvider(configuredValue);
         if (!configuration.connected()) {
             throw new ResponseStatusException(
                     HttpStatus.SERVICE_UNAVAILABLE,
@@ -401,6 +407,19 @@ public class SavedPaymentMethodsService {
     private boolean isDemoSimulatorMode() {
         return MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO
                 && simulatorClient.isEnabled();
+    }
+
+    private boolean activeDemoProviderAllowsRegistration() {
+        if (!isDemoSimulatorMode()) {
+            return false;
+        }
+        try {
+            PaymentSimulatorRegistrationClient.GatewayConfiguration configuration = simulatorClient.configuration();
+            String provider = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
+            return configuration.connected() && Set.of("stripe", "barion").contains(provider);
+        } catch (RuntimeException ignored) {
+            return false;
+        }
     }
 
     private boolean isExpired(SavedPaymentMethod method) {
