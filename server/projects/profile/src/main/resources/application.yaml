@@ -49,6 +49,8 @@ operator:
 
 payment:
   enablePay: ${PAYMENT_ENABLE_PAY:false}
+  registration:
+    ttl: ${PAYMENT_REGISTRATION_TTL:PT10M}
   simulator:
     enabled: ${PAYMENT_SIMULATOR_ENABLED:false}
     baseUrl: ${PAYMENT_SIMULATOR_BASE_URL:}

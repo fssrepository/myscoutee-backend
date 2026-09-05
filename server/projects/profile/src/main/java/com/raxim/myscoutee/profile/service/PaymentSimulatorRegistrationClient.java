@@ -96,6 +96,22 @@ public class PaymentSimulatorRegistrationClient {
         return configuration;
     }
 
+    public GatewayConfigurationAccess createConfigurationAccess() {
+        requireConfigured();
+        ResponseEntity<GatewayConfigurationAccess> response = restTemplate.exchange(
+                baseUrl + "/myscoutee/v1/configuration-access",
+                HttpMethod.POST,
+                new HttpEntity<>(Map.of(), headers()),
+                GatewayConfigurationAccess.class);
+        GatewayConfigurationAccess access = response.getBody();
+        if (access == null || !StringUtils.hasText(access.url()) || !StringUtils.hasText(access.expiresAt())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Payment simulator returned an invalid configuration access response.");
+        }
+        return access;
+    }
+
     public boolean authorizesCallback(String authorization) {
         String supplied = safeText(authorization);
         if (supplied.startsWith("Bearer ")) {
@@ -165,4 +181,6 @@ public class PaymentSimulatorRegistrationClient {
             String expiresAt) {}
 
     public record GatewayConfiguration(String provider, boolean requires3ds) {}
+
+    public record GatewayConfigurationAccess(String url, String expiresAt) {}
 }

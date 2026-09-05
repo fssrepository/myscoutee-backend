@@ -50,7 +50,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 1,
+    "acceptedMembers": 2,
     "pendingMembers": 0,
     "topics": [
       "#WinterSports",
@@ -180,7 +180,8 @@
     "updatedDate": "2027-02-11T17:15:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "acceptedMemberUserIds": [
-      "bf057de7c586eede7e84bdc7"
+      "bf057de7c586eede7e84bdc7",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],

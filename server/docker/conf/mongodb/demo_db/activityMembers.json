@@ -17914,6 +17914,27 @@
   },
   {
     "_id": {
+      "$oid": "f7a2c9d4e1b63805a9174c2d"
+    },
+    "syncKey": "payment-demo-event-member:21746c9aacc985817e31cf9f:af0436815ab38f4864dd1e24",
+    "ownerType": "event",
+    "ownerId": "21746c9aacc985817e31cf9f",
+    "userId": "af0436815ab38f4864dd1e24",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": null,
+    "metAtIso": "2026-08-24T17:30:00.000Z",
+    "actionAtIso": "2026-08-24T17:30:00.000Z",
+    "metWhere": "Snowline Shuttle Briefing",
+    "createdDate": "2026-08-24T17:30:00.000Z",
+    "createdUser": "af0436815ab38f4864dd1e24",
+    "updatedDate": "2026-08-24T17:30:00.000Z",
+    "updatedUser": "af0436815ab38f4864dd1e24"
+  },
+  {
+    "_id": {
       "$oid": "974ceb15682ad4e4bc9bef6b"
     },
     "syncKey": "seed-event-member:c66972829391ece30a38e9be:b29df68956f3fe15e04558de",

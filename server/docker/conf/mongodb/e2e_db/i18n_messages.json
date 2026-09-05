@@ -1782,6 +1782,48 @@
     "value": "What it does"
   },
   {
+    "_id": "i18n-message-en-admin-payment-simulator",
+    "key": "admin.payment.simulator",
+    "lang": "en",
+    "value": "Payment simulator"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-open",
+    "key": "admin.payment.simulator.open",
+    "lang": "en",
+    "value": "Open payment simulator configuration"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-subtitle",
+    "key": "admin.payment.simulator.subtitle",
+    "lang": "en",
+    "value": "Runtime configuration for demo payment branches"
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-loading",
+    "key": "admin.payment.simulator.loading",
+    "lang": "en",
+    "value": "Opening the protected simulator session..."
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-unavailable",
+    "key": "admin.payment.simulator.unavailable",
+    "lang": "en",
+    "value": "The payment simulator configuration is unavailable."
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-timeout",
+    "key": "admin.payment.simulator.timeout",
+    "lang": "en",
+    "value": "Opening the payment simulator timed out."
+  },
+  {
+    "_id": "i18n-message-en-admin-payment-simulator-retry",
+    "key": "admin.payment.simulator.retry",
+    "lang": "en",
+    "value": "Try again"
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-run-windows",
     "key": "admin.jobs.run.windows",
     "lang": "en",
@@ -2298,6 +2340,18 @@
     "value": "Sends queued in-app and push notifications."
   },
   {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-method-expiry",
+    "key": "admin.jobs.rule.payment.method.expiry",
+    "lang": "en",
+    "value": "Check expired payment cards"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-payment-method-expiry-description",
+    "key": "admin.jobs.rule.payment.method.expiry.description",
+    "lang": "en",
+    "value": "Marks expired saved payment cards and queues a notification for their owners."
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-rule-affinity-recompute",
     "key": "admin.jobs.rule.affinity.recompute",
     "lang": "en",
@@ -2518,6 +2572,24 @@
     "key": "admin.jobs.run.detail.checkout.marked",
     "lang": "en",
     "value": "Marked {count} expired checkout basket item(s) as deleted."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-payment-card-expiry-scanning",
+    "key": "admin.jobs.run.detail.payment.card.expiry.scanning",
+    "lang": "en",
+    "value": "Scanning expired saved payment cards."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-payment-card-expiry-none-due",
+    "key": "admin.jobs.run.detail.payment.card.expiry.none.due",
+    "lang": "en",
+    "value": "No expired saved payment cards were due."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-payment-card-expiry-completed",
+    "key": "admin.jobs.run.detail.payment.card.expiry.completed",
+    "lang": "en",
+    "value": "Expired {count} saved payment card(s) and queued owner notifications."
   },
   {
     "_id": "i18n-message-en-admin-monitoring-subtitle",
@@ -12408,6 +12480,12 @@
     "value": "Payment cards"
   },
   {
+    "_id": "i18n-message-en-payment-error-user-required",
+    "key": "payment.error.user.required",
+    "lang": "en",
+    "value": "A signed-in user is required."
+  },
+  {
     "_id": "i18n-message-en-payment-details-aria",
     "key": "payment.details.aria",
     "lang": "en",
@@ -20898,6 +20976,48 @@
     "value": "Mit csinál"
   },
   {
+    "_id": "i18n-message-hu-admin-payment-simulator",
+    "key": "admin.payment.simulator",
+    "lang": "hu",
+    "value": "Fizetési szimulátor"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-open",
+    "key": "admin.payment.simulator.open",
+    "lang": "hu",
+    "value": "Fizetési szimulátor konfigurációjának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-subtitle",
+    "key": "admin.payment.simulator.subtitle",
+    "lang": "hu",
+    "value": "A demo fizetési ágak futásidejű beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-loading",
+    "key": "admin.payment.simulator.loading",
+    "lang": "hu",
+    "value": "A védett szimulátorsession megnyitása..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-unavailable",
+    "key": "admin.payment.simulator.unavailable",
+    "lang": "hu",
+    "value": "A fizetési szimulátor konfigurációja nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-timeout",
+    "key": "admin.payment.simulator.timeout",
+    "lang": "hu",
+    "value": "A fizetési szimulátor megnyitása túllépte az időkorlátot."
+  },
+  {
+    "_id": "i18n-message-hu-admin-payment-simulator-retry",
+    "key": "admin.payment.simulator.retry",
+    "lang": "hu",
+    "value": "Újrapróbálás"
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-run-windows",
     "key": "admin.jobs.run.windows",
     "lang": "hu",
@@ -21414,6 +21534,18 @@
     "value": "Kiküldi a sorban álló alkalmazáson belüli és push értesítéseket."
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-method-expiry",
+    "key": "admin.jobs.rule.payment.method.expiry",
+    "lang": "hu",
+    "value": "Lejárt fizetési kártyák ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-payment-method-expiry-description",
+    "key": "admin.jobs.rule.payment.method.expiry.description",
+    "lang": "hu",
+    "value": "Lejártként jelöli a mentett fizetési kártyákat, és értesítést készít a tulajdonosuknak."
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-rule-affinity-recompute",
     "key": "admin.jobs.rule.affinity.recompute",
     "lang": "hu",
@@ -21634,6 +21766,24 @@
     "key": "admin.jobs.run.detail.checkout.marked",
     "lang": "hu",
     "value": "{count} lejárt pénztárkosár-elem töröltként megjelölve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-payment-card-expiry-scanning",
+    "key": "admin.jobs.run.detail.payment.card.expiry.scanning",
+    "lang": "hu",
+    "value": "Lejárt mentett fizetési kártyák keresése."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-payment-card-expiry-none-due",
+    "key": "admin.jobs.run.detail.payment.card.expiry.none.due",
+    "lang": "hu",
+    "value": "Nincs esedékes lejárt mentett fizetési kártya."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-payment-card-expiry-completed",
+    "key": "admin.jobs.run.detail.payment.card.expiry.completed",
+    "lang": "hu",
+    "value": "{count} mentett fizetési kártya lejártként megjelölve, a tulajdonosi értesítések sorba állítva."
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-subtitle",
@@ -31522,6 +31672,12 @@
     "key": "payment.cards.title",
     "lang": "hu",
     "value": "Fizetési kártyák"
+  },
+  {
+    "_id": "i18n-message-hu-payment-error-user-required",
+    "key": "payment.error.user.required",
+    "lang": "hu",
+    "value": "Bejelentkezett felhasználó szükséges."
   },
   {
     "_id": "i18n-message-hu-payment-details-aria",

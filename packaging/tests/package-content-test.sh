@@ -86,6 +86,7 @@ assert_admin_job_seed_defaults() {
       "event-counter-expiry",
       "event-checkout-basket-purge",
       "notification-outbox",
+      "payment-method-expiry",
       "affinity-recompute",
       "affinity-graph-layout",
       "scheduled-messages",

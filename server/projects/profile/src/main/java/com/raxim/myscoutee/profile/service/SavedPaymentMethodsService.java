@@ -2,8 +2,10 @@ package com.raxim.myscoutee.profile.service;
 
 import static com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.*;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderRes
 @Service
 public class SavedPaymentMethodsService {
     public static final int MAX_ACTIVE_PAYMENT_METHODS = 6;
+    private static final Duration DEFAULT_REGISTRATION_TTL = Duration.ofMinutes(10);
     private static final String ACTIVE = "active";
     private static final List<String> ARTWORK_KEYS = List.of(
             "midnight", "emerald", "coral", "graphite", "orbit", "aurora");
@@ -41,6 +45,9 @@ public class SavedPaymentMethodsService {
     private final PaymentSimulatorRegistrationClient simulatorClient;
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
     private final UsersRepository usersRepository;
+
+    @Value("${payment.registration.ttl:PT10M}")
+    private Duration registrationTtl = DEFAULT_REGISTRATION_TTL;
 
     public SavedPaymentMethodsService(
             SavedPaymentMethodsRepository paymentMethodsRepository,
@@ -103,7 +110,7 @@ public class SavedPaymentMethodsService {
         registration.setReplacesPaymentMethodId(replacesId);
         registration.setCreatedAtIso(now.toString());
         registration.setUpdatedAtIso(now.toString());
-        registration.setExpiresAtIso(now.plus(10, ChronoUnit.MINUTES).toString());
+        registration.setExpiresAtIso(now.plus(effectiveRegistrationTtl()).toString());
         registration = registrationsRepository.save(registration);
 
         try {
@@ -166,14 +173,22 @@ public class SavedPaymentMethodsService {
         if (Set.of("failed", "cancelled", "expired").contains(registration.getStatus())) {
             return toRegistrationDto(registration, null);
         }
-        if (Instant.parse(registration.getExpiresAtIso()).isBefore(Instant.now())) {
+        boolean deadlineReached = !Instant.parse(registration.getExpiresAtIso()).isAfter(Instant.now());
+        GatewayRegistration gateway;
+        try {
+            // The provider owns the registration session. Let it perform and
+            // persist the timeout transition instead of ending only the local
+            // projection while the provider record remains pending.
+            gateway = simulatorClient.retrieve(registration.getGatewayRegistrationId());
+        } catch (RuntimeException unavailableProvider) {
+            if (!deadlineReached) {
+                throw unavailableProvider;
+            }
             registration.setStatus("expired");
             registration.setGatewayPaymentUrl(null);
             registration.setUpdatedAtIso(Instant.now().toString());
             return toRegistrationDto(registrationsRepository.save(registration), null);
         }
-
-        GatewayRegistration gateway = simulatorClient.retrieve(registration.getGatewayRegistrationId());
         String status = normalizeRegistrationStatus(gateway.status());
         registration.setStatus(status);
         registration.setUpdatedAtIso(Instant.now().toString());
@@ -332,9 +347,15 @@ public class SavedPaymentMethodsService {
         return paymentMethodsRepository.findByUserIdAndStatusOrderByCreatedAtIsoDesc(userId, ACTIVE);
     }
 
+    private Duration effectiveRegistrationTtl() {
+        return registrationTtl == null || registrationTtl.isZero() || registrationTtl.isNegative()
+                ? DEFAULT_REGISTRATION_TTL
+                : registrationTtl;
+    }
+
     private boolean isExpired(SavedPaymentMethod method) {
         Integer key = method == null ? null : method.getExpiryKey();
-        YearMonth now = YearMonth.now();
+        YearMonth now = YearMonth.now(ZoneOffset.UTC);
         return key == null || key < now.getYear() * 100 + now.getMonthValue();
     }
 
