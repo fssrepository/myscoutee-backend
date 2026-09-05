@@ -152,7 +152,9 @@
       userFields: [targetUser, hostUser].map(user => ({
         userId: text(user.userId || user._id),
         activities: snapshotField(user, "activities"),
-        paymentSpentTotals: snapshotField(user, "paymentSpentTotals")
+        paymentSpentTotals: snapshotField(user, "paymentSpentTotals"),
+        paymentIncomeTotals: snapshotField(user, "paymentIncomeTotals"),
+        paymentAllTotals: snapshotField(user, "paymentAllTotals")
       })),
       snapshots
     });
@@ -214,6 +216,8 @@
     for (const user of snapshot.userFields || []) {
       restoreField(text(user.userId), "activities", user.activities);
       restoreField(text(user.userId), "paymentSpentTotals", user.paymentSpentTotals);
+      restoreField(text(user.userId), "paymentIncomeTotals", user.paymentIncomeTotals);
+      restoreField(text(user.userId), "paymentAllTotals", user.paymentAllTotals);
     }
     // A notification worker may have consumed an event-scoped outbox row while
     // reset was running. Re-apply the exact fixture boundary once after restore.
@@ -471,6 +475,7 @@
         paymentMethodId: text(item.paymentMethodId),
         provider: text(item.provider),
         status: text(item.status),
+        failureReason: text(item.lastGatewayError),
         fulfillmentStatus: text(item.fulfillmentStatus),
         amount: Number(item.amount || 0),
         currency: text(item.currency)

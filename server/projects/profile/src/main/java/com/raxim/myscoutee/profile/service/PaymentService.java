@@ -845,11 +845,19 @@ public class PaymentService {
     }
 
     private String safeGatewayError(RuntimeException exception) {
-        if (exception instanceof ResponseStatusException responseStatusException
-                && hasText(responseStatusException.getReason())) {
-            return responseStatusException.getReason();
+        Throwable current = exception;
+        String firstMessage = null;
+        while (current != null) {
+            if (current instanceof ResponseStatusException responseStatusException
+                    && hasText(responseStatusException.getReason())) {
+                return responseStatusException.getReason();
+            }
+            if (!hasText(firstMessage) && hasText(current.getMessage())) {
+                firstMessage = current.getMessage().trim();
+            }
+            current = current.getCause();
         }
-        return exception == null ? "Payment provider failure." : exception.getClass().getSimpleName();
+        return hasText(firstMessage) ? firstMessage : "Payment provider failure.";
     }
 
     private void hydratePaymentRequest(Payment payment, EventCheckoutRequestDto request, String provider) {

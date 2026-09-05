@@ -51,6 +51,7 @@ public final class PaymentDtos {
             String paymentMethodId,
             String provider,
             String status,
+            String failureReason,
             Double amount,
             String currency,
             String bookingStatus,

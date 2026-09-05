@@ -442,7 +442,7 @@ public class SavedPaymentMethodsService {
         return new PaymentHistoryItemDto(
                 payment.getId(), payment.getSourceId(),
                 normalizeId(payment.getUserId()).equals(normalizeId(viewerUserId)) ? "expense" : "income",
-                payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(),
+                payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(), payment.getLastGatewayError(),
                 payment.getAmount(), payment.getCurrency(), payment.getBookingStatus(),
                 payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate(),
                 paymentMethod);
