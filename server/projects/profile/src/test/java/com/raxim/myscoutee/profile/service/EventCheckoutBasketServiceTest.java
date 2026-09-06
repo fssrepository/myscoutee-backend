@@ -105,6 +105,9 @@ class EventCheckoutBasketServiceTest {
         EventCheckoutBasketItem succeeded = persistedItem();
         succeeded.setSourceId("event-2");
         succeeded.setResultState("succeeded");
+        EventCheckoutBasketItem deletedBeforeSuccess = persistedItem();
+        deletedBeforeSuccess.setSourceId("event-2");
+        deletedBeforeSuccess.setResultState("deleted");
         EventCheckoutBasketItem deleted = persistedItem();
         deleted.setSourceId("event-3");
         deleted.setResultState("deleted");
@@ -113,7 +116,7 @@ class EventCheckoutBasketServiceTest {
                 eq(List.of("event-1", "event-2")),
                 anyList(),
                 anyList()))
-                .thenReturn(List.of(pending, failed, succeeded, deleted));
+                .thenReturn(List.of(pending, failed, deletedBeforeSuccess, succeeded, deleted));
 
         Map<String, String> result = service.loadResultStatesByEvent(
                 " user-1 ",

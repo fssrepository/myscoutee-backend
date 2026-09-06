@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
+import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -103,6 +104,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private EventCheckoutBasketService eventCheckoutBasketService;
     @Mock
+    private EventCheckoutPricingService eventCheckoutPricingService;
+    @Mock
     private ScheduledMessageTaskService scheduledMessageTaskService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -130,6 +133,8 @@ class ActivitiesEventsServiceTest {
     private AccessControlService accessControlService;
     @Mock
     private UserActivityCountersService userActivityCountersService;
+    @Mock
+    private com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -155,6 +160,7 @@ class ActivitiesEventsServiceTest {
                 eventParticipationTicketService,
                 paymentService,
                 eventCheckoutBasketService,
+                eventCheckoutPricingService,
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -169,11 +175,13 @@ class ActivitiesEventsServiceTest {
                 eventSlotReadModelService,
                 accessControlService,
                 userActivityCountersService,
+                eventWatchSubscriptionsRepository,
                 activityEventDetailMapper,
                 activityEventMapper,
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
                 activitySubEventStageRuntimeMapper);
+        lenient().when(eventCheckoutPricingService.reprice(any())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
@@ -563,6 +571,71 @@ class ActivitiesEventsServiceTest {
                 eq(List.of("modified")),
                 eq("host"));
         assertThat(audienceCaptor.getValue()).containsExactly("accepted-member");
+    }
+
+    @Test
+    void republishNotifiesOnlyOutsideWatchersWhenTheEventIsPublicAgain() {
+        ActivityEvent event = event("event-1", "host", 0d);
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
+        AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "accepted-member"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+        EventWatchSubscription outsideWatcher = new EventWatchSubscription();
+        outsideWatcher.setEventId("event-1");
+        outsideWatcher.setUserId("outside-watcher");
+        EventWatchSubscription staleMemberWatcher = new EventWatchSubscription();
+        staleMemberWatcher.setEventId("event-1");
+        staleMemberWatcher.setUserId("accepted-member");
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            currentEvent.set(saved.get(0));
+            return saved;
+        });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(membersSnapshot);
+        when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
+                .thenReturn(Map.of("event-1", membersSnapshot));
+        when(chatService.ensurePublishedMainEventChat(
+                any(ActivityEvent.class),
+                eq(List.of("host", "accepted-member"))))
+                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of()));
+        when(eventWatchSubscriptionsRepository.findByEventId("event-1"))
+                .thenReturn(List.of(outsideWatcher, staleMemberWatcher));
+
+        service.publish(new EventActionRequestDto(
+                "host",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventWatchlistDefinitionChanged(
+                eq("event-1"),
+                eq("event-1"),
+                audienceCaptor.capture(),
+                eq(List.of("modified")),
+                eq("host"));
+        assertThat(audienceCaptor.getValue()).containsExactly("outside-watcher");
     }
 
     @Test
@@ -962,6 +1035,60 @@ class ActivitiesEventsServiceTest {
                 anyBoolean());
         verify(affinityRecomputeTaskService, never())
                 .enqueueEventMembersChanged(anyString(), anyString());
+    }
+
+    @Test
+    void requestJoinUsesTheActiveSlotWhenAnOlderTrashedCopyHasTheSameSourceId() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent root = event("event-1", "host", 0d);
+        ActivityEvent activeSlot = event("slot-1", "host", 0d);
+        activeSlot.setId("slot-active-document");
+        activeSlot.setGenerated(true);
+        activeSlot.setEventType("slot");
+        activeSlot.setParentEventId("event-1");
+        ActivityEvent trashedSlot = event("slot-1", "host", 0d);
+        trashedSlot.setId("slot-trashed-document");
+        trashedSlot.setGenerated(true);
+        trashedSlot.setEventType("slot");
+        trashedSlot.setParentEventId("event-1");
+        trashedSlot.setStatus(ActivityEvent.STATUS_TRASHED);
+        ActivitiesMembersService.OwnerMembersSnapshot before =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "event-1", List.of(), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
+        ActivitiesMembersService.OwnerMembersSnapshot rootAfter =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+        ActivitiesMembersService.OwnerMembersSnapshot slotAfter =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(root));
+        when(activityEventsRepository.findBySourceIdIn(List.of("slot-1")))
+                .thenReturn(List.of(trashedSlot, activeSlot));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
+        when(activitiesMembersService.requestJoin("event-1", viewer, root, true, false, false))
+                .thenReturn(rootAfter);
+        when(activitiesMembersService.requestJoin("slot-1", viewer, activeSlot, true, false, false))
+                .thenReturn(slotAfter);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                "slot-1",
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("accepted");
+        verify(activitiesMembersService).requestJoin("slot-1", viewer, activeSlot, true, false, false);
+        verify(activitiesMembersService, never()).requestJoin("slot-1", viewer, trashedSlot, true, false, false);
     }
 
     @Test
@@ -1572,12 +1699,12 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void publishedCapacityDecreaseNotifiesOtherParticipantsAsDefinitionChange() {
+    void publishedPublicDetailsChangeNotifiesParticipantsAndOutsideWatchers() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
         ActivityEvent existing = event("event-1", "host", 0d);
-        existing.setTitle("Draft Event");
+        existing.setTitle("Old Event");
         existing.setCapacityMin(1);
         existing.setCapacityMax(8);
         existing.setCapacityTotal(8);
@@ -1592,12 +1719,20 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         Set.of("host"),
                         8);
+        EventWatchSubscription outsideWatcher = new EventWatchSubscription();
+        outsideWatcher.setEventId("event-1");
+        outsideWatcher.setUserId("outside-watcher");
+        EventWatchSubscription staleMemberWatcher = new EventWatchSubscription();
+        staleMemberWatcher.setEventId("event-1");
+        staleMemberWatcher.setUserId("member-1");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
                 .thenReturn(Optional.of(existing));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(eventWatchSubscriptionsRepository.findByEventId("event-1"))
+                .thenReturn(List.of(outsideWatcher, staleMemberWatcher));
 
         EventDto result = service.sync(eventPayload(
                 "sync-event-1",
@@ -1629,6 +1764,15 @@ class ActivitiesEventsServiceTest {
                 eq("host"));
         assertThat(audienceCaptor.getValue()).containsExactly("member-1");
         assertThat(reasonsCaptor.getValue()).containsExactly("details");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> watcherAudienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventWatchlistDefinitionChanged(
+                eq("event-1"),
+                eq("Draft Event"),
+                watcherAudienceCaptor.capture(),
+                eq(List.of("details")),
+                eq("host"));
+        assertThat(watcherAudienceCaptor.getValue()).containsExactly("outside-watcher");
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
@@ -2315,6 +2459,119 @@ class ActivitiesEventsServiceTest {
             assertThat(record.adminIds()).containsExactly("host");
         });
         verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
+    }
+
+    @Test
+    void watchlistKeepsCanonicalEventVisibleAfterViewerLeaves() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent canonical = event("watched-event", "host", 0d);
+        ActivityEvent suppressed = event("watched-event", "host", 0d);
+        suppressed.setId("watched-event-viewer-suppression");
+        suppressed.setOwnerUserId("viewer");
+        suppressed.setStatus(ActivityEvent.STATUS_TRASHED);
+
+        EventWatchSubscription subscription = new EventWatchSubscription();
+        subscription.setUserId("viewer");
+        subscription.setEventId("watched-event");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
+                .thenReturn(Map.of());
+        when(eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc("viewer"))
+                .thenReturn(List.of(subscription));
+        AtomicInteger findCalls = new AtomicInteger();
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenAnswer(invocation -> findCalls.getAndIncrement() == 0
+                        ? List.of(suppressed)
+                        : List.of(canonical, suppressed));
+        when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
+                .thenReturn(List.of(canonical, suppressed));
+        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
+                .thenReturn(Map.of());
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("watched-event");
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+            assertThat(record.watched()).isTrue();
+        });
+        assertThat(page.items()).extracting(EventDto::id).containsExactly("watched-event");
+    }
+
+    @Test
+    void watchlistHidesAnEventThatIsNoLongerPubliclyVisible() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent hidden = event("watched-event", "host", 0d);
+        hidden.setVisibility("Invitation only");
+        EventWatchSubscription subscription = new EventWatchSubscription();
+        subscription.setUserId("viewer");
+        subscription.setEventId("watched-event");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
+                .thenReturn(Map.of());
+        when(eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc("viewer"))
+                .thenReturn(List.of(subscription));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(hidden));
+        when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
+                .thenReturn(List.of(hidden));
+        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
+                .thenReturn(Map.of());
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isZero();
+        assertThat(page.records()).isEmpty();
+        assertThat(page.items()).isEmpty();
+    }
+
+    @Test
+    void activeMemberKeepsCanonicalEventWhenAnotherMemberHasLeft() {
+        Users viewer = new Users();
+        viewer.setId("riley");
+        viewer.setName("Riley User");
+
+        ActivityEvent canonical = event("shared-event", "host", 0d);
+        canonical.setAcceptedMemberUserIds(List.of("host", "riley"));
+        ActivityEvent otherMemberTrash = event("shared-event", "host", 0d);
+        otherMemberTrash.setId("shared-event-nova-suppression");
+        otherMemberTrash.setOwnerUserId("nova");
+        otherMemberTrash.setStatus(ActivityEvent.STATUS_TRASHED);
+        otherMemberTrash.setAcceptedMemberUserIds(List.of("host", "riley"));
+
+        when(homeUserProfileService.resolveCurrentUser("riley")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("riley", false))
+                .thenReturn(acceptedStatuses("shared-event"));
+        when(eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc("riley"))
+                .thenReturn(List.of());
+        AtomicInteger findCalls = new AtomicInteger();
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenAnswer(invocation -> findCalls.getAndIncrement() == 0
+                        ? List.<ActivityEvent>of()
+                        : List.of(canonical, otherMemberTrash));
+        when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
+                .thenReturn(List.of(canonical, otherMemberTrash));
+        when(eventCheckoutBasketService.loadResultStatesByEvent("riley", List.of("shared-event")))
+                .thenReturn(Map.of());
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("shared-event");
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        });
+        assertThat(page.items()).extracting(EventDto::id).containsExactly("shared-event");
     }
 
     @Test

@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
@@ -49,6 +50,7 @@ public class UserActivityCountersService {
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final MongoTemplate mongoTemplate;
 
@@ -58,6 +60,7 @@ public class UserActivityCountersService {
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
+            EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             EventParticipationTicketService eventParticipationTicketService,
             MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
@@ -65,6 +68,7 @@ public class UserActivityCountersService {
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
     }
@@ -162,11 +166,12 @@ public class UserActivityCountersService {
                         count(event.invitations()),
                         count(event.hosting()),
                         count(event.drafts()),
-                        count(event.trash()));
+                        count(event.trash()),
+                        count(event.watchlist()));
     }
 
     private UserEventCountersDto emptyEventCountersDto() {
-        return new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0);
+        return new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     public void refreshSupportCaseCountersForAdmins() {
@@ -367,6 +372,11 @@ public class UserActivityCountersService {
 
     private EventCounters resolveEventCounters(String userId) {
         Set<String> sourceIds = new LinkedHashSet<>();
+        Set<String> watchedSourceIds = eventWatchSubscriptionsRepository
+                .findByUserIdOrderByUpdatedDateDesc(userId).stream()
+                .map(subscription -> normalizeId(subscription == null ? null : subscription.getEventId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
         List<ActivityMember> storedMemberships = activityMembersRepository
                 .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId);
         List<ActivityMember> memberships = storedMemberships == null ? List.of() : storedMemberships;
@@ -407,6 +417,7 @@ public class UserActivityCountersService {
         int drafts = 0;
         int trash = 0;
         Set<String> countedSources = new LinkedHashSet<>();
+        Set<String> allBucketSources = new LinkedHashSet<>();
         for (ActivityEvent event : preferredBySourceId.values()) {
             String sourceId = normalizeId(event.getSourceId());
             if (!countedSources.add(sourceId)) {
@@ -428,11 +439,13 @@ public class UserActivityCountersService {
             }
             if (isInvitationForUser(event, userId)) {
                 invitations += 1;
+                allBucketSources.add(sourceId);
                 continue;
             }
             boolean hostingRecord = isHostingRecordForUser(event, userId);
             if (hostingRecord) {
                 hosting += 1;
+                allBucketSources.add(sourceId);
                 if (isDraftStatus(event)) {
                     drafts += 1;
                 }
@@ -443,13 +456,23 @@ public class UserActivityCountersService {
             }
             if (isPendingRequestForUser(event, userId) || isPendingReviewStatus(event)) {
                 pending += 1;
+                allBucketSources.add(sourceId);
                 continue;
             }
             if (isAcceptedMemberForUser(event, userId) || isActiveEventStatus(event)) {
                 active += 1;
+                allBucketSources.add(sourceId);
             }
         }
-        return new EventCounters(active + pending + invitations + hosting, active, pending, invitations, hosting, drafts, trash);
+        return new EventCounters(
+                allBucketSources.size(),
+                active,
+                pending,
+                invitations,
+                hosting,
+                drafts,
+                trash,
+                watchedSourceIds.size());
     }
 
     private AssetCounters resolveAssetCounters(String userId) {
@@ -510,7 +533,8 @@ public class UserActivityCountersService {
                         counters.invitations(),
                         counters.hosting(),
                         counters.drafts(),
-                        counters.trash()),
+                        counters.trash(),
+                        counters.watchlist()),
                 new Users.UserAssetCountersRecord(
                         count(currentAsset.cars()),
                         count(currentAsset.accommodation()),
@@ -539,6 +563,7 @@ public class UserActivityCountersService {
                 .set("activities.event.hosting", count(event.hosting()))
                 .set("activities.event.drafts", count(event.drafts()))
                 .set("activities.event.trash", count(event.trash()))
+                .set("activities.event.watchlist", count(event.watchlist()))
                 .set("activities.tickets", count(next.tickets()))
                 .set("activities.asset.tickets", count(next.asset() == null ? null : next.asset().tickets()));
         updateUserActivityFields(normalizedUserId, update);
@@ -1049,7 +1074,8 @@ public class UserActivityCountersService {
             int invitations,
             int hosting,
             int drafts,
-            int trash) {
+            int trash,
+            int watchlist) {
     }
 
     private record AssetCounters(

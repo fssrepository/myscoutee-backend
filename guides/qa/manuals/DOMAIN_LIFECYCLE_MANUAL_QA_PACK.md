@@ -48,7 +48,7 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Event Explore payment checkout | One terminal Stripe payment, one inactive succeeded basket and one accepted event membership; separate Cash-only control remains unsubmitted | Event Explore checkout, active-card assignment and expired-card guard, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute plus the selected demo-provider callback; Cash only has no card selector | `EVENT-CHECKOUT-001` |
+| Event Explore payment checkout | Two terminal Stripe payments, two inactive succeeded baskets and two accepted event memberships filling the two Slots; separate Cash-only control remains unsubmitted | Event Explore checkout, active-card assignment and expired-card guard, then Activities Events Active/All and per-user read-only Payment summaries | Normal membership/chat/counter/recompute plus the selected demo-provider callbacks; Cash only has no card selector | `EVENT-CHECKOUT-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite or Join request | Pending asset-scoped membership plus one recipient notification | Asset Members pending row, full parent pending-counter chain and recipient bell | Asset acceptance/rejection and Asset-role notification | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Asset Explore payment checkout | One scoped Barion payment, borrow request, inventory reservation and later owner decision; isolated 3DS decline/timeout create no entitlement | Resource/Asset Explore basket, provider-owned 3DS wait/result and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox plus selected simulator callback work | `ASSET-CHECKOUT-001` |
@@ -94,9 +94,9 @@ The principal checkpoint chains are:
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-CHECKOUT-001` is an isolated direct paid-entry journey. It proves the
-  Event Explore review, resumable basket, Stripe payment and accepted
-  Activity Events destination without reusing the approval-before-payment or
-  physical-ticket branches in `EVENT-TICKET-005`.
+  Event Explore review, resumable basket, two-user Stripe payment across both
+  Slots and accepted Activity Events destination without reusing the
+  approval-before-payment or physical-ticket branches in `EVENT-TICKET-005`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
   `EVENT-TICKET-003` -> `EVENT-TICKET-011` -> `EVENT-TICKET-009` ->
   `EVENT-TICKET-004` (Unpublish midpoint) -> `EVENT-TICKET-012` ->
@@ -2701,12 +2701,10 @@ again.
   Firebase revision or populated public client fields. Do not manufacture a
   frontend token fallback: activate a verified deployment Firebase revision,
   then repeat the read-only device preflight before staging the message.
-- Execution decision, 2026-08-30: defer this delivery boundary to the external
-  `QA-EXPANSION-CP04` run. Execute it only with the production deployment on a
-  production-like VMware host, a verified active Firebase revision and the
-  physical phone. It is covered as the Chat-specific producer/control branch
-  across `OPERATOR-FIREBASE-003` and `MOBILE-PUSH-001` through
-  `MOBILE-PUSH-004`; it no longer blocks the local Core campaign.
+- Execution decision, 2026-08-30: this remains the Chat-specific producer and
+  control block inside `MOBILE-PUSH-LIFECYCLE-001`. Run it in the QA
+  environment with an Operator-tested active Firebase revision and the
+  physical phone; neither prerequisite turns it into Deployment QA.
 
 ## Event feedback and Impressions checkpoints
 
@@ -2920,11 +2918,36 @@ Status: **PASS** on 2026-08-05.
   next poll. No feedback was submitted, removed or otherwise mutated. Keep this
   as a separate checkpoint from `EVENT-IMPRESSION-001`.
 
+## Member side-menu payment checkpoint
+
+### `PAYMENT-METHODS-HISTORY-001` — Payment history, saved cards and provider recovery
+
+Status: **PASS / CLOSED** (2026-09-06).
+
+Stable user guide:
+[`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
+
+- The user completed the 39-step Ava/Alex journey. The Stripe and Barion
+  registration savepoints, Barion replacement, Stripe reconnect, expired-card
+  cleanup and terminal history/idempotence oracles passed. Payment documents
+  and Alex's stored payment totals remained unchanged.
+- The independent Stripe 3DS cancellation branch returned without saving a
+  card or creating a payment. Its original run exposed only incorrect generic
+  failure copy. The provider terminal state is now the existing `cancelled`
+  state, with a dedicated user-cancelled message; generic technical failures
+  retain `payment.registration.error.failed`. The focused simulator regression
+  and the running frontend watcher build passed. The user accepted this
+  bounded correction without another manual replay.
+- Final cleanup removed only the standalone branch's exact terminal
+  registration artifact. Exact reset restored three saved cards, nine prior
+  registration audit records and five prior payment records, then returned the
+  simulator to connected Cash only with 3DS Off and `phase=not-staged`.
+
 ## Event checkout checkpoint
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
-Status: **PREPARED / NOT STAGED / NOT RUN**.
+Status: **IN PROGRESS — VERIFIED THROUGH STEP 74** (2026-09-06).
 
 Stable user guide:
 [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
@@ -2935,13 +2958,15 @@ before payment and therefore never proves a manual click on the Payment
 action.
 
 - Stage one published Public paid Event with Ticketing Off, no approval gate,
-  two selectable Slots, one paid optional item and one required policy. Nova
-  starts outside membership with no Event checkout basket, payment, Activity
-  Events row, chat or counter contribution. Casey is the sole accepted Admin.
+  two selectable Slots with one participant place each in addition to Casey,
+  one paid optional item and one required policy. Nova and Riley start outside
+  membership with no target basket, payment, Activity Events row, chat or
+  counter contribution. Casey is the sole accepted Admin.
 - Stage three read-only controls for the same Nova actor: one free Event, one
   paid approval-required Event and one full paid Event that enters the
-  waitlist. An adjacent paid Event and Riley's complete state are immutable
-  negative controls.
+  waitlist. The adjacent paid Event is an immutable negative control; Riley
+  remains unchanged through the cancellation branch, then owns only the
+  declared Morning payment.
 - The state-dependent action contract is:
 
   | State | Required visible actions/status | Forbidden action |
@@ -2949,60 +2974,147 @@ action.
   | Fresh paid direct Event | Event Explore `Book Event`; checkout review `Join` | `Continue booking`, `Payment summary` |
   | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Stripe` | a second active basket/session |
   | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
-  | Full paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Full direct paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Full multi-Slot paid Event, outside viewer | Event remains in Explore with `Add to Watchlist` | `Book Event`, `Continue booking`, `Join Waiting List`, new basket/payment |
+  | Accepted Event member | normal Event-level notifications; no Watchlist action | `Add to Watchlist`, `Remove from Watchlist` |
   | Free Event | `Join Event`/`Join` | payment step or payment record |
   | Successful direct Stripe payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
 
 - On the fresh paid Event, Slot selection and every required policy gate the
   first review action. A paid optional item changes the displayed total once.
-  `Join` confirms the basket and opens the Stripe payment phase; it is not yet
-  membership or payment success.
+  `Join` confirms the basket, persists a pending membership and opens the
+  Stripe payment phase; it is not yet accepted membership or payment success.
 - Close the payment phase once without paying. The basket icon and Event
   Explore card must expose `Continue booking`. Reopen in place and once after
   a clean reload; both reconstructions must use the same active basket/session
-  identity and amount without creating membership, payment or counters.
+  identity and amount without duplicating membership, payment or counters.
 - Exercise `Cancel payment` from that pre-payment boundary. The current basket
-  becomes one closed audit, the card returns to `Book Event`, and no
-  membership, Activity Events row, chat, ticket or approved payment exists.
-- Start one fresh attempt, return to the payment phase and click `Payment`
-  exactly once. While the request is active the action changes to `Paying...`
-  and is disabled; the rest of the application remains responsive. The
-  checkout closes on success instead of leaving an infinite spinner, frozen
-  overlay or duplicate popup.
+  becomes one closed audit, the pending membership is suppressed, its Pending
+  counter contribution is removed, the card returns to `Book Event`, and no
+  current participation, chat, ticket or approved payment exists.
+- Start one fresh Nova attempt for Evening, return to the payment phase and
+  click `Payment` exactly once. While the request is active the action changes
+  to `Paying...` and is disabled; the rest of the application remains
+  responsive. After it succeeds, `Continue booking` is correct while Morning
+  remains open. Reuse Casey's browser for Riley, pay Morning once, then require
+  both Slots to be full and the fresh-booking/Continue action to disappear for
+  both participants. Accepted members do not receive a redundant Watchlist
+  action because they already receive the Event-level member notifications.
 - The assign surface keeps expired and provider-mismatched cards visible but
-  unselectable. Both retain their artwork beneath the same white overlay. The
+  unselectable, ordered after selectable cards as `selectable -> Reconnect ->
+  Expired`. Both retain their artwork beneath the same white overlay. The
   provider-mismatched card exposes `Retokenize >` with Retokenize/Delete while
   keeping the checkout open. Provider authority is checked before a new
   payment starts; an already identified in-flight payment/3DS session stays
   pinned to its original provider, while any later new or periodic use of that
   provider token fails with the short retokenization message.
-- Immediate write oracle: exactly one `provider=stripe`, terminal authorized
-  payment with the selected immutable price/currency and
-  `bookingStatus=joined`; one
-  succeeded, inactive basket; one accepted Nova membership/participation
-  overlay; occupancy `1 -> 2`; and the normal accepted-member chat/counter
-  effects exactly once. Ticketing Off keeps physical tickets and both ticket
-  counters at zero. The Stripe simulator authorization belongs to this branch;
-  capture/settlement and Registry work are outside this checkpoint.
-- Immediate UI oracle: the paid target is present exactly once under Nova's
-  Activity Events `Active` and `All` buckets. Its menu exposes `View Event`,
-  read-only `Payment summary` and `Leave Event`; the summary returns the exact
-  Slot, optional item, accepted policy IDs, amount, currency, Stripe provider,
-  selected payment method and authorized/joined result. Merely opening it
-  cannot write.
+- Immediate write oracle: exactly two `provider=stripe`, terminal authorized
+  payments with immutable price/currency and `bookingStatus=joined`: Nova owns
+  Evening and Riley owns Morning. Require two succeeded inactive baskets,
+  accepted Nova and Riley memberships, root occupancy `1 -> 3`, both Slots at
+  `2 / 2`, and the normal accepted-member chat/counter effects exactly once.
+  Ticketing Off keeps physical tickets and both ticket counters at zero. The
+  Stripe simulator authorizations belong to this branch; capture/settlement
+  and Registry work are outside this checkpoint.
+- Immediate UI oracle: the paid target is present exactly once under both
+  participants' Activity Events `Active` and `All` buckets and remains exactly
+  once in Event Explore as a full multi-Slot Event. Each Active/All menu
+  exposes `View Event`, read-only `Payment summary` and `Leave Event`; Nova's
+  summary returns Evening and Riley's returns Morning with their own payment
+  method and authorized/joined result. Explore exposes the Event-level
+  outside viewer's Watchlist action, never another booking/payment action.
+  The accepted participants do not expose a Watchlist action. Merely opening
+  either summary cannot write.
 - One clean reload must reconstruct the same accepted membership, bucket
   counters, menu actions and Payment summary from persisted state. The target
-  must not return as a fresh Event Explore payment candidate. Reopening the
-  summary twice and replaying the captured request identity through the
-  machine oracle must retain one payment, basket, membership and chat join
-  effect.
+  remains visible in Event Explore without becoming a fresh payment candidate.
+  Reopening the
+  summaries and replaying the captured request identities through the machine
+  oracle must retain exactly two payments, baskets and participant joins with
+  one shared three-member chat projection.
 - Inspect the free, approval-required and waitlist controls without converting
-  them to successful payments. Their labels and forbidden-payment states must
-  match the table, and every control plus Riley remains byte-identical.
+  them to successful payments. The Waitlist control is pending membership with
+  no basket, so `Continue booking` is forbidden. The plain non-slot Cash-only
+  checkout has no Basket/Slot panel and is explicitly cancelled; Free,
+  Approval, Waitlist and the adjacent paid control retain their declared
+  contracts.
 - A versioned fixture must provide guarded `stage`, read-only `status`, named
   `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
-  execute this row until that harness and its isolated Casey/Nova browser
-  sessions exist.
+  execute this row until that harness and the isolated Casey/Nova/Ava browser
+  sessions exist; Riley reuses Casey's session slot only at the declared step.
+- The versioned fixture retains exact rollback points for the cancelled block-4
+  boundary, the persisted step-66 destination boundary and the exact step-74
+  pre-Watchlist boundary. The target and
+  controls, Nova's Stripe/Barion/expired cards, Riley's separate Stripe card,
+  the exact-reset snapshot and three isolated Casey/Nova/Ava windows remain
+  owned by this checkpoint.
+- Payment-ready savepoint (2026-09-06 06:12 CEST): after the user-controlled
+  steps through 21, the versioned `capture-payment-ready` oracle passed with
+  one active `4900 HUF` basket containing two items, exactly zero payments and
+  Nova's target membership persisted as `pending`.
+- Cancelled savepoint (2026-09-06 06:17 CEST): the preserved payment-ready
+  snapshot proved Event counters `all=3`, `pending=3`, the two-item basket,
+  pending membership and zero payment at step 21. The current step-32 oracle
+  then passed with those two basket items closed, the former pending membership
+  suppressed, zero payments and zero tickets. The next boundary is the fresh
+  successful Stripe attempt beginning at step 33.
+- Block-4 extension (2026-09-06): each active Slot is now `1 / 2`; Nova pays
+  Evening and Riley pays Morning. The write oracle expects two payments, both
+  Slots full and no stale fresh-booking/Continue action for either user.
+- Destination/control evidence (2026-09-06 09:42 CEST): steps through 74 are
+  verified at `phase=destination-verified`. The persisted target has Casey,
+  Nova and Riley at `3 / 6`; Morning is Casey/Riley `2 / 2`, Evening is
+  Casey/Nova `2 / 2`; exactly two `stripe/authorized/joined` payments and two
+  succeeded inactive baskets remain, with zero active target baskets. Repeated
+  exploratory leave/rejoin attempts contributed only deleted inactive basket
+  audit rows and matching main-Event join/leave messages, not duplicate payment
+  writes.
+- The background audit found that an active participant-owned Slot overlay
+  could duplicate its canonical Slot in the parent `upcomingSlots` write. The
+  source-side refresh now selects one canonical document per Slot `sourceId`;
+  the retained fixture is normalized to exactly Morning plus Evening once, and
+  the harness rejects any future duplicate occurrence at the paid oracle.
+- The Waitlist control is now one pending `requestKind=waitlist` membership
+  with zero baskets. The Cash-only control has zero Nova membership, basket and
+  payment after explicit cancellation. Free and Adjacent remain untouched;
+  Approval retains exactly one pending approval basket. The current step-66
+  rollback snapshot and step-74 control oracle both passed after these repairs.
+- The three bounded post-step-74 UI regressions passed: the Waitlist control
+  has no `Continue booking`, the plain Cash-only checkout has no Basket/Slot
+  panel, and the paid Payment summary retains its selected Slot item. Block 7
+  first proves the Watchlist action absent for accepted Riley and Nova. Nova
+  then leaves the paid target and becomes the outside Watchlist subscriber;
+  the exact full pre-Nova-leave state was captured as the `block7-ready`
+  rollback boundary. Riley's later leave opens one additional Slot place. This
+  distinguishes Nova's one
+  Watchlist availability notification from the normal Event-level member
+  notification and proves that accepted members have no Watchlist action.
+- Final Watchlist/leave evidence (2026-09-06 10:41 CEST): the complete
+  block-7 oracle passed after the user-controlled steps through 81. Casey is
+  the sole accepted root and Slot member, each Slot has one available place,
+  the two authorized joined Stripe payments are unchanged, and neither Nova
+  nor Riley has an active basket. Nova has no retained Watchlist subscription
+  or counter contribution; the availability notification, Riley member
+  notification and their outbox intents are each exactly once, while the Event
+  chat contains exactly the Nova and Riley voluntary-leave messages. A later
+  extra Add-to-watchlist click was classified from the HTTP write audit and
+  removed by the bounded fixture cleanup before the final oracle. Voluntary
+  self-leave notifications now use `left`; organizer removal continues to use
+  `removed`.
+- Accepted post-close Watchlist refinement (2026-09-06): availability copy is
+  now neutral (`A new spot is available`) because following an Event does not
+  imply that it was full at subscription time. An outside watcher also gets a
+  generic update when a followed Event becomes public again or its public
+  title/location, schedule or program changes, but only while the
+  same Explore visibility policy still permits that user to view it.
+  Accepted/pending/invited participants are excluded from this watcher intent,
+  and draft, invitation-only or otherwise inaccessible Events disappear from
+  Watchlist without disclosing their internal changes. The Watchlist write and
+  new-spot scheduler recheck that same visibility boundary, so a retained
+  subscription cannot expose a newly private Event. Backend and frontend local
+  implementations carry the same boundary; regression specifications cover
+  outsider/member recipient separation, hidden Watchlist records and hidden
+  Event write/notification rejection.
 
 ## Event ticketing checkpoints
 
@@ -6476,10 +6588,38 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **PREPARED / NOT STAGED / NOT RUN**.
+Status: **STAGED / NOT RUN**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
+
+The versioned fixture was staged at `2026-09-06T09:38:32.096Z` after a proven
+exact reset, and its second
+read-only `status` reached `phase=baseline-ready`. The persisted baseline is
+exact: connected Barion with 3DS Off; Casey Admin plus Nova Member on the one
+Event; the target paid Asset at quantity `3`; all five named controls; and zero
+scoped payment, request projection, activity resource, server basket or stored
+Asset membership. `EVENT-CHECKOUT-001` was first restored through its own
+snapshot-protected reset with zero remaining scoped artifacts. No Asset
+checkout browser was opened or operated by Codex.
+
+The source preflight also found that the pre-Pay Borrow Basket draft had been
+held only in an in-memory signal even though checklist steps 22-23 require one
+clean reload. It now uses the scoped `AssetBorrowDraftStore` backed by the
+application's namespaced local storage, keyed by user, Sub-event and Asset.
+The existing frontend watcher compiled and deployed that correction
+successfully. This is implementation evidence only: reload reconstruction
+remains an unpassed user-visible assertion in steps 22-23.
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-checkout ASSET-CHECKOUT-001
+```
+
+The first user boundary is checklist step 1 through step 18. On the exact
+`payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
+before that oracle. Replay boundaries are available as
+`rollback-payment-ready`, `rollback-paid-pending` and `rollback-accepted`.
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
@@ -6492,9 +6632,10 @@ payment.
   quantity `1`. Nova starts with no request, payment/session, borrow draft,
   assignment, availability reservation, Asset activity contribution or role
   change.
-- Stage one free Asset, one zero-availability control and one adjacent paid
-  Asset. A sibling Event/Sub-event using the same type and Riley's state are
-  immutable scope controls.
+- Stage one free Asset, one zero-availability control, one adjacent paid Asset
+  and two isolated paid terminal controls named `Decline Control` and
+  `Timeout Control`. A sibling Event/Sub-event using the same type and Riley's
+  state are immutable scope controls.
 - The state-dependent action contract is:
 
   | State | Required visible actions/status | Forbidden action |
@@ -6511,15 +6652,14 @@ payment.
   availability and any unaccepted required policy disable the forward action
   and create no server write. A valid quantity/time/policy set produces one
   deterministic line item and total.
-- Select `Confirm borrow` once. This creates one active Barion checkout session
-  and moves to the locked payment phase; it does not yet create the borrow
-  request or assignment. Closing the surface leaves one Borrow Basket item
-  with `Continue request`. In-place reopen and one clean reload must reconstruct
-  the same session, amount, timeframe, quantity and policy set.
-- Use `Back` once, change the quantity or timeframe, and confirm again. The old
-  active session must not be reused with changed content: it becomes a closed
-  or superseded audit and exactly one new active session owns the recalculated
-  payload. No borrow request or inventory delta exists before `Pay`.
+- Select `Confirm borrow` once. This moves to the locked payment phase but does
+  not call the provider and creates no server payment/session, request,
+  assignment or inventory delta. The one Borrow Basket item is a frontend
+  draft. `Continue request`, in-place reopen and one clean reload must
+  reconstruct its amount, timeframe, quantity and policy set.
+- Use `Back` once, change the quantity or timeframe, and confirm again. The
+  final frontend draft owns the recalculated payload; stale values must not
+  return and server checkout state must remain empty before `Pay`.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
@@ -6527,8 +6667,9 @@ payment.
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
   reservation/availability decrement for quantity `1`; and one pending
-  resource projection. The first abandoned/superseded session is not revenue
-  and cannot create entitlement.
+  resource projection. There is no server `eventCheckoutBasketItems` row in
+  this Asset flow; the request's `inventoryApplied=true` plus the exact
+  quantity decrement own the reservation proof.
 - Immediate UI oracle: the Asset remains once in Explore with availability
   reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
   and Casey sees Nova once as the pending borrower on the exact Asset/request.
@@ -6548,10 +6689,19 @@ payment.
 - Inspect the free and unavailable controls without submitting them. Their
   labels and forbidden-payment states must match the table and no control may
   inherit the target's payment/session identity.
-- A versioned fixture must provide guarded `stage`, read-only `status`, named
-  `payment-ready`, `paid-pending` and `accepted` captures, plus exact `reset`.
-  Do not execute this row until that harness and isolated Casey/Nova browser
-  sessions exist.
+- Run one normal quantity-`1` checkout on `Decline Control` and one on
+  `Timeout Control`, keeping Barion 3DS enabled. The first must yield exactly
+  one declined/failed terminal payment and the second exactly one expired
+  terminal payment. Neither control may create a borrow request, inventory
+  delta, resource assignment, entitlement or server basket row.
+- The versioned `asset-checkout` fixture provides guarded `stage`, read-only
+  `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
+  request-destination and `accepted` captures, three exact persisted rollback
+  savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
+  active and expired Barion card controls into the running payment simulator.
+  The payment-ready rollback restores the server boundary only; if the browser
+  draft was already cleared, the user repeats steps 1-18 because the harness
+  never writes browser-local storage.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 
@@ -6890,7 +7040,7 @@ running HTTP stack before staging:
 Recheck those values at the Article savepoints; a Mongo URL match alone is not
 the media-retention oracle.
 
-This consolidated Core journey replaces four unexecuted microtest rows. It
+This consolidated journey replaces four unexecuted microtest rows. It
 does not reopen or rewrite the already-PASS Article Editor and landing
 publication evidence.
 
@@ -6963,79 +7113,76 @@ publication evidence.
   contract. Capture the existing admin telemetry stream separately at the
   matching UI savepoints; do not infer Redis telemetry from Mongo state.
 
-## Operator configuration and security cases
+## Current Operator Pair-QA journeys
 
-### `OPERATOR-FIREBASE-001` — activate, observe login mode, roll back
+### `OPERATOR-CONFIGURATION-LIFECYCLE-001` — configuration workspace
 
-- In a disposable deployment, save and test valid Firebase configuration, then
-  activate only the verified revision.
-- In a fresh browser session, verify that the normal entry action opens the
-  Firebase authentication surface instead of the demo user selector.
-- Verify failed/unverified activation never changes the login mode and that
-  bootstrap/operator recovery remains available only through its documented
-  boundary.
-- Restore the original deployment capability and verify the original login
-  mode. Record credentials only as masked/absent evidence.
+- Open Configuration once and use one reversible happy-path value in the
+  public configuration, TLS, payment and Firebase blocks.
+- After each Save/Test action, reopen the same block and compare the normalized
+  visible value; credentials may return only as configured/masked state.
+- After Firebase activation, complete one eligible fresh sign-in and verify
+  that reload/login reuses the same application identity.
+- Restore every changed block to its exact baseline before closing the row.
+- Invalid-input, callback-security, secret-leak, TLS-worker failure and other
+  fault-injection branches belong to automated regression coverage. Checkout and real-device push
+  effects stay in Event/Asset and Notifications.
 
-### `OPERATOR-PAYMENT-001` — configure and rotate the payment token
+### `OPERATOR-REGISTRY-LIFECYCLE-001` — registry and community
 
-Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+- Register one disposable local binding, complete one claim/link path, inspect
+  its leaderboard/community projection and synchronize one measurement period.
+- Deactivate/reactivate once to verify member/admin fail-closed behavior and
+  retained Operator recovery, then restore the disposable binding.
+- Protocol abuse, retry storms, token-security probes, announcement fan-out and
+  worker failures belong to automated regression coverage.
 
-- In a disposable operator deployment, save a valid payment-provider token,
-  validate it through the named server-side provider check and activate only
-  the verified revision.
-- The raw token must never be returned in a row DTO, stored in frontend/local
-  cache, written to logs, notifications or audit payloads, or redisplayed after
-  save. The UI may expose only masked metadata such as provider, state,
-  fingerprint/last characters and updated time.
-- Prove invalid-token rejection leaves the prior active revision unchanged.
-  Rotate to a second valid token and prove new payment operations use only the
-  new revision; then revoke it and prove payment operations fail closed while
-  operator recovery remains available through its documented boundary.
-- Record an immutable actor/configuration audit for save, validation,
-  activation, rotation and revocation without recording either raw token.
+### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
-### `OPERATOR-PAYMENT-IP-001` — restrict payment access by client IP
+- Apply one prepared compatible QA release from Updates, observe honest
+  progress, then reopen the Operator screen and verify the resulting version.
+- Invalid signatures, corrupt archives, downgrade rejection, interrupted-worker
+  recovery and rollback belong to packaging/update automation, not extra manual
+  branches.
 
-Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+### `OPERATOR-REVENUE-LIFECYCLE-001` — revenue
 
-- Configure an explicit server-side IP/CIDR allowlist for payment-token
-  management and payment operations. `127.0.0.1` is the required loopback-only
-  checkpoint: the same host is accepted and a request whose trusted resolved
-  client IP does not match is denied before token access or provider traffic.
-- Resolve client IP only through the deployment's trusted proxy chain. A raw or
-  spoofed `X-Forwarded-For` value from an untrusted source must not bypass the
-  policy; malformed addresses and an empty effective allowlist fail closed.
-- Prove the denial is enforced by the backend even when the operator UI/action
-  is called directly. Frontend hiding is neither enforcement nor PASS evidence.
-- Audit allowed and denied attempts with actor, resolved client IP, policy
-  revision and outcome, but never the raw payment token. After restoring the
-  prior policy, prove access changes exactly once and no stale browser state
-  overrides the authoritative server decision.
+- Open Revenue for one controlled captured/released payment set, synchronize
+  once, compare totals and one settlement, then reopen the persisted result.
+- Failure injection, retry/idempotency and exclusion rules belong to automated
+  regression coverage.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 114 executable journeys after provider behavior was moved
-into its owning Event/Asset rows and the five obsolete External Payment rows
-were replaced by one Event-owned Core side-menu Payment checkpoint. All 86 passed rows remain individually immutable: only their
-owning `QA domain` may move, while ID, status, contract and evidence stay
-unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
-were consolidated into complete lifecycle parents. Every assertion below is
-still required, but an old source ID is not an independently scheduled test
-unless it remains a current CSV/XLSX row. The consolidated parent rows in the
-matrix and the handoff's resume pointer are authoritative.
+The matrix contains 103 executable journeys after provider behavior was moved
+into its owning Event/Asset rows and the five obsolete standalone Payment rows
+were replaced by one Event-owned side-menu Payment checkpoint, and the
+six non-Pair-QA Deployment rows were removed. Nine planned Operator rows were
+consolidated into four screen-level journeys. All 88 passed rows remain
+individually immutable, including their owning `QA domain`, ID, status,
+contract and evidence. Non-PASS microcases from the earlier 190/212-row planning stages
+were consolidated into complete lifecycle parents. Assertions below belong
+either to automated coverage or bounded parent subassertions; an old source ID is
+not an independently scheduled test unless it remains a current CSV/XLSX row.
+The consolidated parent rows in the matrix and the handoff's resume pointer
+are authoritative.
 
 The tables below are therefore a source-oracle archive for the consolidated
 parents, not an instruction to recreate microtests. Runtime execution uses at
 most three browser identities at once; mobile observations replace, rather
 than add to, one desktop phase when three desktop accounts are already active.
 
-The XLSX uses the teal `EXT / optional` scope marker only for journeys whose
-stable ID starts with `OPERATOR-` or `DEPLOY-`. The Core
-`PAYMENT-METHODS-HISTORY-001` row is deliberately not External. Local Admin work is
-distributed to its actual Core owner; there is no separate Admin-optional
-execution bucket. Scope and execution status remain independent, and the overview reports
-separate Core and External/optional totals.
+All current rows belong to one Pair-QA queue. Operator is a normal domain.
+Local Admin work is distributed to its actual capability owner, and the
+overview reports one total across every current Pair-QA row without a separate
+scope branch, legend or total.
+
+The four current Operator parents are
+`OPERATOR-CONFIGURATION-LIFECYCLE-001`,
+`OPERATOR-REGISTRY-LIFECYCLE-001`,
+`OPERATOR-UPDATE-LIFECYCLE-001` and
+`OPERATOR-REVENUE-LIFECYCLE-001`. The detailed Operator tables below are
+source assertions for those parents, not additional scheduled Pair-QA rows.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -7046,7 +7193,7 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### Retired source archive — payment authorization and provider callbacks
 
-These former External Payment cases are not current matrix rows or separately
+These former standalone Payment cases are not current matrix rows or separately
 scheduled pair-QA tests. Their product-visible requirements moved to
 `EVENT-CHECKOUT-001` (Stripe), `ASSET-CHECKOUT-001` (Barion/3DS)
 and `PAYMENT-METHODS-HISTORY-001` (side-menu history/cards). The obsolete
@@ -7084,7 +7231,7 @@ must not be run as a second payment suite.
 The current free/no-payment control is `ASSET-BORROW-LIFECYCLE-001`; the
 Cash-only paid control is part of `EVENT-CHECKOUT-001`. Provider
 registration, expired-card notification/cleanup and Payment History are one
-Core checkpoint:
+checkpoint:
 [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
@@ -7251,21 +7398,19 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `OPERATOR-PRIVACY-001` | Save valid controller/contact values, test invalid partial/email input and restore. | Public deployment config exposes only the valid pair; invalid save is atomic and neither operator secrets nor unrelated branding changes. |
 | `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
 
-### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
+### `QA-EXPANSION-CP04` — Operator Firebase and Notifications push
 
-External execution environment: deploy the production build to the dedicated
-production-like VMware host, activate a disposable verified Firebase revision,
-and use one physical phone. This bundle also owns the deferred
-`CHAT-PUSH-001` producer/control flow: Casey sends one ordinary participant
-message, Nova stays foreground as the no-system-push control, and Riley is the
-background/closed-app target. The native permission prompt already passed on
-the local clean WebAPK install, but permission, token rotation and delivery are
-repeated here against the production runtime.
+This is QA-environment Pair QA, not a live-system deployment test. Operator
+owns configuration, verification, activation, one fresh sign-in and rollback.
+Notifications owns device registration and the deferred `CHAT-PUSH-001`
+producer/control flow: Casey sends one ordinary participant message, Nova stays
+foreground as the no-system-push control, and Riley is the background/closed-
+app target.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `OPERATOR-FIREBASE-002` | Save a new Firebase revision, fail one capability test and attempt activation. | Any configuration change clears prior tested revisions; unverified activation fails and the currently active login/messaging runtime remains untouched. |
-| `OPERATOR-FIREBASE-003` | Run the messaging capability test with a real disposable browser/device token. | Token/readiness inputs are write-only and absent from DTO/log/audit; one test message reaches only the target and records the tested revision/time. |
+| `OPERATOR-FIREBASE-001` | Save, verify and activate one Firebase configuration, then restore the prior configuration after the login check. | Tested/active state changes once, the existing Operator session stays usable and restoration returns the prior login mode. |
+| `ENTRY-FIREBASE-REG-001` | After activation, complete one eligible fresh sign-in and repeat login. | One subject/email links to one application user/profile, reload reuses it, the Operator recovery control stays valid and no demo/global collision occurs. This assertion is a block inside `OPERATOR-CONFIGURATION-LIFECYCLE-001`. |
 | `MOBILE-PUSH-001` | Keep the phone app visible and produce one target notification from a desktop actor. | Foreground listener shows one in-app notification/counter, no duplicate system notification and the backend inbox/outbox/token identities agree. |
 | `MOBILE-PUSH-002` | Background, then fully close the phone app and produce one target notification. | FCM displays one system notification while the app is not open; no desktop actor receives it and the persisted unread count stays one. |
 | `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
@@ -7287,7 +7432,7 @@ repeated here against the production runtime.
 | `OPERATOR-ANNOUNCEMENT-001` | Publish/receive one controlled registry announcement. | Eligible deployment receives it once in order; acknowledgement/cursor does not hide it from another deployment or create a local notification duplicate. |
 | `OPERATOR-COMMUNITY-001` | Load available community/payment providers with one unavailable control. | Only registry-advertised compatible providers appear; unavailable/malformed metadata cannot become active configuration. |
 
-### `QA-EXPANSION-CP06` — TLS, updates and deployment emulation
+### `QA-EXPANSION-CP06` — Operator TLS and updates
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7297,14 +7442,6 @@ repeated here against the production runtime.
 | `OPERATOR-UPDATE-001` | Offer and apply one correctly signed compatible release. | Signature/content fingerprint/version are verified before replacement; job events survive restart and active version changes once. |
 | `OPERATOR-UPDATE-002` | Offer invalid-signature, corrupted and downgrade releases. | Every variant fails before activation, current services/data remain intact and audit/log contains no release private key or credentials. |
 | `OPERATOR-UPDATE-003` | Interrupt the update worker and reconnect to job events. | Durable phase and event sequence resume without double extraction/restart; operator UI reconstructs terminal truth after reload. |
-| `DEPLOY-EMU-001` | Render dev and production Compose/config with simulator and registry settings without starting them. | Dev topology resolves named services/health dependencies; production contains neither simulator nor dev endpoint switches and no secret value is baked into config. |
-| `DEPLOY-INSTALL-001` | Install the versioned package on a disposable local VM/container-host analogue. | Prerequisites, numeric ownership, systemd unit, env/secrets split, deployment identity and health qualification pass from a clean host. |
-| `DEPLOY-UPGRADE-001` | Upgrade the disposable install with a signed next release. | Backup/preflight precede mutation; version/data/identity advance once and an injected failure rolls binaries/config back coherently. |
-| `DEPLOY-BACKUP-001` | Back up Mongo/media/config identity and restore into an isolated target. | Counts, selected hashes, ownership and registry/deployment identity match; secrets remain permission-restricted and restore never touches the live source. |
-| `DEPLOY-TLS-001` | Exercise HTTP-to-HTTPS, hostname, certificate chain and renewal presentation on the disposable deployment. | Only intended public ports/routes are reachable, redirects preserve safe paths and renewed certificate is served without mixed old/new material. |
-| `DEPLOY-RESTART-001` | Reboot/restart the disposable host and services in dependency order. | Mongo/Redis/object store/backend/nginx become healthy once, no duplicate worker ownership appears and persisted sessions/tasks recover according to policy. |
-| `DEPLOY-RESOURCE-001` | Inject bounded low-disk, low-memory and unavailable dependency conditions one at a time. | Health and diagnostics identify the owner, writes fail safely, no retry storm/second build appears and recovery clears only the induced condition. |
-| `DEPLOY-SECURITY-001` | Scan resolved listeners, headers, CORS, images/artifacts and filesystem permissions. | Only declared ports are public; security headers/origin policy hold and live/test credentials, private keys and simulator capabilities are absent from images/logs/public files. |
 
 ### `QA-EXPANSION-CP07` — operator revenue and measurement
 
@@ -7319,7 +7456,7 @@ repeated here against the production runtime.
 ### Administration ownership and journey consolidation
 
 The route that exposes a control does not define its capability owner. Local
-Admin journeys are Core and follow the state they read or mutate:
+Admin journeys stay in Pair QA and follow the state they read or mutate:
 
 - `ROLE-TRIAD-CORE-001` owns authorization plus warn/report/feedback/support/
   block/unblock in `Identity & access`.
@@ -7330,8 +7467,9 @@ Admin journeys are Core and follow the state they read or mutate:
 - `ADMIN-MONITORING-001`, `ADMIN-AFFINITY-GRAPH-001` and
   `ADMIN-PARAMETERS-001` own the remaining Administration surfaces.
 - Event, Tournament, Chat and other workers remain with their actual member
-  domain. Operator, Registry/network, payment-provider and deployment-host
-  journeys remain deferred external boundaries.
+  domain. Operator and Registry/network behavior remains in the Operator
+  domain; provider availability is a test prerequisite, not a separate scope.
+  Deployment-host qualification is not Pair QA.
 
 The already-PASS `BASE-STAT`, `STAT-011` and `STAT-012` rows moved only to
 Administration, Chat and Event respectively; their content and evidence were
@@ -7371,7 +7509,7 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
-The stable user-facing click guide for the local Core journey is
+The stable user-facing click guide for the local journey is
 [`ROLE-TRIAD-CORE-001.md`](../checklists/identity-access/ROLE-TRIAD-CORE-001.md). Its 22
 top-level sections preserve the repeatable human journey without checkmarks or
 live status; this pack and the ledger remain authoritative for persisted
@@ -7380,8 +7518,6 @@ evidence and status.
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, persist one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; the authorized branding revision persists, while already-open clients may require an explicit reload; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. Automatic branding refresh is not required. |
-| `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
-| `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
 - **`ROLE-TRIAD-CORE-001` clean replay baseline READY — 2026-08-31**:
   the versioned harness reset the reviewed partial transaction, an independent

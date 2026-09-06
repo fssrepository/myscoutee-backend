@@ -32,7 +32,7 @@ class SavedPaymentMethodsServiceTest {
     }
 
     @Test
-    void deleteRevokesProviderTokenBeforeKeepingTheCardAsInactiveAuditData() {
+    void deleteAttemptsProviderCleanupBeforeMarkingTheLocalCardDeleted() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
@@ -66,7 +66,7 @@ class SavedPaymentMethodsServiceTest {
     }
 
     @Test
-    void providerFailureLeavesTheLocalSavedCardActive() {
+    void providerCleanupFailureDoesNotFailTheLocalDeletion() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
@@ -77,6 +77,8 @@ class SavedPaymentMethodsServiceTest {
         method.setProviderPaymentMethodRef("pm-provider-1");
         method.setStatus("active");
         when(methods.findByIdAndUserId("pm-1", "user-1")).thenReturn(Optional.of(method));
+        when(methods.markDeleted(org.mockito.ArgumentMatchers.eq("pm-1"), org.mockito.ArgumentMatchers.eq("user-1"), org.mockito.ArgumentMatchers.anyString()))
+                .thenReturn(1L);
         when(simulator.isEnabled()).thenReturn(true);
         org.mockito.Mockito.doThrow(new IllegalStateException("provider unavailable"))
                 .when(simulator).revoke("stripe", "pm-provider-1");
@@ -89,12 +91,11 @@ class SavedPaymentMethodsServiceTest {
                 mock(DeploymentPaymentProviderResolver.class),
                 mock(UsersRepository.class));
 
-        assertThatThrownBy(() -> service.delete("user-1", "pm-1"))
-                .isInstanceOf(IllegalStateException.class);
+        service.delete("user-1", "pm-1");
 
-        verify(methods, never()).markDeleted(
-                org.mockito.ArgumentMatchers.anyString(),
-                org.mockito.ArgumentMatchers.anyString(),
+        verify(methods).markDeleted(
+                org.mockito.ArgumentMatchers.eq("pm-1"),
+                org.mockito.ArgumentMatchers.eq("user-1"),
                 org.mockito.ArgumentMatchers.anyString());
     }
 
@@ -123,11 +124,65 @@ class SavedPaymentMethodsServiceTest {
 
         when(simulator.configuration()).thenReturn(
                 new PaymentSimulatorRegistrationClient.GatewayConfiguration("none", false, true, ""));
-        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isFalse();
+        var cashOnlyPage = service.queryPage("user-1", 0, 6);
+        assertThat(cashOnlyPage.canAdd()).isFalse();
+        assertThat(cashOnlyPage.currentProvider()).isEqualTo("none");
 
         when(simulator.configuration()).thenReturn(
                 new PaymentSimulatorRegistrationClient.GatewayConfiguration(
                         "stripe", true, true, "sk_test_generated"));
-        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isTrue();
+        var stripePage = service.queryPage("user-1", 0, 6);
+        assertThat(stripePage.canAdd()).isTrue();
+        assertThat(stripePage.currentProvider()).isEqualTo("stripe");
+    }
+
+    @Test
+    void cardsAreOrderedAsSelectableThenReconnectThenExpired() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
+        PaymentMethodRegistrationsRepository registrations = mock(PaymentMethodRegistrationsRepository.class);
+        PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
+        SavedPaymentMethod expired = paymentMethod("expired", "stripe", "expired", 202001, "2026-09-06T00:00:00Z");
+        SavedPaymentMethod reconnect = paymentMethod("reconnect", "barion", "active", 202912, "2026-09-06T00:00:00Z");
+        SavedPaymentMethod selectable = paymentMethod("selectable", "stripe", "active", 202912, "2026-09-06T00:00:00Z");
+        when(simulator.isEnabled()).thenReturn(true);
+        when(simulator.configuration()).thenReturn(
+                new PaymentSimulatorRegistrationClient.GatewayConfiguration(
+                        "stripe", true, true, "sk_test_generated"));
+        when(registrations.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "pending"))
+                .thenReturn(List.of());
+        when(methods.findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
+                "user-1", List.of("active", "expired")))
+                .thenReturn(List.of(expired, reconnect, selectable));
+        when(methods.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "active"))
+                .thenReturn(List.of(reconnect, selectable));
+
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                methods,
+                registrations,
+                mock(PaymentsRepository.class),
+                simulator,
+                mock(DeploymentPaymentProviderResolver.class),
+                mock(UsersRepository.class));
+
+        assertThat(service.queryPage("user-1", 0, 6).items())
+                .extracting(item -> item.id())
+                .containsExactly("selectable", "reconnect", "expired");
+    }
+
+    private SavedPaymentMethod paymentMethod(
+            String id,
+            String provider,
+            String status,
+            int expiryKey,
+            String createdAtIso) {
+        SavedPaymentMethod method = new SavedPaymentMethod();
+        method.setId(id);
+        method.setUserId("user-1");
+        method.setProvider(provider);
+        method.setStatus(status);
+        method.setExpiryKey(expiryKey);
+        method.setCreatedAtIso(createdAtIso);
+        return method;
     }
 }

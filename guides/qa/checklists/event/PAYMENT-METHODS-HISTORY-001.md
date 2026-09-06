@@ -7,8 +7,9 @@ inside the three Event/Asset journeys; there is no separate External Payment
 matrix row.
 
 The complete journey is one testcase transaction. `stripe-registered`,
-`barion-registered`, `expired-cleaned` and `history-complete` are replay
-savepoints, not separate matrix rows.
+`barion-registered`, `replace-verified`, `reconnect-verified`,
+`expired-cleaned` and `history-complete` are replay savepoints, not separate
+matrix rows.
 
 ## Actors and startup
 
@@ -17,7 +18,7 @@ savepoints, not separate matrix rows.
 - Codex stages the versioned `payment-ui` fixture, proves phase
   `baseline-ready`, and later runs the machine-side savepoint oracles and exact
   reset. The user exclusively performs browser navigation and clicks.
-- Begin with simulator provider **Cash only**, 3DS Off, exactly three visible
+- Begin with simulator provider **Cash Only**, 3DS Off, exactly three visible
   Alex cards (`4242`, `1881`, expired `0008`), three expense history rows, one
   income row, and totals `HUF −17,400` / `HUF +8,400`.
 - Do not start an Event/Asset checkout, do not create another payment, and do
@@ -34,14 +35,15 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh stage 
 ```
 
 Open the configured Ava/Alex windows only after the read-only status reports
-`baseline-ready` and simulator provider `none` (the UI label is `Cash only`).
+`baseline-ready` and simulator provider `none` (the UI label is `Cash Only`).
 
-## 1. Verify Cash only and the Payment History baseline
+## 1. Verify Cash Only and the Payment History baseline
 
 1. In **Ava**, confirm the `Testing` group is the last side-menu group and open
-   `Payment simulator`. Confirm `Cash only` is selected and 3DS is disabled.
+   `Payment simulator`. Confirm the text-only `Cash Only` wordmark is selected,
+   is visually similar in size to the Stripe wordmark, and 3DS is disabled.
 2. In **Alex**, open `Cards`. Confirm `Add card` is disabled while the simulator
-   is `Cash only`; no provider form opens and no registration is created. Return
+   is `Cash Only`; no provider form opens and no registration is created. Return
    to `Payment history`.
 3. Confirm the Payment history header
    shows two compact badges: `HUF −17,400` in red and `HUF +8,400` in green.
@@ -117,40 +119,102 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 
-## 4. Verify and clean up the expired card
+## 4. Replace a card without changing provider
 
-22. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
+22. Keep the simulator on connected `Barion` with 3DS Off. In Alex's Cards
+    surface, use the three-dot menu on the Barion card created in step 20.
+    Confirm this current-provider card is normal and its menu offers exactly
+    `Replace card` and `Delete card`; it must not show `Reconnect`.
+23. Select `Replace card`. Confirm the embedded provider surface is Barion and
+    no MyScoutee card-data form appears. Generate the Barion test card once,
+    then select `Tokenize and save card` once.
+24. Confirm the old Barion card is replaced rather than duplicated: the active
+    card count is unchanged, the replacement remains Barion, retains the old
+    card's artwork, and the other cards and Payment History remain unchanged.
+25. Report and wait:
+
+    `PAYMENT-METHODS-HISTORY-001 replace verified: Barion card replaced once`
+
+Codex runs `verify-replace payment-ui PAYMENT-METHODS-HISTORY-001`.
+
+## 5. Reconnect a card after changing provider
+
+26. Still on connected `Barion`, choose any one active Stripe card and note its
+    cardholder and last four digits. Confirm it has the provider-mismatch
+    overlay and `Reconnect >` instead of a three-dot trigger.
+27. Open `Reconnect >`, and select `Retokenize card`. Confirm
+    the embedded provider surface is Barion. Generate the Barion test card
+    once, then select `Tokenize and save card` once.
+28. Confirm the chosen Stripe card is replaced rather than duplicated: its
+    Barion replacement retains the original artwork, the active card count is
+    unchanged, and the other two active Stripe cards still show `Reconnect >`.
+29. Report and wait:
+
+    `PAYMENT-METHODS-HISTORY-001 reconnect verified: Stripe card retokenized with Barion`
+
+Codex runs `verify-reconnect payment-ui PAYMENT-METHODS-HISTORY-001`.
+
+## 6. Verify and clean up the expired card
+
+30. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
     artwork remains identifiable beneath the stronger white expired overlay
     and it has no three-dot action.
-23. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
+31. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
     The overlay must not whiten or disable this badge. Select it once. The
     opened menu must contain only `Delete card`; it must not offer Replace or
     selection.
-24. Select `Delete card`, confirm once, and verify the expired card disappears
+32. Select `Delete card`, confirm once, and verify the expired card disappears
     without changing active cards or Payment History.
-25. Open Alex's notifications and confirm the controlled translated expired
+33. Open Alex's notifications and confirm the controlled translated expired
     card notification names card ending `0008`. Reading it may mark that one
     notification read; do not delete or mutate another notification.
-26. Report and wait:
+34. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 expired cleaned: badge menu removed 0008 once`
 
 Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 
-## 5. Terminal reload and read-only proof
+## 7. Terminal reload and read-only proof
 
-27. Reload Alex exactly once. Reopen Payment history and Cards.
-28. Confirm the four original history rows, both exact totals, all three
+35. Reload Alex exactly once. Reopen Payment history and Cards.
+36. Confirm the four original history rows, both exact totals, all three
     filters, failure reason and day groups reconstruct unchanged.
-29. Confirm one new Stripe and one new Barion card remain, baseline active
-    cards remain, and expired `0008` does not return.
-30. Confirm no payment, membership, Asset request, basket or checkout was
+37. Confirm the two successful replacement results remain as active Barion
+    cards, the chosen Stripe and Barion source cards do not return, the two
+    remaining active Stripe cards show `Reconnect >`, and expired `0008` does
+    not return.
+38. Confirm no payment, membership, Asset request, basket or checkout was
     created merely by filtering history or managing cards.
-31. Report the terminal phrase:
+39. Report the terminal phrase:
 
     `PAYMENT-METHODS-HISTORY-001 UI complete: history, registrations and expired cleanup persist`
 
 Codex runs `verify payment-ui PAYMENT-METHODS-HISTORY-001`, records the pair-QA
 result, then runs the exact reset. Reset restores Alex's original cards,
 registrations, payments, notification state and payment totals, and restores
-the simulator to `Cash only`.
+the simulator to `Cash Only`.
+
+## Standalone Stripe 3DS decline branch
+
+This branch is independent from steps 1–39 and does not require replaying them.
+
+1. Codex runs:
+
+   ```bash
+   bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh stage-decline payment-ui PAYMENT-METHODS-HISTORY-001
+   ```
+
+2. In **Ava**, select connected `Stripe`, enable 3DS, and save. In **Alex**,
+   open `Cards` > `Add card`, generate one test card and submit it once.
+3. In Ava's `3DS` surface, open only Alex's pending card registration and
+   select `Decline card registration`.
+4. In Alex, confirm the embedded registration result says `Registration
+   cancelled` and `The card was not saved.`, then returns to the unchanged card
+   list. No saved card, payment or total may be created or changed.
+5. Report:
+
+   `PAYMENT-METHODS-HISTORY-001 standalone decline complete: no card saved`
+
+Codex runs `verify-decline payment-ui PAYMENT-METHODS-HISTORY-001`, then the
+normal `reset payment-ui PAYMENT-METHODS-HISTORY-001`. The 39-step test is not
+repeated.

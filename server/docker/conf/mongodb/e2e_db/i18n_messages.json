@@ -7326,6 +7326,24 @@
     "value": "Preview"
   },
   {
+    "_id": "i18n-message-en-landing-hero-history",
+    "key": "landing.hero.history",
+    "lang": "en",
+    "value": "Meeting people was once social."
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-return",
+    "key": "landing.hero.return",
+    "lang": "en",
+    "value": "We’re making it social again."
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-graph",
+    "key": "landing.hero.graph",
+    "lang": "en",
+    "value": "6 people · 6 priority lists → 1 shared group"
+  },
+  {
     "_id": "i18n-message-en-landing-preview-open-guide",
     "key": "landing.preview.open.guide",
     "lang": "en",
@@ -12730,6 +12748,12 @@
     "key": "payment.registration.close",
     "lang": "en",
     "value": "Close card registration"
+  },
+  {
+    "_id": "i18n-message-en-payment-registration-error-cancelled",
+    "key": "payment.registration.error.cancelled",
+    "lang": "en",
+    "value": "Card registration was cancelled by the user. The card was not saved."
   },
   {
     "_id": "i18n-message-en-payment-registration-error-ended",
@@ -26682,6 +26706,24 @@
     "value": "Tesztverzió"
   },
   {
+    "_id": "i18n-message-hu-landing-hero-history",
+    "key": "landing.hero.history",
+    "lang": "hu",
+    "value": "Az emberek régen társas közegben ismerkedtek."
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-return",
+    "key": "landing.hero.return",
+    "lang": "hu",
+    "value": "Mi ezt újra közösségivé tesszük."
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-graph",
+    "key": "landing.hero.graph",
+    "lang": "hu",
+    "value": "6 ember · 6 prioritáslista → 1 közös csoport"
+  },
+  {
     "_id": "i18n-message-hu-landing-preview-open-guide",
     "key": "landing.preview.open.guide",
     "lang": "hu",
@@ -32086,6 +32128,12 @@
     "key": "payment.registration.close",
     "lang": "hu",
     "value": "Kártyaregisztráció bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-registration-error-cancelled",
+    "key": "payment.registration.error.cancelled",
+    "lang": "hu",
+    "value": "A felhasználó megszakította a kártyaregisztrációt. A kártya nem lett mentve."
   },
   {
     "_id": "i18n-message-hu-payment-registration-error-ended",

@@ -2918,7 +2918,8 @@ public class HomeUserProfileService {
                 event == null ? 0 : normalizeCount(event.invitations()),
                 event == null ? 0 : normalizeCount(event.hosting()),
                 event == null ? 0 : normalizeCount(event.drafts()),
-                event == null ? 0 : normalizeCount(event.trash()));
+                event == null ? 0 : normalizeCount(event.trash()),
+                event == null ? 0 : normalizeCount(event.watchlist()));
     }
 
     private UserChatCountersDto toUserChatCountersDto(Users.UserChatCountersRecord chat) {
@@ -2967,7 +2968,8 @@ public class HomeUserProfileService {
                 event == null ? 0 : normalizeCount(event.invitations()),
                 event == null ? 0 : normalizeCount(event.hosting()),
                 event == null ? 0 : normalizeCount(event.drafts()),
-                event == null ? 0 : normalizeCount(event.trash()));
+                event == null ? 0 : normalizeCount(event.trash()),
+                event == null ? 0 : normalizeCount(event.watchlist()));
     }
 
     private Users.UserChatCountersRecord toUserChatCountersRecord(UserChatCountersDto chat) {

@@ -24,6 +24,7 @@ done
 
 for verifier_source in \
   README.md \
+  browser-smoke.mjs \
   run.mjs \
   checks.mjs \
   lib/assertions.mjs \
@@ -292,6 +293,7 @@ CLIENT_TOOLS_CONTENTS="${TEST_ROOT}/client-tools-contents.txt"
 tar -tzf "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}" > "${CLIENT_TOOLS_CONTENTS}"
 for verifier_member in \
   README.md \
+  browser-smoke.mjs \
   run.mjs \
   checks.mjs \
   lib/assertions.mjs \

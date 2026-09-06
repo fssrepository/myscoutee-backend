@@ -46,6 +46,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
@@ -104,6 +105,7 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepositor
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
@@ -162,6 +164,7 @@ public class ActivitiesEventsService {
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final EventCheckoutPricingService eventCheckoutPricingService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -176,6 +179,7 @@ public class ActivitiesEventsService {
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
+    private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventDetailMapper activityEventDetailMapper;
     private final ActivityEventMapper activityEventMapper;
     private final ActivityEventSubEventsMapper activityEventSubEventsMapper;
@@ -196,6 +200,7 @@ public class ActivitiesEventsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
@@ -210,6 +215,7 @@ public class ActivitiesEventsService {
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
+            EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventDetailMapper activityEventDetailMapper,
             ActivityEventMapper activityEventMapper,
             ActivityEventSubEventsMapper activityEventSubEventsMapper,
@@ -228,6 +234,7 @@ public class ActivitiesEventsService {
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
+        this.eventCheckoutPricingService = eventCheckoutPricingService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
@@ -242,6 +249,7 @@ public class ActivitiesEventsService {
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
+        this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventDetailMapper = activityEventDetailMapper;
         this.activityEventMapper = activityEventMapper;
         this.activityEventSubEventsMapper = activityEventSubEventsMapper;
@@ -383,9 +391,15 @@ public class ActivitiesEventsService {
         membershipSourceIds.removeAll(directSourceIds);
 
         List<ActivityEvent> membershipRecords = loadEventListCardDocumentsBySourceIds(membershipSourceIds);
-        List<ActivityEvent> scopedRecords = new ArrayList<>(directOwnerRecords.size() + membershipRecords.size());
+        Set<String> watchedSourceIds = watchedEventSourceIds(viewer.userId());
+        List<ActivityEvent> watchedRecords = loadEventListCardDocumentsBySourceIds(watchedSourceIds);
+        List<ActivityEvent> scopedRecords = new ArrayList<>(directOwnerRecords.size() + membershipRecords.size() + watchedRecords.size());
         scopedRecords.addAll(directOwnerRecords);
         scopedRecords.addAll(membershipRecords);
+        watchedRecords.stream()
+                .filter(this::isRootActivityRecord)
+                .filter(record -> !isTrashStatus(record))
+                .forEach(scopedRecords::add);
 
         return new EventQueryContext(
                 scopedRecords,
@@ -396,7 +410,8 @@ public class ActivitiesEventsService {
                 includePendingPayments
                         ? pendingPaymentEventSourceIds(viewer.userId(), scopedRecords)
                         : Set.of(),
-                includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedRecords) : Map.of());
+                includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedRecords) : Map.of(),
+                watchedSourceIds);
     }
 
     private EventQueryContext buildAttendingListCardQueryContext(ViewerContext viewer) {
@@ -486,7 +501,8 @@ public class ActivitiesEventsService {
                 trackedStatusesBySourceId,
                 checkoutResultStatesBySourceId,
                 Set.of(),
-                includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of());
+                includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of(),
+                viewer == null ? Set.of() : watchedEventSourceIds(viewer.userId()));
     }
 
     private Map<String, String> trackedEventMembershipStatuses(String userId) {
@@ -2232,6 +2248,7 @@ public class ActivitiesEventsService {
                         pendingReason,
                         firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null)));
             }
+            eventSlotReadModelService.refreshForChangedSourceIds(List.of(normalizedSourceId));
         }
 
         ActivityEvent refreshed = findPreferredEventRecord(normalizedSourceId);
@@ -2280,6 +2297,11 @@ public class ActivitiesEventsService {
             } else {
                 scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
+            schedulePublicWatchlistEventChangedNotification(
+                    sourceId,
+                    publishedDocuments,
+                    List.of("modified"),
+                    userId);
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
             markEventAttachmentsAvailable(publishedDocuments);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
@@ -2916,10 +2938,7 @@ public class ActivitiesEventsService {
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
-            ActivityEvent slotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
-                    .filter(this::isGeneratedSlotRecord)
-                    .findFirst()
-                    .orElse(null);
+            ActivityEvent slotRecord = findActiveGeneratedSlotRecord(requestedSlotSourceId);
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
                 accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
@@ -2947,20 +2966,23 @@ public class ActivitiesEventsService {
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
-                ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
-                        .filter(this::isGeneratedSlotRecord)
-                        .findFirst()
-                        .orElse(slotRecord);
+                ActivityEvent refreshedSlotRecord = findActiveGeneratedSlotRecord(requestedSlotSourceId);
+                if (refreshedSlotRecord == null) {
+                    refreshedSlotRecord = slotRecord;
+                }
+                eventSlotReadModelService.refreshForChangedSourceIds(List.of(sourceId));
                 ActivityEvent refreshedSource = findPreferredEventRecord(sourceId);
                 return withCounterDelta(
-                        toParticipationActionResult(
-                                sourceId,
-                                slotSourceId,
-                                joinedSlot ? "accepted" : "pending",
-                                joinedSlot ? null : pendingReasonForAction(waitingList, approvalRequested),
-                                refreshedSlotRecord,
-                                slotSnapshot,
-                                request),
+                        withFull(
+                                toParticipationActionResult(
+                                        sourceId,
+                                        slotSourceId,
+                                        joinedSlot ? "accepted" : "pending",
+                                        joinedSlot ? null : pendingReasonForAction(waitingList, approvalRequested),
+                                        refreshedSlotRecord,
+                                        slotSnapshot,
+                                        request),
+                                isRecordFull(refreshedSource == null ? preferred : refreshedSource)),
                         sourceSnapshot != null && sourceSnapshot.mutationApplied()
                                 ? eventActivityTransition(
                                         beforeState,
@@ -3031,10 +3053,7 @@ public class ActivitiesEventsService {
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(paymentMembershipSourceId));
         boolean acceptedBeforePayment = isAcceptedMember(acceptedBeforePaymentSnapshot, request.userId());
         ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
-                ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElse(null)
+                ? findActiveGeneratedSlotRecord(slotSourceId)
                 : findPreferredEventRecord(request.sourceId());
         if (!paymentService.hasJoinedEventJoin(request.userId(), paymentMembershipSourceId)
                 && isRecordFull(paymentRecord)) {
@@ -3235,7 +3254,7 @@ public class ActivitiesEventsService {
                 ? List.of()
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
         if (!basketItems.isEmpty()) {
-            eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+            EventCheckoutRequestDto submittedCheckout = new EventCheckoutRequestDto(
                     userId,
                     sourceId,
                     request.slotSourceId(),
@@ -3249,7 +3268,8 @@ public class ActivitiesEventsService {
                     request.totalAmount(),
                     request.currency(),
                     pendingReason,
-                    request.appliedPromoCodes()));
+                    request.appliedPromoCodes());
+            eventCheckoutBasketService.saveBasket(eventCheckoutPricingService.reprice(submittedCheckout));
             return;
         }
         eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
@@ -3546,6 +3566,28 @@ public class ActivitiesEventsService {
                 result.changed(),
                 result.reason(),
                 counterDelta);
+    }
+
+    private EventParticipationActionResultDto withFull(
+            EventParticipationActionResultDto result,
+            boolean full) {
+        if (result == null) {
+            return null;
+        }
+        return new EventParticipationActionResultDto(
+                result.sourceId(),
+                result.slotSourceId(),
+                result.action(),
+                result.membershipStatus(),
+                result.pendingReason(),
+                result.acceptedMembers(),
+                result.pendingMembers(),
+                result.capacityTotal(),
+                full,
+                result.paymentSessionId(),
+                result.changed(),
+                result.reason(),
+                result.counterDelta());
     }
 
     private UserActivityCounterDeltaDto eventActivityTransition(
@@ -4608,21 +4650,21 @@ public class ActivitiesEventsService {
         if (record == null) {
             return false;
         }
-        if (Boolean.TRUE.equals(record.getFull())) {
-            return true;
-        }
         if (isSlotParentRecord(record)) {
             return slotParentFull(record.getUpcomingSlots());
+        }
+        if (Boolean.TRUE.equals(record.getFull())) {
+            return true;
         }
         return directRecordFull(record);
     }
 
     private boolean resolveFullForActionResult(ActivityEvent record, int acceptedMembers, int capacityTotal) {
-        if (record != null && Boolean.TRUE.equals(record.getFull())) {
-            return true;
-        }
         if (record != null && isSlotParentRecord(record)) {
             return slotParentFull(record.getUpcomingSlots());
+        }
+        if (record != null && Boolean.TRUE.equals(record.getFull())) {
+            return true;
         }
         return capacityTotal > 0 && acceptedMembers >= capacityTotal;
     }
@@ -4775,6 +4817,11 @@ public class ActivitiesEventsService {
                 removedRuntimeAudienceUserIds,
                 actorUserId,
                 false);
+        schedulePublicWatchlistEventChangedNotification(
+                sourceId,
+                savedDocuments,
+                publicWatchlistChangeReasons(existing, baseRecord, definitionChange),
+                actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
         if (!StringUtils.hasText(city)) {
@@ -5206,6 +5253,71 @@ public class ActivitiesEventsService {
                 actorUserId);
     }
 
+    private void schedulePublicWatchlistEventChangedNotification(
+            String sourceId,
+            List<ActivityEvent> updatedRecords,
+            Collection<String> reasons,
+            String actorUserId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId) || reasons == null || reasons.isEmpty()) {
+            return;
+        }
+        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
+                .stream()
+                .findFirst()
+                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
+        if (event == null) {
+            return;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedSourceId);
+        LinkedHashSet<String> trackedUserIds = new LinkedHashSet<>();
+        if (membershipSnapshot != null) {
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.acceptedMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.pendingMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.invitedMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.pendingRequestMemberUserIds()));
+        }
+        trackedUserIds.add(normalizeId(actorUserId));
+        List<EventWatchSubscription> subscriptions =
+                eventWatchSubscriptionsRepository.findByEventId(normalizedSourceId);
+        LinkedHashSet<String> watcherUserIds = (subscriptions == null
+                ? List.<EventWatchSubscription>of()
+                : subscriptions).stream()
+                .map(subscription -> normalizeId(subscription == null ? null : subscription.getUserId()))
+                .filter(StringUtils::hasText)
+                .filter(userId -> !trackedUserIds.contains(userId))
+                .filter(userId -> isVisibleToUntrackedViewer(event, userId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (watcherUserIds.isEmpty()) {
+            return;
+        }
+        scheduledMessageTaskService.scheduleEventWatchlistDefinitionChanged(
+                normalizedSourceId,
+                event.getTitle(),
+                watcherUserIds,
+                reasons,
+                actorUserId);
+    }
+
+    private List<String> publicWatchlistChangeReasons(
+            ActivityEvent previous,
+            ActivityEvent next,
+            EventDefinitionChangeSummary definitionChange) {
+        if (definitionChange == null || !definitionChange.changed()) {
+            return List.of();
+        }
+        boolean publicDetailsChanged = !Objects.equals(
+                safeText(previous == null ? null : previous.getTitle()),
+                safeText(next == null ? null : next.getTitle()))
+                || !Objects.equals(
+                        safeText(previous == null ? null : previous.getLocation()),
+                        safeText(next == null ? null : next.getLocation()));
+        return definitionChange.reasons().stream()
+                .filter(reason -> !"details".equals(safeText(reason)) || publicDetailsChanged)
+                .toList();
+    }
+
     private void notifyPublishedPendingInvitees(
             List<ActivityEvent> publishedRecords,
             ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
@@ -5272,12 +5384,13 @@ public class ActivitiesEventsService {
         return switch (filter) {
             case "all" -> {
                 List<ActivityEvent> directOwnerRecords = currentDirectOwnerRecords(viewer.userId());
-                yield concat(
+                yield uniqueEventRecords(concat(
                         concat(activeEventItems, pendingEventItems),
                         concat(
                                 queryInvitationRecords(viewer, directOwnerRecords),
-                                queryMyEventRecords(viewer, directOwnerRecords)));
+                                queryMyEventRecords(viewer, directOwnerRecords))));
             }
+            case "watchlist" -> queryWatchlistRecords(viewer);
             case "pending" -> concat(
                     pendingEventItems,
                     queryMyEventRecords(viewer, currentDirectOwnerRecords(viewer.userId())).stream()
@@ -5319,6 +5432,40 @@ public class ActivitiesEventsService {
                 .toList();
 
         return concat(directRecords, membershipRecords);
+    }
+
+    private List<ActivityEvent> queryWatchlistRecords(ViewerContext viewer) {
+        if (viewer == null || !StringUtils.hasText(viewer.userId())) {
+            return List.of();
+        }
+        Set<String> watchedSourceIds = watchedEventSourceIds(viewer.userId());
+        if (watchedSourceIds.isEmpty()) {
+            return List.of();
+        }
+        EventQueryContext context = ACTIVE_CONTEXT.get();
+        List<ActivityEvent> records = context == null
+                ? loadEventListCardDocumentsBySourceIds(watchedSourceIds)
+                : context.allEvents();
+        List<ActivityEvent> visibleWatchedRecords = records.stream()
+                .filter(record -> watchedSourceIds.contains(normalizeId(record.getSourceId())))
+                .filter(this::isRootActivityRecord)
+                .filter(record -> !isTrashStatus(record))
+                .filter(record -> isVisibleToUntrackedViewer(record, viewer.userId()))
+                .toList();
+        return computePreferredEventRecords(visibleWatchedRecords).stream()
+                .map(this::cloneDocument)
+                .toList();
+    }
+
+    private Set<String> watchedEventSourceIds(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        return eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc(normalizedUserId).stream()
+                .map(subscription -> normalizeId(subscription == null ? null : subscription.getEventId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
 
     private ActivityEvent buildViewerScopedDirectRecord(String viewerUserId, ActivityEvent record) {
@@ -5393,7 +5540,8 @@ public class ActivitiesEventsService {
                 current == null ? Set.of() : current.pendingPaymentEventSourceIds(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey(),
                 creatorAvatarUrlsByUserId(hydratedRecords),
-                resourcePendingReadBySourceId(hydratedRecords, viewer == null ? null : viewer.userId()));
+                resourcePendingReadBySourceId(hydratedRecords, viewer == null ? null : viewer.userId()),
+                current == null ? Set.of() : current.watchedEventSourceIds());
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
                 .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
@@ -5781,7 +5929,23 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldPreferRecord(ActivityEvent next, ActivityEvent current) {
+        boolean nextCanonical = isCanonicalOwnerRecord(next);
+        boolean currentCanonical = isCanonicalOwnerRecord(current);
+        if (nextCanonical != currentCanonical) {
+            return nextCanonical;
+        }
+        boolean nextTrashed = isTrashStatus(next);
+        boolean currentTrashed = isTrashStatus(current);
+        if (nextTrashed != currentTrashed) {
+            return !nextTrashed;
+        }
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
+    }
+
+    private boolean isCanonicalOwnerRecord(ActivityEvent record) {
+        String ownerUserId = normalizeId(record == null ? null : record.getOwnerUserId());
+        return StringUtils.hasText(ownerUserId)
+                && ownerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean shouldIncludeUserDirectRecord(ActivityEvent record, String userId, ActivityEvent preferredRecord) {
@@ -6046,7 +6210,8 @@ public class ActivitiesEventsService {
                 ctx == null ? Map.of() : ctx.creatorAvatarUrlsByUserId(),
                 ctx == null ? Map.of() : ctx.trackedEventStatusesBySourceId(),
                 viewer == null ? null : viewer.userId(),
-                ctx == null ? Map.of() : ctx.resourcePendingReadBySourceId());
+                ctx == null ? Map.of() : ctx.resourcePendingReadBySourceId(),
+                ctx == null ? Set.of() : ctx.watchedEventSourceIds());
     }
 
     private Map<String, Integer> resourcePendingReadBySourceId(
@@ -6990,6 +7155,18 @@ public class ActivitiesEventsService {
                 .orElse(null);
     }
 
+    private ActivityEvent findActiveGeneratedSlotRecord(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+        return loadEventDocumentsBySourceIds(List.of(normalizedSourceId)).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .filter(record -> ActivityEvent.STATUS_ACTIVE.equals(safeText(record.getStatus())))
+                .findFirst()
+                .orElse(null);
+    }
+
     private ActivityEvent findPreferredEventDetailRecord(String sourceId) {
         String normalizedSourceId = normalizeId(sourceId);
         if (!StringUtils.hasText(normalizedSourceId)) {
@@ -7088,12 +7265,20 @@ public class ActivitiesEventsService {
                 .include("full")
                 .include("ticketing")
                 .include("approvalRequired")
+                .include("pricing")
+                .include("policiesEnabled")
+                .include("policies")
                 .include("parentEventId")
                 .include("slotTemplateId")
                 .include("generated")
                 .include("eventType")
                 .include("mode")
                 .include("slotsEnabled")
+                .include("slotTemplates")
+                .include("upcomingSlots")
+                .include("subEventsEnabled")
+                .include("subEventDefinitions")
+                .include("subEvents")
                 .include("currentStage")
                 .include("acceptedMembers")
                 .include("pendingMembers")
@@ -7313,7 +7498,7 @@ public class ActivitiesEventsService {
     private String normalizeActivityListFilter(String value) {
         String normalized = safeText(value);
         return switch (normalized) {
-            case "all", "pending", "invitations", "my-events", "drafts", "trash" -> normalized;
+            case "all", "pending", "invitations", "my-events", "drafts", "trash", "watchlist" -> normalized;
             default -> "active-events";
         };
     }
@@ -8082,6 +8267,17 @@ public class ActivitiesEventsService {
         return merged;
     }
 
+    private List<ActivityEvent> uniqueEventRecords(List<ActivityEvent> records) {
+        Map<String, ActivityEvent> unique = new LinkedHashMap<>();
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            String sourceId = normalizeId(record == null ? null : record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                unique.putIfAbsent(sourceId, record);
+            }
+        }
+        return new ArrayList<>(unique.values());
+    }
+
     private record CheckoutSlotPricing(
             double amount,
             String currency,
@@ -8211,7 +8407,8 @@ public class ActivitiesEventsService {
             Set<String> pendingPaymentEventSourceIds,
             Map<String, Double> edgeWeightsByPairKey,
             Map<String, String> creatorAvatarUrlsByUserId,
-            Map<String, Integer> resourcePendingReadBySourceId) {
+            Map<String, Integer> resourcePendingReadBySourceId,
+            Set<String> watchedEventSourceIds) {
         private EventQueryContext(
                 List<ActivityEvent> allEvents,
                 List<ActivityEvent> mergedEvents,
@@ -8230,7 +8427,31 @@ public class ActivitiesEventsService {
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
                     Map.of(),
-                    Map.of());
+                    Map.of(),
+                    Set.of());
+        }
+
+        private EventQueryContext(
+                List<ActivityEvent> allEvents,
+                List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds,
+                Map<String, String> trackedEventStatusesBySourceId,
+                Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey,
+                Set<String> watchedEventSourceIds) {
+            this(
+                    allEvents,
+                    mergedEvents,
+                    snapshotsBySourceId,
+                    trackedEventSourceIds,
+                    trackedEventStatusesBySourceId,
+                    Map.of(),
+                    pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey,
+                    Map.of(),
+                    Map.of(),
+                    watchedEventSourceIds);
         }
 
         private EventQueryContext(
@@ -8252,7 +8473,32 @@ public class ActivitiesEventsService {
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
                     Map.of(),
-                    Map.of());
+                    Map.of(),
+                    Set.of());
+        }
+
+        private EventQueryContext(
+                List<ActivityEvent> allEvents,
+                List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds,
+                Map<String, String> trackedEventStatusesBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey,
+                Set<String> watchedEventSourceIds) {
+            this(
+                    allEvents,
+                    mergedEvents,
+                    snapshotsBySourceId,
+                    trackedEventSourceIds,
+                    trackedEventStatusesBySourceId,
+                    checkoutResultStatesBySourceId,
+                    pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey,
+                    Map.of(),
+                    Map.of(),
+                    watchedEventSourceIds);
         }
 
         private EventQueryContext(
@@ -8275,7 +8521,8 @@ public class ActivitiesEventsService {
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
                     creatorAvatarUrlsByUserId,
-                    Map.of());
+                    Map.of(),
+                    Set.of());
         }
     }
 }

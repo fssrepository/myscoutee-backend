@@ -44,6 +44,16 @@ node packaging/verify-deployment/run.mjs \
   --expected-version 1.2.3
 ```
 
+For a newly installed, not-yet-configured node, verify the packaged Explore
+data route instead of expecting a production deployment configuration seed:
+
+```bash
+node packaging/verify-deployment/run.mjs \
+  --url https://deployment.example \
+  --expected-version 1.2.3 \
+  --demo-session
+```
+
 Useful commands:
 
 ```bash
@@ -90,6 +100,44 @@ node packaging/verify-deployment/run.mjs --url https://deployment.example
 
 The runner intentionally has no `--insecure` option and refuses to run when
 `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+
+## Short browser render check
+
+`browser-smoke.mjs` complements the HTTP verifier with one isolated,
+read-only Chrome render. It starts a temporary headless profile, loads only
+the deployment root, checks that Angular boots, compares `index.html` and
+`app-version.json` build metadata, and reports uncaught browser exceptions.
+It never attaches to an existing browser, clicks, submits a form, or changes
+application state.
+
+```bash
+node packaging/verify-deployment/browser-smoke.mjs \
+  --url https://deployment.example \
+  --expected-version 1.2.3
+```
+
+On an uninitialized QA node, add `--demo-session`. The locally generated
+bootstrap certificate may be accepted only for a loopback URL and only with
+the explicit local flag:
+
+```bash
+node packaging/verify-deployment/browser-smoke.mjs \
+  --url https://localhost \
+  --expected-version 1.2.3 \
+  --demo-session \
+  --allow-insecure-localhost
+```
+
+This browser check is manual and is not called by package installation, CI,
+the HTTP verifier, or any manual-QA checkpoint.
+
+## Repeatable prerelease qualification
+
+The canonical build, install, verification, pair-QA boundary, and release
+sequence is in
+[`guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md`](../../guides/releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md).
+This directory owns only the external HTTP verifier and isolated browser-render
+steps of that method. Do not reuse their results for a rebuilt candidate.
 
 For a custom HTTPS port, provide the separate public HTTP listener if the
 redirect and Nginx health exceptions should also be checked. It must use the

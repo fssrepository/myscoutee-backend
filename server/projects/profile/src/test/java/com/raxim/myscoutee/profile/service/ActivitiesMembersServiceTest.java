@@ -2936,6 +2936,78 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void acceptedMemberCanJoinAgainAfterLeavingTheEvent() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(8);
+        ActivityMember suppressed = suppressedMember(
+                member("viewer-sync", "event-1", "viewer", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        AtomicReference<ActivityMember> stored = new AtomicReference<>(suppressed);
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(stored.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitiesMembersService.OwnerMembersSnapshot result =
+                service.requestJoin("event-1", viewer, event, true, false, false);
+
+        assertThat(result.mutationApplied()).isTrue();
+        assertThat(stored.get().getStatus()).isEqualTo("accepted");
+        assertThat(stored.get().getStatusBeforeSuppression()).isNull();
+        assertThat(stored.get().getSuppressionRootOwnerId()).isNull();
+        assertThat(stored.get().getSuppressedAtIso()).isNull();
+    }
+
+    @Test
+    void acceptedMemberCanJoinAnotherSlotAfterLeavingAMultiSlotEvent() {
+        ActivityEvent slot = event("slot-2", "host", "host");
+        slot.setParentEventId("event-1");
+        slot.setCapacityTotal(8);
+        ActivityMember suppressed = suppressedMember(
+                member("viewer-slot-sync", "slot-2", "viewer", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        AtomicReference<ActivityMember> stored = new AtomicReference<>(suppressed);
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "slot-2"))
+                .thenAnswer(invocation -> List.of(stored.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("slot-2")).thenReturn(List.of(slot));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(slot));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitiesMembersService.OwnerMembersSnapshot result =
+                service.requestJoin("slot-2", viewer, slot, true, false, false);
+
+        assertThat(result.mutationApplied()).isTrue();
+        assertThat(stored.get().getStatus()).isEqualTo("accepted");
+        assertThat(stored.get().getStatusBeforeSuppression()).isNull();
+        assertThat(stored.get().getSuppressionRootOwnerId()).isNull();
+        assertThat(stored.get().getSuppressedAtIso()).isNull();
+        verifyNoInteractions(eventInviteNotificationService);
+    }
+
+    @Test
     void inviteeCanAcceptTheSeatAlreadyReservedForThem() {
         ActivityEvent event = event("event-1", "host", "host");
         event.setBlindMode("Blind Event");

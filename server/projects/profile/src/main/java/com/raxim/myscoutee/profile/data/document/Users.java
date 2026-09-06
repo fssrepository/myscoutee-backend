@@ -609,7 +609,18 @@ public class Users {
             Integer invitations,
             Integer hosting,
             Integer drafts,
-            Integer trash) {
+            Integer trash,
+            Integer watchlist) {
+        public UserEventCountersRecord(
+                Integer all,
+                Integer active,
+                Integer pending,
+                Integer invitations,
+                Integer hosting,
+                Integer drafts,
+                Integer trash) {
+            this(all, active, pending, invitations, hosting, drafts, trash, 0);
+        }
     }
 
     public record UserAssetCountersRecord(

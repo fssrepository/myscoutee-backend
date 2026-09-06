@@ -27,7 +27,6 @@ ROW_FILL_COLORS = {
     "partial": "FFFFC000",
     "fail": "FFFF6666",
     "not-run": "FFB4C6E7",
-    "external": "FF7FC8C8",
     "legend-x": "FFBFBFBF",
     "legend-delta": "FF5B9BD5",
     "legend-indirect": "FFB4A7D6",
@@ -49,9 +48,8 @@ DOMAIN_COLUMN = "QA domain"
 DEV_COLUMN = "Dev"
 LOCAL_COLUMN = "Local"
 COMPLEXITY_COLUMN = "Remaining QA complexity (min/max)"
-DOMAIN_PRIORITY_BLOCK_COUNT = 3
 DOMAIN_PRIORITY_BLOCK_WIDTH = 5
-DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5, 10)
+DOMAIN_PRIORITY_BLOCK_STARTS = (0, 5)
 DOMAIN_PRIORITY_VALUE_OFFSETS = (0, 2, 3)
 COMPACT_VISIBLE_COLUMN_WIDTHS = (
     14.0, 16.0, 12.0, 12.0, 14.0,
@@ -72,15 +70,9 @@ DOMAIN_METADATA = (
     ("Asset", 9, "FFFFE5CC", "ASSET"),
     ("Content", 8, "FFFFF2CC", "ARTICLE"),
     ("Notifications", 7, "FFE2F0D9", "BELL"),
-    ("Client platform", 6, "FFD9E1F2", "MOBILE"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
-    ("Deployment", 1, "FF45818E", "DEPLOY"),
 )
-EXTERNAL_OPTIONAL_DOMAINS = frozenset({
-    "Operator",
-    "Deployment",
-})
 DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
 DOMAIN_STYLE_KEY = {
     domain: f"domain-{priority}"
@@ -93,8 +85,8 @@ ROW_FILL_COLORS.update({
 
 # Exact exceptions cover consolidated journeys whose stable ID prefix does not
 # identify the owning capability. Local Admin work is distributed to its real
-# Core domain; only genuine operator/payment/deployment boundaries remain in
-# the deferred third block.
+# owner. Deployment qualification is not Pair QA. Operator remains a normal
+# manual-QA domain and uses the same domain-priority table as every other row.
 EXACT_DOMAIN_OVERRIDES = {
     "BASE-STAT": "Administration",
     "CONTENT-ADMIN-LIFECYCLE-001": "Content",
@@ -127,7 +119,7 @@ def cell_column(index: int) -> str:
 def expected_domain(identifier: str) -> str:
     normalized = identifier.strip().upper()
     # A route/screen name is not the QA owner or the launch gate. Exact
-    # overrides preserve stable IDs while assigning the real Core capability.
+    # overrides preserve stable IDs while assigning the real capability.
     if normalized in EXACT_DOMAIN_OVERRIDES:
         return EXACT_DOMAIN_OVERRIDES[normalized]
     domain_prefixes = (
@@ -138,14 +130,15 @@ def expected_domain(identifier: str) -> str:
         ("Chat", ("CHAT",)),
         ("Asset", ("ASSET",)),
         ("Content", ("ARTICLE", "LANDING-ARTICLE")),
-        ("Notifications", ("BELL", "MOBILE-PUSH")),
-        ("Client platform", ("MOBILE-WEBVIEW", "MOBILE-ADB", "UI-")),
+        (
+            "Notifications",
+            ("BELL", "MOBILE-PUSH", "MOBILE-WEBVIEW", "MOBILE-ADB", "UI-"),
+        ),
         (
             "Administration",
             ("ADMIN", "BASE", "STAT", "MON", "GRAPH", "PARAM", "JOB", "STATIC"),
         ),
         ("Operator", ("OPERATOR",)),
-        ("Deployment", ("DEPLOY",)),
     )
     for domain, prefixes in domain_prefixes:
         if any(
@@ -295,14 +288,10 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
     def compact_row(*values: str) -> list[str]:
         return [*values, *("" for _ in range(len(headers) - len(values)))]
 
-    core_counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
-    scope_counts = {"core": 0, "external": 0}
+    status_counts = {"done": 0, "pending": 0, "not-started": 0, "failed": 0}
     for row in test_rows:
         item = dict(zip(headers, row))
-        scope = qa_scope_bucket(item)
-        scope_counts[scope] += 1
-        if scope == "core":
-            core_counts[qa_status_bucket(item)] += 1
+        status_counts[qa_status_bucket(item)] += 1
     legend_items = [
         (
             item["ID"].removeprefix("LEGEND-"),
@@ -313,15 +302,13 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
     status_items = [
         (
             "Done",
-            f"{core_counts['done']} ({(core_counts['done'] / scope_counts['core']):.0%})"
-            if scope_counts["core"]
+            f"{status_counts['done']} ({(status_counts['done'] / len(test_rows)):.0%})"
+            if test_rows
             else "0 (0%)",
         ),
-        ("Pending", str(core_counts["pending"])),
-        ("Not started", str(core_counts["not-started"])),
-        ("Failed", str(core_counts["failed"])),
-        ("Core", str(scope_counts["core"])),
-        ("External / optional", str(scope_counts["external"])),
+        ("Pending", str(status_counts["pending"])),
+        ("Not started", str(status_counts["not-started"])),
+        ("Failed", str(status_counts["failed"])),
         ("Total", str(len(test_rows))),
     ]
     domain_totals = {domain: 0 for domain in DOMAIN_PRIORITY}
@@ -360,17 +347,10 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         status_items[0][1],
     )]
     remaining_status_items = status_items[1:]
-    core_priority_items = [
-        item for item in domain_priority_items if item[0] not in EXTERNAL_OPTIONAL_DOMAINS
-    ]
-    external_priority_items = [
-        item for item in domain_priority_items if item[0] in EXTERNAL_OPTIONAL_DOMAINS
-    ]
-    core_block_size = (len(core_priority_items) + 1) // 2
+    first_block_size = (len(domain_priority_items) + 1) // 2
     domain_priority_blocks = [
-        core_priority_items[:core_block_size],
-        core_priority_items[core_block_size:],
-        external_priority_items,
+        domain_priority_items[:first_block_size],
+        domain_priority_items[first_block_size:],
     ]
     domain_priority_block_size = max(len(block) for block in domain_priority_blocks)
     domain_priority_rows = []
@@ -379,7 +359,7 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
         for block_index, block in enumerate(domain_priority_blocks):
             if priority_row_index == 0:
                 priority_values = (
-                    f"{DOMAIN_COLUMN} (EXT / optional)" if block_index == 2 else DOMAIN_COLUMN,
+                    DOMAIN_COLUMN,
                     "Priority",
                     "Progress / remaining min/max",
                 )
@@ -454,15 +434,6 @@ def qa_status_bucket(item: dict[str, str]) -> str:
     return "pending"
 
 
-def qa_scope_bucket(item: dict[str, str]) -> str:
-    identifier = item.get("ID", "").strip().upper()
-    domain = item.get(DOMAIN_COLUMN, "").strip()
-    return "external" if (
-        domain in EXTERNAL_OPTIONAL_DOMAINS
-        or identifier.startswith(("OPERATOR-", "DEPLOY-"))
-    ) else "core"
-
-
 def progress_style_key(progress: str) -> str:
     try:
         percentage = int(progress.rsplit("(", 1)[1].split("%", 1)[0])
@@ -507,15 +478,6 @@ def qa_status_formula(row_index: int, manual_column: str, result_column: str) ->
         f'IF(OR({not_started}),"Not started",'
         f'IF(OR({pending}),"Pending",'
         f'IF(OR({done}),"Done","Pending"))))'
-    )
-
-
-def qa_scope_formula(row_index: int, id_column: str, domain_column: str) -> str:
-    reference = f"{id_column}{row_index}"
-    domain_reference = f"{domain_column}{row_index}"
-    return (
-        f'IF(OR(LEFT({reference},9)="OPERATOR-",'
-        f'LEFT({reference},7)="DEPLOY-"),"External","Core")'
     )
 
 
@@ -750,7 +712,7 @@ def build_styles(existing: bytes) -> tuple[bytes, dict[str, int]]:
     styles["default"] = ensure_cell_style(cell_xfs, 0)
 
     for base_key in (
-        "pass", "partial", "fail", "not-run", "test-section", "external"
+        "pass", "partial", "fail", "not-run", "test-section"
     ):
         base_style = cell_xfs.findall(f"{{{NS}}}xf")[styles[base_key]]
         styles[f"{base_key}-align-right"] = ensure_cell_style(
@@ -800,17 +762,13 @@ def row_style(values: list[str], headers: list[str]) -> str:
         "LEGEND-DELTA": "legend-delta",
         "LEGEND-INDIRECT": "legend-indirect",
         "LEGEND-GAP": "legend-gap",
-        "LEGEND-EXT": "external",
         "X": "legend-x",
         "DELTA": "legend-delta",
         "INDIRECT": "legend-indirect",
         "GAP": "legend-gap",
-        "EXT": "external",
     }
     if identifier in legend_styles:
         return legend_styles[identifier]
-    if qa_scope_bucket(item) == "external":
-        return "external"
     return {
         "done": "pass",
         "pending": "partial",
@@ -834,11 +792,9 @@ def build_sheet(
     last_visible_column = cell_column(len(rows[0]) - 1)
     status_helper_column_index = len(rows[0])
     status_helper_column = cell_column(status_helper_column_index)
-    scope_helper_column_index = len(rows[0]) + 1
-    scope_helper_column = cell_column(scope_helper_column_index)
-    complexity_min_helper_column_index = len(rows[0]) + 2
+    complexity_min_helper_column_index = len(rows[0]) + 1
     complexity_min_helper_column = cell_column(complexity_min_helper_column_index)
-    complexity_max_helper_column_index = len(rows[0]) + 3
+    complexity_max_helper_column_index = len(rows[0]) + 2
     complexity_max_helper_column = cell_column(complexity_max_helper_column_index)
     headers = next((row for row in rows if row and row[0] == "ID"), None)
     if headers is None:
@@ -852,7 +808,6 @@ def build_sheet(
     last_test_row = len(rows)
     manual_column = cell_column(headers.index("Manual status"))
     result_column = cell_column(headers.index("Result"))
-    id_column = cell_column(headers.index("ID"))
     domain_column_index = headers.index(DOMAIN_COLUMN)
     domain_column = cell_column(domain_column_index)
     complexity_column_index = headers.index(COMPLEXITY_COLUMN)
@@ -888,7 +843,6 @@ def build_sheet(
         )
     for helper_column_index in (
         status_helper_column_index,
-        scope_helper_column_index,
         complexity_min_helper_column_index,
         complexity_max_helper_column_index,
     ):
@@ -910,10 +864,10 @@ def build_sheet(
 
     merged_ranges: list[str] = []
     effect_markers_last_row = 1 + len([
-        row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP", "EXT"}
+        row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP"}
     ])
     status_last_row = 1 + len({
-        "Pending", "Not started", "Failed", "Core", "External", "Total"
+        "Pending", "Not started", "Failed", "Total"
     })
     domain_priority_title_row = next(
         row_index
@@ -921,15 +875,7 @@ def build_sheet(
         if values[0] == DOMAIN_PRIORITY_TITLE
     )
     domain_priority_header_row = domain_priority_title_row + 1
-    core_domain_count = sum(
-        domain not in EXTERNAL_OPTIONAL_DOMAINS
-        for domain, _, _, _ in DOMAIN_METADATA
-    )
-    external_domain_count = len(DOMAIN_METADATA) - core_domain_count
-    domain_priority_block_size = max(
-        (core_domain_count + 1) // 2,
-        external_domain_count,
-    )
+    domain_priority_block_size = (len(DOMAIN_METADATA) + 1) // 2
     domain_priority_last_row = domain_priority_header_row + domain_priority_block_size
     domain_priority_column_indexes = tuple(
         column_index
@@ -946,7 +892,6 @@ def build_sheet(
         "DELTA": "legend-delta",
         "INDIRECT": "legend-indirect",
         "GAP": "legend-gap",
-        "EXT": "external",
     }
     status_styles = {
         "Total": "test-section",
@@ -954,32 +899,17 @@ def build_sheet(
         "Pending": "partial",
         "Not started": "not-run",
         "Failed": "fail",
-        "Core": "test-section",
-        "External": "external",
     }
     summary_formulas = {
         "Done": (
-            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
-            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
-            f'&" ("&IF(COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")=0,"0%",'
-            f'TEXT(COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done",'
-            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")/'
-            f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core"),"0%"))&")"'
+            f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done")'
+            f'&" ("&IF(COUNTA(A{first_test_row}:A{last_test_row})=0,"0%",'
+            f'TEXT(COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Done")/'
+            f'COUNTA(A{first_test_row}:A{last_test_row}),"0%"))&")"'
         ),
-        "Pending": (
-            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Pending",'
-            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
-        ),
-        "Not started": (
-            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Not started",'
-            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
-        ),
-        "Failed": (
-            f'COUNTIFS({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Failed",'
-            f'{scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")'
-        ),
-        "Core": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"Core")',
-        "External": f'COUNTIF({scope_helper_column}{first_test_row}:{scope_helper_column}{last_test_row},"External")',
+        "Pending": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Pending")',
+        "Not started": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Not started")',
+        "Failed": f'COUNTIF({status_helper_column}{first_test_row}:{status_helper_column}{last_test_row},"Failed")',
         "Total": f"COUNTA(A{first_test_row}:A{last_test_row})",
     }
     helper_values = {
@@ -1193,23 +1123,6 @@ def build_sheet(
                 result_column,
             )
             ET.SubElement(helper_cell, f"{{{NS}}}v").text = helper_values[bucket]
-
-            scope = qa_scope_bucket(dict(zip(headers, values)))
-            scope_cell = ET.SubElement(
-                row,
-                f"{{{NS}}}c",
-                {
-                    "r": f"{scope_helper_column}{row_index}",
-                    "s": str(style_indexes["default"]),
-                    "t": "str",
-                },
-            )
-            ET.SubElement(scope_cell, f"{{{NS}}}f").text = qa_scope_formula(
-                row_index,
-                id_column,
-                domain_column,
-            )
-            ET.SubElement(scope_cell, f"{{{NS}}}v").text = "External" if scope == "external" else "Core"
 
             item = dict(zip(headers, values))
             complexity = item[COMPLEXITY_COLUMN]

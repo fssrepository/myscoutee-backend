@@ -293,7 +293,25 @@ public final class EventsDtos {
             Integer invitations,
             Integer hosting,
             Integer drafts,
-            Integer trash) {
+            Integer trash,
+            Integer watchlist) {
+        public UserEventCounterDeltaDto(
+                Integer all,
+                Integer active,
+                Integer pending,
+                Integer invitations,
+                Integer hosting,
+                Integer drafts,
+                Integer trash) {
+            this(all, active, pending, invitations, hosting, drafts, trash, null);
+        }
+    }
+
+    public record EventWatchActionResultDto(
+            String sourceId,
+            Boolean watched,
+            Boolean changed,
+            UserEventCountersDto eventCounters) {
     }
 
     public record UserAssetCounterDeltaDto(
@@ -529,7 +547,17 @@ public final class EventsDtos {
             String eventType,
             String mode,
             TournamentCurrentStageDto currentStage,
+            Boolean ticketing,
+            PricingConfigDto pricing,
+            Boolean policiesEnabled,
+            List<PolicyItemDto> policies,
             Boolean slotsEnabled,
+            List<EventSlotTemplateDto> slotTemplates,
+            EventSlotOccurrenceDto nextSlot,
+            List<EventSlotOccurrenceDto> upcomingSlots,
+            Boolean subEventsEnabled,
+            List<SubEventDefinitionDto> subEventDefinitions,
+            List<SubEventItemDto> subEvents,
             Integer acceptedMembers,
             Integer pendingMembers,
             List<String> acceptedMemberUserIds,
@@ -540,7 +568,8 @@ public final class EventsDtos {
             String currentUserMembershipStatus,
             Boolean approvalRequired,
             String checkoutResultState,
-            Double boost) {
+            Double boost,
+            Boolean watched) {
     }
 
     public record EventsExplorePageDto(

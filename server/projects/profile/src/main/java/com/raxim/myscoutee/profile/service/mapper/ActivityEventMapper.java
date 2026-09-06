@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,7 +26,8 @@ public class ActivityEventMapper {
             Map<String, String> creatorAvatarUrlsByUserId,
             Map<String, String> currentUserMembershipStatusesBySourceId,
             String viewerUserId,
-            Map<String, Integer> resourcePendingReadBySourceId) {
+            Map<String, Integer> resourcePendingReadBySourceId,
+            Set<String> watchedEventSourceIds) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
@@ -36,6 +38,7 @@ public class ActivityEventMapper {
             resourcePendingReadBySourceId = resourcePendingReadBySourceId == null
                     ? Map.of()
                     : resourcePendingReadBySourceId;
+            watchedEventSourceIds = watchedEventSourceIds == null ? Set.of() : Set.copyOf(watchedEventSourceIds);
         }
 
         public MappingContext(
@@ -52,7 +55,27 @@ public class ActivityEventMapper {
                     creatorAvatarUrlsByUserId,
                     currentUserMembershipStatusesBySourceId,
                     viewerUserId,
-                    Map.of());
+                    Map.of(),
+                    Set.of());
+        }
+
+        public MappingContext(
+                LocationCoordinatesDto viewerCoordinates,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Map<String, String> creatorAvatarUrlsByUserId,
+                Map<String, String> currentUserMembershipStatusesBySourceId,
+                String viewerUserId,
+                Map<String, Integer> resourcePendingReadBySourceId) {
+            this(
+                    viewerCoordinates,
+                    snapshotsBySourceId,
+                    checkoutResultStatesBySourceId,
+                    creatorAvatarUrlsByUserId,
+                    currentUserMembershipStatusesBySourceId,
+                    viewerUserId,
+                    resourcePendingReadBySourceId,
+                    Set.of());
         }
     }
 
@@ -66,6 +89,9 @@ public class ActivityEventMapper {
         List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record, membersSnapshot);
         List<String> invitedMemberUserIds = resolveInvitedMemberUserIds(record, membersSnapshot);
         List<String> pendingRequestMemberUserIds = resolvePendingRequestMemberUserIds(record, membersSnapshot);
+        List<EventSlotOccurrenceDto> upcomingSlots = record.getUpcomingSlots() == null
+                ? new ArrayList<>()
+                : new ArrayList<>(record.getUpcomingSlots());
         int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
                 ? normalizeCount(record.getCapacityTotal())
                 : Math.max(0, membersSnapshot.capacityTotal());
@@ -107,7 +133,19 @@ public class ActivityEventMapper {
                 resolveEventType(record),
                 normalizeMode(record.getMode()),
                 record.getCurrentStage(),
+                Boolean.TRUE.equals(record.getTicketing()),
+                record.getPricing(),
+                Boolean.TRUE.equals(record.getPoliciesEnabled()),
+                record.getPolicies() == null ? new ArrayList<>() : new ArrayList<>(record.getPolicies()),
                 Boolean.TRUE.equals(record.getSlotsEnabled()),
+                record.getSlotTemplates() == null ? new ArrayList<>() : new ArrayList<>(record.getSlotTemplates()),
+                upcomingSlots.isEmpty() ? null : upcomingSlots.get(0),
+                upcomingSlots,
+                record.getSubEventsEnabled() == null || Boolean.TRUE.equals(record.getSubEventsEnabled()),
+                record.getSubEventDefinitions() == null
+                        ? new ArrayList<>()
+                        : new ArrayList<>(record.getSubEventDefinitions()),
+                SubEventItemMapper.toDtoList(record.getSubEvents()),
                 acceptedMembers,
                 pendingMembers,
                 acceptedMemberUserIds,
@@ -118,7 +156,8 @@ public class ActivityEventMapper {
                 resolveCurrentUserMembershipStatus(record, context, membersSnapshot),
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
-                safeDouble(record.getBoost()));
+                safeDouble(record.getBoost()),
+                context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())));
     }
 
     private String resolveCurrentUserMembershipStatus(

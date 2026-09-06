@@ -25,9 +25,10 @@ summary in this document when a whole test pack changes status.
 
 This is the first pack of the wider manual QA ledger, not a closed Admin Jobs
 document. Future manual testing of authentication, profiles, activities,
-assets, chat, notifications, moderation, operator functions, installation or
-other product areas must be appended to the same ledger (or linked from it when
-the evidence is too large), using the extension rules below.
+assets, chat, notifications, moderation, operator functions or other product
+areas must be appended to the same ledger (or linked from it when the evidence
+is too large), using the extension rules below. Deployment-host installation
+and qualification are not Pair QA.
 
 ## Pair-QA operating contract
 
@@ -72,7 +73,7 @@ the campaign from chat history.
 ## Extending the ledger with future manual tests
 
 - Assign a stable area prefix and ID, for example `AUTH-`, `PROFILE-`,
-  `EVENT-`, `ASSET-`, `CHAT-`, `OPERATOR-` or `INSTALL-`.
+  `EVENT-`, `ASSET-`, `CHAT-` or `OPERATOR-`.
 - Add one spreadsheet row per independently passable behavior. Do not combine
   several failures behind one broad feature row.
 - Use `X` in every cross-surface cell where no effect is expected; use `DELTA`,

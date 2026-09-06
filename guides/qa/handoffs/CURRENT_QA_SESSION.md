@@ -1,9 +1,9 @@
 # Current manual QA session
 
-Updated: 2026-09-05 13:37 CEST
+Updated: 2026-09-06 11:46 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
-It stores one minimal live resume pointer plus reusable execution lessons. It
+It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
 is not the transactional evidence ledger or a backup of the QA pack. Read this
 file first, then open only the linked active checkpoint section.
 
@@ -16,13 +16,15 @@ file first, then open only the linked active checkpoint section.
 - Stable user-facing click guide for the completed Asset membership testcase;
   execution status or machine evidence never belong in a checklist:
   [`ASSET-MEMBER-001.md`](../checklists/asset/ASSET-MEMBER-001.md).
-- Stable user-facing click guide for the active staged Assignment lifecycle;
+- Stable user-facing click guide for the completed Assignment lifecycle;
   execution status and machine evidence remain in the pack/handoff:
   [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared, queued Content lifecycle:
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared side-menu Payment journey:
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
+- Stable user-facing click guide for the active Asset checkout journey:
+  [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -42,6 +44,10 @@ file first, then open only the linked active checkpoint section.
   [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
 - Isolated side-menu Payment history, registration and expired-card fixture:
   [`payment-ui-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/payment-ui-checkpoints.js)
+- Isolated Event checkout, control and provider-card fixture:
+  [`event-checkout-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-checkout-checkpoints.js)
+- Isolated Asset checkout, Barion/3DS control and rollback fixture:
+  [`asset-checkout-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-checkout-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -71,21 +77,47 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
-checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete; the exact payment-ui baseline is staged; no manual step has run
-next_replay_boundary: do not stage again; the user opens only the configured Ava/Alex sessions and starts checklist step 1
-fixture_phase: read-only status at `2026-09-05 13:36 CEST` is `phase=baseline-ready`, provider `none` (Cash only), requires3ds=false
-browser_phase: no Payment browser was opened; the user exclusively controls browser actions
+checkpoint: ASSET-CHECKOUT-001 — STAGED / NOT RUN
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-checkout-001--asset-explore-barion-payment-reaches-the-scoped-borrow-destination
+checklist: ../checklists/asset/ASSET-CHECKOUT-001.md
+substage: fresh paid Asset and controls are staged; no checkout action has been performed
+next_replay_boundary: baseline-ready; later named savepoints are payment-ready, paid-pending and accepted
+fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
+browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
-queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: run one read-only payment-ui status; if it remains baseline-ready/Cash only, the user opens only the configured Ava/Alex sessions and starts checklist step 1; do not stage again
-actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
-pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
-last_completed: implementation preparation plus one exact payment-ui stage and read-only baseline proof. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
+queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
+required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
+actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
+pending_machine_oracle: after `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`, run `capture-payment-ready asset-checkout ASSET-CHECKOUT-001`
+pre_pay_contract: Confirm borrow creates only the scoped, namespaced-local-storage AssetBorrowDraftStore entry keyed by user/Sub-event/Asset; payment-ready must still have zero server payment/provider-session/request/inventory/resource/basket writes. The existing frontend watcher compiled and deployed this reload-persistence correction, but checklist steps 22-23 remain pending manual evidence. The first server checkout write is Pay
+rollback_contract: all three commands restore exact persisted savepoints; payment-ready cannot recreate a cleared frontend-local draft, so after that rollback the user reloads and repeats steps 1-18 once without recapturing the already restored server phase
+provider_change_contract: baseline is connected Barion with 3DS Off; Nova has active Barion 4444 plus blocked expired Barion 0008. The user enables 3DS only at checklist step 31
+deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
+last_completed: EVENT-CHECKOUT-001 PASS/CLOSED and snapshot-reset with zero remaining scoped artifacts; ASSET-CHECKOUT-001 stage plus independent baseline status passed
 ```
+
+Resume with this read-only gate only:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-checkout ASSET-CHECKOUT-001
+```
+
+If it still prints `phase=baseline-ready`, hand control to the user at
+`ASSET-CHECKOUT-001` step 1. The first stop phrase is:
+
+`ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
+
+Then run:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  capture-payment-ready asset-checkout ASSET-CHECKOUT-001
+```
+
+Do not stage again, reset, enable 3DS early, open a browser, or reconstruct the
+fixture through ad-hoc Mongo writes while the baseline matches.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -128,28 +160,24 @@ while a released non-overlapping window restores it in place and after reload;
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
-Borrow remains prepared but is deliberately deferred while the payment-facing
-journeys are verified. It is not the active checkpoint.
+The independent free Borrow lifecycle remains prepared and deferred while the
+active paid Asset checkout journey is verified.
 
 The three existing Event/Asset cases divide checkout coverage without a
 separate External Payment row: `EVENT-CHECKOUT-001` owns Stripe plus the
 Cash-only paid control and card assignment; `ASSET-CHECKOUT-001` owns
 Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
 `ASSET-BORROW-LIFECYCLE-001` remains the genuinely free/no-payment control.
-Their stable guides have been expanded for these combinations; their full
-manual runs remain for later pair QA.
+Their stable guides carry those separate combinations. Event checkout is
+PASS/CLOSED; paid Asset checkout is the active staged transaction; the free
+Borrow lifecycle remains later pair QA.
 
-`PAYMENT-METHODS-HISTORY-001` is the one new Core side-menu journey and the
-selected next testcase. Its versioned fixture, exact reset, savepoint oracles
-and Ava/Alex browser definition are prepared, and its runtime fixture is now
-staged at the proven `baseline-ready` / Cash-only boundary. The independent
-real scheduler smoke already proved active expired card -> `expired` -> one
-outbox -> one in-app notification, including duplicate suppression. It also
-exposed and repaired the null-version duplicate-ID write by replacing the
-read-modify-save expiry transition with one guarded atomic update.
+`PAYMENT-METHODS-HISTORY-001` and `EVENT-CHECKOUT-001` are PASS/CLOSED. The
+Event checkout fixture was reset through its saved baseline before
+`ASSET-CHECKOUT-001` was staged at `baseline-ready`.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
-open consolidated Core Content row and now has a stable click guide. It creates
+open consolidated Content row and now has a stable click guide. It creates
 inactive Help/Privacy/Terms/Explanation revisions, activates Privacy with
 per-user consent isolation, deletes one inactive revision, exercises the
 implemented newest-remaining fallback after active Privacy deletion, then
@@ -160,9 +188,9 @@ assertion was corrected to match Java, frontend-local and the administrator
 manual. Its versioned fixture, six savepoint oracles, exact reset and
 Ava/Kai/Riley browser-session definition are prepared. It remains explicitly
 not staged and no Content browser was opened, so it did not alter the active
-Asset Assignment boundary. After Assignment is recorded and reset, stage
-Content once, require `baseline-ready`, and only then open its configured
-browsers. The Mongo harness proves revision, audit, consent and Article-bucket
+Asset checkout boundary. After Asset checkout is recorded and reset, stage
+Content only if it is then selected from the canonical matrix, require
+`baseline-ready`, and only then let the user open its configured browsers. The Mongo harness proves revision, audit, consent and Article-bucket
 state; the existing admin telemetry stream is a separate savepoint oracle.
 Both distinct managed-image controls returned HTTP 200 and their pre-stage
 sizes/SHA-256 values are recorded in the Content pack section for tomorrow's
@@ -230,13 +258,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Do not open a browser yet. When the user starts pair QA, run the read-only
-`status payment-ui PAYMENT-METHODS-HISTORY-001` gate. If it still reports
-`phase=not-staged`, stage it once, require `phase=baseline-ready` with simulator
-provider `none` (`Cash only`), and only then prepare the configured Ava/Alex
-sessions. Begin at checklist step 1. The first stop phrase is
-`PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`.
-The fixture is exact-reset capable and no manual Payment verdict exists yet.
+Run the read-only `status asset-checkout ASSET-CHECKOUT-001` gate. If it remains
+`baseline-ready`, the user starts checklist step 1 and stops after step 18 on
+the exact `payment ready` phrase. Codex then runs `capture-payment-ready` and
+continues only from the harness result.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
@@ -324,27 +349,25 @@ do not silently redefine the expected behavior or expand the current test.
 
 The physical CSV/XLSX row order is the manual execution order, not merely a
 visual grouping. The main testcase table has one normalized, domain-colored
-`QA domain` column; its other cells retain the existing status/scope colors.
-The workbook's separate `QA domain | Priority | Progress` table is generated
-from the same rows, begins at row 8 as three side-by-side columns above the
-main table, orders whole domains by numeric `Priority DESC`, and shows `passed
+`QA domain` column; its other cells retain the existing status/effect-marker
+colors.
+The workbook's separate `QA domain | Priority | Progress` overview is generated
+from the same rows, begins at row 8 as two side-by-side three-field blocks above
+the main table, orders whole domains by numeric `Priority DESC`, and shows `passed
 / total (percentage)` plus summed unfinished `MIN/MAX` ranges per domain. The
 generator owns compact A-T widths: all 20 primary columns remain visible
 without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
-and only the four formula-helper columns remain hidden. Summary count cells are
+and only the three formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
-and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus the Operator and Deployment
-deferred boundaries. Their numeric priorities preserve the
+and order them by priority. The top-level taxonomy is intentionally coarse:
+10 Pair-QA capability/operations domains, including Operator. Their numeric priorities preserve the
 authoritative execution order.
-A generated priority overview places the first five Core domains in its first
-column, the remaining five Core domains in its second column, and reserves the
-third `EXT / optional` column for Operator and Deployment. The third
-column must therefore always sum to the separate
-External/optional count rather than being mixed into the Core execution queue.
+A generated priority overview places the first five domains in its first
+block and the remaining five domains in its second block. Operator is a normal
+Pair-QA domain and has no separate scope marker or summary total.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
 mobile WebView, Statistics, Monitoring and background jobs in the owning
@@ -352,18 +375,19 @@ domain's `Area` instead of manufacturing singleton domains. Create a new
 top-level domain only for an independently executable capability with a
 material workflow set; otherwise classify the row under its real owner.
 The same ownership rule applies to the configurable Admin shell. Local Admin
-work is Core and is distributed by the state it reads or mutates: authorization
+work stays in Pair QA and is distributed by the state it reads or mutates: authorization
 and moderation belong to Identity & access, revisions to Content, notification
 rules to Notifications, statistics and monitoring to Administration, and so
 on. The route or shell does not manufacture a separate Admin domain.
-Operator, Registry and deployment cases remain deferred external boundaries.
-Member payment history and saved-card behavior is Core; provider checkout
-variants are owned by the Core Event and Asset journeys. Row-level Manual QA
-priority orders risk inside a scope; it does
+Operator and Registry behavior remains in the Operator domain. Deployment
+qualification is not Pair QA.
+Member payment history and saved-card behavior belongs to Event; provider checkout
+variants are owned by the Event and Asset journeys. Row-level Manual QA
+priority orders risk inside the queue; it does
 not change capability ownership.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
-currently active domain closes, choose the highest-priority Core domain whose
+currently active domain closes, choose the highest-priority domain whose
 Progress is below 100%, then close its Pending/Not started rows in physical
 order. Status colors never select the next test. More generally, whenever
 fixture dependencies and the active transactional checkpoint allow a choice,
@@ -457,9 +481,8 @@ record has been removed.
 
 ### 1.1 Checkpoint granularity and new rows
 
-- Treat every PASS/CLOSED testcase as immutable evidence. It may move to its
-  actual owning `QA domain`, but its ID, status, contract, evidence and every
-  other cell remain unchanged. Non-PASS source rows may instead be consolidated
+- Treat every PASS/CLOSED testcase as immutable evidence: its `QA domain`, ID,
+  status, contract, evidence and every other cell remain unchanged. Non-PASS source rows may instead be consolidated
   into one complete domain journey when they are only micro-oracles of the same
   lifecycle; preserve every source assertion inside the parent contract and do
   not count the retired source IDs as independently scheduled tests. Count
@@ -467,9 +490,8 @@ record has been removed.
   cells span several file lines; ignore `LEGEND-*` records when quoting the
   testcase total. Capture a canonical serialized hash keyed by every
   PASS testcase ID and prove the same ID/content hashes after CSV and XLSX
-  synchronization. Insert Core coverage beside its owning domain
-  rows and before the `LEGEND-EXT`/external block; do not append a Core row
-  after EXT merely because it was discovered later. Preserve the relative
+  synchronization. Insert new coverage beside its owning domain rows instead
+  of appending it merely because it was discovered later. Preserve the relative
   order and contents of all PASS testcase rows while doing so. Consolidated or
   new journeys receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
@@ -491,16 +513,11 @@ record has been removed.
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
   per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
   formulas into the XLSX, with automatic recalculation on open. The overview
-  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`,
-  `External / optional`,
-  `Total`. The four status rows and the Done percentage are filtered to Core
-  tests only, so they partition the displayed Core total instead of mixing the
-  deferred scope into product progress. Stable IDs beginning `OPERATOR-`,
-  `OPERATOR-` or `DEPLOY-` remain teal `EXT / optional` without renaming
-  testcase IDs; that scope is a separate count and `Total` is
-  the final Core+deferred count. The generator also adds `EXT` to the left
-  overview legend. Scope is orthogonal to
-  status. Read the generated formulas and cached totals back after
+  order is `Done`, `Pending`, `Not started`, `Failed`, `Total`. The four status
+  rows partition all current Pair-QA tests, and the Done percentage uses that
+  same total. Stable IDs beginning `OPERATOR-` remain unchanged and are counted
+  exactly like every other Pair-QA domain; there is no separate scope branch,
+  helper or legend. Read the generated formulas and cached totals back after
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
@@ -515,8 +532,8 @@ record has been removed.
   effort estimate. Record any overrun beyond the range separately.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
-  passed and remaining counts separately for Core and External/optional, plus
-  the total case count. Derive those values from the same classifiers as the generated
+  the passed count and total case count for the single Pair-QA queue. Derive
+  those values from the same classifiers as the generated
   workbook, and keep its active-checkpoint sentence aligned with this handoff's
   sole resume pointer. Detailed Pending/Not started/Failed counts belong only
   in the QA matrix. Treat a stale README summary as an incomplete ledger update.
@@ -1198,33 +1215,6 @@ resume pointer; never reconstruct or reapply already-backed-up changes merely
 because the worktree became clean. Treat a backup as incorrect or reverted
 only when the user explicitly says so.
 
-### 5.2 Release qualification during a QA pause
-
-A production-package or deployment qualification performed while the manual
-QA campaign is paused is a separate runtime boundary. Do not advance, reset or
-rewrite the active QA checkpoint merely because a Debian package was built or
-installed on an isolated VM. On return, use the saved read-only resume gate
-against the development stack and continue only from the persisted checkpoint
-oracle; never infer that the VM's state replaced the QA fixture.
-
-The packaged Explore database is deliberately disposable. Every successful
-install or reinstall must rebuild exactly `demo_db` from the current packaged
-seed and refresh only the package-owned `images/demo-assets`,
-`images/demo-events` and `images/demo-profiles` MinIO prefixes. This is needed
-even on a same-version reinstall: otherwise old demo records can keep external
-or obsolete media URLs while the package already contains a newer generated
-image set. Guard the destructive path to the literal demo database, reject it
-when the configured production database has the same name, and retain a retry
-marker until Mongo import, MinIO seed and the demo oracle all succeed.
-
-Production data is the opposite contract: package install/reinstall preserves
-the production database and operator/user uploads byte-for-byte except for an
-explicit, versioned migration or narrowly allow-listed system-seed sync. A
-release replay must capture a read-only production control snapshot before the
-install and prove it unchanged afterward, independently from the clean demo
-oracle. Do not generalize the demo reset helper into a caller-selected database
-drop command, and do not clear the complete MinIO volume to refresh demo media.
-
 ### 6. Recording and communication
 
 During the active manual-QA campaign, keep the hot-deploy output directory
@@ -1298,7 +1288,6 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
 -> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
 -> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
--> DEPLOY-FIREBASE-LIFECYCLE-001 (deferred production-like VMware/Firebase journey)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
@@ -1307,17 +1296,17 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 ```
 
 Tournament is 15/15 complete, QA infrastructure is 2/2 complete and Identity &
-access is 8/8 complete. Select the next Core checkpoint from the canonical
+access is 8/8 complete. Select the next checkpoint from the canonical
 matrix; do not replay
 the closed role-triad, consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
-physical-device Chat boundary is retained under external CP04 and must be run
-with production-like VMware/Firebase evidence, not the local demo stack.
+physical-device Chat boundary is retained in `MOBILE-PUSH-LIFECYCLE-001` and
+uses an Operator-tested Firebase revision in the QA environment.
 
-The former Firebase registration, role activation/deactivation and physical
-Chat-push microcases are assertions inside external
-`DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
-by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
-the Core Identity & access gate. Only the Operator and Deployment sequences
-stay deferred under Core-first execution. Member payment history and saved
-cards are Core behavior owned by Event; Payment is not a separate QA domain.
+Configuration, including the Firebase activation and fresh-sign-in checkpoint,
+is owned by `OPERATOR-CONFIGURATION-LIFECYCLE-001`; physical Chat push is owned
+by `MOBILE-PUSH-LIFECYCLE-001`; registry activation/deactivation is owned by
+`OPERATOR-REGISTRY-LIFECYCLE-001`. No Deployment testcase remains in Pair QA.
+The Operator sequence follows the same priority ordering as every other Pair-QA
+domain. Member payment history and saved cards are behavior owned by Event; Payment is
+not a separate QA domain.

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -256,14 +257,24 @@ public class PaymentService {
                             authoritativeRequest,
                             payment.getCheckoutSessionId(),
                             selectedPaymentMethod.getProviderPaymentMethodRef());
-            validateGatewayResult(payment, authorization);
-            applyGatewayResult(payment, authorization);
-            payment = saveAndProjectSpending(payment);
-            eventCheckoutBasketService.saveBasket(withCheckoutState(
-                    authoritativeRequest,
-                    "pay",
-                    payment.getCheckoutSessionId()));
+            payment = applyGatewayAuthorization(
+                    payment.getCheckoutSessionId(),
+                    authorization,
+                    null).payment();
+            if (!Set.of(
+                            statusValue(AuthorizationStatus.AUTHORIZED),
+                            statusValue(AuthorizationStatus.CAPTURED))
+                            .contains(safeText(payment.getStatus()))
+                    && !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))
+                    && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
+                eventCheckoutBasketService.saveBasket(withCheckoutState(
+                        authoritativeRequest,
+                        "pay",
+                        payment.getCheckoutSessionId()));
+            }
             return toCheckoutSession(payment);
+        } catch (OptimisticLockingFailureException conflict) {
+            throw conflict;
         } catch (RuntimeException exception) {
             payment.setStatus(statusValue(AuthorizationStatus.FAILED));
             payment.setFailedAtIso(nowIso());
@@ -278,31 +289,57 @@ public class PaymentService {
             String internalPaymentSessionId,
             AuthorizationResult authorization,
             String gatewayEventId) {
-        Payment payment = findGatewayPayment(internalPaymentSessionId, authorization)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Payment session for the gateway event was not found."));
-        validateGatewayResult(payment, authorization);
         String normalizedEventId = normalizeId(gatewayEventId);
-        if (hasText(normalizedEventId) && payment.getProcessedGatewayEventIds().contains(normalizedEventId)) {
-            return new GatewayTransition(payment, false, true);
+        OptimisticLockingFailureException lastConflict = null;
+        for (int attempt = 0; attempt < 3; attempt += 1) {
+            Payment payment = findGatewayPayment(internalPaymentSessionId, authorization)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Payment session for the gateway event was not found."));
+            validateGatewayResult(payment, authorization);
+            if (hasText(normalizedEventId) && payment.getProcessedGatewayEventIds().contains(normalizedEventId)) {
+                return new GatewayTransition(payment, false, true);
+            }
+            if (!hasText(normalizedEventId) && gatewayResultAlreadyApplied(payment, authorization)) {
+                return new GatewayTransition(payment, false, true);
+            }
+            String previousStatus = safeText(payment.getStatus());
+            if (!isAllowedGatewayTransition(previousStatus, authorization.status())) {
+                return new GatewayTransition(payment, false, true);
+            }
+            applyGatewayResult(payment, authorization);
+            if (hasText(normalizedEventId)) {
+                List<String> eventIds = new java.util.ArrayList<>(payment.getProcessedGatewayEventIds());
+                eventIds.add(normalizedEventId);
+                payment.setProcessedGatewayEventIds(eventIds.size() <= 100
+                        ? eventIds
+                        : eventIds.subList(eventIds.size() - 100, eventIds.size()));
+            }
+            try {
+                Payment saved = saveAndProjectSpending(payment);
+                boolean newlyAuthorized = authorization.status() == AuthorizationStatus.AUTHORIZED
+                        && !statusValue(AuthorizationStatus.AUTHORIZED).equals(previousStatus);
+                return new GatewayTransition(saved, newlyAuthorized, false);
+            } catch (OptimisticLockingFailureException conflict) {
+                lastConflict = conflict;
+            }
         }
-        String previousStatus = safeText(payment.getStatus());
-        if (!isAllowedGatewayTransition(previousStatus, authorization.status())) {
-            return new GatewayTransition(payment, false, true);
-        }
-        applyGatewayResult(payment, authorization);
-        if (hasText(normalizedEventId)) {
-            List<String> eventIds = new java.util.ArrayList<>(payment.getProcessedGatewayEventIds());
-            eventIds.add(normalizedEventId);
-            payment.setProcessedGatewayEventIds(eventIds.size() <= 100
-                    ? eventIds
-                    : eventIds.subList(eventIds.size() - 100, eventIds.size()));
-        }
-        Payment saved = saveAndProjectSpending(payment);
-        boolean newlyAuthorized = authorization.status() == AuthorizationStatus.AUTHORIZED
-                && !statusValue(AuthorizationStatus.AUTHORIZED).equals(previousStatus);
-        return new GatewayTransition(saved, newlyAuthorized, false);
+        throw lastConflict;
+    }
+
+    private boolean gatewayResultAlreadyApplied(Payment payment, AuthorizationResult authorization) {
+        String expectedStatus = statusValue(authorization.status());
+        String currentStatus = safeText(payment.getStatus());
+        boolean compatibleStatus = expectedStatus.equals(currentStatus)
+                || (AuthorizationStatus.AUTHORIZED == authorization.status()
+                        && "captured".equals(currentStatus));
+        String expectedAuthorizationId = normalizeId(authorization.gatewayAuthorizationId());
+        String expectedGatewaySessionId = normalizeId(authorization.gatewayCheckoutId());
+        boolean sameAuthorization = hasText(expectedAuthorizationId)
+                ? expectedAuthorizationId.equals(normalizeId(payment.getGatewayAuthorizationId()))
+                : hasText(expectedGatewaySessionId)
+                        && expectedGatewaySessionId.equals(normalizeId(payment.getGatewaySessionId()));
+        return compatibleStatus && sameAuthorization;
     }
 
     public Payment markGatewayFulfillment(String paymentId, boolean succeeded, String failureReason) {
