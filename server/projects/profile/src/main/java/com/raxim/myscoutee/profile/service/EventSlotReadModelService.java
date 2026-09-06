@@ -128,15 +128,43 @@ public class EventSlotReadModelService {
             return List.of();
         }
         long nowMs = System.currentTimeMillis() - UPCOMING_SLOT_GRACE_MS;
-        return (slotDocuments == null ? List.<ActivityEvent>of() : slotDocuments).stream()
-                .filter(this::isGeneratedSlotRecord)
-                .filter(item -> normalizedParentSourceId.equals(normalizeId(item.getParentEventId())))
-                .filter(item -> !Boolean.TRUE.equals(item.getIsTrashed()))
-                .filter(item -> toSortableDate(item.getEndAtIso()) >= nowMs)
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent item : slotDocuments == null ? List.<ActivityEvent>of() : slotDocuments) {
+            String sourceId = normalizeId(item == null ? null : item.getSourceId());
+            if (!StringUtils.hasText(sourceId)
+                    || !isGeneratedSlotRecord(item)
+                    || !normalizedParentSourceId.equals(normalizeId(item.getParentEventId()))
+                    || Boolean.TRUE.equals(item.getIsTrashed())
+                    || ActivityEvent.STATUS_TRASHED.equals(safeText(item.getStatus()))
+                    || toSortableDate(item.getEndAtIso()) < nowMs) {
+                continue;
+            }
+            ActivityEvent current = preferredBySourceId.get(sourceId);
+            if (current == null || preferSlotSourceDocument(item, current)) {
+                preferredBySourceId.put(sourceId, item);
+            }
+        }
+        return preferredBySourceId.values().stream()
                 .sorted(Comparator.comparingLong(item -> toSortableDate(item.getStartAtIso())))
                 .map(item -> toSlotOccurrence(parent, item))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private boolean preferSlotSourceDocument(ActivityEvent candidate, ActivityEvent current) {
+        boolean candidateCanonical = isCreatorOwnedDocument(candidate);
+        boolean currentCanonical = isCreatorOwnedDocument(current);
+        if (candidateCanonical != currentCanonical) {
+            return candidateCanonical;
+        }
+        return toSortableDate(candidate == null ? null : candidate.getUpdatedDate())
+                > toSortableDate(current == null ? null : current.getUpdatedDate());
+    }
+
+    private boolean isCreatorOwnedDocument(ActivityEvent record) {
+        String ownerUserId = normalizeId(record == null ? null : record.getOwnerUserId());
+        String creatorUserId = normalizeId(record == null ? null : record.getCreatorUserId());
+        return StringUtils.hasText(ownerUserId) && ownerUserId.equals(creatorUserId);
     }
 
     private EventSlotOccurrenceDto toSlotOccurrence(ActivityEvent parent, ActivityEvent item) {

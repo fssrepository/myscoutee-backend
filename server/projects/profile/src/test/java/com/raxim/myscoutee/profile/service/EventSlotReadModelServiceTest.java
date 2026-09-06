@@ -72,6 +72,30 @@ class EventSlotReadModelServiceTest {
                 assertThat(savedParent.getUpcomingSlots()).extracting(slot -> slot.id()).containsExactly("slot-1"));
     }
 
+    @Test
+    void refreshParentUpcomingSlotsUsesCanonicalSlotOnceWhenParticipantOverlayIsActive() {
+        ActivityEvent eventParent = parent("event-1", "first");
+        ActivityEvent canonicalSlot = slot("slot-1", "event-1", "2099-06-02T10:00:00Z", 2, 0);
+        canonicalSlot.setOwnerUserId("creator-1");
+        canonicalSlot.setCreatorUserId("creator-1");
+        ActivityEvent participantOverlay = slot("slot-1", "event-1", "2099-06-02T10:00:00Z", 9, 0);
+        participantOverlay.setId("slot-1-participant-overlay");
+        participantOverlay.setOwnerUserId("member-1");
+        participantOverlay.setCreatorUserId("creator-1");
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(eventParent));
+        when(activityEventsRepository.findByParentEventIdIn(List.of("event-1")))
+                .thenReturn(List.of(participantOverlay, canonicalSlot));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<ActivityEvent> saved = service.refreshParentUpcomingSlots(List.of("event-1"));
+
+        assertThat(saved).singleElement().satisfies(savedParent -> {
+            assertThat(savedParent.getUpcomingSlots()).extracting(slot -> slot.id()).containsExactly("slot-1");
+            assertThat(savedParent.getUpcomingSlots().get(0).acceptedMembers()).isEqualTo(2);
+        });
+    }
+
     private ActivityEvent parent(String sourceId, String suffix) {
         ActivityEvent event = new ActivityEvent();
         event.setId(sourceId + "-" + suffix);

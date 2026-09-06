@@ -229,14 +229,16 @@ Usage:
   bash manual-qa-checkpoints.sh reset payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh stage event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh status event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh repair-control-fixtures event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh capture-payment-ready event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-pending-event event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-cancelled event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-block-4 event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-paid event-checkout EVENT-CHECKOUT-001
-  bash manual-qa-checkpoints.sh rollback-block-5 event-checkout EVENT-CHECKOUT-001
-  bash manual-qa-checkpoints.sh verify-leave-rejoined event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-destination event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-controls event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-block-6 event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-leave-rejoined event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh reset event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
@@ -366,7 +368,9 @@ print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
     || fail "Payment simulator loaded ${actual} checkout card fixtures; expected ${expected}."
 }
 
-set_payment_simulator_cash_only() {
+set_payment_simulator_provider() {
+  local target_provider="$1"
+  local provider_label="$2"
   local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
   local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
   local temp_dir access_response access_url session_url result provider
@@ -389,12 +393,20 @@ set_payment_simulator_cash_only() {
   result="$(curl --fail --silent --show-error -X PUT \
     --cookie "${temp_dir}/cookies" \
     -H 'Content-Type: application/json' \
-    --data '{"provider":"none","requires3ds":false}' \
+    --data "{\"provider\":\"${target_provider}\",\"requires3ds\":false}" \
     "${session_url}")" \
-    || { rm -r -- "${temp_dir}"; fail "Could not restore Cash only in the payment simulator."; }
+    || { rm -r -- "${temp_dir}"; fail "Could not restore ${provider_label} in the payment simulator."; }
   rm -r -- "${temp_dir}"
   provider="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("provider", ""))' <<<"${result}")"
-  [ "${provider}" = "none" ] || fail "Payment simulator did not restore Cash only."
+  [ "${provider}" = "${target_provider}" ] || fail "Payment simulator did not restore ${provider_label}."
+}
+
+set_payment_simulator_cash_only() {
+  set_payment_simulator_provider "none" "Cash only"
+}
+
+set_payment_simulator_stripe() {
+  set_payment_simulator_provider "stripe" "Stripe with 3DS Off"
 }
 
 run_scenario() {
@@ -746,12 +758,13 @@ case "${scenario}:${command}" in
     set_payment_simulator_cash_only
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:rollback-block-5|event-checkout:verify-leave-rejoined|event-checkout:verify-destination|event-checkout:verify)
+  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:repair-control-fixtures|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify-controls|event-checkout:rollback-block-6|event-checkout:verify-leave-rejoined|event-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
-    if [ "${command}" = "rollback-block-4" ] || [ "${command}" = "rollback-block-5" ]; then
+    if [ "${command}" = "rollback-block-4" ] || [ "${command}" = "rollback-block-6" ]; then
       replace_payment_simulator_checkout_card_fixtures
+      set_payment_simulator_stripe
     fi
     ;;
   event-checkout:reset)

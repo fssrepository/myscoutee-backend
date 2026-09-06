@@ -77,6 +77,10 @@
     return [...new Set((values || []).map(Q.text).filter(Boolean))].sort();
   }
 
+  function samePersistedSnapshot(left, right) {
+    return Q.sameJson(EJSON.serialize(left), EJSON.serialize(right));
+  }
+
   function optionalField(document, key) {
     return Object.prototype.hasOwnProperty.call(document || {}, key)
       ? { present: true, value: document[key] }
@@ -429,6 +433,78 @@
     }
   }
 
+  function assertControlContracts() {
+    const event = id => Q.collection("events").findOne({ sourceId: id, status: "A" });
+    const novaMembers = id => Q.collection("activityMembers")
+      .find({ ownerType: "event", ownerId: id, userId: NOVA_ID })
+      .toArray();
+    const baskets = id => Q.collection("eventCheckoutBasketItems")
+      .find({ sourceId: id, userId: NOVA_ID })
+      .toArray();
+    const payments = id => Q.collection("payments")
+      .find({ sourceId: id, userId: NOVA_ID })
+      .toArray();
+
+    const free = event(FREE_ID);
+    if (!free
+        || !free.pricing
+        || free.pricing.enabled !== false
+        || free.slotsEnabled === true
+        || novaMembers(FREE_ID).length !== 0
+        || baskets(FREE_ID).length !== 0
+        || payments(FREE_ID).length !== 0) {
+      Q.fail("Free control is not the untouched no-payment/no-membership fixture.");
+    }
+
+    const approval = event(APPROVAL_ID);
+    const approvalMembers = novaMembers(APPROVAL_ID);
+    const approvalBaskets = baskets(APPROVAL_ID);
+    if (!approval
+        || approval.approvalRequired !== true
+        || !Q.sameJson(sorted(approval.pendingMemberUserIds), [NOVA_ID])
+        || approvalMembers.length !== 1
+        || Q.text(approvalMembers[0].status) !== "pending"
+        || Q.text(approvalMembers[0].requestKind) !== "join"
+        || approvalBaskets.length !== 1
+        || String(approvalBaskets[0]._id) !== `${PREFIX}:basket:approval`
+        || Q.text(approvalBaskets[0].status) !== "approval-pending"
+        || approvalBaskets[0].reservationActive !== true
+        || payments(APPROVAL_ID).length !== 0) {
+      Q.fail("Approval control is not the exact pending-approval fixture.");
+    }
+
+    const waitlist = event(WAITLIST_ID);
+    const waitlistMembers = novaMembers(WAITLIST_ID);
+    if (!waitlist
+        || waitlist.full !== true
+        || !Q.sameJson(sorted(waitlist.pendingMemberUserIds), [NOVA_ID])
+        || waitlistMembers.length !== 1
+        || Q.text(waitlistMembers[0].status) !== "pending"
+        || Q.text(waitlistMembers[0].requestKind) !== "waitlist"
+        || baskets(WAITLIST_ID).length !== 0
+        || payments(WAITLIST_ID).length !== 0) {
+      Q.fail("Waitlist control is not pending membership without a checkout basket.");
+    }
+
+    const cash = event(CASH_ID);
+    if (!cash
+        || cash.slotsEnabled === true
+        || (cash.upcomingSlots || []).length !== 0
+        || novaMembers(CASH_ID).length !== 0
+        || baskets(CASH_ID).length !== 0
+        || payments(CASH_ID).length !== 0) {
+      Q.fail("Cash-only control is not the clean plain non-slot checkout fixture.");
+    }
+
+    const adjacent = event(ADJACENT_ID);
+    if (!adjacent
+        || novaMembers(ADJACENT_ID).length !== 0
+        || baskets(ADJACENT_ID).length !== 0
+        || payments(ADJACENT_ID).length !== 0) {
+      Q.fail("Adjacent paid control changed during EVENT-CHECKOUT-001.");
+    }
+  }
+
   function assertRileyUnchanged(currentState) {
     const current = Q.ensureUser(RILEY_ID, "Riley control");
     if (!Q.sameJson(current, currentState.rileyFingerprint)) {
@@ -630,10 +706,9 @@
     members.push(memberDocument(APPROVAL_ID, NOVA_ID, "Member", "pending", nowIso, "join"));
     members.push(memberDocument(WAITLIST_ID, NOVA_ID, "Member", "pending", nowIso, "waitlist"));
     Q.collection("activityMembers").insertMany(members);
-    Q.collection("eventCheckoutBasketItems").insertMany([
-      basketDocument(`${PREFIX}:basket:approval`, APPROVAL_ID, "QA EVENT-CHECKOUT-001 Approval", "approval-pending", now, expires, 3200),
-      basketDocument(`${PREFIX}:basket:waitlist`, WAITLIST_ID, "QA EVENT-CHECKOUT-001 Waitlist", "waiting", now, expires, 3200)
-    ]);
+    Q.collection("eventCheckoutBasketItems").insertOne(
+      basketDocument(`${PREFIX}:basket:approval`, APPROVAL_ID, "QA EVENT-CHECKOUT-001 Approval", "approval-pending", now, expires, 3200)
+    );
     Q.collection("savedPaymentMethods").insertMany([
       cardDocument(CARD_IDS.stripe, NOVA_ID, "NOVA SOCIAL", "stripe", "pm_sim_checkout_nova_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
       cardDocument(CARD_IDS.rileyStripe, RILEY_ID, "RILEY OUTSIDE", "stripe", "pm_sim_checkout_riley_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
@@ -644,7 +719,7 @@
       }
     ]);
     setEventCounters();
-    Q.holdRule(BASKET_RULE, 2, `${CHECKPOINT}: two stable pending controls`, 3600);
+    Q.holdRule(BASKET_RULE, 1, `${CHECKPOINT}: one stable approval basket`, 3600);
     const currentState = state();
     const controls = controlFingerprint();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
@@ -775,6 +850,108 @@
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, repaired: { cardId: CARD_IDS.barion, provider: "barion", last4: "4444", artworkKey: "graphite" } });
   }
 
+  function withoutSeededWaitlistBasket(snapshots) {
+    return (snapshots || []).map(snapshot => {
+      if (snapshot.collection !== "eventCheckoutBasketItems") return snapshot;
+      return {
+        ...snapshot,
+        documents: (snapshot.documents || []).filter(item =>
+          String(item._id) !== `${PREFIX}:basket:waitlist`)
+      };
+    });
+  }
+
+  function repairControlFixtures() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "paid-verified") {
+      Q.fail("control fixture repair is restricted to the paid-verified boundary.");
+    }
+    const savedUsers = currentState.block5UserFields || [];
+    if (!Q.sameJson(sorted(savedUsers.map(item => item.userId)), [CASEY_ID, NOVA_ID, RILEY_ID])) {
+      Q.fail("the exact pre-control Casey/Nova/Riley snapshots are unavailable; refusing to repair counters by projection.");
+    }
+
+    const cashPaymentIds = Q.collection("payments")
+      .find({ sourceId: CASH_ID, userId: NOVA_ID })
+      .toArray()
+      .map(item => item._id);
+    if (cashPaymentIds.length > 0) {
+      Q.collection("payment_gateway_operations").deleteMany({ paymentId: { $in: cashPaymentIds } });
+    }
+    const cashChats = Q.collection("chats").find({ $or: [
+      { eventId: CASH_ID },
+      { ownerId: CASH_ID },
+      { sourceId: CASH_ID }
+    ] }).toArray();
+    const cashChatIds = cashChats.flatMap(item => [item._id, item.id, item.chatId]).filter(Boolean);
+    if (cashChatIds.length > 0) {
+      Q.collection("chatMessages").deleteMany({ chatId: { $in: cashChatIds } });
+    }
+    const cashNotificationSelector = { $or: [
+      { entityId: CASH_ID },
+      { sourceId: CASH_ID },
+      { "payload.eventId": CASH_ID },
+      { "payload.sourceId": CASH_ID }
+    ] };
+    Q.collection("notificationOutbox").deleteMany(cashNotificationSelector);
+    Q.collection("userNotifications").deleteMany(cashNotificationSelector);
+    Q.collection("chats").deleteMany({ $or: [
+      { eventId: CASH_ID },
+      { ownerId: CASH_ID },
+      { sourceId: CASH_ID }
+    ] });
+    Q.collection("payments").deleteMany({ sourceId: CASH_ID, userId: NOVA_ID });
+    Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: CASH_ID, userId: NOVA_ID });
+    Q.collection("activityMembers").deleteMany({ ownerType: "event", ownerId: CASH_ID, userId: NOVA_ID });
+    Q.collection("events").updateOne(
+      { sourceId: CASH_ID },
+      {
+        $set: {
+          pendingMembers: 0,
+          pendingMemberUserIds: [],
+          pendingRequestMemberUserIds: [],
+          pendingReason: null,
+          paymentSessionId: null,
+          updatedDate: Q.nowIso(),
+          updatedUser: Q.ACTOR
+        }
+      }
+    );
+    Q.collection("eventCheckoutBasketItems").deleteMany({
+      _id: `${PREFIX}:basket:waitlist`,
+      sourceId: WAITLIST_ID,
+      userId: NOVA_ID
+    });
+    for (const saved of savedUsers) restoreUserFields(saved);
+    Q.holdRule(BASKET_RULE, 1, `${CHECKPOINT}: one stable approval basket`, 3600);
+
+    const stateSet = {
+      controlFingerprint: controlFingerprint(),
+      controlFixturesRepairedAtIso: Q.nowIso()
+    };
+    for (const key of ["paymentReadySnapshots", "block4Snapshots", "block5Snapshots"]) {
+      if (Array.isArray(currentState[key])) {
+        stateSet[key] = withoutSeededWaitlistBasket(currentState[key]);
+      }
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: stateSet }
+    );
+
+    assertControlContracts();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "paid-verified",
+      repaired: {
+        waitlist: "pending-membership-without-basket",
+        cashOnly: "no-checkout-effects"
+      }
+    });
+  }
+
   function activeTargetBaskets(userId = NOVA_ID) {
     return Q.collection("eventCheckoutBasketItems").find({
       sourceId: TARGET_ID,
@@ -898,7 +1075,24 @@
       { _id: currentState._id },
       {
         $set: { phase: "payment-ready", paymentReadyRolledBackAtIso: Q.nowIso(), pendingEventVerifiedAtIso: Q.nowIso() },
-        $unset: { cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+        $unset: {
+          cancelledAtIso: "",
+          paidAtIso: "",
+          paidFingerprint: "",
+          block6Snapshots: "",
+          block6UserFields: "",
+          block6ChatMessageIds: "",
+          block6JoinNotificationIds: "",
+          block6JoinOutboxIds: "",
+          block6CapturedAtIso: "",
+          block6RolledBackAtIso: "",
+          destinationAtIso: "",
+          destinationFingerprint: "",
+          controlsVerifiedAtIso: "",
+          leaveRejoinedAtIso: "",
+          leaveRejoinedFingerprint: "",
+          verifiedAtIso: ""
+        }
       }
     );
     const restoredBaskets = activeTargetBaskets();
@@ -1051,7 +1245,23 @@
           block4CapturedAtIso: Q.text(currentState.block4CapturedAtIso) || Q.nowIso(),
           block4RolledBackAtIso: Q.nowIso()
         },
-        $unset: { paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+        $unset: {
+          paidAtIso: "",
+          paidFingerprint: "",
+          block6Snapshots: "",
+          block6UserFields: "",
+          block6ChatMessageIds: "",
+          block6JoinNotificationIds: "",
+          block6JoinOutboxIds: "",
+          block6CapturedAtIso: "",
+          block6RolledBackAtIso: "",
+          destinationAtIso: "",
+          destinationFingerprint: "",
+          controlsVerifiedAtIso: "",
+          leaveRejoinedAtIso: "",
+          leaveRejoinedFingerprint: "",
+          verifiedAtIso: ""
+        }
       }
     );
     assertBlock4Boundary(currentState);
@@ -1289,49 +1499,79 @@
       Q.fail("payment total deltas do not match the payment records' accounted amounts.");
     }
     assertControlsUnchanged(currentState);
-    const block5Snapshots = currentScopedSnapshots();
-    const block5UserFields = [CASEY_ID, NOVA_ID, RILEY_ID]
-      .map(userId => userFields(Q.ensureUser(userId)));
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "paid-verified",
       paidAtIso: Q.nowIso(),
-      paidFingerprint: current,
-      block5Snapshots,
-      block5UserFields,
-      block5CapturedAtIso: Q.nowIso()
+      paidFingerprint: current
     } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-verified", payments: 2, provider: "stripe", status: "authorized", membership: "3 / 6", slotsFull: 2, tickets: 0 });
   }
 
-  function rollbackBlock5() {
+  function eventChatMessages() {
+    return Q.collection("chatMessages")
+      .find({ chatId: TARGET_ID })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function novaJoinNotifications() {
+    return Q.collection("userNotifications")
+      .find({
+        sourceId: TARGET_ID,
+        kind: "event-member-joined",
+        "payload.memberUserId": NOVA_ID
+      })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function novaJoinOutboxItems() {
+    return Q.collection("notificationOutbox")
+      .find({
+        "payload.eventId": TARGET_ID,
+        "payload.type": "event-member-joined",
+        "payload.memberUserId": NOVA_ID
+      })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function documentIds(items) {
+    return (items || []).map(item => String(item._id)).sort();
+  }
+
+  function rollbackBlock6() {
     config();
     const currentState = state();
-    if (!Array.isArray(currentState.block5Snapshots)
-        || currentState.block5Snapshots.length === 0
-        || !Array.isArray(currentState.block5UserFields)
-        || currentState.block5UserFields.length === 0
-        || !currentState.paidFingerprint) {
-      Q.fail("the verified block-5 rollback checkpoint has not been captured.");
+    if (!Array.isArray(currentState.block6Snapshots)
+        || currentState.block6Snapshots.length === 0
+        || !Array.isArray(currentState.block6UserFields)
+        || currentState.block6UserFields.length === 0
+        || !currentState.destinationFingerprint) {
+      Q.fail("the verified step-66 rollback checkpoint has not been captured.");
     }
     clearCurrentEffects();
-    Q.restoreSnapshots(currentState.block5Snapshots);
-    for (const saved of currentState.block5UserFields) restoreUserFields(saved);
+    Q.restoreSnapshots(currentState.block6Snapshots);
+    for (const saved of currentState.block6UserFields) restoreUserFields(saved);
     const restored = paidSnapshot();
-    if (!Q.sameJson(restored, currentState.paidFingerprint)) {
-      Q.fail("block-5 rollback did not restore the exact verified two-payment boundary.");
+    if (!samePersistedSnapshot(restored, currentState.destinationFingerprint)
+        || !Q.sameJson(documentIds(eventChatMessages()), currentState.block6ChatMessageIds || [])
+        || !Q.sameJson(documentIds(novaJoinNotifications()), currentState.block6JoinNotificationIds || [])
+        || !Q.sameJson(documentIds(novaJoinOutboxItems()), currentState.block6JoinOutboxIds || [])) {
+      Q.fail("block-6 rollback did not restore the exact verified step-66 boundary.");
     }
     assertControlsUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: currentState._id },
       {
         $set: {
-          phase: "paid-verified",
-          block5RolledBackAtIso: Q.nowIso()
+          phase: "destination-verified",
+          block6RolledBackAtIso: Q.nowIso()
         },
         $unset: {
+          controlsVerifiedAtIso: "",
           leaveRejoinedAtIso: "",
           leaveRejoinedFingerprint: "",
-          destinationAtIso: "",
           verifiedAtIso: ""
         }
       }
@@ -1339,8 +1579,8 @@
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
-      phase: "paid-verified",
-      rollback: "block-5",
+      phase: "destination-verified",
+      rollback: "block-6-to-step-66",
       payments: 2,
       membership: "3 / 6",
       slotsFull: 2
@@ -1349,11 +1589,11 @@
 
   function verifyLeaveRejoined() {
     const currentState = state();
-    if (Q.text(currentState.phase) !== "paid-verified") {
-      Q.fail("leave/rejoin can only be verified from the paid block-5 boundary.");
+    if (Q.text(currentState.phase) !== "destination-verified") {
+      Q.fail("leave/rejoin can only be verified from the step-66 destination boundary.");
     }
     const current = paidSnapshot();
-    const originalPayments = currentState.paidFingerprint.payments || [];
+    const originalPayments = currentState.destinationFingerprint.payments || [];
     const originalNovaPayment = originalPayments.find(item => Q.text(item.userId) === NOVA_ID);
     const originalRileyPayment = originalPayments.find(item => Q.text(item.userId) === RILEY_ID);
     const currentNovaPayment = current.payments.find(item =>
@@ -1375,7 +1615,7 @@
         || Q.text(currentRileyPayment.slotSourceId) !== MORNING_SLOT_ID) {
       Q.fail("leave/rejoin did not preserve Riley and restore Nova through the original open authorization without a duplicate payment write.");
     }
-    const originalSucceeded = (currentState.paidFingerprint.baskets || []).filter(item =>
+    const originalSucceeded = (currentState.destinationFingerprint.baskets || []).filter(item =>
       item.reservationActive === false
       && item.pendingCounterTracked === false
       && Q.text(item.resultState) === "succeeded"
@@ -1423,6 +1663,46 @@
     if (Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID }) !== 0) {
       Q.fail("Ticketing Off leave/rejoin created an EventTicket.");
     }
+    const baselineChatIds = new Set(currentState.block6ChatMessageIds || []);
+    const newChatMessages = eventChatMessages().filter(item => !baselineChatIds.has(String(item._id)));
+    const newLeftMessages = newChatMessages.filter(item =>
+      Q.text(item.clientId) === "member-left"
+      && Q.text(item.text) === "Nova Social left the event.");
+    const newJoinedMessages = newChatMessages.filter(item =>
+      Q.text(item.clientId) === "member-joined"
+      && Q.text(item.text) === "Nova Social joined the event.");
+    if (newChatMessages.length !== 2 || newLeftMessages.length !== 1 || newJoinedMessages.length !== 1) {
+      Q.fail("leave/rejoin did not append exactly one Nova left and one Nova joined main-Event chat message.");
+    }
+    const baselineJoinNotificationIds = new Set(currentState.block6JoinNotificationIds || []);
+    const newJoinNotifications = novaJoinNotifications()
+      .filter(item => !baselineJoinNotificationIds.has(String(item._id)));
+    if (newJoinNotifications.length !== 2
+        || !Q.sameJson(sorted(newJoinNotifications.map(item => item.recipientUserId)), [CASEY_ID, RILEY_ID])
+        || newJoinNotifications.some(item => Q.text(item.payload && item.payload.membershipAction) !== "joined")) {
+      Q.fail("Nova rejoin did not create exactly one joined notification for Casey and Riley, excluding Nova.");
+    }
+    const baselineJoinOutboxIds = new Set(currentState.block6JoinOutboxIds || []);
+    const newJoinOutboxItems = novaJoinOutboxItems()
+      .filter(item => !baselineJoinOutboxIds.has(String(item._id)));
+    if (newJoinOutboxItems.length !== 1
+        || !Q.sameJson(sorted(newJoinOutboxItems[0].recipientUserIds), [CASEY_ID, RILEY_ID])) {
+      Q.fail("Nova rejoin did not persist one durable joined-notification intent for Casey and Riley.");
+    }
+    const baselineUserFields = new Map((currentState.block6UserFields || [])
+      .map(item => [Q.text(item.userId), item]));
+    const notificationCount = userId => Number((Q.ensureUser(userId).activities || {}).notifications || 0);
+    const baselineNotificationCount = userId => {
+      const saved = baselineUserFields.get(userId);
+      return Number(saved && saved.activities && saved.activities.present
+        ? (saved.activities.value || {}).notifications || 0
+        : 0);
+    };
+    if (notificationCount(CASEY_ID) !== baselineNotificationCount(CASEY_ID) + 2
+        || notificationCount(RILEY_ID) !== baselineNotificationCount(RILEY_ID) + 2
+        || notificationCount(NOVA_ID) !== baselineNotificationCount(NOVA_ID)) {
+      Q.fail("leave/rejoin notification counters do not match the one leave plus one join notification delivered to Casey and Riley.");
+    }
     assertControlsUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "leave-rejoined-verified",
@@ -1444,24 +1724,81 @@
 
   function verifyDestination() {
     const currentState = state();
-    if (Q.text(currentState.phase) !== "leave-rejoined-verified") Q.fail("destination can only be verified after leave/rejoin.");
+    if (Q.text(currentState.phase) !== "paid-verified") Q.fail("destination can only be verified after the paid boundary.");
     const current = paidSnapshot();
-    if (!Q.sameJson(current, currentState.leaveRejoinedFingerprint)) {
-      Q.fail("read-only destination checks changed the rejoined paid Event projection.");
+    if (!samePersistedSnapshot(current, currentState.paidFingerprint)) {
+      Q.fail("read-only destination checks changed the paid Event projection.");
     }
     assertControlsUnchanged(currentState);
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "destination-verified", destinationAtIso: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "destination-verified", persistedPayment: true, persistedMembership: true });
+    const block6Snapshots = currentScopedSnapshots();
+    const block6UserFields = [CASEY_ID, NOVA_ID, RILEY_ID]
+      .map(userId => userFields(Q.ensureUser(userId)));
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: {
+          phase: "destination-verified",
+          destinationAtIso: Q.nowIso(),
+          destinationFingerprint: current,
+          block6Snapshots,
+          block6UserFields,
+          block6ChatMessageIds: documentIds(eventChatMessages()),
+          block6JoinNotificationIds: documentIds(novaJoinNotifications()),
+          block6JoinOutboxIds: documentIds(novaJoinOutboxItems()),
+          block6CapturedAtIso: Q.nowIso()
+        },
+        $unset: {
+          block5Snapshots: "",
+          block5UserFields: "",
+          block5CapturedAtIso: "",
+          block5RolledBackAtIso: ""
+        }
+      }
+    );
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "destination-verified", checkpoint: "step-66", persistedPayment: true, persistedMembership: true });
+  }
+
+  function verifyControls() {
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "destination-verified") {
+      Q.fail("control verification requires the captured step-66 destination boundary.");
+    }
+    if (provider !== "none" || !providerConnected || requires3ds) {
+      Q.fail(`control simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
+    }
+    const current = paidSnapshot();
+    if (!samePersistedSnapshot(current, currentState.destinationFingerprint)) {
+      Q.fail("steps 67-74 changed the paid Event write model.");
+    }
+    assertControlContracts();
+    assertControlsUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: { controlsVerifiedAtIso: Q.nowIso() } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "destination-verified",
+      verifiedThroughStep: 74,
+      controls: {
+        free: "untouched",
+        approval: "pending-with-one-basket",
+        waitlist: "pending-without-basket",
+        cashOnly: "cancelled-without-effects",
+        adjacentPaid: "untouched"
+      }
+    });
   }
 
   function verifyTerminal() {
     const currentState = state();
-    if (Q.text(currentState.phase) !== "destination-verified") Q.fail("terminal verification requires destination-verified.");
+    if (Q.text(currentState.phase) !== "leave-rejoined-verified") Q.fail("terminal verification requires leave-rejoined-verified.");
     if (provider !== "none" || !providerConnected || requires3ds) {
       Q.fail(`terminal simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
     }
     const current = paidSnapshot();
-    if (!Q.sameJson(current, currentState.leaveRejoinedFingerprint)) {
+    if (!samePersistedSnapshot(current, currentState.leaveRejoinedFingerprint)) {
       Q.fail("reload/control reads changed the rejoined paid Event projection.");
     }
     const cashEffects = {
@@ -1498,13 +1835,15 @@
   if (command === "stage") stage();
   else if (command === "status") status();
   else if (command === "repair-card-artwork") repairCardArtwork();
+  else if (command === "repair-control-fixtures") repairControlFixtures();
   else if (command === "capture-payment-ready") capturePaymentReady();
   else if (command === "verify-pending-event") verifyPendingEvent();
   else if (command === "rollback-payment-ready") rollbackPaymentReady();
   else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "rollback-block-4") rollbackBlock4();
   else if (command === "verify-paid") verifyPaid();
-  else if (command === "rollback-block-5") rollbackBlock5();
+  else if (command === "rollback-block-6") rollbackBlock6();
+  else if (command === "verify-controls") verifyControls();
   else if (command === "verify-leave-rejoined") verifyLeaveRejoined();
   else if (command === "verify-destination") verifyDestination();
   else if (command === "verify") verifyTerminal();

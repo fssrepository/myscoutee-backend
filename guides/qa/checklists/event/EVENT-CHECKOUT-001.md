@@ -216,6 +216,12 @@ Begin only after Codex confirms this exact baseline:
     inactive baskets, accepted Nova and Riley memberships, both Slots full and
     no duplicate write.
 
+    This run also covered Nova leaving and rejoining the Evening Slot several
+    times while Riley's paid Morning booking remained unchanged. Treat that as
+    completed exploratory coverage inside this block; do not replay it as a
+    separate later block. The background audit must distinguish the extra
+    closed basket history from an active duplicate.
+
 ### 5. Verify where the successful Event checkout goes
 
 54. After Codex confirms `paid`, in Nova open `Activities → Events → Active
@@ -231,7 +237,8 @@ Begin only after Codex confirms this exact baseline:
     absent.
 58. Open `Payment summary` once. Confirm it is read-only and shows the exact
     Evening Slot, accepted policy, no Workshop add-on, final amount/currency,
-    Stripe provider, selected payment method and paid/recorded result.
+    Stripe provider, selected payment method and paid/recorded result. The
+    Stripe provider badge stays in the Payment block's top-right corner.
 59. Close and reopen `Payment summary`. It must show the same values and no
     loading loop, editable payment field or Pay button.
 60. In Riley, open the same read-only `Payment summary` and confirm it shows
@@ -252,6 +259,9 @@ Begin only after Codex confirms this exact baseline:
 
     `EVENT-CHECKOUT-001 destination ready: Active/All, two Payment summaries and 3/6 membership`
 
+    Wait for Codex to verify the persisted destination and capture the exact
+    step-66 rollback checkpoint.
+
 ### 6. Verify reload reconstruction and the action variants
 
 67. After Codex confirms the destination boundary, reload Nova exactly once.
@@ -264,15 +274,17 @@ Begin only after Codex confirms this exact baseline:
     state with `Waiting for approval`/`Cancel request` and no enabled `Payment`
     before Admin approval. Close without changing it.
 71. Open the staged **Waitlist** control. Confirm it shows `Waiting List` and
-    `Leave waitlist`, with payment locked while no place exists. Close without
-    changing it.
+    `Leave waitlist`, with payment locked while no place exists. `Continue
+    booking` and an active basket must be absent. Close without changing it.
 72. In **Ava**, select `Cash only`, save, and return to Nova's separate paid
-    Cash-only control. Advance it to payment review. Confirm the provider badge
-    says translated `Cash only`, the status says translated `Pay in cash`, and
-    there is no card selector. Cancel that checkout without recording payment.
+    Cash-only control. Because this is a plain non-slot Event, confirm its
+    checkout has no Basket/slot-selection panel. Advance it to payment review.
+    Confirm the provider badge says translated `Cash only`, the status says
+    translated `Pay in cash`, and there is no card selector. Select `Cancel
+    payment` and confirm it once; closing the popup alone is not cancellation.
 73. Confirm the adjacent paid Event and all Free/Approval/Waitlist controls
     remain unchanged.
-74. Report the terminal phrase:
+74. Report the control phrase:
 
     `EVENT-CHECKOUT-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
 
