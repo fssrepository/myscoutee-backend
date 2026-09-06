@@ -66,6 +66,9 @@ public class ActivityEventMapper {
         List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record, membersSnapshot);
         List<String> invitedMemberUserIds = resolveInvitedMemberUserIds(record, membersSnapshot);
         List<String> pendingRequestMemberUserIds = resolvePendingRequestMemberUserIds(record, membersSnapshot);
+        List<EventSlotOccurrenceDto> upcomingSlots = record.getUpcomingSlots() == null
+                ? new ArrayList<>()
+                : new ArrayList<>(record.getUpcomingSlots());
         int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
                 ? normalizeCount(record.getCapacityTotal())
                 : Math.max(0, membersSnapshot.capacityTotal());
@@ -107,7 +110,19 @@ public class ActivityEventMapper {
                 resolveEventType(record),
                 normalizeMode(record.getMode()),
                 record.getCurrentStage(),
+                Boolean.TRUE.equals(record.getTicketing()),
+                record.getPricing(),
+                Boolean.TRUE.equals(record.getPoliciesEnabled()),
+                record.getPolicies() == null ? new ArrayList<>() : new ArrayList<>(record.getPolicies()),
                 Boolean.TRUE.equals(record.getSlotsEnabled()),
+                record.getSlotTemplates() == null ? new ArrayList<>() : new ArrayList<>(record.getSlotTemplates()),
+                upcomingSlots.isEmpty() ? null : upcomingSlots.get(0),
+                upcomingSlots,
+                record.getSubEventsEnabled() == null || Boolean.TRUE.equals(record.getSubEventsEnabled()),
+                record.getSubEventDefinitions() == null
+                        ? new ArrayList<>()
+                        : new ArrayList<>(record.getSubEventDefinitions()),
+                SubEventItemMapper.toDtoList(record.getSubEvents()),
                 acceptedMembers,
                 pendingMembers,
                 acceptedMemberUserIds,

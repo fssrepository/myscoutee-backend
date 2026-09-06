@@ -164,7 +164,6 @@
       ownerUserId: CASEY_ID,
       organizerUserId: CASEY_ID,
       status: "A",
-      published: true,
       isTrashed: false,
       admins: [CASEY_ID],
       avatar: "CB",
@@ -619,7 +618,6 @@
         id: Q.text(target.sourceId),
         title: Q.text(target.title),
         status: Q.text(target.status),
-        published: target.published === true,
         ticketing: target.ticketing === true,
         approvalRequired: target.approvalRequired === true,
         capacity: `${Number(target.acceptedMembers || 0)} / ${Number(target.capacityTotal || 0)}`,
@@ -652,7 +650,6 @@
     if (!target
         || target.title !== "QA EVENT-CHECKOUT-001 Paid"
         || target.status !== "A"
-        || !target.published
         || target.ticketing
         || target.approvalRequired
         || target.capacity !== "1 / 6"

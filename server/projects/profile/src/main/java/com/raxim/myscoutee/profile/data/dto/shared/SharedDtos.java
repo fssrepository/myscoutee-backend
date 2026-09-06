@@ -578,6 +578,7 @@ public final class SharedDtos {
     }
 
     public record EventSlotTemplateDto(
+            @Field("id")
             String id,
             String startAt,
             String overrideDate,
@@ -586,6 +587,7 @@ public final class SharedDtos {
     }
 
     public record EventSlotOccurrenceDto(
+            @Field("id")
             String id,
             String parentEventId,
             String slotTemplateId,
@@ -827,6 +829,7 @@ public final class SharedDtos {
     }
 
     public record PolicyItemDto(
+            @Field("id")
             String id,
             String title,
             String description,
