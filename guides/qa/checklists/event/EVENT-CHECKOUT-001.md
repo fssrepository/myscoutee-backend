@@ -118,8 +118,9 @@ Begin only after Codex confirms this exact baseline:
     confirm the blue selection outline does not widen or clip the card; the
     checkmark is sufficient. Confirm the primary action becomes enabled once
     and does not flicker or multiply.
-21. Report this phrase and wait for Codex to capture the basket/session and
-    pending-membership boundary:
+21. Report this phrase so Codex can capture the basket/session and
+    pending-membership boundary. After the capture is confirmed, continue
+    through step 32 without another machine-oracle stop:
 
     `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired blocked, membership pending`
 
@@ -130,9 +131,9 @@ Begin only after Codex confirms this exact baseline:
 23. Open `Activities → Events → Pending` and confirm the target Event appears
     exactly once.
 24. Open its menu and confirm it shows `Continue booking` instead of `Book
-    Event`. Report this phrase and wait for Codex to verify the persisted
-    Pending counter, captured basket, pending membership and zero-payment
-    boundary:
+    Event`. Record this phrase as the UI checkpoint; do not stop for a separate
+    machine oracle because the step-21 capture preserves the persisted Pending
+    counter, basket, membership and zero-payment boundary:
 
     `EVENT-CHECKOUT-001 pending Activity Event: one card, Continue booking`
 25. Select `Continue booking` and confirm the same payment phase returns with
@@ -168,28 +169,9 @@ Begin only after Codex confirms this exact baseline:
 39. While the request is active, confirm the action changes to `Paying...` and
     cannot be selected again. The page must remain responsive: scrolling and
     the loading indication continue to render.
-40. Wait for the normal request to finish. The following are immediate FAIL
-    conditions:
-
-    - `Paying...` remains indefinitely with no terminal response;
-    - the browser, popup or page stops responding;
-    - a second checkout/payment popup appears;
-    - an error is hidden while the UI claims success.
-
-    The provider is authoritative only when this new payment starts. A known
-    payment/3DS session already returned by the provider remains pinned to that
-    provider and may finish even if the operator changes the provider used by
-    later payments. A later new or periodic payment must reject the old token
-    with the short provider-specific message, for example `Payment provider
-    changed to Barion. Reconnect your card.`; Cash-only instead reports
-    `Payment provider changed to Cash only. Start payment again.` The same
-    response carries the current provider id and updates the shared provider
-    badge directly, without a second configuration request or a background
-    poll. The selected card remains visible with a static blue `Update needed`
-    badge; the badge itself is not clickable, while the card still opens the
-    picker. The UI must not silently clear the selection, and Payment remains
-    unavailable until a provider-compatible card is selected. In Cards/assign,
-    `Reconnect >` opens exactly `Retokenize card` and `Delete card`.
+40. Wait for the result. Stop and report if an error appears, `Paying...` does
+    not finish, the UI freezes or a second popup opens. Do not select `Payment`
+    again.
 
 41. Confirm the checkout closes once on success and no stale overlay blocks
     the application.

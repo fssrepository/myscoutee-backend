@@ -2949,7 +2949,7 @@ Stable user guide:
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
-Status: **IN PROGRESS — PAYMENT READY** (2026-09-06).
+Status: **IN PROGRESS — CANCELLED VERIFIED** (2026-09-06).
 
 Stable user guide:
 [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
@@ -2980,15 +2980,16 @@ action.
 
 - On the fresh paid Event, Slot selection and every required policy gate the
   first review action. A paid optional item changes the displayed total once.
-  `Join` confirms the basket and opens the Stripe payment phase; it is not yet
-  membership or payment success.
+  `Join` confirms the basket, persists a pending membership and opens the
+  Stripe payment phase; it is not yet accepted membership or payment success.
 - Close the payment phase once without paying. The basket icon and Event
   Explore card must expose `Continue booking`. Reopen in place and once after
   a clean reload; both reconstructions must use the same active basket/session
-  identity and amount without creating membership, payment or counters.
+  identity and amount without duplicating membership, payment or counters.
 - Exercise `Cancel payment` from that pre-payment boundary. The current basket
-  becomes one closed audit, the card returns to `Book Event`, and no
-  membership, Activity Events row, chat, ticket or approved payment exists.
+  becomes one closed audit, the pending membership is suppressed, its Pending
+  counter contribution is removed, the card returns to `Book Event`, and no
+  current participation, chat, ticket or approved payment exists.
 - Start one fresh attempt, return to the payment phase and click `Payment`
   exactly once. While the request is active the action changes to `Paying...`
   and is disabled; the rest of the application remains responsive. The
@@ -3034,8 +3035,13 @@ action.
 - Payment-ready savepoint (2026-09-06 06:12 CEST): after the user-controlled
   steps through 21, the versioned `capture-payment-ready` oracle passed with
   one active `4900 HUF` basket containing two items, exactly zero payments and
-  Nova's target membership persisted as `pending`. The next manual boundary is
-  the Pending smartlist and `Continue booking` check in steps 22–24.
+  Nova's target membership persisted as `pending`.
+- Cancelled savepoint (2026-09-06 06:17 CEST): the preserved payment-ready
+  snapshot proved Event counters `all=3`, `pending=3`, the two-item basket,
+  pending membership and zero payment at step 21. The current step-32 oracle
+  then passed with those two basket items closed, the former pending membership
+  suppressed, zero payments and zero tickets. The next boundary is the fresh
+  successful Stripe attempt beginning at step 33.
 
 ## Event ticketing checkpoints
 

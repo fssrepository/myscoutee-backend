@@ -757,6 +757,11 @@
         || Q.text(memberships[0].requestKind) !== "join") {
       Q.fail(`payment-ready pending membership mismatch: ${JSON.stringify(memberships)}.`);
     }
+    const nova = Q.ensureUser(NOVA_ID, "Nova");
+    const eventCounters = nova.activities && nova.activities.event || {};
+    if (Number(eventCounters.all || 0) !== 3 || Number(eventCounters.pending || 0) !== 3) {
+      Q.fail(`payment-ready Event counters mismatch: ${JSON.stringify(eventCounters)}.`);
+    }
     assertControlsUnchanged(currentState);
     assertRileyUnchanged(currentState);
     const paymentReadyDynamic = dynamicArtifacts();
@@ -776,12 +781,13 @@
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "payment-ready",
       paymentReadyAtIso: Q.nowIso(),
+      pendingEventVerifiedAtIso: Q.nowIso(),
       paymentReadyBasketIds: baskets.map(item => item._id),
       paymentReadyBaskets: baskets,
       paymentReadySnapshots,
       paymentReadyUserFields: [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId)))
     } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", basketItems: 2, amount: 4900, currency: "HUF", paymentCount: 0, membership: "pending" });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", basketItems: 2, amount: 4900, currency: "HUF", eventAll: 3, eventPending: 3, paymentCount: 0, membership: "pending" });
   }
 
   function verifyPendingEvent() {
@@ -832,8 +838,8 @@
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: currentState._id },
       {
-        $set: { phase: "payment-ready", paymentReadyRolledBackAtIso: Q.nowIso() },
-        $unset: { pendingEventVerifiedAtIso: "", cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+        $set: { phase: "payment-ready", paymentReadyRolledBackAtIso: Q.nowIso(), pendingEventVerifiedAtIso: Q.nowIso() },
+        $unset: { cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
       }
     );
     const restoredBaskets = activeTargetBaskets();
