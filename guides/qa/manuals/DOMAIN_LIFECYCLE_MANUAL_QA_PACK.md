@@ -3000,7 +3000,8 @@ action.
   both Slots to be full and the fresh-booking/Continue action to disappear for
   both participants.
 - The assign surface keeps expired and provider-mismatched cards visible but
-  unselectable. Both retain their artwork beneath the same white overlay. The
+  unselectable, ordered after selectable cards as `selectable -> Reconnect ->
+  Expired`. Both retain their artwork beneath the same white overlay. The
   provider-mismatched card exposes `Retokenize >` with Retokenize/Delete while
   keeping the checkout open. Provider authority is checked before a new
   payment starts; an already identified in-flight payment/3DS session stays

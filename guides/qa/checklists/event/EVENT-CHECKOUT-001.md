@@ -170,7 +170,8 @@ Begin only after Codex confirms this exact baseline:
     expected for the selected Slot/add-on combination.
 36. Select `Join` exactly once to enter the payment phase.
 37. Confirm the Stripe badge, selected active card, Evening Slot and the new
-    exact total are shown.
+    exact total are shown. In the card selector, selectable cards come first,
+    followed by `Reconnect` cards and then `Expired` cards.
 38. Select `Payment` **exactly once**.
 39. While the request is active, confirm the action changes to `Paying...` and
     cannot be selected again. The page must remain responsive: scrolling and

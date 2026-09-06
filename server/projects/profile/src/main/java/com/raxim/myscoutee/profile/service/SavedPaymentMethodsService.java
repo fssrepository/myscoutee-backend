@@ -74,7 +74,12 @@ public class SavedPaymentMethodsService {
     public synchronized SavedPaymentMethodsPageDto queryPage(String userId, Integer page, Integer size) {
         String ownerId = requiredId(userId, "Current user");
         reconcilePendingRegistrations(ownerId);
-        List<SavedPaymentMethod> all = visibleMethods(ownerId);
+        PaymentSimulatorRegistrationClient.GatewayConfiguration gatewayConfiguration =
+                currentDemoGatewayConfiguration();
+        String currentProvider = currentDemoProvider(gatewayConfiguration);
+        List<SavedPaymentMethod> all = orderedVisibleMethods(
+                visibleMethods(ownerId),
+                currentProvider);
         int pageSize = Math.min(MAX_ACTIVE_PAYMENT_METHODS, Math.max(1, size == null ? MAX_ACTIVE_PAYMENT_METHODS : size));
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
@@ -84,8 +89,6 @@ public class SavedPaymentMethodsService {
                 .stream()
                 .findFirst()
                 .orElse(null);
-        PaymentSimulatorRegistrationClient.GatewayConfiguration gatewayConfiguration =
-                currentDemoGatewayConfiguration();
         return new SavedPaymentMethodsPageDto(
                 all.subList(from, to).stream().map(this::toDto).toList(),
                 all.size(),
@@ -94,7 +97,7 @@ public class SavedPaymentMethodsService {
                         && activeDemoProviderAllowsRegistration(gatewayConfiguration)
                         && pending == null,
                 pending == null ? null : toRegistrationDto(pending, null),
-                currentDemoProvider(gatewayConfiguration));
+                currentProvider);
     }
 
     public synchronized PaymentMethodRegistrationDto beginRegistration(
@@ -424,6 +427,36 @@ public class SavedPaymentMethodsService {
         return paymentMethodsRepository.findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
                 userId,
                 List.of(ACTIVE, "expired"));
+    }
+
+    private List<SavedPaymentMethod> orderedVisibleMethods(
+            List<SavedPaymentMethod> methods,
+            String currentProvider) {
+        return methods.stream()
+                .sorted(Comparator
+                        .comparingInt((SavedPaymentMethod method) -> paymentMethodDisplayRank(
+                                method,
+                                currentProvider))
+                        .thenComparing(
+                                method -> safeText(method.getCreatedAtIso()),
+                                Comparator.reverseOrder())
+                        .thenComparing(method -> safeText(method.getId())))
+                .toList();
+    }
+
+    private int paymentMethodDisplayRank(
+            SavedPaymentMethod method,
+            String currentProvider) {
+        if (method == null
+                || "expired".equals(safeText(method.getStatus()).toLowerCase(Locale.ROOT))
+                || isExpired(method)) {
+            return 2;
+        }
+        String provider = safeText(method.getProvider()).toLowerCase(Locale.ROOT);
+        return StringUtils.hasText(currentProvider)
+                && !currentProvider.equals(provider)
+                        ? 1
+                        : 0;
     }
 
     private Duration effectiveRegistrationTtl() {

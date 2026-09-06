@@ -135,4 +135,54 @@ class SavedPaymentMethodsServiceTest {
         assertThat(stripePage.canAdd()).isTrue();
         assertThat(stripePage.currentProvider()).isEqualTo("stripe");
     }
+
+    @Test
+    void cardsAreOrderedAsSelectableThenReconnectThenExpired() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
+        PaymentMethodRegistrationsRepository registrations = mock(PaymentMethodRegistrationsRepository.class);
+        PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
+        SavedPaymentMethod expired = paymentMethod("expired", "stripe", "expired", 202001, "2026-09-06T00:00:00Z");
+        SavedPaymentMethod reconnect = paymentMethod("reconnect", "barion", "active", 202912, "2026-09-06T00:00:00Z");
+        SavedPaymentMethod selectable = paymentMethod("selectable", "stripe", "active", 202912, "2026-09-06T00:00:00Z");
+        when(simulator.isEnabled()).thenReturn(true);
+        when(simulator.configuration()).thenReturn(
+                new PaymentSimulatorRegistrationClient.GatewayConfiguration(
+                        "stripe", true, true, "sk_test_generated"));
+        when(registrations.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "pending"))
+                .thenReturn(List.of());
+        when(methods.findByUserIdAndStatusInOrderByCreatedAtIsoDesc(
+                "user-1", List.of("active", "expired")))
+                .thenReturn(List.of(expired, reconnect, selectable));
+        when(methods.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "active"))
+                .thenReturn(List.of(reconnect, selectable));
+
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                methods,
+                registrations,
+                mock(PaymentsRepository.class),
+                simulator,
+                mock(DeploymentPaymentProviderResolver.class),
+                mock(UsersRepository.class));
+
+        assertThat(service.queryPage("user-1", 0, 6).items())
+                .extracting(item -> item.id())
+                .containsExactly("selectable", "reconnect", "expired");
+    }
+
+    private SavedPaymentMethod paymentMethod(
+            String id,
+            String provider,
+            String status,
+            int expiryKey,
+            String createdAtIso) {
+        SavedPaymentMethod method = new SavedPaymentMethod();
+        method.setId(id);
+        method.setUserId("user-1");
+        method.setProvider(provider);
+        method.setStatus(status);
+        method.setExpiryKey(expiryKey);
+        method.setCreatedAtIso(createdAtIso);
+        return method;
+    }
 }
