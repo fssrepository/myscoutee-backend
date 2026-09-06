@@ -2949,7 +2949,7 @@ Stable user guide:
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
-Status: **PREPARED / NOT STAGED / NOT RUN**.
+Status: **BASELINE READY / NOT RUN** (2026-09-06).
 
 Stable user guide:
 [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
@@ -3028,6 +3028,9 @@ action.
   `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
   execute this row until that harness and its isolated Casey/Nova browser
   sessions exist.
+- The versioned fixture is staged at `baseline-ready`: the target and controls,
+  Nova's Stripe/Barion/expired cards in both the backend and simulator, the
+  exact-reset snapshot and three isolated Casey/Nova/Ava windows are ready.
 
 ## Event ticketing checkpoints
 

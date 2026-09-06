@@ -227,6 +227,14 @@ Usage:
   bash manual-qa-checkpoints.sh verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh reset payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh stage event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh status event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh capture-payment-ready event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-cancelled event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-paid event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-destination event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh reset event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
@@ -308,6 +316,49 @@ print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
   actual="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("payment_methods", -1))' <<<"${response}")"
   [ "${actual}" = "${expected}" ] \
     || fail "Payment simulator loaded ${actual} payment-card fixtures; expected ${expected}."
+}
+
+replace_payment_simulator_checkout_card_fixtures() {
+  local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
+  local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
+  local target_db="${MANUAL_QA_DB:-demo_db}"
+  local fixture_file="${SCRIPT_DIR}/../../conf/mongodb/${target_db}/savedPaymentMethods.json"
+  local payload response expected actual
+  [ -f "${fixture_file}" ] || fail "Missing payment-card fixture ${fixture_file}."
+  payload="$(python3 -c '
+import json,sys
+cards=json.load(open(sys.argv[1], encoding="utf-8"))
+cards.extend([
+  {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
+  {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_nova_barion_4444","brand":"Mastercard","last4":"4444","expiryMonth":9,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
+  {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_expired_0008","brand":"Visa","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"}
+])
+fixtures=[]
+for card in cards:
+    token=str(card.get("providerPaymentMethodRef", "")).strip()
+    if not token:
+        raise SystemExit("saved payment-method fixture is missing providerPaymentMethodRef")
+    fixtures.append({
+        "provider": str(card.get("provider", "")).strip(),
+        "provider_token": token,
+        "brand": str(card.get("brand", "")).strip(),
+        "last4": str(card.get("last4", "")).strip(),
+        "expiry_month": card.get("expiryMonth"),
+        "expiry_year": card.get("expiryYear"),
+        "cardholder_name": str(card.get("cardholderName", "")).strip()
+    })
+print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
+' "${fixture_file}")"
+  expected="$(python3 -c 'import json,sys; print(len(json.load(sys.stdin)["payment_methods"]))' <<<"${payload}")"
+  response="$(curl --fail --silent --show-error -X PUT \
+    -H "Authorization: Bearer ${api_key}" \
+    -H 'Content-Type: application/json' \
+    --data-binary "${payload}" \
+    "${base_url}/myscoutee/v1/test-fixtures/payment-methods")" \
+    || fail "Could not load the checkout payment-card fixtures into the already-running payment simulator."
+  actual="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("payment_methods", -1))' <<<"${response}")"
+  [ "${actual}" = "${expected}" ] \
+    || fail "Payment simulator loaded ${actual} checkout card fixtures; expected ${expected}."
 }
 
 set_payment_simulator_cash_only() {
@@ -413,10 +464,11 @@ run_scenario() {
       fi
       ;;
     payment-ui) scenario_script="${SCRIPT_DIR}/scenarios/payment-ui-checkpoints.js" ;;
+    event-checkout) scenario_script="${SCRIPT_DIR}/scenarios/event-checkout-checkpoints.js" ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
-  if [ "${scenario}" = "payment-ui" ]; then
+  if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ]; then
     read -r payment_provider payment_requires_3ds payment_provider_connected < <(payment_simulator_state)
   fi
 
@@ -677,6 +729,26 @@ case "${scenario}:${command}" in
   payment-ui:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_card_fixtures
+    set_payment_simulator_cash_only
+    ;;
+  event-checkout:stage)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_checkout_card_fixtures
+    set_payment_simulator_cash_only
+    run_scenario "status" "${scenario}" 30 "$3"
+    ;;
+  event-checkout:status|event-checkout:capture-payment-ready|event-checkout:verify-cancelled|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-checkout:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     replace_payment_simulator_card_fixtures
     set_payment_simulator_cash_only

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 01:53 CEST
+Updated: 2026-09-06 03:39 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -23,6 +23,8 @@ file first, then open only the linked active checkpoint section.
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared side-menu Payment journey:
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
+- Stable user-facing click guide for the active Event checkout journey:
+  [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -42,6 +44,8 @@ file first, then open only the linked active checkpoint section.
   [`asset-member-lifecycle-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-member-lifecycle-checkpoints.js)
 - Isolated side-menu Payment history, registration and expired-card fixture:
   [`payment-ui-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/payment-ui-checkpoints.js)
+- Isolated Event checkout, control and provider-card fixture:
+  [`event-checkout-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-checkout-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -71,22 +75,22 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
-checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; a fresh read-only resume gate proved the exact payment-ui baseline; no manual step has run
-next_replay_boundary: do not build, install, stage, or relaunch; the user starts checklist step 1 in the running Ava/Alex sessions
-fixture_phase: read-only status at `2026-09-06 01:50 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false, with the exact three cards, four history rows, totals, expiry notification, and zero registrations
-browser_phase: at `2026-09-06 01:53 CEST` the checkpoint launcher reported the configured Ava demo-payment Admin session and Alex Payment member session ready in two isolated side-by-side windows; no manual QA step has run. The user exclusively controls browser navigation and clicks. Canonical key-authenticated loopback SSH forwards remain active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`
+checkpoint: EVENT-CHECKOUT-001 — BASELINE READY / NOT RUN
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-checkout-checkpoint
+checklist: ../checklists/event/EVENT-CHECKOUT-001.md
+substage: the final Event testcase is staged at its fresh paid-entry baseline; no manual step has run
+next_replay_boundary: do not build, install, stage, reset or relaunch; Ava selects connected Stripe with 3DS Off, then Nova starts checklist step 1
+fixture_phase: read-only status at `2026-09-06 03:39 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false; the paid target is 1/6 with two named Slots, one required policy and one 1700 HUF add-on; Nova has zero target membership/basket/payment/ticket, while all five controls and three provider-card fixtures are exact
+browser_phase: at `2026-09-06 03:39 CEST` the checkpoint launcher reported the configured Casey, Nova and Ava sessions ready in three isolated side-by-side windows; no manual QA step has run. The user exclusively controls browser navigation and clicks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
-queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: do not rebuild, reinstall, stage, or relaunch; preserve the proven baseline and running Ava/Alex sessions while the user begins checklist step 1
-actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
-pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
-provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
+ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 is the active baseline-ready final Event testcase
+queued_next: EVENT-CHECKOUT-001
+required_resume: preserve the staged fixture and three running windows; Ava selects Stripe with 3DS Off, then Nova begins checklist step 1
+actors: Nova performs checkout; Casey performs only the final membership check; Ava changes only the demo payment provider at the declared boundaries
+pending_machine_oracle: capture-payment-ready, verify-cancelled, verify-paid, verify-destination and terminal verify during this pair-QA run
+provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: implementation preparation plus the fresh exact payment-ui baseline proof after the deployment refresh. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+last_completed: PAYMENT-METHODS-HISTORY-001 PASS/CLOSED, including the accepted bounded cancellation-copy correction and exact reset
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -141,15 +145,10 @@ Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
 Their stable guides have been expanded for these combinations; their full
 manual runs remain for later pair QA.
 
-`PAYMENT-METHODS-HISTORY-001` is the one new Core side-menu journey and the
-selected next testcase. Its versioned fixture, exact reset, savepoint oracles
-and Ava/Alex browser definition are prepared. Its baseline was proven earlier,
-but the package refresh reset the runtime fixture; the current read-only state
-is `not-staged` with the simulator on Stripe. The independent
-real scheduler smoke already proved active expired card -> `expired` -> one
-outbox -> one in-app notification, including duplicate suppression. It also
-exposed and repaired the null-version duplicate-ID write by replacing the
-read-modify-save expiry transition with one guarded atomic update.
+`PAYMENT-METHODS-HISTORY-001` is PASS/CLOSED. `EVENT-CHECKOUT-001` is the
+selected final Event testcase; its versioned fixture, exact reset, savepoint
+oracles, provider-card mirror and Casey/Nova/Ava browser definition are staged
+at `baseline-ready`.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Core Content row and now has a stable click guide. It creates
@@ -233,12 +232,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Do not rebuild, reinstall, stage, or relaunch. The read-only resume gate proved
-`phase=baseline-ready` with simulator provider `none` (`Cash only`) and 3DS Off,
-and the configured Ava/Alex sessions are running. The user begins at checklist
-step 1. The first stop phrase is
-`PAYMENT-METHODS-HISTORY-001 stripe registered: one tokenized provider card`.
-The fixture is exact-reset capable and no manual Payment verdict exists yet.
+Do not rebuild, reinstall, stage, reset or relaunch. The read-only resume gate
+proved `phase=baseline-ready` with simulator provider `none` (`Cash only`) and
+3DS Off, and the configured Casey/Nova/Ava sessions are running. In Ava select
+connected Stripe with 3DS Off, then begin checklist step 1 in Nova. The first
+stop phrase is `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired
+blocked, no membership yet`.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
