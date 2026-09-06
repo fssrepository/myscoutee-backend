@@ -234,6 +234,8 @@ Usage:
   bash manual-qa-checkpoints.sh verify-cancelled event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-block-4 event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-paid event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-block-5 event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-leave-rejoined event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-destination event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh reset event-checkout EVENT-CHECKOUT-001
@@ -744,11 +746,11 @@ case "${scenario}:${command}" in
     set_payment_simulator_cash_only
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify)
+  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:rollback-block-5|event-checkout:verify-leave-rejoined|event-checkout:verify-destination|event-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
-    if [ "${command}" = "rollback-block-4" ]; then
+    if [ "${command}" = "rollback-block-4" ] || [ "${command}" = "rollback-block-5" ]; then
       replace_payment_simulator_checkout_card_fixtures
     fi
     ;;

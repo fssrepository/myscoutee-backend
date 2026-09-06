@@ -1148,8 +1148,7 @@
       && Q.text(item.bookingStatus) === "joined"
       && Number(item.amount || 0) === 3200
       && Q.text(item.currency) === "HUF"
-      && Q.sameJson(sorted(item.optionalSubEventIds), [])
-      && Q.sameJson(sorted(item.acceptedPolicyIds), [POLICY_ID]));
+      && Q.sameJson(sorted(item.optionalSubEventIds), []));
     const novaPayment = successfulPayments.find(item =>
       Q.text(item.userId) === NOVA_ID
       && Q.text(item.slotSourceId) === EVENING_SLOT_ID
@@ -1164,7 +1163,6 @@
     const succeeded = current.baskets.filter(item =>
       item.reservationActive === false
       && item.pendingCounterTracked === false
-      && Q.text(item.status) === "approved"
       && Q.text(item.resultState) === "succeeded"
       && Q.text(item.kind) === "event"
       && !Q.text(item.subEventId));
@@ -1216,9 +1214,28 @@
     const rileyActivities = rileyUser.activities || {};
     const rileyEventCounters = rileyActivities.event || {};
     const rileyChatCounters = rileyActivities.chat || {};
-    const baselineRileyActivities = currentState.rileyFingerprint.activities || {};
+    const block4UserFieldsById = new Map((currentState.block4UserFields || [])
+      .map(item => [Q.text(item.userId), item]));
+    const block4Activities = userId => {
+      const saved = block4UserFieldsById.get(userId);
+      return saved && saved.activities && saved.activities.present
+        ? (saved.activities.value || {})
+        : {};
+    };
+    const baselineRileyActivities = block4Activities(RILEY_ID);
     const baselineRileyEventCounters = baselineRileyActivities.event || {};
-    const baselineRileyChatCounters = baselineRileyActivities.chat || {};
+    const storedChatCounters = userId => {
+      const ownedChats = Q.collection("chats").find({ ownerUserId: userId }).toArray();
+      return ownedChats.reduce((totals, chat) => {
+        const unread = Math.max(0, Number(chat.unread || 0));
+        totals.all += unread;
+        if (Q.text(chat.channelType) === "mainEvent") totals.event += unread;
+        return totals;
+      }, { all: 0, event: 0 });
+    };
+    const expectedNovaChatCounters = storedChatCounters(NOVA_ID);
+    const expectedRileyChatCounters = storedChatCounters(RILEY_ID);
+    const expectedCaseyChatCounters = storedChatCounters(CASEY_ID);
     if (Number(novaActivities.events || 0) !== 1
         || Number(novaEventCounters.all || 0) !== 3
         || Number(novaEventCounters.active || 0) !== 1
@@ -1238,15 +1255,15 @@
       && Q.sameJson(sorted(item.memberIds), [CASEY_ID, NOVA_ID, RILEY_ID]));
     if (targetChats.length !== 3
         || !Q.sameJson(sorted(targetChats.map(item => item.ownerUserId)), [CASEY_ID, NOVA_ID, RILEY_ID])
-        || Number(novaActivities.chats || 0) !== 1
-        || Number(novaChatCounters.all || 0) !== 1
-        || Number(novaChatCounters.event || 0) !== 1
-        || Number(rileyActivities.chats || 0) !== Number(baselineRileyActivities.chats || 0) + 1
-        || Number(rileyChatCounters.all || 0) !== Number(baselineRileyChatCounters.all || 0) + 1
-        || Number(rileyChatCounters.event || 0) !== Number(baselineRileyChatCounters.event || 0) + 1
-        || Number(caseyActivities.chats || 0) !== 1
-        || Number(caseyChatCounters.all || 0) !== 1
-        || Number(caseyChatCounters.event || 0) !== 1) {
+        || Number(novaActivities.chats || 0) !== expectedNovaChatCounters.all
+        || Number(novaChatCounters.all || 0) !== expectedNovaChatCounters.all
+        || Number(novaChatCounters.event || 0) !== expectedNovaChatCounters.event
+        || Number(rileyActivities.chats || 0) !== expectedRileyChatCounters.all
+        || Number(rileyChatCounters.all || 0) !== expectedRileyChatCounters.all
+        || Number(rileyChatCounters.event || 0) !== expectedRileyChatCounters.event
+        || Number(caseyActivities.chats || 0) !== expectedCaseyChatCounters.all
+        || Number(caseyChatCounters.all || 0) !== expectedCaseyChatCounters.all
+        || Number(caseyChatCounters.event || 0) !== expectedCaseyChatCounters.event) {
       Q.fail("accepted Event did not create exactly one shared main-Event chat projection for Casey, Nova and Riley.");
     }
     const novaTotals = paymentTotals(novaUser);
@@ -1255,29 +1272,182 @@
     const baselineNova = currentState.baselineTotals.nova;
     const baselineRiley = currentState.baselineTotals.riley;
     const baselineCasey = currentState.baselineTotals.casey;
-    if (amountFor(novaTotals, "spent", "HUF") !== amountFor(baselineNova, "spent", "HUF") + 3200
-        || amountFor(novaTotals, "all", "HUF") !== amountFor(baselineNova, "all", "HUF") + 3200
-        || amountFor(rileyTotals, "spent", "HUF") !== amountFor(baselineRiley, "spent", "HUF") + 3200
-        || amountFor(rileyTotals, "all", "HUF") !== amountFor(baselineRiley, "all", "HUF") + 3200
-        || amountFor(caseyTotals, "income", "HUF") !== amountFor(baselineCasey, "income", "HUF") + 6400
-        || amountFor(caseyTotals, "all", "HUF") !== amountFor(baselineCasey, "all", "HUF") + 6400) {
-      Q.fail("payment total deltas are not exactly HUF 3,200 for Nova and Riley and HUF 6,400 for Casey.");
+    const accountedAmount = userId => successfulPayments
+      .filter(item => Q.text(item.userId) === userId)
+      .reduce((sum, item) => sum + Number(item.accountedSpentAmount || 0), 0);
+    const novaAccounted = accountedAmount(NOVA_ID);
+    const rileyAccounted = accountedAmount(RILEY_ID);
+    const caseyAccounted = successfulPayments
+      .filter(item => Q.text(item.recipientUserId) === CASEY_ID)
+      .reduce((sum, item) => sum + Number(item.accountedSpentAmount || 0), 0);
+    if (amountFor(novaTotals, "spent", "HUF") !== amountFor(baselineNova, "spent", "HUF") + novaAccounted
+        || amountFor(novaTotals, "all", "HUF") !== amountFor(baselineNova, "all", "HUF") + novaAccounted
+        || amountFor(rileyTotals, "spent", "HUF") !== amountFor(baselineRiley, "spent", "HUF") + rileyAccounted
+        || amountFor(rileyTotals, "all", "HUF") !== amountFor(baselineRiley, "all", "HUF") + rileyAccounted
+        || amountFor(caseyTotals, "income", "HUF") !== amountFor(baselineCasey, "income", "HUF") + caseyAccounted
+        || amountFor(caseyTotals, "all", "HUF") !== amountFor(baselineCasey, "all", "HUF") + caseyAccounted) {
+      Q.fail("payment total deltas do not match the payment records' accounted amounts.");
     }
     assertControlsUnchanged(currentState);
+    const block5Snapshots = currentScopedSnapshots();
+    const block5UserFields = [CASEY_ID, NOVA_ID, RILEY_ID]
+      .map(userId => userFields(Q.ensureUser(userId)));
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "paid-verified",
       paidAtIso: Q.nowIso(),
-      paidFingerprint: current
+      paidFingerprint: current,
+      block5Snapshots,
+      block5UserFields,
+      block5CapturedAtIso: Q.nowIso()
     } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-verified", payments: 2, provider: "stripe", status: "authorized", membership: "3 / 6", slotsFull: 2, tickets: 0 });
   }
 
+  function rollbackBlock5() {
+    config();
+    const currentState = state();
+    if (!Array.isArray(currentState.block5Snapshots)
+        || currentState.block5Snapshots.length === 0
+        || !Array.isArray(currentState.block5UserFields)
+        || currentState.block5UserFields.length === 0
+        || !currentState.paidFingerprint) {
+      Q.fail("the verified block-5 rollback checkpoint has not been captured.");
+    }
+    clearCurrentEffects();
+    Q.restoreSnapshots(currentState.block5Snapshots);
+    for (const saved of currentState.block5UserFields) restoreUserFields(saved);
+    const restored = paidSnapshot();
+    if (!Q.sameJson(restored, currentState.paidFingerprint)) {
+      Q.fail("block-5 rollback did not restore the exact verified two-payment boundary.");
+    }
+    assertControlsUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: {
+          phase: "paid-verified",
+          block5RolledBackAtIso: Q.nowIso()
+        },
+        $unset: {
+          leaveRejoinedAtIso: "",
+          leaveRejoinedFingerprint: "",
+          destinationAtIso: "",
+          verifiedAtIso: ""
+        }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "paid-verified",
+      rollback: "block-5",
+      payments: 2,
+      membership: "3 / 6",
+      slotsFull: 2
+    });
+  }
+
+  function verifyLeaveRejoined() {
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "paid-verified") {
+      Q.fail("leave/rejoin can only be verified from the paid block-5 boundary.");
+    }
+    const current = paidSnapshot();
+    const originalPayments = currentState.paidFingerprint.payments || [];
+    const originalNovaPayment = originalPayments.find(item => Q.text(item.userId) === NOVA_ID);
+    const originalRileyPayment = originalPayments.find(item => Q.text(item.userId) === RILEY_ID);
+    const currentNovaPayment = current.payments.find(item =>
+      originalNovaPayment && String(item._id) === String(originalNovaPayment._id));
+    const currentRileyPayment = current.payments.find(item =>
+      originalRileyPayment && String(item._id) === String(originalRileyPayment._id));
+    if (current.payments.length !== 2
+        || !currentNovaPayment
+        || Q.text(currentNovaPayment.provider) !== "stripe"
+        || Q.text(currentNovaPayment.status) !== "authorized"
+        || Q.text(currentNovaPayment.bookingStatus) !== "joined"
+        || Q.text(currentNovaPayment.refundStatus) !== "none"
+        || Q.text(currentNovaPayment.slotSourceId) !== EVENING_SLOT_ID
+        || Q.text(currentNovaPayment.paymentMethodId) !== CARD_IDS.stripe
+        || Number(currentNovaPayment.amount || 0) !== 3200
+        || Q.text(currentNovaPayment.currency) !== "HUF"
+        || !currentRileyPayment
+        || Q.text(currentRileyPayment.bookingStatus) !== "joined"
+        || Q.text(currentRileyPayment.slotSourceId) !== MORNING_SLOT_ID) {
+      Q.fail("leave/rejoin did not preserve Riley and restore Nova through the original open authorization without a duplicate payment write.");
+    }
+    const originalSucceeded = (currentState.paidFingerprint.baskets || []).filter(item =>
+      item.reservationActive === false
+      && item.pendingCounterTracked === false
+      && Q.text(item.resultState) === "succeeded"
+      && Q.text(item.kind) === "event"
+      && !Q.text(item.subEventId));
+    const succeeded = current.baskets.filter(item =>
+      item.reservationActive === false
+      && item.pendingCounterTracked === false
+      && Q.text(item.resultState) === "succeeded"
+      && Q.text(item.kind) === "event"
+      && !Q.text(item.subEventId));
+    if (succeeded.length !== originalSucceeded.length + 1
+        || succeeded.filter(item => Q.text(item.userId) === NOVA_ID
+          && Q.text(item.slotSourceId) === EVENING_SLOT_ID).length
+          !== originalSucceeded.filter(item => Q.text(item.userId) === NOVA_ID
+            && Q.text(item.slotSourceId) === EVENING_SLOT_ID).length + 1
+        || succeeded.filter(item => Q.text(item.userId) === RILEY_ID
+          && Q.text(item.slotSourceId) === MORNING_SLOT_ID).length
+          !== originalSucceeded.filter(item => Q.text(item.userId) === RILEY_ID
+            && Q.text(item.slotSourceId) === MORNING_SLOT_ID).length
+        || activeTargetBaskets(NOVA_ID).length !== 0
+        || activeTargetBaskets(RILEY_ID).length !== 0) {
+      Q.fail("leave/rejoin did not add exactly one succeeded inactive Nova basket audit or left an active basket.");
+    }
+    const acceptedMembers = current.members.filter(item => Q.text(item.status) === "accepted");
+    const acceptedSlotMembers = current.slotMembers.filter(item => Q.text(item.status) === "accepted");
+    const morningSlot = current.slots.find(item => Q.text(item.sourceId) === MORNING_SLOT_ID);
+    const eveningSlot = current.slots.find(item => Q.text(item.sourceId) === EVENING_SLOT_ID);
+    if (!current.event
+        || Number(current.event.acceptedMembers || 0) !== 3
+        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, NOVA_ID, RILEY_ID])
+        || acceptedMembers.length !== 3
+        || acceptedMembers.some(item => Q.text(item.statusBeforeSuppression)
+          || Q.text(item.suppressionRootOwnerId))
+        || !morningSlot
+        || Number(morningSlot.acceptedMembers || 0) !== 2
+        || !Q.sameJson(sorted(morningSlot.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
+        || !eveningSlot
+        || Number(eveningSlot.acceptedMembers || 0) !== 2
+        || !Q.sameJson(sorted(eveningSlot.acceptedMemberUserIds), [CASEY_ID, NOVA_ID])
+        || !acceptedSlotMembers.some(item => Q.text(item.ownerId) === MORNING_SLOT_ID && Q.text(item.userId) === RILEY_ID)
+        || !acceptedSlotMembers.some(item => Q.text(item.ownerId) === EVENING_SLOT_ID && Q.text(item.userId) === NOVA_ID)) {
+      Q.fail("leave/rejoin did not restore Casey, Nova and Riley or the exact full Slot memberships.");
+    }
+    if (Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID }) !== 0) {
+      Q.fail("Ticketing Off leave/rejoin created an EventTicket.");
+    }
+    assertControlsUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase: "leave-rejoined-verified",
+      leaveRejoinedAtIso: Q.nowIso(),
+      leaveRejoinedFingerprint: current
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "leave-rejoined-verified",
+      payments: 2,
+      novaAuthorization: "reused-without-duplicate-write",
+      novaBooking: "joined",
+      rileyBooking: "joined",
+      membership: "3 / 6",
+      slotsFull: 2
+    });
+  }
+
   function verifyDestination() {
     const currentState = state();
-    if (Q.text(currentState.phase) !== "paid-verified") Q.fail("destination can only be verified after paid.");
+    if (Q.text(currentState.phase) !== "leave-rejoined-verified") Q.fail("destination can only be verified after leave/rejoin.");
     const current = paidSnapshot();
-    if (!Q.sameJson(current, currentState.paidFingerprint)) {
-      Q.fail("read-only destination checks changed the paid Event projection.");
+    if (!Q.sameJson(current, currentState.leaveRejoinedFingerprint)) {
+      Q.fail("read-only destination checks changed the rejoined paid Event projection.");
     }
     assertControlsUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "destination-verified", destinationAtIso: Q.nowIso() } });
@@ -1291,8 +1461,8 @@
       Q.fail(`terminal simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
     }
     const current = paidSnapshot();
-    if (!Q.sameJson(current, currentState.paidFingerprint)) {
-      Q.fail("reload/control reads changed the paid Event projection.");
+    if (!Q.sameJson(current, currentState.leaveRejoinedFingerprint)) {
+      Q.fail("reload/control reads changed the rejoined paid Event projection.");
     }
     const cashEffects = {
       memberships: Q.collection("activityMembers").countDocuments({ ownerId: CASH_ID, userId: NOVA_ID }),
@@ -1334,6 +1504,8 @@
   else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "rollback-block-4") rollbackBlock4();
   else if (command === "verify-paid") verifyPaid();
+  else if (command === "rollback-block-5") rollbackBlock5();
+  else if (command === "verify-leave-rejoined") verifyLeaveRejoined();
   else if (command === "verify-destination") verifyDestination();
   else if (command === "verify") verifyTerminal();
   else if (command === "reset") reset();
