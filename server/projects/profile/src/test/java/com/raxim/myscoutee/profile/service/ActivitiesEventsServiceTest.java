@@ -2423,6 +2423,46 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void activeMemberKeepsCanonicalEventWhenAnotherMemberHasLeft() {
+        Users viewer = new Users();
+        viewer.setId("riley");
+        viewer.setName("Riley User");
+
+        ActivityEvent canonical = event("shared-event", "host", 0d);
+        canonical.setAcceptedMemberUserIds(List.of("host", "riley"));
+        ActivityEvent otherMemberTrash = event("shared-event", "host", 0d);
+        otherMemberTrash.setId("shared-event-nova-suppression");
+        otherMemberTrash.setOwnerUserId("nova");
+        otherMemberTrash.setStatus(ActivityEvent.STATUS_TRASHED);
+        otherMemberTrash.setAcceptedMemberUserIds(List.of("host", "riley"));
+
+        when(homeUserProfileService.resolveCurrentUser("riley")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("riley", false))
+                .thenReturn(acceptedStatuses("shared-event"));
+        when(eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc("riley"))
+                .thenReturn(List.of());
+        AtomicInteger findCalls = new AtomicInteger();
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenAnswer(invocation -> findCalls.getAndIncrement() == 0
+                        ? List.<ActivityEvent>of()
+                        : List.of(canonical, otherMemberTrash));
+        when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
+                .thenReturn(List.of(canonical, otherMemberTrash));
+        when(eventCheckoutBasketService.loadResultStatesByEvent("riley", List.of("shared-event")))
+                .thenReturn(Map.of());
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("shared-event");
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        });
+        assertThat(page.items()).extracting(EventDto::id).containsExactly("shared-event");
+    }
+
+    @Test
     void tournamentRoomOrganizerProfileDoesNotTurnAcceptedHostIntoRoomAdmin() {
         Users casey = new Users();
         casey.setId("casey");

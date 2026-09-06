@@ -5852,7 +5852,23 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldPreferRecord(ActivityEvent next, ActivityEvent current) {
+        boolean nextCanonical = isCanonicalOwnerRecord(next);
+        boolean currentCanonical = isCanonicalOwnerRecord(current);
+        if (nextCanonical != currentCanonical) {
+            return nextCanonical;
+        }
+        boolean nextTrashed = isTrashStatus(next);
+        boolean currentTrashed = isTrashStatus(current);
+        if (nextTrashed != currentTrashed) {
+            return !nextTrashed;
+        }
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
+    }
+
+    private boolean isCanonicalOwnerRecord(ActivityEvent record) {
+        String ownerUserId = normalizeId(record == null ? null : record.getOwnerUserId());
+        return StringUtils.hasText(ownerUserId)
+                && ownerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean shouldIncludeUserDirectRecord(ActivityEvent record, String userId, ActivityEvent preferredRecord) {
