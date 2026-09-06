@@ -1432,10 +1432,11 @@ public class ActivitiesMembersService {
         }
 
         ActivityMember current = existingByUserId.get(viewerUserId);
-        boolean rejoiningCancelledRequest = current != null
+        boolean rejoiningSuppressedParticipation = current != null
                 && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
-                && STATUS_PENDING.equals(normalizeStatus(current.getStatusBeforeSuppression()))
-                && normalizedEventId.equals(normalizeId(current.getSuppressionRootOwnerId()));
+                && ROOT_SUPPRESSIBLE_STATUSES.contains(
+                        normalizeStatus(current.getStatusBeforeSuppression()))
+                && StringUtils.hasText(normalizeId(current.getSuppressionRootOwnerId()));
         boolean resolvingInvitation = current != null
                 && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                     || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
@@ -1443,7 +1444,7 @@ public class ActivitiesMembersService {
         boolean adminApprovalAlreadyPending = isAdminApprovalMembership(current);
         if (current != null
                 && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
-                && !rejoiningCancelledRequest) {
+                && !rejoiningSuppressedParticipation) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
@@ -1487,7 +1488,7 @@ public class ActivitiesMembersService {
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
             mutationApplied = true;
-            if (rejoiningCancelledRequest) {
+            if (rejoiningSuppressedParticipation) {
                 restoreTrashedParticipationOverlays(
                         loadEventDocumentsBySourceId(List.of(normalizedEventId)),
                         viewerUserId,
