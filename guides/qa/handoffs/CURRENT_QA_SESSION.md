@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 03:39 CEST
+Updated: 2026-09-06 06:12 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -75,19 +75,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-CHECKOUT-001 — BASELINE READY / NOT RUN
+checkpoint: EVENT-CHECKOUT-001 — IN PROGRESS / PAYMENT READY
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-checkout-checkpoint
 checklist: ../checklists/event/EVENT-CHECKOUT-001.md
-substage: the final Event testcase is staged at its fresh paid-entry baseline; no manual step has run
-next_replay_boundary: do not build, install, stage, reset or relaunch; Ava selects connected Stripe with 3DS Off, then Nova starts checklist step 1
-fixture_phase: read-only status at `2026-09-06 03:39 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false; the paid target is 1/6 with two named Slots, one required policy and one 1700 HUF add-on; Nova has zero target membership/basket/payment/ticket, while all five controls and three provider-card fixtures are exact
-browser_phase: at `2026-09-06 03:39 CEST` the checkpoint launcher reported the configured Casey, Nova and Ava sessions ready in three isolated side-by-side windows; no manual QA step has run. The user exclusively controls browser navigation and clicks
+substage: user-controlled steps 1–21 reached the payment-ready boundary; the machine capture passed with one pending membership, one 4900 HUF basket containing two items and zero payments
+next_replay_boundary: do not build, install, stage, reset or relaunch; Nova continues with steps 22–24 and reports the Pending smartlist / Continue booking phrase
+fixture_phase: `capture-payment-ready` passed at `2026-09-06 06:12 CEST` with `phase=payment-ready`, basketItems=2, amount=4900, currency=HUF, paymentCount=0 and membership=pending
+browser_phase: the user exclusively performed steps through 21; Codex performed no browser navigation or inspection
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 is the active baseline-ready final Event testcase
+ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 is IN PROGRESS at payment-ready
 queued_next: EVENT-CHECKOUT-001
-required_resume: preserve the staged fixture and three running windows; Ava selects Stripe with 3DS Off, then Nova begins checklist step 1
+required_resume: preserve the payment-ready fixture and three running windows; Nova performs steps 22–24 without restaging
 actors: Nova performs checkout; Casey performs only the final membership check; Ava changes only the demo payment provider at the declared boundaries
-pending_machine_oracle: capture-payment-ready, verify-cancelled, verify-paid, verify-destination and terminal verify during this pair-QA run
+pending_machine_oracle: verify-pending-event, verify-cancelled, verify-paid, verify-destination and terminal verify during this pair-QA run
 provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
 last_completed: PAYMENT-METHODS-HISTORY-001 PASS/CLOSED, including the accepted bounded cancellation-copy correction and exact reset
@@ -233,11 +233,10 @@ the checkpoint says otherwise.
 ### Next manual action
 
 Do not rebuild, reinstall, stage, reset or relaunch. The read-only resume gate
-proved `phase=baseline-ready` with simulator provider `none` (`Cash only`) and
-3DS Off, and the configured Casey/Nova/Ava sessions are running. In Ava select
-connected Stripe with 3DS Off, then begin checklist step 1 in Nova. The first
-stop phrase is `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired
-blocked, no membership yet`.
+captured `phase=payment-ready` with one pending membership, one two-item `4900
+HUF` basket and zero payments. Nova continues with checklist steps 22–24 and
+stops at `EVENT-CHECKOUT-001 pending Activity Event: one card, Continue
+booking`.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

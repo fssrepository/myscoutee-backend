@@ -2949,7 +2949,7 @@ Stable user guide:
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
-Status: **BASELINE READY / NOT RUN** (2026-09-06).
+Status: **IN PROGRESS — PAYMENT READY** (2026-09-06).
 
 Stable user guide:
 [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
@@ -3031,6 +3031,11 @@ action.
 - The versioned fixture is staged at `baseline-ready`: the target and controls,
   Nova's Stripe/Barion/expired cards in both the backend and simulator, the
   exact-reset snapshot and three isolated Casey/Nova/Ava windows are ready.
+- Payment-ready savepoint (2026-09-06 06:12 CEST): after the user-controlled
+  steps through 21, the versioned `capture-payment-ready` oracle passed with
+  one active `4900 HUF` basket containing two items, exactly zero payments and
+  Nova's target membership persisted as `pending`. The next manual boundary is
+  the Pending smartlist and `Continue booking` check in steps 22–24.
 
 ## Event ticketing checkpoints
 
