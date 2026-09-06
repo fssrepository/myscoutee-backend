@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,7 +26,8 @@ public class ActivityEventMapper {
             Map<String, String> creatorAvatarUrlsByUserId,
             Map<String, String> currentUserMembershipStatusesBySourceId,
             String viewerUserId,
-            Map<String, Integer> resourcePendingReadBySourceId) {
+            Map<String, Integer> resourcePendingReadBySourceId,
+            Set<String> watchedEventSourceIds) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
@@ -36,6 +38,7 @@ public class ActivityEventMapper {
             resourcePendingReadBySourceId = resourcePendingReadBySourceId == null
                     ? Map.of()
                     : resourcePendingReadBySourceId;
+            watchedEventSourceIds = watchedEventSourceIds == null ? Set.of() : Set.copyOf(watchedEventSourceIds);
         }
 
         public MappingContext(
@@ -52,7 +55,27 @@ public class ActivityEventMapper {
                     creatorAvatarUrlsByUserId,
                     currentUserMembershipStatusesBySourceId,
                     viewerUserId,
-                    Map.of());
+                    Map.of(),
+                    Set.of());
+        }
+
+        public MappingContext(
+                LocationCoordinatesDto viewerCoordinates,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Map<String, String> creatorAvatarUrlsByUserId,
+                Map<String, String> currentUserMembershipStatusesBySourceId,
+                String viewerUserId,
+                Map<String, Integer> resourcePendingReadBySourceId) {
+            this(
+                    viewerCoordinates,
+                    snapshotsBySourceId,
+                    checkoutResultStatesBySourceId,
+                    creatorAvatarUrlsByUserId,
+                    currentUserMembershipStatusesBySourceId,
+                    viewerUserId,
+                    resourcePendingReadBySourceId,
+                    Set.of());
         }
     }
 
@@ -133,7 +156,8 @@ public class ActivityEventMapper {
                 resolveCurrentUserMembershipStatus(record, context, membersSnapshot),
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
-                safeDouble(record.getBoost()));
+                safeDouble(record.getBoost()),
+                context != null && context.watchedEventSourceIds().contains(normalizeId(record.getSourceId())));
     }
 
     private String resolveCurrentUserMembershipStatus(

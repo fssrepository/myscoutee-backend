@@ -47,6 +47,8 @@ class UserActivityCountersServiceTest {
     @Mock
     private EventFeedbackStatesRepository eventFeedbackStatesRepository;
     @Mock
+    private com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
+    @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
     private MongoTemplate mongoTemplate;
@@ -61,6 +63,7 @@ class UserActivityCountersServiceTest {
                 activityMembersRepository,
                 assetsRepository,
                 eventFeedbackStatesRepository,
+                eventWatchSubscriptionsRepository,
                 eventParticipationTicketService,
                 mongoTemplate);
     }

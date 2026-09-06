@@ -200,9 +200,10 @@ Begin only after Codex confirms this exact baseline:
     while active and the UI remains responsive.
 49. Confirm Riley's checkout closes once on success.
 50. In both Nova and Riley, reopen Event Explore. The target must remain exactly
-    once and its Event-level action must be `Join waiting list` because Evening
-    and Morning are now both full. `Book Event`, `Continue booking`, a new
-    payment action and a paid basket entry must be absent.
+    once and both Slots must be full. The payment response must update the card
+    immediately: `Book Event`, `Continue booking`, `Join waiting list`, a new
+    payment action and a paid basket entry must all be absent. `Add to
+    Watchlist` remains available as the Event-level notification action.
 51. In both users' Active Event menus, confirm `Continue booking`, `Book Event`
     and another `Payment` action are absent. A stale action for either user is
     a failure.
@@ -237,8 +238,9 @@ Begin only after Codex confirms this exact baseline:
 61. Open `All Events` for both users and confirm the Event appears exactly once
     for each.
 62. Return to Event Explore and reconfirm the target remains exactly once with
-    the Event-level `Join waiting list` action, but is not a fresh payment or
-    basket candidate for either user.
+    `Add to Watchlist`, but without `Continue booking`, `Join waiting list`, a
+    fresh payment action or a basket candidate for either user. This later read
+    must converge to the same state already signalled by the final payment.
 63. Sign Riley out of the reused browser, sign back in as **Casey**, then open
     the target through `My Events → Event Members`.
 64. Confirm Casey appears once as Admin, Nova and Riley once each as accepted
@@ -272,6 +274,32 @@ Begin only after Codex confirms this exact baseline:
 74. Report the terminal phrase:
 
     `EVENT-CHECKOUT-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
+
+### 7. Verify the Event Watchlist without changing All
+
+75. In Nova, find the fully booked target in Event Explore and select `Add to
+    Watchlist` exactly once. Confirm its menu changes to `Remove from Watchlist`
+    without reloading and no basket or membership is created.
+76. Immediately open `Activities → Events → Watchlist`. Confirm the dropdown
+    label is `Watchlist`, its own red counter increased once, and the target
+    appears exactly once. The toolbar must show only the existing Event Explore
+    icon: the `+` quick-action button must be absent. Confirm the `All` list and
+    `All` counter did not change because Watchlist is a separate bucket.
+77. Reload Nova once, reopen `Watchlist`, and confirm the same one subscription,
+    one row and own counter return from the user-model poll. `All` must remain
+    unchanged.
+78. In Riley, leave the target Event once so at least one Slot becomes open.
+    Do not make a new booking. After the Watchlist availability check runs,
+    confirm Nova receives exactly one notification that a place is available.
+    The notification must not reserve a Slot, create a basket or create pending
+    membership.
+79. Open the notification and confirm it only opens the Event. Any later Slot
+    choice must still go through the normal booking flow.
+80. In Nova, select `Remove from Watchlist` once. Confirm the Watchlist row and
+    its own counter update immediately; after the next user-model poll they must
+    not return, and `All` must still be unchanged. Report:
+
+    `EVENT-CHECKOUT-001 Watchlist complete: separate counter, one availability notification, no reservation`
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result and restores the fixture.

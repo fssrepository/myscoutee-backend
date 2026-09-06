@@ -132,6 +132,8 @@ class ActivitiesEventsServiceTest {
     private AccessControlService accessControlService;
     @Mock
     private UserActivityCountersService userActivityCountersService;
+    @Mock
+    private com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -172,6 +174,7 @@ class ActivitiesEventsServiceTest {
                 eventSlotReadModelService,
                 accessControlService,
                 userActivityCountersService,
+                eventWatchSubscriptionsRepository,
                 activityEventDetailMapper,
                 activityEventMapper,
                 activityEventSubEventsMapper,

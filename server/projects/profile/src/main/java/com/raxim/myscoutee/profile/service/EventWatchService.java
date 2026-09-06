@@ -1,0 +1,271 @@
+package com.raxim.myscoutee.profile.service;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bson.types.ObjectId;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventWatchActionResultDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
+
+@Service
+public class EventWatchService {
+    private static final String SYSTEM_USER_ID = "event-watchlist";
+    private static final String DEFAULT_CLICK_URL = "/game";
+    private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
+
+    private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
+    private final ActivityEventsRepository activityEventsRepository;
+    private final HomeUserProfileService homeUserProfileService;
+    private final UserActivityCountersService userActivityCountersService;
+    private final NotificationOutboxService notificationOutboxService;
+
+    public EventWatchService(
+            EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
+            ActivityEventsRepository activityEventsRepository,
+            HomeUserProfileService homeUserProfileService,
+            UserActivityCountersService userActivityCountersService,
+            NotificationOutboxService notificationOutboxService) {
+        this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
+        this.activityEventsRepository = activityEventsRepository;
+        this.homeUserProfileService = homeUserProfileService;
+        this.userActivityCountersService = userActivityCountersService;
+        this.notificationOutboxService = notificationOutboxService;
+    }
+
+    public EventWatchActionResultDto watch(String requestedUserId, String requestedEventId) {
+        String userId = resolveUserId(requestedUserId);
+        ActivityEvent event = requireEvent(requestedEventId);
+        String eventId = normalizeId(event.getSourceId());
+        EventWatchSubscription existing = eventWatchSubscriptionsRepository
+                .findByUserIdAndEventId(userId, eventId)
+                .orElse(null);
+        if (existing != null) {
+            return result(userId, eventId, true, false);
+        }
+
+        String nowIso = Instant.now().toString();
+        EventWatchSubscription subscription = new EventWatchSubscription();
+        subscription.setId(new ObjectId().toHexString());
+        subscription.setSyncKey(UUID.randomUUID().toString());
+        subscription.setUserId(userId);
+        subscription.setEventId(eventId);
+        subscription.setLastObservedFull(isFull(event));
+        subscription.setCreatedDate(nowIso);
+        subscription.setCreatedUser(userId);
+        subscription.setUpdatedDate(nowIso);
+        subscription.setUpdatedUser(userId);
+        eventWatchSubscriptionsRepository.save(subscription);
+        userActivityCountersService.refreshEventCountersForUsers(List.of(userId));
+        return result(userId, eventId, true, true);
+    }
+
+    public EventWatchActionResultDto unwatch(String requestedUserId, String requestedEventId) {
+        String userId = resolveUserId(requestedUserId);
+        String eventId = normalizeId(requestedEventId);
+        if (!StringUtils.hasText(eventId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
+        }
+        EventWatchSubscription existing = eventWatchSubscriptionsRepository
+                .findByUserIdAndEventId(userId, eventId)
+                .orElse(null);
+        if (existing == null) {
+            return result(userId, eventId, false, false);
+        }
+        eventWatchSubscriptionsRepository.delete(existing);
+        userActivityCountersService.refreshEventCountersForUsers(List.of(userId));
+        return result(userId, eventId, false, true);
+    }
+
+    public Set<String> watchedEventIds(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        LinkedHashSet<String> eventIds = new LinkedHashSet<>();
+        for (EventWatchSubscription subscription : eventWatchSubscriptionsRepository
+                .findByUserIdOrderByUpdatedDateDesc(normalizedUserId)) {
+            String eventId = normalizeId(subscription == null ? null : subscription.getEventId());
+            if (StringUtils.hasText(eventId)) {
+                eventIds.add(eventId);
+            }
+        }
+        return eventIds;
+    }
+
+    @Scheduled(fixedDelayString = "${events.watchlist.check-delay-ms:60000}")
+    public void notifyWhenEventBecomesAvailable() {
+        List<EventWatchSubscription> subscriptions = eventWatchSubscriptionsRepository.findAll();
+        if (subscriptions.isEmpty()) {
+            return;
+        }
+        Set<String> eventIds = new LinkedHashSet<>();
+        for (EventWatchSubscription subscription : subscriptions) {
+            String eventId = normalizeId(subscription == null ? null : subscription.getEventId());
+            if (StringUtils.hasText(eventId)) {
+                eventIds.add(eventId);
+            }
+        }
+        Map<String, ActivityEvent> eventsById = preferredEventsById(activityEventsRepository.findBySourceIdIn(eventIds));
+        List<EventWatchSubscription> changed = new ArrayList<>();
+        String nowIso = Instant.now().toString();
+        for (EventWatchSubscription subscription : subscriptions) {
+            String eventId = normalizeId(subscription == null ? null : subscription.getEventId());
+            ActivityEvent event = eventsById.get(eventId);
+            if (subscription == null || event == null) {
+                continue;
+            }
+            boolean currentFull = isFull(event);
+            boolean previousFull = Boolean.TRUE.equals(subscription.getLastObservedFull());
+            if (previousFull && !currentFull) {
+                enqueueAvailabilityNotification(subscription, event);
+            }
+            if (!Objects.equals(subscription.getLastObservedFull(), currentFull)) {
+                subscription.setLastObservedFull(currentFull);
+                subscription.setUpdatedDate(nowIso);
+                subscription.setUpdatedUser(SYSTEM_USER_ID);
+                changed.add(subscription);
+            }
+        }
+        if (!changed.isEmpty()) {
+            eventWatchSubscriptionsRepository.saveAll(changed);
+        }
+    }
+
+    private EventWatchActionResultDto result(String userId, String eventId, boolean watched, boolean changed) {
+        return new EventWatchActionResultDto(
+                eventId,
+                watched,
+                changed,
+                userActivityCountersService.readStoredEventCounters(userId));
+    }
+
+    private String resolveUserId(String requestedUserId) {
+        var user = homeUserProfileService.resolveCurrentUser(requestedUserId);
+        String userId = normalizeId(user == null ? null : user.getId());
+        if (!StringUtils.hasText(userId)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Active user is required.");
+        }
+        return userId;
+    }
+
+    private ActivityEvent requireEvent(String requestedEventId) {
+        String eventId = normalizeId(requestedEventId);
+        if (!StringUtils.hasText(eventId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
+        }
+        ActivityEvent event = preferredEventsById(activityEventsRepository.findBySourceId(eventId)).get(eventId);
+        if (event == null || !"A".equals(safeText(event.getStatus())) || Boolean.TRUE.equals(event.getIsTrashed())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event was not found.");
+        }
+        return event;
+    }
+
+    private Map<String, ActivityEvent> preferredEventsById(Collection<ActivityEvent> events) {
+        Map<String, ActivityEvent> result = new LinkedHashMap<>();
+        (events == null ? List.<ActivityEvent>of() : events).stream()
+                .filter(Objects::nonNull)
+                .filter(event -> !Boolean.TRUE.equals(event.getGenerated()))
+                .filter(event -> !StringUtils.hasText(normalizeId(event.getParentEventId())))
+                .sorted(Comparator.comparingInt(this::preferenceScore).reversed())
+                .forEach(event -> result.putIfAbsent(normalizeId(event.getSourceId()), event));
+        result.remove(null);
+        return result;
+    }
+
+    private int preferenceScore(ActivityEvent event) {
+        int score = normalizeId(event.getOwnerUserId()).equals(normalizeId(event.getCreatorUserId())) ? 100 : 0;
+        if ("A".equals(safeText(event.getStatus()))) {
+            score += 10;
+        }
+        return score;
+    }
+
+    private boolean isFull(ActivityEvent event) {
+        if (event == null) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(event.getSlotsEnabled()) && !Boolean.TRUE.equals(event.getGenerated())) {
+            List<EventSlotOccurrenceDto> slots = event.getUpcomingSlots();
+            return slots == null || slots.isEmpty() || slots.stream().allMatch(this::isFull);
+        }
+        if (Boolean.TRUE.equals(event.getFull())) {
+            return true;
+        }
+        int capacity = Math.max(0, event.getCapacityTotal() == null ? 0 : event.getCapacityTotal());
+        int accepted = Math.max(0, event.getAcceptedMembers() == null ? 0 : event.getAcceptedMembers());
+        return capacity > 0 && accepted >= capacity;
+    }
+
+    private boolean isFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacity = Math.max(0, slot.capacityTotal() == null ? 0 : slot.capacityTotal());
+        int accepted = Math.max(0, slot.acceptedMembers() == null ? 0 : slot.acceptedMembers());
+        return capacity > 0 && accepted >= capacity;
+    }
+
+    private void enqueueAvailabilityNotification(EventWatchSubscription subscription, ActivityEvent event) {
+        String eventId = normalizeId(event.getSourceId());
+        String userId = normalizeId(subscription.getUserId());
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(userId)) {
+            return;
+        }
+        String title = firstNonBlank(event.getTitle(), "Event available");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", title);
+        payload.put("eventScope", "watchlist");
+        payload.put("notification_title_key", "notification.event.watchlist.available.title");
+        payload.put("notification_message_key", "notification.event.watchlist.available.message");
+        payload.put("notification_tone", "success");
+        payload.put("notification_avatar_icon", "visibility");
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-watchlist-available",
+                "event",
+                eventId,
+                "event-watchers",
+                List.of(userId),
+                title,
+                "A place is available again. Open the event to book it.",
+                DEFAULT_CLICK_URL,
+                firstNonBlank(event.getImageUrl(), APP_BADGE_URL),
+                APP_BADGE_URL,
+                "event-watchlist-available-" + eventId + "-" + userId,
+                payload,
+                SYSTEM_USER_ID));
+    }
+
+    private String firstNonBlank(String first, String fallback) {
+        return StringUtils.hasText(safeText(first)) ? safeText(first) : fallback;
+    }
+
+    private String normalizeId(String value) {
+        return safeText(value);
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+}

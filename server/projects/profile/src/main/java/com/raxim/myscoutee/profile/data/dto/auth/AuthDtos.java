@@ -150,7 +150,18 @@ public final class AuthDtos {
             Integer invitations,
             Integer hosting,
             Integer drafts,
-            Integer trash) {
+            Integer trash,
+            Integer watchlist) {
+        public UserEventCountersDto(
+                Integer all,
+                Integer active,
+                Integer pending,
+                Integer invitations,
+                Integer hosting,
+                Integer drafts,
+                Integer trash) {
+            this(all, active, pending, invitations, hosting, drafts, trash, 0);
+        }
     }
 
     public record UserAssetCountersDto(
