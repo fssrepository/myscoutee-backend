@@ -17,7 +17,7 @@ savepoints, not separate matrix rows.
 - Codex stages the versioned `payment-ui` fixture, proves phase
   `baseline-ready`, and later runs the machine-side savepoint oracles and exact
   reset. The user exclusively performs browser navigation and clicks.
-- Begin with simulator provider **Cash only**, 3DS Off, exactly three visible
+- Begin with simulator provider **Cash Only**, 3DS Off, exactly three visible
   Alex cards (`4242`, `1881`, expired `0008`), three expense history rows, one
   income row, and totals `HUF −17,400` / `HUF +8,400`.
 - Do not start an Event/Asset checkout, do not create another payment, and do
@@ -34,14 +34,15 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh stage 
 ```
 
 Open the configured Ava/Alex windows only after the read-only status reports
-`baseline-ready` and simulator provider `none` (the UI label is `Cash only`).
+`baseline-ready` and simulator provider `none` (the UI label is `Cash Only`).
 
-## 1. Verify Cash only and the Payment History baseline
+## 1. Verify Cash Only and the Payment History baseline
 
 1. In **Ava**, confirm the `Testing` group is the last side-menu group and open
-   `Payment simulator`. Confirm `Cash only` is selected and 3DS is disabled.
+   `Payment simulator`. Confirm the text-only `Cash Only` wordmark is selected,
+   is visually similar in size to the Stripe wordmark, and 3DS is disabled.
 2. In **Alex**, open `Cards`. Confirm `Add card` is disabled while the simulator
-   is `Cash only`; no provider form opens and no registration is created. Return
+   is `Cash Only`; no provider form opens and no registration is created. Return
    to `Payment history`.
 3. Confirm the Payment history header
    shows two compact badges: `HUF −17,400` in red and `HUF +8,400` in green.
@@ -153,4 +154,4 @@ Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 Codex runs `verify payment-ui PAYMENT-METHODS-HISTORY-001`, records the pair-QA
 result, then runs the exact reset. Reset restores Alex's original cards,
 registrations, payments, notification state and payment totals, and restores
-the simulator to `Cash only`.
+the simulator to `Cash Only`.
