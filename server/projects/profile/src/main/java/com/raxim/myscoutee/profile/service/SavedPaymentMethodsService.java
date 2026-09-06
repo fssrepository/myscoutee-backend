@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class SavedPaymentMethodsService {
+    private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
     public static final int MAX_ACTIVE_PAYMENT_METHODS = 6;
     private static final Duration DEFAULT_REGISTRATION_TTL = Duration.ofMinutes(10);
     private static final String ACTIVE = "active";
@@ -344,7 +347,14 @@ public class SavedPaymentMethodsService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");
         }
         if (isDemoSimulatorMode()) {
-            simulatorClient.revoke(method.getProvider(), method.getProviderPaymentMethodRef());
+            try {
+                simulatorClient.revoke(method.getProvider(), method.getProviderPaymentMethodRef());
+            } catch (RuntimeException exception) {
+                LOG.warn(
+                        "Provider cleanup failed for saved payment method {}; continuing with local deletion ({})",
+                        method.getId(),
+                        exception.getClass().getSimpleName());
+            }
         }
         if (paymentMethodsRepository.markDeleted(method.getId(), ownerId, Instant.now().toString()) != 1) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment card is no longer active.");

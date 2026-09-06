@@ -220,6 +220,8 @@ Usage:
   bash manual-qa-checkpoints.sh status payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-barion payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-replace payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-reconnect payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh reset payment-ui PAYMENT-METHODS-HISTORY-001
@@ -266,6 +268,44 @@ payment_simulator_state() {
     "${base_url}/myscoutee/v1/configuration")" \
     || fail "The already-running payment simulator configuration is unavailable."
   python3 -c 'import json,sys; value=json.load(sys.stdin); print(value.get("provider", ""), str(bool(value.get("requires3ds"))).lower(), str(bool(value.get("connected"))).lower())' <<<"${response}"
+}
+
+replace_payment_simulator_card_fixtures() {
+  local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
+  local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
+  local target_db="${MANUAL_QA_DB:-demo_db}"
+  local fixture_file="${SCRIPT_DIR}/../../conf/mongodb/${target_db}/savedPaymentMethods.json"
+  local payload response expected actual
+  [ -f "${fixture_file}" ] || fail "Missing payment-card fixture ${fixture_file}."
+  payload="$(python3 -c '
+import json,sys
+cards=json.load(open(sys.argv[1], encoding="utf-8"))
+fixtures=[]
+for card in cards:
+    token=str(card.get("providerPaymentMethodRef", "")).strip()
+    if not token:
+        continue
+    fixtures.append({
+        "provider": str(card.get("provider", "")).strip(),
+        "provider_token": token,
+        "brand": str(card.get("brand", "")).strip(),
+        "last4": str(card.get("last4", "")).strip(),
+        "expiry_month": card.get("expiryMonth"),
+        "expiry_year": card.get("expiryYear"),
+        "cardholder_name": str(card.get("cardholderName", "")).strip()
+    })
+print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
+' "${fixture_file}")"
+  expected="$(python3 -c 'import json,sys; print(len(json.load(sys.stdin)["payment_methods"]))' <<<"${payload}")"
+  response="$(curl --fail --silent --show-error -X PUT \
+    -H "Authorization: Bearer ${api_key}" \
+    -H 'Content-Type: application/json' \
+    --data-binary "${payload}" \
+    "${base_url}/myscoutee/v1/test-fixtures/payment-methods")" \
+    || fail "Could not load the payment-card fixtures into the already-running payment simulator."
+  actual="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("payment_methods", -1))' <<<"${response}")"
+  [ "${actual}" = "${expected}" ] \
+    || fail "Payment simulator loaded ${actual} payment-card fixtures; expected ${expected}."
 }
 
 set_payment_simulator_cash_only() {
@@ -621,10 +661,11 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_card_fixtures
     set_payment_simulator_cash_only
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  payment-ui:status|payment-ui:verify-stripe|payment-ui:verify-barion|payment-ui:verify-expired-cleanup|payment-ui:verify)
+  payment-ui:status|payment-ui:verify-stripe|payment-ui:verify-barion|payment-ui:verify-replace|payment-ui:verify-reconnect|payment-ui:verify-expired-cleanup|payment-ui:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
@@ -633,6 +674,7 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_card_fixtures
     set_payment_simulator_cash_only
     ;;
   event-domain:advance)

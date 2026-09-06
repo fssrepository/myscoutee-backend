@@ -32,7 +32,7 @@ class SavedPaymentMethodsServiceTest {
     }
 
     @Test
-    void deleteRevokesProviderTokenBeforeKeepingTheCardAsInactiveAuditData() {
+    void deleteAttemptsProviderCleanupBeforeMarkingTheLocalCardDeleted() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
@@ -66,7 +66,7 @@ class SavedPaymentMethodsServiceTest {
     }
 
     @Test
-    void providerFailureLeavesTheLocalSavedCardActive() {
+    void providerCleanupFailureDoesNotFailTheLocalDeletion() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
         PaymentSimulatorRegistrationClient simulator = mock(PaymentSimulatorRegistrationClient.class);
@@ -77,6 +77,8 @@ class SavedPaymentMethodsServiceTest {
         method.setProviderPaymentMethodRef("pm-provider-1");
         method.setStatus("active");
         when(methods.findByIdAndUserId("pm-1", "user-1")).thenReturn(Optional.of(method));
+        when(methods.markDeleted(org.mockito.ArgumentMatchers.eq("pm-1"), org.mockito.ArgumentMatchers.eq("user-1"), org.mockito.ArgumentMatchers.anyString()))
+                .thenReturn(1L);
         when(simulator.isEnabled()).thenReturn(true);
         org.mockito.Mockito.doThrow(new IllegalStateException("provider unavailable"))
                 .when(simulator).revoke("stripe", "pm-provider-1");
@@ -89,12 +91,11 @@ class SavedPaymentMethodsServiceTest {
                 mock(DeploymentPaymentProviderResolver.class),
                 mock(UsersRepository.class));
 
-        assertThatThrownBy(() -> service.delete("user-1", "pm-1"))
-                .isInstanceOf(IllegalStateException.class);
+        service.delete("user-1", "pm-1");
 
-        verify(methods, never()).markDeleted(
-                org.mockito.ArgumentMatchers.anyString(),
-                org.mockito.ArgumentMatchers.anyString(),
+        verify(methods).markDeleted(
+                org.mockito.ArgumentMatchers.eq("pm-1"),
+                org.mockito.ArgumentMatchers.eq("user-1"),
                 org.mockito.ArgumentMatchers.anyString());
     }
 

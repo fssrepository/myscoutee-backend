@@ -300,7 +300,11 @@
     const verifiedAtIso = Q.nowIso();
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: currentState._id },
-      { $set: { [`evidence.${expectedProvider}Registration`]: true, [`evidence.${expectedProvider}VerifiedAtIso`]: verifiedAtIso } }
+      { $set: {
+        [`evidence.${expectedProvider}Registration`]: true,
+        [`evidence.${expectedProvider}CardId`]: Q.text(method._id),
+        [`evidence.${expectedProvider}VerifiedAtIso`]: verifiedAtIso
+      } }
     );
     Q.printObject({
       scenario: SCENARIO,
@@ -313,6 +317,70 @@
       next: expectedProvider === "stripe"
         ? "Switch the demo Admin simulator to connected Barion, then register one Barion card."
         : "Continue with the expired-card badge cleanup and Payment History filters."
+    });
+  }
+
+  function verifyReplacement(kind) {
+    config();
+    const currentState = state(true);
+    assertProvider("barion");
+    const evidence = currentState.evidence || {};
+    const sourceEvidenceKey = kind === "replace" ? "barionCardId" : "stripeCardId";
+    const sourceId = Q.text(evidence[sourceEvidenceKey]);
+    if (!sourceId) Q.fail(`missing '${sourceEvidenceKey}' savepoint evidence.`);
+    const source = Q.collection("savedPaymentMethods").findOne({ _id: sourceId, userId: TARGET_USER_ID });
+    if (!source || Q.text(source.status) !== "replaced" || !Q.text(source.replacedByPaymentMethodId)) {
+      Q.fail(`${kind} source card '${sourceId}' was not replaced exactly once.`);
+    }
+    const replacementId = Q.text(source.replacedByPaymentMethodId);
+    const replacement = Q.collection("savedPaymentMethods").findOne({
+      _id: replacementId,
+      userId: TARGET_USER_ID,
+      provider: "barion",
+      status: "active",
+      replacesPaymentMethodId: sourceId
+    });
+    if (!replacement || !Q.text(replacement.registrationId)) {
+      Q.fail(`${kind} did not create the expected active Barion replacement card.`);
+    }
+    const registration = Q.collection("paymentMethodRegistrations").findOne({
+      _id: Q.text(replacement.registrationId),
+      userId: TARGET_USER_ID,
+      provider: "barion",
+      status: "completed",
+      completedPaymentMethodId: replacementId,
+      replacesPaymentMethodId: sourceId
+    });
+    if (!registration) Q.fail(`${kind} replacement is not owned by a completed Barion registration.`);
+    if (Q.text(replacement.artworkKey) !== Q.text(source.artworkKey)) {
+      Q.fail(`${kind} replacement did not retain the source card artwork.`);
+    }
+    assertPaymentsUnchanged(currentState);
+    assertControlledTotals();
+    const verifiedAtIso = Q.nowIso();
+    const evidencePrefix = kind === "replace" ? "replace" : "reconnect";
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: {
+        [`evidence.${evidencePrefix}Verified`]: true,
+        [`evidence.${evidencePrefix}SourceCardId`]: sourceId,
+        [`evidence.${evidencePrefix}ReplacementCardId`]: replacementId,
+        [`evidence.${evidencePrefix}VerifiedAtIso`]: verifiedAtIso
+      } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: Q.text(currentState.phase),
+      verified: `${kind}-registration`,
+      sourceCard: { id: sourceId, provider: Q.text(source.provider), status: Q.text(source.status) },
+      replacementCard: { id: replacementId, provider: Q.text(replacement.provider), status: Q.text(replacement.status) },
+      artworkRetained: true,
+      historyUnchanged: true,
+      totalsUnchanged: true,
+      next: kind === "replace"
+        ? "Run the separate Reconnect block on the Stripe card recorded by the stripe savepoint."
+        : "Continue with the expired-card badge cleanup."
     });
   }
 
@@ -346,7 +414,7 @@
     config();
     const currentState = state(true);
     const evidence = currentState.evidence || {};
-    for (const key of ["stripeRegistration", "barionRegistration", "expiredCleanup"]) {
+    for (const key of ["stripeRegistration", "barionRegistration", "replaceVerified", "reconnectVerified", "expiredCleanup"]) {
       if (evidence[key] !== true) Q.fail(`missing '${key}' savepoint evidence.`);
     }
     assertPaymentsUnchanged(currentState);
@@ -414,6 +482,8 @@
     case "status": status(); break;
     case "verify-stripe": verifyProviderRegistration("stripe"); break;
     case "verify-barion": verifyProviderRegistration("barion"); break;
+    case "verify-replace": verifyReplacement("replace"); break;
+    case "verify-reconnect": verifyReplacement("reconnect"); break;
     case "verify-expired-cleanup": verifyExpiredCleanup(); break;
     case "verify": verify(); break;
     case "reset": reset(); break;
