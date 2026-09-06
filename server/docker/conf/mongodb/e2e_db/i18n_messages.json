@@ -7326,6 +7326,24 @@
     "value": "Preview"
   },
   {
+    "_id": "i18n-message-en-landing-hero-history",
+    "key": "landing.hero.history",
+    "lang": "en",
+    "value": "Meeting people was once social."
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-return",
+    "key": "landing.hero.return",
+    "lang": "en",
+    "value": "We’re making it social again."
+  },
+  {
+    "_id": "i18n-message-en-landing-hero-graph",
+    "key": "landing.hero.graph",
+    "lang": "en",
+    "value": "Six people, six priority lists, and one group where their priorities meet."
+  },
+  {
     "_id": "i18n-message-en-landing-preview-open-guide",
     "key": "landing.preview.open.guide",
     "lang": "en",
@@ -26686,6 +26704,24 @@
     "key": "landing.preview.badge",
     "lang": "hu",
     "value": "Tesztverzió"
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-history",
+    "key": "landing.hero.history",
+    "lang": "hu",
+    "value": "Az emberek régen társas közegben ismerkedtek."
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-return",
+    "key": "landing.hero.return",
+    "lang": "hu",
+    "value": "Mi ezt újra közösségivé tesszük."
+  },
+  {
+    "_id": "i18n-message-hu-landing-hero-graph",
+    "key": "landing.hero.graph",
+    "lang": "hu",
+    "value": "Hat ember, hat prioritáslista és egy csoport, ahol a prioritásaik összeérnek."
   },
   {
     "_id": "i18n-message-hu-landing-preview-open-guide",
