@@ -119,21 +119,26 @@ Begin only after Codex confirms this exact baseline:
     checkmark is sufficient. Confirm the primary action becomes enabled once
     and does not flicker or multiply.
 21. Report this phrase and wait for Codex to capture the basket/session and
-    zero-membership boundary:
+    pending-membership boundary:
 
-    `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired blocked, no membership yet`
+    `EVENT-CHECKOUT-001 payment ready: Stripe card assigned, expired blocked, membership pending`
 
 ### 3. Resume the payment phase, then cancel it
 
 22. After Codex confirms `payment-ready`, close the checkout with its normal
     close control. Do not select Back, Cancel or Payment.
-23. In the still-open Event Explore surface, confirm the target card remains
-    visible and its menu now shows `Continue booking` instead of `Book Event`.
-24. Confirm the checkout/basket affordance reports exactly one target item.
+23. Open `Activities → Events → Pending` and confirm the target Event appears
+    exactly once.
+24. Open its menu and confirm it shows `Continue booking` instead of `Book
+    Event`. Report this phrase and wait for Codex to verify the persisted
+    Pending counter, captured basket, pending membership and zero-payment
+    boundary:
+
+    `EVENT-CHECKOUT-001 pending Activity Event: one card, Continue booking`
 25. Select `Continue booking` and confirm the same payment phase returns with
     the same Slot, add-on, policy, amount and currency.
 26. Close it again, then reload Nova exactly once.
-27. Reopen Event Explore. Confirm the same card still exposes
+27. Reopen `Activities → Events → Pending`. Confirm the same card still exposes
     `Continue booking`, then open it once.
 28. Confirm the payment phase reconstructs the same selections and does not
     create a second basket/session, accepted membership or payment.
@@ -141,7 +146,8 @@ Begin only after Codex confirms this exact baseline:
     confirmation dialog.
 30. Confirm the checkout closes, the basket item disappears and the target
     card menu returns to `Book Event` without reloading.
-31. Confirm the target is absent from Nova's `Active Events` and `All Events`.
+31. Confirm the target is absent from Nova's `Pending`, `Active Events` and
+    `All Events`.
 32. Report this phrase and wait for Codex to prove one closed basket audit and
     zero successful payment/membership effects:
 

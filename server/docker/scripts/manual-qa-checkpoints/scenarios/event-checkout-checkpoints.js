@@ -725,6 +725,13 @@
     }).sort({ createdAtIso: 1, _id: 1 }).toArray();
   }
 
+  function targetNovaMemberships() {
+    return Q.collection("activityMembers")
+      .find({ ownerType: "event", ownerId: TARGET_ID, userId: NOVA_ID })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
   function capturePaymentReady() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "baseline-ready") Q.fail("payment-ready can only be captured from baseline-ready.");
@@ -732,6 +739,7 @@
       Q.fail(`payment-ready simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Stripe with 3DS Off.`);
     }
     const baskets = activeTargetBaskets();
+    const memberships = targetNovaMemberships();
     const kinds = sorted(baskets.map(item => item.kind));
     const total = baskets.reduce((sum, item) => sum + Number(item.amount || 0) * Math.max(1, Number(item.quantity || 1)), 0);
     if (baskets.length !== 2
@@ -743,8 +751,11 @@
       Q.fail(`payment-ready basket mismatch: ${JSON.stringify(baskets.map(item => ({ kind: item.kind, subEventId: item.subEventId, slotSourceId: item.slotSourceId, status: item.status, amount: item.amount })))}.`);
     }
     if (Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
-        || Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: NOVA_ID }) !== 0) {
-      Q.fail("payment-ready already created a payment or Nova membership.");
+        || memberships.length !== 1
+        || Q.text(memberships[0].status) !== "pending"
+        || Q.text(memberships[0].pendingSource) !== "member"
+        || Q.text(memberships[0].requestKind) !== "join") {
+      Q.fail(`payment-ready pending membership mismatch: ${JSON.stringify(memberships)}.`);
     }
     assertControlsUnchanged(currentState);
     assertRileyUnchanged(currentState);
@@ -770,7 +781,43 @@
       paymentReadySnapshots,
       paymentReadyUserFields: [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId)))
     } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", basketItems: 2, amount: 4900, currency: "HUF", paymentCount: 0, membershipCount: 0 });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", basketItems: 2, amount: 4900, currency: "HUF", paymentCount: 0, membership: "pending" });
+  }
+
+  function verifyPendingEvent() {
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "payment-ready") Q.fail("pending Activity Event verification requires payment-ready.");
+    const baskets = activeTargetBaskets();
+    const memberships = targetNovaMemberships();
+    const nova = Q.ensureUser(NOVA_ID, "Nova");
+    const eventCounters = nova.activities && nova.activities.event || {};
+    if (!Q.sameJson(EJSON.serialize(baskets), EJSON.serialize(currentState.paymentReadyBaskets))
+        || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
+        || memberships.length !== 1
+        || Q.text(memberships[0].status) !== "pending"
+        || Q.text(memberships[0].pendingSource) !== "member"
+        || Q.text(memberships[0].requestKind) !== "join"
+        || Number(eventCounters.all || 0) !== 3
+        || Number(eventCounters.pending || 0) !== 3) {
+      Q.fail(`the pending Event write-side boundary is invalid: counters=${JSON.stringify(eventCounters)}.`);
+    }
+    assertControlsUnchanged(currentState);
+    assertRileyUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: { pendingEventVerifiedAtIso: Q.nowIso() } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "payment-ready",
+      checkpoint: "pending-activity-event",
+      basketItems: baskets.length,
+      eventAll: Number(eventCounters.all || 0),
+      eventPending: Number(eventCounters.pending || 0),
+      paymentCount: 0,
+      membership: "pending"
+    });
   }
 
   function rollbackPaymentReady() {
@@ -786,21 +833,24 @@
       { _id: currentState._id },
       {
         $set: { phase: "payment-ready", paymentReadyRolledBackAtIso: Q.nowIso() },
-        $unset: { cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+        $unset: { pendingEventVerifiedAtIso: "", cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
       }
     );
     const restoredBaskets = activeTargetBaskets();
+    const restoredMemberships = targetNovaMemberships();
     if (!Q.sameJson(restoredBaskets, currentState.paymentReadyBaskets)
         || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
-        || Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: NOVA_ID }) !== 0) {
+        || restoredMemberships.length !== 1
+        || Q.text(restoredMemberships[0].status) !== "pending") {
       Q.fail("payment-ready rollback did not restore the exact step-22 boundary.");
     }
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-22", basketItems: restoredBaskets.length, paymentCount: 0, membershipCount: 0 });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-22", basketItems: restoredBaskets.length, paymentCount: 0, membership: "pending" });
   }
 
   function verifyCancelled() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "payment-ready") Q.fail("cancelled can only be verified after payment-ready.");
+    if (!Q.text(currentState.pendingEventVerifiedAtIso)) Q.fail("pending Activity Event checkpoint must be verified before cancellation.");
     const all = Q.collection("eventCheckoutBasketItems").find({ sourceId: TARGET_ID, userId: NOVA_ID }).toArray();
     const originals = new Set((currentState.paymentReadyBasketIds || []).map(String));
     const cancelled = all.filter(item => originals.has(String(item._id)));
@@ -810,15 +860,25 @@
         || activeTargetBaskets().length !== 0) {
       Q.fail("the first checkout attempt is not one closed cancelled basket audit.");
     }
+    const cancelledMemberships = targetNovaMemberships();
     if (Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
-        || Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: NOVA_ID }) !== 0
+        || cancelledMemberships.length !== 1
+        || Q.text(cancelledMemberships[0].status) !== "suppressed"
+        || Q.text(cancelledMemberships[0].statusBeforeSuppression) !== "pending"
+        || Q.text(cancelledMemberships[0].suppressionRootOwnerId) !== TARGET_ID
         || Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID, userId: NOVA_ID }) !== 0) {
-      Q.fail("cancelled checkout produced a payment, membership or ticket.");
+      Q.fail("cancelled checkout did not suppress the pending membership cleanly.");
+    }
+    const cancelledNova = Q.ensureUser(NOVA_ID, "Nova");
+    const cancelledEventCounters = cancelledNova.activities && cancelledNova.activities.event || {};
+    if (Number(cancelledEventCounters.all || 0) !== 2
+        || Number(cancelledEventCounters.pending || 0) !== 2) {
+      Q.fail(`cancelled checkout did not remove the Pending Event counters: ${JSON.stringify(cancelledEventCounters)}.`);
     }
     assertControlsUnchanged(currentState);
     assertRileyUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "cancelled-verified", cancelledAtIso: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "cancelled-verified", closedBasketItems: 2, paymentCount: 0, membershipCount: 0 });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "cancelled-verified", closedBasketItems: 2, paymentCount: 0, membership: "suppressed", tickets: 0 });
   }
 
   function paidSnapshot() {
@@ -983,6 +1043,7 @@
   else if (command === "status") status();
   else if (command === "repair-card-artwork") repairCardArtwork();
   else if (command === "capture-payment-ready") capturePaymentReady();
+  else if (command === "verify-pending-event") verifyPendingEvent();
   else if (command === "rollback-payment-ready") rollbackPaymentReady();
   else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "verify-paid") verifyPaid();
