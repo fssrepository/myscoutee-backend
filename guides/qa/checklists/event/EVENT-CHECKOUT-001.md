@@ -22,8 +22,9 @@ matrix rows.
   that same browser for Riley; sign back in as Casey only for the final Event
   Members check.
 - **Ava** selects the demo provider branch before each declared control.
-- Block 7 starts by taking **Nova** out of the paid target while **Riley**
-  remains its accepted member; Nova then owns the Watchlist subscription.
+- Block 7 first proves that accepted **Nova** and **Riley** have no Watchlist
+  action. Nova then leaves the paid target while Riley remains its accepted
+  member, and Nova owns the Watchlist subscription.
 - Codex stages all Events, checkout controls and sessions and runs the
   independent machine oracles. The user exclusively opens and controls the
   configured Casey/Nova/Ava browser sessions. Riley reuses Casey's browser;
@@ -205,8 +206,8 @@ Begin only after Codex confirms this exact baseline:
 50. In both Nova and Riley, reopen Event Explore. The target must remain exactly
     once and both Slots must be full. The payment response must update the card
     immediately: `Book Event`, `Continue booking`, `Join waiting list`, a new
-    payment action and a paid basket entry must all be absent. `Add to
-    Watchlist` remains available as the Event-level notification action.
+    payment action, a paid basket entry and both Watchlist actions must all be
+    absent. Accepted members already receive Event-level notifications.
 51. In both users' Active Event menus, confirm `Continue booking`, `Book Event`
     and another `Payment` action are absent. A stale action for either user is
     a failure.
@@ -247,10 +248,11 @@ Begin only after Codex confirms this exact baseline:
     Riley's Morning Slot payment, not Nova's Evening payment.
 61. Open `All Events` for both users and confirm the Event appears exactly once
     for each.
-62. Return to Event Explore and reconfirm the target remains exactly once with
-    `Add to Watchlist`, but without `Continue booking`, `Join waiting list`, a
-    fresh payment action or a basket candidate for either user. This later read
-    must converge to the same state already signalled by the final payment.
+62. Return to Event Explore and reconfirm the target remains exactly once, but
+    without `Add to Watchlist`, `Remove from Watchlist`, `Continue booking`,
+    `Join waiting list`, a fresh payment action or a basket candidate for
+    either accepted user. This later read must converge to the same state
+    already signalled by the final payment.
 63. Sign Riley out of the reused browser, sign back in as **Casey**, then open
     the target through `My Events → Event Members`.
 64. Confirm Casey appears once as Admin, Nova and Riley once each as accepted
@@ -302,10 +304,10 @@ fixture can reconcile any stale browser draft, then check only these three:
 
 These three checks passed during this run.
 
-Before step 75, Codex captures the exact current state with `capture-block-7`:
-Nova and Riley are still accepted, both Slots are full and no Watchlist
-subscription exists. `rollback-block-7` restores this complete starting point,
-including Nova's membership.
+Before step 75, Codex captured the exact current state with `capture-block-7`:
+`phase=block7-ready`, Nova and Riley are still accepted, both Slots are full
+and no Watchlist subscription exists. `rollback-block-7` restores this
+complete starting point, including Nova's membership.
 
 ### 7. Verify the Event Watchlist without changing All
 
