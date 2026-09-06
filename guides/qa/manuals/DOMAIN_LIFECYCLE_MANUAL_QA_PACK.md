@@ -7087,6 +7087,31 @@ registration, expired-card notification/cleanup and Payment History are one
 Core checkpoint:
 [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 
+### `PAYMENT-METHODS-HISTORY-001` — active pair-QA evidence
+
+Status: **IN PROGRESS — REPAIR REPLAY** (2026-09-06).
+
+- The first manual run reached the pending Stripe card-registration boundary
+  without creating a card or changing Payment History/totals. It exposed four
+  bounded presentation/integration defects: the Cash Only choice used an icon
+  and undersized lowercase text; the active-provider header rendered Stripe
+  and Cash Only together because its wordmark display rule overrode `hidden`;
+  the 3DS page retained a `TEST ONLY` badge; and its `Open confirmation`
+  popup was blocked by the parent iframe sandbox.
+- The simulator now renders text-only `Cash Only` at provider-wordmark scale,
+  gives `[hidden]` precedence so exactly one active provider is visible, and
+  omits the 3DS badge. The Admin simulator iframe now grants only the additional
+  `allow-popups` capability needed by the simulator-owned confirmation URL.
+  The focused simulator UI test passes, the existing frontend watcher compiled
+  and synchronized the sandbox change, and the rebuilt simulator container is
+  healthy.
+- The blocked registration expired during repair. The exact versioned reset
+  restored the pre-checkpoint scope, then a single fresh stage/status proved
+  `baseline-ready`, provider `none` (Cash Only), 3DS Off, the canonical three
+  cards/four history rows/totals/notification, and zero registrations. No PASS
+  is claimed. Reload the existing Ava and Alex windows once so they load the
+  repaired bundle, then replay from checklist step 1.
+
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
 
 `ENTRY-DEMO-REG-001` completed execution checkpoint (2026-08-13): the existing

@@ -81,7 +81,8 @@ Open the configured Ava/Alex windows only after the read-only status reports
 13. Confirm the registration surface changes to a three-minute 3DS wait and no
     card is added yet. In **Ava**, open `3DS`; in the possibly multi-member list,
     locate only Alex's pending Stripe **card registration**, open its confirmation
-    surface and approve it. Do not act on another member's pending item.
+    surface in the separate window and approve it. The 3DS list header must not
+    show a `TEST ONLY` badge. Do not act on another member's pending item.
 14. In **Alex**, confirm the waiting text changes to the animated success result,
     remains visible briefly, then the popup returns without a page reload and
     exactly one new active Stripe card appears with artwork, masked number,

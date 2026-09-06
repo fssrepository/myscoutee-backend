@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 01:53 CEST
+Updated: 2026-09-06 02:07 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -71,22 +71,22 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: PAYMENT-METHODS-HISTORY-001 — BASELINE READY / NOT RUN
+checkpoint: PAYMENT-METHODS-HISTORY-001 — IN PROGRESS / REPAIR REPLAY
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#consolidated-executable-journeys-and-source-oracle-archive
 checklist: ../checklists/event/PAYMENT-METHODS-HISTORY-001.md
-substage: implementation and versioned fixture preparation complete, including provider-change recovery and the Cash-only simulator logo cleanup; a fresh read-only resume gate proved the exact payment-ui baseline; no manual step has run
-next_replay_boundary: do not build, install, stage, or relaunch; the user starts checklist step 1 in the running Ava/Alex sessions
-fixture_phase: read-only status at `2026-09-06 01:50 CEST` is `phase=baseline-ready`, provider `none` (Cash only), connected=true, requires3ds=false, with the exact three cards, four history rows, totals, expiry notification, and zero registrations
-browser_phase: at `2026-09-06 01:53 CEST` the checkpoint launcher reported the configured Ava demo-payment Admin session and Alex Payment member session ready in two isolated side-by-side windows; no manual QA step has run. The user exclusively controls browser navigation and clicks. Canonical key-authenticated loopback SSH forwards remain active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`
+substage: the first manual path reached a pending Stripe card registration and exposed repaired provider-wordmark, 3DS-badge and iframe-popup defects; the blocked registration expired during repair, so the exact reset plus one fresh stage/status restored a clean replay boundary
+next_replay_boundary: do not build, install, stage, reset, or relaunch browsers; the user reloads the existing Ava and Alex windows once, then restarts at checklist step 1
+fixture_phase: exact stage/status at `2026-09-06 02:05 CEST` is `phase=baseline-ready`, provider `none` (Cash Only), connected=true, requires3ds=false, with the canonical three cards, four history rows, totals, expiry notification, and zero registrations
+browser_phase: the configured Ava demo-payment Admin and Alex Payment member windows remain open. Their documents predate the repaired frontend bundle, so the user must reload each once before replay. The user exclusively controls browser navigation and clicks. Canonical key-authenticated loopback SSH forwards remain active at `localhost:80 -> VM:80` and `localhost:443 -> VM:443`
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is NOT RUN, owned by Event, and its runtime fixture is baseline-ready
+ledger_status: 86/114 total, Core 86/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is IN PROGRESS / REPAIR REPLAY, owned by Event, and its fresh runtime fixture is baseline-ready
 queued_next: PAYMENT-METHODS-HISTORY-001
-required_resume: do not rebuild, reinstall, stage, or relaunch; preserve the proven baseline and running Ava/Alex sessions while the user begins checklist step 1
+required_resume: do not rebuild, reinstall, stage, reset, or relaunch; preserve the proven baseline, have the user reload the existing Ava/Alex windows once, then replay checklist step 1
 actors: Ava configures only the demo simulator; Alex exercises Payment history, Cards, provider registration and expired-card cleanup
 pending_machine_oracle: verify-stripe, verify-barion, verify-expired-cleanup and terminal verify during the future pair-QA run
 provider_change_contract: the structured payment error carries the current provider (including Cash only) and updates the shared frontend provider state directly without polling or a second configuration request. A selected mismatched card remains visible with a static blue `Update needed` badge; clicking the card reopens the existing picker. The Cards/assign list shows the whitened card with a clickable blue `Reconnect >` badge and Retokenize/Delete actions
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: implementation preparation plus the fresh exact payment-ui baseline proof after the deployment refresh. The real expiry scheduler -> outbox -> notification smoke passed; no Payment manual verdict is recorded
+last_completed: repaired and hot-deployed text-only/exclusive provider branding, removed the 3DS test badge, enabled the confirmation popup at the parent sandbox boundary, then exact-reset and freshly staged the canonical baseline. The real expiry scheduler -> outbox -> notification smoke passed; no Payment PASS verdict is recorded
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
