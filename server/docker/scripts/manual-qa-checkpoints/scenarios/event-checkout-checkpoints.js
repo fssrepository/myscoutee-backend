@@ -871,6 +871,47 @@
     return snapshots;
   }
 
+  function expectedCancelledBasketIds(currentState) {
+    const ids = (currentState.paymentReadyBasketIds || []).map(String);
+    if (ids.length !== 2 || new Set(ids).size !== 2) {
+      Q.fail("the block-4 checkpoint does not identify exactly two original basket items.");
+    }
+    return new Set(ids);
+  }
+
+  function isTargetNovaBasket(item) {
+    return Q.text(item && item.sourceId) === TARGET_ID
+      && Q.text(item && item.userId) === NOVA_ID;
+  }
+
+  function isClosedCancelledBasket(item, expectedIds) {
+    return expectedIds.has(String(item._id))
+      && item.reservationActive !== true
+      && item.pendingCounterTracked !== true
+      && Q.text(item.status) === "cancelled"
+      && Q.text(item.resultState) === "deleted";
+  }
+
+  function block4SnapshotsForOriginalAttempt(currentState, snapshots) {
+    const expectedIds = expectedCancelledBasketIds(currentState);
+    return snapshots.map(snapshot => {
+      if (snapshot.collection !== "eventCheckoutBasketItems") return snapshot;
+      return {
+        ...snapshot,
+        documents: (snapshot.documents || []).filter(item =>
+          !isTargetNovaBasket(item) || expectedIds.has(String(item._id)))
+      };
+    });
+  }
+
+  function assertCancelledBasketAudit(currentState, baskets, message) {
+    const expectedIds = expectedCancelledBasketIds(currentState);
+    if (baskets.length !== 2
+        || baskets.some(item => !isClosedCancelledBasket(item, expectedIds))) {
+      Q.fail(message);
+    }
+  }
+
   function assertBlock4Boundary(currentState) {
     const memberships = Q.collection("activityMembers").find({
       ownerType: "event",
@@ -880,6 +921,14 @@
     const target = Q.collection("events").findOne({ _id: TARGET_ID });
     const nova = Q.ensureUser(NOVA_ID, "Nova");
     const eventCounters = nova.activities && nova.activities.event || {};
+    const baskets = Q.collection("eventCheckoutBasketItems")
+      .find({ sourceId: TARGET_ID, userId: NOVA_ID })
+      .toArray();
+    assertCancelledBasketAudit(
+      currentState,
+      baskets,
+      "the block-4 rollback did not restore exactly the original two cancelled basket records."
+    );
     if (activeTargetBaskets().length !== 0
         || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
         || Q.collection("chats").countDocuments(chatSelector) !== 0
@@ -914,9 +963,18 @@
       Q.fail("the verified block-4 rollback checkpoint has not been captured.");
     }
     const checkpoint = {
-      snapshots: currentState.block4Snapshots,
+      snapshots: block4SnapshotsForOriginalAttempt(currentState, currentState.block4Snapshots),
       userFields: currentState.block4UserFields
     };
+    const checkpointBaskets = checkpoint.snapshots
+      .filter(snapshot => snapshot.collection === "eventCheckoutBasketItems")
+      .flatMap(snapshot => snapshot.documents || [])
+      .filter(isTargetNovaBasket);
+    assertCancelledBasketAudit(
+      currentState,
+      checkpointBaskets,
+      "the saved block-4 checkpoint does not contain exactly the original two cancelled basket records."
+    );
     clearCurrentEffects();
     Q.restoreSnapshots(checkpoint.snapshots);
     for (const saved of checkpoint.userFields) restoreUserFields(saved);
@@ -954,12 +1012,14 @@
     const all = Q.collection("eventCheckoutBasketItems").find({ sourceId: TARGET_ID, userId: NOVA_ID }).toArray();
     const originals = new Set((currentState.paymentReadyBasketIds || []).map(String));
     const cancelled = all.filter(item => originals.has(String(item._id)));
-    if (cancelled.length !== 2
-        || cancelled.some(item => item.reservationActive === true || item.pendingCounterTracked === true)
-        || cancelled.some(item => Q.text(item.status) !== "cancelled" || Q.text(item.resultState) !== "deleted")
-        || activeTargetBaskets().length !== 0) {
+    if (all.length !== 2 || activeTargetBaskets().length !== 0) {
       Q.fail("the first checkout attempt is not one closed cancelled basket audit.");
     }
+    assertCancelledBasketAudit(
+      currentState,
+      cancelled,
+      "the first checkout attempt is not one closed cancelled basket audit."
+    );
     const cancelledMemberships = targetNovaMemberships();
     if (Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
         || cancelledMemberships.length !== 1
