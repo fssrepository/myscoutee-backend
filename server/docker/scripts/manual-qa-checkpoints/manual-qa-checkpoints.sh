@@ -217,7 +217,9 @@ Usage:
   bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-003
   bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-003
   bash manual-qa-checkpoints.sh stage payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh stage-decline payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh status payment-ui PAYMENT-METHODS-HISTORY-001
+  bash manual-qa-checkpoints.sh verify-decline payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-barion payment-ui PAYMENT-METHODS-HISTORY-001
   bash manual-qa-checkpoints.sh verify-replace payment-ui PAYMENT-METHODS-HISTORY-001
@@ -657,15 +659,17 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  payment-ui:stage)
+  payment-ui:stage|payment-ui:stage-decline)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
-    replace_payment_simulator_card_fixtures
-    set_payment_simulator_cash_only
-    run_scenario "status" "${scenario}" 30 "$3"
+    if [ "${command}" = "stage" ]; then
+      replace_payment_simulator_card_fixtures
+      set_payment_simulator_cash_only
+      run_scenario "status" "${scenario}" 30 "$3"
+    fi
     ;;
-  payment-ui:status|payment-ui:verify-stripe|payment-ui:verify-barion|payment-ui:verify-replace|payment-ui:verify-reconnect|payment-ui:verify-expired-cleanup|payment-ui:verify)
+  payment-ui:status|payment-ui:verify-decline|payment-ui:verify-stripe|payment-ui:verify-barion|payment-ui:verify-replace|payment-ui:verify-reconnect|payment-ui:verify-expired-cleanup|payment-ui:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "PAYMENT-METHODS-HISTORY-001" ] || fail "${command} is restricted to PAYMENT-METHODS-HISTORY-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

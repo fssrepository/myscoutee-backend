@@ -139,16 +139,15 @@ Codex runs `verify-replace payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 ## 5. Reconnect a card after changing provider
 
-26. Still on connected `Barion`, find the Stripe card created in steps 11–14
-    (the `Stripe Test User 001` card), not either baseline Stripe card. Confirm
-    it has the provider-mismatch overlay and `Reconnect >` instead of a
-    three-dot trigger.
+26. Still on connected `Barion`, choose any one active Stripe card and note its
+    cardholder and last four digits. Confirm it has the provider-mismatch
+    overlay and `Reconnect >` instead of a three-dot trigger.
 27. Open `Reconnect >`, and select `Retokenize card`. Confirm
     the embedded provider surface is Barion. Generate the Barion test card
     once, then select `Tokenize and save card` once.
-28. Confirm the original Stripe card is replaced rather than duplicated: its
+28. Confirm the chosen Stripe card is replaced rather than duplicated: its
     Barion replacement retains the original artwork, the active card count is
-    unchanged, and the two baseline Stripe cards still show `Reconnect >`.
+    unchanged, and the other two active Stripe cards still show `Reconnect >`.
 29. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 reconnect verified: Stripe card retokenized with Barion`
@@ -181,9 +180,9 @@ Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 36. Confirm the four original history rows, both exact totals, all three
     filters, failure reason and day groups reconstruct unchanged.
 37. Confirm the two successful replacement results remain as active Barion
-    cards, the transient Stripe and Barion source cards do not return, both
-    baseline active Stripe cards remain with `Reconnect >`, and expired `0008`
-    does not return.
+    cards, the chosen Stripe and Barion source cards do not return, the two
+    remaining active Stripe cards show `Reconnect >`, and expired `0008` does
+    not return.
 38. Confirm no payment, membership, Asset request, basket or checkout was
     created merely by filtering history or managing cards.
 39. Report the terminal phrase:
@@ -194,3 +193,28 @@ Codex runs `verify payment-ui PAYMENT-METHODS-HISTORY-001`, records the pair-QA
 result, then runs the exact reset. Reset restores Alex's original cards,
 registrations, payments, notification state and payment totals, and restores
 the simulator to `Cash Only`.
+
+## Standalone Stripe 3DS decline branch
+
+This branch is independent from steps 1–39 and does not require replaying them.
+
+1. Codex runs:
+
+   ```bash
+   bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh stage-decline payment-ui PAYMENT-METHODS-HISTORY-001
+   ```
+
+2. In **Ava**, select connected `Stripe`, enable 3DS, and save. In **Alex**,
+   open `Cards` > `Add card`, generate one test card and submit it once.
+3. In Ava's `3DS` surface, open only Alex's pending card registration and
+   select `Decline card registration`.
+4. In Alex, confirm the embedded registration result says `Registration
+   declined` and `The card was not saved.`, then returns to the unchanged card
+   list. No saved card, payment or total may be created or changed.
+5. Report:
+
+   `PAYMENT-METHODS-HISTORY-001 standalone decline complete: no card saved`
+
+Codex runs `verify-decline payment-ui PAYMENT-METHODS-HISTORY-001`, then the
+normal `reset payment-ui PAYMENT-METHODS-HISTORY-001`. The 39-step test is not
+repeated.

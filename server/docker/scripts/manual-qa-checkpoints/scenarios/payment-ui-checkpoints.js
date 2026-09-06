@@ -251,6 +251,55 @@
     });
   }
 
+  function stageDecline() {
+    config();
+    Q.assertNotStaged(SCENARIO);
+    Q.assertNoOtherActiveScenario(SCENARIO);
+    const user = Q.ensureUser(TARGET_USER_ID, "payment UI member");
+    const declineBaselineCards = Q.collection("savedPaymentMethods")
+      .find(cardSelector).sort({ _id: 1 }).toArray();
+    const declineBaselineRegistrations = Q.collection("paymentMethodRegistrations")
+      .find(registrationSelector).sort({ _id: 1 }).toArray();
+    const declineBaselinePayments = Q.collection("payments")
+      .find(paymentSelector).sort({ _id: 1 }).toArray();
+    const stagedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).insertOne({
+      _id: Q.stateId(SCENARIO),
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "decline-ready",
+      branch: "stripe-3ds-decline",
+      stagedAtIso,
+      targetUserId: TARGET_USER_ID,
+      snapshots: Q.snapshotSpecs([
+        { collection: "savedPaymentMethods", selector: cardSelector },
+        { collection: "paymentMethodRegistrations", selector: registrationSelector },
+        { collection: "payments", selector: paymentSelector }
+      ]),
+      userFields: {
+        paymentSpentTotals: snapshotField(user, "paymentSpentTotals"),
+        paymentIncomeTotals: snapshotField(user, "paymentIncomeTotals"),
+        paymentAllTotals: snapshotField(user, "paymentAllTotals")
+      },
+      controlledPayments: declineBaselinePayments,
+      declineBaselineCards,
+      declineBaselineRegistrationIds: ids(declineBaselineRegistrations),
+      declineBaselineTotals: userTotals(user)
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "decline-ready",
+      branch: "stripe-3ds-decline",
+      baseline: {
+        cards: declineBaselineCards.length,
+        registrations: declineBaselineRegistrations.length,
+        payments: declineBaselinePayments.length
+      },
+      next: "Configure connected Stripe with 3DS On, start one Add card registration, generate once, submit once, then decline that pending card registration."
+    });
+  }
+
   function status() {
     config();
     const currentState = state(false);
@@ -272,7 +321,7 @@
       totals: userTotals(Q.ensureUser(TARGET_USER_ID, "payment UI member")),
       expiryNotification: Q.collection("userNotifications").findOne({ _id: NOTIFICATION_ID }, { readAtIso: 1, revision: 1 }) || null,
       evidence: currentState.evidence || {},
-      next: Q.text(currentState.phase) === "verified"
+      next: ["verified", "decline-verified"].includes(Q.text(currentState.phase))
         ? `Run reset ${SCENARIO} ${CHECKPOINT}.`
         : "Continue only from the matching stable checklist savepoint."
     });
@@ -320,14 +369,79 @@
     });
   }
 
+  function verifyDecline() {
+    config();
+    const currentState = state(true);
+    if (Q.text(currentState.branch) !== "stripe-3ds-decline") {
+      Q.fail("the staged payment checkpoint is not the standalone Stripe 3DS decline branch.");
+    }
+    assertProvider("stripe");
+    if (!requires3ds) Q.fail("payment simulator has 3DS disabled; expected Stripe with 3DS enabled.");
+
+    const currentCards = Q.collection("savedPaymentMethods")
+      .find(cardSelector).sort({ _id: 1 }).toArray();
+    if (!Q.sameJson(currentCards, currentState.declineBaselineCards || [])) {
+      Q.fail("declined Stripe registration changed the saved-card list.");
+    }
+    const baselineRegistrationIds = currentState.declineBaselineRegistrationIds || [];
+    const newRegistrations = Q.collection("paymentMethodRegistrations").find({
+      userId: TARGET_USER_ID,
+      _id: { $nin: baselineRegistrationIds }
+    }).toArray();
+    if (newRegistrations.length !== 1) {
+      Q.fail(`expected exactly one standalone decline registration, found ${newRegistrations.length}.`);
+    }
+    const registration = newRegistrations[0];
+    if (Q.text(registration.provider) !== "stripe" || Q.text(registration.status) !== "failed" ||
+        Q.text(registration.completedPaymentMethodId)) {
+      Q.fail(`decline registration is not terminal Stripe/failed without a saved card: ${JSON.stringify(registration)}.`);
+    }
+    assertPaymentsUnchanged(currentState);
+    const totals = userTotals(Q.ensureUser(TARGET_USER_ID, "payment UI member"));
+    if (!Q.sameJson(totals, currentState.declineBaselineTotals || {})) {
+      Q.fail("declined Stripe registration changed payment totals.");
+    }
+    const verifiedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: {
+        phase: "decline-verified",
+        verifiedAtIso,
+        "evidence.stripe3dsDeclined": true,
+        "evidence.stripe3dsDeclinedRegistrationId": Q.text(registration._id)
+      } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "decline-verified",
+      verifiedAtIso,
+      registration: { id: Q.text(registration._id), provider: "stripe", status: "failed" },
+      unchanged: { savedCards: true, payments: true, paymentTotals: true },
+      next: `Run reset ${SCENARIO} ${CHECKPOINT}; the completed 39-step run does not need to be repeated.`
+    });
+  }
+
   function verifyReplacement(kind) {
     config();
     const currentState = state(true);
     assertProvider("barion");
     const evidence = currentState.evidence || {};
-    const sourceEvidenceKey = kind === "replace" ? "barionCardId" : "stripeCardId";
-    const sourceId = Q.text(evidence[sourceEvidenceKey]);
-    if (!sourceId) Q.fail(`missing '${sourceEvidenceKey}' savepoint evidence.`);
+    const sourceEvidenceKey = kind === "replace" ? "barionCardId" : null;
+    let sourceId = sourceEvidenceKey ? Q.text(evidence[sourceEvidenceKey]) : "";
+    if (kind === "reconnect") {
+      const candidates = Q.collection("savedPaymentMethods").find({
+        userId: TARGET_USER_ID,
+        provider: "stripe",
+        status: "replaced",
+        replacedByPaymentMethodId: { $exists: true, $nin: [null, ""] }
+      }).toArray();
+      if (candidates.length !== 1) {
+        Q.fail(`expected exactly one reconnected Stripe source card, found ${candidates.length}.`);
+      }
+      sourceId = Q.text(candidates[0]._id);
+    }
+    if (!sourceId) Q.fail(`missing '${sourceEvidenceKey || "Stripe reconnect source"}' savepoint evidence.`);
     const source = Q.collection("savedPaymentMethods").findOne({ _id: sourceId, userId: TARGET_USER_ID });
     if (!source || Q.text(source.status) !== "replaced" || !Q.text(source.replacedByPaymentMethodId)) {
       Q.fail(`${kind} source card '${sourceId}' was not replaced exactly once.`);
@@ -379,7 +493,7 @@
       historyUnchanged: true,
       totalsUnchanged: true,
       next: kind === "replace"
-        ? "Run the separate Reconnect block on the Stripe card recorded by the stripe savepoint."
+        ? "Run the separate Reconnect block on any one active Stripe card."
         : "Continue with the expired-card badge cleanup."
     });
   }
@@ -426,16 +540,14 @@
     if (!Q.sameJson(activeReplacementIds, replacementIds)) {
       Q.fail(`active Barion replacement cards are ${JSON.stringify(activeReplacementIds)}; expected ${JSON.stringify(replacementIds)}.`);
     }
-    if (registrationMethods("stripe").length !== 0) {
-      Q.fail("the transient registered Stripe card returned after Reconnect.");
-    }
-    const baselineActive = Q.collection("savedPaymentMethods").find({
-      _id: { $in: BASELINE_CARD_IDS.filter(id => id !== EXPIRED_CARD_ID) },
+    const activeStripe = Q.collection("savedPaymentMethods").find({
       userId: TARGET_USER_ID,
       provider: "stripe",
       status: "active"
     }).toArray();
-    if (baselineActive.length !== 2) Q.fail("baseline active Stripe cards changed during Replace/Reconnect.");
+    if (activeStripe.length !== 2) {
+      Q.fail(`expected two remaining active Stripe cards after Reconnect, found ${activeStripe.length}.`);
+    }
     assertPaymentsUnchanged(currentState);
     const summary = paymentSummary();
     assertCanonicalIds(Q.collection("payments").find(paymentSelector).toArray(), BASELINE_PAYMENT_IDS, "controlled Payment History");
@@ -498,7 +610,9 @@
   Q.assertDeploymentSafety();
   switch (command) {
     case "stage": stage(); break;
+    case "stage-decline": stageDecline(); break;
     case "status": status(); break;
+    case "verify-decline": verifyDecline(); break;
     case "verify-stripe": verifyProviderRegistration("stripe"); break;
     case "verify-barion": verifyProviderRegistration("barion"); break;
     case "verify-replace": verifyReplacement("replace"); break;
