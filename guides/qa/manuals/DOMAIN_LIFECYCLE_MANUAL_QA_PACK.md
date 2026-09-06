@@ -2920,6 +2920,31 @@ Status: **PASS** on 2026-08-05.
   next poll. No feedback was submitted, removed or otherwise mutated. Keep this
   as a separate checkpoint from `EVENT-IMPRESSION-001`.
 
+## Member side-menu payment checkpoint
+
+### `PAYMENT-METHODS-HISTORY-001` — Payment history, saved cards and provider recovery
+
+Status: **PASS / CLOSED** (2026-09-06).
+
+Stable user guide:
+[`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
+
+- The user completed the 39-step Ava/Alex journey. The Stripe and Barion
+  registration savepoints, Barion replacement, Stripe reconnect, expired-card
+  cleanup and terminal history/idempotence oracles passed. Payment documents
+  and Alex's stored payment totals remained unchanged.
+- The independent Stripe 3DS cancellation branch returned without saving a
+  card or creating a payment. Its original run exposed only incorrect generic
+  failure copy. The provider terminal state is now the existing `cancelled`
+  state, with a dedicated user-cancelled message; generic technical failures
+  retain `payment.registration.error.failed`. The focused simulator regression
+  and the running frontend watcher build passed. The user accepted this
+  bounded correction without another manual replay.
+- Final cleanup removed only the standalone branch's exact terminal
+  registration artifact. Exact reset restored three saved cards, nine prior
+  registration audit records and five prior payment records, then returned the
+  simulator to connected Cash only with 3DS Off and `phase=not-staged`.
+
 ## Event checkout checkpoint
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation

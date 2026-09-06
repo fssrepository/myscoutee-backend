@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-05:** 86/114 passed — core 86/99, external/optional 0/15; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001` and `CONTENT-ADMIN-LIFECYCLE-001` are PASS/CLOSED; Borrow remains deferred and not staged during the payment-interface rewrite; the Event-owned Core `PAYMENT-METHODS-HISTORY-001` side-menu journey is BASELINE READY / NOT RUN; `EVENT-CHECKOUT-001` and `ASSET-CHECKOUT-001` own the provider checkout branches as NOT RUN; `EVENT-SCHEDULERS-001`, `EVENT-SLOT-TOURNAMENT-001`, `EVENT-EDIT-RUNTIME-001` and `JOB-PURGE` are PASS/CLOSED; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
+**2026-09-06:** 87/114 passed — core 87/99, external/optional 0/15; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001` and the Event-owned Core `PAYMENT-METHODS-HISTORY-001` side-menu journey are PASS/CLOSED; `EVENT-CHECKOUT-001` is the active final Event testcase and `ASSET-CHECKOUT-001` retains the later Barion checkout branch; verified Firebase, messaging and deployment-state journeys are consolidated under the external `DEPLOY-FIREBASE-LIFECYCLE-001` production-like VMware/Firebase run.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
