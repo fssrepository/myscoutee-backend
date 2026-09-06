@@ -162,6 +162,7 @@ public class ActivitiesEventsService {
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final EventCheckoutPricingService eventCheckoutPricingService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -196,6 +197,7 @@ public class ActivitiesEventsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
@@ -228,6 +230,7 @@ public class ActivitiesEventsService {
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
+        this.eventCheckoutPricingService = eventCheckoutPricingService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
@@ -3235,7 +3238,7 @@ public class ActivitiesEventsService {
                 ? List.of()
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
         if (!basketItems.isEmpty()) {
-            eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+            EventCheckoutRequestDto submittedCheckout = new EventCheckoutRequestDto(
                     userId,
                     sourceId,
                     request.slotSourceId(),
@@ -3249,7 +3252,8 @@ public class ActivitiesEventsService {
                     request.totalAmount(),
                     request.currency(),
                     pendingReason,
-                    request.appliedPromoCodes()));
+                    request.appliedPromoCodes());
+            eventCheckoutBasketService.saveBasket(eventCheckoutPricingService.reprice(submittedCheckout));
             return;
         }
         eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(

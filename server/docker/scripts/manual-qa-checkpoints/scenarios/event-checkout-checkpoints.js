@@ -591,7 +591,7 @@
     ]);
     Q.collection("savedPaymentMethods").insertMany([
       cardDocument(CARD_IDS.stripe, "stripe", "pm_sim_checkout_nova_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
-      cardDocument(CARD_IDS.barion, "barion", "pm_sim_checkout_nova_barion_4444", "4444", 9, 2029, "silver", "active", nowIso),
+      cardDocument(CARD_IDS.barion, "barion", "pm_sim_checkout_nova_barion_4444", "4444", 9, 2029, "graphite", "active", nowIso),
       {
         ...cardDocument(CARD_IDS.expired, "stripe", "pm_sim_checkout_nova_expired_0008", "0008", 8, 2026, "coral", "expired", nowIso),
         expiredNotifiedAtIso: nowIso
@@ -669,7 +669,7 @@
     }
     if (summary.cards.length !== 3
         || !summary.cards.some(item => item.provider === "stripe" && item.last4 === "4242" && item.status === "active")
-        || !summary.cards.some(item => item.provider === "barion" && item.last4 === "4444" && item.status === "active")
+        || !summary.cards.some(item => item.provider === "barion" && item.last4 === "4444" && item.status === "active" && item.artworkKey === "graphite")
         || !summary.cards.some(item => item.provider === "stripe" && item.last4 === "0008" && item.status === "expired" && item.artworkKey === "coral")) {
       Q.fail(`Nova card baseline mismatch: ${JSON.stringify(summary.cards)}.`);
     }
@@ -705,6 +705,17 @@
     });
   }
 
+  function repairCardArtwork() {
+    config();
+    state();
+    const result = Q.collection("savedPaymentMethods").updateOne(
+      { _id: CARD_IDS.barion, userId: NOVA_ID, provider: "barion", last4: "4444" },
+      { $set: { artworkKey: "graphite", updatedAtIso: Q.nowIso() } }
+    );
+    if (result.matchedCount !== 1) Q.fail("could not repair Nova's Barion 4444 fixture artwork.");
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, repaired: { cardId: CARD_IDS.barion, provider: "barion", last4: "4444", artworkKey: "graphite" } });
+  }
+
   function activeTargetBaskets() {
     return Q.collection("eventCheckoutBasketItems").find({
       sourceId: TARGET_ID,
@@ -717,6 +728,9 @@
   function capturePaymentReady() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "baseline-ready") Q.fail("payment-ready can only be captured from baseline-ready.");
+    if (provider !== "stripe" || !providerConnected || requires3ds) {
+      Q.fail(`payment-ready simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Stripe with 3DS Off.`);
+    }
     const baskets = activeTargetBaskets();
     const kinds = sorted(baskets.map(item => item.kind));
     const total = baskets.reduce((sum, item) => sum + Number(item.amount || 0) * Math.max(1, Number(item.quantity || 1)), 0);
@@ -734,13 +748,54 @@
     }
     assertControlsUnchanged(currentState);
     assertRileyUnchanged(currentState);
+    const paymentReadyDynamic = dynamicArtifacts();
+    const paymentReadySnapshots = Q.snapshotSpecs(staticSpecs());
+    paymentReadySnapshots.push({
+      collection: "payment_gateway_operations",
+      selector: { paymentId: { $in: paymentReadyDynamic.paymentIds } },
+      documents: paymentReadyDynamic.paymentIds.length === 0 ? [] : Q.collection("payment_gateway_operations")
+        .find({ paymentId: { $in: paymentReadyDynamic.paymentIds } }).toArray()
+    });
+    paymentReadySnapshots.push({
+      collection: "chatMessages",
+      selector: { chatId: { $in: paymentReadyDynamic.chatIds } },
+      documents: paymentReadyDynamic.chatIds.length === 0 ? [] : Q.collection("chatMessages")
+        .find({ chatId: { $in: paymentReadyDynamic.chatIds } }).toArray()
+    });
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "payment-ready",
       paymentReadyAtIso: Q.nowIso(),
       paymentReadyBasketIds: baskets.map(item => item._id),
-      paymentReadyBaskets: baskets
+      paymentReadyBaskets: baskets,
+      paymentReadySnapshots,
+      paymentReadyUserFields: [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId)))
     } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", basketItems: 2, amount: 4900, currency: "HUF", paymentCount: 0, membershipCount: 0 });
+  }
+
+  function rollbackPaymentReady() {
+    config();
+    const currentState = state();
+    if (!Array.isArray(currentState.paymentReadySnapshots) || currentState.paymentReadySnapshots.length === 0) {
+      Q.fail("payment-ready rollback checkpoint has not been captured.");
+    }
+    clearCurrentEffects();
+    Q.restoreSnapshots(currentState.paymentReadySnapshots);
+    for (const saved of currentState.paymentReadyUserFields || []) restoreUserFields(saved);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: { phase: "payment-ready", paymentReadyRolledBackAtIso: Q.nowIso() },
+        $unset: { cancelledAtIso: "", paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+      }
+    );
+    const restoredBaskets = activeTargetBaskets();
+    if (!Q.sameJson(restoredBaskets, currentState.paymentReadyBaskets)
+        || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
+        || Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: NOVA_ID }) !== 0) {
+      Q.fail("payment-ready rollback did not restore the exact step-18 boundary.");
+    }
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-18", basketItems: restoredBaskets.length, paymentCount: 0, membershipCount: 0 });
   }
 
   function verifyCancelled() {
@@ -926,7 +981,9 @@
   Q.assertDeploymentSafety();
   if (command === "stage") stage();
   else if (command === "status") status();
+  else if (command === "repair-card-artwork") repairCardArtwork();
   else if (command === "capture-payment-ready") capturePaymentReady();
+  else if (command === "rollback-payment-ready") rollbackPaymentReady();
   else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "verify-paid") verifyPaid();
   else if (command === "verify-destination") verifyDestination();

@@ -741,7 +741,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_cash_only
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  event-checkout:status|event-checkout:capture-payment-ready|event-checkout:verify-cancelled|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify)
+  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:capture-payment-ready|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

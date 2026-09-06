@@ -103,6 +103,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private EventCheckoutBasketService eventCheckoutBasketService;
     @Mock
+    private EventCheckoutPricingService eventCheckoutPricingService;
+    @Mock
     private ScheduledMessageTaskService scheduledMessageTaskService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -155,6 +157,7 @@ class ActivitiesEventsServiceTest {
                 eventParticipationTicketService,
                 paymentService,
                 eventCheckoutBasketService,
+                eventCheckoutPricingService,
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -174,6 +177,7 @@ class ActivitiesEventsServiceTest {
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
                 activitySubEventStageRuntimeMapper);
+        lenient().when(eventCheckoutPricingService.reprice(any())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
