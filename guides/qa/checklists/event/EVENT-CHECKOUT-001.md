@@ -288,6 +288,16 @@ Begin only after Codex confirms this exact baseline:
 
     `EVENT-CHECKOUT-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
 
+Before step 75, an optional short visual regression glance is enough; it is
+not another checkpoint. Reload Event Explore once so the repaired server
+fixture can reconcile any stale browser draft, then check only these three:
+
+- `QA EVENT-CHECKOUT-001 Waitlist`: its menu has no `Continue booking`;
+- `QA EVENT-CHECKOUT-001 Cash only`: `Book Event` opens without a Basket/Slot
+  panel;
+- `QA EVENT-CHECKOUT-001 Paid` in Active Events: `Payment summary` still shows
+  its selected Slot/basket item.
+
 ### 7. Verify the Event Watchlist without changing All
 
 75. In Nova, find the fully booked target in Event Explore and select `Add to

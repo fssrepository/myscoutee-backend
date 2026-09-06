@@ -952,6 +952,78 @@
     });
   }
 
+  function repairDuplicateSlotOccurrences() {
+    config();
+    const currentState = state();
+    if (!["paid-verified", "destination-verified"].includes(Q.text(currentState.phase))) {
+      Q.fail("slot occurrence repair is restricted to the verified paid/destination boundary.");
+    }
+    const target = Q.collection("events").findOne({ _id: TARGET_ID, status: "A" });
+    if (!target) {
+      Q.fail("the canonical paid Event is unavailable.");
+    }
+    const expectedSnapshot = Q.text(currentState.phase) === "destination-verified"
+      ? currentState.destinationFingerprint
+      : currentState.paidFingerprint;
+    const currentSnapshot = paidSnapshot();
+    const withoutDerivedSlotFields = snapshot => ({
+      ...snapshot,
+      event: snapshot && snapshot.event
+        ? { ...snapshot.event, upcomingSlots: [], updatedDate: null, updatedUser: null }
+        : null
+    });
+    if (!samePersistedSnapshot(
+      withoutDerivedSlotFields(currentSnapshot),
+      withoutDerivedSlotFields(expectedSnapshot)
+    )) {
+      Q.fail("paid Event state changed beyond the duplicate derived Slot occurrence; refusing repair.");
+    }
+    const expectedIds = [MORNING_SLOT_ID, EVENING_SLOT_ID];
+    const uniqueById = new Map();
+    for (const slot of target.upcomingSlots || []) {
+      const slotId = Q.text(slot && slot.id);
+      if (expectedIds.includes(slotId) && !uniqueById.has(slotId)) {
+        uniqueById.set(slotId, slot);
+      }
+    }
+    const normalizedSlots = expectedIds.map(id => uniqueById.get(id)).filter(Boolean);
+    if (normalizedSlots.length !== expectedIds.length) {
+      Q.fail("the canonical paid Event does not contain both expected Slot occurrences.");
+    }
+    const changed = (target.upcomingSlots || []).length !== normalizedSlots.length;
+    if (changed) {
+      Q.collection("events").updateOne(
+        { _id: TARGET_ID, status: "A" },
+        { $set: { upcomingSlots: normalizedSlots, full: true, updatedDate: Q.nowIso(), updatedUser: Q.ACTOR } }
+      );
+    }
+
+    const normalized = paidSnapshot();
+    const stateSet = { paidFingerprint: normalized, slotOccurrencesRepairedAtIso: Q.nowIso() };
+    const stateUnset = {};
+    if (Q.text(currentState.phase) === "destination-verified") {
+      stateSet.destinationFingerprint = normalized;
+      stateSet.block6Snapshots = currentScopedSnapshots();
+      stateSet.block6UserFields = [CASEY_ID, NOVA_ID, RILEY_ID]
+        .map(userId => userFields(Q.ensureUser(userId)));
+      stateSet.block6ChatMessageIds = documentIds(eventChatMessages());
+      stateSet.block6JoinNotificationIds = documentIds(novaJoinNotifications());
+      stateSet.block6JoinOutboxIds = documentIds(novaJoinOutboxItems());
+      stateSet.block6CapturedAtIso = Q.nowIso();
+      stateUnset.controlsVerifiedAtIso = "";
+    }
+    const update = { $set: stateSet };
+    if (Object.keys(stateUnset).length > 0) update.$unset = stateUnset;
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, update);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: Q.text(currentState.phase),
+      changed,
+      upcomingSlotIds: normalizedSlots.map(slot => Q.text(slot.id))
+    });
+  }
+
   function activeTargetBaskets(userId = NOVA_ID) {
     return Q.collection("eventCheckoutBasketItems").find({
       sourceId: TARGET_ID,
@@ -1367,7 +1439,13 @@
       Q.text(item.userId) === RILEY_ID
       && Q.text(item.slotSourceId) === MORNING_SLOT_ID
       && Q.text(item.paymentMethodId) === CARD_IDS.rileyStripe);
-    if (current.payments.length !== 2 || successfulPayments.length !== 2 || !novaPayment || !rileyPayment) {
+    const upcomingSlotIds = (current.event && current.event.upcomingSlots || [])
+      .map(item => Q.text(item && item.id));
+    if (current.payments.length !== 2
+        || successfulPayments.length !== 2
+        || !novaPayment
+        || !rileyPayment
+        || !Q.sameJson(upcomingSlotIds, [MORNING_SLOT_ID, EVENING_SLOT_ID])) {
       Q.fail(`expected the exact Nova-Evening and Riley-Morning Stripe payments, found ${JSON.stringify(current.payments.map(item => ({ id: item._id, userId: item.userId, provider: item.provider, status: item.status, bookingStatus: item.bookingStatus, amount: item.amount, slotSourceId: item.slotSourceId, paymentMethodId: item.paymentMethodId })))}.`);
     }
     const succeeded = current.baskets.filter(item =>
@@ -1836,6 +1914,7 @@
   else if (command === "status") status();
   else if (command === "repair-card-artwork") repairCardArtwork();
   else if (command === "repair-control-fixtures") repairControlFixtures();
+  else if (command === "repair-slot-occurrences") repairDuplicateSlotOccurrences();
   else if (command === "capture-payment-ready") capturePaymentReady();
   else if (command === "verify-pending-event") verifyPendingEvent();
   else if (command === "rollback-payment-ready") rollbackPaymentReady();

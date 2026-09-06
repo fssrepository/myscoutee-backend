@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 06:17 CEST
+Updated: 2026-09-06 09:45 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -75,19 +75,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-CHECKOUT-001 — IN PROGRESS / CANCELLED VERIFIED
+checkpoint: EVENT-CHECKOUT-001 — IN PROGRESS / VERIFIED THROUGH STEP 74
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-checkout-checkpoint
 checklist: ../checklists/event/EVENT-CHECKOUT-001.md
-substage: user-controlled steps through 32 completed the resumable Pending and cancellation branch; both historical pending and current cancelled machine oracles passed
-next_replay_boundary: Nova begins the fresh Stripe attempt at step 33; after Nova pays Evening, the existing Casey browser is reused for Riley to pay Morning in the extended block 4
-fixture_phase: `phase=cancelled-verified`; the saved step-21 boundary proved basketItems=2, amount=4900 HUF, eventAll=3, eventPending=3, paymentCount=0 and membership=pending, while step 32 proved closedBasketItems=2, paymentCount=0, membership=suppressed and tickets=0
-browser_phase: the user exclusively performed steps through 32; Codex performed no browser navigation or inspection
+substage: user-controlled steps through 74 are complete; the persisted destination, reload/control reads and repaired control contracts passed, and the already-repeated Nova leave/rejoin path remains exploratory coverage inside block 4 rather than a new block
+next_replay_boundary: optionally perform only the three short regression glances after step 74, then begin block 7 at step 75 with Nova adding the fully booked paid Event to Watchlist
+fixture_phase: `phase=destination-verified`, `controlsVerifiedAtIso` present; the exact step-66 rollback snapshot is captured, the target has exactly Morning plus Evening once, exactly two authorized joined Stripe payments, two succeeded inactive baskets, no active basket, and the Waitlist/Cash-only controls have no active checkout effects
+browser_phase: the user exclusively performed steps through 74 and repeated Nova leave/rejoin several times; Codex performed no browser navigation or clicks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 is IN PROGRESS at cancelled-verified
+ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 remains IN PROGRESS through step 74
 queued_next: EVENT-CHECKOUT-001
-required_resume: preserve the cancelled-verified fixture and three running windows; Nova continues from step 33, then Riley reuses Casey's window instead of opening a fourth browser
-actors: Nova pays Evening; Riley pays Morning after signing Casey out of the reused window; Casey signs back in only for the final membership check; Ava changes only the demo payment provider at the declared boundaries
-pending_machine_oracle: verify-paid expects the exact Nova-Evening and Riley-Morning pair, then verify-destination and terminal verify run during this pair-QA session
+required_resume: preserve the destination-verified fixture and existing browser windows; after any optional three-item visual glance, continue directly with Watchlist step 75 without replaying payment or leave/rejoin
+actors: Nova owns the Watchlist subscription; Riley leaves once only at step 78 to open a Slot; Casey and Ava remain idle during block 7
+pending_machine_oracle: the final block-7 oracle must prove separate Watchlist persistence/counter behavior, one availability notification, no reservation/basket/membership side effect and unchanged All semantics
 provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
 last_completed: PAYMENT-METHODS-HISTORY-001 PASS/CLOSED, including the accepted bounded cancellation-copy correction and exact reset
@@ -232,10 +232,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The rollback gate proved `phase=cancelled-verified`: the step-21 pending
-snapshot and step-32 cancellation both passed. Nova continues from checklist
-step 33 and reports the step-42 intermediate phrase; Riley then reuses Casey's
-browser and completes Morning before the block-4 machine oracle at step 53.
+The persisted gate is `phase=destination-verified` with steps through 74
+verified and the exact step-66 rollback snapshot retained. Optionally inspect
+only the three short UI regressions listed after step 74, then Nova starts the
+Watchlist block at step 75. Do not replay payment or the already-repeated
+leave/rejoin path.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

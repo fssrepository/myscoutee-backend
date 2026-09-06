@@ -2949,7 +2949,7 @@ Stable user guide:
 
 ### `EVENT-CHECKOUT-001` — Event Explore Stripe payment reaches accepted participation
 
-Status: **IN PROGRESS — CANCELLED VERIFIED** (2026-09-06).
+Status: **IN PROGRESS — VERIFIED THROUGH STEP 74** (2026-09-06).
 
 Stable user guide:
 [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
@@ -2976,7 +2976,8 @@ action.
   | Fresh paid direct Event | Event Explore `Book Event`; checkout review `Join` | `Continue booking`, `Payment summary` |
   | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Stripe` | a second active basket/session |
   | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
-  | Full paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Full direct paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
+  | Full multi-Slot paid Event | Event remains in Explore with `Add to Watchlist` | `Book Event`, `Continue booking`, `Join Waiting List`, new basket/payment |
   | Free Event | `Join Event`/`Join` | payment step or payment record |
   | Successful direct Stripe payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
 
@@ -3016,28 +3017,35 @@ action.
   Stripe simulator authorizations belong to this branch; capture/settlement
   and Registry work are outside this checkpoint.
 - Immediate UI oracle: the paid target is present exactly once under both
-  participants' Activity Events `Active` and `All` buckets and absent as a
-  fresh Explore candidate for both. Each menu exposes `View Event`, read-only
-  `Payment summary` and `Leave Event`; Nova's summary returns Evening and
-  Riley's returns Morning with their own payment method and authorized/joined
-  result. Merely opening either summary cannot write.
+  participants' Activity Events `Active` and `All` buckets and remains exactly
+  once in Event Explore as a full multi-Slot Event. Each Active/All menu
+  exposes `View Event`, read-only `Payment summary` and `Leave Event`; Nova's
+  summary returns Evening and Riley's returns Morning with their own payment
+  method and authorized/joined result. Explore exposes the Event-level
+  Watchlist action, never another booking/payment action. Merely opening either
+  summary cannot write.
 - One clean reload must reconstruct the same accepted membership, bucket
   counters, menu actions and Payment summary from persisted state. The target
-  must not return as a fresh Event Explore payment candidate. Reopening the
+  remains visible in Event Explore without becoming a fresh payment candidate.
+  Reopening the
   summaries and replaying the captured request identities through the machine
   oracle must retain exactly two payments, baskets and participant joins with
   one shared three-member chat projection.
 - Inspect the free, approval-required and waitlist controls without converting
-  them to successful payments. Their labels and forbidden-payment states must
-  match the table, and every separate control remains byte-identical.
+  them to successful payments. The Waitlist control is pending membership with
+  no basket, so `Continue booking` is forbidden. The plain non-slot Cash-only
+  checkout has no Basket/Slot panel and is explicitly cancelled; Free,
+  Approval, Waitlist and the adjacent paid control retain their declared
+  contracts.
 - A versioned fixture must provide guarded `stage`, read-only `status`, named
   `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
   execute this row until that harness and the isolated Casey/Nova/Ava browser
   sessions exist; Riley reuses Casey's session slot only at the declared step.
-- The versioned fixture is staged with a `cancelled-verified` block-4 rollback:
-  the target and controls, Nova's Stripe/Barion/expired cards, Riley's separate
-  Stripe card, the exact-reset snapshot and three isolated Casey/Nova/Ava
-  windows are ready. Riley reuses Casey's window only after Nova pays Evening.
+- The versioned fixture retains exact rollback points for the cancelled block-4
+  boundary and the persisted step-66 destination boundary. The target and
+  controls, Nova's Stripe/Barion/expired cards, Riley's separate Stripe card,
+  the exact-reset snapshot and three isolated Casey/Nova/Ava windows remain
+  owned by this checkpoint.
 - Payment-ready savepoint (2026-09-06 06:12 CEST): after the user-controlled
   steps through 21, the versioned `capture-payment-ready` oracle passed with
   one active `4900 HUF` basket containing two items, exactly zero payments and
@@ -3051,6 +3059,24 @@ action.
 - Block-4 extension (2026-09-06): each active Slot is now `1 / 2`; Nova pays
   Evening and Riley pays Morning. The write oracle expects two payments, both
   Slots full and no stale fresh-booking/Continue action for either user.
+- Destination/control evidence (2026-09-06 09:42 CEST): steps through 74 are
+  verified at `phase=destination-verified`. The persisted target has Casey,
+  Nova and Riley at `3 / 6`; Morning is Casey/Riley `2 / 2`, Evening is
+  Casey/Nova `2 / 2`; exactly two `stripe/authorized/joined` payments and two
+  succeeded inactive baskets remain, with zero active target baskets. Repeated
+  exploratory leave/rejoin attempts contributed only deleted inactive basket
+  audit rows and matching main-Event join/leave messages, not duplicate payment
+  writes.
+- The background audit found that an active participant-owned Slot overlay
+  could duplicate its canonical Slot in the parent `upcomingSlots` write. The
+  source-side refresh now selects one canonical document per Slot `sourceId`;
+  the retained fixture is normalized to exactly Morning plus Evening once, and
+  the harness rejects any future duplicate occurrence at the paid oracle.
+- The Waitlist control is now one pending `requestKind=waitlist` membership
+  with zero baskets. The Cash-only control has zero Nova membership, basket and
+  payment after explicit cancellation. Free and Adjacent remain untouched;
+  Approval retains exactly one pending approval basket. The current step-66
+  rollback snapshot and step-74 control oracle both passed after these repairs.
 
 ## Event ticketing checkpoints
 
