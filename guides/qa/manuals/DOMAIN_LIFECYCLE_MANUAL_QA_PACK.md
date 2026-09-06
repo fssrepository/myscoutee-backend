@@ -3107,7 +3107,7 @@ action.
   now neutral (`A new spot is available`) because following an Event does not
   imply that it was full at subscription time. An outside watcher also gets a
   generic update when a followed Event becomes public again or its public
-  title/location/capacity, schedule or program changes, but only while the
+  title/location, schedule or program changes, but only while the
   same Explore visibility policy still permits that user to view it.
   Accepted/pending/invited participants are excluded from this watcher intent,
   and draft, invitation-only or otherwise inaccessible Events disappear from

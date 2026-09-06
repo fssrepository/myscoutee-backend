@@ -1699,12 +1699,12 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void publishedCapacityDecreaseNotifiesOtherParticipantsAsDefinitionChange() {
+    void publishedPublicDetailsChangeNotifiesParticipantsAndOutsideWatchers() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
         ActivityEvent existing = event("event-1", "host", 0d);
-        existing.setTitle("Draft Event");
+        existing.setTitle("Old Event");
         existing.setCapacityMin(1);
         existing.setCapacityMax(8);
         existing.setCapacityTotal(8);

@@ -4820,7 +4820,7 @@ public class ActivitiesEventsService {
         schedulePublicWatchlistEventChangedNotification(
                 sourceId,
                 savedDocuments,
-                definitionChange.reasons(),
+                publicWatchlistChangeReasons(existing, baseRecord, definitionChange),
                 actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
@@ -5298,6 +5298,24 @@ public class ActivitiesEventsService {
                 watcherUserIds,
                 reasons,
                 actorUserId);
+    }
+
+    private List<String> publicWatchlistChangeReasons(
+            ActivityEvent previous,
+            ActivityEvent next,
+            EventDefinitionChangeSummary definitionChange) {
+        if (definitionChange == null || !definitionChange.changed()) {
+            return List.of();
+        }
+        boolean publicDetailsChanged = !Objects.equals(
+                safeText(previous == null ? null : previous.getTitle()),
+                safeText(next == null ? null : next.getTitle()))
+                || !Objects.equals(
+                        safeText(previous == null ? null : previous.getLocation()),
+                        safeText(next == null ? null : next.getLocation()));
+        return definitionChange.reasons().stream()
+                .filter(reason -> !"details".equals(safeText(reason)) || publicDetailsChanged)
+                .toList();
     }
 
     private void notifyPublishedPendingInvitees(
