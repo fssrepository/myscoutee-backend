@@ -277,6 +277,7 @@ public class EventInviteNotificationService {
         String memberName = StringUtils.hasText(safeText(removedUserName))
                 ? safeText(removedUserName)
                 : memberUserId;
+        boolean voluntaryLeave = memberUserId.equals(senderUserId);
         String occurrenceId = UUID.randomUUID().toString();
         Map<String, String> commonPayload = new LinkedHashMap<>();
         commonPayload.put("eventId", eventId);
@@ -285,14 +286,14 @@ public class EventInviteNotificationService {
         commonPayload.put("eventScope", "members");
         commonPayload.put("memberUserId", memberUserId);
         commonPayload.put("memberName", memberName);
-        commonPayload.put("membershipAction", "removed");
+        commonPayload.put("membershipAction", voluntaryLeave ? "left" : "removed");
         commonPayload.put("notification_tone", "warning");
-        commonPayload.put("removalOccurrenceId", occurrenceId);
+        commonPayload.put(voluntaryLeave ? "leaveOccurrenceId" : "removalOccurrenceId", occurrenceId);
         if (StringUtils.hasText(senderUserId)) {
             commonPayload.put("senderUserId", senderUserId);
         }
         if (StringUtils.hasText(safeText(removedAtIso))) {
-            commonPayload.put("removedAtIso", safeText(removedAtIso));
+            commonPayload.put(voluntaryLeave ? "leftAtIso" : "removedAtIso", safeText(removedAtIso));
         }
 
         if (!memberUserId.equals(senderUserId)) {
@@ -327,17 +328,20 @@ public class EventInviteNotificationService {
             Map<String, String> participantPayload = new LinkedHashMap<>(commonPayload);
             participantPayload.put("recipientRole", "event-participant");
             notificationOutboxService.enqueue(new NotificationIntent(
-                    "event-member-removed",
+                    voluntaryLeave ? "event-member-left" : "event-member-removed",
                     "event",
                     eventId,
                     "event-participants",
                     List.copyOf(participantRecipients),
                     eventTitle,
-                    memberName + " was removed from " + eventTitle + ".",
+                    voluntaryLeave
+                            ? memberName + " left " + eventTitle + "."
+                            : memberName + " was removed from " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
                     resolveImageUrl(event),
                     APP_BADGE_URL,
-                    "event-member-removed-" + eventId + "-" + memberUserId,
+                    (voluntaryLeave ? "event-member-left-" : "event-member-removed-")
+                            + eventId + "-" + memberUserId + "-" + occurrenceId,
                     participantPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
         }

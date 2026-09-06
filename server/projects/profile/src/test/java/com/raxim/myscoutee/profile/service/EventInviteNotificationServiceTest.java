@@ -190,4 +190,38 @@ class EventInviteNotificationServiceTest {
                     .containsEntry("membershipAction", "removed");
         });
     }
+
+    @Test
+    void describesASelfRemovalAsLeavingForRemainingParticipants() {
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        UserNotificationService userNotificationService = mock(UserNotificationService.class);
+        EventInviteNotificationService service = new EventInviteNotificationService(
+                notificationOutboxService,
+                userNotificationService);
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Weekend hike");
+
+        service.notifyEventMemberRemoved(
+                event,
+                "nova",
+                "Nova Social",
+                "2026-09-06T08:30:00Z",
+                "nova",
+                List.of("host", "riley", "nova"));
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("event-member-left");
+        assertThat(intent.recipientScope()).isEqualTo("event-participants");
+        assertThat(intent.recipientUserIds()).containsExactly("host", "riley");
+        assertThat(intent.body()).isEqualTo("Nova Social left Weekend hike.");
+        assertThat(intent.createdUser()).isEqualTo("nova");
+        assertThat(intent.payload())
+                .containsEntry("membershipAction", "left")
+                .containsEntry("leftAtIso", "2026-09-06T08:30:00Z")
+                .containsKey("leaveOccurrenceId")
+                .doesNotContainKeys("removedAtIso", "removalOccurrenceId");
+    }
 }
