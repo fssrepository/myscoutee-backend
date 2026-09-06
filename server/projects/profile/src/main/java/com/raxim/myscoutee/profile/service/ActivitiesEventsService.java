@@ -395,13 +395,9 @@ public class ActivitiesEventsService {
         List<ActivityEvent> scopedRecords = new ArrayList<>(directOwnerRecords.size() + membershipRecords.size() + watchedRecords.size());
         scopedRecords.addAll(directOwnerRecords);
         scopedRecords.addAll(membershipRecords);
-        Set<String> scopedSourceIds = scopedRecords.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
         watchedRecords.stream()
-                .filter(record -> !scopedSourceIds.contains(normalizeId(record.getSourceId())))
+                .filter(this::isRootActivityRecord)
+                .filter(record -> !isTrashStatus(record))
                 .forEach(scopedRecords::add);
 
         return new EventQueryContext(
@@ -5374,9 +5370,12 @@ public class ActivitiesEventsService {
         List<ActivityEvent> records = context == null
                 ? loadEventListCardDocumentsBySourceIds(watchedSourceIds)
                 : context.allEvents();
-        return computePreferredEventRecords(records).stream()
+        List<ActivityEvent> visibleWatchedRecords = records.stream()
                 .filter(record -> watchedSourceIds.contains(normalizeId(record.getSourceId())))
+                .filter(this::isRootActivityRecord)
                 .filter(record -> !isTrashStatus(record))
+                .toList();
+        return computePreferredEventRecords(visibleWatchedRecords).stream()
                 .map(this::cloneDocument)
                 .toList();
     }

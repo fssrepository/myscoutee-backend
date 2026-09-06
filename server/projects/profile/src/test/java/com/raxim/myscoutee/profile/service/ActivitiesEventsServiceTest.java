@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventResourceMetricRecord;
+import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -2376,6 +2377,49 @@ class ActivitiesEventsServiceTest {
             assertThat(record.adminIds()).containsExactly("host");
         });
         verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
+    }
+
+    @Test
+    void watchlistKeepsCanonicalEventVisibleAfterViewerLeaves() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent canonical = event("watched-event", "host", 0d);
+        ActivityEvent suppressed = event("watched-event", "host", 0d);
+        suppressed.setId("watched-event-viewer-suppression");
+        suppressed.setOwnerUserId("viewer");
+        suppressed.setStatus(ActivityEvent.STATUS_TRASHED);
+
+        EventWatchSubscription subscription = new EventWatchSubscription();
+        subscription.setUserId("viewer");
+        subscription.setEventId("watched-event");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
+                .thenReturn(Map.of());
+        when(eventWatchSubscriptionsRepository.findByUserIdOrderByUpdatedDateDesc("viewer"))
+                .thenReturn(List.of(subscription));
+        AtomicInteger findCalls = new AtomicInteger();
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenAnswer(invocation -> findCalls.getAndIncrement() == 0
+                        ? List.of(suppressed)
+                        : List.of(canonical, suppressed));
+        when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
+                .thenReturn(List.of(canonical, suppressed));
+        when(eventCheckoutBasketService.loadResultStatesByEvent("viewer", List.of("watched-event")))
+                .thenReturn(Map.of());
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("watched-event");
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+            assertThat(record.watched()).isTrue();
+        });
+        assertThat(page.items()).extracting(EventDto::id).containsExactly("watched-event");
     }
 
     @Test
