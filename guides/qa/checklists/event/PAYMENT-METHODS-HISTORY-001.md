@@ -7,8 +7,9 @@ inside the three Event/Asset journeys; there is no separate External Payment
 matrix row.
 
 The complete journey is one testcase transaction. `stripe-registered`,
-`barion-registered`, `expired-cleaned` and `history-complete` are replay
-savepoints, not separate matrix rows.
+`barion-registered`, `replace-verified`, `reconnect-verified`,
+`expired-cleaned` and `history-complete` are replay savepoints, not separate
+matrix rows.
 
 ## Actors and startup
 
@@ -118,36 +119,74 @@ Codex runs `verify-stripe payment-ui PAYMENT-METHODS-HISTORY-001`.
 
 Codex runs `verify-barion payment-ui PAYMENT-METHODS-HISTORY-001`.
 
-## 4. Verify and clean up the expired card
+## 4. Replace a card without changing provider
 
-22. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
+22. Keep the simulator on connected `Barion` with 3DS Off. In Alex's Cards
+    surface, use the three-dot menu on the Barion card created in step 20.
+    Confirm this current-provider card is normal and its menu offers exactly
+    `Replace card` and `Delete card`; it must not show `Reconnect`.
+23. Select `Replace card`. Confirm the embedded provider surface is Barion and
+    no MyScoutee card-data form appears. Generate the Barion test card once,
+    then select `Tokenize and save card` once.
+24. Confirm the old Barion card is replaced rather than duplicated: the active
+    card count is unchanged, the replacement remains Barion, retains the old
+    card's artwork, and the other cards and Payment History remain unchanged.
+25. Report and wait:
+
+    `PAYMENT-METHODS-HISTORY-001 replace verified: Barion card replaced once`
+
+Codex runs `verify-replace payment-ui PAYMENT-METHODS-HISTORY-001`.
+
+## 5. Reconnect a card after changing provider
+
+26. Still on connected `Barion`, find the Stripe card created in steps 11–14
+    (the `Stripe Test User 001` card), not either baseline Stripe card. Confirm
+    it has the provider-mismatch overlay and `Reconnect >` instead of a
+    three-dot trigger.
+27. Open `Reconnect >`, and select `Retokenize card`. Confirm
+    the embedded provider surface is Barion. Generate the Barion test card
+    once, then select `Tokenize and save card` once.
+28. Confirm the original Stripe card is replaced rather than duplicated: its
+    Barion replacement retains the original artwork, the active card count is
+    unchanged, and the two baseline Stripe cards still show `Reconnect >`.
+29. Report and wait:
+
+    `PAYMENT-METHODS-HISTORY-001 reconnect verified: Stripe card retokenized with Barion`
+
+Codex runs `verify-reconnect payment-ui PAYMENT-METHODS-HISTORY-001`.
+
+## 6. Verify and clean up the expired card
+
+30. In Alex's Cards surface, find the expired `0008` card. Confirm its coral
     artwork remains identifiable beneath the stronger white expired overlay
     and it has no three-dot action.
-23. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
+31. Confirm the vivid `Expired/Lejárt >` badge is the only action trigger.
     The overlay must not whiten or disable this badge. Select it once. The
     opened menu must contain only `Delete card`; it must not offer Replace or
     selection.
-24. Select `Delete card`, confirm once, and verify the expired card disappears
+32. Select `Delete card`, confirm once, and verify the expired card disappears
     without changing active cards or Payment History.
-25. Open Alex's notifications and confirm the controlled translated expired
+33. Open Alex's notifications and confirm the controlled translated expired
     card notification names card ending `0008`. Reading it may mark that one
     notification read; do not delete or mutate another notification.
-26. Report and wait:
+34. Report and wait:
 
     `PAYMENT-METHODS-HISTORY-001 expired cleaned: badge menu removed 0008 once`
 
 Codex runs `verify-expired-cleanup payment-ui PAYMENT-METHODS-HISTORY-001`.
 
-## 5. Terminal reload and read-only proof
+## 7. Terminal reload and read-only proof
 
-27. Reload Alex exactly once. Reopen Payment history and Cards.
-28. Confirm the four original history rows, both exact totals, all three
+35. Reload Alex exactly once. Reopen Payment history and Cards.
+36. Confirm the four original history rows, both exact totals, all three
     filters, failure reason and day groups reconstruct unchanged.
-29. Confirm one new Stripe and one new Barion card remain, baseline active
-    cards remain, and expired `0008` does not return.
-30. Confirm no payment, membership, Asset request, basket or checkout was
+37. Confirm the two successful replacement results remain as active Barion
+    cards, the transient Stripe and Barion source cards do not return, both
+    baseline active Stripe cards remain with `Reconnect >`, and expired `0008`
+    does not return.
+38. Confirm no payment, membership, Asset request, basket or checkout was
     created merely by filtering history or managing cards.
-31. Report the terminal phrase:
+39. Report the terminal phrase:
 
     `PAYMENT-METHODS-HISTORY-001 UI complete: history, registrations and expired cleanup persist`
 

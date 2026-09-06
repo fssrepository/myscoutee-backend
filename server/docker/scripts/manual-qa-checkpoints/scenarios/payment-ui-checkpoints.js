@@ -316,7 +316,7 @@
       totalsUnchanged: true,
       next: expectedProvider === "stripe"
         ? "Switch the demo Admin simulator to connected Barion, then register one Barion card."
-        : "Continue with the expired-card badge cleanup and Payment History filters."
+        : "Continue with the separate same-provider Replace block."
     });
   }
 
@@ -417,6 +417,25 @@
     for (const key of ["stripeRegistration", "barionRegistration", "replaceVerified", "reconnectVerified", "expiredCleanup"]) {
       if (evidence[key] !== true) Q.fail(`missing '${key}' savepoint evidence.`);
     }
+    const replacementIds = [
+      Q.text(evidence.replaceReplacementCardId),
+      Q.text(evidence.reconnectReplacementCardId)
+    ].sort();
+    if (replacementIds.some(id => !id)) Q.fail("replacement savepoint IDs are incomplete.");
+    const activeReplacementIds = registrationMethods("barion").map(card => Q.text(card._id)).sort();
+    if (!Q.sameJson(activeReplacementIds, replacementIds)) {
+      Q.fail(`active Barion replacement cards are ${JSON.stringify(activeReplacementIds)}; expected ${JSON.stringify(replacementIds)}.`);
+    }
+    if (registrationMethods("stripe").length !== 0) {
+      Q.fail("the transient registered Stripe card returned after Reconnect.");
+    }
+    const baselineActive = Q.collection("savedPaymentMethods").find({
+      _id: { $in: BASELINE_CARD_IDS.filter(id => id !== EXPIRED_CARD_ID) },
+      userId: TARGET_USER_ID,
+      provider: "stripe",
+      status: "active"
+    }).toArray();
+    if (baselineActive.length !== 2) Q.fail("baseline active Stripe cards changed during Replace/Reconnect.");
     assertPaymentsUnchanged(currentState);
     const summary = paymentSummary();
     assertCanonicalIds(Q.collection("payments").find(paymentSelector).toArray(), BASELINE_PAYMENT_IDS, "controlled Payment History");
