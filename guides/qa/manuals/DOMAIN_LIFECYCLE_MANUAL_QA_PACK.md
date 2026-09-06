@@ -6590,10 +6590,38 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **PREPARED / NOT STAGED / NOT RUN**.
+Status: **STAGED / NOT RUN**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
+
+The versioned fixture was staged at `2026-09-06T09:38:32.096Z` after a proven
+exact reset, and its second
+read-only `status` reached `phase=baseline-ready`. The persisted baseline is
+exact: connected Barion with 3DS Off; Casey Admin plus Nova Member on the one
+Event; the target paid Asset at quantity `3`; all five named controls; and zero
+scoped payment, request projection, activity resource, server basket or stored
+Asset membership. `EVENT-CHECKOUT-001` was first restored through its own
+snapshot-protected reset with zero remaining scoped artifacts. No Asset
+checkout browser was opened or operated by Codex.
+
+The source preflight also found that the pre-Pay Borrow Basket draft had been
+held only in an in-memory signal even though checklist steps 22-23 require one
+clean reload. It now uses the scoped `AssetBorrowDraftStore` backed by the
+application's namespaced local storage, keyed by user, Sub-event and Asset.
+The existing frontend watcher compiled and deployed that correction
+successfully. This is implementation evidence only: reload reconstruction
+remains an unpassed user-visible assertion in steps 22-23.
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-checkout ASSET-CHECKOUT-001
+```
+
+The first user boundary is checklist step 1 through step 18. On the exact
+`payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
+before that oracle. Replay boundaries are available as
+`rollback-payment-ready`, `rollback-paid-pending` and `rollback-accepted`.
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
@@ -6606,9 +6634,10 @@ payment.
   quantity `1`. Nova starts with no request, payment/session, borrow draft,
   assignment, availability reservation, Asset activity contribution or role
   change.
-- Stage one free Asset, one zero-availability control and one adjacent paid
-  Asset. A sibling Event/Sub-event using the same type and Riley's state are
-  immutable scope controls.
+- Stage one free Asset, one zero-availability control, one adjacent paid Asset
+  and two isolated paid terminal controls named `Decline Control` and
+  `Timeout Control`. A sibling Event/Sub-event using the same type and Riley's
+  state are immutable scope controls.
 - The state-dependent action contract is:
 
   | State | Required visible actions/status | Forbidden action |
@@ -6625,15 +6654,14 @@ payment.
   availability and any unaccepted required policy disable the forward action
   and create no server write. A valid quantity/time/policy set produces one
   deterministic line item and total.
-- Select `Confirm borrow` once. This creates one active Barion checkout session
-  and moves to the locked payment phase; it does not yet create the borrow
-  request or assignment. Closing the surface leaves one Borrow Basket item
-  with `Continue request`. In-place reopen and one clean reload must reconstruct
-  the same session, amount, timeframe, quantity and policy set.
-- Use `Back` once, change the quantity or timeframe, and confirm again. The old
-  active session must not be reused with changed content: it becomes a closed
-  or superseded audit and exactly one new active session owns the recalculated
-  payload. No borrow request or inventory delta exists before `Pay`.
+- Select `Confirm borrow` once. This moves to the locked payment phase but does
+  not call the provider and creates no server payment/session, request,
+  assignment or inventory delta. The one Borrow Basket item is a frontend
+  draft. `Continue request`, in-place reopen and one clean reload must
+  reconstruct its amount, timeframe, quantity and policy set.
+- Use `Back` once, change the quantity or timeframe, and confirm again. The
+  final frontend draft owns the recalculated payload; stale values must not
+  return and server checkout state must remain empty before `Pay`.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
@@ -6641,8 +6669,9 @@ payment.
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
   reservation/availability decrement for quantity `1`; and one pending
-  resource projection. The first abandoned/superseded session is not revenue
-  and cannot create entitlement.
+  resource projection. There is no server `eventCheckoutBasketItems` row in
+  this Asset flow; the request's `inventoryApplied=true` plus the exact
+  quantity decrement own the reservation proof.
 - Immediate UI oracle: the Asset remains once in Explore with availability
   reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
   and Casey sees Nova once as the pending borrower on the exact Asset/request.
@@ -6662,10 +6691,19 @@ payment.
 - Inspect the free and unavailable controls without submitting them. Their
   labels and forbidden-payment states must match the table and no control may
   inherit the target's payment/session identity.
-- A versioned fixture must provide guarded `stage`, read-only `status`, named
-  `payment-ready`, `paid-pending` and `accepted` captures, plus exact `reset`.
-  Do not execute this row until that harness and isolated Casey/Nova browser
-  sessions exist.
+- Run one normal quantity-`1` checkout on `Decline Control` and one on
+  `Timeout Control`, keeping Barion 3DS enabled. The first must yield exactly
+  one declined/failed terminal payment and the second exactly one expired
+  terminal payment. Neither control may create a borrow request, inventory
+  delta, resource assignment, entitlement or server basket row.
+- The versioned `asset-checkout` fixture provides guarded `stage`, read-only
+  `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
+  request-destination and `accepted` captures, three exact persisted rollback
+  savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
+  active and expired Barion card controls into the running payment simulator.
+  The payment-ready rollback restores the server boundary only; if the browser
+  draft was already cleared, the user repeats steps 1-18 because the harness
+  never writes browser-local storage.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

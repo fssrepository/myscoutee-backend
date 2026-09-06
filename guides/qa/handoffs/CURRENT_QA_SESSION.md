@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 10:41 CEST
+Updated: 2026-09-06 11:46 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -16,15 +16,15 @@ file first, then open only the linked active checkpoint section.
 - Stable user-facing click guide for the completed Asset membership testcase;
   execution status or machine evidence never belong in a checklist:
   [`ASSET-MEMBER-001.md`](../checklists/asset/ASSET-MEMBER-001.md).
-- Stable user-facing click guide for the active staged Assignment lifecycle;
+- Stable user-facing click guide for the completed Assignment lifecycle;
   execution status and machine evidence remain in the pack/handoff:
   [`ASSET-ASSIGNMENT-LIFECYCLE-001.md`](../checklists/asset/ASSET-ASSIGNMENT-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared, queued Content lifecycle:
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared side-menu Payment journey:
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
-- Stable user-facing click guide for the active Event checkout journey:
-  [`EVENT-CHECKOUT-001.md`](../checklists/event/EVENT-CHECKOUT-001.md).
+- Stable user-facing click guide for the active Asset checkout journey:
+  [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -46,6 +46,8 @@ file first, then open only the linked active checkpoint section.
   [`payment-ui-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/payment-ui-checkpoints.js)
 - Isolated Event checkout, control and provider-card fixture:
   [`event-checkout-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-checkout-checkpoints.js)
+- Isolated Asset checkout, Barion/3DS control and rollback fixture:
+  [`asset-checkout-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/asset-checkout-checkpoints.js)
 - Three-role authorization/moderation fixture:
   [`role-triad-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/role-triad-checkpoints.js)
 - Admin Job fixture toolkit and account-purge scenario:
@@ -75,24 +77,47 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-CHECKOUT-001 — PASS / CLOSED
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-checkout-checkpoint
-checklist: ../checklists/event/EVENT-CHECKOUT-001.md
-substage: the user-controlled journey through step 81 and the final persisted Watchlist/leave oracle passed
-next_replay_boundary: none; the exact step-74 rollback remains available only for a deliberate future regression replay
-fixture_phase: `phase=verified`; Casey is the sole accepted root/Slot member, two authorized joined Stripe payments remain immutable, both Slots have one available place, and Nova has no active Watchlist subscription or counter
-browser_phase: the user exclusively performed the complete checklist and additional leave/rejoin coverage; Codex performed no browser navigation or clicks
+checkpoint: ASSET-CHECKOUT-001 — STAGED / NOT RUN
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-checkout-001--asset-explore-barion-payment-reaches-the-scoped-borrow-destination
+checklist: ../checklists/asset/ASSET-CHECKOUT-001.md
+substage: fresh paid Asset and controls are staged; no checkout action has been performed
+next_replay_boundary: baseline-ready; later named savepoints are payment-ready, paid-pending and accepted
+fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
+browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 88/114 total, Core 88/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 and EVENT-CHECKOUT-001 are PASS/CLOSED
-queued_next: none selected
-required_resume: do not replay EVENT-CHECKOUT-001 unless a later regression explicitly requires it; select the next checkpoint from the canonical matrix
-actors: Casey remains the accepted fixture member; Nova and Riley are suppressed after voluntary leave; Ava remained idle
-pending_machine_oracle: none for EVENT-CHECKOUT-001
-post_close_follow_up: self-leave uses left; new-place copy is neutral; Watchlist writes, availability and public republish/definition-change recipients are filtered by current Explore visibility and participant membership on backend and frontend local paths
-provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
+ledger_status: 88/114 total, Core 88/99, External/optional 0/15; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
+queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
+required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
+actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
+pending_machine_oracle: after `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`, run `capture-payment-ready asset-checkout ASSET-CHECKOUT-001`
+pre_pay_contract: Confirm borrow creates only the scoped, namespaced-local-storage AssetBorrowDraftStore entry keyed by user/Sub-event/Asset; payment-ready must still have zero server payment/provider-session/request/inventory/resource/basket writes. The existing frontend watcher compiled and deployed this reload-persistence correction, but checklist steps 22-23 remain pending manual evidence. The first server checkout write is Pay
+rollback_contract: all three commands restore exact persisted savepoints; payment-ready cannot recreate a cleared frontend-local draft, so after that rollback the user reloads and repeats steps 1-18 once without recapturing the already restored server phase
+provider_change_contract: baseline is connected Barion with 3DS Off; Nova has active Barion 4444 plus blocked expired Barion 0008. The user enables 3DS only at checklist step 31
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: EVENT-CHECKOUT-001 PASS/CLOSED, including the final Watchlist/leave oracle and bounded notification-copy correction
+last_completed: EVENT-CHECKOUT-001 PASS/CLOSED and snapshot-reset with zero remaining scoped artifacts; ASSET-CHECKOUT-001 stage plus independent baseline status passed
 ```
+
+Resume with this read-only gate only:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-checkout ASSET-CHECKOUT-001
+```
+
+If it still prints `phase=baseline-ready`, hand control to the user at
+`ASSET-CHECKOUT-001` step 1. The first stop phrase is:
+
+`ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
+
+Then run:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  capture-payment-ready asset-checkout ASSET-CHECKOUT-001
+```
+
+Do not stage again, reset, enable 3DS early, open a browser, or reconstruct the
+fixture through ad-hoc Mongo writes while the baseline matches.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -135,21 +160,21 @@ while a released non-overlapping window restores it in place and after reload;
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
-Borrow remains prepared but is deliberately deferred while the payment-facing
-journeys are verified. It is not the active checkpoint.
+The independent free Borrow lifecycle remains prepared and deferred while the
+active paid Asset checkout journey is verified.
 
 The three existing Event/Asset cases divide checkout coverage without a
 separate External Payment row: `EVENT-CHECKOUT-001` owns Stripe plus the
 Cash-only paid control and card assignment; `ASSET-CHECKOUT-001` owns
 Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
 `ASSET-BORROW-LIFECYCLE-001` remains the genuinely free/no-payment control.
-Their stable guides have been expanded for these combinations; their full
-manual runs remain for later pair QA.
+Their stable guides carry those separate combinations. Event checkout is
+PASS/CLOSED; paid Asset checkout is the active staged transaction; the free
+Borrow lifecycle remains later pair QA.
 
-`PAYMENT-METHODS-HISTORY-001` is PASS/CLOSED. `EVENT-CHECKOUT-001` is the
-selected final Event testcase; its versioned fixture, exact reset, savepoint
-oracles, provider-card mirror and Casey/Nova/Ava browser definition are staged
-at `baseline-ready`.
+`PAYMENT-METHODS-HISTORY-001` and `EVENT-CHECKOUT-001` are PASS/CLOSED. The
+Event checkout fixture was reset through its saved baseline before
+`ASSET-CHECKOUT-001` was staged at `baseline-ready`.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Core Content row and now has a stable click guide. It creates
@@ -163,9 +188,9 @@ assertion was corrected to match Java, frontend-local and the administrator
 manual. Its versioned fixture, six savepoint oracles, exact reset and
 Ava/Kai/Riley browser-session definition are prepared. It remains explicitly
 not staged and no Content browser was opened, so it did not alter the active
-Asset Assignment boundary. After Assignment is recorded and reset, stage
-Content once, require `baseline-ready`, and only then open its configured
-browsers. The Mongo harness proves revision, audit, consent and Article-bucket
+Asset checkout boundary. After Asset checkout is recorded and reset, stage
+Content only if it is then selected from the canonical matrix, require
+`baseline-ready`, and only then let the user open its configured browsers. The Mongo harness proves revision, audit, consent and Article-bucket
 state; the existing admin telemetry stream is a separate savepoint oracle.
 Both distinct managed-image controls returned HTTP 200 and their pre-stage
 sizes/SHA-256 values are recorded in the Content pack section for tomorrow's
@@ -233,9 +258,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`EVENT-CHECKOUT-001` is closed at `phase=verified`. No next checkpoint has
-been selected; do not replay its payment or leave/watchlist path unless a
-later regression explicitly requires it.
+Run the read-only `status asset-checkout ASSET-CHECKOUT-001` gate. If it remains
+`baseline-ready`, the user starts checklist step 1 and stops after step 18 on
+the exact `payment ready` phrase. Codex then runs `capture-payment-ready` and
+continues only from the harness result.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

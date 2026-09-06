@@ -246,6 +246,18 @@ Usage:
   bash manual-qa-checkpoints.sh verify-leave-rejoined event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh reset event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh stage asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh status asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh capture-payment-ready asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh capture-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-paid-pending asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-request-destination asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-accepted asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-accepted asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh reset asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
@@ -334,6 +346,7 @@ replace_payment_simulator_checkout_card_fixtures() {
   local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
   local target_db="${MANUAL_QA_DB:-demo_db}"
   local fixture_file="${SCRIPT_DIR}/../../conf/mongodb/${target_db}/savedPaymentMethods.json"
+  local checkout_scope="${1:-event}"
   local payload response expected actual
   [ -f "${fixture_file}" ] || fail "Missing payment-card fixture ${fixture_file}."
   payload="$(python3 -c '
@@ -345,6 +358,8 @@ cards.extend([
   {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_nova_barion_4444","brand":"Mastercard","last4":"4444","expiryMonth":9,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_expired_0008","brand":"Visa","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"}
 ])
+if sys.argv[2] == "asset":
+    cards.append({"provider":"barion","providerPaymentMethodRef":"pm_sim_asset_checkout_nova_barion_expired_0008","brand":"Mastercard","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"})
 fixtures=[]
 for card in cards:
     token=str(card.get("providerPaymentMethodRef", "")).strip()
@@ -360,7 +375,7 @@ for card in cards:
         "cardholder_name": str(card.get("cardholderName", "")).strip()
     })
 print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
-' "${fixture_file}")"
+' "${fixture_file}" "${checkout_scope}")"
   expected="$(python3 -c 'import json,sys; print(len(json.load(sys.stdin)["payment_methods"]))' <<<"${payload}")"
   response="$(curl --fail --silent --show-error -X PUT \
     -H "Authorization: Bearer ${api_key}" \
@@ -376,9 +391,10 @@ print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
 set_payment_simulator_provider() {
   local target_provider="$1"
   local provider_label="$2"
+  local requires_3ds="${3:-false}"
   local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
   local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
-  local temp_dir access_response access_url session_url result provider
+  local temp_dir access_response access_url session_url result provider configured_3ds
   temp_dir="$(mktemp -d)"
   access_response="$(curl --fail --silent --show-error -X POST \
     -H "Authorization: Bearer ${api_key}" \
@@ -398,12 +414,14 @@ set_payment_simulator_provider() {
   result="$(curl --fail --silent --show-error -X PUT \
     --cookie "${temp_dir}/cookies" \
     -H 'Content-Type: application/json' \
-    --data "{\"provider\":\"${target_provider}\",\"requires3ds\":false}" \
+    --data "{\"provider\":\"${target_provider}\",\"requires3ds\":${requires_3ds}}" \
     "${session_url}")" \
     || { rm -r -- "${temp_dir}"; fail "Could not restore ${provider_label} in the payment simulator."; }
   rm -r -- "${temp_dir}"
   provider="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("provider", ""))' <<<"${result}")"
+  configured_3ds="$(python3 -c 'import json,sys; print(str(bool(json.load(sys.stdin).get("requires3ds"))).lower())' <<<"${result}")"
   [ "${provider}" = "${target_provider}" ] || fail "Payment simulator did not restore ${provider_label}."
+  [ "${configured_3ds}" = "${requires_3ds}" ] || fail "Payment simulator did not restore ${provider_label}'s 3DS state."
 }
 
 set_payment_simulator_cash_only() {
@@ -412,6 +430,14 @@ set_payment_simulator_cash_only() {
 
 set_payment_simulator_stripe() {
   set_payment_simulator_provider "stripe" "Stripe with 3DS Off"
+}
+
+set_payment_simulator_barion() {
+  set_payment_simulator_provider "barion" "Barion with 3DS Off"
+}
+
+set_payment_simulator_barion_3ds() {
+  set_payment_simulator_provider "barion" "Barion with 3DS On" "true"
 }
 
 run_scenario() {
@@ -487,10 +513,11 @@ run_scenario() {
       ;;
     payment-ui) scenario_script="${SCRIPT_DIR}/scenarios/payment-ui-checkpoints.js" ;;
     event-checkout) scenario_script="${SCRIPT_DIR}/scenarios/event-checkout-checkpoints.js" ;;
+    asset-checkout) scenario_script="${SCRIPT_DIR}/scenarios/asset-checkout-checkpoints.js" ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
-  if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ]; then
+  if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ] || [ "${scenario}" = "asset-checkout" ]; then
     read -r payment_provider payment_requires_3ds payment_provider_connected < <(payment_simulator_state)
   fi
 
@@ -777,6 +804,40 @@ case "${scenario}:${command}" in
   event-checkout:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_card_fixtures
+    set_payment_simulator_cash_only
+    ;;
+  asset-checkout:stage)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion
+    run_scenario "status" "${scenario}" 30 "$3"
+    ;;
+  asset-checkout:status|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:verify)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  asset-checkout:rollback-payment-ready)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion
+    ;;
+  asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion_3ds
+    ;;
+  asset-checkout:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     replace_payment_simulator_card_fixtures
     set_payment_simulator_cash_only

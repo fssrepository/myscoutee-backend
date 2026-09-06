@@ -41,11 +41,27 @@ trigger another stack or database process.
 | `chat-domain` | Stages one selected Chat checkpoint with exact row, context, ordering and zero-write oracles | No scheduler; the selected checkpoint uses the normal paged Chat read/write paths |
 | `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
 | `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
+| `asset-checkout` | Stages the exact Event/Sub-event, paid/free/unavailable/terminal Asset controls and Nova's Barion cards for `ASSET-CHECKOUT-001` | Real frontend-local draft followed by one normal Barion/3DS payment and Asset request/resource writes |
 | `operator-domain` | Snapshots the exact deployment configuration and prints a credentials-safe Firebase capability oracle | No scheduler; QA supplies disposable provider configuration through the Operator UI |
 | `role-triad` | Snapshots the exact Kai/Ava/Operator identities, two reports, one feedback item, branding, support-chat and notification boundary | No scheduler; one continuous three-session authorization and moderation journey |
 
 Only one manual scenario may be staged at a time. The historical 2026-08-04
 results were **not** rerun while these helpers were added.
+
+The Asset checkout journey has three replay savepoints. `payment-ready`
+contains only the frontend Borrow Basket draft and deliberately has zero
+server payment/session/request/assignment rows; the first server checkout
+write occurs on `Pay`.
+
+```bash
+bash manual-qa-checkpoints-docker.sh stage asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh status asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh capture-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh rollback-accepted asset-checkout ASSET-CHECKOUT-001
+bash manual-qa-checkpoints-docker.sh reset asset-checkout ASSET-CHECKOUT-001
+```
 
 The Event scheduler journey uses a separate baseline and arm boundary:
 

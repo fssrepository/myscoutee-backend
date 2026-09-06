@@ -43,9 +43,49 @@ Begin only after Codex confirms this exact baseline:
 - Nova has no target borrow request, payment/session, basket draft,
   reservation, resource assignment, Asset activity contribution or Asset
   role;
-- the Free, unavailable and adjacent paid controls are staged, and the sibling
-  Sub-event plus Riley are unchanged negative controls;
-- isolated Casey, Nova and Ava windows are open and identity-verified.
+- the Free, unavailable, adjacent paid, Decline and Timeout controls are
+  staged, and the sibling Sub-event plus Riley are unchanged negative
+  controls;
+- the configured Casey, Nova and Ava identities are available; the user opens
+  and identity-checks any browser windows used for the manual steps.
+
+Codex checkpoint commands for this testcase use the existing MongoDB and
+payment-simulator containers; they do not start or restart the development
+stack:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  capture-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  capture-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-paid-pending asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-request-destination asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-accepted asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-accepted asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset asset-checkout ASSET-CHECKOUT-001
+```
+
+The rollback commands restore the exact server-persisted state. The pre-Pay
+Borrow Basket belongs to the scoped browser-local `AssetBorrowDraftStore`,
+which is keyed by user, Sub-event and Asset and is expected to survive a clean
+reload. `rollback-payment-ready` cannot manufacture that local entry if it was
+already cleared: after such a rollback the user repeats steps 1-18 once while
+Codex keeps the already captured server boundary at `payment-ready`.
 
 ## Complete test journey
 
@@ -86,8 +126,9 @@ Begin only after Codex confirms this exact baseline:
 16. Confirm that the timeframe, quantity, policy and price controls are locked
     in the payment phase.
 17. Select one active Barion card. Confirm an expired card cannot be selected.
-18. Report this phrase and wait for Codex to capture exactly one active Barion
-    session and zero request/assignment effects:
+18. Report this phrase and wait for Codex to prove that this pre-Pay state is
+    still only one frontend Borrow Basket draft: there is no server payment,
+    provider session, borrow request, inventory delta or assignment yet.
 
     `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
 
@@ -98,15 +139,15 @@ Begin only after Codex confirms this exact baseline:
 20. In the still-open Asset Explore surface, confirm the Borrow Basket shows
     exactly one target item with `Continue request`.
 21. Open `Continue request`. Confirm the same payment phase returns with the
-    same session-owned timeframe, quantity, policy and total.
+    same draft-owned timeframe, quantity, policy and total.
 22. Close it again and reload Nova exactly once.
 23. Return to the same Resource/Asset Explore scope. Confirm the Borrow Basket
     still contains exactly one target item and `Continue request` reconstructs
     the same payment-ready state.
 
 If the draft disappears, restarts at an empty review, changes amount, or
-creates another session merely because of reload, stop here. Report the exact
-mismatch; do not build a new attempt over the orphaned state.
+creates any server payment/session merely because of reload, stop here. Report
+the exact mismatch; do not build a new attempt over the inconsistent state.
 
 24. Select `Back` once.
 25. Confirm the editable review returns and `Pay` disappears.
@@ -114,13 +155,14 @@ mismatch; do not build a new attempt over the orphaned state.
     back to `1`. Keep the same valid timeframe and policy.
 27. Select `Confirm borrow` exactly once.
 28. Confirm Barion returns with the final quantity `1` and original exact
-    total. The superseded session must not remain selectable.
+    total. The earlier draft values must not remain in the payment phase.
 29. Report:
 
-    `ASSET-CHECKOUT-001 revised payment ready: one final session owns quantity 1`
+    `ASSET-CHECKOUT-001 revised payment ready: final draft owns quantity 1`
 
-30. Wait for Codex to prove that changed content did not reuse the old active
-    session and that no request, reservation or assignment exists yet.
+30. Wait for Codex to prove that Back/review/re-confirm changed no server
+    checkout state and that no payment/session, request, reservation or
+    assignment exists yet.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
@@ -213,12 +255,15 @@ mismatch; do not build a new attempt over the orphaned state.
 60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
     for the selected window, or is absent from the availability-filtered
     Explore list. Do not change filters or dates to make it eligible.
-61. From independent clean staged attempts, repeat only the provider terminal
-    controls: decline one 3DS request and let one request reach the three-minute
-    timeout without approval. In each case the waiting text must change to the
-    provider-owned animated X or timeout icon, remain visible briefly, then
-    close automatically; no request, reservation or entitlement may be
-    created. The user can still close either waiting popup early with X.
+61. Use `QA ASSET-CHECKOUT-001 Decline Control` for one new quantity-`1`
+    checkout and decline its 3DS request. Then use
+    `QA ASSET-CHECKOUT-001 Timeout Control` for one new quantity-`1` checkout
+    and leave its 3DS request pending for the three-minute timeout. Do not
+    reuse or change the accepted paid target. In each control the waiting text
+    must change to the provider-owned animated X or timeout icon, remain
+    visible briefly, then close automatically; no borrow request, inventory
+    delta, resource assignment or entitlement may be created. The waiting
+    popup remains closable with X.
 62. Confirm Ava's 3DS list shows all concurrently pending member transactions
     separately, or translated `nothing pending` when empty; selecting one row
     opens only that user's confirmation surface.
