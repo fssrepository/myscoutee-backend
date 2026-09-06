@@ -2468,7 +2468,6 @@ class ActivitiesEventsServiceTest {
         viewer.setName("Viewer User");
 
         ActivityEvent canonical = event("watched-event", "host", 0d);
-        canonical.setPublished(true);
         ActivityEvent suppressed = event("watched-event", "host", 0d);
         suppressed.setId("watched-event-viewer-suppression");
         suppressed.setOwnerUserId("viewer");
@@ -2510,7 +2509,6 @@ class ActivitiesEventsServiceTest {
         Users viewer = new Users();
         viewer.setId("viewer");
         ActivityEvent hidden = event("watched-event", "host", 0d);
-        hidden.setPublished(true);
         hidden.setVisibility("Invitation only");
         EventWatchSubscription subscription = new EventWatchSubscription();
         subscription.setUserId("viewer");

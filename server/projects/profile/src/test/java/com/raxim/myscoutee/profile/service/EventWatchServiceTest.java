@@ -74,7 +74,6 @@ class EventWatchServiceTest {
         event.setOwnerUserId("host");
         event.setCreatorUserId("host");
         event.setStatus(ActivityEvent.STATUS_ACTIVE);
-        event.setPublished(true);
         event.setGenerated(false);
         event.setVisibility("Public");
         event.setCapacityTotal(1);
