@@ -264,7 +264,9 @@ Begin only after Codex confirms this exact baseline:
     `EVENT-CHECKOUT-001 destination ready: Active/All, two Payment summaries and 3/6 membership`
 
     Wait for Codex to verify the persisted destination and capture the exact
-    step-66 rollback checkpoint.
+    step-66 rollback checkpoint. The background oracle also confirms that each
+    accepted multi-Slot checkout emits only the main-Event joined notification,
+    never a second generated-Slot notification for the same join.
 
 ### 6. Verify reload reconstruction and the action variants
 

@@ -1555,6 +1555,10 @@
         || Number(caseyChatCounters.event || 0) !== expectedCaseyChatCounters.event) {
       Q.fail("accepted Event did not create exactly one shared main-Event chat projection for Casey, Nova and Riley.");
     }
+    if (generatedSlotJoinNotifications().length !== 0
+        || generatedSlotJoinOutboxItems().length !== 0) {
+      Q.fail("multi-Slot checkout emitted a duplicate generated-Slot joined notification in addition to the main-Event notification.");
+    }
     const novaTotals = paymentTotals(novaUser);
     const rileyTotals = paymentTotals(rileyUser);
     const caseyTotals = paymentTotals(caseyUser);
@@ -1612,6 +1616,24 @@
         "payload.memberUserId": NOVA_ID
       })
       .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function generatedSlotJoinNotifications() {
+    return Q.collection("userNotifications")
+      .find({
+        sourceId: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] },
+        kind: "event-member-joined"
+      })
+      .toArray();
+  }
+
+  function generatedSlotJoinOutboxItems() {
+    return Q.collection("notificationOutbox")
+      .find({
+        "payload.eventId": { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] },
+        "payload.type": "event-member-joined"
+      })
       .toArray();
   }
 

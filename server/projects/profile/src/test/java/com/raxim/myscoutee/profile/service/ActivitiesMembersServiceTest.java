@@ -2973,6 +2973,7 @@ class ActivitiesMembersServiceTest {
     @Test
     void acceptedMemberCanJoinAnotherSlotAfterLeavingAMultiSlotEvent() {
         ActivityEvent slot = event("slot-2", "host", "host");
+        slot.setParentEventId("event-1");
         slot.setCapacityTotal(8);
         ActivityMember suppressed = suppressedMember(
                 member("viewer-slot-sync", "slot-2", "viewer", "Member", "accepted"),
@@ -3003,6 +3004,7 @@ class ActivitiesMembersServiceTest {
         assertThat(stored.get().getStatusBeforeSuppression()).isNull();
         assertThat(stored.get().getSuppressionRootOwnerId()).isNull();
         assertThat(stored.get().getSuppressedAtIso()).isNull();
+        verifyNoInteractions(eventInviteNotificationService);
     }
 
     @Test

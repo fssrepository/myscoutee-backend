@@ -1335,12 +1335,14 @@ public class ActivitiesMembersService {
             if (ACTION_ACCEPT.equals(action)) {
                 postEventMembershipChangeMessages(ownerId, List.of(next), List.of(), actorUserId);
                 ActivityEvent notificationEvent = findPreferredEventRecord(ownerId);
-                eventInviteNotificationService.notifyMemberJoined(
-                        notificationEvent,
-                        targetUserId,
-                        memberDisplayName(next),
-                        next.getActionAtIso(),
-                        eventJoinedRecipientUserIds(ownerId, notificationEvent, targetUserId));
+                if (isRootEventRecord(notificationEvent)) {
+                    eventInviteNotificationService.notifyMemberJoined(
+                            notificationEvent,
+                            targetUserId,
+                            memberDisplayName(next),
+                            next.getActionAtIso(),
+                            eventJoinedRecipientUserIds(ownerId, notificationEvent, targetUserId));
+                }
             } else if (ACTION_REMOVE.equals(action)) {
                 notifyRemovedEventMembers(ownerId, List.of(current), actorUserId, nowIso);
                 postEventMembershipChangeMessages(ownerId, List.of(), List.of(current), actorUserId);
@@ -1546,7 +1548,7 @@ public class ActivitiesMembersService {
                             memberDisplayName(current),
                             current.getActionAtIso(),
                             eventAcceptanceRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
-                } else {
+                } else if (isRootEventRecord(notificationEvent)) {
                     eventInviteNotificationService.notifyMemberJoined(
                             notificationEvent,
                             viewerUserId,
@@ -1559,6 +1561,10 @@ public class ActivitiesMembersService {
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         return snapshot == null ? null : snapshot.withMutationApplied(mutationApplied);
         }
+    }
+
+    private boolean isRootEventRecord(ActivityEvent event) {
+        return event != null && !StringUtils.hasText(normalizeId(event.getParentEventId()));
     }
 
     public OwnerMembersSnapshot removeEventParticipation(String eventId, String userId, String actorUserId) {
