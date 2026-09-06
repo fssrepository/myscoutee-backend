@@ -85,7 +85,7 @@ next_replay_boundary: baseline-ready; later named savepoints are payment-ready, 
 fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
 browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 88/108 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
+ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
 queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
 required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
 actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
@@ -1303,9 +1303,9 @@ closed Tournament fixtures unless their owning code or contract changes. The
 physical-device Chat boundary is retained in `MOBILE-PUSH-LIFECYCLE-001` and
 uses an Operator-tested Firebase revision in the QA environment.
 
-Firebase configuration, activation, one fresh sign-in and rollback are owned by
-`OPERATOR-FIREBASE-LIFECYCLE-001`; physical Chat push is owned by
-`MOBILE-PUSH-LIFECYCLE-001`; deployment activation/deactivation is owned by
+Configuration, including the Firebase activation and fresh-sign-in checkpoint,
+is owned by `OPERATOR-CONFIGURATION-LIFECYCLE-001`; physical Chat push is owned
+by `MOBILE-PUSH-LIFECYCLE-001`; registry activation/deactivation is owned by
 `OPERATOR-REGISTRY-LIFECYCLE-001`. No Deployment testcase remains in Pair QA.
 The Operator sequence follows the same priority ordering as every other Pair-QA
 domain. Member payment history and saved cards are behavior owned by Event; Payment is

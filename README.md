@@ -20,14 +20,12 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-06:** 88/108 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; `ASSET-CHECKOUT-001` is staged at its Barion/3DS-Off baseline as the active Asset journey. Deployment is not a Pair-QA domain; Firebase activation/login remains in Operator, real-device push in Notifications, and registry activation state in Operator.
+**2026-09-06:** 88/103 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; `ASSET-CHECKOUT-001` is staged at its Barion/3DS-Off baseline as the active Asset journey. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
-| Hard multi-model QA | Approximately 30–35 high-complexity cases | 1 Week |
-| Pair-QA completion | Remaining Pair-QA cases | 2 Weeks |
-| Provider-dependent integrations | Locally executable cases requiring an external provider, merchant account, or domain | 1 Week |
-| **Cumulative** | **All remaining QA phases** | **1 Month** |
+| Pair-QA completion | 15 remaining journeys; current complexity range 1125/2720 minutes | 1–2 Weeks |
+| **Cumulative** | **The single remaining Pair-QA queue** | **1–2 Weeks** |
 
 ### Documentation PDFs
 

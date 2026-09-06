@@ -7113,85 +7113,59 @@ publication evidence.
   contract. Capture the existing admin telemetry stream separately at the
   matching UI savepoints; do not infer Redis telemetry from Mongo state.
 
-## Operator configuration and security cases
+## Current Operator Pair-QA journeys
 
-### `OPERATOR-FIREBASE-001` — configure, activate and verify login
+### `OPERATOR-CONFIGURATION-LIFECYCLE-001` — configuration workspace
 
-- In the QA environment, save and test valid Firebase configuration, then
-  activate only the verified revision.
-- In a fresh browser session, verify that the normal entry action opens the
-  Firebase authentication surface instead of the demo user selector.
-- Complete one eligible fresh sign-in through the normal onboarding/profile
-  path, then reload/login and verify that the same application identity is
-  reused without a demo fallback or duplicate global identity. Keep the
-  already authenticated Operator session as an unchanged control.
-- Restore the original configuration and verify the original login mode.
-  Invalid-revision and secret-safety cases are automated Operator/domain
-  regressions, not extra manual Deployment steps.
+- Open Configuration once and use one reversible happy-path value in the
+  public configuration, TLS, payment and Firebase blocks.
+- After each Save/Test action, reopen the same block and compare the normalized
+  visible value; credentials may return only as configured/masked state.
+- After Firebase activation, complete one eligible fresh sign-in and verify
+  that reload/login reuses the same application identity.
+- Restore every changed block to its exact baseline before closing the row.
+- Invalid-input, callback-security, secret-leak, TLS-worker failure and other
+  fault-injection branches belong to automated regression coverage. Checkout and real-device push
+  effects stay in Event/Asset and Notifications.
 
-### `OPERATOR-PAYMENT-001` — configure and rotate the payment token
+### `OPERATOR-REGISTRY-LIFECYCLE-001` — registry and community
 
-Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+- Register one disposable local binding, complete one claim/link path, inspect
+  its leaderboard/community projection and synchronize one measurement period.
+- Deactivate/reactivate once to verify member/admin fail-closed behavior and
+  retained Operator recovery, then restore the disposable binding.
+- Protocol abuse, retry storms, token-security probes, announcement fan-out and
+  worker failures belong to automated regression coverage.
 
-- In a disposable operator deployment, save a valid payment-provider token,
-  validate it through the named server-side provider check and activate only
-  the verified revision.
-- Complete provider callback configuration during this pair-QA case instead of
-  leaving it as an environment-only deployment step:
-  - for Stripe, register the deployment's
-    `<public-base-url>/api/payment/webhooks/stripe` endpoint and manage its
-    endpoint-specific `whsec_...` signing secret as a separate encrypted
-    Operator credential; never reuse the Stripe API key as the webhook secret;
-  - for Barion, do not introduce a Stripe-style callback secret. Treat the
-    callback `PaymentId` only as a change signal, retrieve the authoritative
-    state server-to-server with the active encrypted POSKey, and enforce the
-    documented Barion callback-source IP allowlist.
-- Prove Stripe verification uses the untouched request body plus the
-  `Stripe-Signature` header, and that test/live endpoints use their own signing
-  secrets. Prove the Barion callback returns its timely acknowledgement while
-  invalid, mismatched or replayed `PaymentId` input cannot mutate payment or
-  booking state without a matching authoritative Barion state response.
-- The raw token must never be returned in a row DTO, stored in frontend/local
-  cache, written to logs, notifications or audit payloads, or redisplayed after
-  save. The UI may expose only masked metadata such as provider, state,
-  fingerprint/last characters and updated time.
-- Prove invalid-token rejection leaves the prior active revision unchanged.
-  Rotate to a second valid token and prove new payment operations use only the
-  new revision; then revoke it and prove payment operations fail closed while
-  operator recovery remains available through its documented boundary.
-- Record an immutable actor/configuration audit for save, validation,
-  activation, rotation and revocation without recording either raw token.
+### `OPERATOR-UPDATE-LIFECYCLE-001` — signed update
 
-### `OPERATOR-PAYMENT-IP-001` — restrict payment access by client IP
+- Apply one prepared compatible QA release from Updates, observe honest
+  progress, then reopen the Operator screen and verify the resulting version.
+- Invalid signatures, corrupt archives, downgrade rejection, interrupted-worker
+  recovery and rollback belong to packaging/update automation, not extra manual
+  branches.
 
-Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+### `OPERATOR-REVENUE-LIFECYCLE-001` — revenue
 
-- Configure an explicit server-side IP/CIDR allowlist for payment-token
-  management and payment operations. `127.0.0.1` is the required loopback-only
-  checkpoint: the same host is accepted and a request whose trusted resolved
-  client IP does not match is denied before token access or provider traffic.
-- Resolve client IP only through the deployment's trusted proxy chain. A raw or
-  spoofed `X-Forwarded-For` value from an untrusted source must not bypass the
-  policy; malformed addresses and an empty effective allowlist fail closed.
-- Prove the denial is enforced by the backend even when the operator UI/action
-  is called directly. Frontend hiding is neither enforcement nor PASS evidence.
-- Audit allowed and denied attempts with actor, resolved client IP, policy
-  revision and outcome, but never the raw payment token. After restoring the
-  prior policy, prove access changes exactly once and no stale browser state
-  overrides the authoritative server decision.
+- Open Revenue for one controlled captured/released payment set, synchronize
+  once, compare totals and one settlement, then reopen the persisted result.
+- Failure injection, retry/idempotency and exclusion rules belong to automated
+  regression coverage.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 108 executable journeys after provider behavior was moved
+The matrix contains 103 executable journeys after provider behavior was moved
 into its owning Event/Asset rows and the five obsolete standalone Payment rows
 were replaced by one Event-owned side-menu Payment checkpoint, and the
-six non-Pair-QA Deployment rows were removed. All 88 passed rows remain
+six non-Pair-QA Deployment rows were removed. Nine planned Operator rows were
+consolidated into four screen-level journeys. All 88 passed rows remain
 individually immutable, including their owning `QA domain`, ID, status,
 contract and evidence. Non-PASS microcases from the earlier 190/212-row planning stages
-were consolidated into complete lifecycle parents. Every assertion below is
-still required, but an old source ID is not an independently scheduled test
-unless it remains a current CSV/XLSX row. The consolidated parent rows in the
-matrix and the handoff's resume pointer are authoritative.
+were consolidated into complete lifecycle parents. Assertions below belong
+either to automated coverage or bounded parent subassertions; an old source ID is
+not an independently scheduled test unless it remains a current CSV/XLSX row.
+The consolidated parent rows in the matrix and the handoff's resume pointer
+are authoritative.
 
 The tables below are therefore a source-oracle archive for the consolidated
 parents, not an instruction to recreate microtests. Runtime execution uses at
@@ -7202,6 +7176,13 @@ All current rows belong to one Pair-QA queue. Operator is a normal domain.
 Local Admin work is distributed to its actual capability owner, and the
 overview reports one total across every current Pair-QA row without a separate
 scope branch, legend or total.
+
+The four current Operator parents are
+`OPERATOR-CONFIGURATION-LIFECYCLE-001`,
+`OPERATOR-REGISTRY-LIFECYCLE-001`,
+`OPERATOR-UPDATE-LIFECYCLE-001` and
+`OPERATOR-REVENUE-LIFECYCLE-001`. The detailed Operator tables below are
+source assertions for those parents, not additional scheduled Pair-QA rows.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -7429,7 +7410,7 @@ app target.
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `OPERATOR-FIREBASE-001` | Save, verify and activate one Firebase configuration, then restore the prior configuration after the login check. | Tested/active state changes once, the existing Operator session stays usable and restoration returns the prior login mode. |
-| `ENTRY-FIREBASE-REG-001` | After activation, complete one eligible fresh sign-in and repeat login. | One subject/email links to one application user/profile, reload reuses it, the Operator recovery control stays valid and no demo/global collision occurs. This assertion is consolidated into `OPERATOR-FIREBASE-LIFECYCLE-001`. |
+| `ENTRY-FIREBASE-REG-001` | After activation, complete one eligible fresh sign-in and repeat login. | One subject/email links to one application user/profile, reload reuses it, the Operator recovery control stays valid and no demo/global collision occurs. This assertion is a block inside `OPERATOR-CONFIGURATION-LIFECYCLE-001`. |
 | `MOBILE-PUSH-001` | Keep the phone app visible and produce one target notification from a desktop actor. | Foreground listener shows one in-app notification/counter, no duplicate system notification and the backend inbox/outbox/token identities agree. |
 | `MOBILE-PUSH-002` | Background, then fully close the phone app and produce one target notification. | FCM displays one system notification while the app is not open; no desktop actor receives it and the persisted unread count stays one. |
 | `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
