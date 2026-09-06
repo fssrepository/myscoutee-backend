@@ -7023,6 +7023,21 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 - In a disposable operator deployment, save a valid payment-provider token,
   validate it through the named server-side provider check and activate only
   the verified revision.
+- Complete provider callback configuration during this pair-QA case instead of
+  leaving it as an environment-only deployment step:
+  - for Stripe, register the deployment's
+    `<public-base-url>/api/payment/webhooks/stripe` endpoint and manage its
+    endpoint-specific `whsec_...` signing secret as a separate encrypted
+    Operator credential; never reuse the Stripe API key as the webhook secret;
+  - for Barion, do not introduce a Stripe-style callback secret. Treat the
+    callback `PaymentId` only as a change signal, retrieve the authoritative
+    state server-to-server with the active encrypted POSKey, and enforce the
+    documented Barion callback-source IP allowlist.
+- Prove Stripe verification uses the untouched request body plus the
+  `Stripe-Signature` header, and that test/live endpoints use their own signing
+  secrets. Prove the Barion callback returns its timely acknowledgement while
+  invalid, mismatched or replayed `PaymentId` input cannot mutate payment or
+  booking state without a matching authoritative Barion state response.
 - The raw token must never be returned in a row DTO, stored in frontend/local
   cache, written to logs, notifications or audit payloads, or redisplayed after
   save. The UI may expose only masked metadata such as provider, state,
