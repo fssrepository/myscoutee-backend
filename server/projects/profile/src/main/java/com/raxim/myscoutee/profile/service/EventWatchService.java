@@ -60,6 +60,13 @@ public class EventWatchService {
         EventWatchSubscription existing = eventWatchSubscriptionsRepository
                 .findByUserIdAndEventId(userId, eventId)
                 .orElse(null);
+        if (isAcceptedEventMember(event, userId)) {
+            if (existing != null) {
+                eventWatchSubscriptionsRepository.delete(existing);
+                userActivityCountersService.refreshEventCountersForUsers(List.of(userId));
+            }
+            return result(userId, eventId, false, existing != null);
+        }
         if (existing != null) {
             return result(userId, eventId, true, false);
         }
@@ -128,11 +135,19 @@ public class EventWatchService {
         }
         Map<String, ActivityEvent> eventsById = preferredEventsById(activityEventsRepository.findBySourceIdIn(eventIds));
         List<EventWatchSubscription> changed = new ArrayList<>();
+        List<EventWatchSubscription> redundant = new ArrayList<>();
+        Set<String> counterRefreshUserIds = new LinkedHashSet<>();
         String nowIso = Instant.now().toString();
         for (EventWatchSubscription subscription : subscriptions) {
             String eventId = normalizeId(subscription == null ? null : subscription.getEventId());
             ActivityEvent event = eventsById.get(eventId);
             if (subscription == null || event == null) {
+                continue;
+            }
+            String userId = normalizeId(subscription.getUserId());
+            if (isAcceptedEventMember(event, userId)) {
+                redundant.add(subscription);
+                counterRefreshUserIds.add(userId);
                 continue;
             }
             boolean currentFull = isFull(event);
@@ -149,6 +164,10 @@ public class EventWatchService {
         }
         if (!changed.isEmpty()) {
             eventWatchSubscriptionsRepository.saveAll(changed);
+        }
+        if (!redundant.isEmpty()) {
+            eventWatchSubscriptionsRepository.deleteAll(redundant);
+            userActivityCountersService.refreshEventCountersForUsers(counterRefreshUserIds);
         }
     }
 
@@ -224,6 +243,21 @@ public class EventWatchService {
         int capacity = Math.max(0, slot.capacityTotal() == null ? 0 : slot.capacityTotal());
         int accepted = Math.max(0, slot.acceptedMembers() == null ? 0 : slot.acceptedMembers());
         return capacity > 0 && accepted >= capacity;
+    }
+
+    private boolean isAcceptedEventMember(ActivityEvent event, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (event == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(event.getCreatorUserId()))
+                || normalizedUserId.equals(normalizeId(event.getOwnerUserId()))) {
+            return true;
+        }
+        return (event.getAcceptedMemberUserIds() == null ? List.<String>of() : event.getAcceptedMemberUserIds())
+                .stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
     }
 
     private void enqueueAvailabilityNotification(EventWatchSubscription subscription, ActivityEvent event) {

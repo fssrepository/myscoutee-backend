@@ -2977,7 +2977,8 @@ action.
   | Paid basket confirmed, before payment | Event Explore `Continue booking`; payment step `Back`, `Cancel payment`, `Payment`; provider panel `Stripe` | a second active basket/session |
   | Paid Event awaiting Admin approval | `Waiting for approval`, `Cancel request`; orange `Continue booking` from Explore | `Payment` before approval |
   | Full direct paid Event | `Join Waiting List`, then `Waiting List`/`Leave waitlist` | `Payment` while no place exists |
-  | Full multi-Slot paid Event | Event remains in Explore with `Add to Watchlist` | `Book Event`, `Continue booking`, `Join Waiting List`, new basket/payment |
+  | Full multi-Slot paid Event, outside viewer | Event remains in Explore with `Add to Watchlist` | `Book Event`, `Continue booking`, `Join Waiting List`, new basket/payment |
+  | Accepted Event member | normal Event-level notifications; no Watchlist action | `Add to Watchlist`, `Remove from Watchlist` |
   | Free Event | `Join Event`/`Join` | payment step or payment record |
   | Successful direct Stripe payment | Activity Events `Active`/`All`: `View Event`, `Payment summary`, `Leave Event` | `Book Event`, `Continue booking`, another `Payment` |
 
@@ -2999,7 +3000,8 @@ action.
   responsive. After it succeeds, `Continue booking` is correct while Morning
   remains open. Reuse Casey's browser for Riley, pay Morning once, then require
   both Slots to be full and the fresh-booking/Continue action to disappear for
-  both participants.
+  both participants. Accepted members do not receive a redundant Watchlist
+  action because they already receive the Event-level member notifications.
 - The assign surface keeps expired and provider-mismatched cards visible but
   unselectable, ordered after selectable cards as `selectable -> Reconnect ->
   Expired`. Both retain their artwork beneath the same white overlay. The
@@ -3022,8 +3024,9 @@ action.
   exposes `View Event`, read-only `Payment summary` and `Leave Event`; Nova's
   summary returns Evening and Riley's returns Morning with their own payment
   method and authorized/joined result. Explore exposes the Event-level
-  Watchlist action, never another booking/payment action. Merely opening either
-  summary cannot write.
+  outside viewer's Watchlist action, never another booking/payment action.
+  The accepted participants do not expose a Watchlist action. Merely opening
+  either summary cannot write.
 - One clean reload must reconstruct the same accepted membership, bucket
   counters, menu actions and Payment summary from persisted state. The target
   remains visible in Event Explore without becoming a fresh payment candidate.
@@ -3042,7 +3045,8 @@ action.
   execute this row until that harness and the isolated Casey/Nova/Ava browser
   sessions exist; Riley reuses Casey's session slot only at the declared step.
 - The versioned fixture retains exact rollback points for the cancelled block-4
-  boundary and the persisted step-66 destination boundary. The target and
+  boundary, the persisted step-66 destination boundary and the exact step-74
+  pre-Watchlist boundary. The target and
   controls, Nova's Stripe/Barion/expired cards, Riley's separate Stripe card,
   the exact-reset snapshot and three isolated Casey/Nova/Ava windows remain
   owned by this checkpoint.
@@ -3077,6 +3081,14 @@ action.
   payment after explicit cancellation. Free and Adjacent remain untouched;
   Approval retains exactly one pending approval basket. The current step-66
   rollback snapshot and step-74 control oracle both passed after these repairs.
+- The three bounded post-step-74 UI regressions passed: the Waitlist control
+  has no `Continue booking`, the plain Cash-only checkout has no Basket/Slot
+  panel, and the paid Payment summary retains its selected Slot item. Block 7
+  uses a separate full two-Slot fixture: outsider Nova owns Watchlist
+  persistence and availability, while Riley and Casey are accepted members.
+  This distinguishes Nova's one Watchlist availability notification from the
+  normal Event-level member notification and forbids Watchlist actions for
+  accepted members without disturbing the already-proven paid target.
 
 ## Event ticketing checkpoints
 
