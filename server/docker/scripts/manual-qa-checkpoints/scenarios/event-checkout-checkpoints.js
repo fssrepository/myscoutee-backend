@@ -382,7 +382,7 @@
 
   function assertControlsUnchanged(currentState) {
     const current = controlFingerprint();
-    if (!Q.sameJson(current, currentState.controlFingerprint)) {
+    if (!Q.sameJson(EJSON.serialize(current), EJSON.serialize(currentState.controlFingerprint))) {
       Q.fail("Free/Approval/Waitlist/Adjacent control records changed.");
     }
   }
