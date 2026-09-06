@@ -1334,6 +1334,13 @@ public class ActivitiesMembersService {
             }
             if (ACTION_ACCEPT.equals(action)) {
                 postEventMembershipChangeMessages(ownerId, List.of(next), List.of(), actorUserId);
+                ActivityEvent notificationEvent = findPreferredEventRecord(ownerId);
+                eventInviteNotificationService.notifyMemberJoined(
+                        notificationEvent,
+                        targetUserId,
+                        memberDisplayName(next),
+                        next.getActionAtIso(),
+                        eventJoinedRecipientUserIds(ownerId, notificationEvent, targetUserId));
             } else if (ACTION_REMOVE.equals(action)) {
                 notifyRemovedEventMembers(ownerId, List.of(current), actorUserId, nowIso);
                 postEventMembershipChangeMessages(ownerId, List.of(), List.of(current), actorUserId);
@@ -1527,16 +1534,25 @@ public class ActivitiesMembersService {
                 eventInviteNotificationService.markInvitationResolved(
                         normalizedEventId,
                         viewerUserId);
-                if (accepted) {
-                    ActivityEvent notificationEvent = eventRecord == null
-                            ? findPreferredEventRecord(normalizedEventId)
-                            : eventRecord;
+            }
+            if (accepted) {
+                ActivityEvent notificationEvent = eventRecord == null
+                        ? findPreferredEventRecord(normalizedEventId)
+                        : eventRecord;
+                if (resolvingInvitation) {
                     eventInviteNotificationService.notifyInvitationAccepted(
                             notificationEvent,
                             viewerUserId,
                             memberDisplayName(current),
                             current.getActionAtIso(),
                             eventAcceptanceRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
+                } else {
+                    eventInviteNotificationService.notifyMemberJoined(
+                            notificationEvent,
+                            viewerUserId,
+                            memberDisplayName(current),
+                            current.getActionAtIso(),
+                            eventJoinedRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
                 }
             }
         }
@@ -4803,6 +4819,30 @@ public class ActivitiesMembersService {
         loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
+                .filter(member -> memberListOpen || MANAGER_ROLES.contains(resolveStoredRole(
+                        member,
+                        OWNER_TYPE_EVENT,
+                        normalizedEventId)))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(recipientUserIds::add);
+        recipientUserIds.remove(normalizedExcludedUserId);
+        return List.copyOf(recipientUserIds);
+    }
+
+    private List<String> eventJoinedRecipientUserIds(
+            String eventId,
+            ActivityEvent event,
+            String excludedUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedExcludedUserId = normalizeId(excludedUserId);
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(resolveEventAdminUserIds(event));
+        boolean memberListOpen = event == null
+                || !"Blind Event".equalsIgnoreCase(safeText(event.getBlindMode()));
+        loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
                 .filter(member -> memberListOpen || MANAGER_ROLES.contains(resolveStoredRole(
                         member,
                         OWNER_TYPE_EVENT,

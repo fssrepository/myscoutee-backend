@@ -149,6 +149,65 @@ public class EventInviteNotificationService {
                 memberUserId));
     }
 
+    public void notifyMemberJoined(
+            ActivityEvent event,
+            String joinedUserId,
+            String joinedUserName,
+            String joinedAtIso,
+            List<String> recipientUserIds) {
+        if (event == null) {
+            return;
+        }
+        String memberUserId = safeText(joinedUserId);
+        if (!StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        if (recipientUserIds != null) {
+            recipientUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipients::add);
+        }
+        recipients.remove(memberUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+
+        String eventId = safeText(event.getSourceId());
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(joinedUserName))
+                ? safeText(joinedUserName)
+                : memberUserId;
+        String occurrenceId = UUID.randomUUID().toString();
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "members");
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("membershipAction", "joined");
+        payload.put("notification_tone", "accent");
+        payload.put("joinOccurrenceId", occurrenceId);
+        if (StringUtils.hasText(safeText(joinedAtIso))) {
+            payload.put("joinedAtIso", safeText(joinedAtIso));
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-member-joined",
+                "event",
+                eventId,
+                "event-participants",
+                List.copyOf(recipients),
+                eventTitle,
+                memberName + " joined " + eventTitle + ".",
+                DEFAULT_CLICK_URL,
+                resolveImageUrl(event),
+                APP_BADGE_URL,
+                "event-member-joined-" + eventId + "-" + memberUserId + "-" + occurrenceId,
+                payload,
+                memberUserId));
+    }
+
     public void notifyMemberApproved(
             ActivityEvent event,
             String approvedUserId,
