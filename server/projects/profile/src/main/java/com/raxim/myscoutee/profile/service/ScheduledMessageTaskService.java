@@ -422,7 +422,24 @@ public class ScheduledMessageTaskService {
                 audienceUserIds,
                 reasons,
                 actorUserId,
-                eventDefinitionChangedTaskKey(eventId));
+                eventDefinitionChangedTaskKey(eventId),
+                "event-participants");
+    }
+
+    public ScheduledMessageTask scheduleEventWatchlistDefinitionChanged(
+            String eventId,
+            String eventTitle,
+            Collection<String> audienceUserIds,
+            Collection<String> reasons,
+            String actorUserId) {
+        return scheduleEventDefinitionChangedTask(
+                eventId,
+                eventTitle,
+                audienceUserIds,
+                reasons,
+                actorUserId,
+                eventWatchlistDefinitionChangedTaskKey(eventId),
+                "event-watchers");
     }
 
     public ScheduledMessageTask scheduleEventLifecycleChanged(
@@ -437,7 +454,8 @@ public class ScheduledMessageTaskService {
                 audienceUserIds,
                 reasons,
                 actorUserId,
-                eventLifecycleChangedTaskKey(eventId));
+                eventLifecycleChangedTaskKey(eventId),
+                "event-participants");
     }
 
     private ScheduledMessageTask scheduleEventDefinitionChangedTask(
@@ -446,7 +464,8 @@ public class ScheduledMessageTaskService {
             Collection<String> audienceUserIds,
             Collection<String> reasons,
             String actorUserId,
-            String requestedTaskKey) {
+            String requestedTaskKey,
+            String recipientScope) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -477,7 +496,11 @@ public class ScheduledMessageTaskService {
         task.setDueAtIso(nowIso);
         task.setStatus(STATUS_SCHEDULED);
         task.setSuspended(Boolean.FALSE);
-        task.setPayload(eventDefinitionChangedPayload(eventTitle, normalizedAudience, reasons));
+        task.setPayload(eventDefinitionChangedPayload(
+                eventTitle,
+                normalizedAudience,
+                reasons,
+                recipientScope));
         task.setUpdatedDate(nowIso);
         task.setUpdatedUser(updatedBy);
         ScheduledMessageTask saved = saveRunnableTask(task);
@@ -1117,11 +1140,13 @@ public class ScheduledMessageTaskService {
     private Map<String, String> eventDefinitionChangedPayload(
             String eventTitle,
             Collection<String> audienceUserIds,
-            Collection<String> reasons) {
+            Collection<String> reasons,
+            String recipientScope) {
         Map<String, String> payload = new LinkedHashMap<>();
         putPayload(payload, "eventTitle", eventTitle);
         putPayload(payload, "audienceUserIds", String.join(",", normalizeIds(audienceUserIds)));
         putPayload(payload, "changeReasons", String.join(",", normalizeStrings(reasons)));
+        putPayload(payload, "recipientScope", recipientScope);
         return payload;
     }
 
@@ -1179,7 +1204,10 @@ public class ScheduledMessageTaskService {
         putPayload(variables, "notification_kind", eventDefinitionChangeKind(changeReasons));
         putPayload(variables, "notification_source_type", "event");
         putPayload(variables, "notification_source_id", task == null ? null : task.getEventId());
-        putPayload(variables, "notification_recipient_scope", "event-participants");
+        putPayload(
+                variables,
+                "notification_recipient_scope",
+                firstNonBlank(payload == null ? null : payload.get("recipientScope"), "event-participants"));
         putPayload(variables, "cta_label", "Open event");
         putPayload(variables, "cta_url", baseUrl() + "/game");
         return variables;
@@ -1290,6 +1318,10 @@ public class ScheduledMessageTaskService {
 
     private String eventDefinitionChangedTaskKey(String eventId) {
         return "event-definition-changed:" + normalizeId(eventId);
+    }
+
+    private String eventWatchlistDefinitionChangedTaskKey(String eventId) {
+        return "event-watchlist-definition-changed:" + normalizeId(eventId);
     }
 
     private String eventLifecycleChangedTaskKey(String eventId) {

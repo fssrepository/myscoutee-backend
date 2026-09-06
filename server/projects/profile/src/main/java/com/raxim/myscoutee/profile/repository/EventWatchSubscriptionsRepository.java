@@ -13,6 +13,8 @@ public interface EventWatchSubscriptionsRepository extends MongoRepository<Event
 
     List<EventWatchSubscription> findByUserIdOrderByUpdatedDateDesc(String userId);
 
+    List<EventWatchSubscription> findByEventId(String eventId);
+
     List<EventWatchSubscription> findByUserIdAndEventIdIn(String userId, Collection<String> eventIds);
 
     long countByUserId(String userId);

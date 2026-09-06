@@ -3103,6 +3103,16 @@ action.
   removed by the bounded fixture cleanup before the final oracle. Voluntary
   self-leave notifications now use `left`; organizer removal continues to use
   `removed`.
+- Accepted post-close Watchlist refinement (2026-09-06): availability copy is
+  now neutral (`A new spot is available`) because following an Event does not
+  imply that it was full at subscription time. An outside watcher also gets a
+  generic update when a followed Event becomes public again, but only while
+  the same Explore visibility policy still permits that user to view it.
+  Accepted/pending/invited participants are excluded from this watcher intent,
+  and draft, invitation-only or otherwise inaccessible Events disappear from
+  Watchlist without disclosing their internal changes. Backend and frontend
+  local implementations carry the same boundary; regression specifications
+  cover outsider/member recipient separation and hidden Watchlist records.
 
 ## Event ticketing checkpoints
 

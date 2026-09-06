@@ -46,6 +46,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.EventWatchSubscription;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
@@ -2296,6 +2297,7 @@ public class ActivitiesEventsService {
             } else {
                 scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
+            schedulePublicWatchlistEventUpdatedNotification(sourceId, publishedDocuments, userId);
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
             markEventAttachmentsAvailable(publishedDocuments);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
@@ -5242,6 +5244,52 @@ public class ActivitiesEventsService {
                 actorUserId);
     }
 
+    private void schedulePublicWatchlistEventUpdatedNotification(
+            String sourceId,
+            List<ActivityEvent> updatedRecords,
+            String actorUserId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return;
+        }
+        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
+                .stream()
+                .findFirst()
+                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
+        if (event == null) {
+            return;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedSourceId);
+        LinkedHashSet<String> trackedUserIds = new LinkedHashSet<>();
+        if (membershipSnapshot != null) {
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.acceptedMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.pendingMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.invitedMemberUserIds()));
+            trackedUserIds.addAll(normalizeIds(membershipSnapshot.pendingRequestMemberUserIds()));
+        }
+        trackedUserIds.add(normalizeId(actorUserId));
+        List<EventWatchSubscription> subscriptions =
+                eventWatchSubscriptionsRepository.findByEventId(normalizedSourceId);
+        LinkedHashSet<String> watcherUserIds = (subscriptions == null
+                ? List.<EventWatchSubscription>of()
+                : subscriptions).stream()
+                .map(subscription -> normalizeId(subscription == null ? null : subscription.getUserId()))
+                .filter(StringUtils::hasText)
+                .filter(userId -> !trackedUserIds.contains(userId))
+                .filter(userId -> isVisibleToUntrackedViewer(event, userId))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (watcherUserIds.isEmpty()) {
+            return;
+        }
+        scheduledMessageTaskService.scheduleEventWatchlistDefinitionChanged(
+                normalizedSourceId,
+                event.getTitle(),
+                watcherUserIds,
+                List.of("modified"),
+                actorUserId);
+    }
+
     private void notifyPublishedPendingInvitees(
             List<ActivityEvent> publishedRecords,
             ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
@@ -5374,6 +5422,7 @@ public class ActivitiesEventsService {
                 .filter(record -> watchedSourceIds.contains(normalizeId(record.getSourceId())))
                 .filter(this::isRootActivityRecord)
                 .filter(record -> !isTrashStatus(record))
+                .filter(record -> isVisibleToUntrackedViewer(record, viewer.userId()))
                 .toList();
         return computePreferredEventRecords(visibleWatchedRecords).stream()
                 .map(this::cloneDocument)

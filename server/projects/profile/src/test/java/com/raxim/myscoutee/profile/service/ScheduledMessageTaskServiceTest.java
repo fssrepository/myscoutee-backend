@@ -231,6 +231,12 @@ class ScheduledMessageTaskServiceTest {
                 "eventTitle", "Board Game Night",
                 "audienceUserIds", "user-1",
                 "changeReasons", "modified"));
+        ScheduledMessageTask watcherUpdate = eventChangeTask();
+        watcherUpdate.setPayload(Map.of(
+                "eventTitle", "Board Game Night",
+                "audienceUserIds", "user-1",
+                "changeReasons", "schedule",
+                "recipientScope", "event-watchers"));
 
         @SuppressWarnings("unchecked")
         Map<String, String> underReviewVariables = ReflectionTestUtils.invokeMethod(
@@ -243,6 +249,12 @@ class ScheduledMessageTaskServiceTest {
                 service,
                 "eventDefinitionChangedVariables",
                 modified,
+                recipient);
+        @SuppressWarnings("unchecked")
+        Map<String, String> watcherVariables = ReflectionTestUtils.invokeMethod(
+                service,
+                "eventDefinitionChangedVariables",
+                watcherUpdate,
                 recipient);
 
         assertThat(underReviewVariables)
@@ -257,6 +269,10 @@ class ScheduledMessageTaskServiceTest {
                 .containsEntry("notification_message_key", "notification.event.available.again.message")
                 .containsEntry("notification_tone", "success")
                 .containsEntry("notification_kind", "event-modified");
+        assertThat(watcherVariables)
+                .containsEntry("change_summary", "The event schedule changed.")
+                .containsEntry("notification_recipient_scope", "event-watchers")
+                .containsEntry("notification_kind", "event-details-changed");
     }
 
     @Test
