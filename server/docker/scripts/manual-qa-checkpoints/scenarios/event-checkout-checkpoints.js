@@ -2041,6 +2041,33 @@
     });
   }
 
+  function cleanFinalWatchlistSideEffect() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "block7-ready") {
+      Q.fail("final Watchlist cleanup requires the captured pre-Nova-leave block-7 boundary.");
+    }
+    const removed = Q.collection("eventWatchSubscriptions").deleteMany({
+      eventId: TARGET_ID,
+      userId: NOVA_ID
+    });
+    const nova = Q.ensureUser(NOVA_ID, "Nova");
+    const activities = { ...(nova.activities || {}) };
+    activities.event = {
+      ...(activities.event || {}),
+      watchlist: Number(currentState.block7NovaWatchlistCounter || 0)
+    };
+    Q.collection("users").updateOne(userSelector(NOVA_ID), { $set: { activities } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "block7-ready",
+      cleanup: "post-unwatch-watchlist-side-effect",
+      removedSubscriptions: Number(removed.deletedCount || 0),
+      watchlistCounter: Number(currentState.block7NovaWatchlistCounter || 0)
+    });
+  }
+
   function verifyWatchlist() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "block7-ready") {
@@ -2173,6 +2200,7 @@
   else if (command === "verify-destination") verifyDestination();
   else if (command === "capture-block-7") captureBlock7();
   else if (command === "rollback-block-7") rollbackBlock7();
+  else if (command === "clean-final-watchlist-side-effect") cleanFinalWatchlistSideEffect();
   else if (command === "verify-watchlist") verifyWatchlist();
   else if (command === "verify") verifyTerminal();
   else if (command === "reset") reset();

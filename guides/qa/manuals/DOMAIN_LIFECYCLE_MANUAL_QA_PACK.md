@@ -3091,6 +3091,18 @@ action.
   distinguishes Nova's one
   Watchlist availability notification from the normal Event-level member
   notification and proves that accepted members have no Watchlist action.
+- Final Watchlist/leave evidence (2026-09-06 10:41 CEST): the complete
+  block-7 oracle passed after the user-controlled steps through 81. Casey is
+  the sole accepted root and Slot member, each Slot has one available place,
+  the two authorized joined Stripe payments are unchanged, and neither Nova
+  nor Riley has an active basket. Nova has no retained Watchlist subscription
+  or counter contribution; the availability notification, Riley member
+  notification and their outbox intents are each exactly once, while the Event
+  chat contains exactly the Nova and Riley voluntary-leave messages. A later
+  extra Add-to-watchlist click was classified from the HTTP write audit and
+  removed by the bounded fixture cleanup before the final oracle. Voluntary
+  self-leave notifications now use `left`; organizer removal continues to use
+  `removed`.
 
 ## Event ticketing checkpoints
 

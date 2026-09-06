@@ -315,7 +315,7 @@ public class EventWatchService {
                 "event-watchers",
                 List.of(userId),
                 title,
-                "A place is available again. Open the event to book it.",
+                "A new spot is available. Open the event to book it.",
                 DEFAULT_CLICK_URL,
                 firstNonBlank(event.getImageUrl(), APP_BADGE_URL),
                 APP_BADGE_URL,

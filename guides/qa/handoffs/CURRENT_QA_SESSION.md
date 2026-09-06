@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 09:45 CEST
+Updated: 2026-09-06 10:41 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -75,22 +75,22 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-CHECKOUT-001 — IN PROGRESS / VERIFIED THROUGH STEP 74
+checkpoint: EVENT-CHECKOUT-001 — PASS / CLOSED
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-checkout-checkpoint
 checklist: ../checklists/event/EVENT-CHECKOUT-001.md
-substage: user-controlled steps through 74 are complete; the persisted destination, reload/control reads and repaired control contracts passed, and the already-repeated Nova leave/rejoin path remains exploratory coverage inside block 4 rather than a new block
-next_replay_boundary: the three short regression glances after step 74 passed and the exact pre-Nova-leave block-7 rollback point is captured; perform step 75 by proving the Watchlist action absent for member Riley and member Nova before Nova leaves
-fixture_phase: `phase=block7-ready`, checkpoint `pre-Nova-leave-step-74`; Nova and Riley are accepted, both Slots are full, exactly two authorized joined Stripe payments and two succeeded inactive baskets exist, no active basket or Watchlist subscription exists, and Cash only is active
-browser_phase: the user exclusively performed steps through 74 and repeated Nova leave/rejoin several times; Codex performed no browser navigation or clicks
+substage: the user-controlled journey through step 81 and the final persisted Watchlist/leave oracle passed
+next_replay_boundary: none; the exact step-74 rollback remains available only for a deliberate future regression replay
+fixture_phase: `phase=verified`; Casey is the sole accepted root/Slot member, two authorized joined Stripe payments remain immutable, both Slots have one available place, and Nova has no active Watchlist subscription or counter
+browser_phase: the user exclusively performed the complete checklist and additional leave/rejoin coverage; Codex performed no browser navigation or clicks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 87/114 total, Core 87/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 is PASS/CLOSED and EVENT-CHECKOUT-001 remains IN PROGRESS through step 74
-queued_next: EVENT-CHECKOUT-001
-required_resume: preserve the block7-ready fixture and existing browser windows; continue at step 75 without replaying payment, or use `rollback-block-7` to restore this exact pre-Nova-leave state
-actors: Riley and Nova begin step 75 as accepted paid-target members; Nova leaves and becomes the outsider Watchlist subscriber, Riley leaves once only at step 79 to open one additional Slot place, Casey remains the accepted member and Ava remains idle
-pending_machine_oracle: the final block-7 oracle must prove outsider-only Watchlist persistence/counter behavior, one Nova notification on the additional availability increase distinct from accepted-member Event notifications, no new Nova reservation/basket/membership side effect and unchanged post-leave Nova All semantics
+ledger_status: 88/114 total, Core 88/99, External/optional 0/15; PAYMENT-METHODS-HISTORY-001 and EVENT-CHECKOUT-001 are PASS/CLOSED
+queued_next: none selected
+required_resume: do not replay EVENT-CHECKOUT-001 unless a later regression explicitly requires it; select the next checkpoint from the canonical matrix
+actors: Casey remains the accepted fixture member; Nova and Riley are suppressed after voluntary leave; Ava remained idle
+pending_machine_oracle: none for EVENT-CHECKOUT-001
 provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: PAYMENT-METHODS-HISTORY-001 PASS/CLOSED, including the accepted bounded cancellation-copy correction and exact reset
+last_completed: EVENT-CHECKOUT-001 PASS/CLOSED, including the final Watchlist/leave oracle and bounded notification-copy correction
 ```
 
 Resolved admission decision: first-stage admission locks on the successful
@@ -232,10 +232,9 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The persisted gate is `phase=block7-ready` with steps through 74 verified and
-the exact pre-Nova-leave rollback snapshot captured. Nova starts the Watchlist
-block at step 75. Do not replay payment or the already-repeated leave/rejoin
-path.
+`EVENT-CHECKOUT-001` is closed at `phase=verified`. No next checkpoint has
+been selected; do not replay its payment or leave/watchlist path unless a
+later regression explicitly requires it.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B
