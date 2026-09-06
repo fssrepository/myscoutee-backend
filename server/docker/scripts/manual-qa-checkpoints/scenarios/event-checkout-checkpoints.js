@@ -376,6 +376,7 @@
       { collection: "eventTicketAudit", selector: { eventId: { $in: ALL_EVENT_IDS } } },
       { collection: "notificationOutbox", selector: notificationSelector },
       { collection: "userNotifications", selector: notificationSelector },
+      { collection: "eventWatchSubscriptions", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "scheduledMessageTasks", selector: { eventId: { $in: ALL_EVENT_IDS } } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: ALL_EVENT_IDS } } },
       { collection: "activityEventRuntimeItems", selector: { $or: [
@@ -1618,6 +1619,34 @@
     return (items || []).map(item => String(item._id)).sort();
   }
 
+  function targetNotifications() {
+    return Q.collection("userNotifications")
+      .find({ sourceId: TARGET_ID })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function targetNotificationOutbox() {
+    return Q.collection("notificationOutbox")
+      .find({ $or: [{ entityId: TARGET_ID }, { "payload.eventId": TARGET_ID }] })
+      .sort({ _id: 1 })
+      .toArray();
+  }
+
+  function acceptedUserIds(items) {
+    return sorted((items || [])
+      .filter(item => Q.text(item && item.status) === "accepted")
+      .map(item => item.userId));
+  }
+
+  function availableSlotCapacity(snapshot) {
+    return (snapshot && snapshot.slots || []).reduce((sum, slot) => {
+      const capacity = Math.max(0, Number(slot.capacityTotal || 0));
+      const accepted = Math.max(0, Number(slot.acceptedMembers || 0));
+      return sum + (capacity > 0 ? Math.max(0, capacity - accepted) : 0);
+    }, 0);
+  }
+
   function rollbackBlock6() {
     config();
     const currentState = state();
@@ -1869,27 +1898,220 @@
     });
   }
 
-  function verifyTerminal() {
+  function captureBlock7() {
+    config();
     const currentState = state();
-    if (Q.text(currentState.phase) !== "leave-rejoined-verified") Q.fail("terminal verification requires leave-rejoined-verified.");
+    if (Q.text(currentState.phase) !== "destination-verified"
+        || !Q.text(currentState.controlsVerifiedAtIso)) {
+      Q.fail("block-7 capture requires the verified step-74 destination/control boundary.");
+    }
     if (provider !== "none" || !providerConnected || requires3ds) {
-      Q.fail(`terminal simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
+      Q.fail(`block-7 simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
     }
     const current = paidSnapshot();
-    if (!samePersistedSnapshot(current, currentState.leaveRejoinedFingerprint)) {
-      Q.fail("reload/control reads changed the rejoined paid Event projection.");
+    const morning = current.slots.find(item => Q.text(item.sourceId) === MORNING_SLOT_ID);
+    const evening = current.slots.find(item => Q.text(item.sourceId) === EVENING_SLOT_ID);
+    if (!current.event
+        || current.event.full === true
+        || Number(current.event.acceptedMembers || 0) !== 2
+        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
+        || !Q.sameJson(acceptedUserIds(current.members), [CASEY_ID, RILEY_ID])
+        || !morning
+        || Number(morning.acceptedMembers || 0) !== 2
+        || !Q.sameJson(sorted(morning.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
+        || !evening
+        || Number(evening.acceptedMembers || 0) !== 1
+        || !Q.sameJson(sorted(evening.acceptedMemberUserIds), [CASEY_ID])
+        || availableSlotCapacity(current) !== 1
+        || acceptedUserIds(current.slotMembers).includes(NOVA_ID)
+        || activeTargetBaskets(NOVA_ID).length !== 0
+        || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0) {
+      Q.fail("step 75 is not the exact post-Nova-leave, pre-Watchlist boundary.");
     }
-    const cashEffects = {
-      memberships: Q.collection("activityMembers").countDocuments({ ownerId: CASH_ID, userId: NOVA_ID }),
-      payments: Q.collection("payments").countDocuments({ sourceId: CASH_ID, userId: NOVA_ID }),
-      activeBaskets: Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: CASH_ID, userId: NOVA_ID, reservationActive: true })
-    };
-    if (cashEffects.memberships !== 0 || cashEffects.payments !== 0 || cashEffects.activeBaskets !== 0) {
-      Q.fail(`cancelled Cash-only control left effects: ${JSON.stringify(cashEffects)}.`);
+    if (current.payments.length !== 2) {
+      Q.fail("step 75 changed the two persisted paid Event payment records.");
     }
+    assertControlContracts();
     assertControlsUnchanged(currentState);
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "verified", verifiedAtIso: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "verified", result: "PASS", paymentCount: 2, membership: "3 / 6", slotsFull: 2, tickets: 0, cashOnlyEffects: cashEffects });
+    const block7Snapshots = currentScopedSnapshots();
+    const block7UserFields = [CASEY_ID, NOVA_ID, RILEY_ID]
+      .map(userId => userFields(Q.ensureUser(userId)));
+    const novaFields = block7UserFields.find(item => item.userId === NOVA_ID);
+    const novaActivities = novaFields && novaFields.activities && novaFields.activities.present
+      ? novaFields.activities.value || {}
+      : {};
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: {
+          phase: "block7-ready",
+          block7Snapshots,
+          block7UserFields,
+          block7Fingerprint: current,
+          block7ScopedFingerprint: block7Snapshots,
+          block7NotificationIds: documentIds(targetNotifications()),
+          block7OutboxIds: documentIds(targetNotificationOutbox()),
+          block7ChatMessageIds: documentIds(eventChatMessages()),
+          block7NovaAllCounter: Number(novaActivities.event && novaActivities.event.all || 0),
+          block7NovaWatchlistCounter: Number(novaActivities.event && novaActivities.event.watchlist || 0),
+          block7CapturedAtIso: Q.nowIso()
+        },
+        $unset: {
+          watchlistVerifiedAtIso: "",
+          verifiedAtIso: ""
+        }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "block7-ready",
+      checkpoint: "post-Nova-leave-step-75",
+      payments: 2,
+      membership: "Casey/Riley accepted; Nova outside",
+      availableSlotCapacity: 1,
+      watchSubscriptions: 0
+    });
+  }
+
+  function rollbackBlock7() {
+    config();
+    const currentState = state();
+    if (!Array.isArray(currentState.block7Snapshots)
+        || currentState.block7Snapshots.length === 0
+        || !Array.isArray(currentState.block7UserFields)
+        || currentState.block7UserFields.length === 0
+        || !currentState.block7Fingerprint) {
+      Q.fail("the post-Nova-leave block-7 rollback checkpoint has not been captured.");
+    }
+    clearCurrentEffects();
+    Q.restoreSnapshots(currentState.block7Snapshots);
+    for (const saved of currentState.block7UserFields) restoreUserFields(saved);
+    const restored = paidSnapshot();
+    if (!samePersistedSnapshot(restored, currentState.block7Fingerprint)
+        || !Q.sameJson(documentIds(targetNotifications()), currentState.block7NotificationIds || [])
+        || !Q.sameJson(documentIds(targetNotificationOutbox()), currentState.block7OutboxIds || [])
+        || !Q.sameJson(documentIds(eventChatMessages()), currentState.block7ChatMessageIds || [])
+        || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0) {
+      Q.fail("block-7 rollback did not restore the exact post-Nova-leave step-75 boundary.");
+    }
+    assertControlContracts();
+    assertControlsUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: {
+          phase: "block7-ready",
+          block7RolledBackAtIso: Q.nowIso()
+        },
+        $unset: {
+          watchlistVerifiedAtIso: "",
+          verifiedAtIso: ""
+        }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "block7-ready",
+      rollback: "block-7-to-post-Nova-leave-step-75",
+      availableSlotCapacity: 1,
+      watchSubscriptions: 0
+    });
+  }
+
+  function verifyWatchlist() {
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "block7-ready") {
+      Q.fail("Watchlist verification requires the captured post-Nova-leave block-7 boundary.");
+    }
+    if (provider !== "none" || !providerConnected || requires3ds) {
+      Q.fail(`Watchlist simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
+    }
+    const current = paidSnapshot();
+    const morning = current.slots.find(item => Q.text(item.sourceId) === MORNING_SLOT_ID);
+    const evening = current.slots.find(item => Q.text(item.sourceId) === EVENING_SLOT_ID);
+    const baselinePaymentIds = documentIds(currentState.block7Fingerprint.payments || []);
+    const newNotifications = targetNotifications()
+      .filter(item => !(currentState.block7NotificationIds || []).includes(String(item._id)));
+    const availabilityNotifications = newNotifications.filter(item =>
+      Q.text(item.kind) === "event-watchlist-available"
+      && Q.text(item.recipientUserId) === NOVA_ID
+      && Q.text(item.payload && item.payload.eventScope) === "watchlist");
+    const novaMemberNotifications = newNotifications.filter(item =>
+      Q.text(item.recipientUserId) === NOVA_ID
+      && Q.text(item.kind) === "event-member-removed"
+      && Q.text(item.payload && item.payload.memberUserId) === RILEY_ID);
+    const caseyMemberNotifications = newNotifications.filter(item =>
+      Q.text(item.recipientUserId) === CASEY_ID
+      && Q.text(item.kind) === "event-member-removed"
+      && Q.text(item.payload && item.payload.memberUserId) === RILEY_ID);
+    const newOutbox = targetNotificationOutbox()
+      .filter(item => !(currentState.block7OutboxIds || []).includes(String(item._id)));
+    const availabilityOutbox = newOutbox.filter(item =>
+      Q.text(item.notificationType) === "event-watchlist-available"
+      && Q.sameJson(sorted(item.recipientUserIds), [NOVA_ID]));
+    const memberOutbox = newOutbox.filter(item =>
+      Q.text(item.notificationType) === "event-member-removed"
+      && Q.text(item.payload && item.payload.memberUserId) === RILEY_ID);
+    const newChatMessages = eventChatMessages()
+      .filter(item => !(currentState.block7ChatMessageIds || []).includes(String(item._id)));
+    const rileyLeftMessages = newChatMessages.filter(item =>
+      Q.text(item.clientId) === "member-left"
+      && Q.text(item.text) === "Riley Outside left the event.");
+    const nova = Q.ensureUser(NOVA_ID, "Nova");
+    const novaEventCounters = nova.activities && nova.activities.event || {};
+    if (!current.event
+        || Number(current.event.acceptedMembers || 0) !== 1
+        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID])
+        || !Q.sameJson(acceptedUserIds(current.members), [CASEY_ID])
+        || !morning
+        || Number(morning.acceptedMembers || 0) !== 1
+        || !Q.sameJson(sorted(morning.acceptedMemberUserIds), [CASEY_ID])
+        || !evening
+        || Number(evening.acceptedMembers || 0) !== 1
+        || !Q.sameJson(sorted(evening.acceptedMemberUserIds), [CASEY_ID])
+        || availableSlotCapacity(current) !== 2
+        || activeTargetBaskets(NOVA_ID).length !== 0
+        || activeTargetBaskets(RILEY_ID).length !== 0
+        || !Q.sameJson(documentIds(current.payments), baselinePaymentIds)
+        || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0
+        || Number(novaEventCounters.all || 0) !== Number(currentState.block7NovaAllCounter || 0)
+        || Number(novaEventCounters.watchlist || 0) !== Number(currentState.block7NovaWatchlistCounter || 0)) {
+      Q.fail("final Watchlist state changed payment/participation invariants or left a subscription/counter side effect.");
+    }
+    if (availabilityNotifications.length !== 1
+        || novaMemberNotifications.length !== 0
+        || caseyMemberNotifications.length !== 1
+        || availabilityOutbox.length !== 1
+        || memberOutbox.length !== 1
+        || !Q.sameJson(sorted(memberOutbox[0].recipientUserIds), [CASEY_ID])
+        || newChatMessages.length !== 1
+        || rileyLeftMessages.length !== 1) {
+      Q.fail("Watchlist availability and accepted-member Event notifications were not separated exactly once.");
+    }
+    assertControlContracts();
+    assertControlsUnchanged(currentState);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: { phase: "verified", watchlistVerifiedAtIso: Q.nowIso(), verifiedAtIso: Q.nowIso() } }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "verified",
+      result: "PASS",
+      watchlistAvailabilityNotifications: 1,
+      novaMemberNotifications: 0,
+      caseyMemberNotifications: 1,
+      watchSubscriptions: 0,
+      availableSlotCapacity: 2,
+      payments: 2
+    });
+  }
+
+  function verifyTerminal() {
+    verifyWatchlist();
   }
 
   function reset() {

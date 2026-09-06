@@ -78,6 +78,7 @@ public class EventWatchService {
         subscription.setUserId(userId);
         subscription.setEventId(eventId);
         subscription.setLastObservedFull(isFull(event));
+        subscription.setLastObservedAvailableCapacity(availableCapacity(event));
         subscription.setCreatedDate(nowIso);
         subscription.setCreatedUser(userId);
         subscription.setUpdatedDate(nowIso);
@@ -152,11 +153,18 @@ public class EventWatchService {
             }
             boolean currentFull = isFull(event);
             boolean previousFull = Boolean.TRUE.equals(subscription.getLastObservedFull());
-            if (previousFull && !currentFull) {
+            int currentAvailableCapacity = availableCapacity(event);
+            Integer previousAvailableCapacity = subscription.getLastObservedAvailableCapacity();
+            boolean availabilityIncreased = previousAvailableCapacity == null
+                    ? previousFull && !currentFull
+                    : currentAvailableCapacity > Math.max(0, previousAvailableCapacity);
+            if (availabilityIncreased) {
                 enqueueAvailabilityNotification(subscription, event);
             }
-            if (!Objects.equals(subscription.getLastObservedFull(), currentFull)) {
+            if (!Objects.equals(subscription.getLastObservedFull(), currentFull)
+                    || !Objects.equals(previousAvailableCapacity, currentAvailableCapacity)) {
                 subscription.setLastObservedFull(currentFull);
+                subscription.setLastObservedAvailableCapacity(currentAvailableCapacity);
                 subscription.setUpdatedDate(nowIso);
                 subscription.setUpdatedUser(SYSTEM_USER_ID);
                 changed.add(subscription);
@@ -243,6 +251,31 @@ public class EventWatchService {
         int capacity = Math.max(0, slot.capacityTotal() == null ? 0 : slot.capacityTotal());
         int accepted = Math.max(0, slot.acceptedMembers() == null ? 0 : slot.acceptedMembers());
         return capacity > 0 && accepted >= capacity;
+    }
+
+    private int availableCapacity(ActivityEvent event) {
+        if (event == null) {
+            return 0;
+        }
+        if (Boolean.TRUE.equals(event.getSlotsEnabled()) && !Boolean.TRUE.equals(event.getGenerated())) {
+            return (event.getUpcomingSlots() == null ? List.<EventSlotOccurrenceDto>of() : event.getUpcomingSlots())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .mapToInt(this::availableCapacity)
+                    .sum();
+        }
+        if (Boolean.TRUE.equals(event.getFull())) {
+            return 0;
+        }
+        int capacity = Math.max(0, event.getCapacityTotal() == null ? 0 : event.getCapacityTotal());
+        int accepted = Math.max(0, event.getAcceptedMembers() == null ? 0 : event.getAcceptedMembers());
+        return capacity > 0 ? Math.max(0, capacity - accepted) : 0;
+    }
+
+    private int availableCapacity(EventSlotOccurrenceDto slot) {
+        int capacity = Math.max(0, slot.capacityTotal() == null ? 0 : slot.capacityTotal());
+        int accepted = Math.max(0, slot.acceptedMembers() == null ? 0 : slot.acceptedMembers());
+        return capacity > 0 ? Math.max(0, capacity - accepted) : 0;
     }
 
     private boolean isAcceptedEventMember(ActivityEvent event, String userId) {

@@ -22,8 +22,8 @@ matrix rows.
   that same browser for Riley; sign back in as Casey only for the final Event
   Members check.
 - **Ava** selects the demo provider branch before each declared control.
-- Block 7 uses a separate full multi-Slot Watchlist fixture: **Riley** is its
-  accepted member and **Nova** remains outside it and owns the subscription.
+- Block 7 starts by taking **Nova** out of the paid target while **Riley**
+  remains its accepted member; Nova then owns the Watchlist subscription.
 - Codex stages all Events, checkout controls and sessions and runs the
   independent machine oracles. The user exclusively opens and controls the
   configured Casey/Nova/Ava browser sessions. Riley reuses Casey's browser;
@@ -300,36 +300,38 @@ fixture can reconcile any stale browser draft, then check only these three:
 - `QA EVENT-CHECKOUT-001 Paid` in Active Events: `Payment summary` still shows
   its selected Slot/basket item.
 
-These three checks passed during this run. Before continuing, Codex captures
-the exact step-74 state with `capture-block-7`; `rollback-block-7` owns recovery
-from the following Watchlist block.
+These three checks passed during this run.
 
 ### 7. Verify the Event Watchlist without changing All
 
-75. In **Riley**, find `QA EVENT-CHECKOUT-001 Watchlist` and confirm its
-    accepted-member menu does not contain `Add to Watchlist` or `Remove from
-    Watchlist`. Then in **Nova**, find that same fully booked multi-Slot Event
-    in Event Explore and select `Add to Watchlist` exactly once. Confirm its
-    menu changes to `Remove from Watchlist` without reloading and no basket or
-    membership is created.
-76. Immediately open `Activities → Events → Watchlist`. Confirm the dropdown
+75. In **Riley**, confirm the paid target's accepted-member menu contains
+    neither `Add to Watchlist` nor `Remove from Watchlist`. Confirm the same in
+    **Nova** while she is still a member, then use Nova's Active Event menu to
+    `Leave Event` exactly once. Return to Event Explore and confirm the same
+    target now exposes `Add to Watchlist`. Stop and tell Codex; Codex captures
+    this exact post-leave state with `capture-block-7`, which becomes the
+    `rollback-block-7` replay boundary.
+76. In Nova, select `Add to Watchlist` exactly once. Confirm its menu changes
+    to `Remove from Watchlist` without reloading and no basket or membership is
+    created.
+77. Immediately open `Activities → Events → Watchlist`. Confirm the dropdown
     label is `Watchlist`, its own red counter increased once, and the target
     appears exactly once. The toolbar must show only the existing Event Explore
     icon: the `+` quick-action button must be absent. Confirm the `All` list and
     `All` counter did not change because Watchlist is a separate bucket.
-77. Reload Nova once, reopen `Watchlist`, and confirm the same one subscription,
+78. Reload Nova once, reopen `Watchlist`, and confirm the same one subscription,
     one row and own counter return from the user-model poll. `All` must remain
     unchanged.
-78. In Riley, leave the target Event once so at least one Slot becomes open.
-    Do not make a new booking. After the Watchlist availability check runs,
-    confirm Nova receives exactly one Watchlist notification that a place is
-    available. Nova must not receive the members-only Riley-left notification;
-    that normal Event notification belongs only to the remaining accepted
-    members. The Watchlist notification must not reserve a Slot, create a
-    basket or create pending membership.
-79. Open the notification and confirm it only opens the Event. Any later Slot
+79. In Riley, leave the target Event once so one additional Slot place becomes
+    open. Do not make a new booking. After the Watchlist availability check
+    runs, confirm Nova receives exactly one Watchlist notification that a new
+    place is available. Nova must not receive the members-only Riley-left
+    notification; that normal Event notification belongs only to the remaining
+    accepted member. The Watchlist notification must not reserve a Slot, create
+    a basket or create pending membership.
+80. Open the notification and confirm it only opens the Event. Any later Slot
     choice must still go through the normal booking flow.
-80. In Nova, select `Remove from Watchlist` once. Confirm the Watchlist row and
+81. In Nova, select `Remove from Watchlist` once. Confirm the Watchlist row and
     its own counter update immediately; after the next user-model poll they must
     not return, and `All` must still be unchanged. Report:
 
@@ -337,4 +339,5 @@ from the following Watchlist block.
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result. `rollback-block-7` restores
-the exact pre-Watchlist step-74 fixture when this block must be replayed.
+the exact post-Nova-leave, pre-Watchlist step-75 fixture when this block must be
+replayed.

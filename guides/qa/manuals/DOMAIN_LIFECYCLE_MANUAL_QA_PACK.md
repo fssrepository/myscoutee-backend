@@ -3084,11 +3084,12 @@ action.
 - The three bounded post-step-74 UI regressions passed: the Waitlist control
   has no `Continue booking`, the plain Cash-only checkout has no Basket/Slot
   panel, and the paid Payment summary retains its selected Slot item. Block 7
-  uses a separate full two-Slot fixture: outsider Nova owns Watchlist
-  persistence and availability, while Riley and Casey are accepted members.
-  This distinguishes Nova's one Watchlist availability notification from the
-  normal Event-level member notification and forbids Watchlist actions for
-  accepted members without disturbing the already-proven paid target.
+  first proves the Watchlist action absent for accepted Riley and Nova. Nova
+  then leaves the paid target and becomes the outside Watchlist subscriber;
+  the exact post-leave state is the block-7 rollback boundary. Riley's later
+  leave opens one additional Slot place. This distinguishes Nova's one
+  Watchlist availability notification from the normal Event-level member
+  notification and proves that accepted members have no Watchlist action.
 
 ## Event ticketing checkpoints
 

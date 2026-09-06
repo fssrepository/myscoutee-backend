@@ -22,6 +22,7 @@ public class EventWatchSubscription {
     private String userId;
     private String eventId;
     private Boolean lastObservedFull;
+    private Integer lastObservedAvailableCapacity;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -65,6 +66,14 @@ public class EventWatchSubscription {
 
     public void setLastObservedFull(Boolean lastObservedFull) {
         this.lastObservedFull = lastObservedFull;
+    }
+
+    public Integer getLastObservedAvailableCapacity() {
+        return lastObservedAvailableCapacity;
+    }
+
+    public void setLastObservedAvailableCapacity(Integer lastObservedAvailableCapacity) {
+        this.lastObservedAvailableCapacity = lastObservedAvailableCapacity;
     }
 
     public String getCreatedDate() {
