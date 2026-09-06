@@ -67,6 +67,9 @@ public class EventWatchService {
             }
             return result(userId, eventId, false, existing != null);
         }
+        if (!isVisibleToOutsideWatcher(event, userId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event was not found.");
+        }
         if (existing != null) {
             return result(userId, eventId, true, false);
         }
@@ -158,7 +161,7 @@ public class EventWatchService {
             boolean availabilityIncreased = previousAvailableCapacity == null
                     ? previousFull && !currentFull
                     : currentAvailableCapacity > Math.max(0, previousAvailableCapacity);
-            if (availabilityIncreased) {
+            if (availabilityIncreased && isVisibleToOutsideWatcher(event, userId)) {
                 enqueueAvailabilityNotification(subscription, event);
             }
             if (!Objects.equals(subscription.getLastObservedFull(), currentFull)
@@ -291,6 +294,41 @@ public class EventWatchService {
                 .stream()
                 .map(this::normalizeId)
                 .anyMatch(normalizedUserId::equals);
+    }
+
+    private boolean isVisibleToOutsideWatcher(ActivityEvent event, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (event == null
+                || !StringUtils.hasText(normalizedUserId)
+                || !"A".equals(safeText(event.getStatus()))
+                || !Boolean.TRUE.equals(event.getPublished())
+                || Boolean.TRUE.equals(event.getIsTrashed())) {
+            return false;
+        }
+        String visibility = safeText(event.getVisibility());
+        if ("Invitation only".equals(visibility)) {
+            return false;
+        }
+        return !"Friends only".equals(visibility)
+                || isFriendOfActiveUser(normalizeId(event.getCreatorUserId()), normalizedUserId);
+    }
+
+    private boolean isFriendOfActiveUser(String userId, String activeUserId) {
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
+            return false;
+        }
+        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
+        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
+        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
+        return (seed % 100) < 32;
+    }
+
+    private int hashText(String value) {
+        int hash = 0;
+        for (int index = 0; index < value.length(); index += 1) {
+            hash = (hash * 31 + value.charAt(index)) % 104729;
+        }
+        return Math.abs(hash);
     }
 
     private void enqueueAvailabilityNotification(EventWatchSubscription subscription, ActivityEvent event) {

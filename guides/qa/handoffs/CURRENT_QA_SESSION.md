@@ -88,7 +88,7 @@ queued_next: none selected
 required_resume: do not replay EVENT-CHECKOUT-001 unless a later regression explicitly requires it; select the next checkpoint from the canonical matrix
 actors: Casey remains the accepted fixture member; Nova and Riley are suppressed after voluntary leave; Ava remained idle
 pending_machine_oracle: none for EVENT-CHECKOUT-001
-post_close_follow_up: self-leave uses left; new-place copy is neutral; outside Watchlist update recipients are filtered by current Explore visibility and participant membership on backend and frontend local paths
+post_close_follow_up: self-leave uses left; new-place copy is neutral; Watchlist writes, availability and public republish/definition-change recipients are filtered by current Explore visibility and participant membership on backend and frontend local paths
 provider_change_contract: new payments use the current provider; the active Stripe card is selectable, the Barion card is a backend-known mismatched Retokenize/Delete control, and expired 0008 remains blocked with artwork intact. Cash only exposes no card selector
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
 last_completed: EVENT-CHECKOUT-001 PASS/CLOSED, including the final Watchlist/leave oracle and bounded notification-copy correction

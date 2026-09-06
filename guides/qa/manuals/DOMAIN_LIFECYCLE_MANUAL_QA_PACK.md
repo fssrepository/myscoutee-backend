@@ -3106,13 +3106,17 @@ action.
 - Accepted post-close Watchlist refinement (2026-09-06): availability copy is
   now neutral (`A new spot is available`) because following an Event does not
   imply that it was full at subscription time. An outside watcher also gets a
-  generic update when a followed Event becomes public again, but only while
-  the same Explore visibility policy still permits that user to view it.
+  generic update when a followed Event becomes public again or its public
+  title/location/capacity, schedule or program changes, but only while the
+  same Explore visibility policy still permits that user to view it.
   Accepted/pending/invited participants are excluded from this watcher intent,
   and draft, invitation-only or otherwise inaccessible Events disappear from
-  Watchlist without disclosing their internal changes. Backend and frontend
-  local implementations carry the same boundary; regression specifications
-  cover outsider/member recipient separation and hidden Watchlist records.
+  Watchlist without disclosing their internal changes. The Watchlist write and
+  new-spot scheduler recheck that same visibility boundary, so a retained
+  subscription cannot expose a newly private Event. Backend and frontend local
+  implementations carry the same boundary; regression specifications cover
+  outsider/member recipient separation, hidden Watchlist records and hidden
+  Event write/notification rejection.
 
 ## Event ticketing checkpoints
 

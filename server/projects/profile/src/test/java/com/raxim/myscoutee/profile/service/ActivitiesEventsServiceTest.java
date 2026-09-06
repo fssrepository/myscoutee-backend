@@ -1719,12 +1719,20 @@ class ActivitiesEventsServiceTest {
                         List.of(),
                         Set.of("host"),
                         8);
+        EventWatchSubscription outsideWatcher = new EventWatchSubscription();
+        outsideWatcher.setEventId("event-1");
+        outsideWatcher.setUserId("outside-watcher");
+        EventWatchSubscription staleMemberWatcher = new EventWatchSubscription();
+        staleMemberWatcher.setEventId("event-1");
+        staleMemberWatcher.setUserId("member-1");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
                 .thenReturn(Optional.of(existing));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(eventWatchSubscriptionsRepository.findByEventId("event-1"))
+                .thenReturn(List.of(outsideWatcher, staleMemberWatcher));
 
         EventDto result = service.sync(eventPayload(
                 "sync-event-1",
@@ -1756,6 +1764,15 @@ class ActivitiesEventsServiceTest {
                 eq("host"));
         assertThat(audienceCaptor.getValue()).containsExactly("member-1");
         assertThat(reasonsCaptor.getValue()).containsExactly("details");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> watcherAudienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventWatchlistDefinitionChanged(
+                eq("event-1"),
+                eq("Draft Event"),
+                watcherAudienceCaptor.capture(),
+                eq(List.of("details")),
+                eq("host"));
+        assertThat(watcherAudienceCaptor.getValue()).containsExactly("outside-watcher");
         verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
         verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }

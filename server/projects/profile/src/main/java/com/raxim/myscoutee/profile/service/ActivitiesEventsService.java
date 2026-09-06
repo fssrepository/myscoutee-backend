@@ -2297,7 +2297,11 @@ public class ActivitiesEventsService {
             } else {
                 scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
-            schedulePublicWatchlistEventUpdatedNotification(sourceId, publishedDocuments, userId);
+            schedulePublicWatchlistEventChangedNotification(
+                    sourceId,
+                    publishedDocuments,
+                    List.of("modified"),
+                    userId);
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
             markEventAttachmentsAvailable(publishedDocuments);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
@@ -4813,6 +4817,11 @@ public class ActivitiesEventsService {
                 removedRuntimeAudienceUserIds,
                 actorUserId,
                 false);
+        schedulePublicWatchlistEventChangedNotification(
+                sourceId,
+                savedDocuments,
+                definitionChange.reasons(),
+                actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
         if (!StringUtils.hasText(city)) {
@@ -5244,12 +5253,13 @@ public class ActivitiesEventsService {
                 actorUserId);
     }
 
-    private void schedulePublicWatchlistEventUpdatedNotification(
+    private void schedulePublicWatchlistEventChangedNotification(
             String sourceId,
             List<ActivityEvent> updatedRecords,
+            Collection<String> reasons,
             String actorUserId) {
         String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId)) {
+        if (!StringUtils.hasText(normalizedSourceId) || reasons == null || reasons.isEmpty()) {
             return;
         }
         ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
@@ -5286,7 +5296,7 @@ public class ActivitiesEventsService {
                 normalizedSourceId,
                 event.getTitle(),
                 watcherUserIds,
-                List.of("modified"),
+                reasons,
                 actorUserId);
     }
 
