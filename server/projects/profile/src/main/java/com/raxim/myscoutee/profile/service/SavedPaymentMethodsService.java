@@ -81,14 +81,17 @@ public class SavedPaymentMethodsService {
                 .stream()
                 .findFirst()
                 .orElse(null);
+        PaymentSimulatorRegistrationClient.GatewayConfiguration gatewayConfiguration =
+                currentDemoGatewayConfiguration();
         return new SavedPaymentMethodsPageDto(
                 all.subList(from, to).stream().map(this::toDto).toList(),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 activeMethods(ownerId).size() < MAX_ACTIVE_PAYMENT_METHODS
-                        && activeDemoProviderAllowsRegistration()
+                        && activeDemoProviderAllowsRegistration(gatewayConfiguration)
                         && pending == null,
-                pending == null ? null : toRegistrationDto(pending, null));
+                pending == null ? null : toRegistrationDto(pending, null),
+                currentDemoProvider(gatewayConfiguration));
     }
 
     public synchronized PaymentMethodRegistrationDto beginRegistration(
@@ -424,17 +427,32 @@ public class SavedPaymentMethodsService {
                 && simulatorClient.isEnabled();
     }
 
-    private boolean activeDemoProviderAllowsRegistration() {
+    private PaymentSimulatorRegistrationClient.GatewayConfiguration currentDemoGatewayConfiguration() {
         if (!isDemoSimulatorMode()) {
-            return false;
+            return null;
         }
         try {
-            PaymentSimulatorRegistrationClient.GatewayConfiguration configuration = simulatorClient.configuration();
-            String provider = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
-            return configuration.connected() && Set.of("stripe", "barion").contains(provider);
+            return simulatorClient.configuration();
         } catch (RuntimeException ignored) {
-            return false;
+            return null;
         }
+    }
+
+    private boolean activeDemoProviderAllowsRegistration(
+            PaymentSimulatorRegistrationClient.GatewayConfiguration configuration) {
+        String provider = currentDemoProvider(configuration);
+        return configuration != null
+                && configuration.connected()
+                && Set.of("stripe", "barion").contains(provider);
+    }
+
+    private String currentDemoProvider(
+            PaymentSimulatorRegistrationClient.GatewayConfiguration configuration) {
+        if (configuration == null) {
+            return null;
+        }
+        String provider = safeText(configuration.provider()).toLowerCase(Locale.ROOT);
+        return Set.of("none", "stripe", "barion").contains(provider) ? provider : null;
     }
 
     private boolean isExpired(SavedPaymentMethod method) {

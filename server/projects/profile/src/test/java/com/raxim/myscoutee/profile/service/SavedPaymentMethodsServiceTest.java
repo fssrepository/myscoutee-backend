@@ -123,11 +123,15 @@ class SavedPaymentMethodsServiceTest {
 
         when(simulator.configuration()).thenReturn(
                 new PaymentSimulatorRegistrationClient.GatewayConfiguration("none", false, true, ""));
-        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isFalse();
+        var cashOnlyPage = service.queryPage("user-1", 0, 6);
+        assertThat(cashOnlyPage.canAdd()).isFalse();
+        assertThat(cashOnlyPage.currentProvider()).isEqualTo("none");
 
         when(simulator.configuration()).thenReturn(
                 new PaymentSimulatorRegistrationClient.GatewayConfiguration(
                         "stripe", true, true, "sk_test_generated"));
-        assertThat(service.queryPage("user-1", 0, 6).canAdd()).isTrue();
+        var stripePage = service.queryPage("user-1", 0, 6);
+        assertThat(stripePage.canAdd()).isTrue();
+        assertThat(stripePage.currentProvider()).isEqualTo("stripe");
     }
 }

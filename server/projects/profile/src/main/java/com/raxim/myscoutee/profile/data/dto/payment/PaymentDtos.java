@@ -25,7 +25,8 @@ public final class PaymentDtos {
             long total,
             String nextCursor,
             boolean canAdd,
-            PaymentMethodRegistrationDto pendingRegistration) {}
+            PaymentMethodRegistrationDto pendingRegistration,
+            String currentProvider) {}
 
     public record PaymentMethodRegistrationRequestDto(
             String provider,
