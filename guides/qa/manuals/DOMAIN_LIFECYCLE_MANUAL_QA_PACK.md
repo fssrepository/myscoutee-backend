@@ -3086,7 +3086,7 @@ action.
   panel, and the paid Payment summary retains its selected Slot item. Block 7
   first proves the Watchlist action absent for accepted Riley and Nova. Nova
   then leaves the paid target and becomes the outside Watchlist subscriber;
-  the exact post-leave state is the block-7 rollback boundary. Riley's later
+  the exact full pre-Nova-leave state is the block-7 rollback boundary. Riley's later
   leave opens one additional Slot place. This distinguishes Nova's one
   Watchlist availability notification from the normal Event-level member
   notification and proves that accepted members have no Watchlist action.

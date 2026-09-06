@@ -238,6 +238,9 @@ Usage:
   bash manual-qa-checkpoints.sh verify-paid event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-destination event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-controls event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh capture-block-7 event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-block-7 event-checkout EVENT-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-watchlist event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-block-6 event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-leave-rejoined event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify event-checkout EVENT-CHECKOUT-001
@@ -759,13 +762,15 @@ case "${scenario}:${command}" in
     set_payment_simulator_cash_only
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:repair-control-fixtures|event-checkout:repair-slot-occurrences|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify-controls|event-checkout:rollback-block-6|event-checkout:verify-leave-rejoined|event-checkout:verify)
+  event-checkout:status|event-checkout:repair-card-artwork|event-checkout:repair-control-fixtures|event-checkout:repair-slot-occurrences|event-checkout:capture-payment-ready|event-checkout:verify-pending-event|event-checkout:rollback-payment-ready|event-checkout:verify-cancelled|event-checkout:rollback-block-4|event-checkout:verify-paid|event-checkout:verify-destination|event-checkout:verify-controls|event-checkout:capture-block-7|event-checkout:rollback-block-7|event-checkout:verify-watchlist|event-checkout:rollback-block-6|event-checkout:verify-leave-rejoined|event-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     if [ "${command}" = "rollback-block-4" ] || [ "${command}" = "rollback-block-6" ]; then
       replace_payment_simulator_checkout_card_fixtures
       set_payment_simulator_stripe
+    elif [ "${command}" = "rollback-block-7" ]; then
+      set_payment_simulator_cash_only
     fi
     ;;
   event-checkout:reset)

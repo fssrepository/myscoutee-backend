@@ -302,15 +302,18 @@ fixture can reconcile any stale browser draft, then check only these three:
 
 These three checks passed during this run.
 
+Before step 75, Codex captures the exact current state with `capture-block-7`:
+Nova and Riley are still accepted, both Slots are full and no Watchlist
+subscription exists. `rollback-block-7` restores this complete starting point,
+including Nova's membership.
+
 ### 7. Verify the Event Watchlist without changing All
 
 75. In **Riley**, confirm the paid target's accepted-member menu contains
     neither `Add to Watchlist` nor `Remove from Watchlist`. Confirm the same in
     **Nova** while she is still a member, then use Nova's Active Event menu to
     `Leave Event` exactly once. Return to Event Explore and confirm the same
-    target now exposes `Add to Watchlist`. Stop and tell Codex; Codex captures
-    this exact post-leave state with `capture-block-7`, which becomes the
-    `rollback-block-7` replay boundary.
+    target now exposes `Add to Watchlist`.
 76. In Nova, select `Add to Watchlist` exactly once. Confirm its menu changes
     to `Remove from Watchlist` without reloading and no basket or membership is
     created.
@@ -339,5 +342,5 @@ These three checks passed during this run.
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
 to another testcase until Codex records the result. `rollback-block-7` restores
-the exact post-Nova-leave, pre-Watchlist step-75 fixture when this block must be
+the exact pre-Nova-leave step-74 fixture when this complete block must be
 replayed.

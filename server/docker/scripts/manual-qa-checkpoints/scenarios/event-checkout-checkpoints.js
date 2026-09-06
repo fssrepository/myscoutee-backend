@@ -1912,21 +1912,20 @@
     const morning = current.slots.find(item => Q.text(item.sourceId) === MORNING_SLOT_ID);
     const evening = current.slots.find(item => Q.text(item.sourceId) === EVENING_SLOT_ID);
     if (!current.event
-        || current.event.full === true
-        || Number(current.event.acceptedMembers || 0) !== 2
-        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
-        || !Q.sameJson(acceptedUserIds(current.members), [CASEY_ID, RILEY_ID])
+        || current.event.full !== true
+        || Number(current.event.acceptedMembers || 0) !== 3
+        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, NOVA_ID, RILEY_ID])
+        || !Q.sameJson(acceptedUserIds(current.members), [CASEY_ID, NOVA_ID, RILEY_ID])
         || !morning
         || Number(morning.acceptedMembers || 0) !== 2
         || !Q.sameJson(sorted(morning.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
         || !evening
-        || Number(evening.acceptedMembers || 0) !== 1
-        || !Q.sameJson(sorted(evening.acceptedMemberUserIds), [CASEY_ID])
-        || availableSlotCapacity(current) !== 1
-        || acceptedUserIds(current.slotMembers).includes(NOVA_ID)
+        || Number(evening.acceptedMembers || 0) !== 2
+        || !Q.sameJson(sorted(evening.acceptedMemberUserIds), [CASEY_ID, NOVA_ID])
+        || availableSlotCapacity(current) !== 0
         || activeTargetBaskets(NOVA_ID).length !== 0
         || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0) {
-      Q.fail("step 75 is not the exact post-Nova-leave, pre-Watchlist boundary.");
+      Q.fail("block 7 is not at the exact pre-Nova-leave, pre-Watchlist step-74 boundary.");
     }
     if (current.payments.length !== 2) {
       Q.fail("step 75 changed the two persisted paid Event payment records.");
@@ -1966,10 +1965,10 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "block7-ready",
-      checkpoint: "post-Nova-leave-step-75",
+      checkpoint: "pre-Nova-leave-step-74",
       payments: 2,
-      membership: "Casey/Riley accepted; Nova outside",
-      availableSlotCapacity: 1,
+      membership: "Casey/Nova/Riley accepted",
+      availableSlotCapacity: 0,
       watchSubscriptions: 0
     });
   }
@@ -1982,7 +1981,7 @@
         || !Array.isArray(currentState.block7UserFields)
         || currentState.block7UserFields.length === 0
         || !currentState.block7Fingerprint) {
-      Q.fail("the post-Nova-leave block-7 rollback checkpoint has not been captured.");
+      Q.fail("the pre-Nova-leave block-7 rollback checkpoint has not been captured.");
     }
     clearCurrentEffects();
     Q.restoreSnapshots(currentState.block7Snapshots);
@@ -1993,7 +1992,7 @@
         || !Q.sameJson(documentIds(targetNotificationOutbox()), currentState.block7OutboxIds || [])
         || !Q.sameJson(documentIds(eventChatMessages()), currentState.block7ChatMessageIds || [])
         || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0) {
-      Q.fail("block-7 rollback did not restore the exact post-Nova-leave step-75 boundary.");
+      Q.fail("block-7 rollback did not restore the exact pre-Nova-leave step-74 boundary.");
     }
     assertControlContracts();
     assertControlsUnchanged(currentState);
@@ -2014,8 +2013,8 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "block7-ready",
-      rollback: "block-7-to-post-Nova-leave-step-75",
-      availableSlotCapacity: 1,
+      rollback: "block-7-to-pre-Nova-leave-step-74",
+      availableSlotCapacity: 0,
       watchSubscriptions: 0
     });
   }
@@ -2023,7 +2022,7 @@
   function verifyWatchlist() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "block7-ready") {
-      Q.fail("Watchlist verification requires the captured post-Nova-leave block-7 boundary.");
+      Q.fail("Watchlist verification requires the captured pre-Nova-leave block-7 boundary.");
     }
     if (provider !== "none" || !providerConnected || requires3ds) {
       Q.fail(`Watchlist simulator state is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Cash only with 3DS Off.`);
@@ -2076,7 +2075,7 @@
         || activeTargetBaskets(RILEY_ID).length !== 0
         || !Q.sameJson(documentIds(current.payments), baselinePaymentIds)
         || Q.collection("eventWatchSubscriptions").countDocuments({ eventId: TARGET_ID }) !== 0
-        || Number(novaEventCounters.all || 0) !== Number(currentState.block7NovaAllCounter || 0)
+        || Number(novaEventCounters.all || 0) !== Math.max(0, Number(currentState.block7NovaAllCounter || 0) - 1)
         || Number(novaEventCounters.watchlist || 0) !== Number(currentState.block7NovaWatchlistCounter || 0)) {
       Q.fail("final Watchlist state changed payment/participation invariants or left a subscription/counter side effect.");
     }
@@ -2086,8 +2085,11 @@
         || availabilityOutbox.length !== 1
         || memberOutbox.length !== 1
         || !Q.sameJson(sorted(memberOutbox[0].recipientUserIds), [CASEY_ID])
-        || newChatMessages.length !== 1
-        || rileyLeftMessages.length !== 1) {
+        || newChatMessages.length !== 2
+        || rileyLeftMessages.length !== 1
+        || newChatMessages.filter(item =>
+          Q.text(item.clientId) === "member-left"
+          && Q.text(item.text) === "Nova Social left the event.").length !== 1) {
       Q.fail("Watchlist availability and accepted-member Event notifications were not separated exactly once.");
     }
     assertControlContracts();
@@ -2147,6 +2149,9 @@
   else if (command === "verify-controls") verifyControls();
   else if (command === "verify-leave-rejoined") verifyLeaveRejoined();
   else if (command === "verify-destination") verifyDestination();
+  else if (command === "capture-block-7") captureBlock7();
+  else if (command === "rollback-block-7") rollbackBlock7();
+  else if (command === "verify-watchlist") verifyWatchlist();
   else if (command === "verify") verifyTerminal();
   else if (command === "reset") reset();
   else Q.fail(`unsupported event-checkout command '${command}'.`);
