@@ -199,8 +199,10 @@ Begin only after Codex confirms this exact baseline:
 48. Select `Payment` exactly once. Confirm the action cannot be submitted again
     while active and the UI remains responsive.
 49. Confirm Riley's checkout closes once on success.
-50. In both Nova and Riley, reopen Event Explore. The target must no longer be
-    offered as a fresh booking because Evening and Morning are now both full.
+50. In both Nova and Riley, reopen Event Explore. The target must remain exactly
+    once and its Event-level action must be `Join waiting list` because Evening
+    and Morning are now both full. `Book Event`, `Continue booking`, a new
+    payment action and a paid basket entry must be absent.
 51. In both users' Active Event menus, confirm `Continue booking`, `Book Event`
     and another `Payment` action are absent. A stale action for either user is
     a failure.
@@ -234,8 +236,9 @@ Begin only after Codex confirms this exact baseline:
     Riley's Morning Slot payment, not Nova's Evening payment.
 61. Open `All Events` for both users and confirm the Event appears exactly once
     for each.
-62. Return to Event Explore and reconfirm the target is not a fresh payment
-    candidate for either user.
+62. Return to Event Explore and reconfirm the target remains exactly once with
+    the Event-level `Join waiting list` action, but is not a fresh payment or
+    basket candidate for either user.
 63. Sign Riley out of the reused browser, sign back in as **Casey**, then open
     the target through `My Events → Event Members`.
 64. Confirm Casey appears once as Admin, Nova and Riley once each as accepted

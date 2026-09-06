@@ -159,13 +159,16 @@ public class EventCheckoutBasketService {
                 .map(item -> safeText(item == null ? null : item.getResultState()))
                 .map(value -> StringUtils.hasText(value) ? value : "pending")
                 .toList();
-        if (resultStates.stream().anyMatch("failed"::equals)) {
+        List<String> currentResultStates = resultStates.stream()
+                .filter(resultState -> !RESULT_STATE_DELETED.equals(resultState))
+                .toList();
+        if (currentResultStates.isEmpty() && !resultStates.isEmpty()) {
+            return RESULT_STATE_DELETED;
+        }
+        if (currentResultStates.stream().anyMatch("failed"::equals)) {
             return "failed";
         }
-        if (!resultStates.isEmpty() && resultStates.stream().allMatch("deleted"::equals)) {
-            return "deleted";
-        }
-        if (!resultStates.isEmpty() && resultStates.stream().allMatch("succeeded"::equals)) {
+        if (!currentResultStates.isEmpty() && currentResultStates.stream().allMatch("succeeded"::equals)) {
             return "succeeded";
         }
         return "pending";
