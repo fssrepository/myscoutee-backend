@@ -39,7 +39,7 @@ import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderRes
 
 class PaymentServiceTest {
     @Test
-    void synchronousWebhookAuthorizationWinsTheOptimisticRaceWithoutReopeningTheBasket() {
+    void synchronousWebhookAuthorizationDoesNotReopenBasketBeforeFulfillmentCompletes() {
         PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
         EventCheckoutBasketService basketService = org.mockito.Mockito.mock(EventCheckoutBasketService.class);
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
@@ -103,9 +103,9 @@ class PaymentServiceTest {
             webhookPayment.setCurrency(payment.getCurrency());
             webhookPayment.setCheckoutSessionId(payment.getCheckoutSessionId());
             webhookPayment.setGatewayAuthorizationId("pi-race");
-            webhookPayment.setFulfillmentStatus("succeeded");
+            webhookPayment.setFulfillmentStatus("pending");
             webhookPayment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_EVENT_JOIN);
-            webhookPayment.setBookingStatus("joined");
+            webhookPayment.setBookingStatus("initiated");
             concurrentPayment.set(webhookPayment);
             throw new OptimisticLockingFailureException("webhook updated the payment");
         });
@@ -124,7 +124,7 @@ class PaymentServiceTest {
 
         assertThat(result.status()).isEqualTo("authorized");
         assertThat(concurrentPayment.get().getStatus()).isEqualTo("authorized");
-        assertThat(concurrentPayment.get().getFulfillmentStatus()).isEqualTo("succeeded");
+        assertThat(concurrentPayment.get().getFulfillmentStatus()).isEqualTo("pending");
         verify(repository, times(2)).save(any(Payment.class));
         verify(basketService, never()).saveBasket(any(EventCheckoutRequestDto.class));
     }

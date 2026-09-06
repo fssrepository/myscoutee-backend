@@ -261,7 +261,11 @@ public class PaymentService {
                     payment.getCheckoutSessionId(),
                     authorization,
                     null).payment();
-            if (!BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))
+            if (!Set.of(
+                            statusValue(AuthorizationStatus.AUTHORIZED),
+                            statusValue(AuthorizationStatus.CAPTURED))
+                            .contains(safeText(payment.getStatus()))
+                    && !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))
                     && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
                 eventCheckoutBasketService.saveBasket(withCheckoutState(
                         authoritativeRequest,

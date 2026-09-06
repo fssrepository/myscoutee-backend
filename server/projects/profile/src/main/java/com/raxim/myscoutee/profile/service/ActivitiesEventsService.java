@@ -2919,10 +2919,7 @@ public class ActivitiesEventsService {
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
-            ActivityEvent slotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
-                    .filter(this::isGeneratedSlotRecord)
-                    .findFirst()
-                    .orElse(null);
+            ActivityEvent slotRecord = findActiveGeneratedSlotRecord(requestedSlotSourceId);
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
                 accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
@@ -2950,10 +2947,10 @@ public class ActivitiesEventsService {
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
-                ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
-                        .filter(this::isGeneratedSlotRecord)
-                        .findFirst()
-                        .orElse(slotRecord);
+                ActivityEvent refreshedSlotRecord = findActiveGeneratedSlotRecord(requestedSlotSourceId);
+                if (refreshedSlotRecord == null) {
+                    refreshedSlotRecord = slotRecord;
+                }
                 ActivityEvent refreshedSource = findPreferredEventRecord(sourceId);
                 return withCounterDelta(
                         toParticipationActionResult(
@@ -3034,10 +3031,7 @@ public class ActivitiesEventsService {
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(paymentMembershipSourceId));
         boolean acceptedBeforePayment = isAcceptedMember(acceptedBeforePaymentSnapshot, request.userId());
         ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
-                ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElse(null)
+                ? findActiveGeneratedSlotRecord(slotSourceId)
                 : findPreferredEventRecord(request.sourceId());
         if (!paymentService.hasJoinedEventJoin(request.userId(), paymentMembershipSourceId)
                 && isRecordFull(paymentRecord)) {
@@ -6990,6 +6984,18 @@ public class ActivitiesEventsService {
             return null;
         }
         return computePreferredEventRecords(loadEventDocumentsBySourceIds(List.of(normalizedSourceId))).stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    private ActivityEvent findActiveGeneratedSlotRecord(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+        return loadEventDocumentsBySourceIds(List.of(normalizedSourceId)).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .filter(record -> ActivityEvent.STATUS_ACTIVE.equals(safeText(record.getStatus())))
                 .findFirst()
                 .orElse(null);
     }

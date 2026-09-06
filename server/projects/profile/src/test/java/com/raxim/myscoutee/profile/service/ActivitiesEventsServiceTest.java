@@ -969,6 +969,60 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void requestJoinUsesTheActiveSlotWhenAnOlderTrashedCopyHasTheSameSourceId() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent root = event("event-1", "host", 0d);
+        ActivityEvent activeSlot = event("slot-1", "host", 0d);
+        activeSlot.setId("slot-active-document");
+        activeSlot.setGenerated(true);
+        activeSlot.setEventType("slot");
+        activeSlot.setParentEventId("event-1");
+        ActivityEvent trashedSlot = event("slot-1", "host", 0d);
+        trashedSlot.setId("slot-trashed-document");
+        trashedSlot.setGenerated(true);
+        trashedSlot.setEventType("slot");
+        trashedSlot.setParentEventId("event-1");
+        trashedSlot.setStatus(ActivityEvent.STATUS_TRASHED);
+        ActivitiesMembersService.OwnerMembersSnapshot before =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "event-1", List.of(), List.of("host"), List.of(), List.of(), List.of(), Set.of("host"), 10);
+        ActivitiesMembersService.OwnerMembersSnapshot rootAfter =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "event-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+        ActivitiesMembersService.OwnerMembersSnapshot slotAfter =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event", "slot-1", List.of(), List.of("host", "viewer"), List.of(), List.of(), List.of(), Set.of("host"), 10, true);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(root));
+        when(activityEventsRepository.findBySourceIdIn(List.of("slot-1")))
+                .thenReturn(List.of(trashedSlot, activeSlot));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
+        when(activitiesMembersService.requestJoin("event-1", viewer, root, true, false, false))
+                .thenReturn(rootAfter);
+        when(activitiesMembersService.requestJoin("slot-1", viewer, activeSlot, true, false, false))
+                .thenReturn(slotAfter);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                "slot-1",
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("accepted");
+        verify(activitiesMembersService).requestJoin("slot-1", viewer, activeSlot, true, false, false);
+        verify(activitiesMembersService, never()).requestJoin("slot-1", viewer, trashedSlot, true, false, false);
+    }
+
+    @Test
     void repeatedAcceptedJoinReportsNoMutation() {
         Users viewer = new Users();
         viewer.setId("viewer");

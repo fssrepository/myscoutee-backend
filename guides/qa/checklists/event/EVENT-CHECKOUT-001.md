@@ -14,19 +14,24 @@ matrix rows.
 
 ## Actors and startup
 
-- **Nova** performs the Event Explore checkout and every participant-side
-  observation.
-- **Casey** owns the Events and performs only the final Event Members check.
+- **Nova** pays the Evening Slot and performs the primary participant-side
+  observations.
+- **Riley** pays the remaining Morning Slot in the former Casey browser during
+  block 4.
+- **Casey** owns the Events. After Nova's payment, sign out of Casey and use
+  that same browser for Riley; sign back in as Casey only for the final Event
+  Members check.
 - **Ava** selects the demo provider branch before each declared control.
 - Codex stages all Events, checkout controls and sessions and runs the
   independent machine oracles. The user exclusively opens and controls the
-  configured Casey/Nova/Ava browser sessions. Do not create a replacement
-  Event, user, payment or browser profile.
+  configured Casey/Nova/Ava browser sessions. Riley reuses Casey's browser;
+  do not create a replacement Event, user, payment or browser profile.
 - Ava controls the demo provider from the Admin payment simulator. No real
   provider credential or card data is used.
 - The saved-card fixture includes one active card tokenized for the other
   provider solely to prove the assign-screen recovery menu. It is never used
   to start the controlled Stripe payment.
+- Riley has one separate active Stripe fixture card for the Morning payment.
 - Stop at the first mismatch. Do not compensate with a second click, another
   checkout attempt, an unlisted reload or an API/Mongo action.
 
@@ -38,10 +43,11 @@ Begin only after Codex confirms this exact baseline:
 
 - `QA EVENT-CHECKOUT-001 Paid` is Public, published, Ticketing Off,
   directly joinable and visible once to Nova in Event Explore;
-- it has two named Slots, one paid optional item, one required policy and
-  capacity `1 / 6`, with Casey as the sole accepted Admin;
-- Nova has no target membership, Activity Events row, basket, payment, chat or
-  Event/Ticket counter contribution;
+- it has two named Slots with one participant place each in addition to Casey,
+  one paid optional item, one required policy and root capacity `1 / 6`, with
+  Casey as the sole accepted Admin;
+- Nova and Riley have no target membership, Activity Events row, basket,
+  payment, chat or Event/Ticket counter contribution;
 - the Free, Approval and Waitlist controls are present in their declared
   baseline states;
 - a separate paid Cash-only Event control is present for the final negative
@@ -154,7 +160,7 @@ Begin only after Codex confirms this exact baseline:
 
     `EVENT-CHECKOUT-001 cancelled: Book Event restored, no participation`
 
-### 4. Complete one fresh Stripe payment and prove there is no freeze
+### 4. Complete both Slots with two users and prove there is no freeze
 
 33. After Codex confirms `cancelled`, return to Event Explore and open the
     target's `Book Event` action once.
@@ -175,62 +181,92 @@ Begin only after Codex confirms this exact baseline:
 
 41. Confirm the checkout closes once on success and no stale overlay blocks
     the application.
-42. Do not click another target action. Report:
+42. Do not start another checkout yet. Report:
 
-    `EVENT-CHECKOUT-001 paid: checkout closed once and UI stayed responsive`
+    `EVENT-CHECKOUT-001 Nova paid: checkout closed once and UI stayed responsive`
 
-43. Wait for Codex to prove exactly one approved Stripe payment, one succeeded
-    inactive basket, one accepted Nova membership and no duplicate write.
+43. In Nova, reopen the target menu and confirm `Continue booking` is present.
+    This is correct because the Morning Slot still has one participant place;
+    do not treat it as a stale basket or defect.
+44. In the existing **Casey** browser, sign out and sign in as **Riley**. Do not
+    open a fourth browser.
+45. In Riley, open Event Explore, find the target exactly once and select `Book
+    Event`.
+46. Select `QA Morning Slot`, accept `QA Attendance policy`, leave `QA Workshop
+    Add-on` unselected, then select `Join` once.
+47. Confirm the payment phase shows Stripe, the Morning Slot, HUF 3,200 and
+    Riley's active compatible card. Select that card if it is not preselected.
+48. Select `Payment` exactly once. Confirm the action cannot be submitted again
+    while active and the UI remains responsive.
+49. Confirm Riley's checkout closes once on success.
+50. In both Nova and Riley, reopen Event Explore. The target must no longer be
+    offered as a fresh booking because Evening and Morning are now both full.
+51. In both users' Active Event menus, confirm `Continue booking`, `Book Event`
+    and another `Payment` action are absent. A stale action for either user is
+    a failure.
+52. Report:
+
+    `EVENT-CHECKOUT-001 both slots paid: Evening by Nova, Morning by Riley`
+
+53. Wait for Codex to prove exactly two approved Stripe payments, two succeeded
+    inactive baskets, accepted Nova and Riley memberships, both Slots full and
+    no duplicate write.
 
 ### 5. Verify where the successful Event checkout goes
 
-44. After Codex confirms `paid`, open `Activities → Events → Active Events`.
-45. Confirm `QA EVENT-CHECKOUT-001 Paid` appears exactly once.
-46. Open its menu and confirm these actions are present:
+54. After Codex confirms `paid`, in Nova open `Activities → Events → Active
+    Events`.
+55. Confirm `QA EVENT-CHECKOUT-001 Paid` appears exactly once.
+56. Open its menu and confirm these actions are present:
 
     - `View Event`;
     - `Payment summary`;
     - `Leave Event`.
 
-47. Confirm `Book Event`, `Continue booking` and another `Payment` action are
+57. Confirm `Book Event`, `Continue booking` and another `Payment` action are
     absent.
-48. Open `Payment summary` once. Confirm it is read-only and shows the exact
+58. Open `Payment summary` once. Confirm it is read-only and shows the exact
     Evening Slot, accepted policy, no Workshop add-on, final amount/currency,
     Stripe provider, selected payment method and paid/recorded result.
-49. Close and reopen `Payment summary`. It must show the same values and no
+59. Close and reopen `Payment summary`. It must show the same values and no
     loading loop, editable payment field or Pay button.
-50. Open `All Events` and confirm the same Event appears exactly once there.
-51. Return to Event Explore and confirm the target is not presented as a fresh
-    payment candidate for Nova.
-52. In **Casey**, open the target through `My Events → Event Members`.
-53. Confirm Casey appears once as Admin, Nova once as accepted Member, no
-    pending target row exists, and occupancy is `2 / 6`.
-54. Confirm no target Ticket action/counter exists for Nova because Ticketing
-    is Off.
-55. Report:
+60. In Riley, open the same read-only `Payment summary` and confirm it shows
+    Riley's Morning Slot payment, not Nova's Evening payment.
+61. Open `All Events` for both users and confirm the Event appears exactly once
+    for each.
+62. Return to Event Explore and reconfirm the target is not a fresh payment
+    candidate for either user.
+63. Sign Riley out of the reused browser, sign back in as **Casey**, then open
+    the target through `My Events → Event Members`.
+64. Confirm Casey appears once as Admin, Nova and Riley once each as accepted
+    Members, no pending target row exists, and occupancy is `3 / 6`.
+65. Confirm no target Ticket action/counter exists for Nova or Riley because
+    Ticketing is Off.
+66. Report:
 
-    `EVENT-CHECKOUT-001 destination ready: Active/All, Payment summary and 2/6 membership`
+    `EVENT-CHECKOUT-001 destination ready: Active/All, two Payment summaries and 3/6 membership`
 
 ### 6. Verify reload reconstruction and the action variants
 
-56. After Codex confirms the destination boundary, reload Nova exactly once.
-57. Reopen `Active Events`, `All Events` and `Payment summary`. Confirm the
+67. After Codex confirms the destination boundary, reload Nova exactly once.
+68. Reopen `Active Events`, `All Events` and `Payment summary`. Confirm the
     same one-card, same-action and same immutable-summary state returns.
-58. Open the staged **Free** control from Event Explore. Confirm its checkout
+69. Open the staged **Free** control from Event Explore. Confirm its checkout
     offers `Join Event`/`Join` and never opens a payment phase. Close it
     without joining.
-59. Open the staged **Approval** control. Confirm it shows the pending approval
+70. Open the staged **Approval** control. Confirm it shows the pending approval
     state with `Waiting for approval`/`Cancel request` and no enabled `Payment`
     before Admin approval. Close without changing it.
-60. Open the staged **Waitlist** control. Confirm it shows `Waiting List` and
+71. Open the staged **Waitlist** control. Confirm it shows `Waiting List` and
     `Leave waitlist`, with payment locked while no place exists. Close without
     changing it.
-61. In **Ava**, select `Cash only`, save, and return to Nova's separate paid
+72. In **Ava**, select `Cash only`, save, and return to Nova's separate paid
     Cash-only control. Advance it to payment review. Confirm the provider badge
     says translated `Cash only`, the status says translated `Pay in cash`, and
     there is no card selector. Cancel that checkout without recording payment.
-62. Confirm the adjacent paid Event and every Riley control remain unchanged.
-63. Report the terminal phrase:
+73. Confirm the adjacent paid Event and all Free/Approval/Waitlist controls
+    remain unchanged.
+74. Report the terminal phrase:
 
     `EVENT-CHECKOUT-001 UI complete: Stripe persisted, Cash only has no card selector, all controls match`
 

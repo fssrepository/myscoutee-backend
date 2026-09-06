@@ -25,6 +25,7 @@
   const ALL_EVENT_IDS = [...EVENT_IDS, MORNING_SLOT_ID, EVENING_SLOT_ID];
   const CARD_IDS = {
     stripe: `${PREFIX}:card:stripe-4242`,
+    rileyStripe: `${PREFIX}:card:riley-stripe-4242`,
     barion: `${PREFIX}:card:barion-4444`,
     expired: `${PREFIX}:card:expired-0008`
   };
@@ -44,7 +45,7 @@
   const memberSelector = { ownerType: "event", ownerId: { $in: ALL_EVENT_IDS } };
   const basketSelector = { sourceId: { $in: EVENT_IDS } };
   const paymentSelector = { sourceId: { $in: EVENT_IDS } };
-  const cardSelector = { userId: NOVA_ID };
+  const cardSelector = { _id: { $in: Object.values(CARD_IDS) } };
   const chatSelector = { $or: [
     { eventId: { $in: ALL_EVENT_IDS } },
     { ownerId: { $in: ALL_EVENT_IDS } },
@@ -298,11 +299,11 @@
     };
   }
 
-  function cardDocument(id, providerName, token, last4, expiryMonth, expiryYear, artworkKey, status, nowIso) {
+  function cardDocument(id, userId, cardholderName, providerName, token, last4, expiryMonth, expiryYear, artworkKey, status, nowIso) {
     return {
       _id: id,
       version: 0,
-      userId: NOVA_ID,
+      userId,
       provider: providerName,
       providerPaymentMethodRef: token,
       brand: providerName === "barion" ? "Mastercard" : "Visa",
@@ -310,12 +311,53 @@
       expiryMonth,
       expiryYear,
       expiryKey: expiryYear * 100 + expiryMonth,
-      cardholderName: "NOVA SOCIAL",
+      cardholderName,
       artworkKey,
       status,
       createdAtIso: nowIso,
       updatedAtIso: nowIso
     };
+  }
+
+  function ensureTwoUserBlock4Fixture() {
+    const nowIso = Q.nowIso();
+    const slots = Q.collection("events").find({
+      _id: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] },
+      sourceId: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] },
+      status: "A"
+    }).toArray();
+    if (slots.length !== 2) {
+      Q.fail("the two-user block-4 fixture requires exactly two active stable Slot records.");
+    }
+    Q.collection("events").updateMany(
+      { _id: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] }, status: "A" },
+      { $set: { capacityMax: 2, capacityTotal: 2, capacityTotalActual: 2, full: false, updatedDate: nowIso } }
+    );
+    const target = Q.collection("events").findOne({ _id: TARGET_ID, status: "A" });
+    if (!target || !Array.isArray(target.upcomingSlots) || target.upcomingSlots.length !== 2) {
+      Q.fail("the two-user block-4 fixture requires the stable root with exactly two upcoming Slots.");
+    }
+    const upcomingSlots = target.upcomingSlots.map(slot => ({ ...slot, capacityTotal: 2 }));
+    Q.collection("events").updateOne(
+      { _id: TARGET_ID, status: "A" },
+      { $set: { upcomingSlots, updatedDate: nowIso } }
+    );
+    Q.collection("savedPaymentMethods").replaceOne(
+      { _id: CARD_IDS.rileyStripe },
+      cardDocument(
+        CARD_IDS.rileyStripe,
+        RILEY_ID,
+        "RILEY OUTSIDE",
+        "stripe",
+        "pm_sim_checkout_riley_stripe_4242",
+        "4242",
+        12,
+        2029,
+        "midnight",
+        "active",
+        nowIso),
+      { upsert: true }
+    );
   }
 
   function staticSpecs() {
@@ -478,7 +520,8 @@
       userFields: [casey, nova, riley].map(userFields),
       baselineTotals: {
         casey: paymentTotals(casey),
-        nova: paymentTotals(nova)
+        nova: paymentTotals(nova),
+        riley: paymentTotals(riley)
       },
       rileyFingerprint: riley,
       basketRuleConfig: Q.ruleConfigSnapshot(rule)
@@ -512,7 +555,7 @@
       timeframe: displayTimeframe(morningStart, morningEnd),
       startAtIso: morningStart.toISOString(),
       endAtIso: morningEnd.toISOString(),
-      capacityTotal: 6,
+      capacityTotal: 2,
       acceptedMembers: 1,
       pendingMembers: 0
     };
@@ -524,7 +567,7 @@
       timeframe: displayTimeframe(eveningStart, eveningEnd),
       startAtIso: eveningStart.toISOString(),
       endAtIso: eveningEnd.toISOString(),
-      capacityTotal: 6,
+      capacityTotal: 2,
       acceptedMembers: 1,
       pendingMembers: 0
     };
@@ -551,12 +594,14 @@
       nowIso,
       parentEventId: TARGET_ID,
       slotTemplateId: MORNING_TEMPLATE_ID,
+      capacity: 2,
       subEventDefinitions: []
     });
     const eveningSlot = eventDocument(EVENING_SLOT_ID, "QA Evening Slot", eveningStart, eveningEnd, {
       nowIso,
       parentEventId: TARGET_ID,
       slotTemplateId: EVENING_TEMPLATE_ID,
+      capacity: 2,
       subEventDefinitions: []
     });
     const events = [
@@ -590,10 +635,11 @@
       basketDocument(`${PREFIX}:basket:waitlist`, WAITLIST_ID, "QA EVENT-CHECKOUT-001 Waitlist", "waiting", now, expires, 3200)
     ]);
     Q.collection("savedPaymentMethods").insertMany([
-      cardDocument(CARD_IDS.stripe, "stripe", "pm_sim_checkout_nova_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
-      cardDocument(CARD_IDS.barion, "barion", "pm_sim_checkout_nova_barion_4444", "4444", 9, 2029, "graphite", "active", nowIso),
+      cardDocument(CARD_IDS.stripe, NOVA_ID, "NOVA SOCIAL", "stripe", "pm_sim_checkout_nova_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
+      cardDocument(CARD_IDS.rileyStripe, RILEY_ID, "RILEY OUTSIDE", "stripe", "pm_sim_checkout_riley_stripe_4242", "4242", 12, 2029, "midnight", "active", nowIso),
+      cardDocument(CARD_IDS.barion, NOVA_ID, "NOVA SOCIAL", "barion", "pm_sim_checkout_nova_barion_4444", "4444", 9, 2029, "graphite", "active", nowIso),
       {
-        ...cardDocument(CARD_IDS.expired, "stripe", "pm_sim_checkout_nova_expired_0008", "0008", 8, 2026, "coral", "expired", nowIso),
+        ...cardDocument(CARD_IDS.expired, NOVA_ID, "NOVA SOCIAL", "stripe", "pm_sim_checkout_nova_expired_0008", "0008", 8, 2026, "coral", "expired", nowIso),
         expiredNotifiedAtIso: nowIso
       }
     ]);
@@ -610,8 +656,11 @@
   }
 
   function baselineSummary() {
-    const target = Q.collection("events").findOne({ sourceId: TARGET_ID });
-    const slots = Q.collection("events").find({ parentEventId: TARGET_ID }).sort({ startAtIso: 1 }).toArray();
+    const target = Q.collection("events").findOne({ _id: TARGET_ID, status: "A" });
+    const slots = Q.collection("events")
+      .find({ _id: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] }, status: "A" })
+      .sort({ startAtIso: 1 })
+      .toArray();
     const cards = Q.collection("savedPaymentMethods").find(cardSelector).sort({ _id: 1 }).toArray();
     return {
       target: target ? {
@@ -633,7 +682,13 @@
         targetPayments: Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }),
         targetTickets: Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID, userId: NOVA_ID })
       },
-      cards: cards.map(item => ({ id: Q.text(item._id), provider: Q.text(item.provider), last4: Q.text(item.last4), artworkKey: Q.text(item.artworkKey), status: Q.text(item.status) })),
+      rileyArtifacts: {
+        targetMemberships: Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: RILEY_ID }),
+        targetBaskets: Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: TARGET_ID, userId: RILEY_ID }),
+        targetPayments: Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: RILEY_ID }),
+        targetTickets: Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID, userId: RILEY_ID })
+      },
+      cards: cards.map(item => ({ id: Q.text(item._id), userId: Q.text(item.userId), provider: Q.text(item.provider), last4: Q.text(item.last4), artworkKey: Q.text(item.artworkKey), status: Q.text(item.status) })),
       controls: {
         free: Boolean(Q.collection("events").findOne({ sourceId: FREE_ID, "pricing.enabled": false })),
         approval: Boolean(Q.collection("events").findOne({ sourceId: APPROVAL_ID, approvalRequired: true, pendingMemberUserIds: NOVA_ID })),
@@ -667,11 +722,15 @@
     if (Object.values(summary.novaArtifacts).some(value => value !== 0)) {
       Q.fail(`Nova already has target artifacts: ${JSON.stringify(summary.novaArtifacts)}.`);
     }
-    if (summary.cards.length !== 3
-        || !summary.cards.some(item => item.provider === "stripe" && item.last4 === "4242" && item.status === "active")
+    if (Object.values(summary.rileyArtifacts).some(value => value !== 0)) {
+      Q.fail(`Riley already has target artifacts: ${JSON.stringify(summary.rileyArtifacts)}.`);
+    }
+    if (summary.cards.length !== 4
+        || !summary.cards.some(item => item.userId === NOVA_ID && item.provider === "stripe" && item.last4 === "4242" && item.status === "active")
+        || !summary.cards.some(item => item.userId === RILEY_ID && item.provider === "stripe" && item.last4 === "4242" && item.status === "active")
         || !summary.cards.some(item => item.provider === "barion" && item.last4 === "4444" && item.status === "active" && item.artworkKey === "graphite")
         || !summary.cards.some(item => item.provider === "stripe" && item.last4 === "0008" && item.status === "expired" && item.artworkKey === "coral")) {
-      Q.fail(`Nova card baseline mismatch: ${JSON.stringify(summary.cards)}.`);
+      Q.fail(`participant card baseline mismatch: ${JSON.stringify(summary.cards)}.`);
     }
     if (Object.values(summary.controls).some(value => value !== true)) {
       Q.fail(`control baseline mismatch: ${JSON.stringify(summary.controls)}.`);
@@ -716,10 +775,10 @@
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, repaired: { cardId: CARD_IDS.barion, provider: "barion", last4: "4444", artworkKey: "graphite" } });
   }
 
-  function activeTargetBaskets() {
+  function activeTargetBaskets(userId = NOVA_ID) {
     return Q.collection("eventCheckoutBasketItems").find({
       sourceId: TARGET_ID,
-      userId: NOVA_ID,
+      userId,
       reservationActive: true,
       resultState: { $in: [null, "", "pending", "active"] }
     }).sort({ createdAtIso: 1, _id: 1 }).toArray();
@@ -978,13 +1037,17 @@
     clearCurrentEffects();
     Q.restoreSnapshots(checkpoint.snapshots);
     for (const saved of checkpoint.userFields) restoreUserFields(saved);
+    ensureTwoUserBlock4Fixture();
+    const upgradedSnapshots = currentScopedSnapshots();
+    const upgradedUserFields = [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId)));
     Q.collection(Q.STATE_COLLECTION).updateOne(
       { _id: currentState._id },
       {
         $set: {
           phase: "cancelled-verified",
-          block4Snapshots: checkpoint.snapshots,
-          block4UserFields: checkpoint.userFields,
+          block4Snapshots: upgradedSnapshots,
+          block4UserFields: upgradedUserFields,
+          "baselineTotals.riley": paymentTotals(Q.ensureUser(RILEY_ID, "Riley")),
           block4CapturedAtIso: Q.text(currentState.block4CapturedAtIso) || Q.nowIso(),
           block4RolledBackAtIso: Q.nowIso()
         },
@@ -1050,15 +1113,29 @@
   }
 
   function paidSnapshot() {
-    const event = Q.collection("events").findOne({ sourceId: TARGET_ID });
+    const event = Q.collection("events").findOne({ _id: TARGET_ID, status: "A" });
+    const slots = Q.collection("events")
+      .find({ _id: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] }, status: "A" })
+      .sort({ startAtIso: 1 })
+      .toArray();
     const members = Q.collection("activityMembers").find({ ownerId: TARGET_ID }).sort({ userId: 1 }).toArray();
-    const payments = Q.collection("payments").find({ sourceId: TARGET_ID, userId: NOVA_ID }).sort({ createdDate: 1 }).toArray();
-    const baskets = Q.collection("eventCheckoutBasketItems").find({ sourceId: TARGET_ID, userId: NOVA_ID }).sort({ createdAtIso: 1, _id: 1 }).toArray();
+    const slotMembers = Q.collection("activityMembers")
+      .find({ ownerId: { $in: [MORNING_SLOT_ID, EVENING_SLOT_ID] } })
+      .sort({ ownerId: 1, userId: 1 })
+      .toArray();
+    const payments = Q.collection("payments")
+      .find({ sourceId: TARGET_ID, userId: { $in: [NOVA_ID, RILEY_ID] } })
+      .sort({ createdDate: 1 })
+      .toArray();
+    const baskets = Q.collection("eventCheckoutBasketItems")
+      .find({ sourceId: TARGET_ID, userId: { $in: [NOVA_ID, RILEY_ID] } })
+      .sort({ createdAtIso: 1, _id: 1 })
+      .toArray();
     const chats = Q.collection("chats").find(chatSelector).toArray().filter(item => {
       const eventId = Q.text(item.eventId || item.ownerId || item.sourceId);
       return eventId === TARGET_ID;
     });
-    return { event, members, payments, baskets, chats };
+    return { event, slots, members, slotMembers, payments, baskets, chats };
   }
 
   function verifyPaid() {
@@ -1071,12 +1148,18 @@
       && Q.text(item.bookingStatus) === "joined"
       && Number(item.amount || 0) === 3200
       && Q.text(item.currency) === "HUF"
-      && Q.text(item.slotSourceId) === EVENING_SLOT_ID
       && Q.sameJson(sorted(item.optionalSubEventIds), [])
-      && Q.sameJson(sorted(item.acceptedPolicyIds), [POLICY_ID])
+      && Q.sameJson(sorted(item.acceptedPolicyIds), [POLICY_ID]));
+    const novaPayment = successfulPayments.find(item =>
+      Q.text(item.userId) === NOVA_ID
+      && Q.text(item.slotSourceId) === EVENING_SLOT_ID
       && Q.text(item.paymentMethodId) === CARD_IDS.stripe);
-    if (current.payments.length !== 1 || successfulPayments.length !== 1) {
-      Q.fail(`expected one authorized joined Stripe payment, found ${JSON.stringify(current.payments.map(item => ({ id: item._id, provider: item.provider, status: item.status, bookingStatus: item.bookingStatus, amount: item.amount, slotSourceId: item.slotSourceId, paymentMethodId: item.paymentMethodId })))}.`);
+    const rileyPayment = successfulPayments.find(item =>
+      Q.text(item.userId) === RILEY_ID
+      && Q.text(item.slotSourceId) === MORNING_SLOT_ID
+      && Q.text(item.paymentMethodId) === CARD_IDS.rileyStripe);
+    if (current.payments.length !== 2 || successfulPayments.length !== 2 || !novaPayment || !rileyPayment) {
+      Q.fail(`expected the exact Nova-Evening and Riley-Morning Stripe payments, found ${JSON.stringify(current.payments.map(item => ({ id: item._id, userId: item.userId, provider: item.provider, status: item.status, bookingStatus: item.bookingStatus, amount: item.amount, slotSourceId: item.slotSourceId, paymentMethodId: item.paymentMethodId })))}.`);
     }
     const succeeded = current.baskets.filter(item =>
       item.reservationActive === false
@@ -1084,24 +1167,45 @@
       && Q.text(item.status) === "approved"
       && Q.text(item.resultState) === "succeeded"
       && Q.text(item.kind) === "event"
-      && Q.text(item.slotSourceId) === EVENING_SLOT_ID
       && !Q.text(item.subEventId));
-    if (succeeded.length !== 1 || activeTargetBaskets().length !== 0) {
-      Q.fail("paid checkout did not leave exactly one succeeded inactive basket item.");
+    if (succeeded.length !== 2
+        || !succeeded.some(item => Q.text(item.userId) === NOVA_ID && Q.text(item.slotSourceId) === EVENING_SLOT_ID)
+        || !succeeded.some(item => Q.text(item.userId) === RILEY_ID && Q.text(item.slotSourceId) === MORNING_SLOT_ID)
+        || activeTargetBaskets(NOVA_ID).length !== 0
+        || activeTargetBaskets(RILEY_ID).length !== 0) {
+      Q.fail("paid checkout did not leave the exact two succeeded inactive basket items.");
     }
     const acceptedMembers = current.members.filter(item => Q.text(item.status) === "accepted");
     if (!current.event
-        || Number(current.event.acceptedMembers || 0) !== 2
-        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, NOVA_ID])
-        || acceptedMembers.length !== 2
+        || Number(current.event.acceptedMembers || 0) !== 3
+        || !Q.sameJson(sorted(current.event.acceptedMemberUserIds), [CASEY_ID, NOVA_ID, RILEY_ID])
+        || acceptedMembers.length !== 3
         || !acceptedMembers.some(item => Q.text(item.userId) === CASEY_ID && Q.text(item.role) === "Admin")
-        || !acceptedMembers.some(item => Q.text(item.userId) === NOVA_ID && Q.text(item.role) === "Member")) {
-      Q.fail("paid checkout membership/occupancy projection is not Casey Admin + Nova Member at 2 / 6.");
+        || !acceptedMembers.some(item => Q.text(item.userId) === NOVA_ID && Q.text(item.role) === "Member")
+        || !acceptedMembers.some(item => Q.text(item.userId) === RILEY_ID && Q.text(item.role) === "Member")) {
+      Q.fail("paid checkout membership/occupancy projection is not Casey Admin + Nova and Riley Members at 3 / 6.");
+    }
+    const acceptedSlotMembers = current.slotMembers.filter(item => Q.text(item.status) === "accepted");
+    const morningSlot = current.slots.find(item => Q.text(item.sourceId) === MORNING_SLOT_ID);
+    const eveningSlot = current.slots.find(item => Q.text(item.sourceId) === EVENING_SLOT_ID);
+    if (current.slots.length !== 2
+        || !morningSlot
+        || Number(morningSlot.acceptedMembers || 0) !== 2
+        || Number(morningSlot.capacityTotal || 0) !== 2
+        || !Q.sameJson(sorted(morningSlot.acceptedMemberUserIds), [CASEY_ID, RILEY_ID])
+        || !eveningSlot
+        || Number(eveningSlot.acceptedMembers || 0) !== 2
+        || Number(eveningSlot.capacityTotal || 0) !== 2
+        || !Q.sameJson(sorted(eveningSlot.acceptedMemberUserIds), [CASEY_ID, NOVA_ID])
+        || !acceptedSlotMembers.some(item => Q.text(item.ownerId) === MORNING_SLOT_ID && Q.text(item.userId) === RILEY_ID)
+        || !acceptedSlotMembers.some(item => Q.text(item.ownerId) === EVENING_SLOT_ID && Q.text(item.userId) === NOVA_ID)) {
+      Q.fail("the Morning and Evening Slot projections are not both full with their assigned participant.");
     }
     if (Q.collection("eventTickets").countDocuments({ eventId: TARGET_ID }) !== 0) {
       Q.fail("Ticketing Off checkout created an EventTicket.");
     }
     const novaUser = Q.ensureUser(NOVA_ID, "Nova");
+    const rileyUser = Q.ensureUser(RILEY_ID, "Riley");
     const caseyUser = Q.ensureUser(CASEY_ID, "Casey");
     const novaActivities = novaUser.activities || {};
     const novaEventCounters = novaActivities.event || {};
@@ -1109,10 +1213,20 @@
     const caseyActivities = caseyUser.activities || {};
     const caseyEventCounters = caseyActivities.event || {};
     const caseyChatCounters = caseyActivities.chat || {};
+    const rileyActivities = rileyUser.activities || {};
+    const rileyEventCounters = rileyActivities.event || {};
+    const rileyChatCounters = rileyActivities.chat || {};
+    const baselineRileyActivities = currentState.rileyFingerprint.activities || {};
+    const baselineRileyEventCounters = baselineRileyActivities.event || {};
+    const baselineRileyChatCounters = baselineRileyActivities.chat || {};
     if (Number(novaActivities.events || 0) !== 1
         || Number(novaEventCounters.all || 0) !== 3
         || Number(novaEventCounters.active || 0) !== 1
         || Number(novaEventCounters.pending || 0) !== 2
+        || Number(rileyActivities.events || 0) !== Number(baselineRileyActivities.events || 0) + 1
+        || Number(rileyEventCounters.all || 0) !== Number(baselineRileyEventCounters.all || 0) + 1
+        || Number(rileyEventCounters.active || 0) !== Number(baselineRileyEventCounters.active || 0) + 1
+        || Number(rileyEventCounters.pending || 0) !== Number(baselineRileyEventCounters.pending || 0)
         || Number(caseyActivities.hosting || 0) !== 6
         || Number(caseyEventCounters.all || 0) !== 6
         || Number(caseyEventCounters.hosting || 0) !== 6) {
@@ -1120,36 +1234,42 @@
     }
     const targetChats = current.chats.filter(item =>
       Q.text(item.channelType) === "mainEvent"
-      && [CASEY_ID, NOVA_ID].includes(Q.text(item.ownerUserId))
-      && Q.sameJson(sorted(item.memberIds), [CASEY_ID, NOVA_ID]));
-    if (targetChats.length !== 2
-        || sorted(targetChats.map(item => item.ownerUserId)).length !== 2
+      && [CASEY_ID, NOVA_ID, RILEY_ID].includes(Q.text(item.ownerUserId))
+      && Q.sameJson(sorted(item.memberIds), [CASEY_ID, NOVA_ID, RILEY_ID]));
+    if (targetChats.length !== 3
+        || !Q.sameJson(sorted(targetChats.map(item => item.ownerUserId)), [CASEY_ID, NOVA_ID, RILEY_ID])
         || Number(novaActivities.chats || 0) !== 1
         || Number(novaChatCounters.all || 0) !== 1
         || Number(novaChatCounters.event || 0) !== 1
+        || Number(rileyActivities.chats || 0) !== Number(baselineRileyActivities.chats || 0) + 1
+        || Number(rileyChatCounters.all || 0) !== Number(baselineRileyChatCounters.all || 0) + 1
+        || Number(rileyChatCounters.event || 0) !== Number(baselineRileyChatCounters.event || 0) + 1
         || Number(caseyActivities.chats || 0) !== 1
         || Number(caseyChatCounters.all || 0) !== 1
         || Number(caseyChatCounters.event || 0) !== 1) {
-      Q.fail("accepted Event did not create exactly one shared main-Event chat projection for Casey and Nova.");
+      Q.fail("accepted Event did not create exactly one shared main-Event chat projection for Casey, Nova and Riley.");
     }
     const novaTotals = paymentTotals(novaUser);
+    const rileyTotals = paymentTotals(rileyUser);
     const caseyTotals = paymentTotals(caseyUser);
     const baselineNova = currentState.baselineTotals.nova;
+    const baselineRiley = currentState.baselineTotals.riley;
     const baselineCasey = currentState.baselineTotals.casey;
     if (amountFor(novaTotals, "spent", "HUF") !== amountFor(baselineNova, "spent", "HUF") + 3200
         || amountFor(novaTotals, "all", "HUF") !== amountFor(baselineNova, "all", "HUF") + 3200
-        || amountFor(caseyTotals, "income", "HUF") !== amountFor(baselineCasey, "income", "HUF") + 3200
-        || amountFor(caseyTotals, "all", "HUF") !== amountFor(baselineCasey, "all", "HUF") + 3200) {
-      Q.fail("payment total deltas are not exactly HUF 3,200 for Nova/Casey.");
+        || amountFor(rileyTotals, "spent", "HUF") !== amountFor(baselineRiley, "spent", "HUF") + 3200
+        || amountFor(rileyTotals, "all", "HUF") !== amountFor(baselineRiley, "all", "HUF") + 3200
+        || amountFor(caseyTotals, "income", "HUF") !== amountFor(baselineCasey, "income", "HUF") + 6400
+        || amountFor(caseyTotals, "all", "HUF") !== amountFor(baselineCasey, "all", "HUF") + 6400) {
+      Q.fail("payment total deltas are not exactly HUF 3,200 for Nova and Riley and HUF 6,400 for Casey.");
     }
     assertControlsUnchanged(currentState);
-    assertRileyUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "paid-verified",
       paidAtIso: Q.nowIso(),
       paidFingerprint: current
     } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-verified", payments: 1, provider: "stripe", status: "authorized", membership: "2 / 6", tickets: 0 });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-verified", payments: 2, provider: "stripe", status: "authorized", membership: "3 / 6", slotsFull: 2, tickets: 0 });
   }
 
   function verifyDestination() {
@@ -1160,7 +1280,6 @@
       Q.fail("read-only destination checks changed the paid Event projection.");
     }
     assertControlsUnchanged(currentState);
-    assertRileyUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "destination-verified", destinationAtIso: Q.nowIso() } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "destination-verified", persistedPayment: true, persistedMembership: true });
   }
@@ -1184,9 +1303,8 @@
       Q.fail(`cancelled Cash-only control left effects: ${JSON.stringify(cashEffects)}.`);
     }
     assertControlsUnchanged(currentState);
-    assertRileyUnchanged(currentState);
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "verified", verifiedAtIso: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "verified", result: "PASS", paymentCount: 1, membership: "2 / 6", tickets: 0, cashOnlyEffects: cashEffects });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "verified", result: "PASS", paymentCount: 2, membership: "3 / 6", slotsFull: 2, tickets: 0, cashOnlyEffects: cashEffects });
   }
 
   function reset() {

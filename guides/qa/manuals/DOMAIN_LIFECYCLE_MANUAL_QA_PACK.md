@@ -48,7 +48,7 @@ the same prerequisite without depending on an earlier human action.
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
 | Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
 | Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
-| Event Explore payment checkout | One terminal Stripe payment, one inactive succeeded basket and one accepted event membership; separate Cash-only control remains unsubmitted | Event Explore checkout, active-card assignment and expired-card guard, then Activities Events Active/All and read-only Payment summary | Normal membership/chat/counter/recompute plus the selected demo-provider callback; Cash only has no card selector | `EVENT-CHECKOUT-001` |
+| Event Explore payment checkout | Two terminal Stripe payments, two inactive succeeded baskets and two accepted event memberships filling the two Slots; separate Cash-only control remains unsubmitted | Event Explore checkout, active-card assignment and expired-card guard, then Activities Events Active/All and per-user read-only Payment summaries | Normal membership/chat/counter/recompute plus the selected demo-provider callbacks; Cash only has no card selector | `EVENT-CHECKOUT-001` |
 | Tournament grouping and participant eligibility | Parent/stage/group membership, DQ/removal state and group runtime state | Tournament groups, member panels and standings | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-MEMBER-001`, `TOURNAMENT-MEMBER-002`, `TOURNAMENT-MEMBER-003`, `TOURNAMENT-DQ-001`, `TOURNAMENT-003` |
 | Asset member invite or Join request | Pending asset-scoped membership plus one recipient notification | Asset Members pending row, full parent pending-counter chain and recipient bell | Asset acceptance/rejection and Asset-role notification | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Asset Explore payment checkout | One scoped Barion payment, borrow request, inventory reservation and later owner decision; isolated 3DS decline/timeout create no entitlement | Resource/Asset Explore basket, provider-owned 3DS wait/result and Payment summary; owner request row; exact Event/Sub-event resource projection | Normal asset request/availability/outbox plus selected simulator callback work | `ASSET-CHECKOUT-001` |
@@ -94,9 +94,9 @@ The principal checkpoint chains are:
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-CHECKOUT-001` is an isolated direct paid-entry journey. It proves the
-  Event Explore review, resumable basket, Stripe payment and accepted
-  Activity Events destination without reusing the approval-before-payment or
-  physical-ticket branches in `EVENT-TICKET-005`.
+  Event Explore review, resumable basket, two-user Stripe payment across both
+  Slots and accepted Activity Events destination without reusing the
+  approval-before-payment or physical-ticket branches in `EVENT-TICKET-005`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
   `EVENT-TICKET-003` -> `EVENT-TICKET-011` -> `EVENT-TICKET-009` ->
   `EVENT-TICKET-004` (Unpublish midpoint) -> `EVENT-TICKET-012` ->
@@ -2960,13 +2960,15 @@ before payment and therefore never proves a manual click on the Payment
 action.
 
 - Stage one published Public paid Event with Ticketing Off, no approval gate,
-  two selectable Slots, one paid optional item and one required policy. Nova
-  starts outside membership with no Event checkout basket, payment, Activity
-  Events row, chat or counter contribution. Casey is the sole accepted Admin.
+  two selectable Slots with one participant place each in addition to Casey,
+  one paid optional item and one required policy. Nova and Riley start outside
+  membership with no target basket, payment, Activity Events row, chat or
+  counter contribution. Casey is the sole accepted Admin.
 - Stage three read-only controls for the same Nova actor: one free Event, one
   paid approval-required Event and one full paid Event that enters the
-  waitlist. An adjacent paid Event and Riley's complete state are immutable
-  negative controls.
+  waitlist. The adjacent paid Event is an immutable negative control; Riley
+  remains unchanged through the cancellation branch, then owns only the
+  declared Morning payment.
 - The state-dependent action contract is:
 
   | State | Required visible actions/status | Forbidden action |
@@ -2990,11 +2992,13 @@ action.
   becomes one closed audit, the pending membership is suppressed, its Pending
   counter contribution is removed, the card returns to `Book Event`, and no
   current participation, chat, ticket or approved payment exists.
-- Start one fresh attempt, return to the payment phase and click `Payment`
-  exactly once. While the request is active the action changes to `Paying...`
-  and is disabled; the rest of the application remains responsive. The
-  checkout closes on success instead of leaving an infinite spinner, frozen
-  overlay or duplicate popup.
+- Start one fresh Nova attempt for Evening, return to the payment phase and
+  click `Payment` exactly once. While the request is active the action changes
+  to `Paying...` and is disabled; the rest of the application remains
+  responsive. After it succeeds, `Continue booking` is correct while Morning
+  remains open. Reuse Casey's browser for Riley, pay Morning once, then require
+  both Slots to be full and the fresh-booking/Continue action to disappear for
+  both participants.
 - The assign surface keeps expired and provider-mismatched cards visible but
   unselectable. Both retain their artwork beneath the same white overlay. The
   provider-mismatched card exposes `Retokenize >` with Retokenize/Delete while
@@ -3002,36 +3006,37 @@ action.
   payment starts; an already identified in-flight payment/3DS session stays
   pinned to its original provider, while any later new or periodic use of that
   provider token fails with the short retokenization message.
-- Immediate write oracle: exactly one `provider=stripe`, terminal authorized
-  payment with the selected immutable price/currency and
-  `bookingStatus=joined`; one
-  succeeded, inactive basket; one accepted Nova membership/participation
-  overlay; occupancy `1 -> 2`; and the normal accepted-member chat/counter
-  effects exactly once. Ticketing Off keeps physical tickets and both ticket
-  counters at zero. The Stripe simulator authorization belongs to this branch;
-  capture/settlement and Registry work are outside this checkpoint.
-- Immediate UI oracle: the paid target is present exactly once under Nova's
-  Activity Events `Active` and `All` buckets. Its menu exposes `View Event`,
-  read-only `Payment summary` and `Leave Event`; the summary returns the exact
-  Slot, optional item, accepted policy IDs, amount, currency, Stripe provider,
-  selected payment method and authorized/joined result. Merely opening it
-  cannot write.
+- Immediate write oracle: exactly two `provider=stripe`, terminal authorized
+  payments with immutable price/currency and `bookingStatus=joined`: Nova owns
+  Evening and Riley owns Morning. Require two succeeded inactive baskets,
+  accepted Nova and Riley memberships, root occupancy `1 -> 3`, both Slots at
+  `2 / 2`, and the normal accepted-member chat/counter effects exactly once.
+  Ticketing Off keeps physical tickets and both ticket counters at zero. The
+  Stripe simulator authorizations belong to this branch; capture/settlement
+  and Registry work are outside this checkpoint.
+- Immediate UI oracle: the paid target is present exactly once under both
+  participants' Activity Events `Active` and `All` buckets and absent as a
+  fresh Explore candidate for both. Each menu exposes `View Event`, read-only
+  `Payment summary` and `Leave Event`; Nova's summary returns Evening and
+  Riley's returns Morning with their own payment method and authorized/joined
+  result. Merely opening either summary cannot write.
 - One clean reload must reconstruct the same accepted membership, bucket
   counters, menu actions and Payment summary from persisted state. The target
   must not return as a fresh Event Explore payment candidate. Reopening the
-  summary twice and replaying the captured request identity through the
-  machine oracle must retain one payment, basket, membership and chat join
-  effect.
+  summaries and replaying the captured request identities through the machine
+  oracle must retain exactly two payments, baskets and participant joins with
+  one shared three-member chat projection.
 - Inspect the free, approval-required and waitlist controls without converting
   them to successful payments. Their labels and forbidden-payment states must
-  match the table, and every control plus Riley remains byte-identical.
+  match the table, and every separate control remains byte-identical.
 - A versioned fixture must provide guarded `stage`, read-only `status`, named
   `payment-ready`, `cancelled` and `paid` captures, plus exact `reset`. Do not
-  execute this row until that harness and its isolated Casey/Nova browser
-  sessions exist.
-- The versioned fixture is staged at `baseline-ready`: the target and controls,
-  Nova's Stripe/Barion/expired cards in both the backend and simulator, the
-  exact-reset snapshot and three isolated Casey/Nova/Ava windows are ready.
+  execute this row until that harness and the isolated Casey/Nova/Ava browser
+  sessions exist; Riley reuses Casey's session slot only at the declared step.
+- The versioned fixture is staged with a `cancelled-verified` block-4 rollback:
+  the target and controls, Nova's Stripe/Barion/expired cards, Riley's separate
+  Stripe card, the exact-reset snapshot and three isolated Casey/Nova/Ava
+  windows are ready. Riley reuses Casey's window only after Nova pays Evening.
 - Payment-ready savepoint (2026-09-06 06:12 CEST): after the user-controlled
   steps through 21, the versioned `capture-payment-ready` oracle passed with
   one active `4900 HUF` basket containing two items, exactly zero payments and
@@ -3042,6 +3047,9 @@ action.
   then passed with those two basket items closed, the former pending membership
   suppressed, zero payments and zero tickets. The next boundary is the fresh
   successful Stripe attempt beginning at step 33.
+- Block-4 extension (2026-09-06): each active Slot is now `1 / 2`; Nova pays
+  Evening and Riley pays Morning. The write oracle expects two payments, both
+  Slots full and no stale fresh-booking/Continue action for either user.
 
 ## Event ticketing checkpoints
 

@@ -332,6 +332,7 @@ import json,sys
 cards=json.load(open(sys.argv[1], encoding="utf-8"))
 cards.extend([
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
+  {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_riley_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"RILEY OUTSIDE"},
   {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_nova_barion_4444","brand":"Mastercard","last4":"4444","expiryMonth":9,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_expired_0008","brand":"Visa","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"}
 ])
@@ -747,6 +748,9 @@ case "${scenario}:${command}" in
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "EVENT-CHECKOUT-001" ] || fail "${command} is restricted to EVENT-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
+    if [ "${command}" = "rollback-block-4" ]; then
+      replace_payment_simulator_checkout_card_fixtures
+    fi
     ;;
   event-checkout:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
