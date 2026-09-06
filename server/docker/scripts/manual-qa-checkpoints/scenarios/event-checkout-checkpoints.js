@@ -700,7 +700,7 @@
       simulator: { provider, connected: providerConnected, requires3ds },
       baseline: summary,
       next: Q.text(currentState.phase) === "baseline-ready"
-        ? "Ava selects connected Stripe with 3DS Off; Nova then starts checklist step 1."
+        ? "Nova starts checklist step 1 with staged Cash only; Ava switches to connected Stripe with 3DS Off only at step 17."
         : "Continue only at the savepoint declared by the stable checklist."
     });
   }
@@ -793,9 +793,9 @@
     if (!Q.sameJson(restoredBaskets, currentState.paymentReadyBaskets)
         || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
         || Q.collection("activityMembers").countDocuments({ ownerId: TARGET_ID, userId: NOVA_ID }) !== 0) {
-      Q.fail("payment-ready rollback did not restore the exact step-18 boundary.");
+      Q.fail("payment-ready rollback did not restore the exact step-22 boundary.");
     }
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-18", basketItems: restoredBaskets.length, paymentCount: 0, membershipCount: 0 });
+    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-22", basketItems: restoredBaskets.length, paymentCount: 0, membershipCount: 0 });
   }
 
   function verifyCancelled() {
