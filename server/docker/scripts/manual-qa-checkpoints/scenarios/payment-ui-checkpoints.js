@@ -392,9 +392,9 @@
       Q.fail(`expected exactly one standalone decline registration, found ${newRegistrations.length}.`);
     }
     const registration = newRegistrations[0];
-    if (Q.text(registration.provider) !== "stripe" || Q.text(registration.status) !== "failed" ||
+    if (Q.text(registration.provider) !== "stripe" || Q.text(registration.status) !== "cancelled" ||
         Q.text(registration.completedPaymentMethodId)) {
-      Q.fail(`decline registration is not terminal Stripe/failed without a saved card: ${JSON.stringify(registration)}.`);
+      Q.fail(`decline registration is not terminal Stripe/cancelled without a saved card: ${JSON.stringify(registration)}.`);
     }
     assertPaymentsUnchanged(currentState);
     const totals = userTotals(Q.ensureUser(TARGET_USER_ID, "payment UI member"));
@@ -416,7 +416,7 @@
       checkpointId: CHECKPOINT,
       phase: "decline-verified",
       verifiedAtIso,
-      registration: { id: Q.text(registration._id), provider: "stripe", status: "failed" },
+      registration: { id: Q.text(registration._id), provider: "stripe", status: "cancelled" },
       unchanged: { savedCards: true, payments: true, paymentTotals: true },
       next: `Run reset ${SCENARIO} ${CHECKPOINT}; the completed 39-step run does not need to be repeated.`
     });

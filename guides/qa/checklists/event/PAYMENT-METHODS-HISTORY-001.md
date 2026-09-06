@@ -209,7 +209,7 @@ This branch is independent from steps 1–39 and does not require replaying them
 3. In Ava's `3DS` surface, open only Alex's pending card registration and
    select `Decline card registration`.
 4. In Alex, confirm the embedded registration result says `Registration
-   declined` and `The card was not saved.`, then returns to the unchanged card
+   cancelled` and `The card was not saved.`, then returns to the unchanged card
    list. No saved card, payment or total may be created or changed.
 5. Report:
 

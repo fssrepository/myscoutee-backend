@@ -12732,6 +12732,12 @@
     "value": "Close card registration"
   },
   {
+    "_id": "i18n-message-en-payment-registration-error-cancelled",
+    "key": "payment.registration.error.cancelled",
+    "lang": "en",
+    "value": "Card registration was cancelled by the user. The card was not saved."
+  },
+  {
     "_id": "i18n-message-en-payment-registration-error-ended",
     "key": "payment.registration.error.ended",
     "lang": "en",
@@ -32086,6 +32092,12 @@
     "key": "payment.registration.close",
     "lang": "hu",
     "value": "Kártyaregisztráció bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-registration-error-cancelled",
+    "key": "payment.registration.error.cancelled",
+    "lang": "hu",
+    "value": "A felhasználó megszakította a kártyaregisztrációt. A kártya nem lett mentve."
   },
   {
     "_id": "i18n-message-hu-payment-registration-error-ended",
