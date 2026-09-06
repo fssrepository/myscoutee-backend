@@ -19,9 +19,9 @@ Only unfinished work is estimated:
 - a not-started row estimates its complete remaining journey;
 - a changed status or reduced remaining scope requires a new estimate.
 
-The generated workbook sums both bounds per QA domain. This makes the first
-two Core blocks and the external/optional block comparable without mixing
-effort with execution priority.
+The generated workbook sums both bounds per QA domain. This makes the two
+domain-overview blocks comparable without mixing effort with execution
+priority.
 
 ## Minimum calculation
 

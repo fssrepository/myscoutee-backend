@@ -85,7 +85,7 @@ next_replay_boundary: baseline-ready; later named savepoints are payment-ready, 
 fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
 browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 88/114 total, Core 88/99, External/optional 0/15; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
+ledger_status: 88/108 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
 queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
 required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
 actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
@@ -177,7 +177,7 @@ Event checkout fixture was reset through its saved baseline before
 `ASSET-CHECKOUT-001` was staged at `baseline-ready`.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
-open consolidated Core Content row and now has a stable click guide. It creates
+open consolidated Content row and now has a stable click guide. It creates
 inactive Help/Privacy/Terms/Explanation revisions, activates Privacy with
 per-user consent isolation, deletes one inactive revision, exercises the
 implemented newest-remaining fallback after active Privacy deletion, then
@@ -349,27 +349,25 @@ do not silently redefine the expected behavior or expand the current test.
 
 The physical CSV/XLSX row order is the manual execution order, not merely a
 visual grouping. The main testcase table has one normalized, domain-colored
-`QA domain` column; its other cells retain the existing status/scope colors.
-The workbook's separate `QA domain | Priority | Progress` table is generated
-from the same rows, begins at row 8 as three side-by-side columns above the
-main table, orders whole domains by numeric `Priority DESC`, and shows `passed
+`QA domain` column; its other cells retain the existing status/effect-marker
+colors.
+The workbook's separate `QA domain | Priority | Progress` overview is generated
+from the same rows, begins at row 8 as two side-by-side three-field blocks above
+the main table, orders whole domains by numeric `Priority DESC`, and shows `passed
 / total (percentage)` plus summed unfinished `MIN/MAX` ranges per domain. The
 generator owns compact A-T widths: all 20 primary columns remain visible
 without a default horizontal scroll, long
 content shows as much as the compact cell and its existing line breaks allow,
-and only the four formula-helper columns remain hidden. Summary count cells are
+and only the three formula-helper columns remain hidden. Summary count cells are
 right-aligned. Priority-table Progress cells use completion bands independently
 from domain colors: 0% not-started blue, 1–49% low orange, 50–74% yellow,
 75–99% light green and 100% green. Keep every domain in one contiguous block
-and keep deferred domains at the end. The top-level taxonomy is intentionally
-coarse: 10 Core capability/operations domains plus the Operator and Deployment
-deferred boundaries. Their numeric priorities preserve the
+and order them by priority. The top-level taxonomy is intentionally coarse:
+10 Pair-QA capability/operations domains, including Operator. Their numeric priorities preserve the
 authoritative execution order.
-A generated priority overview places the first five Core domains in its first
-column, the remaining five Core domains in its second column, and reserves the
-third `EXT / optional` column for Operator and Deployment. The third
-column must therefore always sum to the separate
-External/optional count rather than being mixed into the Core execution queue.
+A generated priority overview places the first five domains in its first
+block and the remaining five domains in its second block. Operator is a normal
+Pair-QA domain and has no separate scope marker or summary total.
 A browser surface, device type, test technique or one-off checkpoint name is
 not a domain. Put details such as registration, public landing eligibility,
 mobile WebView, Statistics, Monitoring and background jobs in the owning
@@ -377,18 +375,19 @@ domain's `Area` instead of manufacturing singleton domains. Create a new
 top-level domain only for an independently executable capability with a
 material workflow set; otherwise classify the row under its real owner.
 The same ownership rule applies to the configurable Admin shell. Local Admin
-work is Core and is distributed by the state it reads or mutates: authorization
+work stays in Pair QA and is distributed by the state it reads or mutates: authorization
 and moderation belong to Identity & access, revisions to Content, notification
 rules to Notifications, statistics and monitoring to Administration, and so
 on. The route or shell does not manufacture a separate Admin domain.
-Operator, Registry and deployment cases remain deferred external boundaries.
-Member payment history and saved-card behavior is Core; provider checkout
-variants are owned by the Core Event and Asset journeys. Row-level Manual QA
-priority orders risk inside a scope; it does
+Operator and Registry behavior remains in the Operator domain. Deployment
+qualification is not Pair QA.
+Member payment history and saved-card behavior belongs to Event; provider checkout
+variants are owned by the Event and Asset journeys. Row-level Manual QA
+priority orders risk inside the queue; it does
 not change capability ownership.
 Preserve the intentional checkpoint order inside each block. Once execution
 enters a domain, finish that block before selecting another. After the
-currently active domain closes, choose the highest-priority Core domain whose
+currently active domain closes, choose the highest-priority domain whose
 Progress is below 100%, then close its Pending/Not started rows in physical
 order. Status colors never select the next test. More generally, whenever
 fixture dependencies and the active transactional checkpoint allow a choice,
@@ -482,9 +481,8 @@ record has been removed.
 
 ### 1.1 Checkpoint granularity and new rows
 
-- Treat every PASS/CLOSED testcase as immutable evidence. It may move to its
-  actual owning `QA domain`, but its ID, status, contract, evidence and every
-  other cell remain unchanged. Non-PASS source rows may instead be consolidated
+- Treat every PASS/CLOSED testcase as immutable evidence: its `QA domain`, ID,
+  status, contract, evidence and every other cell remain unchanged. Non-PASS source rows may instead be consolidated
   into one complete domain journey when they are only micro-oracles of the same
   lifecycle; preserve every source assertion inside the parent contract and do
   not count the retired source IDs as independently scheduled tests. Count
@@ -492,9 +490,8 @@ record has been removed.
   cells span several file lines; ignore `LEGEND-*` records when quoting the
   testcase total. Capture a canonical serialized hash keyed by every
   PASS testcase ID and prove the same ID/content hashes after CSV and XLSX
-  synchronization. Insert Core coverage beside its owning domain
-  rows and before the `LEGEND-EXT`/external block; do not append a Core row
-  after EXT merely because it was discovered later. Preserve the relative
+  synchronization. Insert new coverage beside its owning domain rows instead
+  of appending it merely because it was discovered later. Preserve the relative
   order and contents of all PASS testcase rows while doing so. Consolidated or
   new journeys receive stable IDs and ordered checkpoint groups. The target count is an
   audit result, not a quota: record all materially distinct bounded contracts,
@@ -516,16 +513,11 @@ record has been removed.
   expected non-`LEGEND-*` testcase count. The generator writes a hidden
   per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF(S)` overview
   formulas into the XLSX, with automatic recalculation on open. The overview
-  order is `Done`, `Pending`, `Not started`, `Failed`, `Core`,
-  `External / optional`,
-  `Total`. The four status rows and the Done percentage are filtered to Core
-  tests only, so they partition the displayed Core total instead of mixing the
-  deferred scope into product progress. Stable IDs beginning `OPERATOR-`,
-  `OPERATOR-` or `DEPLOY-` remain teal `EXT / optional` without renaming
-  testcase IDs; that scope is a separate count and `Total` is
-  the final Core+deferred count. The generator also adds `EXT` to the left
-  overview legend. Scope is orthogonal to
-  status. Read the generated formulas and cached totals back after
+  order is `Done`, `Pending`, `Not started`, `Failed`, `Total`. The four status
+  rows partition all current Pair-QA tests, and the Done percentage uses that
+  same total. Stable IDs beginning `OPERATOR-` remain unchanged and are counted
+  exactly like every other Pair-QA domain; there is no separate scope branch,
+  helper or legend. Read the generated formulas and cached totals back after
   synchronization and prove they match the CSV classifiers.
   This summary synchronization is part of every append/status update, not a
   later cleanup step.
@@ -540,8 +532,8 @@ record has been removed.
   effort estimate. Record any overrun beyond the range separately.
 - After every CSV/XLSX status change, also update the root README's **Manual QA
   status** block. Keep that public summary deliberately compact: show only
-  passed and remaining counts separately for Core and External/optional, plus
-  the total case count. Derive those values from the same classifiers as the generated
+  the passed count and total case count for the single Pair-QA queue. Derive
+  those values from the same classifiers as the generated
   workbook, and keep its active-checkpoint sentence aligned with this handoff's
   sole resume pointer. Detailed Pending/Not started/Failed counts belong only
   in the QA matrix. Treat a stale README summary as an incomplete ledger update.
@@ -1296,7 +1288,6 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 -> CHAT-ACTIONS-001 (closed; consolidated message action lifecycle)
 -> CHAT-CONTENT-001 (closed; consolidated rich-content conversation)
 -> CHAT-GOVERNANCE-001 (closed; consolidated members and moderation intake)
--> DEPLOY-FIREBASE-LIFECYCLE-001 (deferred production-like VMware/Firebase journey)
 -> CLEANUP (closed; exact no-fixture/no-snapshot gate PASS)
 -> QA-RESET-001 (closed; Nova reload/UI plus persisted zero-state PASS)
 -> LANDING-ELIGIBILITY-001 (closed; local regional eligibility branches PASS)
@@ -1305,17 +1296,17 @@ TOURNAMENT-001 through TOURNAMENT-004 (closed)
 ```
 
 Tournament is 15/15 complete, QA infrastructure is 2/2 complete and Identity &
-access is 8/8 complete. Select the next Core checkpoint from the canonical
+access is 8/8 complete. Select the next checkpoint from the canonical
 matrix; do not replay
 the closed role-triad, consent/session/landing cases, closed Chat desktop journeys or
 closed Tournament fixtures unless their owning code or contract changes. The
-physical-device Chat boundary is retained under external CP04 and must be run
-with production-like VMware/Firebase evidence, not the local demo stack.
+physical-device Chat boundary is retained in `MOBILE-PUSH-LIFECYCLE-001` and
+uses an Operator-tested Firebase revision in the QA environment.
 
-The former Firebase registration, role activation/deactivation and physical
-Chat-push microcases are assertions inside external
-`DEPLOY-FIREBASE-LIFECYCLE-001`; application activation and rollback are owned
-by `DEPLOY-APPLICATION-LIFECYCLE-001`. These external dependencies do not block
-the Core Identity & access gate. Only the Operator and Deployment sequences
-stay deferred under Core-first execution. Member payment history and saved
-cards are Core behavior owned by Event; Payment is not a separate QA domain.
+Firebase configuration, activation, one fresh sign-in and rollback are owned by
+`OPERATOR-FIREBASE-LIFECYCLE-001`; physical Chat push is owned by
+`MOBILE-PUSH-LIFECYCLE-001`; deployment activation/deactivation is owned by
+`OPERATOR-REGISTRY-LIFECYCLE-001`. No Deployment testcase remains in Pair QA.
+The Operator sequence follows the same priority ordering as every other Pair-QA
+domain. Member payment history and saved cards are behavior owned by Event; Payment is
+not a separate QA domain.

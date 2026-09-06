@@ -2701,12 +2701,10 @@ again.
   Firebase revision or populated public client fields. Do not manufacture a
   frontend token fallback: activate a verified deployment Firebase revision,
   then repeat the read-only device preflight before staging the message.
-- Execution decision, 2026-08-30: defer this delivery boundary to the external
-  `QA-EXPANSION-CP04` run. Execute it only with the production deployment on a
-  production-like VMware host, a verified active Firebase revision and the
-  physical phone. It is covered as the Chat-specific producer/control branch
-  across `OPERATOR-FIREBASE-003` and `MOBILE-PUSH-001` through
-  `MOBILE-PUSH-004`; it no longer blocks the local Core campaign.
+- Execution decision, 2026-08-30: this remains the Chat-specific producer and
+  control block inside `MOBILE-PUSH-LIFECYCLE-001`. Run it in the QA
+  environment with an Operator-tested active Firebase revision and the
+  physical phone; neither prerequisite turns it into Deployment QA.
 
 ## Event feedback and Impressions checkpoints
 
@@ -7042,7 +7040,7 @@ running HTTP stack before staging:
 Recheck those values at the Article savepoints; a Mongo URL match alone is not
 the media-retention oracle.
 
-This consolidated Core journey replaces four unexecuted microtest rows. It
+This consolidated journey replaces four unexecuted microtest rows. It
 does not reopen or rewrite the already-PASS Article Editor and landing
 publication evidence.
 
@@ -7117,17 +7115,19 @@ publication evidence.
 
 ## Operator configuration and security cases
 
-### `OPERATOR-FIREBASE-001` — activate, observe login mode, roll back
+### `OPERATOR-FIREBASE-001` — configure, activate and verify login
 
-- In a disposable deployment, save and test valid Firebase configuration, then
+- In the QA environment, save and test valid Firebase configuration, then
   activate only the verified revision.
 - In a fresh browser session, verify that the normal entry action opens the
   Firebase authentication surface instead of the demo user selector.
-- Verify failed/unverified activation never changes the login mode and that
-  bootstrap/operator recovery remains available only through its documented
-  boundary.
-- Restore the original deployment capability and verify the original login
-  mode. Record credentials only as masked/absent evidence.
+- Complete one eligible fresh sign-in through the normal onboarding/profile
+  path, then reload/login and verify that the same application identity is
+  reused without a demo fallback or duplicate global identity. Keep the
+  already authenticated Operator session as an unchanged control.
+- Restore the original configuration and verify the original login mode.
+  Invalid-revision and secret-safety cases are automated Operator/domain
+  regressions, not extra manual Deployment steps.
 
 ### `OPERATOR-PAYMENT-001` — configure and rotate the payment token
 
@@ -7182,11 +7182,12 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
 
 ## Consolidated executable journeys and source-oracle archive
 
-The matrix contains 114 executable journeys after provider behavior was moved
-into its owning Event/Asset rows and the five obsolete External Payment rows
-were replaced by one Event-owned Core side-menu Payment checkpoint. All 86 passed rows remain individually immutable: only their
-owning `QA domain` may move, while ID, status, contract and evidence stay
-unchanged. Non-PASS microcases from the earlier 190/212-row planning stages
+The matrix contains 108 executable journeys after provider behavior was moved
+into its owning Event/Asset rows and the five obsolete standalone Payment rows
+were replaced by one Event-owned side-menu Payment checkpoint, and the
+six non-Pair-QA Deployment rows were removed. All 88 passed rows remain
+individually immutable, including their owning `QA domain`, ID, status,
+contract and evidence. Non-PASS microcases from the earlier 190/212-row planning stages
 were consolidated into complete lifecycle parents. Every assertion below is
 still required, but an old source ID is not an independently scheduled test
 unless it remains a current CSV/XLSX row. The consolidated parent rows in the
@@ -7197,12 +7198,10 @@ parents, not an instruction to recreate microtests. Runtime execution uses at
 most three browser identities at once; mobile observations replace, rather
 than add to, one desktop phase when three desktop accounts are already active.
 
-The XLSX uses the teal `EXT / optional` scope marker only for journeys whose
-stable ID starts with `OPERATOR-` or `DEPLOY-`. The Core
-`PAYMENT-METHODS-HISTORY-001` row is deliberately not External. Local Admin work is
-distributed to its actual Core owner; there is no separate Admin-optional
-execution bucket. Scope and execution status remain independent, and the overview reports
-separate Core and External/optional totals.
+All current rows belong to one Pair-QA queue. Operator is a normal domain.
+Local Admin work is distributed to its actual capability owner, and the
+overview reports one total across every current Pair-QA row without a separate
+scope branch, legend or total.
 
 ```text
 QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
@@ -7213,7 +7212,7 @@ QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
 
 ### Retired source archive — payment authorization and provider callbacks
 
-These former External Payment cases are not current matrix rows or separately
+These former standalone Payment cases are not current matrix rows or separately
 scheduled pair-QA tests. Their product-visible requirements moved to
 `EVENT-CHECKOUT-001` (Stripe), `ASSET-CHECKOUT-001` (Barion/3DS)
 and `PAYMENT-METHODS-HISTORY-001` (side-menu history/cards). The obsolete
@@ -7251,7 +7250,7 @@ must not be run as a second payment suite.
 The current free/no-payment control is `ASSET-BORROW-LIFECYCLE-001`; the
 Cash-only paid control is part of `EVENT-CHECKOUT-001`. Provider
 registration, expired-card notification/cleanup and Payment History are one
-Core checkpoint:
+checkpoint:
 [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
 
 ### `QA-EXPANSION-CP03` — entry, registration and operator configuration
@@ -7418,21 +7417,19 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 | `OPERATOR-PRIVACY-001` | Save valid controller/contact values, test invalid partial/email input and restore. | Public deployment config exposes only the valid pair; invalid save is atomic and neither operator secrets nor unrelated branding changes. |
 | `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
 
-### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
+### `QA-EXPANSION-CP04` — Operator Firebase and Notifications push
 
-External execution environment: deploy the production build to the dedicated
-production-like VMware host, activate a disposable verified Firebase revision,
-and use one physical phone. This bundle also owns the deferred
-`CHAT-PUSH-001` producer/control flow: Casey sends one ordinary participant
-message, Nova stays foreground as the no-system-push control, and Riley is the
-background/closed-app target. The native permission prompt already passed on
-the local clean WebAPK install, but permission, token rotation and delivery are
-repeated here against the production runtime.
+This is QA-environment Pair QA, not a live-system deployment test. Operator
+owns configuration, verification, activation, one fresh sign-in and rollback.
+Notifications owns device registration and the deferred `CHAT-PUSH-001`
+producer/control flow: Casey sends one ordinary participant message, Nova stays
+foreground as the no-system-push control, and Riley is the background/closed-
+app target.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
-| `OPERATOR-FIREBASE-002` | Save a new Firebase revision, fail one capability test and attempt activation. | Any configuration change clears prior tested revisions; unverified activation fails and the currently active login/messaging runtime remains untouched. |
-| `OPERATOR-FIREBASE-003` | Run the messaging capability test with a real disposable browser/device token. | Token/readiness inputs are write-only and absent from DTO/log/audit; one test message reaches only the target and records the tested revision/time. |
+| `OPERATOR-FIREBASE-001` | Save, verify and activate one Firebase configuration, then restore the prior configuration after the login check. | Tested/active state changes once, the existing Operator session stays usable and restoration returns the prior login mode. |
+| `ENTRY-FIREBASE-REG-001` | After activation, complete one eligible fresh sign-in and repeat login. | One subject/email links to one application user/profile, reload reuses it, the Operator recovery control stays valid and no demo/global collision occurs. This assertion is consolidated into `OPERATOR-FIREBASE-LIFECYCLE-001`. |
 | `MOBILE-PUSH-001` | Keep the phone app visible and produce one target notification from a desktop actor. | Foreground listener shows one in-app notification/counter, no duplicate system notification and the backend inbox/outbox/token identities agree. |
 | `MOBILE-PUSH-002` | Background, then fully close the phone app and produce one target notification. | FCM displays one system notification while the app is not open; no desktop actor receives it and the persisted unread count stays one. |
 | `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
@@ -7454,7 +7451,7 @@ repeated here against the production runtime.
 | `OPERATOR-ANNOUNCEMENT-001` | Publish/receive one controlled registry announcement. | Eligible deployment receives it once in order; acknowledgement/cursor does not hide it from another deployment or create a local notification duplicate. |
 | `OPERATOR-COMMUNITY-001` | Load available community/payment providers with one unavailable control. | Only registry-advertised compatible providers appear; unavailable/malformed metadata cannot become active configuration. |
 
-### `QA-EXPANSION-CP06` — TLS, updates and deployment emulation
+### `QA-EXPANSION-CP06` — Operator TLS and updates
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
@@ -7464,14 +7461,6 @@ repeated here against the production runtime.
 | `OPERATOR-UPDATE-001` | Offer and apply one correctly signed compatible release. | Signature/content fingerprint/version are verified before replacement; job events survive restart and active version changes once. |
 | `OPERATOR-UPDATE-002` | Offer invalid-signature, corrupted and downgrade releases. | Every variant fails before activation, current services/data remain intact and audit/log contains no release private key or credentials. |
 | `OPERATOR-UPDATE-003` | Interrupt the update worker and reconnect to job events. | Durable phase and event sequence resume without double extraction/restart; operator UI reconstructs terminal truth after reload. |
-| `DEPLOY-EMU-001` | Render dev and production Compose/config with simulator and registry settings without starting them. | Dev topology resolves named services/health dependencies; production contains neither simulator nor dev endpoint switches and no secret value is baked into config. |
-| `DEPLOY-INSTALL-001` | Install the versioned package on a disposable local VM/container-host analogue. | Prerequisites, numeric ownership, systemd unit, env/secrets split, deployment identity and health qualification pass from a clean host. |
-| `DEPLOY-UPGRADE-001` | Upgrade the disposable install with a signed next release. | Backup/preflight precede mutation; version/data/identity advance once and an injected failure rolls binaries/config back coherently. |
-| `DEPLOY-BACKUP-001` | Back up Mongo/media/config identity and restore into an isolated target. | Counts, selected hashes, ownership and registry/deployment identity match; secrets remain permission-restricted and restore never touches the live source. |
-| `DEPLOY-TLS-001` | Exercise HTTP-to-HTTPS, hostname, certificate chain and renewal presentation on the disposable deployment. | Only intended public ports/routes are reachable, redirects preserve safe paths and renewed certificate is served without mixed old/new material. |
-| `DEPLOY-RESTART-001` | Reboot/restart the disposable host and services in dependency order. | Mongo/Redis/object store/backend/nginx become healthy once, no duplicate worker ownership appears and persisted sessions/tasks recover according to policy. |
-| `DEPLOY-RESOURCE-001` | Inject bounded low-disk, low-memory and unavailable dependency conditions one at a time. | Health and diagnostics identify the owner, writes fail safely, no retry storm/second build appears and recovery clears only the induced condition. |
-| `DEPLOY-SECURITY-001` | Scan resolved listeners, headers, CORS, images/artifacts and filesystem permissions. | Only declared ports are public; security headers/origin policy hold and live/test credentials, private keys and simulator capabilities are absent from images/logs/public files. |
 
 ### `QA-EXPANSION-CP07` — operator revenue and measurement
 
@@ -7486,7 +7475,7 @@ repeated here against the production runtime.
 ### Administration ownership and journey consolidation
 
 The route that exposes a control does not define its capability owner. Local
-Admin journeys are Core and follow the state they read or mutate:
+Admin journeys stay in Pair QA and follow the state they read or mutate:
 
 - `ROLE-TRIAD-CORE-001` owns authorization plus warn/report/feedback/support/
   block/unblock in `Identity & access`.
@@ -7497,8 +7486,9 @@ Admin journeys are Core and follow the state they read or mutate:
 - `ADMIN-MONITORING-001`, `ADMIN-AFFINITY-GRAPH-001` and
   `ADMIN-PARAMETERS-001` own the remaining Administration surfaces.
 - Event, Tournament, Chat and other workers remain with their actual member
-  domain. Operator, Registry/network, payment-provider and deployment-host
-  journeys remain deferred external boundaries.
+  domain. Operator and Registry/network behavior remains in the Operator
+  domain; provider availability is a test prerequisite, not a separate scope.
+  Deployment-host qualification is not Pair QA.
 
 The already-PASS `BASE-STAT`, `STAT-011` and `STAT-012` rows moved only to
 Administration, Chat and Event respectively; their content and evidence were
@@ -7538,7 +7528,7 @@ assertion references for their consolidated parents, not as microtests.
 
 ### `QA-EXPANSION-CP11` — three-role compound workflows
 
-The stable user-facing click guide for the local Core journey is
+The stable user-facing click guide for the local journey is
 [`ROLE-TRIAD-CORE-001.md`](../checklists/identity-access/ROLE-TRIAD-CORE-001.md). Its 22
 top-level sections preserve the repeatable human journey without checkmarks or
 live status; this pack and the ledger remain authoritative for persisted
@@ -7547,8 +7537,6 @@ evidence and status.
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ROLE-TRIAD-CORE-001` | Keep exactly one member, admin and operator session open; prove route boundaries, persist one branding revision, then execute warn/report/feedback/scoped-support/block/unblock as one continuous lifecycle. | Role UI and direct denials cause no unauthorized mutation; the authorized branding revision persists, while already-open clients may require an explicit reload; exact moderation/audit/recipient-notification records persist once; support scope revokes; block isolates only the member and unblock restores only authorized access. Automatic branding refresh is not required. |
-| `DEPLOY-FIREBASE-LIFECYCLE-001` | On the production-like VMware/Firebase host, activate a verified revision, onboard one eligible identity, register a physical token and deliver/tap one Chat push. | Subject/profile/country, roles, token, push routing, deep link and Chat/bell reconciliation agree exactly with no demo fallback or duplicate/self/system push. |
-| `DEPLOY-APPLICATION-LIFECYCLE-001` | Activate, deactivate and reactivate one deployment revision while consumer/admin screens remain open. | Consumer/admin paths fail closed during deactivation, operator recovery remains usable, stale clients cannot write, and all roles reconstruct after reactivation. |
 
 - **`ROLE-TRIAD-CORE-001` clean replay baseline READY — 2026-08-31**:
   the versioned harness reset the reviewed partial transaction, an independent
