@@ -284,7 +284,7 @@ fixtures=[]
 for card in cards:
     token=str(card.get("providerPaymentMethodRef", "")).strip()
     if not token:
-        continue
+        raise SystemExit("saved payment-method fixture is missing providerPaymentMethodRef")
     fixtures.append({
         "provider": str(card.get("provider", "")).strip(),
         "provider_token": token,
