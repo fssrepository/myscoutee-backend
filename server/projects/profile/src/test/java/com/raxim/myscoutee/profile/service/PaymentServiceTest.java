@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,12 +18,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
@@ -30,9 +34,101 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
+import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 
 class PaymentServiceTest {
+    @Test
+    void synchronousWebhookAuthorizationWinsTheOptimisticRaceWithoutReopeningTheBasket() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        EventCheckoutBasketService basketService = org.mockito.Mockito.mock(EventCheckoutBasketService.class);
+        EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
+        SavedPaymentMethodsService savedPaymentMethodsService = org.mockito.Mockito.mock(SavedPaymentMethodsService.class);
+        AtomicReference<Payment> concurrentPayment = new AtomicReference<>();
+        AtomicInteger saveCalls = new AtomicInteger();
+        EventCheckoutRequestDto request = withPaymentMethod(
+                checkoutRequest("user-race", "event-race", 25d, "EUR"),
+                "card-race");
+        when(pricingService.reprice(request)).thenReturn(request);
+        when(repository.findByUserIdAndSourceId("user-race", "event-race")).thenReturn(List.of());
+        when(repository.findByCheckoutSessionId(anyString()))
+                .thenAnswer(invocation -> Optional.ofNullable(concurrentPayment.get()));
+
+        SavedPaymentMethod method = new SavedPaymentMethod();
+        method.setUserId("user-race");
+        method.setProvider("stripe");
+        method.setProviderPaymentMethodRef("pm-race");
+        method.setStatus("active");
+        when(savedPaymentMethodsService.requireActive("user-race", "card-race", null)).thenReturn(method);
+
+        PaymentProcessor stripe = new PaymentProcessor() {
+            @Override
+            public String getType() {
+                return "stripe";
+            }
+
+            @Override
+            public AuthorizationResult prepareAuthorization(
+                    EventCheckoutRequestDto authoritativeRequest,
+                    String paymentSessionId,
+                    String providerPaymentMethodReference) {
+                return new AuthorizationResult(
+                        "stripe",
+                        "pi-race",
+                        "pi-race",
+                        PaymentGateway.AuthorizationStatus.AUTHORIZED,
+                        java.math.BigDecimal.valueOf(authoritativeRequest.totalAmount()),
+                        authoritativeRequest.currency(),
+                        null,
+                        null,
+                        "requires_capture");
+            }
+        };
+        when(repository.save(any(Payment.class))).thenAnswer(invocation -> {
+            Payment payment = invocation.getArgument(0, Payment.class);
+            if (saveCalls.incrementAndGet() == 1) {
+                payment.setId("payment-race");
+                payment.setVersion(0L);
+                concurrentPayment.set(payment);
+                return payment;
+            }
+            Payment webhookPayment = new Payment();
+            webhookPayment.setId("payment-race");
+            webhookPayment.setVersion(3L);
+            webhookPayment.setUserId(payment.getUserId());
+            webhookPayment.setSourceId(payment.getSourceId());
+            webhookPayment.setProvider(payment.getProvider());
+            webhookPayment.setStatus("authorized");
+            webhookPayment.setAmount(payment.getAmount());
+            webhookPayment.setCurrency(payment.getCurrency());
+            webhookPayment.setCheckoutSessionId(payment.getCheckoutSessionId());
+            webhookPayment.setGatewayAuthorizationId("pi-race");
+            webhookPayment.setFulfillmentStatus("succeeded");
+            webhookPayment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_EVENT_JOIN);
+            webhookPayment.setBookingStatus("joined");
+            concurrentPayment.set(webhookPayment);
+            throw new OptimisticLockingFailureException("webhook updated the payment");
+        });
+
+        PaymentService service = new PaymentService(
+                List.of(stripe),
+                repository,
+                basketService,
+                pricingService,
+                paymentProviderResolver(),
+                savedPaymentMethodsService,
+                null);
+        ReflectionTestUtils.setField(service, "enablePay", true);
+
+        EventCheckoutSessionDto result = service.payCheckout(request, "stripe");
+
+        assertThat(result.status()).isEqualTo("authorized");
+        assertThat(concurrentPayment.get().getStatus()).isEqualTo("authorized");
+        assertThat(concurrentPayment.get().getFulfillmentStatus()).isEqualTo("succeeded");
+        verify(repository, times(2)).save(any(Payment.class));
+        verify(basketService, never()).saveBasket(any(EventCheckoutRequestDto.class));
+    }
+
     @Test
     void disabledPaymentModeUsesDummySessionsWithoutCallingConfiguredProcessor() {
         Map<String, Payment> paymentsBySession = new HashMap<>();

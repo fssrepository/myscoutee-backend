@@ -853,6 +853,100 @@
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready", rollback: "step-22", basketItems: restoredBaskets.length, paymentCount: 0, membership: "pending" });
   }
 
+  function currentScopedSnapshots() {
+    const dynamic = dynamicArtifacts();
+    const snapshots = Q.snapshotSpecs(staticSpecs());
+    snapshots.push({
+      collection: "payment_gateway_operations",
+      selector: { paymentId: { $in: dynamic.paymentIds } },
+      documents: dynamic.paymentIds.length === 0 ? [] : Q.collection("payment_gateway_operations")
+        .find({ paymentId: { $in: dynamic.paymentIds } }).toArray()
+    });
+    snapshots.push({
+      collection: "chatMessages",
+      selector: { chatId: { $in: dynamic.chatIds } },
+      documents: dynamic.chatIds.length === 0 ? [] : Q.collection("chatMessages")
+        .find({ chatId: { $in: dynamic.chatIds } }).toArray()
+    });
+    return snapshots;
+  }
+
+  function assertBlock4Boundary(currentState) {
+    const memberships = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: { $in: [TARGET_ID, MORNING_SLOT_ID] },
+      userId: NOVA_ID
+    }).toArray();
+    const target = Q.collection("events").findOne({ _id: TARGET_ID });
+    const nova = Q.ensureUser(NOVA_ID, "Nova");
+    const eventCounters = nova.activities && nova.activities.event || {};
+    if (activeTargetBaskets().length !== 0
+        || Q.collection("payments").countDocuments({ sourceId: TARGET_ID, userId: NOVA_ID }) !== 0
+        || Q.collection("chats").countDocuments(chatSelector) !== 0
+        || memberships.length !== 2
+        || memberships.some(item => Q.text(item.status) !== "suppressed"
+          || Q.text(item.statusBeforeSuppression) !== "pending"
+          || Q.text(item.suppressionRootOwnerId) !== TARGET_ID)
+        || !target
+        || Number(target.acceptedMembers || 0) !== 1
+        || Number(target.pendingMembers || 0) !== 0
+        || !Q.sameJson(sorted(target.acceptedMemberUserIds), [CASEY_ID])
+        || sorted(target.pendingMemberUserIds).length !== 0
+        || Number(eventCounters.all || 0) !== 2
+        || Number(eventCounters.pending || 0) !== 2
+        || Number(eventCounters.active || 0) !== 0) {
+      Q.fail("the block-4 rollback did not restore the exact cancelled checkout boundary.");
+    }
+    assertControlsUnchanged(currentState);
+    assertRileyUnchanged(currentState);
+  }
+
+  function rollbackBlock4() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "cancelled-verified") {
+      Q.fail("block-4 rollback requires the cancelled-verified testcase phase.");
+    }
+    if (!Array.isArray(currentState.block4Snapshots)
+        || currentState.block4Snapshots.length === 0
+        || !Array.isArray(currentState.block4UserFields)
+        || currentState.block4UserFields.length === 0) {
+      Q.fail("the verified block-4 rollback checkpoint has not been captured.");
+    }
+    const checkpoint = {
+      snapshots: currentState.block4Snapshots,
+      userFields: currentState.block4UserFields
+    };
+    clearCurrentEffects();
+    Q.restoreSnapshots(checkpoint.snapshots);
+    for (const saved of checkpoint.userFields) restoreUserFields(saved);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: {
+          phase: "cancelled-verified",
+          block4Snapshots: checkpoint.snapshots,
+          block4UserFields: checkpoint.userFields,
+          block4CapturedAtIso: Q.text(currentState.block4CapturedAtIso) || Q.nowIso(),
+          block4RolledBackAtIso: Q.nowIso()
+        },
+        $unset: { paidAtIso: "", paidFingerprint: "", destinationAtIso: "", verifiedAtIso: "" }
+      }
+    );
+    assertBlock4Boundary(currentState);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "cancelled-verified",
+      rollback: "block-4",
+      activeBasketItems: 0,
+      paymentCount: 0,
+      membership: "suppressed",
+      eventAll: 2,
+      eventPending: 2
+    });
+  }
+
   function verifyCancelled() {
     const currentState = state();
     if (Q.text(currentState.phase) !== "payment-ready") Q.fail("cancelled can only be verified after payment-ready.");
@@ -883,7 +977,15 @@
     }
     assertControlsUnchanged(currentState);
     assertRileyUnchanged(currentState);
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase: "cancelled-verified", cancelledAtIso: Q.nowIso() } });
+    const block4Snapshots = currentScopedSnapshots();
+    const block4UserFields = [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId)));
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase: "cancelled-verified",
+      cancelledAtIso: Q.nowIso(),
+      block4Snapshots,
+      block4UserFields,
+      block4CapturedAtIso: Q.nowIso()
+    } });
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "cancelled-verified", closedBasketItems: 2, paymentCount: 0, membership: "suppressed", tickets: 0 });
   }
 
@@ -1052,6 +1154,7 @@
   else if (command === "verify-pending-event") verifyPendingEvent();
   else if (command === "rollback-payment-ready") rollbackPaymentReady();
   else if (command === "verify-cancelled") verifyCancelled();
+  else if (command === "rollback-block-4") rollbackBlock4();
   else if (command === "verify-paid") verifyPaid();
   else if (command === "verify-destination") verifyDestination();
   else if (command === "verify") verifyTerminal();
