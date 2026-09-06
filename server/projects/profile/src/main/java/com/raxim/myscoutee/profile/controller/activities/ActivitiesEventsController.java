@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
+import com.raxim.myscoutee.profile.service.CurrentPaymentProviderService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
@@ -44,12 +45,15 @@ import com.raxim.myscoutee.profile.service.ActivitiesEventFeedbackService;
 public class ActivitiesEventsController {
     private final ActivitiesEventsService activitiesEventsService;
     private final ActivitiesEventFeedbackService activitiesEventFeedbackService;
+    private final CurrentPaymentProviderService currentPaymentProviderService;
 
     public ActivitiesEventsController(
             ActivitiesEventsService activitiesEventsService,
-            ActivitiesEventFeedbackService activitiesEventFeedbackService) {
+            ActivitiesEventFeedbackService activitiesEventFeedbackService,
+            CurrentPaymentProviderService currentPaymentProviderService) {
         this.activitiesEventsService = activitiesEventsService;
         this.activitiesEventFeedbackService = activitiesEventFeedbackService;
+        this.currentPaymentProviderService = currentPaymentProviderService;
     }
 
     @GetMapping
@@ -191,7 +195,19 @@ public class ActivitiesEventsController {
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
     public EventParticipationActionResultDto requestJoin(@RequestBody EventActionRequestDto request) {
+        if (isCashPaymentConfirmation(request)) {
+            currentPaymentProviderService.requireCashOnly();
+        }
         return activitiesEventsService.requestJoin(request);
+    }
+
+    private boolean isCashPaymentConfirmation(EventActionRequestDto request) {
+        return request != null
+                && Boolean.TRUE.equals(request.bookingConfirmed())
+                && request.totalAmount() != null
+                && request.totalAmount() > 0D
+                && "confirmed".equalsIgnoreCase(request.checkoutState())
+                && !StringUtils.hasText(request.paymentSessionId());
     }
 
     @PostMapping("/stage-action")

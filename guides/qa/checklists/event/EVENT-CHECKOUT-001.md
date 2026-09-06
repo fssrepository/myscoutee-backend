@@ -22,10 +22,8 @@ matrix rows.
   independent machine oracles. The user exclusively opens and controls the
   configured Casey/Nova/Ava browser sessions. Do not create a replacement
   Event, user, payment or browser profile.
-- Ava first selects connected **Stripe** with 3DS Off. Saving the simulator
-  configuration generates the test connection automatically. Before the
-  declared Cash-only control, Ava selects **Cash only**. No real provider
-  credential or card data is used.
+- Ava controls the demo provider from the Admin payment simulator. No real
+  provider credential or card data is used.
 - The saved-card fixture includes one active card tokenized for the other
   provider solely to prove the assign-screen recovery menu. It is never used
   to start the controlled Stripe payment.
@@ -48,9 +46,18 @@ Begin only after Codex confirms this exact baseline:
   baseline states;
 - a separate paid Cash-only Event control is present for the final negative
   branch;
+- the simulator is deliberately staged on **Cash only**; Nova must not start
+  the Stripe journey until the mandatory provider step below is complete;
 - isolated Casey, Nova and Ava windows are open and identity-verified.
 
 ## Complete test journey
+
+### 0. Select Stripe for the main journey
+
+0. In **Ava**, open the Admin payment simulator, select connected **Stripe**
+   with 3DS Off and save. Saving generates the demo connection automatically.
+   Return to Nova only after the configuration is visibly saved. Do not start
+   the Event checkout while the simulator still says **Cash only**.
 
 ### 1. Verify the fresh paid action and review gates
 
