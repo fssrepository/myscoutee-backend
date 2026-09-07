@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Locale;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
@@ -54,9 +55,12 @@ final class PaymentRefundCalculator {
 
     static Preview storedOrCurrentPreview(Payment payment, String nowIso) {
         String requestStatus = text(payment == null ? null : payment.getRefundRequestStatus(), "none");
-        if (("pending".equals(requestStatus) || "approved".equals(requestStatus))
+        String paymentStatus = text(payment == null ? null : payment.getStatus(), "").toLowerCase(Locale.ROOT);
+        boolean finalizedRefund = List.of("released", "refunded", "partially_refunded").contains(paymentStatus)
                 && payment.getRefundedAmount() != null
-                && payment.getRefundNote() != null) {
+                && money(payment.getRefundedAmount()) > 0;
+        if ((("pending".equals(requestStatus) || "approved".equals(requestStatus)) || finalizedRefund)
+                && payment.getRefundedAmount() != null) {
             double paid = money(payment.getAmount());
             double refundable = Math.min(paid, money(payment.getRefundedAmount()));
             String status = refundable <= 0 ? "not_eligible" : refundable >= paid ? "full" : "partial";
@@ -73,7 +77,7 @@ final class PaymentRefundCalculator {
                     storedRule == null ? null : Math.max(0, storedRule.offsetValue() == null ? 0 : storedRule.offsetValue()),
                     storedRule == null ? null : text(storedRule.refundKind(), "percent"),
                     storedRule == null ? null : storedRule.refundValue(),
-                    payment.getRefundNote());
+                    text(payment.getRefundNote(), "The recorded refund amount was returned to the payer."));
         }
         return preview(payment, nowIso);
     }

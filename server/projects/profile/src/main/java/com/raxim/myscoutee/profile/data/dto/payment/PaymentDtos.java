@@ -67,6 +67,7 @@ public final class PaymentDtos {
             String contextAssetId,
             String refundRequestStatus,
             String refundRequestedAtIso,
+            String refundedAtIso,
             Boolean canRequestRefund,
             Boolean canApproveRefund,
             PaymentRefundPreviewDto refundPreview,

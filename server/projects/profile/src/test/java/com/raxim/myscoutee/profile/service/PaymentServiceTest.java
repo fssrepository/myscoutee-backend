@@ -755,6 +755,11 @@ class PaymentServiceTest {
         assertThat(predecessor.getRefundedAmount()).isEqualTo(3200d);
         assertThat(predecessor.getRefundRequestStatus()).isEqualTo("approved");
         assertThat(predecessor.getRefundReviewedByUserId()).isEqualTo("new-manager");
+        PaymentRefundCalculator.Preview refundPreview =
+                PaymentRefundCalculator.storedOrCurrentPreview(predecessor, Instant.now().toString());
+        assertThat(refundPreview.refundableAmount()).isEqualTo(3200d);
+        assertThat(refundPreview.retainedAmount()).isZero();
+        assertThat(refundPreview.ruleId()).isEqualTo("assignment-manager-takeover");
         assertThat(barion.releaseCalls()).isEqualTo(1);
     }
 

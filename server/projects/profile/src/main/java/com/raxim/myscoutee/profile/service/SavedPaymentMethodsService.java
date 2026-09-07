@@ -560,7 +560,7 @@ public class SavedPaymentMethodsService {
                         : payment.getSourceId(),
                 payment.getContextSubEventId(),
                 PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? payment.getSourceId() : null,
-                requestStatus, payment.getRefundRequestedAtIso(),
+                requestStatus, payment.getRefundRequestedAtIso(), payment.getRefundedAtIso(),
                 "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus)
                         && refund.refundableAmount() > 0,
                 "income".equals(direction) && "pending".equals(requestStatus),
