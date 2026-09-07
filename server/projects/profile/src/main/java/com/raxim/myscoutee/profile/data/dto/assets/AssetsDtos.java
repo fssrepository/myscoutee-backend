@@ -158,6 +158,13 @@ public final class AssetsDtos {
         }
     }
 
+    public record AssetBorrowWindowDto(
+            String eventId,
+            String subEventId,
+            String startAtIso,
+            String endAtIso) {
+    }
+
     public record AssetDetailDto(
             String id,
             String type,
@@ -181,7 +188,39 @@ public final class AssetsDtos {
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
             List<String> menuActions,
-            String ownerReleasedAtIso) {
+            String ownerReleasedAtIso,
+            AssetBorrowWindowDto borrowWindow) {
+        public AssetDetailDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String details,
+                String imageUrl,
+                String sourceLink,
+                List<String> routes,
+                Boolean policiesEnabled,
+                List<PolicyItemDto> policies,
+                PricingConfigDto pricing,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                AssetRequestMetricsDto metrics,
+                List<String> menuActions,
+                String ownerReleasedAtIso) {
+            this(
+                    id, type, title, subtitle, category, city, capacityTotal, quantity,
+                    details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions,
+                    ownerReleasedAtIso, null);
+        }
+
         public AssetDetailDto(
                 String id,
                 String type,
@@ -208,7 +247,7 @@ public final class AssetsDtos {
             this(
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
-                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null);
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null, null);
         }
 
         public AssetDetailDto(

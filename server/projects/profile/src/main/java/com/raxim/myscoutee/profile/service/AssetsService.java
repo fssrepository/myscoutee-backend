@@ -46,8 +46,10 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.EventTicket;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetBorrowWindowDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
@@ -193,11 +195,25 @@ public class AssetsService {
     }
 
     public AssetDetailDto queryAssetDetail(String userId, String assetId) {
+        return queryAssetDetail(userId, assetId, null, null);
+    }
+
+    public AssetDetailDto queryAssetDetail(String userId, String assetId, String eventId, String subEventId) {
         String normalizedUserId = effectiveReadActorUserId(userId);
         String normalizedAssetId = normalizeId(assetId);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
         }
+        AssetBorrowWindowDto borrowWindow = resolveAssetBorrowWindow(
+                normalizedUserId,
+                eventId,
+                subEventId);
+        boolean scopedBorrowRequest = StringUtils.hasText(normalizeId(eventId))
+                || StringUtils.hasText(normalizeId(subEventId));
+        if (scopedBorrowRequest && borrowWindow == null) {
+            return null;
+        }
+        AssetBorrowWindowDto resolvedBorrowWindow = borrowWindow;
         return assetsRepository.findByAssetId(normalizedAssetId)
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
                 .filter(asset -> canViewAssetDetail(asset, normalizedUserId))
@@ -205,7 +221,51 @@ public class AssetsService {
                         asset,
                         resolveOwnerNamesByUserId(List.of(asset)),
                         normalizedUserId,
-                        resolveAssetRequestMetrics(asset)))
+                        resolveAssetRequestMetrics(asset),
+                        resolvedBorrowWindow))
+                .orElse(null);
+    }
+
+    private AssetBorrowWindowDto resolveAssetBorrowWindow(String userId, String eventId, String subEventId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) && !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        if (!StringUtils.hasText(normalizedUserId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !accessControlService.canCurrentActorRequestAssetBorrow(normalizedUserId, normalizedEventId)) {
+            return null;
+        }
+        return findAssetBorrowWindow(normalizedEventId, normalizedSubEventId);
+    }
+
+    private AssetBorrowWindowDto findAssetBorrowWindow(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        Query eventQuery = Query.query(new Criteria().orOperator(
+                Criteria.where("_id").is(normalizedEventId),
+                Criteria.where("sourceId").is(normalizedEventId)));
+        ActivityEvent event = mongoTemplate.findOne(eventQuery, ActivityEvent.class);
+        if (event == null || !STATUS_ACTIVE.equals(safeText(event.getStatus()))) {
+            return null;
+        }
+        return (event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents())
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(item -> normalizedSubEventId.equals(normalizeId(item.id())))
+                .filter(item -> StringUtils.hasText(safeText(item.startAt())) && StringUtils.hasText(safeText(item.endAt())))
+                .findFirst()
+                .map(item -> new AssetBorrowWindowDto(
+                        firstNonBlank(normalizeId(event.getSourceId()), normalizedEventId),
+                        normalizedSubEventId,
+                        safeText(item.startAt()),
+                        safeText(item.endAt())))
                 .orElse(null);
     }
 
@@ -1707,9 +1767,11 @@ public class AssetsService {
         }
         if (previous == null) {
             if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(next.status()))) {
-                return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
+                return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId)
+                        && isBorrowRequestWithinParentWindow(next);
             }
-            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next))
+                    && isBorrowRequestWithinParentWindow(next);
         }
 
         String previousStatus = normalizeRequestStatus(previous.status());
@@ -1718,12 +1780,35 @@ public class AssetsService {
             return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
         }
         if ("pending".equals(previousStatus) && "pending".equals(nextStatus)) {
-            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next))
+                    && isBorrowRequestWithinParentWindow(next);
         }
         if (MEMBER_STATUS_ACCEPTED.equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
             return fullAssetWriteAllowed;
         }
         return false;
+    }
+
+    private boolean isBorrowRequestWithinParentWindow(AssetRequestRecord request) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        if (booking == null) {
+            return false;
+        }
+        AssetBorrowWindowDto borrowWindow = findAssetBorrowWindow(booking.eventId(), booking.subEventId());
+        if (borrowWindow == null) {
+            return false;
+        }
+        long requestStart = toSortableDate(booking.startAtIso());
+        long requestEnd = toSortableDate(booking.endAtIso());
+        long parentStart = toSortableDate(borrowWindow.startAtIso());
+        long parentEnd = toSortableDate(borrowWindow.endAtIso());
+        return requestStart != Long.MIN_VALUE
+                && requestEnd != Long.MIN_VALUE
+                && parentStart != Long.MIN_VALUE
+                && parentEnd != Long.MIN_VALUE
+                && parentStart <= requestStart
+                && requestStart < requestEnd
+                && requestEnd <= parentEnd;
     }
 
     private boolean canApplyRemovedAssetRequestPolicy(
@@ -2559,6 +2644,15 @@ public class AssetsService {
             Map<String, String> ownerNamesByUserId,
             String viewerUserId,
             AssetRequestMetricsDto metrics) {
+        return toAssetDetailDto(asset, ownerNamesByUserId, viewerUserId, metrics, null);
+    }
+
+    private AssetDetailDto toAssetDetailDto(
+            Asset asset,
+            Map<String, String> ownerNamesByUserId,
+            String viewerUserId,
+            AssetRequestMetricsDto metrics,
+            AssetBorrowWindowDto borrowWindow) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
@@ -2592,7 +2686,8 @@ public class AssetsService {
                 toAssetRequestDtos(asset, viewerUserId),
                 normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId),
-                safeText(asset.getOwnerReleasedAtIso()));
+                safeText(asset.getOwnerReleasedAtIso()),
+                borrowWindow);
     }
 
     private String assetLocationLabel(Asset asset, String type) {

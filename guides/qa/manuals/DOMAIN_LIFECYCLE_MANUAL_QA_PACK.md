@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **REPAIR DEPLOYED / RETEST REQUIRED**.
+Status: **IN PROGRESS — STEPS 1-30 ACCEPTED**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6617,7 +6617,7 @@ isolated identities successfully at `2026-09-07 04:44 CEST`. The user then
 reached the first confirmed payment-review boundary and reported one concrete
 mismatch: the target card menu remained green `Borrow` instead of changing to
 orange `Continue borrow`. That attempt is repair evidence, not accepted
-checkpoint evidence, and must be replayed from the exact baseline.
+checkpoint evidence, and was replayed from the exact baseline after repair.
 
 Diagnosis against the completed Event checkout reference found the underlying
 contract mismatch. The pre-Pay Asset draft changed only an in-memory signal
@@ -6643,8 +6643,30 @@ when the server basket is absent or succeeded, and after the 10-minute boundary
 when an expiry is represented by a deleted audit, so a local-only ghost
 `Continue borrow` cannot survive. The equivalent local-data path reads the
 shared IndexedDB basket repository. The running frontend and backend watchers
-compiled and deployed these changes successfully; all visible behavior remains
-pending the fresh user replay.
+compiled and deployed these changes successfully.
+
+During the fresh user-controlled replay, the menu, Borrow Basket, Back,
+Continue and Update states behaved as required through step 30. The user also
+performed disclosed date Updates before the quantity Updates. The guarded
+`capture-revised-payment-ready` oracle therefore accepted the exact materially
+changing quantity history `1 → 1 → 1 → 2 → 1`, rather than misclassifying those
+real edits as an unchanged Continue rewrite. It proved one active final
+quantity-`1` confirmed basket with a 10-minute creation-to-expiry delta, four
+deleted predecessors, and zero payment/session, borrow request, inventory
+delta, resource assignment or stored Asset role. It saved the exact
+`revised-payment-ready` server boundary immediately before step 31.
+
+The sole remaining visual observation was raw `asset.borrow.continue` text in
+the otherwise-correct orange menu and corresponding payment surface. Root
+cause was the HTTP-mode backend bundle: the new EN/HU JSON keys had not been
+regenerated into the Mongo seeds and the version remained `.77`. The generated
+seeds and live demo bundle now use `2026.09.07.en.78` and
+`2026.09.07.hu.78`; direct no-store HTTP reads return localized Continue,
+Update, Review, Continuing and Updating labels in both languages. The i18n
+source/seed audit passed for 2 bundles, 6470 messages and all 3 seed databases,
+and the existing frontend watcher rebuilt and synced successfully. Per the
+user's explicit verdict this cosmetic repair does not require another manual
+label-only replay.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
@@ -6658,8 +6680,12 @@ Immediately before every configured browser launch or relaunch,
 demo-session slots. The checkpoint reset restores the pre-QA session-state
 documents exactly. The first user boundary is checklist step 1 through step 18. On the exact
 `payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
-before that oracle. Replay boundaries are available as
-`rollback-payment-ready`, `rollback-paid-pending` and `rollback-accepted`.
+before that oracle. The current retained run is already at
+`revised-payment-ready`; continue at step 31. Replay boundaries are available
+as `rollback-payment-ready`, `rollback-revised-payment-ready`,
+`rollback-paid-pending` and `rollback-accepted`. The revised boundary is the
+pre-step-31 transaction checkpoint and avoids replaying steps 1-30 after a
+later failure.
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
@@ -6707,9 +6733,12 @@ payment.
   action returns to payment without a repository rewrite. Change quantity to
   `2`: the action becomes orange `Update borrow` and saves the revised confirmed
   basket before payment. Back, restore quantity `1`, then Update again. The
-  pre-Pay oracle is exactly three audit generations (initial Confirm plus two
-  Updates), one active final confirmed basket and no fourth generation from the
-  unchanged Continue action.
+  canonical pre-Pay oracle is exactly three audit generations (initial Confirm
+  plus two Updates), one active final confirmed basket and no generation from
+  the unchanged Continue action. A disclosed exploratory run may retain extra
+  Updates only when every adjacent saved selection is materially different and
+  the final basket returns to quantity `1`; the current accepted history is
+  `1/1/1/2/1`.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
@@ -6747,7 +6776,7 @@ payment.
   `pay/failed` checkout audit so the failed attempt remains recoverable.
 - The versioned `asset-checkout` fixture provides guarded `stage`, read-only
   `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
-  request-destination and `accepted` captures, three exact persisted rollback
+  request-destination and `accepted` captures, four exact persisted rollback
   savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
   active and expired Barion card controls into the running payment simulator.
   The payment-ready rollback restores the server boundary only; if the browser

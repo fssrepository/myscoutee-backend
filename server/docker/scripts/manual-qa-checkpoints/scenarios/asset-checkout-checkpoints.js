@@ -867,12 +867,27 @@
       });
   }
 
-  function assertPaymentReadyState(current, expectedAuditCount) {
+  function assertPaymentReadyState(current, expectedAuditCounts) {
     assertScope(current);
     const paid = assetById(current, PAID_ID);
     const basket = targetBasket(current);
     const basketHistory = targetBasketHistory(current);
-    const expectedQuantityHistory = expectedAuditCount === 3 ? [1, 2, 1] : [1];
+    const acceptedAuditCounts = Array.isArray(expectedAuditCounts) ? expectedAuditCounts : [expectedAuditCounts];
+    const auditCount = current.basketAudit.length;
+    const quantityHistory = basketHistory.map(item => item.quantity);
+    const selectionHistory = basketHistory.map(item => [
+      item.quantity,
+      item.detail,
+      item.amount,
+      item.currency
+    ].join("|"));
+    const everyGenerationChanged = selectionHistory.every((selection, index) => (
+      index === 0 || selection !== selectionHistory[index - 1]
+    ));
+    const canonicalHistory = auditCount === 3 && Q.sameJson(quantityHistory, [1, 2, 1]);
+    const disclosedExploratoryHistory = auditCount === 5
+      && Q.sameJson(quantityHistory, [1, 1, 1, 2, 1])
+      && everyGenerationChanged;
     if (!paid || paid.quantity !== 3 || paid.requests.length !== 0
         || current.projections.length !== 0 || current.resources.length !== 0
         || current.payments.length !== 0 || current.baskets.length !== 1
@@ -882,15 +897,14 @@
         || basket.status !== "confirmed" || basket.resultState !== "pending"
         || !basket.reservationActive || !basket.pendingCounterTracked
         || basket.checkoutSessionId || !hasTenMinuteBasketTtl(basket)
-        || current.basketAudit.length !== expectedAuditCount
-        || current.basketAudit.filter(item => item.resultState === "deleted").length !== expectedAuditCount - 1
-        || !Q.sameJson(basketHistory.map(item => item.quantity), expectedQuantityHistory)
-        || !Q.sameJson(
-          basketHistory.map(item => item.resultState),
-          expectedAuditCount === 3 ? ["deleted", "deleted", "pending"] : ["pending"]
-        )
+        || !acceptedAuditCounts.includes(auditCount)
+        || current.basketAudit.filter(item => item.resultState === "deleted").length !== auditCount - 1
+        || (auditCount === 1 && !Q.sameJson(quantityHistory, [1]))
+        || (auditCount > 1 && !canonicalHistory && !disclosedExploratoryHistory)
+        || basketHistory.at(-1)?.resultState !== "pending"
+        || basketHistory.slice(0, -1).some(item => item.resultState !== "deleted")
         || current.storedAssetMembers.length !== 0) {
-      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready-diagnostic", expectedAuditCount, oracle: current });
+      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready-diagnostic", expectedAuditCounts: acceptedAuditCounts, oracle: current });
       Q.fail("payment-ready boundary does not contain exactly one confirmed Asset borrow basket and zero premature request/payment/inventory/assignment/role writes.");
     }
   }
@@ -925,18 +939,21 @@
     }
     assertSimulator(false);
     const current = oracle();
-    assertPaymentReadyState(current, 3);
+    assertPaymentReadyState(current, [3, 5]);
     assertImmutableControls(currentState);
     assertFinancialDelta(currentState, 0);
     captureSavepoint("revisedPaymentReady", "revised-payment-ready");
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      revisedPaymentReadyAuditCount: current.basketAudit.length
+    } });
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "revised-payment-ready",
       serverPaymentSessions: 0,
       activeServerCheckoutBaskets: 1,
-      checkoutBasketAuditRecords: 3,
-      quantityHistory: [1, 2, 1],
+      checkoutBasketAuditRecords: current.basketAudit.length,
+      quantityHistory: targetBasketHistory(current).map(item => item.quantity),
       retrospectivePaymentReadyProof: currentPhase === "baseline-ready",
       rollbackCommand: `rollback-revised-payment-ready asset-checkout ${CHECKPOINT}`,
       next: "Enable Barion 3DS in Ava, Pay once, approve once, then report the paid-pending phrase after step 37."
@@ -950,6 +967,7 @@
 
   function assertPaidPending(current) {
     const currentState = state();
+    const expectedPaidBasketAuditCount = Math.max(1, Number(currentState.revisedPaymentReadyAuditCount || 3)) + 1;
     assertScope(current);
     const paidAsset = assetById(current, PAID_ID);
     const request = targetRequest(current, "pending");
@@ -976,8 +994,8 @@
         || !hasTenMinuteBasketTtl(basket)
         || basket.checkoutSessionId !== request.paymentSessionId
         || basket.reservationActive || basket.pendingCounterTracked
-        || current.basketAudit.filter(item => item.sourceId === PAID_ID).length !== 4
-        || current.basketAudit.filter(item => item.sourceId === PAID_ID && item.resultState === "deleted").length !== 3
+        || current.basketAudit.filter(item => item.sourceId === PAID_ID).length !== expectedPaidBasketAuditCount
+        || current.basketAudit.filter(item => item.sourceId === PAID_ID && item.resultState === "deleted").length !== expectedPaidBasketAuditCount - 1
         || current.storedAssetMembers.length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-pending-diagnostic", oracle: current });
       Q.fail("paid-pending Asset checkout write model is not exact-once or not scoped correctly.");

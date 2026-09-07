@@ -186,10 +186,14 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 
     `ASSET-CHECKOUT-001 revised payment ready: final draft owns quantity 1`
 
-30. Wait for Codex to prove exactly three pre-Pay basket audit generations
-    (initial Confirm plus two Updates), one active final confirmed basket and no
-    payment/session, borrow request, inventory delta or assignment. The
-    unchanged Continue action must not have created a fourth generation.
+30. Wait for Codex to prove the canonical three pre-Pay basket audit
+    generations (initial Confirm plus two Updates), one active final confirmed
+    basket and no payment/session, borrow request, inventory delta or
+    assignment. If the user explicitly tried additional back-and-forth Update
+    values, the fixture may retain those generations only when every adjacent
+    saved selection is materially different and the final state is still the
+    required quantity `1`; the unchanged Continue action must not create a
+    generation.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
