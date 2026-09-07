@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-07 04:44 CEST
+Updated: 2026-09-07 05:29 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -77,25 +77,25 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-CHECKOUT-001 — STAGED / NOT RUN
+checkpoint: ASSET-CHECKOUT-001 — REPAIR DEPLOYED / RETEST ACTIVE
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-checkout-001--asset-explore-barion-payment-reaches-the-scoped-borrow-destination
 checklist: ../checklists/asset/ASSET-CHECKOUT-001.md
-substage: fresh paid Asset and controls are staged; no checkout action has been performed
+substage: the first pre-Pay attempt exposed the static green Borrow-menu defect; the Event-parity basket/menu/expiry repair is deployed and a fresh baseline replay is active
 next_replay_boundary: baseline-ready; later named savepoints are payment-ready, paid-pending and accepted
 fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
-runtime_recovery: the 2026-09-07 dev-stack restart retained only the stale baseline-ready state marker; the Event, memberships, all six Assets, cards and every scoped checkout artifact were absent. All saved collection snapshots were empty and Casey/Nova/Riley reset-owned fields exactly matched the fresh seed, so the versioned reset restored zero artifacts; a normal stage plus its independent second status then reached a fresh `baseline-ready` at `2026-09-07T02:24:00.578Z`. The first browser launch later exposed pre-existing active-session counts Casey/Nova/Ava `1/2/2` and stopped at Nova's `BLOCKED_LIMIT`; the fixture's new snapshot-protected `prepare-browser` boundary cleared them to `0/0/0`, and the next versioned launch prepared all three identities successfully
-browser_phase: the versioned launcher prepared the isolated Casey/Nova/Ava windows at `2026-09-07 04:44 CEST`; Codex performed no checklist navigation, click or form action, and the user now owns every browser action and identity check
+runtime_recovery: the 2026-09-07 dev-stack restart retained only the stale baseline-ready state marker; the Event, memberships, all six Assets, cards and every scoped checkout artifact were absent. All saved collection snapshots were empty and Casey/Nova/Riley reset-owned fields exactly matched the fresh seed, so the versioned reset restored zero artifacts; a normal stage plus its independent second status then reached a fresh `baseline-ready` at `2026-09-07T02:24:00.578Z`. The first browser launch later exposed pre-existing active-session counts Casey/Nova/Ava `1/2/2` and stopped at Nova's `BLOCKED_LIMIT`; the fixture's snapshot-protected `prepare-browser` boundary cleared them. The user's first Confirm reached the client-only payment review and exposed that the card menu stayed green Borrow. That attempt made no server artifact. Frontend/backend hot deployment then completed the shared-basket, state-projection, local-reconciliation and 10-minute-expiry repair. The read-only `status` at `05:28 CEST` still proved the exact untouched `baseline-ready` oracle with zero basket audit rows, so no reset/restage was needed
+browser_phase: immediately after fixture-owned session cleanup, the versioned launcher replaced the prior windows with three new isolated Casey/Nova/Ava profiles at `2026-09-07 05:28 CEST`; Codex performed no checklist navigation, click or form action, and the user owns every browser action and identity check
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
 queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
-required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, run the fixture's snapshot-protected `prepare-browser` session cleanup, launch the configured browsers, then the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
+required_resume: the read-only baseline gate, snapshot-protected session cleanup and browser relaunch are complete; the user now repeats checklist steps 1-18 in Nova and stops on the exact payment-ready phrase
 actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
 pending_machine_oracle: after `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`, run `capture-payment-ready asset-checkout ASSET-CHECKOUT-001`
-pre_pay_contract: Confirm borrow creates only the scoped, namespaced-local-storage AssetBorrowDraftStore entry keyed by user/Sub-event/Asset; payment-ready must still have zero server payment/provider-session/request/inventory/resource/basket writes. The existing frontend watcher compiled and deployed this reload-persistence correction, but checklist steps 22-23 remain pending manual evidence. The first server checkout write is Pay
+pre_pay_contract: Confirm borrow saves one confirmed resource basket before exposing payment-ready, across the live signal, scoped AssetBorrowDraftStore and shared local/HTTP checkout repository. It creates no provider/payment session, borrow request, inventory delta or resource assignment. The expiry is exactly 10 minutes. The target card menu and Borrow Basket are orange Continue borrow; Back shows green Continue borrow when unchanged and orange Update borrow after a change. An unchanged Continue creates no basket generation; each Update does. Asset Explore's backend batch result-state projection clears a local draft when its canonical basket is absent/succeeded, or when a deleted basket has crossed the local expiry
 rollback_contract: all three commands restore exact persisted savepoints; payment-ready cannot recreate a cleared frontend-local draft, so after that rollback the user reloads and repeats steps 1-18 once without recapturing the already restored server phase
 provider_change_contract: baseline is connected Barion with 3DS Off; Nova has active Barion 4444 plus blocked expired Barion 0008. The user enables 3DS only at checklist step 31
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: EVENT-CHECKOUT-001 PASS/CLOSED and snapshot-reset with zero remaining scoped artifacts; ASSET-CHECKOUT-001 stage plus independent baseline status passed
+last_completed: EVENT-CHECKOUT-001 PASS/CLOSED and snapshot-reset with zero remaining scoped artifacts; ASSET-CHECKOUT-001 repair compile/deploy plus fresh independent baseline status and browser handoff passed, manual retest pending
 ```
 
 Resume with this read-only gate only:

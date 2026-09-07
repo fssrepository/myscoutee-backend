@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -147,7 +148,14 @@ public final class AssetsDtos {
     public record AssetExplorePageDto(
             List<AssetDto> items,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            Map<String, String> checkoutResultStates) {
+        public AssetExplorePageDto(
+                List<AssetDto> items,
+                Integer total,
+                String nextCursor) {
+            this(items, total, nextCursor, Map.of());
+        }
     }
 
     public record AssetDetailDto(

@@ -111,6 +111,7 @@ public class AssetsService {
     private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
     private EventTicketAuditService eventTicketAuditService;
     private TranslationService translationService;
+    private EventCheckoutBasketService eventCheckoutBasketService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -155,6 +156,11 @@ public class AssetsService {
     @Autowired(required = false)
     void setTranslationService(TranslationService translationService) {
         this.translationService = translationService;
+    }
+
+    @Autowired(required = false)
+    void setEventCheckoutBasketService(EventCheckoutBasketService eventCheckoutBasketService) {
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
     }
 
     public List<AssetDto> queryAssets(String userId) {
@@ -370,11 +376,17 @@ public class AssetsService {
                 .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
+        Map<String, String> checkoutResultStates = eventCheckoutBasketService == null
+                ? Map.of()
+                : eventCheckoutBasketService.loadResultStatesByEvent(
+                        normalizedUserId,
+                        items.stream().map(AssetDto::id).toList());
 
         return new AssetExplorePageDto(
                 items,
                 pageResult.total(),
-                pageResult.nextCursor());
+                pageResult.nextCursor(),
+                checkoutResultStates);
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {

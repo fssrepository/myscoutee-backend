@@ -18,10 +18,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -41,6 +45,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
@@ -69,6 +74,52 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void visibleAssetPageIncludesCheckoutStatesFromTheSharedBasketRepository() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        MongoConverter converter = mock(MongoConverter.class);
+        EventCheckoutBasketService basketService = mock(EventCheckoutBasketService.class);
+        Asset visibleAsset = asset();
+        visibleAsset.setRequests(List.of());
+        Document facet = new Document("metadata", List.of(new Document("total", 1)))
+                .append("items", List.of(new Document("_id", "asset-doc-1")));
+
+        when(usersRepository.findAll()).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(List.of("u1")))
+                .thenReturn(List.of(user("u1", "Owner One", "OO")));
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("assets"), eq(Document.class)))
+                .thenReturn(new AggregationResults<>(List.of(facet), new Document()));
+        when(mongoTemplate.getConverter()).thenReturn(converter);
+        when(converter.read(eq(Asset.class), any(Document.class))).thenReturn(visibleAsset);
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(basketService.loadResultStatesByEvent("u2", List.of("asset-1")))
+                .thenReturn(Map.of("asset-1", "pending"));
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                mock(AccessControlService.class));
+        service.setEventCheckoutBasketService(basketService);
+
+        AssetExplorePageDto page = service.queryVisibleAssetsPage(
+                "u2",
+                AssetCatalog.TYPE_SUPPLIES,
+                null,
+                null,
+                null,
+                0,
+                20,
+                null,
+                "availability");
+
+        assertThat(page.items()).extracting(AssetDto::id).containsExactly("asset-1");
+        assertThat(page.checkoutResultStates()).containsEntry("asset-1", "pending");
+        verify(basketService).loadResultStatesByEvent("u2", List.of("asset-1"));
+    }
+
     @Test
     void removedEventMemberOnlyStatusDeletesRequestsFromThatEventAssignment() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);

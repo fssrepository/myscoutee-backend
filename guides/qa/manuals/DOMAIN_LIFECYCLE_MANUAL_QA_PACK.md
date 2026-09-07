@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **STAGED / NOT RUN**.
+Status: **REPAIR DEPLOYED / RETEST REQUIRED**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6613,16 +6613,38 @@ owns a `prepare-browser` boundary that preserves the first pre-QA
 `userSessionStates` documents, clears only those three configured actors, and
 restores the preserved documents on reset. Its first live run cleared the
 counts to `0/0/0`, after which the versioned launcher prepared all three
-isolated identities successfully at `2026-09-07 04:44 CEST`. The user owns all
-subsequent browser navigation and clicks; no testcase step has run yet.
+isolated identities successfully at `2026-09-07 04:44 CEST`. The user then
+reached the first confirmed payment-review boundary and reported one concrete
+mismatch: the target card menu remained green `Borrow` instead of changing to
+orange `Continue borrow`. That attempt is repair evidence, not accepted
+checkpoint evidence, and must be replayed from the exact baseline.
 
-The source preflight also found that the pre-Pay Borrow Basket draft had been
-held only in an in-memory signal even though checklist steps 22-23 require one
-clean reload. It now uses the scoped `AssetBorrowDraftStore` backed by the
-application's namespaced local storage, keyed by user, Sub-event and Asset.
-The existing frontend watcher compiled and deployed that correction
-successfully. This is implementation evidence only: reload reconstruction
-remains an unpassed user-visible assertion in steps 22-23.
+Diagnosis against the completed Event checkout reference found the underlying
+contract mismatch. The pre-Pay Asset draft changed only an in-memory signal
+plus namespaced local storage; it never saved the common checkout repository,
+and the card menu projected only its static `Borrow` action. The deployed
+repair now makes initial `Confirm borrow` and changed `Update borrow` save the
+shared checkout repository before changing UI state. That repository is
+IndexedDB in local mode and the backend `eventCheckoutBasketItems` repository
+through HTTP. Only a successful save sets the local confirmed selection
+baseline and immediately projects orange `Continue borrow` in both the target
+card menu and Borrow Basket. Back/review uses the Event palettes and labels:
+unchanged is green `Continue borrow`, changed is orange `Update borrow`, and
+the initial action remains blue `Confirm borrow`. Online providers use `Pay`;
+the no-provider variant uses `Confirm cash payment`. Successful Asset
+fulfillment closes the basket reservation as `succeeded`, while provider
+decline/timeout retains an isolated `failed` checkout audit without creating a
+borrow request or inventory change. Event and Asset basket writers use the
+same 10-minute expiry contract; the previous 20-minute frontend/backend
+fallbacks were invalid and are now corrected. Asset Explore also receives a
+batch `checkoutResultStates` projection from the common backend basket
+repository. On the next successful page load it removes a matching local draft
+when the server basket is absent or succeeded, and after the 10-minute boundary
+when an expiry is represented by a deleted audit, so a local-only ghost
+`Continue borrow` cannot survive. The equivalent local-data path reads the
+shared IndexedDB basket repository. The running frontend and backend watchers
+compiled and deployed these changes successfully; all visible behavior remains
+pending the fresh user replay.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
@@ -6659,25 +6681,35 @@ payment.
   | State | Required visible actions/status | Forbidden action |
   | --- | --- | --- |
   | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
-  | Saved review draft | Borrow Basket `Continue request` | a request/payment write |
+  | Confirmed unchanged review | green `Continue borrow`; card menu and Borrow Basket orange `Continue borrow` | another basket generation, request/payment write |
+  | Confirmed changed review | orange `Update borrow` | stale confirmed payload |
   | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
   | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
 
-- In review, an invalid or empty timeframe, quantity outside current
-  availability and any unaccepted required policy disable the forward action
-  and create no server write. A valid quantity/time/policy set produces one
-  deterministic line item and total.
+- The date control immediately normalizes an attempted End-before/equal-Start
+  value, so an invalid range cannot remain in the review. Quantity outside
+  current availability is clamped/rejected, and any unaccepted required policy
+  disables the forward action. These input gates create no server write. A
+  valid quantity/time/policy set produces one deterministic line item and total.
 - Select `Confirm borrow` once. This moves to the locked payment phase but does
   not call the provider and creates no server payment/session, request,
-  assignment or inventory delta. The one Borrow Basket item is a frontend
-  draft. `Continue request`, in-place reopen and one clean reload must
-  reconstruct its amount, timeframe, quantity and policy set.
-- Use `Back` once, change the quantity or timeframe, and confirm again. The
-  final frontend draft owns the recalculated payload; stale values must not
-  return and server checkout state must remain empty before `Pay`.
+  assignment or inventory delta. It creates exactly one synchronized confirmed
+  Borrow Basket across the Angular signal, scoped local draft and shared
+  local/HTTP repository. The basket expiry is exactly 10 minutes after its
+  creation. Orange `Continue borrow`, in-place reopen and one clean reload must
+  reconstruct its amount, timeframe, quantity and policy set. If the canonical
+  server basket is later absent or expires, the following successful Explore
+  load clears the scoped local draft and restores the fresh `Borrow` action.
+- Use `Back` once. The unchanged review is green `Continue borrow`, and that
+  action returns to payment without a repository rewrite. Change quantity to
+  `2`: the action becomes orange `Update borrow` and saves the revised confirmed
+  basket before payment. Back, restore quantity `1`, then Update again. The
+  pre-Pay oracle is exactly three audit generations (initial Confirm plus two
+  Updates), one active final confirmed basket and no fourth generation from the
+  unchanged Continue action.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
@@ -6685,9 +6717,9 @@ payment.
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
   reservation/availability decrement for quantity `1`; and one pending
-  resource projection. There is no server `eventCheckoutBasketItems` row in
-  this Asset flow; the request's `inventoryApplied=true` plus the exact
-  quantity decrement own the reservation proof.
+  resource projection. The final checkout basket is one `pay/succeeded` audit
+  with its reservation closed; the request's `inventoryApplied=true` plus the
+  exact quantity decrement own the inventory-reservation proof.
 - Immediate UI oracle: the Asset remains once in Explore with availability
   reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
   and Casey sees Nova once as the pending borrower on the exact Asset/request.
@@ -6711,7 +6743,8 @@ payment.
   `Timeout Control`, keeping Barion 3DS enabled. The first must yield exactly
   one declined/failed terminal payment and the second exactly one expired
   terminal payment. Neither control may create a borrow request, inventory
-  delta, resource assignment, entitlement or server basket row.
+  delta, resource assignment or entitlement. Each retains only its isolated
+  `pay/failed` checkout audit so the failed attempt remains recoverable.
 - The versioned `asset-checkout` fixture provides guarded `stage`, read-only
   `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
   request-destination and `accepted` captures, three exact persisted rollback

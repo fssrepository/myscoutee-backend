@@ -85,9 +85,16 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 The rollback commands restore the exact server-persisted state. The pre-Pay
-Borrow Basket belongs to the scoped browser-local `AssetBorrowDraftStore`,
-which is keyed by user, Sub-event and Asset and is expected to survive a clean
-reload. `rollback-payment-ready` cannot manufacture that local entry if it was
+Borrow Basket is synchronized through the live Angular signal, the scoped
+browser-local `AssetBorrowDraftStore` and the shared checkout repository
+(`IndexedDB` locally, MongoDB through HTTP). The local draft is keyed by user,
+Sub-event and Asset and is expected to survive a clean reload. Every newly
+saved Event or Asset checkout basket has the same **10-minute** expiry window;
+20 minutes is not an accepted value. After the server basket is absent, or its
+10-minute expiry has been processed, the next successful Explore load removes
+the matching browser-local draft instead of exposing a local-only
+`Continue borrow` action.
+`rollback-payment-ready` cannot manufacture that browser-local entry if it was
 already cleared: after such a rollback the user repeats steps 1-18 once while
 Codex keeps the already captured server boundary at `payment-ready`.
 
@@ -105,9 +112,9 @@ Codex keeps the already captured server boundary at `payment-ready`.
 4. Select `Borrow` once.
 5. Confirm the borrow review shows the exact Asset, Event/Sub-event context,
    timeframe, quantity, price and required `QA Borrow policy`.
-6. Make the timeframe invalid by setting End before or equal to Start. Confirm
-   the forward action is disabled or shows a clear inline error and no request
-   is sent.
+6. Attempt to set End before or equal to Start. Confirm the date control
+   immediately normalizes the input back to a valid range, so an invalid value
+   cannot remain in the form and no request is sent.
 7. Restore the fixture-provided valid timeframe.
 8. Attempt to enter a quantity above the displayed availability. Confirm it is
    rejected or clamped to the maximum and cannot be submitted as an
@@ -130,9 +137,11 @@ Codex keeps the already captured server boundary at `payment-ready`.
 16. Confirm that the timeframe, quantity, policy and price controls are locked
     in the payment phase.
 17. Select one active Barion card. Confirm an expired card cannot be selected.
-18. Report this phrase and wait for Codex to prove that this pre-Pay state is
-    still only one frontend Borrow Basket draft: there is no server payment,
-    provider session, borrow request, inventory delta or assignment yet.
+18. Report this phrase and wait for Codex to prove that this pre-Pay state owns
+    exactly one matching confirmed Borrow Basket in the Angular signal,
+    browser-local repository and backend repository, with an expiry exactly 10
+    minutes after basket creation. There is still no server payment/provider
+    session, borrow request, inventory delta or assignment.
 
     `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
 
@@ -140,33 +149,40 @@ Codex keeps the already captured server boundary at `payment-ready`.
 
 19. After Codex confirms `payment-ready`, close the checkout with its normal
     close control. Do not select Back or Pay.
-20. In the still-open Asset Explore surface, confirm the Borrow Basket shows
-    exactly one target item with `Continue request`.
-21. Open `Continue request`. Confirm the same payment phase returns with the
+20. In the still-open Asset Explore surface, confirm both the target card menu
+    and the Borrow Basket show the same orange `Continue borrow` state exactly
+    once.
+21. Open `Continue borrow`. Confirm the same payment phase returns with the
     same draft-owned timeframe, quantity, policy and total.
 22. Close it again and reload Nova exactly once.
-23. Return to the same Resource/Asset Explore scope. Confirm the Borrow Basket
-    still contains exactly one target item and `Continue request` reconstructs
-    the same payment-ready state.
+23. Return to the same Resource/Asset Explore scope. Confirm the target card
+    menu and Borrow Basket still contain exactly one orange `Continue borrow`
+    action and it reconstructs the same payment-ready state.
 
 If the draft disappears, restarts at an empty review, changes amount, or
 creates any server payment/session merely because of reload, stop here. Report
 the exact mismatch; do not build a new attempt over the inconsistent state.
 
 24. Select `Back` once.
-25. Confirm the editable review returns and `Pay` disappears.
-26. Change quantity from `1` to `2`, confirm the total changes, then change it
-    back to `1`. Keep the same valid timeframe and policy.
-27. Select `Confirm borrow` exactly once.
-28. Confirm Barion returns with the final quantity `1` and original exact
-    total. The earlier draft values must not remain in the payment phase.
+25. Confirm the editable review returns, `Pay` disappears and the unchanged
+    primary action is green `Continue borrow`.
+26. Select `Continue borrow` once. Confirm the same payment phase returns
+    without creating a new backend basket generation, then select `Back` once.
+27. Change quantity from `1` to `2`. Confirm the total changes and the primary
+    action becomes orange `Update borrow`. Select `Update borrow` once and
+    confirm the payment phase owns quantity `2`; then select `Back` once.
+28. Change quantity back to `1`. Confirm `Update borrow` remains orange, select
+    it once, and confirm Barion returns with final quantity `1` and the original
+    exact total. The earlier quantity-`2` values must not remain in the payment
+    phase.
 29. Report:
 
     `ASSET-CHECKOUT-001 revised payment ready: final draft owns quantity 1`
 
-30. Wait for Codex to prove that Back/review/re-confirm changed no server
-    checkout state and that no payment/session, request, reservation or
-    assignment exists yet.
+30. Wait for Codex to prove exactly three pre-Pay basket audit generations
+    (initial Confirm plus two Updates), one active final confirmed basket and no
+    payment/session, borrow request, inventory delta or assignment. The
+    unchanged Continue action must not have created a fourth generation.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
@@ -256,6 +272,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 59. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
     forward action is `Send borrow request` and no provider badge, `Pay`, session
     or payment summary is presented. Close without submitting.
+    The same paid flow must use `Confirm cash payment` instead of `Pay` when no
+    provider is configured; this Barion checkpoint does not change Ava's
+    provider configuration to exercise that separate runtime variant.
 60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
     for the selected window, or is absent from the availability-filtered
     Explore list. Do not change filters or dates to make it eligible.

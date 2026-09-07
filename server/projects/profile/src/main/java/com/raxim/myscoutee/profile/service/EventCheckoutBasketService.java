@@ -254,7 +254,7 @@ public class EventCheckoutBasketService {
                 continue;
             }
             String expiresAtIso = firstText(item.expiresAtIso(), Instant.now()
-                    .plus(20, ChronoUnit.MINUTES)
+                    .plus(10, ChronoUnit.MINUTES)
                     .toString());
             String status = normalizeStatus(firstText(item.status(), requestStatus));
             String resultState = normalizeResultState(item.resultState());

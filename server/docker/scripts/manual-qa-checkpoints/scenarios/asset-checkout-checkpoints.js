@@ -39,6 +39,14 @@
   const eventSelector = { $or: [{ _id: EVENT_ID }, { sourceId: EVENT_ID }] };
   const memberSelector = { ownerId: { $in: [EVENT_ID, ...ASSET_IDS] } };
   const basketSelector = { sourceId: { $in: ASSET_IDS } };
+  const activeBasketSelector = {
+    ...basketSelector,
+    status: { $in: ["draft", "confirmed", "waiting", "approval-pending", "approved", "pay"] },
+    $or: [
+      { resultState: { $exists: false } },
+      { resultState: { $in: ["pending", "active", "failed", "succeeded"] } }
+    ]
+  };
   const paymentSelector = { sourceId: { $in: ASSET_IDS } };
   const cardSelector = { _id: { $in: Object.values(CARD_IDS) } };
   const resourceSelector = { $or: [
@@ -567,10 +575,8 @@
       projections: projections.map(requestView),
       resources: resources.map(resourceView),
       payments: payments.map(paymentView),
-      baskets: Q.collection("eventCheckoutBasketItems").find(basketSelector).sort({ _id: 1 }).toArray().map(item => ({
-        id: Q.text(item._id), sourceId: Q.text(item.sourceId), userId: Q.text(item.userId), kind: Q.text(item.kind),
-        status: Q.text(item.status), resultState: Q.text(item.resultState), reservationActive: item.reservationActive === true
-      })),
+      baskets: Q.collection("eventCheckoutBasketItems").find(activeBasketSelector).sort({ sourceId: 1, _id: 1 }).toArray().map(basketView),
+      basketAudit: Q.collection("eventCheckoutBasketItems").find(basketSelector).sort({ sourceId: 1, _id: 1 }).toArray().map(basketView),
       storedAssetMembers: members.filter(item => Q.text(item.ownerType) === "asset").map(item => ({
         ownerId: Q.text(item.ownerId), userId: Q.text(item.userId), role: Q.text(item.role), status: Q.text(item.status)
       })),
@@ -582,6 +588,37 @@
         nova: financeView(NOVA_ID)
       }
     };
+  }
+
+  function basketView(item) {
+    return {
+      id: Q.text(item._id),
+      itemId: Q.text(item.itemId),
+      sourceId: Q.text(item.sourceId),
+      userId: Q.text(item.userId),
+      kind: Q.text(item.kind),
+      subEventId: Q.text(item.subEventId),
+      resourceType: Q.text(item.resourceType),
+      label: Q.text(item.label),
+      detail: Q.text(item.detail),
+      amount: Number(item.amount || 0),
+      currency: Q.text(item.currency),
+      quantity: Number(item.quantity || 0),
+      status: Q.text(item.status),
+      resultState: Q.text(item.resultState),
+      reservationActive: item.reservationActive === true,
+      pendingCounterTracked: item.pendingCounterTracked === true,
+      checkoutSessionId: Q.text(item.checkoutSessionId),
+      createdAtIso: Q.text(item.createdAtIso),
+      expiresAtIso: Q.text(item.expiresAtIso)
+    };
+  }
+
+  function hasTenMinuteBasketTtl(basket) {
+    const createdAtMs = Date.parse(Q.text(basket && basket.createdAtIso));
+    const expiresAtMs = Date.parse(Q.text(basket && basket.expiresAtIso));
+    const ttlMs = expiresAtMs - createdAtMs;
+    return Number.isFinite(ttlMs) && ttlMs >= 599000 && ttlMs <= 601000;
   }
 
   function assetById(current, assetId) {
@@ -651,6 +688,7 @@
         || current.resources.length !== 0
         || current.payments.length !== 0
         || current.baskets.length !== 0
+        || current.basketAudit.length !== 0
         || current.storedAssetMembers.length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "baseline-diagnostic", oracle: current });
       Q.fail("fresh paid Asset/control baseline is not exact.");
@@ -816,14 +854,28 @@
     return currentOracle;
   }
 
-  function assertNoCheckoutWrite(current) {
+  function targetBasket(current, sourceId = PAID_ID) {
+    return current.baskets.find(item => item.sourceId === sourceId && item.userId === NOVA_ID);
+  }
+
+  function assertPaymentReadyState(current, expectedAuditCount) {
     assertScope(current);
     const paid = assetById(current, PAID_ID);
+    const basket = targetBasket(current);
     if (!paid || paid.quantity !== 3 || paid.requests.length !== 0
         || current.projections.length !== 0 || current.resources.length !== 0
-        || current.payments.length !== 0 || current.baskets.length !== 0
+        || current.payments.length !== 0 || current.baskets.length !== 1
+        || !basket || basket.kind !== "resource" || basket.subEventId !== SUB_EVENT_ID
+        || basket.resourceType !== "Transport" || basket.quantity !== 1
+        || basket.amount !== 3200 || basket.currency !== "HUF"
+        || basket.status !== "confirmed" || basket.resultState !== "pending"
+        || !basket.reservationActive || !basket.pendingCounterTracked
+        || basket.checkoutSessionId || !hasTenMinuteBasketTtl(basket)
+        || current.basketAudit.length !== expectedAuditCount
+        || current.basketAudit.filter(item => item.resultState === "deleted").length !== expectedAuditCount - 1
         || current.storedAssetMembers.length !== 0) {
-      Q.fail("payment-ready boundary contains a premature request/payment/reservation/assignment/role write.");
+      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready-diagnostic", expectedAuditCount, oracle: current });
+      Q.fail("payment-ready boundary does not contain exactly one confirmed Asset borrow basket and zero premature request/payment/inventory/assignment/role writes.");
     }
   }
 
@@ -833,7 +885,7 @@
     if (Q.text(currentState.phase) !== "baseline-ready") Q.fail("payment-ready can only be captured from baseline-ready.");
     assertSimulator(false);
     const current = oracle();
-    assertNoCheckoutWrite(current);
+    assertPaymentReadyState(current, 1);
     assertImmutableControls(currentState);
     assertFinancialDelta(currentState, 0);
     captureSavepoint("paymentReady", "payment-ready");
@@ -842,7 +894,8 @@
       checkpointId: CHECKPOINT,
       phase: "payment-ready",
       serverPaymentSessions: 0,
-      note: "The pre-Pay Borrow Basket is a frontend draft; no provider authorization or server request exists yet.",
+      serverCheckoutBaskets: 1,
+      note: "The pre-Pay Borrow Basket is synchronized in the signal, frontend local repository and backend repository; no provider authorization, borrow request or inventory write exists yet.",
       next: "Continue at step 19 and report the revised-payment-ready phrase after step 29."
     });
   }
@@ -853,18 +906,17 @@
     if (Q.text(currentState.phase) !== "payment-ready") Q.fail("revised-payment-ready requires payment-ready.");
     assertSimulator(false);
     const current = oracle();
-    assertNoCheckoutWrite(current);
+    assertPaymentReadyState(current, 3);
     assertImmutableControls(currentState);
     assertFinancialDelta(currentState, 0);
-    if (!samePersisted(current, currentState.paymentReadyOracle)) {
-      Q.fail("Back/review/re-confirm changed persisted server state before Pay.");
-    }
     captureSavepoint("revisedPaymentReady", "revised-payment-ready");
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "revised-payment-ready",
       serverPaymentSessions: 0,
+      activeServerCheckoutBaskets: 1,
+      checkoutBasketAuditRecords: 3,
       next: "Enable Barion 3DS in Ava, Pay once, approve once, then report the paid-pending phrase after step 37."
     });
   }
@@ -882,6 +934,7 @@
     const projection = current.projections.find(item => item.userId === NOVA_ID && item.status === "pending" && item.requestKind === "borrow");
     const payment = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID && item.status === "authorized");
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
+    const basket = targetBasket(current);
     if (!paidAsset || paidAsset.quantity !== 2 || paidAsset.requests.length !== 1
         || !request || request.eventId !== EVENT_ID || request.subEventId !== SUB_EVENT_ID
         || request.quantity !== 1 || request.totalAmount !== 3200 || request.currency !== "HUF"
@@ -895,7 +948,15 @@
         || current.resources.length !== 1 || !resource || resource.assetOwnerUserId !== NOVA_ID
         || resource.targetQuantity !== 1 || resource.targetAddedByUserId !== NOVA_ID
         || resource.pending !== 1 || resource.accepted !== 0
-        || current.baskets.length !== 0 || current.storedAssetMembers.length !== 0) {
+        || current.baskets.filter(item => item.sourceId === PAID_ID).length !== 1
+        || !basket || basket.status !== "pay" || basket.resultState !== "succeeded"
+        || basket.quantity !== 1 || basket.amount !== 3200 || basket.currency !== "HUF"
+        || !hasTenMinuteBasketTtl(basket)
+        || basket.checkoutSessionId !== request.paymentSessionId
+        || basket.reservationActive || basket.pendingCounterTracked
+        || current.basketAudit.filter(item => item.sourceId === PAID_ID).length !== 4
+        || current.basketAudit.filter(item => item.sourceId === PAID_ID && item.resultState === "deleted").length !== 3
+        || current.storedAssetMembers.length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-pending-diagnostic", oracle: current });
       Q.fail("paid-pending Asset checkout write model is not exact-once or not scoped correctly.");
     }
@@ -948,12 +1009,17 @@
     const projection = current.projections.find(item => item.userId === NOVA_ID && item.status === "accepted");
     const payment = current.payments.find(item => item.sourceId === PAID_ID && item.status === "authorized");
     const resource = current.resources.find(item => item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
+    const basket = targetBasket(current);
     if (!paidAsset || paidAsset.quantity !== 2 || paidAsset.requests.length !== 1
         || !request || !request.inventoryApplied || request.quantity !== 1
         || current.projections.length !== 1 || !projection || projection.paymentSessionId !== request.paymentSessionId
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1 || !payment || payment.checkoutSessionId !== request.paymentSessionId
         || current.resources.length !== 1 || !resource || resource.accepted !== 1 || resource.pending !== 0
-        || current.baskets.length !== 0 || current.storedAssetMembers.length !== 0) {
+        || current.baskets.filter(item => item.sourceId === PAID_ID).length !== 1
+        || !basket || basket.status !== "pay" || basket.resultState !== "succeeded"
+        || !hasTenMinuteBasketTtl(basket)
+        || basket.checkoutSessionId !== request.paymentSessionId || basket.reservationActive
+        || current.storedAssetMembers.length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "accepted-diagnostic", oracle: current });
       Q.fail("accepted Asset checkout state duplicated inventory/payment or escaped the exact resource scope.");
     }
@@ -993,13 +1059,19 @@
     const timeoutPayments = current.payments.filter(item => item.sourceId === TIMEOUT_ID && item.userId === NOVA_ID);
     const declineAsset = assetById(current, DECLINE_ID);
     const timeoutAsset = assetById(current, TIMEOUT_ID);
+    const declineBasket = targetBasket(current, DECLINE_ID);
+    const timeoutBasket = targetBasket(current, TIMEOUT_ID);
     const isolated = asset => asset && asset.requests.length === 0 && asset.quantity === 1;
     if (declinePayments.length !== 1 || !["declined", "failed"].includes(declinePayments[0].status)
         || timeoutPayments.length !== 1 || timeoutPayments[0].status !== "expired"
         || !isolated(declineAsset) || !isolated(timeoutAsset)
         || current.projections.some(item => TERMINAL_CONTROL_IDS.includes(item.assetId))
         || current.resources.some(item => item.transportAssetIds.some(id => TERMINAL_CONTROL_IDS.includes(id)))
-        || current.baskets.some(item => TERMINAL_CONTROL_IDS.includes(item.sourceId))) {
+        || current.baskets.filter(item => TERMINAL_CONTROL_IDS.includes(item.sourceId)).length !== 2
+        || !declineBasket || declineBasket.status !== "pay" || declineBasket.resultState !== "failed"
+        || !hasTenMinuteBasketTtl(declineBasket)
+        || !timeoutBasket || timeoutBasket.status !== "pay" || timeoutBasket.resultState !== "failed"
+        || !hasTenMinuteBasketTtl(timeoutBasket)) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "terminal-diagnostic", oracle: current });
       Q.fail("decline/timeout controls were not isolated or did not reach one terminal payment each.");
     }
