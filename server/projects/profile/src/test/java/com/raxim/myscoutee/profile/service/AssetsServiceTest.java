@@ -828,7 +828,8 @@ class AssetsServiceTest {
         Asset asset = asset();
         asset.setRequests(List.of(
                 scopedBorrowRequest("manager-request", "u2", "D", 3200d, null, "manager-payment"),
-                scopedBorrowRequest("successor-request", "u3", "accepted", 1600d, 3200d, null)));
+                scopedBorrowRequest("successor-request", "u3", "accepted", 1600d, 3200d, null),
+                scopedBorrowRequest("remaining-request", "u4", "accepted", 1600d, null, null)));
         AtomicReference<Asset> assetState = new AtomicReference<>(asset);
         when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
@@ -844,6 +845,7 @@ class AssetsServiceTest {
                 .thenReturn(true);
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
         when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Successor Three", "ST")));
+        when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(user("u4", "Remaining Four", "RF")));
         PaymentService.AssetPaymentReplacement replacement =
                 new PaymentService.AssetPaymentReplacement("old-payment", "new-payment", true);
         when(paymentService.validateAssetPaymentReplacement(
@@ -894,10 +896,14 @@ class AssetsServiceTest {
         verify(activitiesResourcesService).transferScopedAssetManager(
                 "event-1", "subevent-1", "asset-1", "u2", "u3");
         ArgumentCaptor<NotificationIntent> notifications = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notifications.capture());
+        verify(notificationOutboxService, times(2)).enqueue(notifications.capture());
         assertThat(notifications.getAllValues())
                 .extracting(NotificationIntent::type)
-                .containsExactly("payment-refund-approved");
+                .containsExactlyInAnyOrder("asset-assignment-taken-over", "payment-refund-approved");
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "asset-assignment-taken-over".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> assertThat(notification.recipientUserIds()).containsExactly("u4"));
         assertThat(notifications.getAllValues())
                 .filteredOn(notification -> "payment-refund-approved".equals(notification.type()))
                 .singleElement()
@@ -906,6 +912,8 @@ class AssetsServiceTest {
                     assertThat(notification.payload())
                             .containsEntry("paymentId", "old-payment")
                             .containsEntry("refundRequestStatus", "approved")
+                            .containsEntry("refundStatus", "full")
+                            .containsEntry("paymentStatus", "refunded")
                             .containsEntry("refundReason", "asset-manager-takeover");
                 });
     }

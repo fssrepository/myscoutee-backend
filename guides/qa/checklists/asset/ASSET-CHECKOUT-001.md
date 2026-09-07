@@ -303,9 +303,12 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 51. Without reloading, confirm Nova changes from pending to accepted exactly
     once and is immediately the scoped resource `Manager`. The accepted Borrow
     row and Nova's scoped Members card expose neither `Promote to manager` nor
-    `Revoke Manager`, and Nova's accepted Members card has no three-dot action
-    menu. On the scoped Asset card, the dark accepted-occupancy badge changes
-    `0/3 → 1/3`; the separate red pending indicator disappears. Casey's
+    `Revoke Manager`. Nova's accepted Members card has a three-dot menu whose
+    self-service membership action is `Leave`; it is not a promotion menu. The
+    borrowed resource card has the separate convenience action `Remove`, which
+    removes this runtime Event/Sub-event association and never deletes Casey's
+    global Asset. On the scoped Asset card, the dark accepted-occupancy badge
+    changes `0/3 → 1/3`; the separate red pending indicator disappears. Casey's
     Transport `Pending` counter changes immediately from `1` to `0` through the
     same live update.
 52. Confirm availability for the exact selected date range remains `2`;

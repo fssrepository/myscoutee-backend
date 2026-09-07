@@ -4490,6 +4490,8 @@ public class AssetsService {
         payload.put("previousManagerUserId", normalizedPreviousManagerUserId);
         payload.put("managerUserId", normalizedSuccessorUserId);
         payload.put("refundRequestStatus", "approved");
+        payload.put("refundStatus", "full");
+        payload.put("paymentStatus", "refunded");
         payload.put("refundReason", "asset-manager-takeover");
         payload.put("notification_tone", "accent");
         notificationOutboxService.enqueue(new NotificationIntent(

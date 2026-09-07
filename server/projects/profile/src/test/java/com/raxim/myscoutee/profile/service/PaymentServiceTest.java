@@ -692,6 +692,72 @@ class PaymentServiceTest {
         assertThat(accounted).isEqualTo(3200D);
     }
 
+    @Test
+    void paidAssetTakeOverAuthorizesSuccessorBeforeReleasingAndRefundingPredecessor() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor barion = new RecordingPaymentProcessor("barion");
+        PaymentService service = paymentService(repository, true, barion);
+
+        Payment predecessor = new Payment();
+        predecessor.setId("old-payment");
+        predecessor.setCheckoutSessionId("old-session");
+        predecessor.setGatewaySessionId("old-gateway");
+        predecessor.setGatewayAuthorizationId("old-authorization");
+        predecessor.setUserId("old-manager");
+        predecessor.setRecipientUserId("asset-owner");
+        predecessor.setSourceId("asset-1");
+        predecessor.setContextEventId("event-1");
+        predecessor.setContextSubEventId("subevent-1");
+        predecessor.setProvider("barion");
+        predecessor.setStatus("authorized");
+        predecessor.setBookingStatus("joined");
+        predecessor.setRefundStatus("none");
+        predecessor.setAmount(3200d);
+        predecessor.setAccountedSpentAmount(3200d);
+        predecessor.setCurrency("HUF");
+        savePayment(paymentsBySession, predecessor);
+
+        Payment successor = new Payment();
+        successor.setId("new-payment");
+        successor.setCheckoutSessionId("new-session");
+        successor.setGatewaySessionId("new-gateway");
+        successor.setGatewayAuthorizationId("new-authorization");
+        successor.setUserId("new-manager");
+        successor.setRecipientUserId("asset-owner");
+        successor.setSourceId("asset-1");
+        successor.setProvider("barion");
+        successor.setStatus("authorized");
+        successor.setBookingStatus("initiated");
+        successor.setRefundStatus("none");
+        successor.setAmount(3200d);
+        successor.setAccountedSpentAmount(3200d);
+        successor.setCurrency("HUF");
+        savePayment(paymentsBySession, successor);
+
+        PaymentService.AssetPaymentReplacement replacement = service.validateAssetPaymentReplacement(
+                "old-session",
+                "new-session",
+                "old-manager",
+                "new-manager",
+                "asset-1",
+                "event-1",
+                "subevent-1");
+        service.completeAssetPaymentReplacement(replacement, "new-manager", "event-1", "subevent-1");
+
+        assertThat(successor.getPredecessorPaymentId()).isEqualTo("old-payment");
+        assertThat(successor.getBookingStatus()).isEqualTo("joined");
+        assertThat(successor.getContextEventId()).isEqualTo("event-1");
+        assertThat(successor.getContextSubEventId()).isEqualTo("subevent-1");
+        assertThat(predecessor.getSuccessorPaymentId()).isEqualTo("new-payment");
+        assertThat(predecessor.getStatus()).isEqualTo("released");
+        assertThat(predecessor.getRefundStatus()).isEqualTo("full");
+        assertThat(predecessor.getRefundedAmount()).isEqualTo(3200d);
+        assertThat(predecessor.getRefundRequestStatus()).isEqualTo("approved");
+        assertThat(predecessor.getRefundReviewedByUserId()).isEqualTo("new-manager");
+        assertThat(barion.releaseCalls()).isEqualTo(1);
+    }
+
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -835,6 +901,7 @@ class PaymentServiceTest {
         private final String type;
         private final AtomicInteger checkoutCalls = new AtomicInteger();
         private final AtomicInteger payCalls = new AtomicInteger();
+        private final AtomicInteger releaseCalls = new AtomicInteger();
         private final List<String> paySessionIds = new java.util.ArrayList<>();
         private final List<EventCheckoutRequestDto> checkoutRequests = new java.util.ArrayList<>();
 
@@ -875,12 +942,33 @@ class PaymentServiceTest {
                     null);
         }
 
+        @Override
+        public AuthorizationResult releaseAuthorization(
+                String gatewayAuthorizationId,
+                String idempotencyKey) {
+            releaseCalls.incrementAndGet();
+            return new AuthorizationResult(
+                    type,
+                    type + "_released_" + releaseCalls.get(),
+                    gatewayAuthorizationId,
+                    PaymentGateway.AuthorizationStatus.RELEASED,
+                    java.math.BigDecimal.ZERO,
+                    "HUF",
+                    null,
+                    null,
+                    idempotencyKey);
+        }
+
         int checkoutCalls() {
             return checkoutCalls.get();
         }
 
         int payCalls() {
             return payCalls.get();
+        }
+
+        int releaseCalls() {
+            return releaseCalls.get();
         }
 
         List<String> paySessionIds() {
