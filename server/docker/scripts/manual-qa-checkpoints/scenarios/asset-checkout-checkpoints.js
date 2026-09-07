@@ -1194,6 +1194,26 @@
     if (resourceUpdate.matchedCount !== 1 || resourceUpdate.modifiedCount !== 1) {
       Q.fail("the Free Transport probe could not be removed from the retained paid resource exactly once.");
     }
+    const checkoutEvent = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    if (!checkoutEvent) {
+      Q.fail("the checkout Event is unavailable for step-56 resource-summary repair.");
+    }
+    const repairedSubEvents = (checkoutEvent.subEvents || []).map(item =>
+      Q.text(item && item.id) === SUB_EVENT_ID
+        ? {
+            ...item,
+            carsAccepted: 1,
+            carsPending: 0,
+            carsCapacityMin: 0,
+            carsCapacityMax: 3
+          }
+        : item
+    );
+    Q.collection("events").updateOne({ _id: checkoutEvent._id }, { $set: {
+      subEvents: repairedSubEvents,
+      updatedDate: Q.nowIso(),
+      updatedUser: NOVA_ID
+    } });
     Q.collection("notificationOutbox").deleteMany(freeNotificationSelector);
     Q.collection("userNotifications").deleteMany(freeNotificationSelector);
     resetNovaServiceChatProbe();
@@ -1548,9 +1568,10 @@
       && Q.text(item && item.status) === "accepted"
       && Q.text(item && item.requestKind) === "borrow"
     );
+    const novaRequestId = Q.text(novaRequest && (novaRequest.requestId || novaRequest.id || novaRequest._id));
     const novaProjection = Q.collection("assetRequests").findOne({
       assetId: PAID_ID,
-      requestId: Q.text(novaRequest && novaRequest.id)
+      requestId: novaRequestId
     });
     const resource = Q.collection("activityResources").findOne({
       ownerId: EVENT_ID,
@@ -1562,7 +1583,8 @@
     if (!asset || !novaRequest || !novaProjection || !resource || !event) {
       Q.fail("accepted state cannot be extended with the exact Riley takeover control.");
     }
-    if ((asset.requests || []).some(item => Q.text(item && item.id) === RILEY_REQUEST_ID)
+    if ((asset.requests || []).some(item =>
+          Q.text(item && (item.requestId || item.id || item._id)) === RILEY_REQUEST_ID)
         || Q.collection("activityMembers").countDocuments({ ownerId: EVENT_ID, userId: RILEY_ID }) > 0) {
       Q.fail("Riley takeover control already exists; refusing to duplicate it.");
     }
@@ -1576,7 +1598,7 @@
     });
     const rileyRequest = {
       ...novaRequest,
-      id: RILEY_REQUEST_ID,
+      _id: RILEY_REQUEST_ID,
       userId: RILEY_ID,
       name: Q.text(riley.name) || "Riley Outside",
       initials: Q.text(riley.initials) || "RO",
@@ -1618,7 +1640,18 @@
       updatedDate: nowIso,
       updatedUser: CASEY_ID
     } });
-    const subEvents = (event.subEvents || []).map(item => ({ ...item, membersAccepted: 3 }));
+    const subEvents = (event.subEvents || []).map(item =>
+      Q.text(item && item.id) === SUB_EVENT_ID
+        ? {
+            ...item,
+            membersAccepted: 3,
+            carsAccepted: 2,
+            carsPending: 0,
+            carsCapacityMin: 0,
+            carsCapacityMax: 3
+          }
+        : item
+    );
     Q.collection("events").updateOne({ _id: event._id }, { $set: {
       acceptedMembers: 3,
       acceptedMemberUserIds: sorted([...(event.acceptedMemberUserIds || []), RILEY_ID]),
@@ -1650,6 +1683,8 @@
     const rileyRequest = paidAsset && paidAsset.requests.find(item => item.userId === RILEY_ID && item.status === "accepted");
     const rawRileyRequest = rawScopedRequest(RILEY_ID);
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
+    const storedEvent = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    const storedBorrowSubEvent = (storedEvent && storedEvent.subEvents || []).find(item => Q.text(item && item.id) === SUB_EVENT_ID);
     const rileyCard = Q.collection("savedPaymentMethods").findOne({ _id: CARD_IDS.rileyActive });
     if (!current.event || current.event.acceptedMembers !== 3
         || !Q.sameJson(current.event.acceptedMemberUserIds, sorted([CASEY_ID, NOVA_ID, RILEY_ID]))
@@ -1661,6 +1696,10 @@
         || current.projections.filter(item => item.assetId === PAID_ID).length !== 2
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1
         || !resource || resource.accepted !== 2 || resource.pending !== 0
+        || Number(storedBorrowSubEvent && storedBorrowSubEvent.carsAccepted || 0) !== 2
+        || Number(storedBorrowSubEvent && storedBorrowSubEvent.carsPending || 0) !== 0
+        || Number(storedBorrowSubEvent && storedBorrowSubEvent.carsCapacityMin || 0) !== 0
+        || Number(storedBorrowSubEvent && storedBorrowSubEvent.carsCapacityMax || 0) !== 3
         || resource.targetAddedByUserId !== NOVA_ID
         || !rileyCard || Q.text(rileyCard.userId) !== RILEY_ID || Q.text(rileyCard.status) !== "active"
         || targetWindowAvailability(paidAsset) !== 1
