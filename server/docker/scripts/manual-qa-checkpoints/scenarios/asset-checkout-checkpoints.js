@@ -22,6 +22,10 @@
   const TIMEOUT_ID = `${PREFIX}:asset:timeout-control`;
   const RILEY_REQUEST_ID = `${PREFIX}:request:riley-takeover`;
   const SERVICE_CHAT_ID = `c-service-asset-${PAID_ID}-${SUB_EVENT_ID}-${RILEY_ID}`;
+  const NOVA_SERVICE_CHAT_IDS = [
+    `c-service-asset-${PAID_ID}-${SUB_EVENT_ID}-${NOVA_ID}`,
+    `c-service-event-${EVENT_ID}-${NOVA_ID}`
+  ];
   const CONTROLLED_CHAT_MESSAGE = "QA ASSET-CHECKOUT-001: Riley asks Casey about the paid borrowed Transport.";
   const ASSET_IDS = [PAID_ID, FREE_ID, UNAVAILABLE_ID, ADJACENT_ID, DECLINE_ID, TIMEOUT_ID];
   const IMMUTABLE_CONTROL_IDS = [FREE_ID, UNAVAILABLE_ID, ADJACENT_ID];
@@ -67,6 +71,8 @@
   const browserSessionSelector = { _id: { $in: BROWSER_ACTOR_IDS } };
   const serviceChatSelector = { id: SERVICE_CHAT_ID };
   const serviceChatMessageSelector = { chatId: SERVICE_CHAT_ID };
+  const novaServiceChatSelector = { id: { $in: NOVA_SERVICE_CHAT_IDS } };
+  const novaServiceChatMessageSelector = { chatId: { $in: NOVA_SERVICE_CHAT_IDS } };
 
   function config() {
     if (checkpointId !== CHECKPOINT) {
@@ -1062,6 +1068,46 @@
     return currentOracle;
   }
 
+  function resetNovaServiceChatProbe() {
+    config();
+    const currentState = state();
+    if (!["paid-pending", "request-destination", "accepted"].includes(Q.text(currentState.phase))) {
+      Q.fail("Nova service-chat probe reset is valid only through the accepted checkpoint.");
+    }
+    const savedUsers = currentState.paidPendingUserFields;
+    if (!Array.isArray(savedUsers)) {
+      Q.fail("paid-pending user fields are unavailable for exact chat-counter restoration.");
+    }
+
+    const removedMessages = Q.collection("chatMessages").deleteMany(novaServiceChatMessageSelector).deletedCount;
+    const removedChats = Q.collection("chats").deleteMany(novaServiceChatSelector).deletedCount;
+    for (const userId of [CASEY_ID, NOVA_ID]) {
+      const saved = savedUsers.find(item => Q.text(item && item.userId) === userId);
+      const savedActivities = saved && saved.activities && saved.activities.present
+        ? saved.activities.value || {}
+        : {};
+      const savedChat = savedActivities.chat || {};
+      const result = Q.collection("users").updateOne(userSelector(userId), { $set: {
+        "activities.chats": Number(savedActivities.chats || 0),
+        "activities.chat": savedChat
+      } });
+      if (result.matchedCount !== 1) Q.fail(`could not restore service-chat counters for '${userId}'.`);
+    }
+    if (Q.collection("chats").countDocuments(novaServiceChatSelector) !== 0
+        || Q.collection("chatMessages").countDocuments(novaServiceChatMessageSelector) !== 0) {
+      Q.fail("Nova service-chat probe was not cleared exactly.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: Q.text(currentState.phase),
+      serviceChatProbe: "reset",
+      removedChats,
+      removedMessages,
+      chatIds: NOVA_SERVICE_CHAT_IDS
+    });
+  }
+
   function targetBasket(current, sourceId = PAID_ID) {
     return current.baskets.find(item => item.sourceId === sourceId && item.userId === NOVA_ID);
   }
@@ -1921,6 +1967,7 @@
   else if (command === "capture-revised-payment-ready") captureRevisedPaymentReady();
   else if (command === "verify-paid-pending") verifyPaidPending();
   else if (command === "verify-request-destination") verifyRequestDestination();
+  else if (command === "reset-service-chat-probe") resetNovaServiceChatProbe();
   else if (command === "verify-accepted") verifyAccepted();
   else if (command === "prepare-takeover") prepareTakeOver();
   else if (command === "verify-manager-left") verifyManagerLeft();
