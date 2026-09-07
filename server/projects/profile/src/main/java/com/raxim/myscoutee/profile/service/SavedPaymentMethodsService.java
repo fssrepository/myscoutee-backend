@@ -325,11 +325,13 @@ public class SavedPaymentMethodsService {
         List<Payment> income = paymentsRepository.findByRecipientUserIdOrderByCreatedDateDesc(ownerId).stream()
                 .filter(payment -> !ownerId.equals(normalizeId(payment.getUserId())))
                 .toList();
-        List<Payment> all = switch (normalizedDirection) {
-            case "expenses" -> expenses;
-            case "income" -> income;
-            default -> mergeHistory(expenses, income);
-        };
+        List<Payment> merged = mergeHistory(expenses, income);
+        List<Payment> all = "all".equals(normalizedDirection)
+                ? merged
+                : merged.stream()
+                        .filter(payment -> paymentHistoryDirection(payment, ownerId).equals(
+                                "income".equals(normalizedDirection) ? "income" : "expense"))
+                        .toList();
         int pageSize = Math.min(50, Math.max(1, size == null ? 20 : size));
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
@@ -534,17 +536,18 @@ public class SavedPaymentMethodsService {
         String paymentMethodId = normalizeId(payment.getPaymentMethodId());
         String userId = normalizeId(payment.getUserId());
         String viewerId = normalizeId(viewerUserId);
-        String direction = userId.equals(viewerId) ? "expense" : "income";
+        String direction = paymentHistoryDirection(payment, viewerId);
         String fulfillmentKind = normalizeId(payment.getFulfillmentKind());
         String serviceContext = PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? "asset" : "event";
+        boolean refundAudit = "refund".equals(normalizeId(payment.getAuditKind()));
         String requestStatus = normalizeId(payment.getRefundRequestStatus());
         if (!StringUtils.hasText(requestStatus)) requestStatus = "none";
         boolean refundableStatus = Set.of("authorized", "captured", "approved", "partially_refunded")
                 .contains(safeText(payment.getStatus()).toLowerCase(Locale.ROOT));
         boolean paymentAudit = !StringUtils.hasText(payment.getAuditKind()) || "payment".equals(payment.getAuditKind());
-        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.storedOrCurrentPreview(
-                payment,
-                Instant.now().toString());
+        PaymentRefundCalculator.Preview refund = refundAudit
+                ? null
+                : PaymentRefundCalculator.storedOrCurrentPreview(payment, Instant.now().toString());
         SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
                 ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
                 : null;
@@ -560,23 +563,22 @@ public class SavedPaymentMethodsService {
                         : payment.getSourceId(),
                 payment.getContextSubEventId(),
                 PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? payment.getSourceId() : null,
-                requestStatus, payment.getRefundRequestedAtIso(), payment.getRefundedAtIso(),
+                requestStatus, payment.getRefundRequestedAtIso(),
                 "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus)
                         && refund.refundableAmount() > 0,
                 "income".equals(direction) && "pending".equals(requestStatus),
-                new PaymentRefundPreviewDto(
-                        refund.paidAmount(),
-                        refund.refundableAmount(),
-                        refund.retainedAmount(),
-                        refund.currency(),
-                        refund.status(),
-                        refund.ruleId(),
-                        refund.ruleOffsetUnit(),
-                        refund.ruleOffsetValue(),
-                        refund.refundKind(),
-                        refund.refundValue(),
-                        refund.ruleDescription()),
+                refund == null ? null : new PaymentRefundPreviewDto(
+                        refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
+                        refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
+                        refund.refundKind(), refund.refundValue(), refund.ruleDescription()),
                 paymentMethod);
+    }
+
+    private String paymentHistoryDirection(Payment payment, String viewerUserId) {
+        boolean payer = normalizeId(payment == null ? null : payment.getUserId()).equals(normalizeId(viewerUserId));
+        boolean refund = "refund".equals(normalizeId(payment == null ? null : payment.getAuditKind()));
+        if (refund) return payer ? "income" : "expense";
+        return payer ? "expense" : "income";
     }
 
     public PaymentHistoryMutationDto mutationDto(Payment payment, String viewerUserId) {

@@ -115,6 +115,7 @@ public class PaymentRefundService {
         refunded.setRefundReviewedAtIso(now);
         refunded.setRefundReviewedByUserId(actorId);
         refunded = paymentsRepository.save(refunded);
+        paymentService.saveRefundHistoryRecord(refunded);
         decrementRecipientPendingCounter(actorId);
         enqueueRefundNotification(refunded, actorId, normalize(refunded.getUserId()), true);
         return paymentMethodsService.mutationDto(refunded, actorId);

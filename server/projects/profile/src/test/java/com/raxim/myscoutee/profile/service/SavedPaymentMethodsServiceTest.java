@@ -237,6 +237,68 @@ class SavedPaymentMethodsServiceTest {
         });
     }
 
+    @Test
+    void refundHistoryIsANewerWriteWithItsOwnDirectionAndGrossTotals() {
+        SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        UsersRepository users = mock(UsersRepository.class);
+
+        Payment original = new Payment();
+        original.setId("payment-1");
+        original.setUserId("riley");
+        original.setRecipientUserId("casey");
+        original.setSourceId("asset-1");
+        original.setStatus("partially_refunded");
+        original.setAuditKind("payment");
+        original.setProvider("barion");
+        original.setAmount(3200D);
+        original.setCurrency("HUF");
+        original.setRefundedAmount(1600D);
+        original.setRefundCurrency("HUF");
+        original.setRefundNote("50% refund");
+        original.setCreatedDate("2026-09-07T16:00:00Z");
+
+        Payment refund = new Payment();
+        refund.setId("refund:payment-1");
+        refund.setUserId("riley");
+        refund.setRecipientUserId("casey");
+        refund.setSourceId("asset-1");
+        refund.setStatus("refunded");
+        refund.setAuditKind("refund");
+        refund.setProvider("barion");
+        refund.setAmount(1600D);
+        refund.setCurrency("HUF");
+        refund.setCreatedDate("2026-09-07T17:00:00Z");
+
+        Users riley = new Users();
+        riley.setUserId("riley");
+        riley.setPaymentSpentTotals(java.util.Map.of("HUF", 3200D));
+        riley.setPaymentIncomeTotals(java.util.Map.of("HUF", 1600D));
+        when(users.findByUserId("riley")).thenReturn(Optional.of(riley));
+        when(payments.findByUserIdOrderByCreatedDateDesc("riley")).thenReturn(List.of(refund, original));
+        when(payments.findByRecipientUserIdOrderByCreatedDateDesc("riley")).thenReturn(List.of());
+
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                methods,
+                mock(PaymentMethodRegistrationsRepository.class),
+                payments,
+                mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class),
+                users);
+
+        var all = service.queryHistory("riley", "all", 0, 20);
+        assertThat(all.spendingTotals()).containsEntry("HUF", 3200D);
+        assertThat(all.incomeTotals()).containsEntry("HUF", 1600D);
+        assertThat(all.items()).extracting(item -> item.id(), item -> item.direction(), item -> item.amount())
+                .containsExactly(
+                        org.assertj.core.groups.Tuple.tuple("refund:payment-1", "income", 1600D),
+                        org.assertj.core.groups.Tuple.tuple("payment-1", "expense", 3200D));
+        assertThat(service.queryHistory("riley", "income", 0, 20).items())
+                .singleElement().satisfies(item -> assertThat(item.id()).isEqualTo("refund:payment-1"));
+        assertThat(service.queryHistory("riley", "expenses", 0, 20).items())
+                .singleElement().satisfies(item -> assertThat(item.id()).isEqualTo("payment-1"));
+    }
+
     private SavedPaymentMethod paymentMethod(
             String id,
             String provider,

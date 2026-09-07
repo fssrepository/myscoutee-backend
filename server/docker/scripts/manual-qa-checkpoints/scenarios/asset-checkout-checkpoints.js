@@ -623,6 +623,7 @@
       gatewaySessionId: Q.text(item.gatewaySessionId),
       provider: Q.text(item.provider),
       paymentMethodId: Q.text(item.paymentMethodId),
+      auditKind: Q.text(item.auditKind),
       status: Q.text(item.status),
       fulfillmentKind: Q.text(item.fulfillmentKind),
       fulfillmentStatus: Q.text(item.fulfillmentStatus),
@@ -741,7 +742,11 @@
   }
 
   function lifecyclePayment(userId) {
-    const item = Q.collection("payments").findOne({ sourceId: PAID_ID, userId });
+    const item = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId,
+      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
+    });
     if (!item) return null;
     return {
       ...paymentView(item),
@@ -754,6 +759,16 @@
       refundedAmount: Number(item.refundedAmount || 0),
       refundRuleId: Q.text(item.refundRuleId)
     };
+  }
+
+  function refundHistoryPayment(userId, originalPaymentId) {
+    const item = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId,
+      auditKind: "refund",
+      supersedesPaymentId: originalPaymentId
+    });
+    return item ? paymentView(item) : null;
   }
 
   function rawScopedRequest(userId) {
@@ -1861,6 +1876,7 @@
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const predecessor = lifecyclePayment(NOVA_ID);
     const successor = lifecyclePayment(RILEY_ID);
+    const predecessorRefund = refundHistoryPayment(NOVA_ID, predecessor?.id);
     const refunded = notificationRows("payment-refund-approved");
     const genericTakeOver = notificationRows("asset-assignment-taken-over");
     if (!asset || asset.requests.length !== 2 || !novaRequest || !rileyRequest
@@ -1868,10 +1884,11 @@
         || !Q.sameJson(rileyRequest.acceptedPolicyIds, [POLICY_ID])
         || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || !resource || resource.accepted !== 1 || resource.pending !== 0 || resource.targetAddedByUserId !== RILEY_ID
-        || current.payments.filter(item => item.sourceId === PAID_ID).length !== 2
+        || current.payments.filter(item => item.sourceId === PAID_ID).length !== 3
         || !predecessor || predecessor.status !== "released" || predecessor.refundStatus !== "full"
         || predecessor.refundRequestStatus !== "approved" || predecessor.refundedAmount !== 3200
         || predecessor.refundRuleId !== "assignment-manager-takeover"
+        || !predecessorRefund || predecessorRefund.amount !== 3200 || predecessorRefund.status !== "refunded"
         || predecessor.successorPaymentId !== successor?.id
         || !successor || successor.status !== "authorized" || successor.bookingStatus !== "joined"
         || successor.refundStatus !== "none" || successor.predecessorPaymentId !== predecessor.id
@@ -1888,13 +1905,14 @@
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "takeover-diagnostic", oracle: current, refunded, genericTakeOver });
       Q.fail("paid Asset takeover/refund did not complete with the exact predecessor/successor state.");
     }
-    const expectedCasey = savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals") + 3200;
-    const expectedNova = savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals");
-    const expectedRiley = savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 3200;
-    if (current.finances.casey.incomeHuf !== expectedCasey
-        || current.finances.nova.spentHuf !== expectedNova
-        || financeView(RILEY_ID).spentHuf !== expectedRiley) {
-      Q.fail("takeover did not replace the payer exactly once in persisted finance totals.");
+    const rileyFinance = financeView(RILEY_ID);
+    if (current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals") + 6400
+        || current.finances.casey.spentHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentSpentTotals") + 3200
+        || current.finances.nova.spentHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals") + 3200
+        || current.finances.nova.incomeHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentIncomeTotals") + 3200
+        || rileyFinance.spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 3200
+        || rileyFinance.incomeHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentIncomeTotals")) {
+      Q.fail("takeover did not append the gross payment and full refund totals exactly once.");
     }
     captureSavepoint("takeOverComplete", "takeover-complete");
     Q.printObject({
@@ -1971,12 +1989,17 @@
     const asset = assetById(current, PAID_ID);
     const predecessor = lifecyclePayment(NOVA_ID);
     const successor = lifecyclePayment(RILEY_ID);
+    const predecessorRefund = refundHistoryPayment(NOVA_ID, predecessor?.id);
+    const successorRefund = refundHistoryPayment(RILEY_ID, successor?.id);
     const approved = notificationRows("payment-refund-approved");
     const baselinePending = baselineRefundPending(currentState, CASEY_ID);
     if (!asset || asset.quantity !== 3
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !predecessor || predecessor.refundStatus !== "full"
+        || !predecessorRefund || predecessorRefund.amount !== 3200
         || !successor || successor.status !== "partially_refunded" || successor.refundStatus !== "partial"
+        || !successorRefund || successorRefund.amount !== 1600
+        || current.payments.filter(item => item.sourceId === PAID_ID).length !== 4
         || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 1600
         || successor.refundRuleId !== "qa-refund-1-day-50-percent"
         || paymentRefundPendingCount(CASEY_ID) !== baselinePending
@@ -1984,9 +2007,12 @@
         || !approved.some(item => item.paymentId === predecessor.id && Q.sameJson(item.recipients, [NOVA_ID]))
         || !approved.some(item => item.paymentId === successor.id && Q.sameJson(item.recipients, [RILEY_ID]))
         || !exactServiceChat()
-        || current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals") + 1600
-        || current.finances.nova.spentHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals")
-        || financeView(RILEY_ID).spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 1600) {
+        || current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals") + 6400
+        || current.finances.casey.spentHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentSpentTotals") + 4800
+        || current.finances.nova.spentHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals") + 3200
+        || current.finances.nova.incomeHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentIncomeTotals") + 3200
+        || financeView(RILEY_ID).spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 3200
+        || financeView(RILEY_ID).incomeHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentIncomeTotals") + 1600) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "refunded-diagnostic", oracle: current, approved });
       Q.fail("approved refund did not clear the write-side counter and both payer/owner totals exactly.");
     }
@@ -2001,7 +2027,7 @@
       phase: "refunded",
       result: "PASS",
       globalAssetRetained: true,
-      paymentHistoryRetained: 2,
+      paymentHistoryRetained: 4,
       refundCounter: paymentRefundPendingCount(CASEY_ID),
       next: "Rollback to accepted, then prepare the isolated last-manager Leave branch."
     });

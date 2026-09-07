@@ -57,6 +57,7 @@ public class PaymentService {
     private static final String REFUND_STATUS_PARTIAL = "partial";
     private static final String REFUND_STATUS_FULL = "full";
     private static final String AUDIT_KIND_PAYMENT = "payment";
+    private static final String AUDIT_KIND_REFUND = "refund";
     private static final String AUDIT_KIND_BOOKING_PRICE_REVISION = "booking_price_revision";
     private static final String FULFILLMENT_PENDING = "pending";
     private static final String FULFILLMENT_SUCCEEDED = "succeeded";
@@ -527,7 +528,9 @@ public class PaymentService {
         } else {
             current.setStatus("partially_refunded");
         }
-        return saveAndProjectSpending(current);
+        current = saveAndProjectSpending(current);
+        saveRefundHistoryRecord(current);
+        return current;
     }
 
     private RefundResult refundCapturedPayment(
@@ -691,6 +694,7 @@ public class PaymentService {
         predecessor.setRefundReviewedByUserId(normalizeId(successorUserId));
         if (REFUND_STATUS_FULL.equals(safeText(predecessor.getRefundStatus()))) {
             saveAndProjectSpending(predecessor);
+            saveRefundHistoryRecord(predecessor);
             return;
         }
         approveFullRefund(
@@ -917,6 +921,7 @@ public class PaymentService {
 
         Payment payment = paymentsRepository.findByUserIdAndSourceId(normalizedUserId, normalizedSourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> BOOKING_STATUS_JOINED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !REFUND_STATUS_FULL.equals(safeText(item.getRefundStatus())))
@@ -963,7 +968,7 @@ public class PaymentService {
         Map<String, Payment> latestOpenBySourceId = new LinkedHashMap<>();
         for (Payment payment : paymentsRepository.findByUserIdAndSourceIdIn(normalizedUserId, normalizedSourceIds)) {
             String sourceId = normalizeId(payment == null ? null : payment.getSourceId());
-            if (!hasText(sourceId)
+            if (!hasText(sourceId) || !isPrimaryPayment(payment)
                     || BOOKING_STATUS_CANCELLED.equals(safeText(payment.getBookingStatus()))
                     || REFUND_STATUS_FULL.equals(safeText(payment.getRefundStatus()))) {
                 continue;
@@ -1036,7 +1041,10 @@ public class PaymentService {
             payment.setRefundedAtIso(cancellationTimeIso);
             payment.setStatus(REFUND_STATUS_FULL.equals(refund.status()) ? "refunded" : "partially_refunded");
         }
-        saveAndProjectSpending(payment);
+        payment = saveAndProjectSpending(payment);
+        if (refund.amount() > 0) {
+            saveRefundHistoryRecord(payment);
+        }
     }
 
     private Optional<Payment> findLatestOpenEventPayment(String userId, String sourceId) {
@@ -1047,6 +1055,7 @@ public class PaymentService {
         }
         return paymentsRepository.findByUserIdAndSourceId(normalizedUserId, normalizedSourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !REFUND_STATUS_FULL.equals(safeText(item.getRefundStatus())))
                 .max(Comparator.comparing(item -> sortableIso(
@@ -1077,6 +1086,7 @@ public class PaymentService {
                 statusValue(AuthorizationStatus.AUTHORIZED));
         return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> !hasText(provider)
                         || safeText(provider).equals(safeText(item.getProvider())))
                 .filter(item -> safeText(fulfillmentKind).equals(safeText(item.getFulfillmentKind())))
@@ -1366,14 +1376,77 @@ public class PaymentService {
             return 0D;
         }
         String status = safeText(payment.getStatus());
-        if (!Set.of("authorized", "captured", "approved", "partially_refunded", "refunded").contains(status)) {
+        boolean releasedRefund = "released".equals(status) && safeAmount(payment.getRefundedAmount()) > 0;
+        if (!releasedRefund && !Set.of("authorized", "captured", "approved", "partially_refunded", "refunded").contains(status)) {
             return 0D;
         }
-        double gross = safeAmount(payment.getAmount());
-        double refunded = "refunded".equals(status)
-                ? gross
-                : Math.min(gross, safeAmount(payment.getRefundedAmount()));
-        return roundMoney(Math.max(0D, gross - refunded));
+        return roundMoney(safeAmount(payment.getAmount()));
+    }
+
+    private boolean isPrimaryPayment(Payment payment) {
+        return payment != null
+                && (!hasText(payment.getAuditKind()) || AUDIT_KIND_PAYMENT.equals(safeText(payment.getAuditKind())));
+    }
+
+    Payment saveRefundHistoryRecord(Payment payment) {
+        double amount = safeAmount(payment == null ? null : payment.getRefundedAmount());
+        String refundedAtIso = payment == null ? null : normalizeId(payment.getRefundedAtIso());
+        String paymentKey = firstText(
+                payment == null ? null : payment.getId(),
+                payment == null ? null : payment.getCheckoutSessionId(),
+                payment == null ? null : payment.getGatewaySessionId());
+        if (amount <= 0 || !hasText(refundedAtIso) || !hasText(paymentKey)) {
+            return null;
+        }
+        String historyId = "refund:" + paymentKey;
+        Payment history = paymentsRepository.findById(historyId).orElseGet(Payment::new);
+        double previousAmount = safeAmount(history.getAccountedSpentAmount());
+        history.setId(historyId);
+        history.setUserId(normalizeId(payment.getUserId()));
+        history.setRecipientUserId(normalizeId(payment.getRecipientUserId()));
+        history.setSourceId(normalizeId(payment.getSourceId()));
+        history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
+        history.setProvider(safeText(payment.getProvider()));
+        history.setStatus("refunded");
+        history.setAmount(amount);
+        history.setCurrency(hasText(payment.getRefundCurrency())
+                ? payment.getRefundCurrency()
+                : safeCurrency(payment.getCurrency()));
+        history.setGatewayRefundId(payment.getGatewayRefundId());
+        history.setGatewayRefundStatus(payment.getGatewayRefundStatus());
+        history.setFulfillmentKind(payment.getFulfillmentKind());
+        history.setFulfillmentStatus(payment.getFulfillmentStatus());
+        history.setContextEventId(payment.getContextEventId());
+        history.setContextSubEventId(payment.getContextSubEventId());
+        history.setBookingStatus(payment.getBookingStatus());
+        history.setBookingStartAtIso(payment.getBookingStartAtIso());
+        history.setBookingEndAtIso(payment.getBookingEndAtIso());
+        history.setRefundStatus(payment.getRefundStatus());
+        history.setRefundedAmount(amount);
+        history.setRefundCurrency(history.getCurrency());
+        history.setRefundedAtIso(refundedAtIso);
+        history.setRefundRuleId(payment.getRefundRuleId());
+        history.setRefundNote(payment.getRefundNote());
+        history.setRefundRequestStatus(payment.getRefundRequestStatus());
+        history.setRefundRequestedAtIso(payment.getRefundRequestedAtIso());
+        history.setRefundRequestedByUserId(payment.getRefundRequestedByUserId());
+        history.setRefundReviewedAtIso(payment.getRefundReviewedAtIso());
+        history.setRefundReviewedByUserId(payment.getRefundReviewedByUserId());
+        history.setCancellationPolicy(payment.getCancellationPolicy());
+        history.setAuditKind(AUDIT_KIND_REFUND);
+        history.setSupersedesPaymentId(normalizeId(payment.getId()));
+        history.setAccountedSpentAmount(amount);
+        history.setCreatedDate(refundedAtIso);
+        Payment saved = paymentsRepository.save(history);
+        double delta = roundMoney(amount - previousAmount);
+        String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
+        if (mongoTemplate != null && currency.matches("[A-Z]{3}") && Math.abs(delta) >= 0.005D) {
+            incrementPaymentTotal(saved.getUserId(), "paymentIncomeTotals", currency, delta);
+            incrementPaymentTotal(saved.getUserId(), "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), "paymentSpentTotals", currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), "paymentAllTotals", currency, delta);
+        }
+        return saved;
     }
 
     private String revisionRootSessionId(Payment payment) {

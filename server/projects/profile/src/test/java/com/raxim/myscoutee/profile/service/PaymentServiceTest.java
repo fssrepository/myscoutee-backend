@@ -760,6 +760,11 @@ class PaymentServiceTest {
         assertThat(refundPreview.refundableAmount()).isEqualTo(3200d);
         assertThat(refundPreview.retainedAmount()).isZero();
         assertThat(refundPreview.ruleId()).isEqualTo("assignment-manager-takeover");
+        Payment refundHistory = paymentsBySession.get("refund:old-payment");
+        assertThat(refundHistory).isNotNull();
+        assertThat(refundHistory.getAuditKind()).isEqualTo("refund");
+        assertThat(refundHistory.getAmount()).isEqualTo(3200d);
+        assertThat(refundHistory.getCreatedDate()).isEqualTo(predecessor.getRefundedAtIso());
         assertThat(barion.releaseCalls()).isEqualTo(1);
     }
 
@@ -797,6 +802,10 @@ class PaymentServiceTest {
         assertThat(payment.getGatewayRefundStatus()).isEqualTo("succeeded");
         assertThat(payment.getStatus()).isEqualTo("partially_refunded");
         assertThat(payment.getRefundedAmount()).isEqualTo(1600d);
+        Payment refundHistory = paymentsBySession.get("refund:captured-payment");
+        assertThat(refundHistory).isNotNull();
+        assertThat(refundHistory.getAuditKind()).isEqualTo("refund");
+        assertThat(refundHistory.getAmount()).isEqualTo(1600d);
     }
 
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
