@@ -480,11 +480,13 @@ until Codex confirms that the lifecycle extension is ready.
 
 ### 8. Remove the runtime association, contact the Asset Owner and refund
 
-80. Still in Riley, open the borrowed resource-card menu. Confirm `Remove` is
-    present regardless of the remaining member count. Select it once and
-    confirm the danger dialog. The runtime Event/Sub-event association and its
-    card disappear. Casey's global Asset is not deleted, and both payment
-    histories remain available.
+80. Still in Riley, reopen Members first. Riley is already the last accepted
+    member, so Riley's own member menu must contain `Leave`; do not select it in
+    this branch. Close Members, open the borrowed resource-card menu and confirm
+    `Remove` is present regardless of the remaining member count. Select
+    `Remove` once and confirm the danger dialog. The runtime Event/Sub-event
+    association and its card disappear. Casey's global Asset is not deleted,
+    and both payment histories remain available.
 81. Open Riley's Payment history and the exact Authorized Asset expense row.
     Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
     not contain `Ask Organizer`. The localized action text must be visible; the
@@ -535,9 +537,11 @@ until Codex confirms that the lifecycle extension is ready.
 
 ### 9. Last accepted manager Leave removes only the borrowed runtime
 
-90. Wait for Codex to verify the refund branch, roll back to the accepted
-    savepoint and prepare `last-leave-ready`. Confirm Nova is again the only
-    accepted scoped Manager and the paid runtime card is present at `1/3`.
+90. Wait for Codex to verify the refund branch. Codex then rolls back to the
+    earlier accepted savepoint: this deliberately undoes Nova's Leave and the
+    complete Riley Take Over/Remove/refund branch from sections 7-8. After
+    `last-leave-ready`, confirm Nova is again the only accepted scoped Manager
+    and the paid runtime card is present at `1/3`.
 91. In Nova's own Members card, select `Leave` exactly once; do not use the
     resource-card `Remove` action in this branch. Confirm the danger dialog.
 92. Confirm the last borrower leaving removes the runtime Event/Sub-event Asset
