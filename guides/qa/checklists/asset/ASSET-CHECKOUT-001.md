@@ -246,7 +246,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     `localhost refused to connect`, `This content is blocked` or any other
     frame-denial page is an immediate FAIL.
 36. Confirm the checkout closes once and the stale overlay does not block the
-    Resource/Asset Explore surface. Without reloading, confirm the pending
+    Resource/Asset Explore surface. Without reloading, confirm the target
+    Transport resource card immediately shows `1/3`; it must never flash or
+    settle at `0/3` before a later reopen corrects it. Confirm the same pending
     resource contributes its red counter to `QA Borrow Stage` and the main
     Event aggregate.
 37. Do not start another Borrow. Report:
@@ -273,11 +275,18 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 44. Open the exact Event/Sub-event resource view and confirm the paid Transport
     has one pending borrower/resource contribution, not an accepted or global
     assignment under another scope.
-45. In **Casey**, open
-    `My Assets → Transport → QA ASSET-CHECKOUT-001 Paid Transport → Members`.
-46. Confirm Nova appears exactly once as a pending borrow request with the
-    exact Event/Sub-event timeframe, quantity and payment context.
-47. Confirm no Riley row and no request for the sibling Sub-event exists.
+45. In **Casey**, confirm exactly one `asset-admin-join-request` notification
+    identifies Nova and the paid Asset. Open `My Assets → Transport`. Before
+    opening the Asset, confirm the rose/red-counter `Pending` toggle appears
+    immediately before `+` and its Transport count is `1`.
+46. Select `Pending` once. Confirm only Assets with pending non-manual requests
+    remain, then open
+    `QA ASSET-CHECKOUT-001 Paid Transport → Members`. Confirm Nova appears
+    exactly once with the exact Event/Sub-event timeframe, quantity and payment
+    context.
+47. Confirm no Riley row and no request for the sibling Sub-event exists. The
+    owner notification and pending count must not be duplicated by reopening
+    either surface.
 48. Report:
 
     `ASSET-CHECKOUT-001 request destination ready: Nova pending once, availability 2`
@@ -288,7 +297,8 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     Casey's Asset Members surface.
 50. Select `Approve`, then confirm `Approve` exactly once.
 51. Without reloading, confirm Nova changes from pending to accepted exactly
-    once and the pending indicator disappears.
+    once, the pending indicator disappears and Casey's Transport `Pending`
+    counter changes immediately from `1` to `0` through the live update.
 52. Confirm the Asset availability remains `2`; approval must not reserve the
     already paid quantity a second time.
 53. In Nova, reopen the exact Event/Sub-event resource view. Confirm the paid
@@ -305,7 +315,10 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 
 ### 6. Verify reload reconstruction and the action variants
 
-57. Reload Casey and Nova exactly once each.
+57. Reload Casey and Nova exactly once each. Confirm Casey's Transport
+    `Pending` counter remains `0`, reconstructed from the backend user counter
+    and its frontend-local mirror rather than recalculated by the Asset-list
+    query.
 58. Reopen Casey's Asset Members and Nova's scoped resource/Payment summary.
     Confirm the same request identity, accepted state, payment values and
     availability `2` return.

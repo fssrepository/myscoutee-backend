@@ -6720,6 +6720,30 @@ publishes the exact pending-resource signal delta; the Borrow Stage and main
 Event red counters therefore update immediately instead of appearing only
 after reload.
 
+The next user-controlled approval completed the payment itself, but exposed two
+post-payment state defects. Immediately after the checkout closed, the target
+Transport card showed `0/3`; reopening through another popup reconstructed the
+correct `1/3`. The successful authorized payment also reached the write model,
+but the finance total reader did not yet include the authorized state. The
+resource completion path now patches the visible card from the returned scoped
+resource state before publishing its parent deltas, so the first rendered value
+is `1/3`, and authorized payments contribute to the persisted finance totals.
+Focused regressions cover both paths.
+
+The owner destination is now complete as well. Materializing the paid pending
+borrow enqueues exactly one `asset-admin-join-request` for Casey with the Asset,
+Event, Sub-event, request and Nova identities. Casey's user write model stores
+the pending non-manual Asset-request counts separately for Transport,
+Accommodation and Supplies. The side-menu realtime poll carries those stored
+values before the Asset popup opens; the frontend local user repository mirrors
+them, while approve/reject publishes the immediate signed delta. The Assets
+toolbar shows the rose `Pending` counter toggle immediately before `+` for all
+three categories. The Asset list read derives per-card metrics from the Asset
+documents already loaded and no longer performs a separate `AssetRequest`
+projection query. The checkpoint oracle now requires Casey's `1/0/0` stored
+pending counters and exact notification at paid-pending, then `0/0/0` after
+approval.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001

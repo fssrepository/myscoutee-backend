@@ -195,6 +195,60 @@
     };
   }
 
+  function assetPendingCounters(userId) {
+    const user = Q.ensureUser(userId, `${CHECKPOINT} Asset counter user`);
+    const asset = user && user.activities && user.activities.asset || {};
+    return {
+      carsPending: Number(asset.carsPending || 0),
+      accommodationPending: Number(asset.accommodationPending || 0),
+      suppliesPending: Number(asset.suppliesPending || 0)
+    };
+  }
+
+  function scopedJoinRequestNotifications() {
+    const outbox = Q.collection("notificationOutbox").find(notificationSelector).sort({ createdDate: 1, _id: 1 }).toArray()
+      .filter(item => Q.text(item.notificationType) === "asset-admin-join-request")
+      .map(item => ({
+        id: Q.text(item._id),
+        recipients: sorted(item.recipientUserIds),
+        assetId: Q.text(item.entityId || item.payload && item.payload.assetId),
+        eventId: Q.text(item.payload && item.payload.eventId),
+        subEventId: Q.text(item.payload && item.payload.subEventId),
+        memberUserId: Q.text(item.payload && item.payload.memberUserId),
+        requestId: Q.text(item.payload && item.payload.requestId)
+      }));
+    const inbox = Q.collection("userNotifications").find(notificationSelector).sort({ createdDate: 1, _id: 1 }).toArray()
+      .filter(item => Q.text(item.kind) === "asset-admin-join-request")
+      .map(item => ({
+        id: Q.text(item._id),
+        recipientUserId: Q.text(item.recipientUserId),
+        assetId: Q.text(item.sourceId || item.payload && item.payload.assetId),
+        eventId: Q.text(item.payload && item.payload.eventId),
+        subEventId: Q.text(item.payload && item.payload.subEventId),
+        memberUserId: Q.text(item.payload && item.payload.memberUserId),
+        requestId: Q.text(item.payload && item.payload.requestId)
+      }));
+    return { outbox, inbox };
+  }
+
+  function assertPendingOwnerNotification(requestId) {
+    const notifications = scopedJoinRequestNotifications();
+    const outbox = notifications.outbox[0];
+    const inbox = notifications.inbox[0];
+    if (notifications.outbox.length !== 1 || notifications.inbox.length !== 1
+        || !outbox || !inbox
+        || !Q.sameJson(outbox.recipients, [CASEY_ID])
+        || inbox.recipientUserId !== CASEY_ID
+        || outbox.assetId !== PAID_ID || inbox.assetId !== PAID_ID
+        || outbox.eventId !== EVENT_ID || inbox.eventId !== EVENT_ID
+        || outbox.subEventId !== SUB_EVENT_ID || inbox.subEventId !== SUB_EVENT_ID
+        || outbox.memberUserId !== NOVA_ID || inbox.memberUserId !== NOVA_ID
+        || outbox.requestId !== requestId || inbox.requestId !== requestId) {
+      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "owner-notification-diagnostic", requestId, notifications });
+      Q.fail("paid pending Asset request did not create exactly one scoped Casey notification.");
+    }
+  }
+
   function assertFinancialDelta(currentState, approvedAmount) {
     const casey = financeView(CASEY_ID);
     const nova = financeView(NOVA_ID);
@@ -706,9 +760,15 @@
   function synchronizeOwnerAssetCounters() {
     const active = Q.collection("assets").find({ ownerUserId: CASEY_ID, status: { $nin: ["T", "D", "I", "B", "UR"] } }).toArray();
     const counts = { Transport: 0, Accommodation: 0, Supplies: 0 };
+    const pending = { Transport: 0, Accommodation: 0, Supplies: 0 };
     for (const asset of active) {
       const type = Q.text(asset.type);
-      if (Object.prototype.hasOwnProperty.call(counts, type)) counts[type] += 1;
+      if (!Object.prototype.hasOwnProperty.call(counts, type)) continue;
+      counts[type] += 1;
+      pending[type] += (Array.isArray(asset.requests) ? asset.requests : []).filter(request =>
+        Q.text(request && request.status).toLowerCase() === "pending"
+        && Q.text(request && request.requestKind).toLowerCase() !== "manual"
+      ).length;
     }
     const result = Q.collection("users").updateOne(userSelector(CASEY_ID), { $set: {
       "activities.cars": counts.Transport,
@@ -716,7 +776,10 @@
       "activities.supplies": counts.Supplies,
       "activities.asset.cars": counts.Transport,
       "activities.asset.accommodation": counts.Accommodation,
-      "activities.asset.supplies": counts.Supplies
+      "activities.asset.supplies": counts.Supplies,
+      "activities.asset.carsPending": pending.Transport,
+      "activities.asset.accommodationPending": pending.Accommodation,
+      "activities.asset.suppliesPending": pending.Supplies
     } });
     if (result.matchedCount !== 1) Q.fail("could not synchronize Casey's Asset counters.");
   }
@@ -824,6 +887,8 @@
       browserSessions: browserSessionSummary(),
       browserSessionsPreparedAtIso: Q.text(currentState.browserSessionsPreparedAtIso),
       identities: currentState.context,
+      caseyAssetPendingCounters: assetPendingCounters(CASEY_ID),
+      scopedJoinRequestNotifications: scopedJoinRequestNotifications(),
       oracle: oracle()
     };
   }
@@ -1000,6 +1065,14 @@
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "paid-pending-diagnostic", oracle: current });
       Q.fail("paid-pending Asset checkout write model is not exact-once or not scoped correctly.");
     }
+    if (!Q.sameJson(assetPendingCounters(CASEY_ID), {
+      carsPending: 1,
+      accommodationPending: 0,
+      suppliesPending: 0
+    })) {
+      Q.fail("Casey's persisted Asset pending counters are not 1/0/0 after paid borrow materialization.");
+    }
+    assertPendingOwnerNotification(request.id);
     assertFinancialDelta(currentState, 3200);
     return { payment, request, resource };
   }
@@ -1063,6 +1136,14 @@
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "accepted-diagnostic", oracle: current });
       Q.fail("accepted Asset checkout state duplicated inventory/payment or escaped the exact resource scope.");
     }
+    if (!Q.sameJson(assetPendingCounters(CASEY_ID), {
+      carsPending: 0,
+      accommodationPending: 0,
+      suppliesPending: 0
+    })) {
+      Q.fail("Casey's persisted Asset pending counters did not return to 0/0/0 after approval.");
+    }
+    assertPendingOwnerNotification(request.id);
     assertFinancialDelta(currentState, 3200);
     return { payment, request, resource };
   }
@@ -1193,6 +1274,7 @@
     clearCurrentEffects();
     Q.restoreSnapshots(snapshots);
     for (const saved of users) restoreUserFields(saved);
+    synchronizeOwnerAssetCounters();
     const restored = oracle();
     if (!samePersisted(restored, expected)) {
       Q.fail(`rollback '${name}' did not restore the exact persisted savepoint.`);

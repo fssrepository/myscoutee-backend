@@ -2624,7 +2624,9 @@ public class HomeUserProfileService {
             String requestCursor) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 39
+        int fingerprintOffset = cursorPartCount >= 42
+                ? 40
+                : cursorPartCount >= 39
                 ? 37
                 : cursorPartCount >= 38 ? 36
                 : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
@@ -2704,6 +2706,9 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodation())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().supplies())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().tickets())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().carsPending())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodationPending())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().suppliesPending())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().ownEvents())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().pending())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().feedbacked())),
