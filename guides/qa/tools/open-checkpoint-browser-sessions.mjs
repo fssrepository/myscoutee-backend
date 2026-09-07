@@ -15,6 +15,7 @@ const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
 const chromeBinary = process.env.CHROME_BIN || '/opt/google/chrome/chrome';
 const argumentsList = process.argv.slice(2);
 const dismissGuidesOnly = argumentsList.includes('--dismiss-guides');
+const verifyExistingOnly = argumentsList.includes('--verify-existing');
 const checkpointId = `${argumentsList.find(argument => !argument.startsWith('--')) || process.env.QA_CHECKPOINT || ''}`.trim();
 const runtimeRoot = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 
@@ -57,6 +58,10 @@ const manifestPath = path.join(runtimeRoot, `${safeCheckpointId}.json`);
 
 await mkdir(runtimeRoot, { recursive: true, mode: 0o700 });
 await chmod(runtimeRoot, 0o700);
+if (verifyExistingOnly) {
+  await verifyExistingManagedSessions(manifestPath);
+  process.exit(0);
+}
 if (dismissGuidesOnly) {
   const existing = JSON.parse(await readFile(manifestPath, 'utf8'));
   for (const session of existing.sessions ?? []) {
@@ -206,6 +211,35 @@ async function persistManifest() {
     { mode: 0o600 }
   );
   await chmod(manifestPath, 0o600);
+}
+
+async function verifyExistingManagedSessions(filePath) {
+  if (!existsSync(filePath)) {
+    throw new Error(`No managed browser-session manifest exists for ${checkpointId}.`);
+  }
+  const existing = JSON.parse(await readFile(filePath, 'utf8'));
+  if (existing.checkpointId !== checkpointId || !Array.isArray(existing.sessions)
+      || existing.sessions.length !== checkpoint.sessions.length) {
+    throw new Error(`Managed browser-session manifest for ${checkpointId} is incomplete.`);
+  }
+  for (const session of existing.sessions) {
+    if (`${session.sessionKind ?? ''}` !== 'demo') continue;
+    const port = Number(session.devToolsPort);
+    const userId = `${session.userId ?? ''}`.trim();
+    const sessionId = `${session.sessionId ?? ''}`.trim();
+    const configuredSession = checkpoint.sessions.find(item => item.userId === userId);
+    const targetUrl = `${configuredSession?.targetUrl || checkpoint.targetUrl || defaults.targetUrl || 'http://localhost/game'}`;
+    if (!Number.isInteger(port) || port <= 0 || !userId || !sessionId) {
+      throw new Error(`Managed browser-session state for ${userId || 'unknown user'} is incomplete.`);
+    }
+    await waitForConfiguredSession(port, storageScope, userId, sessionId, targetUrl);
+    session.readinessVerifiedAt = new Date().toISOString();
+    process.stdout.write(`${session.actor}: /auth/me and realtime ready.\n`);
+  }
+  existing.readinessVerifiedAt = new Date().toISOString();
+  await writeFile(filePath, `${JSON.stringify(existing, null, 2)}\n`, { mode: 0o600 });
+  await chmod(filePath, 0o600);
+  process.stdout.write(`${checkpointId}: all managed sessions passed the final readiness gate.\n`);
 }
 
 function positiveInteger(raw, fallback) {
@@ -669,6 +703,7 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
         const raw = localStorage.getItem(${JSON.stringify(sessionKey)});
         const session = raw ? JSON.parse(raw) : null;
         let authentication = { status: 0, userId: '' };
+        let realtime = { status: 0, userId: '', hasCounters: false };
         try {
           const response = await fetch(
             '/api/auth/me?userId=' + encodeURIComponent(${JSON.stringify(userId)}),
@@ -686,6 +721,23 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
             status: response.status,
             userId: typeof body?.id === 'string' ? body.id : ''
           };
+          const realtimeResponse = await fetch('/api/auth/me/realtime/long-poll', {
+            method: 'POST',
+            cache: 'no-store',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-App-Session-Id': ${JSON.stringify(sessionId)},
+              'X-App-Session-Kind': 'demo',
+              'X-Demo-User-Id': ${JSON.stringify(userId)}
+            },
+            body: JSON.stringify({ userId: ${JSON.stringify(userId)}, cursor: null })
+          });
+          const realtimeBody = await realtimeResponse.json().catch(() => null);
+          realtime = {
+            status: realtimeResponse.status,
+            userId: typeof realtimeBody?.userId === 'string' ? realtimeBody.userId : '',
+            hasCounters: Boolean(realtimeBody?.counters)
+          };
         } catch {
           // Keep polling while the application/backend route is still starting.
         }
@@ -694,21 +746,27 @@ async function waitForConfiguredSession(port, scope, userId, sessionId, destinat
           sessionId: session?.kind === 'demo' ? session.sessionId : '',
           authStatus: authentication.status,
           authenticatedUserId: authentication.userId,
+          realtimeStatus: realtime.status,
+          realtimeUserId: realtime.userId,
+          realtimeHasCounters: realtime.hasCounters,
           pathname: window.location.pathname
         };
       })()`);
     } catch {
       return false;
     }
-    if (value?.authStatus === 401 || value?.authStatus === 403) {
+    if ([401, 403].includes(value?.authStatus) || [401, 403].includes(value?.realtimeStatus)) {
       throw new Error(
-        `Authenticated readiness for ${userId} returned HTTP ${value.authStatus}.`
+        `Authenticated readiness for ${userId} returned auth HTTP ${value?.authStatus ?? 0} and realtime HTTP ${value?.realtimeStatus ?? 0}.`
       );
     }
     return value?.userId === userId
       && value?.sessionId === sessionId
       && value?.authStatus === 200
       && value?.authenticatedUserId === userId
+      && value?.realtimeStatus === 200
+      && value?.realtimeUserId === userId
+      && value?.realtimeHasCounters === true
       && value?.pathname === expectedPath;
   }, 30000, `MyScoutee session ${userId} on DevTools port ${port}`);
 }
