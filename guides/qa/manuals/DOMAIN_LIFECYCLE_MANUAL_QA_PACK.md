@@ -6684,31 +6684,31 @@ The first step-31 Pay attempt reached Nova's provider-owned waiting surface,
 but Ava's nested Barion confirmation showed `localhost refused to connect`.
 Read-only frame inspection and a direct HTTP response proved that the simulator
 served the valid challenge with `X-Frame-Options: DENY` and
-`frame-ancestors 'none'`: its narrow trusted-browser list included the waiting
-and admin surfaces but omitted `/bank-auth/` and `/barion/bank-auth/`. The
-sibling payment-simulator now permits only those two additional challenge
-routes in same-origin or local MyScoutee frames; other simulator routes remain
-frame-denied. The focused regression and complete Go owning-package suite
-passed, the single existing simulator service was serially rebuilt/replaced,
-and live headers matched both the positive and negative contracts. The failed
-Pay attempt is not accepted evidence. `rollback-revised-payment-ready` removed
-it and most recently restored the exact zero-payment pre-step-31 boundary with
-a fresh active-basket expiry of `2026-09-07T04:46:26.134Z`.
+`frame-ancestors 'none'`: its trusted embedded-UI list omitted the Stripe and
+Barion bank-auth result surface. Those two UI route families now use the same
+local-frame policy as the temporary-access authorization surface; non-UI
+simulator endpoints retain default frame denial. The failed Pay attempt is not
+accepted evidence.
 
-The replacement attempt proved a second, separate simulator boundary defect.
+The replacement attempt proved a second boundary defect in the nested simulator flow.
 Approval itself completed and the backend produced exactly one authorized
 Barion payment, one succeeded client fulfillment, one pending borrow request,
 one quantity reservation and one scoped resource projection, but the nested
-dialog rendered `This content is blocked` after the approval POST. The POST
-targets `/test/bank-auth/.../approve` and
-`/test/barion/bank-auth/.../approve` were still receiving the simulator's
-default frame denial. Those two exact authorization-action route families now
-share the same local-frame policy as their GET challenge; unrelated `/test`
-routes remain `X-Frame-Options: DENY` with `frame-ancestors 'none'`. The full
-simulator owning-package suite passed, the one running simulator was serially
-replaced, and live POST/negative response headers prove both sides. Because
-the visual completion contract failed, this otherwise-successful payment was
-not accepted as QA evidence and was rolled back to `revised-payment-ready`.
+dialog rendered `This content is blocked` after approval. The first diagnosis
+incorrectly attributed that page to the POST route's default frame header.
+Code-path diagnosis proved that the POST had completed and then redirected the
+simulator-owned inner iframe to MyScoutee's payment return URL; MyScoutee
+correctly refuses to render there as a nested document. Stripe and Barion
+approve/decline now redirect that small frame to a simulator-owned terminal
+result page, which reports the outcome and auto-closes through the outer
+simulator. The action POSTs and unrelated non-UI routes remain denied as
+frames. The complete simulator owning-package suite passed, the one service
+was serially replaced, and live headers prove embedded UI allowed plus non-UI
+default denial. Because the visual completion contract failed, the otherwise-
+successful payment was not accepted as QA evidence. The guarded rollback
+restored `revised-payment-ready` with one fresh confirmed basket from
+`2026-09-07T04:59:31.870Z` through `2026-09-07T05:09:31.870Z` and zero scoped
+payment/request/inventory/resource side effects.
 
 The same repair pass closed two payment-lifecycle gaps before replay. A basket
 is now changed to non-purgeable `pay/pending` before external authorization,
