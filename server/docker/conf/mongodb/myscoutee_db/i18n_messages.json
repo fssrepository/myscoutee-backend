@@ -12660,6 +12660,18 @@
     "value": "Payments made with this card will appear here."
   },
   {
+    "_id": "i18n-message-en-payment-history-ask-asset-owner",
+    "key": "payment.history.ask.asset.owner",
+    "lang": "en",
+    "value": "Ask Asset Owner"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-ask-owner-error",
+    "key": "payment.history.ask.owner.error",
+    "lang": "en",
+    "value": "The Asset Owner chat could not be opened."
+  },
+  {
     "_id": "i18n-message-en-payment-history-close",
     "key": "payment.history.close",
     "lang": "en",
@@ -12712,6 +12724,66 @@
     "key": "payment.history.open",
     "lang": "en",
     "value": "Open payment history"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-approve",
+    "key": "payment.history.refund.approve",
+    "lang": "en",
+    "value": "Approve refund"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-approve-error",
+    "key": "payment.history.refund.approve.error",
+    "lang": "en",
+    "value": "The refund could not be approved."
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-approve-message",
+    "key": "payment.history.refund.approve.message",
+    "lang": "en",
+    "value": "Approve the full refund for this payment?"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-approve-title",
+    "key": "payment.history.refund.approve.title",
+    "lang": "en",
+    "value": "Approve refund?"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-approved",
+    "key": "payment.history.refund.approved",
+    "lang": "en",
+    "value": "Refund approved"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-pending",
+    "key": "payment.history.refund.pending",
+    "lang": "en",
+    "value": "Refund requested"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-request",
+    "key": "payment.history.refund.request",
+    "lang": "en",
+    "value": "Request refund"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-request-error",
+    "key": "payment.history.refund.request.error",
+    "lang": "en",
+    "value": "The refund request could not be sent."
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-request-message",
+    "key": "payment.history.refund.request.message",
+    "lang": "en",
+    "value": "Send a full refund request to the payment recipient?"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-request-title",
+    "key": "payment.history.refund.request.title",
+    "lang": "en",
+    "value": "Request refund?"
   },
   {
     "_id": "i18n-message-en-payment-history-spent",
@@ -12886,6 +12958,12 @@
     "key": "payment.status.released",
     "lang": "en",
     "value": "Released"
+  },
+  {
+    "_id": "i18n-message-en-payment-status-refunded",
+    "key": "payment.status.refunded",
+    "lang": "en",
+    "value": "Refunded"
   },
   {
     "_id": "i18n-message-en-payment-status-requires-action",
@@ -32070,6 +32148,18 @@
     "value": "Az ezzel a kártyával végzett fizetések itt jelennek meg."
   },
   {
+    "_id": "i18n-message-hu-payment-history-ask-asset-owner",
+    "key": "payment.history.ask.asset.owner",
+    "lang": "hu",
+    "value": "Kérdés az eszköz tulajdonosához"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-ask-owner-error",
+    "key": "payment.history.ask.owner.error",
+    "lang": "hu",
+    "value": "Az eszköz tulajdonosával folytatott beszélgetés nem nyitható meg."
+  },
+  {
     "_id": "i18n-message-hu-payment-history-close",
     "key": "payment.history.close",
     "lang": "hu",
@@ -32122,6 +32212,66 @@
     "key": "payment.history.open",
     "lang": "hu",
     "value": "Fizetési előzmények megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-approve",
+    "key": "payment.history.refund.approve",
+    "lang": "hu",
+    "value": "Visszatérítés jóváhagyása"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-approve-error",
+    "key": "payment.history.refund.approve.error",
+    "lang": "hu",
+    "value": "A visszatérítés nem hagyható jóvá."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-approve-message",
+    "key": "payment.history.refund.approve.message",
+    "lang": "hu",
+    "value": "Jóváhagyod a fizetés teljes visszatérítését?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-approve-title",
+    "key": "payment.history.refund.approve.title",
+    "lang": "hu",
+    "value": "Jóváhagyod a visszatérítést?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-approved",
+    "key": "payment.history.refund.approved",
+    "lang": "hu",
+    "value": "Visszatérítés jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-pending",
+    "key": "payment.history.refund.pending",
+    "lang": "hu",
+    "value": "Visszatérítés kérve"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-request",
+    "key": "payment.history.refund.request",
+    "lang": "hu",
+    "value": "Visszatérítés kérése"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-request-error",
+    "key": "payment.history.refund.request.error",
+    "lang": "hu",
+    "value": "A visszatérítési kérés nem küldhető el."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-request-message",
+    "key": "payment.history.refund.request.message",
+    "lang": "hu",
+    "value": "Elküldöd a teljes visszatérítési kérést a fizetés kedvezményezettjének?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-request-title",
+    "key": "payment.history.refund.request.title",
+    "lang": "hu",
+    "value": "Visszatérítést kérsz?"
   },
   {
     "_id": "i18n-message-hu-payment-history-spent",
@@ -32296,6 +32446,12 @@
     "key": "payment.status.released",
     "lang": "hu",
     "value": "Felszabadítva"
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-refunded",
+    "key": "payment.status.refunded",
+    "lang": "hu",
+    "value": "Visszatérítve"
   },
   {
     "_id": "i18n-message-hu-payment-status-requires-action",

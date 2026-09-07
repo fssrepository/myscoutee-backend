@@ -473,9 +473,11 @@ extension below.
     histories remain available.
 81. Open Riley's Payment history and the exact Authorized Asset expense row.
     Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
-    not contain `Ask Organizer`.
+    not contain `Ask Organizer`. The localized action text must be visible; the
+    raw key `payment.history.ask.asset.owner` must never be rendered.
 82. Select `Ask Asset Owner`. Confirm Casey is the recipient even though Casey
-    was never a scoped borrower. Before sending, confirm no empty chat was
+    was never a scoped borrower. Before sending, confirm the chat header already
+    shows Riley's and Casey's two participant avatars, while no empty chat was
     created. Send this exact first message once:
 
     `QA ASSET-CHECKOUT-001: Riley asks Casey about the paid borrowed Transport.`
