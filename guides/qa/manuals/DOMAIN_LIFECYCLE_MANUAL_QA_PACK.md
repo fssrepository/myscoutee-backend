@@ -6790,6 +6790,20 @@ the bold title. The Riley menu repair resolves runtime manager settings by the
 exact assigned Asset ID when the physical Asset owner and runtime contributor
 are different. Continue at step 74; do not replay Nova's Leave.
 
+The first Riley Take Over review exposed a required-policy deadlock. The shared
+policy input rendered acknowledgement checkboxes only for optional policies,
+while the Take Over submit gate correctly required `QA Borrow policy`; the
+earlier normal Borrow had appeared to work only because that path omitted the
+same validation and persisted an empty accepted-policy list. Both local and
+HTTP flows now render the required checkbox, block normal Borrow and Take Over
+until it is accepted, carry the accepted ID through the replacement action and
+persist it on Riley's request/payment. The canonical fixture now stores the
+nested Spring record identity as `_id`. The guarded
+`repair-manager-left-required-policy` command normalized the retained paid
+Asset to `qa-borrow-policy`, left Riley's acceptance empty for the manual
+action and recaptured the exact `manager-left` savepoint. Reload Riley once,
+then resume step 74 without replaying Nova's Leave.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
@@ -6848,10 +6862,11 @@ this row's pre-payment basket Cancel or successful Barion payment.
   parent Event/Sub-event window. The date control immediately normalizes an
   attempted End-before/equal-Start value and either endpoint outside that
   parent window, so an invalid range cannot remain in the review. Quantity outside
-  current availability is clamped/rejected. The required lending policy is a
-  mandatory read-only term, matching Event checkout; only optional policies
-  expose acknowledgement controls. These input gates create no server write. A
-  valid quantity/time/policy set produces one deterministic line item and total.
+  current availability is clamped/rejected. Lending policies expose their
+  acknowledgement controls in the review. Every required policy must be
+  accepted before the forward action enables; optional acknowledgements do not
+  block it. These input gates create no server write. A valid
+  quantity/time/policy set produces one deterministic line item and total.
 - Select `Confirm borrow` once. This moves to the locked payment phase but does
   not call the provider and creates no server payment/session, request,
   assignment or inventory delta. It creates exactly one synchronized confirmed
@@ -6929,10 +6944,13 @@ this row's pre-payment basket Cancel or successful Barion payment.
 - Nova leaving while Riley remains keeps the runtime association at accepted
   occupancy `1/3` and gives Riley one Take Over-required notification. Riley
   reuses Nova's browser after logout/login. Take Over must open the replacement
-  Barion payment flow for the predecessor's exact `HUF 3,200`, and transfer only
-  after successful authorization. Completion links both payments, releases and
-  fully refunds Nova's predecessor authorization, keeps Casey's net income at
-  one payment, and makes Riley the scoped Manager. Nova receives the refund
+  Barion payment flow for the predecessor's exact `HUF 3,200`; Riley must accept
+  the required lending policy, and transfer occurs only after successful
+  authorization. Completion links both payments, releases and fully refunds
+  Nova's predecessor authorization, keeps Casey's net income at one payment,
+  and makes Riley the scoped Manager. Immediately afterward the reused browser
+  switches to Nova to prove the refund-result notification and contextual
+  `Refunded` history, then switches back to Riley. Nova receives the refund
   result only, not a generic manager-change notification.
 - Riley then uses resource-card `Remove`. This status-deletes only the exact
   runtime scope and retains Casey's global Asset plus both payment histories.
