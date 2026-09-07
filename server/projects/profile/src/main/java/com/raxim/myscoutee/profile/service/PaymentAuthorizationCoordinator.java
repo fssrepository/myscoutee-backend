@@ -31,7 +31,8 @@ public class PaymentAuthorizationCoordinator {
                 authorization,
                 gatewayEventId);
         Payment payment = transition.payment();
-        if (payment == null || !"authorized".equalsIgnoreCase(payment.getStatus())) {
+        if (payment == null || !("authorized".equalsIgnoreCase(payment.getStatus())
+                || "captured".equalsIgnoreCase(payment.getStatus()))) {
             return transition;
         }
         if ("succeeded".equalsIgnoreCase(payment.getFulfillmentStatus())) {
@@ -65,6 +66,10 @@ public class PaymentAuthorizationCoordinator {
 
     private void compensateUnfulfilledAuthorization(Payment payment, String reason) {
         Payment failed = paymentService.markGatewayFulfillment(payment.getId(), false, reason);
-        gatewayOperationService.enqueueRelease(failed, "fulfillment-compensation");
+        if ("captured".equalsIgnoreCase(failed.getStatus())) {
+            paymentService.refundFailedFulfillment(failed, reason);
+        } else {
+            gatewayOperationService.enqueueRelease(failed, "fulfillment-compensation");
+        }
     }
 }

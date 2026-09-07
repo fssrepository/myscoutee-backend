@@ -463,7 +463,9 @@ public class PaymentService {
         }
         if (payment != null
                 && FULFILLMENT_KIND_CLIENT.equals(safeText(payment.getFulfillmentKind()))
-                && statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))
+                && Set.of(
+                        statusValue(AuthorizationStatus.AUTHORIZED),
+                        statusValue(AuthorizationStatus.CAPTURED)).contains(safeText(payment.getStatus()))
                 && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
             markGatewayFulfillment(payment.getId(), true, null);
         }
@@ -475,6 +477,14 @@ public class PaymentService {
                 reviewedAtIso,
                 "owner-approved-request",
                 "Full refund approved by the payment recipient.");
+    }
+
+    public Payment refundFailedFulfillment(Payment payment, String reason) {
+        return approveFullRefund(
+                payment,
+                nowIso(),
+                "fulfillment-compensation",
+                hasText(reason) ? reason : "The paid checkout could not be fulfilled.");
     }
 
     public Payment approvePolicyRefund(
@@ -523,11 +533,6 @@ public class PaymentService {
         current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
         current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
         current.setRefundNote(hasText(refundNote) ? refundNote : "Refund approved by the payment recipient.");
-        if (full) {
-            if (!"released".equals(safeText(current.getStatus()))) current.setStatus("refunded");
-        } else {
-            current.setStatus("partially_refunded");
-        }
         current = saveAndProjectSpending(current);
         saveRefundHistoryRecord(current);
         return current;
@@ -1039,7 +1044,6 @@ public class PaymentService {
         payment.setRefundStatus(refund.status());
         if (refund.amount() > 0) {
             payment.setRefundedAtIso(cancellationTimeIso);
-            payment.setStatus(REFUND_STATUS_FULL.equals(refund.status()) ? "refunded" : "partially_refunded");
         }
         payment = saveAndProjectSpending(payment);
         if (refund.amount() > 0) {
@@ -1083,7 +1087,8 @@ public class PaymentService {
         Set<String> reusableStatuses = Set.of(
                 statusValue(AuthorizationStatus.AUTHORIZATION_PENDING),
                 statusValue(AuthorizationStatus.CUSTOMER_ACTION_REQUIRED),
-                statusValue(AuthorizationStatus.AUTHORIZED));
+                statusValue(AuthorizationStatus.AUTHORIZED),
+                statusValue(AuthorizationStatus.CAPTURED));
         return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPrimaryPayment)
@@ -1214,9 +1219,9 @@ public class PaymentService {
             case "captured", "released", "expired" -> false;
             case "authorized" -> Set.of("captured", "released", "expired", "failed").contains(next);
             case "customer_action_required" -> Set.of(
-                    "authorization_pending", "authorized", "expired", "failed").contains(next);
+                    "authorization_pending", "authorized", "captured", "expired", "failed").contains(next);
             case "failed" -> Set.of(
-                    "authorization_pending", "customer_action_required", "authorized", "expired").contains(next);
+                    "authorization_pending", "customer_action_required", "authorized", "captured", "expired").contains(next);
             default -> true;
         };
     }

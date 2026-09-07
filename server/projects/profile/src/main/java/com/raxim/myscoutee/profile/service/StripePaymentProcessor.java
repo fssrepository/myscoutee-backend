@@ -69,10 +69,10 @@ public class StripePaymentProcessor implements PaymentProcessor {
     @Override
     public Capabilities capabilities() {
         return new Capabilities(
+                false,
                 true,
-                true,
-                true,
-                Duration.ofDays(7),
+                false,
+                Duration.ZERO,
                 Set.of("card"));
     }
 
@@ -122,7 +122,6 @@ public class StripePaymentProcessor implements PaymentProcessor {
                 .putMetadata("source_id", request.sourceId())
                 .putMetadata("user_id", request.userId())
                 .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
-                        .setCaptureMethod(SessionCreateParams.PaymentIntentData.CaptureMethod.MANUAL)
                         .setSetupFutureUsage(SessionCreateParams.PaymentIntentData.SetupFutureUsage.OFF_SESSION)
                         .putMetadata("checkout_session_id", normalizedPaymentSessionId)
                         .putMetadata("source_id", request.sourceId())
@@ -168,7 +167,6 @@ public class StripePaymentProcessor implements PaymentProcessor {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(toMinorUnits(request.totalAmount(), request.currency()))
                     .setCurrency(request.currency().toLowerCase(Locale.ROOT))
-                    .setCaptureMethod(PaymentIntentCreateParams.CaptureMethod.MANUAL)
                     .setPaymentMethod(paymentMethodReference)
                     .addPaymentMethodType("card")
                     .setConfirm(true)

@@ -19,7 +19,8 @@ public interface PaymentProcessor extends PaymentGateway {
                 session.id(),
                 session.id(),
                 switch (session.status()) {
-                    case "approved", "authorized" -> AuthorizationStatus.AUTHORIZED;
+                    case "approved", "captured" -> AuthorizationStatus.CAPTURED;
+                    case "authorized" -> AuthorizationStatus.AUTHORIZED;
                     case "requires_action" -> AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
                     case "failed" -> AuthorizationStatus.FAILED;
                     default -> AuthorizationStatus.AUTHORIZATION_PENDING;

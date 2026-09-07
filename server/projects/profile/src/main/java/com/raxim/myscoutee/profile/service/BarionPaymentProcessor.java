@@ -78,10 +78,10 @@ public class BarionPaymentProcessor implements PaymentProcessor {
     @Override
     public Capabilities capabilities() {
         return new Capabilities(
+                false,
                 true,
-                true,
-                true,
-                Duration.ofDays(7),
+                false,
+                Duration.ZERO,
                 Set.of("bank_card"));
     }
 
@@ -111,8 +111,7 @@ public class BarionPaymentProcessor implements PaymentProcessor {
                 .toList();
         Map<String, Object> barionRequest = new LinkedHashMap<>();
         barionRequest.put("POSKey", posKey);
-        barionRequest.put("PaymentType", "DelayedCapture");
-        barionRequest.put("DelayedCapturePeriod", "7.00:00:00");
+        barionRequest.put("PaymentType", "Immediate");
         barionRequest.put("GuestCheckOut", true);
         barionRequest.put("FundingSources", List.of("BankCard"));
         barionRequest.put("PaymentRequestId", "myscoutee:" + paymentSessionId);
@@ -134,11 +133,14 @@ public class BarionPaymentProcessor implements PaymentProcessor {
         String paymentId = paymentId(response.get("PaymentId"));
         String gatewayUrl = text(response.get("GatewayUrl"));
         String providerStatus = text(response.get("Status"));
-        AuthorizationStatus status = "authorized".equalsIgnoreCase(providerStatus)
-                ? AuthorizationStatus.AUTHORIZED
-                : AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
+        AuthorizationStatus status = switch (providerStatus.toLowerCase(Locale.ROOT)) {
+            case "succeeded" -> AuthorizationStatus.CAPTURED;
+            case "authorized" -> AuthorizationStatus.AUTHORIZED;
+            case "failed", "canceled" -> AuthorizationStatus.FAILED;
+            default -> AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
+        };
         if (status == AuthorizationStatus.CUSTOMER_ACTION_REQUIRED && !StringUtils.hasText(gatewayUrl)) {
-            throw new RuntimeException("Barion delayed-capture start failed: " + sanitizedProviderError(response));
+            throw new RuntimeException("Barion payment start failed: " + sanitizedProviderError(response));
         }
         return new AuthorizationResult(
                 getType(),
