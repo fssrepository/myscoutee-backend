@@ -82,7 +82,32 @@ class AssetsServiceTest {
         MongoConverter converter = mock(MongoConverter.class);
         EventCheckoutBasketService basketService = mock(EventCheckoutBasketService.class);
         Asset visibleAsset = asset();
-        visibleAsset.setRequests(List.of());
+        visibleAsset.setRequests(List.of(new AssetRequestRecord(
+                "request-pending",
+                "u2",
+                "Member Two",
+                "MT",
+                "man",
+                "pending",
+                "Awaiting owner confirmation.",
+                "borrow",
+                "2030-05-12T08:00:00Z",
+                new AssetRequestBookingRecord(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2030-05-12T09:00:00Z",
+                        "2030-05-12T11:00:00Z",
+                        1,
+                        0d,
+                        "USD",
+                        List.of(),
+                        null,
+                        false))));
         Document facet = new Document("metadata", List.of(new Document("total", 1)))
                 .append("items", List.of(new Document("_id", "asset-doc-1")));
 
@@ -116,8 +141,10 @@ class AssetsServiceTest {
                 "availability");
 
         assertThat(page.items()).extracting(AssetDto::id).containsExactly("asset-1");
+        assertThat(page.items().getFirst().metrics().pendingItems()).isEqualTo(1);
         assertThat(page.checkoutResultStates()).containsEntry("asset-1", "pending");
         verify(basketService).loadResultStatesByEvent("u2", List.of("asset-1"));
+        verify(mongoTemplate, never()).find(any(Query.class), eq(AssetRequest.class));
     }
 
     @Test

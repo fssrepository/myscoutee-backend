@@ -6744,6 +6744,17 @@ projection query. The checkpoint oracle now requires Casey's `1/0/0` stored
 pending counters and exact notification at paid-pending, then `0/0/0` after
 approval.
 
+After those repairs, the guarded rollback restored `revised-payment-ready`.
+The exact active quantity-`1` basket is re-armed from
+`2026-09-07T05:49:37.131Z` through `2026-09-07T05:59:37.131Z`, an exact
+10-minute interval. The five disclosed material basket generations remain,
+while payments, requests, notifications, inventory/resource effects and
+stored Asset memberships are zero; Casey's stored Asset pending counters are
+`0/0/0`. The user may continue at step 31. If the prior successful payment
+cleared Nova's browser-local draft and orange `Continue borrow` is absent, only
+steps 1-18 are repeated to recreate that local entry, followed by another
+guarded rollback; steps 19-30 remain accepted.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001

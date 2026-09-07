@@ -900,7 +900,7 @@ class HomeUserProfileServiceTest {
                 13,
                 new Users.UserChatCountersRecord(4, 1, 1, 1, 1, 0),
                 new Users.UserEventCountersRecord(20, 6, 2, 5, 7, 1, 3),
-                new Users.UserAssetCountersRecord(8, 9, 10, 11),
+                new Users.UserAssetCountersRecord(8, 9, 10, 11, 18, 19, 20),
                 new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
                 15,
                 16,
@@ -1009,6 +1009,9 @@ class HomeUserProfileServiceTest {
         assertThat(asset.accommodation()).isEqualTo(9);
         assertThat(asset.supplies()).isEqualTo(10);
         assertThat(asset.tickets()).isEqualTo(11);
+        assertThat(asset.carsPending()).isEqualTo(18);
+        assertThat(asset.accommodationPending()).isEqualTo(19);
+        assertThat(asset.suppliesPending()).isEqualTo(20);
 
         assertThat(eventFeedback.ownEvents()).isEqualTo(4);
         assertThat(eventFeedback.pending()).isEqualTo(13);
