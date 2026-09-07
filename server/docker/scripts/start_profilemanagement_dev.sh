@@ -23,26 +23,7 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-bootrun_debug_args=()
-bootrun_jvm_arguments=()
-if [[ -n "${PROFILEMANAGEMENT_DEBUG_PORT:-}" ]]; then
-  bootrun_jvm_arguments+=(
-    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${PROFILEMANAGEMENT_DEBUG_PORT}"
-  )
-fi
-if [[ "${PROFILEMANAGEMENT_HOT_RELOAD:-true}" == "true" ]]; then
-  # Gradle may temporarily remove many output classes while recompiling. A
-  # DevTools trigger file defers restart until the existing owner build has
-  # completed and its finalizer touches the classpath marker.
-  bootrun_jvm_arguments+=("-Dspring.devtools.restart.trigger-file=.reloadtrigger")
-fi
-if (( ${#bootrun_jvm_arguments[@]} > 0 )); then
-  bootrun_debug_args+=(
-    "-Dspring-boot.run.jvmArguments=${bootrun_jvm_arguments[*]}"
-  )
-fi
-
-./gradlew "${bootrun_debug_args[@]}" :projects:profile:bootRun &
+./gradlew :projects:profile:bootRun &
 bootrun_pid=$!
 
 if [[ "${PROFILEMANAGEMENT_HOT_RELOAD:-true}" != "true" ]]; then

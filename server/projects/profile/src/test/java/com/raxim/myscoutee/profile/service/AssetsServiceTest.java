@@ -684,12 +684,6 @@ class AssetsServiceTest {
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset asset = asset();
-        asset.setPoliciesEnabled(true);
-        asset.setPolicies(List.of(new AssetPolicyRecord(
-                "policy-1",
-                "Required policy",
-                "Accept before borrowing.",
-                true)));
         AtomicReference<Asset> assetState = new AtomicReference<>(asset);
         when(assetsRepository.findByAssetId("asset-1"))
                 .thenAnswer(invocation -> Optional.of(assetState.get()));
@@ -723,23 +717,13 @@ class AssetsServiceTest {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
-            var rejectedJoin = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
-                    "asset-1",
-                    "event-1",
-                    "subevent-1",
-                    "u2",
-                    "join",
-                    borrowRequestDto("request-missing-policy", "u2", "pending", "event-1")));
-
-            assertThat(rejectedJoin).isNull();
-
             var joined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                     "asset-1",
                     "event-1",
                     "subevent-1",
                     "u2",
                     "join",
-                    borrowRequestDto("request-2", "u2", "pending", "event-1", List.of("policy-1"))));
+                    borrowRequestDto("request-2", "u2", "pending", "event-1")));
 
             assertThat(joined.status()).isEqualTo("pending");
             assertThat(joined.previousStatus()).isNull();
@@ -781,7 +765,7 @@ class AssetsServiceTest {
                     "subevent-1",
                     "u2",
                     "join",
-                    borrowRequestDto("request-3", "u2", "pending", "event-1", List.of("policy-1"))));
+                    borrowRequestDto("request-3", "u2", "pending", "event-1")));
 
             assertThat(rejoined.previousStatus()).isNull();
             assertThat(rejoined.status()).isEqualTo("pending");
@@ -1030,19 +1014,6 @@ class AssetsServiceTest {
                 mock(UserActivityCountersService.class));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
-        var rejected = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
-                "asset-1",
-                "event-1",
-                "subevent-1",
-                "u3",
-                "take-over",
-                null,
-                "successor-payment",
-                "u2"));
-
-        assertThat(rejected).isNull();
-        verifyNoInteractions(paymentService);
-
         var takenOver = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                 "asset-1",
                 "event-1",
@@ -1051,8 +1022,7 @@ class AssetsServiceTest {
                 "take-over",
                 null,
                 "successor-payment",
-                "u2",
-                List.of("policy-1")));
+                "u2"));
 
         assertThat(takenOver.status()).isEqualTo("accepted");
         assertThat(takenOver.acceptedMemberDelta()).isZero();
@@ -1066,7 +1036,7 @@ class AssetsServiceTest {
                     assertThat(request.booking().totalAmount()).isEqualTo(3200d);
                     assertThat(request.booking().previousTotalAmount()).isNull();
                     assertThat(request.booking().paymentSessionId()).isEqualTo("successor-payment");
-                    assertThat(request.booking().acceptedPolicyIds()).containsExactly("policy-1");
+                    assertThat(request.booking().acceptedPolicyIds()).isEmpty();
                 });
         verify(paymentService).completeAssetPaymentReplacement(
                 replacement, "u3", "event-1", "subevent-1");
@@ -3506,15 +3476,6 @@ class AssetsServiceTest {
     }
 
     private AssetMemberRequestDto borrowRequestDto(String requestId, String userId, String status, String eventId) {
-        return borrowRequestDto(requestId, userId, status, eventId, List.of());
-    }
-
-    private AssetMemberRequestDto borrowRequestDto(
-            String requestId,
-            String userId,
-            String status,
-            String eventId,
-            List<String> acceptedPolicyIds) {
         return new AssetMemberRequestDto(
                 requestId,
                 userId,
@@ -3538,7 +3499,7 @@ class AssetsServiceTest {
                         1,
                         0d,
                         "USD",
-                        acceptedPolicyIds,
+                        List.of(),
                         null,
                         null),
                 List.of());
