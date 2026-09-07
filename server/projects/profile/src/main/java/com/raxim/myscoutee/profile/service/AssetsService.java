@@ -3136,43 +3136,6 @@ public class AssetsService {
                 cloneRequestBooking(request.booking()));
     }
 
-    private AssetRequestRecord withAssetRequestPaymentSession(
-            AssetRequestRecord request,
-            String paymentSessionId) {
-        AssetRequestBookingRecord booking = cloneRequestBooking(request == null ? null : request.booking());
-        if (request == null || booking == null) {
-            return request;
-        }
-        AssetRequestBookingRecord updatedBooking = new AssetRequestBookingRecord(
-                booking.eventId(),
-                booking.eventTitle(),
-                booking.subEventId(),
-                booking.subEventTitle(),
-                booking.slotKey(),
-                booking.slotLabel(),
-                booking.timeframe(),
-                booking.startAtIso(),
-                booking.endAtIso(),
-                booking.quantity(),
-                booking.totalAmount(),
-                booking.previousTotalAmount(),
-                booking.currency(),
-                booking.acceptedPolicyIds(),
-                normalizeId(paymentSessionId),
-                booking.inventoryApplied());
-        return new AssetRequestRecord(
-                request.id(),
-                request.userId(),
-                request.name(),
-                request.initials(),
-                request.gender(),
-                request.status(),
-                request.note(),
-                request.requestKind(),
-                request.requestedAtIso(),
-                updatedBooking);
-    }
-
     private AssetRequestRecord withAssetRequestTakeOverAmount(
             AssetRequestRecord request,
             AssetRequestRecord departedManagerRequest) {
