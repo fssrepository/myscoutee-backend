@@ -6680,6 +6680,44 @@ instants. The initial disabled-button report was traced to the already-open tab
 still running the preceding frontend bundle after the watcher had synced the
 corrected build.
 
+The first step-31 Pay attempt reached Nova's provider-owned waiting surface,
+but Ava's nested Barion confirmation showed `localhost refused to connect`.
+Read-only frame inspection and a direct HTTP response proved that the simulator
+served the valid challenge with `X-Frame-Options: DENY` and
+`frame-ancestors 'none'`: its narrow trusted-browser list included the waiting
+and admin surfaces but omitted `/bank-auth/` and `/barion/bank-auth/`. The
+sibling payment-simulator now permits only those two additional challenge
+routes in same-origin or local MyScoutee frames; other simulator routes remain
+frame-denied. The focused regression and complete Go owning-package suite
+passed, the single existing simulator service was serially rebuilt/replaced,
+and live headers matched both the positive and negative contracts. The failed
+Pay attempt is not accepted evidence. `rollback-revised-payment-ready` removed
+it and most recently restored the exact zero-payment pre-step-31 boundary with
+a fresh active-basket expiry of `2026-09-07T04:46:26.134Z`.
+
+The replacement attempt proved a second, separate simulator boundary defect.
+Approval itself completed and the backend produced exactly one authorized
+Barion payment, one succeeded client fulfillment, one pending borrow request,
+one quantity reservation and one scoped resource projection, but the nested
+dialog rendered `This content is blocked` after the approval POST. The POST
+targets `/test/bank-auth/.../approve` and
+`/test/barion/bank-auth/.../approve` were still receiving the simulator's
+default frame denial. Those two exact authorization-action route families now
+share the same local-frame policy as their GET challenge; unrelated `/test`
+routes remain `X-Frame-Options: DENY` with `frame-ancestors 'none'`. The full
+simulator owning-package suite passed, the one running simulator was serially
+replaced, and live POST/negative response headers prove both sides. Because
+the visual completion contract failed, this otherwise-successful payment was
+not accepted as QA evidence and was rolled back to `revised-payment-ready`.
+
+The same repair pass closed two payment-lifecycle gaps before replay. A basket
+is now changed to non-purgeable `pay/pending` before external authorization,
+so a three-minute customer-action window may cross the original 10-minute
+basket deadline without losing its reservation. Asset Explore also publishes
+the exact pending-resource signal delta after a paid borrow is materialized;
+the Borrow Stage and main Event red counters therefore update immediately
+instead of appearing only after reload.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
@@ -6742,7 +6780,8 @@ this row's pre-payment basket Cancel or successful Barion payment.
   Borrow Basket across the Angular signal, scoped local draft and shared
   local/HTTP repository. The basket expiry is exactly 10 minutes after its
   creation. Orange `Continue borrow`, in-place reopen and one clean reload must
-  reconstruct its amount, timeframe, quantity and policy set. If the canonical
+  reconstruct its amount, timeframe, quantity and policy set and open the
+  payment phase directly for an unchanged confirmed selection. If the canonical
   server basket is later absent or expires, the following successful Explore
   load clears the scoped local draft and restores the fresh `Borrow` action.
 - Use `Back` once. The unchanged review is green `Continue borrow`, and that

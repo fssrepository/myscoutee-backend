@@ -100,6 +100,10 @@ saved Event or Asset checkout basket has the same **10-minute** expiry window;
 10-minute expiry has been processed, the next successful Explore load removes
 the matching browser-local draft instead of exposing a local-only
 `Continue borrow` action.
+Once `Pay` starts, the server changes the basket to `pay/pending` before
+opening provider authorization. That in-flight state is not purgeable, even
+when the provider-owned three-minute window crosses the basket's original
+10-minute expiry.
 `rollback-payment-ready` cannot manufacture that browser-local entry if it was
 already cleared: after such a rollback the user repeats steps 1-18 once while
 Codex keeps the already captured server boundary at `payment-ready`.
@@ -230,13 +234,19 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 34. Confirm MyScoutee keeps its waiting popup open while the provider-owned
     confirmation remains pending. The popup shows a three-minute countdown,
     can always be closed with X, and polls status without reloading the whole
-    MyScoutee popup.
+    MyScoutee popup. If the basket's original 10-minute deadline passes during
+    this window, the active payment and reserved basket remain intact.
 35. In Ava's always-visible `3DS` simulator menu, open the pending list and
     approve Nova's exact transaction once. Confirm the provider view changes
     from waiting to an animated success check, remains visible briefly, and
-    closes/returns automatically.
+    closes/returns automatically. The nested bank-auth surface must render in
+    the existing confirmation dialog both before and after approval;
+    `localhost refused to connect`, `This content is blocked` or any other
+    frame-denial page is an immediate FAIL.
 36. Confirm the checkout closes once and the stale overlay does not block the
-    Resource/Asset Explore surface.
+    Resource/Asset Explore surface. Without reloading, confirm the pending
+    resource contributes its red counter to `QA Borrow Stage` and the main
+    Event aggregate.
 37. Do not start another Borrow. Report:
 
     `ASSET-CHECKOUT-001 paid pending: checkout closed once and UI stayed responsive`

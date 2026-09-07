@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,6 +31,7 @@ import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -44,6 +46,7 @@ class PaymentServiceTest {
         EventCheckoutBasketService basketService = org.mockito.Mockito.mock(EventCheckoutBasketService.class);
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         SavedPaymentMethodsService savedPaymentMethodsService = org.mockito.Mockito.mock(SavedPaymentMethodsService.class);
+        AtomicBoolean basketProtected = new AtomicBoolean();
         AtomicReference<Payment> concurrentPayment = new AtomicReference<>();
         AtomicInteger saveCalls = new AtomicInteger();
         EventCheckoutRequestDto request = withPaymentMethod(
@@ -53,6 +56,11 @@ class PaymentServiceTest {
         when(repository.findByUserIdAndSourceId("user-race", "event-race")).thenReturn(List.of());
         when(repository.findByCheckoutSessionId(anyString()))
                 .thenAnswer(invocation -> Optional.ofNullable(concurrentPayment.get()));
+        when(basketService.updateBasketState(any(EventCheckoutStateChangeRequestDto.class)))
+                .thenAnswer(invocation -> {
+                    basketProtected.set(true);
+                    return null;
+                });
 
         SavedPaymentMethod method = new SavedPaymentMethod();
         method.setUserId("user-race");
@@ -72,6 +80,7 @@ class PaymentServiceTest {
                     EventCheckoutRequestDto authoritativeRequest,
                     String paymentSessionId,
                     String providerPaymentMethodReference) {
+                assertThat(basketProtected).as("basket is protected before external authorization").isTrue();
                 return new AuthorizationResult(
                         "stripe",
                         "pi-race",
@@ -126,6 +135,13 @@ class PaymentServiceTest {
         assertThat(concurrentPayment.get().getStatus()).isEqualTo("authorized");
         assertThat(concurrentPayment.get().getFulfillmentStatus()).isEqualTo("pending");
         verify(repository, times(2)).save(any(Payment.class));
+        verify(basketService).updateBasketState(org.mockito.ArgumentMatchers.argThat(state ->
+                "user-race".equals(state.userId())
+                        && "event-race".equals(state.sourceId())
+                        && "pay".equals(state.checkoutState())
+                        && "pending".equals(state.resultState())
+                        && state.checkoutSessionId() != null
+                        && state.checkoutSessionId().startsWith("pay_")));
         verify(basketService, never()).saveBasket(any(EventCheckoutRequestDto.class));
     }
 

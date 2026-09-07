@@ -35,6 +35,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBaske
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -252,6 +253,14 @@ public class PaymentService {
         payment = saveAndProjectSpending(payment);
 
         try {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    authoritativeRequest.userId(),
+                    authoritativeRequest.sourceId(),
+                    authoritativeRequest.slotSourceId(),
+                    "pay",
+                    FULFILLMENT_PENDING,
+                    null,
+                    payment.getCheckoutSessionId()));
             AuthorizationResult authorization = resolveProcessor(normalizedProvider)
                     .prepareAuthorization(
                             authoritativeRequest,
@@ -261,17 +270,6 @@ public class PaymentService {
                     payment.getCheckoutSessionId(),
                     authorization,
                     null).payment();
-            if (!Set.of(
-                            statusValue(AuthorizationStatus.AUTHORIZED),
-                            statusValue(AuthorizationStatus.CAPTURED))
-                            .contains(safeText(payment.getStatus()))
-                    && !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))
-                    && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
-                eventCheckoutBasketService.saveBasket(withCheckoutState(
-                        authoritativeRequest,
-                        "pay",
-                        payment.getCheckoutSessionId()));
-            }
             return toCheckoutSession(payment);
         } catch (OptimisticLockingFailureException conflict) {
             throw conflict;
