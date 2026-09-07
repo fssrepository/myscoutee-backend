@@ -564,10 +564,24 @@ public class PaymentService {
                     operationKey);
         }
         validateRefundResult(payment, amount, result);
-        payment.setGatewayRefundId(normalizeId(result.gatewayRefundId()));
-        payment.setGatewayRefundStatus(result.status().name().toLowerCase(java.util.Locale.ROOT));
-        payment.setLastGatewayError(result.status() == RefundStatus.SUCCEEDED ? null : safeText(result.providerStatus()));
-        paymentsRepository.save(payment);
+        OptimisticLockingFailureException lastConflict = null;
+        Payment current = paymentsRepository.findById(payment.getId()).orElse(payment);
+        for (int attempt = 0; attempt < 3; attempt += 1) {
+            current.setGatewayRefundId(normalizeId(result.gatewayRefundId()));
+            current.setGatewayRefundStatus(result.status().name().toLowerCase(java.util.Locale.ROOT));
+            current.setLastGatewayError(result.status() == RefundStatus.SUCCEEDED ? null : safeText(result.providerStatus()));
+            try {
+                paymentsRepository.save(current);
+                lastConflict = null;
+                break;
+            } catch (OptimisticLockingFailureException conflict) {
+                lastConflict = conflict;
+                current = paymentsRepository.findById(payment.getId()).orElseThrow(() -> conflict);
+            }
+        }
+        if (lastConflict != null) {
+            throw lastConflict;
+        }
         if (result.status() == RefundStatus.PENDING) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The payment provider is still processing the refund.");
         }
@@ -697,8 +711,8 @@ public class PaymentService {
         predecessor.setRefundRequestStatus("approved");
         predecessor.setRefundReviewedAtIso(nowIso);
         predecessor.setRefundReviewedByUserId(normalizeId(successorUserId));
+        predecessor = saveAndProjectSpending(predecessor);
         if (REFUND_STATUS_FULL.equals(safeText(predecessor.getRefundStatus()))) {
-            saveAndProjectSpending(predecessor);
             saveRefundHistoryRecord(predecessor);
             return;
         }
