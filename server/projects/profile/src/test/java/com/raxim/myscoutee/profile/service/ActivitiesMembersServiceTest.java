@@ -959,7 +959,7 @@ class ActivitiesMembersServiceTest {
                     assertThat(entry.status()).isEqualTo("pending");
                     assertThat(entry.pendingSource()).isEqualTo("member");
                     assertThat(entry.requestKind()).isEqualTo("join");
-                    assertThat(entry.statusText()).isEqualTo("Waiting for admin approval.");
+                    assertThat(entry.statusText()).isEqualTo("Waiting for owner approval.");
                 });
         verify(usersRepository, never()).findByUserId("owner-1");
     }

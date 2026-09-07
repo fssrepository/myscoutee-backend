@@ -442,6 +442,9 @@ public class ActivitiesMembersService {
             boolean borrowerInitiated = "borrow".equalsIgnoreCase(safeText(request.requestKind()));
             member.setPendingSource(borrowerInitiated ? "member" : "admin");
             member.setRequestKind(borrowerInitiated ? REQUEST_KIND_JOIN : REQUEST_KIND_INVITE);
+            if (borrowerInitiated) {
+                member.setStatusText("Waiting for owner approval.");
+            }
         }
         String requestedAtIso = normalizeDateTime(request.requestedAtIso(), Instant.now().toString());
         String actionAtIso = acceptedStoredManager
