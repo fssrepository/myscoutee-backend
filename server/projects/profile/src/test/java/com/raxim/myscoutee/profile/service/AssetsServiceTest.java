@@ -850,8 +850,8 @@ class AssetsServiceTest {
                 .filteredOn(notification -> "asset-assignment-takeover-required".equals(notification.type()))
                 .singleElement()
                 .satisfies(notification -> {
-                    assertThat(notification.title()).isEqualTo("Asset needs a new manager — Take Over");
-                    assertThat(notification.body()).isEqualTo("Open the Asset.");
+                    assertThat(notification.title()).isEqualTo("notification.asset.takeover.required.title");
+                    assertThat(notification.body()).isEqualTo("notification.asset.takeover.required.message");
                     assertThat(notification.payload())
                             .containsEntry("notification_title_key", "notification.asset.takeover.required.title")
                             .containsEntry("notification_message_key", "notification.asset.takeover.required.message");

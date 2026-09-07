@@ -15426,6 +15426,780 @@
     "value": "This ticket was already used."
   },
   {
+    "_id": "i18n-message-en-notification-matches-count",
+    "key": "notification.matches.count",
+    "lang": "en",
+    "value": "{count} matching notifications"
+  },
+  {
+    "_id": "i18n-message-en-notification-status-read",
+    "key": "notification.status.read",
+    "lang": "en",
+    "value": "Read"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-member",
+    "key": "notification.source.member",
+    "lang": "en",
+    "value": "Member"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-chat",
+    "key": "notification.source.chat",
+    "lang": "en",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-event",
+    "key": "notification.source.event",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-event-admin",
+    "key": "notification.source.event.admin",
+    "lang": "en",
+    "value": "Event admin"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-asset",
+    "key": "notification.source.asset",
+    "lang": "en",
+    "value": "Asset"
+  },
+  {
+    "_id": "i18n-message-en-notification-source-scheduled",
+    "key": "notification.source.scheduled",
+    "lang": "en",
+    "value": "Scheduled"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-admin-params-changed-title",
+    "key": "notification.kind.admin-params-changed.title",
+    "lang": "en",
+    "value": "Platform parameters changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-admin-params-changed-message",
+    "key": "notification.kind.admin-params-changed.message",
+    "lang": "en",
+    "value": "{sectionLabel} parameters were saved. Recompute tasks were queued."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-assignment-taken-over-title",
+    "key": "notification.kind.asset-assignment-taken-over.title",
+    "lang": "en",
+    "value": "Asset manager changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-assignment-taken-over-message",
+    "key": "notification.kind.asset-assignment-taken-over.message",
+    "lang": "en",
+    "value": "{assetTitle} has a new manager."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-assignment-takeover-required-title",
+    "key": "notification.kind.asset-assignment-takeover-required.title",
+    "lang": "en",
+    "value": "Asset needs a new manager — Take Over"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-assignment-takeover-required-message",
+    "key": "notification.kind.asset-assignment-takeover-required.message",
+    "lang": "en",
+    "value": "Open the Asset."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-invitation-accepted-title",
+    "key": "notification.kind.asset-invitation-accepted.title",
+    "lang": "en",
+    "value": "Asset invitation accepted"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-invitation-accepted-message",
+    "key": "notification.kind.asset-invitation-accepted.message",
+    "lang": "en",
+    "value": "{memberName} accepted the invitation to use {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-manager-promoted-title",
+    "key": "notification.kind.asset-manager-promoted.title",
+    "lang": "en",
+    "value": "Asset manager updated"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-manager-promoted-message",
+    "key": "notification.kind.asset-manager-promoted.message",
+    "lang": "en",
+    "value": "Manager access was added for {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-manager-revoked-title",
+    "key": "notification.kind.asset-manager-revoked.title",
+    "lang": "en",
+    "value": "Asset manager updated"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-manager-revoked-message",
+    "key": "notification.kind.asset-manager-revoked.message",
+    "lang": "en",
+    "value": "Manager access was removed from {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-owner-left-title",
+    "key": "notification.kind.asset-owner-left.title",
+    "lang": "en",
+    "value": "Asset needs a new owner"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-owner-left-message",
+    "key": "notification.kind.asset-owner-left.message",
+    "lang": "en",
+    "value": "{assetTitle} needs a new owner."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-restored-title",
+    "key": "notification.kind.asset-restored.title",
+    "lang": "en",
+    "value": "Asset restored"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-restored-message",
+    "key": "notification.kind.asset-restored.message",
+    "lang": "en",
+    "value": "{assetTitle} is available again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-review-title",
+    "key": "notification.kind.asset-review.title",
+    "lang": "en",
+    "value": "Asset needs review"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-review-message",
+    "key": "notification.kind.asset-review.message",
+    "lang": "en",
+    "value": "Review {assetTitle} and choose the next action."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-takeover-title",
+    "key": "notification.kind.asset-takeover.title",
+    "lang": "en",
+    "value": "Asset responsibility changed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-takeover-message",
+    "key": "notification.kind.asset-takeover.message",
+    "lang": "en",
+    "value": "Responsibility for {assetTitle} changed."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-unavailable-title",
+    "key": "notification.kind.asset-unavailable.title",
+    "lang": "en",
+    "value": "Asset unavailable"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-unavailable-message",
+    "key": "notification.kind.asset-unavailable.message",
+    "lang": "en",
+    "value": "{assetTitle} is no longer available."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-invite-title",
+    "key": "notification.kind.asset-member-invite.title",
+    "lang": "en",
+    "value": "Asset invitation"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-invite-message",
+    "key": "notification.kind.asset-member-invite.message",
+    "lang": "en",
+    "value": "Asset invitation"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-admin-join-request-title",
+    "key": "notification.kind.asset-admin-join-request.title",
+    "lang": "en",
+    "value": "Asset access requested"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-admin-join-request-message",
+    "key": "notification.kind.asset-admin-join-request.message",
+    "lang": "en",
+    "value": "{memberName} requested access."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-request-accepted-title",
+    "key": "notification.kind.asset-member-request-accepted.title",
+    "lang": "en",
+    "value": "Borrow accepted"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-request-accepted-message",
+    "key": "notification.kind.asset-member-request-accepted.message",
+    "lang": "en",
+    "value": "Your request for {assetTitle} was accepted."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-left-title",
+    "key": "notification.kind.asset-member-left.title",
+    "lang": "en",
+    "value": "Asset member left"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-left-message",
+    "key": "notification.kind.asset-member-left.message",
+    "lang": "en",
+    "value": "{memberName} left {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-invitation-declined-title",
+    "key": "notification.kind.asset-invitation-declined.title",
+    "lang": "en",
+    "value": "Asset invitation declined"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-invitation-declined-message",
+    "key": "notification.kind.asset-invitation-declined.message",
+    "lang": "en",
+    "value": "{memberName} declined the invitation to use {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-invitation-withdrawn-title",
+    "key": "notification.kind.asset-member-invitation-withdrawn.title",
+    "lang": "en",
+    "value": "Asset invitation withdrawn"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-invitation-withdrawn-message",
+    "key": "notification.kind.asset-member-invitation-withdrawn.message",
+    "lang": "en",
+    "value": "Your invitation to use {assetTitle} was withdrawn."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-request-declined-title",
+    "key": "notification.kind.asset-member-request-declined.title",
+    "lang": "en",
+    "value": "Asset request declined"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-request-declined-message",
+    "key": "notification.kind.asset-member-request-declined.message",
+    "lang": "en",
+    "value": "Your request to use {assetTitle} was declined."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-removed-title",
+    "key": "notification.kind.asset-member-removed.title",
+    "lang": "en",
+    "value": "Asset membership removed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-asset-member-removed-message",
+    "key": "notification.kind.asset-member-removed.message",
+    "lang": "en",
+    "value": "You were removed from {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-admin-join-request-title",
+    "key": "notification.kind.event-admin-join-request.title",
+    "lang": "en",
+    "value": "Join request"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-admin-join-request-message",
+    "key": "notification.kind.event-admin-join-request.message",
+    "lang": "en",
+    "value": "Join request received."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-admin-join-request-cancelled-title",
+    "key": "notification.kind.event-admin-join-request-cancelled.title",
+    "lang": "en",
+    "value": "Join request cancelled"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-admin-join-request-cancelled-message",
+    "key": "notification.kind.event-admin-join-request-cancelled.message",
+    "lang": "en",
+    "value": "Join request cancelled."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-asset-assignment-removed-title",
+    "key": "notification.kind.event-asset-assignment-removed.title",
+    "lang": "en",
+    "value": "Asset assignment removed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-asset-assignment-removed-message",
+    "key": "notification.kind.event-asset-assignment-removed.message",
+    "lang": "en",
+    "value": "Assignment ended · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-checkout-basket-updated-title",
+    "key": "notification.kind.event-checkout-basket-updated.title",
+    "lang": "en",
+    "value": "Booking updated"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-checkout-basket-updated-message",
+    "key": "notification.kind.event-checkout-basket-updated.message",
+    "lang": "en",
+    "value": "{memberName} updated the booking for {eventTitle}. Review it again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-feedback-submitted-title",
+    "key": "notification.kind.event-feedback-submitted.title",
+    "lang": "en",
+    "value": "New event feedback"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-feedback-submitted-message",
+    "key": "notification.kind.event-feedback-submitted.message",
+    "lang": "en",
+    "value": "You received feedback for {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-invitation-accepted-title",
+    "key": "notification.kind.event-invitation-accepted.title",
+    "lang": "en",
+    "value": "Event invitation accepted"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-invitation-accepted-message",
+    "key": "notification.kind.event-invitation-accepted.message",
+    "lang": "en",
+    "value": "{memberName} accepted the invitation to {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-invite-title",
+    "key": "notification.kind.event-invite.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-invite-message",
+    "key": "notification.kind.event-invite.message",
+    "lang": "en",
+    "value": "Event invitation"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-invite-message-location",
+    "key": "notification.kind.event-invite.message.location",
+    "lang": "en",
+    "value": "Invitation · {location}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-approved-title",
+    "key": "notification.kind.event-member-approved.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-approved-message",
+    "key": "notification.kind.event-member-approved.message",
+    "lang": "en",
+    "value": "Your request to join {eventTitle} was approved."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-joined-title",
+    "key": "notification.kind.event-member-joined.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-joined-message",
+    "key": "notification.kind.event-member-joined.message",
+    "lang": "en",
+    "value": "{memberName} joined {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-left-title",
+    "key": "notification.kind.event-member-left.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-left-message",
+    "key": "notification.kind.event-member-left.message",
+    "lang": "en",
+    "value": "{memberName} left {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-removed-title",
+    "key": "notification.kind.event-member-removed.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-removed-message",
+    "key": "notification.kind.event-member-removed.message",
+    "lang": "en",
+    "value": "{memberName} was removed from {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-disqualified-title",
+    "key": "notification.kind.event-member-disqualified.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-disqualified-message",
+    "key": "notification.kind.event-member-disqualified.message",
+    "lang": "en",
+    "value": "{memberName} was disqualified from {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-reinstated-title",
+    "key": "notification.kind.event-member-reinstated.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-member-reinstated-message",
+    "key": "notification.kind.event-member-reinstated.message",
+    "lang": "en",
+    "value": "{memberName} was reinstated to {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-review-title",
+    "key": "notification.kind.event-review.title",
+    "lang": "en",
+    "value": "Event needs review"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-review-message",
+    "key": "notification.kind.event-review.message",
+    "lang": "en",
+    "value": "Review {eventTitle} and choose the next action."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-unavailable-title",
+    "key": "notification.kind.event-unavailable.title",
+    "lang": "en",
+    "value": "Event unavailable"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-unavailable-message",
+    "key": "notification.kind.event-unavailable.message",
+    "lang": "en",
+    "value": "{eventTitle} is no longer available."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-restored-title",
+    "key": "notification.kind.event-restored.title",
+    "lang": "en",
+    "value": "Event restored"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-restored-message",
+    "key": "notification.kind.event-restored.message",
+    "lang": "en",
+    "value": "{eventTitle} is available again."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-review-title",
+    "key": "notification.kind.event-stage-review.title",
+    "lang": "en",
+    "value": "Tournament scores need review"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-review-message",
+    "key": "notification.kind.event-stage-review.message",
+    "lang": "en",
+    "value": "Complete the scores for {stageTitle} and finalize the stage."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-closed-title",
+    "key": "notification.kind.event-stage-closed.title",
+    "lang": "en",
+    "value": "Tournament stage closed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-closed-message",
+    "key": "notification.kind.event-stage-closed.message",
+    "lang": "en",
+    "value": "{stageTitle} is closed while scores are reviewed."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-finalized-title",
+    "key": "notification.kind.event-stage-finalized.title",
+    "lang": "en",
+    "value": "{stageTitle} finalized"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-finalized-message",
+    "key": "notification.kind.event-stage-finalized.message",
+    "lang": "en",
+    "value": "{stageTitle} has been finalized."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-scores-under-review-title",
+    "key": "notification.kind.event-stage-scores-under-review.title",
+    "lang": "en",
+    "value": "{stageTitle} scores under review"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-scores-under-review-message",
+    "key": "notification.kind.event-stage-scores-under-review.message",
+    "lang": "en",
+    "value": "{stageTitle} scores were reopened and are under review."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-advanced-title",
+    "key": "notification.kind.event-stage-advanced.title",
+    "lang": "en",
+    "value": "Advanced to {nextStageTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-advanced-message",
+    "key": "notification.kind.event-stage-advanced.message",
+    "lang": "en",
+    "value": "You advanced from {stageTitle} to {nextStageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-not-advanced-title",
+    "key": "notification.kind.event-stage-not-advanced.title",
+    "lang": "en",
+    "value": "Did not advance from {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-stage-not-advanced-message",
+    "key": "notification.kind.event-stage-not-advanced.message",
+    "lang": "en",
+    "value": "You did not advance from {stageTitle} to {nextStageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-open-title",
+    "key": "notification.kind.event-supplies-open.title",
+    "lang": "en",
+    "value": "Supplies requested"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-open-message",
+    "key": "notification.kind.event-supplies-open.message",
+    "lang": "en",
+    "value": "Contributions open · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-contribution-added-title",
+    "key": "notification.kind.event-supplies-contribution-added.title",
+    "lang": "en",
+    "value": "Supplies contribution added"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-contribution-added-message",
+    "key": "notification.kind.event-supplies-contribution-added.message",
+    "lang": "en",
+    "value": "{quantity} added · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-contribution-removed-title",
+    "key": "notification.kind.event-supplies-contribution-removed.title",
+    "lang": "en",
+    "value": "Supplies contribution removed"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-supplies-contribution-removed-message",
+    "key": "notification.kind.event-supplies-contribution-removed.message",
+    "lang": "en",
+    "value": "{quantity} removed · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticket-checked-in-title",
+    "key": "notification.kind.event-ticket-checked-in.title",
+    "lang": "en",
+    "value": "Ticket checked in"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticket-checked-in-message",
+    "key": "notification.kind.event-ticket-checked-in.message",
+    "lang": "en",
+    "value": "Your ticket was checked in."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticket-replay-warning-title",
+    "key": "notification.kind.event-ticket-replay-warning.title",
+    "lang": "en",
+    "value": "Ticket reuse warning"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticket-replay-warning-message",
+    "key": "notification.kind.event-ticket-replay-warning.message",
+    "lang": "en",
+    "value": "This ticket was already used."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticketing-enabled-title",
+    "key": "notification.kind.event-ticketing-enabled.title",
+    "lang": "en",
+    "value": "Your event ticket is ready"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-ticketing-enabled-message",
+    "key": "notification.kind.event-ticketing-enabled.message",
+    "lang": "en",
+    "value": "Ticketing is now enabled for {eventTitle}. Open Tickets."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-watchlist-available-title",
+    "key": "notification.kind.event-watchlist-available.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-watchlist-available-message",
+    "key": "notification.kind.event-watchlist-available.message",
+    "lang": "en",
+    "value": "A spot is available. Open the event to book it."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-suspended-title",
+    "key": "notification.kind.event-tournament-suspended.title",
+    "lang": "en",
+    "value": "Tournament suspended"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-suspended-message",
+    "key": "notification.kind.event-tournament-suspended.message",
+    "lang": "en",
+    "value": "{stageTitle} is paused for review."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-started-title",
+    "key": "notification.kind.event-tournament-started.title",
+    "lang": "en",
+    "value": "{stageTitle} started"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-started-message",
+    "key": "notification.kind.event-tournament-started.message",
+    "lang": "en",
+    "value": "{stageTitle} has started. Groups are ready."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-won-title",
+    "key": "notification.kind.event-tournament-won.title",
+    "lang": "en",
+    "value": "Won the tournament"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-won-message",
+    "key": "notification.kind.event-tournament-won.message",
+    "lang": "en",
+    "value": "You won in {stageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-not-won-title",
+    "key": "notification.kind.event-tournament-not-won.title",
+    "lang": "en",
+    "value": "Did not win the tournament"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-not-won-message",
+    "key": "notification.kind.event-tournament-not-won.message",
+    "lang": "en",
+    "value": "You did not win in {stageTitle}."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-start-review-title",
+    "key": "notification.kind.event-tournament-start-review.title",
+    "lang": "en",
+    "value": "Tournament needs start review"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-tournament-start-review-message",
+    "key": "notification.kind.event-tournament-start-review.message",
+    "lang": "en",
+    "value": "Finalize members and start {stageTitle} when ready."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-random-groups-title",
+    "key": "notification.kind.event-random-groups.title",
+    "lang": "en",
+    "value": "{roomTitle} is ready"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-event-random-groups-message",
+    "key": "notification.kind.event-random-groups.message",
+    "lang": "en",
+    "value": "Your group for {parentEventTitle} is ready."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-card-expired-title",
+    "key": "notification.kind.payment-card-expired.title",
+    "lang": "en",
+    "value": "Payment card expired"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-card-expired-message",
+    "key": "notification.kind.payment-card-expired.message",
+    "lang": "en",
+    "value": "Your saved card ending in {last4} has expired."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-refund-approved-title",
+    "key": "notification.kind.payment-refund-approved.title",
+    "lang": "en",
+    "value": "Payment refunded"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-refund-approved-message",
+    "key": "notification.kind.payment-refund-approved.message",
+    "lang": "en",
+    "value": "Your payment was refunded."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-refund-requested-title",
+    "key": "notification.kind.payment-refund-requested.title",
+    "lang": "en",
+    "value": "Refund requested"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-payment-refund-requested-message",
+    "key": "notification.kind.payment-refund-requested.message",
+    "lang": "en",
+    "value": "A payer requested a refund."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-user-rated-title",
+    "key": "notification.kind.user-rated.title",
+    "lang": "en",
+    "value": "New rating"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-user-rated-message",
+    "key": "notification.kind.user-rated.message",
+    "lang": "en",
+    "value": "You received a new rating."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-security-login-title",
+    "key": "notification.kind.security-login.title",
+    "lang": "en",
+    "value": "Security alert"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-security-login-message",
+    "key": "notification.kind.security-login.message",
+    "lang": "en",
+    "value": "Review this login activity."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-watchlist-available-title",
+    "key": "notification.event.watchlist.available.title",
+    "lang": "en",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-watchlist-available-message",
+    "key": "notification.event.watchlist.available.message",
+    "lang": "en",
+    "value": "A spot is available. Open the event to book it."
+  },
+  {
     "_id": "i18n-message-en-asset-ticket-scan-camera-off",
     "key": "asset.ticket.scan.camera.off",
     "lang": "en",
@@ -34924,6 +35698,780 @@
     "key": "notification.ticket.reuse.message",
     "lang": "hu",
     "value": "Ezt a jegyet már felhasználták."
+  },
+  {
+    "_id": "i18n-message-hu-notification-matches-count",
+    "key": "notification.matches.count",
+    "lang": "hu",
+    "value": "{count} egyező értesítés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-status-read",
+    "key": "notification.status.read",
+    "lang": "hu",
+    "value": "Olvasott"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-member",
+    "key": "notification.source.member",
+    "lang": "hu",
+    "value": "Tag"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-chat",
+    "key": "notification.source.chat",
+    "lang": "hu",
+    "value": "Chat"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-event",
+    "key": "notification.source.event",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-event-admin",
+    "key": "notification.source.event.admin",
+    "lang": "hu",
+    "value": "Eseményadmin"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-asset",
+    "key": "notification.source.asset",
+    "lang": "hu",
+    "value": "Eszköz"
+  },
+  {
+    "_id": "i18n-message-hu-notification-source-scheduled",
+    "key": "notification.source.scheduled",
+    "lang": "hu",
+    "value": "Ütemezett"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-admin-params-changed-title",
+    "key": "notification.kind.admin-params-changed.title",
+    "lang": "hu",
+    "value": "A platform paraméterei megváltoztak"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-admin-params-changed-message",
+    "key": "notification.kind.admin-params-changed.message",
+    "lang": "hu",
+    "value": "A(z) {sectionLabel} paraméterei mentve. Az újraszámítási feladatok sorba álltak."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-assignment-taken-over-title",
+    "key": "notification.kind.asset-assignment-taken-over.title",
+    "lang": "hu",
+    "value": "Megváltozott az eszköz managere"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-assignment-taken-over-message",
+    "key": "notification.kind.asset-assignment-taken-over.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} új managert kapott."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-assignment-takeover-required-title",
+    "key": "notification.kind.asset-assignment-takeover-required.title",
+    "lang": "hu",
+    "value": "Az eszközhöz új manager kell — Átvétel"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-assignment-takeover-required-message",
+    "key": "notification.kind.asset-assignment-takeover-required.message",
+    "lang": "hu",
+    "value": "Nyisd meg az eszközt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-invitation-accepted-title",
+    "key": "notification.kind.asset-invitation-accepted.title",
+    "lang": "hu",
+    "value": "Eszközmeghívás elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-invitation-accepted-message",
+    "key": "notification.kind.asset-invitation-accepted.message",
+    "lang": "hu",
+    "value": "{memberName} elfogadta a meghívást a(z) {assetTitle} használatára."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-manager-promoted-title",
+    "key": "notification.kind.asset-manager-promoted.title",
+    "lang": "hu",
+    "value": "Az eszköz managere frissült"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-manager-promoted-message",
+    "key": "notification.kind.asset-manager-promoted.message",
+    "lang": "hu",
+    "value": "Managerjogosultság hozzáadva: {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-manager-revoked-title",
+    "key": "notification.kind.asset-manager-revoked.title",
+    "lang": "hu",
+    "value": "Az eszköz managere frissült"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-manager-revoked-message",
+    "key": "notification.kind.asset-manager-revoked.message",
+    "lang": "hu",
+    "value": "Managerjogosultság eltávolítva: {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-owner-left-title",
+    "key": "notification.kind.asset-owner-left.title",
+    "lang": "hu",
+    "value": "Az eszköznek új tulajdonos kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-owner-left-message",
+    "key": "notification.kind.asset-owner-left.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} új tulajdonosra vár."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-restored-title",
+    "key": "notification.kind.asset-restored.title",
+    "lang": "hu",
+    "value": "Eszköz visszaállítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-restored-message",
+    "key": "notification.kind.asset-restored.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} újra elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-review-title",
+    "key": "notification.kind.asset-review.title",
+    "lang": "hu",
+    "value": "Az eszközt ellenőrizni kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-review-message",
+    "key": "notification.kind.asset-review.message",
+    "lang": "hu",
+    "value": "Ellenőrizd a(z) {assetTitle} eszközt, majd válassz műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-takeover-title",
+    "key": "notification.kind.asset-takeover.title",
+    "lang": "hu",
+    "value": "Megváltozott az eszköz felelőse"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-takeover-message",
+    "key": "notification.kind.asset-takeover.message",
+    "lang": "hu",
+    "value": "Megváltozott a(z) {assetTitle} felelőse."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-unavailable-title",
+    "key": "notification.kind.asset-unavailable.title",
+    "lang": "hu",
+    "value": "Az eszköz nem elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-unavailable-message",
+    "key": "notification.kind.asset-unavailable.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} már nem elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-invite-title",
+    "key": "notification.kind.asset-member-invite.title",
+    "lang": "hu",
+    "value": "Eszközmeghívás"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-invite-message",
+    "key": "notification.kind.asset-member-invite.message",
+    "lang": "hu",
+    "value": "Eszközmeghívás"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-admin-join-request-title",
+    "key": "notification.kind.asset-admin-join-request.title",
+    "lang": "hu",
+    "value": "Eszköz-hozzáférési kérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-admin-join-request-message",
+    "key": "notification.kind.asset-admin-join-request.message",
+    "lang": "hu",
+    "value": "{memberName} hozzáférést kért."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-request-accepted-title",
+    "key": "notification.kind.asset-member-request-accepted.title",
+    "lang": "hu",
+    "value": "Kölcsönzés elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-request-accepted-message",
+    "key": "notification.kind.asset-member-request-accepted.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} eszközre küldött kérelmedet elfogadták."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-left-title",
+    "key": "notification.kind.asset-member-left.title",
+    "lang": "hu",
+    "value": "Egy eszköztag távozott"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-left-message",
+    "key": "notification.kind.asset-member-left.message",
+    "lang": "hu",
+    "value": "{memberName} kilépett innen: {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-invitation-declined-title",
+    "key": "notification.kind.asset-invitation-declined.title",
+    "lang": "hu",
+    "value": "Eszközmeghívás elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-invitation-declined-message",
+    "key": "notification.kind.asset-invitation-declined.message",
+    "lang": "hu",
+    "value": "{memberName} elutasította a meghívást a(z) {assetTitle} használatára."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-invitation-withdrawn-title",
+    "key": "notification.kind.asset-member-invitation-withdrawn.title",
+    "lang": "hu",
+    "value": "Eszközmeghívás visszavonva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-invitation-withdrawn-message",
+    "key": "notification.kind.asset-member-invitation-withdrawn.message",
+    "lang": "hu",
+    "value": "Visszavonták a meghívásodat a(z) {assetTitle} használatára."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-request-declined-title",
+    "key": "notification.kind.asset-member-request-declined.title",
+    "lang": "hu",
+    "value": "Eszközkérelem elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-request-declined-message",
+    "key": "notification.kind.asset-member-request-declined.message",
+    "lang": "hu",
+    "value": "Elutasították a kérelmedet a(z) {assetTitle} használatára."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-removed-title",
+    "key": "notification.kind.asset-member-removed.title",
+    "lang": "hu",
+    "value": "Eszköztagság megszüntetve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-asset-member-removed-message",
+    "key": "notification.kind.asset-member-removed.message",
+    "lang": "hu",
+    "value": "Eltávolítottak innen: {assetTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-admin-join-request-title",
+    "key": "notification.kind.event-admin-join-request.title",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-admin-join-request-message",
+    "key": "notification.kind.event-admin-join-request.message",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem érkezett."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-admin-join-request-cancelled-title",
+    "key": "notification.kind.event-admin-join-request-cancelled.title",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem visszavonva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-admin-join-request-cancelled-message",
+    "key": "notification.kind.event-admin-join-request-cancelled.message",
+    "lang": "hu",
+    "value": "A csatlakozási kérelmet visszavonták."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-asset-assignment-removed-title",
+    "key": "notification.kind.event-asset-assignment-removed.title",
+    "lang": "hu",
+    "value": "Eszköz-hozzárendelés eltávolítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-asset-assignment-removed-message",
+    "key": "notification.kind.event-asset-assignment-removed.message",
+    "lang": "hu",
+    "value": "A hozzárendelés véget ért · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-checkout-basket-updated-title",
+    "key": "notification.kind.event-checkout-basket-updated.title",
+    "lang": "hu",
+    "value": "Foglalás frissítve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-checkout-basket-updated-message",
+    "key": "notification.kind.event-checkout-basket-updated.message",
+    "lang": "hu",
+    "value": "{memberName} frissítette a(z) {eventTitle} foglalását. Ellenőrizd újra."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-feedback-submitted-title",
+    "key": "notification.kind.event-feedback-submitted.title",
+    "lang": "hu",
+    "value": "Új esemény-visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-feedback-submitted-message",
+    "key": "notification.kind.event-feedback-submitted.message",
+    "lang": "hu",
+    "value": "Visszajelzést kaptál erről: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-invitation-accepted-title",
+    "key": "notification.kind.event-invitation-accepted.title",
+    "lang": "hu",
+    "value": "Eseménymeghívás elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-invitation-accepted-message",
+    "key": "notification.kind.event-invitation-accepted.message",
+    "lang": "hu",
+    "value": "{memberName} elfogadta a meghívást erre: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-invite-title",
+    "key": "notification.kind.event-invite.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-invite-message",
+    "key": "notification.kind.event-invite.message",
+    "lang": "hu",
+    "value": "Eseménymeghívás"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-invite-message-location",
+    "key": "notification.kind.event-invite.message.location",
+    "lang": "hu",
+    "value": "Meghívás · {location}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-approved-title",
+    "key": "notification.kind.event-member-approved.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-approved-message",
+    "key": "notification.kind.event-member-approved.message",
+    "lang": "hu",
+    "value": "Elfogadták a csatlakozási kérelmedet erre: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-joined-title",
+    "key": "notification.kind.event-member-joined.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-joined-message",
+    "key": "notification.kind.event-member-joined.message",
+    "lang": "hu",
+    "value": "{memberName} csatlakozott ehhez: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-left-title",
+    "key": "notification.kind.event-member-left.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-left-message",
+    "key": "notification.kind.event-member-left.message",
+    "lang": "hu",
+    "value": "{memberName} távozott innen: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-removed-title",
+    "key": "notification.kind.event-member-removed.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-removed-message",
+    "key": "notification.kind.event-member-removed.message",
+    "lang": "hu",
+    "value": "{memberName} eltávolítva innen: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-disqualified-title",
+    "key": "notification.kind.event-member-disqualified.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-disqualified-message",
+    "key": "notification.kind.event-member-disqualified.message",
+    "lang": "hu",
+    "value": "{memberName} kizárva innen: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-reinstated-title",
+    "key": "notification.kind.event-member-reinstated.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-member-reinstated-message",
+    "key": "notification.kind.event-member-reinstated.message",
+    "lang": "hu",
+    "value": "{memberName} visszaállítva ide: {eventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-review-title",
+    "key": "notification.kind.event-review.title",
+    "lang": "hu",
+    "value": "Az eseményt ellenőrizni kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-review-message",
+    "key": "notification.kind.event-review.message",
+    "lang": "hu",
+    "value": "Ellenőrizd a(z) {eventTitle} eseményt, majd válassz műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-unavailable-title",
+    "key": "notification.kind.event-unavailable.title",
+    "lang": "hu",
+    "value": "Az esemény nem elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-unavailable-message",
+    "key": "notification.kind.event-unavailable.message",
+    "lang": "hu",
+    "value": "A(z) {eventTitle} már nem elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-restored-title",
+    "key": "notification.kind.event-restored.title",
+    "lang": "hu",
+    "value": "Esemény visszaállítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-restored-message",
+    "key": "notification.kind.event-restored.message",
+    "lang": "hu",
+    "value": "A(z) {eventTitle} újra elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-review-title",
+    "key": "notification.kind.event-stage-review.title",
+    "lang": "hu",
+    "value": "A verseny pontjait ellenőrizni kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-review-message",
+    "key": "notification.kind.event-stage-review.message",
+    "lang": "hu",
+    "value": "Töltsd ki a(z) {stageTitle} pontjait, majd zárd le a szakaszt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-closed-title",
+    "key": "notification.kind.event-stage-closed.title",
+    "lang": "hu",
+    "value": "A versenyszakasz lezárult"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-closed-message",
+    "key": "notification.kind.event-stage-closed.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} lezárult, a pontok ellenőrzés alatt állnak."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-finalized-title",
+    "key": "notification.kind.event-stage-finalized.title",
+    "lang": "hu",
+    "value": "Lezárult: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-finalized-message",
+    "key": "notification.kind.event-stage-finalized.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} szakasz lezárult."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-scores-under-review-title",
+    "key": "notification.kind.event-stage-scores-under-review.title",
+    "lang": "hu",
+    "value": "Pontok felülvizsgálata: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-scores-under-review-message",
+    "key": "notification.kind.event-stage-scores-under-review.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} pontozását újranyitották és ellenőrzik."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-advanced-title",
+    "key": "notification.kind.event-stage-advanced.title",
+    "lang": "hu",
+    "value": "Továbbjutottál: {nextStageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-advanced-message",
+    "key": "notification.kind.event-stage-advanced.message",
+    "lang": "hu",
+    "value": "Továbbjutottál a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-not-advanced-title",
+    "key": "notification.kind.event-stage-not-advanced.title",
+    "lang": "hu",
+    "value": "Nem jutottál tovább: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-stage-not-advanced-message",
+    "key": "notification.kind.event-stage-not-advanced.message",
+    "lang": "hu",
+    "value": "Nem jutottál tovább a(z) {stageTitle} szakaszból a(z) {nextStageTitle} szakaszba."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-open-title",
+    "key": "notification.kind.event-supplies-open.title",
+    "lang": "hu",
+    "value": "Kellékek szükségesek"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-open-message",
+    "key": "notification.kind.event-supplies-open.message",
+    "lang": "hu",
+    "value": "Hozzájárulás nyitva · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-contribution-added-title",
+    "key": "notification.kind.event-supplies-contribution-added.title",
+    "lang": "hu",
+    "value": "Kellék-hozzájárulás hozzáadva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-contribution-added-message",
+    "key": "notification.kind.event-supplies-contribution-added.message",
+    "lang": "hu",
+    "value": "{quantity} hozzáadva · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-contribution-removed-title",
+    "key": "notification.kind.event-supplies-contribution-removed.title",
+    "lang": "hu",
+    "value": "Kellék-hozzájárulás eltávolítva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-supplies-contribution-removed-message",
+    "key": "notification.kind.event-supplies-contribution-removed.message",
+    "lang": "hu",
+    "value": "{quantity} eltávolítva · {assetTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticket-checked-in-title",
+    "key": "notification.kind.event-ticket-checked-in.title",
+    "lang": "hu",
+    "value": "Jegy beléptetve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticket-checked-in-message",
+    "key": "notification.kind.event-ticket-checked-in.message",
+    "lang": "hu",
+    "value": "A jegyeddel beléptettek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticket-replay-warning-title",
+    "key": "notification.kind.event-ticket-replay-warning.title",
+    "lang": "hu",
+    "value": "Jegy-újrafelhasználási figyelmeztetés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticket-replay-warning-message",
+    "key": "notification.kind.event-ticket-replay-warning.message",
+    "lang": "hu",
+    "value": "Ezt a jegyet már felhasználták."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticketing-enabled-title",
+    "key": "notification.kind.event-ticketing-enabled.title",
+    "lang": "hu",
+    "value": "Elkészült az eseményjegyed"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-ticketing-enabled-message",
+    "key": "notification.kind.event-ticketing-enabled.message",
+    "lang": "hu",
+    "value": "A jegykezelés aktív ehhez: {eventTitle}. Nyisd meg a Jegyeket."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-watchlist-available-title",
+    "key": "notification.kind.event-watchlist-available.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-watchlist-available-message",
+    "key": "notification.kind.event-watchlist-available.message",
+    "lang": "hu",
+    "value": "Felszabadult egy hely. Nyisd meg az eseményt a foglaláshoz."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-suspended-title",
+    "key": "notification.kind.event-tournament-suspended.title",
+    "lang": "hu",
+    "value": "A verseny szünetel"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-suspended-message",
+    "key": "notification.kind.event-tournament-suspended.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} ellenőrzés miatt szünetel."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-started-title",
+    "key": "notification.kind.event-tournament-started.title",
+    "lang": "hu",
+    "value": "Elindult: {stageTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-started-message",
+    "key": "notification.kind.event-tournament-started.message",
+    "lang": "hu",
+    "value": "A(z) {stageTitle} elindult. A csoportok elkészültek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-won-title",
+    "key": "notification.kind.event-tournament-won.title",
+    "lang": "hu",
+    "value": "Megnyerted a versenyt"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-won-message",
+    "key": "notification.kind.event-tournament-won.message",
+    "lang": "hu",
+    "value": "Megnyerted a versenyt a(z) {stageTitle} szakaszban."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-not-won-title",
+    "key": "notification.kind.event-tournament-not-won.title",
+    "lang": "hu",
+    "value": "Nem nyerted meg a versenyt"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-not-won-message",
+    "key": "notification.kind.event-tournament-not-won.message",
+    "lang": "hu",
+    "value": "Nem nyerted meg a versenyt a(z) {stageTitle} szakaszban."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-start-review-title",
+    "key": "notification.kind.event-tournament-start-review.title",
+    "lang": "hu",
+    "value": "A verseny indítását ellenőrizni kell"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-tournament-start-review-message",
+    "key": "notification.kind.event-tournament-start-review.message",
+    "lang": "hu",
+    "value": "Véglegesítsd a tagokat, majd indítsd el a(z) {stageTitle} szakaszt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-random-groups-title",
+    "key": "notification.kind.event-random-groups.title",
+    "lang": "hu",
+    "value": "Elkészült: {roomTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-event-random-groups-message",
+    "key": "notification.kind.event-random-groups.message",
+    "lang": "hu",
+    "value": "Elkészült a csoportod ehhez: {parentEventTitle}."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-card-expired-title",
+    "key": "notification.kind.payment-card-expired.title",
+    "lang": "hu",
+    "value": "Lejárt a fizetési kártya"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-card-expired-message",
+    "key": "notification.kind.payment-card-expired.message",
+    "lang": "hu",
+    "value": "A(z) {last4} végződésű mentett kártyád lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-refund-approved-title",
+    "key": "notification.kind.payment-refund-approved.title",
+    "lang": "hu",
+    "value": "Fizetés visszatérítve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-refund-approved-message",
+    "key": "notification.kind.payment-refund-approved.message",
+    "lang": "hu",
+    "value": "A fizetésedet visszatérítették."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-refund-requested-title",
+    "key": "notification.kind.payment-refund-requested.title",
+    "lang": "hu",
+    "value": "Visszatérítés kérve"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-payment-refund-requested-message",
+    "key": "notification.kind.payment-refund-requested.message",
+    "lang": "hu",
+    "value": "Egy fizető visszatérítést kért."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-user-rated-title",
+    "key": "notification.kind.user-rated.title",
+    "lang": "hu",
+    "value": "Új értékelés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-user-rated-message",
+    "key": "notification.kind.user-rated.message",
+    "lang": "hu",
+    "value": "Új értékelést kaptál."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-security-login-title",
+    "key": "notification.kind.security-login.title",
+    "lang": "hu",
+    "value": "Biztonsági figyelmeztetés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-security-login-message",
+    "key": "notification.kind.security-login.message",
+    "lang": "hu",
+    "value": "Ellenőrizd ezt a bejelentkezési eseményt."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-watchlist-available-title",
+    "key": "notification.event.watchlist.available.title",
+    "lang": "hu",
+    "value": "{eventTitle}"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-watchlist-available-message",
+    "key": "notification.event.watchlist.available.message",
+    "lang": "hu",
+    "value": "Felszabadult egy hely. Nyisd meg az eseményt a foglaláshoz."
   },
   {
     "_id": "i18n-message-hu-asset-ticket-scan-camera-off",
