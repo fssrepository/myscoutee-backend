@@ -12828,6 +12828,12 @@
     "value": "No applicable refund-policy rule."
   },
   {
+    "_id": "i18n-message-en-payment-history-refund-preview-takeover",
+    "key": "payment.history.refund.preview.takeover",
+    "lang": "en",
+    "value": "Full payer swap; the cancellation refund policy does not apply."
+  },
+  {
     "_id": "i18n-message-en-payment-history-refund-preview-unit-hours",
     "key": "payment.history.refund.preview.unit.hours",
     "lang": "en",
@@ -33178,6 +33184,12 @@
     "key": "payment.history.refund.preview.no.policy",
     "lang": "hu",
     "value": "Nincs alkalmazható visszatérítési szabály."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-takeover",
+    "key": "payment.history.refund.preview.takeover",
+    "lang": "hu",
+    "value": "Teljes fizetőcsere; a lemondási visszatérítési szabályzat nem alkalmazandó."
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-preview-unit-hours",
