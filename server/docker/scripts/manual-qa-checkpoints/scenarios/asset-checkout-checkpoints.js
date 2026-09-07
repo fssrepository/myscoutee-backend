@@ -978,13 +978,13 @@
     if (!paidAsset || paidAsset.quantity !== 2 || paidAsset.requests.length !== 1
         || !request || request.eventId !== EVENT_ID || request.subEventId !== SUB_EVENT_ID
         || request.quantity !== 1 || request.totalAmount !== 3200 || request.currency !== "HUF"
-        || !Q.sameJson(request.acceptedPolicyIds, [POLICY_ID]) || !request.paymentSessionId || !request.inventoryApplied
+        || !Q.sameJson(request.acceptedPolicyIds, []) || !request.paymentSessionId || !request.inventoryApplied
         || current.projections.length !== 1 || !projection || projection.paymentSessionId !== request.paymentSessionId
         || current.payments.length !== 1 || !payment || payment.checkoutSessionId !== request.paymentSessionId
         || payment.provider !== "barion" || payment.paymentMethodId !== CARD_IDS.active
         || payment.recipientUserId !== CASEY_ID || payment.amount !== 3200 || payment.currency !== "HUF"
         || payment.fulfillmentKind !== "client" || payment.fulfillmentStatus !== "succeeded" || payment.bookingStatus !== "joined"
-        || !Q.sameJson(payment.acceptedPolicyIds, [POLICY_ID])
+        || !Q.sameJson(payment.acceptedPolicyIds, [])
         || current.resources.length !== 1 || !resource || resource.assetOwnerUserId !== NOVA_ID
         || resource.targetQuantity !== 1 || resource.targetAddedByUserId !== NOVA_ID
         || resource.pending !== 1 || resource.accepted !== 0

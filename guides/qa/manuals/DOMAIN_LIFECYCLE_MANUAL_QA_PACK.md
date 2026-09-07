@@ -6719,7 +6719,7 @@ this row's pre-payment basket Cancel or successful Barion payment.
 
   | State | Required visible actions/status | Forbidden action |
   | --- | --- | --- |
-  | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
+  | Fresh paid Asset with availability | `Borrow`; review red `Cancel` and blue `Confirm borrow` | `Payment summary`, `Pay` before review |
   | Confirmed unchanged review | green `Continue borrow`; card menu and Borrow Basket orange `Continue borrow` | another basket generation, request/payment write |
   | Confirmed changed review | orange `Update borrow` | stale confirmed payload |
   | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer neutral `Back`, red `Cancel` and `Pay` | editable price/time/quantity/policies in payment phase |
@@ -6732,8 +6732,9 @@ this row's pre-payment basket Cancel or successful Barion payment.
   parent Event/Sub-event window. The date control immediately normalizes an
   attempted End-before/equal-Start value and either endpoint outside that
   parent window, so an invalid range cannot remain in the review. Quantity outside
-  current availability is clamped/rejected, and any unaccepted required policy
-  disables the forward action. These input gates create no server write. A
+  current availability is clamped/rejected. The required lending policy is a
+  mandatory read-only term, matching Event checkout; only optional policies
+  expose acknowledgement controls. These input gates create no server write. A
   valid quantity/time/policy set produces one deterministic line item and total.
 - Select `Confirm borrow` once. This moves to the locked payment phase but does
   not call the provider and creates no server payment/session, request,

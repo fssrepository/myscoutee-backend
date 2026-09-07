@@ -107,7 +107,10 @@ Immediately before step 31, `capture-revised-payment-ready` proves the exact
 `1 → 2 → 1` basket-generation history and saves the resulting server state.
 If any later payment or request step fails, Codex runs
 `rollback-revised-payment-ready` to return to that boundary without replaying
-steps 1-30.
+steps 1-30. Because this is a live ten-minute basket, that rollback preserves
+the exact business payload and audit identity while re-arming the one restored
+active basket to a fresh exact ten-minute TTL. The later isolated Cancel branch
+has its own `cancelled-control` capture and rollback.
 
 ## Complete test journey
 
@@ -135,8 +138,10 @@ steps 1-30.
    rejected or clamped to the maximum and cannot be submitted as an
    over-capacity request.
 9. Set quantity to `1`.
-10. Leave `QA Borrow policy` unaccepted. Confirm the checkout cannot advance.
-11. Accept `QA Borrow policy` once.
+10. Confirm `QA Borrow policy` is mandatory/read-only and does not expose an
+    optional acceptance checkbox.
+11. Confirm the mandatory policy is included by definition and does not block
+    the forward action as an unaccepted optional policy.
 12. Record the exact timeframe, quantity `1`, total and currency.
 13. Confirm the primary action is `Confirm borrow`, the secondary `Cancel`
     action is red, and `Pay` and `Payment summary` are still absent.
