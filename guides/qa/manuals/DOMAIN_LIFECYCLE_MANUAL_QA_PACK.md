@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **IN PROGRESS — MANAGER-LEFT PASS THROUGH STEP 73**.
+Status: **IN PROGRESS — TAKEOVER PASS THROUGH STEP 79**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6802,6 +6802,17 @@ The canonical fixture stores the nested Spring record identity as `_id`. The gua
 Asset to `qa-borrow-policy`, kept Riley's optional-policy acceptance list empty
 and recaptured the exact `manager-left` savepoint. Reload Riley once, then
 resume step 74 without replaying Nova's Leave.
+
+The user-controlled replay then completed Riley's paid Take Over. The guarded
+oracle proves Riley's Captured/Joined successor payment, Nova's retained
+Captured predecessor plus its separate full-refund transaction, the exact
+payer-swap finance totals and Nova's refund-result-only notification. The
+`takeover-complete` savepoint is retained immediately before checklist step 80.
+Its guarded rollback restores the matching Mongo state, Riley's captured
+Barion provider fixture and every required policy ID without executing the
+runtime `Remove` action. Required policies are automatically included after
+lazy Asset-detail loading and render without acknowledgement checkboxes in all
+Borrow/Join/Take Over entry points; optional policies remain selectable.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \

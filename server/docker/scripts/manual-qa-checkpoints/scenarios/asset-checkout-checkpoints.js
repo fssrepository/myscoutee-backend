@@ -1137,7 +1137,10 @@
         delete normalized.id;
         return normalized;
       });
-      if (!Q.sameJson(policies, normalizedPolicies)) {
+      const needsNormalization = policies.some(policy =>
+        !Q.text(policy && policy._id)
+        || Object.prototype.hasOwnProperty.call(policy || {}, "id"));
+      if (needsNormalization) {
         const result = Q.collection("assets").updateOne(
           { _id: asset._id },
           { $set: { policies: normalizedPolicies } }
@@ -1145,7 +1148,7 @@
         if (result.matchedCount !== 1) {
           Q.fail(`Asset '${Q.text(asset.assetId)}' disappeared while normalizing its policy IDs.`);
         }
-        modified += 1;
+        modified += result.modifiedCount;
       }
     }
     return modified;
@@ -2364,6 +2367,7 @@
     rollbackTo("takeOverComplete", "takeover-complete", [
       "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
     ]);
+    const normalizedPolicyAssets = normalizeFixturePolicyStorage();
     const successor = Q.collection("payments").findOne({
       sourceId: PAID_ID,
       userId: RILEY_ID,
@@ -2376,6 +2380,7 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "takeover-complete",
+      normalizedPolicyAssets,
       capturedBarionPaymentId: Q.text(successor.gatewayAuthorizationId),
       next: "Continue at step 80."
     });

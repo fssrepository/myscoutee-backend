@@ -83,6 +83,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-takeover asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage-takeover-complete asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-refund-requested asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-refunded asset-checkout ASSET-CHECKOUT-001
@@ -104,6 +106,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   rollback-accepted asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-manager-left asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-takeover-complete asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
@@ -481,7 +485,9 @@ until Codex confirms that the lifecycle extension is ready.
     payment is Captured/Joined, Nova's predecessor payment remains Captured
     with a separate full-refund transaction, and the write-side finance totals changed payer exactly
     once. Nova receives only the refund-result notification for completion;
-    Nova must not receive a generic manager-change notification.
+    Nova must not receive a generic manager-change notification. Codex then
+    captures the guarded `takeover-complete` savepoint. If the server restarts,
+    `rollback-takeover-complete` restores this exact pre-step-80 boundary.
 
 ### 8. Remove the runtime association, contact the Asset Owner and refund
 
