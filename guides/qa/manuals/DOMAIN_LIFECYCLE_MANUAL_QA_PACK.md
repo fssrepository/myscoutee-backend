@@ -6617,9 +6617,14 @@ remains an unpassed user-visible assertion in steps 22-23.
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-browser asset-checkout ASSET-CHECKOUT-001
 ```
 
-The first user boundary is checklist step 1 through step 18. On the exact
+Immediately before every configured browser launch or relaunch,
+`prepare-browser` snapshot-protects and clears Casey, Nova and Ava's active
+demo-session slots. The checkpoint reset restores the pre-QA session-state
+documents exactly. The first user boundary is checklist step 1 through step 18. On the exact
 `payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
 before that oracle. Replay boundaries are available as
 `rollback-payment-ready`, `rollback-paid-pending` and `rollback-accepted`.

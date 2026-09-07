@@ -88,7 +88,7 @@ browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
 queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
-required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
+required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, run the fixture's snapshot-protected `prepare-browser` session cleanup, launch the configured browsers, then the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
 actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
 pending_machine_oracle: after `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`, run `capture-payment-ready asset-checkout ASSET-CHECKOUT-001`
 pre_pay_contract: Confirm borrow creates only the scoped, namespaced-local-storage AssetBorrowDraftStore entry keyed by user/Sub-event/Asset; payment-ready must still have zero server payment/provider-session/request/inventory/resource/basket writes. The existing frontend watcher compiled and deployed this reload-persistence correction, but checklist steps 22-23 remain pending manual evidence. The first server checkout write is Pay
@@ -106,7 +106,19 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 If it still prints `phase=baseline-ready`, hand control to the user at
-`ASSET-CHECKOUT-001` step 1. The first stop phrase is:
+`ASSET-CHECKOUT-001` step 1 only after this fixture-owned cleanup and the
+versioned browser launcher:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-browser asset-checkout ASSET-CHECKOUT-001
+
+bash guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-CHECKOUT-001
+```
+
+Run `prepare-browser` immediately before every launch or relaunch; it preserves
+the first pre-QA session-state snapshots for exact reset and clears only the
+configured Casey/Nova/Ava active-session slots. The first stop phrase is:
 
 `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
 

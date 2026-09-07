@@ -9,6 +9,8 @@
   const CASEY_ID = "650000000000000000000061";
   const NOVA_ID = "650000000000000000000062";
   const RILEY_ID = "650000000000000000000063";
+  const AVA_ID = "admin-demo-ava";
+  const BROWSER_ACTOR_IDS = [CASEY_ID, NOVA_ID, AVA_ID];
   const EVENT_ID = `${PREFIX}:event`;
   const SUB_EVENT_ID = `${PREFIX}:sub-event:borrow`;
   const SIBLING_SUB_EVENT_ID = `${PREFIX}:sub-event:sibling`;
@@ -50,6 +52,7 @@
     { "payload.assetId": { $in: ASSET_IDS } },
     { "payload.sourceId": { $in: [EVENT_ID, ...ASSET_IDS] } }
   ] };
+  const browserSessionSelector = { _id: { $in: BROWSER_ACTOR_IDS } };
 
   function config() {
     if (checkpointId !== CHECKPOINT) {
@@ -101,6 +104,67 @@
     if (Object.keys(unsetValues).length > 0) update.$unset = unsetValues;
     const result = Q.collection("users").updateOne(userSelector(saved.userId), update);
     if (result.matchedCount !== 1) Q.fail(`could not restore user '${saved.userId}'.`);
+  }
+
+  function browserSessionSummary() {
+    const states = Q.collection("userSessionStates").find(browserSessionSelector).toArray();
+    return BROWSER_ACTOR_IDS.map(userId => {
+      const value = states.find(item => Q.text(item && (item.userId || item._id)) === userId);
+      return {
+        userId,
+        activeSessionCount: Array.isArray(value && value.activeSessions) ? value.activeSessions.length : 0
+      };
+    });
+  }
+
+  function clearBrowserActorSessions() {
+    const currentState = state();
+    const before = browserSessionSummary();
+    let snapshotsCaptured = false;
+    if (!Array.isArray(currentState.browserSessionSnapshots)) {
+      const browserSessionSnapshots = Q.snapshotSpecs([{
+        collection: "userSessionStates",
+        selector: browserSessionSelector
+      }]);
+      Q.collection(Q.STATE_COLLECTION).updateOne(
+        { _id: currentState._id },
+        { $set: { browserSessionSnapshots } }
+      );
+      snapshotsCaptured = true;
+    }
+    const preparedAtIso = Q.nowIso();
+    Q.collection("userSessionStates").updateMany(
+      browserSessionSelector,
+      { $set: { activeSessions: [], updatedDate: preparedAtIso } }
+    );
+    const after = browserSessionSummary();
+    if (after.some(item => item.activeSessionCount !== 0)) {
+      Q.fail("configured Casey/Nova/Ava browser sessions were not cleared exactly.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      {
+        $set: { browserSessionsPreparedAtIso: preparedAtIso },
+        $inc: { browserSessionPreparationCount: 1 }
+      }
+    );
+    return { before, after, snapshotsCaptured, preparedAtIso };
+  }
+
+  function prepareBrowserSessions() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) === "staging") {
+      Q.fail("browser sessions cannot be prepared while fixture staging is incomplete.");
+    }
+    const result = clearBrowserActorSessions();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: Q.text(currentState.phase),
+      browserSessionCleanup: result,
+      next: "Run the versioned ASSET-CHECKOUT-001 browser launcher now."
+    });
   }
 
   function currencyTotal(document, field) {
@@ -671,6 +735,7 @@
       }
     });
     try {
+      const browserSessionCleanup = clearBrowserActorSessions();
       Q.collection("events").insertOne(eventDocument(nowIso, start, end));
       Q.collection("activityMembers").insertMany([
         eventMember(CASEY_ID, "Admin", nowIso),
@@ -694,6 +759,7 @@
       const immutable = immutableControlFingerprint();
       Q.collection(Q.STATE_COLLECTION).updateOne({ _id: Q.stateId(SCENARIO) }, { $set: {
         phase: "baseline-ready",
+        browserSessionCleanup,
         immutableControlFingerprint: immutable,
         baselineOracle: oracle()
       } });
@@ -717,6 +783,8 @@
       checkpointId: CHECKPOINT,
       phase: Q.text(currentState.phase),
       simulator: { provider, connected: providerConnected, requires3ds },
+      browserSessions: browserSessionSummary(),
+      browserSessionsPreparedAtIso: Q.text(currentState.browserSessionsPreparedAtIso),
       identities: currentState.context,
       oracle: oracle()
     };
@@ -983,6 +1051,9 @@
     clearCurrentEffects();
     Q.restoreSnapshots(currentState.snapshots || []);
     for (const saved of currentState.userFields || []) restoreUserFields(saved);
+    if (Array.isArray(currentState.browserSessionSnapshots)) {
+      Q.restoreSnapshots(currentState.browserSessionSnapshots);
+    }
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: currentState._id });
     Q.printObject({
       scenario: SCENARIO,
@@ -996,6 +1067,7 @@
   Q.assertDeploymentSafety();
   if (command === "stage") stage();
   else if (command === "status") status();
+  else if (command === "prepare-browser") prepareBrowserSessions();
   else if (command === "capture-payment-ready") capturePaymentReady();
   else if (command === "capture-revised-payment-ready") captureRevisedPaymentReady();
   else if (command === "verify-paid-pending") verifyPaidPending();

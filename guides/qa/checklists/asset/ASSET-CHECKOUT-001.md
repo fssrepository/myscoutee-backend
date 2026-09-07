@@ -59,6 +59,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-browser asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   capture-payment-ready asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   capture-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
