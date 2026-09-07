@@ -298,7 +298,20 @@
     return `${start.toISOString().slice(0, 16).replace("T", " ")} UTC - ${end.toISOString().slice(11, 16)} UTC`;
   }
 
-  function pricing(enabled, amount) {
+  function qaRefundPolicy() {
+    return {
+      enabled: true,
+      rules: [{
+        id: "qa-refund-1-day-50-percent",
+        offsetUnit: "days",
+        offsetValue: 1,
+        refundKind: "percent",
+        refundValue: 50
+      }]
+    };
+  }
+
+  function pricing(enabled, amount, cancellationPolicy = null) {
     return {
       mode: enabled ? "fixed" : "free",
       basePrice: enabled ? amount : 0,
@@ -314,7 +327,7 @@
       demandRules: [],
       timeRulesEnabled: false,
       timeRules: [],
-      cancellationPolicy: { enabled: false, rules: [] },
+      cancellationPolicy: cancellationPolicy || { enabled: false, rules: [] },
       slotPricingEnabled: false,
       slotOverrides: [],
       audience: {
@@ -355,7 +368,7 @@
         description: "Accept the lending terms before continuing.",
         required: true
       }] : [],
-      pricing: pricing(paid, Number(options.amount || 3200)),
+      pricing: pricing(paid, Number(options.amount || 3200), options.cancellationPolicy),
       requests: [],
       visibility: "Public",
       status: "A",
@@ -1012,7 +1025,10 @@
         eventMember(NOVA_ID, "Member", nowIso)
       ]);
       Q.collection("assets").insertMany([
-        assetDocument(PAID_ID, "QA ASSET-CHECKOUT-001 Paid Transport", 3, nowIso, { capacityTotal: 3 }),
+        assetDocument(PAID_ID, "QA ASSET-CHECKOUT-001 Paid Transport", 3, nowIso, {
+          capacityTotal: 3,
+          cancellationPolicy: qaRefundPolicy()
+        }),
         assetDocument(FREE_ID, "QA ASSET-CHECKOUT-001 Free Transport", 2, nowIso, { paid: false, capacityTotal: 2 }),
         assetDocument(UNAVAILABLE_ID, "QA ASSET-CHECKOUT-001 Unavailable Transport", 0, nowIso, { paid: false, capacityTotal: 1 }),
         assetDocument(ADJACENT_ID, "QA ASSET-CHECKOUT-001 Adjacent Paid Transport", 2, nowIso, { capacityTotal: 2, amount: 4100 }),
@@ -1826,7 +1842,7 @@
       phase: "manager-left",
       repairedPolicyId: POLICY_ID,
       successorAcceptedPolicyIds: rileyRequest.acceptedPolicyIds,
-      next: "Reload Riley once, reopen Take Over and accept the required QA Borrow policy."
+      next: "Reload Riley once and reopen Take Over; the required policy remains implicit."
     });
   }
 
@@ -2195,6 +2211,34 @@
     });
   }
 
+  function rollbackManagerLeft() {
+    rollbackTo("managerLeft", "manager-left", [
+      "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    ]);
+    const nowIso = Q.nowIso();
+    const policy = qaRefundPolicy();
+    const assetResult = Q.collection("assets").updateOne(
+      { assetId: PAID_ID },
+      { $set: { "pricing.cancellationPolicy": policy, updatedDate: nowIso, updatedUser: CASEY_ID } }
+    );
+    const paymentResult = Q.collection("payments").updateOne(
+      { sourceId: PAID_ID, userId: NOVA_ID },
+      { $set: { cancellationPolicy: policy } }
+    );
+    if (assetResult.matchedCount !== 1 || paymentResult.matchedCount !== 1) {
+      Q.fail("manager-left rollback could not attach the exact QA refund policy.");
+    }
+    captureSavepoint("managerLeft", "manager-left");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "manager-left",
+      refundPolicy: "50% when requested at least 1 day before start",
+      takeoverRefund: "full payer swap; cancellation policy does not apply",
+      next: "Reload Riley once and repeat step 74."
+    });
+  }
+
   function reset() {
     config();
     const currentState = state();
@@ -2252,6 +2296,7 @@
     "accepted", "cancelled-control", "verified", "takeover-ready", "manager-left",
     "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
   ]);
+  else if (command === "rollback-manager-left") rollbackManagerLeft();
   else if (command === "rollback-cancelled-control") rollbackTo("cancelledControl", "cancelled-control", ["cancelled-control", "verified"]);
   else if (command === "reset") reset();
   else Q.fail(`unsupported asset-checkout command '${command}'.`);

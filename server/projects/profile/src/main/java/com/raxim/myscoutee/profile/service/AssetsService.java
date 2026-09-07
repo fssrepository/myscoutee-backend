@@ -802,6 +802,7 @@ public class AssetsService {
                 || successorRequest == null
                 || !MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(successorRequest.status()))
                 || !"borrow".equals(normalizeAssetRequestKind(successorRequest.requestKind()))
+                || !hasAcceptedRequiredPolicies(current, request.acceptedPolicyIds())
                 || !StringUtils.hasText(previousManagerUserId)
                 || previousManagerUserId.equals(actorUserId)) {
             return null;
@@ -898,7 +899,6 @@ public class AssetsService {
                     eventId,
                     subEventId,
                     previousManagerUserId,
-                    actorUserId,
                     paymentReplacement.predecessorPaymentId());
         }
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
@@ -1976,7 +1976,12 @@ public class AssetsService {
             if (Objects.equals(previous, next)) {
                 continue;
             }
-            if (!canApplyAddedOrUpdatedAssetRequestPolicy(assetId, previous, next, fullAssetWriteAllowed)) {
+            if (!canApplyAddedOrUpdatedAssetRequestPolicy(
+                    existing,
+                    assetId,
+                    previous,
+                    next,
+                    fullAssetWriteAllowed)) {
                 return false;
             }
         }
@@ -1993,6 +1998,7 @@ public class AssetsService {
     }
 
     private boolean canApplyAddedOrUpdatedAssetRequestPolicy(
+            Asset asset,
             String assetId,
             AssetRequestRecord previous,
             AssetRequestRecord next,
@@ -2003,6 +2009,14 @@ public class AssetsService {
 
         String requesterUserId = normalizeId(next == null ? null : next.userId());
         if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if (!isDeletedAssetRequest(next)
+                && !hasAcceptedRequiredPolicies(
+                        asset,
+                        next == null || next.booking() == null
+                                ? List.of()
+                                : next.booking().acceptedPolicyIds())) {
             return false;
         }
         if (previous == null) {
@@ -3278,6 +3292,18 @@ public class AssetsService {
                 updatedBooking);
     }
 
+    private boolean hasAcceptedRequiredPolicies(Asset asset, List<String> acceptedPolicyIds) {
+        if (asset == null || !Boolean.TRUE.equals(asset.getPoliciesEnabled())) {
+            return true;
+        }
+        Set<String> accepted = new LinkedHashSet<>(normalizeStrings(acceptedPolicyIds));
+        return safePolicies(asset.getPolicies()).stream()
+                .filter(Objects::nonNull)
+                .filter(policy -> policy.required() == null || Boolean.TRUE.equals(policy.required()))
+                .allMatch(policy -> StringUtils.hasText(normalizeId(policy.id()))
+                        && accepted.contains(normalizeId(policy.id())));
+    }
+
     private boolean isDeletedAssetRequest(AssetRequestRecord request) {
         String status = safeText(request == null ? null : request.status());
         return STATUS_DELETED.equalsIgnoreCase(status) || "deleted".equalsIgnoreCase(status);
@@ -4483,11 +4509,9 @@ public class AssetsService {
             String eventId,
             String subEventId,
             String previousManagerUserId,
-            String successorUserId,
             String predecessorPaymentId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedPreviousManagerUserId = normalizeId(previousManagerUserId);
-        String normalizedSuccessorUserId = normalizeId(successorUserId);
         String paymentId = normalizeId(predecessorPaymentId);
         if (!StringUtils.hasText(assetId)
                 || !StringUtils.hasText(normalizedPreviousManagerUserId)
@@ -4502,27 +4526,27 @@ public class AssetsService {
         payload.put("assetTitle", assetTitle(asset));
         payload.put("eventId", normalizeId(eventId));
         payload.put("subEventId", normalizeId(subEventId));
-        payload.put("previousManagerUserId", normalizedPreviousManagerUserId);
-        payload.put("managerUserId", normalizedSuccessorUserId);
         payload.put("refundRequestStatus", "approved");
         payload.put("refundStatus", "full");
         payload.put("paymentStatus", "refunded");
         payload.put("refundReason", "asset-manager-takeover");
+        payload.put("notification_title_key", "notification.kind.payment-refund-approved.title");
+        payload.put("notification_message_key", "notification.payment.refund.takeover.message");
         payload.put("notification_tone", "accent");
         notificationOutboxService.enqueue(new NotificationIntent(
                 "payment-refund-approved",
                 "payment",
                 paymentId,
-                "payment-participant",
+                "app-admin-payment-participant",
                 List.of(normalizedPreviousManagerUserId),
                 "Payment refunded",
-                "Your payment for " + assetTitle(asset) + " was refunded after another member took over.",
+                "Your payment for " + assetTitle(asset) + " was refunded because the Asset was taken over.",
                 "/game",
                 firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "payment-refund-approved-" + paymentId,
                 payload,
-                normalizedSuccessorUserId));
+                null));
     }
 
     private List<String> acceptedAssetParticipantUserIds(Asset asset) {

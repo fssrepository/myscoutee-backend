@@ -16152,6 +16152,12 @@
     "value": "Your payment was refunded."
   },
   {
+    "_id": "i18n-message-en-notification-payment-refund-takeover-message",
+    "key": "notification.payment.refund.takeover.message",
+    "lang": "en",
+    "value": "Your payment for {assetTitle} was refunded because the Asset was taken over."
+  },
+  {
     "_id": "i18n-message-en-notification-kind-payment-refund-requested-title",
     "key": "notification.kind.payment-refund-requested.title",
     "lang": "en",
@@ -36424,6 +36430,12 @@
     "key": "notification.kind.payment-refund-approved.message",
     "lang": "hu",
     "value": "A fizetésedet visszatérítették."
+  },
+  {
+    "_id": "i18n-message-hu-notification-payment-refund-takeover-message",
+    "key": "notification.payment.refund.takeover.message",
+    "lang": "hu",
+    "value": "A(z) {assetTitle} eszközhöz tartozó fizetésedet visszatérítettük, mert valaki átvette az eszközt."
   },
   {
     "_id": "i18n-message-hu-notification-kind-payment-refund-requested-title",

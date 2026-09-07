@@ -103,6 +103,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-accepted asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-manager-left asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   reset asset-checkout ASSET-CHECKOUT-001
@@ -373,7 +375,7 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     Asset; it must not appear as a disabled card. Do not change the dates or
     filters.
 61. Open `QA ASSET-CHECKOUT-001 Adjacent Paid Transport`, request quantity `1`,
-    accept the required policy and select `Confirm borrow` once. On the payment
+    review the required policy and select `Confirm borrow` once. On the payment
     screen confirm `Back`, red `Cancel` and `Pay` are present.
 62. Select red `Cancel` once. In the opened `Cancel borrow?` confirmation
     dialog, select `Back`; this must close only the confirmation dialog and
@@ -447,8 +449,8 @@ until Codex confirms that the lifecycle extension is ready.
     Confirm this opens the locked replacement-payment review for exactly
     `HUF 3,200`, not a plain confirmation dialog and not a fresh Borrow request.
     In the Lending Policies panel, confirm the required `QA Borrow policy`
-    has an acceptance checkbox. Select it if it is not already checked and
-    confirm `Continue to payment` becomes enabled.
+    is shown without a checkbox. Only optional policies are selectable.
+    Confirm `Continue to payment` is enabled.
 76. Select `Continue to payment` once, select Riley's active Barion `5555` card
     and select `Pay` exactly once. In Ava approve Riley's exact 3DS transaction
     once. The provider result remains inside the existing simulator-owned frame

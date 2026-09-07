@@ -6790,19 +6790,18 @@ the bold title. The Riley menu repair resolves runtime manager settings by the
 exact assigned Asset ID when the physical Asset owner and runtime contributor
 are different. Continue at step 74; do not replay Nova's Leave.
 
-The first Riley Take Over review exposed a required-policy deadlock. The shared
-policy input rendered acknowledgement checkboxes only for optional policies,
-while the Take Over submit gate correctly required `QA Borrow policy`; the
-earlier normal Borrow had appeared to work only because that path omitted the
-same validation and persisted an empty accepted-policy list. Both local and
-HTTP flows now render the required checkbox, block normal Borrow and Take Over
-until it is accepted, carry the accepted ID through the replacement action and
-persist it on Riley's request/payment. The canonical fixture now stores the
-nested Spring record identity as `_id`. The guarded
+The first Riley Take Over review exposed an inconsistent submit gate. The
+shared policy input intentionally renders acknowledgement checkboxes only for
+optional policies; required policies are implicit and do not add a checkbox.
+Normal Borrow already followed that rule, but Take Over incorrectly waited for
+an impossible required-policy checkbox and kept `Continue to payment`
+disabled. Local and HTTP Take Over now follow the same rule while still carrying
+any explicitly selected optional policy IDs through the replacement action.
+The canonical fixture stores the nested Spring record identity as `_id`. The guarded
 `repair-manager-left-required-policy` command normalized the retained paid
-Asset to `qa-borrow-policy`, left Riley's acceptance empty for the manual
-action and recaptured the exact `manager-left` savepoint. Reload Riley once,
-then resume step 74 without replaying Nova's Leave.
+Asset to `qa-borrow-policy`, kept Riley's optional-policy acceptance list empty
+and recaptured the exact `manager-left` savepoint. Reload Riley once, then
+resume step 74 without replaying Nova's Leave.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \

@@ -261,6 +261,7 @@ Usage:
   bash manual-qa-checkpoints.sh prepare-takeover asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-manager-left asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh repair-manager-left-required-policy asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-manager-left asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-takeover asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-refund-requested asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-refunded asset-checkout ASSET-CHECKOUT-001
@@ -844,7 +845,7 @@ case "${scenario}:${command}" in
     replace_payment_simulator_checkout_card_fixtures asset
     set_payment_simulator_barion
     ;;
-  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-cancelled-control)
+  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-manager-left|asset-checkout:rollback-cancelled-control)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
