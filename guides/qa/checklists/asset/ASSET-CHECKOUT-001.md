@@ -111,6 +111,10 @@ steps 1-30. Because this is a live ten-minute basket, that rollback preserves
 the exact business payload and audit identity while re-arming the one restored
 active basket to a fresh exact ten-minute TTL. The later isolated Cancel branch
 has its own `cancelled-control` capture and rollback.
+After a rollback, reopening an unchanged locally confirmed draft through the
+orange `Continue borrow` action must reconstruct the payment phase directly;
+it must not reopen the editable Borrow review merely because the dialog was
+previously left there with `Back`.
 
 ## Complete test journey
 
