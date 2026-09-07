@@ -6630,7 +6630,8 @@ through HTTP. Only a successful save sets the local confirmed selection
 baseline and immediately projects orange `Continue borrow` in both the target
 card menu and Borrow Basket. Back/review uses the Event palettes and labels:
 unchanged is green `Continue borrow`, changed is orange `Update borrow`, and
-the initial action remains blue `Confirm borrow`. Online providers use `Pay`;
+the initial action remains blue `Confirm borrow`. Review has a red `Cancel`;
+payment has neutral `Back`, red `Cancel` and the primary payment action. Online providers use `Pay`;
 the no-provider variant uses `Confirm cash payment`. Successful Asset
 fulfillment closes the basket reservation as `succeeded`, while provider
 decline/timeout retains an isolated `failed` checkout audit without creating a
@@ -6668,6 +6669,17 @@ and the existing frontend watcher rebuilt and synced successfully. Per the
 user's explicit verdict this cosmetic repair does not require another manual
 label-only replay.
 
+The Borrow editor's own lazy Asset-detail response now also returns the
+authoritative parent Event/Sub-event start and end. The date control and
+forward action remain fail-closed until that response arrives, and both the
+minute-precision UI and backend request guard reject ranges outside the parent
+window. Parent timestamps can contain sub-minute fixture precision, so both
+guards compare the displayed minute rather than falsely rejecting it because
+of hidden milliseconds. Persisted borrow bookings are sent as absolute ISO
+instants. The initial disabled-button report was traced to the already-open tab
+still running the preceding frontend bundle after the watcher had synced the
+corrected build.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
@@ -6683,14 +6695,15 @@ documents exactly. The first user boundary is checklist step 1 through step 18. 
 before that oracle. The current retained run is already at
 `revised-payment-ready`; continue at step 31. Replay boundaries are available
 as `rollback-payment-ready`, `rollback-revised-payment-ready`,
-`rollback-paid-pending` and `rollback-accepted`. The revised boundary is the
+`rollback-paid-pending`, `rollback-accepted` and, after the isolated Cancel
+branch, `rollback-cancelled-control`. The revised boundary is the
 pre-step-31 transaction checkpoint and avoids replaying steps 1-30 after a
 later failure.
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
-reject and cancel decisions; they must not replay this row's successful Barion
-payment.
+reject and post-request owner/borrower cancel decisions; they must not replay
+this row's pre-payment basket Cancel or successful Barion payment.
 
 - Stage one Public paid Transport owned by Casey and discoverable by Nova
   through Resource/Asset Explore under one exact Event/Sub-event runtime. Give
@@ -6709,14 +6722,16 @@ payment.
   | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
   | Confirmed unchanged review | green `Continue borrow`; card menu and Borrow Basket orange `Continue borrow` | another basket generation, request/payment write |
   | Confirmed changed review | orange `Update borrow` | stale confirmed payload |
-  | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
+  | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer neutral `Back`, red `Cancel` and `Pay` | editable price/time/quantity/policies in payment phase |
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
   | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
 
-- The date control immediately normalizes an attempted End-before/equal-Start
-  value, so an invalid range cannot remain in the review. Quantity outside
+- The Borrow popup's own lazy Asset-detail response supplies the authoritative
+  parent Event/Sub-event window. The date control immediately normalizes an
+  attempted End-before/equal-Start value and either endpoint outside that
+  parent window, so an invalid range cannot remain in the review. Quantity outside
   current availability is clamped/rejected, and any unaccepted required policy
   disables the forward action. These input gates create no server write. A
   valid quantity/time/policy set produces one deterministic line item and total.
@@ -6768,6 +6783,14 @@ payment.
 - Inspect the free and unavailable controls without submitting them. Their
   labels and forbidden-payment states must match the table and no control may
   inherit the target's payment/session identity.
+- On the adjacent paid control, enter payment-ready once and exercise the red
+  `Cancel` blocker: first choose its `Back` action and prove the basket remains,
+  then confirm `Cancel borrow` once. The control returns to fresh `Borrow`, its
+  scoped local draft disappears, and the backend retains exactly one
+  `cancelled/deleted` ten-minute basket audit with no active basket, payment,
+  request, inventory or resource side effect. `verify-cancelled` captures this
+  isolated savepoint before decline/timeout, so those later controls can roll
+  back without repeating the Cancel branch.
 - Run one normal quantity-`1` checkout on `Decline Control` and one on
   `Timeout Control`, keeping Barion 3DS enabled. The first must yield exactly
   one declined/failed terminal payment and the second exactly one expired
@@ -6776,8 +6799,8 @@ payment.
   `pay/failed` checkout audit so the failed attempt remains recoverable.
 - The versioned `asset-checkout` fixture provides guarded `stage`, read-only
   `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
-  request-destination and `accepted` captures, four exact persisted rollback
-  savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
+  request-destination, `accepted` and `cancelled-control` captures, five exact
+  persisted rollback savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
   active and expired Barion card controls into the running payment simulator.
   The payment-ready rollback restores the server boundary only; if the browser
   draft was already cleared, the user repeats steps 1-18 because the harness

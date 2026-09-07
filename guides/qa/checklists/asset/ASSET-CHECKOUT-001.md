@@ -73,6 +73,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-accepted asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-cancelled asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
@@ -82,6 +84,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-accepted asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   reset asset-checkout ASSET-CHECKOUT-001
 ```
@@ -118,10 +122,14 @@ steps 1-30.
 3. Open its menu. Confirm `Borrow` is present and `Payment summary` is absent.
 4. Select `Borrow` once.
 5. Confirm the borrow review shows the exact Asset, Event/Sub-event context,
-   timeframe, quantity, price and required `QA Borrow policy`.
-6. Attempt to set End before or equal to Start. Confirm the date control
-   immediately normalizes the input back to a valid range, so an invalid value
-   cannot remain in the form and no request is sent.
+   timeframe, quantity, price and required `QA Borrow policy`. The lazy-loaded
+   Asset detail response is the authoritative source of the parent Event/Sub-event
+   start and end bounds; the form remains gated until those bounds arrive.
+6. Attempt to set End before or equal to Start, then attempt to move either
+   endpoint outside the parent Event/Sub-event window. Confirm the date control
+   immediately normalizes each input back into the valid parent range, so an
+   invalid or out-of-parent value cannot remain in the form and no request is
+   sent.
 7. Restore the fixture-provided valid timeframe.
 8. Attempt to enter a quantity above the displayed availability. Confirm it is
    rejected or clamped to the maximum and cannot be submitted as an
@@ -130,15 +138,15 @@ steps 1-30.
 10. Leave `QA Borrow policy` unaccepted. Confirm the checkout cannot advance.
 11. Accept `QA Borrow policy` once.
 12. Record the exact timeframe, quantity `1`, total and currency.
-13. Confirm the primary action is `Confirm borrow`; `Pay` and
-    `Payment summary` are still absent.
+13. Confirm the primary action is `Confirm borrow`, the secondary `Cancel`
+    action is red, and `Pay` and `Payment summary` are still absent.
 14. Select `Confirm borrow` exactly once.
 15. Confirm the checkout changes to a locked payment phase with all of the
     following:
 
     - the contextual Barion provider badge and `Ready to redirect` status;
     - the same timeframe, quantity, required policy, total and currency;
-    - active-card selection, `Back` and `Pay` actions;
+    - active-card selection, neutral `Back`, red `Cancel` and `Pay` actions;
     - no pending/accepted borrower success yet.
 
 16. Confirm that the timeframe, quantity, policy and price controls are locked
@@ -155,7 +163,7 @@ steps 1-30.
 ### 2. Resume the same payment state and invalidate it through Back
 
 19. After Codex confirms `payment-ready`, close the checkout with its normal
-    close control. Do not select Back or Pay.
+    close control. Do not select Back, Cancel or Pay.
 20. In the still-open Asset Explore surface, confirm both the target card menu
     and the Borrow Basket show the same orange `Continue borrow` state exactly
     once.
@@ -289,7 +297,24 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
     for the selected window, or is absent from the availability-filtered
     Explore list. Do not change filters or dates to make it eligible.
-61. Use `QA ASSET-CHECKOUT-001 Decline Control` for one new quantity-`1`
+61. Use `QA ASSET-CHECKOUT-001 Adjacent Paid Transport` for an isolated
+    quantity-`1` Cancel branch. Accept the required policy and select
+    `Confirm borrow` once. In the payment phase confirm that neutral `Back`,
+    red `Cancel` and `Pay` are all present.
+62. Select red `Cancel` once. Confirm a blocking danger confirmation appears;
+    select its `Back` action and verify the same payment-ready state remains.
+    Select red `Cancel` again and confirm `Cancel borrow` exactly once.
+63. Confirm the checkout closes, the card menu returns to `Borrow`, and no
+    matching Borrow Basket entry remains locally. Do not Pay. Report:
+
+    `ASSET-CHECKOUT-001 cancelled control: basket removed before payment`
+
+64. Wait for Codex to prove one `cancelled/deleted` ten-minute basket audit
+    record and zero active basket, payment/session, borrow request, inventory
+    delta or resource assignment for the adjacent control. Codex captures this
+    savepoint; a later control failure rolls back with
+    `rollback-cancelled-control` instead of repeating the Cancel branch.
+65. Use `QA ASSET-CHECKOUT-001 Decline Control` for one new quantity-`1`
     checkout and decline its 3DS request. Then use
     `QA ASSET-CHECKOUT-001 Timeout Control` for one new quantity-`1` checkout
     and leave its 3DS request pending for the three-minute timeout. Do not
@@ -298,12 +323,13 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     visible briefly, then close automatically; no borrow request, inventory
     delta, resource assignment or entitlement may be created. The waiting
     popup remains closable with X.
-62. Confirm Ava's 3DS list shows all concurrently pending member transactions
+66. Confirm Ava's 3DS list shows all concurrently pending member transactions
     separately, or translated `nothing pending` when empty; selecting one row
     opens only that user's confirmation surface.
-63. Confirm the adjacent paid Asset, sibling Sub-event and every Riley control
-    remain unchanged and own no target session/payment identity.
-64. Report the terminal phrase:
+67. Confirm the cancelled adjacent Asset retains quantity `2` and has no
+    request, payment or assignment; the sibling Sub-event and every Riley
+    control remain unchanged and own no target session/payment identity.
+68. Report the terminal phrase:
 
     `ASSET-CHECKOUT-001 UI complete: Barion approve, decline and timeout remain isolated`
 

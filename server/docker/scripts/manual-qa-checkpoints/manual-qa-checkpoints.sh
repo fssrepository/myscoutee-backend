@@ -255,6 +255,8 @@ Usage:
   bash manual-qa-checkpoints.sh verify-paid-pending asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-request-destination asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-accepted asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-cancelled asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-accepted asset-checkout ASSET-CHECKOUT-001
@@ -818,7 +820,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:verify)
+  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:verify-cancelled|asset-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
@@ -830,7 +832,7 @@ case "${scenario}:${command}" in
     replace_payment_simulator_checkout_card_fixtures asset
     set_payment_simulator_barion
     ;;
-  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted)
+  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-cancelled-control)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

@@ -1083,18 +1083,61 @@
       paymentSessionId: result.payment.checkoutSessionId,
       availability: 2,
       resource: "one accepted scoped contribution",
-      next: "Continue with reload and the Free/unavailable/decline/timeout controls in steps 57-64."
+      next: "Continue with reload, then the isolated Cancel, Free, unavailable, decline and timeout controls."
+    });
+  }
+
+  function assertCancelledControl(current) {
+    assertAccepted(current);
+    const asset = assetById(current, ADJACENT_ID);
+    const history = targetBasketHistory(current, ADJACENT_ID);
+    const cancelledBasket = history[0];
+    if (!asset || asset.quantity !== 2 || asset.requests.length !== 0
+        || current.projections.some(item => item.assetId === ADJACENT_ID)
+        || current.payments.some(item => item.sourceId === ADJACENT_ID)
+        || current.resources.some(item => item.transportAssetIds.includes(ADJACENT_ID))
+        || current.baskets.some(item => item.sourceId === ADJACENT_ID)
+        || history.length !== 1
+        || !cancelledBasket || cancelledBasket.status !== "cancelled" || cancelledBasket.resultState !== "deleted"
+        || cancelledBasket.quantity !== 1 || cancelledBasket.amount !== 4100 || cancelledBasket.currency !== "HUF"
+        || cancelledBasket.reservationActive || cancelledBasket.pendingCounterTracked
+        || cancelledBasket.checkoutSessionId || !hasTenMinuteBasketTtl(cancelledBasket)) {
+      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "cancelled-control-diagnostic", oracle: current });
+      Q.fail("the isolated Cancel branch did not delete exactly one pre-payment basket without request, payment, inventory or resource side effects.");
+    }
+    return cancelledBasket;
+  }
+
+  function verifyCancelled() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "accepted") Q.fail("cancelled-control requires accepted.");
+    assertSimulator(true);
+    const current = oracle();
+    const cancelledBasket = assertCancelledControl(current);
+    captureSavepoint("cancelledControl", "cancelled-control");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "cancelled-control",
+      cancelledAssetId: ADJACENT_ID,
+      cancelledBasketId: cancelledBasket.id,
+      activeCancelBaskets: 0,
+      requests: 0,
+      payments: 0,
+      inventoryDelta: 0,
+      rollbackCommand: `rollback-cancelled-control asset-checkout ${CHECKPOINT}`,
+      next: "Continue with the decline and timeout controls."
     });
   }
 
   function verifyTerminal() {
     config();
     const currentState = state();
-    if (Q.text(currentState.phase) !== "accepted") Q.fail("terminal verification requires accepted.");
+    if (Q.text(currentState.phase) !== "cancelled-control") Q.fail("terminal verification requires cancelled-control.");
     assertSimulator(true);
     const current = oracle();
-    assertAccepted(current);
-    assertImmutableControls(currentState);
+    assertCancelledControl(current);
     const declinePayments = current.payments.filter(item => item.sourceId === DECLINE_ID && item.userId === NOVA_ID);
     const timeoutPayments = current.payments.filter(item => item.sourceId === TIMEOUT_ID && item.userId === NOVA_ID);
     const declineAsset = assetById(current, DECLINE_ID);
@@ -1128,6 +1171,7 @@
       approvedPayments: 1,
       declinedPayments: 1,
       expiredPayments: 1,
+      cancelledBaskets: 1,
       availability: 2,
       siblingAndRileyIsolation: true,
       next: `Run reset asset-checkout ${CHECKPOINT} after evidence is recorded.`
@@ -1153,8 +1197,43 @@
     if (!samePersisted(restored, expected)) {
       Q.fail(`rollback '${name}' did not restore the exact persisted savepoint.`);
     }
-    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: { phase, [`${name}RolledBackAtIso`]: Q.nowIso() } });
-    Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase, rollback: name, restored: true });
+    const prePayment = ["payment-ready", "revised-payment-ready"].includes(phase);
+    if (prePayment) {
+      const createdAtIso = Q.nowIso();
+      const expiresAtIso = new Date(Date.parse(createdAtIso) + 10 * 60 * 1000).toISOString();
+      const refresh = Q.collection("eventCheckoutBasketItems").updateMany({
+        sourceId: PAID_ID,
+        userId: NOVA_ID,
+        status: "confirmed",
+        resultState: "pending"
+      }, { $set: { createdAtIso, updatedAtIso: createdAtIso, expiresAtIso } });
+      if (refresh.matchedCount !== 1 || refresh.modifiedCount !== 1) {
+        Q.fail(`rollback '${name}' could not re-arm exactly one active pre-payment basket.`);
+      }
+    }
+    const finalOracle = oracle();
+    if (prePayment) {
+      assertPaymentReadyState(finalOracle, phase === "payment-ready" ? 1 : [3, 5]);
+    }
+    const refreshedSnapshots = prePayment ? snapshotSpecs() : snapshots;
+    const refreshedUsers = prePayment
+      ? [CASEY_ID, NOVA_ID, RILEY_ID].map(userId => userFields(Q.ensureUser(userId, userId)))
+      : users;
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase,
+      [`${name}RolledBackAtIso`]: Q.nowIso(),
+      [`${name}Snapshots`]: refreshedSnapshots,
+      [`${name}UserFields`]: refreshedUsers,
+      [`${name}Oracle`]: finalOracle
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase,
+      rollback: name,
+      restored: true,
+      prePaymentTtlRearmed: prePayment
+    });
   }
 
   function reset() {
@@ -1185,17 +1264,19 @@
   else if (command === "verify-paid-pending") verifyPaidPending();
   else if (command === "verify-request-destination") verifyRequestDestination();
   else if (command === "verify-accepted") verifyAccepted();
+  else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "verify") verifyTerminal();
   else if (command === "rollback-payment-ready") rollbackTo("paymentReady", "payment-ready", [
-    "payment-ready", "revised-payment-ready", "paid-pending", "request-destination", "accepted", "verified"
+    "payment-ready", "revised-payment-ready", "paid-pending", "request-destination", "accepted", "cancelled-control", "verified"
   ]);
   else if (command === "rollback-revised-payment-ready") rollbackTo("revisedPaymentReady", "revised-payment-ready", [
-    "revised-payment-ready", "paid-pending", "request-destination", "accepted", "verified"
+    "revised-payment-ready", "paid-pending", "request-destination", "accepted", "cancelled-control", "verified"
   ]);
   else if (command === "rollback-paid-pending") rollbackTo("paidPending", "paid-pending", [
-    "paid-pending", "request-destination", "accepted", "verified"
+    "paid-pending", "request-destination", "accepted", "cancelled-control", "verified"
   ]);
-  else if (command === "rollback-accepted") rollbackTo("accepted", "accepted", ["accepted", "verified"]);
+  else if (command === "rollback-accepted") rollbackTo("accepted", "accepted", ["accepted", "cancelled-control", "verified"]);
+  else if (command === "rollback-cancelled-control") rollbackTo("cancelledControl", "cancelled-control", ["cancelled-control", "verified"]);
   else if (command === "reset") reset();
   else Q.fail(`unsupported asset-checkout command '${command}'.`);
 })();

@@ -1798,10 +1798,10 @@ public class AssetsService {
         if (borrowWindow == null) {
             return false;
         }
-        long requestStart = toSortableDate(booking.startAtIso());
-        long requestEnd = toSortableDate(booking.endAtIso());
-        long parentStart = toSortableDate(borrowWindow.startAtIso());
-        long parentEnd = toSortableDate(borrowWindow.endAtIso());
+        long requestStart = toSortableMinute(booking.startAtIso());
+        long requestEnd = toSortableMinute(booking.endAtIso());
+        long parentStart = toSortableMinute(borrowWindow.startAtIso());
+        long parentEnd = toSortableMinute(borrowWindow.endAtIso());
         return requestStart != Long.MIN_VALUE
                 && requestEnd != Long.MIN_VALUE
                 && parentStart != Long.MIN_VALUE
@@ -4587,6 +4587,11 @@ public class AssetsService {
                 return Long.MIN_VALUE;
             }
         }
+    }
+
+    private long toSortableMinute(String value) {
+        long timestamp = toSortableDate(value);
+        return timestamp == Long.MIN_VALUE ? Long.MIN_VALUE : Math.floorDiv(timestamp, 60_000L);
     }
 
     private String safeText(String value) {
