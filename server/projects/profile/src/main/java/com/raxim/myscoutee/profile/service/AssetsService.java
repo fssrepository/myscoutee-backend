@@ -2608,7 +2608,7 @@ public class AssetsService {
         Document quantity = numericExpression("$quantity", 0);
         Document capacityTotal = numericExpression("$capacityTotal", 0);
         Document totalQuantity = new Document("$cond", List.of(
-                new Document("$gt", List.of(quantity, 0)),
+                new Document("$ne", List.of(new Document("$type", "$quantity"), "missing")),
                 quantity,
                 new Document("$cond", List.of(
                         new Document("$eq", List.of("$type", AssetCatalog.TYPE_SUPPLIES)),
@@ -4718,9 +4718,8 @@ public class AssetsService {
     }
 
     private Integer normalizeAssetQuantity(String type, Object value, Object capacityFallback) {
-        int parsed = Math.max(0, normalizeCount(value));
-        if (parsed > 0) {
-            return parsed;
+        if (value != null) {
+            return normalizeCount(value);
         }
         if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
             return Math.max(1, normalizeCount(capacityFallback));

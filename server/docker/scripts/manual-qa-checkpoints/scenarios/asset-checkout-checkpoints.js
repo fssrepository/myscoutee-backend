@@ -20,6 +20,7 @@
   const ADJACENT_ID = `${PREFIX}:asset:adjacent-paid`;
   const DECLINE_ID = `${PREFIX}:asset:decline-control`;
   const TIMEOUT_ID = `${PREFIX}:asset:timeout-control`;
+  const UNAVAILABLE_REQUEST_ID = `${PREFIX}:request:unavailable-window`;
   const RILEY_REQUEST_ID = `${PREFIX}:request:riley-takeover`;
   const SERVICE_CHAT_ID = `c-service-asset-${PAID_ID}-${SUB_EVENT_ID}-${RILEY_ID}`;
   const NOVA_SERVICE_CHAT_IDS = [
@@ -830,6 +831,22 @@
     return assetWindowAvailability(asset, start.toISOString(), end.toISOString());
   }
 
+  function assertUnavailableControl(current) {
+    const unavailable = assetById(current, UNAVAILABLE_ID);
+    if (!unavailable || unavailable.quantity !== 0 || unavailable.capacityTotal !== 1
+        || unavailable.requests.length !== 0
+        || targetWindowAvailability(unavailable) !== 0
+        || nonOverlappingWindowAvailability(unavailable) !== 0) {
+      Q.printObject({
+        scenario: SCENARIO,
+        checkpointId: CHECKPOINT,
+        phase: "unavailable-control-diagnostic",
+        unavailable
+      });
+      Q.fail("explicit zero-quantity Asset is not unavailable in the Explore contract.");
+    }
+  }
+
   function assertSimulator(expected3ds) {
     if (provider !== "barion" || !providerConnected || requires3ds !== expected3ds) {
       Q.fail(`simulator is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Barion with 3DS ${expected3ds ? "On" : "Off"}.`);
@@ -879,12 +896,12 @@
     const adjacent = assetById(current, ADJACENT_ID);
     const decline = assetById(current, DECLINE_ID);
     const timeout = assetById(current, TIMEOUT_ID);
+    assertUnavailableControl(current);
     if (current.assets.length !== ASSET_IDS.length
         || !paid || paid.title !== "QA ASSET-CHECKOUT-001 Paid Transport" || paid.quantity !== 3 || paid.capacityTotal !== 3
         || !paid.pricingEnabled || paid.amount !== 3200 || paid.policies.length !== 1
         || paid.policies[0].id !== POLICY_ID || !paid.policies[0].required
         || !free || free.title !== "QA ASSET-CHECKOUT-001 Free Transport" || free.pricingEnabled || free.quantity !== 2
-        || !unavailable || unavailable.quantity !== 0
         || !adjacent || !adjacent.pricingEnabled || adjacent.quantity !== 2
         || !decline || decline.quantity !== 1
         || !timeout || timeout.quantity !== 1
@@ -1398,7 +1415,7 @@
     Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "request-destination", readOnly: true, next: "Approve Nova exactly once, then report the accepted phrase after step 55." });
   }
 
-  function assertAccepted(current) {
+  function assertAccepted(current, requireUnavailableControl = true) {
     const currentState = state();
     assertScope(current);
     const paidAsset = assetById(current, PAID_ID);
@@ -1431,7 +1448,59 @@
     }
     assertPendingOwnerNotification(request.id);
     assertFinancialDelta(currentState, 3200);
+    if (requireUnavailableControl) assertUnavailableControl(current);
     return { payment, request, resource };
+  }
+
+  function repairUnavailableControl() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "accepted") {
+      Q.fail("unavailable-control repair is valid only at the accepted checkpoint.");
+    }
+    const current = oracle();
+    assertAccepted(current, false);
+    const unavailable = assetById(current, UNAVAILABLE_ID);
+    const temporaryRequest = unavailable && unavailable.requests[0];
+    if (!unavailable || unavailable.quantity !== 1 || unavailable.capacityTotal !== 1
+        || unavailable.requests.length !== 1 || !temporaryRequest
+        || temporaryRequest.id !== UNAVAILABLE_REQUEST_ID) {
+      Q.fail("unavailable-control repair refuses an unexpected existing control state.");
+    }
+
+    const repairedAtIso = Q.nowIso();
+    const repair = Q.collection("assets").updateOne(
+      { assetId: UNAVAILABLE_ID, ownerUserId: CASEY_ID, quantity: 1, "requests.id": UNAVAILABLE_REQUEST_ID },
+      { $set: {
+        quantity: 0,
+        capacityTotal: 1,
+        requests: [],
+        updatedDate: repairedAtIso,
+        updatedUser: CASEY_ID
+      } }
+    );
+    if (repair.matchedCount !== 1 || repair.modifiedCount !== 1) {
+      Q.fail("unavailable-control repair did not update exactly one fixture Asset.");
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: currentState._id },
+      { $set: { immutableControlFingerprint: immutableControlFingerprint() } }
+    );
+    const repaired = oracle();
+    assertAccepted(repaired);
+    assertImmutableControls(state());
+    captureSavepoint("accepted", "accepted");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "accepted",
+      unavailableAssetId: UNAVAILABLE_ID,
+      selectedWindowAvailability: 0,
+      nonOverlappingWindowAvailability: 0,
+      acceptedSavepointRecaptured: true,
+      next: "Reload Nova's Transport Explore list once; the unavailable control must be absent, then continue at step 61."
+    });
   }
 
   function verifyAccepted() {
@@ -2060,6 +2129,7 @@
   else if (command === "verify-request-destination") verifyRequestDestination();
   else if (command === "reset-service-chat-probe") resetNovaServiceChatProbe();
   else if (command === "repair-step-56-boundary") repairStep56Boundary();
+  else if (command === "repair-unavailable-control") repairUnavailableControl();
   else if (command === "verify-accepted") verifyAccepted();
   else if (command === "prepare-takeover") prepareTakeOver();
   else if (command === "verify-manager-left") verifyManagerLeft();

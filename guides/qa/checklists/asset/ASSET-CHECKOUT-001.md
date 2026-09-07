@@ -363,54 +363,52 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     Confirm the same request identity, accepted state, payment values and
     selected-range availability `2`, stored physical quantity `3` and
     non-overlapping availability `3` return.
-59. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
-    forward action is `Send borrow request` and no provider badge, `Pay`, session
-    or payment summary is presented. Close without submitting.
-    The same paid flow must use `Confirm cash payment` instead of `Pay` when no
-    provider is configured; this Barion checkpoint does not change Ava's
-    provider configuration to exercise that separate runtime variant.
-60. Inspect the unavailable control. Confirm it has no enabled `Borrow` action
-    for the selected window, or is absent from the availability-filtered
-    Explore list. Do not change filters or dates to make it eligible.
-61. Use `QA ASSET-CHECKOUT-001 Adjacent Paid Transport` for an isolated
-    quantity-`1` Cancel branch. Accept the required policy and select
-    `Confirm borrow` once. In the payment phase confirm that neutral `Back`,
-    red `Cancel` and `Pay` are all present.
-62. Select red `Cancel` once. Confirm a blocking danger confirmation appears;
-    select its `Back` action and verify the same payment-ready state remains.
-    Select red `Cancel` again and confirm `Cancel borrow` exactly once.
-63. Confirm the checkout closes, the card menu returns to `Borrow`, and no
-    matching Borrow Basket entry remains locally. Do not Pay. Report:
+59. In Nova's still-open `QA Borrow Stage → Transport → Explore` list, open
+    `QA ASSET-CHECKOUT-001 Free Transport`, then select `Borrow`. Confirm the
+    review shows `Send borrow request` and does not show a provider badge,
+    `Pay` or `Payment summary`. Close the review without submitting it.
+60. Stay in the same Nova `QA Borrow Stage → Transport → Explore` list and look
+    for `QA ASSET-CHECKOUT-001 Unavailable Transport`. Use the Event's existing
+    selected date range. The availability filter must hide this fully reserved
+    Asset; it must not appear as a disabled card. Do not change the dates or
+    filters.
+61. Open `QA ASSET-CHECKOUT-001 Adjacent Paid Transport`, request quantity `1`,
+    accept the required policy and select `Confirm borrow` once. On the payment
+    screen confirm `Back`, red `Cancel` and `Pay` are present.
+62. Select red `Cancel`, then select `Back` in the confirmation dialog. Confirm
+    the payment screen is still open. Select red `Cancel` again and confirm
+    `Cancel borrow` exactly once.
+63. Confirm the checkout closes, the Asset action returns to `Borrow`, and its
+    Borrow Basket entry is gone. Do not select `Pay`. Report:
 
     `ASSET-CHECKOUT-001 cancelled control: basket removed before payment`
 
-64. Wait for Codex to prove one `cancelled/deleted` ten-minute basket audit
-    record and zero active basket, payment/session, borrow request, inventory
-    delta or resource assignment for the adjacent control. Codex captures this
-    savepoint; a later control failure rolls back with
-    `rollback-cancelled-control` instead of repeating the Cancel branch.
-65. Use `QA ASSET-CHECKOUT-001 Decline Control` for one new quantity-`1`
-    checkout and decline its 3DS request. Then use
-    `QA ASSET-CHECKOUT-001 Timeout Control` for one new quantity-`1` checkout
-    and leave its 3DS request pending for the three-minute timeout. Do not
-    reuse or change the accepted paid target. In each control the waiting text
-    must change to the provider-owned animated X or timeout icon, remain
-    visible briefly, then close automatically; no borrow request, inventory
-    delta, resource assignment or entitlement may be created. The waiting
-    popup remains closable with X.
-66. Confirm Ava's 3DS list shows all concurrently pending member transactions
-    separately, or translated `nothing pending` when empty; selecting one row
-    opens only that user's confirmation surface.
-67. Confirm the cancelled adjacent Asset retains quantity `2` and has no
-    request, payment or assignment; the sibling Sub-event and every Riley
-    control remain unchanged and own no target session/payment identity.
+64. Wait for Codex to verify and save the cancelled state. Do not continue
+    until Codex confirms that the adjacent control has one cancelled audit row
+    and no active basket, payment, request or resource assignment.
+65. Exercise these two controls without changing the already accepted Asset:
+
+    - Start a quantity-`1` checkout for `QA ASSET-CHECKOUT-001 Decline Control`.
+      In Ava's 3DS list, decline that request.
+    - Start a quantity-`1` checkout for `QA ASSET-CHECKOUT-001 Timeout Control`.
+      Leave its 3DS request pending until the three-minute timeout expires.
+
+    In both cases, confirm the waiting text changes to the provider result icon,
+    remains visible briefly and then closes automatically. While waiting, the
+    popup must remain closable with X. Neither result may create a borrow
+    request, inventory change, resource assignment or entitlement.
+66. In Ava's 3DS list, confirm each pending transaction has its own row and
+    opening a row shows only that transaction. When none remain, the translated
+    empty-state text is shown.
+67. Confirm the cancelled Adjacent Paid Asset still has quantity `2` and no
+    request, payment or assignment. The sibling Sub-event and Riley controls
+    remain unchanged.
 68. Report the terminal phrase:
 
     `ASSET-CHECKOUT-001 UI complete: Barion approve, decline and timeout remain isolated`
 
-Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
-to another testcase until Codex records the result and prepares the lifecycle
-extension below.
+Wait for Codex to verify the final state. Do not reset or start the next section
+until Codex confirms that the lifecycle extension is ready.
 
 ### 7. Leave the paid manager role and require a paid Take Over
 
