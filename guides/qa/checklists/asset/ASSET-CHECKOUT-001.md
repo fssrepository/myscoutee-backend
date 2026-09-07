@@ -434,7 +434,7 @@ until Codex confirms that the lifecycle extension is ready.
     once. Confirm the danger dialog once. The runtime association remains, its
     dark badge changes to `1/3`, and no red pending count appears. Riley is the
     remaining accepted borrower and receives one compact notification whose
-    bold title contains `Take Over`. Nova's existing payment is still Authorized
+    bold title contains `Take Over`. Nova's existing payment is still Captured
     and is not yet refunded merely because Nova left.
 73. Report:
 
@@ -460,7 +460,7 @@ until Codex confirms that the lifecycle extension is ready.
     remains `1/3`; Riley's member menu changes on the same signal from `Take Over`
     to `Leave`, and `Take Over` disappears without reopening or reloading.
     Nova does not reappear as an accepted scoped member. Riley's
-    Payment history contains one Authorized `HUF -3,200` Asset expense linked
+    Payment history contains one Captured `HUF -3,200` Asset expense linked
     to the exact Event/Sub-event. Casey's gross badges show `HUF -3,200` refunded
     and `HUF +6,400` received, whose net Asset income remains `HUF +3,200`
     because Riley replaced Nova rather than paying in addition to Nova. Sign
@@ -478,8 +478,8 @@ until Codex confirms that the lifecycle extension is ready.
     `ASSET-CHECKOUT-001 paid Take Over complete: Riley manager, Nova refunded`
 
 79. Wait for Codex to prove the linked predecessor/successor payments: Riley's
-    payment is Authorized/Joined, Nova's predecessor authorization is Released
-    with a full refund, and the write-side finance totals changed payer exactly
+    payment is Captured/Joined, Nova's predecessor payment remains Captured
+    with a separate full-refund transaction, and the write-side finance totals changed payer exactly
     once. Nova receives only the refund-result notification for completion;
     Nova must not receive a generic manager-change notification.
 
@@ -492,7 +492,7 @@ until Codex confirms that the lifecycle extension is ready.
     `Remove` once and confirm the danger dialog. The runtime Event/Sub-event
     association and its card disappear. Casey's global Asset is not deleted,
     and both payment histories remain available.
-81. Open Riley's Payment history and the exact Authorized Asset expense row.
+81. Open Riley's Payment history and the exact Captured Asset expense row.
     Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
     not contain `Ask Organizer`. The localized action text must be visible; the
     raw key `payment.history.ask.asset.owner` must never be rendered.

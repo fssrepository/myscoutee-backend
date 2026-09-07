@@ -1384,7 +1384,7 @@
     const paidAsset = assetById(current, PAID_ID);
     const request = targetRequest(current, "pending");
     const projection = current.projections.find(item => item.userId === NOVA_ID && item.status === "pending" && item.requestKind === "borrow");
-    const payment = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID && item.status === "authorized");
+    const payment = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID && item.status === "captured");
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const basket = targetBasket(current);
     if (!paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 1
@@ -1471,7 +1471,7 @@
     const paidAsset = assetById(current, PAID_ID);
     const request = targetRequest(current, "accepted");
     const projection = current.projections.find(item => item.userId === NOVA_ID && item.status === "accepted");
-    const payment = current.payments.find(item => item.sourceId === PAID_ID && item.status === "authorized");
+    const payment = current.payments.find(item => item.sourceId === PAID_ID && item.status === "captured");
     const resource = current.resources.find(item => item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const basket = targetBasket(current);
     if (!paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 1
@@ -1791,7 +1791,7 @@
         || !resource || resource.accepted !== 1 || resource.pending !== 0
         || resource.targetAddedByUserId !== NOVA_ID
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1
-        || !predecessor || predecessor.status !== "authorized" || predecessor.refundStatus !== "none"
+        || !predecessor || predecessor.status !== "captured" || predecessor.refundStatus !== "none"
         || predecessor.refundRequestStatus
         || targetWindowAvailability(asset) !== 2
         || takeoverRequired.length !== 1 || !Q.sameJson(takeoverRequired[0].recipients, [RILEY_ID])
@@ -1808,7 +1808,7 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "manager-left",
-      previousManagerPayment: "authorized and not refunded",
+      previousManagerPayment: "captured and not refunded",
       successorPaymentRequired: 3200,
       takeoverNotificationRecipients: [RILEY_ID],
       next: "Riley uses Take Over, pays with Barion, and Ava approves the exact 3DS transaction."
@@ -1884,12 +1884,12 @@
         || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || !resource || resource.accepted !== 1 || resource.pending !== 0 || resource.targetAddedByUserId !== RILEY_ID
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 3
-        || !predecessor || predecessor.status !== "released" || predecessor.refundStatus !== "full"
+        || !predecessor || predecessor.status !== "captured" || predecessor.refundStatus !== "full"
         || predecessor.refundRequestStatus !== "approved" || predecessor.refundedAmount !== 3200
         || predecessor.refundRuleId !== "assignment-manager-takeover"
         || !predecessorRefund || predecessorRefund.amount !== 3200 || predecessorRefund.status !== "refunded"
         || predecessor.successorPaymentId !== successor?.id
-        || !successor || successor.status !== "authorized" || successor.bookingStatus !== "joined"
+        || !successor || successor.status !== "captured" || successor.bookingStatus !== "joined"
         || successor.refundStatus !== "none" || successor.predecessorPaymentId !== predecessor.id
         || !Q.sameJson(successor.acceptedPolicyIds, [POLICY_ID])
         || successor.checkoutSessionId !== rileyRequest.paymentSessionId
@@ -1954,7 +1954,7 @@
     if (!asset || asset.quantity !== 3
         || asset.requests.some(item => item.status !== "D")
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
-        || !successor || successor.status !== "authorized" || successor.refundStatus !== "none"
+        || !successor || successor.status !== "captured" || successor.refundStatus !== "none"
         || successor.refundRequestStatus !== "pending"
         || successor.refundedAmount !== 1600
         || successor.refundRuleId !== "qa-refund-1-day-50-percent"
@@ -1996,7 +1996,7 @@
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !predecessor || predecessor.refundStatus !== "full"
         || !predecessorRefund || predecessorRefund.amount !== 3200
-        || !successor || successor.status !== "partially_refunded" || successor.refundStatus !== "partial"
+        || !successor || successor.status !== "captured" || successor.refundStatus !== "partial"
         || !successorRefund || successorRefund.amount !== 1600
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 4
         || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 1600
@@ -2065,7 +2065,7 @@
     const payment = lifecyclePayment(NOVA_ID);
     if (!asset || asset.quantity !== 3 || !request || request.status !== "D"
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
-        || !payment || payment.status !== "authorized" || payment.refundStatus !== "none"
+        || !payment || payment.status !== "captured" || payment.refundStatus !== "none"
         || targetWindowAvailability(asset) !== 3
         || notificationRows("asset-assignment-takeover-required").length !== 0
         || paymentRefundPendingCount(CASEY_ID) !== baselineRefundPending(currentState, CASEY_ID)) {
@@ -2251,9 +2251,43 @@
       { assetId: PAID_ID },
       { $set: { "pricing.cancellationPolicy": policy, updatedDate: nowIso, updatedUser: CASEY_ID } }
     );
+    const payment = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId: NOVA_ID,
+      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
+    });
+    if (!payment || !Q.text(payment.gatewayAuthorizationId)) {
+      Q.fail("manager-left rollback could not resolve Nova's Barion payment.");
+    }
     const paymentResult = Q.collection("payments").updateOne(
-      { sourceId: PAID_ID, userId: NOVA_ID },
-      { $set: { cancellationPolicy: policy } }
+      { _id: payment._id },
+      {
+        $set: {
+          status: "captured",
+          gatewayStatus: "Succeeded",
+          capturedAtIso: Q.text(payment.gatewayApprovedAtIso) || nowIso,
+          cancellationPolicy: policy
+        },
+        $unset: {
+          gatewayActionUrl: "",
+          authorizationExpiresAtIso: "",
+          releasedAtIso: "",
+          failedAtIso: "",
+          gatewayRefundId: "",
+          gatewayRefundStatus: "",
+          refundedAtIso: "",
+          refundedAmount: "",
+          refundCurrency: "",
+          refundRuleId: "",
+          refundNote: "",
+          refundRequestStatus: "",
+          refundRequestedAtIso: "",
+          refundRequestedByUserId: "",
+          refundReviewedAtIso: "",
+          refundReviewedByUserId: "",
+          successorPaymentId: ""
+        }
+      }
     );
     if (assetResult.matchedCount !== 1 || paymentResult.matchedCount !== 1) {
       Q.fail("manager-left rollback could not attach the exact QA refund policy.");
@@ -2263,6 +2297,7 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "manager-left",
+      capturedBarionPaymentId: Q.text(payment.gatewayAuthorizationId),
       refundPolicy: "50% when requested at least 1 day before start",
       takeoverRefund: "full payer swap; cancellation policy does not apply",
       next: "Reload Riley once and repeat step 74."
