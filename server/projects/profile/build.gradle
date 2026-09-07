@@ -186,6 +186,18 @@ def profileHotReloadEnabled = providers.environmentVariable('PROFILEMANAGEMENT_H
 	.map { it.equalsIgnoreCase('true') }
 	.orElse(false)
 
+tasks.named('bootRun') {
+	def profileDebugPort = providers.environmentVariable('PROFILEMANAGEMENT_DEBUG_PORT').orNull
+	if (profileDebugPort) {
+		jvmArgs "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${profileDebugPort}"
+	}
+	if (profileHotReloadEnabled.get()) {
+		// The trigger must be configured on the application JVM itself. Passing
+		// spring-boot.run.jvmArguments to Gradle does not reach BootRun.
+		jvmArgs '-Dspring.devtools.restart.trigger-file=.reloadtrigger'
+	}
+}
+
 tasks.register('touchDevtoolsReloadTrigger') {
 	description = 'Signals Spring DevTools only after the existing profile classes build completed.'
 	group = 'build setup'

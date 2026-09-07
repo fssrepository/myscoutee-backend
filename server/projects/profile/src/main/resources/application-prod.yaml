@@ -64,6 +64,9 @@ events:
 scheduled-messages:
   task-poll-delay-ms: ${SCHEDULED_MESSAGES_TASK_POLL_DELAY_MS:1800000}
 
+i18n:
+  cache-refresh-ms: ${I18N_CACHE_REFRESH_MS:60000}
+
 affinity:
   recompute:
     enabled: ${AFFINITY_RECOMPUTE_ENABLED:true}

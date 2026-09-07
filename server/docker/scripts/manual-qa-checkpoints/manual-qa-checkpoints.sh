@@ -248,11 +248,29 @@ Usage:
   bash manual-qa-checkpoints.sh reset event-checkout EVENT-CHECKOUT-001
   bash manual-qa-checkpoints.sh stage asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh status asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-browser asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh capture-payment-ready asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh capture-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-paid-pending asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-request-destination asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh reset-service-chat-probe asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh repair-step-56-boundary asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh repair-unavailable-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-accepted asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-takeover asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-manager-left asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh repair-manager-left-required-policy asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-manager-left asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-takeover asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh stage-takeover-complete asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-takeover-complete asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-refund-requested asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-refunded asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-last-leave asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-last-leave asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-cancelled asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-accepted asset-checkout ASSET-CHECKOUT-001
@@ -356,6 +374,7 @@ cards.extend([
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_riley_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"RILEY OUTSIDE"},
   {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_nova_barion_4444","brand":"Mastercard","last4":"4444","expiryMonth":9,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
+  {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_riley_barion_5555","brand":"Mastercard","last4":"5555","expiryMonth":9,"expiryYear":2029,"cardholderName":"RILEY OUTSIDE"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_expired_0008","brand":"Visa","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"}
 ])
 if sys.argv[2] == "asset":
@@ -386,6 +405,20 @@ print(json.dumps({"payment_methods": fixtures}, separators=(",", ":")))
   actual="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("payment_methods", -1))' <<<"${response}")"
   [ "${actual}" = "${expected}" ] \
     || fail "Payment simulator loaded ${actual} checkout card fixtures; expected ${expected}."
+}
+
+restore_payment_simulator_captured_barion_fixture() {
+  local payment_id="$1"
+  local base_url="${MANUAL_QA_PAYMENT_SIMULATOR_URL:-http://127.0.0.1:18082}"
+  local api_key="${MANUAL_QA_PAYMENT_SIMULATOR_API_KEY:-${PAYMENT_STRIPE_API_KEY:-sk_test_myscoutee}}"
+  local response status
+  response="$(curl --fail --silent --show-error -X PUT \
+    -H "Authorization: Bearer ${api_key}" \
+    "${base_url}/myscoutee/v1/test-fixtures/barion-payments/${payment_id}/captured")" \
+    || fail "Could not restore the captured Barion payment fixture."
+  status="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("status", ""))' <<<"${response}")"
+  [ "${status}" = "Succeeded" ] \
+    || fail "Payment simulator did not restore the captured Barion payment fixture."
 }
 
 set_payment_simulator_provider() {
@@ -816,7 +849,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-checkout:status|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:verify)
+  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:reset-service-chat-probe|asset-checkout:repair-step-56-boundary|asset-checkout:repair-unavailable-control|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:repair-manager-left-required-policy|asset-checkout:verify-takeover|asset-checkout:stage-takeover-complete|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:verify-cancelled|asset-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
@@ -828,7 +861,29 @@ case "${scenario}:${command}" in
     replace_payment_simulator_checkout_card_fixtures asset
     set_payment_simulator_barion
     ;;
-  asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted)
+  asset-checkout:rollback-manager-left)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    rollback_output="$(run_scenario "${command}" "${scenario}" 30 "$3")"
+    printf '%s\n' "${rollback_output}"
+    captured_payment_id="$(python3 -c 'import re,sys; values=re.findall(r"[\"'"'"']capturedBarionPaymentId[\"'"'"']\s*:\s*[\"'"'"']([^\"'"'"']+)", sys.stdin.read()); print(values[-1] if values else "")' <<<"${rollback_output}")"
+    [ -n "${captured_payment_id}" ] || fail "Rollback returned no captured Barion payment ID."
+    restore_payment_simulator_captured_barion_fixture "${captured_payment_id}"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion_3ds
+    ;;
+  asset-checkout:rollback-takeover-complete)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    rollback_output="$(run_scenario "${command}" "${scenario}" 30 "$3")"
+    printf '%s\n' "${rollback_output}"
+    captured_payment_id="$(python3 -c 'import re,sys; values=re.findall(r"[\"'"'"']capturedBarionPaymentId[\"'"'"']\s*:\s*[\"'"'"']([^\"'"'"']+)", sys.stdin.read()); print(values[-1] if values else "")' <<<"${rollback_output}")"
+    [ -n "${captured_payment_id}" ] || fail "Rollback returned no captured Riley Barion payment ID."
+    restore_payment_simulator_captured_barion_fixture "${captured_payment_id}"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion_3ds
+    ;;
+  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-cancelled-control)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

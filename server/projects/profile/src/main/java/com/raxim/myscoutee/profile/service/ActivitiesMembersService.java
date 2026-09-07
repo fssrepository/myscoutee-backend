@@ -324,7 +324,11 @@ public class ActivitiesMembersService {
                                     : left,
                             LinkedHashMap::new));
         Map<String, ActivityMember> membersByUserId = new LinkedHashMap<>();
-        if (!Boolean.TRUE.equals(pendingOnly)) {
+        String scopedManagerUserId = resolveScopedAssetManagerUserId(assetId, eventId, subEventId);
+        String assetOwnerUserId = normalizeId(asset.getOwnerUserId());
+        if (!Boolean.TRUE.equals(pendingOnly)
+                && (!StringUtils.hasText(scopedManagerUserId)
+                        || scopedManagerUserId.equals(assetOwnerUserId))) {
             ActivityMember owner = scopedAssetOwnerMember(asset, eventId, subEventId);
             if (owner != null) {
                 membersByUserId.put(normalizeId(owner.getUserId()), owner);
@@ -335,7 +339,8 @@ public class ActivitiesMembersService {
             ActivityMember member = scopedAssetRequestMember(
                     asset,
                     request,
-                    storedAssetMembersByUserId.get(requestUserId));
+                    storedAssetMembersByUserId.get(requestUserId),
+                    scopedManagerUserId);
             String memberUserId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(memberUserId) && !memberUserId.equals(normalizeId(asset.getOwnerUserId()))) {
                 membersByUserId.put(memberUserId, member);
@@ -344,6 +349,48 @@ public class ActivitiesMembersService {
         return membersByUserId.values().stream()
                 .sorted(this::compareMembersForManagement)
                 .toList();
+    }
+
+    private String resolveScopedAssetManagerUserId(String assetId, String eventId, String subEventId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        for (ActivitySubEventResource resource : activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(
+                        normalizeId(eventId),
+                        normalizeId(subEventId),
+                        RESOURCE_STATUS_DELETED)) {
+            if (resource == null) {
+                continue;
+            }
+            Map<String, Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>> settingsByType =
+                    resource.getAssetSettingsByType();
+            if (settingsByType != null) {
+                for (Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord> settingsByAssetId : settingsByType.values()) {
+                    ActivitySubEventResource.SubEventAssignedAssetSettingsRecord settings = settingsByAssetId == null
+                            ? null
+                            : settingsByAssetId.get(normalizedAssetId);
+                    String managerUserId = normalizeId(settings == null ? null : settings.addedByUserId());
+                    if (StringUtils.hasText(managerUserId)) {
+                        return managerUserId;
+                    }
+                }
+            }
+            boolean assigned = resource.getAssetAssignmentIds() != null
+                    && resource.getAssetAssignmentIds().values().stream()
+                            .filter(Objects::nonNull)
+                            .flatMap(Collection::stream)
+                            .map(this::normalizeId)
+                            .anyMatch(normalizedAssetId::equals);
+            if (assigned) {
+                String fallbackManagerUserId = normalizeId(resource.getAssetOwnerUserId());
+                if (StringUtils.hasText(fallbackManagerUserId)) {
+                    return fallbackManagerUserId;
+                }
+            }
+        }
+        return null;
     }
 
     private ActivityMember scopedAssetOwnerMember(Asset asset, String eventId, String subEventId) {
@@ -370,7 +417,8 @@ public class ActivitiesMembersService {
     private ActivityMember scopedAssetRequestMember(
             Asset asset,
             Asset.AssetRequestRecord request,
-            ActivityMember storedAssetMember) {
+            ActivityMember storedAssetMember,
+            String scopedManagerUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String userId = normalizeId(request == null ? null : request.userId());
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(userId)) {
@@ -386,7 +434,9 @@ public class ActivitiesMembersService {
                 && storedAssetMember != null
                 && STATUS_ACCEPTED.equals(normalizeStatus(storedAssetMember.getStatus()))
                 && MANAGER_ROLES.contains(resolveStoredRole(storedAssetMember, OWNER_TYPE_ASSET, assetId));
-        member.setRole(acceptedStoredManager ? "Manager" : "Member");
+        boolean acceptedScopedManager = STATUS_ACCEPTED.equals(status)
+                && userId.equals(normalizeId(scopedManagerUserId));
+        member.setRole(acceptedStoredManager || acceptedScopedManager ? "Manager" : "Member");
         member.setStatus(status);
         if (STATUS_PENDING.equals(status)) {
             boolean borrowerInitiated = "borrow".equalsIgnoreCase(safeText(request.requestKind()));
@@ -3908,7 +3958,7 @@ public class ActivitiesMembersService {
                 user == null ? initialsFromText(normalizeId(member.getUserId())) : safeText(user.getInitials()),
                 user == null ? "man" : normalizeGender(user.getGender()),
                 user == null ? "" : safeText(user.getCity()),
-                defaultStatusText(status, requestKind, pendingSource),
+                defaultStatusText(status, requestKind, pendingSource, member.getOwnerType()),
                 role,
                 status,
                 pendingSource,
@@ -5358,7 +5408,11 @@ public class ActivitiesMembersService {
         return initials.toString();
     }
 
-    private String defaultStatusText(String status, String requestKind, String pendingSource) {
+    private String defaultStatusText(
+            String status,
+            String requestKind,
+            String pendingSource,
+            String ownerType) {
         if (STATUS_ACCEPTED.equals(status)) {
             return "Recently Active";
         }
@@ -5378,7 +5432,9 @@ public class ActivitiesMembersService {
             return "Invitation pending.";
         }
         if (REQUEST_KIND_APPROVAL.equals(requestKind) || REQUEST_KIND_JOIN.equals(requestKind) || "member".equals(pendingSource)) {
-            return "Waiting for admin approval.";
+            return OWNER_TYPE_ASSET.equals(normalizeOwnerType(ownerType))
+                    ? "Waiting for owner approval."
+                    : "Waiting for admin approval.";
         }
         return "Invitation pending.";
     }

@@ -19,7 +19,8 @@ public interface PaymentProcessor extends PaymentGateway {
                 session.id(),
                 session.id(),
                 switch (session.status()) {
-                    case "approved", "authorized" -> AuthorizationStatus.AUTHORIZED;
+                    case "approved", "captured" -> AuthorizationStatus.CAPTURED;
+                    case "authorized" -> AuthorizationStatus.AUTHORIZED;
                     case "requires_action" -> AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
                     case "failed" -> AuthorizationStatus.FAILED;
                     default -> AuthorizationStatus.AUTHORIZATION_PENDING;
@@ -51,6 +52,20 @@ public interface PaymentProcessor extends PaymentGateway {
             String gatewayAuthorizationId,
             String idempotencyKey) {
         throw new UnsupportedOperationException("Payment authorization release is not implemented.");
+    }
+
+    @Override
+    default RefundResult refundCapturedPayment(
+            String gatewayAuthorizationId,
+            java.math.BigDecimal amount,
+            String currency,
+            String idempotencyKey) {
+        throw new UnsupportedOperationException("Captured payment refund is not implemented.");
+    }
+
+    @Override
+    default RefundResult retrieveRefund(String gatewayRefundId) {
+        throw new UnsupportedOperationException("Payment refund retrieval is not implemented.");
     }
 
     default EventCheckoutSessionDto checkout(EventCheckoutRequestDto request) {

@@ -165,6 +165,24 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
+    void missingExpiryUsesTheTenMinuteBasketContract() {
+        Instant beforeSave = Instant.now();
+
+        service.saveBasket(request(itemDto()));
+
+        Instant afterSave = Instant.now();
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).upsert(
+                any(Query.class),
+                updateCaptor.capture(),
+                eq(EventCheckoutBasketItem.class));
+        Document setValues = (Document) updateCaptor.getValue().getUpdateObject().get("$set");
+        Instant expiresAt = Instant.parse(setValues.getString("expiresAtIso"));
+        assertThat(expiresAt)
+                .isBetween(beforeSave.plusSeconds(600), afterSave.plusSeconds(600));
+    }
+
+    @Test
     void cancelClosesTheReservationUniquenessSlot() {
         service.updateBasketState(new EventCheckoutStateChangeRequestDto(
                 "user-1",

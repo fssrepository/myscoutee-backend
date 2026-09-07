@@ -91,6 +91,7 @@ public class Users {
     private Map<String, Double> paymentSpentTotals = new LinkedHashMap<>();
     private Map<String, Double> paymentIncomeTotals = new LinkedHashMap<>();
     private Map<String, Double> paymentAllTotals = new LinkedHashMap<>();
+    private Integer paymentRefundsPending;
 
     public String getMongoId() {
         return mongoId;
@@ -506,6 +507,14 @@ public class Users {
                 : new LinkedHashMap<>(paymentAllTotals);
     }
 
+    public Integer getPaymentRefundsPending() {
+        return paymentRefundsPending;
+    }
+
+    public void setPaymentRefundsPending(Integer paymentRefundsPending) {
+        this.paymentRefundsPending = paymentRefundsPending;
+    }
+
     public record LocationCoordinatesRecord(
             Double latitude,
             Double longitude) {
@@ -627,7 +636,17 @@ public class Users {
             Integer cars,
             Integer accommodation,
             Integer supplies,
-            Integer tickets) {
+            Integer tickets,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending) {
+        public UserAssetCountersRecord(
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets) {
+            this(cars, accommodation, supplies, tickets, 0, 0, 0);
+        }
     }
 
     public record UserEventFeedbackCountersRecord(

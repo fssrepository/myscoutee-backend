@@ -1,10 +1,12 @@
 package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.raxim.myscoutee.profile.data.AssetCatalog;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPaymentTotalsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -27,7 +29,40 @@ public final class AssetsDtos {
             String subEventId,
             String actorUserId,
             String action,
-            AssetMemberRequestDto request) {
+            AssetMemberRequestDto request,
+            String paymentSessionId,
+            String previousManagerUserId,
+            List<String> acceptedPolicyIds) {
+        public AssetMemberStatusChangeRequestDto(
+                String assetId,
+                String eventId,
+                String subEventId,
+                String actorUserId,
+                String action,
+                AssetMemberRequestDto request,
+                String paymentSessionId,
+                String previousManagerUserId) {
+            this(
+                    assetId,
+                    eventId,
+                    subEventId,
+                    actorUserId,
+                    action,
+                    request,
+                    paymentSessionId,
+                    previousManagerUserId,
+                    null);
+        }
+
+        public AssetMemberStatusChangeRequestDto(
+                String assetId,
+                String eventId,
+                String subEventId,
+                String actorUserId,
+                String action,
+                AssetMemberRequestDto request) {
+            this(assetId, eventId, subEventId, actorUserId, action, request, null, null, null);
+        }
     }
 
     public record AssetMemberStatusChangeDto(
@@ -38,7 +73,8 @@ public final class AssetsDtos {
             String previousStatus,
             String status,
             Integer acceptedMemberDelta,
-            Integer pendingMemberDelta) {
+            Integer pendingMemberDelta,
+            UserPaymentTotalsDto paymentTotals) {
     }
 
     public record AssetDto(
@@ -64,7 +100,8 @@ public final class AssetsDtos {
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
             List<String> menuActions,
-            String ownerReleasedAtIso) {
+            String ownerReleasedAtIso,
+            String ownerAvatarUrl) {
         public AssetDto(
                 String id,
                 String type,
@@ -92,7 +129,7 @@ public final class AssetsDtos {
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     description, imageUrl, sourceLink, locationLabel, priceLabel,
                     policiesEnabled, policyCount, visibility, status, ownerUserId, ownerName,
-                    requests, metrics, menuActions, null);
+                    requests, metrics, menuActions, null, null);
         }
 
         public AssetDto(
@@ -140,6 +177,7 @@ public final class AssetsDtos {
                     requests,
                     null,
                     menuActions,
+                    null,
                     null);
         }
     }
@@ -147,7 +185,21 @@ public final class AssetsDtos {
     public record AssetExplorePageDto(
             List<AssetDto> items,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            Map<String, String> checkoutResultStates) {
+        public AssetExplorePageDto(
+                List<AssetDto> items,
+                Integer total,
+                String nextCursor) {
+            this(items, total, nextCursor, Map.of());
+        }
+    }
+
+    public record AssetBorrowWindowDto(
+            String eventId,
+            String subEventId,
+            String startAtIso,
+            String endAtIso) {
     }
 
     public record AssetDetailDto(
@@ -173,7 +225,40 @@ public final class AssetsDtos {
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
             List<String> menuActions,
-            String ownerReleasedAtIso) {
+            String ownerReleasedAtIso,
+            AssetBorrowWindowDto borrowWindow,
+            String ownerAvatarUrl) {
+        public AssetDetailDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String details,
+                String imageUrl,
+                String sourceLink,
+                List<String> routes,
+                Boolean policiesEnabled,
+                List<PolicyItemDto> policies,
+                PricingConfigDto pricing,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                AssetRequestMetricsDto metrics,
+                List<String> menuActions,
+                String ownerReleasedAtIso) {
+            this(
+                    id, type, title, subtitle, category, city, capacityTotal, quantity,
+                    details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions,
+                    ownerReleasedAtIso, null, null);
+        }
+
         public AssetDetailDto(
                 String id,
                 String type,
@@ -200,7 +285,7 @@ public final class AssetsDtos {
             this(
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
-                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null);
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null, null, null);
         }
 
         public AssetDetailDto(
@@ -248,6 +333,8 @@ public final class AssetsDtos {
                     requests,
                     null,
                     menuActions,
+                    null,
+                    null,
                     null);
         }
 
@@ -277,7 +364,8 @@ public final class AssetsDtos {
                     requests,
                     metrics,
                     menuActions,
-                    ownerReleasedAtIso);
+                    ownerReleasedAtIso,
+                    ownerAvatarUrl);
         }
     }
 

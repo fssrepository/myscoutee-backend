@@ -386,7 +386,7 @@ public class HomeUserProfileService {
         }
         String email = safeText(firebasePrincipal.getEmail());
         String name = admin ? adminDisplayName(email) : "Operator";
-        UserActivitiesDto activities = toUserActivitiesDto(null);
+        UserActivitiesDto activities = toUserActivitiesDto(null, 0);
         UserMenuCountersDto menuCounters = emptyMenuCounters();
         return new UserByIdResponseDto(
                 userId,
@@ -1232,7 +1232,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
                 user.isOperator(),
-                toUserActivitiesDto(user.getActivities()),
+                toUserActivitiesDto(user.getActivities(), user.getPaymentRefundsPending()),
                 includeImpressions
                         ? new UserNotificationPreferencesDto(
                                 user.getNotificationPreferences() != null
@@ -2124,6 +2124,7 @@ public class HomeUserProfileService {
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
+                normalizeCount(user.getPaymentRefundsPending()),
                 activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 
@@ -2134,7 +2135,7 @@ public class HomeUserProfileService {
                 new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                 new UserAssetCountersDto(0, 0, 0, 0),
                 new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                0, 0, 0);
+                0, 0, 0, 0);
     }
 
     private String adminDisplayName(String email) {
@@ -2624,7 +2625,11 @@ public class HomeUserProfileService {
             String requestCursor) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 39
+        int fingerprintOffset = cursorPartCount >= 44
+                ? 42
+                : cursorPartCount >= 42
+                ? 40
+                : cursorPartCount >= 39
                 ? 37
                 : cursorPartCount >= 38 ? 36
                 : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
@@ -2652,6 +2657,7 @@ public class HomeUserProfileService {
                 counters.eventFeedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
+                counters.paymentRefundsPending(),
                 resolveRealtimeNotificationCount(user, counters.notifications()),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash));
@@ -2704,12 +2710,16 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodation())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().supplies())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().tickets())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().carsPending())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodationPending())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().suppliesPending())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().ownEvents())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().pending())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().feedbacked())),
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().removed())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
+                String.valueOf(normalizeCount(counters.paymentRefundsPending())),
                 String.valueOf(normalizeCount(counters.notifications())),
                 paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
@@ -2848,7 +2858,9 @@ public class HomeUserProfileService {
                 normalizeStrings(preferences.getReligions()));
     }
 
-    private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {
+    private UserActivitiesDto toUserActivitiesDto(
+            Users.UserActivitiesRecord activities,
+            Integer paymentRefundsPending) {
         if (activities == null) {
             return new UserActivitiesDto(
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2856,7 +2868,7 @@ public class HomeUserProfileService {
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                    0, 0, 0);
+                    0, 0, normalizeCount(paymentRefundsPending), 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2876,6 +2888,7 @@ public class HomeUserProfileService {
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()),
+                normalizeCount(paymentRefundsPending),
                 normalizeCount(activities.notifications()));
     }
 
@@ -2949,7 +2962,10 @@ public class HomeUserProfileService {
                 asset == null ? 0 : normalizeCount(asset.cars()),
                 asset == null ? 0 : normalizeCount(asset.accommodation()),
                 asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()));
+                asset == null ? 0 : normalizeCount(asset.tickets()),
+                asset == null ? 0 : normalizeCount(asset.carsPending()),
+                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
+                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
     private UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
@@ -2999,7 +3015,10 @@ public class HomeUserProfileService {
                 asset == null ? 0 : normalizeCount(asset.cars()),
                 asset == null ? 0 : normalizeCount(asset.accommodation()),
                 asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()));
+                asset == null ? 0 : normalizeCount(asset.tickets()),
+                asset == null ? 0 : normalizeCount(asset.carsPending()),
+                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
+                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
     private Users.UserEventFeedbackCountersRecord toUserEventFeedbackCountersRecord(UserEventFeedbackCountersDto feedback) {

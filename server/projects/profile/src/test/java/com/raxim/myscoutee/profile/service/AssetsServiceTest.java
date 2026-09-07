@@ -18,10 +18,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -33,6 +37,7 @@ import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.AssetRequest;
@@ -41,6 +46,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
@@ -69,6 +75,111 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void assetReadModelPreservesExplicitZeroQuantity() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset unavailableAsset = asset();
+        unavailableAsset.setType(AssetCatalog.TYPE_TRANSPORT);
+        unavailableAsset.setQuantity(0);
+        unavailableAsset.setRequests(List.of());
+
+        when(assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc("u1"))
+                .thenReturn(List.of(unavailableAsset));
+        when(mongoTemplate.find(any(Query.class), eq(Asset.class))).thenReturn(List.of());
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(List.of("u1")))
+                .thenReturn(List.of(user("u1", "Owner One", "OO")));
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                mock(AccessControlService.class));
+
+        assertThat(service.queryAssets("u1"))
+                .singleElement()
+                .extracting(AssetDto::quantity)
+                .isEqualTo(0);
+    }
+
+    @Test
+    void visibleAssetPageIncludesCheckoutStatesFromTheSharedBasketRepository() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        MongoConverter converter = mock(MongoConverter.class);
+        EventCheckoutBasketService basketService = mock(EventCheckoutBasketService.class);
+        Asset visibleAsset = asset();
+        visibleAsset.setRequests(List.of(new AssetRequestRecord(
+                "request-pending",
+                "u2",
+                "Member Two",
+                "MT",
+                "man",
+                "pending",
+                "Awaiting owner confirmation.",
+                "borrow",
+                "2030-05-12T08:00:00Z",
+                new AssetRequestBookingRecord(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2030-05-12T09:00:00Z",
+                        "2030-05-12T11:00:00Z",
+                        1,
+                        0d,
+                        "USD",
+                        List.of(),
+                        null,
+                        false))));
+        Document facet = new Document("metadata", List.of(new Document("total", 1)))
+                .append("items", List.of(new Document("_id", "asset-doc-1")));
+
+        Users owner = user("u1", "Owner One", "OO");
+        owner.setImages(List.of("https://media.example.test/owner.webp"));
+        when(usersRepository.findAll()).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(List.of("u1")))
+                .thenReturn(List.of(owner));
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("assets"), eq(Document.class)))
+                .thenReturn(new AggregationResults<>(List.of(facet), new Document()));
+        when(mongoTemplate.getConverter()).thenReturn(converter);
+        when(converter.read(eq(Asset.class), any(Document.class))).thenReturn(visibleAsset);
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(basketService.loadResultStatesByEvent("u2", List.of("asset-1")))
+                .thenReturn(Map.of("asset-1", "pending"));
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                mock(AccessControlService.class));
+        service.setEventCheckoutBasketService(basketService);
+
+        AssetExplorePageDto page = service.queryVisibleAssetsPage(
+                "u2",
+                AssetCatalog.TYPE_SUPPLIES,
+                null,
+                null,
+                null,
+                0,
+                20,
+                null,
+                "availability");
+
+        assertThat(page.items()).extracting(AssetDto::id).containsExactly("asset-1");
+        assertThat(page.items().getFirst().ownerAvatarUrl()).isEqualTo("https://media.example.test/owner.webp");
+        assertThat(page.items().getFirst().metrics().pendingItems()).isEqualTo(1);
+        assertThat(page.checkoutResultStates()).containsEntry("asset-1", "pending");
+        verify(basketService).loadResultStatesByEvent("u2", List.of("asset-1"));
+        verify(mongoTemplate, never()).find(any(Query.class), eq(AssetRequest.class));
+    }
+
     @Test
     void removedEventMemberOnlyStatusDeletesRequestsFromThatEventAssignment() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
@@ -573,6 +684,12 @@ class AssetsServiceTest {
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset asset = asset();
+        asset.setPoliciesEnabled(true);
+        asset.setPolicies(List.of(new AssetPolicyRecord(
+                "policy-1",
+                "Required policy",
+                "Shown automatically before borrowing.",
+                true)));
         AtomicReference<Asset> assetState = new AtomicReference<>(asset);
         when(assetsRepository.findByAssetId("asset-1"))
                 .thenAnswer(invocation -> Optional.of(assetState.get()));
@@ -606,13 +723,23 @@ class AssetsServiceTest {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
+            var rejectedJoin = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                    "asset-1",
+                    "event-1",
+                    "subevent-1",
+                    "u2",
+                    "join",
+                    borrowRequestDto("request-missing-policy", "u2", "pending", "event-1")));
+
+            assertThat(rejectedJoin).isNull();
+
             var joined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                     "asset-1",
                     "event-1",
                     "subevent-1",
                     "u2",
                     "join",
-                    borrowRequestDto("request-2", "u2", "pending", "event-1")));
+                    borrowRequestDto("request-2", "u2", "pending", "event-1", List.of("policy-1"))));
 
             assertThat(joined.status()).isEqualTo("pending");
             assertThat(joined.previousStatus()).isNull();
@@ -654,7 +781,7 @@ class AssetsServiceTest {
                     "subevent-1",
                     "u2",
                     "join",
-                    borrowRequestDto("request-3", "u2", "pending", "event-1")));
+                    borrowRequestDto("request-3", "u2", "pending", "event-1", List.of("policy-1"))));
 
             assertThat(rejoined.previousStatus()).isNull();
             assertThat(rejoined.status()).isEqualTo("pending");
@@ -667,6 +794,308 @@ class AssetsServiceTest {
         } finally {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    @Test
+    void scopedBorrowManagerLeaveKeepsAssignmentAndPublishesReplacementAmount() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment"),
+                scopedBorrowRequest("successor-request", "u3", "accepted", 1600d, null, null)));
+        AtomicReference<Asset> assetState = new AtomicReference<>(asset);
+        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            assetState.set(saved);
+            return saved;
+        });
+        Users previousManager = user("u2", "Manager Two", "MT");
+        Users successor = user("u3", "Successor Three", "ST");
+        successor.setPaymentSpentTotals(Map.of("HUF", 3200d));
+        successor.setPaymentIncomeTotals(Map.of());
+        successor.setPaymentAllTotals(Map.of("HUF", 3200d));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(previousManager));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(successor));
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1", "event-1", "subevent-1", "u2", "leave", null));
+
+        assertThat(left.status()).isEqualTo("deleted");
+        assertThat(assetState.get().getRequests())
+                .filteredOn(request -> "successor-request".equals(request.id()))
+                .singleElement()
+                .satisfies(request -> {
+                    assertThat(request.status()).isEqualTo("accepted");
+                    assertThat(request.booking().totalAmount()).isEqualTo(1600d);
+                    assertThat(request.booking().previousTotalAmount()).isEqualTo(3200d);
+                    assertThat(request.booking().currency()).isEqualTo("HUF");
+                });
+        verify(activitiesResourcesService, never()).removeScopedAssetAssignment(any(), any(), any(), any(), any());
+        ArgumentCaptor<NotificationIntent> notifications = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(2)).enqueue(notifications.capture());
+        assertThat(notifications.getAllValues())
+                .extracting(NotificationIntent::type)
+                .contains("asset-assignment-takeover-required");
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "asset-assignment-takeover-required".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> {
+                    assertThat(notification.title()).isEqualTo("notification.asset.takeover.required.title");
+                    assertThat(notification.body()).isEqualTo("notification.asset.takeover.required.message");
+                    assertThat(notification.payload())
+                            .containsEntry("notification_title_key", "notification.asset.takeover.required.title")
+                            .containsEntry("notification_message_key", "notification.asset.takeover.required.message");
+                });
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void scopedBorrowLastManagerLeaveRemovesOnlyRuntimeAssignment() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment")));
+        AtomicReference<Asset> assetState = new AtomicReference<>(asset);
+        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            assetState.set(saved);
+            return saved;
+        });
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+        when(activitiesResourcesService.removeScopedAssetAssignment(
+                "event-1", "subevent-1", "asset-1", "u2", "u2"))
+                .thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1", "event-1", "subevent-1", "u2", "leave", null));
+
+        assertThat(left.status()).isEqualTo("deleted");
+        assertThat(assetState.get().getAssetId()).isEqualTo("asset-1");
+        assertThat(assetState.get().getRequests())
+                .singleElement()
+                .satisfies(request -> assertThat(request.status()).isEqualTo("D"));
+        verify(activitiesResourcesService).removeScopedAssetAssignment(
+                "event-1", "subevent-1", "asset-1", "u2", "u2");
+    }
+
+    @Test
+    void scopedBorrowManagerLeaveDoesNotPublishReplacementWithoutCancelPermission() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment"),
+                scopedBorrowRequest("successor-request", "u3", "accepted", 0d, null, null)));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1", "event-1", "subevent-1", "u2", "leave", null));
+
+        assertThat(left).isNull();
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
+    void scopedBorrowTakeOverTransfersManagerOnlyAfterReplacementPaymentValidation() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        PaymentService paymentService = mock(PaymentService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setPoliciesEnabled(true);
+        asset.setPolicies(List.of(new AssetPolicyRecord(
+                "policy-1",
+                "Required policy",
+                "Accept before taking over.",
+                true)));
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "D", 3200d, null, "manager-payment"),
+                scopedBorrowRequest("successor-request", "u3", "accepted", 1600d, 3200d, null),
+                scopedBorrowRequest("remaining-request", "u4", "accepted", 1600d, null, null)));
+        AtomicReference<Asset> assetState = new AtomicReference<>(asset);
+        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            assetState.set(saved);
+            return saved;
+        });
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+        when(activitiesResourcesService.transferScopedAssetManager(
+                "event-1", "subevent-1", "asset-1", "u2", "u3"))
+                .thenReturn(true);
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Successor Three", "ST")));
+        when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(user("u4", "Remaining Four", "RF")));
+        PaymentService.AssetPaymentReplacement replacement =
+                new PaymentService.AssetPaymentReplacement("old-payment", "new-payment", true);
+        when(paymentService.validateAssetPaymentReplacement(
+                "manager-payment", "successor-payment", "u2", "u3", "asset-1", "event-1", "subevent-1"))
+                .thenReturn(replacement);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                paymentService,
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var rejected = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                "u3",
+                "take-over",
+                null,
+                "successor-payment",
+                "u2"));
+
+        assertThat(rejected).isNull();
+        verifyNoInteractions(paymentService);
+
+        var takenOver = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                "u3",
+                "take-over",
+                null,
+                "successor-payment",
+                "u2",
+                List.of("policy-1")));
+
+        assertThat(takenOver.status()).isEqualTo("accepted");
+        assertThat(takenOver.acceptedMemberDelta()).isZero();
+        assertThat(takenOver.paymentTotals().outgoing()).containsEntry("HUF", 3200d);
+        assertThat(takenOver.paymentTotals().incoming()).isEmpty();
+        assertThat(takenOver.paymentTotals().all()).containsEntry("HUF", 3200d);
+        assertThat(assetState.get().getRequests())
+                .filteredOn(request -> "successor-request".equals(request.id()))
+                .singleElement()
+                .satisfies(request -> {
+                    assertThat(request.booking().totalAmount()).isEqualTo(3200d);
+                    assertThat(request.booking().previousTotalAmount()).isNull();
+                    assertThat(request.booking().paymentSessionId()).isEqualTo("successor-payment");
+                    assertThat(request.booking().acceptedPolicyIds()).containsExactly("policy-1");
+                });
+        verify(paymentService).completeAssetPaymentReplacement(
+                replacement, "u3", "event-1", "subevent-1");
+        verify(activitiesResourcesService).transferScopedAssetManager(
+                "event-1", "subevent-1", "asset-1", "u2", "u3");
+        ArgumentCaptor<NotificationIntent> notifications = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService, times(2)).enqueue(notifications.capture());
+        assertThat(notifications.getAllValues())
+                .extracting(NotificationIntent::type)
+                .containsExactlyInAnyOrder("asset-assignment-taken-over", "payment-refund-approved");
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "asset-assignment-taken-over".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> assertThat(notification.recipientUserIds()).containsExactly("u4"));
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "payment-refund-approved".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> {
+                    assertThat(notification.recipientUserIds()).containsExactly("u2");
+                    assertThat(notification.createdUser()).isNull();
+                    assertThat(notification.payload())
+                            .containsEntry("paymentId", "old-payment")
+                            .containsEntry("refundRequestStatus", "approved")
+                            .containsEntry("refundStatus", "full")
+                            .containsEntry("paymentStatus", "refunded")
+                            .containsEntry("refundReason", "asset-manager-takeover")
+                            .containsEntry("notification_message_key", "notification.payment.refund.takeover.message")
+                            .doesNotContainKeys("previousManagerUserId", "managerUserId");
+                });
     }
 
     @Test
@@ -720,11 +1149,17 @@ class AssetsServiceTest {
     }
 
     @Test
-    void scopedAssetMemberManagementRequiresOwnerOrExplicitManagerRole() {
+    void scopedAssetMemberManagementAllowsOwnerGlobalManagerOrExactRuntimeManager() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = assetWithEventRequest();
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("runtime-manager");
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -740,9 +1175,12 @@ class AssetsServiceTest {
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
                 mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u1")).isTrue();
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "runtime-manager")).isTrue();
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u2")).isFalse();
 
@@ -781,6 +1219,52 @@ class AssetsServiceTest {
                         acceptedBooking.inventoryApplied()))));
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+    }
+
+    @Test
+    void removingBorrowedRuntimeAssignmentRetiresScopeUnderGlobalAssetOwner() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UserActivityCountersService userActivityCountersService = mock(UserActivityCountersService.class);
+        Asset asset = asset();
+        asset.setOwnerUserId("global-owner");
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "runtime-manager", "accepted", 3200d, null, "payment-1"),
+                scopedBorrowRequest("member-request", "member", "accepted", 3200d, null, "payment-2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                userActivityCountersService);
+
+        service.statusDeleteAssignmentScopeRequests(
+                "runtime-manager",
+                List.of("asset-1"),
+                "event-1",
+                "event-1",
+                "subevent-1",
+                "runtime-manager",
+                "2026-09-07T09:00:00Z");
+
+        ArgumentCaptor<Asset> saved = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(saved.capture());
+        assertThat(saved.getValue().getOwnerUserId()).isEqualTo("global-owner");
+        assertThat(saved.getValue().getRequests())
+                .extracting(AssetRequestRecord::status)
+                .containsOnly("D");
+        verify(userActivityCountersService).refreshAssetCountersForUser("global-owner");
+        verify(assetsRepository, never()).findByOwnerUserIdAndAssetId(anyString(), anyString());
     }
 
     @Test
@@ -2178,40 +2662,52 @@ class AssetsServiceTest {
     @Test
     void upsertAllowsPendingBorrowRequestWithoutFullAssetEditAndIgnoresAssetFieldChanges() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset existing = asset();
+        var authentication = new TestingAuthenticationToken("firebase-principal", null);
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1", "Owner One", "OO")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
         when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
 
         AssetsService service = new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
-                mock(ActivityMembersRepository.class),
+                usersRepository,
+                activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
+                notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
                 mock(UserActivityCountersService.class));
 
-        service.upsert(new AssetUpsertRequestDto(
-                "u1",
-                assetCard(
-                        "asset-1",
-                        "Spoofed Title",
-                        1,
-                        List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            service.upsert(new AssetUpsertRequestDto(
+                    "u1",
+                    assetCard(
+                            "asset-1",
+                            "Spoofed Title",
+                            1,
+                            List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
 
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
-        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(2);
         assertThat(savedAsset.getValue().getRequests()).hasSize(2);
         assertThat(savedAsset.getValue().getRequests())
                 .anySatisfy(request -> {
@@ -2228,6 +2724,18 @@ class AssetsServiceTest {
                 });
         verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
         verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-admin-join-request");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u1");
+        assertThat(notification.getValue().payload())
+                .containsEntry("assetId", "asset-1")
+                .containsEntry("eventId", "event-1")
+                .containsEntry("subEventId", "subevent-1")
+                .containsEntry("requestId", "request-2")
+                .containsEntry("memberUserId", "u2")
+                .containsEntry("requestKind", "borrow")
+                .containsEntry("senderUserId", "u2");
     }
 
     @Test
@@ -2337,6 +2845,7 @@ class AssetsServiceTest {
 
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(2);
         assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("accepted");
     }
 
@@ -2904,6 +3413,42 @@ class AssetsServiceTest {
         return asset;
     }
 
+    private AssetRequestRecord scopedBorrowRequest(
+            String requestId,
+            String userId,
+            String status,
+            Double totalAmount,
+            Double previousTotalAmount,
+            String paymentSessionId) {
+        return new AssetRequestRecord(
+                requestId,
+                userId,
+                userId,
+                userId.toUpperCase(),
+                "man",
+                status,
+                "Scoped borrow request.",
+                "borrow",
+                "2026-09-07T06:00:00Z",
+                new AssetRequestBookingRecord(
+                        "event-1",
+                        "QA Event",
+                        "subevent-1",
+                        "QA Borrow Stage",
+                        "subevent-1",
+                        "QA Borrow Stage",
+                        "Sep 9",
+                        "2026-09-09T02:24:00Z",
+                        "2026-09-09T04:24:00Z",
+                        1,
+                        totalAmount,
+                        previousTotalAmount,
+                        "HUF",
+                        List.of("policy-1"),
+                        paymentSessionId,
+                        true));
+    }
+
     private AssetDetailDto assetCard(String assetId) {
         return assetCard(assetId, "Camp Kit", 2, List.of());
     }
@@ -2964,6 +3509,15 @@ class AssetsServiceTest {
     }
 
     private AssetMemberRequestDto borrowRequestDto(String requestId, String userId, String status, String eventId) {
+        return borrowRequestDto(requestId, userId, status, eventId, List.of());
+    }
+
+    private AssetMemberRequestDto borrowRequestDto(
+            String requestId,
+            String userId,
+            String status,
+            String eventId,
+            List<String> acceptedPolicyIds) {
         return new AssetMemberRequestDto(
                 requestId,
                 userId,
@@ -2987,7 +3541,7 @@ class AssetsServiceTest {
                         1,
                         0d,
                         "USD",
-                        List.of(),
+                        acceptedPolicyIds,
                         null,
                         null),
                 List.of());

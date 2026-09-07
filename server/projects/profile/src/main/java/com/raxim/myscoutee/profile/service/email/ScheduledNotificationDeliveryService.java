@@ -99,6 +99,11 @@ public class ScheduledNotificationDeliveryService {
         copyIfText(variables, payload, "productBrandingRevision");
         copyIfText(variables, payload, "product_branding_revision");
         copyIfText(variables, payload, "notification_tone");
+        copyIfText(variables, payload, "notification_title_key");
+        copyIfText(variables, payload, "notification_message_key");
+        copyIfText(variables, payload, "notification_status_badge_key");
+        copyIfText(variables, payload, "notification_status_badge_fallback");
+        copyIfText(variables, payload, "notification_status_badge_tone");
         return payload;
     }
 

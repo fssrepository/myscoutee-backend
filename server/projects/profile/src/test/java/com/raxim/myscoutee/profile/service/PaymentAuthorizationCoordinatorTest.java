@@ -19,11 +19,10 @@ import com.raxim.myscoutee.profile.service.PaymentService.GatewayTransition;
 class PaymentAuthorizationCoordinatorTest {
 
     @Test
-    void fulfillmentExceptionPersistsFailureAndQueuesAnIdempotentRelease() {
+    void fulfillmentExceptionPersistsFailureAndRefundsTheCapturedPayment() {
         PaymentService paymentService = mock(PaymentService.class);
         ActivitiesEventsService activitiesEventsService = mock(ActivitiesEventsService.class);
-        PaymentGatewayOperationService operations = mock(PaymentGatewayOperationService.class);
-        Payment payment = authorizedPayment("pending");
+        Payment payment = capturedPayment("pending");
         AuthorizationResult authorization = authorization();
         GatewayTransition transition = new GatewayTransition(payment, true, false);
         when(paymentService.applyGatewayAuthorization("pay-1", authorization, "stripe:event-1"))
@@ -35,20 +34,18 @@ class PaymentAuthorizationCoordinatorTest {
 
         PaymentAuthorizationCoordinator coordinator = new PaymentAuthorizationCoordinator(
                 paymentService,
-                activitiesEventsService,
-                operations);
+                activitiesEventsService);
 
         assertThat(coordinator.apply("pay-1", authorization, "stripe:event-1")).isSameAs(transition);
         verify(paymentService).markGatewayFulfillment(payment.getId(), false, "IllegalStateException");
-        verify(operations).enqueueRelease(payment, "fulfillment-compensation");
+        verify(paymentService).refundFailedFulfillment(payment, "IllegalStateException");
     }
 
     @Test
-    void repeatedWebhookRepairsAMissingReleaseQueueWithoutRepeatingMembershipFulfillment() {
+    void repeatedWebhookRepairsAMissingRefundWithoutRepeatingMembershipFulfillment() {
         PaymentService paymentService = mock(PaymentService.class);
         ActivitiesEventsService activitiesEventsService = mock(ActivitiesEventsService.class);
-        PaymentGatewayOperationService operations = mock(PaymentGatewayOperationService.class);
-        Payment payment = authorizedPayment("failed");
+        Payment payment = capturedPayment("failed");
         AuthorizationResult authorization = authorization();
         GatewayTransition duplicate = new GatewayTransition(payment, false, true);
         when(paymentService.applyGatewayAuthorization("pay-1", authorization, "stripe:event-1"))
@@ -56,21 +53,19 @@ class PaymentAuthorizationCoordinatorTest {
 
         PaymentAuthorizationCoordinator coordinator = new PaymentAuthorizationCoordinator(
                 paymentService,
-                activitiesEventsService,
-                operations);
+                activitiesEventsService);
 
         assertThat(coordinator.apply("pay-1", authorization, "stripe:event-1")).isSameAs(duplicate);
         verify(activitiesEventsService, never()).finalizeAuthorizedPayment(payment);
         verify(paymentService, never()).markGatewayFulfillment(anyString(), org.mockito.ArgumentMatchers.anyBoolean(), anyString());
-        verify(operations).enqueueRelease(payment, "fulfillment-compensation");
+        verify(paymentService).refundFailedFulfillment(payment, "The captured payment could not be fulfilled.");
     }
 
     @Test
-    void clientAuthorizationWaitsForTheAssetWriteToFulfillThePayment() {
+    void clientPaymentWaitsForTheAssetWriteToFulfillThePayment() {
         PaymentService paymentService = mock(PaymentService.class);
         ActivitiesEventsService activitiesEventsService = mock(ActivitiesEventsService.class);
-        PaymentGatewayOperationService operations = mock(PaymentGatewayOperationService.class);
-        Payment payment = authorizedPayment("pending");
+        Payment payment = capturedPayment("pending");
         payment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
         AuthorizationResult authorization = authorization();
         GatewayTransition transition = new GatewayTransition(payment, true, false);
@@ -79,20 +74,19 @@ class PaymentAuthorizationCoordinatorTest {
 
         PaymentAuthorizationCoordinator coordinator = new PaymentAuthorizationCoordinator(
                 paymentService,
-                activitiesEventsService,
-                operations);
+                activitiesEventsService);
 
         assertThat(coordinator.apply("pay-1", authorization, "stripe:event-1")).isSameAs(transition);
         verify(activitiesEventsService, never()).finalizeAuthorizedPayment(payment);
         verify(paymentService, never()).markGatewayFulfillment(anyString(), org.mockito.ArgumentMatchers.anyBoolean(),
                 org.mockito.ArgumentMatchers.any());
-        verify(operations, never()).enqueueRelease(payment, "fulfillment-compensation");
+        verify(paymentService, never()).refundFailedFulfillment(payment, "fulfillment-compensation");
     }
 
-    private Payment authorizedPayment(String fulfillmentStatus) {
+    private Payment capturedPayment(String fulfillmentStatus) {
         Payment payment = new Payment();
         payment.setId("payment-1");
-        payment.setStatus("authorized");
+        payment.setStatus("captured");
         payment.setFulfillmentStatus(fulfillmentStatus);
         return payment;
     }
@@ -102,11 +96,11 @@ class PaymentAuthorizationCoordinatorTest {
                 "stripe",
                 "cs-1",
                 "pi-1",
-                AuthorizationStatus.AUTHORIZED,
+                AuthorizationStatus.CAPTURED,
                 BigDecimal.TEN,
                 "EUR",
                 null,
                 null,
-                "requires_capture");
+                "succeeded");
     }
 }

@@ -46,12 +46,16 @@ public class Payment {
     private String gatewayAuthorizationId;
     private String gatewayStatus;
     private String gatewayActionUrl;
+    private String gatewayRefundId;
+    private String gatewayRefundStatus;
     private String authorizationExpiresAtIso;
     private String capturedAtIso;
     private String releasedAtIso;
     private String failedAtIso;
     private String fulfillmentStatus;
     private String fulfillmentKind;
+    private String contextEventId;
+    private String contextSubEventId;
     private String lastGatewayError;
     private String predecessorPaymentId;
     private String successorPaymentId;
@@ -73,6 +77,11 @@ public class Payment {
     private String refundCurrency;
     private String refundRuleId;
     private String refundNote;
+    private String refundRequestStatus;
+    private String refundRequestedAtIso;
+    private String refundRequestedByUserId;
+    private String refundReviewedAtIso;
+    private String refundReviewedByUserId;
     private PricingCancellationPolicyDto cancellationPolicy;
     private String auditKind;
     private String revisionRootSessionId;
@@ -130,6 +139,12 @@ public class Payment {
     public String getGatewayActionUrl() { return gatewayActionUrl; }
     public void setGatewayActionUrl(String gatewayActionUrl) { this.gatewayActionUrl = gatewayActionUrl; }
 
+    public String getGatewayRefundId() { return gatewayRefundId; }
+    public void setGatewayRefundId(String gatewayRefundId) { this.gatewayRefundId = gatewayRefundId; }
+
+    public String getGatewayRefundStatus() { return gatewayRefundStatus; }
+    public void setGatewayRefundStatus(String gatewayRefundStatus) { this.gatewayRefundStatus = gatewayRefundStatus; }
+
     public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
     public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }
 
@@ -147,6 +162,12 @@ public class Payment {
 
     public String getFulfillmentKind() { return fulfillmentKind; }
     public void setFulfillmentKind(String fulfillmentKind) { this.fulfillmentKind = fulfillmentKind; }
+
+    public String getContextEventId() { return contextEventId; }
+    public void setContextEventId(String contextEventId) { this.contextEventId = contextEventId; }
+
+    public String getContextSubEventId() { return contextSubEventId; }
+    public void setContextSubEventId(String contextSubEventId) { this.contextSubEventId = contextSubEventId; }
 
     public String getLastGatewayError() { return lastGatewayError; }
     public void setLastGatewayError(String lastGatewayError) { this.lastGatewayError = lastGatewayError; }
@@ -222,6 +243,21 @@ public class Payment {
 
     public String getRefundNote() { return refundNote; }
     public void setRefundNote(String refundNote) { this.refundNote = refundNote; }
+
+    public String getRefundRequestStatus() { return refundRequestStatus; }
+    public void setRefundRequestStatus(String refundRequestStatus) { this.refundRequestStatus = refundRequestStatus; }
+
+    public String getRefundRequestedAtIso() { return refundRequestedAtIso; }
+    public void setRefundRequestedAtIso(String refundRequestedAtIso) { this.refundRequestedAtIso = refundRequestedAtIso; }
+
+    public String getRefundRequestedByUserId() { return refundRequestedByUserId; }
+    public void setRefundRequestedByUserId(String refundRequestedByUserId) { this.refundRequestedByUserId = refundRequestedByUserId; }
+
+    public String getRefundReviewedAtIso() { return refundReviewedAtIso; }
+    public void setRefundReviewedAtIso(String refundReviewedAtIso) { this.refundReviewedAtIso = refundReviewedAtIso; }
+
+    public String getRefundReviewedByUserId() { return refundReviewedByUserId; }
+    public void setRefundReviewedByUserId(String refundReviewedByUserId) { this.refundReviewedByUserId = refundReviewedByUserId; }
 
     public PricingCancellationPolicyDto getCancellationPolicy() { return cancellationPolicy; }
     public void setCancellationPolicy(PricingCancellationPolicyDto cancellationPolicy) { this.cancellationPolicy = cancellationPolicy; }

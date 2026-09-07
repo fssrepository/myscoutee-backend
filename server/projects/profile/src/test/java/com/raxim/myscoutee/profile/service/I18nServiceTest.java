@@ -1,11 +1,12 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +33,14 @@ class I18nServiceTest {
                 "install.prompt.description",
                 "Install {productName} for quick access from your home screen.");
         when(bundleRepository.findAll()).thenReturn(List.of(bundle));
-        when(bundleRepository.findByLang("en")).thenReturn(Optional.of(bundle));
-        when(messageRepository.findByLang("en")).thenReturn(List.of(title, description));
+        when(messageRepository.findAll()).thenReturn(List.of(title, description));
+
+        I18nService service = new I18nService(messageRepository, bundleRepository);
 
         I18nBundleResponseDto response =
-                new I18nService(messageRepository, bundleRepository)
-                        .getBundle("en", "en-US", null);
+                service.getBundle("en", "en-US", null);
+        I18nBundleResponseDto cachedResponse =
+                service.getBundle("en", "en-US", null);
 
         assertThat(response.lang()).isEqualTo("en");
         assertThat(response.version()).isEqualTo("2026.07.29.en.46");
@@ -49,7 +52,9 @@ class I18nServiceTest {
                 .containsEntry(
                         "install.prompt.description",
                         "Install {productName} for quick access from your home screen.");
-        verify(messageRepository).findByLang("en");
+        assertThat(cachedResponse).isEqualTo(response);
+        verify(bundleRepository).findAll();
+        verify(messageRepository).findAll();
     }
 
     @Test
@@ -69,8 +74,7 @@ class I18nServiceTest {
                 "install.prompt.description",
                 "{productName} telepítésével gyorsan elérheted az alkalmazást a kezdőképernyőről.");
         when(bundleRepository.findAll()).thenReturn(List.of(englishBundle, hungarianBundle));
-        when(bundleRepository.findByLang("hu")).thenReturn(Optional.of(hungarianBundle));
-        when(messageRepository.findByLang("hu")).thenReturn(List.of(title, description));
+        when(messageRepository.findAll()).thenReturn(List.of(title, description));
 
         I18nBundleResponseDto response =
                 new I18nService(messageRepository, bundleRepository)
@@ -85,7 +89,7 @@ class I18nServiceTest {
                 .containsEntry(
                         "install.prompt.description",
                         "{productName} telepítésével gyorsan elérheted az alkalmazást a kezdőképernyőről.");
-        verify(messageRepository).findByLang("hu");
+        verify(messageRepository).findAll();
     }
 
     @Test
@@ -96,7 +100,7 @@ class I18nServiceTest {
                 org.mockito.Mockito.mock(I18nBundleRepository.class);
         I18nBundle bundle = bundle("en", "2026.07.29.en.46");
         when(bundleRepository.findAll()).thenReturn(List.of(bundle));
-        when(bundleRepository.findByLang("en")).thenReturn(Optional.of(bundle));
+        when(messageRepository.findAll()).thenReturn(List.of());
 
         I18nBundleResponseDto response =
                 new I18nService(messageRepository, bundleRepository)
@@ -108,6 +112,35 @@ class I18nServiceTest {
         assertThat(response.lang()).isEqualTo("en");
         assertThat(response.version()).isEqualTo("2026.07.29.en.46");
         assertThat(response.data()).isNull();
+    }
+
+    @Test
+    void periodicRefreshReloadsMessagesOnlyWhenTheBundleVersionChanges() {
+        I18nMessageRepository messageRepository =
+                org.mockito.Mockito.mock(I18nMessageRepository.class);
+        I18nBundleRepository bundleRepository =
+                org.mockito.Mockito.mock(I18nBundleRepository.class);
+        AtomicReference<String> version = new AtomicReference<>("v1");
+        AtomicReference<String> value = new AtomicReference<>("Before");
+        when(bundleRepository.findAll()).thenAnswer(ignored -> List.of(bundle("en", version.get())));
+        when(messageRepository.findAll()).thenAnswer(ignored -> List.of(message("en", "key", value.get())));
+        I18nService service = new I18nService(messageRepository, bundleRepository);
+
+        assertThat(service.getBundle("en", null, null).data()).containsEntry("key", "Before");
+
+        service.refreshCache();
+
+        assertThat(service.getBundle("en", null, null).data()).containsEntry("key", "Before");
+        verify(messageRepository, times(2)).findAll();
+
+        version.set("v2");
+        value.set("After");
+        service.refreshCache();
+
+        I18nBundleResponseDto refreshed = service.getBundle("en", null, "v1");
+        assertThat(refreshed.version()).isEqualTo("v2");
+        assertThat(refreshed.data()).containsEntry("key", "After");
+        verify(messageRepository, times(4)).findAll();
     }
 
     private static I18nBundle bundle(String lang, String version) {

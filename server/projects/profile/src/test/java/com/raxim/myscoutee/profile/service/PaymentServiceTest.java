@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,6 +31,7 @@ import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -44,6 +46,7 @@ class PaymentServiceTest {
         EventCheckoutBasketService basketService = org.mockito.Mockito.mock(EventCheckoutBasketService.class);
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         SavedPaymentMethodsService savedPaymentMethodsService = org.mockito.Mockito.mock(SavedPaymentMethodsService.class);
+        AtomicBoolean basketProtected = new AtomicBoolean();
         AtomicReference<Payment> concurrentPayment = new AtomicReference<>();
         AtomicInteger saveCalls = new AtomicInteger();
         EventCheckoutRequestDto request = withPaymentMethod(
@@ -53,6 +56,11 @@ class PaymentServiceTest {
         when(repository.findByUserIdAndSourceId("user-race", "event-race")).thenReturn(List.of());
         when(repository.findByCheckoutSessionId(anyString()))
                 .thenAnswer(invocation -> Optional.ofNullable(concurrentPayment.get()));
+        when(basketService.updateBasketState(any(EventCheckoutStateChangeRequestDto.class)))
+                .thenAnswer(invocation -> {
+                    basketProtected.set(true);
+                    return null;
+                });
 
         SavedPaymentMethod method = new SavedPaymentMethod();
         method.setUserId("user-race");
@@ -72,6 +80,7 @@ class PaymentServiceTest {
                     EventCheckoutRequestDto authoritativeRequest,
                     String paymentSessionId,
                     String providerPaymentMethodReference) {
+                assertThat(basketProtected).as("basket is protected before external authorization").isTrue();
                 return new AuthorizationResult(
                         "stripe",
                         "pi-race",
@@ -126,6 +135,13 @@ class PaymentServiceTest {
         assertThat(concurrentPayment.get().getStatus()).isEqualTo("authorized");
         assertThat(concurrentPayment.get().getFulfillmentStatus()).isEqualTo("pending");
         verify(repository, times(2)).save(any(Payment.class));
+        verify(basketService).updateBasketState(org.mockito.ArgumentMatchers.argThat(state ->
+                "user-race".equals(state.userId())
+                        && "event-race".equals(state.sourceId())
+                        && "pay".equals(state.checkoutState())
+                        && "pending".equals(state.resultState())
+                        && state.checkoutSessionId() != null
+                        && state.checkoutSessionId().startsWith("pay_")));
         verify(basketService, never()).saveBasket(any(EventCheckoutRequestDto.class));
     }
 
@@ -575,7 +591,7 @@ class PaymentServiceTest {
         assertThat(payment.getRefundedAmount()).isEqualTo(40d);
         assertThat(payment.getRefundCurrency()).isEqualTo("EUR");
         assertThat(payment.getRefundRuleId()).isEqualTo("partial-1d");
-        assertThat(payment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(payment.getStatus()).isEqualTo("approved");
     }
 
     @Test
@@ -659,6 +675,214 @@ class PaymentServiceTest {
         assertThat(payment.getJoinedAtIso()).isNotBlank();
         assertThat(payment.getRefundStatus()).isEqualTo("none");
         verify(repository).save(payment);
+    }
+
+    @Test
+    void authorizedPaymentIsIncludedInAccountedSpendingBeforeDelayedCapture() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment payment = new Payment();
+        payment.setAuditKind("payment");
+        payment.setStatus("authorized");
+        payment.setAmount(3200D);
+        PaymentService service =
+                paymentService(repository, true, new RecordingPaymentProcessor("barion"));
+
+        Double accounted = ReflectionTestUtils.invokeMethod(service, "accountedSpentAmount", payment);
+
+        assertThat(accounted).isEqualTo(3200D);
+    }
+
+    @Test
+    void refundReleaseKeepsTheOriginalGrossPaymentAccounted() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment payment = new Payment();
+        payment.setAuditKind("payment");
+        payment.setStatus("released");
+        payment.setAmount(3200D);
+        payment.setProcessedGatewayEventIds(List.of("operation:refund-request:old-payment"));
+        PaymentService service =
+                paymentService(repository, true, new RecordingPaymentProcessor("barion"));
+
+        Double accounted = ReflectionTestUtils.invokeMethod(service, "accountedSpentAmount", payment);
+        Double signedDelta = ReflectionTestUtils.invokeMethod(service, "roundSignedMoney", -3200D);
+
+        assertThat(accounted).isEqualTo(3200D);
+        assertThat(signedDelta).isEqualTo(-3200D);
+    }
+
+    @Test
+    void paidAssetTakeOverKeepsCapturedPaymentsAndAppendsThePredecessorRefund() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor barion = new RecordingPaymentProcessor("barion");
+        PaymentService service = paymentService(repository, true, barion);
+
+        Payment predecessor = new Payment();
+        predecessor.setId("old-payment");
+        predecessor.setCheckoutSessionId("old-session");
+        predecessor.setGatewaySessionId("old-gateway");
+        predecessor.setGatewayAuthorizationId("old-authorization");
+        predecessor.setUserId("old-manager");
+        predecessor.setRecipientUserId("asset-owner");
+        predecessor.setSourceId("asset-1");
+        predecessor.setContextEventId("event-1");
+        predecessor.setContextSubEventId("subevent-1");
+        predecessor.setProvider("barion");
+        predecessor.setStatus("captured");
+        predecessor.setBookingStatus("joined");
+        predecessor.setRefundStatus("none");
+        predecessor.setAmount(3200d);
+        predecessor.setAccountedSpentAmount(3200d);
+        predecessor.setCurrency("HUF");
+        savePayment(paymentsBySession, predecessor);
+
+        Payment successor = new Payment();
+        successor.setId("new-payment");
+        successor.setCheckoutSessionId("new-session");
+        successor.setGatewaySessionId("new-gateway");
+        successor.setGatewayAuthorizationId("new-authorization");
+        successor.setUserId("new-manager");
+        successor.setRecipientUserId("asset-owner");
+        successor.setSourceId("asset-1");
+        successor.setProvider("barion");
+        successor.setStatus("captured");
+        successor.setBookingStatus("initiated");
+        successor.setRefundStatus("none");
+        successor.setAmount(3200d);
+        successor.setAccountedSpentAmount(3200d);
+        successor.setCurrency("HUF");
+        savePayment(paymentsBySession, successor);
+
+        PaymentService.AssetPaymentReplacement replacement = service.validateAssetPaymentReplacement(
+                "old-session",
+                "new-session",
+                "old-manager",
+                "new-manager",
+                "asset-1",
+                "event-1",
+                "subevent-1");
+        service.completeAssetPaymentReplacement(replacement, "new-manager", "event-1", "subevent-1");
+
+        assertThat(successor.getPredecessorPaymentId()).isEqualTo("old-payment");
+        assertThat(successor.getBookingStatus()).isEqualTo("joined");
+        assertThat(successor.getContextEventId()).isEqualTo("event-1");
+        assertThat(successor.getContextSubEventId()).isEqualTo("subevent-1");
+        assertThat(predecessor.getSuccessorPaymentId()).isEqualTo("new-payment");
+        assertThat(predecessor.getStatus()).isEqualTo("captured");
+        assertThat(predecessor.getRefundStatus()).isEqualTo("full");
+        assertThat(predecessor.getRefundedAmount()).isEqualTo(3200d);
+        assertThat(predecessor.getRefundRequestStatus()).isEqualTo("approved");
+        assertThat(predecessor.getRefundReviewedByUserId()).isEqualTo("new-manager");
+        PaymentRefundCalculator.Preview refundPreview =
+                PaymentRefundCalculator.storedOrCurrentPreview(predecessor, Instant.now().toString());
+        assertThat(refundPreview.refundableAmount()).isEqualTo(3200d);
+        assertThat(refundPreview.retainedAmount()).isZero();
+        assertThat(refundPreview.ruleId()).isEqualTo("assignment-manager-takeover");
+        Payment refundHistory = paymentsBySession.get("refund:old-payment");
+        assertThat(refundHistory).isNotNull();
+        assertThat(refundHistory.getAuditKind()).isEqualTo("refund");
+        assertThat(refundHistory.getAmount()).isEqualTo(3200d);
+        assertThat(refundHistory.getCreatedDate()).isEqualTo(predecessor.getRefundedAtIso());
+        assertThat(barion.releaseCalls()).isZero();
+        assertThat(barion.refundCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void approvedPolicyRefundExecutesARealProviderRefundAfterCapture() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, stripe);
+        Payment payment = new Payment();
+        payment.setId("captured-payment");
+        payment.setCheckoutSessionId("captured-session");
+        payment.setGatewayAuthorizationId("pi_captured");
+        payment.setUserId("payer");
+        payment.setRecipientUserId("recipient");
+        payment.setSourceId("asset-1");
+        payment.setProvider("stripe");
+        payment.setStatus("captured");
+        payment.setAmount(3200d);
+        payment.setCurrency("HUF");
+        payment.setAuditKind("payment");
+        payment.setAccountedSpentAmount(3200d);
+        savePayment(paymentsBySession, payment);
+
+        service.approvePolicyRefund(
+                payment,
+                Instant.now().toString(),
+                1600d,
+                "HUF",
+                "refund-50-percent",
+                "50% refund");
+
+        assertThat(stripe.refundCalls()).isEqualTo(1);
+        assertThat(payment.getGatewayRefundId()).isEqualTo("stripe_refund_1");
+        assertThat(payment.getGatewayRefundStatus()).isEqualTo("succeeded");
+        assertThat(payment.getStatus()).isEqualTo("captured");
+        assertThat(payment.getRefundedAmount()).isEqualTo(1600d);
+        Payment refundHistory = paymentsBySession.get("refund:captured-payment");
+        assertThat(refundHistory).isNotNull();
+        assertThat(refundHistory.getAuditKind()).isEqualTo("refund");
+        assertThat(refundHistory.getAmount()).isEqualTo(1600d);
+    }
+
+    @Test
+    void refundRequestHistoryRowIsUpdatedInPlaceWhenTheRefundIsApproved() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, stripe);
+        Payment payment = new Payment();
+        payment.setId("captured-payment");
+        payment.setGatewayAuthorizationId("pi_captured");
+        payment.setUserId("payer");
+        payment.setRecipientUserId("recipient");
+        payment.setSourceId("asset-1");
+        payment.setProvider("stripe");
+        payment.setStatus("captured");
+        payment.setAmount(3200d);
+        payment.setCurrency("HUF");
+        payment.setAuditKind("payment");
+        payment.setAccountedSpentAmount(3200d);
+        savePayment(paymentsBySession, payment);
+
+        String requestedAt = "2026-09-07T18:00:00Z";
+        Payment request = service.saveRefundRequestHistoryRecord(
+                payment,
+                requestedAt,
+                "payer",
+                new PaymentRefundCalculator.Preview(
+                        3200d,
+                        1600d,
+                        "HUF",
+                        "partial",
+                        "refund-50-percent",
+                        "days",
+                        1,
+                        "percent",
+                        50d,
+                        "50% refund"));
+
+        assertThat(payment.getRefundRequestStatus()).isNull();
+        assertThat(request.getId()).isEqualTo("refund:captured-payment");
+        assertThat(request.getStatus()).isEqualTo("refund_requested");
+        assertThat(request.getCreatedDate()).isEqualTo(requestedAt);
+
+        service.approvePolicyRefund(
+                payment,
+                "2026-09-07T19:00:00Z",
+                1600d,
+                "HUF",
+                "refund-50-percent",
+                "50% refund");
+
+        Payment refunded = paymentsBySession.get("refund:captured-payment");
+        assertThat(refunded).isSameAs(request);
+        assertThat(refunded.getStatus()).isEqualTo("refunded");
+        assertThat(refunded.getAmount()).isEqualTo(1600d);
+        assertThat(refunded.getCreatedDate()).isEqualTo(requestedAt);
+        assertThat(payment.getRefundRequestStatus()).isNull();
     }
 
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
@@ -804,6 +1028,8 @@ class PaymentServiceTest {
         private final String type;
         private final AtomicInteger checkoutCalls = new AtomicInteger();
         private final AtomicInteger payCalls = new AtomicInteger();
+        private final AtomicInteger releaseCalls = new AtomicInteger();
+        private final AtomicInteger refundCalls = new AtomicInteger();
         private final List<String> paySessionIds = new java.util.ArrayList<>();
         private final List<EventCheckoutRequestDto> checkoutRequests = new java.util.ArrayList<>();
 
@@ -844,12 +1070,54 @@ class PaymentServiceTest {
                     null);
         }
 
+        @Override
+        public AuthorizationResult releaseAuthorization(
+                String gatewayAuthorizationId,
+                String idempotencyKey) {
+            releaseCalls.incrementAndGet();
+            return new AuthorizationResult(
+                    type,
+                    type + "_released_" + releaseCalls.get(),
+                    gatewayAuthorizationId,
+                    PaymentGateway.AuthorizationStatus.RELEASED,
+                    java.math.BigDecimal.ZERO,
+                    "HUF",
+                    null,
+                    null,
+                    idempotencyKey);
+        }
+
+        @Override
+        public PaymentGateway.RefundResult refundCapturedPayment(
+                String gatewayAuthorizationId,
+                java.math.BigDecimal amount,
+                String currency,
+                String idempotencyKey) {
+            int call = refundCalls.incrementAndGet();
+            return new PaymentGateway.RefundResult(
+                    type,
+                    gatewayAuthorizationId,
+                    type + "_refund_" + call,
+                    PaymentGateway.RefundStatus.SUCCEEDED,
+                    amount,
+                    currency,
+                    "succeeded");
+        }
+
         int checkoutCalls() {
             return checkoutCalls.get();
         }
 
         int payCalls() {
             return payCalls.get();
+        }
+
+        int releaseCalls() {
+            return releaseCalls.get();
+        }
+
+        int refundCalls() {
+            return refundCalls.get();
         }
 
         List<String> paySessionIds() {

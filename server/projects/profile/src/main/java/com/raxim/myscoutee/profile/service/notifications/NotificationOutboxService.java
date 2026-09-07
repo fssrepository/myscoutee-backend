@@ -394,6 +394,12 @@ public class NotificationOutboxService {
         putIfText(payload, "entityType", intent.entityType());
         putIfText(payload, "entityId", intent.entityId());
         putIfText(payload, "recipientScope", intent.recipientScope());
+        payload.putIfAbsent(
+                "notification_title_key",
+                notificationKey(intent.type(), "title"));
+        payload.putIfAbsent(
+                "notification_message_key",
+                notificationKey(intent.type(), "message"));
         putIfText(payload, "productName", branding.productName());
         putIfText(payload, "productLogoUrl", branding.logoUrl());
         putIfText(
@@ -414,6 +420,14 @@ public class NotificationOutboxService {
                 payload.get("badge"))));
         putIfText(payload, "tag", firstNonBlank(intent.tag(), payload.get("tag"), intent.type()));
         return payload;
+    }
+
+    private String notificationKey(String type, String field) {
+        String normalizedType = safeText(type)
+                .toLowerCase(java.util.Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("^-+|-+$", "");
+        return "notification.kind." + normalizedType + "." + field;
     }
 
     private ResolvedDeploymentBranding deploymentBranding(

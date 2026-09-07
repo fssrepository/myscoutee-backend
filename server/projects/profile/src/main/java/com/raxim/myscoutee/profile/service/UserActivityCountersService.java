@@ -479,19 +479,49 @@ public class UserActivityCountersService {
         int cars = 0;
         int accommodation = 0;
         int supplies = 0;
+        int carsPending = 0;
+        int accommodationPending = 0;
+        int suppliesPending = 0;
         for (Asset asset : assetsRepository.findByOwnerUserId(userId)) {
             if (asset == null || isSuppressedAssetStatus(asset.getStatus())) {
                 continue;
             }
+            int pending = pendingAssetRequestCount(asset);
             switch (safeText(asset.getType())) {
-                case AssetCatalog.TYPE_TRANSPORT -> cars += 1;
-                case AssetCatalog.TYPE_ACCOMMODATION -> accommodation += 1;
-                case AssetCatalog.TYPE_SUPPLIES -> supplies += 1;
+                case AssetCatalog.TYPE_TRANSPORT -> {
+                    cars += 1;
+                    carsPending += pending;
+                }
+                case AssetCatalog.TYPE_ACCOMMODATION -> {
+                    accommodation += 1;
+                    accommodationPending += pending;
+                }
+                case AssetCatalog.TYPE_SUPPLIES -> {
+                    supplies += 1;
+                    suppliesPending += pending;
+                }
                 default -> {
                 }
             }
         }
-        return new AssetCounters(cars, accommodation, supplies);
+        return new AssetCounters(
+                cars,
+                accommodation,
+                supplies,
+                carsPending,
+                accommodationPending,
+                suppliesPending);
+    }
+
+    private int pendingAssetRequestCount(Asset asset) {
+        if (asset == null || asset.getRequests() == null) {
+            return 0;
+        }
+        return (int) asset.getRequests().stream()
+                .filter(Objects::nonNull)
+                .filter(request -> "pending".equalsIgnoreCase(safeText(request.status())))
+                .filter(request -> !"manual".equalsIgnoreCase(safeText(request.requestKind())))
+                .count();
     }
 
     private int resolveTicketCount(String userId) {
@@ -539,7 +569,10 @@ public class UserActivityCountersService {
                         count(currentAsset.cars()),
                         count(currentAsset.accommodation()),
                         count(currentAsset.supplies()),
-                        count(ticketCount)),
+                        count(ticketCount),
+                        count(currentAsset.carsPending()),
+                        count(currentAsset.accommodationPending()),
+                        count(currentAsset.suppliesPending())),
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
@@ -589,7 +622,10 @@ public class UserActivityCountersService {
                         counters.cars(),
                         counters.accommodation(),
                         counters.supplies(),
-                        count(safe.asset() == null ? null : safe.asset().tickets())),
+                        count(safe.asset() == null ? null : safe.asset().tickets()),
+                        counters.carsPending(),
+                        counters.accommodationPending(),
+                        counters.suppliesPending()),
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
@@ -609,7 +645,10 @@ public class UserActivityCountersService {
                 .set("activities.asset.cars", count(asset.cars()))
                 .set("activities.asset.accommodation", count(asset.accommodation()))
                 .set("activities.asset.supplies", count(asset.supplies()))
-                .set("activities.asset.tickets", count(asset.tickets()));
+                .set("activities.asset.tickets", count(asset.tickets()))
+                .set("activities.asset.carsPending", count(asset.carsPending()))
+                .set("activities.asset.accommodationPending", count(asset.accommodationPending()))
+                .set("activities.asset.suppliesPending", count(asset.suppliesPending()));
         updateUserActivityFields(normalizedUserId, update);
     }
 
@@ -1081,7 +1120,10 @@ public class UserActivityCountersService {
     private record AssetCounters(
             int cars,
             int accommodation,
-            int supplies) {
+            int supplies,
+            int carsPending,
+            int accommodationPending,
+            int suppliesPending) {
     }
 
     private record FeedbackCounters(

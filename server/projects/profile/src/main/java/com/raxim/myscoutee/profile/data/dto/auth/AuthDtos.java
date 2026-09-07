@@ -73,6 +73,7 @@ public final class AuthDtos {
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
+            Integer paymentRefundsPending,
             Integer notifications) {
         public UserMenuCountersDto(
                 Integer game,
@@ -110,7 +111,20 @@ public final class AuthDtos {
                     eventFeedback,
                     adminJobs,
                     adminMetrics,
+                    0,
                     0);
+        }
+
+        public UserMenuCountersDto(
+                Integer game, Integer chats, Integer invitations, Integer events, Integer hosting,
+                Integer cars, Integer accommodation, Integer supplies, Integer tickets,
+                Integer contacts, Integer feedback, UserChatCountersDto chat,
+                UserEventCountersDto event, UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback, Integer adminJobs,
+                Integer adminMetrics, Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies,
+                    tickets, contacts, feedback, chat, event, asset, eventFeedback,
+                    adminJobs, adminMetrics, 0, notifications);
         }
     }
 
@@ -168,7 +182,17 @@ public final class AuthDtos {
             Integer cars,
             Integer accommodation,
             Integer supplies,
-            Integer tickets) {
+            Integer tickets,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending) {
+        public UserAssetCountersDto(
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets) {
+            this(cars, accommodation, supplies, tickets, 0, 0, 0);
+        }
     }
 
     public record UserEventFeedbackCountersDto(
@@ -200,6 +224,7 @@ public final class AuthDtos {
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
+            Integer paymentRefundsPending,
             Integer notifications,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
@@ -242,8 +267,23 @@ public final class AuthDtos {
                     adminJobs,
                     adminMetrics,
                     0,
+                    0,
                     impressionsHostChanged,
                     impressionsMemberChanged);
+        }
+
+        public UserRealtimeCountersDto(
+                Integer game, Integer chats, Integer invitations, Integer events, Integer hosting,
+                Integer cars, Integer accommodation, Integer supplies, Integer tickets,
+                Integer contacts, Integer feedback, UserChatCountersDto chat,
+                UserEventCountersDto event, UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback, Integer adminJobs,
+                Integer adminMetrics, Integer notifications, Boolean impressionsHostChanged,
+                Boolean impressionsMemberChanged) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies,
+                    tickets, contacts, feedback, chat, event, asset, eventFeedback,
+                    adminJobs, adminMetrics, 0, notifications,
+                    impressionsHostChanged, impressionsMemberChanged);
         }
     }
 
@@ -295,6 +335,7 @@ public final class AuthDtos {
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
+            Integer paymentRefundsPending,
             Integer notifications) {
         public UserActivitiesDto(
                 Integer game,
@@ -332,7 +373,20 @@ public final class AuthDtos {
                     eventFeedback,
                     adminJobs,
                     adminMetrics,
+                    0,
                     0);
+        }
+
+        public UserActivitiesDto(
+                Integer game, Integer chats, Integer invitations, Integer events, Integer hosting,
+                Integer cars, Integer accommodation, Integer supplies, Integer tickets,
+                Integer contacts, Integer feedback, UserChatCountersDto chat,
+                UserEventCountersDto event, UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback, Integer adminJobs,
+                Integer adminMetrics, Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies,
+                    tickets, contacts, feedback, chat, event, asset, eventFeedback,
+                    adminJobs, adminMetrics, 0, notifications);
         }
     }
 

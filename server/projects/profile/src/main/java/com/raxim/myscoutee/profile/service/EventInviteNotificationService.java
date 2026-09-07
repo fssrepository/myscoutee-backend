@@ -63,6 +63,11 @@ public class EventInviteNotificationService {
         payload.put("startAtIso", safeText(event.getStartAtIso()));
         payload.put("eventScope", "invitations");
         payload.put("invitationOccurrenceId", UUID.randomUUID().toString());
+        payload.put(
+                "notification_message_key",
+                StringUtils.hasText(safeText(event.getLocation()))
+                        ? "notification.kind.event-invite.message.location"
+                        : "notification.kind.event-invite.message");
         if (StringUtils.hasText(senderUserId)) {
             payload.put("senderUserId", senderUserId);
         }

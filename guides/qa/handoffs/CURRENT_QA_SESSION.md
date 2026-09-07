@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 11:46 CEST
+Updated: 2026-09-07 21:32 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -77,24 +77,25 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-CHECKOUT-001 — STAGED / NOT RUN
+checkpoint: ASSET-CHECKOUT-001 — IN PROGRESS / TAKEOVER PASS THROUGH STEP 79
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-checkout-001--asset-explore-barion-payment-reaches-the-scoped-borrow-destination
 checklist: ../checklists/asset/ASSET-CHECKOUT-001.md
-substage: fresh paid Asset and controls are staged; no checkout action has been performed
-next_replay_boundary: baseline-ready; later named savepoints are payment-ready, paid-pending and accepted
-fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
-browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
+substage: steps 1-68 passed the final core oracle, steps 69-73 passed the `manager-left` boundary and steps 74-79 passed the paid Take Over oracle. Continue at step 80 with Riley's runtime-only resource `Remove`; do not repeat Take Over
+next_replay_boundary: `takeover-complete` immediately before step 80. `rollback-takeover-complete asset-checkout ASSET-CHECKOUT-001` restores the exact Mongo savepoint, Riley's captured Barion provider fixture and normalized required-policy IDs without executing `Remove`. Earlier accepted, cancelled-control, take-over-ready and manager-left savepoints remain available
+fixture_phase: `phase=takeover-complete`; Riley is the sole accepted scoped borrower and runtime Manager with a Captured/Joined HUF 3,200 successor payment. Nova is deleted from the scoped borrow; her Captured predecessor has a separate full HUF 3,200 refund transaction. The runtime resource association is still present for step 80, selected-window availability is `2`, and required policies are stored with stable IDs
+runtime_recovery: the implemented contract includes the simulator-owned terminal frame; required Borrow policies displayed without checkboxes and automatically persisted into the audit; write-side, polled Asset pending and payment-refund counters; exact local-adapter parity; scoped Member-screen management based only on accepted scoped Asset Manager membership rather than Event-admin/global-owner rights; no scoped Promote/Revoke branch; manager `Leave`; paid successor `Take Over`; automatic full predecessor refund that ignores cancellation policy because it is a payer swap; runtime-only resource-card `Remove`; lazy first-message `Ask Asset Owner` chat; and owner refund approval. Each completed refund appends its own persisted Payment-history write with the refund timestamp, amount and direction; date-desc ordering therefore places it above the retained original payment. Gross badges retain the original outgoing amount and show the refund separately (`-3200/+3200` for Take Over, `-3200/+1600` for the QA policy), while the original row exposes no further Refund action. Take Over sends a MyScoutee notification that does not disclose the successor. Separate requested refunds preview and persist the policy-derived refund, retained amount and rule for both requester and approver; the QA policy is 50% with one-day notice. Captured non-cash refunds also execute against the configured Stripe or Barion gateway with provider idempotency before the internal refund status is finalized; the simulator implements the same endpoints for later controlled QA. Stored physical quantity remains `3`; only overlapping dated availability is reserved to `2`, and approval cannot reserve it twice. The recurring `No network` state was traced to the app JVM missing the DevTools trigger-file property: it restarted while the continuous compiler had temporarily removed 133 classes and retained a partial controller set. `bootRun` now receives the trigger and debug arguments directly from Gradle, the single existing backend container was restarted, and `/api/auth/me`, deployment configuration and the Event filter all returned HTTP 200 while `phase=manager-left` remained intact
+browser_phase: the versioned launcher opened exactly three isolated Casey/Nova/Ava profiles. Riley reused Nova's browser through explicit user-controlled logout/login, and step 77 returned that browser to Riley after Nova's refund inspection. Continue step 80 in the already visible Riley identity. No fourth browser/profile exists. Codex performed no checklist navigation, click or form action, and the user owns every browser action and identity check
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
+ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is IN PROGRESS with paid Take Over PASS through step 79
 queued_next: none; ASSET-CHECKOUT-001 is now the active transaction
-required_resume: run the read-only asset-checkout status command below; if it remains baseline-ready, the user continues checklist steps 1-18 and stops on the exact payment-ready phrase
-actors: Nova performs borrower-side actions, Casey only the owner approval, Ava only the Barion/3DS simulator choices; Riley is a persisted negative control
-pending_machine_oracle: after `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`, run `capture-payment-ready asset-checkout ASSET-CHECKOUT-001`
-pre_pay_contract: Confirm borrow creates only the scoped, namespaced-local-storage AssetBorrowDraftStore entry keyed by user/Sub-event/Asset; payment-ready must still have zero server payment/provider-session/request/inventory/resource/basket writes. The existing frontend watcher compiled and deployed this reload-persistence correction, but checklist steps 22-23 remain pending manual evidence. The first server checkout write is Pay
-rollback_contract: all three commands restore exact persisted savepoints; payment-ready cannot recreate a cleared frontend-local draft, so after that rollback the user reloads and repeats steps 1-18 once without recapturing the already restored server phase
-provider_change_contract: baseline is connected Barion with 3DS Off; Nova has active Barion 4444 plus blocked expired Barion 0008. The user enables 3DS only at checklist step 31
+required_resume: do not repeat the main payment, owner approval, Adjacent Cancel, decline, timeout, Nova Leave or Riley Take Over branches. Continue with Riley at checklist step 80. Required policies have no checkbox and are automatically included after lazy Asset-detail loading; only optional policies are selectable
+actors: exactly three configured browser profiles exist: Casey, Nova and Ava. Riley remains a negative control during core checkout, then reuses Nova's browser through explicit Nova logout/Riley login for step 74. Step 77 temporarily switches Riley to Nova for the takeover-refund check and back to Riley before the runtime-removal/refund-request branch. Casey owns approval/refund actions; Ava owns Barion/3DS simulator choices
+pending_machine_oracle: paid Take Over passed and the pre-step-80 savepoint is retained; the next machine oracle follows runtime `Remove`, the controlled first Asset-owner chat message and Riley's refund request
+pre_pay_contract: Confirm borrow saves one confirmed resource basket before exposing payment-ready, across the live signal, scoped AssetBorrowDraftStore and shared local/HTTP checkout repository. It creates no provider/payment session, borrow request, inventory delta or resource assignment. The expiry is exactly 10 minutes. Once Pay starts, the basket becomes non-purgeable `pay/pending` before external authorization, so a three-minute 3DS window may cross that original deadline; the returned session identity is also saved immediately through the dialog signal and scoped local draft. The Borrow lazy-detail response owns the authoritative parent Event/Sub-event window; UI and backend compare its displayed minute and persisted booking timestamps are absolute instants. The target card menu and Borrow Basket are orange Continue borrow; Back shows green Continue borrow when unchanged and orange Update borrow after a change. Review owns red Cancel; payment owns neutral Back plus red Cancel. An unchanged Continue creates no basket generation and reconstructs the payment phase directly from the confirmed selection signature; each Update does create a generation. Asset Explore's backend batch result-state projection clears a local draft when its canonical basket is absent/succeeded, or when a deleted basket has crossed the local expiry
+rollback_contract: `rollback-takeover-complete` restores the exact pre-step-80 transaction, Riley's captured Barion fixture and normalized required-policy IDs. `rollback-revised-payment-ready` restores the exact pre-step-31 server transaction checkpoint and re-arms the one restored active basket to a new exact 10-minute creation-to-expiry interval, so a later payment/request failure or elapsed wall-clock time does not require replaying steps 1-30. The older payment-ready, paid-pending, accepted, cancelled-control and manager-left commands retain their own persisted boundaries. A server rollback never fabricates cleared browser-local state
+provider_change_contract: baseline is connected Barion with 3DS Off; Nova has active Barion 4444 plus blocked expired Barion 0008. The user enabled 3DS at the first step-31 attempt and the restored boundary now retains connected Barion with 3DS On, so it must not be toggled again before the replacement Pay
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
-last_completed: EVENT-CHECKOUT-001 PASS/CLOSED and snapshot-reset with zero remaining scoped artifacts; ASSET-CHECKOUT-001 stage plus independent baseline status passed
+last_completed: ASSET-CHECKOUT-001 paid Take Over PASS through step 79. Continue at step 80
 ```
 
 Resume with this read-only gate only:
@@ -104,20 +105,38 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-checkout ASSET-CHECKOUT-001
 ```
 
-If it still prints `phase=baseline-ready`, hand control to the user at
-`ASSET-CHECKOUT-001` step 1. The first stop phrase is:
+It must print `phase=takeover-complete`. Do not run session cleanup or
+relaunch the browser at this retained boundary unless the user explicitly asks
+for another restage. The following startup commands are used only after that
+explicit reset/restage:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-browser asset-checkout ASSET-CHECKOUT-001
+
+bash guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-CHECKOUT-001
+```
+
+Run `prepare-browser` immediately before every launch or relaunch; it preserves
+the first pre-QA session-state snapshots for exact reset and clears the
+configured Casey/Nova/Ava session slots plus Riley's reusable-identity slot.
+The launcher still opens exactly three profiles: Casey, Nova and Ava. Riley
+later signs into Nova's profile only after Nova signs out. After a deliberate full
+reset/replay, the first stop phrase is:
 
 `ASSET-CHECKOUT-001 payment ready: Barion card assigned, no borrow request yet`
 
-Then run:
+Then run the first-boundary capture:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   capture-payment-ready asset-checkout ASSET-CHECKOUT-001
 ```
 
-Do not stage again, reset, enable 3DS early, open a browser, or reconstruct the
-fixture through ad-hoc Mongo writes while the baseline matches.
+For the current retained run, do not reset, relaunch a browser, or reconstruct
+the fixture through ad-hoc Mongo writes. Step 31 intentionally
+enables 3DS; a later failure rolls back with
+`rollback-revised-payment-ready asset-checkout ASSET-CHECKOUT-001`.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -258,10 +277,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-Run the read-only `status asset-checkout ASSET-CHECKOUT-001` gate. If it remains
-`baseline-ready`, the user starts checklist step 1 and stops after step 18 on
-the exact `payment ready` phrase. Codex then runs `capture-payment-ready` and
-continues only from the harness result.
+Run the read-only `status asset-checkout ASSET-CHECKOUT-001` gate. It must
+remain `takeover-complete`; then continue at checklist step 80. If this branch
+must be restored after a server restart or later failure, use the guarded
+`rollback-takeover-complete` boundary rather than repeating Nova's Leave or
+Riley's paid Take Over.
 
 Group-size audit: retain `TOURNAMENT-MEMBER-002` as 2+1 because Riley's Group B
 proves parent-event notification delivery across room boundaries while Group B

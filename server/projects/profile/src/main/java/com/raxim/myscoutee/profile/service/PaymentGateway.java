@@ -24,6 +24,12 @@ public interface PaymentGateway {
         FAILED
     }
 
+    enum RefundStatus {
+        PENDING,
+        SUCCEEDED,
+        FAILED
+    }
+
     record Capabilities(
             boolean delayedCapture,
             boolean customerAction,
@@ -58,6 +64,20 @@ public interface PaymentGateway {
         }
     }
 
+    record RefundResult(
+            String provider,
+            String gatewayAuthorizationId,
+            String gatewayRefundId,
+            RefundStatus status,
+            BigDecimal amount,
+            String currency,
+            String providerStatus) {
+        public RefundResult {
+            amount = amount == null ? BigDecimal.ZERO : amount;
+            status = status == null ? RefundStatus.FAILED : status;
+        }
+    }
+
     String getType();
 
     Capabilities capabilities();
@@ -85,4 +105,12 @@ public interface PaymentGateway {
     AuthorizationResult releaseAuthorization(
             String gatewayAuthorizationId,
             String idempotencyKey);
+
+    RefundResult refundCapturedPayment(
+            String gatewayAuthorizationId,
+            BigDecimal amount,
+            String currency,
+            String idempotencyKey);
+
+    RefundResult retrieveRefund(String gatewayRefundId);
 }

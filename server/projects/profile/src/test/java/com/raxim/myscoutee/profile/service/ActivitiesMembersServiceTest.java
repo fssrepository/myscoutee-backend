@@ -34,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -923,7 +924,25 @@ class ActivitiesMembersServiceTest {
                 "subevent-1",
                 null))
                 .thenReturn(Optional.of(scopedAsset));
-        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+        ActivitySubEventResource borrowedAssignment = new ActivitySubEventResource();
+        borrowedAssignment.setOwnerId("event-1:slot:slot-1:2026-07-23T06:30:00Z");
+        borrowedAssignment.setSubEventId("subevent-1");
+        borrowedAssignment.setAssetOwnerUserId("borrower-1");
+        borrowedAssignment.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        borrowedAssignment.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0,
+                        3,
+                        1,
+                        "borrower-1",
+                        false,
+                        List.of()))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1:slot:slot-1:2026-07-23T06:30:00Z",
+                "subevent-1",
+                "D"))
+                .thenReturn(List.of(borrowedAssignment));
         when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
@@ -934,14 +953,120 @@ class ActivitiesMembersServiceTest {
                 "subevent-1");
 
         assertThat(result)
-                .filteredOn(entry -> "borrower-1".equals(entry.userId()))
                 .singleElement()
                 .satisfies(entry -> {
+                    assertThat(entry.userId()).isEqualTo("borrower-1");
                     assertThat(entry.status()).isEqualTo("pending");
                     assertThat(entry.pendingSource()).isEqualTo("member");
                     assertThat(entry.requestKind()).isEqualTo("join");
-                    assertThat(entry.statusText()).isEqualTo("Waiting for admin approval.");
+                    assertThat(entry.statusText()).isEqualTo("Waiting for owner approval.");
                 });
+        verify(usersRepository, never()).findByUserId("owner-1");
+    }
+
+    @Test
+    void approvingScopedBorrowReturnsOnlyTheBorrowerAsAcceptedManager() {
+        String eventId = "event-1:slot:slot-1:2026-09-09T02:24:00Z";
+        String subEventId = "subevent-1";
+        Asset.AssetRequestBookingRecord booking = new Asset.AssetRequestBookingRecord(
+                eventId,
+                "QA Event",
+                subEventId,
+                "QA Borrow Stage",
+                "asset-1:1",
+                "Transport",
+                "Sep 9",
+                "2026-09-09T02:24:00Z",
+                "2026-09-09T04:24:00Z",
+                1,
+                3200.0,
+                "HUF",
+                List.of(),
+                "payment-session-1",
+                false);
+        Asset pendingAsset = new Asset();
+        pendingAsset.setAssetId("asset-1");
+        pendingAsset.setOwnerUserId("asset-owner");
+        pendingAsset.setTitle("Paid Transport");
+        pendingAsset.setStatus("A");
+        pendingAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "borrower-1",
+                "Nova Social",
+                "NS",
+                "woman",
+                "pending",
+                "Waiting for admin approval.",
+                "borrow",
+                "2026-09-07T06:30:00Z",
+                booking)));
+        Asset acceptedAsset = new Asset();
+        acceptedAsset.setAssetId("asset-1");
+        acceptedAsset.setOwnerUserId("asset-owner");
+        acceptedAsset.setTitle("Paid Transport");
+        acceptedAsset.setStatus("A");
+        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "borrower-1",
+                "Nova Social",
+                "NS",
+                "woman",
+                "accepted",
+                "Borrow request approved by the owner.",
+                "borrow",
+                "2026-09-07T06:30:00Z",
+                booking)));
+        ActivitySubEventResource assignment = new ActivitySubEventResource();
+        assignment.setOwnerId(eventId);
+        assignment.setSubEventId(subEventId);
+        assignment.setAssetOwnerUserId("borrower-1");
+        assignment.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        assignment.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0,
+                        3,
+                        1,
+                        "borrower-1",
+                        false,
+                        List.of()))));
+
+        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
+        when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null))
+                .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                eq("asset-1"),
+                eq(eventId),
+                eq(subEventId),
+                anyList(),
+                eq("asset-owner")))
+                .thenReturn("asset-owner");
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                eventId,
+                subEventId,
+                "D"))
+                .thenReturn(List.of(assignment));
+        when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                "asset-owner",
+                "borrower-1",
+                "accept",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(result)
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.userId()).isEqualTo("borrower-1");
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.role()).isEqualTo("Manager");
+                });
+        assertThat(result).noneMatch(entry -> "asset-owner".equals(entry.userId()));
     }
 
     @Test

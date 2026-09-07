@@ -6588,43 +6588,259 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **STAGED / NOT RUN**.
+Status: **IN PROGRESS — TAKEOVER PASS THROUGH STEP 79**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
 
-The versioned fixture was staged at `2026-09-06T09:38:32.096Z` after a proven
-exact reset, and its second
-read-only `status` reached `phase=baseline-ready`. The persisted baseline is
+The versioned fixture was restaged at `2026-09-07T02:24:00.578Z` after the
+dev-stack restart left only its stale state marker while every scoped fixture
+record was absent. All saved collection snapshots were empty and the current
+Casey/Nova/Riley reset-owned fields exactly matched their saved values, so the
+versioned reset restored zero artifacts. The normal stage and its second
+read-only `status` then reached `phase=baseline-ready`. The persisted baseline is
 exact: connected Barion with 3DS Off; Casey Admin plus Nova Member on the one
 Event; the target paid Asset at quantity `3`; all five named controls; and zero
 scoped payment, request projection, activity resource, server basket or stored
 Asset membership. `EVENT-CHECKOUT-001` was first restored through its own
 snapshot-protected reset with zero remaining scoped artifacts. No Asset
-checkout browser was opened or operated by Codex.
+checkout checklist action was operated by Codex.
 
-The source preflight also found that the pre-Pay Borrow Basket draft had been
-held only in an in-memory signal even though checklist steps 22-23 require one
-clean reload. It now uses the scoped `AssetBorrowDraftStore` backed by the
-application's namespaced local storage, keyed by user, Sub-event and Asset.
-The existing frontend watcher compiled and deployed that correction
-successfully. This is implementation evidence only: reload reconstruction
-remains an unpassed user-visible assertion in steps 22-23.
+The first configured browser launch at `2026-09-07 04:39 CEST` stopped before
+handoff when Nova's tracked login returned `BLOCKED_LIMIT`; the pre-existing
+Casey/Nova/Ava active-session counts were `1/2/2`. The versioned fixture now
+owns a `prepare-browser` boundary that preserves the first pre-QA
+`userSessionStates` documents, clears only those three configured actors, and
+restores the preserved documents on reset. Its first live run cleared the
+counts to `0/0/0`, after which the versioned launcher prepared all three
+isolated identities successfully at `2026-09-07 04:44 CEST`. The user then
+reached the first confirmed payment-review boundary and reported one concrete
+mismatch: the target card menu remained green `Borrow` instead of changing to
+orange `Continue borrow`. That attempt is repair evidence, not accepted
+checkpoint evidence, and was replayed from the exact baseline after repair.
+
+Diagnosis against the completed Event checkout reference found the underlying
+contract mismatch. The pre-Pay Asset draft changed only an in-memory signal
+plus namespaced local storage; it never saved the common checkout repository,
+and the card menu projected only its static `Borrow` action. The deployed
+repair now makes initial `Confirm borrow` and changed `Update borrow` save the
+shared checkout repository before changing UI state. That repository is
+IndexedDB in local mode and the backend `eventCheckoutBasketItems` repository
+through HTTP. Only a successful save sets the local confirmed selection
+baseline and immediately projects orange `Continue borrow` in both the target
+card menu and Borrow Basket. Back/review uses the Event palettes and labels:
+unchanged is green `Continue borrow`, changed is orange `Update borrow`, and
+the initial action remains blue `Confirm borrow`. Review has a red `Cancel`;
+payment has neutral `Back`, red `Cancel` and the primary payment action. Online providers use `Pay`;
+the no-provider variant uses `Confirm cash payment`. Successful Asset
+fulfillment closes the basket reservation as `succeeded`, while provider
+decline/timeout retains an isolated `failed` checkout audit without creating a
+borrow request or inventory change. Event and Asset basket writers use the
+same 10-minute expiry contract; the previous 20-minute frontend/backend
+fallbacks were invalid and are now corrected. Asset Explore also receives a
+batch `checkoutResultStates` projection from the common backend basket
+repository. On the next successful page load it removes a matching local draft
+when the server basket is absent or succeeded, and after the 10-minute boundary
+when an expiry is represented by a deleted audit, so a local-only ghost
+`Continue borrow` cannot survive. The equivalent local-data path reads the
+shared IndexedDB basket repository. The running frontend and backend watchers
+compiled and deployed these changes successfully.
+
+During the fresh user-controlled replay, the menu, Borrow Basket, Back,
+Continue and Update states behaved as required through step 30. The user also
+performed disclosed date Updates before the quantity Updates. The guarded
+`capture-revised-payment-ready` oracle therefore accepted the exact materially
+changing quantity history `1 → 1 → 1 → 2 → 1`, rather than misclassifying those
+real edits as an unchanged Continue rewrite. It proved one active final
+quantity-`1` confirmed basket with a 10-minute creation-to-expiry delta, four
+deleted predecessors, and zero payment/session, borrow request, inventory
+delta, resource assignment or stored Asset role. It saved the exact
+`revised-payment-ready` server boundary immediately before step 31.
+
+The sole remaining visual observation was raw `asset.borrow.continue` text in
+the otherwise-correct orange menu and corresponding payment surface. Root
+cause was the HTTP-mode backend bundle: the new EN/HU JSON keys had not been
+regenerated into the Mongo seeds and the version remained `.77`. The generated
+seeds and live demo bundle now use `2026.09.07.en.78` and
+`2026.09.07.hu.78`; direct no-store HTTP reads return localized Continue,
+Update, Review, Continuing and Updating labels in both languages. The i18n
+source/seed audit passed for 2 bundles, 6470 messages and all 3 seed databases,
+and the existing frontend watcher rebuilt and synced successfully. Per the
+user's explicit verdict this cosmetic repair does not require another manual
+label-only replay.
+
+The Borrow editor's own lazy Asset-detail response now also returns the
+authoritative parent Event/Sub-event start and end. The date control and
+forward action remain fail-closed until that response arrives, and both the
+minute-precision UI and backend request guard reject ranges outside the parent
+window. Parent timestamps can contain sub-minute fixture precision, so both
+guards compare the displayed minute rather than falsely rejecting it because
+of hidden milliseconds. Persisted borrow bookings are sent as absolute ISO
+instants. The initial disabled-button report was traced to the already-open tab
+still running the preceding frontend bundle after the watcher had synced the
+corrected build.
+
+The first step-31 Pay attempt reached Nova's provider-owned waiting surface,
+but Ava's nested Barion confirmation showed `localhost refused to connect`.
+Read-only frame inspection and a direct HTTP response proved that the simulator
+served the valid challenge with `X-Frame-Options: DENY` and
+`frame-ancestors 'none'`: its trusted embedded-UI list omitted the Stripe and
+Barion bank-auth result surface. Those two UI route families now use the same
+local-frame policy as the temporary-access authorization surface; non-UI
+simulator endpoints retain default frame denial. The failed Pay attempt is not
+accepted evidence.
+
+The replacement attempt proved a second boundary defect in the nested simulator flow.
+Approval itself completed and the backend produced exactly one authorized
+Barion payment, one succeeded client fulfillment, one pending borrow request,
+one quantity reservation and one scoped resource projection, but the nested
+dialog rendered `This content is blocked` after approval. The first diagnosis
+incorrectly attributed that page to the POST route's default frame header.
+Code-path diagnosis proved that the POST had completed and then redirected the
+simulator-owned inner iframe to MyScoutee's payment return URL; MyScoutee
+correctly refuses to render there as a nested document. Stripe and Barion
+approve/decline now redirect that small frame to a simulator-owned terminal
+result page, which reports the outcome and auto-closes through the outer
+simulator. The action POSTs and unrelated non-UI routes remain denied as
+frames. The complete simulator owning-package suite passed, the one service
+was serially replaced, and live headers prove embedded UI allowed plus non-UI
+default denial. Because the visual completion contract failed, the otherwise-
+successful payment was not accepted as QA evidence. The guarded rollback
+restored `revised-payment-ready` with one fresh confirmed basket from
+`2026-09-07T04:59:31.870Z` through `2026-09-07T05:09:31.870Z` and zero scoped
+payment/request/inventory/resource side effects.
+
+The same repair pass closed two payment-lifecycle gaps before replay. A basket
+is now changed to non-purgeable `pay/pending` before external authorization,
+so a three-minute customer-action window may cross the original 10-minute
+basket deadline without losing its reservation. Once authorization returns a
+session, Asset Explore also saves that identity immediately through its live
+dialog signal and scoped browser-local draft. After materialization it
+publishes the exact pending-resource signal delta; the Borrow Stage and main
+Event red counters therefore update immediately instead of appearing only
+after reload.
+
+The next user-controlled approval completed the payment itself and clarified
+the two distinct counters. While Nova is still awaiting Casey's decision, the
+target Transport card must show accepted occupancy `0/3` plus a separate red
+pending counter `1`; only Casey's later Approve changes that accepted occupancy
+to `1/3` and removes the red counter. The successful authorized payment also
+reached the write model, but the finance total reader did not yet include the
+authorized state. The resource completion path now patches the visible card
+from the returned scoped resource state before publishing its parent deltas,
+and authorized payments contribute to the persisted finance totals. Focused
+regressions cover both paths.
+
+The owner destination is now complete as well. Materializing the paid pending
+borrow enqueues exactly one `asset-admin-join-request` for Casey with the Asset,
+Event, Sub-event, request and Nova identities. Casey's user write model stores
+the pending non-manual Asset-request counts separately for Transport,
+Accommodation and Supplies. The side-menu realtime poll carries those stored
+values before the Asset popup opens; the frontend local user repository mirrors
+them, while approve/reject publishes the immediate signed delta. The Assets
+toolbar shows the rose `Pending` counter toggle immediately before `+` for all
+three categories. The Asset list read derives per-card metrics from the Asset
+documents already loaded and no longer performs a separate `AssetRequest`
+projection query. The checkpoint oracle now requires Casey's `1/0/0` stored
+pending counters and exact notification at paid-pending, then `0/0/0` after
+approval.
+
+The scoped membership contract is also explicit. Casey remains the lender and
+is omitted from the borrowed Asset's scoped Members list. Nova is its only
+pending Member before approval. Approve makes that same Nova row an accepted
+scoped `Manager` immediately because the resource assignment already names Nova
+as `addedByUserId`; it does not create a global Asset-manager role. Therefore
+the accepted Borrow row and scoped Members card expose neither Promote/Revoke
+Manager actions. Nova's own scoped Members card keeps its three-dot menu for
+the self-service `Leave` action, while the borrowed resource card separately
+exposes `Remove` for deleting only that runtime association. The unrelated
+generic Asset-manager feature remains available outside this scoped Borrow
+surface.
+
+The user-controlled run subsequently completed steps 31-56. The accepted
+oracle proves exactly one authorized Barion payment, the same paid request now
+accepted once, one accepted scoped resource contribution, Nova as the scoped
+Manager without a stored global Asset role, selected-range availability `2`,
+physical quantity `3`, non-overlapping availability `3`, and Casey's stored
+Asset pending counters returned to `0/0/0`. A disclosed Free-Asset request and
+temporary Nova service chats were created after the intended boundary while
+diagnosing the UI. The versioned `repair-step-56-boundary` command removed only
+those probe artifacts, restored the Free control from its exact staged
+fingerprint, restored its resource/counter effects and then required the full
+accepted oracle before capture. `rollback-accepted` was executed immediately
+after capture and restored the same oracle successfully. Continue at step 57;
+steps 1-56 and the payment/owner approval must not be replayed.
+
+The user-controlled run then completed steps 57-68 and the final core oracle
+passed. The Free request, zero-quantity unavailable control, isolated Adjacent
+Cancel, Barion decline and Barion timeout branches left the accepted target,
+its physical quantity `3`, dated availability `2`, sibling scope and Riley
+control unchanged. The exact accepted savepoint was restored and the isolated
+two-borrower Take Over extension was prepared without replaying the core flow.
+
+Nova's manager `Leave` initially failed because the service-owned settlement
+write to Riley's already-accepted request was incorrectly evaluated as an
+ordinary user edit. The repaired transition authorizes Nova's own cancellation,
+stores Riley's predecessor amount and leaves the runtime assignment in place.
+The `manager-left` oracle now passes: Nova is deleted from the scoped borrow,
+Riley is the sole accepted borrower, Nova's HUF 3,200 authorization is not yet
+refunded, selected-window availability is `2`, and exactly one Take Over-required
+notification targets Riley. Its compact replacement copy puts `Take Over` in
+the bold title. The Riley menu repair resolves runtime manager settings by the
+exact assigned Asset ID when the physical Asset owner and runtime contributor
+are different. Continue at step 74; do not replay Nova's Leave.
+
+The first Riley Take Over review exposed an inconsistent submit gate. The
+shared policy input intentionally renders acknowledgement checkboxes only for
+optional policies; required policies are implicit and do not add a checkbox.
+Normal Borrow already followed that rule, but Take Over incorrectly waited for
+an impossible required-policy checkbox and kept `Continue to payment`
+disabled. Local and HTTP Take Over now follow the same rule while still carrying
+any explicitly selected optional policy IDs through the replacement action.
+The canonical fixture stores the nested Spring record identity as `_id`. The guarded
+`repair-manager-left-required-policy` command normalized the retained paid
+Asset to `qa-borrow-policy`, kept Riley's optional-policy acceptance list empty
+and recaptured the exact `manager-left` savepoint. Reload Riley once, then
+resume step 74 without replaying Nova's Leave.
+
+The user-controlled replay then completed Riley's paid Take Over. The guarded
+oracle proves Riley's Captured/Joined successor payment, Nova's retained
+Captured predecessor plus its separate full-refund transaction, the exact
+payer-swap finance totals and Nova's refund-result-only notification. The
+`takeover-complete` savepoint is retained immediately before checklist step 80.
+Its guarded rollback restores the matching Mongo state, Riley's captured
+Barion provider fixture and every required policy ID without executing the
+runtime `Remove` action. Required policies are automatically included after
+lazy Asset-detail loading and render without acknowledgement checkboxes in all
+Borrow/Join/Take Over entry points; optional policies remain selectable.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-browser asset-checkout ASSET-CHECKOUT-001
 ```
 
-The first user boundary is checklist step 1 through step 18. On the exact
+Immediately before every configured browser launch or relaunch,
+`prepare-browser` snapshot-protects and clears Casey, Nova, Riley and Ava's
+active demo-session slots. The launcher still opens only the three configured
+Casey/Nova/Ava browser profiles; Riley later reuses Nova's profile through an
+explicit user-controlled logout/login. The checkpoint reset restores the
+pre-QA session-state documents exactly. The first user boundary is checklist
+step 1 through step 18. On the exact
 `payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
-before that oracle. Replay boundaries are available as
-`rollback-payment-ready`, `rollback-paid-pending` and `rollback-accepted`.
+before that oracle. The current retained run is already at
+`revised-payment-ready`; continue at step 31. Replay boundaries are available
+as `rollback-payment-ready`, `rollback-revised-payment-ready`,
+`rollback-paid-pending`, `rollback-accepted` and, after the isolated Cancel
+branch, `rollback-cancelled-control`. The revised boundary is the
+pre-step-31 transaction checkpoint and avoids replaying steps 1-30 after a
+later failure.
 
 This row owns the paid browser flow and its state-dependent actions. The
 generic `ASSET-BORROW-001` branches continue to own independent free/request,
-reject and cancel decisions; they must not replay this row's successful Barion
-payment.
+reject and post-request owner/borrower cancel decisions; they must not replay
+this row's pre-payment basket Cancel or successful Barion payment.
 
 - Stage one Public paid Transport owned by Casey and discoverable by Nova
   through Resource/Asset Explore under one exact Event/Sub-event runtime. Give
@@ -6640,47 +6856,74 @@ payment.
 
   | State | Required visible actions/status | Forbidden action |
   | --- | --- | --- |
-  | Fresh paid Asset with availability | `Borrow`; review `Confirm borrow` | `Payment summary`, `Pay` before review |
-  | Saved review draft | Borrow Basket `Continue request` | a request/payment write |
-  | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer `Back` and `Pay` | editable price/time/quantity/policies in payment phase |
+  | Fresh paid Asset with availability | `Borrow`; review red `Cancel` and blue `Confirm borrow` | `Payment summary`, `Pay` before review |
+  | Confirmed unchanged review | green `Continue borrow`; card menu and Borrow Basket orange `Continue borrow` | another basket generation, request/payment write |
+  | Confirmed changed review | orange `Update borrow` | stale confirmed payload |
+  | Payment-ready paid Asset | payment panel `Barion`/`Ready to redirect`; footer neutral `Back`, red `Cancel` and `Pay` | editable price/time/quantity/policies in payment phase |
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
-  | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
+  | Owner-accepted paid borrow | read-only `Payment summary`; member-card `Leave`; resource-card `Remove`; `Ask Asset Owner` | Promote/Revoke or global Asset delete |
+  | Manager left with accepted successor | `Take Over`; exact predecessor price; replacement payment flow | plain confirm-only transfer or early predecessor refund |
+  | Runtime association removed | retained Payment history with `Ask Asset Owner` and `Request refund` | global Asset deletion or erased payment record |
+  | Refund pending/approved | owner Payment counter/filter delta; `Approve refund`; contextual `Refunded` history and summary | query projection counter or duplicate refund |
 
-- In review, an invalid or empty timeframe, quantity outside current
-  availability and any unaccepted required policy disable the forward action
-  and create no server write. A valid quantity/time/policy set produces one
-  deterministic line item and total.
+- The Borrow popup's own lazy Asset-detail response supplies the authoritative
+  parent Event/Sub-event window. The date control immediately normalizes an
+  attempted End-before/equal-Start value and either endpoint outside that
+  parent window, so an invalid range cannot remain in the review. Quantity outside
+  current availability is clamped/rejected. Lending policies expose their
+  acknowledgement controls in the review. Every required policy must be
+  accepted before the forward action enables; optional acknowledgements do not
+  block it. These input gates create no server write. A valid
+  quantity/time/policy set produces one deterministic line item and total.
 - Select `Confirm borrow` once. This moves to the locked payment phase but does
   not call the provider and creates no server payment/session, request,
-  assignment or inventory delta. The one Borrow Basket item is a frontend
-  draft. `Continue request`, in-place reopen and one clean reload must
-  reconstruct its amount, timeframe, quantity and policy set.
-- Use `Back` once, change the quantity or timeframe, and confirm again. The
-  final frontend draft owns the recalculated payload; stale values must not
-  return and server checkout state must remain empty before `Pay`.
+  assignment or inventory delta. It creates exactly one synchronized confirmed
+  Borrow Basket across the Angular signal, scoped local draft and shared
+  local/HTTP repository. The basket expiry is exactly 10 minutes after its
+  creation. Orange `Continue borrow`, in-place reopen and one clean reload must
+  reconstruct its amount, timeframe, quantity and policy set and open the
+  payment phase directly for an unchanged confirmed selection. If the canonical
+  server basket is later absent or expires, the following successful Explore
+  load clears the scoped local draft and restores the fresh `Borrow` action.
+- Use `Back` once. The unchanged review is green `Continue borrow`, and that
+  action returns to payment without a repository rewrite. Change quantity to
+  `2`: the action becomes orange `Update borrow` and saves the revised confirmed
+  basket before payment. Back, restore quantity `1`, then Update again. The
+  canonical pre-Pay oracle is exactly three audit generations (initial Confirm
+  plus two Updates), one active final confirmed basket and no generation from
+  the unchanged Continue action. A disclosed exploratory run may retain extra
+  Updates only when every adjacent saved selection is materially different and
+  the final basket returns to quantity `1`; the current accepted history is
+  `1/1/1/2/1`.
 - Click `Pay` exactly once. While active it changes to `Paying...` and is
   disabled; the application remains responsive. Success closes the checkout
   instead of leaving a frozen editor, spinner or duplicate payment surface.
 - Immediate write oracle: one terminal `provider=barion` authorized payment for
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
-  reservation/availability decrement for quantity `1`; and one pending
-  resource projection. There is no server `eventCheckoutBasketItems` row in
-  this Asset flow; the request's `inventoryApplied=true` plus the exact
-  quantity decrement own the reservation proof.
+  date-window reservation for quantity `1`; and one pending resource
+  projection. The final checkout basket is one `pay/succeeded` audit with its
+  reservation closed. The physical Asset quantity remains `3`; the request
+  remains `inventoryApplied=false`, and overlapping request windows are the
+  authoritative availability reservations.
 - Immediate UI oracle: the Asset remains once in Explore with availability
-  reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
-  and Casey sees Nova once as the pending borrower on the exact Asset/request.
-  The summary contains the immutable timeframe, quantity, accepted policy,
-  amount/currency and recorded Barion/payment-method result. Opening it twice is a
-  pure read.
+  reduced `3 -> 2` for the selected date range while a non-overlapping range
+  remains `3`; its same-scope menu exposes read-only `Payment summary`, and
+  Casey sees Nova once as the pending borrower on the exact Asset/request.
+  Before approval the scoped card shows accepted occupancy `0/3` plus red
+  pending `1`. The summary contains the immutable timeframe, quantity, accepted
+  policy, amount/currency and recorded Barion/payment-method result. Opening it
+  twice is a pure read.
 - Casey accepts that same pending request once through the normal Asset member
-  action. The accepted projection and exact Event/Sub-event resource scope
-  update once; availability stays `2` because payment already reserved the
-  quantity. Nova gains no Event, Tournament-group or global Asset Manager role.
-  The sibling Event/Sub-event, adjacent paid Asset and Riley stay unchanged.
+  action. Nova becomes that exact scope's accepted `Manager`; the dark badge
+  changes `0/3 -> 1/3`, red pending changes `1 -> 0`, and no Promote/Revoke
+  Manager action remains on this Borrow row. Availability stays `2` because the
+  payment already created the dated reservation, not because physical quantity
+  was decremented. Nova gains no Event, Tournament-group or global Asset
+  Manager role. The sibling Event/Sub-event, adjacent paid Asset and Riley stay
+  unchanged.
 - One clean reload must reconstruct Casey's accepted request, Nova's scoped
   resource/Payment summary and the final availability from persisted state.
   Replaying the final action identity or reopening the summary cannot create a
@@ -6689,19 +6932,72 @@ payment.
 - Inspect the free and unavailable controls without submitting them. Their
   labels and forbidden-payment states must match the table and no control may
   inherit the target's payment/session identity.
+- On the adjacent paid control, enter payment-ready once and exercise the red
+  `Cancel` blocker: first choose its `Back` action and prove the basket remains,
+  then confirm `Cancel borrow` once. The control returns to fresh `Borrow`, its
+  scoped local draft disappears, and the backend retains exactly one
+  `cancelled/deleted` ten-minute basket audit with no active basket, payment,
+  request, inventory or resource side effect. `verify-cancelled` captures this
+  isolated savepoint before decline/timeout, so those later controls can roll
+  back without repeating the Cancel branch.
 - Run one normal quantity-`1` checkout on `Decline Control` and one on
   `Timeout Control`, keeping Barion 3DS enabled. The first must yield exactly
   one declined/failed terminal payment and the second exactly one expired
   terminal payment. Neither control may create a borrow request, inventory
-  delta, resource assignment, entitlement or server basket row.
+  delta, resource assignment or entitlement. Each retains only its isolated
+  `pay/failed` checkout audit so the failed attempt remains recoverable.
+- After the core terminal oracle, roll back to `accepted` and prepare one
+  accepted Riley scoped borrower without a payment. Nova's own member-card
+  action is `Leave`; as runtime Manager Nova can `Remove member` from Riley's
+  card, while the resource-card `Remove` remains a separate convenience action.
+  Do not exercise the Riley removal in the paid-takeover branch.
+- Nova leaving while Riley remains keeps the runtime association at accepted
+  occupancy `1/3` and gives Riley one Take Over-required notification. Riley
+  reuses Nova's browser after logout/login. Take Over must open the replacement
+  Barion payment flow for the predecessor's exact `HUF 3,200`; Riley must accept
+  the required lending policy, and transfer occurs only after successful
+  authorization. Completion links both payments, releases and fully refunds
+  Nova's predecessor authorization, keeps Casey's net income at one payment,
+  and makes Riley the scoped Manager. Immediately afterward the reused browser
+  switches to Nova to prove the refund-result notification and contextual
+  `Refunded` history, then switches back to Riley. Nova receives the refund
+  result only, not a generic manager-change notification.
+- Riley then uses resource-card `Remove`. This status-deletes only the exact
+  runtime scope and retains Casey's global Asset plus both payment histories.
+  The Asset payment expense menu uses `Ask Asset Owner`, resolves Casey rather
+  than the departed runtime Manager or Event organizer, and creates the Asset
+  service chat only on the first sent message. The normal Chat channel and
+  unread red counter own delivery after creation.
+- Riley requests a refund from the retained history row. Casey's backend Users
+  write model increments `paymentRefundsPending`; the side-menu poll exposes it
+  before Payment history opens, and the popup filter shows the same value.
+  Casey approves from the income row. Both finance signals update immediately,
+  the persisted counter returns to zero, and both history and Payment summary
+  show a contextually distinct `Refunded` result.
+- Finally roll back to `accepted` once more. With no accepted successor, Nova's
+  member-card `Leave` removes only the runtime association immediately. The
+  global Asset and payment history remain, no Take Over notification or
+  automatic refund is created, and the retained expense row still offers
+  `Ask Asset Owner` and `Request refund`.
 - The versioned `asset-checkout` fixture provides guarded `stage`, read-only
   `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
-  request-destination and `accepted` captures, three exact persisted rollback
-  savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
-  active and expired Barion card controls into the running payment simulator.
+  request-destination, `accepted`, `cancelled-control`, paid Take Over, runtime
+  Remove/refund and last-manager Leave captures, exact persisted rollback
+  savepoints, terminal verifiers and exact `reset`. It mirrors Nova and Riley's
+  active Barion cards plus Nova's expired control into the running payment simulator.
   The payment-ready rollback restores the server boundary only; if the browser
   draft was already cleared, the user repeats steps 1-18 because the harness
   never writes browser-local storage.
+
+Core browser evidence recorded on 2026-09-07: steps 1-68 reached `PASS` with
+exactly one approved target payment, one isolated declined payment, one isolated
+expired payment and one cancelled Adjacent basket audit. The target Asset kept
+stored quantity `3` and selected-window availability `2`; the sibling scope and
+Riley remained unchanged. The unavailable control exposed an explicit-zero
+backend parity defect during this run: explicit quantity `0` is now preserved,
+the temporary reservation workaround was removed, and the dated Explore query
+excludes that control. The accepted and cancelled-control rollback savepoints
+remain available for the lifecycle extension.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

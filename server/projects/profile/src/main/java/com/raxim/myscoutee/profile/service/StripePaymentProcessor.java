@@ -13,10 +13,12 @@ import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingReso
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver.PaymentRouting;
 import com.stripe.model.checkout.Session;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Refund;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.PaymentIntentCancelParams;
 import com.stripe.param.PaymentIntentCaptureParams;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.RefundCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import java.math.BigDecimal;
@@ -67,10 +69,10 @@ public class StripePaymentProcessor implements PaymentProcessor {
     @Override
     public Capabilities capabilities() {
         return new Capabilities(
+                false,
                 true,
-                true,
-                true,
-                Duration.ofDays(7),
+                false,
+                Duration.ZERO,
                 Set.of("card"));
     }
 
@@ -120,7 +122,6 @@ public class StripePaymentProcessor implements PaymentProcessor {
                 .putMetadata("source_id", request.sourceId())
                 .putMetadata("user_id", request.userId())
                 .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
-                        .setCaptureMethod(SessionCreateParams.PaymentIntentData.CaptureMethod.MANUAL)
                         .setSetupFutureUsage(SessionCreateParams.PaymentIntentData.SetupFutureUsage.OFF_SESSION)
                         .putMetadata("checkout_session_id", normalizedPaymentSessionId)
                         .putMetadata("source_id", request.sourceId())
@@ -166,7 +167,6 @@ public class StripePaymentProcessor implements PaymentProcessor {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(toMinorUnits(request.totalAmount(), request.currency()))
                     .setCurrency(request.currency().toLowerCase(Locale.ROOT))
-                    .setCaptureMethod(PaymentIntentCreateParams.CaptureMethod.MANUAL)
                     .setPaymentMethod(paymentMethodReference)
                     .addPaymentMethodType("card")
                     .setConfirm(true)
@@ -237,6 +237,61 @@ public class StripePaymentProcessor implements PaymentProcessor {
         } catch (Exception exception) {
             throw new RuntimeException("Failed to release Stripe PaymentIntent authorization", exception);
         }
+    }
+
+    @Override
+    public RefundResult refundCapturedPayment(
+            String gatewayAuthorizationId,
+            BigDecimal amount,
+            String currency,
+            String idempotencyKey) {
+        String apiKey = requireApiKey();
+        try {
+            RefundCreateParams params = RefundCreateParams.builder()
+                    .setPaymentIntent(normalizedRequired(gatewayAuthorizationId, "Stripe PaymentIntent id"))
+                    .setAmount(toMinorUnits(
+                            requirePositiveAmount(amount, "refund amount").doubleValue(),
+                            normalizedRequired(currency, "refund currency")))
+                    .setReason(RefundCreateParams.Reason.REQUESTED_BY_CUSTOMER)
+                    .build();
+            Refund refund = Refund.create(
+                    params,
+                    requestOptions(apiKey, normalizedRequired(idempotencyKey, "refund idempotency key")));
+            return toRefundResult(refund);
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to refund Stripe PaymentIntent", exception);
+        }
+    }
+
+    @Override
+    public RefundResult retrieveRefund(String gatewayRefundId) {
+        String apiKey = requireApiKey();
+        try {
+            return toRefundResult(Refund.retrieve(
+                    normalizedRequired(gatewayRefundId, "Stripe Refund id"),
+                    requestOptions(apiKey, null)));
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to retrieve Stripe refund", exception);
+        }
+    }
+
+    private RefundResult toRefundResult(Refund refund) {
+        String providerStatus = safeLower(refund == null ? null : refund.getStatus());
+        RefundStatus status = switch (providerStatus) {
+            case "succeeded" -> RefundStatus.SUCCEEDED;
+            case "failed", "canceled" -> RefundStatus.FAILED;
+            default -> RefundStatus.PENDING;
+        };
+        String currency = refund == null ? null : refund.getCurrency();
+        long minorAmount = refund == null || refund.getAmount() == null ? 0L : refund.getAmount();
+        return new RefundResult(
+                getType(),
+                refund == null ? null : refund.getPaymentIntent(),
+                refund == null ? null : refund.getId(),
+                status,
+                fromMinorUnits(minorAmount, currency),
+                currency,
+                providerStatus);
     }
 
     public AuthorizationResult toAuthorizationResult(String checkoutId, PaymentIntent intent) {
@@ -320,6 +375,13 @@ public class StripePaymentProcessor implements PaymentProcessor {
             throw new IllegalArgumentException(label + " is required.");
         }
         return value.trim();
+    }
+
+    private BigDecimal requirePositiveAmount(BigDecimal value, String label) {
+        if (value == null || value.signum() <= 0) {
+            throw new IllegalArgumentException(label + " must be positive.");
+        }
+        return value;
     }
 
     private String safeLower(String value) {

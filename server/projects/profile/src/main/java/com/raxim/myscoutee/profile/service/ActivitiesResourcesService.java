@@ -624,6 +624,7 @@ public class ActivitiesResourcesService {
         List<SupplyContributionAddition> addedSupplyContributions = addedSupplyContributions(current, next);
         List<SupplyContributionRemoval> removedSupplyContributions = removedSupplyContributions(current, next);
         List<AssetAssignmentRemoval> removedAssetAssignments = removedAssetAssignments(current, next);
+        requireManagedAssetRemovals(current, removedAssetAssignments, actorUserId);
         boolean resourceBecameEmpty = current != null && referencedAssetIds(next).isEmpty();
         Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
         next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
@@ -725,6 +726,32 @@ public class ActivitiesResourcesService {
             removedIds.forEach(assetId -> removals.add(new AssetAssignmentRemoval(assetId, type)));
         }
         return removals;
+    }
+
+    private void requireManagedAssetRemovals(
+            ActivitySubEventResource current,
+            List<AssetAssignmentRemoval> removals,
+            String actorUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (current == null || removals == null || removals.isEmpty()) {
+            return;
+        }
+        for (AssetAssignmentRemoval removal : removals) {
+            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId =
+                    current.getAssetSettingsByType() == null
+                            ? null
+                            : current.getAssetSettingsByType().get(removal.resourceType());
+            SubEventAssignedAssetSettingsRecord settings = settingsByAssetId == null
+                    ? null
+                    : settingsByAssetId.get(removal.assetId());
+            String managerUserId = resolveManagedUserId(settings, current.getAssetOwnerUserId());
+            if (!StringUtils.hasText(normalizedActorUserId)
+                    || !normalizedActorUserId.equals(managerUserId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Only the current Asset assignment manager can remove this Asset.");
+            }
+        }
     }
 
     private List<SupplyContributionAddition> addedSupplyContributions(
@@ -1312,6 +1339,170 @@ public class ActivitiesResourcesService {
             updateEventSubEventResourceCounters(parts[0], parts[1]);
         }
         changedOwnerIds.forEach(this::refreshEventParticipationProjection);
+    }
+
+    public String scopedAssetManagerUserId(String ownerId, String subEventId, String assetId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        STATUS_DELETED)) {
+            if (record == null || record.getAssetSettingsByType() == null) {
+                continue;
+            }
+            for (Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId
+                    : record.getAssetSettingsByType().values()) {
+                SubEventAssignedAssetSettingsRecord settings = settingsByAssetId == null
+                        ? null
+                        : settingsByAssetId.get(normalizedAssetId);
+                String managerUserId = normalizeId(settings == null ? null : settings.addedByUserId());
+                if (StringUtils.hasText(managerUserId)) {
+                    return managerUserId;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean transferScopedAssetManager(
+            String ownerId,
+            String subEventId,
+            String assetId,
+            String expectedManagerUserId,
+            String successorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedExpectedManagerUserId = normalizeId(expectedManagerUserId);
+        String normalizedSuccessorUserId = normalizeId(successorUserId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedExpectedManagerUserId)
+                || !StringUtils.hasText(normalizedSuccessorUserId)
+                || normalizedExpectedManagerUserId.equals(normalizedSuccessorUserId)) {
+            return false;
+        }
+
+        String nowIso = Instant.now().toString();
+        for (String type : AssetCatalog.ASSET_TYPES) {
+            String managerPath = "assetSettingsByType." + type + "." + normalizedAssetId + ".addedByUserId";
+            Query query = Query.query(new Criteria().andOperator(
+                    Criteria.where("ownerId").is(normalizedOwnerId),
+                    Criteria.where("subEventId").is(normalizedSubEventId),
+                    Criteria.where("status").ne(STATUS_DELETED),
+                    Criteria.where(managerPath).is(normalizedExpectedManagerUserId)));
+            Update update = new Update()
+                    .set(managerPath, normalizedSuccessorUserId)
+                    .set("updatedDate", nowIso)
+                    .set("updatedUser", normalizedSuccessorUserId);
+            if (mongoTemplate.updateFirst(query, update, ActivitySubEventResource.class).getModifiedCount() == 1) {
+                refreshEventParticipationProjection(normalizedOwnerId);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeScopedAssetAssignment(
+            String ownerId,
+            String subEventId,
+            String assetId,
+            String expectedManagerUserId,
+            String actorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedExpectedManagerUserId = normalizeId(expectedManagerUserId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedExpectedManagerUserId)
+                || !normalizedExpectedManagerUserId.equals(normalizedActorUserId)) {
+            return false;
+        }
+
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        STATUS_DELETED)) {
+            if (record == null || !referencedAssetIds(record).contains(normalizedAssetId)) {
+                continue;
+            }
+            boolean managedByExpectedUser = record.getAssetSettingsByType() != null
+                    && record.getAssetSettingsByType().values().stream()
+                            .filter(Objects::nonNull)
+                            .map(settings -> settings.get(normalizedAssetId))
+                            .filter(Objects::nonNull)
+                            .map(SubEventAssignedAssetSettingsRecord::addedByUserId)
+                            .map(this::normalizeId)
+                            .anyMatch(normalizedExpectedManagerUserId::equals);
+            if (!managedByExpectedUser) {
+                continue;
+            }
+
+            ActivitySubEventResource next = cloneRecord(record);
+            Map<String, List<String>> assignmentIds = filterAssignmentIds(next.getAssetAssignmentIds(), null);
+            assignmentIds.replaceAll((type, ids) -> ids.stream()
+                    .filter(id -> !normalizedAssetId.equals(normalizeId(id)))
+                    .toList());
+            assignmentIds.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            next.setAssetAssignmentIds(assignmentIds);
+
+            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
+                    filterSettings(next.getAssetSettingsByType(), null);
+            settingsByType.values().forEach(settings -> settings.remove(normalizedAssetId));
+            settingsByType.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            next.setAssetSettingsByType(settingsByType);
+
+            Map<String, List<SubEventSupplyContributionEntryRecord>> supplyEntries =
+                    filterSupplyEntries(next.getSupplyContributionEntriesByAssetId(), null);
+            supplyEntries.remove(normalizedAssetId);
+            next.setSupplyContributionEntriesByAssetId(supplyEntries);
+
+            Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(next, normalizedActorUserId);
+            Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, referencedAssets);
+            next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
+            boolean resourceBecameEmpty = referencedAssetIds(next).isEmpty();
+            if (resourceBecameEmpty) {
+                next.setStatus(STATUS_DELETED);
+            }
+            String nowIso = Instant.now().toString();
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(normalizedActorUserId);
+            ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+            if (resourceBecameEmpty) {
+                removeGroupRuntimeResourceMetrics(saved, normalizedActorUserId, nowIso);
+            } else {
+                persistGroupRuntimeResourceMetrics(
+                        saved,
+                        metricsByType,
+                        normalizedActorUserId,
+                        nowIso,
+                        false);
+            }
+            enqueueAssetAssignmentRemovedNotifications(
+                    saved.getOwnerId(),
+                    saved.getSubEventId(),
+                    normalizedActorUserId,
+                    saved.getAssetOwnerUserId(),
+                    nowIso,
+                    removedAssetAssignments(record, next));
+            updateEventSubEventResourceCounters(normalizedOwnerId, normalizedSubEventId);
+            refreshEventParticipationProjection(normalizedOwnerId);
+            return true;
+        }
+        return false;
     }
 
     private void removeGroupRuntimeResourceMetrics(

@@ -52,8 +52,10 @@ public class AssetsController {
     @GetMapping("/{assetId}")
     public AssetDetailDto queryAssetDetail(
             @PathVariable("assetId") String assetId,
-            @RequestParam(value = "userId", required = false) String userId) {
-        return assetsService.queryAssetDetail(userId, assetId);
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "eventId", required = false) String eventId,
+            @RequestParam(value = "subEventId", required = false) String subEventId) {
+        return assetsService.queryAssetDetail(userId, assetId, eventId, subEventId);
     }
 
     @GetMapping("/{assetId}/availability")

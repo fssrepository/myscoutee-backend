@@ -35,6 +35,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBaske
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -43,6 +44,8 @@ import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationStatus;
+import com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult;
+import com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus;
 
 @Service
 public class PaymentService {
@@ -54,6 +57,7 @@ public class PaymentService {
     private static final String REFUND_STATUS_PARTIAL = "partial";
     private static final String REFUND_STATUS_FULL = "full";
     private static final String AUDIT_KIND_PAYMENT = "payment";
+    private static final String AUDIT_KIND_REFUND = "refund";
     private static final String AUDIT_KIND_BOOKING_PRICE_REVISION = "booking_price_revision";
     private static final String FULFILLMENT_PENDING = "pending";
     private static final String FULFILLMENT_SUCCEEDED = "succeeded";
@@ -252,6 +256,14 @@ public class PaymentService {
         payment = saveAndProjectSpending(payment);
 
         try {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    authoritativeRequest.userId(),
+                    authoritativeRequest.sourceId(),
+                    authoritativeRequest.slotSourceId(),
+                    "pay",
+                    FULFILLMENT_PENDING,
+                    null,
+                    payment.getCheckoutSessionId()));
             AuthorizationResult authorization = resolveProcessor(normalizedProvider)
                     .prepareAuthorization(
                             authoritativeRequest,
@@ -261,17 +273,6 @@ public class PaymentService {
                     payment.getCheckoutSessionId(),
                     authorization,
                     null).payment();
-            if (!Set.of(
-                            statusValue(AuthorizationStatus.AUTHORIZED),
-                            statusValue(AuthorizationStatus.CAPTURED))
-                            .contains(safeText(payment.getStatus()))
-                    && !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))
-                    && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
-                eventCheckoutBasketService.saveBasket(withCheckoutState(
-                        authoritativeRequest,
-                        "pay",
-                        payment.getCheckoutSessionId()));
-            }
             return toCheckoutSession(payment);
         } catch (OptimisticLockingFailureException conflict) {
             throw conflict;
@@ -425,6 +426,28 @@ public class PaymentService {
             String bookingStartAtIso,
             String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
+        recordAssetBooking(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                bookingEndAtIso,
+                cancellationPolicy,
+                null,
+                null);
+    }
+
+    public void recordAssetBooking(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            String bookingEndAtIso,
+            PricingCancellationPolicyDto cancellationPolicy,
+            String eventId,
+            String subEventId) {
         Payment payment = recordBooking(
                 paymentSessionId,
                 userId,
@@ -433,11 +456,317 @@ public class PaymentService {
                 bookingStartAtIso,
                 bookingEndAtIso,
                 cancellationPolicy);
+        if (payment != null) {
+            payment.setContextEventId(normalizeId(eventId));
+            payment.setContextSubEventId(normalizeId(subEventId));
+            payment = saveAndProjectSpending(payment);
+        }
         if (payment != null
                 && FULFILLMENT_KIND_CLIENT.equals(safeText(payment.getFulfillmentKind()))
-                && statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))
+                && Set.of(
+                        statusValue(AuthorizationStatus.AUTHORIZED),
+                        statusValue(AuthorizationStatus.CAPTURED)).contains(safeText(payment.getStatus()))
                 && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
             markGatewayFulfillment(payment.getId(), true, null);
+        }
+    }
+
+    public Payment approveFullRefund(Payment payment, String reviewedAtIso) {
+        return approveFullRefund(
+                payment,
+                reviewedAtIso,
+                "owner-approved-request",
+                "Full refund approved by the payment recipient.");
+    }
+
+    public Payment refundFailedFulfillment(Payment payment, String reason) {
+        return approveFullRefund(
+                payment,
+                nowIso(),
+                "fulfillment-compensation",
+                hasText(reason) ? reason : "The paid checkout could not be fulfilled.");
+    }
+
+    public Payment approvePolicyRefund(
+            Payment payment,
+            String reviewedAtIso,
+            double refundableAmount,
+            String refundCurrency,
+            String refundRuleId,
+            String refundNote) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment is required.");
+        }
+        double paidAmount = safeAmount(payment.getAmount());
+        double approvedAmount = Math.min(paidAmount, safeAmount(refundableAmount));
+        if (approvedAmount <= 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
+        }
+        Payment current = payment;
+        if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
+                && hasText(current.getGatewayAuthorizationId())
+                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
+            if (approvedAmount >= paidAmount) {
+                releaseGatewayAuthorization(current, "refund-request:" + normalizeId(current.getId()));
+            } else {
+                captureGatewayAuthorization(
+                        current,
+                        BigDecimal.valueOf(roundMoney(paidAmount - approvedAmount)),
+                        "refund-request:" + normalizeId(current.getId()));
+            }
+            current = paymentsRepository.findById(current.getId()).orElse(current);
+        } else if (statusValue(AuthorizationStatus.CAPTURED).equals(safeText(current.getStatus()))
+                && hasText(current.getGatewayAuthorizationId())
+                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
+            refundCapturedPayment(
+                    current,
+                    BigDecimal.valueOf(approvedAmount),
+                    "refund-request:" + normalizeId(current.getId()));
+            current = paymentsRepository.findById(current.getId()).orElse(current);
+        }
+        boolean full = approvedAmount >= paidAmount;
+        current.setRefundStatus(full ? REFUND_STATUS_FULL : REFUND_STATUS_PARTIAL);
+        current.setRefundedAmount(approvedAmount);
+        current.setRefundCurrency(hasText(refundCurrency) ? refundCurrency : safeCurrency(current.getCurrency()));
+        current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
+        current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
+        current.setRefundNote(hasText(refundNote) ? refundNote : "Refund approved by the payment recipient.");
+        current = saveAndProjectSpending(current);
+        saveRefundHistoryRecord(current);
+        return current;
+    }
+
+    private RefundResult refundCapturedPayment(
+            Payment payment,
+            BigDecimal amount,
+            String operationKey) {
+        PaymentProcessor processor = resolveProcessor(payment.getProvider());
+        RefundResult result;
+        if (hasText(payment.getGatewayRefundId())
+                && RefundStatus.PENDING.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
+            result = processor.retrieveRefund(payment.getGatewayRefundId());
+        } else if (RefundStatus.SUCCEEDED.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
+            return new RefundResult(
+                    safeText(payment.getProvider()),
+                    safeText(payment.getGatewayAuthorizationId()),
+                    safeText(payment.getGatewayRefundId()),
+                    RefundStatus.SUCCEEDED,
+                    amount,
+                    safeCurrency(payment.getCurrency()),
+                    safeText(payment.getGatewayRefundStatus()));
+        } else {
+            result = processor.refundCapturedPayment(
+                    payment.getGatewayAuthorizationId(),
+                    amount,
+                    payment.getCurrency(),
+                    operationKey);
+        }
+        validateRefundResult(payment, amount, result);
+        OptimisticLockingFailureException lastConflict = null;
+        Payment current = paymentsRepository.findById(payment.getId()).orElse(payment);
+        for (int attempt = 0; attempt < 3; attempt += 1) {
+            current.setGatewayRefundId(normalizeId(result.gatewayRefundId()));
+            current.setGatewayRefundStatus(result.status().name().toLowerCase(java.util.Locale.ROOT));
+            current.setLastGatewayError(result.status() == RefundStatus.SUCCEEDED ? null : safeText(result.providerStatus()));
+            try {
+                paymentsRepository.save(current);
+                lastConflict = null;
+                break;
+            } catch (OptimisticLockingFailureException conflict) {
+                lastConflict = conflict;
+                current = paymentsRepository.findById(payment.getId()).orElseThrow(() -> conflict);
+            }
+        }
+        if (lastConflict != null) {
+            throw lastConflict;
+        }
+        if (result.status() == RefundStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The payment provider is still processing the refund.");
+        }
+        if (result.status() != RefundStatus.SUCCEEDED) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The payment provider rejected the refund.");
+        }
+        return result;
+    }
+
+    private void validateRefundResult(Payment payment, BigDecimal expectedAmount, RefundResult result) {
+        if (result == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Payment provider returned no refund result.");
+        }
+        if (!safeText(payment.getProvider()).equals(safeText(result.provider()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund provider does not match the payment.");
+        }
+        if (!normalizeId(payment.getGatewayAuthorizationId()).equals(normalizeId(result.gatewayAuthorizationId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund does not match the provider payment.");
+        }
+        BigDecimal actualAmount = result.amount() == null ? BigDecimal.ZERO : result.amount().stripTrailingZeros();
+        if (expectedAmount.stripTrailingZeros().compareTo(actualAmount) != 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider refund amount does not match the approved amount.");
+        }
+        if (!safeCurrency(payment.getCurrency()).equalsIgnoreCase(safeCurrency(result.currency()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider refund currency does not match the payment.");
+        }
+    }
+
+    public AssetPaymentReplacement validateAssetPaymentReplacement(
+            String predecessorPaymentSessionId,
+            String successorPaymentSessionId,
+            String predecessorUserId,
+            String successorUserId,
+            String assetId,
+            String eventId,
+            String subEventId) {
+        String normalizedPredecessorSessionId = normalizeId(predecessorPaymentSessionId);
+        String normalizedSuccessorSessionId = normalizeId(successorPaymentSessionId);
+        String normalizedPredecessorUserId = normalizeId(predecessorUserId);
+        String normalizedSuccessorUserId = normalizeId(successorUserId);
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!hasText(normalizedPredecessorSessionId)) {
+            if (hasText(normalizedSuccessorSessionId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "A successor payment cannot replace a free assignment.");
+            }
+            return AssetPaymentReplacement.free();
+        }
+        if (!hasText(normalizedSuccessorSessionId)
+                || !hasText(normalizedPredecessorUserId)
+                || !hasText(normalizedSuccessorUserId)
+                || normalizedPredecessorUserId.equals(normalizedSuccessorUserId)
+                || !hasText(normalizedAssetId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both assignment payments are required.");
+        }
+
+        Payment predecessor = findByAnySessionId(normalizedPredecessorSessionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The predecessor payment was not found."));
+        Payment successor = findByAnySessionId(normalizedSuccessorSessionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The successor payment was not found."));
+        validateAssetReplacementPaymentIdentity(
+                predecessor,
+                normalizedPredecessorUserId,
+                normalizedAssetId,
+                normalizedEventId,
+                normalizedSubEventId,
+                "predecessor");
+        validateAssetReplacementPaymentIdentity(
+                successor,
+                normalizedSuccessorUserId,
+                normalizedAssetId,
+                null,
+                null,
+                "successor");
+        if (!Set.of("authorized", "captured", "approved").contains(safeText(successor.getStatus()))
+                || BOOKING_STATUS_CANCELLED.equals(safeText(successor.getBookingStatus()))
+                || REFUND_STATUS_FULL.equals(safeText(successor.getRefundStatus()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment is not authorized.");
+        }
+        if (!safeCurrency(predecessor.getCurrency()).equalsIgnoreCase(safeCurrency(successor.getCurrency()))
+                || BigDecimal.valueOf(roundMoney(safeAmount(predecessor.getAmount())))
+                        .compareTo(BigDecimal.valueOf(roundMoney(safeAmount(successor.getAmount())))) != 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment does not match the predecessor payment.");
+        }
+        String linkedSuccessorId = normalizeId(predecessor.getSuccessorPaymentId());
+        if (hasText(linkedSuccessorId) && !linkedSuccessorId.equals(normalizeId(successor.getId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The predecessor payment was already replaced.");
+        }
+        String linkedPredecessorId = normalizeId(successor.getPredecessorPaymentId());
+        if (hasText(linkedPredecessorId) && !linkedPredecessorId.equals(normalizeId(predecessor.getId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment already replaces another payment.");
+        }
+        return new AssetPaymentReplacement(
+                normalizeId(predecessor.getId()),
+                normalizeId(successor.getId()),
+                true);
+    }
+
+    public void completeAssetPaymentReplacement(
+            AssetPaymentReplacement replacement,
+            String successorUserId,
+            String eventId,
+            String subEventId) {
+        if (replacement == null || !replacement.paymentRequired()) {
+            return;
+        }
+        Payment predecessor = paymentsRepository.findById(replacement.predecessorPaymentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The predecessor payment was not found."));
+        Payment successor = paymentsRepository.findById(replacement.successorPaymentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The successor payment was not found."));
+        String nowIso = nowIso();
+
+        successor.setPredecessorPaymentId(normalizeId(predecessor.getId()));
+        successor.setContextEventId(normalizeId(eventId));
+        successor.setContextSubEventId(normalizeId(subEventId));
+        successor.setBookingStatus(BOOKING_STATUS_JOINED);
+        successor.setJoinedAtIso(hasText(successor.getJoinedAtIso()) ? successor.getJoinedAtIso() : nowIso);
+        if (!hasText(successor.getRefundStatus())) {
+            successor.setRefundStatus(REFUND_STATUS_NONE);
+        }
+        successor = saveAndProjectSpending(successor);
+
+        predecessor.setSuccessorPaymentId(normalizeId(successor.getId()));
+        predecessor.setRefundRequestStatus("approved");
+        predecessor.setRefundReviewedAtIso(nowIso);
+        predecessor.setRefundReviewedByUserId(normalizeId(successorUserId));
+        predecessor = saveAndProjectSpending(predecessor);
+        if (REFUND_STATUS_FULL.equals(safeText(predecessor.getRefundStatus()))) {
+            saveRefundHistoryRecord(predecessor);
+            return;
+        }
+        approveFullRefund(
+                predecessor,
+                nowIso,
+                "assignment-manager-takeover",
+                "The predecessor payment was refunded after the successor paid and took over the Asset assignment.");
+    }
+
+    private Payment approveFullRefund(
+            Payment payment,
+            String reviewedAtIso,
+            String refundRuleId,
+            String refundNote) {
+        return approvePolicyRefund(
+                payment,
+                reviewedAtIso,
+                safeAmount(payment == null ? null : payment.getAmount()),
+                payment == null ? null : payment.getCurrency(),
+                refundRuleId,
+                refundNote);
+    }
+
+    private void validateAssetReplacementPaymentIdentity(
+            Payment payment,
+            String expectedUserId,
+            String expectedAssetId,
+            String expectedEventId,
+            String expectedSubEventId,
+            String label) {
+        if (payment == null
+                || !normalizeId(expectedUserId).equals(normalizeId(payment.getUserId()))
+                || !normalizeId(expectedAssetId).equals(normalizeId(payment.getSourceId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment identity does not match the assignment.");
+        }
+        if (hasText(expectedEventId)
+                && hasText(payment.getContextEventId())
+                && !normalizeId(expectedEventId).equals(normalizeId(payment.getContextEventId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Event scope does not match.");
+        }
+        if (hasText(expectedSubEventId)
+                && hasText(payment.getContextSubEventId())
+                && !normalizeId(expectedSubEventId).equals(normalizeId(payment.getContextSubEventId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Sub-event scope does not match.");
+        }
+    }
+
+    public record AssetPaymentReplacement(
+            String predecessorPaymentId,
+            String successorPaymentId,
+            boolean paymentRequired) {
+        public static AssetPaymentReplacement free() {
+            return new AssetPaymentReplacement(null, null, false);
         }
     }
 
@@ -611,6 +940,7 @@ public class PaymentService {
 
         Payment payment = paymentsRepository.findByUserIdAndSourceId(normalizedUserId, normalizedSourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> BOOKING_STATUS_JOINED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !REFUND_STATUS_FULL.equals(safeText(item.getRefundStatus())))
@@ -657,7 +987,7 @@ public class PaymentService {
         Map<String, Payment> latestOpenBySourceId = new LinkedHashMap<>();
         for (Payment payment : paymentsRepository.findByUserIdAndSourceIdIn(normalizedUserId, normalizedSourceIds)) {
             String sourceId = normalizeId(payment == null ? null : payment.getSourceId());
-            if (!hasText(sourceId)
+            if (!hasText(sourceId) || !isPrimaryPayment(payment)
                     || BOOKING_STATUS_CANCELLED.equals(safeText(payment.getBookingStatus()))
                     || REFUND_STATUS_FULL.equals(safeText(payment.getRefundStatus()))) {
                 continue;
@@ -728,9 +1058,11 @@ public class PaymentService {
         payment.setRefundStatus(refund.status());
         if (refund.amount() > 0) {
             payment.setRefundedAtIso(cancellationTimeIso);
-            payment.setStatus(REFUND_STATUS_FULL.equals(refund.status()) ? "refunded" : "partially_refunded");
         }
-        saveAndProjectSpending(payment);
+        payment = saveAndProjectSpending(payment);
+        if (refund.amount() > 0) {
+            saveRefundHistoryRecord(payment);
+        }
     }
 
     private Optional<Payment> findLatestOpenEventPayment(String userId, String sourceId) {
@@ -741,6 +1073,7 @@ public class PaymentService {
         }
         return paymentsRepository.findByUserIdAndSourceId(normalizedUserId, normalizedSourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
                 .filter(item -> !REFUND_STATUS_FULL.equals(safeText(item.getRefundStatus())))
                 .max(Comparator.comparing(item -> sortableIso(
@@ -768,9 +1101,11 @@ public class PaymentService {
         Set<String> reusableStatuses = Set.of(
                 statusValue(AuthorizationStatus.AUTHORIZATION_PENDING),
                 statusValue(AuthorizationStatus.CUSTOMER_ACTION_REQUIRED),
-                statusValue(AuthorizationStatus.AUTHORIZED));
+                statusValue(AuthorizationStatus.AUTHORIZED),
+                statusValue(AuthorizationStatus.CAPTURED));
         return paymentsRepository.findByUserIdAndSourceId(userId, sourceId).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPrimaryPayment)
                 .filter(item -> !hasText(provider)
                         || safeText(provider).equals(safeText(item.getProvider())))
                 .filter(item -> safeText(fulfillmentKind).equals(safeText(item.getFulfillmentKind())))
@@ -898,9 +1233,9 @@ public class PaymentService {
             case "captured", "released", "expired" -> false;
             case "authorized" -> Set.of("captured", "released", "expired", "failed").contains(next);
             case "customer_action_required" -> Set.of(
-                    "authorization_pending", "authorized", "expired", "failed").contains(next);
+                    "authorization_pending", "authorized", "captured", "expired", "failed").contains(next);
             case "failed" -> Set.of(
-                    "authorization_pending", "customer_action_required", "authorized", "expired").contains(next);
+                    "authorization_pending", "customer_action_required", "authorized", "captured", "expired").contains(next);
             default -> true;
         };
     }
@@ -991,7 +1326,7 @@ public class PaymentService {
             payment.setAccountedSpentAmount(nextAccounted);
         }
         Payment saved = paymentsRepository.save(payment);
-        double delta = roundMoney(nextAccounted - previousAccounted);
+        double delta = roundSignedMoney(nextAccounted - previousAccounted);
         String userId = normalizeId(saved.getUserId());
         String recipientUserId = normalizeId(saved.getRecipientUserId());
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
@@ -1060,14 +1395,139 @@ public class PaymentService {
             return 0D;
         }
         String status = safeText(payment.getStatus());
-        if (!Set.of("captured", "approved", "partially_refunded", "refunded").contains(status)) {
+        boolean releasedRefund = "released".equals(status)
+                && (safeAmount(payment.getRefundedAmount()) > 0
+                        || payment.getProcessedGatewayEventIds().stream()
+                                .map(this::safeText)
+                                .anyMatch(eventId -> eventId.startsWith("operation:refund-request:")));
+        if (!releasedRefund && !Set.of("authorized", "captured", "approved", "partially_refunded", "refunded").contains(status)) {
             return 0D;
         }
-        double gross = safeAmount(payment.getAmount());
-        double refunded = "refunded".equals(status)
-                ? gross
-                : Math.min(gross, safeAmount(payment.getRefundedAmount()));
-        return roundMoney(Math.max(0D, gross - refunded));
+        return roundMoney(safeAmount(payment.getAmount()));
+    }
+
+    private boolean isPrimaryPayment(Payment payment) {
+        return payment != null
+                && (!hasText(payment.getAuditKind()) || AUDIT_KIND_PAYMENT.equals(safeText(payment.getAuditKind())));
+    }
+
+    Payment saveRefundRequestHistoryRecord(
+            Payment payment,
+            String requestedAtIso,
+            String requestedByUserId,
+            PaymentRefundCalculator.Preview refund) {
+        String paymentId = payment == null ? null : normalizeId(payment.getId());
+        if (!hasText(paymentId) || refund == null || refund.refundableAmount() <= 0) {
+            return null;
+        }
+        String historyId = "refund:" + paymentId;
+        Payment existing = paymentsRepository.findById(historyId).orElse(null);
+        if (existing != null) {
+            return existing;
+        }
+        Payment history = new Payment();
+        history.setId(historyId);
+        history.setUserId(normalizeId(payment.getUserId()));
+        history.setRecipientUserId(normalizeId(payment.getRecipientUserId()));
+        history.setSourceId(normalizeId(payment.getSourceId()));
+        history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
+        history.setProvider(safeText(payment.getProvider()));
+        history.setStatus("refund_requested");
+        history.setAmount(refund.refundableAmount());
+        history.setCurrency(refund.currency());
+        history.setFulfillmentKind(payment.getFulfillmentKind());
+        history.setFulfillmentStatus(payment.getFulfillmentStatus());
+        history.setContextEventId(payment.getContextEventId());
+        history.setContextSubEventId(payment.getContextSubEventId());
+        history.setBookingStatus(payment.getBookingStatus());
+        history.setBookingStartAtIso(payment.getBookingStartAtIso());
+        history.setBookingEndAtIso(payment.getBookingEndAtIso());
+        history.setRefundedAmount(refund.refundableAmount());
+        history.setRefundCurrency(refund.currency());
+        history.setRefundRuleId(refund.ruleId());
+        history.setRefundNote(refund.ruleDescription());
+        history.setRefundRequestStatus("pending");
+        history.setRefundRequestedAtIso(requestedAtIso);
+        history.setRefundRequestedByUserId(requestedByUserId);
+        history.setCancellationPolicy(payment.getCancellationPolicy());
+        history.setAuditKind(AUDIT_KIND_REFUND);
+        history.setSupersedesPaymentId(paymentId);
+        history.setAccountedSpentAmount(0D);
+        history.setCreatedDate(requestedAtIso);
+        return paymentsRepository.save(history);
+    }
+
+    Payment saveRefundHistoryRecord(Payment payment) {
+        double amount = safeAmount(payment == null ? null : payment.getRefundedAmount());
+        String refundedAtIso = payment == null ? null : normalizeId(payment.getRefundedAtIso());
+        String paymentKey = firstText(
+                payment == null ? null : payment.getId(),
+                payment == null ? null : payment.getCheckoutSessionId(),
+                payment == null ? null : payment.getGatewaySessionId());
+        if (amount <= 0 || !hasText(refundedAtIso) || !hasText(paymentKey)) {
+            return null;
+        }
+        String historyId = "refund:" + paymentKey;
+        Payment history = paymentsRepository.findById(historyId).orElseGet(Payment::new);
+        double previousAmount = safeAmount(history.getAccountedSpentAmount());
+        history.setId(historyId);
+        history.setUserId(normalizeId(payment.getUserId()));
+        history.setRecipientUserId(normalizeId(payment.getRecipientUserId()));
+        history.setSourceId(normalizeId(payment.getSourceId()));
+        history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
+        history.setProvider(safeText(payment.getProvider()));
+        history.setStatus("refunded");
+        history.setAmount(amount);
+        history.setCurrency(hasText(payment.getRefundCurrency())
+                ? payment.getRefundCurrency()
+                : safeCurrency(payment.getCurrency()));
+        history.setGatewayRefundId(payment.getGatewayRefundId());
+        history.setGatewayRefundStatus(payment.getGatewayRefundStatus());
+        history.setFulfillmentKind(payment.getFulfillmentKind());
+        history.setFulfillmentStatus(payment.getFulfillmentStatus());
+        history.setContextEventId(payment.getContextEventId());
+        history.setContextSubEventId(payment.getContextSubEventId());
+        history.setBookingStatus(payment.getBookingStatus());
+        history.setBookingStartAtIso(payment.getBookingStartAtIso());
+        history.setBookingEndAtIso(payment.getBookingEndAtIso());
+        history.setRefundStatus(payment.getRefundStatus());
+        history.setRefundedAmount(amount);
+        history.setRefundCurrency(history.getCurrency());
+        history.setRefundedAtIso(refundedAtIso);
+        history.setRefundRuleId(payment.getRefundRuleId());
+        history.setRefundNote(payment.getRefundNote());
+        if (hasText(payment.getRefundRequestStatus())) {
+            history.setRefundRequestStatus(payment.getRefundRequestStatus());
+        }
+        if (hasText(payment.getRefundRequestedAtIso())) {
+            history.setRefundRequestedAtIso(payment.getRefundRequestedAtIso());
+        }
+        if (hasText(payment.getRefundRequestedByUserId())) {
+            history.setRefundRequestedByUserId(payment.getRefundRequestedByUserId());
+        }
+        if (hasText(payment.getRefundReviewedAtIso())) {
+            history.setRefundReviewedAtIso(payment.getRefundReviewedAtIso());
+        }
+        if (hasText(payment.getRefundReviewedByUserId())) {
+            history.setRefundReviewedByUserId(payment.getRefundReviewedByUserId());
+        }
+        history.setCancellationPolicy(payment.getCancellationPolicy());
+        history.setAuditKind(AUDIT_KIND_REFUND);
+        history.setSupersedesPaymentId(normalizeId(payment.getId()));
+        history.setAccountedSpentAmount(amount);
+        if (!hasText(history.getCreatedDate())) {
+            history.setCreatedDate(refundedAtIso);
+        }
+        Payment saved = paymentsRepository.save(history);
+        double delta = roundSignedMoney(amount - previousAmount);
+        String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
+        if (mongoTemplate != null && currency.matches("[A-Z]{3}") && Math.abs(delta) >= 0.005D) {
+            incrementPaymentTotal(saved.getUserId(), "paymentIncomeTotals", currency, delta);
+            incrementPaymentTotal(saved.getUserId(), "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), "paymentSpentTotals", currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), "paymentAllTotals", currency, delta);
+        }
+        return saved;
     }
 
     private String revisionRootSessionId(Payment payment) {
@@ -1392,6 +1852,10 @@ public class PaymentService {
 
     private double roundMoney(double value) {
         return Math.round(Math.max(0D, value) * 100D) / 100D;
+    }
+
+    private double roundSignedMoney(double value) {
+        return Math.round(value * 100D) / 100D;
     }
 
     private record RefundComputation(

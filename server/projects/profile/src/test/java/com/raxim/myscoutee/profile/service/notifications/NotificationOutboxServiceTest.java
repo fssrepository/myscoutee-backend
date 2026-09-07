@@ -57,6 +57,9 @@ class NotificationOutboxServiceTest {
         verify(repository).save(savedItem.capture());
         assertThat(savedItem.getValue().getRecipientUserIds()).containsExactly("u1", "u2");
         assertThat(savedItem.getValue().getStatus()).isEqualTo(NotificationOutboxItem.STATUS_PENDING);
+        assertThat(savedItem.getValue().getPayload())
+                .containsEntry("notification_title_key", "notification.kind.asset-review.title")
+                .containsEntry("notification_message_key", "notification.kind.asset-review.message");
     }
 
     @Test
@@ -81,6 +84,26 @@ class NotificationOutboxServiceTest {
 
         assertThat(result).isEmpty();
         verify(repository, never()).save(any(NotificationOutboxItem.class));
+    }
+
+    @Test
+    void enqueuePreservesExplicitNotificationTranslationKeys() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                anyString(), anyCollection(), anyString())).thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        NotificationOutboxService service = new NotificationOutboxService(repository);
+
+        NotificationOutboxItem saved = service.enqueue(intent(
+                List.of("u1"),
+                Map.of(
+                        "notification_title_key", "notification.asset.takeover.required.title",
+                        "notification_message_key", "notification.asset.takeover.required.message")))
+                .orElseThrow();
+
+        assertThat(saved.getPayload())
+                .containsEntry("notification_title_key", "notification.asset.takeover.required.title")
+                .containsEntry("notification_message_key", "notification.asset.takeover.required.message");
     }
 
     @Test
