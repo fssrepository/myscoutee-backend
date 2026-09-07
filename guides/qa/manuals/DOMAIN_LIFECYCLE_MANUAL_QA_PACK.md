@@ -6751,8 +6751,11 @@ pending Member before approval. Approve makes that same Nova row an accepted
 scoped `Manager` immediately because the resource assignment already names Nova
 as `addedByUserId`; it does not create a global Asset-manager role. Therefore
 the accepted Borrow row and scoped Members card expose neither Promote/Revoke
-Manager actions nor a three-dot action menu. The unrelated generic Asset-manager
-feature remains available outside this scoped Borrow surface.
+Manager actions. Nova's own scoped Members card keeps its three-dot menu for
+the self-service `Leave` action, while the borrowed resource card separately
+exposes `Remove` for deleting only that runtime association. The unrelated
+generic Asset-manager feature remains available outside this scoped Borrow
+surface.
 
 After those repairs, the guarded rollback restored `revised-payment-ready`.
 The exact active quantity-`1` basket is re-armed from
