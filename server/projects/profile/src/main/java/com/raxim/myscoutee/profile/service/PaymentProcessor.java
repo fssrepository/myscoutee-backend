@@ -53,6 +53,20 @@ public interface PaymentProcessor extends PaymentGateway {
         throw new UnsupportedOperationException("Payment authorization release is not implemented.");
     }
 
+    @Override
+    default RefundResult refundCapturedPayment(
+            String gatewayAuthorizationId,
+            java.math.BigDecimal amount,
+            String currency,
+            String idempotencyKey) {
+        throw new UnsupportedOperationException("Captured payment refund is not implemented.");
+    }
+
+    @Override
+    default RefundResult retrieveRefund(String gatewayRefundId) {
+        throw new UnsupportedOperationException("Payment refund retrieval is not implemented.");
+    }
+
     default EventCheckoutSessionDto checkout(EventCheckoutRequestDto request) {
         return new EventCheckoutSessionDto(
                 "pending",

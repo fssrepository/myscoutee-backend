@@ -46,6 +46,8 @@ public class Payment {
     private String gatewayAuthorizationId;
     private String gatewayStatus;
     private String gatewayActionUrl;
+    private String gatewayRefundId;
+    private String gatewayRefundStatus;
     private String authorizationExpiresAtIso;
     private String capturedAtIso;
     private String releasedAtIso;
@@ -136,6 +138,12 @@ public class Payment {
 
     public String getGatewayActionUrl() { return gatewayActionUrl; }
     public void setGatewayActionUrl(String gatewayActionUrl) { this.gatewayActionUrl = gatewayActionUrl; }
+
+    public String getGatewayRefundId() { return gatewayRefundId; }
+    public void setGatewayRefundId(String gatewayRefundId) { this.gatewayRefundId = gatewayRefundId; }
+
+    public String getGatewayRefundStatus() { return gatewayRefundStatus; }
+    public void setGatewayRefundStatus(String gatewayRefundStatus) { this.gatewayRefundStatus = gatewayRefundStatus; }
 
     public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
     public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }

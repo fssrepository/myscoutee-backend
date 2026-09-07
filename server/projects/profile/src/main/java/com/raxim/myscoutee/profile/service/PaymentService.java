@@ -44,6 +44,8 @@ import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationResult;
 import com.raxim.myscoutee.profile.service.PaymentGateway.AuthorizationStatus;
+import com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult;
+import com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus;
 
 @Service
 public class PaymentService {
@@ -503,6 +505,15 @@ public class PaymentService {
                         "refund-request:" + normalizeId(current.getId()));
             }
             current = paymentsRepository.findById(current.getId()).orElse(current);
+        } else if (statusValue(AuthorizationStatus.CAPTURED).equals(safeText(current.getStatus()))
+                && hasText(current.getGatewayAuthorizationId())
+                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
+            refundCapturedPayment(
+                    current,
+                    BigDecimal.valueOf(approvedAmount),
+                    "refund-request:" + normalizeId(current.getId()));
+            current = paymentsRepository.findById(current.getId()).orElse(current);
         }
         boolean full = approvedAmount >= paidAmount;
         current.setRefundStatus(full ? REFUND_STATUS_FULL : REFUND_STATUS_PARTIAL);
@@ -517,6 +528,64 @@ public class PaymentService {
             current.setStatus("partially_refunded");
         }
         return saveAndProjectSpending(current);
+    }
+
+    private RefundResult refundCapturedPayment(
+            Payment payment,
+            BigDecimal amount,
+            String operationKey) {
+        PaymentProcessor processor = resolveProcessor(payment.getProvider());
+        RefundResult result;
+        if (hasText(payment.getGatewayRefundId())
+                && !RefundStatus.SUCCEEDED.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
+            result = processor.retrieveRefund(payment.getGatewayRefundId());
+        } else if (RefundStatus.SUCCEEDED.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
+            return new RefundResult(
+                    safeText(payment.getProvider()),
+                    safeText(payment.getGatewayAuthorizationId()),
+                    safeText(payment.getGatewayRefundId()),
+                    RefundStatus.SUCCEEDED,
+                    amount,
+                    safeCurrency(payment.getCurrency()),
+                    safeText(payment.getGatewayRefundStatus()));
+        } else {
+            result = processor.refundCapturedPayment(
+                    payment.getGatewayAuthorizationId(),
+                    amount,
+                    payment.getCurrency(),
+                    operationKey);
+        }
+        validateRefundResult(payment, amount, result);
+        payment.setGatewayRefundId(normalizeId(result.gatewayRefundId()));
+        payment.setGatewayRefundStatus(result.status().name().toLowerCase(java.util.Locale.ROOT));
+        payment.setLastGatewayError(result.status() == RefundStatus.SUCCEEDED ? null : safeText(result.providerStatus()));
+        paymentsRepository.save(payment);
+        if (result.status() == RefundStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The payment provider is still processing the refund.");
+        }
+        if (result.status() != RefundStatus.SUCCEEDED) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The payment provider rejected the refund.");
+        }
+        return result;
+    }
+
+    private void validateRefundResult(Payment payment, BigDecimal expectedAmount, RefundResult result) {
+        if (result == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Payment provider returned no refund result.");
+        }
+        if (!safeText(payment.getProvider()).equals(safeText(result.provider()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund provider does not match the payment.");
+        }
+        if (!normalizeId(payment.getGatewayAuthorizationId()).equals(normalizeId(result.gatewayAuthorizationId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund does not match the provider payment.");
+        }
+        BigDecimal actualAmount = result.amount() == null ? BigDecimal.ZERO : result.amount().stripTrailingZeros();
+        if (expectedAmount.stripTrailingZeros().compareTo(actualAmount) != 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider refund amount does not match the approved amount.");
+        }
+        if (!safeCurrency(payment.getCurrency()).equalsIgnoreCase(safeCurrency(result.currency()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment provider refund currency does not match the payment.");
+        }
     }
 
     public AssetPaymentReplacement validateAssetPaymentReplacement(

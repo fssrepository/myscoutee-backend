@@ -758,6 +758,42 @@ class PaymentServiceTest {
         assertThat(barion.releaseCalls()).isEqualTo(1);
     }
 
+    @Test
+    void approvedPolicyRefundExecutesARealProviderRefundAfterCapture() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, stripe);
+        Payment payment = new Payment();
+        payment.setId("captured-payment");
+        payment.setCheckoutSessionId("captured-session");
+        payment.setGatewayAuthorizationId("pi_captured");
+        payment.setUserId("payer");
+        payment.setRecipientUserId("recipient");
+        payment.setSourceId("asset-1");
+        payment.setProvider("stripe");
+        payment.setStatus("captured");
+        payment.setAmount(3200d);
+        payment.setCurrency("HUF");
+        payment.setAuditKind("payment");
+        payment.setAccountedSpentAmount(3200d);
+        savePayment(paymentsBySession, payment);
+
+        service.approvePolicyRefund(
+                payment,
+                Instant.now().toString(),
+                1600d,
+                "HUF",
+                "refund-50-percent",
+                "50% refund");
+
+        assertThat(stripe.refundCalls()).isEqualTo(1);
+        assertThat(payment.getGatewayRefundId()).isEqualTo("stripe_refund_1");
+        assertThat(payment.getGatewayRefundStatus()).isEqualTo("succeeded");
+        assertThat(payment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(payment.getRefundedAmount()).isEqualTo(1600d);
+    }
+
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -902,6 +938,7 @@ class PaymentServiceTest {
         private final AtomicInteger checkoutCalls = new AtomicInteger();
         private final AtomicInteger payCalls = new AtomicInteger();
         private final AtomicInteger releaseCalls = new AtomicInteger();
+        private final AtomicInteger refundCalls = new AtomicInteger();
         private final List<String> paySessionIds = new java.util.ArrayList<>();
         private final List<EventCheckoutRequestDto> checkoutRequests = new java.util.ArrayList<>();
 
@@ -959,6 +996,23 @@ class PaymentServiceTest {
                     idempotencyKey);
         }
 
+        @Override
+        public PaymentGateway.RefundResult refundCapturedPayment(
+                String gatewayAuthorizationId,
+                java.math.BigDecimal amount,
+                String currency,
+                String idempotencyKey) {
+            int call = refundCalls.incrementAndGet();
+            return new PaymentGateway.RefundResult(
+                    type,
+                    gatewayAuthorizationId,
+                    type + "_refund_" + call,
+                    PaymentGateway.RefundStatus.SUCCEEDED,
+                    amount,
+                    currency,
+                    "succeeded");
+        }
+
         int checkoutCalls() {
             return checkoutCalls.get();
         }
@@ -969,6 +1023,10 @@ class PaymentServiceTest {
 
         int releaseCalls() {
             return releaseCalls.get();
+        }
+
+        int refundCalls() {
+            return refundCalls.get();
         }
 
         List<String> paySessionIds() {

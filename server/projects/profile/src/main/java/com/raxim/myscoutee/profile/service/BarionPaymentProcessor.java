@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,6 +216,56 @@ public class BarionPaymentProcessor implements PaymentProcessor {
         return retrieveAuthorization(null, gatewayAuthorizationId);
     }
 
+    @Override
+    public RefundResult refundCapturedPayment(
+            String gatewayAuthorizationId,
+            BigDecimal amount,
+            String currency,
+            String idempotencyKey) {
+        String paymentId = paymentId(gatewayAuthorizationId, "Barion PaymentId");
+        BigDecimal requestedAmount = amount == null ? BigDecimal.ZERO : amount;
+        if (requestedAmount.signum() <= 0) {
+            throw new IllegalArgumentException("Barion refund amount must be positive.");
+        }
+        Map<String, Object> state = getPaymentState(paymentId);
+        if (!"succeeded".equals(lower(state.get("Status")))) {
+            throw new IllegalStateException("Only a succeeded Barion payment can be refunded.");
+        }
+        String idempotencyGuid = UUID.nameUUIDFromBytes(
+                required(idempotencyKey, "refund idempotency key").getBytes(StandardCharsets.UTF_8)).toString();
+        List<Map<String, Object>> refunds = refundTransactions(state, requestedAmount, idempotencyGuid);
+        Map<String, Object> response = post(
+                "/v2/Payment/Refund",
+                Map.of(
+                        "POSKey", requirePosKey(),
+                        "PaymentId", paymentId,
+                        "TransactionsToRefund", refunds),
+                idempotencyGuid);
+        List<Map<String, Object>> errors = mapList(response.get("Errors"));
+        if (!errors.isEmpty()) {
+            throw new RuntimeException("Barion refund failed: " + sanitizedProviderError(response));
+        }
+        List<Map<String, Object>> refundedTransactions = mapList(response.get("RefundedTransactions"));
+        boolean succeeded = !refundedTransactions.isEmpty()
+                && refundedTransactions.stream().allMatch(item -> "succeeded".equals(lower(item.get("Status"))));
+        BigDecimal refundedAmount = refundedTransactions.stream()
+                .map(item -> decimal(item.get("Total")))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return new RefundResult(
+                getType(),
+                paymentId,
+                idempotencyGuid,
+                succeeded ? RefundStatus.SUCCEEDED : RefundStatus.FAILED,
+                refundedAmount,
+                StringUtils.hasText(currency) ? currency.trim().toUpperCase(Locale.ROOT) : text(state.get("Currency")),
+                succeeded ? "Succeeded" : "Failed");
+    }
+
+    @Override
+    public RefundResult retrieveRefund(String gatewayRefundId) {
+        throw new UnsupportedOperationException("Barion refunds complete synchronously and are not retrieved by refund id.");
+    }
+
     private Map<String, Object> getPaymentState(String paymentId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-pos-key", requirePosKey());
@@ -273,9 +325,47 @@ public class BarionPaymentProcessor implements PaymentProcessor {
         return result;
     }
 
+    private List<Map<String, Object>> refundTransactions(
+            Map<String, Object> state,
+            BigDecimal targetTotal,
+            String refundKey) {
+        List<Map<String, Object>> source = mapList(state.get("Transactions")).stream()
+                .filter(transaction -> Set.of("cardpayment", "shop", "banktransferpayment")
+                        .contains(lower(transaction.get("TransactionType"))))
+                .toList();
+        if (source.isEmpty()) {
+            throw new IllegalStateException("Barion PaymentState did not return refundable transactions.");
+        }
+        BigDecimal remaining = targetTotal;
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (int index = 0; index < source.size() && remaining.signum() > 0; index++) {
+            Map<String, Object> transaction = source.get(index);
+            BigDecimal refundable = decimal(transaction.get("Total"));
+            BigDecimal refunded = remaining.min(refundable).max(BigDecimal.ZERO);
+            if (refunded.signum() <= 0) continue;
+            result.add(Map.of(
+                    "TransactionId", required(text(transaction.get("TransactionId")), "Barion TransactionId"),
+                    "POSTransactionId", "myscoutee-refund-" + refundKey + "-" + index,
+                    "AmountToRefund", refunded,
+                    "Comment", "MyScoutee approved refund"));
+            remaining = remaining.subtract(refunded);
+        }
+        if (remaining.signum() != 0) {
+            throw new IllegalArgumentException("Barion refund amount exceeds the refundable payment total.");
+        }
+        return result;
+    }
+
     private Map<String, Object> post(String path, Map<String, Object> body) {
+        return post(path, body, null);
+    }
+
+    private Map<String, Object> post(String path, Map<String, Object> body, String idempotencyKey) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        if (StringUtils.hasText(idempotencyKey)) {
+            headers.set("Idempotency-Key", idempotencyKey.trim());
+        }
         ResponseEntity<Map> response = restTemplate.exchange(
                 apiBaseUrl() + path,
                 HttpMethod.POST,
