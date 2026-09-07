@@ -111,6 +111,7 @@
     const setValues = {};
     const unsetValues = {};
     for (const key of ["activities", "paymentSpentTotals", "paymentIncomeTotals", "paymentAllTotals", "paymentRefundsPending"]) {
+      if (!Object.prototype.hasOwnProperty.call(saved, key)) continue;
       if (saved[key] && saved[key].present) setValues[key] = saved[key].value;
       else unsetValues[key] = "";
     }
@@ -683,6 +684,36 @@
         text: Q.text(item.text)
       }))
     };
+  }
+
+  function lifecyclePayment(userId) {
+    const item = Q.collection("payments").findOne({ sourceId: PAID_ID, userId });
+    if (!item) return null;
+    return {
+      ...paymentView(item),
+      contextEventId: Q.text(item.contextEventId),
+      contextSubEventId: Q.text(item.contextSubEventId),
+      predecessorPaymentId: Q.text(item.predecessorPaymentId),
+      successorPaymentId: Q.text(item.successorPaymentId),
+      refundStatus: Q.text(item.refundStatus),
+      refundRequestStatus: Q.text(item.refundRequestStatus),
+      refundedAmount: Number(item.refundedAmount || 0),
+      refundRuleId: Q.text(item.refundRuleId)
+    };
+  }
+
+  function rawScopedRequest(userId) {
+    const asset = Q.collection("assets").findOne({ assetId: PAID_ID });
+    return (asset && asset.requests || []).find(item =>
+      Q.text(item && item.userId) === userId
+      && Q.text(item && item.requestKind) === "borrow"
+      && Q.text(item && item.booking && item.booking.eventId) === EVENT_ID
+      && Q.text(item && item.booking && item.booking.subEventId) === SUB_EVENT_ID
+    ) || null;
+  }
+
+  function baselineRefundPending(currentState, userId) {
+    return Number(currentState.userFields.find(item => item.userId === userId)?.paymentRefundsPending?.value || 0);
   }
 
   function basketView(item) {
@@ -1385,6 +1416,7 @@
     const paidAsset = assetById(current, PAID_ID);
     const novaRequest = paidAsset && paidAsset.requests.find(item => item.userId === NOVA_ID && item.status === "accepted");
     const rileyRequest = paidAsset && paidAsset.requests.find(item => item.userId === RILEY_ID && item.status === "accepted");
+    const rawRileyRequest = rawScopedRequest(RILEY_ID);
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const rileyCard = Q.collection("savedPaymentMethods").findOne({ _id: CARD_IDS.rileyActive });
     if (!current.event || current.event.acceptedMembers !== 3
@@ -1393,21 +1425,22 @@
         || !current.eventMembers.some(item => item.userId === RILEY_ID && item.status === "accepted")
         || !paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 2
         || !novaRequest || !rileyRequest || rileyRequest.requestKind !== "borrow"
-        || rileyRequest.paymentSessionId || rileyRequest.previousTotalAmount !== 0
+        || rileyRequest.paymentSessionId || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || current.projections.filter(item => item.assetId === PAID_ID).length !== 2
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1
         || !resource || resource.accepted !== 2 || resource.pending !== 0
         || resource.targetAddedByUserId !== NOVA_ID
         || !rileyCard || Q.text(rileyCard.userId) !== RILEY_ID || Q.text(rileyCard.status) !== "active"
         || targetWindowAvailability(paidAsset) !== 1
-        || current.refundCounters.casey !== Number(currentState.userFields.find(item => item.userId === CASEY_ID)?.paymentRefundsPending?.value || 0)) {
+        || paymentRefundPendingCount(CASEY_ID) !== baselineRefundPending(currentState, CASEY_ID)) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "takeover-ready-diagnostic", oracle: current });
       Q.fail("Riley takeover-ready fixture is not exact.");
     }
     assertFinancialDelta(currentState, 3200);
-    if (current.finances.riley.spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals")
-        || current.finances.riley.incomeHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentIncomeTotals")
-        || current.finances.riley.allHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentAllTotals")) {
+    const rileyFinance = financeView(RILEY_ID);
+    if (rileyFinance.spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals")
+        || rileyFinance.incomeHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentIncomeTotals")
+        || rileyFinance.allHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentAllTotals")) {
       Q.fail("Riley finance totals changed before takeover payment.");
     }
     return { selectedWindowAvailability: targetWindowAvailability(paidAsset), rileyRequest, resource };
@@ -1440,11 +1473,12 @@
     const asset = assetById(current, PAID_ID);
     const novaRequest = asset && asset.requests.find(item => item.userId === NOVA_ID && item.status === "D");
     const rileyRequest = asset && asset.requests.find(item => item.userId === RILEY_ID && item.status === "accepted");
+    const rawRileyRequest = rawScopedRequest(RILEY_ID);
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const takeoverRequired = notificationRows("asset-assignment-takeover-required");
-    const predecessor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID);
+    const predecessor = lifecyclePayment(NOVA_ID);
     if (!asset || asset.requests.length !== 2 || !novaRequest || !rileyRequest
-        || rileyRequest.previousTotalAmount !== 3200 || rileyRequest.paymentSessionId
+        || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 3200 || rileyRequest.paymentSessionId
         || current.projections.filter(item => item.assetId === PAID_ID).length !== 2
         || !resource || resource.accepted !== 1 || resource.pending !== 0
         || resource.targetAddedByUserId !== NOVA_ID
@@ -1482,13 +1516,15 @@
     const asset = assetById(current, PAID_ID);
     const novaRequest = asset && asset.requests.find(item => item.userId === NOVA_ID && item.status === "D");
     const rileyRequest = asset && asset.requests.find(item => item.userId === RILEY_ID && item.status === "accepted");
+    const rawRileyRequest = rawScopedRequest(RILEY_ID);
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
-    const predecessor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID);
-    const successor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === RILEY_ID);
+    const predecessor = lifecyclePayment(NOVA_ID);
+    const successor = lifecyclePayment(RILEY_ID);
     const refunded = notificationRows("payment-refund-approved");
     const genericTakeOver = notificationRows("asset-assignment-taken-over");
     if (!asset || asset.requests.length !== 2 || !novaRequest || !rileyRequest
-        || !rileyRequest.paymentSessionId || rileyRequest.totalAmount !== 3200 || rileyRequest.previousTotalAmount !== 0
+        || !rileyRequest.paymentSessionId || rileyRequest.totalAmount !== 3200
+        || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || !resource || resource.accepted !== 1 || resource.pending !== 0 || resource.targetAddedByUserId !== RILEY_ID
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 2
         || !predecessor || predecessor.status !== "released" || predecessor.refundStatus !== "full"
@@ -1512,7 +1548,7 @@
     const expectedRiley = savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 3200;
     if (current.finances.casey.incomeHuf !== expectedCasey
         || current.finances.nova.spentHuf !== expectedNova
-        || current.finances.riley.spentHuf !== expectedRiley) {
+        || financeView(RILEY_ID).spentHuf !== expectedRiley) {
       Q.fail("takeover did not replace the payer exactly once in persisted finance totals.");
     }
     captureSavepoint("takeOverComplete", "takeover-complete");
@@ -1528,17 +1564,18 @@
     });
   }
 
-  function exactServiceChat(current) {
-    return current.serviceChat.rows.length === 2
-      && Q.sameJson(current.serviceChat.rows.map(item => item.ownerUserId), sorted([CASEY_ID, RILEY_ID]))
-      && current.serviceChat.rows.every(item => item.id === SERVICE_CHAT_ID
+  function exactServiceChat() {
+    const serviceChat = serviceChatView();
+    return serviceChat.rows.length === 2
+      && Q.sameJson(serviceChat.rows.map(item => item.ownerUserId), sorted([CASEY_ID, RILEY_ID]))
+      && serviceChat.rows.every(item => item.id === SERVICE_CHAT_ID
         && item.ownerId === EVENT_ID
         && item.eventId === EVENT_ID
         && item.subEventId === SUB_EVENT_ID
         && Q.sameJson(item.memberIds, sorted([CASEY_ID, RILEY_ID])))
-      && current.serviceChat.messages.length === 1
-      && current.serviceChat.messages[0].senderUserId === RILEY_ID
-      && current.serviceChat.messages[0].text === CONTROLLED_CHAT_MESSAGE;
+      && serviceChat.messages.length === 1
+      && serviceChat.messages[0].senderUserId === RILEY_ID
+      && serviceChat.messages[0].text === CONTROLLED_CHAT_MESSAGE;
   }
 
   function verifyRefundRequested() {
@@ -1549,18 +1586,18 @@
     }
     const current = oracle();
     const asset = assetById(current, PAID_ID);
-    const successor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === RILEY_ID);
+    const successor = lifecyclePayment(RILEY_ID);
     const requested = notificationRows("payment-refund-requested");
-    const baselinePending = Number(currentState.userFields.find(item => item.userId === CASEY_ID)?.paymentRefundsPending?.value || 0);
+    const baselinePending = baselineRefundPending(currentState, CASEY_ID);
     if (!asset || asset.quantity !== 3
         || asset.requests.some(item => item.status !== "D")
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !successor || successor.status !== "authorized" || successor.refundStatus !== "none"
         || successor.refundRequestStatus !== "pending"
-        || current.refundCounters.casey !== baselinePending + 1
+        || paymentRefundPendingCount(CASEY_ID) !== baselinePending + 1
         || requested.length !== 1 || !Q.sameJson(requested[0].recipients, [CASEY_ID])
         || requested[0].paymentId !== successor.id || requested[0].sourceId !== PAID_ID
-        || !exactServiceChat(current)) {
+        || !exactServiceChat()) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "refund-requested-diagnostic", oracle: current, requested });
       Q.fail("runtime Remove, Ask Asset Owner or refund request did not produce the exact retained-history state.");
     }
@@ -1572,7 +1609,7 @@
       runtimeAssociationRemoved: true,
       globalAssetRetained: true,
       serviceChatId: SERVICE_CHAT_ID,
-      caseyRefundCounter: current.refundCounters.casey,
+      caseyRefundCounter: paymentRefundPendingCount(CASEY_ID),
       next: "Casey opens the pending refund from Payment history and approves it exactly once."
     });
   }
@@ -1585,23 +1622,23 @@
     }
     const current = oracle();
     const asset = assetById(current, PAID_ID);
-    const predecessor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID);
-    const successor = current.payments.find(item => item.sourceId === PAID_ID && item.userId === RILEY_ID);
+    const predecessor = lifecyclePayment(NOVA_ID);
+    const successor = lifecyclePayment(RILEY_ID);
     const approved = notificationRows("payment-refund-approved");
-    const baselinePending = Number(currentState.userFields.find(item => item.userId === CASEY_ID)?.paymentRefundsPending?.value || 0);
+    const baselinePending = baselineRefundPending(currentState, CASEY_ID);
     if (!asset || asset.quantity !== 3
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !predecessor || predecessor.refundStatus !== "full"
         || !successor || successor.status !== "released" || successor.refundStatus !== "full"
         || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 3200
-        || current.refundCounters.casey !== baselinePending
+        || paymentRefundPendingCount(CASEY_ID) !== baselinePending
         || approved.length !== 2
         || !approved.some(item => item.paymentId === predecessor.id && Q.sameJson(item.recipients, [NOVA_ID]))
         || !approved.some(item => item.paymentId === successor.id && Q.sameJson(item.recipients, [RILEY_ID]))
-        || !exactServiceChat(current)
+        || !exactServiceChat()
         || current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals")
         || current.finances.nova.spentHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals")
-        || current.finances.riley.spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals")) {
+        || financeView(RILEY_ID).spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals")) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "refunded-diagnostic", oracle: current, approved });
       Q.fail("approved refund did not clear the write-side counter and both payer/owner totals exactly.");
     }
@@ -1617,7 +1654,7 @@
       result: "PASS",
       globalAssetRetained: true,
       paymentHistoryRetained: 2,
-      refundCounter: current.refundCounters.casey,
+      refundCounter: paymentRefundPendingCount(CASEY_ID),
       next: "Rollback to accepted, then prepare the isolated last-manager Leave branch."
     });
   }
@@ -1652,13 +1689,13 @@
     const current = oracle();
     const asset = assetById(current, PAID_ID);
     const request = asset && asset.requests.find(item => item.userId === NOVA_ID);
-    const payment = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID);
+    const payment = lifecyclePayment(NOVA_ID);
     if (!asset || asset.quantity !== 3 || !request || request.status !== "D"
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !payment || payment.status !== "authorized" || payment.refundStatus !== "none"
         || targetWindowAvailability(asset) !== 3
         || notificationRows("asset-assignment-takeover-required").length !== 0
-        || current.refundCounters.casey !== Number(currentState.userFields.find(item => item.userId === CASEY_ID)?.paymentRefundsPending?.value || 0)) {
+        || paymentRefundPendingCount(CASEY_ID) !== baselineRefundPending(currentState, CASEY_ID)) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "last-leave-diagnostic", oracle: current });
       Q.fail("last accepted borrower Leave did not remove only the runtime association while retaining payment history.");
     }
