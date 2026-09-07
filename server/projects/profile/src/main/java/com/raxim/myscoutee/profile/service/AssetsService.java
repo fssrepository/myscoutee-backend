@@ -725,7 +725,14 @@ public class AssetsService {
         next.setUpdatedUser(actorUserId);
         next.setAffinity(resolveAssetAffinity(next, actorUserId));
         next.setBoost(resolveAssetBoost(next, actorUserId));
-        if (!canApplyAssetRequestPolicies(current, next, false)) {
+        boolean requestPoliciesAllowed = acceptedManagerLeave && acceptedSuccessorRemains
+                // The actor-owned accepted request is being cancelled, while the
+                // successor settlement amount is written by this service as part
+                // of the same transition. It is not a user edit of the accepted
+                // successor request.
+                ? accessControlService.canCurrentActorCancelAssetBorrow(actorUserId, assetId)
+                : canApplyAssetRequestPolicies(current, next, false);
+        if (!requestPoliciesAllowed) {
             return null;
         }
 

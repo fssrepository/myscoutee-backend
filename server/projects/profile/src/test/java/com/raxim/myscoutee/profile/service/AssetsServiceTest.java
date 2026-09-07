@@ -846,6 +846,49 @@ class AssetsServiceTest {
         assertThat(notifications.getAllValues())
                 .extracting(NotificationIntent::type)
                 .contains("asset-assignment-takeover-required");
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void scopedBorrowManagerLeaveDoesNotPublishReplacementWithoutCancelPermission() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment"),
+                scopedBorrowRequest("successor-request", "u3", "accepted", 0d, null, null)));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1", "event-1", "subevent-1", "u2", "leave", null));
+
+        assertThat(left).isNull();
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
     @Test
