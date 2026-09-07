@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **IN PROGRESS — STEPS 1-56 ACCEPTED**.
+Status: **IN PROGRESS — STEPS 1-68 CORE PASS**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6941,6 +6941,16 @@ this row's pre-payment basket Cancel or successful Barion payment.
   The payment-ready rollback restores the server boundary only; if the browser
   draft was already cleared, the user repeats steps 1-18 because the harness
   never writes browser-local storage.
+
+Core browser evidence recorded on 2026-09-07: steps 1-68 reached `PASS` with
+exactly one approved target payment, one isolated declined payment, one isolated
+expired payment and one cancelled Adjacent basket audit. The target Asset kept
+stored quantity `3` and selected-window availability `2`; the sibling scope and
+Riley remained unchanged. The unavailable control exposed an explicit-zero
+backend parity defect during this run: explicit quantity `0` is now preserved,
+the temporary reservation workaround was removed, and the dated Explore query
+excludes that control. The accepted and cancelled-control rollback savepoints
+remain available for the lifecycle extension.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

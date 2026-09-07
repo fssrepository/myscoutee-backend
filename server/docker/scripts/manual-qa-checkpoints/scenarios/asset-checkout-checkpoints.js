@@ -2035,7 +2035,7 @@
       storedQuantity: 3,
       selectedWindowAvailability: 2,
       siblingAndRileyIsolation: true,
-      next: `Run reset asset-checkout ${CHECKPOINT} after evidence is recorded.`
+      next: `Record the core evidence, then run rollback-accepted and prepare-takeover for the lifecycle extension.`
     });
   }
 
