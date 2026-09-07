@@ -333,7 +333,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     global Asset. On the scoped Asset card, the dark accepted-occupancy badge
     changes `0/3 → 1/3`; the separate red pending indicator disappears. Casey's
     Transport `Pending` counter changes immediately from `1` to `0` through the
-    same live update.
+    same live update. Nova's acceptance notification uses the compact
+    `Borrow accepted` title and the Asset title as its body; it must not repeat
+    the full request sentence that gets clipped on the notification card.
 52. Confirm availability for the exact selected date range remains `2`;
     approval must not reserve the already paid quantity a second time. Confirm
     the stored physical Asset quantity remains `3`, while a non-overlapping date
@@ -477,8 +479,9 @@ extension below.
     raw key `payment.history.ask.asset.owner` must never be rendered.
 82. Select `Ask Asset Owner`. Confirm Casey is the recipient even though Casey
     was never a scoped borrower. Before sending, confirm the chat header already
-    shows Riley's and Casey's two participant avatars, while no empty chat was
-    created. Send this exact first message once:
+    shows Riley's and Casey's two profile-photo avatars (not an initials tile
+    for fixture owner Casey), while no empty chat was created. Send this exact
+    first message once:
 
     `QA ASSET-CHECKOUT-001: Riley asks Casey about the paid borrowed Transport.`
 

@@ -111,9 +111,11 @@ class AssetsServiceTest {
         Document facet = new Document("metadata", List.of(new Document("total", 1)))
                 .append("items", List.of(new Document("_id", "asset-doc-1")));
 
+        Users owner = user("u1", "Owner One", "OO");
+        owner.setImages(List.of("https://media.example.test/owner.webp"));
         when(usersRepository.findAll()).thenReturn(List.of());
         when(usersRepository.findByUserIdIn(List.of("u1")))
-                .thenReturn(List.of(user("u1", "Owner One", "OO")));
+                .thenReturn(List.of(owner));
         when(mongoTemplate.aggregate(any(Aggregation.class), eq("assets"), eq(Document.class)))
                 .thenReturn(new AggregationResults<>(List.of(facet), new Document()));
         when(mongoTemplate.getConverter()).thenReturn(converter);
@@ -141,6 +143,7 @@ class AssetsServiceTest {
                 "availability");
 
         assertThat(page.items()).extracting(AssetDto::id).containsExactly("asset-1");
+        assertThat(page.items().getFirst().ownerAvatarUrl()).isEqualTo("https://media.example.test/owner.webp");
         assertThat(page.items().getFirst().metrics().pendingItems()).isEqualTo(1);
         assertThat(page.checkoutResultStates()).containsEntry("asset-1", "pending");
         verify(basketService).loadResultStatesByEvent("u2", List.of("asset-1"));

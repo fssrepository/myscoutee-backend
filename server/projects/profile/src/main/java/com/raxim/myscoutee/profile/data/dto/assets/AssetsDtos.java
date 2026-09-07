@@ -78,7 +78,8 @@ public final class AssetsDtos {
             List<AssetMemberRequestDto> requests,
             AssetRequestMetricsDto metrics,
             List<String> menuActions,
-            String ownerReleasedAtIso) {
+            String ownerReleasedAtIso,
+            String ownerAvatarUrl) {
         public AssetDto(
                 String id,
                 String type,
@@ -106,7 +107,7 @@ public final class AssetsDtos {
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     description, imageUrl, sourceLink, locationLabel, priceLabel,
                     policiesEnabled, policyCount, visibility, status, ownerUserId, ownerName,
-                    requests, metrics, menuActions, null);
+                    requests, metrics, menuActions, null, null);
         }
 
         public AssetDto(
@@ -154,6 +155,7 @@ public final class AssetsDtos {
                     requests,
                     null,
                     menuActions,
+                    null,
                     null);
         }
     }
@@ -202,7 +204,8 @@ public final class AssetsDtos {
             AssetRequestMetricsDto metrics,
             List<String> menuActions,
             String ownerReleasedAtIso,
-            AssetBorrowWindowDto borrowWindow) {
+            AssetBorrowWindowDto borrowWindow,
+            String ownerAvatarUrl) {
         public AssetDetailDto(
                 String id,
                 String type,
@@ -231,7 +234,7 @@ public final class AssetsDtos {
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
                     visibility, status, ownerUserId, ownerName, requests, metrics, menuActions,
-                    ownerReleasedAtIso, null);
+                    ownerReleasedAtIso, null, null);
         }
 
         public AssetDetailDto(
@@ -260,7 +263,7 @@ public final class AssetsDtos {
             this(
                     id, type, title, subtitle, category, city, capacityTotal, quantity,
                     details, imageUrl, sourceLink, routes, policiesEnabled, policies, pricing,
-                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null, null);
+                    visibility, status, ownerUserId, ownerName, requests, metrics, menuActions, null, null, null);
         }
 
         public AssetDetailDto(
@@ -308,6 +311,8 @@ public final class AssetsDtos {
                     requests,
                     null,
                     menuActions,
+                    null,
+                    null,
                     null);
         }
 
@@ -337,7 +342,8 @@ public final class AssetsDtos {
                     requests,
                     metrics,
                     menuActions,
-                    ownerReleasedAtIso);
+                    ownerReleasedAtIso,
+                    ownerAvatarUrl);
         }
     }
 

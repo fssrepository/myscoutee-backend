@@ -187,10 +187,10 @@ public class AssetsService {
                         asset -> normalizeDateTime(asset.getUpdatedDate(), ""),
                         Comparator.reverseOrder()))
                 .toList();
-        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetOwnerSummary> ownersByUserId = resolveOwnersByUserId(assets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
         return assets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
+                .map(asset -> toAssetDto(asset, ownersByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -220,7 +220,7 @@ public class AssetsService {
                 .filter(asset -> canViewAssetDetail(asset, normalizedUserId))
                 .map(asset -> toAssetDetailDto(
                         asset,
-                        resolveOwnerNamesByUserId(List.of(asset)),
+                        resolveOwnersByUserId(List.of(asset)),
                         normalizedUserId,
                         resolveAssetRequestMetrics(asset),
                         resolvedBorrowWindow))
@@ -319,14 +319,14 @@ public class AssetsService {
                         || memberAssetIds.contains(normalizeId(asset.getAssetId()))
                         || borrowedAssetIds.contains(normalizeId(asset.getAssetId())))
                 .toList();
-        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(eligibleAssets);
+        Map<String, AssetOwnerSummary> ownersByUserId = resolveOwnersByUserId(eligibleAssets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(eligibleAssets);
         Map<String, AssetDetailDto> detailsByAssetId = new LinkedHashMap<>();
         for (Asset asset : eligibleAssets) {
             String assetId = normalizeId(asset.getAssetId());
             AssetDetailDto detail = toAssetDetailDto(
                     asset,
-                    ownerNamesByUserId,
+                    ownersByUserId,
                     normalizedUserId,
                     metricsByAssetId.get(assetId));
             if (StringUtils.hasText(assetId) && detail != null) {
@@ -358,14 +358,14 @@ public class AssetsService {
                 .filter(Objects::nonNull)
                 .filter(asset -> isReferencedResourceVisibleStatus(asset.getStatus()))
                 .toList();
-        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(referencedAssets);
+        Map<String, AssetOwnerSummary> ownersByUserId = resolveOwnersByUserId(referencedAssets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(referencedAssets);
         Map<String, AssetDetailDto> detailsByAssetId = new LinkedHashMap<>();
         for (Asset asset : referencedAssets) {
             String assetId = normalizeId(asset.getAssetId());
             AssetDetailDto detail = toAssetDetailDto(
                     asset,
-                    ownerNamesByUserId,
+                    ownersByUserId,
                     normalizedViewerUserId,
                     metricsByAssetId.get(assetId));
             if (StringUtils.hasText(assetId) && detail != null) {
@@ -388,10 +388,10 @@ public class AssetsService {
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
                 .sorted(visibleAssetComparator(viewerAffinity))
                 .toList();
-        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetOwnerSummary> ownersByUserId = resolveOwnersByUserId(assets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
         return assets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
+                .map(asset -> toAssetDto(asset, ownersByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -431,10 +431,10 @@ public class AssetsService {
                 Math.max(0, startIndex),
                 normalizedPageSize);
         List<Asset> pageAssets = pageResult.items();
-        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(pageAssets);
+        Map<String, AssetOwnerSummary> ownersByUserId = resolveOwnersByUserId(pageAssets);
         Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(pageAssets);
         List<AssetDto> items = pageAssets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
+                .map(asset -> toAssetDto(asset, ownersByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
         Map<String, String> checkoutResultStates = eventCheckoutBasketService == null
@@ -592,7 +592,7 @@ public class AssetsService {
             return null;
         }
         Asset saved = saveOwnedAsset(normalizeId(request.userId()), request.asset());
-        return saved == null ? null : toAssetDto(saved, resolveOwnerNamesByUserId(List.of(saved)), normalizeId(request.userId()));
+        return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), normalizeId(request.userId()));
     }
 
     public AssetMemberStatusChangeDto applyMemberStatusChange(AssetMemberStatusChangeRequestDto request) {
@@ -1096,7 +1096,7 @@ public class AssetsService {
         for (String recipientUserId : successorCandidateUserIds) {
             userActivityCountersService.refreshAssetCountersForUser(recipientUserId);
         }
-        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetDto restore(AssetDeleteRequestDto request) {
@@ -1129,7 +1129,7 @@ public class AssetsService {
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetRestoredNotification(next, normalizedUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetDto takeOver(AssetDeleteRequestDto request) {
@@ -1172,7 +1172,7 @@ public class AssetsService {
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
         userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetDto makeManager(AssetMakeManagerRequestDto request) {
@@ -1249,7 +1249,7 @@ public class AssetsService {
         syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         enqueueAssetManagerPromotedNotification(next, normalizedUserId, normalizedTargetUserId);
-        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetDto revokeManager(AssetMakeManagerRequestDto request) {
@@ -1290,7 +1290,7 @@ public class AssetsService {
         syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetChanged(assetId, actorId);
         enqueueAssetManagerRevokedNotification(next, actorId, targetId);
-        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), actorId);
+        return toAssetDto(next, resolveOwnersByUserId(List.of(next)), actorId);
     }
 
     private boolean updateAssetTakeOverIfSnapshotCurrent(Asset current, Asset next) {
@@ -2454,7 +2454,7 @@ public class AssetsService {
         return assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(ownerUserId);
     }
 
-    private Map<String, String> resolveOwnerNamesByUserId(List<Asset> assets) {
+    private Map<String, AssetOwnerSummary> resolveOwnersByUserId(List<Asset> assets) {
         List<String> ownerUserIds = (assets == null ? List.<Asset>of() : assets).stream()
                 .map(asset -> normalizeId(asset == null ? null : asset.getOwnerUserId()))
                 .filter(StringUtils::hasText)
@@ -2468,12 +2468,14 @@ public class AssetsService {
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getUserId()), user), Map::putAll);
 
-        Map<String, String> ownerNamesByUserId = new LinkedHashMap<>();
+        Map<String, AssetOwnerSummary> ownersByUserId = new LinkedHashMap<>();
         for (String ownerUserId : ownerUserIds) {
             Users owner = usersById.get(ownerUserId);
-            ownerNamesByUserId.put(ownerUserId, owner == null ? null : safeText(owner.getName()));
+            ownersByUserId.put(ownerUserId, owner == null
+                    ? new AssetOwnerSummary(null, null)
+                    : new AssetOwnerSummary(safeText(owner.getName()), firstUserImageUrl(owner)));
         }
-        return ownerNamesByUserId;
+        return ownersByUserId;
     }
 
     private List<Asset> queryVisibleExploreAssets(String userId, String type, String category) {
@@ -2812,13 +2814,13 @@ public class AssetsService {
         return "manual".equals(normalizeAssetRequestKind(request == null ? null : request.requestKind()));
     }
 
-    private AssetDto toAssetDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
-        return toAssetDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    private AssetDto toAssetDto(Asset asset, Map<String, AssetOwnerSummary> ownersByUserId, String viewerUserId) {
+        return toAssetDto(asset, ownersByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
     }
 
     private AssetDto toAssetDto(
             Asset asset,
-            Map<String, String> ownerNamesByUserId,
+            Map<String, AssetOwnerSummary> ownersByUserId,
             String viewerUserId,
             AssetRequestMetricsDto metrics) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
@@ -2846,28 +2848,29 @@ public class AssetsService {
                 normalizeVisibility(asset.getVisibility()),
                 safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
-                resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
+                resolveOwnerName(asset.getOwnerUserId(), ownersByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
                 normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId),
-                safeText(asset.getOwnerReleasedAtIso()));
+                safeText(asset.getOwnerReleasedAtIso()),
+                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId));
     }
 
-    private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
-        return toAssetDetailDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, AssetOwnerSummary> ownersByUserId, String viewerUserId) {
+        return toAssetDetailDto(asset, ownersByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
     }
 
     private AssetDetailDto toAssetDetailDto(
             Asset asset,
-            Map<String, String> ownerNamesByUserId,
+            Map<String, AssetOwnerSummary> ownersByUserId,
             String viewerUserId,
             AssetRequestMetricsDto metrics) {
-        return toAssetDetailDto(asset, ownerNamesByUserId, viewerUserId, metrics, null);
+        return toAssetDetailDto(asset, ownersByUserId, viewerUserId, metrics, null);
     }
 
     private AssetDetailDto toAssetDetailDto(
             Asset asset,
-            Map<String, String> ownerNamesByUserId,
+            Map<String, AssetOwnerSummary> ownersByUserId,
             String viewerUserId,
             AssetRequestMetricsDto metrics,
             AssetBorrowWindowDto borrowWindow) {
@@ -2900,12 +2903,13 @@ public class AssetsService {
                 normalizeVisibility(asset.getVisibility()),
                 safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
-                resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
+                resolveOwnerName(asset.getOwnerUserId(), ownersByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
                 normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId),
                 safeText(asset.getOwnerReleasedAtIso()),
-                borrowWindow);
+                borrowWindow,
+                resolveOwnerAvatarUrl(asset.getOwnerUserId(), ownersByUserId));
     }
 
     private String assetLocationLabel(Asset asset, String type) {
@@ -4219,8 +4223,8 @@ public class AssetsService {
                             "asset-member-request-accepted",
                             "asset-member",
                             List.of(memberUserId),
-                            "Asset request accepted",
-                            "Your request to use " + assetTitle(next) + " was accepted.",
+                            "Borrow accepted",
+                            assetTitle(next),
                             "accepted");
                 }
                 continue;
@@ -4658,18 +4662,37 @@ public class AssetsService {
         return "Public";
     }
 
-    private String resolveOwnerName(String ownerUserId, Map<String, String> ownerNamesByUserId) {
+    private String resolveOwnerName(String ownerUserId, Map<String, AssetOwnerSummary> ownersByUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         if (!StringUtils.hasText(normalizedOwnerUserId)) {
             return null;
         }
-        if (ownerNamesByUserId != null && ownerNamesByUserId.containsKey(normalizedOwnerUserId)) {
-            return ownerNamesByUserId.get(normalizedOwnerUserId);
+        if (ownersByUserId != null && ownersByUserId.containsKey(normalizedOwnerUserId)) {
+            AssetOwnerSummary owner = ownersByUserId.get(normalizedOwnerUserId);
+            return owner == null ? null : owner.name();
         }
         return usersRepository.findByUserId(normalizedOwnerUserId)
                 .map(Users::getName)
                 .map(this::safeText)
                 .orElse(null);
+    }
+
+    private String resolveOwnerAvatarUrl(String ownerUserId, Map<String, AssetOwnerSummary> ownersByUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return null;
+        }
+        if (ownersByUserId != null && ownersByUserId.containsKey(normalizedOwnerUserId)) {
+            AssetOwnerSummary owner = ownersByUserId.get(normalizedOwnerUserId);
+            return owner == null ? null : safeNullableText(owner.avatarUrl());
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(this::firstUserImageUrl)
+                .map(this::safeNullableText)
+                .orElse(null);
+    }
+
+    private record AssetOwnerSummary(String name, String avatarUrl) {
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
