@@ -256,7 +256,12 @@ public class AssetAvailabilityMapper {
                 && StringUtils.hasText(safeText(booking == null ? null : booking.subEventId()))) {
             return List.of("manage");
         }
-        if (!isManualRequest(request) && "accepted".equals(normalizeStatus(request == null ? null : request.status()))) {
+        boolean scopedBorrow = "borrow".equalsIgnoreCase(safeText(request == null ? null : request.requestKind()))
+                && StringUtils.hasText(safeText(booking == null ? null : booking.eventId()))
+                && StringUtils.hasText(safeText(booking == null ? null : booking.subEventId()));
+        if (!scopedBorrow
+                && !isManualRequest(request)
+                && "accepted".equals(normalizeStatus(request == null ? null : request.status()))) {
             return List.of("makeManager");
         }
         return List.of();

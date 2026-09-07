@@ -6720,15 +6720,16 @@ publishes the exact pending-resource signal delta; the Borrow Stage and main
 Event red counters therefore update immediately instead of appearing only
 after reload.
 
-The next user-controlled approval completed the payment itself, but exposed two
-post-payment state defects. Immediately after the checkout closed, the target
-Transport card showed `0/3`; reopening through another popup reconstructed the
-correct `1/3`. The successful authorized payment also reached the write model,
-but the finance total reader did not yet include the authorized state. The
-resource completion path now patches the visible card from the returned scoped
-resource state before publishing its parent deltas, so the first rendered value
-is `1/3`, and authorized payments contribute to the persisted finance totals.
-Focused regressions cover both paths.
+The next user-controlled approval completed the payment itself and clarified
+the two distinct counters. While Nova is still awaiting Casey's decision, the
+target Transport card must show accepted occupancy `0/3` plus a separate red
+pending counter `1`; only Casey's later Approve changes that accepted occupancy
+to `1/3` and removes the red counter. The successful authorized payment also
+reached the write model, but the finance total reader did not yet include the
+authorized state. The resource completion path now patches the visible card
+from the returned scoped resource state before publishing its parent deltas,
+and authorized payments contribute to the persisted finance totals. Focused
+regressions cover both paths.
 
 The owner destination is now complete as well. Materializing the paid pending
 borrow enqueues exactly one `asset-admin-join-request` for Casey with the Asset,
@@ -6744,9 +6745,18 @@ projection query. The checkpoint oracle now requires Casey's `1/0/0` stored
 pending counters and exact notification at paid-pending, then `0/0/0` after
 approval.
 
+The scoped membership contract is also explicit. Casey remains the lender and
+is omitted from the borrowed Asset's scoped Members list. Nova is its only
+pending Member before approval. Approve makes that same Nova row an accepted
+scoped `Manager` immediately because the resource assignment already names Nova
+as `addedByUserId`; it does not create a global Asset-manager role. Therefore
+the accepted Borrow row and scoped Members card expose neither Promote/Revoke
+Manager actions nor a three-dot action menu. The unrelated generic Asset-manager
+feature remains available outside this scoped Borrow surface.
+
 After those repairs, the guarded rollback restored `revised-payment-ready`.
 The exact active quantity-`1` basket is re-armed from
-`2026-09-07T05:49:37.131Z` through `2026-09-07T05:59:37.131Z`, an exact
+`2026-09-07T06:43:40.282Z` through `2026-09-07T06:53:40.282Z`, an exact
 10-minute interval. The five disclosed material basket generations remain,
 while payments, requests, notifications, inventory/resource effects and
 stored Asset memberships are zero; Casey's stored Asset pending counters are
@@ -6837,21 +6847,27 @@ this row's pre-payment basket Cancel or successful Barion payment.
 - Immediate write oracle: one terminal `provider=barion` authorized payment for
   the final session/payload; one exact Event/Sub-event-scoped Nova borrow
   request with payment-session reference and `Pending` owner decision; one
-  reservation/availability decrement for quantity `1`; and one pending
-  resource projection. The final checkout basket is one `pay/succeeded` audit
-  with its reservation closed; the request's `inventoryApplied=true` plus the
-  exact quantity decrement own the inventory-reservation proof.
+  date-window reservation for quantity `1`; and one pending resource
+  projection. The final checkout basket is one `pay/succeeded` audit with its
+  reservation closed. The physical Asset quantity remains `3`; the request
+  remains `inventoryApplied=false`, and overlapping request windows are the
+  authoritative availability reservations.
 - Immediate UI oracle: the Asset remains once in Explore with availability
-  reduced `3 -> 2`, its same-scope menu exposes read-only `Payment summary`,
-  and Casey sees Nova once as the pending borrower on the exact Asset/request.
-  The summary contains the immutable timeframe, quantity, accepted policy,
-  amount/currency and recorded Barion/payment-method result. Opening it twice is a
-  pure read.
+  reduced `3 -> 2` for the selected date range while a non-overlapping range
+  remains `3`; its same-scope menu exposes read-only `Payment summary`, and
+  Casey sees Nova once as the pending borrower on the exact Asset/request.
+  Before approval the scoped card shows accepted occupancy `0/3` plus red
+  pending `1`. The summary contains the immutable timeframe, quantity, accepted
+  policy, amount/currency and recorded Barion/payment-method result. Opening it
+  twice is a pure read.
 - Casey accepts that same pending request once through the normal Asset member
-  action. The accepted projection and exact Event/Sub-event resource scope
-  update once; availability stays `2` because payment already reserved the
-  quantity. Nova gains no Event, Tournament-group or global Asset Manager role.
-  The sibling Event/Sub-event, adjacent paid Asset and Riley stay unchanged.
+  action. Nova becomes that exact scope's accepted `Manager`; the dark badge
+  changes `0/3 -> 1/3`, red pending changes `1 -> 0`, and no Promote/Revoke
+  Manager action remains on this Borrow row. Availability stays `2` because the
+  payment already created the dated reservation, not because physical quantity
+  was decremented. Nova gains no Event, Tournament-group or global Asset
+  Manager role. The sibling Event/Sub-event, adjacent paid Asset and Riley stay
+  unchanged.
 - One clean reload must reconstruct Casey's accepted request, Nova's scoped
   resource/Payment summary and the final availability from persisted state.
   Replaying the final action identity or reopening the summary cannot create a

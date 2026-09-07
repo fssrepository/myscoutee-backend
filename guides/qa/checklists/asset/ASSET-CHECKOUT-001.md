@@ -301,7 +301,10 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     Casey's Asset Members surface.
 50. Select `Approve`, then confirm `Approve` exactly once.
 51. Without reloading, confirm Nova changes from pending to accepted exactly
-    once. On the scoped Asset card, the dark accepted-occupancy badge changes
+    once and is immediately the scoped resource `Manager`. The accepted Borrow
+    row and Nova's scoped Members card expose neither `Promote to manager` nor
+    `Revoke Manager`, and Nova's accepted Members card has no three-dot action
+    menu. On the scoped Asset card, the dark accepted-occupancy badge changes
     `0/3 → 1/3`; the separate red pending indicator disappears. Casey's
     Transport `Pending` counter changes immediately from `1` to `0` through the
     same live update.
@@ -312,8 +315,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 53. In Nova, reopen the exact Event/Sub-event resource view. Confirm the paid
     Transport is accepted/available in that scope and `Payment summary`
     remains read-only with the original payment values.
-54. Confirm Nova did not gain Event Admin, Tournament-group membership, global
-    Asset Manager or ownership of Casey's Asset.
+54. Confirm Nova's Manager role is limited to this exact assigned Asset scope;
+    Nova did not gain Event Admin, Tournament-group membership, global Asset
+    Manager or ownership of Casey's Asset.
 55. Report:
 
     `ASSET-CHECKOUT-001 accepted: exact scoped resource, availability stays 2`
