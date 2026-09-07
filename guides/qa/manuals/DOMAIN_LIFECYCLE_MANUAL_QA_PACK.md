@@ -6593,9 +6593,12 @@ Status: **STAGED / NOT RUN**.
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
 
-The versioned fixture was staged at `2026-09-06T09:38:32.096Z` after a proven
-exact reset, and its second
-read-only `status` reached `phase=baseline-ready`. The persisted baseline is
+The versioned fixture was restaged at `2026-09-07T02:24:00.578Z` after the
+dev-stack restart left only its stale state marker while every scoped fixture
+record was absent. All saved collection snapshots were empty and the current
+Casey/Nova/Riley reset-owned fields exactly matched their saved values, so the
+versioned reset restored zero artifacts. The normal stage and its second
+read-only `status` then reached `phase=baseline-ready`. The persisted baseline is
 exact: connected Barion with 3DS Off; Casey Admin plus Nova Member on the one
 Event; the target paid Asset at quantity `3`; all five named controls; and zero
 scoped payment, request projection, activity resource, server basket or stored

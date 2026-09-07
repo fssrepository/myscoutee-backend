@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-06 11:46 CEST
+Updated: 2026-09-07 04:24 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -83,6 +83,7 @@ checklist: ../checklists/asset/ASSET-CHECKOUT-001.md
 substage: fresh paid Asset and controls are staged; no checkout action has been performed
 next_replay_boundary: baseline-ready; later named savepoints are payment-ready, paid-pending and accepted
 fixture_phase: `phase=baseline-ready`; connected Barion with 3DS Off, target quantity 3, Casey Event Admin, Nova Event Member, six exact Assets, and zero scoped payments, requests, resources, server baskets or stored Asset memberships
+runtime_recovery: the 2026-09-07 dev-stack restart retained only the stale baseline-ready state marker; the Event, memberships, all six Assets, cards and every scoped checkout artifact were absent. All saved collection snapshots were empty and Casey/Nova/Riley reset-owned fields exactly matched the fresh seed, so the versioned reset restored zero artifacts; a normal stage plus its independent second status then reached a fresh `baseline-ready` at `2026-09-07T02:24:00.578Z`
 browser_phase: no ASSET-CHECKOUT-001 browser was opened, navigated or clicked by Codex; the user owns all browser actions and identity checks
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 88/103 total; EVENT-CHECKOUT-001 is reset after PASS/CLOSED and ASSET-CHECKOUT-001 is STAGED/NOT RUN
