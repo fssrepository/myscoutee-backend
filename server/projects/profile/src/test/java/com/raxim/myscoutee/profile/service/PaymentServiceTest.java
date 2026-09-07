@@ -677,6 +677,21 @@ class PaymentServiceTest {
         verify(repository).save(payment);
     }
 
+    @Test
+    void authorizedPaymentIsIncludedInAccountedSpendingBeforeDelayedCapture() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment payment = new Payment();
+        payment.setAuditKind("payment");
+        payment.setStatus("authorized");
+        payment.setAmount(3200D);
+        PaymentService service =
+                paymentService(repository, true, new RecordingPaymentProcessor("barion"));
+
+        Double accounted = ReflectionTestUtils.invokeMethod(service, "accountedSpentAmount", payment);
+
+        assertThat(accounted).isEqualTo(3200D);
+    }
+
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));

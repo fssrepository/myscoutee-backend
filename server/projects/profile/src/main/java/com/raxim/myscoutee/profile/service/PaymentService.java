@@ -1058,7 +1058,7 @@ public class PaymentService {
             return 0D;
         }
         String status = safeText(payment.getStatus());
-        if (!Set.of("captured", "approved", "partially_refunded", "refunded").contains(status)) {
+        if (!Set.of("authorized", "captured", "approved", "partially_refunded", "refunded").contains(status)) {
             return 0D;
         }
         double gross = safeAmount(payment.getAmount());
