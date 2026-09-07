@@ -263,8 +263,10 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 
 39. After Codex confirms `paid-pending`, inspect the same target card without
     reloading.
-40. Confirm its availability changed exactly `3 → 2` and no duplicate card
-    appeared.
+40. Confirm its availability for the exact selected Event/Sub-event date range
+    changed `3 → 2` and no duplicate card appeared. This is a dated reservation:
+    the Asset's stored physical quantity remains `3`, and a non-overlapping date
+    range remains available at `3`.
 41. Open its menu. Confirm `Payment summary` is present and another same-scope
     `Pay` action is absent.
 42. Open `Payment summary` once. Confirm it is read-only and contains the exact
@@ -299,10 +301,14 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     Casey's Asset Members surface.
 50. Select `Approve`, then confirm `Approve` exactly once.
 51. Without reloading, confirm Nova changes from pending to accepted exactly
-    once, the pending indicator disappears and Casey's Transport `Pending`
-    counter changes immediately from `1` to `0` through the live update.
-52. Confirm the Asset availability remains `2`; approval must not reserve the
-    already paid quantity a second time.
+    once. On the scoped Asset card, the dark accepted-occupancy badge changes
+    `0/3 → 1/3`; the separate red pending indicator disappears. Casey's
+    Transport `Pending` counter changes immediately from `1` to `0` through the
+    same live update.
+52. Confirm availability for the exact selected date range remains `2`;
+    approval must not reserve the already paid quantity a second time. Confirm
+    the stored physical Asset quantity remains `3`, while a non-overlapping date
+    range remains available at `3`.
 53. In Nova, reopen the exact Event/Sub-event resource view. Confirm the paid
     Transport is accepted/available in that scope and `Payment summary`
     remains read-only with the original payment values.
@@ -323,7 +329,8 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     query.
 58. Reopen Casey's Asset Members and Nova's scoped resource/Payment summary.
     Confirm the same request identity, accepted state, payment values and
-    availability `2` return.
+    selected-range availability `2`, stored physical quantity `3` and
+    non-overlapping availability `3` return.
 59. Inspect the staged **Free** Asset. Confirm `Borrow` opens a review whose
     forward action is `Send borrow request` and no provider badge, `Pay`, session
     or payment summary is presented. Close without submitting.

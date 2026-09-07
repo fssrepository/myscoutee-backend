@@ -2301,7 +2301,7 @@ class AssetsServiceTest {
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
-        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(2);
         assertThat(savedAsset.getValue().getRequests()).hasSize(2);
         assertThat(savedAsset.getValue().getRequests())
                 .anySatisfy(request -> {
@@ -2439,6 +2439,7 @@ class AssetsServiceTest {
 
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(2);
         assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("accepted");
     }
 

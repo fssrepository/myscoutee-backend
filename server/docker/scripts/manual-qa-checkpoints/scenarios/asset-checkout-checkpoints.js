@@ -679,6 +679,45 @@
     return current.assets.find(item => item.assetId === assetId);
   }
 
+  function requestReservesWindow(request) {
+    return request
+      && !request.inventoryApplied
+      && (request.status === "accepted"
+        || request.requestKind === "manual"
+        || (request.status === "pending" && request.requestKind === "borrow"));
+  }
+
+  function rangesOverlap(leftStartAtIso, leftEndAtIso, rightStartAtIso, rightEndAtIso) {
+    const leftStart = Date.parse(Q.text(leftStartAtIso));
+    const leftEnd = Date.parse(Q.text(leftEndAtIso));
+    const rightStart = Date.parse(Q.text(rightStartAtIso));
+    const rightEnd = Date.parse(Q.text(rightEndAtIso));
+    return [leftStart, leftEnd, rightStart, rightEnd].every(Number.isFinite)
+      && leftStart < rightEnd
+      && rightStart < leftEnd;
+  }
+
+  function assetWindowAvailability(asset, startAtIso, endAtIso) {
+    if (!asset) return 0;
+    const reserved = asset.requests
+      .filter(requestReservesWindow)
+      .filter(request => rangesOverlap(request.startAtIso, request.endAtIso, startAtIso, endAtIso))
+      .reduce((sum, request) => sum + Math.max(1, Number(request.quantity || 0)), 0);
+    return Math.max(0, asset.quantity - reserved);
+  }
+
+  function targetWindowAvailability(asset) {
+    const context = state().context || {};
+    return assetWindowAvailability(asset, context.startAtIso, context.endAtIso);
+  }
+
+  function nonOverlappingWindowAvailability(asset) {
+    const context = state().context || {};
+    const start = new Date(Date.parse(Q.text(context.endAtIso)) + 60 * 60 * 1000);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    return assetWindowAvailability(asset, start.toISOString(), end.toISOString());
+  }
+
   function assertSimulator(expected3ds) {
     if (provider !== "barion" || !providerConnected || requires3ds !== expected3ds) {
       Q.fail(`simulator is provider='${provider}', connected=${providerConnected}, requires3ds=${requires3ds}; expected connected Barion with 3DS ${expected3ds ? "On" : "Off"}.`);
@@ -1040,10 +1079,12 @@
     const payment = current.payments.find(item => item.sourceId === PAID_ID && item.userId === NOVA_ID && item.status === "authorized");
     const resource = current.resources.find(item => item.ownerId === EVENT_ID && item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const basket = targetBasket(current);
-    if (!paidAsset || paidAsset.quantity !== 2 || paidAsset.requests.length !== 1
+    if (!paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 1
+        || targetWindowAvailability(paidAsset) !== 2
+        || nonOverlappingWindowAvailability(paidAsset) !== 3
         || !request || request.eventId !== EVENT_ID || request.subEventId !== SUB_EVENT_ID
         || request.quantity !== 1 || request.totalAmount !== 3200 || request.currency !== "HUF"
-        || !Q.sameJson(request.acceptedPolicyIds, []) || !request.paymentSessionId || !request.inventoryApplied
+        || !Q.sameJson(request.acceptedPolicyIds, []) || !request.paymentSessionId || request.inventoryApplied
         || current.projections.length !== 1 || !projection || projection.paymentSessionId !== request.paymentSessionId
         || current.payments.length !== 1 || !payment || payment.checkoutSessionId !== request.paymentSessionId
         || payment.provider !== "barion" || payment.paymentMethodId !== CARD_IDS.active
@@ -1091,7 +1132,9 @@
       checkpointId: CHECKPOINT,
       phase: "paid-pending",
       paymentSessionId: result.payment.checkoutSessionId,
-      availability: "3 -> 2",
+      storedQuantity: 3,
+      selectedWindowAvailability: "3 -> 2",
+      nonOverlappingWindowAvailability: 3,
       request: "one pending borrow",
       next: "Continue at step 39 and report the request-destination phrase after step 48."
     });
@@ -1123,8 +1166,10 @@
     const payment = current.payments.find(item => item.sourceId === PAID_ID && item.status === "authorized");
     const resource = current.resources.find(item => item.subEventId === SUB_EVENT_ID && item.transportAssetIds.includes(PAID_ID));
     const basket = targetBasket(current);
-    if (!paidAsset || paidAsset.quantity !== 2 || paidAsset.requests.length !== 1
-        || !request || !request.inventoryApplied || request.quantity !== 1
+    if (!paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 1
+        || targetWindowAvailability(paidAsset) !== 2
+        || nonOverlappingWindowAvailability(paidAsset) !== 3
+        || !request || request.inventoryApplied || request.quantity !== 1
         || current.projections.length !== 1 || !projection || projection.paymentSessionId !== request.paymentSessionId
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1 || !payment || payment.checkoutSessionId !== request.paymentSessionId
         || current.resources.length !== 1 || !resource || resource.accepted !== 1 || resource.pending !== 0
@@ -1162,7 +1207,9 @@
       checkpointId: CHECKPOINT,
       phase: "accepted",
       paymentSessionId: result.payment.checkoutSessionId,
-      availability: 2,
+      storedQuantity: 3,
+      selectedWindowAvailability: 2,
+      nonOverlappingWindowAvailability: 3,
       resource: "one accepted scoped contribution",
       next: "Continue with reload, then the isolated Cancel, Free, unavailable, decline and timeout controls."
     });
@@ -1253,7 +1300,8 @@
       declinedPayments: 1,
       expiredPayments: 1,
       cancelledBaskets: 1,
-      availability: 2,
+      storedQuantity: 3,
+      selectedWindowAvailability: 2,
       siblingAndRileyIsolation: true,
       next: `Run reset asset-checkout ${CHECKPOINT} after evidence is recorded.`
     });

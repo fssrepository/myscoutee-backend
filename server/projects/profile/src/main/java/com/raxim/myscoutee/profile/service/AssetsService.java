@@ -1833,7 +1833,6 @@ public class AssetsService {
 
     private Asset toRequestScopedAsset(Asset existing, Asset proposed, String ownerUserId) {
         Asset next = cloneAsset(existing);
-        next.setQuantity(proposed.getQuantity());
         next.setRequests(new ArrayList<>(safeRequests(proposed.getRequests())));
         next.setUpdatedDate(proposed.getUpdatedDate());
         next.setUpdatedUser(ownerUserId);
@@ -2394,7 +2393,10 @@ public class AssetsService {
                         new Document("$ne", List.of("$$request.status", "deleted")),
                         new Document("$or", List.of(
                                 new Document("$eq", List.of("$$request.status", MEMBER_STATUS_ACCEPTED)),
-                                new Document("$eq", List.of("$$request.requestKind", "manual")))),
+                                new Document("$eq", List.of("$$request.requestKind", "manual")),
+                                new Document("$and", List.of(
+                                        new Document("$eq", List.of("$$request.status", "pending")),
+                                        new Document("$eq", List.of("$$request.requestKind", "borrow")))))),
                         new Document("$ne", List.of("$$request.booking.inventoryApplied", true)),
                         new Document("$lt", List.of("$$request.booking.startAtIso", endAtIso)),
                         new Document("$lt", List.of(startAtIso, "$$request.booking.endAtIso"))))));
