@@ -247,10 +247,10 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     frame-denial page is an immediate FAIL.
 36. Confirm the checkout closes once and the stale overlay does not block the
     Resource/Asset Explore surface. Without reloading, confirm the target
-    Transport resource card immediately shows `1/3`; it must never flash or
-    settle at `0/3` before a later reopen corrects it. Confirm the same pending
-    resource contributes its red counter to `QA Borrow Stage` and the main
-    Event aggregate.
+    Transport resource card remains at accepted occupancy `0/3` and shows a
+    separate red pending counter `1`. Pending demand must not be folded into
+    accepted occupancy. Confirm the same pending resource contributes its red
+    counter to `QA Borrow Stage` and the main Event aggregate.
 37. Do not start another Borrow. Report:
 
     `ASSET-CHECKOUT-001 paid pending: checkout closed once and UI stayed responsive`
@@ -283,7 +283,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     remain, then open
     `QA ASSET-CHECKOUT-001 Paid Transport → Members`. Confirm Nova appears
     exactly once with the exact Event/Sub-event timeframe, quantity and payment
-    context.
+    context. Casey is the lender/Asset owner, not a participant in this borrowed
+    resource scope, so Casey must not appear in this list. For a directly
+    assigned own Asset, its owner remains the accepted resource manager/member.
 47. Confirm no Riley row and no request for the sibling Sub-event exists. The
     owner notification and pending count must not be duplicated by reopening
     either surface.

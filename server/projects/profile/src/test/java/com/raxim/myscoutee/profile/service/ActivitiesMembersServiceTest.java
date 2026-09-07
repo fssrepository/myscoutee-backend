@@ -34,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -923,7 +924,25 @@ class ActivitiesMembersServiceTest {
                 "subevent-1",
                 null))
                 .thenReturn(Optional.of(scopedAsset));
-        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+        ActivitySubEventResource borrowedAssignment = new ActivitySubEventResource();
+        borrowedAssignment.setOwnerId("event-1:slot:slot-1:2026-07-23T06:30:00Z");
+        borrowedAssignment.setSubEventId("subevent-1");
+        borrowedAssignment.setAssetOwnerUserId("borrower-1");
+        borrowedAssignment.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        borrowedAssignment.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0,
+                        3,
+                        1,
+                        "borrower-1",
+                        false,
+                        List.of()))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1:slot:slot-1:2026-07-23T06:30:00Z",
+                "subevent-1",
+                "D"))
+                .thenReturn(List.of(borrowedAssignment));
         when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
 
         List<ActivityMemberEntryDto> result = service.queryMembers(
@@ -934,14 +953,15 @@ class ActivitiesMembersServiceTest {
                 "subevent-1");
 
         assertThat(result)
-                .filteredOn(entry -> "borrower-1".equals(entry.userId()))
                 .singleElement()
                 .satisfies(entry -> {
+                    assertThat(entry.userId()).isEqualTo("borrower-1");
                     assertThat(entry.status()).isEqualTo("pending");
                     assertThat(entry.pendingSource()).isEqualTo("member");
                     assertThat(entry.requestKind()).isEqualTo("join");
                     assertThat(entry.statusText()).isEqualTo("Waiting for admin approval.");
                 });
+        verify(usersRepository, never()).findByUserId("owner-1");
     }
 
     @Test
