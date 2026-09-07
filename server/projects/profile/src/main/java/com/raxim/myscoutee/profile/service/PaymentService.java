@@ -467,6 +467,130 @@ public class PaymentService {
     }
 
     public Payment approveFullRefund(Payment payment, String reviewedAtIso) {
+        return approveFullRefund(
+                payment,
+                reviewedAtIso,
+                "owner-approved-request",
+                "Full refund approved by the payment recipient.");
+    }
+
+    public AssetPaymentReplacement validateAssetPaymentReplacement(
+            String predecessorPaymentSessionId,
+            String successorPaymentSessionId,
+            String predecessorUserId,
+            String successorUserId,
+            String assetId,
+            String eventId,
+            String subEventId) {
+        String normalizedPredecessorSessionId = normalizeId(predecessorPaymentSessionId);
+        String normalizedSuccessorSessionId = normalizeId(successorPaymentSessionId);
+        String normalizedPredecessorUserId = normalizeId(predecessorUserId);
+        String normalizedSuccessorUserId = normalizeId(successorUserId);
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!hasText(normalizedPredecessorSessionId)) {
+            if (hasText(normalizedSuccessorSessionId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "A successor payment cannot replace a free assignment.");
+            }
+            return AssetPaymentReplacement.free();
+        }
+        if (!hasText(normalizedSuccessorSessionId)
+                || !hasText(normalizedPredecessorUserId)
+                || !hasText(normalizedSuccessorUserId)
+                || normalizedPredecessorUserId.equals(normalizedSuccessorUserId)
+                || !hasText(normalizedAssetId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both assignment payments are required.");
+        }
+
+        Payment predecessor = findByAnySessionId(normalizedPredecessorSessionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The predecessor payment was not found."));
+        Payment successor = findByAnySessionId(normalizedSuccessorSessionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The successor payment was not found."));
+        validateAssetReplacementPaymentIdentity(
+                predecessor,
+                normalizedPredecessorUserId,
+                normalizedAssetId,
+                normalizedEventId,
+                normalizedSubEventId,
+                "predecessor");
+        validateAssetReplacementPaymentIdentity(
+                successor,
+                normalizedSuccessorUserId,
+                normalizedAssetId,
+                null,
+                null,
+                "successor");
+        if (!Set.of("authorized", "captured", "approved").contains(safeText(successor.getStatus()))
+                || BOOKING_STATUS_CANCELLED.equals(safeText(successor.getBookingStatus()))
+                || REFUND_STATUS_FULL.equals(safeText(successor.getRefundStatus()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment is not authorized.");
+        }
+        if (!safeCurrency(predecessor.getCurrency()).equalsIgnoreCase(safeCurrency(successor.getCurrency()))
+                || BigDecimal.valueOf(roundMoney(safeAmount(predecessor.getAmount())))
+                        .compareTo(BigDecimal.valueOf(roundMoney(safeAmount(successor.getAmount())))) != 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment does not match the predecessor payment.");
+        }
+        String linkedSuccessorId = normalizeId(predecessor.getSuccessorPaymentId());
+        if (hasText(linkedSuccessorId) && !linkedSuccessorId.equals(normalizeId(successor.getId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The predecessor payment was already replaced.");
+        }
+        String linkedPredecessorId = normalizeId(successor.getPredecessorPaymentId());
+        if (hasText(linkedPredecessorId) && !linkedPredecessorId.equals(normalizeId(predecessor.getId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The successor payment already replaces another payment.");
+        }
+        return new AssetPaymentReplacement(
+                normalizeId(predecessor.getId()),
+                normalizeId(successor.getId()),
+                true);
+    }
+
+    public void completeAssetPaymentReplacement(
+            AssetPaymentReplacement replacement,
+            String successorUserId,
+            String eventId,
+            String subEventId) {
+        if (replacement == null || !replacement.paymentRequired()) {
+            return;
+        }
+        Payment predecessor = paymentsRepository.findById(replacement.predecessorPaymentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The predecessor payment was not found."));
+        Payment successor = paymentsRepository.findById(replacement.successorPaymentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The successor payment was not found."));
+        String nowIso = nowIso();
+
+        successor.setPredecessorPaymentId(normalizeId(predecessor.getId()));
+        successor.setContextEventId(normalizeId(eventId));
+        successor.setContextSubEventId(normalizeId(subEventId));
+        successor.setBookingStatus(BOOKING_STATUS_JOINED);
+        successor.setJoinedAtIso(hasText(successor.getJoinedAtIso()) ? successor.getJoinedAtIso() : nowIso);
+        if (!hasText(successor.getRefundStatus())) {
+            successor.setRefundStatus(REFUND_STATUS_NONE);
+        }
+        successor = saveAndProjectSpending(successor);
+
+        predecessor.setSuccessorPaymentId(normalizeId(successor.getId()));
+        predecessor.setRefundRequestStatus("approved");
+        predecessor.setRefundReviewedAtIso(nowIso);
+        predecessor.setRefundReviewedByUserId(normalizeId(successorUserId));
+        if (REFUND_STATUS_FULL.equals(safeText(predecessor.getRefundStatus()))) {
+            saveAndProjectSpending(predecessor);
+            return;
+        }
+        approveFullRefund(
+                predecessor,
+                nowIso,
+                "assignment-manager-takeover",
+                "The predecessor payment was refunded after the successor paid and took over the Asset assignment.");
+    }
+
+    private Payment approveFullRefund(
+            Payment payment,
+            String reviewedAtIso,
+            String refundRuleId,
+            String refundNote) {
         if (payment == null) {
             throw new IllegalArgumentException("Payment is required.");
         }
@@ -482,12 +606,45 @@ public class PaymentService {
         current.setRefundedAmount(safeAmount(current.getAmount()));
         current.setRefundCurrency(hasText(current.getCurrency()) ? current.getCurrency() : "USD");
         current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
-        current.setRefundRuleId("owner-approved-request");
-        current.setRefundNote("Full refund approved by the payment recipient.");
+        current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
+        current.setRefundNote(hasText(refundNote) ? refundNote : "Full refund approved by the payment recipient.");
         if (!"released".equals(safeText(current.getStatus()))) {
             current.setStatus("refunded");
         }
         return saveAndProjectSpending(current);
+    }
+
+    private void validateAssetReplacementPaymentIdentity(
+            Payment payment,
+            String expectedUserId,
+            String expectedAssetId,
+            String expectedEventId,
+            String expectedSubEventId,
+            String label) {
+        if (payment == null
+                || !normalizeId(expectedUserId).equals(normalizeId(payment.getUserId()))
+                || !normalizeId(expectedAssetId).equals(normalizeId(payment.getSourceId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment identity does not match the assignment.");
+        }
+        if (hasText(expectedEventId)
+                && hasText(payment.getContextEventId())
+                && !normalizeId(expectedEventId).equals(normalizeId(payment.getContextEventId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Event scope does not match.");
+        }
+        if (hasText(expectedSubEventId)
+                && hasText(payment.getContextSubEventId())
+                && !normalizeId(expectedSubEventId).equals(normalizeId(payment.getContextSubEventId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Sub-event scope does not match.");
+        }
+    }
+
+    public record AssetPaymentReplacement(
+            String predecessorPaymentId,
+            String successorPaymentId,
+            boolean paymentRequired) {
+        public static AssetPaymentReplacement free() {
+            return new AssetPaymentReplacement(null, null, false);
+        }
     }
 
     public EventCheckoutPaymentAuditDto loadPaymentAudit(

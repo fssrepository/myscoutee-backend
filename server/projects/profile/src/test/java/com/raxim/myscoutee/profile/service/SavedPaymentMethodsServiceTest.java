@@ -16,6 +16,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.mockito.InOrder;
 
 import com.raxim.myscoutee.profile.data.document.SavedPaymentMethod;
+import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.PaymentMethodRegistrationsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.repository.SavedPaymentMethodsRepository;
@@ -168,6 +170,71 @@ class SavedPaymentMethodsServiceTest {
         assertThat(service.queryPage("user-1", 0, 6).items())
                 .extracting(item -> item.id())
                 .containsExactly("selectable", "reconnect", "expired");
+    }
+
+    @Test
+    void historyExposesAssetOwnerRefundActionsAndStoredPendingCounterByViewerRole() {
+        SavedPaymentMethodsRepository methods = mock(SavedPaymentMethodsRepository.class);
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        UsersRepository users = mock(UsersRepository.class);
+        Payment payment = new Payment();
+        payment.setId("payment-asset-1");
+        payment.setUserId("nova");
+        payment.setRecipientUserId("casey");
+        payment.setSourceId("asset-1");
+        payment.setFulfillmentKind(PaymentService.FULFILLMENT_KIND_CLIENT);
+        payment.setContextEventId("event-1");
+        payment.setContextSubEventId("sub-event-1");
+        payment.setStatus("authorized");
+        payment.setAuditKind("payment");
+        payment.setProvider("barion");
+        payment.setAmount(3200D);
+        payment.setCurrency("HUF");
+        payment.setCreatedDate("2026-09-07T06:00:00Z");
+
+        Users nova = new Users();
+        nova.setUserId("nova");
+        nova.setPaymentRefundsPending(0);
+        Users casey = new Users();
+        casey.setUserId("casey");
+        casey.setPaymentRefundsPending(1);
+        when(users.findByUserId("nova")).thenReturn(Optional.of(nova));
+        when(users.findByUserId("casey")).thenReturn(Optional.of(casey));
+        when(payments.findByUserIdOrderByCreatedDateDesc("nova")).thenReturn(List.of(payment));
+        when(payments.findByRecipientUserIdOrderByCreatedDateDesc("nova")).thenReturn(List.of());
+        when(payments.findByUserIdOrderByCreatedDateDesc("casey")).thenReturn(List.of());
+        when(payments.findByRecipientUserIdOrderByCreatedDateDesc("casey")).thenReturn(List.of(payment));
+
+        SavedPaymentMethodsService service = new SavedPaymentMethodsService(
+                methods,
+                mock(PaymentMethodRegistrationsRepository.class),
+                payments,
+                mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class),
+                users);
+
+        var payerPage = service.queryHistory("nova", "all", 0, 20);
+        assertThat(payerPage.pendingRefundCount()).isZero();
+        assertThat(payerPage.items()).singleElement().satisfies(item -> {
+            assertThat(item.direction()).isEqualTo("expense");
+            assertThat(item.serviceContext()).isEqualTo("asset");
+            assertThat(item.recipientUserId()).isEqualTo("casey");
+            assertThat(item.contextAssetId()).isEqualTo("asset-1");
+            assertThat(item.contextEventId()).isEqualTo("event-1");
+            assertThat(item.contextSubEventId()).isEqualTo("sub-event-1");
+            assertThat(item.canRequestRefund()).isTrue();
+            assertThat(item.canApproveRefund()).isFalse();
+        });
+
+        payment.setRefundRequestStatus("pending");
+        var recipientPage = service.queryHistory("casey", "income", 0, 20);
+        assertThat(recipientPage.pendingRefundCount()).isEqualTo(1);
+        assertThat(recipientPage.items()).singleElement().satisfies(item -> {
+            assertThat(item.direction()).isEqualTo("income");
+            assertThat(item.canRequestRefund()).isFalse();
+            assertThat(item.canApproveRefund()).isTrue();
+            assertThat(item.refundRequestStatus()).isEqualTo("pending");
+        });
     }
 
     private SavedPaymentMethod paymentMethod(

@@ -607,7 +607,7 @@ public class AssetsService {
                 || !StringUtils.hasText(eventId)
                 || !StringUtils.hasText(subEventId)
                 || !StringUtils.hasText(actorUserId)
-                || (!"join".equals(action) && !"leave".equals(action))) {
+                || (!"join".equals(action) && !"leave".equals(action) && !"take-over".equals(action))) {
             return null;
         }
 
@@ -628,7 +628,9 @@ public class AssetsService {
         if ("leave".equals(action) && previous == null) {
             return null;
         }
-        if ("leave".equals(action) && !"pending".equals(previousStatus)) {
+        if ("leave".equals(action)
+                && !"pending".equals(previousStatus)
+                && !MEMBER_STATUS_ACCEPTED.equals(previousStatus)) {
             return null;
         }
         if ("join".equals(action) && previous != null) {
@@ -661,6 +663,36 @@ public class AssetsService {
             }
         }
 
+        ActivitiesResourcesService activitiesResourcesService = activitiesResourcesServiceProvider == null
+                ? null
+                : activitiesResourcesServiceProvider.getIfAvailable();
+        String scopedManagerUserId = activitiesResourcesService == null
+                ? null
+                : activitiesResourcesService.scopedAssetManagerUserId(eventId, subEventId, assetId);
+        if ("take-over".equals(action)) {
+            return takeOverScopedBorrowedAsset(
+                    current,
+                    previous,
+                    request,
+                    activitiesResourcesService,
+                    scopedManagerUserId,
+                    assetId,
+                    eventId,
+                    subEventId,
+                    actorUserId);
+        }
+        boolean acceptedManagerLeave = "leave".equals(action)
+                && MEMBER_STATUS_ACCEPTED.equals(previousStatus)
+                && actorUserId.equals(normalizeId(scopedManagerUserId));
+        boolean acceptedSuccessorRemains = acceptedManagerLeave
+                && safeRequests(current.getRequests()).stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> !isDeletedAssetRequest(item))
+                        .filter(item -> !"manual".equals(normalizeAssetRequestKind(item.requestKind())))
+                        .filter(item -> isRequestInScope(item, eventId, subEventId))
+                        .filter(item -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(item.status())))
+                        .anyMatch(item -> !actorUserId.equals(normalizeId(item.userId())));
+
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         for (AssetRequestRecord item : safeRequests(current.getRequests())) {
             if (item == null) {
@@ -672,7 +704,15 @@ public class AssetsService {
                 }
                 continue;
             }
-            nextRequests.add(item);
+            boolean remainingScopedBorrower = acceptedManagerLeave
+                    && acceptedSuccessorRemains
+                    && !isDeletedAssetRequest(item)
+                    && "borrow".equals(normalizeAssetRequestKind(item.requestKind()))
+                    && MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(item.status()))
+                    && isRequestInScope(item, eventId, subEventId);
+            nextRequests.add(remainingScopedBorrower
+                    ? withAssetRequestTakeOverAmount(item, previous)
+                    : item);
         }
         if (joinedRequest != null) {
             nextRequests.add(joinedRequest);
@@ -698,9 +738,34 @@ public class AssetsService {
                 subEventId,
                 actorUserId);
         enqueueAssetMembershipTransitionNotifications(current, next, actorUserId);
+        if (acceptedManagerLeave && acceptedSuccessorRemains) {
+            enqueueScopedAssetTakeOverRequestedNotification(
+                    current,
+                    previous,
+                    eventId,
+                    subEventId,
+                    actorUserId);
+        }
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
+
+        if (acceptedManagerLeave && !acceptedSuccessorRemains) {
+            if (activitiesResourcesService == null
+                    || !activitiesResourcesService.removeScopedAssetAssignment(
+                            eventId,
+                            subEventId,
+                            assetId,
+                            actorUserId,
+                            actorUserId)) {
+                LOGGER.warn(
+                        "Accepted last Asset borrower left, but the scoped resource assignment could not be removed. assetId={}, eventId={}, subEventId={}, actorUserId={}",
+                        assetId,
+                        eventId,
+                        subEventId,
+                        actorUserId);
+            }
+        }
 
         String nextStatus = "join".equals(action) ? "pending" : "deleted";
         return memberStatusChange(
@@ -712,6 +777,124 @@ public class AssetsService {
                 nextStatus,
                 statusDelta(previousStatus, nextStatus, MEMBER_STATUS_ACCEPTED),
                 statusDelta(previousStatus, nextStatus, "pending"));
+    }
+
+    private AssetMemberStatusChangeDto takeOverScopedBorrowedAsset(
+            Asset current,
+            AssetRequestRecord successorRequest,
+            AssetMemberStatusChangeRequestDto request,
+            ActivitiesResourcesService activitiesResourcesService,
+            String scopedManagerUserId,
+            String assetId,
+            String eventId,
+            String subEventId,
+            String actorUserId) {
+        String previousManagerUserId = normalizeId(request.previousManagerUserId());
+        if (activitiesResourcesService == null
+                || successorRequest == null
+                || !MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(successorRequest.status()))
+                || !"borrow".equals(normalizeAssetRequestKind(successorRequest.requestKind()))
+                || !StringUtils.hasText(previousManagerUserId)
+                || previousManagerUserId.equals(actorUserId)) {
+            return null;
+        }
+        if (actorUserId.equals(normalizeId(scopedManagerUserId))) {
+            return memberStatusChange(
+                    assetId,
+                    eventId,
+                    subEventId,
+                    actorUserId,
+                    MEMBER_STATUS_ACCEPTED,
+                    MEMBER_STATUS_ACCEPTED,
+                    0,
+                    0);
+        }
+        if (!previousManagerUserId.equals(normalizeId(scopedManagerUserId))) {
+            return null;
+        }
+        AssetRequestRecord predecessorRequest = safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
+                .filter(item -> previousManagerUserId.equals(normalizeId(item.userId())))
+                .filter(item -> isRequestInScope(item, eventId, subEventId))
+                .filter(this::isDeletedAssetRequest)
+                .findFirst()
+                .orElse(null);
+        if (predecessorRequest == null) {
+            return null;
+        }
+
+        String predecessorPaymentSessionId = assetRequestPaymentSessionId(predecessorRequest);
+        String successorPaymentSessionId = normalizeId(request.paymentSessionId());
+        PaymentService.AssetPaymentReplacement paymentReplacement = paymentService.validateAssetPaymentReplacement(
+                predecessorPaymentSessionId,
+                successorPaymentSessionId,
+                previousManagerUserId,
+                actorUserId,
+                assetId,
+                eventId,
+                subEventId);
+
+        AssetRequestRecord updatedSuccessorRequest = withAssetRequestReplacementPayment(
+                successorRequest,
+                successorPaymentSessionId);
+        List<AssetRequestRecord> nextRequests = safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .map(item -> item == successorRequest ? updatedSuccessorRequest : item)
+                .toList();
+        Asset next = cloneAsset(current);
+        next.setRequests(deduplicateRequests(nextRequests));
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(actorUserId);
+        next.setAffinity(resolveAssetAffinity(next, actorUserId));
+        next.setBoost(resolveAssetBoost(next, actorUserId));
+
+        if (!activitiesResourcesService.transferScopedAssetManager(
+                eventId,
+                subEventId,
+                assetId,
+                previousManagerUserId,
+                actorUserId)) {
+            return null;
+        }
+        try {
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            syncAssetRequestPayments(current, next);
+            paymentService.completeAssetPaymentReplacement(
+                    paymentReplacement,
+                    actorUserId,
+                    eventId,
+                    subEventId);
+        } catch (RuntimeException exception) {
+            activitiesResourcesService.transferScopedAssetManager(
+                    eventId,
+                    subEventId,
+                    assetId,
+                    actorUserId,
+                    previousManagerUserId);
+            throw exception;
+        }
+
+        enqueueScopedAssetTakeOverCompletedNotification(
+                next,
+                predecessorRequest,
+                eventId,
+                subEventId,
+                previousManagerUserId,
+                actorUserId);
+        affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
+        adminTelemetryService.record("asset.assignment.taken-over", "assets", assetId, actorUserId);
+        userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                actorUserId,
+                MEMBER_STATUS_ACCEPTED,
+                MEMBER_STATUS_ACCEPTED,
+                0,
+                0);
     }
 
     private AssetMemberStatusChangeDto memberStatusChange(
@@ -1787,6 +1970,9 @@ public class AssetsService {
         }
         if (MEMBER_STATUS_ACCEPTED.equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
             return fullAssetWriteAllowed;
+        }
+        if (MEMBER_STATUS_ACCEPTED.equals(previousStatus) && isDeletedAssetRequest(next)) {
+            return accessControlService.canCurrentActorCancelAssetBorrow(requesterUserId, assetId);
         }
         return false;
     }
@@ -2950,6 +3136,127 @@ public class AssetsService {
                 cloneRequestBooking(request.booking()));
     }
 
+    private AssetRequestRecord withAssetRequestPaymentSession(
+            AssetRequestRecord request,
+            String paymentSessionId) {
+        AssetRequestBookingRecord booking = cloneRequestBooking(request == null ? null : request.booking());
+        if (request == null || booking == null) {
+            return request;
+        }
+        AssetRequestBookingRecord updatedBooking = new AssetRequestBookingRecord(
+                booking.eventId(),
+                booking.eventTitle(),
+                booking.subEventId(),
+                booking.subEventTitle(),
+                booking.slotKey(),
+                booking.slotLabel(),
+                booking.timeframe(),
+                booking.startAtIso(),
+                booking.endAtIso(),
+                booking.quantity(),
+                booking.totalAmount(),
+                booking.previousTotalAmount(),
+                booking.currency(),
+                booking.acceptedPolicyIds(),
+                normalizeId(paymentSessionId),
+                booking.inventoryApplied());
+        return new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                request.status(),
+                request.note(),
+                request.requestKind(),
+                request.requestedAtIso(),
+                updatedBooking);
+    }
+
+    private AssetRequestRecord withAssetRequestTakeOverAmount(
+            AssetRequestRecord request,
+            AssetRequestRecord departedManagerRequest) {
+        AssetRequestBookingRecord booking = cloneRequestBooking(request == null ? null : request.booking());
+        AssetRequestBookingRecord departedBooking = departedManagerRequest == null
+                ? null
+                : departedManagerRequest.booking();
+        if (request == null || booking == null || departedBooking == null) {
+            return request;
+        }
+        AssetRequestBookingRecord updatedBooking = new AssetRequestBookingRecord(
+                booking.eventId(),
+                booking.eventTitle(),
+                booking.subEventId(),
+                booking.subEventTitle(),
+                booking.slotKey(),
+                booking.slotLabel(),
+                booking.timeframe(),
+                booking.startAtIso(),
+                booking.endAtIso(),
+                booking.quantity(),
+                booking.totalAmount(),
+                departedBooking.totalAmount() == null || !Double.isFinite(departedBooking.totalAmount())
+                        ? 0d
+                        : Math.max(0d, departedBooking.totalAmount()),
+                StringUtils.hasText(departedBooking.currency())
+                        ? departedBooking.currency()
+                        : booking.currency(),
+                booking.acceptedPolicyIds(),
+                booking.paymentSessionId(),
+                booking.inventoryApplied());
+        return new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                request.status(),
+                request.note(),
+                request.requestKind(),
+                request.requestedAtIso(),
+                updatedBooking);
+    }
+
+    private AssetRequestRecord withAssetRequestReplacementPayment(
+            AssetRequestRecord request,
+            String paymentSessionId) {
+        AssetRequestBookingRecord booking = cloneRequestBooking(request == null ? null : request.booking());
+        if (request == null || booking == null) {
+            return request;
+        }
+        Double replacementTotal = booking.previousTotalAmount() == null || !Double.isFinite(booking.previousTotalAmount())
+                ? booking.totalAmount()
+                : Math.max(0d, booking.previousTotalAmount());
+        AssetRequestBookingRecord updatedBooking = new AssetRequestBookingRecord(
+                booking.eventId(),
+                booking.eventTitle(),
+                booking.subEventId(),
+                booking.subEventTitle(),
+                booking.slotKey(),
+                booking.slotLabel(),
+                booking.timeframe(),
+                booking.startAtIso(),
+                booking.endAtIso(),
+                booking.quantity(),
+                replacementTotal,
+                null,
+                booking.currency(),
+                booking.acceptedPolicyIds(),
+                normalizeId(paymentSessionId),
+                booking.inventoryApplied());
+        return new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                request.status(),
+                request.note(),
+                request.requestKind(),
+                request.requestedAtIso(),
+                updatedBooking);
+    }
+
     private boolean isDeletedAssetRequest(AssetRequestRecord request) {
         String status = safeText(request == null ? null : request.status());
         return STATUS_DELETED.equalsIgnoreCase(status) || "deleted".equalsIgnoreCase(status);
@@ -4028,6 +4335,124 @@ public class AssetsService {
                 notificationType + "-" + assetId + "-" + requestId,
                 payload,
                 normalizedActorUserId));
+    }
+
+    private void enqueueScopedAssetTakeOverRequestedNotification(
+            Asset asset,
+            AssetRequestRecord departedManagerRequest,
+            String eventId,
+            String subEventId,
+            String departedManagerUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedDepartedManagerUserId = normalizeId(departedManagerUserId);
+        List<String> recipients = safeRequests(asset == null ? null : asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> !isDeletedAssetRequest(item))
+                .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
+                .filter(item -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(item.status())))
+                .filter(item -> isRequestInScope(item, normalizedEventId, normalizedSubEventId))
+                .map(AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !normalizedDepartedManagerUserId.equals(userId))
+                .filter(this::isActiveUser)
+                .distinct()
+                .toList();
+        if (!StringUtils.hasText(assetId) || recipients.isEmpty()) {
+            return;
+        }
+        String managerName = firstNonBlank(
+                departedManagerRequest == null ? null : departedManagerRequest.name(),
+                normalizedDepartedManagerUserId);
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("ownerId", normalizedEventId);
+        payload.put("eventId", normalizedEventId);
+        payload.put("subEventId", normalizedSubEventId);
+        payload.put("resourceType", normalizeAssetType(asset.getType()));
+        payload.put("previousManagerUserId", normalizedDepartedManagerUserId);
+        payload.put("membershipAction", "takeover-required");
+        payload.put("notification_tone", "warning");
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-assignment-takeover-required",
+                "asset",
+                assetId,
+                "asset-scoped-members",
+                recipients,
+                "Asset needs a new manager",
+                managerName + " left " + assetTitle(asset) + ". An accepted member can take over.",
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-assignment-takeover-required-" + assetId + "-" + normalizedEventId + "-" + normalizedSubEventId,
+                payload,
+                normalizedDepartedManagerUserId));
+    }
+
+    private void enqueueScopedAssetTakeOverCompletedNotification(
+            Asset asset,
+            AssetRequestRecord departedManagerRequest,
+            String eventId,
+            String subEventId,
+            String previousManagerUserId,
+            String successorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedPreviousManagerUserId = normalizeId(previousManagerUserId);
+        String normalizedSuccessorUserId = normalizeId(successorUserId);
+        LinkedHashSet<String> recipientIds = safeRequests(asset == null ? null : asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> !isDeletedAssetRequest(item))
+                .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
+                .filter(item -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(item.status())))
+                .filter(item -> isRequestInScope(item, normalizedEventId, normalizedSubEventId))
+                .map(AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        recipientIds.add(normalizedPreviousManagerUserId);
+        recipientIds.remove(normalizedSuccessorUserId);
+        List<String> recipients = recipientIds.stream()
+                .filter(StringUtils::hasText)
+                .filter(this::isActiveUser)
+                .toList();
+        if (!StringUtils.hasText(assetId) || recipients.isEmpty()) {
+            return;
+        }
+        String successorName = usersRepository.findByUserId(normalizedSuccessorUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .orElse("A member");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("ownerId", normalizedEventId);
+        payload.put("eventId", normalizedEventId);
+        payload.put("subEventId", normalizedSubEventId);
+        payload.put("resourceType", normalizeAssetType(asset.getType()));
+        payload.put("previousManagerUserId", normalizedPreviousManagerUserId);
+        payload.put("managerUserId", normalizedSuccessorUserId);
+        payload.put("membershipAction", "taken-over");
+        payload.put("notification_tone", "accent");
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-assignment-taken-over",
+                "asset",
+                assetId,
+                "asset-scoped-members",
+                recipients,
+                "Asset manager changed",
+                successorName + " took over " + assetTitle(asset) + ".",
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-assignment-taken-over-" + assetId + "-" + normalizedEventId + "-" + normalizedSubEventId,
+                payload,
+                normalizedSuccessorUserId));
     }
 
     private List<String> acceptedAssetParticipantUserIds(Asset asset) {

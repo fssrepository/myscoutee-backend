@@ -28,7 +28,18 @@ public final class AssetsDtos {
             String subEventId,
             String actorUserId,
             String action,
-            AssetMemberRequestDto request) {
+            AssetMemberRequestDto request,
+            String paymentSessionId,
+            String previousManagerUserId) {
+        public AssetMemberStatusChangeRequestDto(
+                String assetId,
+                String eventId,
+                String subEventId,
+                String actorUserId,
+                String action,
+                AssetMemberRequestDto request) {
+            this(assetId, eventId, subEventId, actorUserId, action, request, null, null);
+        }
     }
 
     public record AssetMemberStatusChangeDto(
