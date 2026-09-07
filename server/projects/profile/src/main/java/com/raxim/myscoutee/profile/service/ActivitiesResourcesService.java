@@ -624,6 +624,7 @@ public class ActivitiesResourcesService {
         List<SupplyContributionAddition> addedSupplyContributions = addedSupplyContributions(current, next);
         List<SupplyContributionRemoval> removedSupplyContributions = removedSupplyContributions(current, next);
         List<AssetAssignmentRemoval> removedAssetAssignments = removedAssetAssignments(current, next);
+        requireManagedAssetRemovals(current, removedAssetAssignments, actorUserId);
         boolean resourceBecameEmpty = current != null && referencedAssetIds(next).isEmpty();
         Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, eligibleAssets);
         next.setResourceMetricsByType(toResourceMetricRecords(metricsByType));
@@ -725,6 +726,32 @@ public class ActivitiesResourcesService {
             removedIds.forEach(assetId -> removals.add(new AssetAssignmentRemoval(assetId, type)));
         }
         return removals;
+    }
+
+    private void requireManagedAssetRemovals(
+            ActivitySubEventResource current,
+            List<AssetAssignmentRemoval> removals,
+            String actorUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (current == null || removals == null || removals.isEmpty()) {
+            return;
+        }
+        for (AssetAssignmentRemoval removal : removals) {
+            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId =
+                    current.getAssetSettingsByType() == null
+                            ? null
+                            : current.getAssetSettingsByType().get(removal.resourceType());
+            SubEventAssignedAssetSettingsRecord settings = settingsByAssetId == null
+                    ? null
+                    : settingsByAssetId.get(removal.assetId());
+            String managerUserId = resolveManagedUserId(settings, current.getAssetOwnerUserId());
+            if (!StringUtils.hasText(normalizedActorUserId)
+                    || !normalizedActorUserId.equals(managerUserId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Only the current Asset assignment manager can remove this Asset.");
+            }
+        }
     }
 
     private List<SupplyContributionAddition> addedSupplyContributions(

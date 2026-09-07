@@ -68,6 +68,9 @@ public class PaymentRefundService {
         if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
             return paymentMethodsService.mutationDto(existingRequest, actorId);
         }
+        if (existingRequest != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "A refund is already recorded for this payment.");
+        }
 
         String now = Instant.now().toString();
         PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.preview(payment, now);

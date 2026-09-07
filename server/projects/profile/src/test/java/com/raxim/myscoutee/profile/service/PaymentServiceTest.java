@@ -827,6 +827,64 @@ class PaymentServiceTest {
         assertThat(refundHistory.getAmount()).isEqualTo(1600d);
     }
 
+    @Test
+    void refundRequestHistoryRowIsUpdatedInPlaceWhenTheRefundIsApproved() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, stripe);
+        Payment payment = new Payment();
+        payment.setId("captured-payment");
+        payment.setGatewayAuthorizationId("pi_captured");
+        payment.setUserId("payer");
+        payment.setRecipientUserId("recipient");
+        payment.setSourceId("asset-1");
+        payment.setProvider("stripe");
+        payment.setStatus("captured");
+        payment.setAmount(3200d);
+        payment.setCurrency("HUF");
+        payment.setAuditKind("payment");
+        payment.setAccountedSpentAmount(3200d);
+        savePayment(paymentsBySession, payment);
+
+        String requestedAt = "2026-09-07T18:00:00Z";
+        Payment request = service.saveRefundRequestHistoryRecord(
+                payment,
+                requestedAt,
+                "payer",
+                new PaymentRefundCalculator.Preview(
+                        3200d,
+                        1600d,
+                        "HUF",
+                        "partial",
+                        "refund-50-percent",
+                        "days",
+                        1,
+                        "percent",
+                        50d,
+                        "50% refund"));
+
+        assertThat(payment.getRefundRequestStatus()).isNull();
+        assertThat(request.getId()).isEqualTo("refund:captured-payment");
+        assertThat(request.getStatus()).isEqualTo("refund_requested");
+        assertThat(request.getCreatedDate()).isEqualTo(requestedAt);
+
+        service.approvePolicyRefund(
+                payment,
+                "2026-09-07T19:00:00Z",
+                1600d,
+                "HUF",
+                "refund-50-percent",
+                "50% refund");
+
+        Payment refunded = paymentsBySession.get("refund:captured-payment");
+        assertThat(refunded).isSameAs(request);
+        assertThat(refunded.getStatus()).isEqualTo("refunded");
+        assertThat(refunded.getAmount()).isEqualTo(1600d);
+        assertThat(refunded.getCreatedDate()).isEqualTo(requestedAt);
+        assertThat(payment.getRefundRequestStatus()).isNull();
+    }
+
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
