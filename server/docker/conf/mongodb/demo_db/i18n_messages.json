@@ -13038,6 +13038,12 @@
     "value": "Refunded"
   },
   {
+    "_id": "i18n-message-en-payment-history-original-payment",
+    "key": "payment.history.original.payment",
+    "lang": "en",
+    "value": "Original payment"
+  },
+  {
     "_id": "i18n-message-en-payment-status-partially-refunded",
     "key": "payment.status.partially_refunded",
     "lang": "en",
@@ -33394,6 +33400,12 @@
     "key": "payment.status.refunded",
     "lang": "hu",
     "value": "Visszatérítve"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-original-payment",
+    "key": "payment.history.original.payment",
+    "lang": "hu",
+    "value": "Eredeti fizetés"
   },
   {
     "_id": "i18n-message-hu-payment-status-partially-refunded",
