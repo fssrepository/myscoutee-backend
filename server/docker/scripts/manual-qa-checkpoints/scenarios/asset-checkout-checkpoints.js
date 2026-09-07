@@ -510,6 +510,32 @@
     };
   }
 
+  function ensureRileyTakeoverCard() {
+    const existing = Q.collection("savedPaymentMethods").findOne({ _id: CARD_IDS.rileyActive });
+    if (existing) {
+      if (Q.text(existing.userId) !== RILEY_ID
+          || Q.text(existing.provider) !== "barion"
+          || Q.text(existing.last4) !== "5555"
+          || Q.text(existing.status) !== "active") {
+        Q.fail("Riley's saved takeover payment method conflicts with the controlled fixture.");
+      }
+      return false;
+    }
+    const nowIso = Q.nowIso();
+    Q.collection("savedPaymentMethods").insertOne(cardDocument(
+      CARD_IDS.rileyActive,
+      "5555",
+      "active",
+      nowIso,
+      {
+        userId: RILEY_ID,
+        cardholderName: "RILEY OUTSIDE",
+        providerPaymentMethodRef: "pm_sim_checkout_riley_barion_5555"
+      }
+    ));
+    return true;
+  }
+
   function staticSpecs() {
     return [
       { collection: "assets", selector: assetSelector },
@@ -1827,6 +1853,7 @@
     if (!samePersisted(restored, expected)) {
       Q.fail(`rollback '${name}' did not restore the exact persisted savepoint.`);
     }
+    const rileyTakeoverCardAdded = ensureRileyTakeoverCard();
     const prePayment = ["payment-ready", "revised-payment-ready"].includes(phase);
     if (prePayment) {
       const createdAtIso = Q.nowIso();
@@ -1862,6 +1889,7 @@
       phase,
       rollback: name,
       restored: true,
+      rileyTakeoverCardAdded,
       prePaymentTtlRearmed: prePayment
     });
   }
