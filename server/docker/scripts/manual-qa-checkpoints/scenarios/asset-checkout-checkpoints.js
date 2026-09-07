@@ -858,10 +858,21 @@
     return current.baskets.find(item => item.sourceId === sourceId && item.userId === NOVA_ID);
   }
 
+  function targetBasketHistory(current, sourceId = PAID_ID) {
+    return current.basketAudit
+      .filter(item => item.sourceId === sourceId && item.userId === NOVA_ID)
+      .sort((left, right) => {
+        const createdOrder = left.createdAtIso.localeCompare(right.createdAtIso);
+        return createdOrder !== 0 ? createdOrder : left.id.localeCompare(right.id);
+      });
+  }
+
   function assertPaymentReadyState(current, expectedAuditCount) {
     assertScope(current);
     const paid = assetById(current, PAID_ID);
     const basket = targetBasket(current);
+    const basketHistory = targetBasketHistory(current);
+    const expectedQuantityHistory = expectedAuditCount === 3 ? [1, 2, 1] : [1];
     if (!paid || paid.quantity !== 3 || paid.requests.length !== 0
         || current.projections.length !== 0 || current.resources.length !== 0
         || current.payments.length !== 0 || current.baskets.length !== 1
@@ -873,6 +884,11 @@
         || basket.checkoutSessionId || !hasTenMinuteBasketTtl(basket)
         || current.basketAudit.length !== expectedAuditCount
         || current.basketAudit.filter(item => item.resultState === "deleted").length !== expectedAuditCount - 1
+        || !Q.sameJson(basketHistory.map(item => item.quantity), expectedQuantityHistory)
+        || !Q.sameJson(
+          basketHistory.map(item => item.resultState),
+          expectedAuditCount === 3 ? ["deleted", "deleted", "pending"] : ["pending"]
+        )
         || current.storedAssetMembers.length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "payment-ready-diagnostic", expectedAuditCount, oracle: current });
       Q.fail("payment-ready boundary does not contain exactly one confirmed Asset borrow basket and zero premature request/payment/inventory/assignment/role writes.");
@@ -903,7 +919,10 @@
   function captureRevisedPaymentReady() {
     config();
     const currentState = state();
-    if (Q.text(currentState.phase) !== "payment-ready") Q.fail("revised-payment-ready requires payment-ready.");
+    const currentPhase = Q.text(currentState.phase);
+    if (!["baseline-ready", "payment-ready"].includes(currentPhase)) {
+      Q.fail("revised-payment-ready requires baseline-ready or payment-ready.");
+    }
     assertSimulator(false);
     const current = oracle();
     assertPaymentReadyState(current, 3);
@@ -917,6 +936,9 @@
       serverPaymentSessions: 0,
       activeServerCheckoutBaskets: 1,
       checkoutBasketAuditRecords: 3,
+      quantityHistory: [1, 2, 1],
+      retrospectivePaymentReadyProof: currentPhase === "baseline-ready",
+      rollbackCommand: `rollback-revised-payment-ready asset-checkout ${CHECKPOINT}`,
       next: "Enable Barion 3DS in Ava, Pay once, approve once, then report the paid-pending phrase after step 37."
     });
   }
@@ -1148,6 +1170,9 @@
   else if (command === "verify") verifyTerminal();
   else if (command === "rollback-payment-ready") rollbackTo("paymentReady", "payment-ready", [
     "payment-ready", "revised-payment-ready", "paid-pending", "request-destination", "accepted", "verified"
+  ]);
+  else if (command === "rollback-revised-payment-ready") rollbackTo("revisedPaymentReady", "revised-payment-ready", [
+    "revised-payment-ready", "paid-pending", "request-destination", "accepted", "verified"
   ]);
   else if (command === "rollback-paid-pending") rollbackTo("paidPending", "paid-pending", [
     "paid-pending", "request-destination", "accepted", "verified"

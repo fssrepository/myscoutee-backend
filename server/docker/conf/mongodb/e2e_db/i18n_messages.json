@@ -15672,6 +15672,24 @@
     "value": "Confirm borrow"
   },
   {
+    "_id": "i18n-message-en-asset-borrow-continue",
+    "key": "asset.borrow.continue",
+    "lang": "en",
+    "value": "Continue borrow"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-update",
+    "key": "asset.borrow.update",
+    "lang": "en",
+    "value": "Update borrow"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-review",
+    "key": "asset.borrow.review",
+    "lang": "en",
+    "value": "Review borrow"
+  },
+  {
     "_id": "i18n-message-en-asset-borrow-send-request",
     "key": "asset.borrow.send.request",
     "lang": "en",
@@ -15688,6 +15706,18 @@
     "key": "asset.borrow.confirming",
     "lang": "en",
     "value": "Confirming borrow..."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-continuing",
+    "key": "asset.borrow.continuing",
+    "lang": "en",
+    "value": "Continuing borrow..."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-updating",
+    "key": "asset.borrow.updating",
+    "lang": "en",
+    "value": "Updating borrow..."
   },
   {
     "_id": "i18n-message-en-asset-borrow-sending-request",
@@ -35052,6 +35082,24 @@
     "value": "Kölcsönzés megerősítése"
   },
   {
+    "_id": "i18n-message-hu-asset-borrow-continue",
+    "key": "asset.borrow.continue",
+    "lang": "hu",
+    "value": "Kölcsönzés folytatása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-update",
+    "key": "asset.borrow.update",
+    "lang": "hu",
+    "value": "Kölcsönzés frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-review",
+    "key": "asset.borrow.review",
+    "lang": "hu",
+    "value": "Kölcsönzés áttekintése"
+  },
+  {
     "_id": "i18n-message-hu-asset-borrow-send-request",
     "key": "asset.borrow.send.request",
     "lang": "hu",
@@ -35068,6 +35116,18 @@
     "key": "asset.borrow.confirming",
     "lang": "hu",
     "value": "Kölcsönzés megerősítése..."
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-continuing",
+    "key": "asset.borrow.continuing",
+    "lang": "hu",
+    "value": "Kölcsönzés folytatása..."
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-updating",
+    "key": "asset.borrow.updating",
+    "lang": "hu",
+    "value": "Kölcsönzés frissítése..."
   },
   {
     "_id": "i18n-message-hu-asset-borrow-sending-request",

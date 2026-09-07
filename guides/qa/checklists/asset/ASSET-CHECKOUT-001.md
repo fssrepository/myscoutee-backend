@@ -77,6 +77,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  rollback-revised-payment-ready asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-paid-pending asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   rollback-accepted asset-checkout ASSET-CHECKOUT-001
@@ -97,6 +99,11 @@ the matching browser-local draft instead of exposing a local-only
 `rollback-payment-ready` cannot manufacture that browser-local entry if it was
 already cleared: after such a rollback the user repeats steps 1-18 once while
 Codex keeps the already captured server boundary at `payment-ready`.
+Immediately before step 31, `capture-revised-payment-ready` proves the exact
+`1 → 2 → 1` basket-generation history and saves the resulting server state.
+If any later payment or request step fails, Codex runs
+`rollback-revised-payment-ready` to return to that boundary without replaying
+steps 1-30.
 
 ## Complete test journey
 
