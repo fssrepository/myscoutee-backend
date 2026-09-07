@@ -1123,6 +1123,62 @@
     return currentOracle;
   }
 
+  function normalizeFixturePolicyStorage() {
+    let modified = 0;
+    const assets = Q.collection("assets").find({ assetId: { $in: ASSET_IDS } }).toArray();
+    for (const asset of assets) {
+      const policies = Array.isArray(asset.policies) ? asset.policies : [];
+      const normalizedPolicies = policies.map(policy => {
+        const policyId = Q.text(policy && (policy._id || policy.id));
+        if (!policyId) {
+          Q.fail(`Asset '${Q.text(asset.assetId)}' contains a policy without an ID.`);
+        }
+        const normalized = { ...policy, _id: policyId };
+        delete normalized.id;
+        return normalized;
+      });
+      if (!Q.sameJson(policies, normalizedPolicies)) {
+        const result = Q.collection("assets").updateOne(
+          { _id: asset._id },
+          { $set: { policies: normalizedPolicies } }
+        );
+        if (result.matchedCount !== 1) {
+          Q.fail(`Asset '${Q.text(asset.assetId)}' disappeared while normalizing its policy IDs.`);
+        }
+        modified += 1;
+      }
+    }
+    return modified;
+  }
+
+  function stageTakeOverComplete() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "takeover-complete") {
+      Q.fail("takeover-complete staging requires the verified takeover-complete phase.");
+    }
+    const expected = currentState.takeOverCompleteOracle;
+    const before = oracle();
+    if (!expected || !samePersisted(before, expected)) {
+      Q.fail("takeover-complete staging refused a state that changed after verification.");
+    }
+    const normalizedPolicyAssets = normalizeFixturePolicyStorage();
+    const after = oracle();
+    if (!samePersisted(after, expected)) {
+      Q.fail("policy fixture normalization changed the takeover-complete oracle.");
+    }
+    captureSavepoint("takeOverComplete", "takeover-complete");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "takeover-complete",
+      stagedForStep: 80,
+      normalizedPolicyAssets,
+      rollbackCommand: `rollback-takeover-complete asset-checkout ${CHECKPOINT}`,
+      next: "Continue at step 80."
+    });
+  }
+
   function resetNovaServiceChatProbe() {
     config();
     const currentState = state();
@@ -2304,6 +2360,27 @@
     });
   }
 
+  function rollbackTakeOverComplete() {
+    rollbackTo("takeOverComplete", "takeover-complete", [
+      "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    ]);
+    const successor = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId: RILEY_ID,
+      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
+    });
+    if (!successor || !Q.text(successor.gatewayAuthorizationId)) {
+      Q.fail("takeover-complete rollback could not resolve Riley's captured Barion payment.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "takeover-complete",
+      capturedBarionPaymentId: Q.text(successor.gatewayAuthorizationId),
+      next: "Continue at step 80."
+    });
+  }
+
   function reset() {
     config();
     const currentState = state();
@@ -2339,6 +2416,7 @@
   else if (command === "verify-manager-left") verifyManagerLeft();
   else if (command === "repair-manager-left-required-policy") repairManagerLeftRequiredPolicy();
   else if (command === "verify-takeover") verifyTakeOver();
+  else if (command === "stage-takeover-complete") stageTakeOverComplete();
   else if (command === "verify-refund-requested") verifyRefundRequested();
   else if (command === "verify-refunded") verifyRefunded();
   else if (command === "prepare-last-leave") prepareLastLeave();
@@ -2362,6 +2440,7 @@
     "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
   ]);
   else if (command === "rollback-manager-left") rollbackManagerLeft();
+  else if (command === "rollback-takeover-complete") rollbackTakeOverComplete();
   else if (command === "rollback-cancelled-control") rollbackTo("cancelledControl", "cancelled-control", ["cancelled-control", "verified"]);
   else if (command === "reset") reset();
   else Q.fail(`unsupported asset-checkout command '${command}'.`);
