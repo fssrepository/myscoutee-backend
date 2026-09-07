@@ -1274,7 +1274,7 @@
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "layout": {
-        "columns": 3
+        "columns": 2
       },
       "sessions": [
         {
@@ -1288,6 +1288,12 @@
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
           "expectedName": "Nova Social · Barion and 3DS checkout"
+        },
+        {
+          "actor": "Riley Asset takeover member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · paid Asset takeover and refund"
         },
         {
           "actor": "Ava demo payment configuration",

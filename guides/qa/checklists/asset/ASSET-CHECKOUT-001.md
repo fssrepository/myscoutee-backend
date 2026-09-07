@@ -19,11 +19,13 @@ separate matrix rows.
 - **Casey** owns the paid Asset and performs only the owner request decision.
 - **Ava** selects connected Barion and the requested 3DS branch in the demo
   Payment simulator.
+- **Riley** remains an unchanged negative control during the core checkout,
+  then performs the paid manager-take-over and refund lifecycle extension.
 - Codex stages the exact Event/Sub-event resource scope, Assets, actors and
   checkout controls, then runs the independent machine oracles. Immediately
   before every launch or relaunch, Codex runs the fixture-owned
   `prepare-browser` session cleanup and the versioned launcher. After that
-  handoff, the user exclusively controls the configured Casey/Nova/Ava browser
+  handoff, the user exclusively controls the configured Casey/Nova/Riley/Ava browser
   sessions. Do not create replacement data or browser profiles.
 - This Core Asset checkpoint uses connected **Barion**. Its provider-owned 3DS
   presentation is driven by the already-running payment simulator; no real
@@ -48,7 +50,7 @@ Begin only after Codex confirms this exact baseline:
 - the Free, unavailable, adjacent paid, Decline and Timeout controls are
   staged, and the sibling Sub-event plus Riley are unchanged negative
   controls;
-- the configured Casey, Nova and Ava identities are available; the user opens
+- the configured Casey, Nova, Riley and Ava identities are available; the user opens
   and identity-checks any browser windows used for the manual steps.
 
 Codex checkpoint commands for this testcase use the existing MongoDB and

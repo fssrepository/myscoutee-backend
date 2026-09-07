@@ -255,6 +255,13 @@ Usage:
   bash manual-qa-checkpoints.sh verify-paid-pending asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-request-destination asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-accepted asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-takeover asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-manager-left asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-takeover asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-refund-requested asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-refunded asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-last-leave asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-last-leave asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-cancelled asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
@@ -360,6 +367,7 @@ cards.extend([
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_riley_stripe_4242","brand":"Visa","last4":"4242","expiryMonth":12,"expiryYear":2029,"cardholderName":"RILEY OUTSIDE"},
   {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_nova_barion_4444","brand":"Mastercard","last4":"4444","expiryMonth":9,"expiryYear":2029,"cardholderName":"NOVA SOCIAL"},
+  {"provider":"barion","providerPaymentMethodRef":"pm_sim_checkout_riley_barion_5555","brand":"Mastercard","last4":"5555","expiryMonth":9,"expiryYear":2029,"cardholderName":"RILEY OUTSIDE"},
   {"provider":"stripe","providerPaymentMethodRef":"pm_sim_checkout_nova_expired_0008","brand":"Visa","last4":"0008","expiryMonth":8,"expiryYear":2026,"cardholderName":"NOVA SOCIAL"}
 ])
 if sys.argv[2] == "asset":
@@ -820,7 +828,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:verify-cancelled|asset-checkout:verify)
+  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:verify-takeover|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:verify-cancelled|asset-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
