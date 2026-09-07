@@ -591,7 +591,7 @@ class PaymentServiceTest {
         assertThat(payment.getRefundedAmount()).isEqualTo(40d);
         assertThat(payment.getRefundCurrency()).isEqualTo("EUR");
         assertThat(payment.getRefundRuleId()).isEqualTo("partial-1d");
-        assertThat(payment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(payment.getStatus()).isEqualTo("approved");
     }
 
     @Test
@@ -711,7 +711,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void paidAssetTakeOverAuthorizesSuccessorBeforeReleasingAndRefundingPredecessor() {
+    void paidAssetTakeOverKeepsCapturedPaymentsAndAppendsThePredecessorRefund() {
         Map<String, Payment> paymentsBySession = new HashMap<>();
         PaymentsRepository repository = inMemoryRepository(paymentsBySession);
         RecordingPaymentProcessor barion = new RecordingPaymentProcessor("barion");
@@ -728,7 +728,7 @@ class PaymentServiceTest {
         predecessor.setContextEventId("event-1");
         predecessor.setContextSubEventId("subevent-1");
         predecessor.setProvider("barion");
-        predecessor.setStatus("authorized");
+        predecessor.setStatus("captured");
         predecessor.setBookingStatus("joined");
         predecessor.setRefundStatus("none");
         predecessor.setAmount(3200d);
@@ -745,7 +745,7 @@ class PaymentServiceTest {
         successor.setRecipientUserId("asset-owner");
         successor.setSourceId("asset-1");
         successor.setProvider("barion");
-        successor.setStatus("authorized");
+        successor.setStatus("captured");
         successor.setBookingStatus("initiated");
         successor.setRefundStatus("none");
         successor.setAmount(3200d);
@@ -768,7 +768,7 @@ class PaymentServiceTest {
         assertThat(successor.getContextEventId()).isEqualTo("event-1");
         assertThat(successor.getContextSubEventId()).isEqualTo("subevent-1");
         assertThat(predecessor.getSuccessorPaymentId()).isEqualTo("new-payment");
-        assertThat(predecessor.getStatus()).isEqualTo("released");
+        assertThat(predecessor.getStatus()).isEqualTo("captured");
         assertThat(predecessor.getRefundStatus()).isEqualTo("full");
         assertThat(predecessor.getRefundedAmount()).isEqualTo(3200d);
         assertThat(predecessor.getRefundRequestStatus()).isEqualTo("approved");
@@ -783,7 +783,8 @@ class PaymentServiceTest {
         assertThat(refundHistory.getAuditKind()).isEqualTo("refund");
         assertThat(refundHistory.getAmount()).isEqualTo(3200d);
         assertThat(refundHistory.getCreatedDate()).isEqualTo(predecessor.getRefundedAtIso());
-        assertThat(barion.releaseCalls()).isEqualTo(1);
+        assertThat(barion.releaseCalls()).isZero();
+        assertThat(barion.refundCalls()).isEqualTo(1);
     }
 
     @Test
@@ -818,7 +819,7 @@ class PaymentServiceTest {
         assertThat(stripe.refundCalls()).isEqualTo(1);
         assertThat(payment.getGatewayRefundId()).isEqualTo("stripe_refund_1");
         assertThat(payment.getGatewayRefundStatus()).isEqualTo("succeeded");
-        assertThat(payment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(payment.getStatus()).isEqualTo("captured");
         assertThat(payment.getRefundedAmount()).isEqualTo(1600d);
         Payment refundHistory = paymentsBySession.get("refund:captured-payment");
         assertThat(refundHistory).isNotNull();
