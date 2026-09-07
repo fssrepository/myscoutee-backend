@@ -1882,6 +1882,8 @@
         || refunded.length !== 1 || !Q.sameJson(refunded[0].recipients, [NOVA_ID])
         || refunded[0].paymentId !== predecessor.id || refunded[0].sourceId !== PAID_ID
         || refunded[0].refundStatus !== "full" || refunded[0].paymentStatus !== "refunded"
+        || refunded[0].senderUserId || refunded[0].previousManagerUserId || refunded[0].managerUserId
+        || refunded[0].messageKey !== "notification.payment.refund.takeover.message"
         || genericTakeOver.some(item => item.recipients.includes(NOVA_ID))) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "takeover-diagnostic", oracle: current, refunded, genericTakeOver });
       Q.fail("paid Asset takeover/refund did not complete with the exact predecessor/successor state.");
@@ -1937,6 +1939,8 @@
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !successor || successor.status !== "authorized" || successor.refundStatus !== "none"
         || successor.refundRequestStatus !== "pending"
+        || successor.refundedAmount !== 1600
+        || successor.refundRuleId !== "qa-refund-1-day-50-percent"
         || paymentRefundPendingCount(CASEY_ID) !== baselinePending + 1
         || requested.length !== 1 || !Q.sameJson(requested[0].recipients, [CASEY_ID])
         || requested[0].paymentId !== successor.id || requested[0].sourceId !== PAID_ID
@@ -1972,16 +1976,17 @@
     if (!asset || asset.quantity !== 3
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !predecessor || predecessor.refundStatus !== "full"
-        || !successor || successor.status !== "released" || successor.refundStatus !== "full"
-        || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 3200
+        || !successor || successor.status !== "partially_refunded" || successor.refundStatus !== "partial"
+        || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 1600
+        || successor.refundRuleId !== "qa-refund-1-day-50-percent"
         || paymentRefundPendingCount(CASEY_ID) !== baselinePending
         || approved.length !== 2
         || !approved.some(item => item.paymentId === predecessor.id && Q.sameJson(item.recipients, [NOVA_ID]))
         || !approved.some(item => item.paymentId === successor.id && Q.sameJson(item.recipients, [RILEY_ID]))
         || !exactServiceChat()
-        || current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals")
+        || current.finances.casey.incomeHuf !== savedCurrencyTotal(currentState, CASEY_ID, "paymentIncomeTotals") + 1600
         || current.finances.nova.spentHuf !== savedCurrencyTotal(currentState, NOVA_ID, "paymentSpentTotals")
-        || financeView(RILEY_ID).spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals")) {
+        || financeView(RILEY_ID).spentHuf !== savedCurrencyTotal(currentState, RILEY_ID, "paymentSpentTotals") + 1600) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "refunded-diagnostic", oracle: current, approved });
       Q.fail("approved refund did not clear the write-side counter and both payer/owner totals exactly.");
     }

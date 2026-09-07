@@ -450,7 +450,8 @@ until Codex confirms that the lifecycle extension is ready.
     `HUF 3,200`, not a plain confirmation dialog and not a fresh Borrow request.
     In the Lending Policies panel, confirm the required `QA Borrow policy`
     is shown without a checkbox. Only optional policies are selectable.
-    Confirm `Continue to payment` is enabled.
+    Confirm `Continue to payment` is enabled; continuing records the displayed
+    required policy ID automatically in the payment audit.
 76. Select `Continue to payment` once, select Riley's active Barion `5555` card
     and select `Pay` exactly once. In Ava approve Riley's exact 3DS transaction
     once. The provider result remains inside the existing simulator-owned frame
@@ -462,8 +463,10 @@ until Codex confirms that the lifecycle extension is ready.
     because Riley replaced Nova rather than paying in addition to Nova. Sign
     Riley out of the reused browser and sign Nova in there. Confirm Nova has
     exactly one takeover refund-result notification and Nova's original Asset
-    expense is now `Refunded` in Payment history; no generic manager-change
-    notification targets Nova. Sign Nova out, sign Riley back in and confirm
+    expense is now `Refunded` with a separate `HUF +3,200` refund amount in
+    Payment history. The notification is from MyScoutee, says the refund happened
+    because someone took over the Asset, and does not identify Riley; no generic
+    manager-change notification targets Nova. Sign Nova out, sign Riley back in and confirm
     the visible identity is Riley before continuing.
 78. Report:
 
@@ -501,8 +504,10 @@ until Codex confirms that the lifecycle extension is ready.
     and the conversation contains the exact Riley message once. Reopening `Ask
     Asset Owner` opens that same persisted channel and message; it must not
     create another empty or duplicate channel.
-84. Return to Riley's same Payment history row, select `Request refund` and
-    confirm exactly once. The row gains a pending-refund badge and loses the
+84. Return to Riley's same Payment history row and select `Request refund`.
+    Before deciding, confirm the dialog shows `HUF +1,600` refundable,
+    `HUF −1,600` retained, and the configured 50% / one-day policy basis.
+    Confirm exactly once. The row gains a pending-refund badge and loses the
     request action. Report:
 
     `ASSET-CHECKOUT-001 refund requested: runtime removed, owner chat sent once`
@@ -514,13 +519,14 @@ until Codex confirms that the lifecycle extension is ready.
 86. In Casey, before opening Payment history, confirm its side-menu Payment red
     counter is `1`. Open Payment history and confirm the filter/dropdown also
     carries `1`; the exact `HUF +3,200` income row shows the pending refund and
-    exposes `Approve refund`.
-87. Select `Approve refund` and confirm exactly once. The pending counter
+    exposes `Approve refund`. Select it and confirm the approval dialog shows
+    the same `HUF +1,600` refund, retained amount and policy basis as Riley saw.
+87. Confirm `Approve refund` exactly once. The pending counter
     changes immediately to `0` through the signal and stays `0` after the next
-    user-model poll. Casey's income and Riley's expense totals remove the
-    `HUF 3,200` exactly once.
+    user-model poll. Casey's income and Riley's expense totals both retain
+    `HUF 1,600`; the other `HUF 1,600` is refunded exactly once.
 88. In both Casey's income view and Riley's expense view, confirm the record has
-    a contextually distinct `Refunded` status/badge. Open `Payment summary` on
+    a contextually distinct `Partially refunded` status/badge. Open `Payment summary` on
     each side and confirm the same refunded result appears there. Reopening is
     read-only and cannot refund twice.
 89. Report:

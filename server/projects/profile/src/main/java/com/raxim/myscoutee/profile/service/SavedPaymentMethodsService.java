@@ -542,6 +542,9 @@ public class SavedPaymentMethodsService {
         boolean refundableStatus = Set.of("authorized", "captured", "approved", "partially_refunded")
                 .contains(safeText(payment.getStatus()).toLowerCase(Locale.ROOT));
         boolean paymentAudit = !StringUtils.hasText(payment.getAuditKind()) || "payment".equals(payment.getAuditKind());
+        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.storedOrCurrentPreview(
+                payment,
+                Instant.now().toString());
         SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
                 ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
                 : null;
@@ -558,8 +561,21 @@ public class SavedPaymentMethodsService {
                 payment.getContextSubEventId(),
                 PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? payment.getSourceId() : null,
                 requestStatus, payment.getRefundRequestedAtIso(),
-                "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus),
+                "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus)
+                        && refund.refundableAmount() > 0,
                 "income".equals(direction) && "pending".equals(requestStatus),
+                new PaymentRefundPreviewDto(
+                        refund.paidAmount(),
+                        refund.refundableAmount(),
+                        refund.retainedAmount(),
+                        refund.currency(),
+                        refund.status(),
+                        refund.ruleId(),
+                        refund.ruleOffsetUnit(),
+                        refund.ruleOffsetValue(),
+                        refund.refundKind(),
+                        refund.refundValue(),
+                        refund.ruleDescription()),
                 paymentMethod);
     }
 

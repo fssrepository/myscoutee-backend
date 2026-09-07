@@ -474,6 +474,51 @@ public class PaymentService {
                 "Full refund approved by the payment recipient.");
     }
 
+    public Payment approvePolicyRefund(
+            Payment payment,
+            String reviewedAtIso,
+            double refundableAmount,
+            String refundCurrency,
+            String refundRuleId,
+            String refundNote) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment is required.");
+        }
+        double paidAmount = safeAmount(payment.getAmount());
+        double approvedAmount = Math.min(paidAmount, safeAmount(refundableAmount));
+        if (approvedAmount <= 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
+        }
+        Payment current = payment;
+        if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
+                && hasText(current.getGatewayAuthorizationId())
+                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
+            if (approvedAmount >= paidAmount) {
+                releaseGatewayAuthorization(current, "refund-request:" + normalizeId(current.getId()));
+            } else {
+                captureGatewayAuthorization(
+                        current,
+                        BigDecimal.valueOf(roundMoney(paidAmount - approvedAmount)),
+                        "refund-request:" + normalizeId(current.getId()));
+            }
+            current = paymentsRepository.findById(current.getId()).orElse(current);
+        }
+        boolean full = approvedAmount >= paidAmount;
+        current.setRefundStatus(full ? REFUND_STATUS_FULL : REFUND_STATUS_PARTIAL);
+        current.setRefundedAmount(approvedAmount);
+        current.setRefundCurrency(hasText(refundCurrency) ? refundCurrency : safeCurrency(current.getCurrency()));
+        current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
+        current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
+        current.setRefundNote(hasText(refundNote) ? refundNote : "Refund approved by the payment recipient.");
+        if (full) {
+            if (!"released".equals(safeText(current.getStatus()))) current.setStatus("refunded");
+        } else {
+            current.setStatus("partially_refunded");
+        }
+        return saveAndProjectSpending(current);
+    }
+
     public AssetPaymentReplacement validateAssetPaymentReplacement(
             String predecessorPaymentSessionId,
             String successorPaymentSessionId,
@@ -591,27 +636,13 @@ public class PaymentService {
             String reviewedAtIso,
             String refundRuleId,
             String refundNote) {
-        if (payment == null) {
-            throw new IllegalArgumentException("Payment is required.");
-        }
-        Payment current = payment;
-        if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
-                && hasText(current.getGatewayAuthorizationId())
-                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
-                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
-            releaseGatewayAuthorization(current, "refund-request:" + normalizeId(current.getId()));
-            current = paymentsRepository.findById(current.getId()).orElse(current);
-        }
-        current.setRefundStatus(REFUND_STATUS_FULL);
-        current.setRefundedAmount(safeAmount(current.getAmount()));
-        current.setRefundCurrency(hasText(current.getCurrency()) ? current.getCurrency() : "USD");
-        current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
-        current.setRefundRuleId(hasText(refundRuleId) ? refundRuleId : "owner-approved-request");
-        current.setRefundNote(hasText(refundNote) ? refundNote : "Full refund approved by the payment recipient.");
-        if (!"released".equals(safeText(current.getStatus()))) {
-            current.setStatus("refunded");
-        }
-        return saveAndProjectSpending(current);
+        return approvePolicyRefund(
+                payment,
+                reviewedAtIso,
+                safeAmount(payment == null ? null : payment.getAmount()),
+                payment == null ? null : payment.getCurrency(),
+                refundRuleId,
+                refundNote);
     }
 
     private void validateAssetReplacementPaymentIdentity(

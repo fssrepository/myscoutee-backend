@@ -69,7 +69,21 @@ public final class PaymentDtos {
             String refundRequestedAtIso,
             Boolean canRequestRefund,
             Boolean canApproveRefund,
+            PaymentRefundPreviewDto refundPreview,
             SavedPaymentMethodDto paymentMethod) {}
+
+    public record PaymentRefundPreviewDto(
+            Double paidAmount,
+            Double refundableAmount,
+            Double retainedAmount,
+            String currency,
+            String status,
+            String ruleId,
+            String ruleOffsetUnit,
+            Integer ruleOffsetValue,
+            String refundKind,
+            Double refundValue,
+            String ruleDescription) {}
 
     public record PaymentHistoryPageDto(
             List<PaymentHistoryItemDto> items,

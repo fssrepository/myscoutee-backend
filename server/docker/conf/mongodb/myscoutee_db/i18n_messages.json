@@ -12741,7 +12741,7 @@
     "_id": "i18n-message-en-payment-history-refund-approve-message",
     "key": "payment.history.refund.approve.message",
     "lang": "en",
-    "value": "Approve the full refund for this payment?"
+    "value": "Approve this policy-based refund?"
   },
   {
     "_id": "i18n-message-en-payment-history-refund-approve-title",
@@ -12777,13 +12777,79 @@
     "_id": "i18n-message-en-payment-history-refund-request-message",
     "key": "payment.history.refund.request.message",
     "lang": "en",
-    "value": "Send a full refund request to the payment recipient?"
+    "value": "Send this policy-based refund request to the payment recipient?"
   },
   {
     "_id": "i18n-message-en-payment-history-refund-request-title",
     "key": "payment.history.refund.request.title",
     "lang": "en",
     "value": "Request refund?"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-amount",
+    "key": "payment.history.refund.preview.amount",
+    "lang": "en",
+    "value": "Refund: {amount}"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-retained",
+    "key": "payment.history.refund.preview.retained",
+    "lang": "en",
+    "value": "Retained amount: {amount}"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-policy",
+    "key": "payment.history.refund.preview.policy",
+    "lang": "en",
+    "value": "Policy: {refund} with at least {offset} {unit} notice."
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-full",
+    "key": "payment.history.refund.preview.full",
+    "lang": "en",
+    "value": "full refund"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-none",
+    "key": "payment.history.refund.preview.none",
+    "lang": "en",
+    "value": "no refund"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-percent",
+    "key": "payment.history.refund.preview.percent",
+    "lang": "en",
+    "value": "{percent}% refund"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-no-policy",
+    "key": "payment.history.refund.preview.no.policy",
+    "lang": "en",
+    "value": "No applicable refund-policy rule."
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-unit-hours",
+    "key": "payment.history.refund.preview.unit.hours",
+    "lang": "en",
+    "value": "hours"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-unit-days",
+    "key": "payment.history.refund.preview.unit.days",
+    "lang": "en",
+    "value": "days"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-unit-weeks",
+    "key": "payment.history.refund.preview.unit.weeks",
+    "lang": "en",
+    "value": "weeks"
+  },
+  {
+    "_id": "i18n-message-en-payment-history-refund-preview-unit-months",
+    "key": "payment.history.refund.preview.unit.months",
+    "lang": "en",
+    "value": "months"
   },
   {
     "_id": "i18n-message-en-payment-history-spent",
@@ -12964,6 +13030,12 @@
     "key": "payment.status.refunded",
     "lang": "en",
     "value": "Refunded"
+  },
+  {
+    "_id": "i18n-message-en-payment-status-partially-refunded",
+    "key": "payment.status.partially_refunded",
+    "lang": "en",
+    "value": "Partially refunded"
   },
   {
     "_id": "i18n-message-en-payment-status-requires-action",
@@ -33021,7 +33093,7 @@
     "_id": "i18n-message-hu-payment-history-refund-approve-message",
     "key": "payment.history.refund.approve.message",
     "lang": "hu",
-    "value": "Jóváhagyod a fizetés teljes visszatérítését?"
+    "value": "Jóváhagyod a szabályzat szerinti visszatérítést?"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-approve-title",
@@ -33057,13 +33129,79 @@
     "_id": "i18n-message-hu-payment-history-refund-request-message",
     "key": "payment.history.refund.request.message",
     "lang": "hu",
-    "value": "Elküldöd a teljes visszatérítési kérést a fizetés kedvezményezettjének?"
+    "value": "Elküldöd a szabályzat szerinti visszatérítési kérést a fizetés kedvezményezettjének?"
   },
   {
     "_id": "i18n-message-hu-payment-history-refund-request-title",
     "key": "payment.history.refund.request.title",
     "lang": "hu",
     "value": "Visszatérítést kérsz?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-amount",
+    "key": "payment.history.refund.preview.amount",
+    "lang": "hu",
+    "value": "Visszatérítés: {amount}"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-retained",
+    "key": "payment.history.refund.preview.retained",
+    "lang": "hu",
+    "value": "Visszatartott összeg: {amount}"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-policy",
+    "key": "payment.history.refund.preview.policy",
+    "lang": "hu",
+    "value": "Szabály: {refund}, legalább {offset} {unit} határidővel."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-full",
+    "key": "payment.history.refund.preview.full",
+    "lang": "hu",
+    "value": "teljes visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-none",
+    "key": "payment.history.refund.preview.none",
+    "lang": "hu",
+    "value": "nincs visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-percent",
+    "key": "payment.history.refund.preview.percent",
+    "lang": "hu",
+    "value": "{percent}% visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-no-policy",
+    "key": "payment.history.refund.preview.no.policy",
+    "lang": "hu",
+    "value": "Nincs alkalmazható visszatérítési szabály."
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-unit-hours",
+    "key": "payment.history.refund.preview.unit.hours",
+    "lang": "hu",
+    "value": "órával"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-unit-days",
+    "key": "payment.history.refund.preview.unit.days",
+    "lang": "hu",
+    "value": "nappal"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-unit-weeks",
+    "key": "payment.history.refund.preview.unit.weeks",
+    "lang": "hu",
+    "value": "héttel"
+  },
+  {
+    "_id": "i18n-message-hu-payment-history-refund-preview-unit-months",
+    "key": "payment.history.refund.preview.unit.months",
+    "lang": "hu",
+    "value": "hónappal"
   },
   {
     "_id": "i18n-message-hu-payment-history-spent",
@@ -33244,6 +33382,12 @@
     "key": "payment.status.refunded",
     "lang": "hu",
     "value": "Visszatérítve"
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-partially-refunded",
+    "key": "payment.status.partially_refunded",
+    "lang": "hu",
+    "value": "Részben visszatérítve"
   },
   {
     "_id": "i18n-message-hu-payment-status-requires-action",

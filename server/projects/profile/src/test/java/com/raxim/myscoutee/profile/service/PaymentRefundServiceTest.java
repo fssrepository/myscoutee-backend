@@ -9,6 +9,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryMutationDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
@@ -39,6 +44,8 @@ class PaymentRefundServiceTest {
 
         assertThat(fixture.service.requestRefund("payment-1", "nova")).isSameAs(expected);
         assertThat(payment.getRefundRequestStatus()).isEqualTo("pending");
+        assertThat(payment.getRefundedAmount()).isEqualTo(1600D);
+        assertThat(payment.getRefundRuleId()).isEqualTo("qa-refund");
         assertThat(payment.getRefundRequestedByUserId()).isEqualTo("nova");
         assertThat(payment.getRefundRequestedAtIso()).isNotBlank();
         verify(fixture.mongo).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
@@ -68,9 +75,11 @@ class PaymentRefundServiceTest {
         Fixture fixture = new Fixture();
         Payment payment = fixture.payment("authorized", "pending");
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
-        when(fixture.paymentService.approveFullRefund(eq(payment), any(String.class))).thenAnswer(invocation -> {
-            payment.setStatus("refunded");
-            payment.setRefundStatus("full");
+        when(fixture.paymentService.approvePolicyRefund(
+                eq(payment), any(String.class), eq(1600D), eq("HUF"), eq("qa-refund"), any(String.class)))
+                .thenAnswer(invocation -> {
+            payment.setStatus("partially_refunded");
+            payment.setRefundStatus("partial");
             return payment;
         });
         when(fixture.payments.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -81,7 +90,8 @@ class PaymentRefundServiceTest {
         assertThat(payment.getRefundRequestStatus()).isEqualTo("approved");
         assertThat(payment.getRefundReviewedByUserId()).isEqualTo("casey");
         assertThat(payment.getRefundReviewedAtIso()).isNotBlank();
-        verify(fixture.paymentService).approveFullRefund(eq(payment), any(String.class));
+        verify(fixture.paymentService).approvePolicyRefund(
+                eq(payment), any(String.class), eq(1600D), eq("HUF"), eq("qa-refund"), any(String.class));
         verify(fixture.mongo).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
 
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
@@ -130,6 +140,16 @@ class PaymentRefundServiceTest {
             payment.setAmount(3200D);
             payment.setCurrency("HUF");
             payment.setRefundRequestStatus(refundRequestStatus);
+            payment.setBookingStartAtIso(Instant.now().plus(Duration.ofDays(2)).toString());
+            payment.setCancellationPolicy(new PricingCancellationPolicyDto(
+                    true,
+                    List.of(new PricingCancellationRuleDto("qa-refund", "days", 1, "percent", 50D))));
+            if ("pending".equals(refundRequestStatus)) {
+                payment.setRefundedAmount(1600D);
+                payment.setRefundCurrency("HUF");
+                payment.setRefundRuleId("qa-refund");
+                payment.setRefundNote("Refund 50% when requested at least 1 day before start.");
+            }
             return payment;
         }
     }

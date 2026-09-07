@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryMutationDto;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,11 +69,19 @@ public class PaymentRefundService {
         }
 
         String now = Instant.now().toString();
+        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.preview(payment, now);
+        if (refund.refundableAmount() <= 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
+        }
         payment.setRefundRequestStatus("pending");
         payment.setRefundRequestedAtIso(now);
         payment.setRefundRequestedByUserId(actorId);
         payment.setRefundReviewedAtIso(null);
         payment.setRefundReviewedByUserId(null);
+        payment.setRefundedAmount(refund.refundableAmount());
+        payment.setRefundCurrency(refund.currency());
+        payment.setRefundRuleId(refund.ruleId());
+        payment.setRefundNote(refund.ruleDescription());
         Payment saved = paymentsRepository.save(payment);
         incrementRecipientPendingCounter(recipientUserId);
         enqueueRefundNotification(saved, actorId, recipientUserId, false);
@@ -94,7 +103,14 @@ public class PaymentRefundService {
         }
 
         String now = Instant.now().toString();
-        Payment refunded = paymentService.approveFullRefund(payment, now);
+        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.storedOrCurrentPreview(payment, now);
+        Payment refunded = paymentService.approvePolicyRefund(
+                payment,
+                now,
+                refund.refundableAmount(),
+                refund.currency(),
+                refund.ruleId(),
+                refund.ruleDescription());
         refunded.setRefundRequestStatus("approved");
         refunded.setRefundReviewedAtIso(now);
         refunded.setRefundReviewedByUserId(actorId);
@@ -134,6 +150,15 @@ public class PaymentRefundService {
         String paymentId = normalize(payment.getId());
         String sourceId = normalize(payment.getSourceId());
         String type = approved ? "payment-refund-approved" : "payment-refund-requested";
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("paymentId", paymentId);
+        payload.put("sourceId", sourceId);
+        payload.put("refundRequestStatus", approved ? "approved" : "pending");
+        payload.put("refundAmount", Double.toString(payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount()));
+        payload.put("refundCurrency", normalize(payment.getRefundCurrency()));
+        payload.put("refundRuleId", normalize(payment.getRefundRuleId()));
+        payload.put("notification_title_key", "notification.kind." + type + ".title");
+        payload.put("notification_message_key", "notification.kind." + type + ".message");
         notificationOutboxService.enqueue(new NotificationIntent(
                 type,
                 "payment",
@@ -148,10 +173,7 @@ public class PaymentRefundService {
                 "/assets/logo/heart.webp",
                 "/assets/logo/heart.webp",
                 type + "-" + paymentId,
-                Map.of(
-                        "paymentId", paymentId,
-                        "sourceId", sourceId,
-                        "refundRequestStatus", approved ? "approved" : "pending"),
+                payload,
                 actorUserId));
     }
 
