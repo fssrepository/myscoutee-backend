@@ -77,6 +77,20 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-accepted asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-takeover asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-manager-left asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-takeover asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-refund-requested asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-refunded asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-last-leave asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-last-leave asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-cancelled asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify asset-checkout ASSET-CHECKOUT-001
@@ -388,4 +402,128 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     `ASSET-CHECKOUT-001 UI complete: Barion approve, decline and timeout remain isolated`
 
 Wait for Codex's final persisted/idempotence oracle. Do not reset or continue
-to another testcase until Codex records the result and restores the fixture.
+to another testcase until Codex records the result and prepares the lifecycle
+extension below.
+
+### 7. Leave the paid manager role and require a paid Take Over
+
+69. Wait for Codex to verify the core terminal state, roll back to the accepted
+    savepoint and prepare the isolated `takeover-ready` extension. Begin only
+    after Codex confirms Nova and Riley are the two accepted scoped borrowers,
+    Nova is the runtime Manager, Casey remains only the global Asset owner, and
+    Riley has no payment yet. This preparation is fixture setup, not a manual
+    application action.
+70. In Nova, reopen the paid borrowed Transport and its Members list. Confirm
+    the dark badge is `2/3`, there is no red pending counter, Casey is absent,
+    and Nova and Riley appear exactly once. Nova's own member menu contains
+    `Leave`. Because Nova is the runtime Manager, Riley's member menu contains
+    `Remove member`; do not select it in this branch. Neither card contains
+    Promote/Revoke Manager.
+71. Close Members, open the borrowed resource-card menu and confirm it contains
+    the separate convenience action `Remove`, plus `Ask Asset Owner`; it must
+    not say `Ask Organizer`. Do not select `Remove` yet.
+72. Return to Members and select `Leave` from Nova's own member card exactly
+    once. Confirm the danger dialog once. The runtime association remains, its
+    dark badge changes to `1/3`, and no red pending count appears. Riley is the
+    remaining accepted borrower and receives one Take Over-required
+    notification. Nova's existing payment is still Authorized and is not yet
+    refunded merely because Nova left.
+73. Report:
+
+    `ASSET-CHECKOUT-001 manager left: Riley must pay before Take Over`
+
+74. After Codex verifies `manager-left`, sign Nova out of that browser and sign
+    in as **Riley** in the same browser. Confirm the visible identity is Riley
+    before opening any Asset surface; do not create a fourth Google/browser
+    session.
+75. Open the exact Event/Sub-event, the paid borrowed Transport and its Members
+    list. Riley's own member menu now contains `Take Over`. Select it once.
+    Confirm this opens the locked replacement-payment review for exactly
+    `HUF 3,200`, not a plain confirmation dialog and not a fresh Borrow request.
+76. Advance once, select Riley's active Barion `5555` card and select `Pay`
+    exactly once. In Ava approve Riley's exact 3DS transaction once. The
+    provider result remains inside the existing simulator-owned frame and
+    returns automatically.
+77. Without reload, confirm Riley becomes the scoped Manager and the badge
+    remains `1/3`. Nova does not reappear as an accepted scoped member. Riley's
+    Payment history contains one Authorized `HUF -3,200` Asset expense linked
+    to the exact Event/Sub-event; Casey's net Asset income remains `HUF +3,200`
+    because Riley replaced Nova rather than paying in addition to Nova.
+78. Report:
+
+    `ASSET-CHECKOUT-001 paid Take Over complete: Riley manager, Nova refunded`
+
+79. Wait for Codex to prove the linked predecessor/successor payments: Riley's
+    payment is Authorized/Joined, Nova's predecessor authorization is Released
+    with a full refund, and the write-side finance totals changed payer exactly
+    once. Nova receives only the refund-result notification for completion;
+    Nova must not receive a generic manager-change notification.
+
+### 8. Remove the runtime association, contact the Asset Owner and refund
+
+80. Still in Riley, open the borrowed resource-card menu. Confirm `Remove` is
+    present regardless of the remaining member count. Select it once and
+    confirm the danger dialog. The runtime Event/Sub-event association and its
+    card disappear. Casey's global Asset is not deleted, and both payment
+    histories remain available.
+81. Open Riley's Payment history and the exact Authorized Asset expense row.
+    Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
+    not contain `Ask Organizer`.
+82. Select `Ask Asset Owner`. Confirm Casey is the recipient even though Casey
+    was never a scoped borrower. Before sending, confirm no empty chat was
+    created. Send this exact first message once:
+
+    `QA ASSET-CHECKOUT-001: Riley asks Casey about the paid borrowed Transport.`
+
+83. Confirm the Asset service chat is now visible in the Chat channel. Casey's
+    Chat unread red counter increases once and the conversation contains the
+    exact Riley message once.
+84. Return to Riley's same Payment history row, select `Request refund` and
+    confirm exactly once. The row gains a pending-refund badge and loses the
+    request action. Report:
+
+    `ASSET-CHECKOUT-001 refund requested: runtime removed, owner chat sent once`
+
+85. Wait for Codex to prove the global Asset and both payment records remain,
+    the runtime resource is absent, the service chat/message is exact-once,
+    Casey's persisted write-side `paymentRefundsPending` changed by `+1`, and
+    exactly one refund-request notification targets Casey.
+86. In Casey, before opening Payment history, confirm its side-menu Payment red
+    counter is `1`. Open Payment history and confirm the filter/dropdown also
+    carries `1`; the exact `HUF +3,200` income row shows the pending refund and
+    exposes `Approve refund`.
+87. Select `Approve refund` and confirm exactly once. The pending counter
+    changes immediately to `0` through the signal and stays `0` after the next
+    user-model poll. Casey's income and Riley's expense totals remove the
+    `HUF 3,200` exactly once.
+88. In both Casey's income view and Riley's expense view, confirm the record has
+    a contextually distinct `Refunded` status/badge. Open `Payment summary` on
+    each side and confirm the same refunded result appears there. Reopening is
+    read-only and cannot refund twice.
+89. Sign Riley out of the reused browser and sign Nova back in. Confirm Nova has
+    exactly one takeover refund-result notification and the predecessor Asset
+    payment is `Refunded`; no generic manager-change notification targets Nova.
+90. Report:
+
+    `ASSET-CHECKOUT-001 refund approved: counters zero, histories refunded`
+
+### 9. Last accepted manager Leave removes only the borrowed runtime
+
+91. Wait for Codex to verify the refund branch, roll back to the accepted
+    savepoint and prepare `last-leave-ready`. Confirm Nova is again the only
+    accepted scoped Manager and the paid runtime card is present at `1/3`.
+92. In Nova's own Members card, select `Leave` exactly once; do not use the
+    resource-card `Remove` action in this branch. Confirm the danger dialog.
+93. Confirm the last borrower leaving removes the runtime Event/Sub-event Asset
+    association. It does not delete Casey's global Asset and does not erase
+    Nova's payment history. With no remaining accepted borrower, no Take Over
+    notification is created and no automatic refund occurs; the retained
+    Payment-history row continues to provide `Ask Asset Owner` and
+    `Request refund`.
+94. Report:
+
+    `ASSET-CHECKOUT-001 last manager left: runtime removed, Asset and history retained`
+
+Wait for Codex's `last-leave-verified` persisted oracle. These shared paid
+take-over/refund mechanics are replayed manually only on this Asset checkpoint;
+do not repeat the Event checkout testcase for them.

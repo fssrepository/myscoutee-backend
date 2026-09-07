@@ -6776,9 +6776,12 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 ```
 
 Immediately before every configured browser launch or relaunch,
-`prepare-browser` snapshot-protects and clears Casey, Nova and Ava's active
-demo-session slots. The checkpoint reset restores the pre-QA session-state
-documents exactly. The first user boundary is checklist step 1 through step 18. On the exact
+`prepare-browser` snapshot-protects and clears Casey, Nova, Riley and Ava's
+active demo-session slots. The launcher still opens only the three configured
+Casey/Nova/Ava browser profiles; Riley later reuses Nova's profile through an
+explicit user-controlled logout/login. The checkpoint reset restores the
+pre-QA session-state documents exactly. The first user boundary is checklist
+step 1 through step 18. On the exact
 `payment ready` phrase, run `capture-payment-ready`; do not enable 3DS or Pay
 before that oracle. The current retained run is already at
 `revised-payment-ready`; continue at step 31. Replay boundaries are available
@@ -6814,7 +6817,10 @@ this row's pre-payment basket Cancel or successful Barion payment.
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
-  | Owner-accepted paid borrow | read-only `Payment summary`; exact scoped resource/accepted projection | fresh same-scope payment or Event-role change |
+  | Owner-accepted paid borrow | read-only `Payment summary`; member-card `Leave`; resource-card `Remove`; `Ask Asset Owner` | Promote/Revoke or global Asset delete |
+  | Manager left with accepted successor | `Take Over`; exact predecessor price; replacement payment flow | plain confirm-only transfer or early predecessor refund |
+  | Runtime association removed | retained Payment history with `Ask Asset Owner` and `Request refund` | global Asset deletion or erased payment record |
+  | Refund pending/approved | owner Payment counter/filter delta; `Approve refund`; contextual `Refunded` history and summary | query projection counter or duplicate refund |
 
 - The Borrow popup's own lazy Asset-detail response supplies the authoritative
   parent Event/Sub-event window. The date control immediately normalizes an
@@ -6893,11 +6899,42 @@ this row's pre-payment basket Cancel or successful Barion payment.
   terminal payment. Neither control may create a borrow request, inventory
   delta, resource assignment or entitlement. Each retains only its isolated
   `pay/failed` checkout audit so the failed attempt remains recoverable.
+- After the core terminal oracle, roll back to `accepted` and prepare one
+  accepted Riley scoped borrower without a payment. Nova's own member-card
+  action is `Leave`; as runtime Manager Nova can `Remove member` from Riley's
+  card, while the resource-card `Remove` remains a separate convenience action.
+  Do not exercise the Riley removal in the paid-takeover branch.
+- Nova leaving while Riley remains keeps the runtime association at accepted
+  occupancy `1/3` and gives Riley one Take Over-required notification. Riley
+  reuses Nova's browser after logout/login. Take Over must open the replacement
+  Barion payment flow for the predecessor's exact `HUF 3,200`, and transfer only
+  after successful authorization. Completion links both payments, releases and
+  fully refunds Nova's predecessor authorization, keeps Casey's net income at
+  one payment, and makes Riley the scoped Manager. Nova receives the refund
+  result only, not a generic manager-change notification.
+- Riley then uses resource-card `Remove`. This status-deletes only the exact
+  runtime scope and retains Casey's global Asset plus both payment histories.
+  The Asset payment expense menu uses `Ask Asset Owner`, resolves Casey rather
+  than the departed runtime Manager or Event organizer, and creates the Asset
+  service chat only on the first sent message. The normal Chat channel and
+  unread red counter own delivery after creation.
+- Riley requests a refund from the retained history row. Casey's backend Users
+  write model increments `paymentRefundsPending`; the side-menu poll exposes it
+  before Payment history opens, and the popup filter shows the same value.
+  Casey approves from the income row. Both finance signals update immediately,
+  the persisted counter returns to zero, and both history and Payment summary
+  show a contextually distinct `Refunded` result.
+- Finally roll back to `accepted` once more. With no accepted successor, Nova's
+  member-card `Leave` removes only the runtime association immediately. The
+  global Asset and payment history remain, no Take Over notification or
+  automatic refund is created, and the retained expense row still offers
+  `Ask Asset Owner` and `Request refund`.
 - The versioned `asset-checkout` fixture provides guarded `stage`, read-only
   `status`, `payment-ready`, revised-payment-ready, `paid-pending`,
-  request-destination, `accepted` and `cancelled-control` captures, five exact
-  persisted rollback savepoints, terminal `verify` and exact `reset`. It also mirrors Nova's
-  active and expired Barion card controls into the running payment simulator.
+  request-destination, `accepted`, `cancelled-control`, paid Take Over, runtime
+  Remove/refund and last-manager Leave captures, exact persisted rollback
+  savepoints, terminal verifiers and exact `reset`. It mirrors Nova and Riley's
+  active Barion cards plus Nova's expired control into the running payment simulator.
   The payment-ready rollback restores the server boundary only; if the browser
   draft was already cleared, the user repeats steps 1-18 because the harness
   never writes browser-local storage.
