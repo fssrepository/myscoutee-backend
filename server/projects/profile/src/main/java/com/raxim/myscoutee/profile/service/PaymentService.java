@@ -1307,7 +1307,7 @@ public class PaymentService {
             payment.setAccountedSpentAmount(nextAccounted);
         }
         Payment saved = paymentsRepository.save(payment);
-        double delta = roundMoney(nextAccounted - previousAccounted);
+        double delta = roundSignedMoney(nextAccounted - previousAccounted);
         String userId = normalizeId(saved.getUserId());
         String recipientUserId = normalizeId(saved.getRecipientUserId());
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
@@ -1376,7 +1376,11 @@ public class PaymentService {
             return 0D;
         }
         String status = safeText(payment.getStatus());
-        boolean releasedRefund = "released".equals(status) && safeAmount(payment.getRefundedAmount()) > 0;
+        boolean releasedRefund = "released".equals(status)
+                && (safeAmount(payment.getRefundedAmount()) > 0
+                        || payment.getProcessedGatewayEventIds().stream()
+                                .map(this::safeText)
+                                .anyMatch(eventId -> eventId.startsWith("operation:refund-request:")));
         if (!releasedRefund && !Set.of("authorized", "captured", "approved", "partially_refunded", "refunded").contains(status)) {
             return 0D;
         }
@@ -1438,7 +1442,7 @@ public class PaymentService {
         history.setAccountedSpentAmount(amount);
         history.setCreatedDate(refundedAtIso);
         Payment saved = paymentsRepository.save(history);
-        double delta = roundMoney(amount - previousAmount);
+        double delta = roundSignedMoney(amount - previousAmount);
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
         if (mongoTemplate != null && currency.matches("[A-Z]{3}") && Math.abs(delta) >= 0.005D) {
             incrementPaymentTotal(saved.getUserId(), "paymentIncomeTotals", currency, delta);
@@ -1771,6 +1775,10 @@ public class PaymentService {
 
     private double roundMoney(double value) {
         return Math.round(Math.max(0D, value) * 100D) / 100D;
+    }
+
+    private double roundSignedMoney(double value) {
+        return Math.round(value * 100D) / 100D;
     }
 
     private record RefundComputation(

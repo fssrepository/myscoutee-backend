@@ -693,6 +693,24 @@ class PaymentServiceTest {
     }
 
     @Test
+    void refundReleaseKeepsTheOriginalGrossPaymentAccounted() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment payment = new Payment();
+        payment.setAuditKind("payment");
+        payment.setStatus("released");
+        payment.setAmount(3200D);
+        payment.setProcessedGatewayEventIds(List.of("operation:refund-request:old-payment"));
+        PaymentService service =
+                paymentService(repository, true, new RecordingPaymentProcessor("barion"));
+
+        Double accounted = ReflectionTestUtils.invokeMethod(service, "accountedSpentAmount", payment);
+        Double signedDelta = ReflectionTestUtils.invokeMethod(service, "roundSignedMoney", -3200D);
+
+        assertThat(accounted).isEqualTo(3200D);
+        assertThat(signedDelta).isEqualTo(-3200D);
+    }
+
+    @Test
     void paidAssetTakeOverAuthorizesSuccessorBeforeReleasingAndRefundingPredecessor() {
         Map<String, Payment> paymentsBySession = new HashMap<>();
         PaymentsRepository repository = inMemoryRepository(paymentsBySession);
