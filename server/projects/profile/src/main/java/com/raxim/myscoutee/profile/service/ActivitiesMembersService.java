@@ -442,9 +442,6 @@ public class ActivitiesMembersService {
             boolean borrowerInitiated = "borrow".equalsIgnoreCase(safeText(request.requestKind()));
             member.setPendingSource(borrowerInitiated ? "member" : "admin");
             member.setRequestKind(borrowerInitiated ? REQUEST_KIND_JOIN : REQUEST_KIND_INVITE);
-            if (borrowerInitiated) {
-                member.setStatusText("Waiting for owner approval.");
-            }
         }
         String requestedAtIso = normalizeDateTime(request.requestedAtIso(), Instant.now().toString());
         String actionAtIso = acceptedStoredManager
@@ -3961,7 +3958,7 @@ public class ActivitiesMembersService {
                 user == null ? initialsFromText(normalizeId(member.getUserId())) : safeText(user.getInitials()),
                 user == null ? "man" : normalizeGender(user.getGender()),
                 user == null ? "" : safeText(user.getCity()),
-                defaultStatusText(status, requestKind, pendingSource),
+                defaultStatusText(status, requestKind, pendingSource, member.getOwnerType()),
                 role,
                 status,
                 pendingSource,
@@ -5411,7 +5408,11 @@ public class ActivitiesMembersService {
         return initials.toString();
     }
 
-    private String defaultStatusText(String status, String requestKind, String pendingSource) {
+    private String defaultStatusText(
+            String status,
+            String requestKind,
+            String pendingSource,
+            String ownerType) {
         if (STATUS_ACCEPTED.equals(status)) {
             return "Recently Active";
         }
@@ -5431,7 +5432,9 @@ public class ActivitiesMembersService {
             return "Invitation pending.";
         }
         if (REQUEST_KIND_APPROVAL.equals(requestKind) || REQUEST_KIND_JOIN.equals(requestKind) || "member".equals(pendingSource)) {
-            return "Waiting for admin approval.";
+            return OWNER_TYPE_ASSET.equals(normalizeOwnerType(ownerType))
+                    ? "Waiting for owner approval."
+                    : "Waiting for admin approval.";
         }
         return "Invitation pending.";
     }

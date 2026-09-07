@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryPageDto;
+import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryMutationDto;
 import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentMethodRegistrationDto;
 import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentMethodRegistrationCallbackDto;
 import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentMethodRegistrationRequestDto;
@@ -22,6 +23,7 @@ import com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.SavedPaymentMeth
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.SavedPaymentMethodsService;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
+import com.raxim.myscoutee.profile.service.PaymentRefundService;
 
 @RestController
 @RequestMapping("/payment-methods")
@@ -29,14 +31,17 @@ public class SavedPaymentMethodsController {
     private final SavedPaymentMethodsService service;
     private final HomeUserProfileService homeUserProfileService;
     private final PaymentSimulatorRegistrationClient simulatorClient;
+    private final PaymentRefundService paymentRefundService;
 
     public SavedPaymentMethodsController(
             SavedPaymentMethodsService service,
             HomeUserProfileService homeUserProfileService,
-            PaymentSimulatorRegistrationClient simulatorClient) {
+            PaymentSimulatorRegistrationClient simulatorClient,
+            PaymentRefundService paymentRefundService) {
         this.service = service;
         this.homeUserProfileService = homeUserProfileService;
         this.simulatorClient = simulatorClient;
+        this.paymentRefundService = paymentRefundService;
     }
 
     @GetMapping
@@ -97,6 +102,20 @@ public class SavedPaymentMethodsController {
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size) {
         return service.queryHistory(resolveCurrentUserId(userId), direction, page, size);
+    }
+
+    @PostMapping("/history/{paymentId}/refund-request")
+    public PaymentHistoryMutationDto requestRefund(
+            @PathVariable String paymentId,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return paymentRefundService.requestRefund(paymentId, resolveCurrentUserId(userId));
+    }
+
+    @PostMapping("/history/{paymentId}/refund-approve")
+    public PaymentHistoryMutationDto approveRefund(
+            @PathVariable String paymentId,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return paymentRefundService.approveRefund(paymentId, resolveCurrentUserId(userId));
     }
 
     private String resolveCurrentUserId(String requestedUserId) {

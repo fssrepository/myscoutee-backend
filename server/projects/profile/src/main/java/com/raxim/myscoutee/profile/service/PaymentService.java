@@ -423,6 +423,28 @@ public class PaymentService {
             String bookingStartAtIso,
             String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
+        recordAssetBooking(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                bookingEndAtIso,
+                cancellationPolicy,
+                null,
+                null);
+    }
+
+    public void recordAssetBooking(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            String bookingEndAtIso,
+            PricingCancellationPolicyDto cancellationPolicy,
+            String eventId,
+            String subEventId) {
         Payment payment = recordBooking(
                 paymentSessionId,
                 userId,
@@ -431,12 +453,41 @@ public class PaymentService {
                 bookingStartAtIso,
                 bookingEndAtIso,
                 cancellationPolicy);
+        if (payment != null) {
+            payment.setContextEventId(normalizeId(eventId));
+            payment.setContextSubEventId(normalizeId(subEventId));
+            payment = saveAndProjectSpending(payment);
+        }
         if (payment != null
                 && FULFILLMENT_KIND_CLIENT.equals(safeText(payment.getFulfillmentKind()))
                 && statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(payment.getStatus()))
                 && !FULFILLMENT_SUCCEEDED.equals(safeText(payment.getFulfillmentStatus()))) {
             markGatewayFulfillment(payment.getId(), true, null);
         }
+    }
+
+    public Payment approveFullRefund(Payment payment, String reviewedAtIso) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Payment is required.");
+        }
+        Payment current = payment;
+        if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
+                && hasText(current.getGatewayAuthorizationId())
+                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
+            releaseGatewayAuthorization(current, "refund-request:" + normalizeId(current.getId()));
+            current = paymentsRepository.findById(current.getId()).orElse(current);
+        }
+        current.setRefundStatus(REFUND_STATUS_FULL);
+        current.setRefundedAmount(safeAmount(current.getAmount()));
+        current.setRefundCurrency(hasText(current.getCurrency()) ? current.getCurrency() : "USD");
+        current.setRefundedAtIso(hasText(reviewedAtIso) ? reviewedAtIso : nowIso());
+        current.setRefundRuleId("owner-approved-request");
+        current.setRefundNote("Full refund approved by the payment recipient.");
+        if (!"released".equals(safeText(current.getStatus()))) {
+            current.setStatus("refunded");
+        }
+        return saveAndProjectSpending(current);
     }
 
     public EventCheckoutPaymentAuditDto loadPaymentAudit(

@@ -1,0 +1,174 @@
+package com.raxim.myscoutee.profile.service;
+
+import static com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryMutationDto;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.PaymentsRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
+
+@Service
+public class PaymentRefundService {
+    private static final Set<String> REFUNDABLE_STATUSES = Set.of(
+            "authorized", "captured", "approved", "partially_refunded");
+
+    private final PaymentsRepository paymentsRepository;
+    private final PaymentService paymentService;
+    private final SavedPaymentMethodsService paymentMethodsService;
+    private final NotificationOutboxService notificationOutboxService;
+    private final MongoTemplate mongoTemplate;
+
+    public PaymentRefundService(
+            PaymentsRepository paymentsRepository,
+            PaymentService paymentService,
+            SavedPaymentMethodsService paymentMethodsService,
+            NotificationOutboxService notificationOutboxService,
+            MongoTemplate mongoTemplate) {
+        this.paymentsRepository = paymentsRepository;
+        this.paymentService = paymentService;
+        this.paymentMethodsService = paymentMethodsService;
+        this.notificationOutboxService = notificationOutboxService;
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public synchronized PaymentHistoryMutationDto requestRefund(String paymentId, String actorUserId) {
+        String actorId = requiredId(actorUserId, "Current user");
+        Payment payment = requirePayment(paymentId);
+        if (!actorId.equals(normalize(payment.getUserId()))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the payer can request this refund.");
+        }
+        String recipientUserId = normalize(payment.getRecipientUserId());
+        if (!StringUtils.hasText(recipientUserId) || recipientUserId.equals(actorId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This payment has no separate recipient.");
+        }
+        String requestStatus = refundRequestStatus(payment);
+        if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
+            return paymentMethodsService.mutationDto(payment, actorId);
+        }
+        if (!REFUNDABLE_STATUSES.contains(normalize(payment.getStatus()).toLowerCase())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This payment can no longer be refunded.");
+        }
+        if (StringUtils.hasText(payment.getAuditKind()) && !"payment".equals(payment.getAuditKind())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment audit revisions cannot be refunded.");
+        }
+
+        String now = Instant.now().toString();
+        payment.setRefundRequestStatus("pending");
+        payment.setRefundRequestedAtIso(now);
+        payment.setRefundRequestedByUserId(actorId);
+        payment.setRefundReviewedAtIso(null);
+        payment.setRefundReviewedByUserId(null);
+        Payment saved = paymentsRepository.save(payment);
+        incrementRecipientPendingCounter(recipientUserId);
+        enqueueRefundNotification(saved, actorId, recipientUserId, false);
+        return paymentMethodsService.mutationDto(saved, actorId);
+    }
+
+    public synchronized PaymentHistoryMutationDto approveRefund(String paymentId, String actorUserId) {
+        String actorId = requiredId(actorUserId, "Current user");
+        Payment payment = requirePayment(paymentId);
+        if (!actorId.equals(normalize(payment.getRecipientUserId()))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the payment recipient can approve this refund.");
+        }
+        String requestStatus = refundRequestStatus(payment);
+        if ("approved".equals(requestStatus)) {
+            return paymentMethodsService.mutationDto(payment, actorId);
+        }
+        if (!"pending".equals(requestStatus)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There is no pending refund request for this payment.");
+        }
+
+        String now = Instant.now().toString();
+        Payment refunded = paymentService.approveFullRefund(payment, now);
+        refunded.setRefundRequestStatus("approved");
+        refunded.setRefundReviewedAtIso(now);
+        refunded.setRefundReviewedByUserId(actorId);
+        refunded = paymentsRepository.save(refunded);
+        decrementRecipientPendingCounter(actorId);
+        enqueueRefundNotification(refunded, actorId, normalize(refunded.getUserId()), true);
+        return paymentMethodsService.mutationDto(refunded, actorId);
+    }
+
+    private Payment requirePayment(String paymentId) {
+        return paymentsRepository.findById(requiredId(paymentId, "Payment"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment was not found."));
+    }
+
+    private void incrementRecipientPendingCounter(String recipientUserId) {
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(recipientUserId)),
+                new Update().inc("paymentRefundsPending", 1),
+                Users.class);
+    }
+
+    private void decrementRecipientPendingCounter(String recipientUserId) {
+        mongoTemplate.updateFirst(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("userId").is(recipientUserId),
+                        Criteria.where("paymentRefundsPending").gt(0))),
+                new Update().inc("paymentRefundsPending", -1),
+                Users.class);
+    }
+
+    private void enqueueRefundNotification(
+            Payment payment,
+            String actorUserId,
+            String recipientUserId,
+            boolean approved) {
+        if (!StringUtils.hasText(recipientUserId)) return;
+        String paymentId = normalize(payment.getId());
+        String sourceId = normalize(payment.getSourceId());
+        String type = approved ? "payment-refund-approved" : "payment-refund-requested";
+        notificationOutboxService.enqueue(new NotificationIntent(
+                type,
+                "payment",
+                paymentId,
+                "payment-participant",
+                List.of(recipientUserId),
+                approved ? "Refund approved" : "Refund requested",
+                approved
+                        ? "The payment recipient approved your refund request."
+                        : "A payer requested a refund for " + sourceId + ".",
+                "/game",
+                "/assets/logo/heart.webp",
+                "/assets/logo/heart.webp",
+                type + "-" + paymentId,
+                Map.of(
+                        "paymentId", paymentId,
+                        "sourceId", sourceId,
+                        "refundRequestStatus", approved ? "approved" : "pending"),
+                actorUserId));
+    }
+
+    private String refundRequestStatus(Payment payment) {
+        String status = normalize(payment == null ? null : payment.getRefundRequestStatus()).toLowerCase();
+        return StringUtils.hasText(status) ? status : "none";
+    }
+
+    private String requiredId(String value, String label) {
+        String normalized = normalize(value);
+        if (!StringUtils.hasText(normalized)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, label + " is required.");
+        }
+        return normalized;
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim();
+    }
+}

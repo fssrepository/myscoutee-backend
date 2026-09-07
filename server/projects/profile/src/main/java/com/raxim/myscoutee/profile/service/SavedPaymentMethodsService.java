@@ -306,7 +306,8 @@ public class SavedPaymentMethodsService {
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
-                incomeTotals(ownerId));
+                incomeTotals(ownerId),
+                pendingRefundCount(ownerId));
     }
 
     public PaymentHistoryPageDto queryHistory(String userId, Integer page, Integer size) {
@@ -338,7 +339,8 @@ public class SavedPaymentMethodsService {
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(ownerId),
-                incomeTotals(ownerId));
+                incomeTotals(ownerId),
+                pendingRefundCount(ownerId));
     }
 
     public synchronized void delete(String userId, String paymentMethodId) {
@@ -528,19 +530,52 @@ public class SavedPaymentMethodsService {
         return toHistoryDto(payment, normalizeId(payment.getUserId()));
     }
 
-    private PaymentHistoryItemDto toHistoryDto(Payment payment, String viewerUserId) {
+    public PaymentHistoryItemDto toHistoryDto(Payment payment, String viewerUserId) {
         String paymentMethodId = normalizeId(payment.getPaymentMethodId());
         String userId = normalizeId(payment.getUserId());
+        String viewerId = normalizeId(viewerUserId);
+        String direction = userId.equals(viewerId) ? "expense" : "income";
+        String fulfillmentKind = normalizeId(payment.getFulfillmentKind());
+        String serviceContext = PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? "asset" : "event";
+        String requestStatus = normalizeId(payment.getRefundRequestStatus());
+        if (!StringUtils.hasText(requestStatus)) requestStatus = "none";
+        boolean refundableStatus = Set.of("authorized", "captured", "approved", "partially_refunded")
+                .contains(safeText(payment.getStatus()).toLowerCase(Locale.ROOT));
+        boolean paymentAudit = !StringUtils.hasText(payment.getAuditKind()) || "payment".equals(payment.getAuditKind());
         SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
                 ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
                 : null;
         return new PaymentHistoryItemDto(
                 payment.getId(), payment.getSourceId(),
-                normalizeId(payment.getUserId()).equals(normalizeId(viewerUserId)) ? "expense" : "income",
+                direction,
                 payment.getPaymentMethodId(), payment.getProvider(), payment.getStatus(), payment.getLastGatewayError(),
                 payment.getAmount(), payment.getCurrency(), payment.getBookingStatus(),
                 payment.getAuditKind(), payment.getFulfillmentKind(), payment.getCheckoutSessionId(), payment.getCreatedDate(),
+                payment.getRecipientUserId(), serviceContext,
+                PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind)
+                        ? payment.getContextEventId()
+                        : payment.getSourceId(),
+                payment.getContextSubEventId(),
+                PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? payment.getSourceId() : null,
+                requestStatus, payment.getRefundRequestedAtIso(),
+                "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus),
+                "income".equals(direction) && "pending".equals(requestStatus),
                 paymentMethod);
+    }
+
+    public PaymentHistoryMutationDto mutationDto(Payment payment, String viewerUserId) {
+        String ownerId = requiredId(viewerUserId, "Current user");
+        return new PaymentHistoryMutationDto(
+                toHistoryDto(payment, ownerId),
+                spendingTotals(ownerId),
+                incomeTotals(ownerId),
+                pendingRefundCount(ownerId));
+    }
+
+    public int pendingRefundCount(String userId) {
+        return usersRepository.findByUserId(normalizeId(userId))
+                .map(user -> Math.max(0, user.getPaymentRefundsPending() == null ? 0 : user.getPaymentRefundsPending()))
+                .orElse(0);
     }
 
     private List<Payment> mergeHistory(List<Payment> expenses, List<Payment> income) {

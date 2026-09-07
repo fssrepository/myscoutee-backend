@@ -60,6 +60,15 @@ public final class PaymentDtos {
             String fulfillmentKind,
             String checkoutSessionId,
             String createdAtIso,
+            String recipientUserId,
+            String serviceContext,
+            String contextEventId,
+            String contextSubEventId,
+            String contextAssetId,
+            String refundRequestStatus,
+            String refundRequestedAtIso,
+            Boolean canRequestRefund,
+            Boolean canApproveRefund,
             SavedPaymentMethodDto paymentMethod) {}
 
     public record PaymentHistoryPageDto(
@@ -67,5 +76,12 @@ public final class PaymentDtos {
             long total,
             String nextCursor,
             Map<String, Double> spendingTotals,
-            Map<String, Double> incomeTotals) {}
+            Map<String, Double> incomeTotals,
+            Integer pendingRefundCount) {}
+
+    public record PaymentHistoryMutationDto(
+            PaymentHistoryItemDto item,
+            Map<String, Double> spendingTotals,
+            Map<String, Double> incomeTotals,
+            Integer pendingRefundCount) {}
 }
