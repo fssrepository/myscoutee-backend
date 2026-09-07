@@ -1669,7 +1669,15 @@ public class AssetsService {
                 || hasAcceptedAssetManagerRole(asset, normalizedUserId)) {
             return true;
         }
-        return false;
+        ActivitiesResourcesService activitiesResourcesService = activitiesResourcesServiceProvider == null
+                ? null
+                : activitiesResourcesServiceProvider.getIfAvailable();
+        return activitiesResourcesService != null
+                && normalizedUserId.equals(normalizeId(
+                        activitiesResourcesService.scopedAssetManagerUserId(
+                                normalizedEventId,
+                                normalizedSubEventId,
+                                normalizedAssetId)));
     }
 
     private boolean isRequestInScope(AssetRequestRecord request, String eventId, String subEventId) {

@@ -961,11 +961,17 @@ class AssetsServiceTest {
     }
 
     @Test
-    void scopedAssetMemberManagementRequiresOwnerOrExplicitManagerRole() {
+    void scopedAssetMemberManagementAllowsOwnerGlobalManagerOrExactRuntimeManager() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = assetWithEventRequest();
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("runtime-manager");
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -981,9 +987,12 @@ class AssetsServiceTest {
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
                 mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u1")).isTrue();
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "runtime-manager")).isTrue();
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u2")).isFalse();
 
@@ -1022,6 +1031,52 @@ class AssetsServiceTest {
                         acceptedBooking.inventoryApplied()))));
         assertThat(service.canManageScopedAssetMembers(
                 "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+    }
+
+    @Test
+    void removingBorrowedRuntimeAssignmentRetiresScopeUnderGlobalAssetOwner() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UserActivityCountersService userActivityCountersService = mock(UserActivityCountersService.class);
+        Asset asset = asset();
+        asset.setOwnerUserId("global-owner");
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "runtime-manager", "accepted", 3200d, null, "payment-1"),
+                scopedBorrowRequest("member-request", "member", "accepted", 3200d, null, "payment-2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                userActivityCountersService);
+
+        service.statusDeleteAssignmentScopeRequests(
+                "runtime-manager",
+                List.of("asset-1"),
+                "event-1",
+                "event-1",
+                "subevent-1",
+                "runtime-manager",
+                "2026-09-07T09:00:00Z");
+
+        ArgumentCaptor<Asset> saved = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(saved.capture());
+        assertThat(saved.getValue().getOwnerUserId()).isEqualTo("global-owner");
+        assertThat(saved.getValue().getRequests())
+                .extracting(AssetRequestRecord::status)
+                .containsOnly("D");
+        verify(userActivityCountersService).refreshAssetCountersForUser("global-owner");
+        verify(assetsRepository, never()).findByOwnerUserIdAndAssetId(anyString(), anyString());
     }
 
     @Test
