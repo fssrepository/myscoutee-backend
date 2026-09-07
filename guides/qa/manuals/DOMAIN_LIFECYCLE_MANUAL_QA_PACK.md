@@ -6604,7 +6604,17 @@ Event; the target paid Asset at quantity `3`; all five named controls; and zero
 scoped payment, request projection, activity resource, server basket or stored
 Asset membership. `EVENT-CHECKOUT-001` was first restored through its own
 snapshot-protected reset with zero remaining scoped artifacts. No Asset
-checkout browser was opened or operated by Codex.
+checkout checklist action was operated by Codex.
+
+The first configured browser launch at `2026-09-07 04:39 CEST` stopped before
+handoff when Nova's tracked login returned `BLOCKED_LIMIT`; the pre-existing
+Casey/Nova/Ava active-session counts were `1/2/2`. The versioned fixture now
+owns a `prepare-browser` boundary that preserves the first pre-QA
+`userSessionStates` documents, clears only those three configured actors, and
+restores the preserved documents on reset. Its first live run cleared the
+counts to `0/0/0`, after which the versioned launcher prepared all three
+isolated identities successfully at `2026-09-07 04:44 CEST`. The user owns all
+subsequent browser navigation and clicks; no testcase step has run yet.
 
 The source preflight also found that the pre-Pay Borrow Basket draft had been
 held only in an in-memory signal even though checklist steps 22-23 require one
