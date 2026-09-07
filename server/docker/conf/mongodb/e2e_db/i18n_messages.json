@@ -13032,6 +13032,12 @@
     "value": "Released"
   },
   {
+    "_id": "i18n-message-en-payment-status-refund-requested",
+    "key": "payment.status.refund_requested",
+    "lang": "en",
+    "value": "Refund requested"
+  },
+  {
     "_id": "i18n-message-en-payment-status-refunded",
     "key": "payment.status.refunded",
     "lang": "en",
@@ -33388,6 +33394,12 @@
     "key": "payment.status.released",
     "lang": "hu",
     "value": "Felszabadítva"
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-refund-requested",
+    "key": "payment.status.refund_requested",
+    "lang": "hu",
+    "value": "Visszatérítés kérve"
   },
   {
     "_id": "i18n-message-hu-payment-status-refunded",

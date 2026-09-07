@@ -57,15 +57,16 @@ public class PaymentRefundService {
         if (!StringUtils.hasText(recipientUserId) || recipientUserId.equals(actorId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This payment has no separate recipient.");
         }
-        String requestStatus = refundRequestStatus(payment);
-        if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
-            return paymentMethodsService.mutationDto(payment, actorId);
-        }
         if (!REFUNDABLE_STATUSES.contains(normalize(payment.getStatus()).toLowerCase())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This payment can no longer be refunded.");
         }
         if (StringUtils.hasText(payment.getAuditKind()) && !"payment".equals(payment.getAuditKind())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment audit revisions cannot be refunded.");
+        }
+        Payment existingRequest = paymentsRepository.findById(refundHistoryId(payment)).orElse(null);
+        String requestStatus = refundRequestStatus(existingRequest);
+        if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
+            return paymentMethodsService.mutationDto(existingRequest, actorId);
         }
 
         String now = Instant.now().toString();
@@ -73,16 +74,10 @@ public class PaymentRefundService {
         if (refund.refundableAmount() <= 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund policy does not allow a refund.");
         }
-        payment.setRefundRequestStatus("pending");
-        payment.setRefundRequestedAtIso(now);
-        payment.setRefundRequestedByUserId(actorId);
-        payment.setRefundReviewedAtIso(null);
-        payment.setRefundReviewedByUserId(null);
-        payment.setRefundedAmount(refund.refundableAmount());
-        payment.setRefundCurrency(refund.currency());
-        payment.setRefundRuleId(refund.ruleId());
-        payment.setRefundNote(refund.ruleDescription());
-        Payment saved = paymentsRepository.save(payment);
+        Payment saved = paymentService.saveRefundRequestHistoryRecord(payment, now, actorId, refund);
+        if (saved == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund request could not be recorded.");
+        }
         incrementRecipientPendingCounter(recipientUserId);
         enqueueRefundNotification(saved, actorId, recipientUserId, false);
         return paymentMethodsService.mutationDto(saved, actorId);
@@ -90,35 +85,43 @@ public class PaymentRefundService {
 
     public synchronized PaymentHistoryMutationDto approveRefund(String paymentId, String actorUserId) {
         String actorId = requiredId(actorUserId, "Current user");
-        Payment payment = requirePayment(paymentId);
+        Payment selected = requirePayment(paymentId);
+        Payment request = "refund".equals(normalize(selected.getAuditKind()))
+                ? selected
+                : paymentsRepository.findById(refundHistoryId(selected)).orElse(null);
+        Payment payment = "refund".equals(normalize(selected.getAuditKind()))
+                ? requirePayment(selected.getSupersedesPaymentId())
+                : selected;
         if (!actorId.equals(normalize(payment.getRecipientUserId()))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the payment recipient can approve this refund.");
         }
-        String requestStatus = refundRequestStatus(payment);
+        String requestStatus = refundRequestStatus(request);
         if ("approved".equals(requestStatus)) {
-            return paymentMethodsService.mutationDto(payment, actorId);
+            return paymentMethodsService.mutationDto(request, actorId);
         }
         if (!"pending".equals(requestStatus)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There is no pending refund request for this payment.");
         }
 
         String now = Instant.now().toString();
-        PaymentRefundCalculator.Preview refund = PaymentRefundCalculator.storedOrCurrentPreview(payment, now);
         Payment refunded = paymentService.approvePolicyRefund(
                 payment,
                 now,
-                refund.refundableAmount(),
-                refund.currency(),
-                refund.ruleId(),
-                refund.ruleDescription());
-        refunded.setRefundRequestStatus("approved");
-        refunded.setRefundReviewedAtIso(now);
-        refunded.setRefundReviewedByUserId(actorId);
-        refunded = paymentsRepository.save(refunded);
-        paymentService.saveRefundHistoryRecord(refunded);
+                request.getRefundedAmount() == null ? 0D : request.getRefundedAmount(),
+                request.getRefundCurrency(),
+                request.getRefundRuleId(),
+                request.getRefundNote());
+        Payment history = paymentService.saveRefundHistoryRecord(refunded);
+        if (history == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The refund history could not be recorded.");
+        }
+        history.setRefundRequestStatus("approved");
+        history.setRefundReviewedAtIso(now);
+        history.setRefundReviewedByUserId(actorId);
+        history = paymentsRepository.save(history);
         decrementRecipientPendingCounter(actorId);
-        enqueueRefundNotification(refunded, actorId, normalize(refunded.getUserId()), true);
-        return paymentMethodsService.mutationDto(refunded, actorId);
+        enqueueRefundNotification(history, actorId, normalize(refunded.getUserId()), true);
+        return paymentMethodsService.mutationDto(history, actorId);
     }
 
     private Payment requirePayment(String paymentId) {
@@ -148,7 +151,9 @@ public class PaymentRefundService {
             String recipientUserId,
             boolean approved) {
         if (!StringUtils.hasText(recipientUserId)) return;
-        String paymentId = normalize(payment.getId());
+        String paymentId = StringUtils.hasText(normalize(payment.getSupersedesPaymentId()))
+                ? normalize(payment.getSupersedesPaymentId())
+                : normalize(payment.getId());
         String sourceId = normalize(payment.getSourceId());
         String type = approved ? "payment-refund-approved" : "payment-refund-requested";
         Map<String, String> payload = new LinkedHashMap<>();
@@ -181,6 +186,10 @@ public class PaymentRefundService {
     private String refundRequestStatus(Payment payment) {
         String status = normalize(payment == null ? null : payment.getRefundRequestStatus()).toLowerCase();
         return StringUtils.hasText(status) ? status : "none";
+    }
+
+    private String refundHistoryId(Payment payment) {
+        return "refund:" + requiredId(payment == null ? null : payment.getId(), "Payment");
     }
 
     private String requiredId(String value, String label) {

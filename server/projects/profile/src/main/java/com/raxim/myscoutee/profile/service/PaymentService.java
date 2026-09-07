@@ -1411,6 +1411,52 @@ public class PaymentService {
                 && (!hasText(payment.getAuditKind()) || AUDIT_KIND_PAYMENT.equals(safeText(payment.getAuditKind())));
     }
 
+    Payment saveRefundRequestHistoryRecord(
+            Payment payment,
+            String requestedAtIso,
+            String requestedByUserId,
+            PaymentRefundCalculator.Preview refund) {
+        String paymentId = payment == null ? null : normalizeId(payment.getId());
+        if (!hasText(paymentId) || refund == null || refund.refundableAmount() <= 0) {
+            return null;
+        }
+        String historyId = "refund:" + paymentId;
+        Payment existing = paymentsRepository.findById(historyId).orElse(null);
+        if (existing != null) {
+            return existing;
+        }
+        Payment history = new Payment();
+        history.setId(historyId);
+        history.setUserId(normalizeId(payment.getUserId()));
+        history.setRecipientUserId(normalizeId(payment.getRecipientUserId()));
+        history.setSourceId(normalizeId(payment.getSourceId()));
+        history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
+        history.setProvider(safeText(payment.getProvider()));
+        history.setStatus("refund_requested");
+        history.setAmount(refund.refundableAmount());
+        history.setCurrency(refund.currency());
+        history.setFulfillmentKind(payment.getFulfillmentKind());
+        history.setFulfillmentStatus(payment.getFulfillmentStatus());
+        history.setContextEventId(payment.getContextEventId());
+        history.setContextSubEventId(payment.getContextSubEventId());
+        history.setBookingStatus(payment.getBookingStatus());
+        history.setBookingStartAtIso(payment.getBookingStartAtIso());
+        history.setBookingEndAtIso(payment.getBookingEndAtIso());
+        history.setRefundedAmount(refund.refundableAmount());
+        history.setRefundCurrency(refund.currency());
+        history.setRefundRuleId(refund.ruleId());
+        history.setRefundNote(refund.ruleDescription());
+        history.setRefundRequestStatus("pending");
+        history.setRefundRequestedAtIso(requestedAtIso);
+        history.setRefundRequestedByUserId(requestedByUserId);
+        history.setCancellationPolicy(payment.getCancellationPolicy());
+        history.setAuditKind(AUDIT_KIND_REFUND);
+        history.setSupersedesPaymentId(paymentId);
+        history.setAccountedSpentAmount(0D);
+        history.setCreatedDate(requestedAtIso);
+        return paymentsRepository.save(history);
+    }
+
     Payment saveRefundHistoryRecord(Payment payment) {
         double amount = safeAmount(payment == null ? null : payment.getRefundedAmount());
         String refundedAtIso = payment == null ? null : normalizeId(payment.getRefundedAtIso());
@@ -1450,16 +1496,28 @@ public class PaymentService {
         history.setRefundedAtIso(refundedAtIso);
         history.setRefundRuleId(payment.getRefundRuleId());
         history.setRefundNote(payment.getRefundNote());
-        history.setRefundRequestStatus(payment.getRefundRequestStatus());
-        history.setRefundRequestedAtIso(payment.getRefundRequestedAtIso());
-        history.setRefundRequestedByUserId(payment.getRefundRequestedByUserId());
-        history.setRefundReviewedAtIso(payment.getRefundReviewedAtIso());
-        history.setRefundReviewedByUserId(payment.getRefundReviewedByUserId());
+        if (hasText(payment.getRefundRequestStatus())) {
+            history.setRefundRequestStatus(payment.getRefundRequestStatus());
+        }
+        if (hasText(payment.getRefundRequestedAtIso())) {
+            history.setRefundRequestedAtIso(payment.getRefundRequestedAtIso());
+        }
+        if (hasText(payment.getRefundRequestedByUserId())) {
+            history.setRefundRequestedByUserId(payment.getRefundRequestedByUserId());
+        }
+        if (hasText(payment.getRefundReviewedAtIso())) {
+            history.setRefundReviewedAtIso(payment.getRefundReviewedAtIso());
+        }
+        if (hasText(payment.getRefundReviewedByUserId())) {
+            history.setRefundReviewedByUserId(payment.getRefundReviewedByUserId());
+        }
         history.setCancellationPolicy(payment.getCancellationPolicy());
         history.setAuditKind(AUDIT_KIND_REFUND);
         history.setSupersedesPaymentId(normalizeId(payment.getId()));
         history.setAccountedSpentAmount(amount);
-        history.setCreatedDate(refundedAtIso);
+        if (!hasText(history.getCreatedDate())) {
+            history.setCreatedDate(refundedAtIso);
+        }
         Payment saved = paymentsRepository.save(history);
         double delta = roundSignedMoney(amount - previousAmount);
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);

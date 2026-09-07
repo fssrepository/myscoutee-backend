@@ -542,11 +542,26 @@ public class SavedPaymentMethodsService {
         boolean refundAudit = "refund".equals(normalizeId(payment.getAuditKind()));
         String requestStatus = normalizeId(payment.getRefundRequestStatus());
         if (!StringUtils.hasText(requestStatus)) requestStatus = "none";
+        Payment linkedRefund = !refundAudit && StringUtils.hasText(payment.getId())
+                ? paymentsRepository.findById("refund:" + payment.getId()).orElse(null)
+                : null;
+        boolean refundAlreadyRecorded = linkedRefund != null
+                && "refund".equals(normalizeId(linkedRefund.getAuditKind()));
         boolean refundableStatus = Set.of("authorized", "captured", "approved", "partially_refunded")
                 .contains(safeText(payment.getStatus()).toLowerCase(Locale.ROOT));
         boolean paymentAudit = !StringUtils.hasText(payment.getAuditKind()) || "payment".equals(payment.getAuditKind());
+        Double originalPaidAmount = refundAudit && StringUtils.hasText(payment.getSupersedesPaymentId())
+                ? paymentsRepository.findById(payment.getSupersedesPaymentId())
+                        .map(Payment::getAmount)
+                        .orElse(payment.getAmount())
+                : null;
         PaymentRefundCalculator.Preview refund = refundAudit
-                ? null
+                ? "pending".equals(requestStatus)
+                        ? PaymentRefundCalculator.storedOrCurrentPreview(
+                                payment,
+                                Instant.now().toString(),
+                                originalPaidAmount)
+                        : null
                 : PaymentRefundCalculator.storedOrCurrentPreview(payment, Instant.now().toString());
         SavedPaymentMethodDto paymentMethod = StringUtils.hasText(paymentMethodId) && StringUtils.hasText(userId)
                 ? paymentMethodsRepository.findByIdAndUserId(paymentMethodId, userId).map(this::toDto).orElse(null)
@@ -564,9 +579,10 @@ public class SavedPaymentMethodsService {
                 payment.getContextSubEventId(),
                 PaymentService.FULFILLMENT_KIND_CLIENT.equals(fulfillmentKind) ? payment.getSourceId() : null,
                 requestStatus, payment.getRefundRequestedAtIso(),
-                "expense".equals(direction) && paymentAudit && refundableStatus && "none".equals(requestStatus)
+                "expense".equals(direction) && paymentAudit && refundableStatus && !refundAlreadyRecorded
+                        && "none".equals(requestStatus)
                         && refund.refundableAmount() > 0,
-                "income".equals(direction) && "pending".equals(requestStatus),
+                "expense".equals(direction) && refundAudit && "pending".equals(requestStatus),
                 refund == null ? null : new PaymentRefundPreviewDto(
                         refund.paidAmount(), refund.refundableAmount(), refund.retainedAmount(), refund.currency(),
                         refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),

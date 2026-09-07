@@ -36,18 +36,22 @@ class PaymentRefundServiceTest {
     @Test
     void payerRequestPersistsPendingStateIncrementsRecipientWriteModelAndNotifiesOwner() {
         Fixture fixture = new Fixture();
-        Payment payment = fixture.payment("authorized", null);
+        Payment payment = fixture.payment("authorized");
+        Payment request = fixture.refundRequest("pending");
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
-        when(fixture.payments.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(fixture.payments.findById("refund:payment-1")).thenReturn(Optional.empty());
+        when(fixture.paymentService.saveRefundRequestHistoryRecord(
+                eq(payment), any(String.class), eq("nova"), any(PaymentRefundCalculator.Preview.class)))
+                .thenReturn(request);
         PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of("HUF", 3200D), Map.of(), 0);
-        when(fixture.history.mutationDto(payment, "nova")).thenReturn(expected);
+        when(fixture.history.mutationDto(request, "nova")).thenReturn(expected);
 
         assertThat(fixture.service.requestRefund("payment-1", "nova")).isSameAs(expected);
-        assertThat(payment.getRefundRequestStatus()).isEqualTo("pending");
-        assertThat(payment.getRefundedAmount()).isEqualTo(1600D);
-        assertThat(payment.getRefundRuleId()).isEqualTo("qa-refund");
-        assertThat(payment.getRefundRequestedByUserId()).isEqualTo("nova");
-        assertThat(payment.getRefundRequestedAtIso()).isNotBlank();
+        assertThat(payment.getRefundRequestStatus()).isNull();
+        assertThat(request.getRefundRequestStatus()).isEqualTo("pending");
+        assertThat(request.getRefundedAmount()).isEqualTo(1600D);
+        assertThat(request.getRefundRuleId()).isEqualTo("qa-refund");
+        assertThat(request.getSupersedesPaymentId()).isEqualTo("payment-1");
         verify(fixture.mongo).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
 
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
@@ -59,13 +63,16 @@ class PaymentRefundServiceTest {
     @Test
     void repeatedPendingRequestIsIdempotent() {
         Fixture fixture = new Fixture();
-        Payment payment = fixture.payment("authorized", "pending");
+        Payment payment = fixture.payment("authorized");
+        Payment request = fixture.refundRequest("pending");
         PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of(), Map.of(), 0);
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
-        when(fixture.history.mutationDto(payment, "nova")).thenReturn(expected);
+        when(fixture.payments.findById("refund:payment-1")).thenReturn(Optional.of(request));
+        when(fixture.history.mutationDto(request, "nova")).thenReturn(expected);
 
         assertThat(fixture.service.requestRefund("payment-1", "nova")).isSameAs(expected);
-        verify(fixture.payments, never()).save(any());
+        verify(fixture.paymentService, never()).saveRefundRequestHistoryRecord(
+                any(), any(), any(), any());
         verify(fixture.mongo, never()).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
         verify(fixture.outbox, never()).enqueue(any());
     }
@@ -73,23 +80,34 @@ class PaymentRefundServiceTest {
     @Test
     void recipientApprovalRefundsOnceDecrementsWriteModelCounterAndNotifiesPayer() {
         Fixture fixture = new Fixture();
-        Payment payment = fixture.payment("authorized", "pending");
+        Payment payment = fixture.payment("authorized");
+        Payment request = fixture.refundRequest("pending");
+        when(fixture.payments.findById("refund:payment-1")).thenReturn(Optional.of(request));
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
         when(fixture.paymentService.approvePolicyRefund(
                 eq(payment), any(String.class), eq(1600D), eq("HUF"), eq("qa-refund"), any(String.class)))
                 .thenAnswer(invocation -> {
             payment.setStatus("partially_refunded");
             payment.setRefundStatus("partial");
+            payment.setRefundedAmount(1600D);
+            payment.setRefundCurrency("HUF");
+            payment.setRefundedAtIso(Instant.now().toString());
             return payment;
+        });
+        when(fixture.paymentService.saveRefundHistoryRecord(payment)).thenAnswer(invocation -> {
+            request.setStatus("refunded");
+            return request;
         });
         when(fixture.payments.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
         PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of(), Map.of(), 0);
-        when(fixture.history.mutationDto(payment, "casey")).thenReturn(expected);
+        when(fixture.history.mutationDto(request, "casey")).thenReturn(expected);
 
-        assertThat(fixture.service.approveRefund("payment-1", "casey")).isSameAs(expected);
-        assertThat(payment.getRefundRequestStatus()).isEqualTo("approved");
-        assertThat(payment.getRefundReviewedByUserId()).isEqualTo("casey");
-        assertThat(payment.getRefundReviewedAtIso()).isNotBlank();
+        assertThat(fixture.service.approveRefund("refund:payment-1", "casey")).isSameAs(expected);
+        assertThat(payment.getRefundRequestStatus()).isNull();
+        assertThat(request.getStatus()).isEqualTo("refunded");
+        assertThat(request.getRefundRequestStatus()).isEqualTo("approved");
+        assertThat(request.getRefundReviewedByUserId()).isEqualTo("casey");
+        assertThat(request.getRefundReviewedAtIso()).isNotBlank();
         verify(fixture.paymentService).approvePolicyRefund(
                 eq(payment), any(String.class), eq(1600D), eq("HUF"), eq("qa-refund"), any(String.class));
         verify(fixture.mongo).updateFirst(any(Query.class), any(UpdateDefinition.class), eq(Users.class));
@@ -103,14 +121,15 @@ class PaymentRefundServiceTest {
     @Test
     void unrelatedUserCannotRequestOrApproveRefund() {
         Fixture fixture = new Fixture();
-        Payment payment = fixture.payment("authorized", null);
+        Payment payment = fixture.payment("authorized");
+        Payment request = fixture.refundRequest("pending");
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
+        when(fixture.payments.findById("refund:payment-1")).thenReturn(Optional.of(request));
 
         assertThatThrownBy(() -> fixture.service.requestRefund("payment-1", "riley"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Only the payer");
-        payment.setRefundRequestStatus("pending");
-        assertThatThrownBy(() -> fixture.service.approveRefund("payment-1", "riley"))
+        assertThatThrownBy(() -> fixture.service.approveRefund("refund:payment-1", "riley"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Only the payment recipient");
     }
@@ -128,7 +147,7 @@ class PaymentRefundServiceTest {
                 outbox,
                 mongo);
 
-        private Payment payment(String status, String refundRequestStatus) {
+        private Payment payment(String status) {
             Payment payment = new Payment();
             payment.setId("payment-1");
             payment.setUserId("nova");
@@ -139,18 +158,31 @@ class PaymentRefundServiceTest {
             payment.setAuditKind("payment");
             payment.setAmount(3200D);
             payment.setCurrency("HUF");
-            payment.setRefundRequestStatus(refundRequestStatus);
             payment.setBookingStartAtIso(Instant.now().plus(Duration.ofDays(2)).toString());
             payment.setCancellationPolicy(new PricingCancellationPolicyDto(
                     true,
                     List.of(new PricingCancellationRuleDto("qa-refund", "days", 1, "percent", 50D))));
-            if ("pending".equals(refundRequestStatus)) {
-                payment.setRefundedAmount(1600D);
-                payment.setRefundCurrency("HUF");
-                payment.setRefundRuleId("qa-refund");
-                payment.setRefundNote("Refund 50% when requested at least 1 day before start.");
-            }
             return payment;
+        }
+
+        private Payment refundRequest(String status) {
+            Payment request = new Payment();
+            request.setId("refund:payment-1");
+            request.setUserId("nova");
+            request.setRecipientUserId("casey");
+            request.setSourceId("asset-1");
+            request.setProvider("barion");
+            request.setStatus("refund_requested");
+            request.setAuditKind("refund");
+            request.setSupersedesPaymentId("payment-1");
+            request.setAmount(1600D);
+            request.setCurrency("HUF");
+            request.setRefundRequestStatus(status);
+            request.setRefundedAmount(1600D);
+            request.setRefundCurrency("HUF");
+            request.setRefundRuleId("qa-refund");
+            request.setRefundNote("Refund 50% when requested at least 1 day before start.");
+            return request;
         }
     }
 }

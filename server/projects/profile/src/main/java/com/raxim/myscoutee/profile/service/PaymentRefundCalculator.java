@@ -54,6 +54,10 @@ final class PaymentRefundCalculator {
     }
 
     static Preview storedOrCurrentPreview(Payment payment, String nowIso) {
+        return storedOrCurrentPreview(payment, nowIso, null);
+    }
+
+    static Preview storedOrCurrentPreview(Payment payment, String nowIso, Double paidAmountOverride) {
         String requestStatus = text(payment == null ? null : payment.getRefundRequestStatus(), "none");
         String paymentStatus = text(payment == null ? null : payment.getStatus(), "").toLowerCase(Locale.ROOT);
         boolean finalizedRefund = List.of("released", "refunded", "partially_refunded").contains(paymentStatus)
@@ -61,7 +65,7 @@ final class PaymentRefundCalculator {
                 && money(payment.getRefundedAmount()) > 0;
         if ((("pending".equals(requestStatus) || "approved".equals(requestStatus)) || finalizedRefund)
                 && payment.getRefundedAmount() != null) {
-            double paid = money(payment.getAmount());
+            double paid = money(paidAmountOverride == null ? payment.getAmount() : paidAmountOverride);
             double refundable = Math.min(paid, money(payment.getRefundedAmount()));
             String status = refundable <= 0 ? "not_eligible" : refundable >= paid ? "full" : "partial";
             PricingCancellationRuleDto storedRule = ruleById(
