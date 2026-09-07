@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.raxim.myscoutee.profile.data.AssetCatalog;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPaymentTotalsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -50,7 +51,8 @@ public final class AssetsDtos {
             String previousStatus,
             String status,
             Integer acceptedMemberDelta,
-            Integer pendingMemberDelta) {
+            Integer pendingMemberDelta,
+            UserPaymentTotalsDto paymentTotals) {
     }
 
     public record AssetDto(

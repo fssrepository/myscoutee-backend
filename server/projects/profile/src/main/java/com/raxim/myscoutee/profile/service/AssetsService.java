@@ -67,6 +67,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidat
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPaymentTotalsDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
@@ -688,7 +689,7 @@ public class AssetsService {
                 && safeRequests(current.getRequests()).stream()
                         .filter(Objects::nonNull)
                         .filter(item -> !isDeletedAssetRequest(item))
-                        .filter(item -> !"manual".equals(normalizeAssetRequestKind(item.requestKind())))
+                        .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
                         .filter(item -> isRequestInScope(item, eventId, subEventId))
                         .filter(item -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(item.status())))
                         .anyMatch(item -> !actorUserId.equals(normalizeId(item.userId())));
@@ -883,6 +884,15 @@ public class AssetsService {
                 subEventId,
                 previousManagerUserId,
                 actorUserId);
+        if (paymentReplacement.paymentRequired()) {
+            enqueueScopedAssetTakeOverRefundedNotification(
+                    next,
+                    eventId,
+                    subEventId,
+                    previousManagerUserId,
+                    actorUserId,
+                    paymentReplacement.predecessorPaymentId());
+        }
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
         adminTelemetryService.record("asset.assignment.taken-over", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
@@ -894,7 +904,13 @@ public class AssetsService {
                 MEMBER_STATUS_ACCEPTED,
                 MEMBER_STATUS_ACCEPTED,
                 0,
-                0);
+                0,
+                usersRepository.findByUserId(actorUserId)
+                        .map(user -> new UserPaymentTotalsDto(
+                                new LinkedHashMap<>(user.getPaymentSpentTotals()),
+                                new LinkedHashMap<>(user.getPaymentIncomeTotals()),
+                                new LinkedHashMap<>(user.getPaymentAllTotals())))
+                        .orElse(null));
     }
 
     private AssetMemberStatusChangeDto memberStatusChange(
@@ -906,6 +922,28 @@ public class AssetsService {
             String status,
             int acceptedMemberDelta,
             int pendingMemberDelta) {
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta,
+                null);
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta,
+            UserPaymentTotalsDto paymentTotals) {
         return new AssetMemberStatusChangeDto(
                 assetId,
                 eventId,
@@ -914,7 +952,8 @@ public class AssetsService {
                 previousStatus,
                 status,
                 acceptedMemberDelta,
-                pendingMemberDelta);
+                pendingMemberDelta,
+                paymentTotals);
     }
 
     private int statusDelta(String previousStatus, String nextStatus, String countedStatus) {
@@ -3008,9 +3047,7 @@ public class AssetsService {
             if (!StringUtils.hasText(assetId)) {
                 continue;
             }
-            Asset current = assetsRepository
-                    .findByOwnerUserIdAndAssetId(normalizedAssetOwnerUserId, assetId)
-                    .orElse(null);
+            Asset current = findAssetByAssetId(assetId).orElse(null);
             if (current == null) {
                 continue;
             }
@@ -3039,7 +3076,7 @@ public class AssetsService {
             assetsRepository.save(next);
             syncAssetRequestProjection(current, next);
             affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
-            userActivityCountersService.refreshAssetCountersForUser(normalizedAssetOwnerUserId);
+            userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
         }
     }
 
@@ -4377,8 +4414,8 @@ public class AssetsService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        recipientIds.add(normalizedPreviousManagerUserId);
         recipientIds.remove(normalizedSuccessorUserId);
+        recipientIds.remove(normalizedPreviousManagerUserId);
         List<String> recipients = recipientIds.stream()
                 .filter(StringUtils::hasText)
                 .filter(this::isActiveUser)
@@ -4414,6 +4451,51 @@ public class AssetsService {
                 firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-assignment-taken-over-" + assetId + "-" + normalizedEventId + "-" + normalizedSubEventId,
+                payload,
+                normalizedSuccessorUserId));
+    }
+
+    private void enqueueScopedAssetTakeOverRefundedNotification(
+            Asset asset,
+            String eventId,
+            String subEventId,
+            String previousManagerUserId,
+            String successorUserId,
+            String predecessorPaymentId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedPreviousManagerUserId = normalizeId(previousManagerUserId);
+        String normalizedSuccessorUserId = normalizeId(successorUserId);
+        String paymentId = normalizeId(predecessorPaymentId);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(normalizedPreviousManagerUserId)
+                || !StringUtils.hasText(paymentId)
+                || !isActiveUser(normalizedPreviousManagerUserId)) {
+            return;
+        }
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("paymentId", paymentId);
+        payload.put("sourceId", assetId);
+        payload.put("assetId", assetId);
+        payload.put("assetTitle", assetTitle(asset));
+        payload.put("eventId", normalizeId(eventId));
+        payload.put("subEventId", normalizeId(subEventId));
+        payload.put("previousManagerUserId", normalizedPreviousManagerUserId);
+        payload.put("managerUserId", normalizedSuccessorUserId);
+        payload.put("refundRequestStatus", "approved");
+        payload.put("refundReason", "asset-manager-takeover");
+        payload.put("notification_tone", "accent");
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "payment-refund-approved",
+                "payment",
+                paymentId,
+                "payment-participant",
+                List.of(normalizedPreviousManagerUserId),
+                "Payment refunded",
+                "Your payment for " + assetTitle(asset) + " was refunded after another member took over.",
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "payment-refund-approved-" + paymentId,
                 payload,
                 normalizedSuccessorUserId));
     }

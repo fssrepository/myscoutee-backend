@@ -767,8 +767,13 @@ class AssetsServiceTest {
             assetState.set(saved);
             return saved;
         });
-        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
-        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Successor Three", "ST")));
+        Users previousManager = user("u2", "Manager Two", "MT");
+        Users successor = user("u3", "Successor Three", "ST");
+        successor.setPaymentSpentTotals(Map.of("HUF", 3200d));
+        successor.setPaymentIncomeTotals(Map.of());
+        successor.setPaymentAllTotals(Map.of("HUF", 3200d));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(previousManager));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(successor));
         when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
         when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
         when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
@@ -814,8 +819,10 @@ class AssetsServiceTest {
     @Test
     void scopedBorrowTakeOverTransfersManagerOnlyAfterReplacementPaymentValidation() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
         PaymentService paymentService = mock(PaymentService.class);
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
         ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = asset();
@@ -835,6 +842,8 @@ class AssetsServiceTest {
         when(activitiesResourcesService.transferScopedAssetManager(
                 "event-1", "subevent-1", "asset-1", "u2", "u3"))
                 .thenReturn(true);
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3", "Successor Three", "ST")));
         PaymentService.AssetPaymentReplacement replacement =
                 new PaymentService.AssetPaymentReplacement("old-payment", "new-payment", true);
         when(paymentService.validateAssetPaymentReplacement(
@@ -843,7 +852,7 @@ class AssetsServiceTest {
 
         AssetsService service = new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                usersRepository,
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 paymentService,
@@ -851,7 +860,7 @@ class AssetsServiceTest {
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
+                notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
                 mock(UserActivityCountersService.class));
@@ -869,6 +878,9 @@ class AssetsServiceTest {
 
         assertThat(takenOver.status()).isEqualTo("accepted");
         assertThat(takenOver.acceptedMemberDelta()).isZero();
+        assertThat(takenOver.paymentTotals().outgoing()).containsEntry("HUF", 3200d);
+        assertThat(takenOver.paymentTotals().incoming()).isEmpty();
+        assertThat(takenOver.paymentTotals().all()).containsEntry("HUF", 3200d);
         assertThat(assetState.get().getRequests())
                 .filteredOn(request -> "successor-request".equals(request.id()))
                 .singleElement()
@@ -881,6 +893,21 @@ class AssetsServiceTest {
                 replacement, "u3", "event-1", "subevent-1");
         verify(activitiesResourcesService).transferScopedAssetManager(
                 "event-1", "subevent-1", "asset-1", "u2", "u3");
+        ArgumentCaptor<NotificationIntent> notifications = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notifications.capture());
+        assertThat(notifications.getAllValues())
+                .extracting(NotificationIntent::type)
+                .containsExactly("payment-refund-approved");
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "payment-refund-approved".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> {
+                    assertThat(notification.recipientUserIds()).containsExactly("u2");
+                    assertThat(notification.payload())
+                            .containsEntry("paymentId", "old-payment")
+                            .containsEntry("refundRequestStatus", "approved")
+                            .containsEntry("refundReason", "asset-manager-takeover");
+                });
     }
 
     @Test
