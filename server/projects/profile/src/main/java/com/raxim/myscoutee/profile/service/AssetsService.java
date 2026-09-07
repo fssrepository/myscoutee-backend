@@ -4395,14 +4395,16 @@ public class AssetsService {
         payload.put("previousManagerUserId", normalizedDepartedManagerUserId);
         payload.put("membershipAction", "takeover-required");
         payload.put("notification_tone", "warning");
+        payload.put("notification_title_key", "notification.asset.takeover.required.title");
+        payload.put("notification_message_key", "notification.asset.takeover.required.message");
         notificationOutboxService.enqueue(new NotificationIntent(
                 "asset-assignment-takeover-required",
                 "asset",
                 assetId,
                 "asset-scoped-members",
                 recipients,
-                "Asset needs a new manager",
-                managerName + " left " + assetTitle(asset) + ". An accepted member can take over.",
+                "Asset needs a new manager — Take Over",
+                "Open the Asset.",
                 "/game",
                 firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",

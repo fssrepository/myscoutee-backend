@@ -2,58 +2,85 @@ package com.raxim.myscoutee.profile.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.I18nBundle;
 import com.raxim.myscoutee.profile.data.document.I18nMessage;
 import com.raxim.myscoutee.profile.data.dto.shared.I18nBundleResponseDto;
 import com.raxim.myscoutee.profile.repository.I18nBundleRepository;
 import com.raxim.myscoutee.profile.repository.I18nMessageRepository;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class I18nService {
     private static final String DEFAULT_LANG = "en";
+    private static final Logger LOGGER = LoggerFactory.getLogger(I18nService.class);
 
     private final I18nMessageRepository i18nMessageRepository;
     private final I18nBundleRepository i18nBundleRepository;
+    private final EnumMap<MongoSessionMode, AtomicReference<CachedBundles>> cachedBundles =
+            new EnumMap<>(MongoSessionMode.class);
+    private final EnumMap<MongoSessionMode, Object> modeLocks =
+            new EnumMap<>(MongoSessionMode.class);
 
     public I18nService(I18nMessageRepository i18nMessageRepository, I18nBundleRepository i18nBundleRepository) {
         this.i18nMessageRepository = i18nMessageRepository;
         this.i18nBundleRepository = i18nBundleRepository;
+        for (MongoSessionMode mode : MongoSessionMode.values()) {
+            cachedBundles.put(mode, new AtomicReference<>(CachedBundles.unloaded()));
+            modeLocks.put(mode, new Object());
+        }
+    }
+
+    @PostConstruct
+    public void preloadCache() {
+        refreshCache();
+    }
+
+    @Scheduled(fixedDelayString = "${i18n.cache-refresh-ms:60000}")
+    public void refreshCache() {
+        for (MongoSessionMode mode : MongoSessionMode.values()) {
+            refreshCache(mode);
+        }
     }
 
     public I18nBundleResponseDto getBundle(String requestedLang, String acceptLanguage, String currentVersion) {
-        String selectedLang = selectLanguage(requestedLang, acceptLanguage);
-        I18nBundle i18nBundle = i18nBundleRepository.findByLang(selectedLang).orElse(null);
-        if (i18nBundle == null) {
+        CachedBundles snapshot = currentBundles();
+        String selectedLang = selectLanguage(requestedLang, acceptLanguage, snapshot.languages());
+        CachedBundle bundle = snapshot.byLanguage().get(selectedLang);
+        if (bundle == null) {
             return new I18nBundleResponseDto(DEFAULT_LANG, "0", null);
         }
 
-        String latestVersion = safeText(i18nBundle.getVersion(), "0");
+        String latestVersion = bundle.version();
 
         if (latestVersion.equals(safeText(currentVersion, ""))) {
             return new I18nBundleResponseDto(selectedLang, latestVersion, null);
         }
 
-        Map<String, String> data = i18nMessageRepository.findByLang(selectedLang).stream()
-                .collect(Collectors.toMap(I18nMessage::getKey, I18nMessage::getValue, (v1, v2) -> v1));
-
-        return new I18nBundleResponseDto(selectedLang, latestVersion, data);
+        return new I18nBundleResponseDto(selectedLang, latestVersion, bundle.messages());
     }
 
-    private String selectLanguage(String requestedLang, String acceptLanguage) {
-        Set<String> availableLangs = i18nBundleRepository.findAll().stream()
-                .map(I18nBundle::getLang)
-                .map(this::normalizeLang)
-                .filter(lang -> !lang.isBlank())
-                .collect(Collectors.toSet());
+    private String selectLanguage(
+            String requestedLang,
+            String acceptLanguage,
+            Set<String> availableLangs) {
         if (availableLangs.isEmpty()) {
             return DEFAULT_LANG;
         }
@@ -67,6 +94,77 @@ public class I18nService {
             }
         }
         return DEFAULT_LANG;
+    }
+
+    private CachedBundles currentBundles() {
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        CachedBundles current = cachedBundles.get(mode).get();
+        if (current.loaded()) {
+            return current;
+        }
+        refreshCache(mode);
+        return cachedBundles.get(mode).get();
+    }
+
+    private void refreshCache(MongoSessionMode mode) {
+        synchronized (modeLocks.get(mode)) {
+            try {
+                CachedBundles current = cachedBundles.get(mode).get();
+                CachedBundles refreshed = inMode(mode, () -> loadBundles(current));
+                cachedBundles.get(mode).set(refreshed);
+            } catch (RuntimeException exception) {
+                LOGGER.warn(
+                        "I18n bundle cache refresh failed for {} mode; keeping the previous snapshot.",
+                        mode,
+                        exception);
+            }
+        }
+    }
+
+    private CachedBundles loadBundles(CachedBundles current) {
+        Map<String, String> versions = new HashMap<>();
+        for (I18nBundle bundle : i18nBundleRepository.findAll()) {
+            String lang = normalizeLang(bundle.getLang());
+            if (!lang.isBlank()) {
+                versions.put(lang, safeText(bundle.getVersion(), "0"));
+            }
+        }
+        Map<String, String> immutableVersions = Map.copyOf(versions);
+        if (current.loaded() && current.versions().equals(immutableVersions)) {
+            return current;
+        }
+
+        Map<String, Map<String, String>> messagesByLanguage = new HashMap<>();
+        for (I18nMessage message : i18nMessageRepository.findAll()) {
+            String lang = normalizeLang(message.getLang());
+            String key = safeText(message.getKey(), "");
+            if (lang.isBlank() || key.isBlank() || !versions.containsKey(lang)) {
+                continue;
+            }
+            messagesByLanguage
+                    .computeIfAbsent(lang, ignored -> new HashMap<>())
+                    .putIfAbsent(key, Objects.toString(message.getValue(), ""));
+        }
+
+        Map<String, CachedBundle> byLanguage = new HashMap<>();
+        versions.forEach((lang, version) -> byLanguage.put(
+                lang,
+                new CachedBundle(
+                        version,
+                        Map.copyOf(messagesByLanguage.getOrDefault(lang, Map.of())))));
+        return new CachedBundles(true, immutableVersions, Map.copyOf(byLanguage));
+    }
+
+    private <T> T inMode(
+            MongoSessionMode mode,
+            java.util.function.Supplier<T> action) {
+        MongoSessionMode previous = MongoSessionModeContext.currentMode();
+        MongoSessionModeContext.set(mode);
+        try {
+            return action.get();
+        } finally {
+            MongoSessionModeContext.set(previous);
+        }
     }
 
     private List<String> languageCandidates(String requestedLang, String acceptLanguage) {
@@ -146,5 +244,21 @@ public class I18nService {
     }
 
     private record LanguagePreference(String lang, double quality, int index) {
+    }
+
+    private record CachedBundle(String version, Map<String, String> messages) {
+    }
+
+    private record CachedBundles(
+            boolean loaded,
+            Map<String, String> versions,
+            Map<String, CachedBundle> byLanguage) {
+        private static CachedBundles unloaded() {
+            return new CachedBundles(false, Map.of(), Map.of());
+        }
+
+        private Set<String> languages() {
+            return byLanguage.keySet();
+        }
     }
 }

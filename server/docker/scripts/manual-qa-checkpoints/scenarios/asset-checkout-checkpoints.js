@@ -1729,7 +1729,9 @@
         refundStatus: Q.text(item.payload && item.payload.refundStatus),
         paymentStatus: Q.text(item.payload && item.payload.paymentStatus),
         previousManagerUserId: Q.text(item.payload && item.payload.previousManagerUserId),
-        managerUserId: Q.text(item.payload && item.payload.managerUserId)
+        managerUserId: Q.text(item.payload && item.payload.managerUserId),
+        title: Q.text(item.title),
+        body: Q.text(item.body)
       }));
   }
 
@@ -1758,6 +1760,8 @@
         || predecessor.refundRequestStatus
         || targetWindowAvailability(asset) !== 2
         || takeoverRequired.length !== 1 || !Q.sameJson(takeoverRequired[0].recipients, [RILEY_ID])
+        || takeoverRequired[0].title !== "Asset needs a new manager — Take Over"
+        || takeoverRequired[0].body !== "Nova Social left. Open the Asset."
         || notificationRows("asset-assignment-taken-over").length !== 0
         || notificationRows("payment-refund-approved").length !== 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "manager-left-diagnostic", oracle: current, takeoverRequired });

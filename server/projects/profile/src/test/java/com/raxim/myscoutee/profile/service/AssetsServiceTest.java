@@ -846,7 +846,71 @@ class AssetsServiceTest {
         assertThat(notifications.getAllValues())
                 .extracting(NotificationIntent::type)
                 .contains("asset-assignment-takeover-required");
+        assertThat(notifications.getAllValues())
+                .filteredOn(notification -> "asset-assignment-takeover-required".equals(notification.type()))
+                .singleElement()
+                .satisfies(notification -> {
+                    assertThat(notification.title()).isEqualTo("Asset needs a new manager — Take Over");
+                    assertThat(notification.body()).isEqualTo("Open the Asset.");
+                    assertThat(notification.payload())
+                            .containsEntry("notification_title_key", "notification.asset.takeover.required.title")
+                            .containsEntry("notification_message_key", "notification.asset.takeover.required.message");
+                });
         verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void scopedBorrowLastManagerLeaveRemovesOnlyRuntimeAssignment() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        Asset asset = asset();
+        asset.setRequests(List.of(
+                scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment")));
+        AtomicReference<Asset> assetState = new AtomicReference<>(asset);
+        when(assetsRepository.findByAssetId("asset-1")).thenAnswer(invocation -> Optional.of(assetState.get()));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            assetState.set(saved);
+            return saved;
+        });
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+        when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
+        when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
+                .thenReturn("u2");
+        when(activitiesResourcesService.removeScopedAssetAssignment(
+                "event-1", "subevent-1", "asset-1", "u2", "u2"))
+                .thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
+
+        var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                "asset-1", "event-1", "subevent-1", "u2", "leave", null));
+
+        assertThat(left.status()).isEqualTo("deleted");
+        assertThat(assetState.get().getAssetId()).isEqualTo("asset-1");
+        assertThat(assetState.get().getRequests())
+                .singleElement()
+                .satisfies(request -> assertThat(request.status()).isEqualTo("D"));
+        verify(activitiesResourcesService).removeScopedAssetAssignment(
+                "event-1", "subevent-1", "asset-1", "u2", "u2");
     }
 
     @Test

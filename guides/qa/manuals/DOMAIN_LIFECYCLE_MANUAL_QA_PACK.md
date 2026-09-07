@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **IN PROGRESS — STEPS 1-68 CORE PASS**.
+Status: **IN PROGRESS — MANAGER-LEFT PASS THROUGH STEP 73**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6770,6 +6770,25 @@ fingerprint, restored its resource/counter effects and then required the full
 accepted oracle before capture. `rollback-accepted` was executed immediately
 after capture and restored the same oracle successfully. Continue at step 57;
 steps 1-56 and the payment/owner approval must not be replayed.
+
+The user-controlled run then completed steps 57-68 and the final core oracle
+passed. The Free request, zero-quantity unavailable control, isolated Adjacent
+Cancel, Barion decline and Barion timeout branches left the accepted target,
+its physical quantity `3`, dated availability `2`, sibling scope and Riley
+control unchanged. The exact accepted savepoint was restored and the isolated
+two-borrower Take Over extension was prepared without replaying the core flow.
+
+Nova's manager `Leave` initially failed because the service-owned settlement
+write to Riley's already-accepted request was incorrectly evaluated as an
+ordinary user edit. The repaired transition authorizes Nova's own cancellation,
+stores Riley's predecessor amount and leaves the runtime assignment in place.
+The `manager-left` oracle now passes: Nova is deleted from the scoped borrow,
+Riley is the sole accepted borrower, Nova's HUF 3,200 authorization is not yet
+refunded, selected-window availability is `2`, and exactly one Take Over-required
+notification targets Riley. Its compact replacement copy puts `Take Over` in
+the bold title. The Riley menu repair resolves runtime manager settings by the
+exact assigned Asset ID when the physical Asset owner and runtime contributor
+are different. Continue at step 74; do not replay Nova's Leave.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \

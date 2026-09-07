@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-07:** 88/103 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; active `ASSET-CHECKOUT-001` has a core PASS through step 68 with exact `accepted` and `cancelled-control` savepoints, and continues with the paid Take Over/refund extension. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
+**2026-09-07:** 88/103 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; active `ASSET-CHECKOUT-001` has a core PASS through step 68 and a verified `manager-left` boundary through step 73, and continues with Riley's paid Take Over/refund extension. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|

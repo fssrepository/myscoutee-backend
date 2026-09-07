@@ -431,9 +431,9 @@ until Codex confirms that the lifecycle extension is ready.
 72. Return to Members and select `Leave` from Nova's own member card exactly
     once. Confirm the danger dialog once. The runtime association remains, its
     dark badge changes to `1/3`, and no red pending count appears. Riley is the
-    remaining accepted borrower and receives one Take Over-required
-    notification. Nova's existing payment is still Authorized and is not yet
-    refunded merely because Nova left.
+    remaining accepted borrower and receives one compact notification whose
+    bold title contains `Take Over`. Nova's existing payment is still Authorized
+    and is not yet refunded merely because Nova left.
 73. Report:
 
     `ASSET-CHECKOUT-001 manager left: Riley must pay before Take Over`

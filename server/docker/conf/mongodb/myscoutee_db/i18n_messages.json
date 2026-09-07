@@ -15402,6 +15402,18 @@
     "value": "Cancelled"
   },
   {
+    "_id": "i18n-message-en-notification-asset-takeover-required-title",
+    "key": "notification.asset.takeover.required.title",
+    "lang": "en",
+    "value": "Asset needs a new manager — Take Over"
+  },
+  {
+    "_id": "i18n-message-en-notification-asset-takeover-required-message",
+    "key": "notification.asset.takeover.required.message",
+    "lang": "en",
+    "value": "Open the Asset."
+  },
+  {
     "_id": "i18n-message-en-notification-ticket-checked-in-message",
     "key": "notification.ticket.checked.in.message",
     "lang": "en",
@@ -34888,6 +34900,18 @@
     "key": "notification.event.join.cancelled.badge",
     "lang": "hu",
     "value": "Visszavonva"
+  },
+  {
+    "_id": "i18n-message-hu-notification-asset-takeover-required-title",
+    "key": "notification.asset.takeover.required.title",
+    "lang": "hu",
+    "value": "Az eszközhöz új manager kell — Átvétel"
+  },
+  {
+    "_id": "i18n-message-hu-notification-asset-takeover-required-message",
+    "key": "notification.asset.takeover.required.message",
+    "lang": "hu",
+    "value": "Nyisd meg az eszközt."
   },
   {
     "_id": "i18n-message-hu-notification-ticket-checked-in-message",
