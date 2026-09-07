@@ -222,7 +222,9 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     once**.
 32. While the request is active, confirm the action changes to `Paying...` and
     cannot be selected again. The loading indication and surrounding page
-    continue to render and respond.
+    continue to render and respond. The returned payment-session identity is
+    saved immediately into the same browser-local Borrow draft; it is not
+    deferred until the provider outcome.
 33. Wait for the normal request to finish. The following are immediate FAIL
     conditions:
 

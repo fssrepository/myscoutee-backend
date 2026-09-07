@@ -6713,10 +6713,12 @@ not accepted as QA evidence and was rolled back to `revised-payment-ready`.
 The same repair pass closed two payment-lifecycle gaps before replay. A basket
 is now changed to non-purgeable `pay/pending` before external authorization,
 so a three-minute customer-action window may cross the original 10-minute
-basket deadline without losing its reservation. Asset Explore also publishes
-the exact pending-resource signal delta after a paid borrow is materialized;
-the Borrow Stage and main Event red counters therefore update immediately
-instead of appearing only after reload.
+basket deadline without losing its reservation. Once authorization returns a
+session, Asset Explore also saves that identity immediately through its live
+dialog signal and scoped browser-local draft. After materialization it
+publishes the exact pending-resource signal delta; the Borrow Stage and main
+Event red counters therefore update immediately instead of appearing only
+after reload.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
