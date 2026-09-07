@@ -375,9 +375,10 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
 61. Open `QA ASSET-CHECKOUT-001 Adjacent Paid Transport`, request quantity `1`,
     accept the required policy and select `Confirm borrow` once. On the payment
     screen confirm `Back`, red `Cancel` and `Pay` are present.
-62. Select red `Cancel`, then select `Back` in the confirmation dialog. Confirm
-    the payment screen is still open. Select red `Cancel` again and confirm
-    `Cancel borrow` exactly once.
+62. Select red `Cancel` once. In the opened `Cancel borrow?` confirmation
+    dialog, select `Back`; this must close only the confirmation dialog and
+    leave the payment screen open with its basket intact. Select red `Cancel`
+    again, then select `Cancel borrow` exactly once in that confirmation dialog.
 63. Confirm the checkout closes, the Asset action returns to `Borrow`, and its
     Borrow Basket entry is gone. Do not select `Pay`. Report:
 
