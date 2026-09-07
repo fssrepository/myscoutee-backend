@@ -802,6 +802,7 @@ public class AssetsService {
                 || successorRequest == null
                 || !MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(successorRequest.status()))
                 || !"borrow".equals(normalizeAssetRequestKind(successorRequest.requestKind()))
+                || !hasAcceptedRequiredPolicies(current, request.acceptedPolicyIds())
                 || !StringUtils.hasText(previousManagerUserId)
                 || previousManagerUserId.equals(actorUserId)) {
             return null;
@@ -845,7 +846,8 @@ public class AssetsService {
 
         AssetRequestRecord updatedSuccessorRequest = withAssetRequestReplacementPayment(
                 successorRequest,
-                successorPaymentSessionId);
+                successorPaymentSessionId,
+                request.acceptedPolicyIds());
         List<AssetRequestRecord> nextRequests = safeRequests(current.getRequests()).stream()
                 .filter(Objects::nonNull)
                 .map(item -> item == successorRequest ? updatedSuccessorRequest : item)
@@ -1975,7 +1977,12 @@ public class AssetsService {
             if (Objects.equals(previous, next)) {
                 continue;
             }
-            if (!canApplyAddedOrUpdatedAssetRequestPolicy(assetId, previous, next, fullAssetWriteAllowed)) {
+            if (!canApplyAddedOrUpdatedAssetRequestPolicy(
+                    existing,
+                    assetId,
+                    previous,
+                    next,
+                    fullAssetWriteAllowed)) {
                 return false;
             }
         }
@@ -1992,6 +1999,7 @@ public class AssetsService {
     }
 
     private boolean canApplyAddedOrUpdatedAssetRequestPolicy(
+            Asset asset,
             String assetId,
             AssetRequestRecord previous,
             AssetRequestRecord next,
@@ -2002,6 +2010,14 @@ public class AssetsService {
 
         String requesterUserId = normalizeId(next == null ? null : next.userId());
         if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if (!isDeletedAssetRequest(next)
+                && !hasAcceptedRequiredPolicies(
+                        asset,
+                        next == null || next.booking() == null
+                                ? List.of()
+                                : next.booking().acceptedPolicyIds())) {
             return false;
         }
         if (previous == null) {
@@ -3238,7 +3254,8 @@ public class AssetsService {
 
     private AssetRequestRecord withAssetRequestReplacementPayment(
             AssetRequestRecord request,
-            String paymentSessionId) {
+            String paymentSessionId,
+            List<String> acceptedPolicyIds) {
         AssetRequestBookingRecord booking = cloneRequestBooking(request == null ? null : request.booking());
         if (request == null || booking == null) {
             return request;
@@ -3260,7 +3277,7 @@ public class AssetsService {
                 replacementTotal,
                 null,
                 booking.currency(),
-                booking.acceptedPolicyIds(),
+                normalizeStrings(acceptedPolicyIds),
                 normalizeId(paymentSessionId),
                 booking.inventoryApplied());
         return new AssetRequestRecord(
@@ -3274,6 +3291,18 @@ public class AssetsService {
                 request.requestKind(),
                 request.requestedAtIso(),
                 updatedBooking);
+    }
+
+    private boolean hasAcceptedRequiredPolicies(Asset asset, List<String> acceptedPolicyIds) {
+        if (asset == null || !Boolean.TRUE.equals(asset.getPoliciesEnabled())) {
+            return true;
+        }
+        Set<String> accepted = new LinkedHashSet<>(normalizeStrings(acceptedPolicyIds));
+        return safePolicies(asset.getPolicies()).stream()
+                .filter(Objects::nonNull)
+                .filter(policy -> policy.required() == null || Boolean.TRUE.equals(policy.required()))
+                .allMatch(policy -> StringUtils.hasText(normalizeId(policy.id()))
+                        && accepted.contains(normalizeId(policy.id())));
     }
 
     private boolean isDeletedAssetRequest(AssetRequestRecord request) {

@@ -446,15 +446,23 @@ until Codex confirms that the lifecycle extension is ready.
     list. Riley's own member menu now contains `Take Over`. Select it once.
     Confirm this opens the locked replacement-payment review for exactly
     `HUF 3,200`, not a plain confirmation dialog and not a fresh Borrow request.
-76. Advance once, select Riley's active Barion `5555` card and select `Pay`
-    exactly once. In Ava approve Riley's exact 3DS transaction once. The
-    provider result remains inside the existing simulator-owned frame and
-    returns automatically.
+    In the Lending Policies panel, confirm the required `QA Borrow policy`
+    has an acceptance checkbox. Select it if it is not already checked and
+    confirm `Continue to payment` becomes enabled.
+76. Select `Continue to payment` once, select Riley's active Barion `5555` card
+    and select `Pay` exactly once. In Ava approve Riley's exact 3DS transaction
+    once. The provider result remains inside the existing simulator-owned frame
+    and returns automatically.
 77. Without reload, confirm Riley becomes the scoped Manager and the badge
     remains `1/3`. Nova does not reappear as an accepted scoped member. Riley's
     Payment history contains one Authorized `HUF -3,200` Asset expense linked
     to the exact Event/Sub-event; Casey's net Asset income remains `HUF +3,200`
-    because Riley replaced Nova rather than paying in addition to Nova.
+    because Riley replaced Nova rather than paying in addition to Nova. Sign
+    Riley out of the reused browser and sign Nova in there. Confirm Nova has
+    exactly one takeover refund-result notification and Nova's original Asset
+    expense is now `Refunded` in Payment history; no generic manager-change
+    notification targets Nova. Sign Nova out, sign Riley back in and confirm
+    the visible identity is Riley before continuing.
 78. Report:
 
     `ASSET-CHECKOUT-001 paid Take Over complete: Riley manager, Nova refunded`
@@ -513,27 +521,24 @@ until Codex confirms that the lifecycle extension is ready.
     a contextually distinct `Refunded` status/badge. Open `Payment summary` on
     each side and confirm the same refunded result appears there. Reopening is
     read-only and cannot refund twice.
-89. Sign Riley out of the reused browser and sign Nova back in. Confirm Nova has
-    exactly one takeover refund-result notification and the predecessor Asset
-    payment is `Refunded`; no generic manager-change notification targets Nova.
-90. Report:
+89. Report:
 
     `ASSET-CHECKOUT-001 refund approved: counters zero, histories refunded`
 
 ### 9. Last accepted manager Leave removes only the borrowed runtime
 
-91. Wait for Codex to verify the refund branch, roll back to the accepted
+90. Wait for Codex to verify the refund branch, roll back to the accepted
     savepoint and prepare `last-leave-ready`. Confirm Nova is again the only
     accepted scoped Manager and the paid runtime card is present at `1/3`.
-92. In Nova's own Members card, select `Leave` exactly once; do not use the
+91. In Nova's own Members card, select `Leave` exactly once; do not use the
     resource-card `Remove` action in this branch. Confirm the danger dialog.
-93. Confirm the last borrower leaving removes the runtime Event/Sub-event Asset
+92. Confirm the last borrower leaving removes the runtime Event/Sub-event Asset
     association. It does not delete Casey's global Asset and does not erase
     Nova's payment history. With no remaining accepted borrower, no Take Over
     notification is created and no automatic refund occurs; the retained
     Payment-history row continues to provide `Ask Asset Owner` and
     `Request refund`.
-94. Report:
+93. Report:
 
     `ASSET-CHECKOUT-001 last manager left: runtime removed, Asset and history retained`
 

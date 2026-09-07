@@ -350,7 +350,7 @@
       routes: ["Austin"],
       policiesEnabled: paid && options.policies !== false,
       policies: paid && options.policies !== false ? [{
-        id: POLICY_ID,
+        _id: POLICY_ID,
         title: "QA Borrow policy",
         description: "Accept the lending terms before continuing.",
         required: true
@@ -683,7 +683,7 @@
         capacityTotal: Number(asset.capacityTotal || 0),
         pricingEnabled: asset.pricing && asset.pricing.enabled === true,
         amount: Number(asset.pricing && asset.pricing.basePrice || 0),
-        policies: (asset.policies || []).map(item => ({ id: Q.text(item.id), required: item.required === true })),
+        policies: (asset.policies || []).map(item => ({ id: Q.text(item.id || item._id), required: item.required === true })),
         requests: (asset.requests || []).map(requestView)
       })),
       projections: projections.map(requestView),
@@ -1362,13 +1362,13 @@
         || nonOverlappingWindowAvailability(paidAsset) !== 3
         || !request || request.eventId !== EVENT_ID || request.subEventId !== SUB_EVENT_ID
         || request.quantity !== 1 || request.totalAmount !== 3200 || request.currency !== "HUF"
-        || !Q.sameJson(request.acceptedPolicyIds, []) || !request.paymentSessionId || request.inventoryApplied
+        || !Q.sameJson(request.acceptedPolicyIds, [POLICY_ID]) || !request.paymentSessionId || request.inventoryApplied
         || current.projections.length !== 1 || !projection || projection.paymentSessionId !== request.paymentSessionId
         || current.payments.length !== 1 || !payment || payment.checkoutSessionId !== request.paymentSessionId
         || payment.provider !== "barion" || payment.paymentMethodId !== CARD_IDS.active
         || payment.recipientUserId !== CASEY_ID || payment.amount !== 3200 || payment.currency !== "HUF"
         || payment.fulfillmentKind !== "client" || payment.fulfillmentStatus !== "succeeded" || payment.bookingStatus !== "joined"
-        || !Q.sameJson(payment.acceptedPolicyIds, [])
+        || !Q.sameJson(payment.acceptedPolicyIds, [POLICY_ID])
         || current.resources.length !== 1 || !resource || resource.assetOwnerUserId !== NOVA_ID
         || resource.targetQuantity !== 1 || resource.targetAddedByUserId !== NOVA_ID
         || resource.pending !== 1 || resource.accepted !== 0
@@ -1593,6 +1593,7 @@
     const rileyBooking = cloneBooking(novaRequest.booking, {
       totalAmount: 0,
       previousTotalAmount: null,
+      acceptedPolicyIds: [],
       paymentSessionId: null,
       inventoryApplied: false
     });
@@ -1692,6 +1693,7 @@
         || !current.eventMembers.some(item => item.userId === RILEY_ID && item.status === "accepted")
         || !paidAsset || paidAsset.quantity !== 3 || paidAsset.requests.length !== 2
         || !novaRequest || !rileyRequest || rileyRequest.requestKind !== "borrow"
+        || !Q.sameJson(rileyRequest.acceptedPolicyIds, [])
         || rileyRequest.paymentSessionId || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || current.projections.filter(item => item.assetId === PAID_ID).length !== 2
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 1
@@ -1753,6 +1755,7 @@
     const takeoverRequired = notificationRows("asset-assignment-takeover-required");
     const predecessor = lifecyclePayment(NOVA_ID);
     if (!asset || asset.requests.length !== 2 || !novaRequest || !rileyRequest
+        || !Q.sameJson(rileyRequest.acceptedPolicyIds, [])
         || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 3200 || rileyRequest.paymentSessionId
         || current.projections.filter(item => item.assetId === PAID_ID).length !== 2
         || !resource || resource.accepted !== 1 || resource.pending !== 0
@@ -1782,6 +1785,51 @@
     });
   }
 
+  function repairManagerLeftRequiredPolicy() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "manager-left") {
+      Q.fail("manager-left policy repair requires manager-left.");
+    }
+    assertSimulator(true);
+    const asset = Q.collection("assets").findOne({ assetId: PAID_ID });
+    const policies = asset && Array.isArray(asset.policies) ? asset.policies : [];
+    if (!asset || policies.length !== 1
+        || Q.text(policies[0].title) !== "QA Borrow policy"
+        || policies[0].required !== true) {
+      Q.fail("manager-left paid Asset does not contain the exact required QA policy.");
+    }
+    const nowIso = Q.nowIso();
+    Q.collection("assets").updateOne(
+      { assetId: PAID_ID },
+      {
+        $set: {
+          "policies.0._id": POLICY_ID,
+          updatedDate: nowIso,
+          updatedUser: CASEY_ID
+        },
+        $unset: { "policies.0.id": "" }
+      }
+    );
+    const repaired = oracle();
+    const paid = assetById(repaired, PAID_ID);
+    const rileyRequest = paid && paid.requests.find(item => item.userId === RILEY_ID && item.status === "accepted");
+    if (!paid || paid.policies.length !== 1 || paid.policies[0].id !== POLICY_ID
+        || !paid.policies[0].required || !rileyRequest
+        || !Q.sameJson(rileyRequest.acceptedPolicyIds, [])) {
+      Q.fail("manager-left required policy repair did not produce the exact takeover input.");
+    }
+    captureSavepoint("managerLeft", "manager-left");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "manager-left",
+      repairedPolicyId: POLICY_ID,
+      successorAcceptedPolicyIds: rileyRequest.acceptedPolicyIds,
+      next: "Reload Riley once, reopen Take Over and accept the required QA Borrow policy."
+    });
+  }
+
   function verifyTakeOver() {
     config();
     const currentState = state();
@@ -1801,6 +1849,7 @@
     const genericTakeOver = notificationRows("asset-assignment-taken-over");
     if (!asset || asset.requests.length !== 2 || !novaRequest || !rileyRequest
         || !rileyRequest.paymentSessionId || rileyRequest.totalAmount !== 3200
+        || !Q.sameJson(rileyRequest.acceptedPolicyIds, [POLICY_ID])
         || Number(rawRileyRequest?.booking?.previousTotalAmount || 0) !== 0
         || !resource || resource.accepted !== 1 || resource.pending !== 0 || resource.targetAddedByUserId !== RILEY_ID
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 2
@@ -1810,6 +1859,7 @@
         || predecessor.successorPaymentId !== successor?.id
         || !successor || successor.status !== "authorized" || successor.bookingStatus !== "joined"
         || successor.refundStatus !== "none" || successor.predecessorPaymentId !== predecessor.id
+        || !Q.sameJson(successor.acceptedPolicyIds, [POLICY_ID])
         || successor.checkoutSessionId !== rileyRequest.paymentSessionId
         || successor.contextEventId !== EVENT_ID || successor.contextSubEventId !== SUB_EVENT_ID
         || successor.paymentMethodId !== CARD_IDS.rileyActive
@@ -2178,6 +2228,7 @@
   else if (command === "verify-accepted") verifyAccepted();
   else if (command === "prepare-takeover") prepareTakeOver();
   else if (command === "verify-manager-left") verifyManagerLeft();
+  else if (command === "repair-manager-left-required-policy") repairManagerLeftRequiredPolicy();
   else if (command === "verify-takeover") verifyTakeOver();
   else if (command === "verify-refund-requested") verifyRefundRequested();
   else if (command === "verify-refunded") verifyRefunded();

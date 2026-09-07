@@ -31,7 +31,29 @@ public final class AssetsDtos {
             String action,
             AssetMemberRequestDto request,
             String paymentSessionId,
-            String previousManagerUserId) {
+            String previousManagerUserId,
+            List<String> acceptedPolicyIds) {
+        public AssetMemberStatusChangeRequestDto(
+                String assetId,
+                String eventId,
+                String subEventId,
+                String actorUserId,
+                String action,
+                AssetMemberRequestDto request,
+                String paymentSessionId,
+                String previousManagerUserId) {
+            this(
+                    assetId,
+                    eventId,
+                    subEventId,
+                    actorUserId,
+                    action,
+                    request,
+                    paymentSessionId,
+                    previousManagerUserId,
+                    null);
+        }
+
         public AssetMemberStatusChangeRequestDto(
                 String assetId,
                 String eventId,
@@ -39,7 +61,7 @@ public final class AssetsDtos {
                 String actorUserId,
                 String action,
                 AssetMemberRequestDto request) {
-            this(assetId, eventId, subEventId, actorUserId, action, request, null, null);
+            this(assetId, eventId, subEventId, actorUserId, action, request, null, null, null);
         }
     }
 
