@@ -537,7 +537,7 @@ public class PaymentService {
         PaymentProcessor processor = resolveProcessor(payment.getProvider());
         RefundResult result;
         if (hasText(payment.getGatewayRefundId())
-                && !RefundStatus.SUCCEEDED.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
+                && RefundStatus.PENDING.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
             result = processor.retrieveRefund(payment.getGatewayRefundId());
         } else if (RefundStatus.SUCCEEDED.name().equalsIgnoreCase(safeText(payment.getGatewayRefundStatus()))) {
             return new RefundResult(
