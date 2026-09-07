@@ -73,6 +73,14 @@
   const serviceChatMessageSelector = { chatId: SERVICE_CHAT_ID };
   const novaServiceChatSelector = { id: { $in: NOVA_SERVICE_CHAT_IDS } };
   const novaServiceChatMessageSelector = { chatId: { $in: NOVA_SERVICE_CHAT_IDS } };
+  const allServiceChatSelector = { id: { $in: [SERVICE_CHAT_ID, ...NOVA_SERVICE_CHAT_IDS] } };
+  const allServiceChatMessageSelector = { chatId: { $in: [SERVICE_CHAT_ID, ...NOVA_SERVICE_CHAT_IDS] } };
+  const freeNotificationSelector = { $or: [
+    { entityId: FREE_ID },
+    { sourceId: FREE_ID },
+    { "payload.assetId": FREE_ID },
+    { "payload.sourceId": FREE_ID }
+  ] };
 
   function config() {
     if (checkpointId !== CHECKPOINT) {
@@ -554,8 +562,8 @@
       { collection: "savedPaymentMethods", selector: cardSelector },
       { collection: "notificationOutbox", selector: notificationSelector },
       { collection: "userNotifications", selector: notificationSelector },
-      { collection: "chats", selector: serviceChatSelector },
-      { collection: "chatMessages", selector: serviceChatMessageSelector },
+      { collection: "chats", selector: allServiceChatSelector },
+      { collection: "chatMessages", selector: allServiceChatMessageSelector },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: [EVENT_ID, ...ASSET_IDS] } } },
       { collection: "scheduledMessageTasks", selector: { eventId: EVENT_ID } }
     ];
@@ -1087,10 +1095,14 @@
         ? saved.activities.value || {}
         : {};
       const savedChat = savedActivities.chat || {};
-      const result = Q.collection("users").updateOne(userSelector(userId), { $set: {
+      const restoredFields = {
         "activities.chats": Number(savedActivities.chats || 0),
         "activities.chat": savedChat
-      } });
+      };
+      if (userId === CASEY_ID) {
+        restoredFields["activities.notifications"] = Number(savedActivities.notifications || 0);
+      }
+      const result = Q.collection("users").updateOne(userSelector(userId), { $set: restoredFields });
       if (result.matchedCount !== 1) Q.fail(`could not restore service-chat counters for '${userId}'.`);
     }
     if (Q.collection("chats").countDocuments(novaServiceChatSelector) !== 0
@@ -1105,6 +1117,85 @@
       removedChats,
       removedMessages,
       chatIds: NOVA_SERVICE_CHAT_IDS
+    });
+  }
+
+  function repairStep56Boundary() {
+    config();
+    const currentState = state();
+    if (!["paid-pending", "request-destination"].includes(Q.text(currentState.phase))) {
+      Q.fail("step-56 repair requires the retained paid-pending/request-destination harness phase.");
+    }
+    const paidAsset = Q.collection("assets").findOne({ $or: [{ _id: PAID_ID }, { assetId: PAID_ID }] });
+    const paidRequest = paidAsset && (paidAsset.requests || []).find(item =>
+      Q.text(item.userId) === NOVA_ID
+      && Q.text(item.booking && item.booking.eventId) === EVENT_ID
+      && Q.text(item.booking && item.booking.subEventId) === SUB_EVENT_ID
+    );
+    if (!paidRequest
+        || Q.text(paidRequest.status) !== "accepted"
+        || Q.text(paidRequest.booking && paidRequest.booking.paymentSessionId).length === 0) {
+      Q.fail("the live paid request is not accepted; refusing to synthesize the step-56 boundary.");
+    }
+
+    const baselineControls = currentState.immutableControlFingerprint || {};
+    const baselineFreeAssets = (baselineControls.assets || []).filter(item =>
+      Q.text(item.assetId || item._id) === FREE_ID
+    );
+    if (baselineFreeAssets.length !== 1) {
+      Q.fail("the exact staged Free Transport baseline is unavailable.");
+    }
+    Q.restoreSnapshots([{
+      collection: "assets",
+      selector: { $or: [{ _id: FREE_ID }, { assetId: FREE_ID }] },
+      documents: baselineFreeAssets
+    }]);
+    Q.collection("assetRequests").deleteMany({ assetId: FREE_ID });
+    Q.collection("payments").deleteMany({ sourceId: FREE_ID });
+    Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: FREE_ID });
+
+    const resource = Q.collection("activityResources").findOne({
+      ownerId: EVENT_ID,
+      subEventId: SUB_EVENT_ID,
+      "assetAssignmentIds.Transport": { $all: [PAID_ID, FREE_ID] }
+    });
+    if (!resource) {
+      Q.fail("the exact paid-plus-Free probe resource is unavailable for step-56 repair.");
+    }
+    const resourceUpdate = Q.collection("activityResources").updateOne({ _id: resource._id }, {
+      $pull: { "assetAssignmentIds.Transport": FREE_ID },
+      $unset: { [`assetSettingsByType.Transport.${FREE_ID}`]: "" },
+      $set: {
+        "resourceMetricsByType.Transport.accepted": 1,
+        "resourceMetricsByType.Transport.pending": 0,
+        "resourceMetricsByType.Transport.capacityMin": 0,
+        "resourceMetricsByType.Transport.capacityMax": 3,
+        updatedDate: Q.nowIso(),
+        updatedUser: NOVA_ID
+      }
+    });
+    if (resourceUpdate.matchedCount !== 1 || resourceUpdate.modifiedCount !== 1) {
+      Q.fail("the Free Transport probe could not be removed from the retained paid resource exactly once.");
+    }
+    Q.collection("notificationOutbox").deleteMany(freeNotificationSelector);
+    Q.collection("userNotifications").deleteMany(freeNotificationSelector);
+    resetNovaServiceChatProbe();
+    synchronizeOwnerAssetCounters();
+
+    const current = oracle();
+    const result = assertAccepted(current);
+    assertImmutableControls(currentState);
+    captureSavepoint("accepted", "accepted");
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "accepted",
+      repairedBoundary: "step-56",
+      paymentSessionId: result.payment.checkoutSessionId,
+      storedQuantity: 3,
+      selectedWindowAvailability: 2,
+      nonOverlappingWindowAvailability: 3,
+      rollbackCommand: `rollback-accepted asset-checkout ${CHECKPOINT}`
     });
   }
 
@@ -1968,6 +2059,7 @@
   else if (command === "verify-paid-pending") verifyPaidPending();
   else if (command === "verify-request-destination") verifyRequestDestination();
   else if (command === "reset-service-chat-probe") resetNovaServiceChatProbe();
+  else if (command === "repair-step-56-boundary") repairStep56Boundary();
   else if (command === "verify-accepted") verifyAccepted();
   else if (command === "prepare-takeover") prepareTakeOver();
   else if (command === "verify-manager-left") verifyManagerLeft();

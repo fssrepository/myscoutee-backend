@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **IN PROGRESS — STEPS 1-30 ACCEPTED**.
+Status: **IN PROGRESS — STEPS 1-56 ACCEPTED**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -6757,16 +6757,19 @@ exposes `Remove` for deleting only that runtime association. The unrelated
 generic Asset-manager feature remains available outside this scoped Borrow
 surface.
 
-After those repairs, the guarded rollback restored `revised-payment-ready`.
-The exact active quantity-`1` basket is re-armed from
-`2026-09-07T06:43:40.282Z` through `2026-09-07T06:53:40.282Z`, an exact
-10-minute interval. The five disclosed material basket generations remain,
-while payments, requests, notifications, inventory/resource effects and
-stored Asset memberships are zero; Casey's stored Asset pending counters are
-`0/0/0`. The user may continue at step 31. If the prior successful payment
-cleared Nova's browser-local draft and orange `Continue borrow` is absent, only
-steps 1-18 are repeated to recreate that local entry, followed by another
-guarded rollback; steps 19-30 remain accepted.
+The user-controlled run subsequently completed steps 31-56. The accepted
+oracle proves exactly one authorized Barion payment, the same paid request now
+accepted once, one accepted scoped resource contribution, Nova as the scoped
+Manager without a stored global Asset role, selected-range availability `2`,
+physical quantity `3`, non-overlapping availability `3`, and Casey's stored
+Asset pending counters returned to `0/0/0`. A disclosed Free-Asset request and
+temporary Nova service chats were created after the intended boundary while
+diagnosing the UI. The versioned `repair-step-56-boundary` command removed only
+those probe artifacts, restored the Free control from its exact staged
+fingerprint, restored its resource/counter effects and then required the full
+accepted oracle before capture. `rollback-accepted` was executed immediately
+after capture and restored the same oracle successfully. Continue at step 57;
+steps 1-56 and the payment/owner approval must not be replayed.
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \

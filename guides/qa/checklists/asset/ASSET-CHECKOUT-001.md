@@ -480,14 +480,18 @@ extension below.
 82. Select `Ask Asset Owner`. Confirm Casey is the recipient even though Casey
     was never a scoped borrower. Before sending, confirm the chat header already
     shows Riley's and Casey's two profile-photo avatars (not an initials tile
-    for fixture owner Casey), while no empty chat was created. Send this exact
-    first message once:
+    for fixture owner Casey), while no empty chat was created. Select the avatar
+    stack once and confirm the view-only Chat-channel Members list contains
+    exactly Riley and Casey rather than an empty list; close Members. Send this
+    exact first message once:
 
     `QA ASSET-CHECKOUT-001: Riley asks Casey about the paid borrowed Transport.`
 
-83. Confirm the Asset service chat is now visible in the Chat channel. Casey's
-    Chat unread red counter increases once and the conversation contains the
-    exact Riley message once.
+83. Confirm the first message creates the Asset service chat and it is now
+    visible in the Chat channel. Casey's Chat unread red counter increases once
+    and the conversation contains the exact Riley message once. Reopening `Ask
+    Asset Owner` opens that same persisted channel and message; it must not
+    create another empty or duplicate channel.
 84. Return to Riley's same Payment history row, select `Request refund` and
     confirm exactly once. The row gains a pending-refund badge and loses the
     request action. Report:

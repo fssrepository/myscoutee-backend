@@ -20,7 +20,7 @@ remaining qualification work is completed.
 
 ### Manual QA status and estimate
 
-**2026-09-07:** 88/103 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; active `ASSET-CHECKOUT-001` has accepted steps 1-30 and an exact pre-step-31 `revised-payment-ready` rollback checkpoint. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
+**2026-09-07:** 88/103 passed; QA infrastructure 2/2, Identity & access 8/8, Tournament 15/15 and Chat 6/6 complete; `ASSET-LIFE-001`, `ASSET-VIS-001`, `ASSET-MEMBER-LIFECYCLE-001`, `ASSET-ASSIGNMENT-LIFECYCLE-001`, `CONTENT-ADMIN-LIFECYCLE-001`, `PAYMENT-METHODS-HISTORY-001` and the Event-owned `EVENT-CHECKOUT-001` journey are PASS/CLOSED; active `ASSET-CHECKOUT-001` has accepted steps 1-56 and an exact, rollback-tested `accepted` checkpoint. Deployment is not a Pair-QA domain; Operator work is consolidated into four screen-level journeys, real-device push remains in Notifications, and downstream product behavior stays in its owning domain.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
