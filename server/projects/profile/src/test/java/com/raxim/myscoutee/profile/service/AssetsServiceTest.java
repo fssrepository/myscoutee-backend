@@ -1086,12 +1086,15 @@ class AssetsServiceTest {
                 .singleElement()
                 .satisfies(notification -> {
                     assertThat(notification.recipientUserIds()).containsExactly("u2");
+                    assertThat(notification.createdUser()).isNull();
                     assertThat(notification.payload())
                             .containsEntry("paymentId", "old-payment")
                             .containsEntry("refundRequestStatus", "approved")
                             .containsEntry("refundStatus", "full")
                             .containsEntry("paymentStatus", "refunded")
-                            .containsEntry("refundReason", "asset-manager-takeover");
+                            .containsEntry("refundReason", "asset-manager-takeover")
+                            .containsEntry("notification_message_key", "notification.payment.refund.takeover.message")
+                            .doesNotContainKeys("previousManagerUserId", "managerUserId");
                 });
     }
 
