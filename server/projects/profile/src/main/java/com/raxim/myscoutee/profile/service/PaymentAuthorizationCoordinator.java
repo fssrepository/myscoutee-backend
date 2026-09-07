@@ -11,15 +11,12 @@ import com.raxim.myscoutee.profile.service.PaymentService.GatewayTransition;
 public class PaymentAuthorizationCoordinator {
     private final PaymentService paymentService;
     private final ActivitiesEventsService activitiesEventsService;
-    private final PaymentGatewayOperationService gatewayOperationService;
 
     public PaymentAuthorizationCoordinator(
             PaymentService paymentService,
-            ActivitiesEventsService activitiesEventsService,
-            PaymentGatewayOperationService gatewayOperationService) {
+            ActivitiesEventsService activitiesEventsService) {
         this.paymentService = paymentService;
         this.activitiesEventsService = activitiesEventsService;
-        this.gatewayOperationService = gatewayOperationService;
     }
 
     public GatewayTransition apply(
@@ -31,15 +28,16 @@ public class PaymentAuthorizationCoordinator {
                 authorization,
                 gatewayEventId);
         Payment payment = transition.payment();
-        if (payment == null || !("authorized".equalsIgnoreCase(payment.getStatus())
-                || "captured".equalsIgnoreCase(payment.getStatus()))) {
+        if (payment == null || !"captured".equalsIgnoreCase(payment.getStatus())) {
             return transition;
         }
         if ("succeeded".equalsIgnoreCase(payment.getFulfillmentStatus())) {
             return transition;
         }
         if ("failed".equalsIgnoreCase(payment.getFulfillmentStatus())) {
-            gatewayOperationService.enqueueRelease(payment, "fulfillment-compensation");
+            paymentService.refundFailedFulfillment(
+                    payment,
+                    "The captured payment could not be fulfilled.");
             return transition;
         }
 
@@ -66,10 +64,6 @@ public class PaymentAuthorizationCoordinator {
 
     private void compensateUnfulfilledAuthorization(Payment payment, String reason) {
         Payment failed = paymentService.markGatewayFulfillment(payment.getId(), false, reason);
-        if ("captured".equalsIgnoreCase(failed.getStatus())) {
-            paymentService.refundFailedFulfillment(failed, reason);
-        } else {
-            gatewayOperationService.enqueueRelease(failed, "fulfillment-compensation");
-        }
+        paymentService.refundFailedFulfillment(failed, reason);
     }
 }
