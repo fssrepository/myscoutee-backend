@@ -71,13 +71,22 @@ class UserActivityCountersServiceTest {
     @Test
     void refreshAssetCountersForUserStoresActiveOwnedAssetCounts() {
         Users user = user("owner", activitiesWithAssetAndFeedback(0, 0, 0, 5, 2, 1, 3, 4));
+        Asset transport = asset(AssetCatalog.TYPE_TRANSPORT, "A");
+        transport.setRequests(List.of(
+                assetRequest("pending", "borrow"),
+                assetRequest("pending", "manual"),
+                assetRequest("accepted", "borrow")));
+        Asset accommodation = asset(AssetCatalog.TYPE_ACCOMMODATION, "A");
+        accommodation.setRequests(List.of(assetRequest("pending", "borrow")));
+        Asset deletedTransport = asset(AssetCatalog.TYPE_TRANSPORT, "D");
+        deletedTransport.setRequests(List.of(assetRequest("pending", "borrow")));
         when(usersRepository.findByUserId("owner")).thenReturn(Optional.of(user));
         when(assetsRepository.findByOwnerUserId("owner")).thenReturn(List.of(
-                asset(AssetCatalog.TYPE_TRANSPORT, "A"),
-                asset(AssetCatalog.TYPE_ACCOMMODATION, "A"),
+                transport,
+                accommodation,
                 asset(AssetCatalog.TYPE_SUPPLIES, "A"),
                 asset(AssetCatalog.TYPE_SUPPLIES, "UR"),
-                asset(AssetCatalog.TYPE_TRANSPORT, "D")));
+                deletedTransport));
 
         service.refreshAssetCountersForUser("owner");
 
@@ -89,6 +98,9 @@ class UserActivityCountersServiceTest {
         assertThat(fields.getInteger("activities.asset.accommodation")).isEqualTo(1);
         assertThat(fields.getInteger("activities.asset.supplies")).isEqualTo(1);
         assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(5);
+        assertThat(fields.getInteger("activities.asset.carsPending")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.accommodationPending")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.suppliesPending")).isZero();
     }
 
     @Test
@@ -385,6 +397,20 @@ class UserActivityCountersServiceTest {
         asset.setType(type);
         asset.setStatus(status);
         return asset;
+    }
+
+    private Asset.AssetRequestRecord assetRequest(String status, String requestKind) {
+        return new Asset.AssetRequestRecord(
+                status + '-' + requestKind,
+                "member",
+                "Member",
+                "ME",
+                "woman",
+                status,
+                "",
+                requestKind,
+                "2030-01-01T00:00:00Z",
+                null);
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String status) {

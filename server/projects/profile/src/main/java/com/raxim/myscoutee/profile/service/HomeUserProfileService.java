@@ -2949,7 +2949,10 @@ public class HomeUserProfileService {
                 asset == null ? 0 : normalizeCount(asset.cars()),
                 asset == null ? 0 : normalizeCount(asset.accommodation()),
                 asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()));
+                asset == null ? 0 : normalizeCount(asset.tickets()),
+                asset == null ? 0 : normalizeCount(asset.carsPending()),
+                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
+                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
     private UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
@@ -2999,7 +3002,10 @@ public class HomeUserProfileService {
                 asset == null ? 0 : normalizeCount(asset.cars()),
                 asset == null ? 0 : normalizeCount(asset.accommodation()),
                 asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()));
+                asset == null ? 0 : normalizeCount(asset.tickets()),
+                asset == null ? 0 : normalizeCount(asset.carsPending()),
+                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
+                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
     private Users.UserEventFeedbackCountersRecord toUserEventFeedbackCountersRecord(UserEventFeedbackCountersDto feedback) {

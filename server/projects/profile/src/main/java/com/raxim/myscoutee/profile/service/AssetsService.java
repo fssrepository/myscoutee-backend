@@ -1546,7 +1546,9 @@ public class AssetsService {
         }
         assetsRepository.save(saved);
         syncAssetRequestProjection(existing, saved);
-        enqueueAssetMembershipTransitionNotifications(existing, saved, currentActorUserId());
+        String actorUserId = currentActorUserId();
+        enqueueNewScopedAssetPendingRequestNotifications(existing, saved, actorUserId);
+        enqueueAssetMembershipTransitionNotifications(existing, saved, actorUserId);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
@@ -2493,33 +2495,12 @@ public class AssetsService {
         if (assets == null || assets.isEmpty()) {
             return Map.of();
         }
-        Map<String, String> ownerUserIdByAssetId = new LinkedHashMap<>();
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = new LinkedHashMap<>();
         for (Asset asset : assets) {
             String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
-            if (StringUtils.hasText(assetId) && StringUtils.hasText(ownerUserId)) {
-                ownerUserIdByAssetId.put(assetId, ownerUserId);
+            if (StringUtils.hasText(assetId)) {
+                metricsByAssetId.put(assetId, toAssetRequestMetrics(asset.getRequests()));
             }
-        }
-        if (ownerUserIdByAssetId.isEmpty()) {
-            return Map.of();
-        }
-        List<AssetRequest> requests = mongoTemplate.find(
-                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())
-                        .and("status").nin(STATUS_DELETED, "deleted")),
-                AssetRequest.class);
-        Map<String, List<AssetRequest>> requestsByAssetId = new LinkedHashMap<>();
-        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
-            String assetId = normalizeId(request == null ? null : request.assetId());
-            String ownerUserId = normalizeId(request == null ? null : request.ownerUserId());
-            if (!StringUtils.hasText(assetId) || !Objects.equals(ownerUserIdByAssetId.get(assetId), ownerUserId)) {
-                continue;
-            }
-            requestsByAssetId.computeIfAbsent(assetId, ignored -> new ArrayList<>()).add(request);
-        }
-        Map<String, AssetRequestMetricsDto> metricsByAssetId = new LinkedHashMap<>();
-        for (String assetId : ownerUserIdByAssetId.keySet()) {
-            metricsByAssetId.put(assetId, toAssetRequestMetrics(requestsByAssetId.getOrDefault(assetId, List.of())));
         }
         return metricsByAssetId;
     }
@@ -2532,19 +2513,19 @@ public class AssetsService {
         return resolveAssetRequestMetricsByAssetId(List.of(asset)).getOrDefault(assetId, emptyAssetRequestMetrics());
     }
 
-    private AssetRequestMetricsDto toAssetRequestMetrics(Collection<AssetRequest> requests) {
+    private AssetRequestMetricsDto toAssetRequestMetrics(Collection<AssetRequestRecord> requests) {
         int assignedItems = 0;
         int borrowedItems = 0;
         int pendingItems = 0;
-        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+        for (AssetRequestRecord request : requests == null ? List.<AssetRequestRecord>of() : requests) {
             if (!isLaterAssetRequest(request)) {
                 continue;
             }
             if (isManualAssetRequest(request)) {
                 assignedItems++;
-            } else if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+            } else if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status()))) {
                 borrowedItems++;
-            } else if ("pending".equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+            } else if ("pending".equals(normalizeRequestStatus(request.status()))) {
                 pendingItems++;
             }
         }
@@ -2557,12 +2538,12 @@ public class AssetsService {
                 pendingItems);
     }
 
-    private boolean isLaterAssetRequest(AssetRequest request) {
+    private boolean isLaterAssetRequest(AssetRequestRecord request) {
         long endAtMs = assetRequestEndAtMs(request);
         return endAtMs != Long.MIN_VALUE && endAtMs >= System.currentTimeMillis();
     }
 
-    private long assetRequestEndAtMs(AssetRequest request) {
+    private long assetRequestEndAtMs(AssetRequestRecord request) {
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
         long startAtMs = toSortableDate(firstNonBlank(
                 booking == null ? null : booking.startAtIso(),
@@ -2590,7 +2571,7 @@ public class AssetsService {
         return new AssetRequestMetricsDto(0, 0, 0, 0, 0);
     }
 
-    private boolean isManualAssetRequest(AssetRequest request) {
+    private boolean isManualAssetRequest(AssetRequestRecord request) {
         return "manual".equals(normalizeAssetRequestKind(request == null ? null : request.requestKind()));
     }
 
@@ -3706,6 +3687,34 @@ public class AssetsService {
                         normalizedEventId,
                         normalizedSubEventId,
                         normalizedActorUserId));
+    }
+
+    private void enqueueNewScopedAssetPendingRequestNotifications(
+            Asset previous,
+            Asset next,
+            String actorUserId) {
+        Set<String> notifiedScopes = new LinkedHashSet<>();
+        for (AssetRequestRecord request : safeRequests(next == null ? null : next.getRequests())) {
+            if (request == null
+                    || !"pending".equals(normalizeRequestStatus(request.status()))
+                    || "manual".equals(normalizeAssetRequestKind(request.requestKind()))) {
+                continue;
+            }
+            AssetRequestBookingRecord booking = request.booking();
+            String eventId = normalizeId(booking == null ? null : booking.eventId());
+            String subEventId = normalizeId(booking == null ? null : booking.subEventId());
+            if (!StringUtils.hasText(eventId)
+                    || !StringUtils.hasText(subEventId)
+                    || !notifiedScopes.add(eventId + "\u0000" + subEventId)) {
+                continue;
+            }
+            enqueueScopedAssetPendingRequestNotifications(
+                    previous,
+                    next,
+                    eventId,
+                    subEventId,
+                    actorUserId);
+        }
     }
 
     private void enqueueScopedAssetPendingRequestNotification(

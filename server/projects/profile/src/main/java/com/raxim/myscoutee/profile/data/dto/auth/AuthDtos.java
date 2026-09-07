@@ -168,7 +168,17 @@ public final class AuthDtos {
             Integer cars,
             Integer accommodation,
             Integer supplies,
-            Integer tickets) {
+            Integer tickets,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending) {
+        public UserAssetCountersDto(
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets) {
+            this(cars, accommodation, supplies, tickets, 0, 0, 0);
+        }
     }
 
     public record UserEventFeedbackCountersDto(

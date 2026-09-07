@@ -627,7 +627,17 @@ public class Users {
             Integer cars,
             Integer accommodation,
             Integer supplies,
-            Integer tickets) {
+            Integer tickets,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending) {
+        public UserAssetCountersRecord(
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets) {
+            this(cars, accommodation, supplies, tickets, 0, 0, 0);
+        }
     }
 
     public record UserEventFeedbackCountersRecord(
