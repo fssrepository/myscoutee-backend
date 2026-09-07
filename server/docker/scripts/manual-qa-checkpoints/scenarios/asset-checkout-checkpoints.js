@@ -623,7 +623,6 @@
       gatewaySessionId: Q.text(item.gatewaySessionId),
       provider: Q.text(item.provider),
       paymentMethodId: Q.text(item.paymentMethodId),
-      auditKind: Q.text(item.auditKind),
       status: Q.text(item.status),
       fulfillmentKind: Q.text(item.fulfillmentKind),
       fulfillmentStatus: Q.text(item.fulfillmentStatus),

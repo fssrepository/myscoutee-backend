@@ -459,12 +459,15 @@ until Codex confirms that the lifecycle extension is ready.
 77. Without reload, confirm Riley becomes the scoped Manager and the badge
     remains `1/3`. Nova does not reappear as an accepted scoped member. Riley's
     Payment history contains one Authorized `HUF -3,200` Asset expense linked
-    to the exact Event/Sub-event; Casey's net Asset income remains `HUF +3,200`
+    to the exact Event/Sub-event. Casey's gross badges show `HUF -3,200` refunded
+    and `HUF +6,400` received, whose net Asset income remains `HUF +3,200`
     because Riley replaced Nova rather than paying in addition to Nova. Sign
     Riley out of the reused browser and sign Nova in there. Confirm Nova has
-    exactly one takeover refund-result notification and Nova's original Asset
-    expense is now `Refunded` with a separate `HUF +3,200` refund amount in
-    Payment history. The notification is from MyScoutee, says the refund happened
+    exactly one takeover refund-result notification. Nova's Payment history is
+    date-descending: the newer, contextually distinct `HUF +3,200` `Refunded`
+    write appears above the original `HUF -3,200` Asset expense. Its gross badges
+    are `HUF -3,200 / HUF +3,200`, and the original row has no Refund action.
+    The notification is from MyScoutee, says the refund happened
     because someone took over the Asset, and does not identify Riley; no generic
     manager-change notification targets Nova. Sign Nova out, sign Riley back in and confirm
     the visible identity is Riley before continuing.
@@ -525,12 +528,14 @@ until Codex confirms that the lifecycle extension is ready.
     the same `HUF +1,600` refund, retained amount and policy basis as Riley saw.
 87. Confirm `Approve refund` exactly once. The pending counter
     changes immediately to `0` through the signal and stays `0` after the next
-    user-model poll. Casey's income and Riley's expense totals both retain
-    `HUF 1,600`; the other `HUF 1,600` is refunded exactly once.
-88. In both Casey's income view and Riley's expense view, confirm the record has
-    a contextually distinct `Partially refunded` status/badge. Open `Payment summary` on
-    each side and confirm the same refunded result appears there. Reopening is
-    read-only and cannot refund twice.
+    user-model poll. Riley's gross badges are `HUF -3,200 / HUF +1,600`;
+    Casey's rows retain the corresponding gross receipt and refund while the
+    net result is `HUF 1,600` on each side.
+88. In both Casey and Riley, confirm the newer `HUF 1,600` refund write appears
+    above the original payment with a contextually distinct `Refunded` badge.
+    The original payment has no further Refund action. Open `Payment summary`
+    from the original row on each side and confirm the same partial refund result
+    appears there. Reopening is read-only and cannot refund twice.
 89. Report:
 
     `ASSET-CHECKOUT-001 refund approved: counters zero, histories refunded`
