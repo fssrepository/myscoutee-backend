@@ -294,7 +294,12 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     read creates no second request/payment/reservation.
 44. Open the exact Event/Sub-event resource view and confirm the paid Transport
     has one pending borrower/resource contribution, not an accepted or global
-    assignment under another scope.
+    assignment under another scope. Open its scoped Members view as Casey.
+    Casey is an Event admin but is neither an accepted member nor the Manager
+    of this scoped Asset, so Nova's card exposes no `Approve`, `Reject` or other
+    Asset-membership management action here. Casey may inspect Nova's
+    participation and open Nova's profile with the eye action. The owner
+    approval remains exclusively on Casey's own Asset screen in steps 45-50.
 45. In **Casey**, confirm exactly one `asset-admin-join-request` notification
     identifies Nova and the paid Asset. Open `My Assets → Transport`. Before
     opening the Asset, confirm the rose/red-counter `Pending` toggle appears
