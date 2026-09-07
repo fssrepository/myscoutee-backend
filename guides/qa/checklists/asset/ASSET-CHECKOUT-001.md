@@ -457,7 +457,9 @@ until Codex confirms that the lifecycle extension is ready.
     once. The provider result remains inside the existing simulator-owned frame
     and returns automatically.
 77. Without reload, confirm Riley becomes the scoped Manager and the badge
-    remains `1/3`. Nova does not reappear as an accepted scoped member. Riley's
+    remains `1/3`; Riley's member menu changes on the same signal from `Take Over`
+    to `Leave`, and `Take Over` disappears without reopening or reloading.
+    Nova does not reappear as an accepted scoped member. Riley's
     Payment history contains one Authorized `HUF -3,200` Asset expense linked
     to the exact Event/Sub-event. Casey's gross badges show `HUF -3,200` refunded
     and `HUF +6,400` received, whose net Asset income remains `HUF +3,200`
