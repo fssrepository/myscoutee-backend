@@ -6814,6 +6814,24 @@ runtime `Remove` action. Required policies are automatically included after
 lazy Asset-detail loading and render without acknowledgement checkboxes in all
 Borrow/Join/Take Over entry points; optional policies remain selectable.
 
+A diagnostic Riley `Leave` at the retained boundary correctly followed the
+section-9 last-accepted-borrower domain path: Riley's scoped request and the
+runtime assignment were deleted while Casey's global Asset remained. The
+returned/reopened scoped Members read was nevertheless wrong because both the
+Java and local member adapters treated a missing runtime manager as permission
+to synthesize Casey as a scoped Manager. That fallback is removed. A scoped
+owner is now included only when an active runtime assignment explicitly names
+that owner as its manager, which preserves directly assigned own Assets while
+leaving the terminated Borrow scope empty. The existing backend and frontend
+watchers compiled and deployed the repair. A read-only authenticated HTTP read
+proved zero members after the diagnostic last Leave; after the guarded
+`rollback-takeover-complete`, the same route proved exactly Riley as the sole
+accepted Manager and no Casey row. At 2026-09-08 04:15 CEST the fixture again
+reported `phase=takeover-complete` and `Continue at step 80`, then
+`prepare-browser` and the versioned launcher opened the three configured
+Casey/Nova/Ava profiles. The user must switch the reused Nova profile to Riley
+before step 80; Codex performed no browser checklist action.
+
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-checkout ASSET-CHECKOUT-001
