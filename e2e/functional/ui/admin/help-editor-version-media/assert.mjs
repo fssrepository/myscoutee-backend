@@ -1,5 +1,8 @@
 import { assert } from '../../../../shared/assertions.mjs';
-import { openNavigatorMenu, waitForVisibleText } from '../../lib/ui-contracts.mjs';
+import {
+  openNavigatorMenu,
+  waitForVisibleText
+} from '../../lib/ui-contracts.mjs';
 import { fileURLToPath } from 'node:url';
 
 const FIRST_IMAGE_FIXTURE = {
@@ -310,10 +313,10 @@ async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
       return false;
     }
     const background = window.getComputedStyle(slot).backgroundImage || '';
+    const renderedUrl = background.match(/url\(["']?(.*?)["']?\)/)?.[1] ?? '';
     if (
       expectedUrl
-      && !decodeURIComponent(background).includes(expectedUrl)
-      && !decodeURIComponent(background).includes(comparableUrl(expectedUrl))
+      && decodeURIComponent(comparableUrl(renderedUrl)) !== decodeURIComponent(comparableUrl(expectedUrl))
     ) {
       return false;
     }
@@ -325,7 +328,7 @@ async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
     remove.click();
     return true;
   }, { slotIndex, expectedUrl });
-  assert(removed, `Help editor carousel slot ${slotIndex + 1} should expose a remove button`);
+  assert(removed, `Help editor carousel slot ${slotIndex + 1} should expose a remove button for the uploaded image`);
 }
 
 async function assertDraftCarouselImagePresent(page, expectedUrl) {
@@ -485,8 +488,9 @@ async function openSavedRevisionPreview(page, marker) {
 }
 
 async function assertSavedPreviewReferencesImage(page, marker, expectedUrl) {
+  const expectedObjectPath = managedMediaObjectPath(expectedUrl);
   await page.waitFor('saved help editor preview references saved image', async () => {
-    return page.evaluate(({ marker, expectedUrl }) => {
+    return page.evaluate(({ marker, expectedUrl, expectedObjectPath }) => {
       const comparableUrl = value => {
         const text = `${value ?? ''}`.trim();
         if (!text) {
@@ -503,10 +507,11 @@ async function assertSavedPreviewReferencesImage(page, marker, expectedUrl) {
         .find(item => item.textContent?.includes(marker) && !item.classList.contains('help-editor-draft-card'));
       const html = card?.innerHTML ?? '';
       const decoded = decodeURIComponent(html);
-      return html.includes(expectedUrl)
+      return (expectedObjectPath && decoded.includes(expectedObjectPath))
+        || html.includes(expectedUrl)
         || decoded.includes(expectedUrl)
         || decoded.includes(comparableUrl(expectedUrl));
-    }, { marker, expectedUrl });
+    }, { marker, expectedUrl, expectedObjectPath });
   }, 30000);
 }
 
@@ -603,15 +608,52 @@ async function waitForRevisionAbsent(page, marker, revisionId) {
 }
 
 function revisionHasImageUrl(revision, imageUrl) {
-  const expected = comparableMediaUrl(imageUrl);
-  return (revision?.imageUrls ?? []).some(url => comparableMediaUrl(url) === expected);
+  const expected = mediaIdentity(imageUrl);
+  return (revision?.imageUrls ?? []).some(url => mediaIdentity(url) === expected);
+}
+
+function mediaIdentity(value) {
+  return managedMediaObjectPath(value) || comparableMediaUrl(value);
+}
+
+function managedMediaObjectPath(value) {
+  const text = `${value ?? ''}`.trim();
+  if (!text) {
+    return '';
+  }
+  try {
+    const parsed = new URL(text, 'http://localhost');
+    const key = parsed.searchParams.get('key')?.trim() ?? '';
+    if (!key) {
+      return '';
+    }
+    return key.replace(/\/(?:small|medium|large)\.[^/]+$/i, '');
+  } catch {
+    return '';
+  }
 }
 
 async function deleteRevisionViaApi(page, revisionId) {
   const result = await page.evaluate(async revisionId => {
+    let userId = '';
+    let sessionId = '';
+    try {
+      const session = JSON.parse(window.localStorage.getItem('myscoutee.http.session.v1') || '{}');
+      userId = `${session?.userId ?? ''}`.trim();
+      sessionId = `${session?.sessionId ?? ''}`.trim();
+    } catch {
+      userId = '';
+      sessionId = '';
+    }
+    const headers = {
+      'content-type': 'application/json',
+      'X-App-Session-Kind': 'demo',
+      ...(userId ? { 'X-Demo-User-Id': userId } : {}),
+      ...(sessionId ? { 'X-App-Session-Id': sessionId } : {})
+    };
     const response = await fetch(`/api/admin/explanation/revisions/${encodeURIComponent(revisionId)}`, {
       method: 'DELETE',
-      headers: { 'content-type': 'application/json' },
+      headers,
       body: JSON.stringify({ actorUserId: 'admin-demo-ava' })
     });
     return { ok: response.ok, status: response.status };

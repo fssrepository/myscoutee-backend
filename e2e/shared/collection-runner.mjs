@@ -27,7 +27,12 @@ export async function runCollection(options) {
     includeMutations = false
   } = options;
   const cases = await discoverCollection(rootDir);
-  const selected = cases.filter(testCase => matchesFilter(testCase, { filter, group, includeMutations }));
+  const selected = cases.filter(testCase => matchesFilter(testCase, {
+    filter,
+    group,
+    includeMutations,
+    qaCase: options.qaCase
+  }));
 
   if (listOnly) {
     printCaseList(selected);
@@ -161,7 +166,8 @@ export function parseCommonArgs(argv) {
     listOnly: false,
     record: false,
     failFast: false,
-    includeMutations: false
+    includeMutations: false,
+    qaCase: ''
   };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -173,6 +179,11 @@ export function parseCommonArgs(argv) {
       args.failFast = true;
     } else if (arg === '--include-mutations') {
       args.includeMutations = true;
+    } else if (arg === '--qa-case') {
+      args.qaCase = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--qa-case=')) {
+      args.qaCase = arg.slice('--qa-case='.length);
     } else if (arg === '--group') {
       args.group = argv[index + 1] ?? '';
       index += 1;
@@ -220,6 +231,9 @@ function matchesFilter(testCase, options) {
   if (options.group && request.group !== options.group && !testCase.id.startsWith(`${options.group}/`)) {
     return false;
   }
+  if (options.qaCase && !qaBranchIds(request).includes(options.qaCase)) {
+    return false;
+  }
   if (!options.filter) {
     return true;
   }
@@ -228,7 +242,20 @@ function matchesFilter(testCase, options) {
     || (request.tags ?? []).some(tag => `${tag}`.includes(options.filter));
 }
 
-async function resolveSkipReason(testCase, ctx) {
+export function qaBranchIds(request = {}) {
+  const branches = request.qaBranches;
+  if (Array.isArray(branches)) {
+    return branches.map(value => `${value}`);
+  }
+  if (!branches || typeof branches !== 'object') {
+    return [];
+  }
+  return [...new Set(Object.values(branches)
+    .flatMap(value => Array.isArray(value) ? value : [])
+    .map(value => `${value}`))];
+}
+
+export async function resolveSkipReason(testCase, ctx) {
   const request = testCase.request;
   if (request.skip) {
     return request.skip === true ? 'marked skipped' : request.skip;
@@ -243,7 +270,7 @@ async function resolveSkipReason(testCase, ctx) {
   return '';
 }
 
-async function importOptional(dir, filename) {
+export async function importOptional(dir, filename) {
   try {
     return await import(pathToFileURL(path.join(dir, filename)).href);
   } catch (error) {
@@ -357,7 +384,7 @@ function interpolate(value, vars) {
   return value;
 }
 
-function deepMerge(left, right) {
+export function deepMerge(left, right) {
   if (!right || typeof right !== 'object' || Array.isArray(right)) {
     return right;
   }

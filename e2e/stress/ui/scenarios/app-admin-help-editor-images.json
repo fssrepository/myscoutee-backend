@@ -2,6 +2,9 @@
   "name": "UI admin help editor images slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "admin/help-editor-images",
+  "qaBranches": {
+    "supporting": ["ARTICLE-EDITOR-001", "CONTENT-ADMIN-LIFECYCLE-001", "MEDIA-IMG-001"]
+  },
   "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,

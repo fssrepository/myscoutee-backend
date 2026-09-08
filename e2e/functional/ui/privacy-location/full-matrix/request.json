@@ -6,5 +6,9 @@
   "script": "assert.mjs",
   "fullStackOnly": true,
   "mutation": true,
+  "qaBranches": {
+    "core": ["ENTRY-CONSENT-001"],
+    "supporting": ["ENTRY-CONSENT-002", "ENTRY-CONSENT-003", "LANDING-ELIGIBILITY-001"]
+  },
   "maxMs": 120000
 }

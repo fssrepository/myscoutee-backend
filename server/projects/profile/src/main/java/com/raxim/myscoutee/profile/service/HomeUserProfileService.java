@@ -2165,6 +2165,21 @@ public class HomeUserProfileService {
     }
 
     private Users mergeUserDocument(Users current, UserDto user) {
+        LocationCoordinatesDto requestedLocation = user.locationCoordinates();
+        Users.LocationCoordinatesRecord storedLocation = current == null
+                ? null
+                : current.getLocationCoordinates();
+        String storedPartitionKey = current == null ? null : current.getPartitionKey();
+        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(requestedLocation);
+        boolean retainsStoredPartition = StringUtils.hasText(safeText(storedPartitionKey))
+                && sameLocation(requestedLocation, storedLocation);
+        if (regionSecurityProperties.isEnabled()
+                && requestedLocation != null
+                && !StringUtils.hasText(resolvedPartitionKey)
+                && !retainsStoredPartition) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+        }
+
         Users document = current == null ? new Users() : current;
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
         document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
@@ -2190,14 +2205,10 @@ public class HomeUserProfileService {
         document.setHeadline(nullToEmpty(user.headline()));
         document.setAbout(nullToEmpty(user.about()));
         document.setAffinity(absoluteAffinityService.resolveUserAffinity(user));
-        document.setLocationCoordinates(toLocationCoordinatesRecord(user.locationCoordinates()));
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(user.locationCoordinates());
-        if (regionSecurityProperties.isEnabled() && user.locationCoordinates() != null && !StringUtils.hasText(resolvedPartitionKey)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-        }
+        document.setLocationCoordinates(toLocationCoordinatesRecord(requestedLocation));
         document.setPartitionKey(resolveStoredPartitionKey(
-                user.locationCoordinates(),
-                current == null ? null : current.getPartitionKey(),
+                resolvedPartitionKey,
+                storedPartitionKey,
                 current));
         document.setImages(normalizeStrings(user.images()));
         document.setProfileDetails(toProfileDetailRecords(user.profileDetails()));
@@ -2412,6 +2423,13 @@ public class HomeUserProfileService {
             String currentPartitionKey,
             Users partitionOwner) {
         String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(coordinates);
+        return resolveStoredPartitionKey(resolvedPartitionKey, currentPartitionKey, partitionOwner);
+    }
+
+    private String resolveStoredPartitionKey(
+            String resolvedPartitionKey,
+            String currentPartitionKey,
+            Users partitionOwner) {
         if (StringUtils.hasText(resolvedPartitionKey)) {
             return resolvedPartitionKey;
         }
@@ -2422,6 +2440,15 @@ public class HomeUserProfileService {
         }
 
         return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
+    }
+
+    private boolean sameLocation(
+            LocationCoordinatesDto requested,
+            Users.LocationCoordinatesRecord stored) {
+        return requested != null
+                && stored != null
+                && Objects.equals(requested.latitude(), stored.latitude())
+                && Objects.equals(requested.longitude(), stored.longitude());
     }
 
     private String resolveStoredEmail(String userId, String fallbackEmail) {

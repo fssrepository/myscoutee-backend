@@ -2,6 +2,9 @@
   "name": "Admin and content read benchmark",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": ["ARTICLE-EDITOR-001", "CONTENT-ADMIN-LIFECYCLE-001", "LANDING-ARTICLE-001", "MEDIA-IMG-001"]
+  },
   "users": 4,
   "rampUpMs": 5000,
   "durationMs": 60000,

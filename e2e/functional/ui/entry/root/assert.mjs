@@ -1,10 +1,15 @@
 import { assert } from '../../../../shared/assertions.mjs';
-import { acceptEntryPrivacyIfPresent, waitForLoginDialogOrDemoSelector, waitForVisibleCount } from '../../lib/ui-contracts.mjs';
+import {
+  acceptEntryPrivacyIfPresent,
+  clickEntryPrimaryAction,
+  waitForLoginDialogOrDemoSelector,
+  waitForVisibleCount
+} from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   await acceptEntryPrivacyIfPresent(page);
   await page.recordStep('privacy-ready');
-  await page.click('.entry-cta-primary');
+  await clickEntryPrimaryAction(page);
   await waitForLoginDialogOrDemoSelector(page, 30000);
   if (await page.isSelectorVisible('.dialog')) {
     await page.recordStep('location-required-dialog');

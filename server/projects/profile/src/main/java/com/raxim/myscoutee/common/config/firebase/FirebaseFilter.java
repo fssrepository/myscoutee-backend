@@ -180,7 +180,13 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private boolean isPublicEntryBootstrapRequest(HttpServletRequest request) {
         String requestUri = request == null ? "" : request.getRequestURI();
-        return requestUri.equals("/deployment/configuration")
+        return requestUri.equals("/health")
+                || requestUri.equals("/api/health")
+                || requestUri.equals("/media/public")
+                || requestUri.startsWith("/media/public/")
+                || requestUri.equals("/api/media/public")
+                || requestUri.startsWith("/api/media/public/")
+                || requestUri.equals("/deployment/configuration")
                 || requestUri.equals("/api/deployment/configuration")
                 || requestUri.equals("/i18n/bundle")
                 || requestUri.equals("/api/i18n/bundle")

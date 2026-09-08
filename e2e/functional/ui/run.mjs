@@ -5,9 +5,19 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { assert, expectDuration } from '../../shared/assertions.mjs';
-import { discoverCollection, parseCommonArgs } from '../../shared/collection-runner.mjs';
+import {
+  deepMerge,
+  discoverCollection,
+  importOptional,
+  parseCommonArgs
+} from '../../shared/collection-runner.mjs';
 import { launchChromeBrowser } from './lib/chrome-cdp.mjs';
-import { assertBrowserExpectations, performDemoLogin } from './lib/ui-contracts.mjs';
+import {
+  applyCurrentDemoSessionHeaders,
+  assertBrowserExpectations,
+  performDemoLogin
+} from './lib/ui-contracts.mjs';
+import { resetE2eDatabase } from '../backend/hooks/e2e-db.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rawArgs = process.argv.slice(2);
@@ -21,11 +31,17 @@ const artifactsDir = process.env.E2E_UI_ARTIFACTS_DIR
 const ctx = {
   mode: process.env.E2E_UI_MODE ?? 'full',
   baseUrl,
-  vars: {},
+  vars: {
+    runId: process.env.E2E_RUN_ID ?? `run-${Date.now()}`
+  },
   defaultMaxMs: Number(process.env.E2E_UI_DEFAULT_MAX_MS ?? 20000),
   viewport: uiArgs.viewport
 };
 const DEFAULT_UI_USER_ID = 'bf057de7c586eede7e84bdc7';
+
+if (!args.listOnly && shouldResetE2eDatabase()) {
+  await resetE2eDatabase(ctx);
+}
 
 const summary = await runUiCollection({
   rootDir: __dirname,
@@ -36,6 +52,12 @@ const summary = await runUiCollection({
 
 console.log(`\nui e2e: ${summary.passed} passed, ${summary.failed} failed, ${summary.skipped} skipped, ${summary.total} selected`);
 process.exitCode = summary.failed > 0 ? 1 : 0;
+
+function shouldResetE2eDatabase() {
+  const serverMode = process.env.E2E_SERVER_MODE ?? '';
+  return (serverMode === 'e2e' || serverMode === 'stress')
+    && process.env.E2E_SKIP_E2E_RESET !== 'true';
+}
 
 async function runUiCollection(options) {
   const cases = await discoverCollection(options.rootDir);
@@ -173,6 +195,7 @@ async function runUiCollection(options) {
       }
     }
   } finally {
+    await revokeSuiteDemoSessions(browser, options.ctx).catch(() => undefined);
     await browser.close();
   }
   if (options.record) {
@@ -188,7 +211,16 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
   const expected = await readJsonOptional(testCase.dir, 'response.json');
   const scriptName = testCase.request.script ?? 'assert.mjs';
   const script = await import(pathToFileURL(path.join(testCase.dir, scriptName)).href);
-  const request = materializeRequest(testCase.request, ctx);
+  const prepareModule = await importOptional(testCase.dir, 'prepare.mjs');
+  const requestPatch = prepareModule?.prepare
+    ? await prepareModule.prepare({ ctx, testCase })
+    : null;
+  const request = materializeRequest(
+    requestPatch && typeof requestPatch === 'object'
+      ? deepMerge(testCase.request, requestPatch)
+      : testCase.request,
+    ctx
+  );
   const auxiliaryBrowsers = [];
   if (request.geolocation) {
     await page.setGeolocation(request.geolocation);
@@ -206,6 +238,9 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
 
   try {
     await page.primeOrigin(storage);
+    if (request.suiteDemoLogin) {
+      await applyCurrentDemoSessionHeaders(page);
+    }
     await page.navigate(request.route ?? request.path ?? '/', {
       loadTimeoutMs: request.loadTimeoutMs ?? ctx.defaultMaxMs
     });
@@ -275,12 +310,73 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
     return result;
   } finally {
     for (const childPage of auxiliaryPages) {
+      await revokeCaseDemoSessions(childPage, ctx).catch(() => undefined);
       auxiliarySteps.push(...(childPage.recordedSteps ?? []));
       await childPage.close().catch(() => undefined);
     }
     for (const childBrowser of auxiliaryBrowsers) {
       await childBrowser.close().catch(() => undefined);
     }
+    await revokeCaseDemoSessions(page, ctx).catch(() => undefined);
+  }
+}
+
+async function revokeCaseDemoSessions(page, ctx, preserveSuiteSessions = true) {
+  if (!page) {
+    return;
+  }
+  const preservedSessionIds = preserveSuiteSessions
+    ? storedDemoSessionIds(ctx.suiteDemoStorage?.localStorage)
+    : [];
+  await page.evaluate(async preservedIds => {
+    const preserved = new Set(preservedIds);
+    const sessions = new Map();
+    for (const storage of [window.localStorage, window.sessionStorage]) {
+      for (let index = 0; index < storage.length; index += 1) {
+        const key = storage.key(index) ?? '';
+        if (!key.endsWith('session.v1')) {
+          continue;
+        }
+        try {
+          const session = JSON.parse(storage.getItem(key) || '{}');
+          const sessionId = `${session?.sessionId ?? ''}`.trim();
+          const userId = `${session?.userId ?? ''}`.trim();
+          if (session?.kind === 'demo' && sessionId && userId && !preserved.has(sessionId)) {
+            sessions.set(`${userId}:${sessionId}`, { userId, sessionId });
+          }
+        } catch {
+          // Ignore unrelated or malformed browser storage during best-effort teardown.
+        }
+      }
+    }
+    for (const { userId, sessionId } of sessions.values()) {
+      await fetch('/api/auth/me/logout', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'X-App-Session-Kind': 'demo',
+          'X-Demo-User-Id': userId,
+          'X-App-Session-Id': sessionId
+        },
+        body: JSON.stringify({ userId })
+      }).catch(() => undefined);
+    }
+  }, preservedSessionIds);
+}
+
+async function revokeSuiteDemoSessions(browser, ctx) {
+  if (!hasStoredDemoSession(ctx.suiteDemoStorage?.localStorage)) {
+    return;
+  }
+  const cleanupPage = await browser.newPage({ viewport: ctx.viewport });
+  try {
+    await cleanupPage.primeOrigin({
+      localStorage: ctx.suiteDemoStorage.localStorage ?? {},
+      sessionStorage: ctx.suiteDemoStorage.sessionStorage ?? {}
+    });
+    await revokeCaseDemoSessions(cleanupPage, ctx, false);
+  } finally {
+    await cleanupPage.close().catch(() => undefined);
   }
 }
 
@@ -444,12 +540,34 @@ function hasStoredDemoSession(localStorageSnapshot = {}) {
   });
 }
 
+function storedDemoSessionIds(localStorageSnapshot = {}) {
+  const sessionIds = [];
+  for (const [key, rawValue] of Object.entries(localStorageSnapshot)) {
+    if (typeof rawValue !== 'string' || !key.endsWith('session.v1')) {
+      continue;
+    }
+    try {
+      const session = JSON.parse(rawValue);
+      const sessionId = `${session?.sessionId ?? ''}`.trim();
+      if (session?.kind === 'demo' && sessionId) {
+        sessionIds.push(sessionId);
+      }
+    } catch {
+      // Ignore unrelated or malformed browser storage snapshots.
+    }
+  }
+  return [...new Set(sessionIds)];
+}
+
 function matchesFilter(testCase, options) {
   const request = testCase.request;
   if (request.mutation && !options.includeMutations) {
     return false;
   }
   if (options.group && request.group !== options.group && !testCase.id.startsWith(`${options.group}/`)) {
+    return false;
+  }
+  if (options.qaCase && !qaBranchIds(request).includes(options.qaCase)) {
     return false;
   }
   if (!options.filter) {
@@ -459,6 +577,19 @@ function matchesFilter(testCase, options) {
   return testCase.id.toLowerCase().includes(needle)
     || `${request.name ?? ''}`.toLowerCase().includes(needle)
     || (request.tags ?? []).some(tag => `${tag}`.toLowerCase().includes(needle));
+}
+
+function qaBranchIds(request = {}) {
+  const branches = request.qaBranches;
+  if (Array.isArray(branches)) {
+    return branches.map(value => `${value}`);
+  }
+  if (!branches || typeof branches !== 'object') {
+    return [];
+  }
+  return [...new Set(Object.values(branches)
+    .flatMap(value => Array.isArray(value) ? value : [])
+    .map(value => `${value}`))];
 }
 
 function skipReasonFor(testCase, ctx) {

@@ -2,6 +2,9 @@
   "name": "UI asset resource lifecycle slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "assets/resource-lifecycle",
+  "qaBranches": {
+    "supporting": ["ASSET-ASSIGNMENT-LIFECYCLE-001", "TOURNAMENT-RESOURCE-001"]
+  },
   "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,

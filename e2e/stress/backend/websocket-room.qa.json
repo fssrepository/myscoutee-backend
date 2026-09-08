@@ -1,0 +1,7 @@
+{
+  "name": "Stateful WebSocket room fanout stress",
+  "runner": "websocket-room.mjs",
+  "qaBranches": {
+    "supporting": ["CHAT-AUTH-001", "CHAT-CONTENT-001", "CHAT-FLOW-001"]
+  }
+}

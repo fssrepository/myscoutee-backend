@@ -45,10 +45,10 @@ export async function assertUi({ page }) {
 
   await page.waitForSelector('app-event-editor-popup .ui-popup__panel', { timeoutMs: 15000 });
   await page.recordStep('event-explore-checkout-open');
+  await closeExplanationPopupEventually(page, 10000);
   await prepareCheckout(page);
   await page.recordStep('event-explore-checkout-prepared');
   await submitCheckout(page);
-  await page.waitForNetwork('/api/activities/events/checkout/pay', { timeoutMs: 45000 });
   await page.waitForSelectorHidden('app-event-editor-popup .ui-popup__panel', { timeoutMs: 45000 }).catch(() => undefined);
   await page.recordStep('event-explore-checkout-submitted');
 }
@@ -127,7 +127,7 @@ async function seedJoinableEvent(page) {
       name: 'E2E UI Join Host',
       age: 31,
       birthday: '1995-01-12',
-      city: 'Bratislava',
+      city: 'Budapest',
       height: '180 cm',
       physique: 'active',
       languages: ['en'],
@@ -136,8 +136,8 @@ async function seedJoinableEvent(page) {
       statusText: 'E2E UI join host',
       profileStatus: 'public',
       locationCoordinates: {
-        latitude: 48.1486,
-        longitude: 17.1077
+        latitude: 47.4979,
+        longitude: 19.0402
       },
       images: []
     });
@@ -172,11 +172,11 @@ async function seedJoinableEvent(page) {
       creatorName: 'E2E UI Join Host',
       creatorInitials: 'JH',
       creatorGender: 'man',
-      creatorCity: 'Bratislava',
-      location: 'Bratislava',
+      creatorCity: 'Budapest',
+      location: 'Budapest',
       locationCoordinates: {
-        latitude: 48.1486,
-        longitude: 17.1077
+        latitude: 47.4979,
+        longitude: 19.0402
       },
       topics: ['e2e', 'ui-join'],
       pricing: {
@@ -365,17 +365,29 @@ async function submitCheckout(page) {
   }, 30000);
   if (await page.isSelectorVisible('app-event-editor-popup .editor-list-card--payment')) {
     await page.recordStep('event-explore-checkout-payment-step');
+    const joinRequestsBeforeFinalConfirm = page.network.filter(entry => (
+      entry.url.includes('/api/activities/events/join')
+    )).length;
     await page.waitFor('checkout payment confirm enabled', async () => {
       return page.evaluate(() => {
         const button = document.querySelector(
-          'app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="payment"]'
+          'app-event-editor-popup .event-editor-checkout-footer__actions .app-menu__button-row-item:last-of-type'
         );
         return Boolean(button && !button.disabled);
       });
     }, 20000);
-    await page.clickVisible('app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="payment"]');
+    await page.clickVisible(
+      'app-event-editor-popup .event-editor-checkout-footer__actions .app-menu__button-row-item:last-of-type'
+    );
     await page.waitForSelector('.dialog');
     await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
+    await page.waitFor('cash confirmation or provider payment request', async () => {
+      const joinRequests = page.network.filter(entry => (
+        entry.url.includes('/api/activities/events/join')
+      )).length;
+      return joinRequests > joinRequestsBeforeFinalConfirm
+        || page.hasNetwork('/api/activities/events/checkout/pay');
+    }, 45000);
   }
 }
 

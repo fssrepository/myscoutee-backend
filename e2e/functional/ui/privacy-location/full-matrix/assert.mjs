@@ -2,6 +2,7 @@ import { assert } from '../../../../shared/assertions.mjs';
 import {
   assertBrowserExpectations,
   assertNoDocumentHorizontalOverflow,
+  clickEntryPrimaryAction,
   closeExplanationPopupEventually,
   waitForLoginDialogOrDemoSelector,
   waitForVisibleCount
@@ -42,7 +43,7 @@ export async function assertUi({ page }) {
   assert(!(await page.isSelectorVisible('.entry-auth-btn-location')), 'Demo selector mode should not show the location gate in the header');
 
   await page.setGeolocationPermission('denied');
-  await page.clickVisible('.entry-cta-primary');
+  await clickEntryPrimaryAction(page);
   await waitForLoginDialogOrDemoSelector(page, 30000);
   if (await page.isSelectorVisible('.dialog')) {
     await assertLocationDialog(page, 'Location Required For Login');
@@ -56,7 +57,7 @@ export async function assertUi({ page }) {
     await page.recordStep('location-denied-dialog-cancelled');
 
     await page.resetPermissions();
-    await page.clickVisible('.entry-cta-primary');
+    await clickEntryPrimaryAction(page);
     await page.waitForSelector('.dialog', { timeoutMs: 20000 });
     await page.clickVisible('.dialog-backdrop');
     await page.waitForSelectorHidden('.dialog', { timeoutMs: 10000 });
@@ -64,7 +65,7 @@ export async function assertUi({ page }) {
     await page.recordStep('location-dialog-backdrop-cancelled');
 
     await page.setGeolocation(GEOLOCATION);
-    await page.clickVisible('.entry-cta-primary');
+    await clickEntryPrimaryAction(page);
     await page.waitForSelector('.dialog', { timeoutMs: 20000 });
     await page.recordStep('location-dialog-open-approve');
     await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');

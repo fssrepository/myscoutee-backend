@@ -2,6 +2,9 @@
   "name": "WebSocket connection smoke",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": ["CHAT-AUTH-001", "CHAT-FLOW-001"]
+  },
   "users": 3,
   "rampUpMs": 1000,
   "iterations": 3,

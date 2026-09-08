@@ -7,64 +7,21 @@
   "script": "resource-assignment-policy.mjs",
   "mutation": true,
   "e2eOnly": true,
+  "qaBranches": {
+    "supporting": ["ASSET-ASSIGNMENT-LIFECYCLE-001"]
+  },
   "headers": {
-    "X-App-Session-Kind": "demo"
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "e2e-policy-asset-owner-{{runId}}"
   },
   "setup": [
-    {
-      "name": "seed policy host profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "e2e-policy-host-{{runId}}",
-        "name": "E2E Policy Host",
-        "age": 31,
-        "birthday": "1995-01-12",
-        "city": "Bratislava",
-        "height": "180 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "PH",
-        "gender": "man",
-        "statusText": "Policy host",
-        "profileStatus": "public",
-        "images": []
-      }
-    },
-    {
-      "name": "seed policy asset owner profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "e2e-policy-asset-owner-{{runId}}",
-        "name": "E2E Policy Asset Owner",
-        "age": 29,
-        "birthday": "1997-03-05",
-        "city": "Bratislava",
-        "height": "168 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "PA",
-        "gender": "woman",
-        "statusText": "Policy asset owner",
-        "profileStatus": "public",
-        "images": []
-      }
-    },
     {
       "name": "seed policy event draft",
       "method": "POST",
       "path": "/api/activities/events/sync",
       "headers": {
-        "X-App-Session-Kind": "demo"
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "e2e-policy-host-{{runId}}"
       },
       "expectedStatus": 200,
       "body": {
@@ -109,7 +66,8 @@
       "method": "POST",
       "path": "/api/assets/upsert",
       "headers": {
-        "X-App-Session-Kind": "demo"
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "e2e-policy-asset-owner-{{runId}}"
       },
       "expectedStatus": 200,
       "body": {

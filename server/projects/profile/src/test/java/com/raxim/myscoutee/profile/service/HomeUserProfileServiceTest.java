@@ -65,6 +65,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
@@ -670,6 +671,43 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void profileSaveKeepsStoredPartitionForUnchangedLegacyLocation() {
+        Users active = user("active", 0d);
+        active.setProfileStatus("public");
+        active.setPartitionKey("country:hu");
+        active.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2768d, -97.7479d));
+        UserDto request = service.toGameCardUserDto(active);
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto saved = service.saveUserProfile(request);
+
+        assertThat(saved.partitionKey()).isEqualTo("country:hu");
+        assertThat(saved.locationCoordinates()).isEqualTo(request.locationCoordinates());
+    }
+
+    @Test
+    void profileSaveRejectsChangedLocationOutsideConfiguredPartitions() {
+        Users active = user("active", 0d);
+        active.setProfileStatus("public");
+        active.setPartitionKey("country:hu");
+        active.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
+        UserDto request = withLocation(
+                service.toGameCardUserDto(active),
+                new LocationCoordinatesDto(30.2768d, -97.7479d));
+        when(regionSecurityProperties.isEnabled()).thenReturn(true);
+        when(countryPartitionService.resolvePartitionKey(request.locationCoordinates())).thenReturn(null);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+
+        assertThatThrownBy(() -> service.saveUserProfile(request))
+                .hasMessageContaining("country or region");
+
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
     void realtimeSnapshotUsesStoredActivityCountersAndAuthoritativeNotifications() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
@@ -1071,5 +1109,40 @@ class HomeUserProfileServiceTest {
                 false,
                 null,
                 null);
+    }
+
+    private UserDto withLocation(UserDto user, LocationCoordinatesDto location) {
+        return new UserDto(
+                user.id(),
+                user.name(),
+                user.age(),
+                user.birthday(),
+                user.city(),
+                user.height(),
+                user.physique(),
+                user.languages(),
+                user.horoscope(),
+                user.initials(),
+                user.gender(),
+                user.statusText(),
+                user.hostTier(),
+                user.traitLabel(),
+                user.completion(),
+                user.profileFormVersion(),
+                user.headline(),
+                user.about(),
+                user.affinity(),
+                location,
+                user.partitionKey(),
+                user.images(),
+                user.profileDetails(),
+                user.impressions(),
+                user.profileStatus(),
+                user.previousProfileStatus(),
+                user.deletedAtIso(),
+                user.admin(),
+                user.operator(),
+                user.activities(),
+                user.notificationPreferences());
     }
 }

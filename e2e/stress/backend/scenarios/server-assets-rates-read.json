@@ -2,6 +2,9 @@
   "name": "Assets and rates read benchmark",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": ["ASSET-CHECKOUT-001", "ASSET-LIFE-001", "ASSET-VIS-001", "EVENT-TICKET-002", "EVENT-TICKET-009"]
+  },
   "users": 6,
   "rampUpMs": 5000,
   "durationMs": 60000,

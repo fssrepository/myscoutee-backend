@@ -8,8 +8,8 @@ const execFileAsync = promisify(execFile);
 
 export async function assertResponse({ ctx, result, request }) {
   const host = assertAuthMe(result.data, ctx);
-  const hostUserId = request.body.id;
-  assert(host.id === hostUserId, 'profile save should return the counter host', {
+  const hostUserId = request.params.userId;
+  assert(host.id === hostUserId, 'fixture read should return the counter host', {
     expected: hostUserId,
     actual: host.id
   });

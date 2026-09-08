@@ -7,6 +7,9 @@
   "script": "help-revision.mjs",
   "mutation": true,
   "e2eOnly": true,
+  "qaBranches": {
+    "supporting": ["ARTICLE-EDITOR-001", "CONTENT-ADMIN-LIFECYCLE-001"]
+  },
   "headers": {
     "X-App-Session-Kind": "demo"
   },

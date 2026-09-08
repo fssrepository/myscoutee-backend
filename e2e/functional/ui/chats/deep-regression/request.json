@@ -3,13 +3,14 @@
   "group": "chats",
   "order": 94,
   "route": "/game",
-  "localStorage": {
-    "myscoutee.http.session.v1": "{\"kind\":\"demo\",\"userId\":\"bf057de7c586eede7e84bdc7\"}",
-    "myscoutee.http.demo.active-user.v1": "bf057de7c586eede7e84bdc7"
-  },
+  "suiteDemoLogin": true,
   "script": "assert.mjs",
   "fullStackOnly": true,
   "mutation": true,
+  "qaBranches": {
+    "core": ["CHAT-FLOW-001", "CHAT-CONTENT-001"],
+    "supporting": ["CHAT-ACTIONS-001", "CHAT-GOVERNANCE-001"]
+  },
   "tags": [
     "chat",
     "websocket",

@@ -1,0 +1,25 @@
+{
+  "name": "e2e auth session: two slots, blocked third login, revoke, admit",
+  "group": "flows",
+  "order": 9005,
+  "method": "POST",
+  "path": "/api/auth/session/login",
+  "script": "auth-session.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "qaBranches": {
+    "core": ["AUTH-SESSION-001"]
+  },
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{sessionUserId}}",
+    "X-App-Session-Id": "{{sessionAId}}",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36"
+  },
+  "body": {
+    "attemptId": "{{sessionAttemptAId}}",
+    "provider": "demo"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

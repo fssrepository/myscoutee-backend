@@ -4,6 +4,9 @@
   "order": 24,
   "route": "/",
   "script": "assert.mjs",
+  "qaBranches": {
+    "supporting": ["ENTRY-CONSENT-001", "LANDING-ELIGIBILITY-001"]
+  },
   "fullStackOnly": true,
   "maxMs": 45000
 }

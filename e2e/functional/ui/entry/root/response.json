@@ -4,11 +4,11 @@
     "selectors": [
       "app-entry-page",
       ".entry-shell",
-      ".entry-cta-primary"
+      ".entry-hero-cta-menu .app-menu__button-row-item"
     ],
     "text": [
-      "Stop Swiping.",
-      "Start Connecting."
+      "Meeting people was once social.",
+      "We’re making it social again."
     ],
     "network": [
       "/api/landing/content"

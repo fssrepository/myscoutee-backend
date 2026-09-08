@@ -8,33 +8,9 @@
   "mutation": true,
   "e2eOnly": true,
   "headers": {
-    "X-App-Session-Kind": "demo"
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}"
   },
-  "setup": [
-    {
-      "name": "seed contacts owner profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Contacts Owner",
-        "age": 30,
-        "birthday": "1996-02-12",
-        "city": "Bratislava",
-        "height": "175 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "EC",
-        "gender": "woman",
-        "profileStatus": "public",
-        "images": []
-      }
-    }
-  ],
   "body": {
     "userId": "{{e2eUserId}}",
     "contacts": [

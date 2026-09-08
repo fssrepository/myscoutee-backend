@@ -11,6 +11,7 @@ This directory keeps QA execution material separate from project plans.
 | [`diagnostics`](diagnostics/) | Focused defect investigations and pending measurements |
 | [`reference`](reference/) | Shared QA policy and prioritization rules |
 | [`tools`](tools/) | QA document generation and synchronization utilities |
+| [`e2e`](e2e/) | Incremental PASS-branch audit checkpoint and links to executable E2E coverage |
 
 Resume an active session from the
 [current compact handoff](handoffs/CURRENT_QA_SESSION.md). Open the

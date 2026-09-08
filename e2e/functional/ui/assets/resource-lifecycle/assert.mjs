@@ -4,6 +4,7 @@ import {
   closeExplanationPopupEventually,
   openNavigatorMenu,
   recordInfoCardMenuAnchorFinding,
+  selectActivitiesEventScope,
   waitForSmartListSettled,
   waitForVisibleText
 } from '../../lib/ui-contracts.mjs';
@@ -75,6 +76,13 @@ export async function assertUi({ page }) {
     assetOwnerUserId: resourceEvent.userId,
     assetId: createdAsset.id
   });
+  const assignedAsset = await findOwnedAssetByTitle(page, marker);
+  assert(
+    assignedAsset?.policiesEnabled === true
+      && assignedAsset.policies?.some(policy => policy.title === policyTitle),
+    'Assigning an asset to a sub-event must preserve its detail-only lending policies',
+    assignedAsset
+  );
 
   await openAssignedResourceView(page, marker, policyTitle, editedDetails);
   await page.recordStep('resource-assigned-asset-viewed');
@@ -727,11 +735,11 @@ async function closeAssetsPopup(page) {
 
 async function openMyEvents(page) {
   await openNavigatorMenu(page);
-  await page.click('button[aria-label="Open my events"]');
+  await page.click('button[aria-label="Open events"]');
   await closeExplanationPopupEventually(page, 10000);
   await page.waitForSelector('.activities-popup');
-  await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/events', { timeoutMs: 25000 });
+  await selectActivitiesEventScope(page, 'My Events');
 }
 
 async function openEventEditorByTitle(page, title) {
@@ -773,7 +781,7 @@ async function openEventEditorFromList(page, title) {
     title: 'Resource lifecycle event card action menu is visually detached from its three-dot trigger'
   });
   await page.recordStep('resource-event-card-menu-open');
-  await page.clickByText('app-activities-popup app-menu-outlet .app-menu__panel button', 'View');
+  await page.clickByText('app-activities-popup app-menu-outlet .app-menu__panel button', 'Manage Event');
   await page.waitFor('resource event details or sub-events overview open', async () => {
     return (await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'))
       || (await page.isSelectorVisible('app-event-subevents-list-popup .event-subevents-list-smart-list'));

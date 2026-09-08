@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 import { execFile } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
+
+import { qaBranchIds } from '../../shared/collection-runner.mjs';
 
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const STREAM_KEY = 'activities:chat:messages';
 const WRITE_STREAM_KEY = 'activities:chat:writes';
+const qaMetadata = JSON.parse(await readFile(path.join(__dirname, 'websocket-room.qa.json'), 'utf8'));
 
 const args = parseArgs(process.argv.slice(2));
 const config = resolveConfig(args);
@@ -18,6 +21,9 @@ const config = resolveConfig(args);
 if (args.help) {
   printHelp();
   process.exit(0);
+}
+if (args.qaCase && !qaBranchIds(qaMetadata).includes(args.qaCase)) {
+  throw new Error(`WebSocket room stress is not linked to QA branch ${args.qaCase}`);
 }
 
 if (config.clients > 1000 && !config.force) {
@@ -967,6 +973,7 @@ function printHelp() {
   console.log(`Usage:
   node e2e/stress/backend/websocket-room.mjs --record
   node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
+  node e2e/stress/backend/websocket-room.mjs --qa-case CHAT-FLOW-001 --clients 3 --messages 2
 
 Requires the backend to run against e2e_db. The script seeds a disposable
 room named e2e-ws-room and user ids named e2e-ws-room-user-0001...

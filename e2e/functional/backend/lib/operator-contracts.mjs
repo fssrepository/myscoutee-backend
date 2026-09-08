@@ -38,7 +38,7 @@ const WRITE_ONLY_CONFIGURATION_KEYS = new Set([
   'privateKey'
 ]);
 
-export function operatorHeaders(operatorUserId = 'operator-demo-dev') {
+export function operatorHeaders(operatorUserId = 'operator@myscoutee.local') {
   return {
     'X-App-Session-Kind': 'demo',
     'X-Demo-User-Id': operatorUserId

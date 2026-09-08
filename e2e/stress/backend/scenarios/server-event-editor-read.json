@@ -2,6 +2,9 @@
   "name": "Event editor read benchmark",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": ["ASSET-ASSIGNMENT-LIFECYCLE-001", "EVENT-EDITOR-001", "EVENT-EDITOR-002", "EVENT-MEMBER-CREATOR-001"]
+  },
   "users": 4,
   "rampUpMs": 5000,
   "durationMs": 60000,

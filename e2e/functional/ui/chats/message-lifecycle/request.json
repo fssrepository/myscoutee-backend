@@ -5,6 +5,10 @@
   "route": "/game",
   "suiteDemoLogin": true,
   "script": "assert.mjs",
+  "qaBranches": {
+    "core": ["CHAT-ACTIONS-001"],
+    "supporting": ["CHAT-CONTENT-001", "CHAT-FLOW-001", "CHAT-GOVERNANCE-001"]
+  },
   "fullStackOnly": true,
   "mutation": true,
   "maxMs": 140000

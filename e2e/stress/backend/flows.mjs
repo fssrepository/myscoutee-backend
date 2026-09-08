@@ -6,6 +6,7 @@ import { createHttpClient } from '../../shared/http.mjs';
 import {
   discoverCollection,
   parseCommonArgs,
+  qaBranchIds,
   runCollection
 } from '../../shared/collection-runner.mjs';
 import { resetE2eDatabase } from '../../functional/backend/hooks/e2e-db.mjs';
@@ -112,12 +113,12 @@ function matchesRequestedFlow(testCase, options) {
     return false;
   }
   if (!options.filter) {
-    return true;
+    return !options.qaCase || qaBranchIds(testCase.request).includes(options.qaCase);
   }
   const normalizedFilter = options.filter.toLowerCase();
-  return testCase.id.includes(options.filter)
+  return (!options.qaCase || qaBranchIds(testCase.request).includes(options.qaCase)) && (testCase.id.includes(options.filter)
     || `${testCase.request.name ?? ''}`.toLowerCase().includes(normalizedFilter)
-    || (testCase.request.tags ?? []).some(tag => `${tag}`.includes(options.filter));
+    || (testCase.request.tags ?? []).some(tag => `${tag}`.includes(options.filter)));
 }
 
 function createCtx(runId) {
@@ -129,7 +130,7 @@ function createCtx(runId) {
     }),
     vars: {
       adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
-      operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator-demo-dev',
+      operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator@myscoutee.local',
       nonOperatorUserId: process.env.E2E_NON_OPERATOR_USER_ID ?? 'bf057de7c586eede7e84bdc7',
       e2eUserId: `${process.env.E2E_USER_ID ?? 'e2e-host'}-${runId}`,
       e2eSecondUserId: `${process.env.E2E_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,

@@ -9,5 +9,8 @@
     "X-Demo-User-Id": "{{operatorUserId}}"
   },
   "expectedStatus": 200,
-  "maxMs": 8000
+  "maxMs": 8000,
+  "qaBranches": {
+    "supporting": ["ROLE-TRIAD-CORE-001"]
+  }
 }

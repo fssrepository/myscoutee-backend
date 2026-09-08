@@ -29,7 +29,7 @@ const ctx = {
   vars: {
     adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
     demoAdminUserId: process.env.E2E_DEMO_ADMIN_USER_ID ?? 'admin-demo-ava',
-    operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator-demo-dev',
+    operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator@myscoutee.local',
     nonOperatorUserId: process.env.E2E_NON_OPERATOR_USER_ID ?? 'bf057de7c586eede7e84bdc7',
     e2eUserId: process.env.E2E_USER_ID ?? 'e2e-host',
     e2eSecondUserId: process.env.E2E_SECOND_USER_ID ?? 'e2e-member',

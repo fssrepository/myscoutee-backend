@@ -8,6 +8,10 @@
   "script": "chat-message-lifecycle.mjs",
   "mutation": true,
   "e2eOnly": true,
+  "qaBranches": {
+    "core": ["CHAT-ACTIONS-001"],
+    "supporting": ["CHAT-FLOW-001", "CHAT-CONTENT-001", "CHAT-GOVERNANCE-001"]
+  },
   "headers": {
     "X-App-Session-Kind": "demo"
   },

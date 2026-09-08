@@ -4,10 +4,18 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { launchChromeBrowser } from '../../functional/ui/lib/chrome-cdp.mjs';
+import { resetE2eDatabase } from '../../functional/backend/hooks/e2e-db.mjs';
+import {
+  deepMerge,
+  importOptional,
+  qaBranchIds
+} from '../../shared/collection-runner.mjs';
 import {
   acceptEntryPrivacyIfPresent,
+  applyCurrentDemoSessionHeaders,
   assertBrowserExpectations,
   clickDemoUser,
+  clickEntryPrimaryAction,
   performDemoLogin,
   settleFirstRunOverlays,
   waitForLoginDialogOrDemoSelector
@@ -45,12 +53,17 @@ if (args.help) {
   process.exit(0);
 }
 if (args.list) {
-  await listScenarios();
+  await listScenarios(args.qaCase);
   process.exit(0);
 }
 
 const scenario = await loadScenario(args.scenario);
+assertQaCaseSelection(scenario, args.qaCase);
 applyScenarioOverrides(scenario, args);
+
+if (shouldResetE2eDatabase()) {
+  await resetE2eDatabase({ vars: {} });
+}
 
 const baseUrl = process.env.E2E_UI_STRESS_BASE_URL
   ?? process.env.E2E_UI_BASE_URL
@@ -95,6 +108,12 @@ if (runError) {
 }
 const failed = Boolean(runError) || evaluateThresholds(summary, scenario.thresholds ?? {});
 process.exitCode = failed ? 1 : 0;
+
+function shouldResetE2eDatabase() {
+  const serverMode = process.env.E2E_SERVER_MODE ?? '';
+  return (serverMode === 'e2e' || serverMode === 'stress')
+    && process.env.E2E_SKIP_E2E_RESET !== 'true';
+}
 
 async function runVirtualUser({ scenario, baseUrl, metrics, vu, startedAt, artifactDir }) {
   const durationMs = Number(scenario.durationMs ?? 0);
@@ -215,7 +234,7 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
 
     await acceptEntryPrivacyIfPresent(page, timeoutMs);
     mark(timings, 'privacyReadyMs', started);
-    await page.click('.entry-cta-primary', { timeoutMs });
+    await clickEntryPrimaryAction(page, timeoutMs);
     mark(timings, 'loginClickedMs', started);
 
     await waitForLoginDialogOrDemoSelector(page, timeoutMs);
@@ -270,6 +289,7 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
     };
     throw error;
   } finally {
+    await revokePageDemoSessions(page).catch(() => undefined);
     await page.close().catch(() => undefined);
     await browser.close();
   }
@@ -279,7 +299,22 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
   const timeoutMs = Number(scenario.timeoutMs ?? 90000);
   const testCase = await loadFunctionalUiCase(scenario.functionalCase ?? scenario.case);
   const expected = await readJsonOptional(testCase.dir, 'response.json');
-  const rawRequest = testCase.request;
+  const functionalCtx = {
+    mode: 'ui-stress',
+    baseUrl,
+    vars: {
+      runId: `${scenario.id ?? 'ui-stress'}-vu${vu}-i${iteration}-${Date.now()}`
+    },
+    defaultMaxMs: timeoutMs,
+    viewport: scenario.viewport
+  };
+  const prepareModule = await importOptional(testCase.dir, 'prepare.mjs');
+  const requestPatch = prepareModule?.prepare
+    ? await prepareModule.prepare({ ctx: functionalCtx, testCase })
+    : null;
+  const rawRequest = requestPatch && typeof requestPatch === 'object'
+    ? deepMerge(testCase.request, requestPatch)
+    : testCase.request;
   const request = materializeFunctionalRequest(rawRequest, scenario);
   const browser = await launchChromeBrowser({
     baseUrl,
@@ -315,6 +350,9 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
       },
       sessionStorage: request.sessionStorage ?? {}
     });
+    if (rawRequest.suiteDemoLogin === true) {
+      await applyCurrentDemoSessionHeaders(page);
+    }
     await resetPageStressBuffers(page);
 
     const started = performance.now();
@@ -337,13 +375,7 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
       await script.assertUi({
         page,
         browser,
-        ctx: {
-          mode: 'ui-stress',
-          baseUrl,
-          vars: {},
-          defaultMaxMs: timeoutMs,
-          viewport: scenario.viewport
-        },
+        ctx: functionalCtx,
         request,
         expected,
         testCase,
@@ -402,14 +434,55 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
     throw error;
   } finally {
     for (const childPage of auxiliaryPages) {
+      await revokePageDemoSessions(childPage).catch(() => undefined);
       await childPage.close().catch(() => undefined);
     }
     for (const childBrowser of auxiliaryBrowsers) {
       await childBrowser.close().catch(() => undefined);
     }
+    await revokePageDemoSessions(page).catch(() => undefined);
     await page.close().catch(() => undefined);
     await browser.close();
   }
+}
+
+async function revokePageDemoSessions(page) {
+  if (!page) {
+    return;
+  }
+  await page.evaluate(async () => {
+    const sessions = new Map();
+    for (const storage of [window.localStorage, window.sessionStorage]) {
+      for (let index = 0; index < storage.length; index += 1) {
+        const key = storage.key(index) ?? '';
+        if (!key.endsWith('session.v1')) {
+          continue;
+        }
+        try {
+          const session = JSON.parse(storage.getItem(key) || '{}');
+          const sessionId = `${session?.sessionId ?? ''}`.trim();
+          const userId = `${session?.userId ?? ''}`.trim();
+          if (session?.kind === 'demo' && sessionId && userId) {
+            sessions.set(`${userId}:${sessionId}`, { userId, sessionId });
+          }
+        } catch {
+          // Ignore unrelated or malformed browser storage during best-effort teardown.
+        }
+      }
+    }
+    for (const { userId, sessionId } of sessions.values()) {
+      await fetch('/api/auth/me/logout', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'X-App-Session-Kind': 'demo',
+          'X-Demo-User-Id': userId,
+          'X-App-Session-Id': sessionId
+        },
+        body: JSON.stringify({ userId })
+      }).catch(() => undefined);
+    }
+  });
 }
 
 function enableStepTracing(page, caseId) {
@@ -1001,13 +1074,22 @@ function defaultGeolocation() {
   };
 }
 
-async function listScenarios() {
+async function listScenarios(qaCase = '') {
   const files = (await readdir(path.join(__dirname, 'scenarios')))
     .filter(file => file.endsWith('.json'))
     .sort();
   for (const file of files) {
     const scenario = JSON.parse(await readFile(path.join(__dirname, 'scenarios', file), 'utf8'));
+    if (qaCase && !qaBranchIds(scenario).includes(qaCase)) {
+      continue;
+    }
     console.log(`${file.replace(/\.json$/, '')} [${scenario.flow ?? 'demoBootstrap'}] users=${scenario.users ?? 1} iterations=${scenario.iterations ?? '-'} durationMs=${scenario.durationMs ?? '-'} - ${scenario.name ?? ''}`);
+  }
+}
+
+function assertQaCaseSelection(scenario, qaCase) {
+  if (qaCase && !qaBranchIds(scenario).includes(qaCase)) {
+    throw new Error(`UI stress scenario ${scenario.id} is not linked to QA branch ${qaCase}`);
   }
 }
 
@@ -1061,7 +1143,7 @@ function applyNumberOverride(target, key, value) {
 }
 
 function parseArgs(argv) {
-  const parsed = { list: false, help: false, record: false, scenario: '', artifactsDir: '' };
+  const parsed = { list: false, help: false, record: false, scenario: '', artifactsDir: '', qaCase: '' };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--help' || arg === '-h') {
@@ -1075,6 +1157,11 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg.startsWith('--scenario=')) {
       parsed.scenario = arg.slice('--scenario='.length);
+    } else if (arg === '--qa-case') {
+      parsed.qaCase = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--qa-case=')) {
+      parsed.qaCase = arg.slice('--qa-case='.length);
     } else if (arg === '--artifacts-dir') {
       parsed.artifactsDir = argv[index + 1] ?? '';
       index += 1;
@@ -1163,6 +1250,7 @@ function printHelp() {
   node e2e/stress/ui/run.mjs --scenario app-profile-editor-open --record
 
 Options:
+  --qa-case EVENT-EDITOR-001
   --cpu-throttle 4
   --network slow-4g
   --viewport 390x844

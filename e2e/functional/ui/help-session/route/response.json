@@ -1,8 +1,10 @@
 {
-  "urlPath": "/admin/help/e2e-placeholder-token",
+  "urlPath": "/game",
   "selectors": [
-    "app-root"
+    ".game-page"
   ],
-  "noFailedApi": false,
+  "network": [
+    "/api/share-tokens/resolve"
+  ],
   "maxMs": 25000
 }

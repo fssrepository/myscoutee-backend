@@ -1,6 +1,9 @@
 {
   "name": "UI demo bootstrap slow-mobile benchmark",
   "flow": "demoBootstrap",
+  "qaBranches": {
+    "supporting": ["ENTRY-CONSENT-001", "ENTRY-DEMO-REG-001", "LANDING-ELIGIBILITY-001"]
+  },
   "baseUrl": "https://127.0.0.1",
   "route": "/",
   "users": 1,
