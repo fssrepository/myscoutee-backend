@@ -1455,7 +1455,7 @@
 
   function assertPaidPending(current) {
     const currentState = state();
-    const expectedPaidBasketAuditCount = Math.max(1, Number(currentState.revisedPaymentReadyAuditCount || 3)) + 1;
+    const expectedPaidBasketAuditCount = Math.max(1, Number(currentState.revisedPaymentReadyAuditCount || 1)) + 1;
     assertScope(current);
     const paidAsset = assetById(current, PAID_ID);
     const request = targetRequest(current, "pending");
