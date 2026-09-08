@@ -15,6 +15,19 @@ that crosses into the sibling `myscoutee-registry` repository.
 
 **A VERZIÓZOTT MANUÁLIS QA CHECKPOINT HARNESST A MÁR FUTÓ MONGODB KONTÉNERHEZ SZÜKSÉGES DOCKER-HOZZÁFÉRÉSSEL KELL ELSŐRE MEGHÍVNI. A SANDBOXOLT FUTÁS DOCKER SOCKET JOGOSULTSÁGHIBA MIATT HAMISAN AZT IS ÍRHATJA, HOGY `MONGO CONTAINER 'MONGODB' IS NOT ALREADY RUNNING`; EZ NEM BIZONYÍTJA, HOGY A KONTÉNER ÁLL. ILYENKOR UGYANAZT A HARNESS PARANCSOT FUTTASD ÚJRA DOCKER-HOZZÁFÉRÉSSEL, ÉS ELLENŐRIZD A MÁR FUTÓ KONTÉNERT. EMIATT TILOS MONGODB-T, SZERVERT, WATCHERT VAGY COMPOSE STACKET INDÍTANI, ÚJRAÉPÍTENI VAGY DUPLIKÁLNI.**
 
+## Managed manual-QA browser sessions
+
+- Every fixture-backed browser launch must use the versioned
+  `guides/qa/tools/open-checkpoint-browser-sessions.mjs` launcher. Before it
+  registers new demo logins, its common harness snapshots and clears the
+  configured actors' server-side active-session lists so a retained login
+  cannot cause `BLOCKED_LIMIT`.
+- Keep this cleanup centralized; do not copy actor-specific session mutations
+  into each scenario. A normal versioned fixture `reset` restores the retained
+  pre-launch session-state snapshot before restoring the fixture itself.
+- The common preparation is part of standardized startup only. It does not
+  authorize any browser navigation or checklist action after handoff.
+
 ## Trust mode gate
 
 For engineering investigations or changes involving code, configuration, seed,

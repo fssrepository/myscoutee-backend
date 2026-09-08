@@ -56,6 +56,22 @@
     return state;
   }
 
+  function mergedSnapshot(retained, addedUserIds) {
+    const existing = retained.snapshots && retained.snapshots[0] || {
+      collection: "userSessionStates",
+      selector: sessionSelector([]),
+      documents: []
+    };
+    const addedDocuments = addedUserIds.length === 0
+      ? []
+      : Q.collection("userSessionStates").find(sessionSelector(addedUserIds)).toArray();
+    return {
+      collection: "userSessionStates",
+      selector: sessionSelector([...new Set([...(retained.browserUserIds || []), ...addedUserIds])]),
+      documents: [...(existing.documents || []), ...addedDocuments]
+    };
+  }
+
   function prepare() {
     if (!checkpointId) Q.fail("browser preparation requires a checkpoint ID.");
     if (browserUserIds.length === 0) {
@@ -66,11 +82,26 @@
     const id = snapshotId(fixtureScenario);
     const retained = Q.collection(SNAPSHOT_COLLECTION).findOne({ _id: id });
     if (retained) {
-      if (Q.text(retained.checkpointId).toUpperCase() !== checkpointId
-          || Q.text(retained.fixtureStateId) !== Q.text(state._id)
-          || !Q.sameJson(retained.browserUserIds || [], browserUserIds)) {
+      if (Q.text(retained.fixtureStateId) !== Q.text(state._id)
+          || Q.text(retained.stagedAtIso) !== Q.text(state.stagedAtIso)) {
         Q.fail(`a different browser-session snapshot is already retained for scenario '${fixtureScenario}'; reset it first.`);
       }
+      const retainedUserIds = retained.browserUserIds || [];
+      const addedUserIds = browserUserIds.filter(userId => !retainedUserIds.includes(userId));
+      const allUserIds = [...new Set([...retainedUserIds, ...browserUserIds])];
+      const checkpointIds = [...new Set([
+        ...(retained.checkpointIds || [Q.text(retained.checkpointId).toUpperCase()]).filter(Boolean),
+        checkpointId
+      ])];
+      Q.collection(SNAPSHOT_COLLECTION).updateOne(
+        { _id: id },
+        { $set: {
+          checkpointId,
+          checkpointIds,
+          browserUserIds: allUserIds,
+          snapshots: [mergedSnapshot(retained, addedUserIds)]
+        } }
+      );
     } else {
       Q.collection(SNAPSHOT_COLLECTION).insertOne({
         _id: id,
@@ -78,6 +109,7 @@
         fixtureScenario,
         fixtureStateId: Q.text(state._id),
         checkpointId,
+        checkpointIds: [checkpointId],
         stagedAtIso: Q.text(state.stagedAtIso),
         preparedAtIso: Q.nowIso(),
         browserUserIds,
@@ -117,15 +149,20 @@
   }
 
   function restore() {
-    if (!sourceScenario) return;
-    const id = snapshotId(sourceScenario);
+    let fixtureScenario = sourceScenario;
+    if (checkpointId) {
+      const state = Q.collection(Q.STATE_COLLECTION).findOne({ checkpointId });
+      if (state && Q.text(state.scenario)) fixtureScenario = Q.text(state.scenario);
+    }
+    if (!fixtureScenario) return;
+    const id = snapshotId(fixtureScenario);
     const retained = Q.collection(SNAPSHOT_COLLECTION).findOne({ _id: id });
     if (!retained) return;
     Q.restoreSnapshots(retained.snapshots || []);
     Q.collection(SNAPSHOT_COLLECTION).deleteOne({ _id: id });
     Q.printObject({
       scenario: SCENARIO,
-      fixtureScenario: sourceScenario,
+      fixtureScenario,
       checkpointId: Q.text(retained.checkpointId),
       phase: "restored-before-fixture-reset",
       browserUserIds: retained.browserUserIds || []
