@@ -67,7 +67,7 @@ export async function assertUi({ page }) {
   await openAndInspectAssetExplore(page);
   await page.recordStep('resource-asset-explore-opened');
 
-  await assignOwnedAssetToResource(page, marker);
+  await assignOwnedAssetToResource(page, marker, createdAsset.id);
   await page.recordStep('resource-asset-assigned');
 
   await assertResourceAssignmentState(page, {
@@ -210,7 +210,7 @@ async function waitForAssetExploreContentReady(page, timeoutMs = 30000) {
   }, timeoutMs);
 }
 
-async function assignOwnedAssetToResource(page, marker) {
+async function assignOwnedAssetToResource(page, marker, assetId) {
   await page.clickVisible('.subevent-assets-popup button[aria-label="Open sub-event asset actions"]');
   await page.clickByText('.subevent-assets-quick-actions .app-menu__panel button', 'Assign');
   const assignPopup = 'app-asset-popup .asset-popup-content.assets-popup-basket';
@@ -256,8 +256,42 @@ async function assignOwnedAssetToResource(page, marker) {
   page.clearNetworkLog();
   await page.clickVisible('app-asset-popup button[aria-label="Save selected assets"]');
   await page.waitForNetwork('/api/activities/events/subevent-resources/replace', { timeoutMs: 45000 });
+  await page.waitForNetwork('/api/assets/requests', { timeoutMs: 45000 });
+  assertSingleAssetRequestsSave(page, assetId);
   await page.waitForSelectorHidden(assignPopup, { timeoutMs: 45000 });
   await waitForVisibleText(page, '.subevent-assets-popup', marker, 30000);
+}
+
+function assertSingleAssetRequestsSave(page, assetId) {
+  const calls = page.network.map(response => {
+    const request = page.requests.get(response.requestId) ?? {};
+    let pathname = '';
+    try {
+      pathname = new URL(response.url).pathname;
+    } catch {
+      pathname = response.url;
+    }
+    return {
+      pathname,
+      method: request.method ?? '',
+      status: response.status
+    };
+  });
+  const requestSaves = calls.filter(call => call.pathname === '/api/assets/requests');
+  assert(
+    requestSaves.length === 1 && requestSaves[0].method === 'POST',
+    'Assigning an owned asset should persist its requests with one targeted API call',
+    requestSaves
+  );
+  const legacyCalls = calls.filter(call => (
+    call.pathname === '/api/assets/upsert'
+    || call.pathname === `/api/assets/${encodeURIComponent(assetId)}`
+  ));
+  assert(
+    legacyCalls.length === 0,
+    'Assigning an owned asset should not load and upsert the complete asset',
+    legacyCalls
+  );
 }
 
 async function openAssignedResourceView(page, marker, policyTitle, editedDetails) {

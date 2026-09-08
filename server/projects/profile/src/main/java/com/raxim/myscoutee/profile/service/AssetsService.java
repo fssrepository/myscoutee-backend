@@ -58,6 +58,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRe
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestsSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketScanPayloadDto;
@@ -594,6 +595,30 @@ public class AssetsService {
         }
         Asset saved = saveOwnedAsset(normalizeId(request.userId()), request.asset());
         return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), normalizeId(request.userId()));
+    }
+
+    public AssetDto saveRequests(AssetRequestsSaveRequestDto request) {
+        if (request == null) {
+            return null;
+        }
+        String ownerUserId = normalizeId(request.userId());
+        String assetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(assetId)) {
+            return null;
+        }
+        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, assetId).orElse(null);
+        if (existing == null) {
+            return null;
+        }
+        boolean fullAssetWriteAllowed = accessControlService.canCurrentActorEditAsset(ownerUserId, assetId);
+        Asset proposed = cloneAsset(existing);
+        proposed.setRequests(normalizeRequests(request.requests()));
+        proposed.setAffinity(resolveAssetAffinity(proposed, ownerUserId));
+        proposed.setBoost(resolveAssetBoost(proposed, ownerUserId));
+        proposed.setUpdatedDate(Instant.now().toString());
+        proposed.setUpdatedUser(ownerUserId);
+        Asset saved = saveOwnedAssetProposal(ownerUserId, existing, proposed, fullAssetWriteAllowed);
+        return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), ownerUserId);
     }
 
     public AssetMemberStatusChangeDto applyMemberStatusChange(AssetMemberStatusChangeRequestDto request) {
@@ -1841,6 +1866,14 @@ public class AssetsService {
         if (proposed == null) {
             return null;
         }
+        return saveOwnedAssetProposal(ownerUserId, existing, proposed, fullAssetWriteAllowed);
+    }
+
+    private Asset saveOwnedAssetProposal(
+            String ownerUserId,
+            Asset existing,
+            Asset proposed,
+            boolean fullAssetWriteAllowed) {
         if (existing != null) {
             proposed.setRequests(preserveRequestAudits(existing.getRequests(), proposed.getRequests()));
         }

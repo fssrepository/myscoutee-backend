@@ -375,6 +375,12 @@ public final class AssetsDtos {
             AssetDetailDto asset) {
     }
 
+    public record AssetRequestsSaveRequestDto(
+            String userId,
+            String assetId,
+            List<AssetMemberRequestDto> requests) {
+    }
+
     public record AssetReplaceRequestDto(
             String userId,
             List<AssetDto> assets) {

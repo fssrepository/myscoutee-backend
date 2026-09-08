@@ -6,6 +6,7 @@
   ],
   "network": [
     "/api/assets",
+    "/api/assets/requests",
     "/api/activities/events/subevent-resources",
     "/api/activities/events/subevent-resources/replace"
   ],
