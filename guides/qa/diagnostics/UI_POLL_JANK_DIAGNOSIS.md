@@ -125,6 +125,11 @@ checkpoint.
 Use the existing dev stack. Do not start a second frontend, backend, database
 or scheduler.
 
+The tester-facing actions, stop phrases and effort breakdown are maintained in
+the stable
+[`UI-POLL-JANK-001` guide](../checklists/notifications/UI-POLL-JANK-001.md).
+This diagnosis remains the machine-side interpretation reference.
+
 ### A. Idle and Admin process-list controls
 
 1. Open browser DevTools Performance and Network.

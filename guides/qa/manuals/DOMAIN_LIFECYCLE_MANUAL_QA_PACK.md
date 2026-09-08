@@ -7752,6 +7752,10 @@ revision plus v5 consent and immutable v4 consent remain as evidence.
 
 ### `QA-EXPANSION-CP04` — Operator Firebase and Notifications push
 
+The stable tester guides for the open Notifications domain are collected under
+[`checklists/notifications`](../checklists/notifications/). Execution status
+and evidence remain in this pack and the matrix rather than those guides.
+
 This is QA-environment Pair QA, not a live-system deployment test. Operator
 owns configuration, verification, activation, one fresh sign-in and rollback.
 Notifications owns device registration and the deferred `CHAT-PUSH-001`

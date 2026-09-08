@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-08 11:24 CEST
+Updated: 2026-09-08 21:29 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -23,8 +23,16 @@ file first, then open only the linked active checkpoint section.
   [`CONTENT-ADMIN-LIFECYCLE-001.md`](../checklists/content/CONTENT-ADMIN-LIFECYCLE-001.md).
 - Stable user-facing click guide for the prepared side-menu Payment journey:
   [`PAYMENT-METHODS-HISTORY-001.md`](../checklists/event/PAYMENT-METHODS-HISTORY-001.md).
-- Stable user-facing click guide for the active Asset Borrow journey:
+- Stable user-facing click guide for the parked Asset Borrow journey:
   [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
+- Stable user-facing guides for all six open Notifications rows, with the
+  current checkpoint first:
+  [`UI-POLL-JANK-001.md`](../checklists/notifications/UI-POLL-JANK-001.md),
+  [`MOBILE-PUSH-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-PUSH-LIFECYCLE-001.md),
+  [`MOBILE-WEBVIEW-LIFECYCLE-001.md`](../checklists/notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md),
+  [`NOTIFICATION-ADMIN-LIFECYCLE-001.md`](../checklists/notifications/NOTIFICATION-ADMIN-LIFECYCLE-001.md),
+  [`JOB-MESSAGES.md`](../checklists/notifications/JOB-MESSAGES.md), and
+  [`BELL-RATING-LIFECYCLE-001.md`](../checklists/notifications/BELL-RATING-LIFECYCLE-001.md).
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 - Reviewable ledger source; regenerate the XLSX after every status update:
@@ -77,47 +85,99 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ASSET-BORROW-001 — STAGED / BASELINE READY / USER ACTION NOT STARTED
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-borrow-001--scoped-borrow-lifecycle
-checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: start at checklist step 1 after the configured Casey, Nova and Riley browser sessions have been relaunched for this restaged fixture
-fixture_phase: `phase=baseline-ready`, staged at `2026-09-08T09:24:00.778Z`; read-only status passed all ten baseline checks
-fixture_window: overlap `2026-09-08T08:24:00.778Z` through `2026-09-15T09:24:00.778Z`; non-overlap `2026-09-16T09:24:00.778Z` through `2026-09-17T09:24:00.778Z`
-fixture_assets: exactly four Public Transport controls — Capacity, Reject, Cancel and Paid; Paid is HUF 3200 through connected Barion with 3DS Off and Nova's saved Mastercard 4444
-runtime_contract: every free or paid Borrow submission has read-only Quantity 1 and creates one independent request, approval, assigned card and optional payment. Repeated same-Asset requests remain separate by request ID, receive `#1`/`#2` card labels and keep their booking date ranges. Source Explore shows the Asset once and has no Payment summary action; assigned paid cards retain Payment summary
-organizer_contract: `Organizer only` is exact-scope fine tuning for Event, Sub-event/Stage, Group and Asset. A user may set it on their own pending or accepted scoped Asset request without receiving wider member-management rights. It never cascades, changes a role, removes/reassigns a member or blocks an already-materialized tournament member from later-stage progression. The selected scope counter updates live and persists; the reverse action is `Count as participant`
-browser_phase: the fixture was restaged after the earlier managed Borrow windows were prepared. Those windows are not valid evidence for the new baseline. No browser was relaunched and Codex performed no checklist action
-browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
-ledger_status: 89/104 passed; ASSET-CHECKOUT-001 is PASS/CLOSED and ASSET-BORROW-001 is the sole staged Asset transaction
-required_resume: run the read-only Borrow status gate; if it remains `baseline-ready`, prepare and launch the configured Borrow sessions once, then hand control to the user at step 1. Do not restage and do not reuse the pre-restage browser projection as evidence
-actors: Casey owns the Assets and request decisions; Nova drives Capacity, Cancel and Paid; Riley drives Reject
-pending_machine_oracle: after the user reports each exact guide phrase, run `verify-borrow-cancel`, `verify-borrow-reject`, `verify-borrow-accepted`, `verify-borrow-paid-pending-organizer`, `verify-borrow-paid-accepted-participant`, then `verify-borrow-terminal`
+checkpoint: UI-POLL-JANK-001 — SELECTED / GUIDE READY / INFRASTRUCTURE NOT YET PREPARED / USER ACTION NOT STARTED
+detail: ../manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md#queued-cross-surface-performance-defect
+checklist: ../checklists/notifications/UI-POLL-JANK-001.md
+substage: implement or bind the versioned fixture/browser/session-snapshot helpers, then verify the complete preflight before checklist step 1
+selection_reason: the user explicitly paused Asset Borrow and moved the manual-QA cursor to Notifications; UI-POLL-JANK-001 is the selected first Notifications row despite its lower numeric priority
+notification_guides: all six open Notifications matrix rows now have stable user-facing guides; they remain separate consolidated journeys and were not expanded into new matrix rows
+notification_order: UI-POLL-JANK-001 first by explicit user selection, then MOBILE-WEBVIEW-LIFECYCLE-001, MOBILE-PUSH-LIFECYCLE-001, NOTIFICATION-ADMIN-LIFECYCLE-001, JOB-MESSAGES and BELL-RATING-LIFECYCLE-001 by existing priority
+notification_remaining_complexity: 425/1025 minutes across the six unchanged matrix rows
+fixture_phase: UI-POLL-JANK-001 is not staged and no managed browser was launched; the guide requires Ava, Casey A, Casey B and Nova, with exactly two active server sessions for Casey
+required_infrastructure: one disposable populated Casey/Nova Group Chat; four-session managed-browser configuration; secret-safe before/after session, audit, process/profile, page-target/context, auth-carrier and `/auth/me` snapshots; trace evidence and exact reset
+runtime_contract: capture exact idle/Admin list/Admin detail/Chat traces, then attribute the already-reported two-session lockout around read-only CDP attachment and ordinary browser close before intentional launcher cleanup
+browser_control: after standardized startup, the user exclusively controls navigation, DevTools recording, Chat input and browser close. Diagnostic CDP may only observe the already-reported session defect and must never create a context, login or QA action
+ledger_status: 89/104 passed; no Notifications result/status changed by generating the guides
+required_resume: do not hand checklist step 1 to the user yet. First resolve the parked Borrow cleanup gate without starting a second simulator/stack, then add or bind UI-POLL-JANK-001's versioned fixture, browser config and secret-safe session oracle; only after stage/status and identity/session preflight may the standard launcher hand over the four windows
+actors: Ava observes Admin Jobs; Casey A is the Chat reader; Casey B is the same controlled account's second session; Nova sends the one live Chat message
+pending_machine_oracle: correlate four saved Performance traces; compare server sessions/audits and browser target/context/auth presence before/after read-only observer attachment and immediately after Casey B closes; capture before any launcher cleanup
 deployment_boundary: deployment method and candidate evidence are maintained separately in `../../releases/PRERELEASE_DEPLOYMENT_QUALIFICATION.md` and `../../releases/v1.0.0-qa.2.md`; this pair-QA continuation must not rebuild or reinstall
 last_completed: ASSET-CHECKOUT-001 PASS/CLOSED through its full 98-step user journey and terminal guarded oracles
 ```
 
-Resume with this read-only gate only:
+The prior Asset Borrow checkpoint is parked, not continued. No Borrow user
+action started. Its last proven baseline was `phase=baseline-ready`, staged at
+`2026-09-08T09:24:00.778Z`, with all ten checks true and the overlap/non-overlap
+windows recorded in the Asset pack. The attempt to recheck it while switching
+domains stopped before reset because the already-running payment simulator
+configuration endpoint at `127.0.0.1:18082` was unavailable. No fixture reset,
+restage, browser launch or checklist action was performed. Do not start a new
+simulator or stack merely to bypass this gate. Once the owning runtime is
+available, run:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status asset-domain ASSET-BORROW-001
 ```
 
-It must print `phase=baseline-ready` and all ten checks must remain `true`.
-The fixture is already staged; do not stage or restage it. Before the manual
-run, replace the stale pre-restage browser sessions once through the standard
-startup:
+If and only if that status again proves the recorded `baseline-ready` boundary,
+reset the parked fixture and verify `phase=not-staged` before staging any
+transactional Notifications support fixture:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  prepare-browser asset-domain ASSET-BORROW-001
+  reset asset-domain ASSET-BORROW-001
 
-bash guides/qa/tools/open-checkpoint-browser-sessions.sh ASSET-BORROW-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status asset-domain ASSET-BORROW-001
 ```
 
-This startup opens exactly Casey, Nova and Riley. After handoff, the user owns
-all navigation and clicks. The first machine boundary is
-`ASSET-BORROW-001 cancel complete: Nova request removed once`.
+Restaging Borrow later reconstructs a fresh time window; never reuse the old
+timestamps or pre-restage browser projection as new evidence.
+
+### Notifications takeover notes
+
+The guide-generation pass changed documentation only. It did not change any
+matrix result, stage a Notifications fixture, add a browser-session entry,
+attach CDP, launch Chrome, send a message or run a product build/test. A new
+Codex session must not tell the user to begin `UI-POLL-JANK-001` merely because
+its guide exists.
+
+For the selected `UI-POLL-JANK-001`, the next implementation work is:
+
+1. resolve the parked Borrow reset gate exactly as described above;
+2. reuse or wrap the existing `CHAT-FLOW-001` disposable Group Chat fixture
+   without reopening its closed result;
+3. add the four-window Ava / Casey A / Casey B / Nova configuration to the
+   versioned managed-browser launcher;
+4. add a read-only, secret-safe session snapshot oracle for the guide's three
+   stop points; it may report counts, equality/hashes and boolean carrier
+   presence, never raw cookies, bearer tokens or session IDs;
+5. prove stage/status/reset plus exactly two Casey sessions before launching;
+   after handoff, the user alone records the traces and closes Casey B.
+
+Existing support for the later Notifications guides must be reused before new
+harness code is created:
+
+- `BELL-RATING-LIFECYCLE-001`: `bell-rating-feedback`, `stat-010` and
+  `graph-rating` fixtures exist; a consolidated wrapper/browser setup is not
+  yet bound.
+- `JOB-MESSAGES`: the `scheduled-messages` inactive-user/recent-user fixture
+  exists; its Admin/fixture-user browser setup is not yet bound.
+- `NOTIFICATION-ADMIN-LIFECYCLE-001`: `notification-read-path` and
+  `notification-outbox` fixtures exist; the combined rule-save/invalid-save/
+  restore wrapper and browser setup are not yet bound.
+- `MOBILE-PUSH-LIFECYCLE-001`: execution remains gated on an Operator-tested
+  active Firebase revision and a disposable physical Android device. Never
+  manufacture a local token fallback.
+- `MOBILE-WEBVIEW-LIFECYCLE-001`: execution needs a physical Android device,
+  recorded old/candidate build identities and a versioned ADB/cache fixture.
+  Never clear app data before capturing the old-cache and account-isolation
+  boundaries.
+
+The six stable guide estimates exactly match the unchanged matrix values:
+UI poll `60/145`, Mobile WebView `110/260`, Mobile Push `100/235`, Notification
+Admin `80/190`, Scheduled Messages `20/65`, and Bell/Rating `55/130` minutes.
 
 Resolved admission decision: first-stage admission locks on the successful
 materialization commit, not when a scheduled Start is merely queued or stuck.
@@ -160,7 +220,7 @@ while a released non-overlapping window restores it in place and after reload;
 removed-manager cleanup with exact write-side Group/stage/root counter reversal
 and a byte-identical sibling-group negative control. This is required coverage,
 not a later optional reminder.
-The active Borrow lifecycle now covers its free controls plus the narrow paid
+The parked Borrow lifecycle covers its free controls plus the narrow paid
 repeat-request parity branch and exact-scope Organizer-only counters.
 
 The three existing Event/Asset cases divide checkout coverage without a
@@ -170,11 +230,12 @@ Barion plus 3DS approve/decline/timeout and expired-card selection blocking;
 `ASSET-BORROW-001` retains the genuinely free/no-payment controls and adds one
 narrow paid parity branch without replaying checkout's 3DS/refund lifecycle.
 Their stable guides carry those separate combinations. Event and Asset
-checkout are PASS/CLOSED; Asset Borrow is the active staged transaction.
+checkout are PASS/CLOSED; Asset Borrow is parked while Notifications owns the
+active cursor.
 
 `PAYMENT-METHODS-HISTORY-001` and `EVENT-CHECKOUT-001` are PASS/CLOSED. The
 Event and Asset checkout are PASS/CLOSED. Their completed transactions must not
-be replayed while `ASSET-BORROW-001` is active.
+be replayed for the selected Notifications work.
 
 Separate captured Content follow-up: `CONTENT-ADMIN-LIFECYCLE-001` is the one
 open consolidated Content row and now has a stable click guide. It creates
@@ -187,8 +248,8 @@ honestly non-live open client. The older unexecuted active-delete-denial
 assertion was corrected to match Java, frontend-local and the administrator
 manual. Its versioned fixture, six savepoint oracles, exact reset and
 Ava/Kai/Riley browser-session definition are prepared. It remains explicitly
-not staged while `ASSET-BORROW-001` owns the active transaction. Stage Content
-only after Borrow closes and the canonical matrix selects it, require
+not staged while Notifications owns the selected cursor. Stage Content only
+after the canonical matrix selects it, require
 `baseline-ready`, and only then let the user open its configured browsers. The
 Mongo harness proves revision, audit, consent and Article-bucket state; the
 existing admin telemetry stream is a separate savepoint oracle.

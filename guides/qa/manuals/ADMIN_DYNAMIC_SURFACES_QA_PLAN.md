@@ -626,6 +626,9 @@ checkpoint in the master spreadsheet until **both** UI checkpoints pass:
 
 Detailed code-path evidence and the reproducible trace procedure are in
 [`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md).
+The tester follows the stable click-by-click
+[`UI-POLL-JANK-001` guide](../checklists/notifications/UI-POLL-JANK-001.md),
+including its explicit `60/145 min` effort breakdown.
 
 1. **Admin Job checkpoint — manual visual pass, performance trace pending.** The process
    table now delegates its five-second live refresh, cancellation, keyed

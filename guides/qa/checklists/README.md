@@ -27,6 +27,8 @@ must never overwrite the user-facing checklist.
 - [`content`](content/) — governed Content and Article lifecycle guides.
 - [`identity-access`](identity-access/) — identity, authorization and account
   lifecycle guides.
+- [`notifications`](notifications/) — notification delivery, realtime and UI
+  performance guides.
 
 ## Available user guides
 
@@ -56,3 +58,15 @@ must never overwrite the user-facing checklist.
 - [`PAYMENT-METHODS-HISTORY-001.md`](event/PAYMENT-METHODS-HISTORY-001.md) —
   one side-menu journey covering Payment History filters/summaries, Stripe and
   Barion card registration, and expired-card notification/cleanup.
+- [`UI-POLL-JANK-001.md`](notifications/UI-POLL-JANK-001.md) — four bounded
+  Admin/Chat performance traces plus two-session CDP/browser-close attribution.
+- [`BELL-RATING-LIFECYCLE-001.md`](notifications/BELL-RATING-LIFECYCLE-001.md) —
+  rating/feedback producers through target bell/read, Statistics and affinity.
+- [`JOB-MESSAGES.md`](notifications/JOB-MESSAGES.md) — real scheduled-message
+  inactive-user and recent-user/reschedule branches.
+- [`NOTIFICATION-ADMIN-LIFECYCLE-001.md`](notifications/NOTIFICATION-ADMIN-LIFECYCLE-001.md) —
+  Admin rule save/validation, one target outbox lifecycle, dedupe and restore.
+- [`MOBILE-PUSH-LIFECYCLE-001.md`](notifications/MOBILE-PUSH-LIFECYCLE-001.md) —
+  physical-device foreground/background/cold-start delivery and token rotation.
+- [`MOBILE-WEBVIEW-LIFECYCLE-001.md`](notifications/MOBILE-WEBVIEW-LIFECYCLE-001.md) —
+  Android cache upgrade, resume, account isolation and offline recovery.
