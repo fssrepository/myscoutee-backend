@@ -270,6 +270,8 @@ Usage:
   bash manual-qa-checkpoints.sh verify-refunded asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh prepare-last-leave asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-last-leave asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-last-remove asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-last-remove asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-cancelled asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
@@ -850,7 +852,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:reset-service-chat-probe|asset-checkout:repair-step-56-boundary|asset-checkout:repair-unavailable-control|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:repair-manager-left-required-policy|asset-checkout:verify-takeover|asset-checkout:stage-takeover-complete|asset-checkout:repair-refund-window|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:verify-cancelled|asset-checkout:verify)
+  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:reset-service-chat-probe|asset-checkout:repair-step-56-boundary|asset-checkout:repair-unavailable-control|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:repair-manager-left-required-policy|asset-checkout:verify-takeover|asset-checkout:stage-takeover-complete|asset-checkout:repair-refund-window|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:prepare-last-remove|asset-checkout:verify-last-remove|asset-checkout:verify-cancelled|asset-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

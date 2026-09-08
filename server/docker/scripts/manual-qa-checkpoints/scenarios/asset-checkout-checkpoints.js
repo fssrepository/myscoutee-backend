@@ -23,8 +23,6 @@
   const UNAVAILABLE_REQUEST_ID = `${PREFIX}:request:unavailable-window`;
   const RILEY_REQUEST_ID = `${PREFIX}:request:riley-takeover`;
   const LAST_REMOVE_RILEY_REQUEST_ID = `${PREFIX}:request:last-remove:riley-pending`;
-  const LAST_REMOVE_RILEY_PAYMENT_ID = `${PREFIX}:payment:last-remove:riley`;
-  const LAST_REMOVE_RILEY_CHECKOUT_ID = `${PREFIX}:checkout:last-remove:riley`;
   const SERVICE_CHAT_ID = `c-service-asset-${PAID_ID}-${SUB_EVENT_ID}-${RILEY_ID}`;
   const NOVA_SERVICE_CHAT_IDS = [
     `c-service-asset-${PAID_ID}-${SUB_EVENT_ID}-${NOVA_ID}`,
@@ -2241,11 +2239,6 @@
       assetId: PAID_ID,
       requestId: novaRequestId
     });
-    const novaPayment = Q.collection("payments").findOne({
-      sourceId: PAID_ID,
-      userId: NOVA_ID,
-      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
-    });
     const event = Q.collection("events").findOne(eventSelector);
     const rawResource = Q.collection("activityResources").findOne({
       ownerId: EVENT_ID,
@@ -2254,12 +2247,11 @@
       status: { $ne: "D" }
     });
     const riley = Q.ensureUser(RILEY_ID, "Riley mixed-status Remove member");
-    if (!asset || !novaRequest || !novaProjection || !novaPayment || !event || !rawResource) {
+    if (!asset || !novaRequest || !novaProjection || !event || !rawResource) {
       Q.fail("accepted state cannot be extended with the mixed-status Remove control.");
     }
     if ((asset.requests || []).some(item =>
           Q.text(item && (item.requestId || item.id || item._id)) === LAST_REMOVE_RILEY_REQUEST_ID)
-        || Q.collection("payments").countDocuments({ _id: LAST_REMOVE_RILEY_PAYMENT_ID }) > 0
         || Q.collection("activityMembers").countDocuments({ ownerId: EVENT_ID, userId: RILEY_ID }) > 0) {
       Q.fail("mixed-status Remove control already exists; refusing to duplicate it.");
     }
@@ -2267,9 +2259,10 @@
     const ownerPendingBefore = assetPendingCounters(CASEY_ID);
     const nowIso = Q.nowIso();
     const rileyBooking = cloneBooking(novaRequest.booking, {
-      totalAmount: 3200,
+      totalAmount: 0,
       previousTotalAmount: null,
-      paymentSessionId: LAST_REMOVE_RILEY_CHECKOUT_ID,
+      acceptedPolicyIds: [],
+      paymentSessionId: null,
       inventoryApplied: false
     });
     const rileyRequest = {
@@ -2280,7 +2273,7 @@
       initials: Q.text(riley.initials) || "RO",
       gender: Q.text(riley.gender) || "man",
       status: "pending",
-      note: "Payment-backed pending member for mixed-status resource Remove.",
+      note: "Pending member for mixed-status resource Remove.",
       requestKind: "borrow",
       requestedAtIso: nowIso,
       booking: rileyBooking
@@ -2305,25 +2298,6 @@
       menuActions: [],
       createdDate: nowIso,
       updatedDate: nowIso
-    });
-    Q.collection("payments").insertOne({
-      ...novaPayment,
-      _id: LAST_REMOVE_RILEY_PAYMENT_ID,
-      version: 0,
-      userId: RILEY_ID,
-      paymentMethodId: CARD_IDS.rileyActive,
-      checkoutSessionId: LAST_REMOVE_RILEY_CHECKOUT_ID,
-      gatewaySessionId: `${PREFIX}:gateway-session:last-remove:riley`,
-      gatewayAuthorizationId: `${PREFIX}:gateway-authorization:last-remove:riley`,
-      predecessorPaymentId: "",
-      successorPaymentId: "",
-      refundStatus: "none",
-      refundedAmount: 0,
-      refundRequestStatus: "none",
-      processedGatewayEventIds: [],
-      capturedAtIso: nowIso,
-      gatewayApprovedAtIso: nowIso,
-      createdDate: nowIso
     });
     const transportMetrics = rawResource.resourceMetricsByType && rawResource.resourceMetricsByType.Transport || {};
     const resourceResult = Q.collection("activityResources").updateOne({ _id: rawResource._id }, { $set: {
@@ -2356,18 +2330,9 @@
     } });
     Q.collection("activityMembers").insertOne(eventMember(RILEY_ID, "Member", nowIso));
     applyEventCounterDelta(RILEY_ID, false);
-    const caseyFinanceResult = Q.collection("users").updateOne(userSelector(CASEY_ID), { $inc: {
-      "paymentIncomeTotals.HUF": 3200,
-      "paymentAllTotals.HUF": 3200
-    } });
-    const rileyFinanceResult = Q.collection("users").updateOne(userSelector(RILEY_ID), { $inc: {
-      "paymentSpentTotals.HUF": 3200,
-      "paymentAllTotals.HUF": 3200
-    } });
     synchronizeOwnerAssetCounters();
     if (assetResult.matchedCount !== 1 || resourceResult.matchedCount !== 1
-        || eventResult.matchedCount !== 1 || caseyFinanceResult.matchedCount !== 1
-        || rileyFinanceResult.matchedCount !== 1) {
+        || eventResult.matchedCount !== 1) {
       Q.fail("mixed-status Remove staging did not update every controlled projection.");
     }
 
@@ -2381,12 +2346,12 @@
         || !preparedResource || preparedResource.accepted !== 1 || preparedResource.pending !== 1
         || preparedResource.targetAddedByUserId !== NOVA_ID
         || targetWindowAvailability(preparedAsset) !== 1
-        || targetPayments.length !== 2
+        || targetPayments.length !== 1
         || !targetPayments.some(item => item.userId === NOVA_ID && item.status === "captured")
-        || !targetPayments.some(item => item.userId === RILEY_ID && item.status === "captured")
+        || targetPayments.some(item => item.userId === RILEY_ID)
         || assetPendingCounters(CASEY_ID).carsPending !== ownerPendingBefore.carsPending + 1) {
       Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "last-remove-ready-diagnostic", oracle: prepared });
-      Q.fail("mixed-status Remove fixture did not reach the exact accepted/pending paid-member state.");
+      Q.fail("mixed-status Remove fixture did not reach the exact paid-manager/pending-member state.");
     }
     const paymentGuard = paymentHistoryGuard();
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
@@ -2402,8 +2367,9 @@
       acceptedScopedBorrowers: 1,
       pendingScopedBorrowers: 1,
       managerUserId: NOVA_ID,
-      paymentBackedMembers: [NOVA_ID, RILEY_ID],
-      next: "Nova uses Remove from the borrowed resource card; verify the card and pending counters disappear while both payment histories remain byte-for-byte unchanged."
+      paymentBackedMembers: [NOVA_ID],
+      paymentFreeMembers: [RILEY_ID],
+      next: "Nova uses Remove from the borrowed resource card; verify the card and pending counters disappear while Nova/Casey history stays unchanged and Riley gains no payment row."
     });
   }
 
