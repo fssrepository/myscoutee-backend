@@ -43,9 +43,9 @@ must never overwrite the user-facing checklist.
   single-Edit reload boundary.
 - [`ASSET-CHECKOUT-001.md`](asset/ASSET-CHECKOUT-001.md) — scoped
   Resource/Asset Explore Barion/3DS payment, request and acceptance journey.
-- [`ASSET-REFUND-POLICY-SNAPSHOT-001.md`](asset/ASSET-REFUND-POLICY-SNAPSHOT-001.md)
-  — short paid-Borrow disclosure and immutable payment-time refund-policy
-  snapshot regression.
+- [`ASSET-PRICING-001.md`](asset/ASSET-PRICING-001.md) — interactive Asset
+  pricing edits from live Borrow projection through audience-contract probing
+  and immutable payment-time price/refund snapshots.
 - [`CONTENT-ADMIN-LIFECYCLE-001.md`](content/CONTENT-ADMIN-LIFECYCLE-001.md) —
   governed revisions, Privacy consent/fallback and Article trash/restore/
   republish journey.

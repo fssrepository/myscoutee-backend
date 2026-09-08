@@ -13,7 +13,7 @@ Borrow lifecycle already owned by `ASSET-CHECKOUT-001` and
 Begin only after the dedicated `asset-pricing` fixture reports
 `baseline-ready`. It provides:
 
-- one `QA ASSET-PRICING-001 Interactive Transport`, quantity `4`, with Pricing
+- one `QA ASSET-PRICING-001 Interactive Transport`, quantity `3`, with Pricing
   initially Off;
 - one Public Event with separate `Variable`, `No policy` and `Cutoff` stages;
 - Casey as Asset owner, Nova as accepted Event member and Riley as the public

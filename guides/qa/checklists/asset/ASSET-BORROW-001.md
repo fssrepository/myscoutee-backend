@@ -28,10 +28,10 @@ This guide intentionally does not replay already-closed Asset coverage:
 The remaining unique evidence is the zero-payment free request path, requester
 Cancel, owner Reject, cross-group overlapping availability, a single free
 approval without a second reservation, and its Asset Statistics delta.
-Refund-policy disclosure and immutable payment-time policy snapshots belong to
-the separate short
-[`ASSET-REFUND-POLICY-SNAPSHOT-001`](ASSET-REFUND-POLICY-SNAPSHOT-001.md)
-regression and are not executed in this free fixture.
+Pricing configuration, refund-policy disclosure and immutable payment-time
+snapshots belong to the separate interactive
+[`ASSET-PRICING-001`](ASSET-PRICING-001.md) journey and are not executed in
+this free fixture.
 
 ## Actors and startup
 
@@ -57,7 +57,9 @@ To start a complete replay, tell Codex:
 
 `Continue ASSET-BORROW-001 from the staged baseline.`
 
-Begin only after Codex runs the read-only checkpoint status and confirms:
+Begin only after Codex runs the read-only checkpoint status, the checkpoint's
+snapshot-protected `prepare-browser` boundary and the versioned launcher, then
+confirms:
 
 - phase `baseline-ready`, with the browser still unopened for this checkpoint;
 - `QA ASSET-BORROW-001 Tournament → QA Borrow Stage` contains Group A

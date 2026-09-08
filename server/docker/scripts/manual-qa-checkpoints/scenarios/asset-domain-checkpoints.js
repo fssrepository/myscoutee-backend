@@ -22,6 +22,7 @@
   const GROUP_A_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_A_ID}`;
   const GROUP_B_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_B_ID}`;
   const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID];
+  const BORROW_BROWSER_ACTOR_IDS = [hostUserId, participantUserId, thirdUserId];
   const IDS = [...ASSET_IDS, EVENT_ID, GROUP_A_ID, GROUP_B_ID];
   const LIFE_CHECKPOINT = "ASSET-LIFE-001";
   const VISIBILITY_CHECKPOINT = "ASSET-VIS-001";
@@ -2567,6 +2568,67 @@
     return state;
   }
 
+  function borrowBrowserSessionSummary() {
+    const states = Q.collection("userSessionStates")
+      .find({ _id: { $in: BORROW_BROWSER_ACTOR_IDS } })
+      .toArray();
+    return BORROW_BROWSER_ACTOR_IDS.map(userId => {
+      const value = states.find(item => Q.text(item && (item.userId || item._id)) === userId);
+      return {
+        userId,
+        activeSessionCount: Array.isArray(value && value.activeSessions)
+          ? value.activeSessions.length
+          : 0
+      };
+    });
+  }
+
+  function prepareBorrowBrowserSessions() {
+    if (checkpointId !== BORROW_CHECKPOINT) {
+      Q.fail(`prepare-browser is restricted to ${BORROW_CHECKPOINT}.`);
+    }
+    const state = requireMatchingState();
+    if (Q.text(state.phase) !== "baseline-ready") {
+      Q.fail("Borrow browser sessions can be prepared only from baseline-ready.");
+    }
+    const before = borrowBrowserSessionSummary();
+    let snapshotsCaptured = false;
+    if (!Array.isArray(state.browserSessionSnapshots)) {
+      const browserSessionSnapshots = Q.snapshotSpecs([{
+        collection: "userSessionStates",
+        selector: { _id: { $in: BORROW_BROWSER_ACTOR_IDS } }
+      }]);
+      Q.collection(Q.STATE_COLLECTION).updateOne(
+        { _id: state._id },
+        { $set: { browserSessionSnapshots } }
+      );
+      snapshotsCaptured = true;
+    }
+    const preparedAtIso = Q.nowIso();
+    Q.collection("userSessionStates").updateMany(
+      { _id: { $in: BORROW_BROWSER_ACTOR_IDS } },
+      { $set: { activeSessions: [], updatedDate: preparedAtIso } }
+    );
+    const after = borrowBrowserSessionSummary();
+    if (after.some(item => item.activeSessionCount !== 0)) {
+      Q.fail("configured Casey/Nova/Riley Borrow browser sessions were not cleared exactly.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      {
+        $set: { browserSessionsPreparedAtIso: preparedAtIso },
+        $inc: { browserSessionPreparationCount: 1 }
+      }
+    );
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: Q.text(state.phase),
+      browserSessionCleanup: { before, after, snapshotsCaptured, preparedAtIso },
+      next: "Run the versioned ASSET-BORROW-001 managed browser launcher now."
+    });
+  }
+
   function next() {
     if (checkpointId === LIFE_CHECKPOINT) {
       const state = requireMatchingState();
@@ -2667,6 +2729,9 @@
     const state = requireMatchingState();
     Q.restoreSnapshots(state.snapshots);
     for (const saved of state.savedUserActivities || []) restoreBorrowUserActivities(saved);
+    if (Array.isArray(state.browserSessionSnapshots)) {
+      Q.restoreSnapshots(state.browserSessionSnapshots);
+    }
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     Q.printObject({
       scenario: SCENARIO,
@@ -2682,6 +2747,7 @@
     case "stage": stage(); break;
     case "next": next(); break;
     case "status": status(); break;
+    case "prepare-browser": prepareBorrowBrowserSessions(); break;
     case "capture-lifecycle-created": captureLifecycleCreated(); break;
     case "verify-lifecycle-edited": verifyLifecycleEdited(); break;
     case "verify-lifecycle-deleted": verifyLifecycleDeleted(); break;

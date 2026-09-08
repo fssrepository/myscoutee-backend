@@ -6551,20 +6551,20 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **PREPARED / DEFERRED / NOT STAGED**.
+Status: **STAGED / BASELINE READY / USER ACTION NOT STARTED**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
 
-The versioned fixture was staged at `2026-09-03T12:34:59.706Z`; two read-only
-checks proved its complete baseline and no browser/manual action occurred. It
-was then reset from its own snapshot at `2026-09-03T12:56:47.217Z` because the
-payment-facing interface will be rewritten and Assignment is the selected
-next testcase. The old date windows are intentionally not a resumable
-boundary.
+The deduplicated fixture was freshly staged at
+`2026-09-08T04:06:17.831Z`. Two read-only status checks proved all baseline
+guards: exactly three Public/free Transport controls, Lina's retained
+two-item Group B reservation and scoped Manager assignment, no Group A
+resource, and zero checkout basket/payment or premature notification. The
+current fixture remains `baseline-ready`; no browser checklist action has
+started.
 
-When Borrow becomes active again, stage a fresh baseline and then run its
-read-only status before opening a browser:
+Its versioned stage/status commands are:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
@@ -6573,18 +6573,26 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-domain ASSET-BORROW-001
 ```
 
-Never reuse the prior timestamps or edit fixture documents ad hoc.
+Do not restage this current baseline before the user starts it. The managed
+Casey/Nova/Riley launcher is the only remaining startup action.
 
+- This checkpoint now owns only the free Borrow-specific cancel, reject,
+  accept, overlap/capacity and Statistics effects. Generic paid checkout,
+  Payment summary, Take Over, Leave, Remove and refund stay in
+  `ASSET-CHECKOUT-001`; direct Assign/Edit/Unassign stays in
+  `ASSET-ASSIGNMENT-LIFECYCLE-001`.
 - From Resource Explore under one generated Tournament group, request one
-  controlled asset for the exact event/stage/group timeframe and accept it. In
-  two independent reset branches, reject and cancel controlled requests.
+  controlled Asset for the exact event/stage/group timeframe and accept it.
+  Use the independent Reject and Cancel controls without replaying checkout.
 - Requester and owner must see the same request identity/status. Only an owned
   asset or a pending/accepted borrow for the exact booking scope becomes
   assignment-eligible. Availability, notification and optional payment intent
   effects occur exactly once.
-- Borrow permission is not Asset Manager membership and never changes an Event
-  role. The accepted asset becomes assignment-eligible only for the exact
-  generated-group booking scope; a sibling group remains unchanged.
+- The accepted borrower becomes the scoped Manager represented by
+  `addedByUserId` only for the exact generated-group resource assignment. This
+  does not change their global Asset ownership, Event role or sibling group.
+  Four guarded commands now verify cancel, reject, accepted and terminal
+  boundaries independently.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
@@ -7040,23 +7048,35 @@ one-day/50% policy in both documents and moves the booking to a safe future
 window. The completed run was not restaged to manufacture evidence; its final
 persisted `last-remove-verified` oracle is the closing result.
 
-### `ASSET-REFUND-POLICY-SNAPSHOT-001` — payment-time policy disclosure
+### `ASSET-PRICING-001` — interactive Asset pricing journey
 
-Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
 
-Stable short guide:
-[`ASSET-REFUND-POLICY-SNAPSHOT-001.md`](../checklists/asset/ASSET-REFUND-POLICY-SNAPSHOT-001.md).
+Stable guide:
+[`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
 
-This is intentionally a separate paid-Borrow regression, not another branch of
-the free `ASSET-BORROW-001` fixture. Confirm and the locked Payment screen must
-always disclose the applicable refund policy or an explicit no-policy state.
-At capture time the payment stores that complete state as an immutable
-snapshot. Payment summary, refund eligibility and the refundable/retained
-amounts use only the payment snapshot after capture; a later Asset-policy edit
-must neither rewrite nor replace it. No fallback to the current Asset policy is
-allowed for an older payment. The short manual fixture will retain one payment
-with a one-day/50% snapshot and one explicit no-policy payment while deliberately
-giving both live Assets different current policies.
+This is a separate interactive journey rather than a set of pre-baked pricing
+controls. Casey repeatedly edits one Public Transport Asset; Nova and Riley
+observe the live Explore/Borrow projection after each save. The sequence covers
+fixed per-booking daily price, hybrid per-item quantity/demand/time rules,
+min/max and rounding, then the audience configuration, and finally three
+captured payment-time variants on separate Event stages: active one-day/50%
+refund policy, explicit no policy and an already-passed cutoff.
+
+The versioned `asset-pricing` harness owns stage/status, exact fixed/variable/
+audience config checks, three payment-snapshot checks, the final oracle and
+snapshot reset. It starts with Pricing Off and no request/basket/payment, so all
+changes remain user-driven and observable on the fly.
+
+The code audit found two real pre-run gaps rather than assigning invented
+manual rules. Asset editor currently sets `showAudienceSection: false`, and the
+Asset Borrow calculator has no VIP identity or Asset promo-code application
+input. The audience step is therefore an explicit contract probe and cannot be
+marked PASS until the Asset-specific member/VIP/invite/promo behavior is
+implemented and defined. Separately, the payment already persists effective
+pricing rows plus its cancellation-policy snapshot; Confirm, Payment and
+Payment summary still need the complete disclosure UI, including an explicit
+no-policy state and payment-time-only historical projection.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 
@@ -7583,7 +7603,7 @@ must not be run as a second payment suite.
 | `PAYMENT-SIMULATOR-SEC-001` | Inspect dev and production-resolved payment configuration and call test controls without capabilities. | Simulator accepts only test credentials, protects outcome/audit controls, binds only as configured in dev, is absent from production topology and production rejects custom API bases. |
 | `PAYMENT-PROVIDER-ROUTING-001` | Repeat equivalent checkout once with Stripe and once with Barion through operator selection. | The user action remains provider-neutral while provider resource IDs, callbacks and operations remain separate; changing selection never reuses the other provider's authorization. |
 
-The current free/no-payment control is `ASSET-BORROW-LIFECYCLE-001`; the
+The current free/no-payment control is `ASSET-BORROW-001`; the
 Cash-only paid control is part of `EVENT-CHECKOUT-001`. Provider
 registration, expired-card notification/cleanup and Payment History are one
 checkpoint:

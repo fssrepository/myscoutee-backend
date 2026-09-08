@@ -1327,6 +1327,33 @@
         }
       ]
     },
+    "ASSET-PRICING-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset pricing owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge · interactive Asset pricing edits"
+        },
+        {
+          "actor": "Nova accepted pricing member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social · member pricing and two payment snapshots"
+        },
+        {
+          "actor": "Riley public pricing control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside · public price and no-policy payment snapshot"
+        }
+      ]
+    },
     "ASSET-ASSIGNMENT-LIFECYCLE-001": {
       "targetUrl": "http://localhost/game",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
