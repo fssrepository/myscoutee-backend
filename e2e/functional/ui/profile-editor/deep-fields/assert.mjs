@@ -228,7 +228,7 @@ async function clickButtonByText(page, selector, label) {
 async function saveProfile(page) {
   page.clearNetworkLog();
   await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
-  await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 30000 });
+  await page.waitForNetwork('/api/auth/me/profile-ext', { timeoutMs: 30000 });
   await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
 }
 

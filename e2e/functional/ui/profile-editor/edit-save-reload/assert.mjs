@@ -1,5 +1,9 @@
 import { assert } from '../../../../shared/assertions.mjs';
-import { assertNoDocumentHorizontalOverflow, openNavigatorMenu } from '../../lib/ui-contracts.mjs';
+import {
+  assertNoDocumentHorizontalOverflow,
+  closeExplanationPopupEventually,
+  openNavigatorMenu
+} from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   const marker = `UI E2E profile ${Date.now().toString(36)}`;
@@ -19,7 +23,7 @@ export async function assertUi({ page }) {
   await page.recordStep('profile-fields-edited');
 
   await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
-  await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 20000 });
+  await page.waitForNetwork('/api/auth/me/profile-ext', { timeoutMs: 20000 });
   await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
   await page.recordStep('profile-save-closed');
 
@@ -59,7 +63,7 @@ export async function assertUi({ page }) {
   await setProfileStatus(page, 'public');
   await page.recordStep('profile-status-restored-public');
   await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
-  await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 20000 });
+  await page.waitForNetwork('/api/auth/me/profile-ext', { timeoutMs: 20000 });
   await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
   await page.recordStep('profile-public-restore-saved');
 
@@ -67,6 +71,7 @@ export async function assertUi({ page }) {
   await page.waitForSelector('.game-page');
   await openProfileEditor(page);
   await waitForProfileStatus(page, 'public');
+  await closeExplanationPopupEventually(page);
   await page.recordStep('profile-public-restored-after-reload');
   await assertNoDocumentHorizontalOverflow(page);
 }

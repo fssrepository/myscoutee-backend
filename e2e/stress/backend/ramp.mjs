@@ -33,6 +33,7 @@ for (const userCount of users) {
     String(userCount)
   ];
   appendOption(runArgs, '--duration-ms', args.durationMs);
+  appendOption(runArgs, '--qa-case', args.qaCase);
   appendOption(runArgs, '--ramp-up-ms', args.rampUpMs);
   appendOption(runArgs, '--think-time-ms', args.thinkTimeMs);
   appendOption(runArgs, '--think-time-jitter-ms', args.thinkTimeJitterMs);
@@ -184,6 +185,11 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg.startsWith('--scenario=')) {
       parsed.scenario = arg.slice('--scenario='.length);
+    } else if (arg === '--qa-case') {
+      parsed.qaCase = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--qa-case=')) {
+      parsed.qaCase = arg.slice('--qa-case='.length);
     } else if (arg === '--users') {
       parsed.users = argv[index + 1] ?? '';
       index += 1;

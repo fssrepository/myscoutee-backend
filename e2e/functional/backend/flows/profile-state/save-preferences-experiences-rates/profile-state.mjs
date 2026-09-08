@@ -95,7 +95,10 @@ export async function assertResponse({ ctx, request }) {
   assert(logout.data?.submitted === true, 'logout action should succeed', logout.data);
 
   const deleted = await ctx.http.post('/api/auth/me/delete', {
-    headers: request.headers,
+    headers: {
+      ...request.headers,
+      'X-App-Session-Id': `e2e-profile-session-b-${ctx.vars.runId}`
+    },
     json: { userId },
     expectedStatus: 200
   });

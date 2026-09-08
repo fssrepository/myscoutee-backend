@@ -8,39 +8,17 @@
   "mutation": true,
   "e2eOnly": true,
   "headers": {
-    "X-App-Session-Kind": "demo"
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}"
   },
   "setup": [
-    {
-      "name": "seed share token owner profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Share Owner",
-        "age": 31,
-        "birthday": "1995-01-12",
-        "city": "Bratislava",
-        "height": "180 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "SO",
-        "gender": "man",
-        "statusText": "E2E share token owner",
-        "profileStatus": "public",
-        "images": []
-      }
-    },
     {
       "name": "seed share token asset",
       "method": "POST",
       "path": "/api/assets/upsert",
       "headers": {
-        "X-App-Session-Kind": "demo"
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "{{e2eUserId}}"
       },
       "expectedStatus": 200,
       "body": {

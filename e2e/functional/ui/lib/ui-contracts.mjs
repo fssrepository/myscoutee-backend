@@ -1,6 +1,30 @@
 import { assert } from '../../../shared/assertions.mjs';
 
 const APP_BACKEND_UI_WINDOW_MS = 3500;
+export const ENTRY_PRIMARY_ACTION_SELECTOR = '.entry-hero-cta-menu .app-menu__button-row-item:first-of-type';
+
+export async function clickEntryPrimaryAction(page, timeoutMs = 15000) {
+  await page.clickVisible(ENTRY_PRIMARY_ACTION_SELECTOR, { timeoutMs });
+}
+
+export async function applyCurrentDemoSessionHeaders(page) {
+  const session = await page.evaluate(() => {
+    try {
+      return JSON.parse(window.localStorage.getItem('myscoutee.http.session.v1') || '{}');
+    } catch {
+      return {};
+    }
+  });
+  assert(session?.kind === 'demo', 'Expected an active demo browser session before applying request headers');
+  assert(`${session.userId ?? ''}`.trim(), 'Demo browser session should contain a user id');
+  assert(`${session.sessionId ?? ''}`.trim(), 'Demo browser session should contain a registered session id');
+  await page.setExtraHttpHeaders({
+    'X-App-Session-Kind': 'demo',
+    'X-Demo-User-Id': session.userId.trim(),
+    'X-App-Session-Id': session.sessionId.trim()
+  });
+  return session;
+}
 
 export async function assertBrowserExpectations(page, expected = {}) {
   for (const selector of expected.selectors ?? []) {
@@ -188,6 +212,70 @@ export async function waitForSmartListSettled(page, rootSelector, timeoutMs = 45
     const state = await backendUiState(page, rootSelector, { includeLazyImages: false });
     return !state.busy;
   }, timeoutMs);
+}
+
+export async function selectActivitiesEventScope(page, label, timeoutMs = 30000) {
+  const eventScopeLabels = [
+    'All',
+    'Active Events',
+    'Pending',
+    'Invitations',
+    'My Events',
+    'Drafts',
+    'Watchlist',
+    'Trash'
+  ];
+  const triggerState = await page.evaluate(({ eventScopeLabels, label }) => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const popupPanel = document.querySelector('.activities-popup')?.closest('.ui-popup__panel');
+    const triggers = Array.from((popupPanel ?? document).querySelectorAll(
+      '.ui-popup__toolbar .app-menu__trigger'
+    )).filter(visible);
+    const eventScopeTrigger = triggers.find(trigger => {
+      const text = `${trigger.querySelector('.app-menu__trigger-label')?.textContent ?? ''}`.trim();
+      return eventScopeLabels.includes(text);
+    });
+    const text = `${eventScopeTrigger?.querySelector('.app-menu__trigger-label')?.textContent ?? ''}`.trim();
+    if (text === label) {
+      return { found: true, selected: true, text };
+    }
+    eventScopeTrigger?.click();
+    return { found: Boolean(eventScopeTrigger), selected: false, text };
+  }, { eventScopeLabels, label });
+  assert(triggerState.found, 'Activities popup should expose an event-scope selector', {
+    label,
+    triggerState
+  });
+  if (!triggerState.selected) {
+    const optionSelector = '.ui-popup__panel:has(.activities-popup) .ui-popup__toolbar .app-menu__panel button';
+    await page.waitForSelector(optionSelector, { timeoutMs });
+    await page.clickByText(optionSelector, label, { timeoutMs });
+  }
+  await page.waitFor(`activities event scope ${label}`, async () => page.evaluate(label => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const popupPanel = document.querySelector('.activities-popup')?.closest('.ui-popup__panel');
+    return Array.from((popupPanel ?? document).querySelectorAll(
+      '.ui-popup__toolbar .app-menu__trigger'
+    )).filter(visible).some(trigger => {
+      const text = `${trigger.querySelector('.app-menu__trigger-label')?.textContent ?? ''}`.trim();
+      return text === label;
+    });
+  }, label), timeoutMs);
+  await waitForSmartListSettled(page, '.activities-popup', timeoutMs);
 }
 
 export async function waitForBackendUiWindow(page, rootSelector = 'body', timeoutMs = APP_BACKEND_UI_WINDOW_MS + 2500) {
@@ -565,7 +653,7 @@ export async function performDemoLogin(page, options = {}) {
   await page.waitForSelector('app-entry-page', { timeoutMs });
   await acceptEntryPrivacyIfPresent(page, timeoutMs);
   await page.recordStep('suite-login-privacy-accepted');
-  await page.click('.entry-hero-cta-menu .app-menu__button-row-item:first-of-type', { timeoutMs });
+  await clickEntryPrimaryAction(page, timeoutMs);
   await waitForLoginDialogOrDemoSelector(page, timeoutMs);
   if (await page.isSelectorVisible('.dialog')) {
     await page.recordStep('suite-login-location-dialog');

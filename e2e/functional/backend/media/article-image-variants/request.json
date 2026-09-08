@@ -7,5 +7,9 @@
   "expectedStatus": 200,
   "maxMs": 2500,
   "script": "article-image-variants.mjs",
-  "e2eOnly": true
+  "e2eOnly": true,
+  "qaBranches": {
+    "core": ["MEDIA-IMG-001"],
+    "supporting": ["LANDING-ARTICLE-001", "CONTENT-ADMIN-LIFECYCLE-001"]
+  }
 }

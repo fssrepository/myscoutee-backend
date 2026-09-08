@@ -731,6 +731,58 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void removeScopedAssetAssignmentRejectsManagerOtherThanStoredPrimaryManager() {
+        ActivitySubEventResource current = resourceState("event-1", "sub-1", "asset-owner");
+        current.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        current.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 5, 1, "riley", false, List.of()))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(current));
+
+        ActivitySubEventResourceStateDto saved = service.removeScopedAssetAssignmentState(
+                "event-1", "sub-1", "asset-1", "nova", "nova");
+
+        assertThat(saved).isNull();
+        verify(activitySubEventResourcesRepository, never()).save(any(ActivitySubEventResource.class));
+        verifyNoInteractions(assetsService);
+    }
+
+    @Test
+    void removeScopedAssetAssignmentAllowsTransferredPrimaryManagerAndDeletesOnlyRuntimeScope() {
+        ActivitySubEventResource current = resourceState("event-1", "sub-1", "asset-owner");
+        current.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        current.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 5, 1, "riley", false, List.of()))));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(current), List.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(assetsService.queryReferencedAssetDetails("riley", Set.of())).thenReturn(Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.removeScopedAssetAssignmentState(
+                "event-1", "sub-1", "asset-1", "riley", "riley");
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.assetAssignmentIds()).isEmpty();
+        assertThat(saved.assetSettingsByType()).isEmpty();
+        ArgumentCaptor<ActivitySubEventResource> resourceCaptor = ArgumentCaptor.forClass(ActivitySubEventResource.class);
+        verify(activitySubEventResourcesRepository).save(resourceCaptor.capture());
+        assertThat(resourceCaptor.getValue().getStatus()).isEqualTo("D");
+        verify(assetsService).statusDeleteAssignmentScopeRequests(
+                eq("asset-owner"),
+                eq(Set.of("asset-1")),
+                eq("event-1"),
+                eq("event-1"),
+                eq("sub-1"),
+                eq("riley"),
+                anyString());
+    }
+
+    @Test
     void replaceNotifiesOtherAcceptedParticipantsWhenSuppliesAreFirstAssignedAndContributed() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))

@@ -1,0 +1,19 @@
+{
+  "name": "payment simulator is reachable through the E2E nginx origin",
+  "group": "health",
+  "order": 30,
+  "method": "GET",
+  "path": "/test/audit",
+  "headers": {
+    "X-Test-Audit-Token": "myscoutee-payment-audit-e2e"
+  },
+  "expectedStatus": 200,
+  "maxMs": 2500,
+  "qaBranches": {
+    "supporting": [
+      "PAYMENT-METHODS-HISTORY-001",
+      "EVENT-CHECKOUT-001",
+      "ASSET-CHECKOUT-001"
+    ]
+  }
+}

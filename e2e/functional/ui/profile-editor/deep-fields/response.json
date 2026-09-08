@@ -6,7 +6,7 @@
   ],
   "network": [
     "/api/auth/me",
-    "/api/auth/me/profile"
+    "/api/auth/me/profile-ext"
   ],
   "noCrashText": true,
   "noBrokenImages": true

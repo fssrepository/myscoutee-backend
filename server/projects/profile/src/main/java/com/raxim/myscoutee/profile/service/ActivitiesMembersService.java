@@ -81,6 +81,8 @@ public class ActivitiesMembersService {
     private static final String ACTION_REINSTATE = "reinstate";
     private static final String ACTION_PROMOTE_ADMIN = "promote-admin";
     private static final String ACTION_STEP_DOWN_ADMIN = "step-down-admin";
+    private static final String ACTION_SET_ORGANIZER_ONLY = "set-organizer-only";
+    private static final String ACTION_SET_PARTICIPANT = "set-participant";
     private static final String REQUEST_KIND_JOIN = "join";
     private static final String REQUEST_KIND_INVITE = "invite";
     private static final String REQUEST_KIND_APPROVAL = "approval";
@@ -311,9 +313,8 @@ public class ActivitiesMembersService {
             return List.of();
         }
 
-        Map<String, ActivityMember> storedAssetMembersByUserId = Boolean.TRUE.equals(pendingOnly)
-                ? Map.of()
-                : activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId).stream()
+        Map<String, ActivityMember> storedAssetMembersByUserId =
+                activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId).stream()
                     .filter(Objects::nonNull)
                     .filter(member -> StringUtils.hasText(normalizeId(member.getUserId())))
                     .collect(Collectors.toMap(
@@ -323,15 +324,19 @@ public class ActivitiesMembersService {
                                     ? right
                                     : left,
                             LinkedHashMap::new));
-        Map<String, ActivityMember> membersByUserId = new LinkedHashMap<>();
+        List<ActivityMember> members = new ArrayList<>();
         String scopedManagerUserId = resolveScopedAssetManagerUserId(assetId, eventId, subEventId);
         String assetOwnerUserId = normalizeId(asset.getOwnerUserId());
         if (!Boolean.TRUE.equals(pendingOnly)
-                && (!StringUtils.hasText(scopedManagerUserId)
-                        || scopedManagerUserId.equals(assetOwnerUserId))) {
-            ActivityMember owner = scopedAssetOwnerMember(asset, eventId, subEventId);
+                && StringUtils.hasText(scopedManagerUserId)
+                && scopedManagerUserId.equals(assetOwnerUserId)) {
+            ActivityMember owner = scopedAssetOwnerMember(
+                    asset,
+                    eventId,
+                    subEventId,
+                    storedAssetMembersByUserId.get(assetOwnerUserId));
             if (owner != null) {
-                membersByUserId.put(normalizeId(owner.getUserId()), owner);
+                members.add(owner);
             }
         }
         for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
@@ -343,10 +348,10 @@ public class ActivitiesMembersService {
                     scopedManagerUserId);
             String memberUserId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(memberUserId) && !memberUserId.equals(normalizeId(asset.getOwnerUserId()))) {
-                membersByUserId.put(memberUserId, member);
+                members.add(member);
             }
         }
-        return membersByUserId.values().stream()
+        return members.stream()
                 .sorted(this::compareMembersForManagement)
                 .toList();
     }
@@ -393,7 +398,11 @@ public class ActivitiesMembersService {
         return null;
     }
 
-    private ActivityMember scopedAssetOwnerMember(Asset asset, String eventId, String subEventId) {
+    private ActivityMember scopedAssetOwnerMember(
+            Asset asset,
+            String eventId,
+            String subEventId,
+            ActivityMember storedAssetMember) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
         if (!StringUtils.hasText(assetId)
@@ -408,6 +417,7 @@ public class ActivitiesMembersService {
         member.setUserId(ownerUserId);
         member.setRole("Manager");
         member.setStatus(STATUS_ACCEPTED);
+        member.setOrganizerOnly(storedAssetMember == null ? false : storedAssetMember.getOrganizerOnly());
         member.setActionAtIso(normalizeDateTime(asset.getUpdatedDate(), normalizeDateTime(asset.getCreatedDate(), Instant.now().toString())));
         member.setMetAtIso(member.getActionAtIso());
         member.setMetWhere(firstNonBlank(asset.getCity(), asset.getTitle()));
@@ -434,10 +444,10 @@ public class ActivitiesMembersService {
                 && storedAssetMember != null
                 && STATUS_ACCEPTED.equals(normalizeStatus(storedAssetMember.getStatus()))
                 && MANAGER_ROLES.contains(resolveStoredRole(storedAssetMember, OWNER_TYPE_ASSET, assetId));
-        boolean acceptedScopedManager = STATUS_ACCEPTED.equals(status)
-                && userId.equals(normalizeId(scopedManagerUserId));
+        boolean acceptedScopedManager = userId.equals(normalizeId(scopedManagerUserId));
         member.setRole(acceptedStoredManager || acceptedScopedManager ? "Manager" : "Member");
         member.setStatus(status);
+        member.setOrganizerOnly(storedAssetMember == null ? false : storedAssetMember.getOrganizerOnly());
         if (STATUS_PENDING.equals(status)) {
             boolean borrowerInitiated = "borrow".equalsIgnoreCase(safeText(request.requestKind()));
             member.setPendingSource(borrowerInitiated ? "member" : "admin");
@@ -819,6 +829,15 @@ public class ActivitiesMembersService {
                 .toList();
         List<String> acceptedUserIds = ordered.stream()
                 .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(member -> !Boolean.TRUE.equals(member.getOrganizerOnly()))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        List<String> capacityOccupyingAcceptedUserIds = ordered.stream()
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(member -> !Boolean.TRUE.equals(member.getOrganizerOnly()))
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -860,6 +879,7 @@ public class ActivitiesMembersService {
                 ownerId,
                 ordered,
                 acceptedUserIds,
+                capacityOccupyingAcceptedUserIds,
                 pendingUserIds,
                 invitedUserIds,
                 pendingRequestUserIds,
@@ -982,6 +1002,7 @@ public class ActivitiesMembersService {
             next.setPendingSource(resolvePendingSource(entry.pendingSource(), next.getStatus()));
             next.setRequestKind(resolveRequestKind(entry.requestKind(), next.getStatus(), next.getPendingSource()));
             next.setInvitedByUserId(resolveInvitedByUserId(entry, current, actorUserId));
+            next.setOrganizerOnly(Boolean.TRUE.equals(entry.organizerOnly()));
             String actionAtIso = normalizeDateTime(entry.actionAtIso(), nowIso);
             next.setActionAtIso(actionAtIso);
             next.setMetAtIso(normalizeDateTime(entry.metAtIso(), actionAtIso));
@@ -1073,6 +1094,9 @@ public class ActivitiesMembersService {
         String action = normalizeMemberAction(request.action());
         String scopedEventId = normalizeId(request.eventId());
         String scopedSubEventId = normalizeId(request.subEventId());
+        String targetMemberId = normalizeId(request.targetMemberId());
+        boolean organizerParticipationAction = ACTION_SET_ORGANIZER_ONLY.equals(action)
+                || ACTION_SET_PARTICIPANT.equals(action);
         boolean scopedAssetAction = OWNER_TYPE_ASSET.equals(ownerType)
                 && StringUtils.hasText(scopedEventId)
                 && StringUtils.hasText(scopedSubEventId);
@@ -1098,6 +1122,11 @@ public class ActivitiesMembersService {
         ActivityMember current = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> targetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> !scopedAssetAction
+                        || !StringUtils.hasText(targetMemberId)
+                        || targetMemberId.equals(firstNonBlank(
+                                normalizeId(member.getSyncKey()),
+                                normalizeId(member.getId()))))
                 .findFirst()
                 .orElse(null);
         if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
@@ -1117,6 +1146,14 @@ public class ActivitiesMembersService {
                 ownerId,
                 actorUserId,
                 scopedEventId);
+        boolean organizerParticipationAllowed = organizerParticipationAction
+                && actorUserId.equals(targetUserId)
+                && (STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
+                    || STATUS_PENDING.equals(normalizeStatus(current.getStatus())))
+                && (actorCanManageOwner || scopedAssetAction);
+        if (organizerParticipationAction && !organizerParticipationAllowed) {
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+        }
         boolean ownerRemovingAcceptedAssetManager = OWNER_TYPE_ASSET.equals(ownerType)
                 && ACTION_REMOVE.equals(action)
                 && isAssetOwnerUser(ownerId, actorUserId)
@@ -1175,10 +1212,45 @@ public class ActivitiesMembersService {
                 && !managingPendingInvitation
                 && !steppingDownOwnManagedRole
                 && !leavingOwnManagedMembership
+                && !organizerParticipationAction
                 && (!actorCanManageOwner
                     || actorUserId.equals(targetUserId)
                     || (isProtectedOwnerMember(ownerType, ownerId, targetUserId)
                         && !ownerRemovingAcceptedAssetManager))) {
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+        }
+
+        if (organizerParticipationAction) {
+            String nowIso = Instant.now().toString();
+            ActivityMember next = scopedAssetAction
+                    ? scopedOrganizerParticipationMember(
+                        current,
+                        ownerId,
+                        targetUserId,
+                        actorUserId,
+                        nowIso)
+                    : cloneMember(current);
+            next.setOrganizerOnly(ACTION_SET_ORGANIZER_ONLY.equals(action));
+            next.setActionAtIso(nowIso);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+            activityMembersRepository.save(next);
+            if (OWNER_TYPE_EVENT.equals(ownerType)) {
+                refreshEmbeddedEventMembers(ownerId);
+                userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
+            } else if (OWNER_TYPE_SUB_EVENT.equals(ownerType)) {
+                SubEventCounterScope scope = subEventCounterScope(ownerId);
+                if (scope != null) {
+                    refreshEmbeddedSubEventMembers(scope.eventId(), scope.subEventId(), ownerId);
+                }
+            } else if (OWNER_TYPE_GROUP.equals(ownerType)) {
+                tournamentGroupCounterService.syncParent(scopedEventId, scopedSubEventId);
+            } else if (OWNER_TYPE_ASSET.equals(ownerType) && scopedAssetAction) {
+                activitiesResourcesService.refreshResourceMetricsForScope(
+                        scopedEventId,
+                        scopedSubEventId,
+                        actorUserId);
+            }
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
         if (!OWNER_TYPE_EVENT.equals(ownerType)
@@ -1272,6 +1344,7 @@ public class ActivitiesMembersService {
                     scopedSubEventId,
                     actorUserId,
                     targetUserId,
+                    targetMemberId,
                     existing,
                     next);
             if (ACTION_REMOVE.equals(action)) {
@@ -1429,12 +1502,19 @@ public class ActivitiesMembersService {
             String subEventId,
             String actorUserId,
             String targetUserId,
+            String targetMemberId,
             List<ActivityMember> existing,
             ActivityMember next) {
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(actorUserId);
         List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
         for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
-            if (member == null || targetUserId.equals(normalizeId(member.getUserId()))) {
+            String memberId = member == null ? "" : firstNonBlank(
+                    normalizeId(member.getSyncKey()),
+                    normalizeId(member.getId()));
+            boolean target = member != null
+                    && targetUserId.equals(normalizeId(member.getUserId()))
+                    && (!StringUtils.hasText(targetMemberId) || targetMemberId.equals(memberId));
+            if (member == null || target) {
                 continue;
             }
             ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId);
@@ -1454,6 +1534,34 @@ public class ActivitiesMembersService {
                 subEventId,
                 nextEntries,
                 actorUserId);
+    }
+
+    private ActivityMember scopedOrganizerParticipationMember(
+            ActivityMember current,
+            String assetId,
+            String targetUserId,
+            String actorUserId,
+            String nowIso) {
+        ActivityMember stored = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, assetId, targetUserId)
+                .orElse(null);
+        ActivityMember next = stored == null ? cloneMember(current) : cloneMember(stored);
+        next.setRole(resolveStoredRole(current, OWNER_TYPE_ASSET, assetId));
+        next.setStatus(normalizeStatus(current.getStatus()));
+        next.setPendingSource(current.getPendingSource());
+        next.setRequestKind(current.getRequestKind());
+        if (stored == null) {
+            next.setId(new ObjectId().toHexString());
+            next.setSyncKey("asset-organizer:" + assetId + ":" + targetUserId);
+            next.setOwnerType(OWNER_TYPE_ASSET);
+            next.setOwnerId(assetId);
+            next.setUserId(targetUserId);
+            next.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));
+            next.setMetWhere(safeText(current.getMetWhere()));
+            next.setCreatedDate(nowIso);
+            next.setCreatedUser(resolveCreatedUser(next, actorUserId));
+        }
+        return next;
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
@@ -2566,6 +2674,9 @@ public class ActivitiesMembersService {
     }
 
     private boolean occupiesEventCapacity(ActivityMember member) {
+        if (Boolean.TRUE.equals(member == null ? null : member.getOrganizerOnly())) {
+            return false;
+        }
         String status = normalizeStatus(member == null ? null : member.getStatus());
         return ACCEPTED_STATUSES.contains(status)
                 || STATUS_INVITED.equals(status)
@@ -3357,6 +3468,15 @@ public class ActivitiesMembersService {
                 .toList();
         List<String> acceptedUserIds = ordered.stream()
                 .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(member -> !Boolean.TRUE.equals(member.getOrganizerOnly()))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        List<String> capacityOccupyingAcceptedUserIds = ordered.stream()
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(member -> !Boolean.TRUE.equals(member.getOrganizerOnly()))
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -3387,6 +3507,7 @@ public class ActivitiesMembersService {
                 ownerId,
                 ordered,
                 acceptedUserIds,
+                capacityOccupyingAcceptedUserIds,
                 pendingUserIds,
                 invitedUserIds,
                 pendingRequestUserIds,
@@ -3976,7 +4097,8 @@ public class ActivitiesMembersService {
                 nullableText(member.getCheckedInAtIso()),
                 nullableText(member.getCheckedInByUserId()),
                 nullableText(member.getCheckedInTicketId()),
-                "Manager".equals(role) ? nullableText(member.getManagerGrantedByUserId()) : null);
+                "Manager".equals(role) ? nullableText(member.getManagerGrantedByUserId()) : null,
+                Boolean.TRUE.equals(member.getOrganizerOnly()));
     }
 
     private ActivityMemberEntryDto withInvolvements(
@@ -4010,7 +4132,8 @@ public class ActivitiesMembersService {
                 entry.checkedInAtIso(),
                 entry.checkedInByUserId(),
                 entry.checkedInTicketId(),
-                entry.managerGrantedByUserId());
+                entry.managerGrantedByUserId(),
+                entry.organizerOnly());
     }
 
     private Map<String, List<ActivityMemberInvolvementDto>> memberInvolvementsByUserId(
@@ -4325,6 +4448,10 @@ public class ActivitiesMembersService {
     }
 
     private boolean canApplyEventMemberAction(String ownerId, String actorUserId, String targetUserId, String action) {
+        if (ACTION_SET_ORGANIZER_ONLY.equals(action) || ACTION_SET_PARTICIPANT.equals(action)) {
+            return normalizeId(actorUserId).equals(normalizeId(targetUserId))
+                    && canManageOwnerMembers(OWNER_TYPE_EVENT, ownerId, actorUserId);
+        }
         if (ACTION_ACCEPT.equals(action)) {
             return accessControlService.canAcceptEventMember(ownerId, actorUserId, targetUserId);
         }
@@ -4352,6 +4479,7 @@ public class ActivitiesMembersService {
         }
         return false;
     }
+
 
     private boolean canCancelEventInvitation(String eventId, String actorUserId, String targetUserId) {
         ActivityMember target = findEventMember(eventId, targetUserId);
@@ -4544,6 +4672,12 @@ public class ActivitiesMembersService {
         }
         if (ACTION_PROMOTE_ADMIN.equals(action)) {
             return "event.member.admin-promoted";
+        }
+        if (ACTION_SET_ORGANIZER_ONLY.equals(action)) {
+            return "event.member.organizer-only";
+        }
+        if (ACTION_SET_PARTICIPANT.equals(action)) {
+            return "event.member.participant";
         }
         return "event.member.admin-stepped-down";
     }
@@ -5215,6 +5349,12 @@ public class ActivitiesMembersService {
         if (ACTION_STEP_DOWN_ADMIN.equals(normalizedAction)) {
             return ACTION_STEP_DOWN_ADMIN;
         }
+        if (ACTION_SET_ORGANIZER_ONLY.equals(normalizedAction)) {
+            return ACTION_SET_ORGANIZER_ONLY;
+        }
+        if (ACTION_SET_PARTICIPANT.equals(normalizedAction)) {
+            return ACTION_SET_PARTICIPANT;
+        }
         return "";
     }
 
@@ -5340,6 +5480,7 @@ public class ActivitiesMembersService {
         clone.setRequestKind(source.getRequestKind());
         clone.setInvitedByUserId(source.getInvitedByUserId());
         clone.setManagerGrantedByUserId(source.getManagerGrantedByUserId());
+        clone.setOrganizerOnly(source.getOrganizerOnly());
         clone.setMetAtIso(source.getMetAtIso());
         clone.setActionAtIso(source.getActionAtIso());
         clone.setMetWhere(source.getMetWhere());
@@ -5464,6 +5605,7 @@ public class ActivitiesMembersService {
             String ownerId,
             List<ActivityMember> members,
             List<String> acceptedMemberUserIds,
+            List<String> capacityOccupyingAcceptedMemberUserIds,
             List<String> pendingMemberUserIds,
             List<String> invitedMemberUserIds,
             List<String> pendingRequestMemberUserIds,
@@ -5475,6 +5617,7 @@ public class ActivitiesMembersService {
                 String ownerId,
                 List<ActivityMember> members,
                 List<String> acceptedMemberUserIds,
+                List<String> capacityOccupyingAcceptedMemberUserIds,
                 List<String> pendingMemberUserIds,
                 List<String> invitedMemberUserIds,
                 List<String> pendingRequestMemberUserIds,
@@ -5485,6 +5628,7 @@ public class ActivitiesMembersService {
                     ownerId,
                     members,
                     acceptedMemberUserIds,
+                    capacityOccupyingAcceptedMemberUserIds,
                     pendingMemberUserIds,
                     invitedMemberUserIds,
                     pendingRequestMemberUserIds,
@@ -5502,6 +5646,7 @@ public class ActivitiesMembersService {
                     ownerId,
                     members,
                     acceptedMemberUserIds,
+                    capacityOccupyingAcceptedMemberUserIds,
                     pendingMemberUserIds,
                     invitedMemberUserIds,
                     pendingRequestMemberUserIds,
@@ -5511,7 +5656,7 @@ public class ActivitiesMembersService {
         }
 
         public int acceptedMembers() {
-            return acceptedMemberUserIds.size();
+            return capacityOccupyingAcceptedMemberUserIds.size();
         }
 
         public int pendingMembers() {

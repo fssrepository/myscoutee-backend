@@ -27,7 +27,7 @@ ENV HOME=/tmp \
 
 EXPOSE 8080
 
-RUN apk add --no-cache imagemagick tzdata && \
+RUN apk add --no-cache imagemagick libwebp-tools tzdata && \
     ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && \
     echo "${TZ}" > /etc/timezone && \
     addgroup -S -g 10001 myscoutee && \
@@ -52,4 +52,3 @@ WORKDIR /app
 USER 10001:10001
 
 ENTRYPOINT ["/usr/local/bin/myscoutee-e2e-entrypoint"]
-

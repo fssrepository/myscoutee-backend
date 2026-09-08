@@ -3,7 +3,8 @@ import {
   assertNoDocumentHorizontalOverflow,
   closeExplanationPopupEventually,
   openNavigatorMenu,
-  waitForBackendUiWindow
+  waitForBackendUiWindow,
+  waitForSmartListSettled
 } from '../../lib/ui-contracts.mjs';
 
 const MENU_COUNTER_SELECTORS = {
@@ -11,7 +12,6 @@ const MENU_COUNTER_SELECTORS = {
   chat: 'button[aria-label="Open chat"]',
   invitations: 'button[aria-label="Open invitations"]',
   events: 'button[aria-label="Open events"]',
-  hosting: 'button[aria-label="Open my events"]',
   cars: 'button[aria-label="Transport"]',
   accommodation: 'button[aria-label="Accommodation"]',
   supplies: 'button[aria-label="Supplies"]',
@@ -25,15 +25,11 @@ export async function assertUi({ page }) {
 
   const expected = await readExpectedAppCounters(page);
   const initialMenu = await readOpenMenuBadges(page);
-  assertBadgeMatches(initialMenu.events, expected.activities.events, 'Menu should show active event counter on login', {
+  assertBadgeMatches(initialMenu.events, expected.activities.event.all, 'Menu should show the consolidated event counter on login', {
     initialMenu,
     expected
   });
   assertBadgeMatches(initialMenu.invitations, expected.activities.invitations, 'Menu should show invitation counter on login', {
-    initialMenu,
-    expected
-  });
-  assertBadgeMatches(initialMenu.hosting, expected.activities.hosting, 'Menu should show hosting counter on login', {
     initialMenu,
     expected
   });
@@ -70,16 +66,16 @@ export async function assertUi({ page }) {
     eventCounters,
     expected
   });
-  assertBadgeTextEquals(eventCounters.primaryTrigger, initialMenu.events, 'Event popup Events trigger badge should match the navigator Events badge', {
+  assertBadgeTextEquals(eventCounters.scopeTrigger, initialMenu.events, 'Event popup All scope badge should match the navigator Events badge', {
     initialMenu,
     eventCounters
   });
-  assertBadgeMatches(eventCounters.scopeTrigger, expected.activities.event.active, 'Event popup active scope trigger should match app-context Active Events counter', {
+  assertBadgeMatches(eventCounters.scopeTrigger, expected.activities.event.all, 'Event popup default All scope trigger should match the consolidated event counter', {
     initialMenu,
     eventCounters,
     expected
   });
-  assertBadgeTextEquals(eventCounters.scope.activeEvents, initialMenu.events, 'Event popup Active Events badge should match menu Events badge', {
+  assertBadgeMatches(eventCounters.scope.activeEvents, expected.activities.event.active, 'Event popup Active Events badge should match app-context active events', {
     initialMenu,
     eventCounters
   });
@@ -87,7 +83,7 @@ export async function assertUi({ page }) {
     initialMenu,
     eventCounters
   });
-  assertBadgeTextEquals(eventCounters.scope.myEvents, initialMenu.hosting, 'Event popup My Events badge should match menu My Events badge', {
+  assertBadgeMatches(eventCounters.scope.myEvents, expected.activities.event.hosting, 'Event popup My Events badge should match app-context hosting events', {
     initialMenu,
     eventCounters
   });
@@ -134,7 +130,7 @@ async function openEventsPopupFromMenu(page) {
   await page.clickVisible('.user-menu-panel.open button[aria-label="Open events"]');
   await page.waitForSelector('.activities-popup', { timeoutMs: 30000 });
   await closeExplanationPopupEventually(page, 10000);
-  await waitForBackendUiWindow(page, '.activities-popup', 30000);
+  await waitForSmartListSettled(page, '.activities-popup', 30000);
 }
 
 async function openAssetsPopupFromMenu(page) {
@@ -180,10 +176,10 @@ async function assertMenuCountersUnchanged(page, expected, actionLabel) {
 }
 
 async function readEventPopupCounters(page) {
-  const toolbarSelector = 'app-activities-popup .ui-popup__toolbar';
+  const toolbarSelector = '.ui-popup__panel:has(.activities-popup) .ui-popup__toolbar';
   const primaryTrigger = await readMenuTriggerCounter(page, toolbarSelector, 'Events');
-  const scopeTrigger = await readMenuTriggerCounter(page, toolbarSelector, 'Active Events');
-  await page.clickByText(`${toolbarSelector} .app-menu__trigger`, 'Active Events');
+  const scopeTrigger = await readMenuTriggerCounter(page, toolbarSelector, 'All');
+  await page.clickByText(`${toolbarSelector} .app-menu__trigger`, 'All');
   const optionSelector = `${toolbarSelector} .app-menu__panel button`;
   await page.waitForSelector(optionSelector, { timeoutMs: 10000 });
   const scope = await readOptionCountersByLabel(page, optionSelector, {
@@ -290,11 +286,36 @@ async function readExpectedAppCounters(page) {
     }
     const user = await response.json();
     const activities = user.activities ?? {};
+    const eventResponse = await fetch('/api/activities/events/filter', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: session.userId,
+        filter: 'all',
+        hostingPublicationFilter: 'all',
+        secondaryFilter: 'recent',
+        sort: 'date',
+        view: 'day',
+        limit: 1,
+        cursor: null
+      })
+    });
+    if (!eventResponse.ok) {
+      throw new Error(`Failed to load canonical event counters: ${eventResponse.status}`);
+    }
+    const eventPage = await eventResponse.json();
+    const event = eventPage.eventCounters ?? activities.event ?? {};
     return {
       userId: user.id,
       activities: {
         ...activities,
-        event: activities.event ?? {},
+        events: event.active ?? activities.events,
+        invitations: event.invitations ?? activities.invitations,
+        hosting: event.hosting ?? activities.hosting,
+        event,
         asset: activities.asset ?? {},
         eventFeedback: activities.eventFeedback ?? {}
       }

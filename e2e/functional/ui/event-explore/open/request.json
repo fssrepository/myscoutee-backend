@@ -5,6 +5,9 @@
   "route": "/game",
   "suiteDemoLogin": true,
   "script": "assert.mjs",
+  "qaBranches": {
+    "supporting": ["EVENT-LIFE-005"]
+  },
   "fullStackOnly": true,
   "maxMs": 35000
 }

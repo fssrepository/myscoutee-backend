@@ -7,5 +7,14 @@
   "script": "assert.mjs",
   "fullStackOnly": true,
   "mutation": true,
+  "qaBranches": {
+    "core": ["EVENT-EDITOR-001", "EVENT-TIMEZONE-001"],
+    "supporting": [
+      "EVENT-EDITOR-003",
+      "EVENT-ACTIVITY-REFRESH-001",
+      "EVENT-MEMBER-CREATOR-001",
+      "EVENT-CAPACITY-SYNC-001"
+    ]
+  },
   "maxMs": 100000
 }

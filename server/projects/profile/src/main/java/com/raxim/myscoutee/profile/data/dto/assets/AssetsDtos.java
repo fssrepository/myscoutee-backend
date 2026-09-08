@@ -74,6 +74,7 @@ public final class AssetsDtos {
             String status,
             Integer acceptedMemberDelta,
             Integer pendingMemberDelta,
+            Boolean resourceAssignmentRemoved,
             UserPaymentTotalsDto paymentTotals) {
     }
 
@@ -372,6 +373,12 @@ public final class AssetsDtos {
     public record AssetUpsertRequestDto(
             String userId,
             AssetDetailDto asset) {
+    }
+
+    public record AssetRequestsSaveRequestDto(
+            String userId,
+            String assetId,
+            List<AssetMemberRequestDto> requests) {
     }
 
     public record AssetReplaceRequestDto(

@@ -26,18 +26,8 @@ export async function assertResponse({ ctx, result, request }) {
     .find(event => event.id === request.body.id);
   assert(published?.status === 'A', 'publish should activate the event', published);
 
-  const explore = await ctx.http.post('/api/activities/events/explore', {
-    headers: request.headers,
-    json: {
-      userId: ctx.vars.e2eSecondUserId
-    }
-  });
-  if (Array.isArray(explore.data)) {
-    assert(assertEventList(explore.data, ctx, 'member explore').some(event => event.id === request.body.id), 'published event should appear in explore');
-  } else {
-    assertEventPage(explore.data, ctx, 'member explore page');
-    assert(explore.data.records.some(event => event.id === request.body.id), 'published event should appear in explore page');
-  }
+  const explored = await waitForExploreEvent(ctx, request);
+  assert(explored, 'published event should converge into explore');
 
   await ctx.http.post('/api/activities/events/unpublish', {
     headers: request.headers,
@@ -79,4 +69,32 @@ export async function assertResponse({ ctx, result, request }) {
     assertEventList(restoredHosting.data, ctx, 'restored hosting').some(event => event.id === request.body.id),
     'restore should put the event back into hosting'
   );
+}
+
+async function waitForExploreEvent(ctx, request) {
+  const deadline = Date.now() + Number(process.env.E2E_EVENT_EXPLORE_WAIT_MS ?? 10000);
+  do {
+    const explore = await ctx.http.post('/api/activities/events/explore', {
+      headers: {
+        ...request.headers,
+        'X-Demo-User-Id': ctx.vars.e2eSecondUserId
+      },
+      json: {
+        userId: ctx.vars.e2eSecondUserId
+      }
+    });
+    const events = Array.isArray(explore.data)
+      ? assertEventList(explore.data, ctx, 'member explore')
+      : assertEventPage(explore.data, ctx, 'member explore page').records;
+    const event = events.find(item => item.id === request.body.id);
+    if (event) {
+      return event;
+    }
+    await sleep(200);
+  } while (Date.now() <= deadline);
+  return null;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

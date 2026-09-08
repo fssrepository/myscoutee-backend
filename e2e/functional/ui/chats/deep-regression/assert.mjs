@@ -1,9 +1,11 @@
 import { assert } from '../../../../shared/assertions.mjs';
 import {
+  applyCurrentDemoSessionHeaders,
   assertBrowserExpectations,
   assertVisibleCount,
   closeExplanationPopupEventually,
   openNavigatorMenu,
+  performDemoLogin,
   waitForVisibleText
 } from '../../lib/ui-contracts.mjs';
 
@@ -45,8 +47,12 @@ export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {
   const receiver = await newIsolatedRecordedPage('receiver-user-session', {
     viewport: ctx.viewport
   });
-  await primeDemoUser(receiver, RECEIVER_USER_ID);
-  await receiver.navigate('/game', { loadTimeoutMs: 30000 });
+  await performDemoLogin(receiver, {
+    geolocation: { latitude: 47.5004928, longitude: 19.0742528, accuracy: 20 },
+    userId: RECEIVER_USER_ID,
+    timeoutMs: 60000
+  });
+  await applyCurrentDemoSessionHeaders(receiver);
   await receiver.waitForSelector('.game-page');
   await assertActiveUser(receiver, RECEIVER_USER_ID);
   await receiver.recordStep('receiver-game-open');
@@ -180,19 +186,6 @@ export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {
     noBrokenImages: true,
     noConsoleErrors: true
   });
-}
-
-async function primeDemoUser(page, userId) {
-  await page.primeOrigin({
-    localStorage: demoStorage(userId)
-  });
-}
-
-function demoStorage(userId) {
-  return {
-    'myscoutee.http.session.v1': JSON.stringify({ kind: 'demo', userId }),
-    'myscoutee.http.demo.active-user.v1': userId
-  };
 }
 
 async function assertActiveUser(page, expectedUserId) {

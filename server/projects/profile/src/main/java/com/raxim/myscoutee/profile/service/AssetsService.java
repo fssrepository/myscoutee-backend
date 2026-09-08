@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -57,6 +58,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRe
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestsSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketScanPayloadDto;
@@ -595,6 +597,30 @@ public class AssetsService {
         return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), normalizeId(request.userId()));
     }
 
+    public AssetDto saveRequests(AssetRequestsSaveRequestDto request) {
+        if (request == null) {
+            return null;
+        }
+        String ownerUserId = normalizeId(request.userId());
+        String assetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(assetId)) {
+            return null;
+        }
+        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, assetId).orElse(null);
+        if (existing == null) {
+            return null;
+        }
+        boolean fullAssetWriteAllowed = accessControlService.canCurrentActorEditAsset(ownerUserId, assetId);
+        Asset proposed = cloneAsset(existing);
+        proposed.setRequests(normalizeRequests(request.requests()));
+        proposed.setAffinity(resolveAssetAffinity(proposed, ownerUserId));
+        proposed.setBoost(resolveAssetBoost(proposed, ownerUserId));
+        proposed.setUpdatedDate(Instant.now().toString());
+        proposed.setUpdatedUser(ownerUserId);
+        Asset saved = saveOwnedAssetProposal(ownerUserId, existing, proposed, fullAssetWriteAllowed);
+        return saved == null ? null : toAssetDto(saved, resolveOwnersByUserId(List.of(saved)), ownerUserId);
+    }
+
     public AssetMemberStatusChangeDto applyMemberStatusChange(AssetMemberStatusChangeRequestDto request) {
         if (request == null) {
             return null;
@@ -758,14 +784,16 @@ public class AssetsService {
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
 
+        boolean resourceAssignmentRemoved = false;
         if (acceptedManagerLeave && !acceptedSuccessorRemains) {
-            if (activitiesResourcesService == null
-                    || !activitiesResourcesService.removeScopedAssetAssignment(
+            resourceAssignmentRemoved = activitiesResourcesService != null
+                    && activitiesResourcesService.removeScopedAssetAssignment(
                             eventId,
                             subEventId,
                             assetId,
                             actorUserId,
-                            actorUserId)) {
+                            actorUserId);
+            if (!resourceAssignmentRemoved) {
                 LOGGER.warn(
                         "Accepted last Asset borrower left, but the scoped resource assignment could not be removed. assetId={}, eventId={}, subEventId={}, actorUserId={}",
                         assetId,
@@ -784,7 +812,8 @@ public class AssetsService {
                 previousStatus,
                 nextStatus,
                 statusDelta(previousStatus, nextStatus, MEMBER_STATUS_ACCEPTED),
-                statusDelta(previousStatus, nextStatus, "pending"));
+                statusDelta(previousStatus, nextStatus, "pending"),
+                resourceAssignmentRemoved);
     }
 
     private AssetMemberStatusChangeDto takeOverScopedBorrowedAsset(
@@ -939,6 +968,30 @@ public class AssetsService {
                 status,
                 acceptedMemberDelta,
                 pendingMemberDelta,
+                false,
+                null);
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta,
+            boolean resourceAssignmentRemoved) {
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta,
+                resourceAssignmentRemoved,
                 null);
     }
 
@@ -952,6 +1005,30 @@ public class AssetsService {
             int acceptedMemberDelta,
             int pendingMemberDelta,
             UserPaymentTotalsDto paymentTotals) {
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta,
+                false,
+                paymentTotals);
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta,
+            boolean resourceAssignmentRemoved,
+            UserPaymentTotalsDto paymentTotals) {
         return new AssetMemberStatusChangeDto(
                 assetId,
                 eventId,
@@ -961,6 +1038,7 @@ public class AssetsService {
                 status,
                 acceptedMemberDelta,
                 pendingMemberDelta,
+                resourceAssignmentRemoved,
                 paymentTotals);
     }
 
@@ -1567,11 +1645,18 @@ public class AssetsService {
             return null;
         }
         String ownerUserId = normalizeId(current.getOwnerUserId());
-        Map<String, ActivityMemberEntryDto> suppliedByUserId = new LinkedHashMap<>();
+        List<ActivityMemberEntryDto> suppliedEntries = new ArrayList<>();
+        Map<String, ActivityMemberEntryDto> suppliedByMemberId = new LinkedHashMap<>();
+        Map<String, List<ActivityMemberEntryDto>> suppliedByUserId = new LinkedHashMap<>();
         for (ActivityMemberEntryDto member : members == null ? List.<ActivityMemberEntryDto>of() : members) {
             String memberUserId = normalizeId(member == null ? null : member.userId());
             if (StringUtils.hasText(memberUserId) && !ownerUserId.equals(memberUserId)) {
-                suppliedByUserId.put(memberUserId, member);
+                suppliedEntries.add(member);
+                String memberId = normalizeId(member.id());
+                if (StringUtils.hasText(memberId)) {
+                    suppliedByMemberId.put(memberId, member);
+                }
+                suppliedByUserId.computeIfAbsent(memberUserId, ignored -> new ArrayList<>()).add(member);
             }
         }
 
@@ -1582,7 +1667,15 @@ public class AssetsService {
                 .findFirst()
                 .map(this::cloneRequestBooking)
                 .orElseGet(() -> minimalRequestBooking(normalizedEventId, normalizedSubEventId));
-        Set<String> retainedUserIds = new LinkedHashSet<>();
+        Map<String, Long> activeRequestCountByUserId = safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> !isDeletedAssetRequest(request))
+                .collect(Collectors.groupingBy(
+                        request -> normalizeId(request.userId()),
+                        LinkedHashMap::new,
+                        Collectors.counting()));
+        Set<String> retainedMemberIds = new LinkedHashSet<>();
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         for (AssetRequestRecord existing : safeRequests(current.getRequests())) {
             if (existing == null || !isRequestInScope(existing, normalizedEventId, normalizedSubEventId)) {
@@ -1590,6 +1683,18 @@ public class AssetsService {
                     nextRequests.add(existing);
                 }
                 continue;
+            }
+            String requestId = normalizeId(existing.id());
+            String requestUserId = normalizeId(existing.userId());
+            ActivityMemberEntryDto supplied = suppliedByMemberId.get(requestId);
+            if (supplied == null && activeRequestCountByUserId.getOrDefault(requestUserId, 0L) == 1L) {
+                List<ActivityMemberEntryDto> sameUserEntries = suppliedByUserId.getOrDefault(requestUserId, List.of());
+                if (sameUserEntries.size() == 1) {
+                    supplied = sameUserEntries.get(0);
+                }
+            }
+            if (supplied != null) {
+                retainedMemberIds.add(normalizeId(supplied.id()));
             }
             if (isDeletedAssetRequest(existing)) {
                 nextRequests.add(existing);
@@ -1599,7 +1704,6 @@ public class AssetsService {
                 nextRequests.add(existing);
                 continue;
             }
-            String requestUserId = normalizeId(existing.userId());
             // A take-over keeps the successor's accepted scoped membership as the
             // authoritative occupant of the resource. Member-list updates omit the
             // current owner, so dropping this row would incorrectly turn 2 -> 0
@@ -1608,23 +1712,21 @@ public class AssetsService {
                 nextRequests.add(existing);
                 continue;
             }
-            ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
             if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
                 nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
                 continue;
             }
-            retainedUserIds.add(requestUserId);
             AssetRequestRecord updated = toScopedAssetRequest(supplied, existing, scopedBooking);
             if (updated != null) {
                 nextRequests.add(updated);
             }
         }
-        for (Map.Entry<String, ActivityMemberEntryDto> entry : suppliedByUserId.entrySet()) {
-            if (retainedUserIds.contains(entry.getKey())
-                    || "deleted".equals(normalizeMemberStatus(entry.getValue().status()))) {
+        for (ActivityMemberEntryDto entry : suppliedEntries) {
+            if (retainedMemberIds.contains(normalizeId(entry.id()))
+                    || "deleted".equals(normalizeMemberStatus(entry.status()))) {
                 continue;
             }
-            AssetRequestRecord added = toScopedAssetRequest(entry.getValue(), null, scopedBooking);
+            AssetRequestRecord added = toScopedAssetRequest(entry, null, scopedBooking);
             if (added != null) {
                 nextRequests.add(added);
             }
@@ -1764,6 +1866,14 @@ public class AssetsService {
         if (proposed == null) {
             return null;
         }
+        return saveOwnedAssetProposal(ownerUserId, existing, proposed, fullAssetWriteAllowed);
+    }
+
+    private Asset saveOwnedAssetProposal(
+            String ownerUserId,
+            Asset existing,
+            Asset proposed,
+            boolean fullAssetWriteAllowed) {
         if (existing != null) {
             proposed.setRequests(preserveRequestAudits(existing.getRequests(), proposed.getRequests()));
         }
@@ -3311,6 +3421,9 @@ public class AssetsService {
 
     private String requestScopeKey(AssetRequestRecord request) {
         String requestId = normalizeId(request == null ? null : request.id());
+        if (StringUtils.hasText(requestId)) {
+            return "id:" + requestId;
+        }
         String userId = normalizeId(request == null ? null : request.userId());
         String requestKind = normalizeAssetRequestKind(request == null ? null : request.requestKind());
         String eventId = normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
@@ -3319,7 +3432,7 @@ public class AssetsService {
         if (StringUtils.hasText(userId) && StringUtils.hasText(eventId) && StringUtils.hasText(subEventId)) {
             return requestKind + ":" + userId + ":" + eventId + ":" + subEventId + ":" + slotKey;
         }
-        return StringUtils.hasText(requestId) ? "id:" + requestId : "request:" + byScopeFallback(request);
+        return "request:" + byScopeFallback(request);
     }
 
     private String byScopeFallback(AssetRequestRecord request) {
@@ -4108,7 +4221,7 @@ public class AssetsService {
             notificationType = "asset-admin-join-request";
             recipientScope = "asset-responsible-users";
             String memberName = firstNonBlank(request.name(), memberUserId);
-            body = memberName + " requested access.";
+            body = memberName + " requested access · " + assetTitle(asset);
         }
         if (recipients.isEmpty()) {
             return;

@@ -8,55 +8,39 @@
   "mutation": true,
   "e2eOnly": true,
   "headers": {
-    "X-App-Session-Kind": "demo"
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}",
+    "X-App-Session-Id": "e2e-profile-session-a-{{runId}}"
   },
   "setup": [
     {
-      "name": "seed profile state owner",
+      "name": "register primary profile session",
       "method": "POST",
-      "path": "/api/auth/me/profile",
+      "path": "/api/auth/session/login",
       "headers": {
-        "X-App-Session-Kind": "demo"
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "{{e2eUserId}}",
+        "X-App-Session-Id": "e2e-profile-session-a-{{runId}}"
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Profile State",
-        "age": 32,
-        "birthday": "1994-02-02",
-        "city": "Bratislava",
-        "height": "181 cm",
-        "physique": "active",
-        "languages": ["en", "sk"],
-        "initials": "EP",
-        "gender": "man",
-        "statusText": "E2E profile state",
-        "profileStatus": "public",
-        "images": []
+        "attemptId": "e2e-profile-attempt-a-{{runId}}",
+        "provider": "demo"
       }
     },
     {
-      "name": "seed rated profile target",
+      "name": "register fallback profile session",
       "method": "POST",
-      "path": "/api/auth/me/profile",
+      "path": "/api/auth/session/login",
       "headers": {
-        "X-App-Session-Kind": "demo"
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "{{e2eUserId}}",
+        "X-App-Session-Id": "e2e-profile-session-b-{{runId}}"
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{e2eSecondUserId}}",
-        "name": "E2E Rated Target",
-        "age": 29,
-        "birthday": "1997-03-05",
-        "city": "Bratislava",
-        "height": "168 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "RT",
-        "gender": "woman",
-        "statusText": "E2E rated target",
-        "profileStatus": "public",
-        "images": []
+        "attemptId": "e2e-profile-attempt-b-{{runId}}",
+        "provider": "demo"
       }
     }
   ],

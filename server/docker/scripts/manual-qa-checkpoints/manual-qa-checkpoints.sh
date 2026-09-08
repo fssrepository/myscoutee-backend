@@ -7,6 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
+  bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
   bash manual-qa-checkpoints.sh reset base-stat
@@ -154,6 +155,12 @@ Usage:
   bash manual-qa-checkpoints.sh verify-visibility-readonly asset-domain ASSET-VIS-001
   bash manual-qa-checkpoints.sh repair-visibility-fixture asset-domain ASSET-VIS-001
   bash manual-qa-checkpoints.sh verify-visibility-edited asset-domain ASSET-VIS-001
+  bash manual-qa-checkpoints.sh verify-borrow-cancel asset-domain ASSET-BORROW-001
+  bash manual-qa-checkpoints.sh verify-borrow-reject asset-domain ASSET-BORROW-001
+  bash manual-qa-checkpoints.sh verify-borrow-accepted asset-domain ASSET-BORROW-001
+  bash manual-qa-checkpoints.sh verify-borrow-paid-pending-organizer asset-domain ASSET-BORROW-001
+  bash manual-qa-checkpoints.sh verify-borrow-paid-accepted-participant asset-domain ASSET-BORROW-001
+  bash manual-qa-checkpoints.sh verify-borrow-terminal asset-domain ASSET-BORROW-001
   bash manual-qa-checkpoints.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001
   bash manual-qa-checkpoints.sh verify-asset-member-terminal asset-domain ASSET-MEMBER-001
   bash manual-qa-checkpoints.sh refresh-retained-window asset-domain ASSET-MEMBER-001
@@ -265,10 +272,13 @@ Usage:
   bash manual-qa-checkpoints.sh verify-takeover asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh stage-takeover-complete asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-takeover-complete asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh repair-refund-window asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-refund-requested asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-refunded asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh prepare-last-leave asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-last-leave asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh prepare-last-remove asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh verify-last-remove asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify-cancelled asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-cancelled-control asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh rollback-payment-ready asset-checkout ASSET-CHECKOUT-001
@@ -276,6 +286,16 @@ Usage:
   bash manual-qa-checkpoints.sh rollback-accepted asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh verify asset-checkout ASSET-CHECKOUT-001
   bash manual-qa-checkpoints.sh reset asset-checkout ASSET-CHECKOUT-001
+  bash manual-qa-checkpoints.sh stage asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh status asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-fixed asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-variable asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-audience asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-active-payment asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-no-policy-payment asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify-cutoff-payment asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh verify asset-pricing ASSET-PRICING-001
+  bash manual-qa-checkpoints.sh reset asset-pricing ASSET-PRICING-001
   bash manual-qa-checkpoints.sh stage auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh status auth-session AUTH-SESSION-001
   bash manual-qa-checkpoints.sh capture-reload auth-session AUTH-SESSION-001
@@ -491,7 +511,13 @@ run_scenario() {
   local payment_requires_3ds="false"
   local payment_provider_connected="false"
 
+  if [ "${command}" = "reset" ] && [ "${scenario}" != "browser-sessions" ]; then
+    MANUAL_QA_BROWSER_SOURCE_SCENARIO="${scenario}" \
+      run_scenario "restore" "browser-sessions" 30 "${checkpoint_id}"
+  fi
+
   case "${scenario}" in
+    browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
     stat-010) scenario_script="${SCRIPT_DIR}/scenarios/stat-010-rating.js" ;;
     graph-rating) scenario_script="${SCRIPT_DIR}/scenarios/graph-rating.js" ;;
@@ -547,10 +573,12 @@ run_scenario() {
     payment-ui) scenario_script="${SCRIPT_DIR}/scenarios/payment-ui-checkpoints.js" ;;
     event-checkout) scenario_script="${SCRIPT_DIR}/scenarios/event-checkout-checkpoints.js" ;;
     asset-checkout) scenario_script="${SCRIPT_DIR}/scenarios/asset-checkout-checkpoints.js" ;;
+    asset-pricing) scenario_script="${SCRIPT_DIR}/scenarios/asset-pricing-checkpoints.js" ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
-  if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ] || [ "${scenario}" = "asset-checkout" ]; then
+  if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ] || [ "${scenario}" = "asset-checkout" ] || [ "${scenario}" = "asset-pricing" ] \
+      || { [ "${scenario}" = "asset-domain" ] && [ "${checkpoint_id}" = "ASSET-BORROW-001" ]; }; then
     read -r payment_provider payment_requires_3ds payment_provider_connected < <(payment_simulator_state)
   fi
 
@@ -598,6 +626,8 @@ run_scenario() {
       -e "MANUAL_QA_PAYMENT_PROVIDER=${payment_provider}" \
       -e "MANUAL_QA_PAYMENT_REQUIRES_3DS=${payment_requires_3ds}" \
       -e "MANUAL_QA_PAYMENT_PROVIDER_CONNECTED=${payment_provider_connected}" \
+      -e "MANUAL_QA_BROWSER_USER_IDS=${MANUAL_QA_BROWSER_USER_IDS:-}" \
+      -e "MANUAL_QA_BROWSER_SOURCE_SCENARIO=${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
       "${mongo_container}" \
       mongosh \
         --quiet \
@@ -630,6 +660,8 @@ run_scenario() {
     MANUAL_QA_PAYMENT_PROVIDER="${payment_provider}" \
     MANUAL_QA_PAYMENT_REQUIRES_3DS="${payment_requires_3ds}" \
     MANUAL_QA_PAYMENT_PROVIDER_CONNECTED="${payment_provider_connected}" \
+    MANUAL_QA_BROWSER_USER_IDS="${MANUAL_QA_BROWSER_USER_IDS:-}" \
+    MANUAL_QA_BROWSER_SOURCE_SCENARIO="${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
     mongosh \
       --quiet \
       --host "${mongo_host}" \
@@ -646,6 +678,10 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
+  browser-sessions:prepare)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   base-stat:stage|base-stat:status|base-stat:reset|\
   stat-010:stage|stat-010:status|stat-010:reset|\
   graph-rating:stage|graph-rating:status|graph-rating:reset|\
@@ -769,7 +805,7 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:prepare-runtime-transport|event-domain:repair-runtime-transport-invite-scope|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
-  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
+  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-borrow-cancel|asset-domain:verify-borrow-reject|asset-domain:verify-borrow-accepted|asset-domain:verify-borrow-paid-pending-organizer|asset-domain:verify-borrow-paid-accepted-participant|asset-domain:verify-borrow-terminal|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
   asset-assignment:stage|asset-assignment:status|asset-assignment:repair-normal-supplies-owner|asset-assignment:verify-normal-assignment|asset-assignment:verify-supply-contribution-delete|asset-assignment:restore-normal-assignment-branch|asset-assignment:repair-tournament-group-ids|asset-assignment:stage-step-10-boundary|asset-assignment:rollback-step-10-boundary|asset-assignment:verify-group-capacity-edit|asset-assignment:stage-step-16-boundary|asset-assignment:rollback-step-16-boundary|asset-assignment:verify-group-unassign|asset-assignment:stage-step-22-boundary|asset-assignment:rollback-step-22-boundary|asset-assignment:verify-group-reassign|asset-assignment:stage-step-29-boundary|asset-assignment:rollback-step-29-boundary|asset-assignment:verify-group-manager-removal|asset-assignment:reset|\
   content-admin:stage|content-admin:status|content-admin:verify-drafts-saved|content-admin:verify-privacy-active|content-admin:restage-step-32-boundary|content-admin:rollback-step-32-boundary|content-admin:verify-privacy-fallback|content-admin:verify-article-trashed|content-admin:verify-article-restored|content-admin:rollback-step-59-boundary|content-admin:verify-article-republished|content-admin:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
@@ -781,6 +817,16 @@ case "${scenario}:${command}" in
       fail "${command} is restricted to CONTENT-ADMIN-LIFECYCLE-001."
     fi
     run_scenario "${command}" "${scenario}" 30 "$3"
+    if [ "${scenario}" = "asset-domain" ] && [ "$3" = "ASSET-BORROW-001" ]; then
+      if [ "${command}" = "stage" ]; then
+        replace_payment_simulator_checkout_card_fixtures asset
+        set_payment_simulator_barion
+        run_scenario "status" "${scenario}" 30 "$3"
+      elif [ "${command}" = "reset" ]; then
+        replace_payment_simulator_card_fixtures
+        set_payment_simulator_cash_only
+      fi
+    fi
     ;;
   role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
@@ -849,7 +895,7 @@ case "${scenario}:${command}" in
     set_payment_simulator_barion
     run_scenario "status" "${scenario}" 30 "$3"
     ;;
-  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:reset-service-chat-probe|asset-checkout:repair-step-56-boundary|asset-checkout:repair-unavailable-control|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:repair-manager-left-required-policy|asset-checkout:verify-takeover|asset-checkout:stage-takeover-complete|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:verify-cancelled|asset-checkout:verify)
+  asset-checkout:status|asset-checkout:prepare-browser|asset-checkout:capture-payment-ready|asset-checkout:capture-revised-payment-ready|asset-checkout:verify-paid-pending|asset-checkout:verify-request-destination|asset-checkout:reset-service-chat-probe|asset-checkout:repair-step-56-boundary|asset-checkout:repair-unavailable-control|asset-checkout:verify-accepted|asset-checkout:prepare-takeover|asset-checkout:verify-manager-left|asset-checkout:repair-manager-left-required-policy|asset-checkout:verify-takeover|asset-checkout:stage-takeover-complete|asset-checkout:repair-refund-window|asset-checkout:verify-refund-requested|asset-checkout:verify-refunded|asset-checkout:prepare-last-leave|asset-checkout:verify-last-leave|asset-checkout:prepare-last-remove|asset-checkout:verify-last-remove|asset-checkout:verify-cancelled|asset-checkout:verify)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
@@ -883,7 +929,18 @@ case "${scenario}:${command}" in
     replace_payment_simulator_checkout_card_fixtures asset
     set_payment_simulator_barion_3ds
     ;;
-  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-cancelled-control)
+  asset-checkout:rollback-accepted)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    rollback_output="$(run_scenario "${command}" "${scenario}" 30 "$3")"
+    printf '%s\n' "${rollback_output}"
+    captured_payment_id="$(python3 -c 'import re,sys; values=re.findall(r"[\"'"'"']capturedBarionPaymentId[\"'"'"']\s*:\s*[\"'"'"']([^\"'"'"']+)", sys.stdin.read()); print(values[-1] if values else "")' <<<"${rollback_output}")"
+    [ -n "${captured_payment_id}" ] || fail "Rollback returned no captured Nova Barion payment ID."
+    restore_payment_simulator_captured_barion_fixture "${captured_payment_id}"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion_3ds
+    ;;
+  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-cancelled-control)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
@@ -893,6 +950,26 @@ case "${scenario}:${command}" in
   asset-checkout:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_card_fixtures
+    set_payment_simulator_cash_only
+    ;;
+  asset-pricing:stage)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-PRICING-001" ] || fail "${command} is restricted to ASSET-PRICING-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion
+    run_scenario "status" "${scenario}" 30 "$3"
+    ;;
+  asset-pricing:status|asset-pricing:verify-fixed|asset-pricing:verify-variable|asset-pricing:verify-audience|asset-pricing:verify-active-payment|asset-pricing:verify-no-policy-payment|asset-pricing:verify-cutoff-payment|asset-pricing:verify)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-PRICING-001" ] || fail "${command} is restricted to ASSET-PRICING-001."
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  asset-pricing:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-PRICING-001" ] || fail "${command} is restricted to ASSET-PRICING-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     replace_payment_simulator_card_fixtures
     set_payment_simulator_cash_only

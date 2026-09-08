@@ -7,67 +7,21 @@
   "script": "event-lifecycle.mjs",
   "mutation": true,
   "e2eOnly": true,
-  "headers": {
-    "X-App-Session-Kind": "demo"
+  "qaBranches": {
+    "core": ["EVENT-EDITOR-002", "EVENT-LIFE-001", "EVENT-LIFE-003"],
+    "supporting": [
+      "EVENT-PUBLISH-CHAT-001",
+      "EVENT-LIFE-002",
+      "EVENT-LIFE-004",
+      "EVENT-LIFE-005",
+      "EVENT-NOTIFICATION-001",
+      "EVENT-CHAT-LIFECYCLE-001"
+    ]
   },
-  "setup": [
-    {
-      "name": "seed host profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Host",
-        "age": 31,
-        "birthday": "1995-01-12",
-        "city": "Bratislava",
-        "height": "180 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "EH",
-        "gender": "man",
-        "statusText": "E2E host",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.1486,
-          "longitude": 17.1077
-        },
-        "images": []
-      }
-    },
-    {
-      "name": "seed member profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eSecondUserId}}",
-        "name": "E2E Member",
-        "age": 29,
-        "birthday": "1997-03-05",
-        "city": "Bratislava",
-        "height": "168 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "EM",
-        "gender": "woman",
-        "statusText": "E2E member",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.149,
-          "longitude": 17.108
-        },
-        "images": []
-      }
-    }
-  ],
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}"
+  },
   "body": {
     "syncKey": "e2e-flow-event-{{runId}}",
     "id": "e2e-flow-event-{{runId}}",

@@ -2,7 +2,7 @@
 
 Status: Admin Job manual visual pass; performance trace and Chat retest pending
 Defect: `UI-POLL-JANK-001`
-Last updated: 2026-08-04
+Last updated: 2026-09-08
 
 ## Scope
 
@@ -125,6 +125,11 @@ checkpoint.
 Use the existing dev stack. Do not start a second frontend, backend, database
 or scheduler.
 
+The tester-facing actions, stop phrases and effort breakdown are maintained in
+the stable
+[`UI-POLL-JANK-001` guide](../checklists/notifications/UI-POLL-JANK-001.md).
+This diagnosis remains the machine-side interpretation reference.
+
 ### A. Idle and Admin process-list controls
 
 1. Open browser DevTools Performance and Network.
@@ -163,6 +168,56 @@ row. A changed selected row also sends that one row to Job Detail.
 5. Mark the WebSocket event, user realtime long-poll completion and every
    visible hitch separately.
 
+### D. Session retention during the same trace
+
+This is a supplemental block of `UI-POLL-JANK-001`, not a new testcase and not
+a reopening of the closed `AUTH-SESSION-001` result. Its purpose is to
+attribute the reported unexpected logout while the normal two-session limit is
+active.
+
+1. Use one controlled user in exactly two intended isolated Chrome profiles.
+   Before attaching DevTools/CDP, record these comparisons without printing
+   secret values:
+
+   - server-side active-session count and a hash/set-equality representation of
+     its opaque session IDs;
+   - immutable login-audit count and outcomes;
+   - each managed Chrome PID and user-data directory identity;
+   - page-target IDs and browser-context IDs;
+   - whether the expected authentication carrier exists in cookie,
+     localStorage or sessionStorage, as booleans only;
+   - `/auth/me` status and resolved controlled-user identity.
+
+2. Attach the Performance/Network tooling and any read-only CDP observer only
+   to the already-open page target. Do not call `Target.createBrowserContext`,
+   create another tab/window, reinstall the demo identity, log in again or
+   perform a QA click through CDP. Repeat the comparison above. A diagnostic
+   attach must create no server session, login audit, warning notification or
+   new browser context.
+3. Let the user normally close exactly one of the two Chrome windows. Before
+   running `prepare-browser`, the versioned launcher, an explicit logout/revoke
+   or any session cleanup, record the server active-session set and the tail of
+   the already-running request/network evidence. Also record whether the
+   closed PID and CDP port ended.
+4. Classify the first observed divergence, without guessing:
+
+   - a new server session or login audit at CDP attachment means the diagnostic
+     path registered another login;
+   - an unchanged server session with a missing browser auth carrier or failed
+     `/auth/me` means profile/context storage continuity failed;
+   - a server slot removed at window close must be backed by an observed normal
+     logout/revoke request or server audit;
+   - a slot removed only by later `prepare-browser` or launcher replacement is
+     harness cleanup, not evidence that ordinary browser close logged out;
+   - `BLOCKED_LIMIT` is attributed to the two-session policy only when the
+     server already held exactly two other active session IDs at that login
+     decision.
+
+5. Preserve the existing fixture cleanup path after evidence is captured. Do
+   not leave an extra profile/session behind and do not put raw cookies,
+   bearer tokens, session IDs or full browser fingerprints into the QA pack,
+   matrix, trace filename or handoff.
+
 ## Acceptance criteria
 
 Admin Job Detail passes only when all of these are true:
@@ -180,4 +235,7 @@ Admin Job Detail passes only when all of these are true:
 
 Chat passes only when its independent trace shows smooth pointer, scroll and
 typing behavior during idle, one live message and one user realtime completion.
-The defect remains open until both surfaces pass.
+The session supplement passes only when CDP attachment is proven not to create
+another session/context and the ordinary-close boundary is attributed from the
+immediate server/browser evidence before launcher cleanup. The defect remains
+open until both performance surfaces and this attribution block pass.

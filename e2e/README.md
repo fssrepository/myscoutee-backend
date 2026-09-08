@@ -11,6 +11,18 @@ e2e/stress/ui           Browser performance/stability scenarios
 e2e/shared              Shared runner/assertion helpers
 ```
 
+The backend collection also has a concurrent runner, while the E2E tree keeps
+Mongo hard-code and UI media-breakpoint audits. These are part of the E2E
+maintenance boundary even though audit reports are not mapped to product QA
+branches.
+
+The QA PASS-branch review boundary and incremental traceability audit live in
+[`guides/qa/e2e`](../guides/qa/e2e/README.md). Run it before expanding coverage:
+
+```bash
+node guides/qa/e2e/audit.mjs
+```
+
 ## Java-to-Go QMAU/revenue/settlement qualification
 
 The registry repository owns the opt-in, no-stack cross-language runner:
@@ -75,6 +87,7 @@ docker compose -f docker-compose.e2e.yml \
 cd ..
 export E2E_SERVER_BASE_URL=https://127.0.0.1
 export NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem
+export E2E_SERVER_MODE=e2e
 node e2e/functional/backend/run.mjs --list
 node e2e/functional/backend/run.mjs
 node e2e/functional/backend/run.mjs --group events
@@ -85,7 +98,7 @@ node e2e/functional/backend/run.mjs --case profile/auth-me --record
 certificate. Copy it again after recreating Nginx. Nginx otherwise uses the
 production HTTP redirect and HSTS response policies.
 
-Operator contracts use the seeded `operator-demo-dev` identity and exercise
+Operator contracts use the seeded `operator@myscoutee.local` identity and exercise
 the distinct `O` authority across the operator controllers, bootstrap and
 request-validation boundaries, registry/configuration state, settlement
 queries, managed TLS fail-closed and secret boundaries, local revenue
@@ -100,7 +113,7 @@ Override the seeded identity only when a matching operator exists in the
 target database:
 
 ```bash
-E2E_OPERATOR_USER_ID=operator-demo-dev \
+E2E_OPERATOR_USER_ID=operator@myscoutee.local \
 node e2e/functional/backend/run.mjs --group operator
 ```
 
@@ -166,7 +179,8 @@ server/docker/conf/mongodb/e2e_db
 It is a dedicated, tracked E2E seed snapshot. The Mongo E2E image bakes it in,
 while all runtime writes land in the disposable `e2e_db` volume.
 
-`docker-compose.e2e.yml` is a complete, standalone, production-style stack.
+`docker-compose.e2e.yml` is a complete, standalone, production-style stack,
+including its private payment simulator.
 Do not layer it over `docker-compose-dev.yml`. The API runs the built boot JAR
 with the `prod` Spring profile, the optimized E2E Angular bundle is baked into
 Nginx, the production redirect/HSTS policy is enabled on ports 80/443, and the
@@ -199,6 +213,9 @@ The driver resets the disposable database once. Deployment-global
 `flows/operator/*` cases then run sequentially exactly once because they mutate
 singleton configuration and registry state. Loop and concurrency settings
 apply only to the remaining repeatable mutation flows.
+It accepts `--qa-case ID`, so a later QA addition can select only linked flows.
+The same selector is forwarded by
+`e2e/functional/backend/run-concurrent.mjs` to both child collections.
 
 ## JMeter-Style Stress Scenarios
 
@@ -217,6 +234,14 @@ List scenarios:
 
 ```bash
 node e2e/stress/backend/run.mjs --list
+```
+
+List and run only scenarios linked to one reviewed QA branch:
+
+```bash
+node e2e/stress/backend/run.mjs --list --qa-case EVENT-LIFE-001
+node e2e/stress/backend/run.mjs \
+  --scenario e2e-flow-smoke --qa-case AUTH-SESSION-001
 ```
 
 Run a short safe read smoke:
@@ -262,6 +287,7 @@ metrics:
 NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
 E2E_WS_ROOM_BASE_URL=https://127.0.0.1 \
 node e2e/stress/backend/websocket-room.mjs \
+  --qa-case CHAT-FLOW-001 \
   --clients 500 --messages 20 --send-rate 2 --record
 ```
 
@@ -288,9 +314,26 @@ user once, closes the normal explanation/privacy/location overlays, and reuses
 that session for internal screens such as game, profile editor, event explore,
 event editor create, and admin help editor image carousel checks.
 
+The shared admin-help route is deliberately different: the original admin app
+and workspace session stays in `localStorage`, while the server-registered
+support identity is scoped to that tab in `sessionStorage`. Its browser case
+asserts both sides of this boundary. Functional and UI-stress teardown revoke
+the tracked demo sessions they created so later cases do not hit the two-session
+limit; teardown does not replace or reinterpret the retained admin identity.
+
 ```bash
 # Start the e2e/full-stack compose environment before running UI checks.
 E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs
+```
+
+Select the executable cases linked to one reviewed QA branch:
+
+```bash
+E2E_SERVER_MODE=e2e node e2e/functional/backend/run.mjs \
+  --qa-case EVENT-LIFE-001 --include-mutations
+
+E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs \
+  --qa-case EVENT-EDITOR-001 --include-mutations
 ```
 
 Run the mutation test that rates through the first game-card page and verifies
@@ -318,10 +361,23 @@ UI stress checks use Chrome DevTools Protocol to apply mobile viewport, touch,
 CPU throttling, network throttling, cold-cache loading, long-task collection,
 resource/chunk transfer measurement, and screenshots.
 
+`functionalCase` stress scenarios execute the selected functional case's
+`prepare.mjs`, storage interpolation, and current demo-session headers before
+running its assertions. This keeps mutation fixtures and authentication equal
+to the functional runner instead of benchmarking a weaker setup path.
+
 List available UI stress scenarios:
 
 ```bash
 node e2e/stress/ui/run.mjs --list
+```
+
+The UI stress runner has the same branch selector:
+
+```bash
+node e2e/stress/ui/run.mjs --list --qa-case EVENT-EDITOR-001
+node e2e/stress/ui/run.mjs \
+  --scenario app-event-editor-open --qa-case EVENT-EDITOR-001 --record
 ```
 
 The first scenario measures demo bootstrap on a slow mobile profile:

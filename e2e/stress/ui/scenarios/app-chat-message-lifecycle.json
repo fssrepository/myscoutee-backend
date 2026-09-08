@@ -2,6 +2,9 @@
   "name": "UI chat message lifecycle slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "chats/message-lifecycle",
+  "qaBranches": {
+    "supporting": ["CHAT-ACTIONS-001", "CHAT-CONTENT-001", "CHAT-FLOW-001", "CHAT-GOVERNANCE-001"]
+  },
   "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,

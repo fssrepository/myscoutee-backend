@@ -81,6 +81,68 @@ class FirebaseFilterOperatorTest {
     }
 
     @Test
+    void publicHealthRequestSkipsMemberFallbackWhenFirebaseIsDisabled()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(false);
+        properties.setMemberUser("member1@myscoutee.local");
+        UserLoginSessionService sessionService = mock(UserLoginSessionService.class);
+        when(sessionService.isCurrentUserEnrolled()).thenReturn(true);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                mock(FirebaseTokenVerifier.class),
+                sessionService);
+        MockHttpServletRequest request =
+                new MockHttpServletRequest("GET", "/health");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        FilterChain chain = mock(FilterChain.class);
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        verify(firebaseService, never()).loadUserByUsername(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyString());
+        verify(sessionService, never()).isCurrentUserEnrolled();
+        verify(chain).doFilter(request, response);
+    }
+
+    @Test
+    void publicMediaRequestSkipsMemberFallbackWhenFirebaseIsDisabled()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(false);
+        properties.setMemberUser("member1@myscoutee.local");
+        UserLoginSessionService sessionService = mock(UserLoginSessionService.class);
+        when(sessionService.isCurrentUserEnrolled()).thenReturn(true);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                mock(FirebaseTokenVerifier.class),
+                sessionService);
+        MockHttpServletRequest request =
+                new MockHttpServletRequest("GET", "/api/media/public/help/e2e-small.webp");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        FilterChain chain = mock(FilterChain.class);
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        verify(firebaseService, never()).loadUserByUsername(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyString());
+        verify(sessionService, never()).isCurrentUserEnrolled();
+        verify(sessionService, never()).isCurrentSessionActive(
+                org.mockito.ArgumentMatchers.any());
+        verify(chain).doFilter(request, response);
+    }
+
+    @Test
     void selectedStoredDemoOperatorGetsOnlyServerDerivedAuthorities() throws Exception {
         FirebaseService firebaseService = mock(FirebaseService.class);
         ConfigProperties properties = new ConfigProperties();

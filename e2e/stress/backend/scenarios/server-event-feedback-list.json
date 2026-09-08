@@ -2,6 +2,9 @@
   "name": "Event feedback list first-load benchmark",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": ["EVENT-FEEDBACK-001", "EVENT-FEEDBACK-002", "EVENT-FEEDBACK-005", "EVENT-FEEDBACK-006"]
+  },
   "users": 8,
   "rampUpMs": 8000,
   "durationMs": 90000,

@@ -93,6 +93,10 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-last-leave asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-last-remove asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-last-remove asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-cancelled asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify asset-checkout ASSET-CHECKOUT-001
@@ -131,8 +135,9 @@ when the provider-owned three-minute window crosses the basket's original
 `rollback-payment-ready` cannot manufacture that browser-local entry if it was
 already cleared: after such a rollback the user repeats steps 1-18 once while
 Codex keeps the already captured server boundary at `payment-ready`.
-Immediately before step 31, `capture-revised-payment-ready` proves the exact
-`1 → 2 → 1` basket-generation history and saves the resulting server state.
+Immediately before step 31, `capture-revised-payment-ready` proves that Back
+and Continue kept the single Quantity-`1` basket generation unchanged and
+saves the resulting server state.
 If any later payment or request step fails, Codex runs
 `rollback-revised-payment-ready` to return to that boundary without replaying
 steps 1-30. Because this is a live ten-minute basket, that rollback preserves
@@ -166,10 +171,10 @@ previously left there with `Back`.
    invalid or out-of-parent value cannot remain in the form and no request is
    sent.
 7. Restore the fixture-provided valid timeframe.
-8. Attempt to enter a quantity above the displayed availability. Confirm it is
-   rejected or clamped to the maximum and cannot be submitted as an
-   over-capacity request.
-9. Set quantity to `1`.
+8. Confirm Quantity is visible but read-only and fixed to `1`; no second unit
+   can be entered in this checkout.
+9. Confirm the separate availability text still shows how many physical items
+   are available for the selected dates.
 10. Confirm `QA Borrow policy` is mandatory/read-only and does not expose an
     optional acceptance checkbox.
 11. Confirm the mandatory policy is included by definition and does not block
@@ -220,25 +225,19 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     primary action is green `Continue borrow`.
 26. Select `Continue borrow` once. Confirm the same payment phase returns
     without creating a new backend basket generation, then select `Back` once.
-27. Change quantity from `1` to `2`. Confirm the total changes and the primary
-    action becomes orange `Update borrow`. Select `Update borrow` once and
-    confirm the payment phase owns quantity `2`; then select `Back` once.
-28. Change quantity back to `1`. Confirm `Update borrow` remains orange, select
-    it once, and confirm Barion returns with final quantity `1` and the original
-    exact total. The earlier quantity-`2` values must not remain in the payment
-    phase.
+27. Confirm Quantity is still read-only `1`; Back cannot make it editable and
+    cannot change the total. Select `Continue borrow` once, then `Back` once.
+28. Confirm Quantity remains `1` and the primary action is still the unchanged
+    green `Continue borrow`. Select it once and confirm Barion returns with the
+    original exact total.
 29. Report:
 
     `ASSET-CHECKOUT-001 revised payment ready: final draft owns quantity 1`
 
-30. Wait for Codex to prove the canonical three pre-Pay basket audit
-    generations (initial Confirm plus two Updates), one active final confirmed
-    basket and no payment/session, borrow request, inventory delta or
-    assignment. If the user explicitly tried additional back-and-forth Update
-    values, the fixture may retain those generations only when every adjacent
-    saved selection is materially different and the final state is still the
-    required quantity `1`; the unchanged Continue action must not create a
-    generation.
+30. Wait for Codex to prove there is still exactly one pre-Pay Quantity-`1`
+    basket generation, one active confirmed basket and no payment/session,
+    Borrow request, inventory delta or assignment. The unchanged Continue
+    action must not create another generation.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
@@ -494,10 +493,12 @@ until Codex confirms that the lifecycle extension is ready.
 80. Still in Riley, reopen Members first. Riley is already the last accepted
     member, so Riley's own member menu must contain `Leave`; do not select it in
     this branch. Close Members, open the borrowed resource-card menu and confirm
-    `Remove` is present regardless of the remaining member count. Select
-    `Remove` once and confirm the danger dialog. The runtime Event/Sub-event
-    association and its card disappear. Casey's global Asset is not deleted,
-    and both payment histories remain available.
+    `Remove` is present because Riley is the current primary manager after the
+    Take Over. A different accepted manager must not receive this action. Select
+    `Remove` once and confirm the danger dialog. The backend must accept it only
+    for Riley. The runtime Event/Sub-event association and its card disappear.
+    Casey's global Asset is not deleted, and both payment histories remain
+    available.
 81. Open Riley's Payment history and the exact Captured Asset expense row.
     Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
     not contain `Ask Organizer`. The localized action text must be visible; the
@@ -520,20 +521,26 @@ until Codex confirms that the lifecycle extension is ready.
 84. Return to Riley's same Payment history row and select `Request refund`.
     Before deciding, confirm the dialog shows `HUF +1,600` refundable,
     `HUF −1,600` retained, and the configured 50% / one-day policy basis.
-    Confirm exactly once. The row gains a pending-refund badge and loses the
-    request action. Report:
+    Confirm exactly once. A separate newer `HUF +1,600` history row appears
+    with `Refund requested`; the original Captured payment remains historically
+    unchanged and loses the request action. Report:
 
     `ASSET-CHECKOUT-001 refund requested: runtime removed, owner chat sent once`
 
 85. Wait for Codex to prove the global Asset and both payment records remain,
     the runtime resource is absent, the service chat/message is exact-once,
     Casey's persisted write-side `paymentRefundsPending` changed by `+1`, and
-    exactly one refund-request notification targets Casey.
+    exactly one refund-request notification targets Casey. The oracle must also
+    prove exactly one separate pending refund audit row exists for the original
+    Riley payment, with no financial delta yet.
 86. In Casey, before opening Payment history, confirm its side-menu Payment red
     counter is `1`. Open Payment history and confirm the filter/dropdown also
-    carries `1`; the exact `HUF +3,200` income row shows the pending refund and
-    exposes `Approve refund`. Select it and confirm the approval dialog shows
-    the same `HUF +1,600` refund, retained amount and policy basis as Riley saw.
+    carries `1`; the separate `HUF -1,600` `Refund requested` expense row is
+    above the unchanged original `HUF +3,200` income row and exposes `Approve
+    refund`. `Payment summary` remains a neutral menu action while `Approve
+    refund` has its contextual approval color. Select it and confirm the
+    approval dialog shows the same `HUF +1,600` refund, retained amount and
+    policy basis as Riley saw.
 87. Confirm `Approve refund` exactly once. The pending counter
     changes immediately to `0` through the signal and stays `0` after the next
     user-model poll. Riley's gross badges are `HUF -3,200 / HUF +1,600`;
@@ -541,9 +548,11 @@ until Codex confirms that the lifecycle extension is ready.
     net result is `HUF 1,600` on each side.
 88. In both Casey and Riley, confirm the newer `HUF 1,600` refund write appears
     above the original payment with a contextually distinct `Refunded` badge.
-    The original payment has no further Refund action. Open `Payment summary`
-    from the original row on each side and confirm the same partial refund result
-    appears there. Reopening is read-only and cannot refund twice.
+    This is the same row that previously showed `Refund requested`, not another
+    appended row. The original payment stays Captured and has no further Refund
+    action. Open `Payment summary` from the original row on each side and confirm
+    the same partial refund result appears there. Reopening is read-only and
+    cannot refund twice.
 89. Report:
 
     `ASSET-CHECKOUT-001 refund approved: counters zero, histories refunded`
@@ -567,6 +576,38 @@ until Codex confirms that the lifecycle extension is ready.
 
     `ASSET-CHECKOUT-001 last manager left: runtime removed, Asset and history retained`
 
-Wait for Codex's `last-leave-verified` persisted oracle. These shared paid
-take-over/refund mechanics are replayed manually only on this Asset checkpoint;
-do not repeat the Event checkout testcase for them.
+Wait for Codex's `last-leave-verified` persisted oracle.
+
+### 10. Ad-hoc mixed-status resource Remove
+
+94. Wait for Codex to roll back to the accepted savepoint and run the dedicated
+    `prepare-last-remove` restage. Reload the open Event once. Confirm the paid
+    Transport card is present with Nova as the accepted Manager, Riley as a
+    pending scoped member and `1 / 1 - 3` metrics. Casey's Asset pending counter
+    is `1`. Nova has the unchanged target `HUF -3,200` Captured
+    payment-history row and Casey has its matching `HUF +3,200` Captured row;
+    Riley has no target payment row before taking responsibility. Nova's row
+    still exposes `Request refund` under the restored one-day/50% policy; do
+    not select it in this Remove branch.
+95. In Nova, close Members and select `Remove` from the paid Transport resource
+    card exactly once. Confirm the danger dialog. Do not use either member's
+    `Leave` action in this branch.
+96. Confirm `Remove` exactly once. The paid Transport card disappears on the
+    fly. The open Event/Sub-event views, tool menus and pending counters update
+    in the same signal transaction: the removed assignment contributes no
+    accepted, pending, minimum or maximum Transport metric, and Casey's Asset
+    pending counter returns to `0`.
+97. Confirm both the accepted Nova request and pending Riley request disappear
+    from the scoped Members list. Casey's global Asset remains with quantity
+    `3`. Nova's and Casey's payment-history rows, all three actors' gross totals
+    and refund-pending counters remain exactly as they were before Remove;
+    Riley still has no target payment row, and no refund row or automatic refund
+    is created. Nova's retained original row still exposes `Request refund`.
+98. Report:
+
+    `ASSET-CHECKOUT-001 mixed-status remove: scope retired, all payment histories unchanged`
+
+Wait for Codex's `last-remove-verified` persisted oracle.
+
+These shared paid take-over/refund mechanics are replayed manually only on this
+Asset checkpoint; do not repeat the Event checkout testcase for them.

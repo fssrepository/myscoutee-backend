@@ -886,6 +886,90 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryScopedAssetDoesNotFabricateOwnerWhenRuntimeAssignmentIsAbsent() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("Borrowed vehicle");
+        scopedAsset.setStatus("A");
+        scopedAsset.setRequests(List.of());
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1",
+                "subevent-1",
+                "D"))
+                .thenReturn(List.of());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result).isEmpty();
+        verify(usersRepository, never()).findByUserId("owner-1");
+    }
+
+    @Test
+    void queryScopedAssetIncludesOwnerOnlyWhenActiveRuntimeAssignmentNamesOwnerAsManager() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("Directly assigned vehicle");
+        scopedAsset.setStatus("A");
+        scopedAsset.setRequests(List.of());
+        ActivitySubEventResource directAssignment = new ActivitySubEventResource();
+        directAssignment.setOwnerId("event-1");
+        directAssignment.setSubEventId("subevent-1");
+        directAssignment.setAssetOwnerUserId("owner-1");
+        directAssignment.setAssetAssignmentIds(Map.of("Transport", List.of("asset-1")));
+        directAssignment.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("asset-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0,
+                        3,
+                        1,
+                        "owner-1",
+                        false,
+                        List.of()))));
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1",
+                "subevent-1",
+                "D"))
+                .thenReturn(List.of(directAssignment));
+        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result)
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.userId()).isEqualTo("owner-1");
+                    assertThat(entry.role()).isEqualTo("Manager");
+                    assertThat(entry.status()).isEqualTo("accepted");
+                });
+    }
+
+    @Test
     void queryScopedAssetBorrowRequestShowsPendingBorrowerInsteadOfInvitation() {
         Asset scopedAsset = new Asset();
         scopedAsset.setAssetId("asset-1");

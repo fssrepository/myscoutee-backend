@@ -8,7 +8,12 @@ import { fileURLToPath } from 'node:url';
 
 import { assertDemoUsers, assertAuthMe, assertAssets, assertChats, assertEventList, assertEventPage } from '../../functional/backend/lib/contracts.mjs';
 import { resetE2eDatabase } from '../../functional/backend/hooks/e2e-db.mjs';
-import { discoverCollection, runCase } from '../../shared/collection-runner.mjs';
+import {
+  discoverCollection,
+  qaBranchIds,
+  resolveSkipReason,
+  runCase
+} from '../../shared/collection-runner.mjs';
 import { createHttpClient } from '../../shared/http.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,11 +23,12 @@ const execFileAsync = promisify(execFile);
 const args = parseArgs(process.argv.slice(2));
 
 if (args.list) {
-  await listScenarios();
+  await listScenarios(args.qaCase);
   process.exit(0);
 }
 
 const scenario = await loadScenario(args.scenario);
+assertQaCaseSelection(scenario, args.qaCase);
 applyScenarioOverrides(scenario, args);
 const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase => [testCase.id, testCase]));
 const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'https://127.0.0.1';
@@ -132,6 +138,27 @@ async function measureStep({ step, ctx, serverCases, vu, iteration, stepIndex, s
   let resultMetric = {};
   try {
     const result = await runStep(step, ctx, serverCases);
+    if (result?.skipped) {
+      return {
+        step: step.name ?? step.collectionCase ?? `step ${stepIndex}`,
+        vu,
+        iteration,
+        ok: true,
+        skipped: true,
+        skipReason: result.skipReason,
+        status: 0,
+        transport: '',
+        method: 'SKIP',
+        url: step.collectionCase ?? '',
+        responseBytes: 0,
+        messageCount: 0,
+        openMs: 0,
+        startedAtMs: started - startedAt,
+        endedAtMs: performance.now() - startedAt,
+        durationMs: performance.now() - started,
+        error: ''
+      };
+    }
     status = result?.status ?? 0;
     resultMetric = metricFromResult(result, step);
   } catch (err) {
@@ -169,6 +196,10 @@ async function runStep(step, ctx, serverCases) {
     }
     if (testCase.request.e2eOnly && ctx.mode !== 'e2e' && ctx.mode !== 'stress') {
       throw new Error(`${step.collectionCase} requires e2e/stress mode`);
+    }
+    const skipReason = await resolveSkipReason(testCase, ctx);
+    if (skipReason) {
+      return { skipped: true, skipReason };
     }
     return runCase(testCase, ctx);
   }
@@ -389,23 +420,35 @@ async function loadScenario(name) {
   return scenario;
 }
 
-async function listScenarios() {
+async function listScenarios(qaCase = '') {
   const { readdir, readFile } = await import('node:fs/promises');
   const files = (await readdir(path.join(__dirname, 'scenarios'))).filter(file => file.endsWith('.json')).sort();
   for (const file of files) {
     const scenario = JSON.parse(await readFile(path.join(__dirname, 'scenarios', file), 'utf8'));
+    if (qaCase && !qaBranchIds(scenario).includes(qaCase)) {
+      continue;
+    }
     console.log(`${file.replace(/\.json$/, '')} [${scenario.mode ?? 'contract'}] users=${scenario.users ?? 1} iterations=${scenario.iterations ?? '-'} durationMs=${scenario.durationMs ?? '-'} - ${scenario.name ?? ''}`);
   }
 }
 
+function assertQaCaseSelection(scenario, qaCase) {
+  if (qaCase && !qaBranchIds(scenario).includes(qaCase)) {
+    throw new Error(`Stress scenario ${scenario.id} is not linked to QA branch ${qaCase}`);
+  }
+}
+
 function summarize(metrics) {
-  const durations = metrics.map(latencyMs).sort((a, b) => a - b);
-  const failed = metrics.filter(item => !item.ok).length;
-  const total = metrics.length;
-  const elapsedMs = elapsedFor(metrics);
-  const responseBytes = metrics.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0);
+  const executed = metrics.filter(item => !item.skipped);
+  const skipped = metrics.length - executed.length;
+  const durations = executed.map(latencyMs).sort((a, b) => a - b);
+  const failed = executed.filter(item => !item.ok).length;
+  const total = executed.length;
+  const elapsedMs = elapsedFor(executed);
+  const responseBytes = executed.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0);
   return {
     total,
+    skipped,
     failed,
     passed: total - failed,
     errorRate: total === 0 ? 0 : failed / total,
@@ -413,7 +456,7 @@ function summarize(metrics) {
     requestsPerSec: perSecond(total, elapsedMs),
     passedPerSec: perSecond(total - failed, elapsedMs),
     responseBytes,
-    statusCounts: countBy(metrics.map(item => String(item.status ?? 0))),
+    statusCounts: countBy(executed.map(item => String(item.status ?? 0))),
     minMs: durations[0] ?? 0,
     maxMs: durations[durations.length - 1] ?? 0,
     avgMs: durations.reduce((sum, value) => sum + value, 0) / Math.max(1, durations.length),
@@ -421,7 +464,7 @@ function summarize(metrics) {
     p90Ms: percentile(durations, 0.90),
     p95Ms: percentile(durations, 0.95),
     p99Ms: percentile(durations, 0.99),
-    byStep: summarizeByStep(metrics)
+    byStep: summarizeByStep(executed)
   };
 }
 
@@ -475,7 +518,7 @@ function latencyMs(item) {
 
 function printSummary(scenario, summary, options = {}) {
   console.log(`\nstress scenario: ${scenario.name ?? scenario.id}`);
-  console.log(`requests: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
+  console.log(`requests: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, skipped: ${summary.skipped}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
   console.log(`throughput: ${summary.requestsPerSec.toFixed(2)} req/s over ${(summary.elapsedMs / 1000).toFixed(1)}s, response=${formatBytes(summary.responseBytes)}`);
   console.log(`status: ${formatCounts(summary.statusCounts)}`);
   console.log(`latency ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p90=${Math.round(summary.p90Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
@@ -869,7 +912,7 @@ function sleep(ms) {
 }
 
 function parseArgs(argv) {
-  const args = { list: false, scenario: '', record: false, artifactsDir: '' };
+  const args = { list: false, scenario: '', record: false, artifactsDir: '', qaCase: '' };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--list') {
@@ -886,6 +929,11 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg.startsWith('--scenario=')) {
       args.scenario = arg.slice('--scenario='.length);
+    } else if (arg === '--qa-case') {
+      args.qaCase = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--qa-case=')) {
+      args.qaCase = arg.slice('--qa-case='.length);
     } else if (arg === '--users') {
       args.users = argv[index + 1] ?? '';
       index += 1;

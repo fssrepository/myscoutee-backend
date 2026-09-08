@@ -4,6 +4,7 @@ import {
   closeExplanationPopupEventually,
   openNavigatorMenu,
   recordInfoCardMenuAnchorFinding,
+  selectActivitiesEventScope,
   waitForVisibleText
 } from '../../lib/ui-contracts.mjs';
 
@@ -204,11 +205,11 @@ async function assertReopenedPolicyPanel(page, policyTitle) {
 
 async function openMyEvents(page) {
   await openNavigatorMenu(page);
-  await page.click('button[aria-label="Open my events"]');
+  await page.click('button[aria-label="Open events"]');
   await closeExplanationPopupEventually(page, 10000);
   await page.waitForSelector('.activities-popup');
-  await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/events', { timeoutMs: 25000 });
+  await selectActivitiesEventScope(page, 'My Events');
 }
 
 async function setVisibleInputValues(page, selector, values) {
@@ -362,7 +363,7 @@ async function openSavedEventFromList(page, title) {
     title: 'Saved event card action menu is visually detached from its three-dot trigger'
   });
   await page.recordStep('event-editor-saved-card-menu-anchored');
-  await page.clickByText('app-activities-popup app-menu-outlet .app-menu__panel button', 'View');
+  await page.clickByText('app-activities-popup app-menu-outlet .app-menu__panel button', 'Manage Event');
   await page.waitFor('saved event details or sub-events overview open', async () => {
     return (await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'))
       || (await page.isSelectorVisible('app-event-subevents-list-popup .event-subevents-list-smart-list'));

@@ -335,6 +335,10 @@ export class ChromePage {
     await this.connection.send('Network.setCacheDisabled', { cacheDisabled: disabled === true });
   }
 
+  async setExtraHttpHeaders(headers = {}) {
+    await this.connection.send('Network.setExtraHTTPHeaders', { headers });
+  }
+
   async clearBrowserCache() {
     await this.connection.send('Network.clearBrowserCache').catch(() => undefined);
   }

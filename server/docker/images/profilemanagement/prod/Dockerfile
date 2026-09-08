@@ -2,7 +2,7 @@ FROM eclipse-temurin:25.0.2_10-jre-alpine
 
 EXPOSE 8080
 
-RUN apk add --no-cache imagemagick && \
+RUN apk add --no-cache imagemagick libwebp-tools && \
     addgroup -S -g 10001 myscoutee && \
     adduser -S -D -H -u 10001 -G myscoutee myscoutee && \
     install -d -o myscoutee -g myscoutee /app \

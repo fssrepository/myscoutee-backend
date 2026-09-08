@@ -2,8 +2,16 @@
   "name": "shared help session route renders browser page",
   "group": "help-session",
   "order": 40,
-  "route": "/admin/help/e2e-placeholder-token",
+  "route": "/admin/help/e2e-admin-help-route",
+  "localStorage": {
+    "myscoutee.http.session.v1": "{{adminAppSession}}",
+    "myscoutee.http.demo.active-user.v1": "{{adminUserId}}",
+    "myscoutee.http.admin.session.v1": "{{adminSession}}"
+  },
   "script": "assert.mjs",
+  "qaBranches": {
+    "supporting": ["ROLE-TRIAD-CORE-001"]
+  },
   "fullStackOnly": true,
   "maxMs": 25000
 }

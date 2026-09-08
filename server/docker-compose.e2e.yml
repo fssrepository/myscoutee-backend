@@ -23,6 +23,7 @@ volumes:
   operator-configuration:
   registry-demo-data:
   registry-demo-client-data:
+  payment-simulator-data:
 
 services:
   mongodb:
@@ -138,6 +139,44 @@ services:
       start_period: 2s
     stop_grace_period: 15s
 
+  payment-simulator:
+    image: ${PAYMENT_SIMULATOR_E2E_IMAGE:-myscoutee-payment-simulator:1.0.0-e2e}
+    build:
+      context: ../../myscoutee-payment-simulator
+      dockerfile: Dockerfile
+    container_name: payment-simulator
+    hostname: payment-simulator
+    environment:
+      PAYMENT_SIMULATOR_LISTEN_ADDR: ":18082"
+      PAYMENT_SIMULATOR_ALLOW_NON_LOOPBACK: "true"
+      PAYMENT_SIMULATOR_PUBLIC_BASE_URL: "https://127.0.0.1"
+      PAYMENT_SIMULATOR_DATABASE_PATH: "/data/payment-simulator.db"
+      PAYMENT_SIMULATOR_API_KEY: "sk_test_myscoutee_e2e"
+      PAYMENT_SIMULATOR_WEBHOOK_URL: "http://profilemanagement:8080/payment/webhooks/stripe"
+      PAYMENT_SIMULATOR_WEBHOOK_SECRET: "whsec_myscoutee_e2e"
+      PAYMENT_SIMULATOR_BARION_POS_KEY: "11111111-1111-4111-8111-111111111111"
+      PAYMENT_SIMULATOR_BARION_CALLBACK_URL: "http://profilemanagement:8080/payment/webhooks/barion"
+      PAYMENT_SIMULATOR_AUDIT_TOKEN: "myscoutee-payment-audit-e2e"
+      PAYMENT_SIMULATOR_REQUIRE_IDEMPOTENCY: "true"
+    volumes:
+      - payment-simulator-data:/data
+    networks:
+      - e2e
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "/payment-simulator", "healthcheck"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 2s
+    stop_grace_period: 15s
+
   profilemanagement:
     image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.0.0-e2e}
     build:
@@ -181,7 +220,20 @@ services:
       MEDIA_OBJECT_STORE_SECRET_KEY: minioadmin
       MEDIA_BUCKET: ${MEDIA_BUCKET:-myscoutee-media}
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
-      PAYMENT_ENABLE_PAY: "false"
+      PAYMENT_ENABLE_PAY: "true"
+      PAYMENT_SIMULATOR_ENABLED: "true"
+      PAYMENT_SIMULATOR_BASE_URL: http://payment-simulator:18082
+      PAYMENT_SIMULATOR_API_KEY: sk_test_myscoutee_e2e
+      PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL: http://profilemanagement:8080/payment-methods/registrations/callback
+      PAYMENT_SIMULATOR_APPLICATION_BASE_URL: https://127.0.0.1
+      PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT: merchant@myscoutee.invalid
+      PAYMENT_STRIPE_API_KEY: sk_test_myscoutee_e2e
+      PAYMENT_STRIPE_API_BASE_URL: http://payment-simulator:18082
+      PAYMENT_STRIPE_TEST_GATEWAY_ENABLED: "true"
+      PAYMENT_STRIPE_WEBHOOK_SECRET: whsec_myscoutee_e2e
+      PAYMENT_BARION_API_KEY: 11111111-1111-4111-8111-111111111111
+      PAYMENT_BARION_API_BASE_URL: http://payment-simulator:18082
+      PAYMENT_BARION_TEST_GATEWAY_ENABLED: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "false"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: ""
       REGISTRY_ENABLED: "false"
@@ -224,6 +276,8 @@ services:
         condition: service_healthy
       registry:
         condition: service_healthy
+      payment-simulator:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/health | grep -Fq '\"status\":\"UP\"'"]
       interval: 2s
@@ -249,6 +303,8 @@ services:
       - e2e
     depends_on:
       profilemanagement:
+        condition: service_healthy
+      payment-simulator:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null"]

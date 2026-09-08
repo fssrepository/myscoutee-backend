@@ -3,21 +3,35 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 
-const DEFAULT_COLLECTIONS = [
+export const E2E_RESET_COLLECTIONS = [
+  'accessGrants',
+  'accessPolicyDefinitions',
+  'activityEventRuntimeItems',
+  'activitySubEventGroups',
+  'activitySubEventStageRuntime',
+  'adminAffinityGraphEdges',
+  'adminAffinityGraphForests',
+  'adminAffinityGraphLayouts',
+  'adminAffinityGraphNodes',
   'users',
   'userRates',
   'userFilterPreferences',
   'assets',
+  'assetRequests',
   'adminStats',
   'adminMonitoring',
   'affinityConfigs',
   'activityMembers',
   'activityResources',
   'chats',
+  'chatMessages',
   'events',
+  'eventCheckoutBasketItems',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
   'eventTickets',
+  'eventTicketAudit',
+  'eventWatchSubscriptions',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',
@@ -30,6 +44,8 @@ const DEFAULT_COLLECTIONS = [
   'shareTokens',
   'ideaPosts',
   'eventLeaderboardEntries',
+  'globalIdentityLinkStates',
+  'globalIdentityPresenceChunkOutbox',
   'notificationRuleConfigs',
   'notificationTemplates',
   'notificationOutbox',
@@ -48,11 +64,25 @@ const DEFAULT_COLLECTIONS = [
   'i18n_messages',
   'deploymentConfigurations',
   'operatorRegistrySettings',
+  'operatorRegistryEndpoints',
   'operatorClaimSubmissionSnapshots',
   'qualifiedMauReportOutbox',
   'revenueReportOutbox',
   'communityProviders',
+  'paymentMethodRegistrations',
+  'paymentProviders',
+  'payment_gateway_operations',
+  'savedPaymentMethods',
+  'userLoginAudits',
+  'userNotifications',
+  'userSessionStates',
   'appSettings'
+];
+const E2E_AFFINITY_LAYOUT_COLLECTIONS = [
+  'adminAffinityGraphEdges',
+  'adminAffinityGraphForests',
+  'adminAffinityGraphLayouts',
+  'adminAffinityGraphNodes'
 ];
 
 export async function resetE2eDatabase(ctx) {
@@ -66,11 +96,72 @@ export async function resetE2eDatabase(ctx) {
     return;
   }
 
-  const evalScript = DEFAULT_COLLECTIONS
+  const evalScript = E2E_RESET_COLLECTIONS
     .map(collection => `db.getCollection(${JSON.stringify(collection)}).deleteMany({});`)
     .join('\n');
   await runMongoEval(dbName, evalScript);
   await importE2eSeed(dbName);
+  await clearResetWindowAffinityLayout(dbName);
+  await restartE2eBackend();
+}
+
+async function restartE2eBackend() {
+  if (process.env.E2E_RESTART_BACKEND_AFTER_RESET === 'false') {
+    return;
+  }
+  const container = process.env.E2E_BACKEND_CONTAINER ?? 'myscoutee';
+  try {
+    await execFileAsync('docker', ['restart', container], {
+      timeout: Number(process.env.E2E_BACKEND_RESTART_TIMEOUT_MS ?? 30000),
+      maxBuffer: 1024 * 1024
+    });
+  } catch (error) {
+    throw new Error(`Unable to restart the existing E2E backend container ${container} after reset. ${error.message}`);
+  }
+
+  const deadline = Date.now() + Number(process.env.E2E_BACKEND_READY_TIMEOUT_MS ?? 120000);
+  let lastError = null;
+  while (Date.now() <= deadline) {
+    try {
+      await execFileAsync('docker', [
+        'exec',
+        container,
+        'wget',
+        '-qO-',
+        'http://127.0.0.1:8080/auth/demo-users?limit=1'
+      ], {
+        timeout: 5000,
+        maxBuffer: 1024 * 1024
+      });
+      return;
+    } catch (error) {
+      lastError = error;
+      await delay(500);
+    }
+  }
+  throw new Error(`E2E backend container ${container} did not become ready after database reset. ${lastError?.message ?? ''}`);
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function clearResetWindowAffinityLayout(dbName) {
+  const cleanup = E2E_AFFINITY_LAYOUT_COLLECTIONS
+    .map(collection => `db.getCollection(${JSON.stringify(collection)}).deleteMany({});`)
+    .join('\n');
+  const evalScript = `
+${cleanup}
+const graphUsers = db.users.countDocuments({
+  userId: { $not: /^admin-demo-/ },
+  profileStatus: { $in: ['public', 'friends only', 'host only'] }
+});
+const graphEdges = db.userAffinityEdges.countDocuments({ edgeWeight: { $gt: 0 } });
+if (graphUsers < 1 || graphEdges < 1) {
+  throw new Error('E2E affinity source fixture is empty after seed import: users=' + graphUsers + ', edges=' + graphEdges);
+}
+`;
+  await runMongoEval(dbName, evalScript);
 }
 
 async function runMongoEval(dbName, evalScript) {

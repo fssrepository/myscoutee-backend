@@ -7,34 +7,14 @@
   "script": "asset-lifecycle.mjs",
   "mutation": true,
   "e2eOnly": true,
-  "headers": {
-    "X-App-Session-Kind": "demo"
+  "qaBranches": {
+    "core": ["ASSET-LIFE-001"],
+    "supporting": ["ASSET-VIS-001"]
   },
-  "setup": [
-    {
-      "name": "seed asset owner profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Asset Owner",
-        "age": 31,
-        "birthday": "1995-01-12",
-        "city": "Bratislava",
-        "height": "180 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "EA",
-        "gender": "man",
-        "profileStatus": "public",
-        "images": []
-      }
-    }
-  ],
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}"
+  },
   "body": {
     "userId": "{{e2eUserId}}",
     "asset": {

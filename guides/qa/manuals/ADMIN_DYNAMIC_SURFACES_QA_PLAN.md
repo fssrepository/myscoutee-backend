@@ -1,7 +1,7 @@
 # Admin dynamic surfaces manual QA plan
 
 Status: living manual execution plan and evidence index
-Last updated: 2026-09-02
+Last updated: 2026-09-08
 Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Reviewable spreadsheet source: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
 Priority model: [`MANUAL_QA_PRIORITY_MODEL.md`](../reference/MANUAL_QA_PRIORITY_MODEL.md)
@@ -626,6 +626,9 @@ checkpoint in the master spreadsheet until **both** UI checkpoints pass:
 
 Detailed code-path evidence and the reproducible trace procedure are in
 [`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md).
+The tester follows the stable click-by-click
+[`UI-POLL-JANK-001` guide](../checklists/notifications/UI-POLL-JANK-001.md),
+including its explicit `60/145 min` effort breakdown.
 
 1. **Admin Job checkpoint — manual visual pass, performance trace pending.** The process
    table now delegates its five-second live refresh, cancellation, keyed
@@ -639,6 +642,17 @@ Detailed code-path evidence and the reproducible trace procedure are in
    stutter was reported in an open chat. Chat itself uses `OnPush` and WebSocket
    events; a separate global user realtime long-poll runs every 30 seconds, or
    10 seconds in demo mode. Do not assume this is the same five-second Job path.
+3. **Session-retention attribution — supplemental block, pending.** During the
+   same still-open testcase, compare the same controlled user's two intended
+   browser sessions before and after read-only DevTools/CDP attachment, then
+   after the user normally closes one browser. Record the server-side active
+   session count and opaque-ID set, login-audit count, Chrome process/profile,
+   page-target/browser-context set, auth-carrier presence and `/auth/me`
+   identity without recording raw cookies, tokens or session IDs. Inspect the
+   close boundary before any `prepare-browser`, launcher replacement or
+   explicit revoke, because those operations intentionally alter session
+   state. This block diagnoses the reported lockout; it does not reopen the
+   closed `AUTH-SESSION-001` testcase.
 
 Run this pack as a separate dedicated performance session; the completed
 `STAT-012` scheduler evidence remains valid. Record 20–30 second browser
@@ -649,7 +663,10 @@ WebSocket messages, user realtime long-poll completion, scripting, layout and
 paint. For Admin Jobs, also prove that unchanged polls do not mutate rows and a
 non-selected row update does not re-render Job Detail. A fix is accepted only
 when the affected trace no longer has the periodic hitch and both UI
-checkpoints remain functionally correct.
+checkpoints remain functionally correct. Run the supplemental session block
+exactly as specified in
+[`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md); never
+infer its cause merely from a browser disappearing or a later launcher run.
 
 ## Execution order for the next manual session
 

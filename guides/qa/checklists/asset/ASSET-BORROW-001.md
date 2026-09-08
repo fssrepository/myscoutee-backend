@@ -1,171 +1,204 @@
 # ASSET-BORROW-001 user test guide
 
-This file is the tester's stable, repeatable guide. It is not an execution
-log: do not add current status, timestamps or machine evidence to it.
+This is the stable manual guide, not an execution log. Use only the staged
+Casey, Nova and Riley browser sessions. Do not compensate for a mismatch with
+an extra click, reload or manual data edit.
 
-The cancel, reject and accept/capacity branches are one consolidated testcase.
-The report phrases below are savepoints inside that testcase, not separate
-matrix rows.
+## Baseline
 
-This is the third Event/Asset payment-control combination: all three staged
-Assets are genuinely free, so no Payment block, provider badge, Cash-only
-recording action or card selector may appear. Cash-only paid behavior is owned
-by `EVENT-CHECKOUT-001`; Barion is owned by
-`ASSET-CHECKOUT-001`; Stripe is owned by the Event checkout journey.
+Open as **Nova**:
 
-## Actors and startup
+`Activities → Events → Active Events → QA ASSET-BORROW-001 Tournament → View Event → QA Borrow Stage → Groups → Group A → Assets → Transport → + / Explore`
 
-- **Casey** owns all three controlled Public/free Transport Assets and is the
-  Event Admin in generated Group A.
-- **Nova** is the Group A requester for the cancel and accepted-capacity
-  branches.
-- **Riley** is the Group A requester for the owner-reject branch.
-- **Lina** is the sole Group B control. Her already-accepted quantity `2`
-  reservation on the Capacity Asset must remain unchanged; no fourth browser
-  is required.
-- The user exclusively opens and controls the configured isolated
-  Casey/Nova/Riley browser sessions. Do not reuse old ASSET-MEMBER windows as
-  evidence and do not create replacement data or profiles.
-- This checkpoint exercises free Borrow only. It must not create a checkout
-  session, payment, payment summary or inventory-applied reservation. The paid
-  flow belongs to `ASSET-CHECKOUT-001`.
-- Select each Send, Cancel, Reject and Approve confirmation exactly once. Stop
-  at the first mismatch; do not compensate with a second action, an ad-hoc
-  reload or an API/Mongo write.
+Use these exact date ranges:
 
-To start a complete replay, tell Codex:
+- overlap: Start `09/08/2026`, End `09/15/2026`
+- non-overlap: Start `09/16/2026`, End `09/17/2026`
 
-`Continue ASSET-BORROW-001 from the staged baseline.`
+Explore must show each source Asset exactly once:
 
-Begin only after Codex runs the read-only checkpoint status and confirms:
+| Asset | Stored quantity | Price | Overlap availability |
+| --- | ---: | ---: | ---: |
+| `QA ASSET-BORROW-001 Capacity Transport` | `3` | Free | `1 left` |
+| `QA ASSET-BORROW-001 Reject Transport` | `2` | Free | `2 left` |
+| `QA ASSET-BORROW-001 Cancel Transport` | `2` | Free | `2 left` |
+| `QA ASSET-BORROW-001 Paid Transport` | `2` | `3200 HUF` | `2 left` |
 
-- phase `baseline-ready`, with the browser still unopened for this checkpoint;
-- `QA ASSET-BORROW-001 Tournament → QA Borrow Stage` contains Group A
-  (Casey, Nova, Riley) and Group B (Lina);
-- Group A has no Transport resource assignment or pending request;
-- Group B has exactly one accepted quantity `2` reservation for Lina on
-  `QA ASSET-BORROW-001 Capacity Transport`;
-- these three Casey-owned Public/free Sedan controls exist exactly once:
+Every Borrow dialog must show `Quantity = 1` as read-only and must still show
+`Available for this time: X item(s)`. To request two items, submit Borrow twice.
+Each submission is a new request, approval, assigned card and—when paid—a new
+payment. Existing assigned cards are read-only.
 
-  | Asset | Stored quantity | Initial request state |
-  | --- | ---: | --- |
-  | `QA ASSET-BORROW-001 Capacity Transport` | `3` | Lina accepted `2` in the overlapping window |
-  | `QA ASSET-BORROW-001 Reject Transport` | `2` | none |
-  | `QA ASSET-BORROW-001 Cancel Transport` | `2` | none |
+The Explore-card menu must not contain `Payment summary`. An assigned paid
+request card must contain it.
 
-- the machine oracle provides the exact overlapping and non-overlapping ISO
-  windows; use those values rather than inventing dates;
-- no controlled notification/outbox effect exists after fixture staging.
+## 1. Scope-local Organizer only
 
-## 1. Confirm Explore scope and overlap capacity
+Finish this block before sending a Borrow request. Always switch the tested row
+back to `Count as participant`, so all baseline counts are restored.
 
-1. In **Nova**, open:
+1. **Casey — Tournament Members → Casey.** Select `Organizer only`.
+   Expected immediately: Tournament accepted count `4 → 3`; Casey stays Admin;
+   QA Borrow Stage and Group A do not change. Reopen Casey's menu: only
+   `Count as participant` is shown. Select it and expect `3 → 4`.
 
-   `Activities → Events → Active Events → QA ASSET-BORROW-001 Tournament → View Event → QA Borrow Stage → Groups → Group A → Assets → Transport → + / Explore`
+2. **Casey — QA Borrow Stage Members → Casey.** Select `Organizer only`.
+   Expected: only the Stage accepted count changes `4 → 3`; Tournament and
+   Group A do not change. Select `Count as participant` and expect `3 → 4`.
 
-2. Confirm the Explore header identifies Group A and Transport. The three
-   controlled Assets appear exactly once and belong to Casey.
-3. Select the oracle's overlapping window. Confirm Capacity Transport shows
-   exactly `1` available: stored quantity `3` minus Lina's overlapping
-   quantity `2`.
-4. Try to set quantity above `1` in its Borrow dialog. Confirm the value is
-   rejected or clamped and cannot be submitted above current availability.
-   Close without sending.
-5. Select the oracle's later non-overlapping window. Confirm Capacity
-   Transport shows exactly `3` available. Return to the overlapping window.
-6. Confirm Reject Transport and Cancel Transport each show `2` available and
-   no payment action. Group B's resource state must not change merely because
-   Group A reads or changes an Explore date filter.
+3. **Casey — Group A Members → Casey.** Select `Organizer only`.
+   Expected: only Group A changes `3 → 2`; Tournament and Stage do not change.
+   Select `Count as participant` and expect `2 → 3`.
 
-## 2. Nova sends and cancels one free request
+No action above removes a membership, changes a role or rewrites another
+scope. All counter/card changes must appear without reload and persist after
+one reload.
 
-7. In **Nova**, open `QA ASSET-BORROW-001 Cancel Transport → Borrow` for the
-   overlapping window, keep quantity `1`, and select `Send borrow request`
-   exactly once.
-8. Confirm the dialog closes normally. In Group A, the Transport resource and
-   its pending chain appear exactly once; the Asset shows one pending request.
-   Nova cannot send a duplicate request for the same Asset/scope.
-9. In **Casey**, confirm exactly one new Borrow-request notification and one
-   pending Nova row on Cancel Transport with the same Event, stage, generated
-   Group A owner scope, timeframe and quantity `1`.
-10. In **Nova**, open that own pending row and select `Cancel join request`,
-    then confirm exactly once. The wording must not say `Leave asset`.
-11. Without reload, confirm the pending row, Group A resource entry and entire
-    pending red-counter chain disappear exactly once. Cancel Transport returns
-    to availability `2`; Group B remains byte-for-byte unchanged.
-12. Reload Nova and Casey once each and confirm no pending/accepted request,
-    Asset membership, assignment or payment state reconstructs for this
-    branch.
-13. Report and wait:
+## 2. Date range and free dialog
+
+4. **Nova — Explore, overlap dates.** Capacity must say `1 left` because Lina
+   already occupies two of its three items in Group B.
+
+5. Open `Capacity Transport → Borrow`. Expected: Quantity is read-only `1`,
+   availability is `1 item`, button is `Send borrow request`, and there is no
+   Payment/provider/card block. Close without sending.
+
+6. Set the non-overlap dates. Capacity must say `3 left`. Set the overlap
+   dates again. Reject and Cancel must each say `2 left`.
+
+7. **Casey — Group B.** Lina's accepted Capacity request is still Quantity
+   `2`; Explore reads and date changes made no write.
+
+## 3. Free Cancel
+
+8. **Nova — overlap dates → `Cancel Transport → Borrow`.** Confirm read-only
+   Quantity `1`; press `Send borrow request` once.
+
+9. Expected without reload: one new pending card appears with date range
+   `09/08/2026 – 09/15/2026`; the red pending delta reaches Transport, Group A,
+   Stage and Tournament. The header says `0 members · 1 pending`.
+
+10. **Casey.** Exactly one request notification identifies
+    `QA ASSET-BORROW-001 Cancel Transport`, and exactly one pending Nova row
+    shows Group A, Stage, the same date range and Quantity `1`.
+
+11. **Nova — own pending row → `Cancel join request`.** Confirm once.
+    Expected without reload: the row, assigned card and complete pending badge
+    chain disappear; Cancel returns to `2 left`. Group B is unchanged.
+
+12. Reload Nova and Casey once. Nothing from the cancelled branch returns.
+    Report:
 
     `ASSET-BORROW-001 cancel complete: Nova request removed once`
 
-## 3. Riley sends and Casey rejects one free request
+Wait for `verify-borrow-cancel`.
 
-14. After Codex confirms the cancel boundary, in **Riley** send one quantity
-    `1` request for `QA ASSET-BORROW-001 Reject Transport` in the overlapping
-    window.
-15. Confirm Group A and Casey receive exactly one pending delta. Group B and
-    the other two Assets remain unchanged.
-16. In **Casey**, open Reject Transport's pending Riley row, select `Reject
-    request`, and confirm exactly once.
-17. Confirm Riley's row and the scoped Group A resource/pending chain disappear
-    in place. Reject Transport returns to availability `2`.
-18. In **Riley**, confirm exactly one rejection notification. Riley gains no
-    Asset Manager, Event Admin or generated-group role.
-19. Reload Casey and Riley once each and confirm the rejected request does not
-    return and no duplicate notification exists.
-20. Report and wait:
+## 4. Free Reject
+
+13. **Riley — overlap dates → `Reject Transport → Borrow`.** Confirm Quantity
+    is read-only `1`; send once.
+
+14. **Casey.** Open the one pending Riley row for Reject Transport and select
+    `Reject request` once.
+
+15. Expected without reload: Riley's row/card and pending badge chain
+    disappear; Reject returns to `2 left`. Riley receives exactly one rejection
+    notification identifying Reject Transport and gains no Asset/Event/Group
+    role.
+
+16. Reload Casey and Riley once. The request and badges do not return. Report:
 
     `ASSET-BORROW-001 reject complete: Riley rejected once and scope cleared`
 
-## 4. Nova requests the overlapping Capacity item and Casey accepts
+Wait for `verify-borrow-reject`.
 
-21. After Codex confirms the reject boundary, record Capacity Transport's
-    Asset Statistics. The fixture control contributes exactly one accepted
-    borrowed item before this branch; record every displayed total used by the
-    Statistics surface.
-22. In **Nova**, select the overlapping window and send one quantity `1`
-    request for Capacity Transport. Confirm its availability becomes `0` for
-    this window, while the later non-overlapping window remains `3`.
-23. In **Casey**, confirm one pending Nova row with the exact Asset, Group A
-    owner scope, stage, timeframe and quantity. Select `Approve`, then confirm
-    exactly once.
-24. Without reload, confirm the row changes from pending to accepted exactly
-    once and the pending red-counter chain clears. Availability remains `0`
-    in the overlapping window; approval must not reserve the same quantity
-    again.
-25. In Group A, confirm the accepted Transport resource identifies Capacity
-    Transport once with Nova's quantity `1`. In Group B, Lina's accepted
-    quantity `2` control remains unchanged.
-26. Confirm Nova is eligible only for this exact generated-group booking
-    scope. Borrow acceptance does not make Nova an Asset Manager, Event Admin
-    or member of another Tournament group.
-27. Reopen Capacity Transport Statistics. Accepted borrowed-item count changes
-    exactly `1 → 2`; occupied quantity changes exactly `2 → 3`; assigned and
-    pending counts do not gain an unrelated delta.
-28. Confirm Nova receives exactly one acceptance notification. No checkout,
-    payment session, payment summary or `inventoryApplied=true` record exists.
-29. Report and wait:
+## 5. Free Accept and capacity
+
+17. **Casey — Capacity Transport Statistics.** Baseline is one accepted Borrow
+    request and occupied Quantity `2` (Lina in Group B).
+
+18. **Nova — overlap dates → `Capacity Transport → Borrow`.** Send the
+    read-only Quantity `1` request once. Expected without reload: overlap
+    availability becomes `0 left`; non-overlap remains `3 left`.
+
+19. **Casey.** Approve the one pending Nova Capacity row once. Expected: the
+    row becomes accepted, all pending badges clear, and availability remains
+    `0 left`—approval must not subtract it a second time.
+
+20. Group A contains Nova's Quantity `1` card and Group B contains Lina's
+    Quantity `2` card. Both show their booking date ranges. Nova is Manager only
+    for the scoped Asset assignment; no Event or Group role changed.
+
+21. Capacity Statistics is now two accepted Borrow requests and occupied
+    Quantity `3`. No payment exists for this free request. Report:
 
     `ASSET-BORROW-001 accepted: Group A quantity 1, Group B quantity 2, occupied 3`
 
-## 5. Reload and terminal isolation
+Wait for `verify-borrow-accepted`.
 
-30. After Codex confirms the accepted boundary, reload Casey, Nova and Riley
-    exactly once each.
-31. Reopen the same Event/stage/groups. Confirm Group A retains Nova's exact
-    accepted Capacity resource and Group B retains Lina's control; Reject and
-    Cancel branches remain absent.
-32. Recheck the overlapping and later windows: Capacity Transport is `0`
-    versus `3`, respectively. No quantity, request or member row is duplicated.
-33. Confirm Event roles and both generated-group member lists match the
-    baseline exactly. Borrow created no Manager or ownership relationship.
-34. Confirm Statistics still reports the exact accepted delta and all
-    controlled notifications occur once.
-35. Report the terminal phrase:
+## 6. First paid request and Organizer only before approval
 
-    `ASSET-BORROW-001 UI complete: cancel, reject, accept, capacity and Statistics persist`
+22. **Nova — overlap dates → `Paid Transport → Borrow`.** Expected: Quantity
+    is read-only `1`, availability is `2 items`, total is `3200 HUF`, provider
+    is Barion, and saved card is Mastercard `****4444`. Pay and send once.
 
-Wait for Codex's final persisted and exact-scope oracle. Do not reset or begin
-another testcase until the matrix result and next resume boundary are saved.
+23. Expected without reload: exactly one pending Paid Transport card appears
+    with `09/08/2026 – 09/15/2026`; all pending badges increase by one. Explore
+    now says `1 left` for the overlap dates.
+
+24. **Nova — pending Paid Transport Members row → `Organizer only`.** Expected:
+    the request remains pending, Nova remains Manager, only `Count as
+    participant` replaces the menu action, and Event/Stage/Group memberships
+    do not change.
+
+25. **Casey.** Confirm there is exactly one pending Paid request and one owner
+    notification identifying `QA ASSET-BORROW-001 Paid Transport`. Do not
+    approve yet. Report:
+
+    `ASSET-BORROW-001 paid pending: one request, organizer only before approval`
+
+Wait for `verify-borrow-paid-pending-organizer`.
+
+## 7. Approve, count as participant, then switch back
+
+26. **Casey.** Approve that exact Paid request once.
+
+27. **Nova — accepted Paid Transport Members row → `Count as participant`.**
+    Expected without reload: the Asset scope accepted participant count changes
+    `0 → 1`; request, payment, card and Manager role remain unchanged. Report:
+
+    `ASSET-BORROW-001 paid accepted: counted as participant after approval`
+
+Wait for `verify-borrow-paid-accepted-participant`.
+
+28. **Nova — same accepted row → `Organizer only`.** Expected: only the Asset
+    scope accepted participant count changes `1 → 0`; the accepted request and
+    paid assigned card remain.
+
+## 8. Second independent paid request
+
+29. **Nova — Explore, overlap dates → `Paid Transport → Borrow`.** Quantity is
+    again read-only `1`, availability is `1 item`, total is `3200 HUF`. Pay and
+    send once. Do not reload.
+
+30. Expected immediately: the assigned list contains two separate cards,
+    `QA ASSET-BORROW-001 Paid Transport #1` and `#2`. Both show the booking date
+    range. One is accepted and one is pending. Each card has its own `Payment
+    summary`; Explore still has no Payment summary menu.
+
+31. **Casey.** Two separate Paid rows are visible. Approve only the new pending
+    row once. Expected: both are accepted, no pending badge remains, and Paid
+    Transport says `0 left` for the overlap dates.
+
+32. Reload Casey and Nova once. Expected: two request IDs, two accepted cards,
+    two approvals and two independent `3200 HUF` Payment summaries remain.
+    Nova is still Organizer only in this Asset scope, so its accepted
+    participant count is `0`; its Manager role and both accepted requests stay.
+
+33. Confirm the three free branches and Lina's Group B Quantity `2` control are
+    unchanged. Report:
+
+    `ASSET-BORROW-001 UI complete: free branches, two paid requests and scope-local organizer state persist`
+
+Wait for `verify-borrow-terminal`. Do not reset the fixture until its server
+oracle has passed and the QA ledger/resume pointer has been updated.

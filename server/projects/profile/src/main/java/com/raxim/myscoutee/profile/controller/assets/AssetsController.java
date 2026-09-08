@@ -20,6 +20,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusC
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyStatsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestsSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketSyncResponseDto;
@@ -157,6 +158,11 @@ public class AssetsController {
     @PostMapping("/upsert")
     public AssetDto upsert(@RequestBody AssetUpsertRequestDto request) {
         return assetsService.upsert(request);
+    }
+
+    @PostMapping("/requests")
+    public AssetDto saveRequests(@RequestBody AssetRequestsSaveRequestDto request) {
+        return assetsService.saveRequests(request);
     }
 
     @PostMapping("/members/action")

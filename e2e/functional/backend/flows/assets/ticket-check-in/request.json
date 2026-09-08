@@ -7,66 +7,15 @@
   "script": "ticket-check-in.mjs",
   "mutation": true,
   "e2eOnly": true,
+  "qaBranches": {
+    "core": ["EVENT-TICKET-003", "EVENT-TICKET-010", "EVENT-TICKET-011"],
+    "supporting": ["EVENT-TICKET-002", "EVENT-TICKET-004", "EVENT-TICKET-009", "EVENT-TICKET-012"]
+  },
   "headers": {
-    "X-App-Session-Kind": "demo"
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{ticketCheckInHolderUserId}}"
   },
   "setup": [
-    {
-      "name": "seed ticket event host profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{ticketCheckInHostUserId}}",
-        "name": "E2E Ticket Host",
-        "age": 34,
-        "birthday": "1992-02-14",
-        "city": "Bratislava",
-        "height": "181 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "TH",
-        "gender": "man",
-        "statusText": "E2E ticket organizer",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.1486,
-          "longitude": 17.1077
-        },
-        "images": []
-      }
-    },
-    {
-      "name": "seed ticket holder profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{ticketCheckInHolderUserId}}",
-        "name": "E2E Ticket Holder",
-        "age": 29,
-        "birthday": "1997-03-05",
-        "city": "Bratislava",
-        "height": "168 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "TK",
-        "gender": "woman",
-        "statusText": "E2E ticket holder",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.149,
-          "longitude": 17.108
-        },
-        "images": []
-      }
-    },
     {
       "name": "seed active ticketing event",
       "method": "POST",

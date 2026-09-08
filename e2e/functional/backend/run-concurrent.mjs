@@ -12,12 +12,13 @@ const baseEnv = {
   E2E_SERVER_MODE: 'e2e',
   E2E_SKIP_E2E_RESET: 'true'
 };
+const forwardedArgs = process.argv.slice(2).filter(arg => arg !== '--include-mutations');
 
 await resetE2eDatabase({ vars: {} });
 
 const results = await Promise.all([
-  runChild('backend-safe', []),
-  runChild('backend-mutations', ['--include-mutations'])
+  runChild('backend-safe', forwardedArgs),
+  runChild('backend-mutations', [...forwardedArgs, '--include-mutations'])
 ]);
 
 const failed = results.filter(result => result.code !== 0);

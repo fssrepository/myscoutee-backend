@@ -7,67 +7,14 @@
   "script": "event-participation.mjs",
   "mutation": true,
   "e2eOnly": true,
-  "headers": {
-    "X-App-Session-Kind": "demo"
+  "qaBranches": {
+    "core": ["EVENT-FEEDBACK-002", "EVENT-FEEDBACK-005", "EVENT-FEEDBACK-006"],
+    "supporting": ["EVENT-FEEDBACK-001", "EVENT-IMPRESSION-001", "EVENT-IMPRESSION-002"]
   },
-  "setup": [
-    {
-      "name": "seed participation host profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eUserId}}",
-        "name": "E2E Participation Host",
-        "age": 31,
-        "birthday": "1995-01-12",
-        "city": "Bratislava",
-        "height": "180 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "PH",
-        "gender": "man",
-        "statusText": "E2E participation host",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.1486,
-          "longitude": 17.1077
-        },
-        "images": []
-      }
-    },
-    {
-      "name": "seed participation member profile",
-      "method": "POST",
-      "path": "/api/auth/me/profile",
-      "headers": {
-        "X-App-Session-Kind": "demo"
-      },
-      "expectedStatus": 200,
-      "body": {
-        "id": "{{e2eSecondUserId}}",
-        "name": "E2E Participation Member",
-        "age": 29,
-        "birthday": "1997-03-05",
-        "city": "Bratislava",
-        "height": "168 cm",
-        "physique": "active",
-        "languages": ["en"],
-        "initials": "PM",
-        "gender": "woman",
-        "statusText": "E2E participation member",
-        "profileStatus": "public",
-        "locationCoordinates": {
-          "latitude": 48.149,
-          "longitude": 17.108
-        },
-        "images": []
-      }
-    }
-  ],
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{e2eUserId}}"
+  },
   "body": {
     "syncKey": "e2e-participation-event-{{runId}}",
     "id": "e2e-participation-event-{{runId}}",

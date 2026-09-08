@@ -15,17 +15,22 @@
   const PRIMARY_ASSET_ID = `${PREFIX}:asset:primary`;
   const SECONDARY_ASSET_ID = `${PREFIX}:asset:secondary`;
   const TERTIARY_ASSET_ID = `${PREFIX}:asset:tertiary`;
+  const PAID_ASSET_ID = `${PREFIX}:asset:paid`;
+  const BORROW_PAYMENT_CARD_ID = `${PREFIX}:card:nova-barion-4444`;
   const EVENT_ID = `${PREFIX}:event`;
   const SUB_EVENT_ID = `${EVENT_ID}:sub-event:transport`;
   const GROUP_A_ID = `${SUB_EVENT_ID}:group:1`;
   const GROUP_B_ID = `${SUB_EVENT_ID}:group:2`;
   const GROUP_A_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_A_ID}`;
   const GROUP_B_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_B_ID}`;
-  const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID];
-  const IDS = [...ASSET_IDS, EVENT_ID, GROUP_A_ID, GROUP_B_ID];
+  const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID, PAID_ASSET_ID];
+  const IDS = [...ASSET_IDS, EVENT_ID, SUB_EVENT_ID, GROUP_A_ID, GROUP_B_ID];
   const LIFE_CHECKPOINT = "ASSET-LIFE-001";
   const VISIBILITY_CHECKPOINT = "ASSET-VIS-001";
   const BORROW_CHECKPOINT = "ASSET-BORROW-001";
+  const provider = Q.text(process.env.MANUAL_QA_PAYMENT_PROVIDER).toLowerCase();
+  const providerConnected = Q.text(process.env.MANUAL_QA_PAYMENT_PROVIDER_CONNECTED) === "true";
+  const requires3ds = Q.text(process.env.MANUAL_QA_PAYMENT_REQUIRES_3DS) === "true";
   const VISIBILITY_FRIEND_USER_ID = "178e8d0cbe164fa3fede5884";
   const VISIBILITY_UNRELATED_USER_ID = "2d520f3c98b0440c1556f4af";
   const VISIBILITY_EVENT_ID = `${PREFIX}:visibility:event`;
@@ -119,10 +124,10 @@
     },
     [BORROW_CHECKPOINT]: {
       stage: "borrow-empty",
-      why: "Prove free scoped Borrow cancel, reject and accept branches plus overlap-aware quantity and Asset Statistics without changing Event or generated-group membership.",
-      action: "Do not start yet. On the next QA session, use Group A Resource Explore and follow the stable ASSET-BORROW-001 checklist with Nova, Riley and Casey.",
-      expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation as the immutable sibling control.",
-      worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-001."
+      why: "Prove one-unit free and paid scoped Borrow requests, independent repeated request cards, overlap-aware capacity, and scope-local organizer-only counters.",
+      action: "After the managed browser launcher hands off control, use Group A Resource Explore and follow the deduplicated ASSET-BORROW-001 guide with Nova, Riley and Casey.",
+      expected: "Group A starts with no Transport assignment. Capacity, Reject and Cancel are free controls; Paid is a 3200 HUF Barion control. Every Borrow quantity is locked to one. Group B retains Lina's accepted two-item Capacity reservation. No request, checkout or payment exists for Group A at baseline.",
+      worker: "MUST NOT use a scheduler. Borrow writes one independent request per submission plus its scoped resource, notification and optional payment effects. Organizer-only changes only the selected membership scope."
     }
   };
 
@@ -162,6 +167,38 @@
         soldOutLabel: "Show \"Sold Out\""
       },
       enabled: false
+    };
+  }
+
+  function paidBorrowPricingDocument() {
+    return {
+      ...disabledAssetPricingDocument(),
+      mode: "fixed",
+      basePrice: 3200,
+      currency: "HUF",
+      taxMode: "included",
+      chargeType: "per_attendee",
+      enabled: true
+    };
+  }
+
+  function borrowPaymentCardDocument(stagedAtIso) {
+    return {
+      _id: BORROW_PAYMENT_CARD_ID,
+      version: 0,
+      userId: participantUserId,
+      provider: "barion",
+      providerPaymentMethodRef: "pm_sim_checkout_nova_barion_4444",
+      brand: "Mastercard",
+      last4: "4444",
+      expiryMonth: 9,
+      expiryYear: 2029,
+      expiryKey: 202909,
+      cardholderName: "NOVA SOCIAL",
+      artworkKey: "graphite",
+      status: "active",
+      createdAtIso: stagedAtIso,
+      updatedAtIso: stagedAtIso
     };
   }
 
@@ -350,6 +387,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: now,
       createdDate: now,
       createdUser: hostUserId,
@@ -358,7 +396,7 @@
     };
   }
 
-  function borrowAssetDocument(assetId, title, quantity, stagedAtIso, requests = []) {
+  function borrowAssetDocument(assetId, title, quantity, stagedAtIso, requests = [], paid = false) {
     const document = assetDocument(assetId, hostUserId, title);
     return {
       ...document,
@@ -366,9 +404,10 @@
       city: "Austin",
       capacityTotal: 4,
       quantity,
-      details: "Controlled free Asset borrow lifecycle.",
+      details: `Controlled ${paid ? "paid" : "free"} Asset borrow lifecycle.`,
       sourceLink: `https://example.com/qa/asset-borrow-001/${assetId.split(":").pop()}`,
       routes: ["Austin"],
+      pricing: paid ? paidBorrowPricingDocument() : disabledAssetPricingDocument(),
       requests,
       createdDate: stagedAtIso,
       updatedDate: stagedAtIso
@@ -449,6 +488,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: stagedAtIso,
       metAtIso: stagedAtIso,
       metWhere: "QA ASSET-BORROW-001 Tournament",
@@ -472,6 +512,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: stagedAtIso,
       metAtIso: stagedAtIso,
       metWhere: "QA ASSET-BORROW-001 Tournament",
@@ -1388,6 +1429,9 @@
         { ownerId: { $in: [EVENT_ID, GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID] } },
         { "assetAssignmentIds.Transport": { $in: ASSET_IDS } }
       ] } },
+      { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: ASSET_IDS } } },
+      { collection: "payments", selector: { sourceId: { $in: ASSET_IDS } } },
+      { collection: "savedPaymentMethods", selector: { _id: BORROW_PAYMENT_CARD_ID } },
       { collection: "notificationOutbox", selector: { $or: [
         { entityId: { $in: IDS } },
         { "payload.assetId": { $in: ASSET_IDS } },
@@ -1455,8 +1499,10 @@
       Q.collection("assets").insertMany([
         borrowAssetDocument(PRIMARY_ASSET_ID, "QA ASSET-BORROW-001 Capacity Transport", 3, stagedAtIso, [controlRequest]),
         borrowAssetDocument(SECONDARY_ASSET_ID, "QA ASSET-BORROW-001 Reject Transport", 2, stagedAtIso),
-        borrowAssetDocument(TERTIARY_ASSET_ID, "QA ASSET-BORROW-001 Cancel Transport", 2, stagedAtIso)
+        borrowAssetDocument(TERTIARY_ASSET_ID, "QA ASSET-BORROW-001 Cancel Transport", 2, stagedAtIso),
+        borrowAssetDocument(PAID_ASSET_ID, "QA ASSET-BORROW-001 Paid Transport", 2, stagedAtIso, [], true)
       ]);
+      Q.collection("savedPaymentMethods").insertOne(borrowPaymentCardDocument(stagedAtIso));
       Q.collection("assetRequests").insertOne(
         borrowRequestProjection(PRIMARY_ASSET_ID, controlRequest, stagedAtIso)
       );
@@ -1468,6 +1514,10 @@
         borrowActivityMemberDocument("event", EVENT_ID, participantUserId, "Member", stagedAtIso, "event"),
         borrowActivityMemberDocument("event", EVENT_ID, thirdUserId, "Member", stagedAtIso, "event"),
         borrowActivityMemberDocument("event", EVENT_ID, VISIBILITY_FRIEND_USER_ID, "Member", stagedAtIso, "event"),
+        borrowActivityMemberDocument("subEvent", SUB_EVENT_ID, hostUserId, "Admin", stagedAtIso, "stage"),
+        borrowActivityMemberDocument("subEvent", SUB_EVENT_ID, participantUserId, "Member", stagedAtIso, "stage"),
+        borrowActivityMemberDocument("subEvent", SUB_EVENT_ID, thirdUserId, "Member", stagedAtIso, "stage"),
+        borrowActivityMemberDocument("subEvent", SUB_EVENT_ID, VISIBILITY_FRIEND_USER_ID, "Member", stagedAtIso, "stage"),
         borrowActivityMemberDocument("group", GROUP_A_ID, hostUserId, "Member", stagedAtIso, "group-a"),
         borrowActivityMemberDocument("group", GROUP_A_ID, participantUserId, "Member", stagedAtIso, "group-a"),
         borrowActivityMemberDocument("group", GROUP_A_ID, thirdUserId, "Member", stagedAtIso, "group-a"),
@@ -1491,7 +1541,7 @@
       ownerId: { $in: ASSET_IDS }
     }).sort({ ownerId: 1, userId: 1 }).toArray();
     const activityMembers = Q.collection("activityMembers")
-      .find({ ownerId: { $in: [EVENT_ID, GROUP_A_ID, GROUP_B_ID] } })
+      .find({ ownerId: { $in: [EVENT_ID, SUB_EVENT_ID, GROUP_A_ID, GROUP_B_ID] } })
       .sort({ ownerType: 1, ownerId: 1, userId: 1 })
       .toArray();
     const requests = Q.collection("assetRequests")
@@ -1501,6 +1551,18 @@
     const resources = Q.collection("activityResources")
       .find({ ownerId: { $in: [EVENT_ID, GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID] } })
       .sort({ ownerId: 1, assetOwnerUserId: 1 })
+      .toArray();
+    const baskets = Q.collection("eventCheckoutBasketItems")
+      .find({ sourceId: { $in: ASSET_IDS } })
+      .sort({ createdAtIso: 1, _id: 1 })
+      .toArray();
+    const payments = Q.collection("payments")
+      .find({ sourceId: { $in: ASSET_IDS } })
+      .sort({ createdDate: 1, _id: 1 })
+      .toArray();
+    const savedPaymentMethods = Q.collection("savedPaymentMethods")
+      .find({ _id: BORROW_PAYMENT_CARD_ID })
+      .sort({ _id: 1 })
       .toArray();
     const runtime = Q.collection("activitySubEventStageRuntime")
       .findOne({ ownerId: EVENT_ID, subEventId: SUB_EVENT_ID }) || {};
@@ -1524,6 +1586,9 @@
         quantity: asset.quantity,
         category: Q.text(asset.category),
         visibility: Q.text(asset.visibility),
+        pricingEnabled: asset.pricing && asset.pricing.enabled === true,
+        basePrice: Q.number(asset.pricing && asset.pricing.basePrice),
+        currency: Q.text(asset.pricing && asset.pricing.currency),
         requests: (asset.requests || []).map(request => ({
           id: Q.text(request && (request.id || request._id || request.requestId)),
           userId: Q.text(request && request.userId),
@@ -1534,24 +1599,31 @@
           startAtIso: Q.text(request && request.booking && request.booking.startAtIso),
           endAtIso: Q.text(request && request.booking && request.booking.endAtIso),
           quantity: Q.number(request && request.booking && request.booking.quantity),
+          totalAmount: Q.number(request && request.booking && request.booking.totalAmount),
+          currency: Q.text(request && request.booking && request.booking.currency),
+          paymentSessionId: Q.text(request && request.booking && request.booking.paymentSessionId),
           inventoryApplied: request && request.booking && request.booking.inventoryApplied === true
         })),
         status: Q.text(asset.status)
       })),
       assetMembers: assetMembers.map(member => ({
+        id: Q.text(member.syncKey || member._id),
         assetId: Q.text(member.ownerId),
         userId: Q.text(member.userId),
         role: Q.text(member.role),
         status: Q.text(member.status),
         requestKind: Q.text(member.requestKind),
-        invitedByUserId: Q.text(member.invitedByUserId)
+        invitedByUserId: Q.text(member.invitedByUserId),
+        organizerOnly: member.organizerOnly === true
       })),
       activityMembers: activityMembers.map(member => ({
+        id: Q.text(member.syncKey || member._id),
         ownerType: Q.text(member.ownerType),
         ownerId: Q.text(member.ownerId),
         userId: Q.text(member.userId),
         role: Q.text(member.role),
-        status: Q.text(member.status)
+        status: Q.text(member.status),
+        organizerOnly: member.organizerOnly === true
       })),
       requestProjections: requests.map(request => ({
         id: Q.text(request._id),
@@ -1566,9 +1638,13 @@
         startAtIso: Q.text(request.booking && request.booking.startAtIso),
         endAtIso: Q.text(request.booking && request.booking.endAtIso),
         quantity: Q.number(request.booking && request.booking.quantity),
+        totalAmount: Q.number(request.booking && request.booking.totalAmount),
+        currency: Q.text(request.booking && request.booking.currency),
+        paymentSessionId: Q.text(request.booking && request.booking.paymentSessionId),
         inventoryApplied: request.booking && request.booking.inventoryApplied === true
       })),
       resources: resources.map(resource => ({
+        id: Q.text(resource._id),
         eventId: Q.text(resource.ownerId),
         status: Q.text(resource.status),
         subEventId: Q.text(resource.subEventId),
@@ -1583,6 +1659,42 @@
         groupsCount: Q.number(runtime.groupsCount),
         groupResourceMetricsByAssetOwnerId: runtime.groupResourceMetricsByAssetOwnerId || {}
       },
+      baskets: baskets.map(item => ({
+        id: Q.text(item._id),
+        sourceId: Q.text(item.sourceId),
+        userId: Q.text(item.userId),
+        status: Q.text(item.status),
+        resultState: Q.text(item.resultState),
+        quantity: Q.number(item.quantity),
+        amount: Q.number(item.amount),
+        currency: Q.text(item.currency),
+        checkoutSessionId: Q.text(item.checkoutSessionId)
+      })),
+      payments: payments.map(item => ({
+        id: Q.text(item._id),
+        sourceId: Q.text(item.sourceId),
+        userId: Q.text(item.userId),
+        recipientUserId: Q.text(item.recipientUserId),
+        checkoutSessionId: Q.text(item.checkoutSessionId),
+        provider: Q.text(item.provider),
+        paymentMethodId: Q.text(item.paymentMethodId),
+        status: Q.text(item.status),
+        fulfillmentStatus: Q.text(item.fulfillmentStatus),
+        bookingStatus: Q.text(item.bookingStatus),
+        amount: Q.number(item.amount),
+        currency: Q.text(item.currency)
+      })),
+      savedPaymentMethods: savedPaymentMethods.map(item => ({
+        id: Q.text(item._id),
+        userId: Q.text(item.userId),
+        provider: Q.text(item.provider),
+        providerPaymentMethodRef: Q.text(item.providerPaymentMethodRef),
+        last4: Q.text(item.last4),
+        status: Q.text(item.status)
+      })),
+      paymentSimulator: { provider, providerConnected, requires3ds },
+      checkoutBasketCount: baskets.length,
+      paymentCount: payments.length,
       afterStageOutboxCount: outboxCount
     };
   }
@@ -1592,14 +1704,20 @@
     const capacity = byAssetId.get(PRIMARY_ASSET_ID);
     const reject = byAssetId.get(SECONDARY_ASSET_ID);
     const cancel = byAssetId.get(TERTIARY_ASSET_ID);
+    const paid = byAssetId.get(PAID_ASSET_ID);
     const expectedEventUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
     const expectedGroupAUsers = [hostUserId, participantUserId, thirdUserId].sort();
+    const expectedStageUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
     const eventUsers = current.activityMembers
       .filter(member => member.ownerType === "event" && member.ownerId === EVENT_ID && member.status === "accepted")
       .map(member => member.userId)
       .sort();
     const groupAUsers = current.activityMembers
       .filter(member => member.ownerType === "group" && member.ownerId === GROUP_A_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const stageUsers = current.activityMembers
+      .filter(member => member.ownerType === "subEvent" && member.ownerId === SUB_EVENT_ID && member.status === "accepted")
       .map(member => member.userId)
       .sort();
     const groupBUsers = current.activityMembers
@@ -1612,16 +1730,19 @@
     const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
     const groupBMetric = (((runtimeGroups[GROUP_B_ID] || {})[VISIBILITY_FRIEND_USER_ID] || {}).Transport) || {};
     const failures = [];
-    if (current.assets.length !== 3
+    if (current.assets.length !== 4
         || !capacity || capacity.title !== "QA ASSET-BORROW-001 Capacity Transport" || capacity.quantity !== 3
         || !reject || reject.title !== "QA ASSET-BORROW-001 Reject Transport" || reject.quantity !== 2
         || !cancel || cancel.title !== "QA ASSET-BORROW-001 Cancel Transport" || cancel.quantity !== 2
+        || !paid || paid.title !== "QA ASSET-BORROW-001 Paid Transport" || paid.quantity !== 2
+        || paid.pricingEnabled !== true || paid.basePrice !== 3200 || paid.currency !== "HUF"
+        || [capacity, reject, cancel].some(asset => asset.pricingEnabled || asset.basePrice !== 0)
         || current.assets.some(asset => asset.ownerUserId !== hostUserId
           || asset.type !== "Transport"
           || asset.category !== "Sedan"
           || asset.visibility !== "Public"
           || lifecycleStatusCode(asset.status) !== "A")) {
-      failures.push("exactThreePublicFreeTransportControls");
+      failures.push("exactFourPublicTransportControls");
     }
     if (!control
         || capacity.requests.length !== 1
@@ -1649,12 +1770,15 @@
     if (current.assetMembers.length !== 1
         || current.assetMembers[0].assetId !== PRIMARY_ASSET_ID
         || current.assetMembers[0].userId !== VISIBILITY_FRIEND_USER_ID
-        || current.assetMembers[0].status !== "accepted") {
+        || current.assetMembers[0].status !== "accepted"
+        || current.assetMembers[0].organizerOnly) {
       failures.push("exactControlAssetMembership");
     }
     if (!Q.sameJson(eventUsers, expectedEventUsers)
+        || !Q.sameJson(stageUsers, expectedStageUsers)
         || !Q.sameJson(groupAUsers, expectedGroupAUsers)
-        || !Q.sameJson(groupBUsers, [VISIBILITY_FRIEND_USER_ID])) {
+        || !Q.sameJson(groupBUsers, [VISIBILITY_FRIEND_USER_ID])
+        || current.activityMembers.some(member => member.organizerOnly)) {
       failures.push("exactEventAndGeneratedGroupRoles");
     }
     if (current.resources.length !== 1
@@ -1662,6 +1786,7 @@
         || groupBResource.status !== "A"
         || !Q.sameJson(groupBResource.transportAssetIds, [PRIMARY_ASSET_ID])
         || Q.number(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 2
+        || Q.text(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== VISIBILITY_FRIEND_USER_ID
         || Q.number(groupBResource.transportMetric.accepted) !== 1
         || Q.number(groupBResource.transportMetric.pending) !== 0) {
       failures.push("exactGroupBResourceControl");
@@ -1677,20 +1802,410 @@
     if (current.afterStageOutboxCount !== 0) {
       failures.push("noPrematureNotification");
     }
+    if (current.checkoutBasketCount !== 0 || current.paymentCount !== 0) {
+      failures.push("noCheckoutOrPaymentState");
+    }
+    if (current.savedPaymentMethods.length !== 1
+        || current.savedPaymentMethods[0].userId !== participantUserId
+        || current.savedPaymentMethods[0].provider !== "barion"
+        || current.savedPaymentMethods[0].providerPaymentMethodRef !== "pm_sim_checkout_nova_barion_4444"
+        || current.savedPaymentMethods[0].last4 !== "4444"
+        || current.savedPaymentMethods[0].status !== "active") {
+      failures.push("exactNovaBarionPaymentMethod");
+    }
     if (failures.length > 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId, phase: "baseline-diagnostic", failures, oracle: current });
       Q.fail(`${BORROW_CHECKPOINT} baseline checks failed: ${failures.join(", ")}.`);
     }
     return {
-      exactThreePublicFreeTransportControls: true,
+      exactFourPublicTransportControls: true,
       exactOverlappingGroupBControlRequest: true,
       exactControlRequestProjection: true,
       exactControlAssetMembership: true,
       exactEventAndGeneratedGroupRoles: true,
       exactGroupBResourceControl: true,
       exactGeneratedGroupRuntimeControl: true,
+      exactNovaBarionPaymentMethod: true,
+      noCheckoutOrPaymentState: true,
       noPrematureNotification: true
     };
+  }
+
+  function assertBorrowImmutableScope(current, allowPaidEffects = false) {
+    const expectedEventUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
+    const expectedGroupAUsers = [hostUserId, participantUserId, thirdUserId].sort();
+    const expectedStageUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
+    const eventUsers = current.activityMembers
+      .filter(member => member.ownerType === "event" && member.ownerId === EVENT_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupAUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_A_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const stageUsers = current.activityMembers
+      .filter(member => member.ownerType === "subEvent" && member.ownerId === SUB_EVENT_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupBUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_B_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const paid = current.assets.find(asset => asset.assetId === PAID_ASSET_ID);
+    const control = capacity && capacity.requests.find(request => request.userId === VISIBILITY_FRIEND_USER_ID);
+    const groupBResource = current.resources.find(resource => resource.eventId === GROUP_B_RESOURCE_OWNER_ID && resource.status === "A");
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const groupBMetric = (((runtimeGroups[GROUP_B_ID] || {})[VISIBILITY_FRIEND_USER_ID] || {}).Transport) || {};
+    const nonPaidAssetMembers = current.assetMembers.filter(member => member.assetId !== PAID_ASSET_ID);
+    if (current.assets.length !== 4
+        || current.assets.some(asset => asset.ownerUserId !== hostUserId || asset.type !== "Transport"
+          || asset.visibility !== "Public" || lifecycleStatusCode(asset.status) !== "A")
+        || !capacity || capacity.quantity !== 3 || !control
+        || !paid || paid.quantity !== 2 || paid.pricingEnabled !== true
+        || paid.basePrice !== 3200 || paid.currency !== "HUF"
+        || control.status !== "accepted" || control.quantity !== 2
+        || control.eventId !== GROUP_B_RESOURCE_OWNER_ID || control.subEventId !== SUB_EVENT_ID
+        || control.inventoryApplied
+        || !Q.sameJson(eventUsers, expectedEventUsers)
+        || !Q.sameJson(stageUsers, expectedStageUsers)
+        || !Q.sameJson(groupAUsers, expectedGroupAUsers)
+        || !Q.sameJson(groupBUsers, [VISIBILITY_FRIEND_USER_ID])
+        || nonPaidAssetMembers.length !== 1
+        || nonPaidAssetMembers[0].assetId !== PRIMARY_ASSET_ID
+        || nonPaidAssetMembers[0].userId !== VISIBILITY_FRIEND_USER_ID
+        || nonPaidAssetMembers[0].status !== "accepted"
+        || !groupBResource
+        || !Q.sameJson(groupBResource.transportAssetIds, [PRIMARY_ASSET_ID])
+        || Q.number(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 2
+        || Q.text(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== VISIBILITY_FRIEND_USER_ID
+        || Q.number(groupBResource.transportMetric.accepted) !== 1
+        || Q.number(groupBResource.transportMetric.pending) !== 0
+        || current.runtime.count !== 1 || current.runtime.status !== "A" || current.runtime.groupsCount !== 2
+        || Q.number(groupBMetric.accepted) !== 1 || Q.number(groupBMetric.pending) !== 0
+        || (!allowPaidEffects && paid.requests.length !== 0)
+        || (!allowPaidEffects && (current.checkoutBasketCount !== 0 || current.paymentCount !== 0))) {
+      Q.fail(`${BORROW_CHECKPOINT} immutable Event/Group B/free-payment scope changed.`);
+    }
+  }
+
+  function assertBorrowDeletedBranch(current, assetId, userId) {
+    const asset = current.assets.find(item => item.assetId === assetId);
+    const requests = asset ? asset.requests.filter(item => item.userId === userId) : [];
+    const projections = current.requestProjections.filter(item => item.assetId === assetId && item.userId === userId);
+    const activeResources = current.resources.filter(resource =>
+      resource.status === "A" && resource.transportAssetIds.includes(assetId));
+    if (!asset || requests.length !== 1 || lifecycleStatusCode(requests[0].status) !== "D"
+        || projections.length !== 1 || lifecycleStatusCode(projections[0].status) !== "D"
+        || activeResources.length !== 0) {
+      Q.fail(`${BORROW_CHECKPOINT} ${assetId} did not retain exactly one deleted request audit with no active resource.`);
+    }
+  }
+
+  function borrowNotificationRows(state) {
+    return Q.collection("notificationOutbox").find({
+      $and: [
+        { $or: [
+          { entityId: { $in: ASSET_IDS } },
+          { "payload.assetId": { $in: ASSET_IDS } },
+          { "payload.eventId": EVENT_ID }
+        ] },
+        { createdDate: { $gt: state.stagedAtIso } }
+      ]
+    }).sort({ createdDate: 1, _id: 1 }).toArray().map(item => ({
+      id: Q.text(item._id),
+      type: Q.text(item.notificationType),
+      assetId: Q.text(item.entityId || item.payload && item.payload.assetId),
+      eventId: Q.text(item.payload && item.payload.eventId),
+      subEventId: Q.text(item.payload && item.payload.subEventId),
+      memberUserId: Q.text(item.payload && item.payload.memberUserId),
+      recipients: (item.recipientUserIds || []).map(Q.text).filter(Boolean).sort()
+    }));
+  }
+
+  function requireBorrowPhase(expected) {
+    const state = requireMatchingState();
+    if (Q.text(state.phase) !== expected) {
+      Q.fail(`${BORROW_CHECKPOINT} requires phase '${expected}', found '${Q.text(state.phase)}'.`);
+    }
+    return state;
+  }
+
+  function saveBorrowVerification(state, phase, field, current) {
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      phase,
+      [field]: current,
+      [`${field}AtIso`]: Q.nowIso()
+    } });
+  }
+
+  function verifyBorrowCancel() {
+    const state = requireBorrowPhase("baseline-ready");
+    const current = oracle(state);
+    assertBorrowImmutableScope(current);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const reject = current.assets.find(asset => asset.assetId === SECONDARY_ASSET_ID);
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const notifications = borrowNotificationRows(state);
+    if (!capacity || capacity.requests.length !== 1 || !reject || reject.requests.length !== 0
+        || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
+        || notifications.length !== 1
+        || notifications[0].type !== "asset-admin-join-request"
+        || notifications[0].assetId !== TERTIARY_ASSET_ID
+        || notifications[0].memberUserId !== participantUserId
+        || !Q.sameJson(notifications[0].recipients, [hostUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-cancel-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} cancel branch did not clear only Nova's free request scope.`);
+    }
+    saveBorrowVerification(state, "borrow-cancel-verified", "borrowCancelOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-cancel-verified",
+      result: "PASS",
+      cancelledRequestAudits: 1,
+      activeGroupAResources: 0,
+      payments: 0,
+      next: "Continue at step 14 with Riley's Reject Transport request."
+    });
+  }
+
+  function verifyBorrowReject() {
+    const state = requireBorrowPhase("borrow-cancel-verified");
+    const current = oracle(state);
+    assertBorrowImmutableScope(current);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const notifications = borrowNotificationRows(state);
+    const requestRows = notifications.filter(item => item.type === "asset-admin-join-request");
+    const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
+    if (!capacity || capacity.requests.length !== 1
+        || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
+        || notifications.length !== 3 || requestRows.length !== 2 || rejectedRows.length !== 1
+        || !rejectedRows[0] || rejectedRows[0].assetId !== SECONDARY_ASSET_ID
+        || rejectedRows[0].memberUserId !== thirdUserId
+        || !Q.sameJson(rejectedRows[0].recipients, [thirdUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-reject-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} reject branch did not retire only Riley's request with one rejection notification.`);
+    }
+    saveBorrowVerification(state, "borrow-reject-verified", "borrowRejectOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-reject-verified",
+      result: "PASS",
+      deletedCancelAndRejectAudits: 2,
+      activeGroupAResources: 0,
+      payments: 0,
+      next: "Continue at step 21 with Capacity Transport Statistics and Nova's free request."
+    });
+  }
+
+  function assertBorrowAccepted(state, current, allowPaidEffects = false) {
+    assertBorrowImmutableScope(current, allowPaidEffects);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const novaRequest = capacity && capacity.requests.find(request => request.userId === participantUserId);
+    const novaProjection = current.requestProjections.find(request =>
+      request.assetId === PRIMARY_ASSET_ID && request.userId === participantUserId);
+    const groupAResource = current.resources.find(resource =>
+      resource.eventId === GROUP_A_RESOURCE_OWNER_ID && resource.status === "A"
+      && resource.transportAssetIds.includes(PRIMARY_ASSET_ID));
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const groupAMetric = (((runtimeGroups[GROUP_A_ID] || {})[participantUserId] || {}).Transport) || {};
+    const notifications = borrowNotificationRows(state);
+    const requestRows = notifications.filter(item => item.type === "asset-admin-join-request");
+    const acceptedRows = notifications.filter(item => item.type === "asset-member-request-accepted");
+    const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
+    if (!capacity || capacity.requests.length !== 2 || !novaRequest
+        || novaRequest.status !== "accepted" || novaRequest.quantity !== 1
+        || novaRequest.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaRequest.subEventId !== SUB_EVENT_ID
+        || novaRequest.startAtIso !== Q.text(state.context.startAtIso)
+        || novaRequest.endAtIso !== Q.text(state.context.overlapEndAtIso)
+        || novaRequest.inventoryApplied
+        || !novaProjection || novaProjection.status !== "accepted" || novaProjection.quantity !== 1
+        || novaProjection.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaProjection.inventoryApplied
+        || !groupAResource
+        || Q.number(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 1
+        || Q.text(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== participantUserId
+        || Q.number(groupAResource.transportMetric.accepted) !== 1
+        || Q.number(groupAResource.transportMetric.pending) !== 0
+        || Q.number(groupAMetric.accepted) !== 1 || Q.number(groupAMetric.pending) !== 0
+        || notifications.length !== 5 || requestRows.length !== 3
+        || acceptedRows.length !== 1 || rejectedRows.length !== 1
+        || acceptedRows[0].assetId !== PRIMARY_ASSET_ID
+        || acceptedRows[0].memberUserId !== participantUserId
+        || !Q.sameJson(acceptedRows[0].recipients, [participantUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-accepted-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} free acceptance did not produce the exact Group A quantity-one scoped Manager state.`);
+    }
+    return { current, notifications };
+  }
+
+  function verifyBorrowAccepted() {
+    const state = requireBorrowPhase("borrow-reject-verified");
+    const { current } = assertBorrowAccepted(state, oracle(state));
+    saveBorrowVerification(state, "borrow-accepted-verified", "borrowAcceptedOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-accepted-verified",
+      result: "PASS",
+      groupAQuantity: 1,
+      groupBQuantity: 2,
+      occupiedQuantity: 3,
+      scopedManagerUserId: participantUserId,
+      payments: 0,
+      next: "Continue with Nova's first Paid Transport Borrow and set Organizer only before Casey approves it."
+    });
+  }
+
+  function assertBorrowPaymentSimulator(current) {
+    if (current.paymentSimulator.provider !== "barion"
+        || !current.paymentSimulator.providerConnected
+        || current.paymentSimulator.requires3ds) {
+      Q.fail(`${BORROW_CHECKPOINT} requires the connected Barion simulator with 3DS off.`);
+    }
+  }
+
+  function paidBorrowState(current) {
+    const asset = current.assets.find(item => item.assetId === PAID_ASSET_ID) || null;
+    const requests = asset ? asset.requests.filter(item => item.userId === participantUserId) : [];
+    const projections = current.requestProjections.filter(item =>
+      item.assetId === PAID_ASSET_ID && item.userId === participantUserId);
+    const payments = current.payments.filter(item =>
+      item.sourceId === PAID_ASSET_ID && item.userId === participantUserId);
+    const member = current.assetMembers.find(item =>
+      item.assetId === PAID_ASSET_ID && item.userId === participantUserId) || null;
+    const resource = current.resources.find(item =>
+      item.eventId === GROUP_A_RESOURCE_OWNER_ID
+      && item.status === "A"
+      && item.transportAssetIds.includes(PAID_ASSET_ID)) || null;
+    return { asset, requests, projections, payments, member, resource };
+  }
+
+  function assertPaidRequestAndPayment(request, projections, payments, expectedStatus) {
+    const projection = projections.find(item => item.requestId === request.id);
+    const payment = payments.find(item => item.checkoutSessionId === request.paymentSessionId);
+    return request.status === expectedStatus
+      && request.requestKind === "borrow"
+      && request.eventId === GROUP_A_RESOURCE_OWNER_ID
+      && request.subEventId === SUB_EVENT_ID
+      && request.quantity === 1
+      && request.totalAmount === 3200
+      && request.currency === "HUF"
+      && request.paymentSessionId.length > 0
+      && !request.inventoryApplied
+      && projection != null
+      && projection.status === expectedStatus
+      && projection.quantity === 1
+      && projection.totalAmount === 3200
+      && projection.currency === "HUF"
+      && projection.paymentSessionId === request.paymentSessionId
+      && payment != null
+      && payment.recipientUserId === hostUserId
+      && payment.provider === "barion"
+      && payment.paymentMethodId === BORROW_PAYMENT_CARD_ID
+      && payment.status === "captured"
+      && payment.fulfillmentStatus === "succeeded"
+      && payment.bookingStatus === "joined"
+      && payment.amount === 3200
+      && payment.currency === "HUF";
+  }
+
+  function verifyBorrowPaidPendingOrganizer() {
+    const state = requireBorrowPhase("borrow-accepted-verified");
+    const current = oracle(state);
+    assertBorrowAccepted(state, current, true);
+    assertBorrowPaymentSimulator(current);
+    const paid = paidBorrowState(current);
+    const requestRows = borrowNotificationRows(state)
+      .filter(item => item.type === "asset-admin-join-request" && item.assetId === PAID_ASSET_ID);
+    if (!paid.asset || paid.requests.length !== 1 || paid.projections.length !== 1 || paid.payments.length !== 1
+        || !assertPaidRequestAndPayment(paid.requests[0], paid.projections, paid.payments, "pending")
+        || !paid.member || paid.member.status !== "pending" || !paid.member.organizerOnly
+        || !paid.resource
+        || Q.number(paid.resource.transportSettings[PAID_ASSET_ID] && paid.resource.transportSettings[PAID_ASSET_ID].quantity) !== 1
+        || requestRows.length !== 1) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-paid-pending-organizer-diagnostic", oracle: current, requestRows });
+      Q.fail(`${BORROW_CHECKPOINT} first paid request or pending organizer-only state is not exact.`);
+    }
+    saveBorrowVerification(state, "borrow-paid-pending-organizer-verified", "borrowPaidPendingOrganizerOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-paid-pending-organizer-verified",
+      result: "PASS",
+      paidRequests: 1,
+      paidAssetItems: 1,
+      organizerOnlyBeforeApproval: true,
+      next: "Casey approves this exact Paid Transport request; Nova then chooses Count as participant."
+    });
+  }
+
+  function verifyBorrowPaidAcceptedParticipant() {
+    const state = requireBorrowPhase("borrow-paid-pending-organizer-verified");
+    const current = oracle(state);
+    assertBorrowAccepted(state, current, true);
+    assertBorrowPaymentSimulator(current);
+    const paid = paidBorrowState(current);
+    if (!paid.asset || paid.requests.length !== 1 || paid.projections.length !== 1 || paid.payments.length !== 1
+        || !assertPaidRequestAndPayment(paid.requests[0], paid.projections, paid.payments, "accepted")
+        || !paid.member || paid.member.status !== "accepted" || paid.member.organizerOnly
+        || !paid.resource
+        || Q.number(paid.resource.transportSettings[PAID_ASSET_ID] && paid.resource.transportSettings[PAID_ASSET_ID].quantity) !== 1) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-paid-accepted-participant-diagnostic", oracle: current });
+      Q.fail(`${BORROW_CHECKPOINT} paid approval or Count as participant did not persist exactly.`);
+    }
+    saveBorrowVerification(state, "borrow-paid-accepted-participant-verified", "borrowPaidAcceptedParticipantOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-paid-accepted-participant-verified",
+      result: "PASS",
+      paidRequests: 1,
+      participantAfterApproval: true,
+      next: "Nova chooses Organizer only, then submits and pays a second one-unit Paid Transport Borrow; Casey approves only that new request."
+    });
+  }
+
+  function verifyBorrowTerminal() {
+    const state = requireBorrowPhase("borrow-paid-accepted-participant-verified");
+    const { current } = assertBorrowAccepted(state, oracle(state), true);
+    assertBorrowPaymentSimulator(current);
+    const paid = paidBorrowState(current);
+    const requestIds = paid.requests.map(item => item.id);
+    const paymentSessionIds = paid.requests.map(item => item.paymentSessionId);
+    if (!paid.asset || paid.requests.length !== 2 || paid.projections.length !== 2 || paid.payments.length !== 2
+        || new Set(requestIds).size !== 2 || new Set(paymentSessionIds).size !== 2
+        || paid.requests.some(request => !assertPaidRequestAndPayment(request, paid.projections, paid.payments, "accepted"))
+        || !paid.member || paid.member.status !== "accepted" || !paid.member.organizerOnly
+        || !paid.resource
+        || Q.number(paid.resource.transportSettings[PAID_ASSET_ID] && paid.resource.transportSettings[PAID_ASSET_ID].quantity) !== 2) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-terminal-paid-diagnostic", oracle: current });
+      Q.fail(`${BORROW_CHECKPOINT} did not retain two independent accepted paid requests and payments.`);
+    }
+    saveBorrowVerification(state, "borrow-verified", "borrowTerminalOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-verified",
+      result: "PASS",
+      freeCancelRejectAccept: true,
+      overlapCapacityAndStatistics: true,
+      scopedManagerWithoutEventRole: true,
+      oneUnitReadOnlyQuantity: true,
+      independentPaidRequestIds: requestIds,
+      independentPaymentSessionIds: paymentSessionIds,
+      paidAssetItems: 2,
+      organizerOnlyAfterApproval: true,
+      checkoutBasketCount: current.checkoutBasketCount,
+      paymentCount: current.paymentCount
+    });
   }
 
   function stageLifecycle() {
@@ -2272,6 +2787,8 @@
         primaryAssetId: PRIMARY_ASSET_ID,
         secondaryAssetId: SECONDARY_ASSET_ID,
         tertiaryAssetId: checkpointId === BORROW_CHECKPOINT ? TERTIARY_ASSET_ID : null,
+        paidAssetId: checkpointId === BORROW_CHECKPOINT ? PAID_ASSET_ID : null,
+        borrowPaymentCardId: checkpointId === BORROW_CHECKPOINT ? BORROW_PAYMENT_CARD_ID : null,
         eventId: EVENT_ID,
         subEventId: SUB_EVENT_ID,
         groupAId: checkpointId === BORROW_CHECKPOINT ? GROUP_A_ID : null,
@@ -2387,6 +2904,9 @@
       Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
     }
     const current = oracle(state);
+    if (checkpointId === BORROW_CHECKPOINT) {
+      assertBorrowPaymentSimulator(current);
+    }
     const baselineChecks = checkpointId === BORROW_CHECKPOINT && Q.text(state.phase) === "baseline-ready"
       ? assertBorrowBaseline(state, current)
       : null;
@@ -2401,7 +2921,7 @@
       baselineChecks,
       expectedVisibleResult: selected.expected,
       next: checkpointId === BORROW_CHECKPOINT
-        ? "Fixture only: do not perform a manual action until the next QA session loads the stable ASSET-BORROW-001 checklist."
+        ? "Baseline ready. Launch the configured managed sessions, then the user starts the deduplicated ASSET-BORROW-001 guide; Codex performs no browser checklist action."
         : "Compare the UI screenshot with this identity-level oracle. Record PASS only when asset and event roles remain independently correct."
     });
   }
@@ -2417,6 +2937,16 @@
     }
     config();
     const state = requireMatchingState();
+    if (checkpointId === BORROW_CHECKPOINT) {
+      const paymentIds = Q.collection("payments")
+        .find({ sourceId: { $in: ASSET_IDS } }, { projection: { _id: 1 } })
+        .toArray()
+        .map(item => Q.text(item._id))
+        .filter(Boolean);
+      if (paymentIds.length > 0) {
+        Q.collection("payment_gateway_operations").deleteMany({ paymentId: { $in: paymentIds } });
+      }
+    }
     Q.restoreSnapshots(state.snapshots);
     for (const saved of state.savedUserActivities || []) restoreBorrowUserActivities(saved);
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
@@ -2440,6 +2970,12 @@
     case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
     case "repair-visibility-fixture": repairVisibilityFixtureSchema(); break;
     case "verify-visibility-edited": verifyVisibilityEdited(); break;
+    case "verify-borrow-cancel": verifyBorrowCancel(); break;
+    case "verify-borrow-reject": verifyBorrowReject(); break;
+    case "verify-borrow-accepted": verifyBorrowAccepted(); break;
+    case "verify-borrow-paid-pending-organizer": verifyBorrowPaidPendingOrganizer(); break;
+    case "verify-borrow-paid-accepted-participant": verifyBorrowPaidAcceptedParticipant(); break;
+    case "verify-borrow-terminal": verifyBorrowTerminal(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

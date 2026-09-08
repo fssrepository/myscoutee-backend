@@ -2,6 +2,9 @@
   "name": "UI admin workspace slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "admin/route",
+  "qaBranches": {
+    "supporting": ["ROLE-TRIAD-CORE-001"]
+  },
   "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,

@@ -11,6 +11,10 @@
   "script": "assert.mjs",
   "fullStackOnly": true,
   "mutation": true,
+  "qaBranches": {
+    "core": ["ARTICLE-EDITOR-001"],
+    "supporting": ["CONTENT-ADMIN-LIFECYCLE-001", "MEDIA-IMG-001"]
+  },
   "tags": [
     "help-editor",
     "revision",

@@ -35,6 +35,7 @@ public class ActivityMember {
     private String requestKind;
     private String invitedByUserId;
     private String managerGrantedByUserId;
+    private Boolean organizerOnly = false;
     private String metAtIso;
     private String actionAtIso;
     private String metWhere;
@@ -157,6 +158,14 @@ public class ActivityMember {
 
     public void setManagerGrantedByUserId(String managerGrantedByUserId) {
         this.managerGrantedByUserId = managerGrantedByUserId;
+    }
+
+    public Boolean getOrganizerOnly() {
+        return organizerOnly;
+    }
+
+    public void setOrganizerOnly(Boolean organizerOnly) {
+        this.organizerOnly = Boolean.TRUE.equals(organizerOnly);
     }
 
     public String getMetAtIso() {

@@ -1418,6 +1418,20 @@ public class ActivitiesResourcesService {
             String assetId,
             String expectedManagerUserId,
             String actorUserId) {
+        return removeScopedAssetAssignmentState(
+                ownerId,
+                subEventId,
+                assetId,
+                expectedManagerUserId,
+                actorUserId) != null;
+    }
+
+    public ActivitySubEventResourceStateDto removeScopedAssetAssignmentState(
+            String ownerId,
+            String subEventId,
+            String assetId,
+            String expectedManagerUserId,
+            String actorUserId) {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
         String normalizedAssetId = normalizeId(assetId);
@@ -1428,7 +1442,7 @@ public class ActivitiesResourcesService {
                 || !StringUtils.hasText(normalizedAssetId)
                 || !StringUtils.hasText(normalizedExpectedManagerUserId)
                 || !normalizedExpectedManagerUserId.equals(normalizedActorUserId)) {
-            return false;
+            return null;
         }
 
         for (ActivitySubEventResource record : activitySubEventResourcesRepository
@@ -1481,10 +1495,12 @@ public class ActivitiesResourcesService {
             next.setUpdatedDate(nowIso);
             next.setUpdatedUser(normalizedActorUserId);
             ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+            Map<String, SubEventResourceMetricDto> groupMetricsByType;
             if (resourceBecameEmpty) {
                 removeGroupRuntimeResourceMetrics(saved, normalizedActorUserId, nowIso);
+                groupMetricsByType = Map.of();
             } else {
-                persistGroupRuntimeResourceMetrics(
+                groupMetricsByType = persistGroupRuntimeResourceMetrics(
                         saved,
                         metricsByType,
                         normalizedActorUserId,
@@ -1498,11 +1514,23 @@ public class ActivitiesResourcesService {
                     saved.getAssetOwnerUserId(),
                     nowIso,
                     removedAssetAssignments(record, next));
-            updateEventSubEventResourceCounters(normalizedOwnerId, normalizedSubEventId);
+            assetsService.statusDeleteAssignmentScopeRequests(
+                    saved.getAssetOwnerUserId(),
+                    Set.of(normalizedAssetId),
+                    normalizedOwnerId,
+                    authorizationEventId(normalizedOwnerId, normalizedSubEventId),
+                    normalizedSubEventId,
+                    normalizedActorUserId,
+                    nowIso);
+            Map<String, SubEventResourceMetricDto> commonMetricsByType =
+                    updateEventSubEventResourceCounters(normalizedOwnerId, normalizedSubEventId);
+            if (commonMetricsByType.isEmpty()) {
+                commonMetricsByType = groupMetricsByType;
+            }
             refreshEventParticipationProjection(normalizedOwnerId);
-            return true;
+            return toMutationStateDto(saved, referencedAssets, commonMetricsByType);
         }
-        return false;
+        return null;
     }
 
     private void removeGroupRuntimeResourceMetrics(
@@ -2089,14 +2117,17 @@ public class ActivitiesResourcesService {
                 continue;
             }
             List<AssetMemberRequestDto> requests = detail == null ? List.of() : detail.requests();
+            Set<String> organizerOnlyUserIds = organizerOnlyAssetUserIds(assetId);
             int[] requestCounts = assetRequestCounts(
                     requests,
                     record == null ? null : record.getOwnerId(),
-                    record == null ? null : record.getSubEventId());
+                    record == null ? null : record.getSubEventId(),
+                    organizerOnlyUserIds);
             accepted += requestCounts[0];
             pending += requestCounts[1];
             String managerUserId = normalizeId(settings == null ? null : settings.addedByUserId());
             if (StringUtils.hasText(managerUserId)
+                    && !organizerOnlyUserIds.contains(managerUserId)
                     && detail != null
                     && !hasScopedAssetRequestForUser(
                             requests,
@@ -2129,7 +2160,8 @@ public class ActivitiesResourcesService {
     private int[] assetRequestCounts(
             List<AssetMemberRequestDto> requests,
             String ownerId,
-            String subEventId) {
+            String subEventId,
+            Set<String> organizerOnlyUserIds) {
         Map<String, String> statusByIdentity = new LinkedHashMap<>();
         for (AssetMemberRequestDto request : requests == null ? List.<AssetMemberRequestDto>of() : requests) {
             if (!isScopedAssetRequest(request, ownerId, subEventId)) {
@@ -2139,7 +2171,12 @@ public class ActivitiesResourcesService {
             if (!"accepted".equals(status) && !"pending".equals(status)) {
                 continue;
             }
-            String identity = firstNonBlank(normalizeId(request.userId()), normalizeId(request.id()));
+            if ("accepted".equals(status)
+                    && (organizerOnlyUserIds == null ? Set.<String>of() : organizerOnlyUserIds)
+                            .contains(normalizeId(request.userId()))) {
+                continue;
+            }
+            String identity = firstNonBlank(normalizeId(request.id()), normalizeId(request.userId()));
             if (!StringUtils.hasText(identity)) {
                 continue;
             }
@@ -2152,6 +2189,25 @@ public class ActivitiesResourcesService {
                 (int) statusByIdentity.values().stream().filter("accepted"::equals).count(),
                 (int) statusByIdentity.values().stream().filter("pending"::equals).count()
         };
+    }
+
+    private Set<String> organizerOnlyAssetUserIds(String assetId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return Set.of();
+        }
+        return mongoTemplate.find(
+                        Query.query(new Criteria().andOperator(
+                                Criteria.where("ownerType").is("asset"),
+                                Criteria.where("ownerId").is(normalizedAssetId),
+                                Criteria.where("organizerOnly").is(true),
+                                Criteria.where("status").ne(STATUS_DELETED))),
+                        ActivityMember.class)
+                .stream()
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
 
     private boolean hasScopedAssetRequestForUser(

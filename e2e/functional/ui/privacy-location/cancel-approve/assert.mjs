@@ -1,5 +1,10 @@
 import { assert } from '../../../../shared/assertions.mjs';
-import { acceptEntryPrivacyIfPresent, waitForLoginDialogOrDemoSelector, waitForVisibleCount } from '../../lib/ui-contracts.mjs';
+import {
+  acceptEntryPrivacyIfPresent,
+  clickEntryPrimaryAction,
+  waitForLoginDialogOrDemoSelector,
+  waitForVisibleCount
+} from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   await page.waitForSelector('app-entry-page');
@@ -7,7 +12,7 @@ export async function assertUi({ page }) {
   await page.recordStep('privacy-accepted');
   assert(!(await page.isSelectorVisible('.entry-auth-btn-location')), 'Demo selector mode should not show the location gate in the header');
 
-  await page.click('.entry-cta-primary');
+  await clickEntryPrimaryAction(page);
   await waitForLoginDialogOrDemoSelector(page, 30000);
   if (!(await page.isSelectorVisible('.dialog'))) {
     await page.waitForSelector('.demo-user-stage', { timeoutMs: 30000 });
@@ -24,7 +29,7 @@ export async function assertUi({ page }) {
 
   assert(!(await page.isSelectorVisible('.demo-user-stage')), 'Demo selector should stay closed after cancelling location');
 
-  await page.click('.entry-cta-primary');
+  await clickEntryPrimaryAction(page);
   await page.waitForSelector('.dialog');
   await page.recordStep('location-required-dialog-visible-again');
   await page.setGeolocation({

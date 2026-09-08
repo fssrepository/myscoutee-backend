@@ -2,6 +2,34 @@
   "name": "E2E mutation flow smoke",
   "mode": "e2e",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": [
+      "ARTICLE-EDITOR-001",
+      "ASSET-LIFE-001",
+      "ASSET-VIS-001",
+      "AUTH-SESSION-001",
+      "CHAT-ACTIONS-001",
+      "CHAT-CONTENT-001",
+      "CHAT-FLOW-001",
+      "CHAT-GOVERNANCE-001",
+      "CONTENT-ADMIN-LIFECYCLE-001",
+      "EVENT-CHAT-LIFECYCLE-001",
+      "EVENT-EDITOR-002",
+      "EVENT-FEEDBACK-001",
+      "EVENT-FEEDBACK-002",
+      "EVENT-FEEDBACK-005",
+      "EVENT-FEEDBACK-006",
+      "EVENT-IMPRESSION-001",
+      "EVENT-IMPRESSION-002",
+      "EVENT-LIFE-001",
+      "EVENT-LIFE-002",
+      "EVENT-LIFE-003",
+      "EVENT-LIFE-004",
+      "EVENT-LIFE-005",
+      "EVENT-NOTIFICATION-001",
+      "EVENT-PUBLISH-CHAT-001"
+    ]
+  },
   "users": 2,
   "rampUpMs": 1000,
   "iterations": 1,
@@ -41,6 +69,10 @@
     {
       "name": "event participation",
       "collectionCase": "flows/event-participation/join-feedback"
+    },
+    {
+      "name": "two-session authentication limit",
+      "collectionCase": "flows/auth-session/two-session-limit"
     }
   ]
 }

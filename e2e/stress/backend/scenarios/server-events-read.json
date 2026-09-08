@@ -2,6 +2,21 @@
   "name": "Events read benchmark",
   "mode": "contract",
   "baseUrl": "https://127.0.0.1",
+  "qaBranches": {
+    "supporting": [
+      "EVENT-ACTIVITY-REFRESH-001",
+      "EVENT-FEEDBACK-001",
+      "EVENT-FEEDBACK-002",
+      "EVENT-FEEDBACK-005",
+      "EVENT-FEEDBACK-006",
+      "EVENT-LIFE-001",
+      "EVENT-LIFE-002",
+      "EVENT-LIFE-003",
+      "EVENT-LIFE-004",
+      "EVENT-LIFE-005",
+      "EVENT-VISIBILITY-001"
+    ]
+  },
   "users": 8,
   "rampUpMs": 8000,
   "durationMs": 90000,

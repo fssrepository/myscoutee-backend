@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventAssetRemovalRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceReadReceiptDto;
@@ -83,6 +84,19 @@ public class ActivitiesResourcesController {
         String actorUserId = homeUserProfileService.resolveSelectedUserId(
                 request == null ? null : request.assetOwnerUserId());
         return activitiesResourcesService.replace(request, actorUserId);
+    }
+
+    @PostMapping("/remove-assignment")
+    public ActivitySubEventResourceStateDto removeAssignment(
+            @RequestBody ActivitySubEventAssetRemovalRequestDto request) {
+        String actorUserId = homeUserProfileService.resolveSelectedUserId(
+                request == null ? null : request.userId());
+        return activitiesResourcesService.removeScopedAssetAssignmentState(
+                request == null ? null : request.ownerId(),
+                request == null ? null : request.subEventId(),
+                request == null ? null : request.assetId(),
+                actorUserId,
+                actorUserId);
     }
 
     @PostMapping("/read")
