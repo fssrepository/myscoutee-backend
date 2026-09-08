@@ -1377,19 +1377,6 @@
     const acceptedAuditCounts = Array.isArray(expectedAuditCounts) ? expectedAuditCounts : [expectedAuditCounts];
     const auditCount = current.basketAudit.length;
     const quantityHistory = basketHistory.map(item => item.quantity);
-    const selectionHistory = basketHistory.map(item => [
-      item.quantity,
-      item.detail,
-      item.amount,
-      item.currency
-    ].join("|"));
-    const everyGenerationChanged = selectionHistory.every((selection, index) => (
-      index === 0 || selection !== selectionHistory[index - 1]
-    ));
-    const canonicalHistory = auditCount === 3 && Q.sameJson(quantityHistory, [1, 2, 1]);
-    const disclosedExploratoryHistory = auditCount === 5
-      && Q.sameJson(quantityHistory, [1, 1, 1, 2, 1])
-      && everyGenerationChanged;
     if (!paid || paid.quantity !== 3 || paid.requests.length !== 0
         || current.projections.length !== 0 || current.resources.length !== 0
         || current.payments.length !== 0 || current.baskets.length !== 1
@@ -1401,8 +1388,7 @@
         || basket.checkoutSessionId || !hasTenMinuteBasketTtl(basket)
         || !acceptedAuditCounts.includes(auditCount)
         || current.basketAudit.filter(item => item.resultState === "deleted").length !== auditCount - 1
-        || (auditCount === 1 && !Q.sameJson(quantityHistory, [1]))
-        || (auditCount > 1 && !canonicalHistory && !disclosedExploratoryHistory)
+        || !quantityHistory.every(quantity => quantity === 1)
         || basketHistory.at(-1)?.resultState !== "pending"
         || basketHistory.slice(0, -1).some(item => item.resultState !== "deleted")
         || current.storedAssetMembers.length !== 0) {
@@ -1441,7 +1427,7 @@
     }
     assertSimulator(false);
     const current = oracle();
-    assertPaymentReadyState(current, [3, 5]);
+    assertPaymentReadyState(current, 1);
     assertImmutableControls(currentState);
     assertFinancialDelta(currentState, 0);
     captureSavepoint("revisedPaymentReady", "revised-payment-ready");

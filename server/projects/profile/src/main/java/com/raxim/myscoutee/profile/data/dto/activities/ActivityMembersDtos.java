@@ -78,14 +78,26 @@ public final class ActivityMembersDtos {
             String action,
             String reason,
             String eventId,
-            String subEventId) {
+            String subEventId,
+            String targetMemberId) {
         public ActivityMemberActionRequestDto(
                 ActivityMemberOwnerRefDto owner,
                 String actorUserId,
                 String targetUserId,
                 String action,
                 String reason) {
-            this(owner, actorUserId, targetUserId, action, reason, null, null);
+            this(owner, actorUserId, targetUserId, action, reason, null, null, null);
+        }
+
+        public ActivityMemberActionRequestDto(
+                ActivityMemberOwnerRefDto owner,
+                String actorUserId,
+                String targetUserId,
+                String action,
+                String reason,
+                String eventId,
+                String subEventId) {
+            this(owner, actorUserId, targetUserId, action, reason, eventId, subEventId, null);
         }
     }
 

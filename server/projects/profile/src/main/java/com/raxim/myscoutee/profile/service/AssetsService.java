@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -1619,11 +1620,18 @@ public class AssetsService {
             return null;
         }
         String ownerUserId = normalizeId(current.getOwnerUserId());
-        Map<String, ActivityMemberEntryDto> suppliedByUserId = new LinkedHashMap<>();
+        List<ActivityMemberEntryDto> suppliedEntries = new ArrayList<>();
+        Map<String, ActivityMemberEntryDto> suppliedByMemberId = new LinkedHashMap<>();
+        Map<String, List<ActivityMemberEntryDto>> suppliedByUserId = new LinkedHashMap<>();
         for (ActivityMemberEntryDto member : members == null ? List.<ActivityMemberEntryDto>of() : members) {
             String memberUserId = normalizeId(member == null ? null : member.userId());
             if (StringUtils.hasText(memberUserId) && !ownerUserId.equals(memberUserId)) {
-                suppliedByUserId.put(memberUserId, member);
+                suppliedEntries.add(member);
+                String memberId = normalizeId(member.id());
+                if (StringUtils.hasText(memberId)) {
+                    suppliedByMemberId.put(memberId, member);
+                }
+                suppliedByUserId.computeIfAbsent(memberUserId, ignored -> new ArrayList<>()).add(member);
             }
         }
 
@@ -1634,7 +1642,15 @@ public class AssetsService {
                 .findFirst()
                 .map(this::cloneRequestBooking)
                 .orElseGet(() -> minimalRequestBooking(normalizedEventId, normalizedSubEventId));
-        Set<String> retainedUserIds = new LinkedHashSet<>();
+        Map<String, Long> activeRequestCountByUserId = safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .filter(request -> !isDeletedAssetRequest(request))
+                .collect(Collectors.groupingBy(
+                        request -> normalizeId(request.userId()),
+                        LinkedHashMap::new,
+                        Collectors.counting()));
+        Set<String> retainedMemberIds = new LinkedHashSet<>();
         List<AssetRequestRecord> nextRequests = new ArrayList<>();
         for (AssetRequestRecord existing : safeRequests(current.getRequests())) {
             if (existing == null || !isRequestInScope(existing, normalizedEventId, normalizedSubEventId)) {
@@ -1642,6 +1658,18 @@ public class AssetsService {
                     nextRequests.add(existing);
                 }
                 continue;
+            }
+            String requestId = normalizeId(existing.id());
+            String requestUserId = normalizeId(existing.userId());
+            ActivityMemberEntryDto supplied = suppliedByMemberId.get(requestId);
+            if (supplied == null && activeRequestCountByUserId.getOrDefault(requestUserId, 0L) == 1L) {
+                List<ActivityMemberEntryDto> sameUserEntries = suppliedByUserId.getOrDefault(requestUserId, List.of());
+                if (sameUserEntries.size() == 1) {
+                    supplied = sameUserEntries.get(0);
+                }
+            }
+            if (supplied != null) {
+                retainedMemberIds.add(normalizeId(supplied.id()));
             }
             if (isDeletedAssetRequest(existing)) {
                 nextRequests.add(existing);
@@ -1651,7 +1679,6 @@ public class AssetsService {
                 nextRequests.add(existing);
                 continue;
             }
-            String requestUserId = normalizeId(existing.userId());
             // A take-over keeps the successor's accepted scoped membership as the
             // authoritative occupant of the resource. Member-list updates omit the
             // current owner, so dropping this row would incorrectly turn 2 -> 0
@@ -1660,23 +1687,21 @@ public class AssetsService {
                 nextRequests.add(existing);
                 continue;
             }
-            ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
             if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
                 nextRequests.add(withAssetRequestStatus(existing, STATUS_DELETED));
                 continue;
             }
-            retainedUserIds.add(requestUserId);
             AssetRequestRecord updated = toScopedAssetRequest(supplied, existing, scopedBooking);
             if (updated != null) {
                 nextRequests.add(updated);
             }
         }
-        for (Map.Entry<String, ActivityMemberEntryDto> entry : suppliedByUserId.entrySet()) {
-            if (retainedUserIds.contains(entry.getKey())
-                    || "deleted".equals(normalizeMemberStatus(entry.getValue().status()))) {
+        for (ActivityMemberEntryDto entry : suppliedEntries) {
+            if (retainedMemberIds.contains(normalizeId(entry.id()))
+                    || "deleted".equals(normalizeMemberStatus(entry.status()))) {
                 continue;
             }
-            AssetRequestRecord added = toScopedAssetRequest(entry.getValue(), null, scopedBooking);
+            AssetRequestRecord added = toScopedAssetRequest(entry, null, scopedBooking);
             if (added != null) {
                 nextRequests.add(added);
             }

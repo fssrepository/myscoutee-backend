@@ -324,7 +324,7 @@ public class ActivitiesMembersService {
                                     ? right
                                     : left,
                             LinkedHashMap::new));
-        Map<String, ActivityMember> membersByUserId = new LinkedHashMap<>();
+        List<ActivityMember> members = new ArrayList<>();
         String scopedManagerUserId = resolveScopedAssetManagerUserId(assetId, eventId, subEventId);
         String assetOwnerUserId = normalizeId(asset.getOwnerUserId());
         if (!Boolean.TRUE.equals(pendingOnly)
@@ -336,7 +336,7 @@ public class ActivitiesMembersService {
                     subEventId,
                     storedAssetMembersByUserId.get(assetOwnerUserId));
             if (owner != null) {
-                membersByUserId.put(normalizeId(owner.getUserId()), owner);
+                members.add(owner);
             }
         }
         for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
@@ -348,10 +348,10 @@ public class ActivitiesMembersService {
                     scopedManagerUserId);
             String memberUserId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(memberUserId) && !memberUserId.equals(normalizeId(asset.getOwnerUserId()))) {
-                membersByUserId.put(memberUserId, member);
+                members.add(member);
             }
         }
-        return membersByUserId.values().stream()
+        return members.stream()
                 .sorted(this::compareMembersForManagement)
                 .toList();
     }
@@ -1094,6 +1094,7 @@ public class ActivitiesMembersService {
         String action = normalizeMemberAction(request.action());
         String scopedEventId = normalizeId(request.eventId());
         String scopedSubEventId = normalizeId(request.subEventId());
+        String targetMemberId = normalizeId(request.targetMemberId());
         boolean organizerParticipationAction = ACTION_SET_ORGANIZER_ONLY.equals(action)
                 || ACTION_SET_PARTICIPANT.equals(action);
         boolean scopedAssetAction = OWNER_TYPE_ASSET.equals(ownerType)
@@ -1121,6 +1122,11 @@ public class ActivitiesMembersService {
         ActivityMember current = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> targetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> !scopedAssetAction
+                        || !StringUtils.hasText(targetMemberId)
+                        || targetMemberId.equals(firstNonBlank(
+                                normalizeId(member.getSyncKey()),
+                                normalizeId(member.getId()))))
                 .findFirst()
                 .orElse(null);
         if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
@@ -1239,6 +1245,11 @@ public class ActivitiesMembersService {
                 }
             } else if (OWNER_TYPE_GROUP.equals(ownerType)) {
                 tournamentGroupCounterService.syncParent(scopedEventId, scopedSubEventId);
+            } else if (OWNER_TYPE_ASSET.equals(ownerType) && scopedAssetAction) {
+                activitiesResourcesService.refreshResourceMetricsForScope(
+                        scopedEventId,
+                        scopedSubEventId,
+                        actorUserId);
             }
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
@@ -1333,6 +1344,7 @@ public class ActivitiesMembersService {
                     scopedSubEventId,
                     actorUserId,
                     targetUserId,
+                    targetMemberId,
                     existing,
                     next);
             if (ACTION_REMOVE.equals(action)) {
@@ -1490,12 +1502,19 @@ public class ActivitiesMembersService {
             String subEventId,
             String actorUserId,
             String targetUserId,
+            String targetMemberId,
             List<ActivityMember> existing,
             ActivityMember next) {
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(actorUserId);
         List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
         for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
-            if (member == null || targetUserId.equals(normalizeId(member.getUserId()))) {
+            String memberId = member == null ? "" : firstNonBlank(
+                    normalizeId(member.getSyncKey()),
+                    normalizeId(member.getId()));
+            boolean target = member != null
+                    && targetUserId.equals(normalizeId(member.getUserId()))
+                    && (!StringUtils.hasText(targetMemberId) || targetMemberId.equals(memberId));
+            if (member == null || target) {
                 continue;
             }
             ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId);
@@ -1527,16 +1546,16 @@ public class ActivitiesMembersService {
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, assetId, targetUserId)
                 .orElse(null);
         ActivityMember next = stored == null ? cloneMember(current) : cloneMember(stored);
+        next.setRole(resolveStoredRole(current, OWNER_TYPE_ASSET, assetId));
+        next.setStatus(normalizeStatus(current.getStatus()));
+        next.setPendingSource(current.getPendingSource());
+        next.setRequestKind(current.getRequestKind());
         if (stored == null) {
             next.setId(new ObjectId().toHexString());
             next.setSyncKey("asset-organizer:" + assetId + ":" + targetUserId);
             next.setOwnerType(OWNER_TYPE_ASSET);
             next.setOwnerId(assetId);
             next.setUserId(targetUserId);
-            next.setRole(resolveStoredRole(current, OWNER_TYPE_ASSET, assetId));
-            next.setStatus(normalizeStatus(current.getStatus()));
-            next.setPendingSource(current.getPendingSource());
-            next.setRequestKind(current.getRequestKind());
             next.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));
             next.setMetWhere(safeText(current.getMetWhere()));
             next.setCreatedDate(nowIso);

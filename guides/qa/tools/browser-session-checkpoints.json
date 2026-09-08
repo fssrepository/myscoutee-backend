@@ -1311,13 +1311,13 @@
           "actor": "Casey Asset owner",
           "sessionKind": "demo",
           "userId": "650000000000000000000061",
-          "expectedName": "Casey Bridge · owner decisions and Statistics"
+          "expectedName": "Casey Bridge · free and paid request approvals"
         },
         {
           "actor": "Nova Borrow requester",
           "sessionKind": "demo",
           "userId": "650000000000000000000062",
-          "expectedName": "Nova Social · cancel and accepted-capacity branches"
+          "expectedName": "Nova Social · free, paid and organizer-only branches"
         },
         {
           "actor": "Riley Borrow requester",

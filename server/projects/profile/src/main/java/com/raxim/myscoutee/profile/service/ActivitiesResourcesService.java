@@ -2117,14 +2117,17 @@ public class ActivitiesResourcesService {
                 continue;
             }
             List<AssetMemberRequestDto> requests = detail == null ? List.of() : detail.requests();
+            Set<String> organizerOnlyUserIds = organizerOnlyAssetUserIds(assetId);
             int[] requestCounts = assetRequestCounts(
                     requests,
                     record == null ? null : record.getOwnerId(),
-                    record == null ? null : record.getSubEventId());
+                    record == null ? null : record.getSubEventId(),
+                    organizerOnlyUserIds);
             accepted += requestCounts[0];
             pending += requestCounts[1];
             String managerUserId = normalizeId(settings == null ? null : settings.addedByUserId());
             if (StringUtils.hasText(managerUserId)
+                    && !organizerOnlyUserIds.contains(managerUserId)
                     && detail != null
                     && !hasScopedAssetRequestForUser(
                             requests,
@@ -2157,7 +2160,8 @@ public class ActivitiesResourcesService {
     private int[] assetRequestCounts(
             List<AssetMemberRequestDto> requests,
             String ownerId,
-            String subEventId) {
+            String subEventId,
+            Set<String> organizerOnlyUserIds) {
         Map<String, String> statusByIdentity = new LinkedHashMap<>();
         for (AssetMemberRequestDto request : requests == null ? List.<AssetMemberRequestDto>of() : requests) {
             if (!isScopedAssetRequest(request, ownerId, subEventId)) {
@@ -2165,6 +2169,11 @@ public class ActivitiesResourcesService {
             }
             String status = safeText(request.status()).toLowerCase(Locale.ROOT);
             if (!"accepted".equals(status) && !"pending".equals(status)) {
+                continue;
+            }
+            if ("accepted".equals(status)
+                    && (organizerOnlyUserIds == null ? Set.<String>of() : organizerOnlyUserIds)
+                            .contains(normalizeId(request.userId()))) {
                 continue;
             }
             String identity = firstNonBlank(normalizeId(request.id()), normalizeId(request.userId()));
@@ -2180,6 +2189,25 @@ public class ActivitiesResourcesService {
                 (int) statusByIdentity.values().stream().filter("accepted"::equals).count(),
                 (int) statusByIdentity.values().stream().filter("pending"::equals).count()
         };
+    }
+
+    private Set<String> organizerOnlyAssetUserIds(String assetId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return Set.of();
+        }
+        return mongoTemplate.find(
+                        Query.query(new Criteria().andOperator(
+                                Criteria.where("ownerType").is("asset"),
+                                Criteria.where("ownerId").is(normalizedAssetId),
+                                Criteria.where("organizerOnly").is(true),
+                                Criteria.where("status").ne(STATUS_DELETED))),
+                        ActivityMember.class)
+                .stream()
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
 
     private boolean hasScopedAssetRequestForUser(

@@ -135,8 +135,9 @@ when the provider-owned three-minute window crosses the basket's original
 `rollback-payment-ready` cannot manufacture that browser-local entry if it was
 already cleared: after such a rollback the user repeats steps 1-18 once while
 Codex keeps the already captured server boundary at `payment-ready`.
-Immediately before step 31, `capture-revised-payment-ready` proves the exact
-`1 → 2 → 1` basket-generation history and saves the resulting server state.
+Immediately before step 31, `capture-revised-payment-ready` proves that Back
+and Continue kept the single Quantity-`1` basket generation unchanged and
+saves the resulting server state.
 If any later payment or request step fails, Codex runs
 `rollback-revised-payment-ready` to return to that boundary without replaying
 steps 1-30. Because this is a live ten-minute basket, that rollback preserves
@@ -170,10 +171,10 @@ previously left there with `Back`.
    invalid or out-of-parent value cannot remain in the form and no request is
    sent.
 7. Restore the fixture-provided valid timeframe.
-8. Attempt to enter a quantity above the displayed availability. Confirm it is
-   rejected or clamped to the maximum and cannot be submitted as an
-   over-capacity request.
-9. Set quantity to `1`.
+8. Confirm Quantity is visible but read-only and fixed to `1`; no second unit
+   can be entered in this checkout.
+9. Confirm the separate availability text still shows how many physical items
+   are available for the selected dates.
 10. Confirm `QA Borrow policy` is mandatory/read-only and does not expose an
     optional acceptance checkbox.
 11. Confirm the mandatory policy is included by definition and does not block
@@ -224,25 +225,19 @@ the exact mismatch; do not build a new attempt over the inconsistent state.
     primary action is green `Continue borrow`.
 26. Select `Continue borrow` once. Confirm the same payment phase returns
     without creating a new backend basket generation, then select `Back` once.
-27. Change quantity from `1` to `2`. Confirm the total changes and the primary
-    action becomes orange `Update borrow`. Select `Update borrow` once and
-    confirm the payment phase owns quantity `2`; then select `Back` once.
-28. Change quantity back to `1`. Confirm `Update borrow` remains orange, select
-    it once, and confirm Barion returns with final quantity `1` and the original
-    exact total. The earlier quantity-`2` values must not remain in the payment
-    phase.
+27. Confirm Quantity is still read-only `1`; Back cannot make it editable and
+    cannot change the total. Select `Continue borrow` once, then `Back` once.
+28. Confirm Quantity remains `1` and the primary action is still the unchanged
+    green `Continue borrow`. Select it once and confirm Barion returns with the
+    original exact total.
 29. Report:
 
     `ASSET-CHECKOUT-001 revised payment ready: final draft owns quantity 1`
 
-30. Wait for Codex to prove the canonical three pre-Pay basket audit
-    generations (initial Confirm plus two Updates), one active final confirmed
-    basket and no payment/session, borrow request, inventory delta or
-    assignment. If the user explicitly tried additional back-and-forth Update
-    values, the fixture may retain those generations only when every adjacent
-    saved selection is materially different and the final state is still the
-    required quantity `1`; the unchanged Continue action must not create a
-    generation.
+30. Wait for Codex to prove there is still exactly one pre-Pay Quantity-`1`
+    basket generation, one active confirmed basket and no payment/session,
+    Borrow request, inventory delta or assignment. The unchanged Continue
+    action must not create another generation.
 
 ### 3. Pay once and prove the Asset UI does not freeze
 
