@@ -128,13 +128,17 @@ confirms:
    `QA ASSET-BORROW-001 Cancel Transport → Borrow`; keep Quantity `1`; press
    `Send borrow request` exactly once.**
 
-8. **Nova — expected immediately:** the dialog closes; Group A shows one
-   Transport resource and one pending chain; Cancel Transport shows one
-   pending request. The same card must not offer a second submission for Nova
-   in Group A. Do not try to force a duplicate.
+8. **Nova — expected immediately, without reload:** the dialog closes; red `1`
+   appears on the Cancel Transport card, the Transport filter, Group A, QA
+   Borrow Stage and the Tournament card under Activity → Events. The resource
+   popup header says `0 members · 1 pending`. The same card must not offer a
+   second submission for Nova in Group A. Do not try to force a duplicate.
 
 9. **Casey — check:** exactly one new Borrow-request notification and exactly
    one pending Nova row under `QA ASSET-BORROW-001 Cancel Transport`.
+
+   **Expected notification detail:**
+   `Requested access · QA ASSET-BORROW-001 Cancel Transport`.
 
    **Expected row:** Group A, QA Borrow Stage, Start `09/08/2026`, End
    `09/15/2026`, Quantity `1`.
@@ -169,9 +173,10 @@ Codex must run `verify-borrow-cancel` before the Reject branch.
     Transport → Borrow`; keep Quantity `1`; press `Send borrow request`
     exactly once.**
 
-15. **Expected:** Group A gains exactly one pending delta and Casey receives
-    exactly one pending delta. Group B, Capacity Transport and Cancel Transport
-    remain unchanged.
+15. **Expected:** Group A gains exactly one pending delta. Casey receives one
+    notification with detail
+    `Requested access · QA ASSET-BORROW-001 Reject Transport`. Group B,
+    Capacity Transport and Cancel Transport remain unchanged.
 
 16. **Casey — open the pending Riley row under Reject Transport; press `Reject
     request`; confirm exactly once.**
@@ -207,9 +212,11 @@ Codex must run `verify-borrow-reject` before the accepted Capacity branch.
     End `09/15/2026`. Change to Start `09/16/2026`, End `09/17/2026`: it must
     show `3 left`. Then restore Start `09/08/2026`, End `09/15/2026`.
 
-23. **Casey — check:** exactly one pending Nova row under Capacity Transport,
-    showing Group A, QA Borrow Stage, Start `09/08/2026`, End `09/15/2026`,
-    Quantity `1`. Press `Approve` and confirm exactly once.
+23. **Casey — check:** exactly one notification with detail
+    `Requested access · QA ASSET-BORROW-001 Capacity Transport`, and exactly
+    one pending Nova row under Capacity Transport showing Group A, QA Borrow
+    Stage, Start `09/08/2026`, End `09/15/2026`, Quantity `1`. Press `Approve`
+    and confirm exactly once.
 
 24. **Casey — check without reload. Expected:** Nova's row changes from
     pending to accepted exactly once; the complete pending red-counter chain
