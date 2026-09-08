@@ -6556,7 +6556,7 @@ Status: **STAGED / BASELINE READY / BROWSER RELAUNCH REQUIRED / USER ACTION NOT 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
 
-The revised fixture was staged at `2026-09-08T08:54:50.176Z`. Its read-only
+The revised fixture was restaged at `2026-09-08T09:24:00.778Z`. Its read-only
 status proves all ten baseline guards: exactly four Public Transport controls
 (three free plus one HUF 3200 Barion Asset), Lina's retained Quantity-`2`
 Group B reservation and scoped Manager assignment, the exact Event/Stage/Group

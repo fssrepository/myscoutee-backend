@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-08 11:20 CEST
+Updated: 2026-09-08 11:24 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -81,8 +81,8 @@ checkpoint: ASSET-BORROW-001 — STAGED / BASELINE READY / USER ACTION NOT START
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#asset-borrow-001--scoped-borrow-lifecycle
 checklist: ../checklists/asset/ASSET-BORROW-001.md
 substage: start at checklist step 1 after the configured Casey, Nova and Riley browser sessions have been relaunched for this restaged fixture
-fixture_phase: `phase=baseline-ready`, staged at `2026-09-08T08:54:50.176Z`; read-only status passed all ten baseline checks
-fixture_window: overlap `2026-09-08T07:54:50.176Z` through `2026-09-15T08:54:50.176Z`; non-overlap `2026-09-16T08:54:50.176Z` through `2026-09-17T08:54:50.176Z`
+fixture_phase: `phase=baseline-ready`, staged at `2026-09-08T09:24:00.778Z`; read-only status passed all ten baseline checks
+fixture_window: overlap `2026-09-08T08:24:00.778Z` through `2026-09-15T09:24:00.778Z`; non-overlap `2026-09-16T09:24:00.778Z` through `2026-09-17T09:24:00.778Z`
 fixture_assets: exactly four Public Transport controls — Capacity, Reject, Cancel and Paid; Paid is HUF 3200 through connected Barion with 3DS Off and Nova's saved Mastercard 4444
 runtime_contract: every free or paid Borrow submission has read-only Quantity 1 and creates one independent request, approval, assigned card and optional payment. Repeated same-Asset requests remain separate by request ID, receive `#1`/`#2` card labels and keep their booking date ranges. Source Explore shows the Asset once and has no Payment summary action; assigned paid cards retain Payment summary
 organizer_contract: `Organizer only` is exact-scope fine tuning for Event, Sub-event/Stage, Group and Asset. A user may set it on their own pending or accepted scoped Asset request without receiving wider member-management rights. It never cascades, changes a role, removes/reassigns a member or blocks an already-materialized tournament member from later-stage progression. The selected scope counter updates live and persists; the reverse action is `Count as participant`
