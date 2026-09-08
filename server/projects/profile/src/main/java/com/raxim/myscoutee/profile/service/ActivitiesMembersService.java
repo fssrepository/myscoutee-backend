@@ -1150,7 +1150,7 @@ public class ActivitiesMembersService {
                 && actorUserId.equals(targetUserId)
                 && (STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
                     || STATUS_PENDING.equals(normalizeStatus(current.getStatus())))
-                && actorCanManageOwner;
+                && (actorCanManageOwner || scopedAssetAction);
         if (organizerParticipationAction && !organizerParticipationAllowed) {
             return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }

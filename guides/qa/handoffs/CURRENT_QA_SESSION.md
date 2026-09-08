@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-08 11:05 CEST
+Updated: 2026-09-08 11:20 CEST
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -85,7 +85,7 @@ fixture_phase: `phase=baseline-ready`, staged at `2026-09-08T08:54:50.176Z`; rea
 fixture_window: overlap `2026-09-08T07:54:50.176Z` through `2026-09-15T08:54:50.176Z`; non-overlap `2026-09-16T08:54:50.176Z` through `2026-09-17T08:54:50.176Z`
 fixture_assets: exactly four Public Transport controls — Capacity, Reject, Cancel and Paid; Paid is HUF 3200 through connected Barion with 3DS Off and Nova's saved Mastercard 4444
 runtime_contract: every free or paid Borrow submission has read-only Quantity 1 and creates one independent request, approval, assigned card and optional payment. Repeated same-Asset requests remain separate by request ID, receive `#1`/`#2` card labels and keep their booking date ranges. Source Explore shows the Asset once and has no Payment summary action; assigned paid cards retain Payment summary
-organizer_contract: `Organizer only` is exact-scope fine tuning for Event, Sub-event/Stage, Group and Asset. It never cascades, changes a role, removes/reassigns a member or blocks an already-materialized tournament member from later-stage progression. The selected scope counter updates live and persists; the reverse action is `Count as participant`
+organizer_contract: `Organizer only` is exact-scope fine tuning for Event, Sub-event/Stage, Group and Asset. A user may set it on their own pending or accepted scoped Asset request without receiving wider member-management rights. It never cascades, changes a role, removes/reassigns a member or blocks an already-materialized tournament member from later-stage progression. The selected scope counter updates live and persists; the reverse action is `Count as participant`
 browser_phase: the fixture was restaged after the earlier managed Borrow windows were prepared. Those windows are not valid evidence for the new baseline. No browser was relaunched and Codex performed no checklist action
 browser_control: the user exclusively controls all manual browser navigation and clicks. CDP is allowed only after the user reports a concrete observed defect, and then only to diagnose that defect. Codex must never use CDP to prepare, position or perform a manual test sequence
 ledger_status: 89/104 passed; ASSET-CHECKOUT-001 is PASS/CLOSED and ASSET-BORROW-001 is the sole staged Asset transaction
