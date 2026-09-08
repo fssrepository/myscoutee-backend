@@ -24,7 +24,7 @@ remaining qualification work is completed.
 
 | Remaining phase | Scope | Estimate |
 |---|---|---:|
-| Pair-QA completion | 15 remaining journeys; current complexity range 1005/2435 minutes | 1–2 Weeks |
+| Pair-QA completion | 15 remaining journeys; current complexity range 1020/2465 minutes | 1–2 Weeks |
 | **Cumulative** | **The single remaining Pair-QA queue** | **1–2 Weeks** |
 
 ### Documentation PDFs
