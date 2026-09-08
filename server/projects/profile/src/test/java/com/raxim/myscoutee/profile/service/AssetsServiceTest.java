@@ -76,6 +76,44 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void assetReadModelKeepsDistinctRequestsFromTheSameBorrowerAndScope() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset requestedAsset = assetWithEventRequest();
+        AssetRequestRecord firstRequest = requestedAsset.getRequests().getFirst();
+        AssetRequestRecord secondRequest = new AssetRequestRecord(
+                "request-2",
+                firstRequest.userId(),
+                firstRequest.name(),
+                firstRequest.initials(),
+                firstRequest.gender(),
+                "pending",
+                "Awaiting owner confirmation.",
+                firstRequest.requestKind(),
+                "2026-05-11T10:05:00Z",
+                firstRequest.booking());
+        requestedAsset.setRequests(List.of(firstRequest, secondRequest));
+
+        when(assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc("u1"))
+                .thenReturn(List.of(requestedAsset));
+        when(mongoTemplate.find(any(Query.class), eq(Asset.class))).thenReturn(List.of());
+        when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(List.of("u1")))
+                .thenReturn(List.of(user("u1", "Owner One", "OO")));
+
+        AssetsService service = assetReadService(
+                assetsRepository,
+                usersRepository,
+                mongoTemplate,
+                mock(AccessControlService.class));
+
+        assertThat(service.queryAssets("u1").getFirst().requests())
+                .extracting(AssetMemberRequestDto::id)
+                .containsExactly("request-1", "request-2");
+    }
+
+    @Test
     void assetReadModelPreservesExplicitZeroQuantity() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

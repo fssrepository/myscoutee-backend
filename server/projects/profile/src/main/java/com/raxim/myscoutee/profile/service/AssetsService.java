@@ -3363,6 +3363,9 @@ public class AssetsService {
 
     private String requestScopeKey(AssetRequestRecord request) {
         String requestId = normalizeId(request == null ? null : request.id());
+        if (StringUtils.hasText(requestId)) {
+            return "id:" + requestId;
+        }
         String userId = normalizeId(request == null ? null : request.userId());
         String requestKind = normalizeAssetRequestKind(request == null ? null : request.requestKind());
         String eventId = normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
@@ -3371,7 +3374,7 @@ public class AssetsService {
         if (StringUtils.hasText(userId) && StringUtils.hasText(eventId) && StringUtils.hasText(subEventId)) {
             return requestKind + ":" + userId + ":" + eventId + ":" + subEventId + ":" + slotKey;
         }
-        return StringUtils.hasText(requestId) ? "id:" + requestId : "request:" + byScopeFallback(request);
+        return "request:" + byScopeFallback(request);
     }
 
     private String byScopeFallback(AssetRequestRecord request) {

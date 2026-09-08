@@ -2357,8 +2357,8 @@ public class ChatService {
                 continue;
             }
             String identity = firstNonBlank(
-                    normalizeId(request.userId()),
-                    normalizeId(request.id()));
+                    normalizeId(request.id()),
+                    normalizeId(request.userId()));
             if (!StringUtils.hasText(identity)) {
                 continue;
             }

@@ -119,7 +119,7 @@ function scopedAssetRequestStatuses(asset, ownerId, subEventId) {
     if (status !== 'accepted' && status !== 'pending') {
       continue;
     }
-    const identity = text(request.userId) || text(request._id) || text(request.id);
+    const identity = text(request.requestId) || text(request._id) || text(request.id) || text(request.userId);
     if (!identity) {
       continue;
     }

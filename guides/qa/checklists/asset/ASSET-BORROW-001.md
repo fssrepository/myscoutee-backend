@@ -131,8 +131,10 @@ confirms:
 8. **Nova — expected immediately, without reload:** the dialog closes; red `1`
    appears on the Cancel Transport card, the Transport filter, Group A, QA
    Borrow Stage and the Tournament card under Activity → Events. The resource
-   popup header says `0 members · 1 pending`. The same card must not offer a
-   second submission for Nova in Group A. Do not try to force a duplicate.
+   popup header says `0 members · 1 pending`. The new resource card shows Start
+   `09/08/2026`, End `09/15/2026`. Because one unit remains, Explore may offer
+   another independent Borrow request for the same Asset; do not submit that
+   second request in this cancel branch.
 
 9. **Casey — check:** exactly one new Borrow-request notification and exactly
    one pending Nova row under `QA ASSET-BORROW-001 Cancel Transport`.

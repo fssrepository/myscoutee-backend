@@ -2167,7 +2167,7 @@ public class ActivitiesResourcesService {
             if (!"accepted".equals(status) && !"pending".equals(status)) {
                 continue;
             }
-            String identity = firstNonBlank(normalizeId(request.userId()), normalizeId(request.id()));
+            String identity = firstNonBlank(normalizeId(request.id()), normalizeId(request.userId()));
             if (!StringUtils.hasText(identity)) {
                 continue;
             }
