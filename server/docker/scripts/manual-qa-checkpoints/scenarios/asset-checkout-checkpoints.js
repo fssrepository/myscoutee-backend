@@ -2466,12 +2466,112 @@
     });
   }
 
+  function rearmRefundEligibilityWindow() {
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "takeover-complete") {
+      Q.fail("refund-window repair requires takeover-complete.");
+    }
+    const successor = lifecyclePayment(RILEY_ID);
+    if (!successor || successor.status !== "captured") {
+      Q.fail("refund-window repair requires Riley's captured successor payment.");
+    }
+    const currentStartMs = Date.parse(Q.text(successor.bookingStartAtIso));
+    const nowMs = Date.now();
+    const minimumRemainingMs = 36 * 60 * 60 * 1000;
+    if (Number.isFinite(currentStartMs) && currentStartMs - nowMs >= minimumRemainingMs) {
+      return {
+        rearmed: false,
+        startAtIso: new Date(currentStartMs).toISOString(),
+        refundDeadlineIso: new Date(currentStartMs - 24 * 60 * 60 * 1000).toISOString()
+      };
+    }
+
+    const startMs = Math.ceil(nowMs / 60000) * 60000 + 48 * 60 * 60 * 1000;
+    const start = new Date(startMs);
+    const end = new Date(startMs + 2 * 60 * 60 * 1000);
+    const siblingStart = new Date(startMs + 3 * 60 * 60 * 1000);
+    const siblingEnd = new Date(startMs + 5 * 60 * 60 * 1000);
+    const startAtIso = start.toISOString();
+    const endAtIso = end.toISOString();
+    const timeframe = displayTimeframe(start, end);
+    const event = Q.collection("events").findOne(eventSelector);
+    if (!event) Q.fail("refund-window repair could not resolve the QA Event.");
+    const subEvents = (Array.isArray(event.subEvents) ? event.subEvents : []).map(item => {
+      if (Q.text(item && item.id) === SUB_EVENT_ID) {
+        return { ...item, startAt: startAtIso, endAt: endAtIso };
+      }
+      if (Q.text(item && item.id) === SIBLING_SUB_EVENT_ID) {
+        return { ...item, startAt: siblingStart.toISOString(), endAt: siblingEnd.toISOString() };
+      }
+      return item;
+    });
+    const eventResult = Q.collection("events").updateOne(eventSelector, { $set: {
+      startAtIso,
+      endAtIso: siblingEnd.toISOString(),
+      timeframe: displayTimeframe(start, siblingEnd),
+      subEvents
+    } });
+
+    const asset = Q.collection("assets").findOne({ assetId: PAID_ID });
+    if (!asset) Q.fail("refund-window repair could not resolve the paid Asset.");
+    const requests = (Array.isArray(asset.requests) ? asset.requests : []).map(request => {
+      const booking = request && request.booking;
+      if (Q.text(booking && booking.eventId) !== EVENT_ID
+          || Q.text(booking && booking.subEventId) !== SUB_EVENT_ID) {
+        return request;
+      }
+      return { ...request, booking: { ...booking, timeframe, startAtIso, endAtIso } };
+    });
+    const assetResult = Q.collection("assets").updateOne({ assetId: PAID_ID }, { $set: { requests } });
+    const projectionResult = Q.collection("assetRequests").updateMany({
+      assetId: PAID_ID,
+      "booking.eventId": EVENT_ID,
+      "booking.subEventId": SUB_EVENT_ID
+    }, { $set: {
+      "booking.timeframe": timeframe,
+      "booking.startAtIso": startAtIso,
+      "booking.endAtIso": endAtIso
+    } });
+    const paymentResult = Q.collection("payments").updateMany({ sourceId: PAID_ID }, { $set: {
+      bookingStartAtIso: startAtIso,
+      bookingEndAtIso: endAtIso
+    } });
+    const stateResult = Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      "context.startAtIso": startAtIso,
+      "context.endAtIso": endAtIso,
+      refundWindowRearmedAtIso: Q.nowIso()
+    } });
+    if (eventResult.matchedCount !== 1 || assetResult.matchedCount !== 1
+        || projectionResult.matchedCount < 1 || paymentResult.matchedCount < 1
+        || stateResult.matchedCount !== 1) {
+      Q.fail("refund-window repair could not update every persisted booking boundary.");
+    }
+    return {
+      rearmed: true,
+      startAtIso,
+      refundDeadlineIso: new Date(startMs - 24 * 60 * 60 * 1000).toISOString()
+    };
+  }
+
+  function repairRefundWindow() {
+    config();
+    const refundWindow = rearmRefundEligibilityWindow();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "takeover-complete",
+      refundWindow,
+      next: "Reload Riley's Payment history; Request refund must be available again."
+    });
+  }
+
   function rollbackTakeOverComplete() {
     rollbackTo("takeOverComplete", "takeover-complete", [
       "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
       "last-remove-ready", "last-remove-verified"
     ]);
     const normalizedPolicyAssets = normalizeFixturePolicyStorage();
+    const refundWindow = rearmRefundEligibilityWindow();
     const successor = Q.collection("payments").findOne({
       sourceId: PAID_ID,
       userId: RILEY_ID,
@@ -2485,6 +2585,7 @@
       checkpointId: CHECKPOINT,
       phase: "takeover-complete",
       normalizedPolicyAssets,
+      refundWindow,
       capturedBarionPaymentId: Q.text(successor.gatewayAuthorizationId),
       next: "Continue at step 80."
     });
@@ -2526,6 +2627,7 @@
   else if (command === "repair-manager-left-required-policy") repairManagerLeftRequiredPolicy();
   else if (command === "verify-takeover") verifyTakeOver();
   else if (command === "stage-takeover-complete") stageTakeOverComplete();
+  else if (command === "repair-refund-window") repairRefundWindow();
   else if (command === "verify-refund-requested") verifyRefundRequested();
   else if (command === "verify-refunded") verifyRefunded();
   else if (command === "prepare-last-leave") prepareLastLeave();
