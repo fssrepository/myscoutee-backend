@@ -327,8 +327,7 @@ public class ActivitiesMembersService {
         String scopedManagerUserId = resolveScopedAssetManagerUserId(assetId, eventId, subEventId);
         String assetOwnerUserId = normalizeId(asset.getOwnerUserId());
         if (!Boolean.TRUE.equals(pendingOnly)
-                && (!StringUtils.hasText(scopedManagerUserId)
-                        || scopedManagerUserId.equals(assetOwnerUserId))) {
+                && scopedManagerUserId.equals(assetOwnerUserId)) {
             ActivityMember owner = scopedAssetOwnerMember(asset, eventId, subEventId);
             if (owner != null) {
                 membersByUserId.put(normalizeId(owner.getUserId()), owner);
