@@ -942,7 +942,7 @@
       checkpointId: CHECKPOINT,
       phase: "audience-observed",
       pricing,
-      contractGap: "Asset editor/Borrow currently has no defined VIP identity or Asset promo application route; manual observation is required before implementation.",
+      developmentGate: "This oracle may run only after Asset member/VIP/invite/promo pricing and promo entry/application are implemented end-to-end.",
       next: "Disable Audience Pricing, enable the one-day/50% policy and capture Nova's HUF 4,600 payment."
     });
   }

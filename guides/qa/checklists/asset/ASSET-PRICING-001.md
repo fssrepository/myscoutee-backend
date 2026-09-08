@@ -10,6 +10,30 @@ Do not repeat Take Over, Leave, Remove, refund approval or the generic free
 Borrow lifecycle already owned by `ASSET-CHECKOUT-001` and
 `ASSET-BORROW-001`.
 
+## Development gate — complete before staging
+
+Do **not** stage or execute this journey against the current implementation.
+A new session must start by implementing these missing Asset-pricing contracts
+in this order:
+
+1. Expose and persist Asset Advanced Audience Pricing, then connect the Asset
+   Borrow calculation to accepted-member price, a deliberately defined VIP
+   identity source, invite-only discount and promo-code entry/application. The
+   current Asset editor hides the audience section and the current Asset Borrow
+   calculation consumes none of those actor/promo inputs. Do not invent a VIP
+   fixture merely to make the oracle pass.
+2. Add a Refund policy disclosure block to Asset Confirm borrow, the locked
+   Payment screen and Payment summary. It must explicitly distinguish an active
+   policy, no payment-time policy, and a payment-time policy whose cutoff has
+   passed.
+3. Render Payment summary from the payment's immutable effective pricing rows
+   and cancellation-policy snapshot. A later edit of the live Asset must never
+   rewrite an earlier payer's price breakdown, policy, refundable amount or
+   refund-action eligibility.
+
+Only after these contracts are implemented and the running dev pipeline passes
+may the dedicated fixture be staged and the interactive steps below begin.
+
 Begin only after the dedicated `asset-pricing` fixture reports
 `baseline-ready`. It provides:
 
@@ -50,10 +74,10 @@ next pricing version.
    persist together.
 6. Compare Nova's accepted-member view with Riley's public non-member view and
    inspect the Borrow flow for a promo-code entry point. Report exactly what
-   changed and what did not. This is an intentional contract probe: the
-   current repository has pricing fields for member/VIP/invite/promo, but no
-   Asset-Borrow VIP classification or promo application path. Do not invent a
-   VIP identity or silently pass unchanged prices. Report
+   changed and what did not. This verifies the development gate above: the
+   member/VIP/invite/promo calculation and promo entry point must now be wired
+   end-to-end. Do not invent a VIP identity or silently pass unchanged prices.
+   Report
    `ASSET-PRICING-001 audience observed`.
 7. Casey disables Audience Pricing again, keeps the exact HUF `4600` variable
    configuration, and enables one refund rule: refund `50%` when at least `1`

@@ -7052,6 +7052,15 @@ persisted `last-remove-verified` oracle is the closing result.
 
 Status: **HARNESS PREPARED / NOT STAGED / IMPLEMENTATION GAPS EXPECTED**.
 
+Hard development gate: another session must not stage this checkpoint first.
+It starts by exposing and wiring Asset audience/member/VIP/invite/promo pricing
+through the Borrow calculation and promo entry point, with an explicit VIP
+identity contract rather than a fixture-only role. It then adds the Refund
+policy block to Confirm borrow, locked Payment and Payment summary, including
+active, no-policy and passed-cutoff states rendered from the immutable
+payment-time calculation/policy snapshot. Only a passing dev-pipeline boundary
+unlocks fixture staging and the interactive journey.
+
 Stable guide:
 [`ASSET-PRICING-001.md`](../checklists/asset/ASSET-PRICING-001.md).
 
