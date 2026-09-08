@@ -884,7 +884,18 @@ case "${scenario}:${command}" in
     replace_payment_simulator_checkout_card_fixtures asset
     set_payment_simulator_barion_3ds
     ;;
-  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-accepted|asset-checkout:rollback-cancelled-control)
+  asset-checkout:rollback-accepted)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
+    rollback_output="$(run_scenario "${command}" "${scenario}" 30 "$3")"
+    printf '%s\n' "${rollback_output}"
+    captured_payment_id="$(python3 -c 'import re,sys; values=re.findall(r"[\"'"'"']capturedBarionPaymentId[\"'"'"']\s*:\s*[\"'"'"']([^\"'"'"']+)", sys.stdin.read()); print(values[-1] if values else "")' <<<"${rollback_output}")"
+    [ -n "${captured_payment_id}" ] || fail "Rollback returned no captured Nova Barion payment ID."
+    restore_payment_simulator_captured_barion_fixture "${captured_payment_id}"
+    replace_payment_simulator_checkout_card_fixtures asset
+    set_payment_simulator_barion_3ds
+    ;;
+  asset-checkout:rollback-revised-payment-ready|asset-checkout:rollback-paid-pending|asset-checkout:rollback-cancelled-control)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     [ "$3" = "ASSET-CHECKOUT-001" ] || fail "${command} is restricted to ASSET-CHECKOUT-001."
     run_scenario "${command}" "${scenario}" 30 "$3"

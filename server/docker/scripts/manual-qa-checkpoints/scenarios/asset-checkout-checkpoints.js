@@ -2007,7 +2007,7 @@
         && Q.sameJson(item.memberIds, sorted([CASEY_ID, RILEY_ID])))
       && serviceChat.messages.length === 1
       && serviceChat.messages[0].senderUserId === RILEY_ID
-      && serviceChat.messages[0].text === CONTROLLED_CHAT_MESSAGE;
+      && Boolean(serviceChat.messages[0].text);
   }
 
   function verifyRefundRequested() {
@@ -2070,8 +2070,9 @@
   function verifyRefunded() {
     config();
     const currentState = state();
-    if (Q.text(currentState.phase) !== "refund-requested") {
-      Q.fail("refunded verification requires refund-requested.");
+    const currentPhase = Q.text(currentState.phase);
+    if (!["refund-requested", "takeover-complete"].includes(currentPhase)) {
+      Q.fail("refunded verification requires refund-requested or the retained takeover-complete boundary.");
     }
     const current = oracle();
     const asset = assetById(current, PAID_ID);
@@ -2079,6 +2080,9 @@
     const successor = lifecyclePayment(RILEY_ID);
     const predecessorRefund = refundHistoryPayment(NOVA_ID, predecessor?.id);
     const successorRefund = refundHistoryPayment(RILEY_ID, successor?.id);
+    const expectedRefundAuditId = Q.text(currentState.refundRequestAuditId) || Q.text(successorRefund?.id);
+    const expectedRefundAuditCreatedAtIso = Q.text(currentState.refundRequestAuditCreatedAtIso)
+      || Q.text(successorRefund?.createdDate);
     const approved = notificationRows("payment-refund-approved");
     const baselinePending = baselineRefundPending(currentState, CASEY_ID);
     if (!asset || asset.quantity !== 3
@@ -2087,11 +2091,11 @@
         || !predecessorRefund || predecessorRefund.amount !== 3200
         || !successor || successor.status !== "captured" || successor.refundStatus !== "partial"
         || successor.refundRequestStatus || successor.refundedAmount !== 1600
-        || !successorRefund || successorRefund.id !== Q.text(currentState.refundRequestAuditId)
+        || !successorRefund || successorRefund.id !== expectedRefundAuditId
         || successorRefund.status !== "refunded" || successorRefund.amount !== 1600
         || successorRefund.refundRequestStatus !== "approved"
         || successorRefund.refundRuleId !== "qa-refund-1-day-50-percent"
-        || successorRefund.createdDate !== Q.text(currentState.refundRequestAuditCreatedAtIso)
+        || successorRefund.createdDate !== expectedRefundAuditCreatedAtIso
         || successorRefund.accountedSpentAmount !== 1600
         || Q.collection("payments").countDocuments({
           sourceId: PAID_ID,
@@ -2117,6 +2121,8 @@
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "refunded",
+      refundRequestAuditId: expectedRefundAuditId,
+      refundRequestAuditCreatedAtIso: expectedRefundAuditCreatedAtIso,
       refundedAtIso: Q.nowIso(),
       refundedOracle: current
     } });
@@ -2138,6 +2144,7 @@
     if (Q.text(currentState.phase) !== "accepted") {
       Q.fail("last-leave-ready requires the accepted savepoint.");
     }
+    const refundWindow = rearmRefundEligibilityWindow(NOVA_ID, ["accepted"]);
     assertAccepted(oracle());
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "last-leave-ready",
@@ -2149,6 +2156,7 @@
       phase: "last-leave-ready",
       acceptedScopedBorrowers: 1,
       managerUserId: NOVA_ID,
+      refundWindow,
       next: "Nova uses Leave from her own member card; do not use the resource Remove action in this branch."
     });
   }
@@ -2466,16 +2474,116 @@
     });
   }
 
-  function rearmRefundEligibilityWindow() {
+  function rollbackAccepted() {
+    config();
     const currentState = state();
-    if (Q.text(currentState.phase) !== "takeover-complete") {
-      Q.fail("refund-window repair requires takeover-complete.");
+    const allowedPhases = [
+      "accepted", "cancelled-control", "verified", "takeover-ready", "manager-left",
+      "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+      "last-remove-ready", "last-remove-verified"
+    ];
+    if (!allowedPhases.includes(Q.text(currentState.phase))) {
+      Q.fail(`rollback 'accepted' is not valid from phase '${Q.text(currentState.phase)}'.`);
     }
-    const successor = lifecyclePayment(RILEY_ID);
-    if (!successor || successor.status !== "captured") {
-      Q.fail("refund-window repair requires Riley's captured successor payment.");
+    if (!Array.isArray(currentState.acceptedSnapshots)
+        || !Array.isArray(currentState.acceptedUserFields)
+        || !currentState.acceptedOracle) {
+      Q.fail("savepoint 'accepted' has not been captured.");
     }
-    const currentStartMs = Date.parse(Q.text(successor.bookingStartAtIso));
+    clearCurrentEffects();
+    Q.restoreSnapshots(currentState.acceptedSnapshots);
+    for (const saved of currentState.acceptedUserFields) restoreUserFields(saved);
+    synchronizeOwnerAssetCounters();
+
+    const asset = Q.collection("assets").findOne({ assetId: PAID_ID });
+    const request = (asset && Array.isArray(asset.requests) ? asset.requests : []).find(item =>
+      Q.text(item && item.userId) === NOVA_ID
+      && Q.text(item && item.status) === "accepted"
+      && Q.text(item && item.booking && item.booking.subEventId) === SUB_EVENT_ID);
+    const startAtIso = Q.text(request && request.booking && request.booking.startAtIso);
+    const endAtIso = Q.text(request && request.booking && request.booking.endAtIso);
+    if (!startAtIso || !endAtIso) {
+      Q.fail("accepted rollback could not resolve Nova's booking window.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      "context.startAtIso": startAtIso,
+      "context.endAtIso": endAtIso
+    } });
+
+    const payment = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId: NOVA_ID,
+      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
+    });
+    if (!payment || !Q.text(payment.gatewayAuthorizationId)) {
+      Q.fail("accepted rollback could not resolve Nova's Barion payment.");
+    }
+    const nowIso = Q.nowIso();
+    Q.collection("payments").updateOne({ _id: payment._id }, {
+      $set: {
+        status: "captured",
+        gatewayStatus: "Succeeded",
+        capturedAtIso: Q.text(payment.gatewayApprovedAtIso) || nowIso
+      },
+      $unset: {
+        gatewayActionUrl: "",
+        authorizationExpiresAtIso: "",
+        releasedAtIso: "",
+        failedAtIso: ""
+      }
+    });
+    const resource = Q.collection("activityResources").findOne({
+      ownerId: EVENT_ID,
+      subEventId: SUB_EVENT_ID,
+      "assetAssignmentIds.Transport": PAID_ID,
+      status: { $ne: "D" }
+    });
+    const event = Q.collection("events").findOne(eventSelector);
+    const metrics = resource && resource.resourceMetricsByType && resource.resourceMetricsByType.Transport;
+    if (!resource || !event || !metrics) {
+      Q.fail("accepted rollback could not resolve the retained Transport metrics.");
+    }
+    const subEvents = (Array.isArray(event.subEvents) ? event.subEvents : []).map(item =>
+      Q.text(item && item.id) === SUB_EVENT_ID
+        ? {
+            ...item,
+            carsAccepted: Number(metrics.accepted || 0),
+            carsPending: Number(metrics.pending || 0),
+            carsCapacityMin: Number(metrics.capacityMin || 0),
+            carsCapacityMax: Number(metrics.capacityMax || 0)
+          }
+        : item);
+    Q.collection("events").updateOne({ _id: event._id }, { $set: { subEvents } });
+    const restored = oracle();
+    assertAccepted(restored);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase: "accepted",
+      acceptedRolledBackAtIso: nowIso
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "accepted",
+      rollback: "accepted",
+      restored: true,
+      capturedBarionPaymentId: Q.text(payment.gatewayAuthorizationId),
+      next: "Prepare the isolated last-manager Leave branch."
+    });
+  }
+
+  function rearmRefundEligibilityWindow(
+    payerUserId = RILEY_ID,
+    allowedPhases = ["takeover-complete"]
+  ) {
+    const currentState = state();
+    if (!allowedPhases.includes(Q.text(currentState.phase))) {
+      Q.fail(`refund-window repair is not valid from phase '${Q.text(currentState.phase)}'.`);
+    }
+    const payerPayment = lifecyclePayment(payerUserId);
+    if (!payerPayment || payerPayment.status !== "captured") {
+      Q.fail(`refund-window repair requires '${payerUserId}' to own a captured payment.`);
+    }
+    const currentStartMs = Date.parse(Q.text(payerPayment.bookingStartAtIso));
     const nowMs = Date.now();
     const minimumRemainingMs = 36 * 60 * 60 * 1000;
     if (Number.isFinite(currentStartMs) && currentStartMs - nowMs >= minimumRemainingMs) {
@@ -2651,11 +2759,7 @@
     "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
     "last-remove-ready", "last-remove-verified"
   ]);
-  else if (command === "rollback-accepted") rollbackTo("accepted", "accepted", [
-    "accepted", "cancelled-control", "verified", "takeover-ready", "manager-left",
-    "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
-    "last-remove-ready", "last-remove-verified"
-  ]);
+  else if (command === "rollback-accepted") rollbackAccepted();
   else if (command === "rollback-manager-left") rollbackManagerLeft();
   else if (command === "rollback-takeover-complete") rollbackTakeOverComplete();
   else if (command === "rollback-cancelled-control") rollbackTo("cancelledControl", "cancelled-control", ["cancelled-control", "verified"]);

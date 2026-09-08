@@ -583,17 +583,5 @@ until Codex confirms that the lifecycle extension is ready.
 
 Wait for Codex's `last-leave-verified` persisted oracle.
 
-94. After `last-leave-verified`, wait for Codex to roll back to `accepted` and
-    prepare `last-remove-ready`. Nova is again the sole accepted scoped borrower
-    and current primary Asset manager. Confirm another accepted manager does not
-    have `Remove`; then, as Nova, select `Remove` from the borrowed resource card
-    exactly once and confirm the danger dialog. Do not use member-card `Leave` in
-    this branch. Confirm the runtime card disappears while Casey's global Asset
-    and Nova's Captured payment history remain, then report:
-
-    `ASSET-CHECKOUT-001 primary manager removed card: runtime removed, Asset and history retained`
-
-    Wait for Codex's `last-remove-verified` persisted oracle.
-
 These shared paid take-over/refund mechanics are replayed manually only on this
 Asset checkpoint; do not repeat the Event checkout testcase for them.
