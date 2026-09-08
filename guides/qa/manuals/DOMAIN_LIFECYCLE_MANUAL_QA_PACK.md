@@ -6588,7 +6588,7 @@ Never reuse the prior timestamps or edit fixture documents ad hoc.
 
 ### `ASSET-CHECKOUT-001` — Asset Explore Barion payment reaches the scoped borrow destination
 
-Status: **IN PROGRESS — TAKEOVER PASS THROUGH STEP 79**.
+Status: **PASS / CLOSED**.
 
 Stable user guide:
 [`ASSET-CHECKOUT-001.md`](../checklists/asset/ASSET-CHECKOUT-001.md).
@@ -7016,6 +7016,47 @@ backend parity defect during this run: explicit quantity `0` is now preserved,
 the temporary reservation workaround was removed, and the dated Explore query
 excludes that control. The accepted and cancelled-control rollback savepoints
 remain available for the lifecycle extension.
+
+The 2026-09-08 continuation closed steps 69-98. The paid Take Over branch kept
+exactly one live payer while retaining Nova's predecessor and separate refund
+audit; Riley's scoped `Remove` removed only the runtime association, resolved
+`Ask Asset Owner` to Casey and retained both payment histories. The separate
+50% refund request/approval branch changed the persisted pending counter
+`0 -> 1 -> 0` and updated both open histories and summaries through their
+signals. The guarded last-manager `Leave` oracle passed at
+`2026-09-08T03:42:02.224Z`: the runtime association disappeared, Casey's global
+Asset and Nova's payment history remained, and no Take Over notification or
+automatic refund appeared. The final mixed-status resource `Remove` oracle
+passed at `2026-09-08T03:48:22.239Z`: Nova's accepted and Riley's pending
+requests/projections became deleted, the resource and all scoped Transport
+metrics disappeared, Casey's pending counter returned to zero, availability
+returned to `3`, and every actor's payment history stayed byte-identical.
+
+The missing `Request refund` action observed while preparing the final replay
+was fixture drift: both the staged Asset and retained payment carried a disabled
+cancellation policy and the booking was inside the cutoff. Future guarded
+last-Leave and mixed-status Remove preparation now restores the explicit
+one-day/50% policy in both documents and moves the booking to a safe future
+window. The completed run was not restaged to manufacture evidence; its final
+persisted `last-remove-verified` oracle is the closing result.
+
+### `ASSET-REFUND-POLICY-SNAPSHOT-001` — payment-time policy disclosure
+
+Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+
+Stable short guide:
+[`ASSET-REFUND-POLICY-SNAPSHOT-001.md`](../checklists/asset/ASSET-REFUND-POLICY-SNAPSHOT-001.md).
+
+This is intentionally a separate paid-Borrow regression, not another branch of
+the free `ASSET-BORROW-001` fixture. Confirm and the locked Payment screen must
+always disclose the applicable refund policy or an explicit no-policy state.
+At capture time the payment stores that complete state as an immutable
+snapshot. Payment summary, refund eligibility and the refundable/retained
+amounts use only the payment snapshot after capture; a later Asset-policy edit
+must neither rewrite nor replace it. No fallback to the current Asset policy is
+allowed for an older payment. The short manual fixture will retain one payment
+with a one-day/50% snapshot and one explicit no-policy payment while deliberately
+giving both live Assets different current policies.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

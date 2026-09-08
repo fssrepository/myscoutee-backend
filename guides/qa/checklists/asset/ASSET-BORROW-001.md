@@ -13,6 +13,26 @@ recording action or card selector may appear. Cash-only paid behavior is owned
 by `EVENT-CHECKOUT-001`; Barion is owned by
 `ASSET-CHECKOUT-001`; Stripe is owned by the Event checkout journey.
 
+This guide intentionally does not replay already-closed Asset coverage:
+
+- `ASSET-ASSIGNMENT-LIFECYCLE-001` owns direct Assign/Edit/Unassign, resource
+  generation replacement and contribution management. Do not use those actions
+  here.
+- `ASSET-CHECKOUT-001` owns generic Borrow-form bounds, paid request approval,
+  persisted Payment summary, scoped Manager lifecycle, Take Over, Remove,
+  Leave and refund. Do not repeat those actions here.
+- `ASSET-MEMBER-LIFECYCLE-001` owns Invite/Join, promotion/revocation and
+  general Asset-member permission rules. This case checks notifications and
+  live counters only where the free Borrow transition itself creates them.
+
+The remaining unique evidence is the zero-payment free request path, requester
+Cancel, owner Reject, cross-group overlapping availability, a single free
+approval without a second reservation, and its Asset Statistics delta.
+Refund-policy disclosure and immutable payment-time policy snapshots belong to
+the separate short
+[`ASSET-REFUND-POLICY-SNAPSHOT-001`](ASSET-REFUND-POLICY-SNAPSHOT-001.md)
+regression and are not executed in this free fixture.
+
 ## Actors and startup
 
 - **Casey** owns all three controlled Public/free Transport Assets and is the
@@ -68,9 +88,10 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 3. Select the oracle's overlapping window. Confirm Capacity Transport shows
    exactly `1` available: stored quantity `3` minus Lina's overlapping
    quantity `2`.
-4. Try to set quantity above `1` in its Borrow dialog. Confirm the value is
-   rejected or clamped and cannot be submitted above current availability.
-   Close without sending.
+4. Open its Borrow dialog only far enough to confirm the free action is
+   `Send borrow request` and that no Payment/provider/card block appears. Close
+   without sending. Do not repeat the generic date/quantity input-boundary
+   checks already closed by `ASSET-CHECKOUT-001`.
 5. Select the oracle's later non-overlapping window. Confirm Capacity
    Transport shows exactly `3` available. Return to the overlapping window.
 6. Confirm Reject Transport and Cancel Transport each show `2` available and
@@ -100,6 +121,8 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 
     `ASSET-BORROW-001 cancel complete: Nova request removed once`
 
+Codex must run `verify-borrow-cancel` before the Reject branch.
+
 ## 3. Riley sends and Casey rejects one free request
 
 14. After Codex confirms the cancel boundary, in **Riley** send one quantity
@@ -118,6 +141,8 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 20. Report and wait:
 
     `ASSET-BORROW-001 reject complete: Riley rejected once and scope cleared`
+
+Codex must run `verify-borrow-reject` before the accepted Capacity branch.
 
 ## 4. Nova requests the overlapping Capacity item and Casey accepts
 
@@ -138,9 +163,12 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 25. In Group A, confirm the accepted Transport resource identifies Capacity
     Transport once with Nova's quantity `1`. In Group B, Lina's accepted
     quantity `2` control remains unchanged.
-26. Confirm Nova is eligible only for this exact generated-group booking
-    scope. Borrow acceptance does not make Nova an Asset Manager, Event Admin
-    or member of another Tournament group.
+26. Confirm Nova is the scoped `Manager` of this exact generated-group Asset
+    assignment, because she is its current responsible borrower. This does not
+    make her the global Asset owner, Event Admin, generated-group Admin or a
+    member of another Tournament group. Do not exercise Manager lifecycle
+    actions; those are already closed by `ASSET-CHECKOUT-001` and
+    `ASSET-MEMBER-LIFECYCLE-001`.
 27. Reopen Capacity Transport Statistics. Accepted borrowed-item count changes
     exactly `1 → 2`; occupied quantity changes exactly `2 → 3`; assigned and
     pending counts do not gain an unrelated delta.
@@ -150,17 +178,21 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 
     `ASSET-BORROW-001 accepted: Group A quantity 1, Group B quantity 2, occupied 3`
 
+Codex must run `verify-borrow-accepted` before the terminal reload.
+
 ## 5. Reload and terminal isolation
 
-30. After Codex confirms the accepted boundary, reload Casey, Nova and Riley
-    exactly once each.
+30. After Codex confirms the accepted boundary, reload Casey and Nova exactly
+    once each. Riley's rejected branch was already reloaded at step 19; do not
+    reload it again merely to duplicate persistence coverage.
 31. Reopen the same Event/stage/groups. Confirm Group A retains Nova's exact
     accepted Capacity resource and Group B retains Lina's control; Reject and
     Cancel branches remain absent.
 32. Recheck the overlapping and later windows: Capacity Transport is `0`
     versus `3`, respectively. No quantity, request or member row is duplicated.
 33. Confirm Event roles and both generated-group member lists match the
-    baseline exactly. Borrow created no Manager or ownership relationship.
+    baseline exactly. Nova remains only the exact Asset assignment's scoped
+    Manager; Borrow created no global ownership or Event/group role.
 34. Confirm Statistics still reports the exact accepted delta and all
     controlled notifications occur once.
 35. Report the terminal phrase:
@@ -169,3 +201,4 @@ Begin only after Codex runs the read-only checkpoint status and confirms:
 
 Wait for Codex's final persisted and exact-scope oracle. Do not reset or begin
 another testcase until the matrix result and next resume boundary are saved.
+Codex runs `verify-borrow-terminal` only after the terminal phrase.

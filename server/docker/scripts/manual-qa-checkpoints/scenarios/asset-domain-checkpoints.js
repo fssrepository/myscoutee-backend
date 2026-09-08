@@ -120,8 +120,8 @@
     [BORROW_CHECKPOINT]: {
       stage: "borrow-empty",
       why: "Prove free scoped Borrow cancel, reject and accept branches plus overlap-aware quantity and Asset Statistics without changing Event or generated-group membership.",
-      action: "Do not start yet. On the next QA session, use Group A Resource Explore and follow the stable ASSET-BORROW-001 checklist with Nova, Riley and Casey.",
-      expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation as the immutable sibling control.",
+      action: "After the managed browser launcher hands off control, use Group A Resource Explore and follow the deduplicated ASSET-BORROW-001 guide with Nova, Riley and Casey.",
+      expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation with Lina as its scoped Manager. No checkout or payment document exists.",
       worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-001."
     }
   };
@@ -1388,6 +1388,8 @@
         { ownerId: { $in: [EVENT_ID, GROUP_A_RESOURCE_OWNER_ID, GROUP_B_RESOURCE_OWNER_ID] } },
         { "assetAssignmentIds.Transport": { $in: ASSET_IDS } }
       ] } },
+      { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: ASSET_IDS } } },
+      { collection: "payments", selector: { sourceId: { $in: ASSET_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [
         { entityId: { $in: IDS } },
         { "payload.assetId": { $in: ASSET_IDS } },
@@ -1583,6 +1585,8 @@
         groupsCount: Q.number(runtime.groupsCount),
         groupResourceMetricsByAssetOwnerId: runtime.groupResourceMetricsByAssetOwnerId || {}
       },
+      checkoutBasketCount: Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: { $in: ASSET_IDS } }),
+      paymentCount: Q.collection("payments").countDocuments({ sourceId: { $in: ASSET_IDS } }),
       afterStageOutboxCount: outboxCount
     };
   }
@@ -1662,6 +1666,7 @@
         || groupBResource.status !== "A"
         || !Q.sameJson(groupBResource.transportAssetIds, [PRIMARY_ASSET_ID])
         || Q.number(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 2
+        || Q.text(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== VISIBILITY_FRIEND_USER_ID
         || Q.number(groupBResource.transportMetric.accepted) !== 1
         || Q.number(groupBResource.transportMetric.pending) !== 0) {
       failures.push("exactGroupBResourceControl");
@@ -1677,6 +1682,9 @@
     if (current.afterStageOutboxCount !== 0) {
       failures.push("noPrematureNotification");
     }
+    if (current.checkoutBasketCount !== 0 || current.paymentCount !== 0) {
+      failures.push("noCheckoutOrPaymentState");
+    }
     if (failures.length > 0) {
       Q.printObject({ scenario: SCENARIO, checkpointId, phase: "baseline-diagnostic", failures, oracle: current });
       Q.fail(`${BORROW_CHECKPOINT} baseline checks failed: ${failures.join(", ")}.`);
@@ -1689,8 +1697,248 @@
       exactEventAndGeneratedGroupRoles: true,
       exactGroupBResourceControl: true,
       exactGeneratedGroupRuntimeControl: true,
+      noCheckoutOrPaymentState: true,
       noPrematureNotification: true
     };
+  }
+
+  function assertBorrowImmutableScope(current) {
+    const expectedEventUsers = [hostUserId, participantUserId, thirdUserId, VISIBILITY_FRIEND_USER_ID].sort();
+    const expectedGroupAUsers = [hostUserId, participantUserId, thirdUserId].sort();
+    const eventUsers = current.activityMembers
+      .filter(member => member.ownerType === "event" && member.ownerId === EVENT_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupAUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_A_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const groupBUsers = current.activityMembers
+      .filter(member => member.ownerType === "group" && member.ownerId === GROUP_B_ID && member.status === "accepted")
+      .map(member => member.userId)
+      .sort();
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const control = capacity && capacity.requests.find(request => request.userId === VISIBILITY_FRIEND_USER_ID);
+    const groupBResource = current.resources.find(resource => resource.eventId === GROUP_B_RESOURCE_OWNER_ID && resource.status === "A");
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const groupBMetric = (((runtimeGroups[GROUP_B_ID] || {})[VISIBILITY_FRIEND_USER_ID] || {}).Transport) || {};
+    if (current.assets.length !== 3
+        || current.assets.some(asset => asset.ownerUserId !== hostUserId || asset.type !== "Transport"
+          || asset.visibility !== "Public" || lifecycleStatusCode(asset.status) !== "A")
+        || !capacity || capacity.quantity !== 3 || !control
+        || control.status !== "accepted" || control.quantity !== 2
+        || control.eventId !== GROUP_B_RESOURCE_OWNER_ID || control.subEventId !== SUB_EVENT_ID
+        || control.inventoryApplied
+        || !Q.sameJson(eventUsers, expectedEventUsers)
+        || !Q.sameJson(groupAUsers, expectedGroupAUsers)
+        || !Q.sameJson(groupBUsers, [VISIBILITY_FRIEND_USER_ID])
+        || current.assetMembers.length !== 1
+        || current.assetMembers[0].assetId !== PRIMARY_ASSET_ID
+        || current.assetMembers[0].userId !== VISIBILITY_FRIEND_USER_ID
+        || current.assetMembers[0].status !== "accepted"
+        || !groupBResource
+        || !Q.sameJson(groupBResource.transportAssetIds, [PRIMARY_ASSET_ID])
+        || Q.number(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 2
+        || Q.text(groupBResource.transportSettings[PRIMARY_ASSET_ID] && groupBResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== VISIBILITY_FRIEND_USER_ID
+        || Q.number(groupBResource.transportMetric.accepted) !== 1
+        || Q.number(groupBResource.transportMetric.pending) !== 0
+        || current.runtime.count !== 1 || current.runtime.status !== "A" || current.runtime.groupsCount !== 2
+        || Q.number(groupBMetric.accepted) !== 1 || Q.number(groupBMetric.pending) !== 0
+        || current.checkoutBasketCount !== 0 || current.paymentCount !== 0) {
+      Q.fail(`${BORROW_CHECKPOINT} immutable Event/Group B/free-payment scope changed.`);
+    }
+  }
+
+  function assertBorrowDeletedBranch(current, assetId, userId) {
+    const asset = current.assets.find(item => item.assetId === assetId);
+    const requests = asset ? asset.requests.filter(item => item.userId === userId) : [];
+    const projections = current.requestProjections.filter(item => item.assetId === assetId && item.userId === userId);
+    const activeResources = current.resources.filter(resource =>
+      resource.status === "A" && resource.transportAssetIds.includes(assetId));
+    if (!asset || requests.length !== 1 || lifecycleStatusCode(requests[0].status) !== "D"
+        || projections.length !== 1 || lifecycleStatusCode(projections[0].status) !== "D"
+        || activeResources.length !== 0) {
+      Q.fail(`${BORROW_CHECKPOINT} ${assetId} did not retain exactly one deleted request audit with no active resource.`);
+    }
+  }
+
+  function borrowNotificationRows(state) {
+    return Q.collection("notificationOutbox").find({
+      $and: [
+        { $or: [
+          { entityId: { $in: ASSET_IDS } },
+          { "payload.assetId": { $in: ASSET_IDS } },
+          { "payload.eventId": EVENT_ID }
+        ] },
+        { createdDate: { $gt: state.stagedAtIso } }
+      ]
+    }).sort({ createdDate: 1, _id: 1 }).toArray().map(item => ({
+      id: Q.text(item._id),
+      type: Q.text(item.notificationType),
+      assetId: Q.text(item.entityId || item.payload && item.payload.assetId),
+      eventId: Q.text(item.payload && item.payload.eventId),
+      subEventId: Q.text(item.payload && item.payload.subEventId),
+      memberUserId: Q.text(item.payload && item.payload.memberUserId),
+      recipients: (item.recipientUserIds || []).map(Q.text).filter(Boolean).sort()
+    }));
+  }
+
+  function requireBorrowPhase(expected) {
+    const state = requireMatchingState();
+    if (Q.text(state.phase) !== expected) {
+      Q.fail(`${BORROW_CHECKPOINT} requires phase '${expected}', found '${Q.text(state.phase)}'.`);
+    }
+    return state;
+  }
+
+  function saveBorrowVerification(state, phase, field, current) {
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, { $set: {
+      phase,
+      [field]: current,
+      [`${field}AtIso`]: Q.nowIso()
+    } });
+  }
+
+  function verifyBorrowCancel() {
+    const state = requireBorrowPhase("baseline-ready");
+    const current = oracle(state);
+    assertBorrowImmutableScope(current);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const reject = current.assets.find(asset => asset.assetId === SECONDARY_ASSET_ID);
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const notifications = borrowNotificationRows(state);
+    if (!capacity || capacity.requests.length !== 1 || !reject || reject.requests.length !== 0
+        || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
+        || notifications.length !== 1
+        || notifications[0].type !== "asset-admin-join-request"
+        || notifications[0].assetId !== TERTIARY_ASSET_ID
+        || notifications[0].memberUserId !== participantUserId
+        || !Q.sameJson(notifications[0].recipients, [hostUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-cancel-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} cancel branch did not clear only Nova's free request scope.`);
+    }
+    saveBorrowVerification(state, "borrow-cancel-verified", "borrowCancelOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-cancel-verified",
+      result: "PASS",
+      cancelledRequestAudits: 1,
+      activeGroupAResources: 0,
+      payments: 0,
+      next: "Continue at step 14 with Riley's Reject Transport request."
+    });
+  }
+
+  function verifyBorrowReject() {
+    const state = requireBorrowPhase("borrow-cancel-verified");
+    const current = oracle(state);
+    assertBorrowImmutableScope(current);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const notifications = borrowNotificationRows(state);
+    const requestRows = notifications.filter(item => item.type === "asset-admin-join-request");
+    const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
+    if (!capacity || capacity.requests.length !== 1
+        || Object.prototype.hasOwnProperty.call(runtimeGroups, GROUP_A_ID)
+        || notifications.length !== 3 || requestRows.length !== 2 || rejectedRows.length !== 1
+        || !rejectedRows[0] || rejectedRows[0].assetId !== SECONDARY_ASSET_ID
+        || rejectedRows[0].memberUserId !== thirdUserId
+        || !Q.sameJson(rejectedRows[0].recipients, [thirdUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-reject-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} reject branch did not retire only Riley's request with one rejection notification.`);
+    }
+    saveBorrowVerification(state, "borrow-reject-verified", "borrowRejectOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-reject-verified",
+      result: "PASS",
+      deletedCancelAndRejectAudits: 2,
+      activeGroupAResources: 0,
+      payments: 0,
+      next: "Continue at step 21 with Capacity Transport Statistics and Nova's free request."
+    });
+  }
+
+  function assertBorrowAccepted(state, current) {
+    assertBorrowImmutableScope(current);
+    assertBorrowDeletedBranch(current, TERTIARY_ASSET_ID, participantUserId);
+    assertBorrowDeletedBranch(current, SECONDARY_ASSET_ID, thirdUserId);
+    const capacity = current.assets.find(asset => asset.assetId === PRIMARY_ASSET_ID);
+    const novaRequest = capacity && capacity.requests.find(request => request.userId === participantUserId);
+    const novaProjection = current.requestProjections.find(request =>
+      request.assetId === PRIMARY_ASSET_ID && request.userId === participantUserId);
+    const groupAResource = current.resources.find(resource =>
+      resource.eventId === GROUP_A_RESOURCE_OWNER_ID && resource.status === "A"
+      && resource.transportAssetIds.includes(PRIMARY_ASSET_ID));
+    const runtimeGroups = current.runtime.groupResourceMetricsByAssetOwnerId || {};
+    const groupAMetric = (((runtimeGroups[GROUP_A_ID] || {})[participantUserId] || {}).Transport) || {};
+    const notifications = borrowNotificationRows(state);
+    const requestRows = notifications.filter(item => item.type === "asset-admin-join-request");
+    const acceptedRows = notifications.filter(item => item.type === "asset-member-request-accepted");
+    const rejectedRows = notifications.filter(item => item.type === "asset-member-request-declined");
+    if (!capacity || capacity.requests.length !== 2 || !novaRequest
+        || novaRequest.status !== "accepted" || novaRequest.quantity !== 1
+        || novaRequest.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaRequest.subEventId !== SUB_EVENT_ID
+        || novaRequest.startAtIso !== Q.text(state.context.startAtIso)
+        || novaRequest.endAtIso !== Q.text(state.context.overlapEndAtIso)
+        || novaRequest.inventoryApplied
+        || !novaProjection || novaProjection.status !== "accepted" || novaProjection.quantity !== 1
+        || novaProjection.eventId !== GROUP_A_RESOURCE_OWNER_ID || novaProjection.inventoryApplied
+        || !groupAResource
+        || Q.number(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].quantity) !== 1
+        || Q.text(groupAResource.transportSettings[PRIMARY_ASSET_ID] && groupAResource.transportSettings[PRIMARY_ASSET_ID].addedByUserId) !== participantUserId
+        || Q.number(groupAResource.transportMetric.accepted) !== 1
+        || Q.number(groupAResource.transportMetric.pending) !== 0
+        || Q.number(groupAMetric.accepted) !== 1 || Q.number(groupAMetric.pending) !== 0
+        || notifications.length !== 5 || requestRows.length !== 3
+        || acceptedRows.length !== 1 || rejectedRows.length !== 1
+        || acceptedRows[0].assetId !== PRIMARY_ASSET_ID
+        || acceptedRows[0].memberUserId !== participantUserId
+        || !Q.sameJson(acceptedRows[0].recipients, [participantUserId])) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "borrow-accepted-diagnostic", oracle: current, notifications });
+      Q.fail(`${BORROW_CHECKPOINT} free acceptance did not produce the exact Group A quantity-one scoped Manager state.`);
+    }
+    return { current, notifications };
+  }
+
+  function verifyBorrowAccepted() {
+    const state = requireBorrowPhase("borrow-reject-verified");
+    const { current } = assertBorrowAccepted(state, oracle(state));
+    saveBorrowVerification(state, "borrow-accepted-verified", "borrowAcceptedOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-accepted-verified",
+      result: "PASS",
+      groupAQuantity: 1,
+      groupBQuantity: 2,
+      occupiedQuantity: 3,
+      scopedManagerUserId: participantUserId,
+      payments: 0,
+      next: "Continue at step 30 with the single Casey/Nova reload persistence check."
+    });
+  }
+
+  function verifyBorrowTerminal() {
+    const state = requireBorrowPhase("borrow-accepted-verified");
+    const { current } = assertBorrowAccepted(state, oracle(state));
+    saveBorrowVerification(state, "borrow-verified", "borrowTerminalOracle", current);
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "borrow-verified",
+      result: "PASS",
+      freeCancelRejectAccept: true,
+      overlapCapacityAndStatistics: true,
+      scopedManagerWithoutEventRole: true,
+      checkoutBasketCount: 0,
+      paymentCount: 0
+    });
   }
 
   function stageLifecycle() {
@@ -2401,7 +2649,7 @@
       baselineChecks,
       expectedVisibleResult: selected.expected,
       next: checkpointId === BORROW_CHECKPOINT
-        ? "Fixture only: do not perform a manual action until the next QA session loads the stable ASSET-BORROW-001 checklist."
+        ? "Baseline ready. Launch the configured managed sessions, then the user starts the deduplicated ASSET-BORROW-001 guide; Codex performs no browser checklist action."
         : "Compare the UI screenshot with this identity-level oracle. Record PASS only when asset and event roles remain independently correct."
     });
   }
@@ -2440,6 +2688,10 @@
     case "verify-visibility-readonly": verifyVisibilityReadonly(); break;
     case "repair-visibility-fixture": repairVisibilityFixtureSchema(); break;
     case "verify-visibility-edited": verifyVisibilityEdited(); break;
+    case "verify-borrow-cancel": verifyBorrowCancel(); break;
+    case "verify-borrow-reject": verifyBorrowReject(); break;
+    case "verify-borrow-accepted": verifyBorrowAccepted(); break;
+    case "verify-borrow-terminal": verifyBorrowTerminal(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
