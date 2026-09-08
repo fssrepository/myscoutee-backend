@@ -848,6 +848,7 @@ class AssetsServiceTest {
                 "asset-1", "event-1", "subevent-1", "u2", "leave", null));
 
         assertThat(left.status()).isEqualTo("deleted");
+        assertThat(left.resourceAssignmentRemoved()).isFalse();
         assertThat(assetState.get().getRequests())
                 .filteredOn(request -> "successor-request".equals(request.id()))
                 .singleElement()
@@ -922,6 +923,7 @@ class AssetsServiceTest {
                 "asset-1", "event-1", "subevent-1", "u2", "leave", null));
 
         assertThat(left.status()).isEqualTo("deleted");
+        assertThat(left.resourceAssignmentRemoved()).isTrue();
         assertThat(assetState.get().getAssetId()).isEqualTo("asset-1");
         assertThat(assetState.get().getRequests())
                 .singleElement()

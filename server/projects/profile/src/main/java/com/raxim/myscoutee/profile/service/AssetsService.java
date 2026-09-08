@@ -758,14 +758,16 @@ public class AssetsService {
         adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
 
+        boolean resourceAssignmentRemoved = false;
         if (acceptedManagerLeave && !acceptedSuccessorRemains) {
-            if (activitiesResourcesService == null
-                    || !activitiesResourcesService.removeScopedAssetAssignment(
+            resourceAssignmentRemoved = activitiesResourcesService != null
+                    && activitiesResourcesService.removeScopedAssetAssignment(
                             eventId,
                             subEventId,
                             assetId,
                             actorUserId,
-                            actorUserId)) {
+                            actorUserId);
+            if (!resourceAssignmentRemoved) {
                 LOGGER.warn(
                         "Accepted last Asset borrower left, but the scoped resource assignment could not be removed. assetId={}, eventId={}, subEventId={}, actorUserId={}",
                         assetId,
@@ -784,7 +786,8 @@ public class AssetsService {
                 previousStatus,
                 nextStatus,
                 statusDelta(previousStatus, nextStatus, MEMBER_STATUS_ACCEPTED),
-                statusDelta(previousStatus, nextStatus, "pending"));
+                statusDelta(previousStatus, nextStatus, "pending"),
+                resourceAssignmentRemoved);
     }
 
     private AssetMemberStatusChangeDto takeOverScopedBorrowedAsset(
@@ -939,6 +942,30 @@ public class AssetsService {
                 status,
                 acceptedMemberDelta,
                 pendingMemberDelta,
+                false,
+                null);
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta,
+            boolean resourceAssignmentRemoved) {
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta,
+                resourceAssignmentRemoved,
                 null);
     }
 
@@ -952,6 +979,30 @@ public class AssetsService {
             int acceptedMemberDelta,
             int pendingMemberDelta,
             UserPaymentTotalsDto paymentTotals) {
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta,
+                false,
+                paymentTotals);
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta,
+            boolean resourceAssignmentRemoved,
+            UserPaymentTotalsDto paymentTotals) {
         return new AssetMemberStatusChangeDto(
                 assetId,
                 eventId,
@@ -961,6 +1012,7 @@ public class AssetsService {
                 status,
                 acceptedMemberDelta,
                 pendingMemberDelta,
+                resourceAssignmentRemoved,
                 paymentTotals);
     }
 

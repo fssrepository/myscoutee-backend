@@ -74,6 +74,7 @@ public final class AssetsDtos {
             String status,
             Integer acceptedMemberDelta,
             Integer pendingMemberDelta,
+            Boolean resourceAssignmentRemoved,
             UserPaymentTotalsDto paymentTotals) {
     }
 
