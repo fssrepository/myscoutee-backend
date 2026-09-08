@@ -4160,7 +4160,7 @@ public class AssetsService {
             notificationType = "asset-admin-join-request";
             recipientScope = "asset-responsible-users";
             String memberName = firstNonBlank(request.name(), memberUserId);
-            body = memberName + " requested access.";
+            body = memberName + " requested access · " + assetTitle(asset);
         }
         if (recipients.isEmpty()) {
             return;
