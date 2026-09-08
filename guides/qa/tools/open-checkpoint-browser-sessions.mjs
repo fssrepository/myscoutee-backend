@@ -10,6 +10,10 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const geolocationHolderPath = path.join(scriptDirectory, 'hold-chrome-geolocation.mjs');
+const browserSessionCheckpointHarnessPath = path.resolve(
+  scriptDirectory,
+  '../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'
+);
 const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
   || path.join(scriptDirectory, 'browser-session-checkpoints.json');
 const chromeBinary = process.env.CHROME_BIN || '/opt/google/chrome/chrome';
@@ -72,6 +76,7 @@ if (dismissGuidesOnly) {
 }
 await closeOtherManagedCheckpointSessions(manifestPath);
 await closePreviousCheckpointSessions(manifestPath);
+await prepareConfiguredDemoSessions();
 
 const manifest = {
   checkpointId,
@@ -211,6 +216,52 @@ async function persistManifest() {
     { mode: 0o600 }
   );
   await chmod(manifestPath, 0o600);
+}
+
+async function prepareConfiguredDemoSessions() {
+  const userIds = [...new Set(
+    checkpoint.sessions
+      .filter(session => `${session.sessionKind ?? 'demo'}`.trim().toLowerCase() === 'demo')
+      .map(session => `${session.userId ?? ''}`.trim())
+      .filter(Boolean)
+  )];
+  if (userIds.length === 0) return;
+  if (!existsSync(browserSessionCheckpointHarnessPath)) {
+    throw new Error(`Browser-session checkpoint harness is missing at ${browserSessionCheckpointHarnessPath}.`);
+  }
+  const result = await runAttachedCommand(
+    'bash',
+    [browserSessionCheckpointHarnessPath, 'prepare', 'browser-sessions', checkpointId],
+    {
+      ...process.env,
+      MANUAL_QA_BROWSER_USER_IDS: userIds.join(',')
+    }
+  );
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+}
+
+async function runAttachedCommand(executable, args, env) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(executable, args, {
+      env,
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', chunk => { stdout += chunk; });
+    child.stderr.on('data', chunk => { stderr += chunk; });
+    child.on('error', reject);
+    child.on('close', code => {
+      if (code !== 0) {
+        reject(new Error(
+          `Browser-session preparation failed with exit code ${code}.${stderr ? ` ${stderr.trim()}` : ''}`
+        ));
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+  });
 }
 
 async function verifyExistingManagedSessions(filePath) {

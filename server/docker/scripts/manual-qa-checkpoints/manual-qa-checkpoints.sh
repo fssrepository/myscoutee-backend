@@ -7,6 +7,7 @@ COMMON_SCRIPT="${SCRIPT_DIR}/scenarios/common.js"
 usage() {
   cat <<'USAGE'
 Usage:
+  bash manual-qa-checkpoints.sh prepare browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
   bash manual-qa-checkpoints.sh reset base-stat
@@ -158,7 +159,6 @@ Usage:
   bash manual-qa-checkpoints.sh verify-borrow-reject asset-domain ASSET-BORROW-001
   bash manual-qa-checkpoints.sh verify-borrow-accepted asset-domain ASSET-BORROW-001
   bash manual-qa-checkpoints.sh verify-borrow-terminal asset-domain ASSET-BORROW-001
-  bash manual-qa-checkpoints.sh prepare-browser asset-domain ASSET-BORROW-001
   bash manual-qa-checkpoints.sh verify-asset-member-pending asset-domain ASSET-MEMBER-001
   bash manual-qa-checkpoints.sh verify-asset-member-terminal asset-domain ASSET-MEMBER-001
   bash manual-qa-checkpoints.sh refresh-retained-window asset-domain ASSET-MEMBER-001
@@ -509,7 +509,13 @@ run_scenario() {
   local payment_requires_3ds="false"
   local payment_provider_connected="false"
 
+  if [ "${command}" = "reset" ] && [ "${scenario}" != "browser-sessions" ]; then
+    MANUAL_QA_BROWSER_SOURCE_SCENARIO="${scenario}" \
+      run_scenario "restore" "browser-sessions" 30 "${checkpoint_id}"
+  fi
+
   case "${scenario}" in
+    browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
     stat-010) scenario_script="${SCRIPT_DIR}/scenarios/stat-010-rating.js" ;;
     graph-rating) scenario_script="${SCRIPT_DIR}/scenarios/graph-rating.js" ;;
@@ -617,6 +623,8 @@ run_scenario() {
       -e "MANUAL_QA_PAYMENT_PROVIDER=${payment_provider}" \
       -e "MANUAL_QA_PAYMENT_REQUIRES_3DS=${payment_requires_3ds}" \
       -e "MANUAL_QA_PAYMENT_PROVIDER_CONNECTED=${payment_provider_connected}" \
+      -e "MANUAL_QA_BROWSER_USER_IDS=${MANUAL_QA_BROWSER_USER_IDS:-}" \
+      -e "MANUAL_QA_BROWSER_SOURCE_SCENARIO=${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
       "${mongo_container}" \
       mongosh \
         --quiet \
@@ -649,6 +657,8 @@ run_scenario() {
     MANUAL_QA_PAYMENT_PROVIDER="${payment_provider}" \
     MANUAL_QA_PAYMENT_REQUIRES_3DS="${payment_requires_3ds}" \
     MANUAL_QA_PAYMENT_PROVIDER_CONNECTED="${payment_provider_connected}" \
+    MANUAL_QA_BROWSER_USER_IDS="${MANUAL_QA_BROWSER_USER_IDS:-}" \
+    MANUAL_QA_BROWSER_SOURCE_SCENARIO="${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
     mongosh \
       --quiet \
       --host "${mongo_host}" \
@@ -665,6 +675,10 @@ command="$1"
 scenario="$2"
 
 case "${scenario}:${command}" in
+  browser-sessions:prepare)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
   base-stat:stage|base-stat:status|base-stat:reset|\
   stat-010:stage|stat-010:status|stat-010:reset|\
   graph-rating:stage|graph-rating:status|graph-rating:reset|\
@@ -788,7 +802,7 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:prepare-runtime-transport|event-domain:repair-runtime-transport-invite-scope|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:capture-lifecycle-action-baseline|event-domain:verify-lifecycle-trash|event-domain:capture-lifecycle-restore-baseline|event-domain:verify-lifecycle-restore|event-domain:capture-participant-lifecycle-baseline|event-domain:capture-participant-leave-state|event-domain:verify-participant-restore|event-domain:verify-participant-leave|event-domain:capture-bucket-read-baseline|event-domain:verify-bucket-readonly|event-domain:diagnose-bucket-read-changes|event-domain:capture-invitation-action-baseline|event-domain:verify-invitation-created|event-domain:diagnose-invitation-chat-counter|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:prepare-invitation-admin-approval-retest|event-domain:arm-ticket-expiry|event-domain:arm-tournament-review|event-domain:verify-tournament-review-noop|event-domain:prepare-tournament-finalize-notification-retest|event-domain:verify-tournament-finalize-notification|event-domain:verify-tournament-room-life-baseline|event-domain:repair-ticket-payment-fixture|event-domain:repair-tournament-room-presentation|event-domain:repair-tournament-room-notifications|event-domain:repair-lifecycle-counter-baseline|event-domain:repair-lifecycle-occupancy-baseline|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:prepare-visibility-save-retest|event-domain:prepare-visibility-publish-window|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|event-domain:verify-ticket-attendance-first-scan|event-domain:verify-ticket-attendance-replay|\
-  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:prepare-browser|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-borrow-cancel|asset-domain:verify-borrow-reject|asset-domain:verify-borrow-accepted|asset-domain:verify-borrow-terminal|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
+  asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:capture-lifecycle-created|asset-domain:verify-lifecycle-edited|asset-domain:verify-lifecycle-deleted|asset-domain:verify-visibility-readonly|asset-domain:repair-visibility-fixture|asset-domain:verify-visibility-edited|asset-domain:verify-borrow-cancel|asset-domain:verify-borrow-reject|asset-domain:verify-borrow-accepted|asset-domain:verify-borrow-terminal|asset-domain:verify-asset-member-pending|asset-domain:verify-asset-member-terminal|asset-domain:refresh-retained-window|asset-domain:prepare-owner-leave-replay|asset-domain:rollback-owner-leave|asset-domain:reset|\
   asset-assignment:stage|asset-assignment:status|asset-assignment:repair-normal-supplies-owner|asset-assignment:verify-normal-assignment|asset-assignment:verify-supply-contribution-delete|asset-assignment:restore-normal-assignment-branch|asset-assignment:repair-tournament-group-ids|asset-assignment:stage-step-10-boundary|asset-assignment:rollback-step-10-boundary|asset-assignment:verify-group-capacity-edit|asset-assignment:stage-step-16-boundary|asset-assignment:rollback-step-16-boundary|asset-assignment:verify-group-unassign|asset-assignment:stage-step-22-boundary|asset-assignment:rollback-step-22-boundary|asset-assignment:verify-group-reassign|asset-assignment:stage-step-29-boundary|asset-assignment:rollback-step-29-boundary|asset-assignment:verify-group-manager-removal|asset-assignment:reset|\
   content-admin:stage|content-admin:status|content-admin:verify-drafts-saved|content-admin:verify-privacy-active|content-admin:restage-step-32-boundary|content-admin:rollback-step-32-boundary|content-admin:verify-privacy-fallback|content-admin:verify-article-trashed|content-admin:verify-article-restored|content-admin:rollback-step-59-boundary|content-admin:verify-article-republished|content-admin:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)

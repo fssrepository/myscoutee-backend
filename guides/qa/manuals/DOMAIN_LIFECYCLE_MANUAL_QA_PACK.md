@@ -6551,7 +6551,7 @@ Status: **PASS / CLOSED (2026-09-03)** together with
 
 ### `ASSET-BORROW-001` — scoped borrow lifecycle
 
-Status: **STAGED / BASELINE READY / USER ACTION NOT STARTED**.
+Status: **STAGED / BASELINE READY / MANAGED BROWSERS READY / USER ACTION NOT STARTED**.
 
 Stable user guide:
 [`ASSET-BORROW-001.md`](../checklists/asset/ASSET-BORROW-001.md).
@@ -6561,8 +6561,11 @@ The deduplicated fixture was freshly staged at
 guards: exactly three Public/free Transport controls, Lina's retained
 two-item Group B reservation and scoped Manager assignment, no Group A
 resource, and zero checkout basket/payment or premature notification. The
-current fixture remains `baseline-ready`; no browser checklist action has
-started.
+current fixture remains `baseline-ready`. The common snapshot-protected browser
+preparation cleared only the configured Casey/Nova/Riley active-session lists
+from `1/2/0` to `0/0/0`, then the launcher created three fresh isolated
+sessions. Its final `/auth/me` and realtime readiness gate passed for all three
+identities. No browser checklist action has started.
 
 Its versioned stage/status commands are:
 
@@ -6573,8 +6576,9 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status asset-domain ASSET-BORROW-001
 ```
 
-Do not restage this current baseline before the user starts it. The managed
-Casey/Nova/Riley launcher is the only remaining startup action.
+Do not restage or relaunch this current baseline before the user starts it.
+Startup is complete; the user starts at step 1 in the prepared Casey/Nova/Riley
+windows.
 
 - This checkpoint now owns only the free Borrow-specific cancel, reject,
   accept, overlap/capacity and Statistics effects. Generic paid checkout,
@@ -7080,12 +7084,13 @@ changes remain user-driven and observable on the fly.
 The code audit found two real pre-run gaps rather than assigning invented
 manual rules. Asset editor currently sets `showAudienceSection: false`, and the
 Asset Borrow calculator has no VIP identity or Asset promo-code application
-input. The audience step is therefore an explicit contract probe and cannot be
-marked PASS until the Asset-specific member/VIP/invite/promo behavior is
-implemented and defined. Separately, the payment already persists effective
-pricing rows plus its cancellation-policy snapshot; Confirm, Payment and
-Payment summary still need the complete disclosure UI, including an explicit
-no-policy state and payment-time-only historical projection.
+input. Implementing and defining the Asset-specific member/VIP/invite/promo
+behavior is therefore the first task of the next session, not a manual step in
+the current product. Separately, the payment already persists effective
+pricing rows plus its cancellation-policy snapshot; the next implementation
+task adds the complete disclosure UI to Confirm, Payment and Payment summary,
+including explicit no-policy and payment-time passed-cutoff states. Only then
+does the audience step become executable acceptance evidence.
 
 ### `ASSET-AVAIL-001` — overlap and finite capacity
 

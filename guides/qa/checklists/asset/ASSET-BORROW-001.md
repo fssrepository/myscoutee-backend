@@ -57,8 +57,8 @@ To start a complete replay, tell Codex:
 
 `Continue ASSET-BORROW-001 from the staged baseline.`
 
-Begin only after Codex runs the read-only checkpoint status, the checkpoint's
-snapshot-protected `prepare-browser` boundary and the versioned launcher, then
+Begin only after Codex runs the read-only checkpoint status and the versioned
+launcher completes its common snapshot-protected session cleanup, then
 confirms:
 
 - phase `baseline-ready`, with the browser still unopened for this checkpoint;
