@@ -15,17 +15,22 @@
   const PRIMARY_ASSET_ID = `${PREFIX}:asset:primary`;
   const SECONDARY_ASSET_ID = `${PREFIX}:asset:secondary`;
   const TERTIARY_ASSET_ID = `${PREFIX}:asset:tertiary`;
+  const PAID_ASSET_ID = `${PREFIX}:asset:paid`;
+  const BORROW_PAYMENT_CARD_ID = `${PREFIX}:card:nova-barion-4444`;
   const EVENT_ID = `${PREFIX}:event`;
   const SUB_EVENT_ID = `${EVENT_ID}:sub-event:transport`;
   const GROUP_A_ID = `${SUB_EVENT_ID}:group:1`;
   const GROUP_B_ID = `${SUB_EVENT_ID}:group:2`;
   const GROUP_A_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_A_ID}`;
   const GROUP_B_RESOURCE_OWNER_ID = `${EVENT_ID}:${SUB_EVENT_ID}:${GROUP_B_ID}`;
-  const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID];
+  const ASSET_IDS = [PRIMARY_ASSET_ID, SECONDARY_ASSET_ID, TERTIARY_ASSET_ID, PAID_ASSET_ID];
   const IDS = [...ASSET_IDS, EVENT_ID, GROUP_A_ID, GROUP_B_ID];
   const LIFE_CHECKPOINT = "ASSET-LIFE-001";
   const VISIBILITY_CHECKPOINT = "ASSET-VIS-001";
   const BORROW_CHECKPOINT = "ASSET-BORROW-001";
+  const provider = Q.text(process.env.MANUAL_QA_PAYMENT_PROVIDER).toLowerCase();
+  const providerConnected = Q.text(process.env.MANUAL_QA_PAYMENT_PROVIDER_CONNECTED) === "true";
+  const requires3ds = Q.text(process.env.MANUAL_QA_PAYMENT_REQUIRES_3DS) === "true";
   const VISIBILITY_FRIEND_USER_ID = "178e8d0cbe164fa3fede5884";
   const VISIBILITY_UNRELATED_USER_ID = "2d520f3c98b0440c1556f4af";
   const VISIBILITY_EVENT_ID = `${PREFIX}:visibility:event`;
@@ -119,10 +124,10 @@
     },
     [BORROW_CHECKPOINT]: {
       stage: "borrow-empty",
-      why: "Prove free scoped Borrow cancel, reject and accept branches plus overlap-aware quantity and Asset Statistics without changing Event or generated-group membership.",
+      why: "Prove one-unit free and paid scoped Borrow requests, independent repeated request cards, overlap-aware capacity, and scope-local organizer-only counters.",
       action: "After the managed browser launcher hands off control, use Group A Resource Explore and follow the deduplicated ASSET-BORROW-001 guide with Nova, Riley and Casey.",
-      expected: "Group A starts with no Transport assignment. Three Casey-owned Public/free Sedan controls are discoverable: Capacity has one remaining item during the overlapping window and three outside it, while Reject and Cancel each have two. Group B retains one accepted two-item Capacity reservation with Lina as its scoped Manager. No checkout or payment document exists.",
-      worker: "MUST NOT use a scheduler. Free Borrow writes direct Asset request, scoped resource assignment, notification and affinity-task effects only; paid checkout remains isolated in ASSET-CHECKOUT-001."
+      expected: "Group A starts with no Transport assignment. Capacity, Reject and Cancel are free controls; Paid is a 3200 HUF Barion control. Every Borrow quantity is locked to one. Group B retains Lina's accepted two-item Capacity reservation. No request, checkout or payment exists for Group A at baseline.",
+      worker: "MUST NOT use a scheduler. Borrow writes one independent request per submission plus its scoped resource, notification and optional payment effects. Organizer-only changes only the selected membership scope."
     }
   };
 
@@ -162,6 +167,38 @@
         soldOutLabel: "Show \"Sold Out\""
       },
       enabled: false
+    };
+  }
+
+  function paidBorrowPricingDocument() {
+    return {
+      ...disabledAssetPricingDocument(),
+      mode: "fixed",
+      basePrice: 3200,
+      currency: "HUF",
+      taxMode: "included",
+      chargeType: "per_attendee",
+      enabled: true
+    };
+  }
+
+  function borrowPaymentCardDocument(stagedAtIso) {
+    return {
+      _id: BORROW_PAYMENT_CARD_ID,
+      version: 0,
+      userId: participantUserId,
+      provider: "barion",
+      providerPaymentMethodRef: "pm_sim_checkout_nova_barion_4444",
+      brand: "Mastercard",
+      last4: "4444",
+      expiryMonth: 9,
+      expiryYear: 2029,
+      expiryKey: 202909,
+      cardholderName: "NOVA SOCIAL",
+      artworkKey: "graphite",
+      status: "active",
+      createdAtIso: stagedAtIso,
+      updatedAtIso: stagedAtIso
     };
   }
 
@@ -350,6 +387,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: now,
       createdDate: now,
       createdUser: hostUserId,
@@ -358,7 +396,7 @@
     };
   }
 
-  function borrowAssetDocument(assetId, title, quantity, stagedAtIso, requests = []) {
+  function borrowAssetDocument(assetId, title, quantity, stagedAtIso, requests = [], paid = false) {
     const document = assetDocument(assetId, hostUserId, title);
     return {
       ...document,
@@ -366,9 +404,10 @@
       city: "Austin",
       capacityTotal: 4,
       quantity,
-      details: "Controlled free Asset borrow lifecycle.",
+      details: `Controlled ${paid ? "paid" : "free"} Asset borrow lifecycle.`,
       sourceLink: `https://example.com/qa/asset-borrow-001/${assetId.split(":").pop()}`,
       routes: ["Austin"],
+      pricing: paid ? paidBorrowPricingDocument() : disabledAssetPricingDocument(),
       requests,
       createdDate: stagedAtIso,
       updatedDate: stagedAtIso
@@ -449,6 +488,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: stagedAtIso,
       metAtIso: stagedAtIso,
       metWhere: "QA ASSET-BORROW-001 Tournament",
@@ -472,6 +512,7 @@
       pendingSource: null,
       requestKind: null,
       invitedByUserId: null,
+      organizerOnly: false,
       actionAtIso: stagedAtIso,
       metAtIso: stagedAtIso,
       metWhere: "QA ASSET-BORROW-001 Tournament",
@@ -1390,6 +1431,7 @@
       ] } },
       { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: ASSET_IDS } } },
       { collection: "payments", selector: { sourceId: { $in: ASSET_IDS } } },
+      { collection: "savedPaymentMethods", selector: { _id: BORROW_PAYMENT_CARD_ID } },
       { collection: "notificationOutbox", selector: { $or: [
         { entityId: { $in: IDS } },
         { "payload.assetId": { $in: ASSET_IDS } },
@@ -1457,8 +1499,10 @@
       Q.collection("assets").insertMany([
         borrowAssetDocument(PRIMARY_ASSET_ID, "QA ASSET-BORROW-001 Capacity Transport", 3, stagedAtIso, [controlRequest]),
         borrowAssetDocument(SECONDARY_ASSET_ID, "QA ASSET-BORROW-001 Reject Transport", 2, stagedAtIso),
-        borrowAssetDocument(TERTIARY_ASSET_ID, "QA ASSET-BORROW-001 Cancel Transport", 2, stagedAtIso)
+        borrowAssetDocument(TERTIARY_ASSET_ID, "QA ASSET-BORROW-001 Cancel Transport", 2, stagedAtIso),
+        borrowAssetDocument(PAID_ASSET_ID, "QA ASSET-BORROW-001 Paid Transport", 2, stagedAtIso, [], true)
       ]);
+      Q.collection("savedPaymentMethods").insertOne(borrowPaymentCardDocument(stagedAtIso));
       Q.collection("assetRequests").insertOne(
         borrowRequestProjection(PRIMARY_ASSET_ID, controlRequest, stagedAtIso)
       );

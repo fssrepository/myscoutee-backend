@@ -791,6 +791,7 @@ public class EventScheduler {
         
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
+        Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
         Map<String, ActivityEvent> candidateEventsById = new LinkedHashMap<>();
         for (ActivityEvent event : events) {
@@ -821,14 +822,17 @@ public class EventScheduler {
                 continue;
             }
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = batchSnapshotsByEventId.get(eventId);
+            Set<String> existingTournamentUserIds = existingTournamentUserIds(eventId, event);
             int queryCount = observedQueries.get();
-            if (snapshot == null || snapshot.acceptedMembers() < 2) {
+            if (snapshot == null || (snapshot.acceptedMembers() < 2 && existingTournamentUserIds.isEmpty())) {
                 publishRandomProgress(progressConsumer, 6, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                         "Queried " + queryCount + " backend lookup(s); event has no eligible accepted members.");
                 continue;
             }
             snapshotsByEventId.put(eventId, snapshot);
+            existingTournamentUserIdsByEventId.put(eventId, existingTournamentUserIds);
             requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
+            requiredUserIds.addAll(existingTournamentUserIds);
             publishRandomProgress(progressConsumer, 10, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                     "Queried " + queryCount + " backend lookup(s); found " + requiredUserIds.size() + " candidate user(s).");
         }
@@ -836,8 +840,12 @@ public class EventScheduler {
         if (includeAllAcceptedMembers) {
             eligibleUserIds = new LinkedHashSet<>(requiredUserIds);
         } else {
-            eligibleUserIds = resolvePublicUserIds(requiredUserIds);
+            eligibleUserIds = new LinkedHashSet<>(resolvePublicUserIds(requiredUserIds));
             incrementObservedQueries(observedQueries);
+            // Each tournament stage is its own participation scope. Existing
+            // stage members therefore stay eligible for that stage even when
+            // the root Event's participation flag changes later.
+            existingTournamentUserIdsByEventId.values().forEach(eligibleUserIds::addAll);
             requiredUserIds.retainAll(eligibleUserIds);
         }
         publishRandomProgress(progressConsumer, 20, 0, snapshotsByEventId.size(), requiredUserIds.size(), observedQueries.get(), "Loaded eligible random events.");
@@ -878,10 +886,15 @@ public class EventScheduler {
 
             Set<String> acceptedUserIds = new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
             acceptedUserIds.retainAll(eligibleUserIds);
-            if (acceptedUserIds.size() < 2) {
+            Set<String> existingTournamentUserIds = new LinkedHashSet<>(
+                    existingTournamentUserIdsByEventId.getOrDefault(eventId, Set.of()));
+            existingTournamentUserIds.retainAll(eligibleUserIds);
+            Set<String> tournamentUserIds = new LinkedHashSet<>(acceptedUserIds);
+            tournamentUserIds.addAll(existingTournamentUserIds);
+            if (acceptedUserIds.size() < 2 && existingTournamentUserIds.isEmpty()) {
                 return;
             }
-            FGraph eventGraph = graph.filter(acceptedUserIds, Set.of(), 0d);
+            FGraph eventGraph = graph.filter(tournamentUserIds, Set.of(), 0d);
             
             if (eventGraph.getNodes().isEmpty()) return;
 
@@ -1187,6 +1200,7 @@ public class EventScheduler {
         // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
+        Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
         Set<String> allRequiredUserIds = new LinkedHashSet<>();
         
         for (ActivityEvent event : events) {
@@ -1201,6 +1215,9 @@ public class EventScheduler {
             if (snapshot != null && snapshot.acceptedMemberUserIds() != null) {
                 allRequiredUserIds.addAll(snapshot.acceptedMemberUserIds());
             }
+            Set<String> existingTournamentUserIds = existingTournamentUserIds(eventId, event);
+            existingTournamentUserIdsByEventId.put(eventId, existingTournamentUserIds);
+            allRequiredUserIds.addAll(existingTournamentUserIds);
         }
         
         FGraph globalGraph = allRequiredUserIds.isEmpty() ? new FGraph() : buildGraphSnapshot(allRequiredUserIds);
@@ -1220,10 +1237,12 @@ public class EventScheduler {
             Set<String> acceptedUserIds = snapshot == null
                     ? new LinkedHashSet<>()
                     : new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
+            Set<String> tournamentUserIds = new LinkedHashSet<>(acceptedUserIds);
+            tournamentUserIds.addAll(existingTournamentUserIdsByEventId.getOrDefault(eventId, Set.of()));
             
-            FGraph eventGraph = acceptedUserIds.isEmpty()
+            FGraph eventGraph = tournamentUserIds.isEmpty()
                     ? new FGraph()
-                    : globalGraph.filter(acceptedUserIds, Set.of(), 0d);
+                    : globalGraph.filter(tournamentUserIds, Set.of(), 0d);
 
             List<SubEventItem> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
@@ -1255,7 +1274,6 @@ public class EventScheduler {
                 if (!STAGE_STATUS_FINALIZED.equals(stageStatus)) continue;
 
                 Set<String> advancingUserIds = resolveAdvancingUserIds(state);
-                advancingUserIds.retainAll(acceptedUserIds);
 
                 SubEventItem nextSubEvent = subEvents.get(index + 1);
                 String nextSubEventId = normalizeId(nextSubEvent == null ? null : nextSubEvent.id());
@@ -1298,7 +1316,6 @@ public class EventScheduler {
                 }
 
                 Set<String> outcomeUserIds = resolveStageParticipantUserIds(state);
-                outcomeUserIds.retainAll(acceptedUserIds);
                 int resultRevision = safeCount(subEvent.stageResultRevision());
                 if (resultRevision <= 0) {
                     changedGroupCount.addAndGet(changedGroups.size());
@@ -1320,7 +1337,7 @@ public class EventScheduler {
                             subEvent,
                             nextSubEvent,
                             state,
-                            acceptedUserIds,
+                            tournamentUserIds,
                             advancingUserIds);
                     recordPlanMarker(
                             "score",
@@ -1584,8 +1601,23 @@ public class EventScheduler {
         }
         EventLeaderboardStateDto previousState = activitiesEventLeaderboardService.queryState(eventId, previousStageId);
         Set<String> advancingUserIds = resolveAdvancingUserIds(previousState);
-        advancingUserIds.retainAll(accepted);
         return advancingUserIds;
+    }
+
+    private Set<String> existingTournamentUserIds(String eventId, ActivityEvent event) {
+        LinkedHashSet<String> userIds = new LinkedHashSet<>();
+        for (SubEventItem stage : safeSubEvents(event)) {
+            if (!isTournamentStage(stage)) {
+                continue;
+            }
+            String stageId = normalizeId(stage == null ? null : stage.id());
+            if (!StringUtils.hasText(stageId)) {
+                continue;
+            }
+            EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, stageId);
+            userIds.addAll(resolveStageParticipantUserIds(state));
+        }
+        return userIds;
     }
 
     private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {

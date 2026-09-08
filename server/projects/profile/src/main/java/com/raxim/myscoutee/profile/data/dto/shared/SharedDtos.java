@@ -641,7 +641,63 @@ public final class SharedDtos {
             String checkedInAtIso,
             String checkedInByUserId,
             String checkedInTicketId,
-            String managerGrantedByUserId) {
+            String managerGrantedByUserId,
+            Boolean organizerOnly) {
+        public ActivityMemberEntryDto(
+                String id,
+                String userId,
+                String name,
+                String initials,
+                String gender,
+                String city,
+                String statusText,
+                String role,
+                String status,
+                String pendingSource,
+                String requestKind,
+                String invitedByUserId,
+                Boolean invitedByActiveUser,
+                String metAtIso,
+                String actionAtIso,
+                String metWhere,
+                String avatarUrl,
+                UserDto profile,
+                List<ActivityMemberInvolvementDto> involvements,
+                String revision,
+                String attendanceStatus,
+                String checkedInAtIso,
+                String checkedInByUserId,
+                String checkedInTicketId,
+                String managerGrantedByUserId) {
+            this(
+                    id,
+                    userId,
+                    name,
+                    initials,
+                    gender,
+                    city,
+                    statusText,
+                    role,
+                    status,
+                    pendingSource,
+                    requestKind,
+                    invitedByUserId,
+                    invitedByActiveUser,
+                    metAtIso,
+                    actionAtIso,
+                    metWhere,
+                    avatarUrl,
+                    profile,
+                    involvements,
+                    revision,
+                    attendanceStatus,
+                    checkedInAtIso,
+                    checkedInByUserId,
+                    checkedInTicketId,
+                    managerGrantedByUserId,
+                    false);
+        }
+
         public ActivityMemberEntryDto(
                 String id,
                 String userId,
@@ -692,7 +748,8 @@ public final class SharedDtos {
                     checkedInAtIso,
                     checkedInByUserId,
                     checkedInTicketId,
-                    null);
+                    null,
+                    false);
         }
     }
 
