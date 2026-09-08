@@ -591,7 +591,9 @@ Wait for Codex's `last-leave-verified` persisted oracle.
     pending scoped member and `1 / 1 - 3` metrics. Casey's Asset pending counter
     is `1`. Nova has the unchanged target `HUF -3,200` Captured
     payment-history row and Casey has its matching `HUF +3,200` Captured row;
-    Riley has no target payment row before taking responsibility.
+    Riley has no target payment row before taking responsibility. Nova's row
+    still exposes `Request refund` under the restored one-day/50% policy; do
+    not select it in this Remove branch.
 95. In Nova, close Members and select `Remove` from the paid Transport resource
     card exactly once. Confirm the danger dialog. Do not use either member's
     `Leave` action in this branch.
@@ -605,7 +607,7 @@ Wait for Codex's `last-leave-verified` persisted oracle.
     `3`. Nova's and Casey's payment-history rows, all three actors' gross totals
     and refund-pending counters remain exactly as they were before Remove;
     Riley still has no target payment row, and no refund row or automatic refund
-    is created.
+    is created. Nova's retained original row still exposes `Request refund`.
 98. Report:
 
     `ASSET-CHECKOUT-001 mixed-status remove: scope retired, all payment histories unchanged`

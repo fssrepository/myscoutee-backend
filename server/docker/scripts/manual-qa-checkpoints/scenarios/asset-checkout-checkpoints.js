@@ -2164,7 +2164,7 @@
     if (Q.text(currentState.phase) !== "accepted") {
       Q.fail("last-leave-ready requires the accepted savepoint.");
     }
-    const refundWindow = rearmRefundEligibilityWindow(NOVA_ID, ["accepted"]);
+    const refundEligibility = prepareNovaRefundEligibility(["accepted"]);
     assertAccepted(oracle());
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
       phase: "last-leave-ready",
@@ -2176,7 +2176,7 @@
       phase: "last-leave-ready",
       acceptedScopedBorrowers: 1,
       managerUserId: NOVA_ID,
-      refundWindow,
+      refundEligibility,
       next: "Nova uses Leave from her own member card; do not use the resource Remove action in this branch."
     });
   }
@@ -2222,6 +2222,7 @@
     if (Q.text(currentState.phase) !== "accepted") {
       Q.fail("last-remove-ready requires the accepted savepoint.");
     }
+    const refundEligibility = prepareNovaRefundEligibility(["accepted"]);
     const current = oracle();
     assertAccepted(current);
     const resource = current.resources.find(item => item.transportAssetIds.includes(PAID_ID));
@@ -2369,6 +2370,7 @@
       managerUserId: NOVA_ID,
       paymentBackedMembers: [NOVA_ID],
       paymentFreeMembers: [RILEY_ID],
+      refundEligibility,
       next: "Nova uses Remove from the borrowed resource card; verify the card and pending counters disappear while Nova/Casey history stays unchanged and Riley gains no payment row."
     });
   }
@@ -2832,6 +2834,52 @@
       rearmed: true,
       startAtIso,
       refundDeadlineIso: new Date(startMs - 24 * 60 * 60 * 1000).toISOString()
+    };
+  }
+
+  function prepareNovaRefundEligibility(allowedPhases) {
+    const currentState = state();
+    if (!allowedPhases.includes(Q.text(currentState.phase))) {
+      Q.fail(`Nova refund eligibility is not valid from phase '${Q.text(currentState.phase)}'.`);
+    }
+    const policy = qaRefundPolicy();
+    const nowIso = Q.nowIso();
+    const assetResult = Q.collection("assets").updateOne(
+      { assetId: PAID_ID },
+      { $set: { "pricing.cancellationPolicy": policy, updatedDate: nowIso, updatedUser: CASEY_ID } }
+    );
+    const payment = Q.collection("payments").findOne({
+      sourceId: PAID_ID,
+      userId: NOVA_ID,
+      $or: [{ auditKind: { $exists: false } }, { auditKind: null }, { auditKind: "" }, { auditKind: "payment" }]
+    });
+    if (!payment || payment.status !== "captured" || Q.text(payment.refundStatus) !== "none") {
+      Q.fail("Nova refund eligibility requires the retained captured, unrefunded payment.");
+    }
+    const paymentResult = Q.collection("payments").updateOne(
+      { _id: payment._id },
+      { $set: { cancellationPolicy: policy } }
+    );
+    if (assetResult.matchedCount !== 1 || paymentResult.matchedCount !== 1) {
+      Q.fail("Nova refund eligibility could not restore the exact Asset/payment cancellation policy.");
+    }
+
+    const refundWindow = rearmRefundEligibilityWindow(NOVA_ID, allowedPhases);
+    const savedAsset = Q.collection("assets").findOne({ assetId: PAID_ID });
+    const savedPayment = Q.collection("payments").findOne({ _id: payment._id });
+    const startMs = Date.parse(Q.text(savedPayment && savedPayment.bookingStartAtIso));
+    const savedAssetPolicy = savedAsset && savedAsset.pricing && savedAsset.pricing.cancellationPolicy;
+    const savedPaymentPolicy = savedPayment && savedPayment.cancellationPolicy;
+    if (!Q.sameJson(savedAssetPolicy, policy)
+        || !Q.sameJson(savedPaymentPolicy, policy)
+        || !Number.isFinite(startMs)
+        || startMs - Date.now() < 36 * 60 * 60 * 1000) {
+      Q.fail("Nova refund eligibility did not retain the QA policy with a safe request window.");
+    }
+    return {
+      policy: "50% at least 1 day before start",
+      canRequestRefund: true,
+      ...refundWindow
     };
   }
 
