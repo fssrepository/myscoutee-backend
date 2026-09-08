@@ -764,6 +764,14 @@ public final class SharedDtos {
             String readAtIso) {
     }
 
+    public record ActivitySubEventAssetRemovalRequestDto(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            String assetId,
+            String userId) {
+    }
+
     public record ActivitySubEventResourceStateDto(
             String ownerId,
             String subEventId,

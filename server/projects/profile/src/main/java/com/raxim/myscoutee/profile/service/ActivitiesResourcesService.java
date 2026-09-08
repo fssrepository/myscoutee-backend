@@ -1418,6 +1418,20 @@ public class ActivitiesResourcesService {
             String assetId,
             String expectedManagerUserId,
             String actorUserId) {
+        return removeScopedAssetAssignmentState(
+                ownerId,
+                subEventId,
+                assetId,
+                expectedManagerUserId,
+                actorUserId) != null;
+    }
+
+    public ActivitySubEventResourceStateDto removeScopedAssetAssignmentState(
+            String ownerId,
+            String subEventId,
+            String assetId,
+            String expectedManagerUserId,
+            String actorUserId) {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
         String normalizedAssetId = normalizeId(assetId);
@@ -1428,7 +1442,7 @@ public class ActivitiesResourcesService {
                 || !StringUtils.hasText(normalizedAssetId)
                 || !StringUtils.hasText(normalizedExpectedManagerUserId)
                 || !normalizedExpectedManagerUserId.equals(normalizedActorUserId)) {
-            return false;
+            return null;
         }
 
         for (ActivitySubEventResource record : activitySubEventResourcesRepository
@@ -1481,10 +1495,12 @@ public class ActivitiesResourcesService {
             next.setUpdatedDate(nowIso);
             next.setUpdatedUser(normalizedActorUserId);
             ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+            Map<String, SubEventResourceMetricDto> groupMetricsByType;
             if (resourceBecameEmpty) {
                 removeGroupRuntimeResourceMetrics(saved, normalizedActorUserId, nowIso);
+                groupMetricsByType = Map.of();
             } else {
-                persistGroupRuntimeResourceMetrics(
+                groupMetricsByType = persistGroupRuntimeResourceMetrics(
                         saved,
                         metricsByType,
                         normalizedActorUserId,
@@ -1498,11 +1514,23 @@ public class ActivitiesResourcesService {
                     saved.getAssetOwnerUserId(),
                     nowIso,
                     removedAssetAssignments(record, next));
-            updateEventSubEventResourceCounters(normalizedOwnerId, normalizedSubEventId);
+            assetsService.statusDeleteAssignmentScopeRequests(
+                    saved.getAssetOwnerUserId(),
+                    Set.of(normalizedAssetId),
+                    normalizedOwnerId,
+                    authorizationEventId(normalizedOwnerId, normalizedSubEventId),
+                    normalizedSubEventId,
+                    normalizedActorUserId,
+                    nowIso);
+            Map<String, SubEventResourceMetricDto> commonMetricsByType =
+                    updateEventSubEventResourceCounters(normalizedOwnerId, normalizedSubEventId);
+            if (commonMetricsByType.isEmpty()) {
+                commonMetricsByType = groupMetricsByType;
+            }
             refreshEventParticipationProjection(normalizedOwnerId);
-            return true;
+            return toMutationStateDto(saved, referencedAssets, commonMetricsByType);
         }
-        return false;
+        return null;
     }
 
     private void removeGroupRuntimeResourceMetrics(

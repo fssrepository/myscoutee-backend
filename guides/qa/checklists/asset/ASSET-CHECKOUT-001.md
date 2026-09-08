@@ -93,6 +93,10 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-last-leave asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  prepare-last-remove asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  verify-last-remove asset-checkout ASSET-CHECKOUT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify-cancelled asset-checkout ASSET-CHECKOUT-001
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   verify asset-checkout ASSET-CHECKOUT-001
@@ -494,10 +498,12 @@ until Codex confirms that the lifecycle extension is ready.
 80. Still in Riley, reopen Members first. Riley is already the last accepted
     member, so Riley's own member menu must contain `Leave`; do not select it in
     this branch. Close Members, open the borrowed resource-card menu and confirm
-    `Remove` is present regardless of the remaining member count. Select
-    `Remove` once and confirm the danger dialog. The runtime Event/Sub-event
-    association and its card disappear. Casey's global Asset is not deleted,
-    and both payment histories remain available.
+    `Remove` is present because Riley is the current primary manager after the
+    Take Over. A different accepted manager must not receive this action. Select
+    `Remove` once and confirm the danger dialog. The backend must accept it only
+    for Riley. The runtime Event/Sub-event association and its card disappear.
+    Casey's global Asset is not deleted, and both payment histories remain
+    available.
 81. Open Riley's Payment history and the exact Captured Asset expense row.
     Confirm its menu contains `Ask Asset Owner` and `Request refund`, and does
     not contain `Ask Organizer`. The localized action text must be visible; the
@@ -520,20 +526,26 @@ until Codex confirms that the lifecycle extension is ready.
 84. Return to Riley's same Payment history row and select `Request refund`.
     Before deciding, confirm the dialog shows `HUF +1,600` refundable,
     `HUF −1,600` retained, and the configured 50% / one-day policy basis.
-    Confirm exactly once. The row gains a pending-refund badge and loses the
-    request action. Report:
+    Confirm exactly once. A separate newer `HUF +1,600` history row appears
+    with `Refund requested`; the original Captured payment remains historically
+    unchanged and loses the request action. Report:
 
     `ASSET-CHECKOUT-001 refund requested: runtime removed, owner chat sent once`
 
 85. Wait for Codex to prove the global Asset and both payment records remain,
     the runtime resource is absent, the service chat/message is exact-once,
     Casey's persisted write-side `paymentRefundsPending` changed by `+1`, and
-    exactly one refund-request notification targets Casey.
+    exactly one refund-request notification targets Casey. The oracle must also
+    prove exactly one separate pending refund audit row exists for the original
+    Riley payment, with no financial delta yet.
 86. In Casey, before opening Payment history, confirm its side-menu Payment red
     counter is `1`. Open Payment history and confirm the filter/dropdown also
-    carries `1`; the exact `HUF +3,200` income row shows the pending refund and
-    exposes `Approve refund`. Select it and confirm the approval dialog shows
-    the same `HUF +1,600` refund, retained amount and policy basis as Riley saw.
+    carries `1`; the separate `HUF -1,600` `Refund requested` expense row is
+    above the unchanged original `HUF +3,200` income row and exposes `Approve
+    refund`. `Payment summary` remains a neutral menu action while `Approve
+    refund` has its contextual approval color. Select it and confirm the
+    approval dialog shows the same `HUF +1,600` refund, retained amount and
+    policy basis as Riley saw.
 87. Confirm `Approve refund` exactly once. The pending counter
     changes immediately to `0` through the signal and stays `0` after the next
     user-model poll. Riley's gross badges are `HUF -3,200 / HUF +1,600`;
@@ -541,9 +553,11 @@ until Codex confirms that the lifecycle extension is ready.
     net result is `HUF 1,600` on each side.
 88. In both Casey and Riley, confirm the newer `HUF 1,600` refund write appears
     above the original payment with a contextually distinct `Refunded` badge.
-    The original payment has no further Refund action. Open `Payment summary`
-    from the original row on each side and confirm the same partial refund result
-    appears there. Reopening is read-only and cannot refund twice.
+    This is the same row that previously showed `Refund requested`, not another
+    appended row. The original payment stays Captured and has no further Refund
+    action. Open `Payment summary` from the original row on each side and confirm
+    the same partial refund result appears there. Reopening is read-only and
+    cannot refund twice.
 89. Report:
 
     `ASSET-CHECKOUT-001 refund approved: counters zero, histories refunded`
@@ -567,6 +581,19 @@ until Codex confirms that the lifecycle extension is ready.
 
     `ASSET-CHECKOUT-001 last manager left: runtime removed, Asset and history retained`
 
-Wait for Codex's `last-leave-verified` persisted oracle. These shared paid
-take-over/refund mechanics are replayed manually only on this Asset checkpoint;
-do not repeat the Event checkout testcase for them.
+Wait for Codex's `last-leave-verified` persisted oracle.
+
+94. After `last-leave-verified`, wait for Codex to roll back to `accepted` and
+    prepare `last-remove-ready`. Nova is again the sole accepted scoped borrower
+    and current primary Asset manager. Confirm another accepted manager does not
+    have `Remove`; then, as Nova, select `Remove` from the borrowed resource card
+    exactly once and confirm the danger dialog. Do not use member-card `Leave` in
+    this branch. Confirm the runtime card disappears while Casey's global Asset
+    and Nova's Captured payment history remain, then report:
+
+    `ASSET-CHECKOUT-001 primary manager removed card: runtime removed, Asset and history retained`
+
+    Wait for Codex's `last-remove-verified` persisted oracle.
+
+These shared paid take-over/refund mechanics are replayed manually only on this
+Asset checkpoint; do not repeat the Event checkout testcase for them.

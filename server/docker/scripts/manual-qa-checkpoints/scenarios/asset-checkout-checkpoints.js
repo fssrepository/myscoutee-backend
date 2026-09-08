@@ -767,7 +767,18 @@
       auditKind: "refund",
       supersedesPaymentId: originalPaymentId
     });
-    return item ? paymentView(item) : null;
+    return item ? {
+      ...paymentView(item),
+      auditKind: Q.text(item.auditKind),
+      supersedesPaymentId: Q.text(item.supersedesPaymentId),
+      refundRequestStatus: Q.text(item.refundRequestStatus),
+      refundedAmount: Number(item.refundedAmount || 0),
+      refundRuleId: Q.text(item.refundRuleId),
+      refundRequestedAtIso: Q.text(item.refundRequestedAtIso),
+      refundRequestedByUserId: Q.text(item.refundRequestedByUserId),
+      createdDate: Q.text(item.createdDate),
+      accountedSpentAmount: Number(item.accountedSpentAmount || 0)
+    } : null;
   }
 
   function rawScopedRequest(userId) {
@@ -2008,15 +2019,29 @@
     const current = oracle();
     const asset = assetById(current, PAID_ID);
     const successor = lifecyclePayment(RILEY_ID);
+    const refundRequest = refundHistoryPayment(RILEY_ID, successor?.id);
     const requested = notificationRows("payment-refund-requested");
     const baselinePending = baselineRefundPending(currentState, CASEY_ID);
     if (!asset || asset.quantity !== 3
         || asset.requests.some(item => item.status !== "D")
         || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
         || !successor || successor.status !== "captured" || successor.refundStatus !== "none"
-        || successor.refundRequestStatus !== "pending"
-        || successor.refundedAmount !== 1600
-        || successor.refundRuleId !== "qa-refund-1-day-50-percent"
+        || successor.refundRequestStatus || successor.refundedAmount !== 0 || successor.refundRuleId
+        || !refundRequest || refundRequest.status !== "refund_requested"
+        || refundRequest.auditKind !== "refund" || refundRequest.supersedesPaymentId !== successor.id
+        || refundRequest.refundRequestStatus !== "pending" || refundRequest.amount !== 1600
+        || refundRequest.refundedAmount !== 1600
+        || refundRequest.refundRuleId !== "qa-refund-1-day-50-percent"
+        || refundRequest.refundRequestedByUserId !== RILEY_ID
+        || !refundRequest.refundRequestedAtIso || !refundRequest.createdDate
+        || refundRequest.accountedSpentAmount !== 0
+        || current.payments.filter(item => item.sourceId === PAID_ID).length !== 4
+        || Q.collection("payments").countDocuments({
+          sourceId: PAID_ID,
+          userId: RILEY_ID,
+          auditKind: "refund",
+          supersedesPaymentId: successor.id
+        }) !== 1
         || paymentRefundPendingCount(CASEY_ID) !== baselinePending + 1
         || requested.length !== 1 || !Q.sameJson(requested[0].recipients, [CASEY_ID])
         || requested[0].paymentId !== successor.id || requested[0].sourceId !== PAID_ID
@@ -2025,12 +2050,17 @@
       Q.fail("runtime Remove, Ask Asset Owner or refund request did not produce the exact retained-history state.");
     }
     captureSavepoint("refundRequested", "refund-requested");
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      refundRequestAuditId: refundRequest.id,
+      refundRequestAuditCreatedAtIso: refundRequest.createdDate
+    } });
     Q.printObject({
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "refund-requested",
       runtimeAssociationRemoved: true,
       globalAssetRetained: true,
+      refundRequestAuditId: refundRequest.id,
       serviceChatId: SERVICE_CHAT_ID,
       caseyRefundCounter: paymentRefundPendingCount(CASEY_ID),
       next: "Casey opens the pending refund from Payment history and approves it exactly once."
@@ -2056,9 +2086,20 @@
         || !predecessor || predecessor.refundStatus !== "full"
         || !predecessorRefund || predecessorRefund.amount !== 3200
         || !successor || successor.status !== "captured" || successor.refundStatus !== "partial"
-        || !successorRefund || successorRefund.amount !== 1600
+        || successor.refundRequestStatus || successor.refundedAmount !== 1600
+        || !successorRefund || successorRefund.id !== Q.text(currentState.refundRequestAuditId)
+        || successorRefund.status !== "refunded" || successorRefund.amount !== 1600
+        || successorRefund.refundRequestStatus !== "approved"
+        || successorRefund.refundRuleId !== "qa-refund-1-day-50-percent"
+        || successorRefund.createdDate !== Q.text(currentState.refundRequestAuditCreatedAtIso)
+        || successorRefund.accountedSpentAmount !== 1600
+        || Q.collection("payments").countDocuments({
+          sourceId: PAID_ID,
+          userId: RILEY_ID,
+          auditKind: "refund",
+          supersedesPaymentId: successor.id
+        }) !== 1
         || current.payments.filter(item => item.sourceId === PAID_ID).length !== 4
-        || successor.refundRequestStatus !== "approved" || successor.refundedAmount !== 1600
         || successor.refundRuleId !== "qa-refund-1-day-50-percent"
         || paymentRefundPendingCount(CASEY_ID) !== baselinePending
         || approved.length !== 2
@@ -2140,6 +2181,67 @@
       scenario: SCENARIO,
       checkpointId: CHECKPOINT,
       phase: "last-leave-verified",
+      result: "PASS",
+      runtimeAssociationRemoved: true,
+      globalAssetRetained: true,
+      paymentHistoryRetained: true
+    });
+  }
+
+  function prepareLastRemove() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "accepted") {
+      Q.fail("last-remove-ready requires the accepted savepoint.");
+    }
+    const current = oracle();
+    assertAccepted(current);
+    const resource = current.resources.find(item => item.transportAssetIds.includes(PAID_ID));
+    if (!resource || resource.targetAddedByUserId !== NOVA_ID) {
+      Q.fail("last-remove-ready requires Nova to be the current scoped Asset manager.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase: "last-remove-ready",
+      lastRemoveReadyAtIso: Q.nowIso()
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "last-remove-ready",
+      acceptedScopedBorrowers: 1,
+      managerUserId: NOVA_ID,
+      next: "Nova uses Remove from the borrowed resource card; do not use Leave in this branch."
+    });
+  }
+
+  function verifyLastRemove() {
+    config();
+    const currentState = state();
+    if (Q.text(currentState.phase) !== "last-remove-ready") {
+      Q.fail("last-remove verification requires last-remove-ready.");
+    }
+    const current = oracle();
+    const asset = assetById(current, PAID_ID);
+    const request = asset && asset.requests.find(item => item.userId === NOVA_ID);
+    const payment = lifecyclePayment(NOVA_ID);
+    if (!asset || asset.quantity !== 3 || !request || request.status !== "D"
+        || current.resources.some(item => item.transportAssetIds.includes(PAID_ID))
+        || !payment || payment.status !== "captured" || payment.refundStatus !== "none"
+        || targetWindowAvailability(asset) !== 3
+        || notificationRows("asset-assignment-takeover-required").length !== 0
+        || paymentRefundPendingCount(CASEY_ID) !== baselineRefundPending(currentState, CASEY_ID)) {
+      Q.printObject({ scenario: SCENARIO, checkpointId: CHECKPOINT, phase: "last-remove-diagnostic", oracle: current });
+      Q.fail("the current primary manager's resource-card Remove did not retain the global Asset and payment history.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: currentState._id }, { $set: {
+      phase: "last-remove-verified",
+      lastRemoveVerifiedAtIso: Q.nowIso(),
+      lastRemoveOracle: current
+    } });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId: CHECKPOINT,
+      phase: "last-remove-verified",
       result: "PASS",
       runtimeAssociationRemoved: true,
       globalAssetRetained: true,
@@ -2302,7 +2404,8 @@
 
   function rollbackManagerLeft() {
     rollbackTo("managerLeft", "manager-left", [
-      "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+      "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+      "last-remove-ready", "last-remove-verified"
     ]);
     const nowIso = Q.nowIso();
     const policy = qaRefundPolicy();
@@ -2365,7 +2468,8 @@
 
   function rollbackTakeOverComplete() {
     rollbackTo("takeOverComplete", "takeover-complete", [
-      "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+      "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+      "last-remove-ready", "last-remove-verified"
     ]);
     const normalizedPolicyAssets = normalizeFixturePolicyStorage();
     const successor = Q.collection("payments").findOne({
@@ -2426,23 +2530,29 @@
   else if (command === "verify-refunded") verifyRefunded();
   else if (command === "prepare-last-leave") prepareLastLeave();
   else if (command === "verify-last-leave") verifyLastLeave();
+  else if (command === "prepare-last-remove") prepareLastRemove();
+  else if (command === "verify-last-remove") verifyLastRemove();
   else if (command === "verify-cancelled") verifyCancelled();
   else if (command === "verify") verifyTerminal();
   else if (command === "rollback-payment-ready") rollbackTo("paymentReady", "payment-ready", [
     "payment-ready", "revised-payment-ready", "paid-pending", "request-destination", "accepted", "cancelled-control", "verified",
-    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+    "last-remove-ready", "last-remove-verified"
   ]);
   else if (command === "rollback-revised-payment-ready") rollbackTo("revisedPaymentReady", "revised-payment-ready", [
     "revised-payment-ready", "paid-pending", "request-destination", "accepted", "cancelled-control", "verified",
-    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+    "last-remove-ready", "last-remove-verified"
   ]);
   else if (command === "rollback-paid-pending") rollbackTo("paidPending", "paid-pending", [
     "paid-pending", "request-destination", "accepted", "cancelled-control", "verified",
-    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    "takeover-ready", "manager-left", "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+    "last-remove-ready", "last-remove-verified"
   ]);
   else if (command === "rollback-accepted") rollbackTo("accepted", "accepted", [
     "accepted", "cancelled-control", "verified", "takeover-ready", "manager-left",
-    "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified"
+    "takeover-complete", "refund-requested", "refunded", "last-leave-ready", "last-leave-verified",
+    "last-remove-ready", "last-remove-verified"
   ]);
   else if (command === "rollback-manager-left") rollbackManagerLeft();
   else if (command === "rollback-takeover-complete") rollbackTakeOverComplete();

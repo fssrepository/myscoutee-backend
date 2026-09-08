@@ -6863,10 +6863,10 @@ this row's pre-payment basket Cancel or successful Barion payment.
   | Free Asset | `Borrow`; `Send borrow request` | payment phase/session/record |
   | Unavailable Asset/window | no enabled `Borrow`, or the card is filtered from Explore | checkout or reservation write |
   | Paid request pending owner decision | `Payment summary`; owner request row `Pending` | another `Pay` for the same scope |
-  | Owner-accepted paid borrow | read-only `Payment summary`; member-card `Leave`; resource-card `Remove`; `Ask Asset Owner` | Promote/Revoke or global Asset delete |
+  | Owner-accepted paid borrow | read-only `Payment summary`; member-card `Leave`; current primary manager's resource-card `Remove`; `Ask Asset Owner` | another manager's `Remove`, Promote/Revoke or global Asset delete |
   | Manager left with accepted successor | `Take Over`; exact predecessor price; replacement payment flow | plain confirm-only transfer or early predecessor refund |
   | Runtime association removed | retained Payment history with `Ask Asset Owner` and `Request refund` | global Asset deletion or erased payment record |
-  | Refund pending/approved | owner Payment counter/filter delta; `Approve refund`; contextual `Refunded` history and summary | query projection counter or duplicate refund |
+  | Refund pending/approved | separate financially neutral `Refund requested` audit row; owner Payment counter/filter delta; `Approve refund`; the same row becomes contextual `Refunded` while the original Captured row stays unchanged | pending badge on the original payment, query projection counter, second refund row or duplicate refund |
 
 - The Borrow popup's own lazy Asset-detail response supplies the authoritative
   parent Event/Sub-event window. The date control immediately normalizes an
