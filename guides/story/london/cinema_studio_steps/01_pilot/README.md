@@ -66,3 +66,15 @@ Recorded historical test spend is 80; latest remaining estimate is approximately
 Before payment, verify the actual image versions loaded by the existing four mentions: an edited world prompt does not replace the already-rendered W01 image. The recorded W01 asset is still the earlier 2K sheet; the new source/destination world design is not verified as rendered. Check whether the actual sheet clearly supplies the cathedral identity and required spatial detail. Resolve a missing reference property before the next video attempt, using the existing reference/Unlimited plan rather than silently adding a paid video retry.
 
 The test covers these reusable mechanisms together. Other full-film encounters and landmarks retain their own detailed prompts; this 16-second result does not claim to show every event in the 200-second film. Freeze the actual accepted source versions and settings as the reusable reference. If the 480p result still lacks a central mechanism or its SFX dynamics, the affected expensive production step is not ready.
+
+## Weather correction from the latest result
+
+Use an overcast evening after the rain has stopped: retain wet paving and reflections, omit falling drizzle and umbrellas, and expose heads and numerical cards. This is synchronized in both visual tests, W01 and Block 01; the narrated test preserves the actual source ambience. The Extend must inherit the actual endpoint and visibly close any inherited umbrella rather than deleting it at the seam. Existing rendered reference images are not changed by this wording. The correction removes a competing visual cue; it does not prove successful rating-card generation. No new paid retry is scheduled by this edit.
+
+## Background transformation correction, 6.5–8 s
+
+The reviewed result blended the background frontage into another composition. The revised first-video prompt specifies one opaque three-bay building: its central bay retreats, the adjoining wall strips unfold into deep loggia sides, its side bays rotate outward, and its cornice folds at the same joints. Rooted piers, doorway, floors, shadows and uninterrupted camera parallax make each intermediate volume traceable. The final Block 01 video/storyboard use the same mechanism. This correction concerns the background block, not the restaurant wall.
+
+## Pack-wide continuity revision
+
+Every film block and both moving pilots now carry explicit solid-material continuity, with scene-specific paths for openings, furniture, transit, landmarks and ground. World/memory/map prompts support solid intermediate geometry and the same local opening from first human glimpse to full encounter. Backgrounds cannot dissolve or be exchanged as pictures. The final clinical and title hard cuts remain explicit; even the final glass reveal uses a physical changing sightline rather than a crossfade. This revision adds no generation task.

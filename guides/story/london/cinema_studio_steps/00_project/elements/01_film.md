@@ -47,7 +47,7 @@ Type: Location
 Canonical key: MW01
 Primary scene: Scene 01
 Also referenced by: Also referenced by Scenes 02 and 07 where the canonical storyboard calls for it.
-Description: Literal London-life memory source environment for social life, cramped shared housing, dating/relationship moments and beginner-dance memories.
+Description: Literal London-life memory source environment for social life, cramped shared housing, dating/relationship moments and beginner-dance memories. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING` in the canonical prompt pack.
 
 ## LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS
@@ -55,7 +55,7 @@ Type: Location
 Canonical key: MWP01
 Primary scene: Shared memory reference
 Also referenced by: Reusable by multiple scenes exactly where the canonical storyboard/video prompt references P01.
-Description: Story-preservation source environment for short literal route, room and document-threshold memories that recur across the film.
+Description: Story-preservation source environment for short literal route, room and document-threshold memories that recur across the film. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS` in the canonical prompt pack.
 
 ## PROP — SCORE CARDS

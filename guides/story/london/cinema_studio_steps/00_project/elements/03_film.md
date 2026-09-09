@@ -7,7 +7,7 @@ Type: Location
 Canonical key: W03
 Primary scene: Scene 03
 Also referenced by: Reuse the same Location wherever the canonical pack explicitly references this World.
-Description: Present-city fused London–Budapest work/admin environment from Aldwych and Kingsway through Holborn to professional façades and Fleet Street edge.
+Description: Present-city fused London–Budapest work/admin environment from Aldwych and Kingsway through Holborn to professional façades and Fleet Street edge. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES` in the canonical prompt pack.
 
 ## CHARACTER 22 — ACCOUNTANT
@@ -39,5 +39,5 @@ Type: Location
 Canonical key: MW03
 Primary scene: Scene 03
 Also referenced by: Reuse only where the canonical pack explicitly references this memory world.
-Description: Literal work/admin memory source environment for cross-border work, accounting delegation, forms, portal responsibility and inconsistent records.
+Description: Literal work/admin memory source environment for cross-border work, accounting delegation, forms, portal responsibility and inconsistent records. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN` in the canonical prompt pack.

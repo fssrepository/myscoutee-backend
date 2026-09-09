@@ -7,7 +7,7 @@ Type: Location
 Canonical key: W07
 Primary scene: Scene 07
 Also referenced by: Reuse the same Location wherever the canonical pack explicitly references this World.
-Description: Present-city fused London–Budapest final environment from Westminster Bridge through Parliament Square and Whitehall to the dark-glass threshold.
+Description: Present-city fused London–Budapest final environment from Westminster Bridge through Parliament Square and Whitehall to the dark-glass threshold. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `WORLD 07 — THE LAST CITY — WESTMINSTER / WHITEHALL / DARK GLASS THRESHOLD` in the canonical prompt pack.
 
 ## CHARACTER 05 — FINAL NURSE

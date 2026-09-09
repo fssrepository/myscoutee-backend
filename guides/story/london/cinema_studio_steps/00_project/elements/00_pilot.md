@@ -23,5 +23,5 @@ Type: Location
 Canonical key: W01
 Primary scene: Scene 01
 Also referenced by: Reuse the same Location wherever the canonical pack explicitly references this World.
-Description: Present-city fused London–Budapest environment for the opening walk: Soho, Piccadilly Circus, Leicester Square and Trafalgar edge.
+Description: Present-city fused London–Budapest environment for the opening walk: Soho, Piccadilly Circus, Leicester Square and Trafalgar edge. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `WORLD 01 — THE CITY JUDGES FIRST — SOHO / PICCADILLY / LEICESTER` in the canonical prompt pack.

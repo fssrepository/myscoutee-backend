@@ -7,7 +7,7 @@ Type: Location
 Canonical key: W05
 Primary scene: Scene 05
 Also referenced by: Reuse the same Location wherever the canonical pack explicitly references this World.
-Description: Present-city fused London–Budapest river environment from Blackfriars north bank across the bridge to the South Bank civic riverfront.
+Description: Present-city fused London–Budapest river environment from Blackfriars north bank across the bridge to the South Bank civic riverfront. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `WORLD 05 — THE RIVER OPENS — BLACKFRIARS / THAMES / SOUTH BANK` in the canonical prompt pack.
 
 ## CHARACTER 27 — JUDGE
@@ -55,7 +55,7 @@ Type: Location
 Canonical key: MW05
 Primary scene: Scene 05
 Also referenced by: Reuse only where the canonical pack explicitly references this memory world.
-Description: Literal court/file/classification memory source environment for hearing, assets, forensic examination, documents and black humour.
+Description: Literal court/file/classification memory source environment for hearing, assets, forensic examination, documents and black humour. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `MEMORY WORLD 05 — COURT / FILE / ASSETS / BLACK HUMOUR` in the canonical prompt pack.
 
 ## LOCATION — MWP02 — MEMORY PRESERVATION WORLD P02 — SYSTEM TIME / TWO DOORS / INSTITUTIONAL REVERSALS
@@ -63,5 +63,5 @@ Type: Location
 Canonical key: MWP02
 Primary scene: Shared memory reference
 Also referenced by: Reusable by multiple scenes exactly where the canonical storyboard/video prompt references P02.
-Description: Story-preservation source environment for institutional-time reversals and private-life collisions with systems.
+Description: Story-preservation source environment for institutional-time reversals and private-life collisions with systems. For all moving uses, preserve this source as solid three-dimensional geometry: visible existing joints open, bend and extend into the new form without dissolves, ghosted overlays or replacement scenes. First glimpse remembered people through the same developing opening used for the complete encounter. Source/storyboard images show sharp connected states, not blended transitions.
 Generation source: `MEMORY PRESERVATION WORLD P02 — SYSTEM TIME / TWO DOORS / INSTITUTIONAL REVERSALS` in the canonical prompt pack.
