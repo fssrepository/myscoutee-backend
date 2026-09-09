@@ -1,3 +1,25 @@
+REFERENCE SETUP INCOMPLETE: C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21, MW01, MW02, MWP01, W02
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@UNBOUND_W02 = LOCATION — W02 — WORLD 02 — ROUTES / PASSAGES — CHARING CROSS / STRAND / ALDWYCH / EMBANKMENT; physical present city; preserve materials and allow the directed architectural transformation.
+@UNBOUND_MW02 = LOCATION — MW02 — MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS; the assigned remembered scenes; preserve the source identities and setting.
+@UNBOUND_MW01 = LOCATION — MW01 — MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING; the assigned remembered scenes; preserve the source identities and setting.
+@UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C10 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@UNBOUND_C12 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C13 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C14 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C15 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
+@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
+@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
+@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
+@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 CINEMATIC STORYBOARD containing EXACTLY NINE equal frames.
@@ -94,7 +116,7 @@ FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloo
 
 FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly gives the viewed card a slightly fuller internal light/fill over the current glass reflection.
 
-FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
+FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: Orosháza / Viharsarok childhood memory: paprika rows and corn rows under a flat Great Plain horizon → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
 
 FRAME 9 — Wide Aldwych / Embankment-side exterior. Opera/Nyugati/M4/Hungarian signage remain unmistakable in the present city. Memory panes return to normal reflections as the protagonist continues the exterior walk.
 

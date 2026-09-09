@@ -1,3 +1,15 @@
+REFERENCE SETUP INCOMPLETE: C22, C23, C24, MW03, MWP01, W03
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@UNBOUND_W03 = LOCATION — W03 — WORLD 03 — WORK CITY — ALDWYCH / KINGSWAY / HOLBORN / PROFESSIONAL FACADES; physical present city; preserve materials and allow the directed architectural transformation.
+@UNBOUND_MW03 = LOCATION — MW03 — MEMORY WORLD 03 — WORK / ACCOUNTING / RULE CHANGE / ADMIN; the assigned remembered scenes; preserve the source identities and setting.
+@UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C22 = CHARACTER 22 — ACCOUNTANT; exact person identity; use only where this person appears.
+@UNBOUND_C23 = CHARACTER 23 — ADMIN COLLEAGUE A; exact person identity; use only where this person appears.
+@UNBOUND_C24 = CHARACTER 24 — ADMIN COLLEAGUE B; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 CINEMATIC STORYBOARD containing EXACTLY NINE equal frames.

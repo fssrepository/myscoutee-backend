@@ -1,19 +1,22 @@
+REFERENCE SETUP INCOMPLETE: A07, C05, C06, C16, C17, HRW07, MW01, MW02, MWP01, SB07, W07
+Do not generate until these references are bound.
+
 MYSCOUTEE — BLOCK 07 — 20 SECONDS
 One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
 
 REFERENCES
-@W07_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
-@HRW07_CLINICAL_REALITY = clinical reality, only in the final reveal beats.
-@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
-@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
-@MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_W07 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_HRW07 = clinical reality, only in the final reveal beats.
+@UNBOUND_MWP01 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW02 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C05_FINAL_NURSE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C17_BALLOON_LOCAL_HELPER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@SB07_STORYBOARD = ordered nine-beat plan, never a visible grid.
-@A07_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_C05 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C06 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_SB07 = ordered nine-beat plan, never a visible grid.
+@UNBOUND_A07 = exact supplied off-screen narration; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -49,8 +52,13 @@ FRAME 8 — HARD CUT to the real clinical room. Same protagonist, conscious, not
 
 FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. WITHIN THIS SAME HIGGSFIELD-GENERATED FINAL BLOCK, make a clean hard transition to black and render the final title exactly as two restrained centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. Do not turn this frame into a dream wake-up or explanatory ending.
 
+MUSIC AND TRANSFORMATION SOUND
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+BLOCK MUSIC DIRECTION: Gradually strip the motif back to one fragile clarinet phrase as the city decelerates. Its last quiet accent accompanies the final facade settling before the doorway approach. Stop all music, transformation foley and city ambience exactly at the clinical hard cut, without a reverb tail into the room. Only ordinary clinical room tone and ending narration remain; keep the title free of a musical sting.
+
 AUDIO
-Use @A07_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A07 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds. A very brief Nile/Aswan room-and-river ambience enters through the first reflection before the cold-white-light intrusion.
 the shared-bedroom DIFFERENT SNORE appears for a moment and its rhythm becomes monitor-like for a single ambiguous beat beneath the rain; an almost subliminal cold ventilation / fluorescent electrical hum accompanies the white-coat edge. Immediately return to city sound.
 balloon-rope / hand-effort / vegetation sound flashes for a moment, then matches into one faint metal contact and white-sheet/fabric movement while city ambience remains present. The connection is physical and brief, not a dream whoosh.

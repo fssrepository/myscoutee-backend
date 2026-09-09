@@ -1,3 +1,20 @@
+REFERENCE SETUP INCOMPLETE: C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@UNBOUND_C12 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C13 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C14 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C15 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
+@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
+@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
+@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
+@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
@@ -53,7 +70,7 @@ Cell 4 — Airport/roadside continuation of the Cairo trip: luggage unexpectedly
 
 Cell 5 — Hot-air-balloon landing in a vegetable plot near a low wall. Passengers/local people cooperate hand-to-hand to solve the situation. Real dirt, plants, basket, fabric and human effort; no fantasy balloon spectacle.
 
-Cell 6 — Literal route-memory fragment: a rural field edge meeting railway track, the visual origin of a long route. Keep it grounded and photographic, not a graphic transition.
+Cell 6 — Literal route-memory fragment: paprika and corn fields near Orosháza in the Viharsarok, their flat horizon meeting a railway track, the childhood origin of a long route. Keep it grounded and photographic, not a graphic transition.
 
 Cell 7 — Budapest tram-wire / rail-memory fragment viewed from an ordinary street perspective, emphasizing physical route lines and infrastructure rather than landmark tourism.
 

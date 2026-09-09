@@ -1,28 +1,31 @@
+REFERENCE SETUP INCOMPLETE: A06, C03, C04, C10, C11, C16, C17, C27, C28, C29, MW01, MW02, MW03, MW04, MW05, MW06, MWP02, SB06, W06
+Do not generate until these references are bound.
+
 MYSCOUTEE — BLOCK 06 — 30 SECONDS
 One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
 
 REFERENCES
-@W06_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
-@MW06_HUMAN_COUNTERMEMORIES = living remembered scene inside real glass; select only the assigned scene.
-@MWP02_SYSTEM_TIME_REVERSALS = living remembered scene inside real glass; select only the assigned scene.
-@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
-@MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
-@MW03_WORK_RULE_CHANGE_ADMIN = living remembered scene inside real glass; select only the assigned scene.
-@MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
-@MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_W06 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_MW06 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MWP02 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW02 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW03 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW04 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MW05 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @char_mys_soho-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C10_BEGINNER_DANCE_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C11_RUSSIAN_TRANSIT_PASSENGER = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C17_BALLOON_LOCAL_HELPER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C27_JUDGE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C28_FORENSIC_EXPERT_A = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C29_FORENSIC_EXPERT_B = exact face, age, hair and body; memory wardrobe follows its source scene.
-@SB06_STORYBOARD = ordered nine-beat plan, never a visible grid.
-@A06_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_C03 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C10 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C11 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C27 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C28 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C29 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_SB06 = ordered nine-beat plan, never a visible grid.
+@UNBOUND_A06 = exact supplied off-screen narration; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -50,16 +53,21 @@ FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / 
 
 FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
 
-FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes from @MWP02_SYSTEM_TIME_REVERSALS carry the institutional parallel: an anonymous high-review chamber unable to assemble a quorum after multiple participants step aside, and the protagonist alone with a laptop / ordinary document cursor trying to reach review from below. The two routes are different and neither decides the other; the shared image is simply an unanswered institutional door. No real court, office, country or current public event is identifiable. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
+FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes from @UNBOUND_MWP02 carry the institutional parallel: an anonymous high-review chamber unable to assemble a quorum after multiple participants step aside, and the protagonist alone with a laptop / ordinary document cursor trying to reach review from below. The two routes are different and neither decides the other; the shared image is simply an unanswered institutional door. No real court, office, country or current public event is identifiable. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
 
 FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards gain a slightly fuller internal light/fill at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
 
 FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible ABOVE his head with a visible gap above the crown at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
 
-FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. In one final civic-glass reflection, @MWP02_SYSTEM_TIME_REVERSALS briefly shows an EMPTY CHAIR HIGH IN THE SYSTEM after the office has changed occupant; it is quiet, anonymous and explicitly NOT a verdict in the protagonist's case. No title, flag, seal, recognizable government room or public figure. The earlier absurd "institution fired" gesture may echo only as timing, never as prediction or cause. The reflection clears and the protagonist walks toward a quieter continuation. NO clinical imagery yet.
+FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. In one final civic-glass reflection, @UNBOUND_MWP02 briefly shows an EMPTY CHAIR HIGH IN THE SYSTEM after the office has changed occupant; it is quiet, anonymous and explicitly NOT a verdict in the protagonist's case. No title, flag, seal, recognizable government room or public figure. The earlier absurd "institution fired" gesture may echo only as timing, never as prediction or cause. The reflection clears and the protagonist walks toward a quieter continuation. NO clinical imagery yet.
+
+MUSIC AND TRANSFORMATION SOUND
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+BLOCK MUSIC DIRECTION: Reach the densest version of the same two-instrument motif as architecture and traffic overload him, using closer repetitions and more urgent clarinet ornament. Keep narration intelligible. Briefly simplify and warm the phrase during the human counter-memories. Intensity comes from musical tension, not overpowering volume.
 
 AUDIO
-Use @A06_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A06 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 denser South Bank city bed, rain, crowd, bus brakes, tram rail, taxi tyre hiss.
 brief transit-gate beep, then a soft human breath-smile; both feel like memory fragments inside separate glass surfaces.
 balloon fabric/rope/hand effort, soil and vegetation movement, immediately followed by current-city traffic.

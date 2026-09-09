@@ -1,3 +1,6 @@
+REFERENCE INPUTS:
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
@@ -41,7 +44,7 @@ Cell 1 — Budapest workers' hostel corridor at night, ordinary institutional fl
 
 Cell 2 — Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
 
-Cell 3 — Rural field / corn-row memory: grounded agricultural rows leading the eye toward distance, the beginning of a route rather than a postcard landscape.
+Cell 3 — Childhood near Orosháza in the Viharsarok: paprika rows and tall corn rows below a flat Great Plain horizon. View the agricultural rows from a child's low eye level, with no visible child, as a lived memory at the beginning of a route. Natural soil, leaves and daylight; no postcard framing.
 
 Cell 4 — Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
 

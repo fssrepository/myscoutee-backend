@@ -1,3 +1,15 @@
+REFERENCE SETUP INCOMPLETE: C04, C27, C28, C29, C30, C31
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
+@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
+@UNBOUND_C28 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@UNBOUND_C29 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@UNBOUND_C30 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
+@UNBOUND_C31 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.

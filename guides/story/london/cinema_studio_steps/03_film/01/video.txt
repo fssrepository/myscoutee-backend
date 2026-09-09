@@ -1,18 +1,21 @@
+REFERENCE SETUP INCOMPLETE: A01, C06, C07, C08, C09, MW01, MWP01, SB01, W01
+Do not generate until these references are bound.
+
 MYSCOUTEE — BLOCK 01 — 30 SECONDS
 One 16:9 photorealistic moving film sequence. Open in motion, already tracking the walking protagonist through wet Soho.
 
 REFERENCES
-@W01_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
-@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
-@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_W01 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MWP01 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @char_mys_soho-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C07_FX_MORTGAGE_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C08_FX_MORTGAGE_SPOUSE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C09_FX_MORTGAGE_CHILD = exact face, age, hair and body; memory wardrobe follows its source scene.
-@SB01_STORYBOARD = ordered nine-beat plan, never a visible grid.
-@A01_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_C06 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C07 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C08 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C09 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_SB01 = ordered nine-beat plan, never a visible grid.
+@UNBOUND_A01 = exact supplied off-screen narration; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -48,8 +51,13 @@ FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Seve
 
 FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
 
+MUSIC AND TRANSFORMATION SOUND
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+BLOCK MUSIC DIRECTION: Introduce the motif quietly as the city pulls him in. Leave more space around the Soho smile and domestic memories.
+
 AUDIO
-Use @A01_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A01 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 rainy Soho / West End city bed, wet tyre hiss, distant red-bus brakes, soft tram rail noise, footsteps on wet stone.
 Piccadilly opens wider; crowd wash, one restrained tram bell, traffic moves past without a dramatic hit.
 taxi-window memory zone; very soft restaurant cutlery/glass clink and indoor room tone heard as if behind wet glass, while current rain remains audible.

@@ -25,20 +25,20 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 46 whitespace-delimited tokens, original target 23–27 s, approximately 102–120 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W03 | `W03_MAIN_WORLD.png` | `@W03_MAIN_WORLD` |
-| MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@MW03_WORK_RULE_CHANGE_ADMIN` |
-| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C22 | `C22_ACCOUNTANT.png` | `@C22_ACCOUNTANT` |
-| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@C23_ADMIN_COLLEAGUE_A` |
-| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@C24_ADMIN_COLLEAGUE_B` |
-| SB03 | `SB03_STORYBOARD.png` | `@SB03_STORYBOARD` |
-| A03 | `A03_NARRATION.wav` | `@A03_NARRATION` |
+| W03 | `W03_MAIN_WORLD.png` | `@UNBOUND_W03` |
+| MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@UNBOUND_MW03` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C22 | `C22_ACCOUNTANT.png` | `@UNBOUND_C22` |
+| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@UNBOUND_C23` |
+| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@UNBOUND_C24` |
+| SB03 | `SB03_STORYBOARD.png` | `@UNBOUND_SB03` |
+| A03 | `A03_NARRATION.wav` | `@UNBOUND_A03` |
 
 ## After generation
 

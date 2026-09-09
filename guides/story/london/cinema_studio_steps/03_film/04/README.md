@@ -26,20 +26,20 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 61 whitespace-delimited tokens, original target 23–27 s, approximately 136–159 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W04 | `W04_MAIN_WORLD.png` | `@W04_MAIN_WORLD` |
-| MW04 | `MW04_POLICE_DEFENCE.png` | `@MW04_POLICE_DEFENCE` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C03 | `C03_POLICEWOMAN.png` | `@C03_POLICEWOMAN` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@C04_APPOINTED_LAWYER` |
-| C25 | `C25_SEARCH_OFFICER_MALE.png` | `@C25_SEARCH_OFFICER_MALE` |
-| C26 | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` | `@C26_DEFENCE_OFFICE_SUBSTITUTE` |
-| SB04 | `SB04_STORYBOARD.png` | `@SB04_STORYBOARD` |
-| A04 | `A04_NARRATION.wav` | `@A04_NARRATION` |
+| W04 | `W04_MAIN_WORLD.png` | `@UNBOUND_W04` |
+| MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C03 | `C03_POLICEWOMAN.png` | `@UNBOUND_C03` |
+| C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
+| C25 | `C25_SEARCH_OFFICER_MALE.png` | `@UNBOUND_C25` |
+| C26 | `C26_DEFENCE_OFFICE_SUBSTITUTE.png` | `@UNBOUND_C26` |
+| SB04 | `SB04_STORYBOARD.png` | `@UNBOUND_SB04` |
+| A04 | `A04_NARRATION.wav` | `@UNBOUND_A04` |
 
 ## After generation
 

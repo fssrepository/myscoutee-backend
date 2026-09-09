@@ -1,7 +1,13 @@
+REFERENCE SETUP INCOMPLETE: T01_IMAGE, TA01, W01
+Do not generate until these references are bound.
+
 Extend the supplied video FORWARD by 4 seconds, 16:9. Continue its exact visible ending: same man, stride, shoulder position, taxi, camera heading and forward velocity, transformed Pest facade, rain, light and continuous city sound. No establishing shot or visual/audio restart.
 
-Use @char_mys_protagonist_s1_v1 for the walking man's identity, @char_mys_soho-woman_s1_v1 for the remembered woman, @W01_MAIN_WORLD for city materials and @T01_SOHO_MEMORY for the same restaurant. @TA01_TEST_NARRATION is the sole off-screen spoken audio: preserve its supplied voice and exact words, once. Nobody visibly lip-syncs.
+Use @char_mys_protagonist_s1_v1 for the walking man's identity, @char_mys_soho-woman_s1_v1 for the remembered woman, @UNBOUND_W01 for city materials and @UNBOUND_T01_IMAGE for the same restaurant. @UNBOUND_TA01 is the sole off-screen spoken audio: preserve its supplied voice and exact words, once. Nobody visibly lip-syncs.
 
 0–1s: carry the forward tracking movement through the boundary without changing the man or returning the transformed facade to its former shape. Rain, footsteps and tyre hiss continue without a gap.
 1–3s: make one short lateral acceleration to the next taxi pane. The same remembered woman gives a tiny continuing head movement, with the restaurant room still inside the glass; then the moving rain reflection covers it. The actual man remains outdoors. Play the supplied short narration once, naturally, over the continuing subdued city sound.
 3–4s: catch the walking man again and keep moving forward. The buildings retain their transformed material state and the street stays alive. Above-head cards remain attached to their current pedestrians, with no face overlap. No finale, title, new voice, extra spoken words, music cue, clinical imagery, full-screen memory, grid or new setting.
+
+MUSIC CONTINUITY:
+Continue the pilot's exact quiet tekerő drone/pulse and warm clarinet motif across the seam, at the same tempo and musical phase; no new melody or cue. Lower the music and foley under the supplied spoken line. The facade has already settled: do not replay a transformation or its stone scrape just to mark a beat. Preserve city ambience and the small restaurant-memory sound.

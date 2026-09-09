@@ -1,3 +1,18 @@
+REFERENCE SETUP INCOMPLETE: C05, C06, C16, C17, HRW07, MW01, MW02, MWP01, W07
+Do not generate until these references are bound.
+
+REFERENCE INPUTS:
+@UNBOUND_W07 = LOCATION — W07 — WORLD 07 — THE LAST CITY — WESTMINSTER / WHITEHALL / DARK GLASS THRESHOLD; physical present city; preserve materials and allow the directed architectural transformation.
+@UNBOUND_HRW07 = LOCATION — HRW07 — HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY; the final clinical reality only, at the specified reveal.
+@UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
+@UNBOUND_MW01 = LOCATION — MW01 — MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING; the assigned remembered scenes; preserve the source identities and setting.
+@UNBOUND_MW02 = LOCATION — MW02 — MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS; the assigned remembered scenes; preserve the source identities and setting.
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C05 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
+@UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
+@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 CINEMATIC STORYBOARD containing EXACTLY NINE equal frames.

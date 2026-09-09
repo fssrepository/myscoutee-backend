@@ -31,3 +31,25 @@ Use any available pre-generation duration estimate, then measure or inspect the 
 [TA01](../01_pilot/test_narration.txt) is a five-word sentence, ideally about 2–3 s for the 4 s extension. It tests the voice/reference route quickly; it does not validate the timing of A04–A06.
 
 Audio-reference input does not prove an unchanged soundtrack. Compare the source recording with the video output during the pilot and V01. Generate the remaining narrations as their blocks become necessary, so an early audio problem does not invalidate seven prepaid recordings.
+
+## Music and transformation foley
+
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+
+The creator identifies Orosháza / Viharsarok paprika and corn fields as childhood roots. The score carries that personal association through the film; the existing rural memory fragments retain it visually. No new scene, character or generation job is added.
+
+### Regional evidence and the film arrangement
+
+The Táncház Association places Orosháza in its Dél-Tiszántúl overview and describes the wider southern plain's dance traditions, including ugrós/oláhos and slow/fast csárdás. That establishes regional context, not one uniquely Orosháza-specific melody. [Dél-Tiszántúl](https://tudasbazis.tanchaz.hu/index.php/nagyalfold/del-tiszantul)
+
+Szerényi Béla's notes for the Téka Foundation's *Padkaporos bál* document older Dél-Alföld instrumentation including tekerő, clarinet and bagpipe, and ornamented playing. Its named source communities are Szentes, Tápé and Tiszaalpár. We use this as a regional instrumental reference, not as evidence of an exact Orosháza village style. [Album notes reproduced by Folkrádió](https://folkradio.hu/mediatar/albumok/446/padkaporos-bal-del-alfoldi-tancmuzsika)
+
+The Hungarian House of Music also identifies the Hungarian tekerő with the Dél-Alföld tradition. [Szerényi family programme](https://zenehaza.hu/esemeny/burdon-szerenyi-bela-es-fiai)
+
+The two-instrument arrangement, restrained two-beat pulse, melancholy and phrase-to-building synchronization are our film composition choices. They are not a transcription of a collected Orosháza tune, and historical dance music is not uniformly melancholy. No archival recording is copied into the film.
+
+### One-take production contract
+
+Each existing video job requests its music, ambience and material foley together. Keep one motif, two instruments and one main musical start/landing gesture per transformation. The pilot has one such gesture at 2–4.5 seconds; the extension tests continuity and narration without another transformation. There is no additional paid music job, comparison batch or automatic reroll. Detailed instrumental authenticity, phrase continuity and exact synchronization are not proven until the output is heard; a small timbral or timing difference alone does not justify spending on another take. Preserve intelligible narration, visible transformation, living memory and above-head cards as the main story requirements. Stop all city sound and score at the clinical cut.

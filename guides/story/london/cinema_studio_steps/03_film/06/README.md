@@ -22,32 +22,32 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 66 whitespace-delimited tokens, original target 23–27 s, approximately 147–172 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W06 | `W06_MAIN_WORLD.png` | `@W06_MAIN_WORLD` |
-| MW06 | `MW06_HUMAN_COUNTERMEMORIES.png` | `@MW06_HUMAN_COUNTERMEMORIES` |
-| MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@MWP02_SYSTEM_TIME_REVERSALS` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@MW02_GLOBAL_ROUTES` |
-| MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@MW03_WORK_RULE_CHANGE_ADMIN` |
-| MW04 | `MW04_POLICE_DEFENCE.png` | `@MW04_POLICE_DEFENCE` |
-| MW05 | `MW05_COURT_FILE.png` | `@MW05_COURT_FILE` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C02 | `C02_SOHO_WOMAN.png` | `@C02_SOHO_WOMAN` |
-| C03 | `C03_POLICEWOMAN.png` | `@C03_POLICEWOMAN` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@C04_APPOINTED_LAWYER` |
-| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@C10_BEGINNER_DANCE_WOMAN` |
-| C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@C11_RUSSIAN_TRANSIT_PASSENGER` |
-| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@C16_BALLOON_LOCAL_HELPER_MAN` |
-| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@C17_BALLOON_LOCAL_HELPER_WOMAN` |
-| C27 | `C27_JUDGE.png` | `@C27_JUDGE` |
-| C28 | `C28_FORENSIC_EXPERT_A.png` | `@C28_FORENSIC_EXPERT_A` |
-| C29 | `C29_FORENSIC_EXPERT_B.png` | `@C29_FORENSIC_EXPERT_B` |
-| SB06 | `SB06_STORYBOARD.png` | `@SB06_STORYBOARD` |
-| A06 | `A06_NARRATION.wav` | `@A06_NARRATION` |
+| W06 | `W06_MAIN_WORLD.png` | `@UNBOUND_W06` |
+| MW06 | `MW06_HUMAN_COUNTERMEMORIES.png` | `@UNBOUND_MW06` |
+| MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@UNBOUND_MWP02` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
+| MW03 | `MW03_WORK_RULE_CHANGE_ADMIN.png` | `@UNBOUND_MW03` |
+| MW04 | `MW04_POLICE_DEFENCE.png` | `@UNBOUND_MW04` |
+| MW05 | `MW05_COURT_FILE.png` | `@UNBOUND_MW05` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C02 | `C02_SOHO_WOMAN.png` | `@char_mys_soho-woman_s1_v1` |
+| C03 | `C03_POLICEWOMAN.png` | `@UNBOUND_C03` |
+| C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
+| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@UNBOUND_C10` |
+| C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@UNBOUND_C11` |
+| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
+| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
+| C27 | `C27_JUDGE.png` | `@UNBOUND_C27` |
+| C28 | `C28_FORENSIC_EXPERT_A.png` | `@UNBOUND_C28` |
+| C29 | `C29_FORENSIC_EXPERT_B.png` | `@UNBOUND_C29` |
+| SB06 | `SB06_STORYBOARD.png` | `@UNBOUND_SB06` |
+| A06 | `A06_NARRATION.wav` | `@UNBOUND_A06` |
 
 ## After generation
 

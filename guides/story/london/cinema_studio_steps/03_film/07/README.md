@@ -23,23 +23,23 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 33 whitespace-delimited tokens, original target 15–19 s, approximately 104–132 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W07 | `W07_MAIN_WORLD.png` | `@W07_MAIN_WORLD` |
-| HRW07 | `HRW07_CLINICAL_REALITY.png` | `@HRW07_CLINICAL_REALITY` |
-| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@MW02_GLOBAL_ROUTES` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C05 | `C05_FINAL_NURSE.png` | `@C05_FINAL_NURSE` |
-| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE` |
-| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@C16_BALLOON_LOCAL_HELPER_MAN` |
-| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@C17_BALLOON_LOCAL_HELPER_WOMAN` |
-| SB07 | `SB07_STORYBOARD.png` | `@SB07_STORYBOARD` |
-| A07 | `A07_NARRATION.wav` | `@A07_NARRATION` |
+| W07 | `W07_MAIN_WORLD.png` | `@UNBOUND_W07` |
+| HRW07 | `HRW07_CLINICAL_REALITY.png` | `@UNBOUND_HRW07` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C05 | `C05_FINAL_NURSE.png` | `@UNBOUND_C05` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
+| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
+| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
+| SB07 | `SB07_STORYBOARD.png` | `@UNBOUND_SB07` |
+| A07 | `A07_NARRATION.wav` | `@UNBOUND_A07` |
 
 ## After generation
 

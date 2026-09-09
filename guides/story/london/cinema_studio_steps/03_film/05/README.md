@@ -28,23 +28,23 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 63 whitespace-delimited tokens, original target 23–27 s, approximately 140–164 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W05 | `W05_MAIN_WORLD.png` | `@W05_MAIN_WORLD` |
-| MW05 | `MW05_COURT_FILE.png` | `@MW05_COURT_FILE` |
-| MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@MWP02_SYSTEM_TIME_REVERSALS` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C04 | `C04_APPOINTED_LAWYER.png` | `@C04_APPOINTED_LAWYER` |
-| C27 | `C27_JUDGE.png` | `@C27_JUDGE` |
-| C28 | `C28_FORENSIC_EXPERT_A.png` | `@C28_FORENSIC_EXPERT_A` |
-| C29 | `C29_FORENSIC_EXPERT_B.png` | `@C29_FORENSIC_EXPERT_B` |
-| C30 | `C30_COURT_CLERK.png` | `@C30_COURT_CLERK` |
-| C31 | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` | `@C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE` |
-| SB05 | `SB05_STORYBOARD.png` | `@SB05_STORYBOARD` |
-| A05 | `A05_NARRATION.wav` | `@A05_NARRATION` |
+| W05 | `W05_MAIN_WORLD.png` | `@UNBOUND_W05` |
+| MW05 | `MW05_COURT_FILE.png` | `@UNBOUND_MW05` |
+| MWP02 | `MWP02_SYSTEM_TIME_REVERSALS.png` | `@UNBOUND_MWP02` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
+| C27 | `C27_JUDGE.png` | `@UNBOUND_C27` |
+| C28 | `C28_FORENSIC_EXPERT_A.png` | `@UNBOUND_C28` |
+| C29 | `C29_FORENSIC_EXPERT_B.png` | `@UNBOUND_C29` |
+| C30 | `C30_COURT_CLERK.png` | `@UNBOUND_C30` |
+| C31 | `C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png` | `@UNBOUND_C31` |
+| SB05 | `SB05_STORYBOARD.png` | `@UNBOUND_SB05` |
+| A05 | `A05_NARRATION.wav` | `@UNBOUND_A05` |
 
 ## After generation
 

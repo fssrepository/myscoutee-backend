@@ -21,20 +21,22 @@ One row is one image request. The planned image model is **Nano Banana Pro in th
 | 3 | [W01 — city](../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
 | 4 | [T01 — single memory still](test_memory_image.txt) | C01 + C02 | `T01_SOHO_MEMORY.png` |
 
-For T01, the prompt now uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these @ identifiers automatically loads their Elements and accepted images in the composer. Use that autoload behavior; no separate manual selection, duplicate upload or binding screenshot is required unless an actual missing/wrong-reference symptom appears. A suitable existing Soho-memory source can replace this extra still when project provenance permits. Bind the T01 alias to that real image. Do not import T01 as another canonical character/location. C01/C02/W01 carry forward into the film; T01 is a pilot source and does not replace the final film's complete MW01 bank.
+For T01, the prompt now uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these @ identifiers automatically loads their Elements and accepted images in the composer. Use that autoload behavior; no separate manual selection, duplicate upload or binding screenshot is required unless an actual missing/wrong-reference symptom appears. A suitable existing Soho-memory source can replace this extra still when project provenance permits. T01 needs a verified persistent reference mention before the video can autoload it. It is currently a raw project image. Do not guess a handle or attach it to an unrelated canonical memory bank; establish the actual media-mention route or a distinct pilot reference container using the existing image. C01/C02/W01 carry forward into the film; T01 is a pilot source and does not replace the final film's complete MW01 bank.
 
 ## 3. Generate the 8-second video
 
 Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, one output**. If any setting is unavailable, follow the [setup guide](../00_project/SETUP.md) before paying.
 
-Attach the actual C01, C02, W01 and T01 images. Replace every alias in [test_video_8s.txt](test_video_8s.txt) with the UI's actual token, then paste the full prompt. Check the quote for one output. Save as `T01_CITY_8S_480P.mp4`.
+[test_video_8s.txt](test_video_8s.txt) explicitly names C01, C02, W01 and T01 through reference mentions. The assistant binds each actual identifier once for the whole pack; paste the full file after its reference setup notice has cleared. See [reference binding](../00_project/REFERENCES.md). Check the quote for one output. Save as `T01_CITY_8S_480P.mp4`.
 
-## 4. Watch once and check four things
+## 4. Watch once and check the visual and audio mechanisms
 
 - Does the same protagonist walk at human speed while the camera moves fast?
 - Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
 - Is traffic alive, and does the woman actually turn/smile inside the taxi glass? The memory must not become a full-screen cutaway or still photograph.
 - Does the fast move land on a readable human moment, with cards above heads and no clinical reveal?
+
+Also listen for the quiet Hungarian folk-rooted motif and material foley synchronized with the visible facade movement; neither should bury the human moment.
 
 At 480p, tiny text and background faces are not a final-quality test. Minor coherent irregularity is acceptable. If a central mechanism fails, name it before any further spending. An 8 s success does not prove full-block story density or 1080p quality.
 
@@ -46,7 +48,7 @@ First check that **Forward Extend accepts source video, new images and an audio 
 
 Generate the five words in [test_narration.txt](test_narration.txt) once, using the [voice to retain](../00_project/VOICE.md), naturally around 2–3 s. Save as `TA01_TEST_NARRATION.wav`. Do not attach the full A01 recording to this four-second test.
 
-Forward Extend source: accepted `T01_CITY_8S_480P.mp4`. Added duration: **4 s**, 480p, 16:9, audio ON, one output. Images: the same C01, C02, W01 and T01. Audio: TA01. Prompt: [test_extend_4s.txt](test_extend_4s.txt), with actual tokens. Put the source video in the real Extend source field, not an ordinary image slot.
+Forward Extend source: accepted `T01_CITY_8S_480P.mp4`. Added duration: **4 s**, 480p, 16:9, audio ON, one output. Images: the same C01, C02, W01 and T01. Audio: TA01. Prompt: [test_extend_4s.txt](test_extend_4s.txt), after its reference setup notice has cleared. Put the source video in the real Extend source field, not an ordinary image slot.
 
 Check stride, camera direction, traffic, rain and ambience at the eight-second boundary. Compare the spoken result with TA01. Record whether the output contains **12 continuous seconds or only a 4-second continuation**. Name and record the actual returned media rather than assuming a cumulative chain.
 

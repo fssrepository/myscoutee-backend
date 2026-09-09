@@ -30,22 +30,22 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 46 whitespace-delimited tokens, original target 23–27 s, approximately 102–120 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W01 | `W01_MAIN_WORLD.png` | `@W01_MAIN_WORLD` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
-| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C02 | `C02_SOHO_WOMAN.png` | `@C02_SOHO_WOMAN` |
-| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE` |
-| C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@C07_FX_MORTGAGE_HOUSEMATE` |
-| C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@C08_FX_MORTGAGE_SPOUSE` |
-| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@C09_FX_MORTGAGE_CHILD` |
-| SB01 | `SB01_STORYBOARD.png` | `@SB01_STORYBOARD` |
-| A01 | `A01_NARRATION.wav` | `@A01_NARRATION` |
+| W01 | `W01_MAIN_WORLD.png` | `@UNBOUND_W01` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C02 | `C02_SOHO_WOMAN.png` | `@char_mys_soho-woman_s1_v1` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
+| C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@UNBOUND_C07` |
+| C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@UNBOUND_C08` |
+| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@UNBOUND_C09` |
+| SB01 | `SB01_STORYBOARD.png` | `@UNBOUND_SB01` |
+| A01 | `A01_NARRATION.wav` | `@UNBOUND_A01` |
 
 ## After generation
 

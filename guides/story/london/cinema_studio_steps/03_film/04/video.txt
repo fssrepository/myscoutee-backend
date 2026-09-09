@@ -1,16 +1,19 @@
+REFERENCE SETUP INCOMPLETE: A04, C03, C04, C25, C26, MW04, SB04, W04
+Do not generate until these references are bound.
+
 MYSCOUTEE — BLOCK 04 — 30 SECONDS
 One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
 
 REFERENCES
-@W04_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
-@MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_W04 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_MW04 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C25_SEARCH_OFFICER_MALE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C26_DEFENCE_OFFICE_SUBSTITUTE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@SB04_STORYBOARD = ordered nine-beat plan, never a visible grid.
-@A04_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_C03 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C25 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C26 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_SB04 = ordered nine-beat plan, never a visible grid.
+@UNBOUND_A04 = exact supplied off-screen narration; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -46,8 +49,13 @@ FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Se
 
 FRAME 9 — Blackfriars-approach wide exterior. The institutional memories fade, but the formal Budapest-in-London architecture remains physically present. The protagonist keeps walking outside.
 
+MUSIC AND TRANSFORMATION SOUND
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+BLOCK MUSIC DIRECTION: Thin the music to its low drone and a few broken clarinet phrases. Give speech and procedural sounds priority; no villain cue or alarm effect.
+
 AUDIO
-Use @A04_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A04 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 formal rainy city street, close footsteps, distant traffic; tension remains grounded.
 ordinary residential buzzer / door mechanism and approaching footsteps, no spoken 'postman' line in the audio.
 apartment room tone, drawers/objects handled carefully, paper and fabric movement; no raid spectacle, no sirens.

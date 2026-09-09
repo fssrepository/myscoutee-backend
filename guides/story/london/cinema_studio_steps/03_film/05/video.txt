@@ -1,19 +1,22 @@
+REFERENCE SETUP INCOMPLETE: A05, C04, C27, C28, C29, C30, C31, MW05, MWP02, SB05, W05
+Do not generate until these references are bound.
+
 MYSCOUTEE — BLOCK 05 — 30 SECONDS
 One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
 
 REFERENCES
-@W05_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
-@MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
-@MWP02_SYSTEM_TIME_REVERSALS = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_W05 = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@UNBOUND_MW05 = living remembered scene inside real glass; select only the assigned scene.
+@UNBOUND_MWP02 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C27_JUDGE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C28_FORENSIC_EXPERT_A = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C29_FORENSIC_EXPERT_B = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C30_COURT_CLERK = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE = exact face, age, hair and body; memory wardrobe follows its source scene.
-@SB05_STORYBOARD = ordered nine-beat plan, never a visible grid.
-@A05_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C27 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C28 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C29 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C30 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_C31 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@UNBOUND_SB05 = ordered nine-beat plan, never a visible grid.
+@UNBOUND_A05 = exact supplied off-screen narration; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -45,12 +48,17 @@ FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two 
 
 FRAME 7 — Dark public glass. Black-humour memory: first the self-made "THE SYSTEM'S MOST WANTED" / impossible police-career application visual or CV fragment; include a very brief self-made institutional-dismissal paper carrying the absurd "institution fired" tone; then, in an adjacent pane, the anonymous fictional cardboard public figure with a deliberately ridiculous hat and an asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real name, politician likeness, party branding, campaign slogan or identifiable contemporary office is attached to the cardboard figure. The "institution fired" line is black humour from below, not authority, prediction or causation. No advocacy and no large readable text.
 
-FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late system-time chain from @MWP02_SYSTEM_TIME_REVERSALS: first a refused request for relief / revised papers deliberately held for a later institutional opening; then TWO LETTERS TO ONE DISTANT DOOR — his ordinary laptop submission from below and an anonymous senior-institution submission from above reaching the same unnamed external review body. No destination name is readable. Do NOT imply that his letter caused any later institutional change.
+FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late system-time chain from @UNBOUND_MWP02: first a refused request for relief / revised papers deliberately held for a later institutional opening; then TWO LETTERS TO ONE DISTANT DOOR — his ordinary laptop submission from below and an anonymous senior-institution submission from above reaching the same unnamed external review body. No destination name is readable. Do NOT imply that his letter caused any later institutional change.
 
 FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many normally visible restrained cards; the city feels like it can classify everyone.
 
+MUSIC AND TRANSFORMATION SOUND
+Use one original Hungarian Southern Great Plain (Dél-Alföld) folk-inspired instrumental motif: a warm, slightly breathy clarinet melody over the low continuous drone and dry rhythmic buzz of a Hungarian tekerő (hurdy-gurdy). Keep just these two musical voices, a short recurring phrase and a gentle two-beat pulse. Intimate longing for home becomes quietly unsettled as the city transforms. Keep the same motif and timbres across continuations; develop its density without adding instruments or a new tune. No singing, existing song quotation, festive show-band arrangement or heroic orchestra. Keep music and foley below the narration, leaving its words clearly intelligible.
+Tie each main architectural transformation to one musical phrase: its first clear accent starts the masonry moving, the melodic rise accompanies the unfolding facade, and the phrase's final accent coincides with the new form settling. Synchronize one weighted stone scrape through the movement and a brief metal/glass rattle at the landing. Keep the transformation visibly in frame; this is a material change coordinated with melody, not a cut hiding a new building. Use only these broad start-and-landing accents, with natural movement between them; avoid requiring a separate beat for every window. No explosion, trailer boom or magical whoosh. Keep the protagonist walking normally, without making the crowd dance.
+BLOCK MUSIC DIRECTION: Let the recurring phrase hesitate through the file and court memories. Preserve human restraint and black humour; no comic sting or triumphant resolution.
+
 AUDIO
-Use @A05_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A05 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 rainy river/civic-city ambience, footsteps and distant traffic.
 quiet courtroom/administrative room tone enters through glass, paper set on a desk, chair movement, no intelligible judicial dialogue.
 folder opening, photograph/paper handling, pen/signature scratch, one soft stamp or file closure.

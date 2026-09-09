@@ -33,30 +33,30 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 - [narration.txt](narration.txt) contains only spoken words: 45 whitespace-delimited tokens, original target 23–27 s, approximately 100–117 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
 - [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
 - All nine story beats remain. Fast camera movement and architectural transformation are already included.
-- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Paste the complete prompt after its reference setup notice has cleared. Verified Element mentions autoload. Missing IDs are bound once for the entire pack by the assistant; do not rewrite individual prompts. See [reference binding](../../00_project/REFERENCES.md).
 - Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
 
-| ID | Actual media to select | Prompt alias to replace |
+| ID | Required media | Reference mention (UNBOUND means missing ID) |
 | --- | --- | --- |
-| W02 | `W02_MAIN_WORLD.png` | `@W02_MAIN_WORLD` |
-| MW02 | `MW02_GLOBAL_ROUTES.png` | `@MW02_GLOBAL_ROUTES` |
-| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
-| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
-| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
-| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@C10_BEGINNER_DANCE_WOMAN` |
-| C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@C11_RUSSIAN_TRANSIT_PASSENGER` |
-| C12 | `C12_AGRA_BUS_WOMAN.png` | `@C12_AGRA_BUS_WOMAN` |
-| C13 | `C13_SUDANESE_TRAVELER_MAN.png` | `@C13_SUDANESE_TRAVELER_MAN` |
-| C14 | `C14_SUDANESE_TRAVELER_WOMAN.png` | `@C14_SUDANESE_TRAVELER_WOMAN` |
-| C15 | `C15_CAIRO_TAXI_DRIVER.png` | `@C15_CAIRO_TAXI_DRIVER` |
-| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@C16_BALLOON_LOCAL_HELPER_MAN` |
-| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@C17_BALLOON_LOCAL_HELPER_WOMAN` |
-| C18 | `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png` | `@C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION` |
-| C19 | `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` | `@C19_BARMOUTH_ROAD_TRIP_COMPANION_A` |
-| C20 | `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` | `@C20_BARMOUTH_ROAD_TRIP_COMPANION_B` |
-| C21 | `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` | `@C21_BARMOUTH_ROAD_TRIP_COMPANION_C` |
-| SB02 | `SB02_STORYBOARD.png` | `@SB02_STORYBOARD` |
-| A02 | `A02_NARRATION.wav` | `@A02_NARRATION` |
+| W02 | `W02_MAIN_WORLD.png` | `@UNBOUND_W02` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
+| C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
+| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@UNBOUND_C10` |
+| C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@UNBOUND_C11` |
+| C12 | `C12_AGRA_BUS_WOMAN.png` | `@UNBOUND_C12` |
+| C13 | `C13_SUDANESE_TRAVELER_MAN.png` | `@UNBOUND_C13` |
+| C14 | `C14_SUDANESE_TRAVELER_WOMAN.png` | `@UNBOUND_C14` |
+| C15 | `C15_CAIRO_TAXI_DRIVER.png` | `@UNBOUND_C15` |
+| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
+| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
+| C18 | `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png` | `@UNBOUND_C18` |
+| C19 | `C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png` | `@UNBOUND_C19` |
+| C20 | `C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png` | `@UNBOUND_C20` |
+| C21 | `C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png` | `@UNBOUND_C21` |
+| SB02 | `SB02_STORYBOARD.png` | `@UNBOUND_SB02` |
+| A02 | `A02_NARRATION.wav` | `@UNBOUND_A02` |
 
 ## After generation
 

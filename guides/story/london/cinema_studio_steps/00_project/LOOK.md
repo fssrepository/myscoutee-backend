@@ -19,3 +19,7 @@ Architecture actually changes: window bays slide, facades lengthen, arcades repe
 One dominant transformation reads at a time. Continuous spinning, deformation on every plane and uninterrupted flashing would obscure the story. Memory participants still act; the film must not become camera movement over static reference images.
 
 Cards remain normally visible above heads and gain only a little internal fill during direct gaze. The protagonist's own card becomes readable in Block 06. No cards, architectural deformation or spectacular camera movement survive the clinical cut: stillness is the final contrast.
+
+## Personal memory and sound
+
+The existing rural memory fragments belong to childhood near Orosháza in the Viharsarok: paprika rows, corn rows, a flat Great Plain horizon and wind through the leaves. Keep these inside the remembered world. The original Dél-Alföld-inspired tekerő and clarinet motif carries this sense of home through the fused city, from intimate longing to controlled overload; the facade starts and settles on the motif's main accents, with synchronized stone and metal/glass foley giving the change material weight. See [sound direction](VOICE.md#music-and-transformation-foley).

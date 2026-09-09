@@ -32,10 +32,10 @@ This is the **September 9, 2026 manual production edition**. Final target: **See
 | `00_project/elements/*.md`, excluding README | **Import Elements** only, and only for missing definitions |
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
 | `narration.txt`, `test_narration.txt` | TTS text field; spoken words only |
-| `video.txt`, `test_video_8s.txt`, `test_extend_4s.txt` | Video prompt, after selecting actual media and replacing reference aliases |
+| `video.txt`, `test_video_8s.txt`, `test_extend_4s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 
-Copy the entire `.txt` file; there are no Markdown fences to remove. `@C01_PROTAGONIST` and similar names are **aliases to replace with the actual tokens inserted by the UI**. Typing a filename does not attach an image.
+Copy the entire `.txt` file once its reference setup notice has cleared. Verified `@` Element mentions autoload in the creator's composer. The assistant binds each ID once and propagates it throughout the pack; no per-file manual substitution. `@UNBOUND_…` marks a missing identifier, not a working Higgsfield handle. See [reference binding](00_project/REFERENCES.md).
 
 ## Authority and preservation
 

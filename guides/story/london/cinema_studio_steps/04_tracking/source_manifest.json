@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
-      "file_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
+      "file_sha256": "0ea6ee0fb114b5c2ed3f5d4671fe64ec835e215bd9888f62ef8c32b7de80ac10",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -467,7 +467,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
-      "file_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
+      "file_sha256": "fb7ce6a6a0449f5588f97321588e7692850884fab252453fb171952255d63117",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -479,7 +479,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
-      "file_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
+      "file_sha256": "8f6f457f1d83167ba90a0d9e7c3c40edeaf8bd62b62677e005d2b61ee2d6c517",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -491,7 +491,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/memories/MW04_POLICE_DEFENCE.txt",
-      "file_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
+      "file_sha256": "37cd114fe6a6a6ddd3d8b91ec872c687d4fea134c90093bd112398dea54897b4",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -503,7 +503,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/memories/MW05_COURT_FILE.txt",
-      "file_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
+      "file_sha256": "c2fb5b57e4191db55ab333c85f39f9d2eb89db7049edb535b4810adbf254e74d",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -515,7 +515,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
-      "file_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
+      "file_sha256": "d888a76e5de495fbc8cf459b4612bb5d478b60ebd29972700a926e1bfd101d6e",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -527,7 +527,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
-      "file_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
+      "file_sha256": "3ba9a1f2aaf59dfb16aec49b5a84ca1c6f80dd86644c279f805c3f0b986e60c9",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -539,7 +539,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
-      "file_sha256": "8a03c17c4e168a7bc79b4197ee82686e5f90b65ad9fb8ff2bfc95efb7a7f972d",
+      "file_sha256": "a1612477b226370c2c6fff9deb50004fd47bf1becfbc7a928e3398fba9e3b37e",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained"
     },
     {
@@ -551,7 +551,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
-      "file_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
+      "file_sha256": "b59a141ab120fbb818395aef400b71b63ab2f75bd5949e08d4431b02a5caaf9b",
       "changes": "Verbatim fenced prompt"
     },
     {
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "d87cc2ee7dd19e177fa5003c98c36cc16c865e18924edc7a3f43645ddff7cf98",
+      "file_sha256": "5621b4fdfa4480f2fdcc2a69271b24840b55521f6eeaeee253cb42eae851ebce",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -755,8 +755,8 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "96c027b2c7c296f656cbffed2eed53fae7cf20787876f2b8b241170b9db291b7",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "2787f2da75610f3fb9f1c8d9d2bc9e165512d9a3132b5a44f6dc11c23514c956",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB02",
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "c9d5ad680241bf01ada13a0ae617fa315602a02e54bb265617712d8fcabcca0e",
+      "file_sha256": "9e303d3e1e1366bc61bb33d6cf5d35995d45507fdb8febfbda299ca1a3223bfe",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -791,8 +791,8 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "d0930df2bb4bc1fa0b1d0d2e2141cb514c1b5898eaa4491103c3383a171a3636",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "17e9c0ae46eff3881b28db7bd9c6eedf99af0884c8745ff331c964e2e1c1f7a4",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB03",
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "eab67d8b12db7d9d7d609a1c02f887c2a4f828364b4530ac31b4325b884aec09",
+      "file_sha256": "ac744ddfcdba00c8aec62d254332ba0a024dcd822ab4e277b1eadf2464fc92e9",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -827,8 +827,8 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "8e1eeee14a7b6f31a267f8f2364c3ce774d244b92f8ebce0bd9ec81c89820ced",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "afcd6b8582c1c354dedd7b256129120f80c95b1fd711d25f0f05b629147977c4",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB04",
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "9afa34290e74646d836166ac216b0be8cd04f86bb90f531664f56cf77411ca60",
+      "file_sha256": "31cfcbcccc2a0b21b19271f1228775ddc82f31886ff0e14f0fd170fceea8cdf0",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -863,8 +863,8 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "0ed2e5e1417935bf335ef72c608885eae3a7010bd8a12ceaa6acbfdcbc1e6375",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "a26cf3e01005173cec0653fdeaff05302ef8b74330158eecef1006dc1a14de9f",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB05",
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "0c8eac111f73b08e7aa6de7f179a30228ee5bbd848af156c19b55811473e5f02",
+      "file_sha256": "739d38f9be82c2dc2b60623c6e5caf3c150252333a6893c25999ba62eb5377d4",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -899,8 +899,8 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "7b87978c5067ff005690b2d86fc4538460368bcdf9d49b3a8e94bbe17e8314ba",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "28bc930649971e7b04b1cb3e524e8a244691aa97868b00550bb7df17493f47f7",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB06",
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "7f39a5159b833cd666cde904ebb694ce0bae86e5fab0353282ae66eaff574d4f",
+      "file_sha256": "5e2f17693ed220eac2d2d0329c7b3e2a52cbd9b22578e8e6b8807f7f3e7c21e8",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -935,8 +935,8 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "422b89cfc9e3b8963ca20c72b495222e8681fe2ac3100a11d1c97ccda87b5619",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "0cc135c361c06863f146d28328208963df1201581f0ace25267ac323eb82b5e1",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     },
     {
       "asset": "SB07",
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "0962b4e779ddd4b34d9a60363d3fef65ca9f1af655bf8f7c2cf1b31c1df5c7ca",
+      "file_sha256": "44f9180308e3e5db1ea0194d24f8a1179b7dc5b0ad9e120ca08de0d5729f630f",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
     },
     {
@@ -971,8 +971,8 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "ec58f072c22c8e0c7759e4f9da0d3841b0dc8ed8954ffc20a9814009dfd9e79c",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
+      "file_sha256": "1fe10a570b7e80b00d3a557ff23336a2417f8b03c073bf13cc6c776386839216",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley"
     }
   ],
   "assets": {
@@ -1682,7 +1682,14 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_4s.txt",
-      "sha256": "805cfb1d5348ab2b92aeba53bbf5b48344f0098e9893a973b321cfd3fadb1cf0"
+      "sha256": "cfbe56c67e661e58e8a41a5d14844f7b601327a72c60b9c5027cef46800b3cfe",
+      "refs": [
+        "C01",
+        "C02",
+        "W01",
+        "T01_IMAGE",
+        "TA01"
+      ]
     },
     {
       "file": "01_pilot/test_memory_image.txt",
@@ -1691,16 +1698,27 @@
         "C01": "char_mys_protagonist_s1_v1",
         "C02": "char_mys_soho-woman_s1_v1"
       },
-      "reference_note": "Displayed Element IDs verified from creator screenshots. Creator confirms that pasted @ identifiers automatically load the Elements and their images; no redundant manual selection or reference-binding screenshot required."
+      "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
+      "refs": [
+        "C01",
+        "C02"
+      ]
     },
     {
       "file": "01_pilot/test_narration.txt",
-      "sha256": "f8258caac81a34f59023992768fe7c50d2fe2057e242e4fdf2e25232def1ef8a"
+      "sha256": "f8258caac81a34f59023992768fe7c50d2fe2057e242e4fdf2e25232def1ef8a",
+      "refs": []
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "a73fc8f32355adebdae65a4a634bcf4cf4ca604d4d25521f48a055811e13f641",
-      "reference_note": "Creator requests all image inputs through autoloading @ references. C01/C02 IDs are verified. Current W01/T01 semantic attachment instructions await replacement with real UI reference IDs; do not invent or present local aliases as resolvable IDs."
+      "sha256": "e6810f8848e80e4fd2a96ebc7ebc85b4eae40eb7d3389126a30fb72df463dda8",
+      "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
+      "refs": [
+        "C01",
+        "C02",
+        "W01",
+        "T01_IMAGE"
+      ]
     }
   ],
   "current_project_observation": {
@@ -1717,5 +1735,323 @@
     "pilot_included_max_credits": 100,
     "additional_funding_available": false,
     "live_costs_verified": false
-  }
+  },
+  "reference_bindings": {
+    "A01": {
+      "alias": "A01_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A01"
+    },
+    "A02": {
+      "alias": "A02_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A02"
+    },
+    "A03": {
+      "alias": "A03_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A03"
+    },
+    "A04": {
+      "alias": "A04_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A04"
+    },
+    "A05": {
+      "alias": "A05_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A05"
+    },
+    "A06": {
+      "alias": "A06_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A06"
+    },
+    "A07": {
+      "alias": "A07_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_A07"
+    },
+    "C01": {
+      "alias": "C01_PROTAGONIST",
+      "mention": "@char_mys_protagonist_s1_v1",
+      "last_mention": "@char_mys_protagonist_s1_v1"
+    },
+    "C02": {
+      "alias": "C02_SOHO_WOMAN",
+      "mention": "@char_mys_soho-woman_s1_v1",
+      "last_mention": "@char_mys_soho-woman_s1_v1"
+    },
+    "C03": {
+      "alias": "C03_POLICEWOMAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C03"
+    },
+    "C04": {
+      "alias": "C04_APPOINTED_LAWYER",
+      "mention": null,
+      "last_mention": "@UNBOUND_C04"
+    },
+    "C05": {
+      "alias": "C05_FINAL_NURSE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C05"
+    },
+    "C06": {
+      "alias": "C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C06"
+    },
+    "C07": {
+      "alias": "C07_FX_MORTGAGE_HOUSEMATE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C07"
+    },
+    "C08": {
+      "alias": "C08_FX_MORTGAGE_SPOUSE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C08"
+    },
+    "C09": {
+      "alias": "C09_FX_MORTGAGE_CHILD",
+      "mention": null,
+      "last_mention": "@UNBOUND_C09"
+    },
+    "C10": {
+      "alias": "C10_BEGINNER_DANCE_WOMAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C10"
+    },
+    "C11": {
+      "alias": "C11_RUSSIAN_TRANSIT_PASSENGER",
+      "mention": null,
+      "last_mention": "@UNBOUND_C11"
+    },
+    "C12": {
+      "alias": "C12_AGRA_BUS_WOMAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C12"
+    },
+    "C13": {
+      "alias": "C13_SUDANESE_TRAVELER_MAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C13"
+    },
+    "C14": {
+      "alias": "C14_SUDANESE_TRAVELER_WOMAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C14"
+    },
+    "C15": {
+      "alias": "C15_CAIRO_TAXI_DRIVER",
+      "mention": null,
+      "last_mention": "@UNBOUND_C15"
+    },
+    "C16": {
+      "alias": "C16_BALLOON_LOCAL_HELPER_MAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C16"
+    },
+    "C17": {
+      "alias": "C17_BALLOON_LOCAL_HELPER_WOMAN",
+      "mention": null,
+      "last_mention": "@UNBOUND_C17"
+    },
+    "C18": {
+      "alias": "C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION",
+      "mention": null,
+      "last_mention": "@UNBOUND_C18"
+    },
+    "C19": {
+      "alias": "C19_BARMOUTH_ROAD_TRIP_COMPANION_A",
+      "mention": null,
+      "last_mention": "@UNBOUND_C19"
+    },
+    "C20": {
+      "alias": "C20_BARMOUTH_ROAD_TRIP_COMPANION_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_C20"
+    },
+    "C21": {
+      "alias": "C21_BARMOUTH_ROAD_TRIP_COMPANION_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_C21"
+    },
+    "C22": {
+      "alias": "C22_ACCOUNTANT",
+      "mention": null,
+      "last_mention": "@UNBOUND_C22"
+    },
+    "C23": {
+      "alias": "C23_ADMIN_COLLEAGUE_A",
+      "mention": null,
+      "last_mention": "@UNBOUND_C23"
+    },
+    "C24": {
+      "alias": "C24_ADMIN_COLLEAGUE_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_C24"
+    },
+    "C25": {
+      "alias": "C25_SEARCH_OFFICER_MALE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C25"
+    },
+    "C26": {
+      "alias": "C26_DEFENCE_OFFICE_SUBSTITUTE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C26"
+    },
+    "C27": {
+      "alias": "C27_JUDGE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C27"
+    },
+    "C28": {
+      "alias": "C28_FORENSIC_EXPERT_A",
+      "mention": null,
+      "last_mention": "@UNBOUND_C28"
+    },
+    "C29": {
+      "alias": "C29_FORENSIC_EXPERT_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_C29"
+    },
+    "C30": {
+      "alias": "C30_COURT_CLERK",
+      "mention": null,
+      "last_mention": "@UNBOUND_C30"
+    },
+    "C31": {
+      "alias": "C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE",
+      "mention": null,
+      "last_mention": "@UNBOUND_C31"
+    },
+    "HRW07": {
+      "alias": "HRW07_CLINICAL_REALITY",
+      "mention": null,
+      "last_mention": "@UNBOUND_HRW07"
+    },
+    "MW01": {
+      "alias": "MW01_LONDON_SOCIAL",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW01"
+    },
+    "MW02": {
+      "alias": "MW02_GLOBAL_ROUTES",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW02"
+    },
+    "MW03": {
+      "alias": "MW03_WORK_RULE_CHANGE_ADMIN",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW03"
+    },
+    "MW04": {
+      "alias": "MW04_POLICE_DEFENCE",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW04"
+    },
+    "MW05": {
+      "alias": "MW05_COURT_FILE",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW05"
+    },
+    "MW06": {
+      "alias": "MW06_HUMAN_COUNTERMEMORIES",
+      "mention": null,
+      "last_mention": "@UNBOUND_MW06"
+    },
+    "MWP01": {
+      "alias": "MWP01_ROUTES_ROOMS_DOCUMENTS",
+      "mention": null,
+      "last_mention": "@UNBOUND_MWP01"
+    },
+    "MWP02": {
+      "alias": "MWP02_SYSTEM_TIME_REVERSALS",
+      "mention": null,
+      "last_mention": "@UNBOUND_MWP02"
+    },
+    "SB01": {
+      "alias": "SB01_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB01"
+    },
+    "SB02": {
+      "alias": "SB02_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB02"
+    },
+    "SB03": {
+      "alias": "SB03_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB03"
+    },
+    "SB04": {
+      "alias": "SB04_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB04"
+    },
+    "SB05": {
+      "alias": "SB05_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB05"
+    },
+    "SB06": {
+      "alias": "SB06_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB06"
+    },
+    "SB07": {
+      "alias": "SB07_STORYBOARD",
+      "mention": null,
+      "last_mention": "@UNBOUND_SB07"
+    },
+    "T01_IMAGE": {
+      "alias": "T01_SOHO_MEMORY",
+      "mention": null,
+      "last_mention": "@UNBOUND_T01_IMAGE"
+    },
+    "TA01": {
+      "alias": "TA01_TEST_NARRATION",
+      "mention": null,
+      "last_mention": "@UNBOUND_TA01"
+    },
+    "W01": {
+      "alias": "W01_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W01"
+    },
+    "W02": {
+      "alias": "W02_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W02"
+    },
+    "W03": {
+      "alias": "W03_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W03"
+    },
+    "W04": {
+      "alias": "W04_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W04"
+    },
+    "W05": {
+      "alias": "W05_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W05"
+    },
+    "W06": {
+      "alias": "W06_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W06"
+    },
+    "W07": {
+      "alias": "W07_MAIN_WORLD",
+      "mention": null,
+      "last_mention": "@UNBOUND_W07"
+    }
+  },
+  "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename."
 }
