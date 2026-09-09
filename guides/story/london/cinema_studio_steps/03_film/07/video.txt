@@ -7,7 +7,7 @@ REFERENCES
 @MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
 @MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
 @MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C05_FINAL_NURSE = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.

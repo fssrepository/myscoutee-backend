@@ -5,7 +5,7 @@ REFERENCES
 @W03_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @MW03_WORK_RULE_CHANGE_ADMIN = living remembered scene inside real glass; select only the assigned scene.
 @MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C22_ACCOUNTANT = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C23_ADMIN_COLLEAGUE_A = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C24_ADMIN_COLLEAGUE_B = exact face, age, hair and body; memory wardrobe follows its source scene.

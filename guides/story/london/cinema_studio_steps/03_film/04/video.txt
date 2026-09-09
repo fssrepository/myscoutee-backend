@@ -4,7 +4,7 @@ One 16:9 photorealistic moving film sequence. Continue the supplied previous acc
 REFERENCES
 @W04_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C25_SEARCH_OFFICER_MALE = exact face, age, hair and body; memory wardrobe follows its source scene.

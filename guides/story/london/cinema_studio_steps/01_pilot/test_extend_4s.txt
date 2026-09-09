@@ -1,6 +1,6 @@
 Extend the supplied video FORWARD by 4 seconds, 16:9. Continue its exact visible ending: same man, stride, shoulder position, taxi, camera heading and forward velocity, transformed Pest facade, rain, light and continuous city sound. No establishing shot or visual/audio restart.
 
-Use @C01_PROTAGONIST for the walking man's identity, @C02_SOHO_WOMAN for the remembered woman, @W01_MAIN_WORLD for city materials and @T01_SOHO_MEMORY for the same restaurant. @TA01_TEST_NARRATION is the sole off-screen spoken audio: preserve its supplied voice and exact words, once. Nobody visibly lip-syncs.
+Use @char_mys_protagonist_s1_v1 for the walking man's identity, @char_mys_soho-woman_s1_v1 for the remembered woman, @W01_MAIN_WORLD for city materials and @T01_SOHO_MEMORY for the same restaurant. @TA01_TEST_NARRATION is the sole off-screen spoken audio: preserve its supplied voice and exact words, once. Nobody visibly lip-syncs.
 
 0–1s: carry the forward tracking movement through the boundary without changing the man or returning the transformed facade to its former shape. Rain, footsteps and tyre hiss continue without a gap.
 1–3s: make one short lateral acceleration to the next taxi pane. The same remembered woman gives a tiny continuing head movement, with the restaurant room still inside the glass; then the moving rain reflection covers it. The actual man remains outdoors. Play the supplied short narration once, naturally, over the continuing subdued city sound.

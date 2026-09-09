@@ -5,7 +5,7 @@ REFERENCES
 @W05_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
 @MWP02_SYSTEM_TIME_REVERSALS = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C27_JUDGE = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C28_FORENSIC_EXPERT_A = exact face, age, hair and body; memory wardrobe follows its source scene.

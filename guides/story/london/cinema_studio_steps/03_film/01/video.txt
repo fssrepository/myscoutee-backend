@@ -5,8 +5,8 @@ REFERENCES
 @W01_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
 @MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
 @MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C02_SOHO_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_soho-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C07_FX_MORTGAGE_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C08_FX_MORTGAGE_SPOUSE = exact face, age, hair and body; memory wardrobe follows its source scene.

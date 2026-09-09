@@ -755,8 +755,8 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "a0e0046bb26fd8efc75335f5a3e2986e5e48321227f49c548f772829ae372176",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "96c027b2c7c296f656cbffed2eed53fae7cf20787876f2b8b241170b9db291b7",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB02",
@@ -791,8 +791,8 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "c45d7164984750a83d0e44f18965a764319f19ead0d972bb20ce52b9e93d973e",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "d0930df2bb4bc1fa0b1d0d2e2141cb514c1b5898eaa4491103c3383a171a3636",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB03",
@@ -827,8 +827,8 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "70e859902203c97c10197dc21a4a332b8233ec4f6ec26434a64af5754dc3b333",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "8e1eeee14a7b6f31a267f8f2364c3ce774d244b92f8ebce0bd9ec81c89820ced",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB04",
@@ -863,8 +863,8 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "124b9b9e70ec9bc23ad70167d28fa2c323256d75c946d515ed3e27c40fb28a9d",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "0ed2e5e1417935bf335ef72c608885eae3a7010bd8a12ceaa6acbfdcbc1e6375",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB05",
@@ -899,8 +899,8 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "5ea8dd1eb7eb7ae724fa9e3ca295896d0b299c22344df68c5aea6a58ec9b6356",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "7b87978c5067ff005690b2d86fc4538460368bcdf9d49b3a8e94bbe17e8314ba",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB06",
@@ -935,8 +935,8 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "86faad0d1f5ed46e14bd47ec0fc8aafe706186f46e6e49ed05e5a9d2c0a459cb",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "422b89cfc9e3b8963ca20c72b495222e8681fe2ac3100a11d1c97ccda87b5619",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     },
     {
       "asset": "SB07",
@@ -971,8 +971,8 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "b209b6beb397565f4c2e966e48f9ab946c6fea85d3f1b3100342bd0291b0b206",
-      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+      "file_sha256": "ec58f072c22c8e0c7759e4f9da0d3841b0dc8ed8954ffc20a9814009dfd9e79c",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases"
     }
   ],
   "assets": {
@@ -1682,7 +1682,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_4s.txt",
-      "sha256": "9eabdaeccf6befe1349eb4461e1f180f45b98140466fbfbc5fb4b740a5c42c49"
+      "sha256": "805cfb1d5348ab2b92aeba53bbf5b48344f0098e9893a973b321cfd3fadb1cf0"
     },
     {
       "file": "01_pilot/test_memory_image.txt",
@@ -1700,7 +1700,7 @@
     {
       "file": "01_pilot/test_video_8s.txt",
       "sha256": "a73fc8f32355adebdae65a4a634bcf4cf4ca604d4d25521f48a055811e13f641",
-      "reference_note": "Verified C01/C02 @ Element IDs autoload their images. Attach the existing W01 nine-view city sheet and T01 single restaurant still as image references from the project. These two images are described semantically in the prompt; no invented or unresolved @ IDs."
+      "reference_note": "Creator requests all image inputs through autoloading @ references. C01/C02 IDs are verified. Current W01/T01 semantic attachment instructions await replacement with real UI reference IDs; do not invent or present local aliases as resolvable IDs."
     }
   ],
   "current_project_observation": {

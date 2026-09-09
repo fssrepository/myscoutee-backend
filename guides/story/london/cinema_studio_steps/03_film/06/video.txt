@@ -10,8 +10,8 @@ REFERENCES
 @MW03_WORK_RULE_CHANGE_ADMIN = living remembered scene inside real glass; select only the assigned scene.
 @MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
 @MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
-@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
-@C02_SOHO_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_soho-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
 @C10_BEGINNER_DANCE_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
