@@ -50,3 +50,7 @@ all further test costs
 The creator cannot repair or assemble the film locally. Confirm the hosted route and actual prices before committing to the expensive stages. Preserve accepted references and picture; do not regenerate them merely to add speech or concatenate files. Covered Unlimited image work consumes no credits only when the actual operation confirms coverage.
 
 After each reported actual debit, subtract it once from this planning baseline and record it in [credit_ledger.csv](../04_tracking/credit_ledger.csv). The historical aggregate 80 is not deducted again. Update the three-test table with current quotes and actual charges; no automatic 4–5-try loop follows a failed individual detail.
+
+## World-reference pages — image preparation, not extra videos
+
+The seven original world-image jobs are now seven Page-A jobs plus fourteen companion B/C jobs: **21 image outputs in total, 14 additional image jobs** if all pages are rendered. Every page is 4K / 16:9 / 2×2. These are covered only through the creator's applicable Unlimited Higgsfield web operation; editing the prompts records no spend. The existing W01 pilot image remains accepted historical work, and its planned replacement does not mean it has been regenerated. Object and morph studies remain separate reference preparation; do not confuse the production checklist row count with a count of paid videos. The five-subject pilot and seven full-film video blocks keep their existing scope.

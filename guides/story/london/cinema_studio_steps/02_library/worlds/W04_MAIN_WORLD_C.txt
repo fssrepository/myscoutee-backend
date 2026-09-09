@@ -1,0 +1,111 @@
+OUTPUT GEOMETRY — ONE 4K WORLD REFERENCE PAGE:
+Generate ONE photographic image with a TRUE 16:9 final canvas at 3840×2160 pixels, selecting 4K in the Higgsfield output controls. Fill the canvas with EXACTLY FOUR equal cells in a 2×2 grid: two columns and two rows. Each cell is 1920×1080 pixels on this exact canvas. Outer margins: 0 pixels. Internal gutters: 0 pixels. The four cells meet edge-to-edge; no borders, titles, captions, labels or unused area. No square canvas, nested contact sheet, letterboxing or pillarboxing. Do not print the page letter, original-view numbers or cell positions. In-world signs and the specified numerical rating cards remain visible.
+
+This prompt generates only the four views assigned below. They are exterior reference views of one connected world, not four video shots, not necessarily four sequential transformation stages and not one continuous panoramic image sliced into quadrants. Each cell is a complete photographic composition with real depth. Use the same world identity, compatible lighting, materials, people/card design and spatial relationships across the page. Where an accepted reference of this world is supplied, use its identity and geometry rather than copying its grid. Camera flight and continuous material morphing belong to the later video prompt; no dissolve or slideshow is implied by this sheet.
+
+WORLD 04 — PAGE C
+This page contains original views 09, 01, 07, 08. Those original-view identifiers are cross-reference instructions, not visible labels.
+
+All four assigned views belong to the same continuous London–Budapest dream metropolis at the same overcast evening continuity, with clear dry air and damp streets. Preserve each view’s scripted source, inherited intrusion or material state; do not invent a new beginning or chronological sequence merely because a view appears first on this page.
+
+STREET VISIBILITY:
+Heavy overcast London sky with cool diffuse evening light. The air is clear and dry; the paving, puddles, coats and stone can remain damp from earlier weather. No falling rain, drizzle, rain streaks or rainfall sound. Every current pedestrian is bareheaded, with hoods down, hair and face exposed and hands lowered naturally. No umbrellas anywhere: none open, folded, carried, held above a head or attached to street furniture. Use uncovered heads and damp clothing even when a supplied reference suggests wet weather. Preserve empty air above each crown for its readable numerical rating card. Wet tyre hiss, footsteps and distant traffic provide the continuous street ambience.
+
+RATING CARDS IN THE REFERENCE IMAGE:
+In every cell containing current pedestrians, show a separate warm-white numerical card above each uncovered head. In the human-scale street cells place two foreground or middle-distance pedestrians with enough headroom to read bold dark 6.2 and 9.2 values, respectively. Their cards have a thin clean border, an air gap above the hair and a face about one-and-a-half head widths wide. Face the cards toward the view enough for the numerals to read. Keep people and cards clear of bus roofs, signs, foliage and one another. The scores are objects in the photographed world, not grid captions or a screen HUD. Distant people retain their own small cards. No blank grey tiles or fill-only bars. Architectural detail cells need no invented people. Do not add remembered or clinical people to this world sheet.
+
+PHYSICAL-PRESENT RULE:
+Every view looks into the connected exterior/public world: street, pavement, plaza, bridge, river walk or open passage. An exterior viewpoint may rise above this public space to expose roofs, both street fronts and the depth between them.
+The current camera never becomes an office-room camera, bedroom camera, police-room camera, courtroom camera or clinical-room camera.
+Architectural interiors may be visible directly through open sides, doorways, arcades and projecting room sections, as well as through ordinary windows. Show actual floors, walls, supports and open air.
+No literal memory event is visible in this WORLD asset.
+
+CITY FUSION RULE:
+London remains recognisable through named landmarks, street details, red double-decker buses and black taxis. Actual landmark distances, street order and map footprints may be rearranged into this continuous dream geography.
+Budapest/Hungary must be equally unmistakable through EXPLICIT named architectural anchors, yellow Budapest trams, tram/trolley wires, Hungarian signage and selected Budapest buildings physically replacing or fusing with London blocks.
+Do not reduce Budapest to generic Central-European façades.
+Do not separate London and Budapest into different districts.
+People remain ordinary inhabitants: they continue their gestures while adapting their pace and gathering around the developing tram stop or café frontage. Their changing activities belong to the same continuously occupied street.
+
+TRANSPORT:
+Use red London double-decker buses, black London taxis and yellow Budapest trams naturally.
+Tram rails share London road geometry; London road markings may cross the rails; Budapest tram/trolley wires attach directly to fused façades.
+At least one of the first six cells must show a substantial side view of a red double-decker and at least one must show a substantial side view of a yellow tram so their windows are usable later.
+
+SPATIAL TRANSFORMATION PREPARATION:
+Build open, three-dimensional architecture that can change directly into inhabited memory. Include visible floor edges, deep door recesses, street benches with legible timber joints, exposed arch ribs, iron glazing bars and ceilings whose attachment to the surrounding building is visible. Leave usable open pavement beside these structures for full-size people, tables and chairs. Let the camera see the front, side and underside of projecting elements in the same view: a near edge overlaps a farther column; light passes between them; solid objects cast contact shadows onto the wet street.
+Glass is one material among stone, iron, timber and plaster. Open-sided rooms, arcades and balconies must also have unobstructed sightlines directly into their depth. Do not make a glass pane or reflective display the obligatory boundary of an inhabited memory.
+This MAIN WORLD supplies architecture, materials and spatial structure. The separate memory references supply specific remembered people and encounters during video generation. Current pedestrians remain ordinary, solid inhabitants. Render their numerical rating cards IN THIS WORLD IMAGE, already above their uncovered crowns; do not leave empty placeholders for a later video pass. No remembered actor or narrative event is baked into this architecture sheet.
+
+LIGHTING / PHOTOGRAPHY:
+Overcast blue hour progressing toward night, with damp streets and no precipitation.
+Cool blue-grey exterior; warm tungsten cafés/restaurants; warm-neutral public interiors; realistic vehicle practicals.
+Photorealistic live-action European feature-film location photography.
+Environment views: approximately 24–28mm full-frame equivalent. Most retain human-height scale; one of the broad assigned environment views rises to a 5–8 metre exterior oblique position to show both street fronts, roof thickness, open passages and a continuous ground route. Keep vertical proportions and material detail readable.
+Detail views: approximately 35–50mm.
+ARRI Alexa LF photographic character, natural Cooke-style rendering, soft highlight roll-off, rich shadow detail, fine organic film grain, real wet stone, real glass, real transport materials.
+Give this impossible architecture the clarity, material detail and light of live-action cinema. Let unusual shape and depth carry its otherworldliness rather than a uniform haze or a flat interface graphic.
+
+WORLD-SPECIFIC FOUR-CELL CONTENT:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
+Close fused formal architecture detail: London public/commercial ground floor, specifically Hungarian Palace-of-Justice / National-Museum stone language above, tram-wire attachment and restrained Hungarian signage. No generic anonymous office block.
+
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
+Fleet Street exterior, recognizable London street geometry, bookshops, cafés, professional frontage and broad wet windows. One large stone block uses the historic BUDAPEST PALACE OF JUSTICE / former Kúria architectural language while remaining an ordinary street-facing London block. No courtroom or institutional event is shown.
+
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+Exterior three-quarter view into a Temple-like stone arch whose jamb stays rooted at the pavement while the corridor behind it bends sideways and extends far beyond the block's visible depth. Trace the same continuous floor joints and repeated arch stones around the bend. A stair rises from one side of the threshold, crosses open air and threads back through an upper doorway in the same facade. Keep the normal lower London door beside it for scale. No screen or reflected corridor.
+
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+Close transit detail: full red-bus side windows, yellow-tram side windows and black-taxi glass against formal London–Budapest stone façades.
+
+FINAL CHECK:
+Exactly one image.
+Exactly four equal photographic cells in one 2×2 grid at 3840×2160.
+0 px outer margin.
+0 px internal gutters; each cell has the full 1920×1080 area.
+No presentation title/caption/legend/frame.
+All current camera positions remain exterior/public.
+Budapest must be specifically recognizable through the named anchors above, not genericized.
+
+
+TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
+London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Render all four assigned views on this page with sharp, solid geometry and moving parts shown in one captured position; companion pages retain the other locations.
+Temple arches extend and bend across one another; a doorway becomes a corridor deeper than the block itself. A stair offers a route then feeds back through the wall. The current walk continues outside these procedural rooms.
+In the assigned broad environment view and structural detail, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
+
+DREAM GEOGRAPHY AND LANDMARK RECOGNITION
+London is the present setting, but real geographic distance and the old map order are not binding. St Paul's can stand beyond a Soho corner, Tower Bridge can approach the next square, and a London frontage can become a Budapest landmark. Build these impossible adjacencies as connected inhabited space that the camera reaches continuously. Show intervening paving, changed perspective and material movement; do not use cuts or a full-screen replacement to relocate the walker. Map sheets are loose composition/association plans, not a compulsory itinerary.
+A famous building must be recognisable by its full characteristic silhouette AND several distinctive architectural features. Give it a clear three-quarter or frontal view, substantial screen area, useful focus and a readable interval before or after transformation. A generic dome, Gothic texture, skyline speck or sign spelling the name is insufficient. During a transformation, pass through traceable intermediate shapes, then resolve the named destination building clearly before the next large change obscures it. Distribute landmarks along the walk and across near/middle/distant views; never flatten them into a pasted skyline collage.
+
+RECOGNITION TARGETS ACROSS THE ASSIGNED VIEWS
+The Royal Courts of Justice read through their Gothic pointed entrances and clustered towers; a separate impossible London courtyard exposes Buckingham Palace's broad symmetrical frontage and forecourt. The Hungarian National Museum's wide columned portico and pediment and the Palace of Justice's monumental facade emerge in this institutional dream. Their recognisability is architectural, not an assertion that the fictional procedural events occurred in these actual institutions.
+Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep this page’s four-cell count. These are reference views; later video supplies movement and continuity.
+
+REFERENCE STATES — SOLID GEOMETRY THAT CAN ACTUALLY CHANGE:
+Preserve the identity of a structure through its ordinary, changing and resolved forms wherever the assigned views show it. Carry one recognisable seam, support, window spacing pattern or carved edge across those forms. The intermediate state is a single sharp physical object with thickness and connected joints: some of the old surface is still present while the adjoining portion already has the new material and depth. Never depict it with transparent duplicates, ghost trails, exploded disconnected fragments or a finished scene hidden behind a peeling wall.
+Make the scale unmistakable. At least one transformed room or roof spans several human heights, with ordinary pedestrians beneath it and a recognisable vehicle beside it. Give the next nearby object a conflicting spatial direction: an upper floor bends outward while a stair threads sideways and a doorway opens backward into impossible depth. Keep the street traversable beneath these incompatible shapes. The strangeness belongs to the built volume itself, not merely to decorative carvings.
+For an assigned wide view, include a clear near kerb or projecting table-height ledge, a middle-distance inhabited frontage, and a whole recognisable landmark farther away. These separated depths provide parallax for later camera travel. Keep the main changed structure sharp and unobscured; do not flatten everything into a scenic skyline collage.
+Each cell is a reference view of one world state, not a prescribed video shot or a collage within the cell. The later film reaches new views by continuous camera travel and changes the same materials in view. Do not render arrows, labels or step numbers. Keep this page’s 4K 2×2 canvas unchanged.
+
+SOLID SOURCE GEOMETRY FOR CONTINUOUS TRANSFORMATION:
+Each cell is a single opaque photographic state, not a blended before/after overlay. Where the described architecture is changing, show original and extended portions joined in the SAME structure: opened mortar joints with individually turned bricks, exposed side faces, a connected sill or floor, and moving parts at distinct intermediate angles. The old corner must be identifiable in the new doorway, rib or balcony edge. Show the actual empty gap made by displaced material, with thick side walls and contact shadows; no building fades into a second skyline. Keep three-dimensional room depth visible through the developing opening so later video can glimpse its people there and approach that same place continuously. Specific remembered people are supplied by their memory/character references. The cells supply solid geometry and materials, never instructions to dissolve between camera setups.
+
+LANDMARK IDENTITY AND STRUCTURAL CORRESPONDENCE:
+Give the justice and museum forms their whole distinctive facade and entrance. Use comparable stone piers, capitals, columned porticos and pediments for the material change. The Royal Courts, Buckingham Palace and Budapest targets occupy connected but distinct views where their shapes do not correspond; a visible camera passage connects them instead of forcing a Gothic arch into an unrelated complete building. Each source cell is a sharp physical view. Provide the original structural parts, an attached intermediate where specified and the identifiable destination. Similarity is visual and structural; do not claim shared historical origin. A merely anonymous facade with a familiar sign is insufficient.
+
+INHABITED LONDON-TO-PEST IDENTITY:
+The London starting view and the Budapest-associated resolved view must differ through recognisable place-specific architecture AND their surrounding street life. Preserve the same connected kerb and route across the sheet's related views. In the Budapest-associated view, give the named historic building substantial screen area alongside a readable yellow tram, its rails and wires, Hungarian KÁVÉ signage and a warm café frontage with solid tables at the street edge. Ordinary people wait by the tram, approach the tables or turn toward companions, with separate silhouettes and clear space above their crowns for the later video cards. These are specific activities in this composition, not claims about national character. The remaining red bus and black taxi preserve the London origin at another depth. Avoid an anonymous office block or generic lobby as the main geographical cue. For intermediate views, keep each sign, light and furniture part attached to its actual support; no blended crowds or colour-grade overlays. This world image supplies the current street population and architecture, while the accepted restaurant source supplies its particular remembered woman and room unchanged.
+
+MATERIAL MORPH — CHANGE THE VOLUME AND SUBSTANCE, NOT ONLY ITS POSITION:
+Show the same object changing cross-section, curvature, surface structure and physical function in full depth. Opening an unchanged window, rotating an intact wall panel or revealing a finished room is not sufficient by itself. Masonry keeps visible thick side faces, granular fractures, deep joints and weight-bearing contact throughout its deformation. It never becomes a thin flexible paper facade. For every local change, identify an original edge or surface mark, show that same part acquiring its intermediate volume and material, and follow it into the destination. If a surface fractures, show the pieces separate along the actual cracks, rotate with visible thickness and re-form into specified new parts; retain the identifiable pieces throughout rather than dissolving them into a particle cloud. Match texture, specular response, contact shadows and material sound to that changing substance. A scripted paper object may change into another material, but must visibly acquire its new thickness and solid structure before it functions as architecture. Do not rewrite the document story to solve an architectural rendering defect.
+
+DEPTH FOR A CONTINUOUSLY ACTIVE WORLD:
+In the assigned intermediate/destination cells, show physically connected structures at several depths with distinct solid intermediate forms: a near projecting masonry or iron part with visible side faces, a middle roof or occupied bay gaining depth, and the designated distant architectural form. Their stages need not match. Preserve the ordinary source geometry in cells explicitly assigned to the London opening. These stills supply geometry for simultaneous video movement; they do not prove motion or prescribe edits. Leave sightlines to current people and their numerical cards.
+
+SPATIAL RULE — INDIVIDUAL LONDON OBJECTS BECOME THEIR PEST COUNTERPARTS:
+London is the starting location. During a London-to-Pest passage, individual buildings and objects already present change into their specified Pest counterparts at their own positions: St Paul's into St Stephen's Basilica, a London frontage's ironwork into Pest balcony ironwork, or an existing English café sign into its Hungarian counterpart. Trace the same object's solid parts through the intermediate shapes into the destination. Different objects start and progress independently, allowing London and Pest forms to coexist along the same street. The camera travels between, around and above these individual transformations.
+The street remains continuously connected, but its space can open and change shape while the buildings inside it independently transform. Establish the original kerb corner, paving seams, building bases and route before movement. Where a beat opens the street, follow those same thick paving courses as they lengthen and redistribute into supported terraces; follow the existing wall returns as their masonry gains depth around an expanding passage. Reveal slab side faces, stone bedding, wall thickness and moving contact shadows. The source volumes remain visible in the destination construction. A traversable strip connects the approaching camera and walking people to the space already visible ahead; no complete street or crowd is replaced. Keep the building morphs running at their own rhythms during the spatial opening: brick courses become carved-stone arch blocks, window bays deepen into inhabited loggias and ironwork reshapes into stairs. Opening the street never substitutes for those material changes. Source and destination coordinates may change through these visible structural movements; their identities, connections and motion must remain traceable. Slow and partially orbit the material that needs inspection, accelerate through the opened volume, and retain the surrounding changes during the rising camera arc. A comparison between famous London and Budapest streets illustrates the possibility, not a compulsory named street-to-street replacement. Begin in recognisable London and grow each specified Pest form from its corresponding source; no pre-existing Budapest opening, paper buildings, dissolves or frame jumps. Preserve the scripted people and keep numerical cards attached to current pedestrians.
+
+CURRENT-PEOPLE REFERENCE CONTINUITY:
+Use varied contemporary inhabitants in both London-source and Pest-associated destination cells. Where the same featured current people appear across these views, retain their recognisable faces, uncovered heads and numerical card ownership while showing the specified source/destination clothing and everyday objects. Keep the resulting Pest ensemble varied too. Their wardrobe and interaction with the named place establish the intended local change; no nationality labels or national-uniform styling. The remembered cast belongs to its separate memory references.

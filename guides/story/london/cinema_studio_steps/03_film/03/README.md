@@ -47,3 +47,9 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 Watch once with sound. Check all nine beats and their short secondary memories against the [story checklist](../../04_tracking/story_beats.csv). Verify identity, the exterior present, moving memories, correct narration and continuation of the previous camera/sound state where applicable. Keep the first usable take; name any missing story beat before considering a paid repair. Minor coherent generative irregularities are acceptable.
 
 `CHAIN` and `MASTER` names describe intended outputs. Treat an output as a cumulative master only if the actual native export contains all preceding footage and sound. A separate continuation segment is not that master.
+
+## World pages for this block
+
+Use [W03 Page A](../../02_library/worlds/W03_MAIN_WORLD.txt), [Page B](../../02_library/worlds/W03_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W03_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+
+The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W03 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

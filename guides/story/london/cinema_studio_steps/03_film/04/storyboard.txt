@@ -1,5 +1,11 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04, W04
+REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04, W04, W04_B, W04_C
 Do not generate until these references are bound.
+
+WORLD REFERENCE PAGES FOR THIS BLOCK — ONE CONTINUOUS CONNECTED WORLD:
+@UNBOUND_W04 supplies W04 Page A: four environment views, corresponding to original views 1–4.
+@UNBOUND_W04_B supplies W04 Page B: original views 5–8, including further spaces and close material/transport construction.
+@UNBOUND_W04_C supplies W04 Page C: original view 9 at top-left, original view 1 at top-right, original view 7 at bottom-left and original view 8 at bottom-right. These repeated anchors connect the destination/detail view to the same source world.
+Each supplied new page is a 4K 2×2 reference image. Use its cells as geometric and material evidence, not additional shots or a slideshow. Several spaces and material changes can occur within this block: reach them along the established connected route, with actual camera travel and continuous material change. Multiple world-reference pages do not reset the walker, scenery or current people. Keep source, intermediate and destination geometry distinct. Preserve every scripted human encounter and the camera/sound timing below; page order is not a new event order. The final scripted clinical hard cut remains an explicit exception. Original-view numbers identify the old view descriptions, never a request for a fifth or ninth cell on a four-cell page.
 
 SPATIAL RULE — INDIVIDUAL LONDON OBJECTS BECOME THEIR PEST COUNTERPARTS:
 London is the starting location. During a London-to-Pest passage, individual buildings and objects already present change into their specified Pest counterparts at their own positions: St Paul's into St Stephen's Basilica, a London frontage's ironwork into Pest balcony ironwork, or an existing English café sign into its Hungarian counterpart. Trace the same object's solid parts through the intermediate shapes into the destination. Different objects start and progress independently, allowing London and Pest forms to coexist along the same street. The camera travels between, around and above these individual transformations.

@@ -563,8 +563,8 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/W01_MAIN_WORLD.txt",
-      "file_sha256": "29215380bc3ed3f3aa3d1ac3058fe57ef3e8e395b9475923aaa13203d0d1600f",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "3c99b198d1a9c73018d0bf5f4b4bcfee3000e980fef2be816009cf2655be374e",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP01",
@@ -587,8 +587,8 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/W02_MAIN_WORLD.txt",
-      "file_sha256": "1c1b66fd262c103b1aa07a0e3c4b585b92e0b5eab7574c3628605cbca8d7a278",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "3854bc39f80269fd90bf147f2946f7f6142ca85dab606cc6859bc81b35858249",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP02",
@@ -611,8 +611,8 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/W03_MAIN_WORLD.txt",
-      "file_sha256": "4450830ed1fc4285f8c284c3e2a0885d3f8a80d9971df583fd9bcefd0fa11c9a",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "38c4142401b94c622d8a99ec521b617e75d6de520e0a2977f2e3434b4eb1111e",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP03",
@@ -635,8 +635,8 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/W04_MAIN_WORLD.txt",
-      "file_sha256": "347c04fef21248487b6cc294b0cd348ac1a14ab2ea567381a2aae1c7aa8663ad",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "b78050ab597bc8f747219a90581a4f832a5a1e5cfd9f7177049dd5a8fc2186a2",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP04",
@@ -659,8 +659,8 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/W05_MAIN_WORLD.txt",
-      "file_sha256": "8e57eb909b68b82b7bff8dc3bcad48a0b73b0a35f8d63ccd3f39768b436a6cf0",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "68af1d56dd087c8b7881a78aab66524bc12745d8dd2b388833552af3b6d646c8",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP05",
@@ -683,8 +683,8 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/W06_MAIN_WORLD.txt",
-      "file_sha256": "3a3d27320affdac534e9a2faa17f7dc1ba2068ecbc59a2532c8cf1a463a617b3",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "e4255842b292917e4a027af1af7da253fa0d96349cabfcf3e42a64efe5fb35d6",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP06",
@@ -707,8 +707,8 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/W07_MAIN_WORLD.txt",
-      "file_sha256": "7be01250c12931dc7651fa9c83f77e46fd4247d991e1f8b3822fcf1dc4ad602f",
-      "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
+      "file_sha256": "3e7ad1028b7c2c992c4e87a70130c1e63135c588e2fe19f59c6e1a466eb052f5",
+      "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
     {
       "asset": "MAP07",
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "1d555dfa054e10ee4f8714ec7d45ef36e3117755d4a7abaed3e35a90ee585c61",
+      "file_sha256": "1dc49d2828fd5cc7a1a3265b5c30ed62d6c6215080128de7e91bb196cd634bef",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "8f2e72872aada1c330f15ec0b3dab642ea9357c05f2bca0a66533410b21a6c41",
+      "file_sha256": "fbf458a14308fdd563787f7baf07037fd3485ae285e5608f99da81147b4e9006",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "efb23483724add0474ef442e6840e67b3eba6288667698998ad488a0230511ea",
+      "file_sha256": "3c39f5779ed0955864f65fd8d4177b4bd801550511428538f1a4a32835fe5858",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "0a28e7fe1f93105b2654b5d2f53c4f851e107e24fa934b085335c00ae0ad9ffd",
+      "file_sha256": "95699da08bb78196b6be4c13925b557671d84202c42a36ac394489926f0382e6",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "643da71dc5b8276064c0800d6d5fc512385b25fd3d5e2f94af1bc3d39bd39486",
+      "file_sha256": "74d07f0a0cc39df6f354b8d013b54938fed171ba0b5287236deba1590dca9cd0",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "6791a1bdb2faba868a8a746addab4f80f77ec63ce5f9ec0bed470d40c49a2b21",
+      "file_sha256": "290b01903a5e8057afa194e8868331fee315da287b549b7548221bed727ab5b8",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "15a11379685a1fb2b902e0e0b81b4d481a474224063ea320099e20476c7293e0",
+      "file_sha256": "ca2266219e64607a6e074266691baa447b33273b75afe08ae21c2d23039816de",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "52cc88d8f50d3afe6f626c0e00659c7fa1708ad386019de65139a7568a7f8f28",
+      "file_sha256": "1b180884b2a8a2da128d70ce095544d722ac4b8c9f12eee33e09d0d2cc944719",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "ef332d10f6514dbb4cf83557b6946be4c3d1dd37970d980d421c988bdded2f2d",
+      "file_sha256": "8e4b3cb219ed9dbab822730e5247881a5cbc731cbb5329c007ece6b3b01e1e4d",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "96bb79345e509096c3e8c6fa4e79e4d49d5f3c43e2e38854a3095a57f7d7026f",
+      "file_sha256": "9961db651db049ff2c2cc87ee9e760b0e19e50ce375cd2bad158f41701e2de39",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "ee1ae3a1be0a4da94fc7f6d905cdbfc47f09231f3037e44c7aed5bd9ba48f67a",
+      "file_sha256": "7f0294c34bb04fa847df2855fb8f594e9d0d48a984f74bb1657f323bf69fe12e",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "5a30253a4bf5d7767966a4e633270e7594e34718efb9db8fc34a93ba2b1c254d",
+      "file_sha256": "45355e781c0e21b355cfadc115b8b4db615707e25dcf14820c09c1fecbc0c110",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "25201cae4900f63456e2abcbb1144d9dffef1db8b6e2c5e095042a4b8d6e864a",
+      "file_sha256": "2993435ee98805dec51cc0d8c2b0a277bc1c4d0112540e423da2b3b03256a063",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,8 +971,176 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "9dd42793745d401bf1acce2f12e28cf560454eadd1cefdaadca91e6ccd382a57",
+      "file_sha256": "08074779ab8c1e56da55b425b936171b7986c332ec30d880257071b54e14414d",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
+    },
+    {
+      "asset": "W01_B",
+      "source_heading": "WORLD 01 —",
+      "source_lines": [
+        3061,
+        3148
+      ],
+      "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
+      "file": "02_library/worlds/W01_MAIN_WORLD_B.txt",
+      "file_sha256": "e31d5486dee45acc39be63b128344cd956f0448726114ad7b46c92541432b8bb",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W01_C",
+      "source_heading": "WORLD 01 —",
+      "source_lines": [
+        3061,
+        3148
+      ],
+      "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
+      "file": "02_library/worlds/W01_MAIN_WORLD_C.txt",
+      "file_sha256": "35e63f0e9f119f21bccc04582705a78945ed3e5faf77696b64b4a4591a30d1a8",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W02_B",
+      "source_heading": "WORLD 02 —",
+      "source_lines": [
+        3155,
+        3242
+      ],
+      "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
+      "file": "02_library/worlds/W02_MAIN_WORLD_B.txt",
+      "file_sha256": "044d477231479e33dbf7198dc8e4226709ded1dcfa99063edb126aa177aeeee1",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W02_C",
+      "source_heading": "WORLD 02 —",
+      "source_lines": [
+        3155,
+        3242
+      ],
+      "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
+      "file": "02_library/worlds/W02_MAIN_WORLD_C.txt",
+      "file_sha256": "873502ff2e1678549a030f9239d371aa12cc6222d04b429be2b32f96e9548ecc",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W03_B",
+      "source_heading": "WORLD 03 —",
+      "source_lines": [
+        3249,
+        3336
+      ],
+      "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
+      "file": "02_library/worlds/W03_MAIN_WORLD_B.txt",
+      "file_sha256": "ff54e6a402d9b3c533b238000b179415c7b5a621ec2ea3d70e1e77b4c83100a4",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W03_C",
+      "source_heading": "WORLD 03 —",
+      "source_lines": [
+        3249,
+        3336
+      ],
+      "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
+      "file": "02_library/worlds/W03_MAIN_WORLD_C.txt",
+      "file_sha256": "b36be903dcab632f9d405a69628beeb1deade3f5d97c003e36d845a7b84efe84",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W04_B",
+      "source_heading": "WORLD 04 —",
+      "source_lines": [
+        3343,
+        3430
+      ],
+      "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
+      "file": "02_library/worlds/W04_MAIN_WORLD_B.txt",
+      "file_sha256": "32c7ed4d4d318424c971d6e8d3193d0262a78d73d9cc30c2b18593772d29331c",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W04_C",
+      "source_heading": "WORLD 04 —",
+      "source_lines": [
+        3343,
+        3430
+      ],
+      "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
+      "file": "02_library/worlds/W04_MAIN_WORLD_C.txt",
+      "file_sha256": "043a641340170e7f6551d832cfeeeafaf15e8fdecc605fc777ddd93109cd1b18",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W05_B",
+      "source_heading": "WORLD 05 —",
+      "source_lines": [
+        3437,
+        3524
+      ],
+      "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
+      "file": "02_library/worlds/W05_MAIN_WORLD_B.txt",
+      "file_sha256": "14954eede3b6720d88e7586a1e263751d984400465147de2024fbb94973c75f5",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W05_C",
+      "source_heading": "WORLD 05 —",
+      "source_lines": [
+        3437,
+        3524
+      ],
+      "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
+      "file": "02_library/worlds/W05_MAIN_WORLD_C.txt",
+      "file_sha256": "192e487b8baabe51322d7b13c586a440ba49c263bebe71d8a59611926404be51",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W06_B",
+      "source_heading": "WORLD 06 —",
+      "source_lines": [
+        3531,
+        3618
+      ],
+      "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
+      "file": "02_library/worlds/W06_MAIN_WORLD_B.txt",
+      "file_sha256": "03fd893bd6c117707206c6cb9135bce4e608ed5334c3cc7beb7f29c693835afe",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W06_C",
+      "source_heading": "WORLD 06 —",
+      "source_lines": [
+        3531,
+        3618
+      ],
+      "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
+      "file": "02_library/worlds/W06_MAIN_WORLD_C.txt",
+      "file_sha256": "372f54bf87ca05422c9ac7c1039234900ad76428ded447c17b83b21df73d7943",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W07_B",
+      "source_heading": "WORLD 07 —",
+      "source_lines": [
+        3625,
+        3712
+      ],
+      "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
+      "file": "02_library/worlds/W07_MAIN_WORLD_B.txt",
+      "file_sha256": "e5c692b997083a0be927ee126019dd778f25f423eae8be120c584b815965f60c",
+      "changes": "Derived 4K 2×2 Page B; original views [5, 6, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "W07_C",
+      "source_heading": "WORLD 07 —",
+      "source_lines": [
+        3625,
+        3712
+      ],
+      "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
+      "file": "02_library/worlds/W07_MAIN_WORLD_C.txt",
+      "file_sha256": "b28c854a591cd0c5fc7f9288a90ff780fa859f805a7c5d24e1da7c72a47a8b7b",
+      "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
     }
   ],
   "assets": {
@@ -1374,7 +1542,9 @@
         "C07",
         "C08",
         "C09",
-        "T01_IMAGE"
+        "T01_IMAGE",
+        "W01_B",
+        "W01_C"
       ]
     },
     "A01": {
@@ -1399,7 +1569,9 @@
         "C09",
         "SB01",
         "A01",
-        "T01_IMAGE"
+        "T01_IMAGE",
+        "W01_B",
+        "W01_C"
       ]
     },
     "SB02": {
@@ -1423,7 +1595,9 @@
         "C18",
         "C19",
         "C20",
-        "C21"
+        "C21",
+        "W02_B",
+        "W02_C"
       ]
     },
     "A02": {
@@ -1456,7 +1630,9 @@
         "C21",
         "SB02",
         "A02",
-        "V01"
+        "V01",
+        "W02_B",
+        "W02_C"
       ]
     },
     "SB03": {
@@ -1470,7 +1646,9 @@
         "C01",
         "C22",
         "C23",
-        "C24"
+        "C24",
+        "W03_B",
+        "W03_C"
       ]
     },
     "A03": {
@@ -1493,7 +1671,9 @@
         "C24",
         "SB03",
         "A03",
-        "V02"
+        "V02",
+        "W03_B",
+        "W03_C"
       ]
     },
     "SB04": {
@@ -1507,7 +1687,9 @@
         "C03",
         "C04",
         "C25",
-        "C26"
+        "C26",
+        "W04_B",
+        "W04_C"
       ]
     },
     "A04": {
@@ -1530,7 +1712,9 @@
         "C26",
         "SB04",
         "A04",
-        "V03"
+        "V03",
+        "W04_B",
+        "W04_C"
       ]
     },
     "SB05": {
@@ -1547,7 +1731,9 @@
         "C28",
         "C29",
         "C30",
-        "C31"
+        "C31",
+        "W05_B",
+        "W05_C"
       ]
     },
     "A05": {
@@ -1573,7 +1759,9 @@
         "C31",
         "SB05",
         "A05",
-        "V04"
+        "V04",
+        "W05_B",
+        "W05_C"
       ]
     },
     "SB06": {
@@ -1599,7 +1787,9 @@
         "C17",
         "C27",
         "C28",
-        "C29"
+        "C29",
+        "W06_B",
+        "W06_C"
       ]
     },
     "A06": {
@@ -1634,7 +1824,9 @@
         "C29",
         "SB06",
         "A06",
-        "V05"
+        "V05",
+        "W06_B",
+        "W06_C"
       ]
     },
     "SB07": {
@@ -1651,7 +1843,9 @@
         "C05",
         "C06",
         "C16",
-        "C17"
+        "C17",
+        "W07_B",
+        "W07_C"
       ]
     },
     "A07": {
@@ -1677,7 +1871,9 @@
         "C17",
         "SB07",
         "A07",
-        "V06"
+        "V06",
+        "W07_B",
+        "W07_C"
       ]
     },
     "MR001": {
@@ -1724,6 +1920,104 @@
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job."
+    },
+    "W01_B": {
+      "key": "W01_B",
+      "path": "02_library/worlds/W01_MAIN_WORLD_B.txt",
+      "output": "W01_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W01_C": {
+      "key": "W01_C",
+      "path": "02_library/worlds/W01_MAIN_WORLD_C.txt",
+      "output": "W01_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W02_B": {
+      "key": "W02_B",
+      "path": "02_library/worlds/W02_MAIN_WORLD_B.txt",
+      "output": "W02_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W02_C": {
+      "key": "W02_C",
+      "path": "02_library/worlds/W02_MAIN_WORLD_C.txt",
+      "output": "W02_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W03_B": {
+      "key": "W03_B",
+      "path": "02_library/worlds/W03_MAIN_WORLD_B.txt",
+      "output": "W03_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W03_C": {
+      "key": "W03_C",
+      "path": "02_library/worlds/W03_MAIN_WORLD_C.txt",
+      "output": "W03_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W04_B": {
+      "key": "W04_B",
+      "path": "02_library/worlds/W04_MAIN_WORLD_B.txt",
+      "output": "W04_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W04_C": {
+      "key": "W04_C",
+      "path": "02_library/worlds/W04_MAIN_WORLD_C.txt",
+      "output": "W04_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W05_B": {
+      "key": "W05_B",
+      "path": "02_library/worlds/W05_MAIN_WORLD_B.txt",
+      "output": "W05_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W05_C": {
+      "key": "W05_C",
+      "path": "02_library/worlds/W05_MAIN_WORLD_C.txt",
+      "output": "W05_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W06_B": {
+      "key": "W06_B",
+      "path": "02_library/worlds/W06_MAIN_WORLD_B.txt",
+      "output": "W06_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W06_C": {
+      "key": "W06_C",
+      "path": "02_library/worlds/W06_MAIN_WORLD_C.txt",
+      "output": "W06_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W07_B": {
+      "key": "W07_B",
+      "path": "02_library/worlds/W07_MAIN_WORLD_B.txt",
+      "output": "W07_MAIN_WORLD_B.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
+    },
+    "W07_C": {
+      "key": "W07_C",
+      "path": "02_library/worlds/W07_MAIN_WORLD_C.txt",
+      "output": "W07_MAIN_WORLD_C.png",
+      "refs": [],
+      "status": "PREPARED_NOT_RENDERED"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -2145,6 +2439,76 @@
       "mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
       "last_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
       "evidence": "Creator supplied the complete copied Element mention. Preserve uppercase MYS and scene s0. Existing Basilica image remains the destination input."
+    },
+    "W01_B": {
+      "alias": "W01_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W01_B"
+    },
+    "W01_C": {
+      "alias": "W01_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W01_C"
+    },
+    "W02_B": {
+      "alias": "W02_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W02_B"
+    },
+    "W02_C": {
+      "alias": "W02_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W02_C"
+    },
+    "W03_B": {
+      "alias": "W03_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W03_B"
+    },
+    "W03_C": {
+      "alias": "W03_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W03_C"
+    },
+    "W04_B": {
+      "alias": "W04_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W04_B"
+    },
+    "W04_C": {
+      "alias": "W04_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W04_C"
+    },
+    "W05_B": {
+      "alias": "W05_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W05_B"
+    },
+    "W05_C": {
+      "alias": "W05_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W05_C"
+    },
+    "W06_B": {
+      "alias": "W06_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W06_B"
+    },
+    "W06_C": {
+      "alias": "W06_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W06_C"
+    },
+    "W07_B": {
+      "alias": "W07_MAIN_WORLD_B",
+      "mention": null,
+      "last_mention": "@UNBOUND_W07_B"
+    },
+    "W07_C": {
+      "alias": "W07_MAIN_WORLD_C",
+      "mention": null,
+      "last_mention": "@UNBOUND_W07_C"
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -2552,6 +2916,30 @@
           "note": "Creator-requested future architectural destination option. No pilot or specific production beat added automatically."
         }
       }
+    },
+    {
+      "file": "00_project/elements/10_world_reference_pages.md",
+      "canonical_keys": [
+        "W01_B",
+        "W01_C",
+        "W02_B",
+        "W02_C",
+        "W03_B",
+        "W03_C",
+        "W04_B",
+        "W04_C",
+        "W05_B",
+        "W05_C",
+        "W06_B",
+        "W06_C",
+        "W07_B",
+        "W07_C"
+      ],
+      "expected_new_elements": 14,
+      "file_sha256": "5c020b344457e0de444d0dda2fb7b629f0af9bd1d364f4a89c9fe4726700306b",
+      "status": "PREPARED_NOT_IMPORTED_NOT_RENDERED",
+      "media_embedded": false,
+      "note": "Companion B/C containers only. Existing W01–W07 remain their own Elements; accepted old images are not replaced by this local edit."
     }
   ],
   "supplemental_reference_sets": {
@@ -2603,5 +2991,323 @@
       "additional_image_references": [],
       "source": "Accepted joined approximately 16-second footage; no visual regeneration"
     }
+  },
+  "world_reference_pages": {
+    "format": "4K 3840x2160, 2x2, zero margins/gutters",
+    "cell_resolution": "1920x1080",
+    "mapping": {
+      "A": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "B": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "C": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "worlds": {
+      "W01": [
+        {
+          "page": "A",
+          "asset": "W01",
+          "file": "02_library/worlds/W01_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "3c99b198d1a9c73018d0bf5f4b4bcfee3000e980fef2be816009cf2655be374e",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W01_B",
+          "file": "02_library/worlds/W01_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "e31d5486dee45acc39be63b128344cd956f0448726114ad7b46c92541432b8bb",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W01_C",
+          "file": "02_library/worlds/W01_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "35e63f0e9f119f21bccc04582705a78945ed3e5faf77696b64b4a4591a30d1a8",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W02": [
+        {
+          "page": "A",
+          "asset": "W02",
+          "file": "02_library/worlds/W02_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "3854bc39f80269fd90bf147f2946f7f6142ca85dab606cc6859bc81b35858249",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W02_B",
+          "file": "02_library/worlds/W02_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "044d477231479e33dbf7198dc8e4226709ded1dcfa99063edb126aa177aeeee1",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W02_C",
+          "file": "02_library/worlds/W02_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "873502ff2e1678549a030f9239d371aa12cc6222d04b429be2b32f96e9548ecc",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W03": [
+        {
+          "page": "A",
+          "asset": "W03",
+          "file": "02_library/worlds/W03_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "38c4142401b94c622d8a99ec521b617e75d6de520e0a2977f2e3434b4eb1111e",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W03_B",
+          "file": "02_library/worlds/W03_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "ff54e6a402d9b3c533b238000b179415c7b5a621ec2ea3d70e1e77b4c83100a4",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W03_C",
+          "file": "02_library/worlds/W03_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "b36be903dcab632f9d405a69628beeb1deade3f5d97c003e36d845a7b84efe84",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W04": [
+        {
+          "page": "A",
+          "asset": "W04",
+          "file": "02_library/worlds/W04_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "b78050ab597bc8f747219a90581a4f832a5a1e5cfd9f7177049dd5a8fc2186a2",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W04_B",
+          "file": "02_library/worlds/W04_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "32c7ed4d4d318424c971d6e8d3193d0262a78d73d9cc30c2b18593772d29331c",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W04_C",
+          "file": "02_library/worlds/W04_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "043a641340170e7f6551d832cfeeeafaf15e8fdecc605fc777ddd93109cd1b18",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W05": [
+        {
+          "page": "A",
+          "asset": "W05",
+          "file": "02_library/worlds/W05_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "68af1d56dd087c8b7881a78aab66524bc12745d8dd2b388833552af3b6d646c8",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W05_B",
+          "file": "02_library/worlds/W05_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "14954eede3b6720d88e7586a1e263751d984400465147de2024fbb94973c75f5",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W05_C",
+          "file": "02_library/worlds/W05_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "192e487b8baabe51322d7b13c586a440ba49c263bebe71d8a59611926404be51",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W06": [
+        {
+          "page": "A",
+          "asset": "W06",
+          "file": "02_library/worlds/W06_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "e4255842b292917e4a027af1af7da253fa0d96349cabfcf3e42a64efe5fb35d6",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W06_B",
+          "file": "02_library/worlds/W06_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "03fd893bd6c117707206c6cb9135bce4e608ed5334c3cc7beb7f29c693835afe",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W06_C",
+          "file": "02_library/worlds/W06_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "372f54bf87ca05422c9ac7c1039234900ad76428ded447c17b83b21df73d7943",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ],
+      "W07": [
+        {
+          "page": "A",
+          "asset": "W07",
+          "file": "02_library/worlds/W07_MAIN_WORLD.txt",
+          "original_views": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "sha256": "3e7ad1028b7c2c992c4e87a70130c1e63135c588e2fe19f59c6e1a466eb052f5",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "B",
+          "asset": "W07_B",
+          "file": "02_library/worlds/W07_MAIN_WORLD_B.txt",
+          "original_views": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "e5c692b997083a0be927ee126019dd778f25f423eae8be120c584b815965f60c",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        },
+        {
+          "page": "C",
+          "asset": "W07_C",
+          "file": "02_library/worlds/W07_MAIN_WORLD_C.txt",
+          "original_views": [
+            9,
+            1,
+            7,
+            8
+          ],
+          "sha256": "b28c854a591cd0c5fc7f9288a90ff780fa859f805a7c5d24e1da7c72a47a8b7b",
+          "status": "PREPARED_4K_2X2_NOT_RENDERED"
+        }
+      ]
+    },
+    "image_jobs_if_all_pages_rendered": 21,
+    "previous_world_image_jobs": 7,
+    "additional_image_jobs": 14,
+    "status": "PROMPTS_PREPARED_NO_NEW_WORLD_IMAGES_RENDERED",
+    "note": "All 63 original view descriptions retained. C repeats views 1,7,8 alongside view9. This change does not replace accepted world images, alter the five-subject pilot, or add video generations."
   }
 }

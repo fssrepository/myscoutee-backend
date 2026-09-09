@@ -43,3 +43,7 @@ Record the actual displayed IDs and accepted image versions after import/render;
 ## Additional London landmark detail definitions — prepared for production
 
 [09_london_landmarks.md](09_london_landmarks.md) contains only three further definitions: R054 Elizabeth Tower / Big Ben, R055 Westminster Abbey and R056 Fisherman’s Bastion destination. These have not been reported imported or rendered. R054/R055 support the already-scripted Block 07 landmarks; R056 is a requested future production option. They do not change the current five-image pilot. The earlier 53-reference import remains intact and must not be repeated. Together the reference library now has 56 definitions; this is not a per-video input count.
+
+## World companion pages — prepared, not imported
+
+[10_world_reference_pages.md](10_world_reference_pages.md) adds only the fourteen B/C world-page containers. It contains no existing W01–W07, R001–R053 or other earlier entries. Page A reuses each existing world Element after a new image is accepted; the short new-only list is for separate companion images. Full render prompts are separate in [worlds](../../02_library/worlds/README.md). Actual platform IDs and media are pending, and no merge is assumed.

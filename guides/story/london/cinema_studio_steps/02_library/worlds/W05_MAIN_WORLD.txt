@@ -1,24 +1,12 @@
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+OUTPUT GEOMETRY — ONE 4K WORLD REFERENCE PAGE:
+Generate ONE photographic image with a TRUE 16:9 final canvas at 3840×2160 pixels, selecting 4K in the Higgsfield output controls. Fill the canvas with EXACTLY FOUR equal cells in a 2×2 grid: two columns and two rows. Each cell is 1920×1080 pixels on this exact canvas. Outer margins: 0 pixels. Internal gutters: 0 pixels. The four cells meet edge-to-edge; no borders, titles, captions, labels or unused area. No square canvas, nested contact sheet, letterboxing or pillarboxing. Do not print the page letter, original-view numbers or cell positions. In-world signs and the specified numerical rating cards remain visible.
 
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each photographic cell must therefore be a TRUE 16:9 widescreen rectangle, occupying one third of the full canvas width and one third of its height, apart from the thin internal gutters.
-DO NOT create a square 1:1 canvas.
-DO NOT create square cells.
-DO NOT place a square 3×3 contact sheet inside a wider canvas.
-DO NOT add letterboxing or pillarboxing.
-The 3×3 grid itself must fill the entire 16:9 canvas edge-to-edge.
+This prompt generates only the four views assigned below. They are exterior reference views of one connected world, not four video shots, not necessarily four sequential transformation stages and not one continuous panoramic image sliced into quadrants. Each cell is a complete photographic composition with real depth. Use the same world identity, compatible lighting, materials, people/card design and spatial relationships across the page. Where an accepted reference of this world is supplied, use its identity and geometry rather than copying its grid. Camera flight and continuous material morphing belong to the later video prompt; no dissolve or slideshow is implied by this sheet.
 
-The nine photographic cells occupy 100% of the final canvas and touch all four physical canvas edges.
-Outer margin: 0 pixels.
-Use only hairline 1–2 pixel gutters BETWEEN adjacent cells.
-No title area, no header, no footer, no caption bands, no legend, no decorative framing, no unused space.
-Do not render cell numbers or layout labels.
-In-world shop, street and transit signage is allowed and REQUIRED where specified below.
+WORLD 05 — PAGE A
+This page contains original views 01, 02, 03, 04. Those original-view identifiers are cross-reference instructions, not visible labels.
 
-All nine cells depict the SAME continuous photorealistic London–Budapest dream metropolis at the SAME overcast evening continuity with clear dry air and damp streets.
+All four assigned views belong to the same continuous London–Budapest dream metropolis at the same overcast evening continuity, with clear dry air and damp streets. Preserve each view’s scripted source, inherited intrusion or material state; do not invent a new beginning or chronological sequence merely because a view appears first on this page.
 
 STREET VISIBILITY:
 Heavy overcast London sky with cool diffuse evening light. The air is clear and dry; the paving, puddles, coats and stone can remain damp from earlier weather. No falling rain, drizzle, rain streaks or rainfall sound. Every current pedestrian is bareheaded, with hoods down, hair and face exposed and hands lowered naturally. No umbrellas anywhere: none open, folded, carried, held above a head or attached to street furniture. Use uncovered heads and damp clothing even when a supplied reference suggests wet weather. Preserve empty air above each crown for its readable numerical rating card. Wet tyre hiss, footsteps and distant traffic provide the continuous street ambience.
@@ -58,43 +46,31 @@ Detail views: approximately 35–50mm.
 ARRI Alexa LF photographic character, natural Cooke-style rendering, soft highlight roll-off, rich shadow detail, fine organic film grain, real wet stone, real glass, real transport materials.
 Give this impossible architecture the clarity, material detail and light of live-action cinema. Let unusual shape and depth carry its otherworldliness rather than a uniform haze or a flat interface graphic.
 
-NINE-CELL FUNCTION:
-Cells 1–6 = six exterior environment views along this section of the walk.
-Cell 7 = structural/material identity detail; where specified, expose the connected intermediate form rather than a reflection surface.
-Cell 8 = moving transit-window technical detail.
-Cell 9 = resolved named architectural form or its distinctive material detail, with in-world signage only where specified.
+WORLD-SPECIFIC FOUR-CELL CONTENT:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+Blackfriars north-bank riverfront exterior. Thames geometry is unmistakably London, but across one separated sightline the HUNGARIAN PARLIAMENT stands naturally on the riverfront at believable scale. It is a mandatory recognition anchor, not a vague Gothic substitute. London structures remain elsewhere at different depths. 15–30 pedestrians.
 
-WORLD-SPECIFIC CONTENT:
-Cell 1 — Blackfriars north-bank riverfront exterior. Thames geometry is unmistakably London, but across one separated sightline the HUNGARIAN PARLIAMENT stands naturally on the riverfront at believable scale. It is a mandatory recognition anchor, not a vague Gothic substitute. London structures remain elsewhere at different depths. 15–30 pedestrians.
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+Blackfriars Bridge approach. Show the recognisable Tower Bridge with two stone towers and high walkways developing into the full Széchenyi Chain Bridge, its deck and suspension carrying a visible intermediate change. The whole bridge may become the recognisable Chain Bridge through visible corresponding tower, deck and suspension forms; retain a connected crossing in the dream geography.
 
-Cell 2 — Blackfriars Bridge approach. Show the recognisable Tower Bridge with two stone towers and high walkways developing into the full Széchenyi Chain Bridge, its deck and suspension carrying a visible intermediate change. The whole bridge may become the recognisable Chain Bridge through visible corresponding tower, deck and suspension forms; retain a connected crossing in the dream geography.
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+North-bank public block where the London riverfront footprint carries the unmistakable façade language of GRESHAM PALACE / FOUR SEASONS BUDAPEST. Ground-floor cafés and public glass remain London-scaled. Yellow Budapest tram runs along the riverside road like Budapest Tram 2.
 
-Cell 3 — North-bank public block where the London riverfront footprint carries the unmistakable façade language of GRESHAM PALACE / FOUR SEASONS BUDAPEST. Ground-floor cafés and public glass remain London-scaled. Yellow Budapest tram runs along the riverside road like Budapest Tram 2.
-
-Cell 4 — South Bank-side public cultural riverfront after crossing. London pedestrian promenade, restaurants and large cultural glass. One public building carries PESTI VIGADÓ-inspired façade rhythm adapted to South Bank massing. Red bus and black taxi remain on nearby road geometry.
-
-Cell 5 — Wide river composition with HUNGARIAN PARLIAMENT and LONDON EYE visible at DIFFERENT depths and separated by architecture/occlusion. Never postcard collage. A yellow tram occupies the Embankment-side line; wet river and stone reflect city light.
-
-Cell 6 — Strong riverside transport view: full side red double-decker, full side yellow Budapest tram and black taxi separated cleanly against Thames geometry and Hungarian Parliament/Gresham anchors. 20–35 pedestrians.
-
-Cell 7 — Close-to-middle exterior view of the river railing becoming immense looped iron ribs above the London riverside path. At the nearest rooted post, follow a thin familiar railing line as it thickens and curves upward into a several-person-height loop; the next ordinary railing segment stays identifiable. Behind it, attached Gresham-like stone panels fan outward from the same frontage, revealing their thick edges and deep occupied-looking balconies without specific narrative actors. Keep the river, bridge and human path visible through the gaps.
-
-Cell 8 — Close moving-transit detail with red bus side windows, Budapest Tram-2-like yellow tram windows and black taxi glass; river reflections behind.
-
-Cell 9 — Close riverfront architecture/signage detail: London ground-floor public frontage fused specifically with Gresham Palace / Pest Danube-side architecture. Visible VILLAMOS, KÁVÉ or BEJÁRAT signage beside English signs.
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+South Bank-side public cultural riverfront after crossing. London pedestrian promenade, restaurants and large cultural glass. One public building carries PESTI VIGADÓ-inspired façade rhythm adapted to South Bank massing. Red bus and black taxi remain on nearby road geometry.
 
 FINAL CHECK:
 Exactly one image.
-Exactly nine equal photographic cells in a 3×3 grid.
+Exactly four equal photographic cells in one 2×2 grid at 3840×2160.
 0 px outer margin.
-Only 1–2 px internal gutters.
+0 px internal gutters; each cell has the full 1920×1080 area.
 No presentation title/caption/legend/frame.
 All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 
 
 TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
-London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
+London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Render all four assigned views on this page with sharp, solid geometry and moving parts shown in one captured position; companion pages retain the other locations.
 Gresham stone fans outward above the Thames-side route; a fingerprint ridge grows into towering iron loops and a shelf of the embodied records room becomes river railing. Parliament forms emerge in the same London riverside geometry.
 In the assigned broad environment view and structural detail, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
 
@@ -104,13 +80,13 @@ A famous building must be recognisable by its full characteristic silhouette AND
 
 RECOGNITION TARGETS ACROSS THE ASSIGNED VIEWS
 Tower Bridge first reads clearly with BOTH stone towers, the high connecting walkways and blue suspension elements. It becomes the Széchenyi Chain Bridge with two great stone pylons, hanging chain lines and approach lions, visibly changing the same bridge. The Hungarian Parliament is unmistakable as the long riverside Gothic facade centred on its large dome; Gresham Palace's curved Art Nouveau frontage occupies a separate nearer bank view.
-Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep the existing nine-cell count. These are reference views; later video supplies movement and continuity.
+Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep this page’s four-cell count. These are reference views; later video supplies movement and continuity.
 
 REFERENCE STATES — SOLID GEOMETRY THAT CAN ACTUALLY CHANGE:
 Preserve the identity of a structure through its ordinary, changing and resolved forms wherever the assigned views show it. Carry one recognisable seam, support, window spacing pattern or carved edge across those forms. The intermediate state is a single sharp physical object with thickness and connected joints: some of the old surface is still present while the adjoining portion already has the new material and depth. Never depict it with transparent duplicates, ghost trails, exploded disconnected fragments or a finished scene hidden behind a peeling wall.
 Make the scale unmistakable. At least one transformed room or roof spans several human heights, with ordinary pedestrians beneath it and a recognisable vehicle beside it. Give the next nearby object a conflicting spatial direction: an upper floor bends outward while a stair threads sideways and a doorway opens backward into impossible depth. Keep the street traversable beneath these incompatible shapes. The strangeness belongs to the built volume itself, not merely to decorative carvings.
 For an assigned wide view, include a clear near kerb or projecting table-height ledge, a middle-distance inhabited frontage, and a whole recognisable landmark farther away. These separated depths provide parallax for later camera travel. Keep the main changed structure sharp and unobscured; do not flatten everything into a scenic skyline collage.
-Each cell is a reference view of one world state, not a prescribed video shot or a collage within the cell. The later film reaches new views by continuous camera travel and changes the same materials in view. Do not render arrows, labels or step numbers. Keep the nine-cell canvas unchanged.
+Each cell is a reference view of one world state, not a prescribed video shot or a collage within the cell. The later film reaches new views by continuous camera travel and changes the same materials in view. Do not render arrows, labels or step numbers. Keep this page’s 4K 2×2 canvas unchanged.
 
 SOLID SOURCE GEOMETRY FOR CONTINUOUS TRANSFORMATION:
 Each cell is a single opaque photographic state, not a blended before/after overlay. Where the described architecture is changing, show original and extended portions joined in the SAME structure: opened mortar joints with individually turned bricks, exposed side faces, a connected sill or floor, and moving parts at distinct intermediate angles. The old corner must be identifiable in the new doorway, rib or balcony edge. Show the actual empty gap made by displaced material, with thick side walls and contact shadows; no building fades into a second skyline. Keep three-dimensional room depth visible through the developing opening so later video can glimpse its people there and approach that same place continuously. Specific remembered people are supplied by their memory/character references. The cells supply solid geometry and materials, never instructions to dissolve between camera setups.
