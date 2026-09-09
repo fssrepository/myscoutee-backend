@@ -1685,7 +1685,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "f1d0411e6b76636ec01a45fe18a47117ae62d274f7c76927615357141f45e82a",
+      "sha256": "5f9a4d77302316fb0498ee343e25bfc8fd5c4e487a358bd3258904b8d2a7b658",
       "refs": [
         "C01",
         "C02",
@@ -1708,7 +1708,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "a9b396fc9030d059dad31ef024accdc18e7f54431fb78967910011de5164d123",
+      "sha256": "23c0e9e522c14a05f139879a21aa1ed2bcf08efeead889f4e4d8070087b8f78b",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -2106,7 +2106,7 @@
       ],
       "expected_new_elements": 1,
       "type": "Location",
-      "file_sha256": "d1c1eca6f97e8c2634a0386c71a705c86284108c41b0e7498e887944d287e59a",
+      "file_sha256": "e472345c881af08065516e18e901e0f11f06254b6c647111c9e0a71da88717d9",
       "status": "ELEMENT_ID_REPORTED_IMAGE_ASSOCIATION_UNVERIFIED",
       "media_embedded": false,
       "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"
@@ -2169,11 +2169,11 @@
         "R053"
       ],
       "expected_new_elements": 53,
-      "file_sha256": "bd754e8aefed5e2d80adcff2d6330f529f4119a9b51c871b33af756c6bdbe548",
-      "status": "PREPARED_NOT_IMPORTED_NOT_RENDERED",
+      "file_sha256": "dbb46b904b25bc3a1cf90269ee72e2676ca6c5fa8e64b0757d5c7def5339e4e8",
+      "status": "IMPORT_REPORTED_IDS_AND_IMAGES_UNVERIFIED",
       "media_embedded": false,
       "generation_source": "02_library/objects/README.md",
-      "note": "Complete image prompts embedded in import Descriptions; covered web image renders performed by creator. Library count is not per-video input count.",
+      "note": "New-only first-import batch R001–R053 with short identity descriptions. Detailed image prompts are separate R-numbered .txt files, indexed in generation_source and image_prompt_files. No merge, import or render is performed locally.",
       "image_prompt_files": {
         "R001": {
           "file": "02_library/objects/R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt",
@@ -2440,65 +2440,38 @@
           "sha256": "7e8cb96cf7e090dedbc49769d02e9cc2e395cc4c153279d15359acdb3be32521",
           "status": "PREPARED_NOT_RENDERED"
         }
-      }
+      },
+      "import_evidence": "Creator reports: ez importalva lett. No actual new IDs or rendered images verified."
     }
   ],
   "supplemental_reference_sets": {
-    "status": "PLANNED_IMAGES_AND_ACTUAL_HANDLES_PENDING",
+    "status": "IMPORT_REPORTED_IMAGES_AND_ACTUAL_HANDLES_PENDING",
     "test_video_8s.txt": {
       "required": [
         "R011",
         "R001",
-        "R005",
         "R006",
         "R002",
-        "R003",
-        "R004",
-        "R008",
-        "R010",
-        "R012",
-        "R014",
-        "R015",
-        "R016",
-        "R017",
-        "R018",
-        "R019",
-        "R020",
-        "R021",
-        "R022",
-        "R023",
-        "R024",
-        "R025",
-        "R026",
-        "R027"
+        "R008"
       ],
-      "optional": [
-        "R007"
-      ]
+      "optional": [],
+      "production_reuse": "Block 01; remaining detail references stay in the production library."
     },
     "test_extend_8s.txt": {
       "required": [
         "R001",
         "R002",
-        "R003",
-        "R004",
-        "R009",
-        "R012",
-        "R022",
-        "R023",
-        "R025",
-        "R026",
-        "R027",
-        "R028",
-        "R029",
-        "R030",
-        "R051",
-        "R052"
+        "R009"
       ],
-      "optional": [
-        "R053"
+      "optional": [],
+      "new_images": [
+        "R009"
       ],
-      "native_source": "Actual selected first video; inherit its actual endpoint"
+      "reused_images": [
+        "R001",
+        "R002"
+      ],
+      "native_source": "Actual selected first video; inherit its actual endpoint."
     },
     "test_narrated_video.txt": {
       "additional_image_references": [],

@@ -18,11 +18,19 @@ The total next-round cost is **not yet known**. No additional charge is recorded
 
 The creator has confirmed a seven-day Unlimited web image window. Prepare the additional references there, using [the separate copyable image prompts](../02_library/objects/README.md), and keep the same three video/audio test tasks.
 
-Import the missing **R001–R053** reference definitions from [08_reference_assets.md](../00_project/elements/08_reference_assets.md), then render into those Elements. Each definition contains the full image prompt, required attachments and its intended use. The 53-image library spans tests and production; attach the relevant set for each test, counting all existing inputs too. No new paid video-test files are added.
+The creator reports the R001–R053 batch imported. Do not import it again. The import contains short identities; full image prompts remain in the R-numbered `.txt` files. Prepare **five additional images for the first 8-second test**, using the matching Elements in Higgsfield:
 
-Start with section 11, the clean **London opening** with St Paul's, London transport and numerical cards. Next use section 01 for a **readable rating-card example** against that London setting. Sections 05 and 06 specify the complete **St Paul's source and Basilica destination**; reuse accepted imagery if it already resolves those actual buildings. Then add the bus/taxi/tram and café-object detail references in sections 02–04 and 08, the canopy in 09 and the statue in 10 where the current video needs them. Section 07 is an optional intermediate geometry illustration, not a morph test. All of these are image assets reusable in production, not separate paid effect videos.
+| Reference | What this image supplies |
+| --- | --- |
+| R011 | Clean London opening, St Paul's source silhouette, connected street and camera space |
+| R001 | Clearly readable numerical cards on uncovered current pedestrians |
+| R006 | Complete St Stephen's Basilica destination identity |
+| R002 | Consistent red London bus geometry for the close pass |
+| R008 | Café window, solid material construction and accepted restaurant furniture detail |
 
-For the **first 8 seconds**, main references are R011, R001, R005–R006, R002–R004, R008, R010 and R012; material/camera-depth details are R014–R027. R007 is optional intermediate geometry. This is 24 supplementary images (25 with R007), plus the four existing references. For the **native 8-second Extend**, use R001–R004, R009, R012, R022–R023, R025–R030 and R051–R052; R053 is optional. This is 16 supplementary images (17 with R053), plus existing image inputs and the actual source video. Reuse images already accepted for the first test. These are planned sets; actual imports, renders and bindings are pending.
+Generate R011 first, then derive R001 from that London setting. R008 uses the accepted restaurant reference; its image is already available and does not need replacing. R006 supplies the destination building, never the London opening composition. Reuse the existing C01/C02/W01/T01 references in their assigned roles. All five new images also serve production Block 01; the other detailed assets remain available for the full film. The previous 24-image pilot requirement is withdrawn. Preserve the full video prompt's material and camera detail.
+
+For native Extend, inherit the actual selected first result and reuse the relevant accepted images; R009 is the additional canopy study for its new action. The previous 16-image preparation list is a detail inventory for production, not a requirement to render sixteen more images for Extend. The narrated test uses the accepted joined footage. None of these choices adds a video test or changes production block counts. Image renders and actual new bindings are still pending.
 
 Inspect the generated stills for correct location, actual source/target shapes, solid material thickness and readable scores before attaching them. Use the clean London image for the opening; assign the Basilica image only to destination identity. Every added object image has an explicit shape/material role. Keep the four existing character/restaurant/world bindings until actual replacement or additional media are available; never invent an Element handle for an image that has not been generated and attached. Record real handles centrally, then update the reference-role paragraphs and check the actual video prompt before generation. The extra images have not been generated or attached by editing these files.
 

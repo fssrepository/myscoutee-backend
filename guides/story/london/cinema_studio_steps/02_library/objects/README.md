@@ -10,13 +10,11 @@ There are **53 separate complete image-prompt files** in this directory. This is
 
 | Consumer | Reference numbers | Purpose |
 | --- | --- | --- |
-| First 8-second test — main visual anchors | 11, 01, 05, 06, 02, 03, 04, 08, 10, 12 | London source, numerical cards, cathedral endpoints, transport, café, statue and current people |
-| First test — detailed material support | 14–27 | Window, glass, masonry, floor, bench, furniture, cup, doors, fixtures, ironwork, sign and returning roof geometry |
-| First test — optional geometry illustration | 07 | Intermediate cathedral volume only; not a motion test |
-| Native 8-second Extend | 01–04, 09, 12, 22–23, 25–30 | Inherited people/transport, roof and arcade/fanlight-to-canopy material detail; use actual source video as the continuation input |
-| Street opening while buildings morph — native Extend and matching production beats | 51–52; 53 optional | Source street section, opened destination and inspectable intermediate volume; no prescribed Piccadilly–Andrássy replacement |
+| First 8-second test — five additional images | 11, 01, 06, 02, 08 | London opening with St Paul's, readable ratings, Basilica destination, close-pass bus, café material/construction detail |
+| Native 8-second Extend | Reuse 01, 02; add 09 for the new canopy | Actual selected source video supplies the inherited scene; one new canopy study supports the new material action |
+| Production street-opening detail library | 51–52; 53 optional | Source, destination and optional intermediate volume for the relevant film beat; no mandatory extra pilot image jobs |
 | Later open-square bus-interior passage | 02, 13 | Consistent bus exterior and a traversable actual door-to-aisle-to-door route; this is not automatically inserted into the current 8-second shot |
-| Block 01 | First-test sets, with approved C01/C02 and T01/MW01 scene references | Same reference evidence reused in production |
+| Block 01 | 01–06, 08, 10–12, 14–27; 07 optional; approved C01/C02 and T01/MW01 | Reuse the five accepted pilot images; remaining object, façade and roof studies support the production block |
 | Block 02 | 17–18, 21–23, 28–33, 43–47 | Station/Opera targets, transit gate, seats, taxi cabin, balloon and ground material |
 | Block 03 | 16–18, 21–24, 30, 42, 48 | Historic exterior, workroom construction and meaningful real records |
 | Block 04 | 16–18, 21–23, 30, 49 | Solid doorway/room materials, cabinet-to-desk supports and procedural objects; retain W04/MW04 |
@@ -24,12 +22,14 @@ There are **53 separate complete image-prompt files** in this directory. This is
 | Block 06 | 01, 12, 17–23, 28–30, 34–38, 40, 43–47, 49–50 | Crowds, recurring human-memory objects, Market Hall/Bálna roof pair and London scale anchors |
 | Block 07 | 01–04, 24–27, 33, 39–40; reuse accepted HRW07 | Current-city identity and objects, quieting route and unchanged clinical endpoint |
 
-The test sets above are explicit inputs to prepare, not assets already generated or attached. With the four existing image references, the first-test main/detail sets use at most 28 images, or 29 with optional 07. The Extend set uses 14 supplementary images, plus 51–52 for the street opening (16 supplementary images, or 17 with optional 53), the existing images and the selected source video. Confirm actual composer accounting when adding media; do not equate a contact sheet's cells with separate input slots.
+The first pilot prepares **five new images**, reusing the existing four bound character/world/restaurant inputs: nine planned image inputs in total, subject to actual accepted media and composer setup. The 24-image set previously listed here is superseded; its remaining detail studies belong to production preparation. The native Extend reuses the actual accepted source and relevant accepted references, adding R009 for its new canopy. The full production rows are reusable subject inventories, not an instruction to render every variant before this short pilot. The images produced for the pilot remain production assets. The library's 53 definitions have been reported imported by the creator; their actual IDs, rendered images and attachments are not yet verified.
 
-Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered `.txt` file is complete and directly copyable into the Higgsfield interface. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Import the missing definitions from [08_reference_assets.md](../../00_project/elements/08_reference_assets.md), render into those Elements using their complete image prompts, then record the actual persistent Element IDs and reference roles before the next paid video pass. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
+Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered `.txt` file is complete and directly copyable into the Higgsfield interface. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Use the already-imported R001–R053 Elements; do not import [the batch](../../00_project/elements/08_reference_assets.md) again. Render the selected five pilot images into their Elements using the matching `.txt` prompts, then record actual IDs and accepted image versions before binding them to the video. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
 
 
 ## Files, source attachments and use
+
+Only the five images in the pilot row are the current first-test preparation set. Other entries mentioning a pilot object describe possible reuse and production detail, not further mandatory pilot renders.
 
 The `.txt` files contain no Markdown fences, headings, import metadata or operator notes. Required source attachments and consumers are listed here. The files preserve the full image-prompt wording. R-numbers identify local reference assets, not platform mentions.
 

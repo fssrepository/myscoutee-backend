@@ -1,17 +1,10 @@
-# MYSCOUTEE — PILOT TEST ASSET ELEMENT IMPORT
+# MYSCOUTEE — PILOT RESTAURANT ELEMENT
 
-Purpose: Higgsfield Cinema Studio Import Elements only.
-Expected new Elements: exactly 1 Location, if the definition below does not already exist.
-
-Import only the definition below. Reuse an existing Element with the same Canonical key or exact Name instead of creating a duplicate. Keep the existing film Elements unchanged. This file contains metadata only; it does not request image, video or audio generation and does not upload the accepted image. Do not infer additional Characters, Locations or Props from people, rooms, filenames or cross-references in the description. Obtain the actual full Element ID after import; no generated ID is assumed here.
+Already imported. Retained definition only; do not import again.
 
 ## LOCATION — T01_IMAGE — PILOT SOHO RESTAURANT MEMORY
 Type: Location
 Canonical key: T01_IMAGE
 Name: Pilot Soho Restaurant Memory
 Version: v1
-Primary scene: Scene 01
-Also referenced by: The 8-second visual pilot, its 8-second continuation, MW01 source Cells 1–3, and the final Block 01 storyboard/video FRAME 3. Reuse this same Element whenever this exact restaurant memory is needed.
-Description: A remembered moment inside a compact Soho sushi restaurant, with warm practical lighting, modest wooden tables and a narrow passage to two restroom doors. The protagonist stands beside the doors after a mildly awkward wrong-door mistake. The Soho woman sits at a table, turning toward him with a small spontaneous smile. Use the attached accepted image as the source for a complete life-size restaurant memory reconstructed in three dimensions: London paving, street furniture and continuously changing wall surfaces become the room, furniture and both remembered people as an occupied place in the open street; its walls can continue transforming into an arcade as the camera passes. The accepted image defines their layout and identities; first glimpse these same people through the café window’s physically widening opening, then continuously expose their full room as its floor extends into the street. Keep every moving panel solid and attached; no scene dissolve. do not display it as a flat picture on glass. Preserve both established character identities. This is an interior memory source, separate from the present London street and the larger Memory World 01 collection.
-Generation source: `02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt` in the Cinema Studio steps pack. Its image has already been generated and accepted; do not generate it again for this import.
-Image association after import: Attach the existing single restaurant still from MyScoutee / All assets, tracked as `T01_SOHO_MEMORY.png`. The import itself supplies no image bytes or media URL.
+Description: The accepted warm Soho sushi restaurant, with the seated Soho woman, modest wooden tables and the remembered protagonist beside two restroom doors.

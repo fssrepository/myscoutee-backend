@@ -1,6 +1,9 @@
 # Elements — staged import without duplication
 
-These files define **Import Elements** batches. Import creates reference containers, not rendered images. The new detail batch also carries complete image-render prompts in its Description fields so the creator can render into each Element afterward.
+**The creator reports the new R001–R053 batch imported. Do not import it or the earlier batches again; Higgsfield does not merge imports. Next: render the five selected pilot images into their existing Elements. Actual new IDs and images remain unverified.**
+
+
+These files define **Import Elements** batches. Import creates reference containers, not rendered images. The new detail batch contains short element definitions only. Detailed image-render prompts remain in the separate R-numbered `.txt` files.
 
 **Current starting point:** the supplied 2026-09-09 screenshot already shows imported Elements in **MyScoutee**, with empty **Add element image** slots on the visible entries. Skip import for those entries and supply their matching accepted images. The screenshot alone does not verify all 48 entries; only actually missing definitions need importing.
 
@@ -29,10 +32,10 @@ The metadata file contains no image bytes or media URL. After import, associate 
 
 ## Expanded objects, façade details and world views — render into Elements
 
-Use [08_reference_assets.md](08_reference_assets.md) for **53 reusable reference containers**, R001–R053. Every definition includes its complete image-render prompt in `Description`, required source attachments and consuming test/film block. Import missing definitions, then render the images into those Elements. The readable [separate prompt files and per-test sets](../../02_library/objects/README.md) use the same numbering and render text. These definitions add no Character identities.
+Use [08_reference_assets.md](08_reference_assets.md) for **53 reusable reference containers**, R001–R053. Every definition contains only its type, canonical key, name, version and short description. Required source attachments and test/film assignments are in the reference README; the full image prompts are in the separate `.txt` files. This batch has now been reported imported; render the selected images into those existing Elements. Higgsfield does not merge these imports: do not submit the old batches again or repeat this batch after success. After a partial import, prepare a reduced file containing only confirmed unimported entries before submitting anything again. The readable [separate prompt files and per-test sets](../../02_library/objects/README.md) use the same R-numbers to match each imported Element to its full image prompt. These definitions add no Character identities.
 
 The original 48 definitions, accepted restaurant supplement and 53 detail definitions total **102 defined Elements** if every container is needed and imported. This is the project library count, not one video's input count and not a count of images already rendered. One world may draw on several views and detail Elements. Reuse accepted subjects and supporting details wherever available; do not duplicate a world or character just to change the camera angle. R001 is an inhabited street/card example and does not replace the existing SCORE_CARDS prop.
 
-For the first 8-second test, prepare R011 first (clean London source), then the main and material sets listed in the collection. The Extend reuses accepted images and adds its canopy, gallery and opening-street source/target detail. R051–R052 specify that street volume; R053 is optional intermediate geometry guidance. Retain the selected actual video as the native continuation source. Rendering an image or importing an empty Element does not test motion. The narrated test reuses the joined footage.
+For the first 8-second test, render R011, R001, R006, R002 and R008. These five assets are reused in production. The broader library supplies detailed assets for the seven full-film blocks; it is not a requirement to render all 53 before testing. Native Extend reuses accepted references and adds R009 for its canopy. R051–R053 remain production street-opening studies. The narrated test reuses joined footage.
 
 Record the actual displayed IDs and accepted image versions after import/render; the R-numbers are local canonical keys, not fabricated platform handles. No import, render or credit charge has been executed by preparing these files.
