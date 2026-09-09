@@ -1711,7 +1711,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "30c902ebb96f370838f82aaeda10618ec10f253a1e5a155d39c4fb4784bb4e2b",
+      "sha256": "1ab1c7f4c984e3d245361af47dc1b6c268860905e722babfcee42e8076c839c5",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
