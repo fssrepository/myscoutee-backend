@@ -33,7 +33,7 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-Later STORYBOARD / VIDEO generation animates the selected scene and projects its moving image ONTO the assigned existing city pane. This source sheet supplies only the remembered content, without that pane, city reflections or above-head cards.
+Later STORYBOARD / VIDEO generation uses these literal source scenes for the contextual mode assigned to each beat: projection onto glass, a named object or room extending into the city, or a city material changing into a remembered form. This source sheet itself stays a clear direct view of the memory, without the city composite or cards.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.

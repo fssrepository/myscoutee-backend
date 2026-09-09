@@ -44,7 +44,7 @@ At least one of the first six cells must show a substantial side view of a red d
 MEMORY-COMPOSITING PREPARATION:
 Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
 These are only the PHYSICAL PRESENT surfaces.
-This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds projected memories and clearly visible above-head cards. Leave clear space above pedestrian heads for that later layer.
+This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, moving projections and the specified memories that physically enter city space. Leave clear space above pedestrian heads for that later layer.
 The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
 
 LIGHTING / PHOTOGRAPHY:
@@ -54,7 +54,7 @@ Photorealistic live-action European feature-film location photography.
 Environment views: approximately 28mm full-frame equivalent, camera height about 1.6 m.
 Detail views: approximately 35–50mm.
 ARRI Alexa LF photographic character, natural Cooke-style rendering, soft highlight roll-off, rich shadow detail, fine organic film grain, real wet stone, real glass, real transport materials.
-No fantasy glow, no psychedelic haze, no game-engine appearance, no obvious sci-fi interface.
+Give this impossible architecture the clarity, material detail and light of live-action cinema. Let unusual shape and depth carry its otherworldliness rather than a uniform haze or a flat interface graphic.
 
 NINE-CELL FUNCTION:
 Cells 1–6 = six exterior environment views along this section of the walk.
@@ -93,4 +93,6 @@ Budapest must be specifically recognizable through the named anchors above, not 
 TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
 Photorealistic materials in an impossible world: sculpted limestone, layered iron balconies and connected London–Budapest architecture occupy one continuous street. Preserve every named landmark and all nine cells. This sheet captures sharp moments of an inhabited city whose structures can move; it is not a nine-shot video plan. Do not animate, blur or repeat a cell to show time.
 In the first exterior environment view, show the last Gresham/Pest upper bay partly extended with connected carved stone. In the final doorway view, everything has settled: rigid dark glass, fixed handle and quiet architectural symmetry. Do not place the clinical room into this city source sheet.
-The visible intermediate geometry is intentional architecture, not broken construction: solid connections, coherent perspective, matching shadows and no rubble. Maintain a clear walkable ground plane. Other cells show the same rich world from their assigned viewpoints. Later video shows the actual movement, projections and cards.
+The visible intermediate geometry is intentional architecture, not broken construction: solid connections, coherent perspective, matching shadows and no rubble. Maintain a clear walkable ground plane. Other cells show the same rich world from their assigned viewpoints. Later video shows the actual movement, visible cards and the contextual memory modes, including objects and room fragments emerging into city space.
+
+SPATIAL POTENTIAL: Leave depth beside the public path for a remembered room to unfold, a clear opening above the transport wires for a balloon, and visible joints in paving and railings that can change material. These are connected parts of the inhabited city, not isolated display screens. Do not pre-render those later memory events in this clean world sheet.
