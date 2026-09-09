@@ -9,12 +9,12 @@ REFERENCE INPUTS:
 @UNBOUND_C26 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
 Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
 
 GRID GEOMETRY:
 3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, occupying one third of the full canvas width and one third of its height, apart from the thin internal gutters.
 DO NOT create a square 1:1 canvas.
 DO NOT create square cells.
 DO NOT place a square contact sheet inside a wider canvas.

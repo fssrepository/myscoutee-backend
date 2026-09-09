@@ -3,6 +3,7 @@ Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 07 — 20 SECONDS
 One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+Keep the narrator's established timbre, accent, pitch, loudness and dry recording character from the previous block. Start the new passage after a brief natural breath; do not repeat or overlap the previous sentence. Continue the existing music and ambience underneath that breath without a fade-out, silence or new opening cue. Apply the new narration only to the added portion; do not rewrite the preceding soundtrack.
 
 REFERENCES
 @UNBOUND_W07 = physical city, route, materials and recognizable architecture; transformation allowed as directed.

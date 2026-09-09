@@ -26,4 +26,4 @@ Exit code 2 means missing bindings or unsynchronized local content. Supply avail
 
 Coverage includes all nine memory/clinical source prompts, all seven storyboards, all seven film video prompts, and dependent pilot prompts. Initial character/world/map images need no reference to themselves. TTS files contain spoken words only. The previous accepted video must still be selected in the actual Forward Extend source field: an image-reference mention does not establish an extension.
 
-The pilot remains step 6 of the 76-step production plan. Binding metadata adds no media-generation job.
+The pilot remains step 6 of the 77-step production plan. Binding metadata adds no media-generation job.

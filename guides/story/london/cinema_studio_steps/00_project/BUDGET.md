@@ -33,20 +33,30 @@ The pricing article gives an example of 24 credits for 8 s at 480p versus 52 at 
 
 ## Full-film allowance
 
-| Item | Treatment |
-| --- | --- |
-| Previous film spending | Recover actual charges; do not assume zero |
-| New pilot | At most 100, including paid preparation |
-| V01 plus six continuations | Obtain current quotes for the actual modes; Extend may differ from References |
-| A01–A07 | Seven complete scripts, one voice, measured durations |
-| Missing characters, worlds, memories, storyboards | Only the next block's dependencies; reuse accepted assets |
-| Watermark/packshot/export, if charged | Include the actual completion route |
-| Emergency completion reserve | Protect 800 credits outside the 2200-credit working ceiling |
-| Optional maps, separate music, separate memory videos | No new generations by default |
+The allocation below is for **six 30-second blocks plus one 20-second block at 1080p, with video audio ON**. It is a spending plan, not an account quote or proof that the required delivery route fits.
 
-The old master's **2026-08-26 record** quotes 270 credits for a 30 s 1080p References clip and 180 for 20 s, totaling 1800 for seven standalone durations. Its narration record totals approximately 13.8 credits. These are **historical figures**, not evidence of today's six actual Extend prices.
+| Item | Credits allocated | Basis and remaining check |
+| --- | ---: | --- |
+| V01 plus six continuations, 200 s total at 1080p | 1800 | Public duration estimate; quote the actual References and Extend operations with audio ON |
+| A01–A07, seven separate narration inputs | 250 | Allowance for one recording per script with the same selected voice; actual model, duration billing and quotes still required |
+| Entire pilot, including TA01 | 100 | Ceiling for both pilot videos, short speech and any paid preparation; not another 100 on top of pilot charges already incurred |
+| Hosted assembly, title, watermark/packshot, export and any other required spending | 50 | Remaining allowance only; no evidence yet that the complete finishing route costs 50 or less |
+| **Complete-film working ceiling** | **2200** | **Includes all earlier film charges in their matching categories** |
+| Protected emergency completion reserve | 800 | Outside planned spending; no optional jobs or cosmetic rerolls |
 
-Arithmetic illustration using those old figures: 1800 video + 13.8 narration + at most 100 pilot = **1913.8 planned credits**, leaving **286.2 within the 2200 working ceiling** for all other paid images and completion costs. The **800-credit reserve remains untouched**. Prior spending reduces that headroom. These historical rates do not prove the live plan fits; price the actual remaining operations before committing.
+Missing reference images use the confirmed Unlimited route where covered; any paid image consumes the remaining allowance. The creator requested one W01 replacement at 4K and 4K for subsequent worlds. Those jobs are planned under Unlimited; coverage at 4K is not assumed merely because the accepted 2K operation was Unlimited. If the selected job quotes credits, include them before submitting it. Recover previous charges before accepting the forecast. A lower actual audio or video quote releases room for completion inside 2200; it does not authorize extra candidates.
+
+### Audio is included explicitly
+
+The extra audio jobs are **seven clean spoken monologues**, plus the short TA01 test already inside the pilot allocation. Generate those first and provide each to its matching video job. Keep one selected voice/model throughout. There is no separate music or SFX generation in the default plan: the Hungarian folk-inspired score, city ambience and synchronized stone/metal/glass transformation sounds are requested in the native video pass. Count the actual **audio-ON video quote**, including any mode surcharge, once. This is supported by the provider's [native audio documentation](https://higgsfield.ai/creator-hub/help-center/tools/how-do-i-use-cinema-studio).
+
+The old master's narration total of approximately **13.8 credits is superseded for planning**; the model and current billing behind it are not verified. A newer official example lists **12 credits for 10 seconds of Seed Audio 1.0** and **90 credits for 10 seconds of 1080p Seedance 2.5**. These are public examples, not this account's live prices. [Official workflow and price table](https://higgsfield.ai/blog/generate-voice-edit-ai-video-one-place)
+
+For scale only, the original narration targets total 153–181 seconds. Linear extrapolation of that audio example gives approximately **184–218 credits**; rounding each of the six long recordings to 30 seconds and the final one to 20 seconds would give **240 credits**. Neither linear pricing nor this rounding is an established billing rule. The **250-credit allocation** replaces the provisional 100-credit narration allowance and covers these illustrations, not every possible tariff. A different TTS model needs its own quote; do not apply Seed Audio's rate to it. Do not stretch or regenerate a naturally shorter usable narration to consume its target window.
+
+The old master's **2026-08-26 record** quotes 270 credits for a 30 s 1080p References clip and 180 for 20 s, totaling 1800. The newer public 90-per-10-second example gives the same 200-second arithmetic. Neither establishes the actual six Extend prices or whether each quote charges only newly added seconds. Quote that before treating 1800 as sufficient.
+
+Allocation arithmetic: **1800 video + 250 narration + 100 pilot + 50 completion = 2200 credits**, leaving **800 protected**. The small 50-credit completion allowance is the unresolved constraint: identify the hosted assembly/export route and its total cost before full-film spending. Do not silently assign normal finishing costs to the emergency reserve or assume local editing will fill the gap.
 
 Before every paid operation:
 

@@ -12,6 +12,16 @@ The existing 4-second pilot extension must demonstrate the combined result befor
 
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
+Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The budget now allocates 250 credits to A01–A07, separately from TA01 inside the 100-credit pilot ceiling; these are allowances, not verified prices. See [BUDGET.md](BUDGET.md#audio-is-included-explicitly).
+
+## Seven recordings, one continuing speaker
+
+The current plan has seven separate narration recordings, one per video block; this is a production choice to fit the existing block inputs, not a claim that Higgsfield requires seven files. Each recording is the next passage of the same inner monologue. Keep the actual audio model, voice ID/preset, accent, pitch, recording character and available voice settings fixed. Adjust phrasing to fit the script without selecting a different voice. A text description such as "the same male voice" alone is insufficient evidence of a stable voice.
+
+Compare A01 to the accepted TA01 voice and each subsequent recording to A01 and the preceding passage. Listen for changes in timbre, accent, apparent age, loudness and room sound. Each passage should finish its sentence within its own block, with a natural breath before the next passage. Do not split a word at a boundary or replay the preceding line. No extra calibration recordings are added.
+
+V02–V07 are planned as native Forward Extend operations from the preceding accepted video. Keep its last pose, stride, camera movement, exposure and rain state; preserve the sound bed and musical phrase through the boundary. New narration belongs only to the new portion. Native continuation and a fixed voice preset reduce sources of discontinuity but do not guarantee an invisible seam or unchanged audio-reference timbre. The 8+4 s pilot checks the initial picture/music seam and speech incorporation; A01→A02 is the first check of continuity between two full narration passages. The complete hosted export remains a separate verification in SETUP.md.
+
 ## The protagonist's inner voice
 
 The narration is the audible inner monologue of this exact walking protagonist: his own thoughts and recollections in an intimate, natural English male voice, approximately forty, restrained and slightly tired. He does not address another person or the audience, and nobody answers him. Keep his lips naturally at rest except for breathing; no visible speech or lip-sync. Keep the voice close and consistent in level as the camera moves, without street-distance filtering. Let thoughts breathe with natural pauses rather than filling every second. Preserve the supplied wording and established voice throughout the film; music and transformation sounds stay underneath it.
