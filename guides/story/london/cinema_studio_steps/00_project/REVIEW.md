@@ -4,7 +4,7 @@ Sources: the [v2.2.57 master](../../promt_pack/myscoutee_canonical_prompt_pack.m
 
 ## Findings and repairs
 
-The London–Budapest walk, living memories in glass, above-head judgment cards and ordinary clinical ending form a coherent story system. The practical problem is not simply the earlier model: the master accumulated a story bible, operator rules, automation history and generation instructions in one document.
+The London–Budapest walk, contextual memories, above-head judgment cards and ordinary clinical ending form the story system. The current creative revision permits projected memories, spatial emergence and material transformation: memories are no longer universally confined to glass. The practical problem is not simply the earlier model: the master accumulated a story bible, operator rules, automation history and generation instructions in one document.
 
 | Finding | Treatment in this edition |
 | --- | --- |
@@ -36,6 +36,6 @@ Current importer SHA-256: `58a54931b408149522939cdeae80b82db5a33f051fccbc8f47a3e
 
 ## Preservation and scope
 
-75 extracted prompts: 31 characters, nine memory/hidden worlds, seven main worlds, seven optional maps, seven storyboards, seven full narrations and seven videos. [The manifest](../04_tracking/source_manifest.json) records source lines, hashes and change categories. All 63 main beats retain their embedded secondary memories. The old optional A/B/C clip split and historical social-publication copy remain in the original master outside the active production sequence.
+75 extracted prompts: 31 characters, nine memory/hidden worlds, seven main worlds, seven optional maps, seven storyboards, seven full narrations and seven videos. [The manifest](../04_tracking/source_manifest.json) records source lines, hashes and change categories. The 63 main beats retain their source-memory subjects; the current revision changes how selected memories enter city space and expands their physical action. The old optional A/B/C clip split and historical social-publication copy remain in the original master outside the active production sequence.
 
 The three original files remain untouched. This pack prepares reviewable inputs; it generated no media and does not claim a completed film or submission. Documentation is English; original Hungarian signs and place names are intentional film content.

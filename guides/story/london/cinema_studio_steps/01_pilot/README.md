@@ -42,7 +42,7 @@ The import creates metadata only. Attach the accepted restaurant still, save the
 
 The first downloaded pilot failed visual review. The current prompt is an untested revision informed by [published examples and the 2.5 guide](../00_project/PROMPTING.md). It retains all four references and uses one forward camera path; no automatic reroll is authorized by this document.
 
-Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, one output**. If any setting is unavailable, follow the [setup guide](../00_project/SETUP.md) before paying.
+Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, one output; Film setup → Tempo → Single Shot**. If any setting is unavailable, follow the [setup guide](../00_project/SETUP.md) before paying.
 
 [test_video_8s.txt](test_video_8s.txt) explicitly names C01, C02, W01 and T01 through reference mentions. The assistant binds each actual identifier once for the whole pack; paste the full file after its reference setup notice has cleared. See [reference binding](../00_project/REFERENCES.md). Check the quote for one output. Save as `T01_CITY_8S_480P.mp4`.
 
@@ -50,10 +50,10 @@ Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, 
 
 - Does the same protagonist walk at human speed while one connected camera path follows his gaze and keeps the transformation visible?
 - Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
-- Is traffic alive, and does the woman actually turn/smile inside the taxi glass? The memory must not become a full-screen cutaway or still photograph.
+- Does the restaurant first appear on the café pane, then acquire depth beyond its original plane, with a recognisable turning/smiling woman? Keep the same street threshold visible; a full-screen cutaway or still photograph is not this spatial emergence.
 - Does the moving shot keep the human memory gesture readable, with cards above heads and no clinical reveal?
 
-Also listen for the quiet Hungarian folk-rooted motif and material foley synchronized with the visible facade movement; neither should bury the human moment.
+Listen for a clearly audible, hummable fiddle-led Hungarian folk-rooted theme with acoustic tekerő buzz and short clarinet answers. Check distinct stone grinding, iron creak and wood/glass events against the visible movements. Give the smile a brief quieter pocket; the whole soundtrack must not collapse into generic ambience.
 
 At 480p, tiny text and background faces are not a final-quality test. Minor coherent irregularity is acceptable. If a central mechanism fails, name it before any further spending. An 8 s success does not prove full-block story density or 1080p quality.
 
