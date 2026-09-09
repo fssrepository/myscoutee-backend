@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/W01_MAIN_WORLD.txt",
-      "file_sha256": "538e2e290f57c31a09bb7e720438710d2b38d98afc72a2562227784178f5a834",
+      "file_sha256": "42938452cffed19de3e89fa963e21f9309734b94582ae23837506082d9752621",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/W02_MAIN_WORLD.txt",
-      "file_sha256": "9546eeea5fdb0fcc4930228635c651d100c9e9cdc3b030c561046d7bc05fda49",
+      "file_sha256": "4992f7721b81d1aefade5b971d3376db83609015f0e564cc69cdc203899dfac5",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/W03_MAIN_WORLD.txt",
-      "file_sha256": "e6becccda7cb6b78906b26a5d0f382acaae702d7530c2dc8125e2fa2c8e1708d",
+      "file_sha256": "dfae1c91174fb361fa8d4408e0ec6ffef9d221fb0d4a745c5ffdf30791596f29",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/W04_MAIN_WORLD.txt",
-      "file_sha256": "6ebf825434c17fdf8db22f0ae8f1b0ec250e0b85dd6bd1e36bb1f50bd3398df7",
+      "file_sha256": "fba1ec66a8f14a796806806e5d0ddf37fb209773a27a2283888120dab5ea05ff",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/W05_MAIN_WORLD.txt",
-      "file_sha256": "507cef1d9d738a3b7adbe3deb51cc2dd21029f1da2baff52a4f5e0047ab8ea05",
+      "file_sha256": "3272a7a9078f7978ae619a82c54421531fffa62cf1cb2c4d212a5e384500fc36",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/W06_MAIN_WORLD.txt",
-      "file_sha256": "a9184c94e2e1c2566ed64c522c8f3a51d7e61b75ace9df37085ad00dfa335104",
+      "file_sha256": "ba725be267df74e62b542713b0ffcff902264ae054676d07ad399dd6686a3d11",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/W07_MAIN_WORLD.txt",
-      "file_sha256": "3451135b493e5636a87469f292a5c8704a83abfbd7b8d9b5efe6aea0ffde3429",
+      "file_sha256": "bf08dd21e3af44f186fd4f928e8626f2f806f9d9e480df6a3fba742cfc767953",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {

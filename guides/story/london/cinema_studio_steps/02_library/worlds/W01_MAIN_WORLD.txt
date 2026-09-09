@@ -24,9 +24,9 @@ STREET VISIBILITY:
 No open umbrellas. Show uncovered heads, separate pedestrian silhouettes and unobstructed space above their crowns. Fine drizzle, wet coats, dripping stone and tyre spray establish the rain. Keep broad vehicle windows and shopfront panes clear of foreground people and passing vehicles.
 
 PHYSICAL-PRESENT RULE:
-Every camera position is outside in public pedestrian space: street, pavement, plaza, bridge, river walk, open-air or publicly open passage.
+Every view looks into the connected exterior/public world: street, pavement, plaza, bridge, river walk or open passage. An exterior viewpoint may rise above this public space to expose roofs, both street fronts and the depth between them.
 The current camera never becomes an office-room camera, bedroom camera, police-room camera, courtroom camera or clinical-room camera.
-Interior depth may be visible THROUGH real street-facing glass, but only as architectural depth.
+Architectural interiors may be visible directly through open sides, doorways, arcades and projecting room sections, as well as through ordinary windows. Show actual floors, walls, supports and open air.
 No literal memory event is visible in this WORLD asset.
 
 CITY FUSION RULE:
@@ -41,45 +41,44 @@ Use red London double-decker buses, black London taxis and yellow Budapest trams
 Tram rails share London road geometry; London road markings may cross the rails; Budapest tram/trolley wires attach directly to fused façades.
 At least one of the first six cells must show a substantial side view of a red double-decker and at least one must show a substantial side view of a yellow tram so their windows are usable later.
 
-MEMORY-COMPOSITING PREPARATION:
-Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
-These are only the PHYSICAL PRESENT surfaces.
-This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, the specified embodied memories growing directly from city materials. Leave clear space above pedestrian heads for that later layer.
-The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
+SPATIAL TRANSFORMATION PREPARATION:
+Build open, three-dimensional architecture that can change directly into inhabited memory. Include visible floor edges, deep door recesses, street benches with legible timber joints, exposed arch ribs, iron glazing bars and ceilings whose attachment to the surrounding building is visible. Leave usable open pavement beside these structures for full-size people, tables and chairs. Let the camera see the front, side and underside of projecting elements in the same view: a near edge overlaps a farther column; light passes between them; solid objects cast contact shadows onto the wet street.
+Glass is one material among stone, iron, timber and plaster. Open-sided rooms, arcades and balconies must also have unobstructed sightlines directly into their depth. Do not make a glass pane or reflective display the obligatory boundary of an inhabited memory.
+This MAIN WORLD supplies architecture, materials and spatial structure. The separate memory references supply specific remembered people and encounters during video generation. Current pedestrians remain ordinary, solid inhabitants; keep clear space above their crowns for the film's numerical rating cards. No remembered actor or narrative event is baked into this architecture sheet.
 
 LIGHTING / PHOTOGRAPHY:
 Rainy blue hour progressing toward night.
 Cool blue-grey exterior; warm tungsten cafés/restaurants; warm-neutral public interiors; realistic vehicle practicals.
 Photorealistic live-action European feature-film location photography.
-Environment views: approximately 28mm full-frame equivalent, camera height about 1.6 m.
+Environment views: approximately 24–28mm full-frame equivalent. Most retain human-height scale; one of the broad assigned environment views rises to a 5–8 metre exterior oblique position to show both street fronts, roof thickness, open passages and a continuous ground route. Keep vertical proportions and material detail readable.
 Detail views: approximately 35–50mm.
 ARRI Alexa LF photographic character, natural Cooke-style rendering, soft highlight roll-off, rich shadow detail, fine organic film grain, real wet stone, real glass, real transport materials.
 Give this impossible architecture the clarity, material detail and light of live-action cinema. Let unusual shape and depth carry its otherworldliness rather than a uniform haze or a flat interface graphic.
 
 NINE-CELL FUNCTION:
 Cells 1–6 = six exterior environment views along this section of the walk.
-Cell 7 = major glass / reflection-surface technical detail.
+Cell 7 = structural/material identity detail; where specified, expose the connected intermediate form rather than a reflection surface.
 Cell 8 = moving transit-window technical detail.
-Cell 9 = fused London–Budapest architecture + in-world signage technical detail.
+Cell 9 = resolved named architectural form or its distinctive material detail, with in-world signage only where specified.
 
 WORLD-SPECIFIC CONTENT:
-Cell 1 — Soho / Brewer Street / Old Compton Street after rain. Narrow recognizable London street geometry, pubs, cafés, bookshop and theatre frontage. At the end of the street axis, capture ST PAUL'S CATHEDRAL partway into ST STEPHEN'S BASILICA: the existing ribbed dome, west towers and classical entrance visibly reshape into the destination's dome curvature, twin bell towers and columned pedimented facade. This reference describes the target transformation; the video starts from its London form. Visible mixed signage includes KÖNYV and KÁVÉ beside normal English shop signs. 10–20 anonymous pedestrians.
+Cell 1 — The coherent London starting street, viewed from a low exterior diagonal: Soho shopfronts and a timber bench beside an open strip of wet paving, Piccadilly's curved frontage connected beyond the same kerb, and the recognisable untransformed ST PAUL'S CATHEDRAL down the roadway. Show its whole ribbed dome, paired west towers and classical entrance. No Basilica form has appeared in this starting view. The street includes a black taxi, separately readable red bus and the yellow tram intrusion. Leave an open human-scale foreground pocket beside the bench and two vertical stone door bands for the restaurant's later growth. No literal restaurant memory or actor is present.
 
-Cell 2 — Same Soho world from another angle. British pub and restaurant ground floors beneath ornate Pest limestone upper floors and balconies. A black taxi is close enough for a broad wet side window; a yellow Budapest tram appears deeper in the street under trolley/tram wires. One small Hungarian BEJÁRAT sign is naturally integrated.
+Cell 2 — Same near Soho frontage in an impossible but sharply solid intermediate state. One full upper room hinges out from its original lower sill; show its furnished depth, brick side wall and underside casting a shadow below. Its balcony iron is partway uncoiled into a sideways stair. At pavement level, some of the original bench slats are still narrow while their continuous grain extends into a broad table-height surface; its supports begin lengthening. Wet paving joins timber boards along a visible material boundary. The SAME brick face retains red courses at one edge while the adjoining mortar lines close into cream plaster around thickening wooden doorframes. No finished hidden cafe behind a lifted wall and no specific remembered people. Keep the adjacent London route visible.
 
-Cell 3 — Immediately recognizable PICCADILLY CIRCUS: very wide multi-street junction, curved classical London blocks, broad pedestrian areas and the Shaftesbury Memorial / Eros winged statue clearly present and NOT replaced. One curved Piccadilly block keeps its London footprint but carries ANDRÁSSY AVENUE / Pest palatial façade language. 25–40 pedestrians.
+Cell 3 — High oblique exterior view, about eight metres above the SAME junction joining Soho and PICCADILLY CIRCUS. Curved London blocks and Eros remain clearly recognisable. Trace the continuous kerb from the bench/frontage pocket toward the junction; expose open air behind the projecting room and the full depth of its sideways stair. Opposite windows bend into a rising stone ribbon while their lower piers stay attached to the pavement. Include distinct transport lanes, whole tram and taxi silhouettes and the St Paul's sightline. This supplies the spatial relationship for a later descending camera flight, not an additional video shot.
 
 Cell 4 — Piccadilly transport view. A full-size red London double-decker occupies roughly 15–25% of the frame width in substantial SIDE VIEW with large clean windows; separately readable yellow Budapest tram and black taxi in the same junction. London road markings cross tram rails naturally. Hungarian tram wires span the Piccadilly geometry.
 
 Cell 5 — Coventry Street / Leicester Square cinema-theatre district. Large cinema lobbies, marquees, restaurants, wet plaza and strong glazing. One entire theatre/cultural block uses BUDAPEST NATIONAL THEATRE-inspired architecture adapted to the London footprint. Visible in-world MOZI and SZÍNHÁZ signs sit naturally among English cinema/theatre signage. 20–35 pedestrians.
 
-Cell 6 — Leicester / Haymarket-side public space. Keep the West End geometry, but include one KOSSUTH-STYLE HUNGARIAN CIVIC MONUMENT as a temporarily emerged memory form inside the London public space, clearly separate from Eros. Continue red bus / yellow tram / black taxi traces and reflective public glazing.
+Cell 6 — Open public space beside the next arcade in this same West End world. One original stone arch and its small iron-framed glazed fanlight stretch into a several-storey curved glass-and-iron canopy above the road. Show its rooted pier, narrow original fanlight edge, long extending ribs, underside of stretched glass and the yellow tram beneath, all in one sharp physical view. The adjacent lower doorway opens into an impossibly deep gallery of repeated columns. Ordinary pedestrians establish scale. Retain a distinct Kossuth-style civic monument in the public space, separate from Eros, and identifiable London frontage beyond the canopy.
 
 Cell 7 — Clear exterior three-quarter view of ST PAUL'S CATHEDRAL as the untransformed London starting landmark. Show its full ribbed dome and drum, paired west towers and columned west front with enough surrounding space to identify the complete building. Sharp architectural detail, no morphing in this cell. This is the identity reference for the starting cathedral, not an extra video shot.
 
 Cell 8 — Close transit detail: broad red double-decker side windows, broad yellow Budapest tram side windows and black taxi glass all readable; wet rails and London road markings visible.
 
-Cell 9 — Close architecture/signage detail of ONE coherent fused block: London pub/cinema/bookshop ground floor; Budapest limestone upper storeys, balconies and roof detail; tram-wire attachment; restrained readable Hungarian KÖNYV, KÁVÉ or BEJÁRAT beside English signage. Keep London materials legible through the deliberately impossible joined building geometry.
+Cell 9 — The fully resolved ST STEPHEN'S BASILICA as a specific whole-building target, at the same impossible London road-axis site as St Paul's in the starting view. Clear three-quarter/frontal exterior view: the complete broad dome, BOTH symmetrical bell towers and the columned entrance with triangular pediment occupy most of the cell's useful height without cropping. London shopfront edges and road markings remain at the sides and bottom. Match the same ground line and surrounding block positions used for the starting cathedral. No generic blended cathedral, intermediate morph, labels or comparison inset. This supplies the distinct destination identity for the later continuous transformation.
 
 FINAL CHECK:
 Exactly one image.
@@ -92,9 +91,9 @@ Budapest must be specifically recognizable through the named anchors above, not 
 
 
 TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
-London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
+London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep the nine assigned views. Cells 1 and 7 establish the untransformed London identity; cells 2 and 6 expose connected intermediate structures; cell 9 resolves the Basilica destination. Each depicts one sharp captured physical state; they are not a film timeline.
 St Paul's can occupy the next sightline despite its real distance from Soho. A complete Piccadilly upper room hinges outward above the pavement; the adjacent window band bends upward while its entrance opens into a deep arcade. The recognisable St Paul's Cathedral becomes the recognisable St Stephen's Basilica.
-In one of the broad environment cells, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
+In the assigned broad environment view and structural detail, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
 
 DREAM GEOGRAPHY AND LANDMARK RECOGNITION
 London is the present setting, but real geographic distance and the old map order are not binding. St Paul's can stand beyond a Soho corner, Tower Bridge can approach the next square, and a London frontage can become a Budapest landmark. Build these impossible adjacencies as connected inhabited space that the camera reaches continuously. Show intervening paving, changed perspective and material movement; do not use cuts or a full-screen replacement to relocate the walker. Map sheets are loose composition/association plans, not a compulsory itinerary.
@@ -103,3 +102,9 @@ A famous building must be recognisable by its full characteristic silhouette AND
 RECOGNITION TARGETS ACROSS THE ASSIGNED VIEWS
 St Paul's Cathedral: great ribbed dome on its drum, long classical body and paired west towers. Destination St Stephen's Basilica: its distinct broad dome, two symmetrical bell towers and columned entrance with triangular pediment, matched as a complete facade to the supplied Basilica reference. Piccadilly's curved frontage and Eros establish the nearby West End; Nelson's Column enters a later open sightline. St Paul's and the Basilica must read as two specific buildings, not one generic cathedral.
 Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep the existing nine-cell count. These are reference views; later video supplies movement and continuity.
+
+REFERENCE STATES — SOLID GEOMETRY THAT CAN ACTUALLY CHANGE:
+Preserve the identity of a structure through its ordinary, changing and resolved forms wherever the assigned views show it. Carry one recognisable seam, support, window spacing pattern or carved edge across those forms. The intermediate state is a single sharp physical object with thickness and connected joints: some of the old surface is still present while the adjoining portion already has the new material and depth. Never depict it with transparent duplicates, ghost trails, exploded disconnected fragments or a finished scene hidden behind a peeling wall.
+Make the scale unmistakable. At least one transformed room or roof spans several human heights, with ordinary pedestrians beneath it and a recognisable vehicle beside it. Give the next nearby object a conflicting spatial direction: an upper floor bends outward while a stair threads sideways and a doorway opens backward into impossible depth. Keep the street traversable beneath these incompatible shapes. The strangeness belongs to the built volume itself, not merely to decorative carvings.
+For an assigned wide view, include a clear near kerb or projecting table-height ledge, a middle-distance inhabited frontage, and a whole recognisable landmark farther away. These separated depths provide parallax for later camera travel. Keep the main changed structure sharp and unobscured; do not flatten everything into a scenic skyline collage.
+Each cell is a reference view of one world state, not a prescribed video shot or a collage within the cell. The later film reaches new views by continuous camera travel and changes the same materials in view. Do not render arrows, labels or step numbers. Keep the nine-cell canvas unchanged.
