@@ -1,0 +1,23 @@
+REFERENCE ROLES:
+@UNBOUND_R022 supplies the accepted source/target geometry and material relationships for this object study. Reconstruct those objects from the fixed comparison angle; do not copy reference layouts as panels.
+
+Create ONE photographic 3840×2160 image, true 16:9, with EXACTLY FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, no gutters. Select 4K for the whole sheet. Reading order is top-left source, top-right first unfinished material state, bottom-left second unfinished material state, bottom-right resolved target. No labels, captions, arrows or decorative borders. This is one image job.
+Use one fixed three-quarter comparison camera, lens, scale, focus and light direction in every cell. Show the whole changing object and enough stable surroundings to establish support and depth; leave room for the target from the first cell. For city exteriors use cool overcast light, damp materials, clear dry air and no umbrellas. Memory objects retain their supplied setting's practical light. Keep the material opaque and thick, except for actual glass or fabric as specified. No alternate finished designs, paper architecture, disappearance dust, ghost overlays or completed replacement object hidden behind the source.
+
+VISIBLE DIFFERENCE BETWEEN THE FOUR STATES:
+Use one fixed comparison camera and identical light/exposure. Frame the changing structure large enough to judge its silhouette, opening shape and projecting depth without zooming into tiny ornament. Allocate the same generous envelope in every cell; preserve the surrounding site, not the object's original shape. The four cells must show four immediately distinguishable physical states: intact source; a conspicuously unfinished first reconstruction; a different, substantially advanced but still unfinished reconstruction; resolved destination. Both middle cells must contain large supported transitional volumes that exist at neither endpoint. A changed colour, a few added grooves, a different pose, or a slightly different finished object is insufficient. Differences must remain evident when the complete sheet is viewed at reduced size.
+Track the same joints and material patches while allowing them to move, thicken, subdivide and change cross-section. Negative spaces and contact shadows change because the actual geometry changes. Do not obtain variation by switching viewpoints, relighting, swapping backgrounds or adding unrelated objects. Keep every phase a single opaque solid state, with ordinary transparent glass only where specified. There is no faded double state within a cell. The second and third cells are material intermediates, not two alternative designs or near-duplicates of the finished target.
+
+TOP-LEFT — SOURCE:
+A short solid window fixing with screw heads, mounting plate and a thick metal shank anchored to masonry or timber. Include its existing glass receiving edge, using the accepted lamp design for the eventual connection.
+
+TOP-RIGHT — FIRST UNFINISHED MATERIAL STATE:
+The shank has extended into a visibly long stepped bar with a thick base and partly narrowed lower section. Its original fixing eye opens into a deep U-shaped cradle. The old screw remains in its mounting plate; exposed side faces show volume.
+
+BOTTOM-LEFT — SECOND UNFINISHED MATERIAL STATE:
+The bar has become a long curved pendant stem but retains one conspicuous angular shoulder midway through rounding. The cradle has wrapped most of the way into a cylindrical neck, leaving a wide open side seam around the glass connection. The supported glass component remains the same object, not a new floating lamp.
+
+BOTTOM-RIGHT — RESOLVED DESTINATION:
+The angular shoulder has resolved into the stem curve and the receiving neck has a complete thick socket around the shade. The original mounting plate still carries the assembly. Metal highlights follow changed curvature; no simple downward translation of an unchanged bracket.
+
+VIDEO USE: The same identifiable material passes through these four states continuously within the existing scripted beat. The video camera can slow and partially orbit to show thickness, then accelerate onward through connected space. The fixed sheet camera is for comparison only: never play its cells as four shots, swap complete frames or change the source film timing just to match panel count. Still geometry does not prove animation continuity.

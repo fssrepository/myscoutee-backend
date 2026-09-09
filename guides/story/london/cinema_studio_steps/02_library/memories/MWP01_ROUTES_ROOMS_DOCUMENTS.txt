@@ -38,25 +38,24 @@ Literal ordinary environments and objects.
 No symbolic fantasy, no dream haze, no abstract graphics, no nostalgic glow.
 Human scale, practical light, believable wear and imperfection.
 
-NINE CELLS:
+PAGE A OF MWP01: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
-Cell 1 — Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+A video can use several world and memory pages within the same 30-second block. Its own camera travels continuously through connected reconstructed space and uses explicit material morph sheets where needed; the source grid never appears as a slideshow. Additional detail pages may cover the same place without creating another memory, another story event or another paid video test. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-Cell 2 — Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
+FOUR ASSIGNED CELLS:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
 
-Cell 3 — Childhood near Orosháza in the Viharsarok: paprika rows and tall corn rows below a flat Great Plain horizon. View the agricultural rows from a child's low eye level, with no visible child, as a lived memory at the beginning of a route. Natural soil, leaves and daylight; no postcard framing.
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
 
-Cell 4 — Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+Childhood near Orosháza in the Viharsarok: paprika rows and tall corn rows below a flat Great Plain horizon. View the agricultural rows from a child's low eye level, with no visible child, as a lived memory at the beginning of a route. Natural soil, leaves and daylight; no postcard framing.
 
-Cell 5 — A rented-car key resting on an ordinary budget-hotel table during a self-organized journey. Include mundane travel objects such as folded route notes, receipts or a cheap room keycard; no luxury travel styling.
-
-Cell 6 — A phone displaying an ordinary camel photograph while airport/security personnel remain naturally visible in the remembered background. Keep the moment observational, not threatening and not exoticized.
-
-Cell 7 — Nile / Aswan hotel-room memory: a modest room prepared for two people but occupied by only the protagonist, with two sleeping places and a real window toward the river. The empty half of the room matters more than tourism spectacle.
-
-Cell 8 — Ordinary health-insurance / administrative form with one clearly empty field while the protagonist handles the paperwork. Keep most text unreadable; the missing field and human hand are the visual fact.
-
-Cell 9 — Education / belonging / record threshold: an ordinary diploma/certificate and supporting paperwork where a required language-exam stamp/credential is visibly absent, with the edge of later Brexit/work-coverage paperwork in the same physical document stack. No infographic, no accusatory montage.
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
 
 FINAL CHECK:
 Exactly one 16:9 image.
@@ -67,7 +66,7 @@ No explanatory captions.
 These details exist to preserve biography, not to simplify it.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
-The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; no additional cells or image requests. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
 
 SOURCE CONTINUITY FOR THE MOVING FILM:
 Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. That landmark lets the video first glimpse this SAME person through a developing opening and then expose the full encounter continuously. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image does not perform a transition or replace the street as a flat composition; the video reconstructs its arrangement through the explicitly described material movement. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.

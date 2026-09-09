@@ -2,21 +2,8 @@ REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @char_mys_final-nurse_s7_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
 
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
-
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each cell must be a TRUE 16:9 widescreen rectangle, occupying one third of the full canvas width and one third of its height, apart from the thin internal gutters.
-DO NOT create a square 1:1 canvas.
-DO NOT create square cells.
-DO NOT place a square contact sheet inside a wider canvas.
-DO NOT add letterboxing or pillarboxing.
-The grid fills the entire canvas edge-to-edge.
-Outer margin: 0 pixels.
-Use only hairline 1–2 pixel gutters BETWEEN cells.
-No title, header, footer, caption band, legend, decorative border or layout labels.
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
 
 MEMORY-WORLD FUNCTION:
 This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
@@ -52,28 +39,28 @@ One arm is restrained.
 The nurse is calm, competent and ordinary, with a small genuine everyday smile.
 Any enema/endoscopy-related preparation is routine and NON-GRAPHIC; no invasive detail.
 
-NINE CELLS:
-Cell 1 — Wide establishing view of the entire ordinary clinical room, showing bed, practical furniture, cold-neutral light and enough spatial layout for later shot continuity.
+PAGE A OF HRW07: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
-Cell 2 — Medium-wide side view of the protagonist lying conscious in bed, one leg elevated/immobilized, body physically vulnerable but calm.
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+A video can use several world and memory pages within the same 30-second block. Its own camera travels continuously through connected reconstructed space and uses explicit material morph sheets where needed; the source grid never appears as a slideshow. Additional detail pages may cover the same place without creating another memory, another story event or another paid video test. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-Cell 3 — Close physical reference of the elevated/immobilized leg and supporting equipment, non-graphic and clinically ordinary.
+FOUR ASSIGNED CELLS:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+Wide establishing view of the entire ordinary clinical room, showing bed, practical furniture, cold-neutral light and enough spatial layout for later shot continuity.
 
-Cell 4 — Close physical reference of the restrained arm / metal restraint with white-sheet edge, non-graphic, no punishment aesthetic.
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+Medium-wide side view of the protagonist lying conscious in bed, one leg elevated/immobilized, body physically vulnerable but calm.
 
-Cell 5 — FINAL NURSE in the room preparing routine non-graphic clinical equipment for an enema/endoscopy-related procedure. Competent, ordinary, no menace.
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+Close physical reference of the elevated/immobilized leg and supporting equipment, non-graphic and clinically ordinary.
 
-Cell 6 — Nurse close/medium reference with the small everyday human smile that can echo earlier institutional smiles.
-
-Cell 7 — Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a brief embodied pre-reveal intrusion without exposing the full room.
-
-Cell 8 — Fragment composition combining a small portion of elevated leg, white sheet and metal restraint, again suitable for a sub-second cropped pre-reveal glimpse while still originating from this real room.
-
-Cell 9 — Final restrained two-shot / eyeline composition: protagonist looks toward the nurse; she remains ordinary and human; room tone and stillness implied. This is the basis for the final hold before black.
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+Close physical reference of the restrained arm / metal restraint with white-sheet edge, non-graphic, no punishment aesthetic.
 
 FINAL CHECK:
 Exactly one 16:9 image.
-Exactly nine 16:9 photographic cells in a 3×3 grid.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
 No score cards.
 No dream effects.
 No London–Budapest city.

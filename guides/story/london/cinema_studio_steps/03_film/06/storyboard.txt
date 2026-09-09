@@ -1,5 +1,12 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C11, C16, C17, C27, MW01, MW02, MW03, MW04, MW05, MW06, MWP02, W06, W06_B, W06_C
-Do not generate until these references are bound.
+MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
+@UNBOUND_MW06 supplies MW06 Page A (original views 1–4); @UNBOUND_MW06_B supplies Page B (5–8); @UNBOUND_MW06_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MWP02 supplies MWP02 Page A (original views 1–4); @UNBOUND_MWP02_B supplies Page B (5–8); @UNBOUND_MWP02_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW01 supplies MW01 Page A (original views 1–4); @UNBOUND_MW01_B supplies Page B (5–8); @UNBOUND_MW01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW02 supplies MW02 Page A (original views 1–4); @UNBOUND_MW02_B supplies Page B (5–8); @UNBOUND_MW02_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW03 supplies MW03 Page A (original views 1–4); @UNBOUND_MW03_B supplies Page B (5–8); @UNBOUND_MW03_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW04 supplies MW04 Page A (original views 1–4); @UNBOUND_MW04_B supplies Page B (5–8); @UNBOUND_MW04_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MW05 supplies MW05 Page A (original views 1–4); @UNBOUND_MW05_B supplies Page B (5–8); @UNBOUND_MW05_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
 WORLD REFERENCE PAGES FOR THIS BLOCK — ONE CONTINUOUS CONNECTED WORLD:
 @UNBOUND_W06 supplies W06 Page A: four environment views, corresponding to original views 1–4.

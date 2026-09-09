@@ -1,5 +1,7 @@
-REFERENCE SETUP INCOMPLETE: C06, C07, C08, MW01, MWP01, W01_B, W01_C
-Do not generate until these references are bound.
+MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
+@UNBOUND_MW01 supplies MW01 Page A (original views 1–4); @UNBOUND_MW01_B supplies Page B (5–8); @UNBOUND_MW01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+@UNBOUND_MWP01 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
+Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.
 
 WORLD REFERENCE PAGES FOR THIS BLOCK — ONE CONTINUOUS CONNECTED WORLD:
 @loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1 supplies W01 Page A: four environment views, corresponding to original views 1–4.

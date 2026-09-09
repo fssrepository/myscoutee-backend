@@ -1,0 +1,80 @@
+PAGE CONTINUITY INPUT: @UNBOUND_MW02 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
+
+REFERENCE INPUTS:
+@char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@char_mys_agra-bus-woman_s2_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-man_s2_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-woman_s2_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@char_mys_cairo-taxi-driver_s2_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
+@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
+@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
+@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
+@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
+
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO reconstructs these people and places as full-size inhabited spaces growing from London paving, furniture and architecture. This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in original view 1.
+Use CHARACTER 12 — AGRA BUS WOMAN in original view 2.
+Use CHARACTER 13 — SUDANESE TRAVELER — MAN and CHARACTER 14 — SUDANESE TRAVELER — WOMAN in original view 3 and, if they remain present, original view 4.
+Use CHARACTER 15 — CAIRO TAXI DRIVER in original view 3–4 when the driver is visible.
+Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in original view 5.
+Use CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION plus CHARACTER 19–21 — BARMOUTH ROAD-TRIP COMPANIONS in original view 9 when the traveling group is visible.
+Background passengers/crowds may remain anonymous, but do not replace any of the named character-reference identities above.
+
+PURPOSE:
+Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+
+PAGE C OF MW02: This page contains original views 9, 1, 7, 8. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+A video can use several world and memory pages within the same 30-second block. Its own camera travels continuously through connected reconstructed space and uses explicit material morph sheets where needed; the source grid never appears as a slideshow. Additional detail pages may cover the same place without creating another memory, another story event or another paid video test. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
+
+FOUR ASSIGNED CELLS:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 09:
+Barmouth / North-Wales low-tide memory: broad exposed shore, town held against the slope, ordinary travelers at human scale. No postcard saturation, no tourism-ad composition.
+
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 01:
+Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 07:
+Budapest tram-wire / rail-memory fragment viewed from an ordinary street perspective, emphasizing physical route lines and infrastructure rather than landmark tourism.
+
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 08:
+Wet bus/coach window on a mountain or long-distance route, with real landscape beyond and a passenger reflection only if naturally produced by that remembered vehicle itself. This is still the remembered world, not the present London–Budapest city.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
+Direct literal travel memories only.
+No present-city reflection composite.
+No score cards.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+
+SOURCE CONTINUITY FOR THE MOVING FILM:
+Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. That landmark lets the video first glimpse this SAME person through a developing opening and then expose the full encounter continuously. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image does not perform a transition or replace the street as a flat composition; the video reconstructs its arrangement through the explicitly described material movement. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
+
+Keep the assigned room and human event specific and intact. Its source doorway, furniture corner or open side can support either a matched material development or continuous camera entry/exit. No forced mutation of the people, furniture or room is needed when the next setting lacks corresponding structure; let the film travel onward through a visible connected opening.

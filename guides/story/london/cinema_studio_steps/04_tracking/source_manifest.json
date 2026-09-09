@@ -1141,6 +1141,240 @@
       "file": "02_library/worlds/W07_MAIN_WORLD_C.txt",
       "file_sha256": "b28c854a591cd0c5fc7f9288a90ff780fa859f805a7c5d24e1da7c72a47a8b7b",
       "changes": "Derived 4K 2×2 Page C; original views [9, 1, 7, 8]; source provenance belongs to the original complete world prompt."
+    },
+    {
+      "asset": "MW01",
+      "source_heading": "MEMORY WORLD 01 —",
+      "source_lines": [
+        2387,
+        2453
+      ],
+      "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
+      "file": "02_library/memories/MW01_LONDON_SOCIAL_B.txt",
+      "file_sha256": "4c99d4c5344511ee3f5505b193eef04b4f27727f65f5a6be43666d55c2449624",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW01",
+      "source_heading": "MEMORY WORLD 01 —",
+      "source_lines": [
+        2387,
+        2453
+      ],
+      "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
+      "file": "02_library/memories/MW01_LONDON_SOCIAL_C.txt",
+      "file_sha256": "17190be364d8e4065d86d26e3a3d590113911bf61657756e2bd98392a06fc062",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW02",
+      "source_heading": "MEMORY WORLD 02 —",
+      "source_lines": [
+        2462,
+        2530
+      ],
+      "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
+      "file": "02_library/memories/MW02_GLOBAL_ROUTES_B.txt",
+      "file_sha256": "8bcd084dda7c6dcd278e098722425dcc468dbcae1458487e6a97eeed7295ba28",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW02",
+      "source_heading": "MEMORY WORLD 02 —",
+      "source_lines": [
+        2462,
+        2530
+      ],
+      "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
+      "file": "02_library/memories/MW02_GLOBAL_ROUTES_C.txt",
+      "file_sha256": "c3db8961bb17a23cd1f30c5ff50a73c5ab637d8934f869219193e7ca0f842ee2",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW03",
+      "source_heading": "MEMORY WORLD 03 —",
+      "source_lines": [
+        2539,
+        2603
+      ],
+      "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
+      "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+      "file_sha256": "c83bf3f963600095e908c45d5320f9273e1ef1073d9fe0571dc64ff3c97b0469",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW03",
+      "source_heading": "MEMORY WORLD 03 —",
+      "source_lines": [
+        2539,
+        2603
+      ],
+      "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
+      "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+      "file_sha256": "d65bbff880770a713c95a5d46e62135225d1c7b91b4673a77bed857cca5e15d9",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW04",
+      "source_heading": "MEMORY WORLD 04 —",
+      "source_lines": [
+        2612,
+        2678
+      ],
+      "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
+      "file": "02_library/memories/MW04_POLICE_DEFENCE_B.txt",
+      "file_sha256": "eefbca3cdbe61ceaef6cc58b9f3b9c043eed33cd1ab93a2a5d9504ca588cedc0",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW04",
+      "source_heading": "MEMORY WORLD 04 —",
+      "source_lines": [
+        2612,
+        2678
+      ],
+      "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
+      "file": "02_library/memories/MW04_POLICE_DEFENCE_C.txt",
+      "file_sha256": "3fffe0a1d88d73d4af875e337e022d1ae1f198de15a8777975d50f25eba26812",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW05",
+      "source_heading": "MEMORY WORLD 05 —",
+      "source_lines": [
+        2687,
+        2753
+      ],
+      "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
+      "file": "02_library/memories/MW05_COURT_FILE_B.txt",
+      "file_sha256": "f7c67be89bde3dbc2156bcd0c67ac4f252e0e1e2b854565e7a5f7aeefad894a7",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW05",
+      "source_heading": "MEMORY WORLD 05 —",
+      "source_lines": [
+        2687,
+        2753
+      ],
+      "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
+      "file": "02_library/memories/MW05_COURT_FILE_C.txt",
+      "file_sha256": "4f9a0f90e83e756b7b52183d7d441d11ee0c75f1bc15e93f42b1723c4948e31b",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MW06",
+      "source_heading": "MEMORY WORLD 06 —",
+      "source_lines": [
+        2762,
+        2832
+      ],
+      "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
+      "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+      "file_sha256": "42b7eb9f78d655b4d64de5d7e8ad61aa81ec3578dfbfe2ba52807d4340106124",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MW06",
+      "source_heading": "MEMORY WORLD 06 —",
+      "source_lines": [
+        2762,
+        2832
+      ],
+      "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
+      "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+      "file_sha256": "462640a492a17dd26a8d5857c65f5b5c3a2e1335261f98ce4fee15242955f645",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MWP01",
+      "source_heading": "MEMORY PRESERVATION WORLD P01 —",
+      "source_lines": [
+        2844,
+        2907
+      ],
+      "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
+      "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+      "file_sha256": "79e905f1d85ec06b1850b1de007b06d3a18126ab3849559916c40dc893aec3d2",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MWP01",
+      "source_heading": "MEMORY PRESERVATION WORLD P01 —",
+      "source_lines": [
+        2844,
+        2907
+      ],
+      "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
+      "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+      "file_sha256": "30fabbe3b6f71e5dcde27f33c05c6116c98cc8f4569ebf66646b197443550417",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "MWP02",
+      "source_heading": "MEMORY PRESERVATION WORLD P02 —",
+      "source_lines": [
+        2913,
+        2967
+      ],
+      "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
+      "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+      "file_sha256": "4427f27578ddbb134e1589b7b63650bbc3fb10d6b146ff0b3f8e8a4ac574d259",
+      "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "MWP02",
+      "source_heading": "MEMORY PRESERVATION WORLD P02 —",
+      "source_lines": [
+        2913,
+        2967
+      ],
+      "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
+      "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+      "file_sha256": "b4629aebddeb1e9c1e32c0feb63db0109e76cdb34dbdb76d0413a1f7cfc01f94",
+      "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
+    },
+    {
+      "asset": "HRW07",
+      "source_heading": "HIDDEN REALITY WORLD 07 —",
+      "source_lines": [
+        2973,
+        3048
+      ],
+      "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
+      "file": "02_library/memories/HRW07_CLINICAL_REALITY_B.txt",
+      "file_sha256": "547f82690f1b88ca0b4cd039374ef24d216aee00c68118336673c9230b854ce3",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page B preserving original memory views."
+    },
+    {
+      "asset": "HRW07",
+      "source_heading": "HIDDEN REALITY WORLD 07 —",
+      "source_lines": [
+        2973,
+        3048
+      ],
+      "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
+      "file": "02_library/memories/HRW07_CLINICAL_REALITY_C.txt",
+      "file_sha256": "44087f6b601054f0e31ad1077cd6ea9f190f6e1ff05d3d425d463eeb016846ec",
+      "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
+      "note": "Companion page C preserving original memory views."
     }
   ],
   "assets": {
@@ -1343,6 +1577,11 @@
         "C09",
         "C10",
         "T01_IMAGE"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW01_B",
+        "MW01_C"
       ]
     },
     "MW02": {
@@ -1362,6 +1601,11 @@
         "C19",
         "C20",
         "C21"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW02_B",
+        "MW02_C"
       ]
     },
     "MW03": {
@@ -1373,6 +1617,11 @@
         "C22",
         "C23",
         "C24"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW03_B",
+        "MW03_C"
       ]
     },
     "MW04": {
@@ -1385,6 +1634,11 @@
         "C04",
         "C25",
         "C26"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW04_B",
+        "MW04_C"
       ]
     },
     "MW05": {
@@ -1399,6 +1653,11 @@
         "C29",
         "C30",
         "C31"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW05_B",
+        "MW05_C"
       ]
     },
     "MW06": {
@@ -1417,6 +1676,11 @@
         "C27",
         "C28",
         "C29"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MW06_B",
+        "MW06_C"
       ]
     },
     "MWP01": {
@@ -1425,6 +1689,11 @@
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS.png",
       "refs": [
         "C01"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "MWP02": {
@@ -1433,6 +1702,11 @@
       "output": "MWP02_SYSTEM_TIME_REVERSALS.png",
       "refs": [
         "C01"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "MWP02_B",
+        "MWP02_C"
       ]
     },
     "HRW07": {
@@ -1442,6 +1716,11 @@
       "refs": [
         "C01",
         "C05"
+      ],
+      "layout": "4K 2x2 page A; original views 1–4",
+      "companion_pages": [
+        "HRW07_B",
+        "HRW07_C"
       ]
     },
     "W01": {
@@ -1544,7 +1823,11 @@
         "C09",
         "T01_IMAGE",
         "W01_B",
-        "W01_C"
+        "W01_C",
+        "MW01_B",
+        "MW01_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "A01": {
@@ -1571,7 +1854,11 @@
         "A01",
         "T01_IMAGE",
         "W01_B",
-        "W01_C"
+        "W01_C",
+        "MW01_B",
+        "MW01_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "SB02": {
@@ -1597,7 +1884,13 @@
         "C20",
         "C21",
         "W02_B",
-        "W02_C"
+        "W02_C",
+        "MW02_B",
+        "MW02_C",
+        "MW01_B",
+        "MW01_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "A02": {
@@ -1632,7 +1925,13 @@
         "A02",
         "V01",
         "W02_B",
-        "W02_C"
+        "W02_C",
+        "MW02_B",
+        "MW02_C",
+        "MW01_B",
+        "MW01_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "SB03": {
@@ -1648,7 +1947,11 @@
         "C23",
         "C24",
         "W03_B",
-        "W03_C"
+        "W03_C",
+        "MW03_B",
+        "MW03_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "A03": {
@@ -1673,7 +1976,11 @@
         "A03",
         "V02",
         "W03_B",
-        "W03_C"
+        "W03_C",
+        "MW03_B",
+        "MW03_C",
+        "MWP01_B",
+        "MWP01_C"
       ]
     },
     "SB04": {
@@ -1689,7 +1996,9 @@
         "C25",
         "C26",
         "W04_B",
-        "W04_C"
+        "W04_C",
+        "MW04_B",
+        "MW04_C"
       ]
     },
     "A04": {
@@ -1714,7 +2023,9 @@
         "A04",
         "V03",
         "W04_B",
-        "W04_C"
+        "W04_C",
+        "MW04_B",
+        "MW04_C"
       ]
     },
     "SB05": {
@@ -1733,7 +2044,11 @@
         "C30",
         "C31",
         "W05_B",
-        "W05_C"
+        "W05_C",
+        "MW05_B",
+        "MW05_C",
+        "MWP02_B",
+        "MWP02_C"
       ]
     },
     "A05": {
@@ -1761,7 +2076,11 @@
         "A05",
         "V04",
         "W05_B",
-        "W05_C"
+        "W05_C",
+        "MW05_B",
+        "MW05_C",
+        "MWP02_B",
+        "MWP02_C"
       ]
     },
     "SB06": {
@@ -1789,7 +2108,21 @@
         "C28",
         "C29",
         "W06_B",
-        "W06_C"
+        "W06_C",
+        "MW06_B",
+        "MW06_C",
+        "MWP02_B",
+        "MWP02_C",
+        "MW01_B",
+        "MW01_C",
+        "MW02_B",
+        "MW02_C",
+        "MW03_B",
+        "MW03_C",
+        "MW04_B",
+        "MW04_C",
+        "MW05_B",
+        "MW05_C"
       ]
     },
     "A06": {
@@ -1826,7 +2159,21 @@
         "A06",
         "V05",
         "W06_B",
-        "W06_C"
+        "W06_C",
+        "MW06_B",
+        "MW06_C",
+        "MWP02_B",
+        "MWP02_C",
+        "MW01_B",
+        "MW01_C",
+        "MW02_B",
+        "MW02_C",
+        "MW03_B",
+        "MW03_C",
+        "MW04_B",
+        "MW04_C",
+        "MW05_B",
+        "MW05_C"
       ]
     },
     "SB07": {
@@ -1845,7 +2192,15 @@
         "C16",
         "C17",
         "W07_B",
-        "W07_C"
+        "W07_C",
+        "HRW07_B",
+        "HRW07_C",
+        "MWP01_B",
+        "MWP01_C",
+        "MW01_B",
+        "MW01_C",
+        "MW02_B",
+        "MW02_C"
       ]
     },
     "A07": {
@@ -1873,7 +2228,15 @@
         "A07",
         "V06",
         "W07_B",
-        "W07_C"
+        "W07_C",
+        "HRW07_B",
+        "HRW07_C",
+        "MWP01_B",
+        "MWP01_C",
+        "MW01_B",
+        "MW01_C",
+        "MW02_B",
+        "MW02_C"
       ]
     },
     "MR001": {
@@ -1892,7 +2255,7 @@
         "03_film/01/video.txt"
       ],
       "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed.",
-      "prompt_sha256": "9b80e2b70ee2088cafba410d61883c7990371a6162dfdebd4265cbdd47dab40f",
+      "prompt_sha256": "cee1cbd14c062fd59ba873526c96adba78cd263a7247c3cdb4974151ae84faa8",
       "latest_image_review": {
         "file": "/home/raxim/Downloads/hf_20260909_194343_c663f27c-24ac-4db1-b610-1de68b585d30.png",
         "accepted": false,
@@ -1909,11 +2272,12 @@
         "R011",
         "R006"
       ],
-      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "status": "REVISED_NOT_RENDERED",
       "generation_count": 1,
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
-      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job."
+      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
+      "prompt_sha256": "1f733827f8cc8c88633e44d421a5ceb8b8e9c36bc0dac2575d6b7dc2e6a8d0d7"
     },
     "MR003": {
       "key": "MR003",
@@ -1923,11 +2287,12 @@
         "R011",
         "R006"
       ],
-      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "status": "REVISED_NOT_RENDERED",
       "generation_count": 1,
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
-      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job."
+      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job.",
+      "prompt_sha256": "35e087f1c332ae983f80a43ce813c4a7bdd77f4f3d6931f5bd1ccbcaa270635b"
     },
     "W01_B": {
       "key": "W01_B",
@@ -2026,6 +2391,789 @@
       "output": "W07_MAIN_WORLD_C.png",
       "refs": [],
       "status": "PREPARED_NOT_RENDERED"
+    },
+    "MR004": {
+      "key": "MR004",
+      "path": "02_library/morphs/MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt",
+      "output": "MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.png",
+      "refs": [
+        "R015",
+        "R022"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R015",
+        "R022"
+      ],
+      "four_state_summary": "Flat notched glass → concave shard → open-seam shade → complete shade",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR005": {
+      "key": "MR005",
+      "path": "02_library/morphs/MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt",
+      "output": "MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.png",
+      "refs": [
+        "R016"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R016"
+      ],
+      "four_state_summary": "Rectangular brick head → stepped wedge head → unfinished arch → carved stone arch",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR006": {
+      "key": "MR006",
+      "path": "02_library/morphs/MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt",
+      "output": "MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.png",
+      "refs": [
+        "R017"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R017"
+      ],
+      "four_state_summary": "Stone threshold → divided mineral/wood ribs → half-length boarded floor → full supported floor",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR007": {
+      "key": "MR007",
+      "path": "02_library/morphs/MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt",
+      "output": "MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.png",
+      "refs": [
+        "R018"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R018"
+      ],
+      "four_state_summary": "Bench → splayed supported slats → open angular border → curved timber border",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR008": {
+      "key": "MR008",
+      "path": "02_library/morphs/MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt",
+      "output": "MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.png",
+      "refs": [
+        "R022"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R022"
+      ],
+      "four_state_summary": "Short fixing → stepped elongated shank → bent unfinished socket → attached lamp stem",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR009": {
+      "key": "MR009",
+      "path": "02_library/morphs/MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt",
+      "output": "MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.png",
+      "refs": [
+        "R023"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R023"
+      ],
+      "four_state_summary": "Coiled rail → spreading thick plate segments → uneven half-stair → supported sideways stair",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR010": {
+      "key": "MR010",
+      "path": "02_library/morphs/MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt",
+      "output": "MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.png",
+      "refs": [
+        "R024"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R024"
+      ],
+      "four_state_summary": "Mounted source letters → split raised strokes → partly formed target glyphs → KÁVÉ",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR011": {
+      "key": "MR011",
+      "path": "02_library/morphs/MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt",
+      "output": "MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.png",
+      "refs": [
+        "R025",
+        "R026"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R025",
+        "R026"
+      ],
+      "four_state_summary": "Pitched slate roof → unequal bent ribs → half-glazed curved roof → complete glazing",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR012": {
+      "key": "MR012",
+      "path": "02_library/morphs/MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt",
+      "output": "MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.png",
+      "refs": [
+        "R025",
+        "R026"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R025",
+        "R026"
+      ],
+      "four_state_summary": "Square chimney pair → offset helical courses → open unfinished crowns → spiral stone uprights",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR013": {
+      "key": "MR013",
+      "path": "02_library/morphs/MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt",
+      "output": "MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.png",
+      "refs": [
+        "R043"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/02/video.txt"
+      ],
+      "source_object_keys": [
+        "R043"
+      ],
+      "four_state_summary": "Railing → thickened post and split elbow → unfinished gate housing → complete transit gate",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR014": {
+      "key": "MR014",
+      "path": "02_library/morphs/MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt",
+      "output": "MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.png",
+      "refs": [
+        "R044"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/02/video.txt"
+      ],
+      "source_object_keys": [
+        "R044"
+      ],
+      "four_state_summary": "Bench and posts → divided seat shells → unfinished seat row/window pillars → remembered bus geometry",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR015": {
+      "key": "MR015",
+      "path": "02_library/morphs/MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt",
+      "output": "MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.png",
+      "refs": [
+        "R046"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/02/video.txt"
+      ],
+      "source_object_keys": [
+        "R046"
+      ],
+      "four_state_summary": "Canopy → asymmetric rising ribs → partly rounded envelope → balloon with supported basket",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR016": {
+      "key": "MR016",
+      "path": "02_library/morphs/MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt",
+      "output": "MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.png",
+      "refs": [
+        "R047"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/02/video.txt"
+      ],
+      "source_object_keys": [
+        "R047"
+      ],
+      "four_state_summary": "Rooted plants → thick bent stalk bundles → unfinished timber sleepers → supported rail bed",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR017": {
+      "key": "MR017",
+      "path": "02_library/morphs/MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt",
+      "output": "MR017_CABINET_TO_DESK_AND_CHAIR_2X2.png",
+      "refs": [
+        "R049"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/04/video.txt"
+      ],
+      "source_object_keys": [
+        "R049"
+      ],
+      "four_state_summary": "Cabinet → extended top and divided panels → unfinished desk/chair → complete procedure furniture",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR018": {
+      "key": "MR018",
+      "path": "02_library/morphs/MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt",
+      "output": "MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.png",
+      "refs": [
+        "R050"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/05/video.txt"
+      ],
+      "source_object_keys": [
+        "R050"
+      ],
+      "four_state_summary": "Hearing bench → split timber supports → half-shelf/half-compartment → complete file shelving",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR019": {
+      "key": "MR019",
+      "path": "02_library/morphs/MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt",
+      "output": "MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.png",
+      "refs": [
+        "R051",
+        "R052",
+        "R053"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "source_object_keys": [
+        "R051",
+        "R052",
+        "R053"
+      ],
+      "four_state_summary": "Ordinary street → staggered extending courses → half-built terrace → open supported street pocket",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "MR020": {
+      "key": "MR020",
+      "path": "02_library/morphs/MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt",
+      "output": "MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.png",
+      "refs": [
+        "HRW07"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/07/video.txt"
+      ],
+      "source_object_keys": [
+        "HRW07"
+      ],
+      "four_state_summary": "Rope → spreading fibre web → unfinished fabric hem → white sheet edge",
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+    },
+    "R009_STUDY": {
+      "key": "R009_STUDY",
+      "path": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
+      "output": "R009_FANLIGHT_TO_CANOPY_2X2.png",
+      "refs": [
+        "R028",
+        "R029"
+      ],
+      "status": "PREPARED_INPUT_BINDINGS_PENDING",
+      "production_reuse": [
+        "01_pilot/test_extend_8s.txt",
+        "03_film/01/video.txt"
+      ],
+      "layout": "2x2 source/unfinished/unfinished/target"
+    },
+    "R008_STUDY": {
+      "key": "R008_STUDY",
+      "path": "02_library/morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
+      "output": "R008_CAFE_CONSTRUCTION_2X2.png",
+      "refs": [
+        "T01_IMAGE",
+        "R011"
+      ],
+      "status": "REVISED_NOT_RENDERED",
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "production_reuse": [
+        "01_pilot/test_video_8s.txt",
+        "03_film/01/video.txt"
+      ]
+    },
+    "MW01_B": {
+      "key": "MW01_B",
+      "path": "02_library/memories/MW01_LONDON_SOCIAL_B.txt",
+      "output": "MW01_LONDON_SOCIAL_B.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "T01_IMAGE",
+        "MW01"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW01",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW01_C": {
+      "key": "MW01_C",
+      "path": "02_library/memories/MW01_LONDON_SOCIAL_C.txt",
+      "output": "MW01_LONDON_SOCIAL_C.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "T01_IMAGE",
+        "MW01"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW01",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MW02_B": {
+      "key": "MW02_B",
+      "path": "02_library/memories/MW02_GLOBAL_ROUTES_B.txt",
+      "output": "MW02_GLOBAL_ROUTES_B.png",
+      "refs": [
+        "C01",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "MW02"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW02",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW02_C": {
+      "key": "MW02_C",
+      "path": "02_library/memories/MW02_GLOBAL_ROUTES_C.txt",
+      "output": "MW02_GLOBAL_ROUTES_C.png",
+      "refs": [
+        "C01",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "MW02"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW02",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MW03_B": {
+      "key": "MW03_B",
+      "path": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+      "output": "MW03_WORK_RULE_CHANGE_ADMIN_B.png",
+      "refs": [
+        "C01",
+        "C22",
+        "C23",
+        "C24",
+        "MW03"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW03",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW03_C": {
+      "key": "MW03_C",
+      "path": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+      "output": "MW03_WORK_RULE_CHANGE_ADMIN_C.png",
+      "refs": [
+        "C01",
+        "C22",
+        "C23",
+        "C24",
+        "MW03"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW03",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MW04_B": {
+      "key": "MW04_B",
+      "path": "02_library/memories/MW04_POLICE_DEFENCE_B.txt",
+      "output": "MW04_POLICE_DEFENCE_B.png",
+      "refs": [
+        "C01",
+        "C03",
+        "C04",
+        "C25",
+        "C26",
+        "MW04"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW04",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW04_C": {
+      "key": "MW04_C",
+      "path": "02_library/memories/MW04_POLICE_DEFENCE_C.txt",
+      "output": "MW04_POLICE_DEFENCE_C.png",
+      "refs": [
+        "C01",
+        "C03",
+        "C04",
+        "C25",
+        "C26",
+        "MW04"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW04",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MW05_B": {
+      "key": "MW05_B",
+      "path": "02_library/memories/MW05_COURT_FILE_B.txt",
+      "output": "MW05_COURT_FILE_B.png",
+      "refs": [
+        "C01",
+        "C04",
+        "C27",
+        "C28",
+        "C29",
+        "C30",
+        "C31",
+        "MW05"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW05",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW05_C": {
+      "key": "MW05_C",
+      "path": "02_library/memories/MW05_COURT_FILE_C.txt",
+      "output": "MW05_COURT_FILE_C.png",
+      "refs": [
+        "C01",
+        "C04",
+        "C27",
+        "C28",
+        "C29",
+        "C30",
+        "C31",
+        "MW05"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW05",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MW06_B": {
+      "key": "MW06_B",
+      "path": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+      "output": "MW06_HUMAN_COUNTERMEMORIES_B.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C16",
+        "C17",
+        "C27",
+        "C28",
+        "C29",
+        "MW06"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW06",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MW06_C": {
+      "key": "MW06_C",
+      "path": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+      "output": "MW06_HUMAN_COUNTERMEMORIES_C.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C16",
+        "C17",
+        "C27",
+        "C28",
+        "C29",
+        "MW06"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MW06",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MWP01_B": {
+      "key": "MWP01_B",
+      "path": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+      "output": "MWP01_ROUTES_ROOMS_DOCUMENTS_B.png",
+      "refs": [
+        "C01",
+        "MWP01"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MWP01",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MWP01_C": {
+      "key": "MWP01_C",
+      "path": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+      "output": "MWP01_ROUTES_ROOMS_DOCUMENTS_C.png",
+      "refs": [
+        "C01",
+        "MWP01"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MWP01",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "MWP02_B": {
+      "key": "MWP02_B",
+      "path": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+      "output": "MWP02_SYSTEM_TIME_REVERSALS_B.png",
+      "refs": [
+        "C01",
+        "MWP02"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MWP02",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "MWP02_C": {
+      "key": "MWP02_C",
+      "path": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+      "output": "MWP02_SYSTEM_TIME_REVERSALS_C.png",
+      "refs": [
+        "C01",
+        "MWP02"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "MWP02",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "HRW07_B": {
+      "key": "HRW07_B",
+      "path": "02_library/memories/HRW07_CLINICAL_REALITY_B.txt",
+      "output": "HRW07_CLINICAL_REALITY_B.png",
+      "refs": [
+        "C01",
+        "C05",
+        "HRW07"
+      ],
+      "layout": "4K 2x2 page B",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "HRW07",
+      "original_views": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "HRW07_C": {
+      "key": "HRW07_C",
+      "path": "02_library/memories/HRW07_CLINICAL_REALITY_C.txt",
+      "output": "HRW07_CLINICAL_REALITY_C.png",
+      "refs": [
+        "C01",
+        "C05",
+        "HRW07"
+      ],
+      "layout": "4K 2x2 page C",
+      "status": "PREPARED_NOT_RENDERED",
+      "source_memory": "HRW07",
+      "original_views": [
+        9,
+        1,
+        7,
+        8
+      ]
+    },
+    "T01_DETAILS": {
+      "key": "T01_DETAILS",
+      "path": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt",
+      "output": "T01_SOHO_RESTAURANT_DETAILS_2X2.png",
+      "refs": [
+        "T01_IMAGE",
+        "C01",
+        "C02"
+      ],
+      "status": "PREPARED_NOT_RENDERED",
+      "layout": "4K 2x2 room/gesture/support/exit"
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -2049,6 +3197,7 @@
       },
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
+        "T01_IMAGE",
         "C01",
         "C02"
       ]
@@ -2517,6 +3666,240 @@
       "alias": "W07_MAIN_WORLD_C",
       "mention": null,
       "last_mention": "@UNBOUND_W07_C"
+    },
+    "R015": {
+      "alias": "R015",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R022": {
+      "alias": "R022",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R016": {
+      "alias": "R016",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R017": {
+      "alias": "R017",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R018": {
+      "alias": "R018",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R023": {
+      "alias": "R023",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R024": {
+      "alias": "R024",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R025": {
+      "alias": "R025",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R026": {
+      "alias": "R026",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R043": {
+      "alias": "R043",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R044": {
+      "alias": "R044",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R046": {
+      "alias": "R046",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R047": {
+      "alias": "R047",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R049": {
+      "alias": "R049",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R050": {
+      "alias": "R050",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R051": {
+      "alias": "R051",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R052": {
+      "alias": "R052",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R053": {
+      "alias": "R053",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
+    },
+    "R028": {
+      "alias": "R028",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Actual imported Element mention not yet supplied."
+    },
+    "R029": {
+      "alias": "R029",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Actual imported Element mention not yet supplied."
+    },
+    "MW01_B": {
+      "alias": "MW01_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW01_C": {
+      "alias": "MW01_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW02_B": {
+      "alias": "MW02_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW02_C": {
+      "alias": "MW02_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW03_B": {
+      "alias": "MW03_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW03_C": {
+      "alias": "MW03_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW04_B": {
+      "alias": "MW04_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW04_C": {
+      "alias": "MW04_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW05_B": {
+      "alias": "MW05_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW05_C": {
+      "alias": "MW05_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW06_B": {
+      "alias": "MW06_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MW06_C": {
+      "alias": "MW06_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MWP01_B": {
+      "alias": "MWP01_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MWP01_C": {
+      "alias": "MWP01_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MWP02_B": {
+      "alias": "MWP02_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "MWP02_C": {
+      "alias": "MWP02_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "HRW07_B": {
+      "alias": "HRW07_B",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "HRW07_C": {
+      "alias": "HRW07_C",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
+    },
+    "T01_DETAILS": {
+      "alias": "T01_DETAILS",
+      "mention": null,
+      "last_mention": null,
+      "evidence": "Prepared additional four-view coverage of accepted T01; not imported or rendered."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -3317,5 +4700,432 @@
     "additional_image_jobs": 14,
     "status": "PROMPTS_PREPARED_NO_NEW_WORLD_IMAGES_RENDERED",
     "note": "All 63 original view descriptions retained. C repeats views 1,7,8 alongside view9. This change does not replace accepted world images, alter the five-subject pilot, or add video generations."
+  },
+  "morph_reference_preparation": {
+    "review": {
+      "state": "PROMPTS_PREPARED_NOT_RENDERED",
+      "four_cell_files": 22,
+      "new_morph_keys": [
+        "MR004",
+        "MR005",
+        "MR006",
+        "MR007",
+        "MR008",
+        "MR009",
+        "MR010",
+        "MR011",
+        "MR012",
+        "MR013",
+        "MR014",
+        "MR015",
+        "MR016",
+        "MR017",
+        "MR018",
+        "MR019",
+        "MR020"
+      ],
+      "existing_revised_keys": [
+        "MR001",
+        "MR002",
+        "MR003",
+        "R008",
+        "R009"
+      ],
+      "import_file": "00_project/elements/11_morph_reference_sheets.md",
+      "import_status": "PREPARED_NOT_IMPORTED",
+      "required_pilot_subjects_unchanged": true
+    }
+  },
+  "memory_reference_pages": {
+    "layout": "4K 3840x2160, four 1920x1080 cells",
+    "worlds": {
+      "MW01": {
+        "pages": {
+          "A": {
+            "key": "MW01",
+            "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW01_B",
+            "file": "02_library/memories/MW01_LONDON_SOCIAL_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW01_C",
+            "file": "02_library/memories/MW01_LONDON_SOCIAL_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MW02": {
+        "pages": {
+          "A": {
+            "key": "MW02",
+            "file": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW02_B",
+            "file": "02_library/memories/MW02_GLOBAL_ROUTES_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW02_C",
+            "file": "02_library/memories/MW02_GLOBAL_ROUTES_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MW03": {
+        "pages": {
+          "A": {
+            "key": "MW03",
+            "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW03_B",
+            "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW03_C",
+            "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MW04": {
+        "pages": {
+          "A": {
+            "key": "MW04",
+            "file": "02_library/memories/MW04_POLICE_DEFENCE.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW04_B",
+            "file": "02_library/memories/MW04_POLICE_DEFENCE_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW04_C",
+            "file": "02_library/memories/MW04_POLICE_DEFENCE_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MW05": {
+        "pages": {
+          "A": {
+            "key": "MW05",
+            "file": "02_library/memories/MW05_COURT_FILE.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW05_B",
+            "file": "02_library/memories/MW05_COURT_FILE_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW05_C",
+            "file": "02_library/memories/MW05_COURT_FILE_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MW06": {
+        "pages": {
+          "A": {
+            "key": "MW06",
+            "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MW06_B",
+            "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MW06_C",
+            "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MWP01": {
+        "pages": {
+          "A": {
+            "key": "MWP01",
+            "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MWP01_B",
+            "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MWP01_C",
+            "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "MWP02": {
+        "pages": {
+          "A": {
+            "key": "MWP02",
+            "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "MWP02_B",
+            "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "MWP02_C",
+            "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      },
+      "HRW07": {
+        "pages": {
+          "A": {
+            "key": "HRW07",
+            "file": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
+            "original_views": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "B": {
+            "key": "HRW07_B",
+            "file": "02_library/memories/HRW07_CLINICAL_REALITY_B.txt",
+            "original_views": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          },
+          "C": {
+            "key": "HRW07_C",
+            "file": "02_library/memories/HRW07_CLINICAL_REALITY_C.txt",
+            "original_views": [
+              9,
+              1,
+              7,
+              8
+            ],
+            "status": "PREPARED_NOT_RENDERED"
+          }
+        },
+        "original_views": 9,
+        "status": "PREPARED_NOT_RENDERED",
+        "legacy_image_unchanged": true
+      }
+    },
+    "new_only_import": "00_project/elements/12_memory_reference_pages.md",
+    "import_status": "PREPARED_NOT_IMPORTED",
+    "new_keys": [
+      "MW01_B",
+      "MW01_C",
+      "MW02_B",
+      "MW02_C",
+      "MW03_B",
+      "MW03_C",
+      "MW04_B",
+      "MW04_C",
+      "MW05_B",
+      "MW05_C",
+      "MW06_B",
+      "MW06_C",
+      "MWP01_B",
+      "MWP01_C",
+      "MWP02_B",
+      "MWP02_C",
+      "HRW07_B",
+      "HRW07_C",
+      "T01_DETAILS"
+    ],
+    "original_views_retained": 81,
+    "four_cell_pages": 28,
+    "legacy_generated_images_unchanged": true,
+    "note": "27 memory/clinical pages plus T01 detail page; image preparation only, no video generation or added story events."
   }
 }

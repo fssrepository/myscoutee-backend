@@ -1,6 +1,3 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C26
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
@@ -8,21 +5,8 @@ REFERENCE INPUTS:
 @char_mys_search-officer-male_s4_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
 @UNBOUND_C26 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
 
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
-
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each cell must be a TRUE 16:9 widescreen rectangle, occupying one third of the full canvas width and one third of its height, apart from the thin internal gutters.
-DO NOT create a square 1:1 canvas.
-DO NOT create square cells.
-DO NOT place a square contact sheet inside a wider canvas.
-DO NOT add letterboxing or pillarboxing.
-The grid fills the entire canvas edge-to-edge.
-Outer margin: 0 pixels.
-Use only hairline 1–2 pixel gutters BETWEEN cells.
-No title, header, footer, caption band, legend, decorative border or layout labels.
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
 
 MEMORY-WORLD FUNCTION:
 This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
@@ -41,43 +25,43 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially Cells 6 and 9.
+Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially original view 6 and 9.
 Use CHARACTER 04 — APPOINTED LAWYER only where that recurring lawyer is intended.
 Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
-Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in Cell 7.
+Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in original view 7.
 Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
 
 PURPOSE:
 Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
 
-NINE CELLS:
-Cell 1 — Apartment-entry memory before the search: ordinary residential door/intercom context, someone outside announces themselves as a postman and the door is opened. Do not render the spoken word as a caption.
+PAGE A OF MW04: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
-Cell 2 — Immediate continuation: ordinary police officers enter the apartment after the door opens. Calm procedural movement, no tactical-raid spectacle, no weapons emphasis.
+REFERENCE COVERAGE FOR THE MOVING FILM:
+This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
+A video can use several world and memory pages within the same 30-second block. Its own camera travels continuously through connected reconstructed space and uses explicit material morph sheets where needed; the source grid never appears as a slideshow. Additional detail pages may cover the same place without creating another memory, another story event or another paid video test. Keep full body/furniture support legible wherever the assigned view permits. Never substitute four nearly identical wide shots for the four assigned subjects.
 
-Cell 3 — Apartment search in progress. Officers inspect ordinary rooms and belongings while the protagonist is present. Real domestic space, restrained procedure, no evidence-wall aesthetic.
+FOUR ASSIGNED CELLS:
+CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
+Apartment-entry memory before the search: ordinary residential door/intercom context, someone outside announces themselves as a postman and the door is opened. Do not render the spoken word as a caption.
 
-Cell 4 — Search moment in which one officer is visibly speaking the remembered line about looking for cocaine. Do not place dialogue text on screen; the scene remains ordinary and procedural, with no drug glamorization.
+CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
+Immediate continuation: ordinary police officers enter the apartment after the door opens. Calm procedural movement, no tactical-raid spectacle, no weapons emphasis.
 
-Cell 5 — Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence.
+CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
+Apartment search in progress. Officers inspect ordinary rooms and belongings while the protagonist is present. Real domestic space, restrained procedure, no evidence-wall aesthetic.
 
-Cell 6 — Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging.
-
-Cell 7 — Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy.
-
-Cell 8 — Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister.
-
-Cell 9 — Human break-through inside procedure: the POLICEWOMAN or another officer struggles not to laugh / gives a small embarrassed smile during a formal moment. Nothing procedural changes; the role and the person briefly coexist.
+CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
+Search moment in which one officer is visibly speaking the remembered line about looking for cocaine. Do not place dialogue text on screen; the scene remains ordinary and procedural, with no drug glamorization.
 
 FINAL CHECK:
 Exactly one 16:9 image.
-Exactly nine 16:9 photographic cells in a 3×3 grid.
+Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
 Direct literal police/defence memories only.
 No present-city reflection composite.
 No score cards.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
-The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; no additional cells or image requests. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.
 
 SOURCE CONTINUITY FOR THE MOVING FILM:
 Render each cell as a single clear, solid view of the specified people and their actual room or place. Show a usable doorway edge, furniture corner or support beside the central gesture, with full bodily depth, clear hands and contact shadows. That landmark lets the video first glimpse this SAME person through a developing opening and then expose the full encounter continuously. Never supply ghosted people, translucent rooms, double exposures or blended before/after scenes. The source image does not perform a transition or replace the street as a flat composition; the video reconstructs its arrangement through the explicitly described material movement. Preserve the assigned identities and events across alternative views. Keep the source free of present-city overlays and rating cards.
