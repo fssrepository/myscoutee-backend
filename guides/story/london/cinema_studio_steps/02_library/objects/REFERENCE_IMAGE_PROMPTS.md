@@ -1,8 +1,32 @@
 # Reusable object and material reference images
 
-Prepared for the creator-confirmed seven-day Unlimited web image workflow. Still images can verify shape, material detail, identity and legible numerical cards. They cannot test morph continuity, frame jumps, camera travel or timing; those remain video acceptance checks. An intermediate illustration is optional geometry guidance, never evidence that the morph works. These are image prompts, not extra video tests. Generate and inspect them in that covered workflow; no generation has been launched by this file. Use accepted assets wherever the required detail is already clear. This file consolidates the first pilot/Extend reference gaps; later object families follow the inventory in ../../00_project/REFERENCES.md.
+Prepared for the creator-confirmed seven-day Unlimited web image workflow. Still images can verify shape, material detail, identity and legible numerical cards. They cannot test morph continuity, frame jumps, camera travel or timing; those remain video acceptance checks. An intermediate illustration is optional geometry guidance, never evidence that the morph works. These are image prompts, not extra video tests. Generate and inspect them in that covered workflow; no generation has been launched by this file. Use accepted assets wherever the required detail is already clear. This collection covers the pilot, native Extend and all seven production blocks. A world can use multiple source, target, underside, rooftop and street-level detail images; one world sheet is not a ceiling on reference preparation. Reuse the same accepted object across views, instead of generating unrelated designs for each camera angle.
 
 Each code block is a complete image prompt. Attach the stated existing references before using it. Preserve accepted source identities; assign real Element IDs only after actual images exist and are attached. Match each supplied reference to its stated geometry/material role in the video prompt. A reference contact sheet is never a request to reproduce its grid or its camera cuts in the output video.
+
+## Reference sets for the actual tests and production
+
+There are **53 complete image prompts** in this single collection. This is a reusable library, not an instruction to attach all 53 images plus the existing cast to every clip. The 50-input ceiling includes all inputs admitted by the actual composer. Existing accepted character and restaurant references remain in use; reuse accepted detail wherever it already resolves the required object. No additional video-test jobs are introduced.
+
+| Consumer | Image-prompt sections | Purpose |
+| --- | --- | --- |
+| First 8-second test — main visual anchors | 11, 01, 05, 06, 02, 03, 04, 08, 10, 12 | London source, numerical cards, cathedral endpoints, transport, café, statue and current people |
+| First test — detailed material support | 14–27 | Window, glass, masonry, floor, bench, furniture, cup, doors, fixtures, ironwork, sign and returning roof geometry |
+| First test — optional geometry illustration | 07 | Intermediate cathedral volume only; not a motion test |
+| Native 8-second Extend | 01–04, 09, 12, 22–23, 25–30 | Inherited people/transport, roof and arcade/fanlight-to-canopy material detail; use actual source video as the continuation input |
+| Street opening while buildings morph — native Extend and matching production beats | 51–52; 53 optional | Source street section, opened destination and inspectable intermediate volume; no prescribed Piccadilly–Andrássy replacement |
+| Later open-square bus-interior passage | 02, 13 | Consistent bus exterior and a traversable actual door-to-aisle-to-door route; this is not automatically inserted into the current 8-second shot |
+| Block 01 | First-test sets, with approved C01/C02 and T01/MW01 scene references | Same reference evidence reused in production |
+| Block 02 | 17–18, 21–23, 28–33, 43–47 | Station/Opera targets, transit gate, seats, taxi cabin, balloon and ground material |
+| Block 03 | 16–18, 21–24, 30, 42, 48 | Historic exterior, workroom construction and meaningful real records |
+| Block 04 | 16–18, 21–23, 30, 49 | Solid doorway/room materials, cabinet-to-desk supports and procedural objects; retain W04/MW04 |
+| Block 05 | 16–18, 23, 34–35, 40–41, 48, 50 | Bridge pair, named riverfront landmarks, record/device structures; retain W05/MW05 |
+| Block 06 | 01, 12, 17–23, 28–30, 34–38, 40, 43–47, 49–50 | Crowds, recurring human-memory objects, Market Hall/Bálna roof pair and London scale anchors |
+| Block 07 | 01–04, 24–27, 33, 39–40; reuse accepted HRW07 | Current-city identity and objects, quieting route and unchanged clinical endpoint |
+
+The test sets above are explicit inputs to prepare, not assets already generated or attached. With the four existing image references, the first-test main/detail sets use at most 28 images, or 29 with optional 07. The Extend set uses 14 supplementary images, plus 51–52 for the street opening (16 supplementary images, or 17 with optional 53), the existing images and the selected source video. Confirm actual composer accounting when adding media; do not equate a contact sheet's cells with separate input slots.
+
+Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered code block is complete and copyable. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Import the missing definitions from [08_reference_assets.md](../../00_project/elements/08_reference_assets.md), render into those Elements using their complete image prompts, then record the actual persistent Element IDs and reference roles before the next paid video pass. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
 
 ## 01 — Rating cards in the inhabited street
 
@@ -123,4 +147,528 @@ Attach the accepted card-bearing pedestrian reference from section 01. Use actua
 Generate a 16:9 photographic reference with two equal side-by-side views of the SAME two current pedestrians, framed head to foot with generous space above their numerical rating cards. Match faces, body proportions, uncovered hair, hand positions, camera angle and overcast lighting between the views. Keep a varied contemporary cast. In both views person A carries the same clear warm-white 6.2 card and person B the same 9.2 card above their own crowns.
 In the source view, person A wears a light commuter coat with a visible shoulder seam, collar, pocket welt and long hem; person B carries an ordinary shoulder bag with one hand touching its strap. A restrained recognisable London frontage supplies the setting. In the destination view, person A wears the selected contemporary Pest-associated wool jacket: expose the thicker lapel, shorter hem and pocket construction corresponding to the original coat. Person B holds the selected everyday bag with visible handles, gussets and side seams corresponding to their original shoulder bag. Keep the same arm, hand and bodily pose rather than casting replacement people. Local Hungarian café signage and a fragment of the target Pest frontage identify the destination setting. The clothes are individual contemporary choices, not national costumes.
 Render actual fabric weave, leather or cloth thickness, seams, fasteners, skin detail and contact shadows sharply. Both ensembles remain varied in appearance. No ethnic homogenisation, nationality badges, flags, umbrellas, head-covering hoods, blank rating tiles, dissolving bodies or translucent overlays. Do not change either person's decimal value. No panel captions or transition arrows. These are two reference states for a continuous video action, not two requested video shots.
+```
+
+
+## 13 — Red bus lower-deck passage and open-door geometry
+
+Used by: Pilot close bus; later open-square camera-through-bus passage.
+
+Attach the accepted bus exterior from 02.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show ONE full-depth interior of the same red London double-decker, at lower-deck eye height just inside its open rear or middle passenger doorway. Reproduce the exact door configuration supported by that source vehicle; do not invent a rear opening on a model without one. Show the clear aisle toward its actual open front door, seat backs, upholstery seams, window pillars, handrails, floor texture, step edges and ceiling depth. The same London square is visible through both the front exit and the side windows. Leave an unobstructed camera-sized route along the aisle, with the exit visible before entry. Keep the driver area physically separate and vehicle parts consistent with the exterior. No passengers blocking the route or duplicate seats. This still defines the real empty-air path for a continuous camera passage, not a new bus interior memory or permission to cut. Preserve full-width door frames and their contact with the floor.
+```
+
+
+## 14 — Original London café window before fracture
+
+Used by: Pilot 1–2 s; Block 01 café.
+
+Attach the clean London opening from 11 and accepted restaurant source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show a single close three-quarter exterior view of the EXACT right-hand London café opening. The intact glass pane, vertical timber mullion, small metal fasteners, thick brick returns and original stone sill are clearly visible together. Include one distinctive chipped red brick at the lower pier corner, the full thickness of the sill and the adjacent wet kerb. The ordinary source café interior exists behind the pane, with the accepted furniture layout at real depth; do not replace it with a generic luxurious room. Keep the window intact in this source image. No top-hinged open window, enlarged canopy, paper-thin side wall or finished morph. Make the separate glass edge, timber grain, fixing points and mortar lines sharp enough to serve as identifiable source parts. A strip of the existing street remains in view beside the window.
+```
+
+
+## 15 — Glass source thickness and destination pendant shades
+
+Used by: Pilot glass-to-pendant morph; Block 01 café.
+
+Attach the original window from 14 and accepted restaurant lighting.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal side-by-side photographic object views. On the left show a large piece of the original shop-window glass at an oblique angle: visible green edge thickness, one corner notch and separate reflections from front and back surfaces. On the right show the exact destination pendant shade shape from the accepted restaurant, with the same glass type and comparable lighting. Expose its rim, wall thickness, rounded curvature and metal-neck attachment. Maintain enough background structure to demonstrate refraction through the glass, without turning it into a mirror or screen. These are distinct source/destination physical forms, not a dissolve or a simulated flight. Do not invent translucent particles, sparkling dust or a whole pane simply raised overhead. No people, labels or instructional arrows. The still must make the difference between a flat section and a genuinely curved thick glass volume inspectable.
+```
+
+
+## 16 — Solid London brick and Pest carved-stone correspondence
+
+Used by: Pilot pier/arch; all thick-masonry morphs.
+
+Use the clean London brick frontage and selected Pest carved-stone destination detail.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal photographic close views of the corresponding masonry corners. Source: several solid red London bricks with real mortar depth, exposed side faces and a visible chipped lower corner. Destination: the chosen deep curved carved-stone arch blocks with the same corner orientation, comparable scale and consistent light direction. Reveal front, side and underside together. Preserve porous fired-clay texture in the source and mineral grain in the destination, with credible heavy contact shadows in both. Show their structural backing rather than surface swatches floating on a blank page. The target is substantial masonry, not folded paper, a rubber wall or a thin decorative facade. No broken parts disappearing into fog. This reference specifies shape, grain and thickness for the video’s tracked source-to-target change; it does not itself prove the motion.
+```
+
+
+## 17 — Stone sill, wet paving and supported timber threshold
+
+Used by: Pilot sill/floor morph; later embodied-room floors.
+
+Attach the accepted café/restaurant source and the original window from 14.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show two corresponding low oblique views of the SAME threshold location. Source view: thick stone sill, adjoining paving slab joints, original vertical jamb and a shallow puddle beside the fixed kerb. Destination view: the restaurant’s exact wooden threshold and floorboard edge occupy that same local footprint, with a visible full-depth supporting underside and the unchanged jamb behind. Match the angle and light so the source sill corner corresponds clearly to the destination board edge. Show mineral texture versus longitudinal timber grain, separate board joints and the adjacent paving left intact. Keep the doorway’s street relationship continuous across the reference views. No floating floor, unsupported furniture, disappearing puddle overlay or generic plank texture pasted over stone. These endpoints support the later physical extension and the camera’s low-to-side inspection.
+```
+
+
+## 18 — London timber bench and curved floor border
+
+Used by: Pilot secondary bench morph; Blocks 02/06 bench-based memories.
+
+Attach the bench visible in the London opening and the accepted restaurant floor detail.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal photographic object views at the same low three-quarter angle. Source: the particular London street bench with each seat slat, grain line, screw head, metal or timber support and footplate visible. Destination: those same timber slats form the specified curved boundary around the emerging restaurant floor, with the existing support blocks expanded into short feet. Keep the destination’s open interior clear; it does not replace the woman’s occupied chair or table. Show one dark grain line on a source slat and its corresponding location along the curved destination edge. Expose real timber thickness, separation between adjacent slats and contact with the same damp paving. No new unrelated bench style, cardboard strip or floating decorative ribbon. Use the destination image only to define the new object function.
+```
+
+
+## 19 — Accepted restaurant table and chair from outside
+
+Used by: Pilot human-memory depth; MW01 and Block 01/06.
+
+Attach the accepted Soho restaurant still.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Reconstruct the EXACT near table and woman’s chair from the accepted room as a photorealistic object study, retaining their original material, colour, proportions, joints and wear. Present three equal views: front three-quarter, side view exposing table thickness and the space below the seat, and rear three-quarter showing the chair back and all supporting legs. Keep the same model in all views, with no redesign into luxury furniture. Do not generate a replacement woman for this object-only study; preserve the occupied arrangement in the actual restaurant reference. Place the furniture on the same wooden floor with a visible floor edge and contact shadows. Clear lighting must show which leg occludes which support as the viewpoint changes. This supplies geometry for moving the accepted occupied furniture into the street, not a furniture mutation or a separate memory.
+```
+
+
+## 20 — Cup, hand contact and tabletop depth
+
+Used by: Pilot woman’s gesture; narrated joined-test visual reference.
+
+Attach the accepted restaurant still and exact woman identity only if her hand is shown.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce a single photographic detail view of the exact cup, saucer or other cup support, table surface and the woman’s hand as present in the accepted restaurant. Preserve the source object design and the source person’s hand proportions; do not invent another drink service. Her hand rests beside or partly in front of the cup with one clear natural overlap, showing the real air gap and cast shadow. The cup has a visible rim, inner volume, curved side and point of contact with the table. The table’s near corner exposes its top and side thickness together. Keep a softly legible room background consistent with the accepted memory rather than turning the image into a generic product advertisement. No motion streak, duplicated fingers, transparent hand or new written message. The still supports identity, occlusion and contact, not the timing of the smile.
+```
+
+
+## 21 — Restaurant rear doors and depth relationships
+
+Used by: Pilot first glimpse and embodied room; MW01.
+
+Attach the accepted Soho restaurant source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show a single clear oblique view through the accepted restaurant’s near table toward its two restroom doors. Keep the exact modest room, narrow passage, door positions, frames, handles and lighting from the source. If the remembered man and woman appear, use their accepted identities and actual positions: man by the doors, woman at the near table. Show the full floor connection between them, with the near furniture larger than the rear doorway and a visible side wall returning into depth. Give both door jambs real thickness and ordinary attachment to the wall. Do not add additional doors, move the man to the table, swap the current walker into the memory or turn the room into a storefront reflection. Remembered people have no cards. This is depth/layout evidence for the same place during the continuous reveal.
+```
+
+
+## 22 — Street-light fittings and restaurant pendant connections
+
+Used by: Pilot metal-fastener/pendant morph; local street-light changes.
+
+Attach the actual London window fasteners and accepted restaurant pendant source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create three equal material-detail views with consistent lighting: the original small metal window fittings fixed into timber or masonry, the exact destination pendant stem and shade neck, and an oblique underside view of the assembled pendant showing the joint between metal and glass. Preserve the source metal finish and the destination lamp identity. Show screws or fixing plates, cylindrical or rectangular cross-sections, seams and the depth of the receiving socket. The shade must be the accepted restaurant design, not an ornamental chandelier invented for spectacle. Put each object against enough real material context to show its attachment and contact shadow. No floating light or detached glowing bulb. The images define the individual pieces and their final function; the video describes their continuous elongation and assembly.
+```
+
+
+## 23 — Balcony scroll and sideways stair structural parts
+
+Used by: Pilot upper ironwork; later balcony/stair morphs.
+
+Use the actual London balcony source and assigned Pest ironwork destination.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal oblique architectural-detail views. Source: a complete section of the existing balcony scrollwork, including its wall fixing, coiled bar, slab edge and footplate. Destination: the planned short sideways stair running along that same wall, with broad solid tread undersides, a continuous handrail and visible support at the original footplate. Keep the metal finish, thickness and convincing connections; round bars becoming tread plates must be represented by clear source and destination cross-sections. Retain the wall and balcony slab behind both views so the target is supported architecture rather than a floating decorative drawing. No pasted staircase, paper folds, thin wire treads or missing load path. Show the exact source curl and destination tread/rail shapes that the later morph must connect.
+```
+
+
+## 24 — Mounted English café sign and Hungarian destination sign
+
+Used by: Pilot sign morph; London-to-Pest street details.
+
+Use the source London shop frontage; preserve its sign mount and frame.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal photographic close views of the SAME mounted slatted shop sign, with the same outer frame, wall attachment, perspective and illumination. Source face reads the existing English café/shop wording from the selected London image. Destination face reads KÁVÉ in clear physical lettering, using the same slats rather than a glowing screen. Show the slat thickness, pivot points, letter relief and a small shadow between each slat and its frame. Keep the wall clearly London-derived in both views; only this sign’s local target state changes. No new Budapest street composition, subtitle, nationality flag or unrelated advertising panel. The lettering must be sharp enough to use as design evidence. These endpoints do not tell the video to swap whole images; it must reshape and turn the same mounted parts.
+```
+
+
+## 25 — Original London roof and chimney volumes
+
+Used by: Pilot opening and 180-degree return.
+
+Attach the clean London source image from 11.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show a single elevated oblique view of the SAME two low roof volumes beside the pilot café and junction. Retain the original London buildings, their wall footprints, slate roof slopes, ridges, eaves, chimney positions and relation to the kerb below. Make the whole roof masses three-dimensional: roof thickness, rear and side walls, brick chimneys embedded in the slopes and cast shadows on the slate. Keep the opening café and nearby road bend visible to identify the location from above. No new landmark, office block, Budapest panorama or already-mutated roof in this source view. Render the original ridge and one distinctive chimney seam sharply enough to track later. This image anchors what the rising returning camera will see before these individual roofs transform.
+```
+
+
+## 26 — Target roof glazing, stone corbels and chimney crowns
+
+Used by: Pilot returning rooftop morph; later overhead material changes.
+
+Attach the accepted source roof from 25.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the SAME two buildings from exactly the source roof viewpoint and scale. Keep their wall footprints and road relationship fixed while their individual roof objects have reached the specified destination shapes. On the first, the original roof ribs form supported curved glazing, the former slate courses correspond to thick shaped glass sections, and the eave blocks have become deep carved-stone corbels. On the second, the original paired chimney shafts form spiral stone uprights with open bell-like crowns, still embedded at their original bases. Show glass edges, carved-stone grain, roof depth and contact shadows clearly. The building volumes remain solid, not folded sheets. Preserve their identities and London street context rather than replacing either building with an anonymous office block. This image defines geometry only; actual motion must remain visible in video.
+```
+
+
+## 27 — Same London junction from the returning aerial angle
+
+Used by: Pilot 180-degree upward ellipse; native Extend source orientation.
+
+Attach the accepted clean London opening image and source roof view from 25.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce one elevated oblique photographic view looking back along the SAME London street after an approximately 180-degree heading reversal from the source approach. Reconstruct the same right-hand café, kerb bend, plinth, roof footprints and junction from this new position rather than inventing another square. The camera is above the previously established low roof edge and tilts down toward the people and street. Keep black cabs and red buses on their connected lanes, and show numerical cards above uncovered current pedestrians at the appropriate smaller perspective scale. This is a spatial reference view, not a prescribed final frame. Do not move the cathedral into the reverse sightline if it lies behind this viewpoint. Preserve object locations, building identity and depth; no skyline collage or relocated road. Overcast light and damp materials match the source.
+```
+
+
+## 28 — Original arcade arch and fanlight
+
+Used by: Extend 0–1.5 s; later canopy sources.
+
+Use the arch actually visible at the accepted source endpoint, not an invented new entrance.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show a single close oblique view of the next original arcade bay: two thick piers, their rooted footings, a curved stone arch, a narrow fanlight and its iron glazing bars. Expose the crown seam, one chipped arch edge, a clear iron intersection and the four attached corners of a small glass pane. Show the arch’s front, side and underside together with the continuous pavement passing below it. Include the original doorway and the connected road visible beyond, so the camera’s approach and later pass have real space. Keep the source arch at its actual size and state; do not generate the completed giant canopy yet. No floating frame, paper arch, opaque inserted corridor or large blank grey panels. The purpose is a readable original object that the video can transform.
+```
+
+
+## 29 — Full supported canopy destination
+
+Used by: Extend 1.5–6.5 s; larger roof transformations.
+
+Attach the original fanlight/arch from 28.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Reconstruct the giant glass-and-iron canopy destination supported by the SAME original pair of piers and arch footings. Use an oblique underside view exposing one near stone outer rib, the iron structural web, several curved glass panes and the original doorway under the roof. The canopy projects well over the connected street, with the yellow tram visible at a separate middle distance if already established by the accepted source. Show how the roof ribs reach the original supports, how each pane is fixed at its corners and how their near edges have real thickness. Retain the arch’s chipped edge on the corresponding outer rib where possible. Avoid a generic terminal roof pasted over an unrelated square. The skyline and road remain inherited. This is target structural evidence, not a command for an instantaneous roof reveal.
+```
+
+
+## 30 — Deep gallery through the unchanged threshold
+
+Used by: Extend 4.5–6.5 s; repeated-column depth.
+
+Attach the accepted next arcade bay from 28.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show one photographic view through the SAME ordinary-width doorway and its original thick jamb into the planned deep warm gallery. Keep the entrance threshold and near piers exactly recognisable. Inside, show a sequence of substantial columns, floor seams, ceiling supports and light fixtures receding much farther than the shallow exterior block suggests. Each support has its own contact shadow; the floor connects continuously to the original pavement. Include two ordinary current-city inhabitants at different depths with their numerical cards, without blocking the threshold. No flat corridor photograph inside the door, mirrored recursion, duplicated person or separate scene floating behind glass. This reference defines the target internal depth while the source image preserves the original opening; the video must lengthen those same floor and support relationships continuously.
+```
+
+
+## 31 — London station source exterior and iron structure
+
+Used by: Block 02 station transformation; W02 source.
+
+Use the assigned Charing Cross/Strand-side London station reference and its actual landmark identity.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create one photographic exterior view of the chosen London station and adjacent street before its Hungarian target transformation. Preserve the named London source’s recognisable frontage, entrance proportions, roofline and public approach rather than blending it with Nyugati already. Include a clear iron-and-glass structural bay or roof connection that the script can trace into the target station span. Show the whole relevant building volume and its connected pavement, with red London transport and numerical-card pedestrians establishing the present setting. Overcast light, dry air and damp paving. Keep glass framing and masonry depth sharp, with no umbrella cover. This is the specific station source; surrounding Hungarian destination forms must not be imported into its initial architecture.
+```
+
+
+## 32 — Nyugati station destination and roof joints
+
+Used by: Block 02 station target; W02.
+
+Use an accurate Nyugati Railway Station reference and the approved station-source orientation from 31.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show Budapest Nyugati Railway Station’s recognisable principal iron-and-glass frontage and its full attached roof volume from a frontal three-quarter view. Preserve the real target design from the supplied photograph, including its characteristic framing, masonry wings and entrance structure. Use comparable angle and scale to the London station source so the existing script can map entrance piers, roof ribs and glazing intersections. Expose the front frame thickness and a side return into the hall; do not provide only a flat facade crop. Neutral overcast light reveals the ironwork and glass depth. Avoid a generic railway terminal, fictional extra wings or a ready-made London/Budapest composite. This image defines the destination building; it does not relocate the film’s camera or street.
+```
+
+
+## 33 — Hungarian State Opera target facade and entry depth
+
+Used by: Blocks 02/07; W02/W07 named target.
+
+Use the actual Hungarian State Opera House reference; preserve its specific identity.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce one three-quarter photographic view of the Hungarian State Opera House showing its complete main facade, roof silhouette, entrance arcade and projecting architectural detail. Reproduce the supplied building accurately rather than generating a generic palace or theatre. Keep a small section of forecourt visible for scale and show the depth behind the entrance columns, the side faces of cornices and the connection of roof to wall. Use matching cool overcast light and realistic stone texture. Current people, if included, have numerical cards and uncovered heads; avoid crowds obscuring identifying features. This is a named destination geometry reference for the existing London theatre/civic block. It supplies neither a new opening location nor a new independent camera shot.
+```
+
+
+## 34 — Tower Bridge source structure
+
+Used by: Block 05 bridge morph; W05 source.
+
+Use an accurate Tower Bridge reference from the selected riverward side.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the whole recognisable London Tower Bridge with both stone towers, upper walkways, road deck, suspension elements, river piers and connected approaches visible together. Use a broad three-quarter view that reveals the near tower’s side depth and the far tower’s smaller perspective scale. Preserve the actual source configuration, colours and proportions from the supplied reference. Show where suspension elements connect to the towers and deck; keep the underlying river and banks as neutral spatial context. No Chain Bridge components in this source image, no generic suspension bridge and no disembodied tower collage. Moderate depth of field must retain both structural attachments and the characteristic whole silhouette. This image is source geometry for the material transformation in the existing river scene.
+```
+
+
+## 35 — Széchenyi Chain Bridge destination structure
+
+Used by: Block 05 bridge morph; W05 target.
+
+Use an accurate Chain Bridge reference and match the source viewpoint from 34 as closely as practical.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the complete recognisable Széchenyi Chain Bridge with its actual pylons, suspension chains, road deck, river supports and approaches. Keep the viewing orientation and canvas scale comparable to the Tower Bridge source. Expose chain attachments, the pylon openings and their substantial masonry side faces, and the connection of the deck through those openings. Preserve the specific bridge in the supplied reference rather than importing Tower Bridge’s upper walkways or tower roofs into the target. Overcast photographic lighting shows stone grain, metal thickness and water context. No blended half-bridge or invisible supporting cables. This reference defines the destination parts; the video must change the original towers, suspension and deck through their own visible intermediate structures at the same river crossing.
+```
+
+
+## 36 — London Eye and connected South Bank depth
+
+Used by: Block 06 London identity and scale; W06.
+
+Use the accepted South Bank route/reference and accurate London Eye appearance.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce one photographic oblique view of the recognisable London Eye with its complete circular wheel, visible capsules, supports and riverbank relation. Preserve the actual London landmark from the supplied source and leave open sky around its silhouette. Show the adjacent South Bank promenade with a continuous walking route and people with numerical cards, uncovered heads and no umbrellas. Include clear near, middle and far depth: near paving/railing, middle wheel base and far river buildings. Do not replace the wheel with a decorative ring, omit its supports or paste it into a generic Budapest skyline. The wheel remains a London anchor while separate neighbouring objects change; this reference does not request an additional wheel morph.
+```
+
+
+## 37 — Great Market Hall roof and brick source volume
+
+Used by: Block 06 Great Market Hall-to-Bálna material pairing; W06.
+
+Use an accurate Great Market Hall image; this is a later established structure, not the film’s London opening.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the recognisable Budapest Great Market Hall as one full-depth building, with its long pitched roof, patterned roof surface, substantial brick walls and entrance relationship visible together. Use a three-quarter angle exposing both roof slopes and one long side wall. Follow the supplied actual architecture rather than inventing a generic warehouse. Render the ridge line, tile courses, existing roof openings and eave connections sharply; they are the source parts that later develop into curved roof ribs and glazing. Keep the building’s base and door positions clear for spatial correspondence to the destination. No flexible paper roof, detached pattern sheet or interior-only market collage. This is structural evidence for the already-scripted later morph, not a Budapest starting streetscape.
+```
+
+
+## 38 — Bálna curved-glass target volume
+
+Used by: Block 06 target roof; W06.
+
+Use the actual Bálna Budapest reference and the established source orientation from 37.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the distinctive curved glass volume and its relationship to the retained masonry building mass of Bálna, following the supplied real destination reference. Use an oblique angle revealing the glass shell’s ribs, pane boundaries, full depth, side attachment and underlying occupied structure. Keep the whole target building readable, not just a generic curved window. Match the source reference’s light direction and comparable scale so its pitched ridge, eaves and roof openings can map to the target curved frame and glazing. Glass remains visibly thick at exposed edges with realistic reflections and framing. No transparent overlay of two buildings or free-floating glass balloon. This is target geometry for a continuous change of the existing source roof while its footprint remains traceable.
+```
+
+
+## 39 — Westminster and Parliament Square London source
+
+Used by: Block 07 London source anchors; later returning camera views.
+
+Use accurate Westminster/Parliament Square source photography and the assigned route.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce one broad photographic London exterior with the recognisable Palace of Westminster/Elizabeth Tower composition appropriate to the supplied viewpoint, Parliament Square street context and connected pavement. Preserve actual landmark identity and relative massing rather than substituting Hungarian Parliament. Show deep stone surfaces, characteristic roof and tower features, street-level entrances and the road edge clearly. If the sequence’s current people are present, keep numerical cards above uncovered heads; the later removal of cards is a scripted video event, not part of this source image. Use subdued overcast light with damp ground and dry air. No Budapest architecture pasted into this initial source view and no clinical room. This image anchors the real London setting before the specified final local intrusions and quieting.
+```
+
+
+## 40 — Hungarian Parliament complete destination silhouette
+
+Used by: Blocks 05–07 named landmark; W05–W07.
+
+Use an accurate Hungarian Parliament reference; keep it separate from the London source image.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show the complete recognisable Hungarian Parliament building from the riverward three-quarter or frontal orientation selected in the script. Preserve its central dome, long facade, characteristic roofline and full connected building mass from the supplied photograph. Give it substantial screen area with open sky, visible base and real side depth rather than a tiny skyline patch. Show major stone openings, pinnacles, roof sections and the relation of the dome to the flanking wings. Match the overcast illumination of the London source for later material correspondence, while retaining the target’s specific identity. No Westminster/Budapest blend, generic Gothic palace or second cathedral. The image is destination identity evidence; it does not prescribe a different river, street or camera setup in the video.
+```
+
+
+## 41 — Gresham Palace frontage and deep stone details
+
+Used by: Block 05; W05 named target.
+
+Use the actual Gresham Palace reference, maintaining the selected facade identity.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create one three-quarter photographic view of Gresham Palace with the complete recognisable frontage, roof profile, main entrance and one visible side return. Preserve the specific source architecture’s motifs and proportions, avoiding a generic grand hotel facade. Render the stone/metal/glass interfaces, carved surrounds, entrance depth and roof attachments clearly. Include only enough neutral pavement for scale; avoid flags, tourist crowds or unrelated signage covering the facade. Use diffuse overcast light and real material depth. This destination detail supplies the established London riverfront block’s transformation target. The surrounding film street remains at its own site and camera angle, and this reference must not be treated as a new Budapest establishing composition.
+```
+
+
+## 42 — New York Palace historic exterior with occupied-bay depth
+
+Used by: Block 03 work-world exterior; W03.
+
+Use the named New York Palace Budapest reference and W03 design; do not replace the accepted work-memory interiors.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show one complete, recognisable historic New York Palace exterior with its distinctive corner mass, carved facade, cornices and roof silhouette faithfully derived from the supplied reference. Expose one ordinary window bay’s thick stone returns and an interior floor edge at real depth, without converting the whole building into a rectangular office block. Keep the principal historic form readable while showing the structural parts from which the script’s local workroom ledges can extend. Use an oblique angle and lighting that reveals front, side and underside of the projecting ornament. No paper-like architectural sheets, filing-cabinet building or generic glass tower. This reference establishes the historic exterior; literal desks, records and remembered people remain defined by the separate work-memory bank.
+```
+
+
+## 43 — London entrance rail and remembered transit gate
+
+Used by: Block 02 FRAME 2; Block 06 transit recurrence.
+
+Attach the London entrance rail and accepted Russian transit-memory source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal three-quarter structural views. Source: the actual London street-level entrance railing with a rooted footplate, vertical bar and horizontal elbow. Destination: the remembered ticket gate with its post, reader support, actual rotating gate leaf and floor contact matching the accepted memory. Preserve the original viewing direction and show the physical correspondences between bar and post, elbow and reader support, footplate and gate base. Keep metal thickness, screw points and contact shadows crisp. Do not invent a new transit logo or explanatory route map. If a hand is included, use the accepted source character and show it near the actual reader without duplicated fingers. This supports the physical gate construction and later hand interaction, not a cut into a station interior.
+```
+
+
+## 44 — Remembered bus seats, aisle and canopy-post correspondence
+
+Used by: Block 02 FRAME 3; Agra memory.
+
+Attach the accepted Agra bus memory and the assigned London bench/canopy source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Produce one full-depth oblique view of the exact remembered bus seating arrangement, with paired seat frames, upholstery thickness, aisle floor, side-window pillars and handrails visible together. Preserve the source seating style and human layout; if the named woman and remembered protagonist appear, use their actual accepted identities and placements, without cards. Include enough side opening to inspect the aisle-to-seat and canopy-post-to-window-pillar geometry. Show one seat cushion edge, one support below it and one window-sill corner clearly. No generic luxury coach, duplicated passenger rows or flat interior photograph behind glass. This reference defines the target room and objects that the existing bench and canopy material will become in open street space.
+```
+
+
+## 45 — Cairo taxi cabin, rear bench and luggage contact
+
+Used by: Block 02 FRAME 4–5; Cairo memory.
+
+Attach the accepted Cairo taxi memory and driver/passenger identities only where people are included.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Show one oblique open-side view of the remembered Cairo taxi cabin, matching the accepted source exactly: rear bench depth, door ledge, roof pillar, footwell, luggage rack or actual bag support, and the ordinary bag that the script later drops. Keep real upholstered cushion thickness, metal attachment points and the space around passengers readable. Preserve the source driver and passenger identities when visible, with no rating cards on remembered people. Do not turn this into a black London taxi or invent a more luxurious car. The bag rests on its real support in this still; motion and the actual fall are tested in video. Leave the open rear-side camera route legible for the subsequent continuous passage toward the adjacent memory room.
+```
+
+
+## 46 — Canopy and balloon envelope, rigging and basket interfaces
+
+Used by: Block 02 FRAME 6; balloon helpers memory.
+
+Attach the accepted balloon/helper memory and the actual station-canopy source.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two corresponding oblique structural views with consistent light. Source: the canopy’s visible curved ribs, roof covering, hanging ties and supports. Destination: the accepted balloon envelope, stitched fabric panels, suspension ropes and full-depth basket with their actual connection points. Preserve the destination balloon’s specific design and the source canopy’s identifiable rib/edge relationships. Show fabric thickness at seams, taut rope paths, knots and basket weave, including the underside and floor support. No detached balloon over an unrelated landscape, ropes disappearing into skin or paper balloon shell. Named helpers, if included, keep their accepted identities and actual grip points. This reference explains materials and support; it is not a still-image test of inflation, lifting or human motion.
+```
+
+
+## 47 — Paving, soil, paprika/corn roots and rail sleepers
+
+Used by: Block 02 FRAME 6/8/9; roots and travel transitions.
+
+Use the accepted Orosháza/Viharsarok memory material palette.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create three equal low oblique material views with comparable scale and light. First: the current street’s thick paving slabs, open joints and soil beneath. Second: the selected paprika/corn planting strip with real roots embedded in soil, plant stems, leaf texture and shadows. Third: the intended rail sleepers and adjoining paving edge, with grain, fastenings and solid support. Keep each view physically deep rather than a flat texture swatch. Distinguish roots from rail metal and show the precise boundaries the video must connect. No plant replacing a person, synthetic green carpet or disappearing ground plane. This is source/target material evidence for the existing growing-root and folding-stalk action, not an additional pastoral scene or a new memory.
+```
+
+
+## 48 — Administrative desk, actual documents and device geometry
+
+Used by: Block 03; later records recurrences.
+
+Attach the accepted work-memory source and exact document props where legible text matters.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Reconstruct the specific work desk from the memory bank in a clear oblique photographic view: desktop edge, supporting brackets/legs, calendar, printer or actual device, papers and phone in their established positions. Preserve the source document meanings and visible layout; do not invent legal text, identifying personal data or new institutional claims. Show paper thickness at corners, the actual missing field where scripted, a monitor as an object on the desk and room depth behind it. Documents are ordinary paper here; the building around them is not made of folded sheets. Include a second small view only if necessary to expose the desk underside, keeping the same object identity. Named occupants retain their approved appearance and remain card-free within the memory. This reference supplies objects, supports and hand-contact geometry.
+```
+
+
+## 49 — Cabinet, fingerprint desk and chair construction
+
+Used by: Block 04 FRAME 4–5; Block 06 procedural recurrence.
+
+Use the accepted apartment cabinet and fingerprinting-memory references.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create two equal oblique source/destination views. Source: the actual apartment cabinet with top, drawer base, side panels, handles, grain and joints sharply visible. Destination: the accepted fingerprinting desk and chair, showing the corresponding desktop edge, downward leg supports and seat base at the same angle. Keep the device or paper used in the source procedure on the actual work surface. Show front, side and underside so panel thickness is unmistakable; do not treat a cabinet front as a flat image that reveals a different room. The policewoman and remembered protagonist, if included, must match their approved identities and positions and have no cards. No tactical raid staging, invented evidence wall or body substitution. The video will describe how the actual boards reshape continuously into their new furniture function.
+```
+
+
+## 50 — Court, file compartments and retained-device supports
+
+Used by: Block 05 FRAME 2–6; records-based structures.
+
+Attach the accepted court/apartment/device-handling memory references.
+
+```text
+Produce a true 16:9 photographic reference image for MyScoutee with inspectable geometry and material detail. Use the supplied accepted source identity rather than a generic substitute. Match its scene lighting; for current-city exteriors use overcast light, damp paving, clear dry air and no umbrellas. Show real thickness, joints, depth and contact shadows. No title, panel labels, comparison arrows or decorative border. This is reference preparation for later video, not a request for animation or replacement video shots.
+
+Create three equal photographic detail views from the same compatible material palette: the actual hearing bench/floor and thick supports; the memory’s domestic shelving and document compartments; and the device-handling desk with its closed property boxes, phone, laptop and storage in their established positions. Preserve the exact object roles without inventing accusations, labels or new paperwork. Show the tabletop and shelf-board side faces, drawer/compartment dividers, fastening points and floor contact. Documents remain ordinary handled objects, and all supporting architecture stays full-depth timber, stone or metal. If a hand is needed for scale, derive it from the appropriate accepted character rather than adding a new person. These details provide the source/target objects for the scripted sequence; they are not three requested video shots or a crime-thriller montage.
+```
+
+## 51 — Original London street cross-section and connected building bases
+
+Used by: Native Extend street expansion; production street-opening beats.
+
+Use the accepted London world and actual selected source endpoint. Preserve existing building and transport identities.
+
+```text
+Produce one detailed 16:9 photographic low-oblique view of the SAME London street section beneath the next arcade. Establish the ordinary source before its space opens: distinct paving slabs, kerb blocks, road surface, gutter, the feet of the two arcade piers and the substantial masonry bases of the adjoining historic buildings. The far lane and next doorway are visibly connected to the foreground by uninterrupted ground. Show the source's existing rails only where they actually occur. Keep all building masses full-depth, with side walls and heavy contact shadows; no model cutaway or labels. Use damp paving, overcast light and clear dry air without umbrellas. Two existing current pedestrians retain their accepted faces and readable 6.2 and 9.2 cards. The beginning remains recognisable London, with its source shopfronts and transport, rather than an already completed Budapest boulevard. This is the physical source geometry for an expanding street, not evidence of animated motion. Do not redesign the accepted source video's endpoint to match an invented plan.
+```
+
+## 52 — Opened street volume with simultaneously changed historic buildings
+
+Used by: Native Extend expanding space and canopy; matching production beats.
+
+Attach 51 and the accepted arch/canopy and historic destination detail images relevant to this beat.
+
+```text
+Produce one detailed 16:9 photographic view from the SAME viewpoint as the source street section. Show that same connected street opened into a broader traversable pocket beneath the giant iron-and-glass canopy. The original near kerb corner, two arch footings and next entrance threshold remain identifiable. Between them the original paving courses have become longer interlocking stone courses; the former gutter stones continue as the edge of a shallow stepped terrace. Reveal real thick slab edges, supported risers and the continuous road route beyond them. The original nearby buildings remain present with solid side walls: one has deep carved-stone window surrounds and an occupied loggia, while its neighbour's iron balcony has become a supported sideways stair. These are individually transformed parts of the original historic London volumes, not buildings removed to make room for a new square. Preserve an unbroken walking strip and distinct traffic lanes through the opened area; chairs and people have complete ground support. Current people keep the same identities and numerical cards. Use overcast daylight, damp material and no umbrellas. The source London street has acquired specific local Pest architectural details; do not impose a literal Piccadilly-to-Andrássy destination, invented landmark or changed crowd. This is the destination space and material reference, not a separate requested video shot.
+```
+
+## 53 — Optional intermediate street depth with concurrent masonry morph
+
+Used by: Native Extend optional geometry guidance; never an animation test.
+
+Attach 51 and 52; retain their actual location, people and objects.
+
+```text
+Produce one 16:9 photographic structural intermediate between the supplied source and opened destination of the SAME street. Use the same viewpoint. In the foreground the original kerb corner still meets the unchanging near pavement. Farther along, the thick paving courses are partway through elongating into supported terrace treads: show their side faces, interlocking ends and the stone bedding still supporting them. A visible seam leads continuously from the unchanged source slab into the longer destination course. Leave a complete supported walking strip alongside this movement. Above it the same historic building's window surround has some original brick courses and some deep carved-stone voussoirs, joined in one opaque wall with real backing and side depth. The adjacent balcony is partway between its original scroll and its supported stair shape. The roof ribs retain contact with both original piers. Show intermediate geometry in one inhabited space, not ghosted source/target images or a three-frame slideshow. No paper-like folded buildings, floating facade sheets, empty void under a pedestrian, disappearance dust or colour-wash transition. The unchanged current pedestrians retain their own numerical cards. Overcast light, damp paving, no umbrellas. This still helps inspect depth and correspondences only; it cannot establish whether the later video morph is continuous.
 ```
