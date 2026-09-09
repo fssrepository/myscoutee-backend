@@ -2,17 +2,17 @@
 
 **Purpose:** test fast camera movement, physically transforming architecture, a living city and moving memory inside glass in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
 
-Budget: [at most 100 credits](../00_project/BUDGET.md) for the whole pilot, including paid preparation. One opening test, then one short continuation only if usable. No automatic rerolls.
+Budget: [at most 100 credits](../00_project/BUDGET.md) for the whole pilot, including paid preparation. This is included in the complete-film 2200-credit working ceiling, not added on top; protect the other 800 credits and the cost of all unfinished production. One opening test, then one short continuation only if usable. No automatic rerolls.
 
 ## 1. Existing project and references
 
-Open the existing `AI Film Festival` project. Check for accepted C01, C02 and W01 assets. Reuse valid existing media; the presence of a local prompt file does not establish whether the account already contains its image.
+Continue in the existing **MyScoutee** project shown in the supplied screenshot. Its visible Elements are already imported and show **Add element image** rather than rendered thumbnails. Use those existing containers; do not repeat their import. Check C01, C02 and W01 specifically and reuse any accepted images already available. The screenshot does not establish the state of off-screen entries.
 
 If Elements are missing, [00_pilot.md](../00_project/elements/00_pilot.md) starts with three definitions. This is metadata, not rendered imagery. If all 48 Elements were imported earlier, **do not import them again**. See the [import guide](../00_project/elements/README.md).
 
 ## 2. Generate only missing images
 
-One row is one image request. Paste the linked `.txt` in the image prompt field. Use 16:9 and one output. Keep reference images detailed; 480p is the video setting.
+One row is one image request. The planned image model is **Nano Banana Pro in the stated seven-day unlimited window**, once the selected project operation is confirmed covered. Paste the linked `.txt` in the image prompt field. Use 16:9 and one output. Keep reference images detailed; 480p is the video setting. Use each matching existing Element's **Add element image** control to associate its accepted render, following the actual options offered by the interface.
 
 | Order | Prompt | Existing image inputs | Output name |
 | --- | --- | --- | --- |

@@ -2,12 +2,14 @@
 
 **Start here: [the short 480p pilot](01_pilot/README.md).** One 8-second shot tests fast camera movement, a living London–Budapest city, transforming architecture and moving memory inside glass. If usable, one 4-second extension tests the seam and a short narration reference. One output per request; no variation campaign.
 
-This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The current account and its existing assets have not been inspected.
+This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
+
+**Complete-film working ceiling: 2200 credits; protected reserve: 800.** Include all required finishing work before spending, not just the next clip. There is no additional funding if the original 3000 credits run out. See the [budget](00_project/BUDGET.md).
 
 ## Order of work
 
 1. Read [setup and capability checks](00_project/SETUP.md) and the [budget](00_project/BUDGET.md). Use the price displayed for the actual operation.
-2. If needed, paste [project_brief.txt](00_project/project_brief.txt) into the existing `AI Film Festival` project's brief field.
+2. Continue in the existing **MyScoutee** project shown in the screenshot. If needed, paste [project_brief.txt](00_project/project_brief.txt) into its brief field. Existing Elements do not need re-importing.
 3. Follow the [numbered pilot steps](01_pilot/README.md). Do not build the whole asset library first.
 4. After a usable pilot, follow the film blocks below. Each README lists **prompt → required existing references → output name**.
 5. After V02, verify that the native 60-second result can continue and eventually export as one film before preparing the remaining blocks.

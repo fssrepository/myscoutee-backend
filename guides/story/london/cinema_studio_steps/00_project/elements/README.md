@@ -2,6 +2,8 @@
 
 These files are metadata for **Import Elements only**. They do not create rendered reference images and are not video prompts.
 
+**Current starting point:** the supplied 2026-09-09 screenshot already shows imported Elements in **MyScoutee**, with empty **Add element image** slots on the visible entries. Skip import for those entries and supply their matching accepted images. The screenshot alone does not verify all 48 entries; only actually missing definitions need importing.
+
 If the project's original 48 Elements already exist, there is no new import step. Use the correct image with each existing Element rather than creating another Element for the same canonical key. Use the actual available image-binding control; this guide does not invent a move/copy operation.
 
 For an empty or partially populated project, use `00_pilot.md`, then `01_film.md` through `07_film.md` as needed. Each logical definition appears in exactly one batch. Pilot C01/C02/W01 therefore do not repeat in the first film batch. Together the batches preserve **31 characters + 16 locations + one score-card prop = 48 Elements**.

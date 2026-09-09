@@ -1696,5 +1696,20 @@
       "file": "01_pilot/test_video_8s.txt",
       "sha256": "2e8dc883e51d3da02ac6e4ebe40833567f9a7b287947e6edb91b9ada27e08c34"
     }
-  ]
+  ],
+  "current_project_observation": {
+    "display_name": "MyScoutee",
+    "source": "User-supplied screenshot, 2026-09-09 09:37:22",
+    "visible_elements": "Imported metadata containers; Add element image placeholders on visible entries",
+    "full_inventory_verified": false,
+    "subscription": "Planned one-month Ultra; creator reports seven-day Nano Banana Pro unlimited image offer; entitlement not verified"
+  },
+  "production_budget": {
+    "complete_film_working_ceiling_credits": 2200,
+    "protected_emergency_completion_reserve_credits": 800,
+    "absolute_limit_credits": 3000,
+    "pilot_included_max_credits": 100,
+    "additional_funding_available": false,
+    "live_costs_verified": false
+  }
 }

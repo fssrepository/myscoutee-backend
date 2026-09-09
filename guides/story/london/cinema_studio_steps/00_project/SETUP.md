@@ -1,6 +1,8 @@
 # Setup and checks before generation
 
-Production plan; public documentation checked **2026-09-09**. The signed-in account and current Ultra entitlements have not been inspected.
+Production plan; public documentation checked **2026-09-09**. The supplied screenshot from **2026-09-09 09:37:22** shows the existing project named **MyScoutee**, its Elements page, and visible imported entries displaying **Add element image**. This establishes existing metadata containers with no image shown on those visible entries; it does not establish the full Element count or off-screen media state. Continue in this project; do not create or import a duplicate because the old master used the name `AI Film Festival`.
+
+The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unlimited image offer. Use that as the intended image-production route, conditional on the actual selected operation being covered. The screenshot does not show plan terms or an active subscription; the live entitlement and expiry have not been verified. The screenshot's all-credits-used notice is a pre-purchase observation, not evidence that this film consumed 3000 credits.
 
 | Setting | Pilot | Final film |
 | --- | --- | --- |
@@ -14,7 +16,7 @@ Production plan; public documentation checked **2026-09-09**. The signed-in acco
 | Look | Contemporary rainy blue hour, natural skin and materials | Same |
 | Optics | Approximately 24–28 mm; readable subject and environment | Same; fast movement directed in the prompt |
 
-For reference images, use an image model available inside the project that accepts the required references, preferably one actually covered by the plan. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition.
+For reference images, the intended model is **Nano Banana Pro during the stated seven-day unlimited window**, provided it is available inside this project, accepts the required reference set and the actual operation is covered. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition. Use the existing Element's visible **Add element image** entry point for its matching accepted image, following the controls actually offered next. Do not create another Element for the same person or location. The screenshot's real Element names differ from the pack aliases; insert the actual token after selecting the correct rendered reference, never a guessed or truncated name.
 
 Drama is a suitable Director's Panel starting point. The overload comes from camera movement and architecture; the man is not constantly shouting. A tempo control may change cutting density, so do not automatically select Chaotic if that fragments the continuous walk. Specific camera actions are already in each video prompt.
 
