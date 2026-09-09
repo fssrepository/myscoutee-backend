@@ -1,6 +1,6 @@
 # MYSCOUTEE — Cinema Studio, step by step
 
-**Resume at [the current session](04_tracking/SESSION.md), using [the numbered production list](04_tracking/production_steps.csv).** Do not restart completed assets. The [short 480p pilot](01_pilot/README.md) tests fast camera movement, a living London–Budapest city, transforming architecture and moving memory inside glass. If usable, one 4-second extension tests the seam and a short narration reference. One output per request; no variation campaign.
+**Resume at [the current session](04_tracking/SESSION.md), using [the numbered production list](04_tracking/production_steps.csv).** Do not restart completed assets. The [short 480p pilot](01_pilot/README.md) tests fast camera movement, a living London–Budapest city, transforming architecture and a full-depth inhabited memory grown from London materials. One native 4-second continuation combines the next visual transformation, camera/scene continuity, rating cards and native sound in the same result. One short supplied recording is prepared from the exact sentence in the pilot README; it is evaluated inside that same continuation. One output per request; no variation campaign.
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
 
@@ -33,8 +33,8 @@ The production list includes the outstanding reference binding, clean narration,
 | `project_brief.txt` | Project Brief; not a generation prompt |
 | `00_project/elements/*.md`, excluding README | **Import Elements** only, and only for missing definitions |
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
-| `narration.txt`, `test_narration.txt` | TTS text field; spoken words only |
-| `test_memory_element_description.txt` | Description field of the Pilot Soho Restaurant Memory Element; metadata only |
+| `03_film/NN/narration.txt` | Full-film TTS text field; spoken words only |
+| `00_project/elements/00_pilot_test_assets.md` | Existing restaurant Element metadata; no generation |
 | `video.txt`, `test_video_8s.txt`, `test_extend_4s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 

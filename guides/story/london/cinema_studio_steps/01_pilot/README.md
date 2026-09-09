@@ -1,77 +1,41 @@
-# First test — 8 seconds, 480p
+# Pilot — detailed first scene, then one shared continuation test
 
-**Purpose:** test continuous forward camera movement, physically transforming architecture, a living city and an embodied memory growing from London materials in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
+Two active video prompt files remain. The first scene keeps its complete detailed wording. The continuation tests NEW visible transformations, native camera/scene continuity, numerical rating cards and supplied speech with the music/SFX in the SAME output. Do not generate a separate video for each mechanism or replace the first scene with a shortened combined prompt.
 
-Budget: **80 credits already spent; 720 credits maximum available from now for all remaining work**, creator-reported. The earlier 100-credit pilot ceiling leaves only 20 for remaining pilot checks unless explicitly reallocated within 720. No automatic retry. See [current budget](../00_project/BUDGET.md).
+| File or input | What it does | Operation |
+| --- | --- | --- |
+| [test_video_8s.txt](test_video_8s.txt) | Full first scene: living London, physical restaurant memory, camera flight, landmarks, cards and music/SFX | First video, 8 s / 480p / 16:9 / audio ON / one output |
+| Short audio input, exact text below | Supplies the one spoken thought for the continuation | One short audio preparation; reuse suitable existing audio if available |
+| [test_extend_4s.txt](test_extend_4s.txt) | Continues the actual first-scene ending with a new immense arcade-to-canopy transformation, checking the seam and audio together | Native Forward Extend, 4 added seconds / 480p / 16:9 / audio ON / one output |
 
-## 1. Existing project and references
+The [restaurant image source](../02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt) belongs to the reference library and has already produced an accepted image. Its [Element description](../00_project/elements/00_pilot_test_assets.md) is existing metadata. Neither is another pending pilot generation. Reuse C01, C02, W01 and T01 on their existing Elements; their four actual image mentions are bound. The rejected combined-first-scene file is not part of this workflow.
 
-Continue in the existing **MyScoutee** project. C01, C02 and the 2K W01 already have accepted images on the matching imported Elements; the single T01 restaurant still is also accepted. Reuse them for this pilot. Do not repeat their generation or import. The pending pilot work is reference binding and the video itself; see the [current session](../04_tracking/SESSION.md).
+## Budget and input check before payment
 
-If Elements are missing, [00_pilot.md](../00_project/elements/00_pilot.md) starts with three definitions. This is metadata, not rendered imagery. If all 48 Elements were imported earlier, **do not import them again**. See the [import guide](../00_project/elements/README.md).
+Creator-reported: 80 credits already spent; maximum 720 remaining for all unfinished work. The historical 100-credit pilot allowance was for the ENTIRE pilot, not each file. It leaves 20 in that old allocation, which is not proof that another first video plus short audio plus Extend fits. Quote the operations actually remaining together. Record speech and video charges separately but review the resulting continuation together. No automatic 4–5-attempt loop and no retry per failed detail. See [BUDGET.md](../00_project/BUDGET.md).
 
-## 2. Generate only missing images
+Before generating the short audio, verify in the manual interface that the selected Forward Extend operation accepts the source video, the existing image references and the audio reference together. Identify the supported added duration and price. Resolve unsupported inputs before spending on an unusable reference. Inspect the hosted final assembly/export route without buying a calibration render merely to inspect controls.
 
-One row is one image request. The planned image model is **Nano Banana Pro in the stated seven-day unlimited window**, once the selected project operation is confirmed covered. Paste the linked `.txt` in the image prompt field. Use 16:9 and one output. Keep reference images detailed; 480p is the video setting. Use each matching existing Element's **Add element image** control to associate its accepted render, following the actual options offered by the interface.
+## First scene
 
-| Order | Prompt | Existing image inputs | Output name |
-| --- | --- | --- | --- |
-| 1 | [C01 — protagonist](../02_library/characters/C01_PROTAGONIST.txt) | None | `C01_PROTAGONIST.png` |
-| 2 | [C02 — Soho woman](../02_library/characters/C02_SOHO_WOMAN.txt) | None | `C02_SOHO_WOMAN.png` |
-| 3 | [W01 — city](../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
-| 4 | [T01 — single memory still](test_memory_image.txt) | C01 + C02 | `T01_SOHO_MEMORY.png` |
+Use the complete [8-second prompt](test_video_8s.txt), with the existing four image references. The revised prompt is not itself a generated result. Review the actual output once: camera travel must be continuous, remembered people and furniture must occupy the street in full depth, surface changes must remain visible, ratings must contain numbers, and London/Budapest landmark forms and transport must be recognisable. Listen to the same output for its material sound and Hungarian theme. Keep useful earlier results as evidence; do not regenerate a completed source image for every video attempt.
 
-For T01, the prompt uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these identifiers automatically loads their Elements and accepted images in the composer. T01 is already an accepted raw project image. To give it the same reusable reference route, create the distinct Location Element below and attach that existing image. Do not regenerate it, reimport the full library or replace the final film's larger MW01 bank.
+## Short audio preparation — included here, no separate test text file
 
-### Give the accepted restaurant still its own Element
+Copy ONLY this sentence into the speech text field:
 
-In MyScoutee / Elements, import [00_pilot_test_assets.md](../00_project/elements/00_pilot_test_assets.md). This replaces manual field entry and creates only the missing pilot Location definition. If the empty New element dialog is still open, cancel it first. If this Element was already created, reuse it instead of importing a duplicate. The imported fields should match:
+```text
+Memory edits without asking permission.
+```
 
-| Field | Value |
-| --- | --- |
-| Category | Location |
-| Name | Pilot Soho Restaurant Memory |
-| Version | v1 |
-| Description | Included in the import; [test_memory_element_description.txt](test_memory_element_description.txt) retains the same text for inspection or a manual field correction |
-| Image | Attach the accepted single restaurant still from MyScoutee / All assets |
-| Scene, if offered | 1 |
+Use one adult English-speaking male voice, approximately forty, low-to-mid register, intimate and slightly tired. The delivery is a personal thought with clear consonants and a natural sentence ending, about 2–3 seconds. Generate clean speech only: no music, effects, rain or additional words. Retain the actual selected voice ID/preset if available and the returned recording. Use the established voice if a suitable recording/preset already exists; do not audition multiple paid variants. Full-film voice direction remains in [VOICE.md](../00_project/VOICE.md).
 
-The import creates metadata only. Attach the accepted restaurant still, save the Element and copy its actual full Element ID. The assistant checks its association and binds it to T01_IMAGE throughout the pack before opening the video prompt for copying. Do not predict the generated ID from this name. Creating metadata and associating the existing still is part of the current reference-binding task, not a new image-generation job. The label "Pilot" describes its initial use; it does not prevent later reuse where this exact memory is needed.
+Save or identify the output as TA01_TEST_NARRATION. Obtain its actual supported audio reference and bind TA01 before copying the extension prompt. Do not paste `@UNBOUND_TA01` into the generator. A correct local mention is not proof that the interface loaded the audio: verify the actual attached recording. The cost comes from the displayed speech quote, not an assumed free step.
 
-## 3. Generate the 8-second video
+## One native continuation, one combined review
 
-The first downloaded pilot failed visual review. The current prompt is an untested revision informed by [published examples and the 2.5 guide](../00_project/PROMPTING.md). It retains all four references and uses one forward camera path; no automatic reroll is authorized by this document.
+Put the selected first-scene video into the real Forward Extend source field. It determines the actual starting image, camera movement and sound. Inspect that endpoint and reconcile the continuation's source-dependent staging before copying it; no earlier rejected download is automatically selected. The prompt does not replay the restaurant smile, first camera descent or St Paul's-to-Basilica transformation. It advances into the next arcade, whose arch and fanlight visibly grow into a giant curved roof over the continuing city.
 
-Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, one output; Film setup → Tempo → Single Shot**. If any setting is unavailable, follow the [setup guide](../00_project/SETUP.md) before paying.
+Use [test_extend_4s.txt](test_extend_4s.txt) with the four existing images and bound short recording. Review ONE returned result for all of the following together: picture seam, continued camera path, new material transformation and spatial depth, persistent numerical cards, exact supplied words and voice, intelligible speech over continuous music/foley, and absence of visible lip-sync. Do not turn each finding into an independent test generation.
 
-[test_video_8s.txt](test_video_8s.txt) explicitly names C01, C02, W01 and T01 through reference mentions. The assistant binds each actual identifier once for the whole pack; paste the full file after its reference setup notice has cleared. See [reference binding](../00_project/REFERENCES.md). Check the quote for one output. Save as `T01_CITY_8S_480P.mp4`.
-
-## 4. Watch once and check the visual and audio mechanisms
-
-- Does the same protagonist walk at human speed while one continuous high-to-low-to-wide camera flight reveals both street sides and keeps the transformation visible?
-- Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
-- Does the whole restaurant emerge directly as a life-size three-dimensional room with solid furniture, both remembered people, contact shadows and a recognisable turning/smiling woman? Keep the continuous kerb and walking path visible; a full-screen cutaway or still photograph is not this spatial emergence.
-- After the memory, does the outward rising camera arc open the view across the same road, showing a substantial black taxi and yellow tram within a complete near-to-distant city whose architecture changes across multiple connected depths?
-- Are complete above-head numerical rating cards with readable decimal values visible in the opening and final wide view, with the human memory gesture readable in between and no clinical reveal?
-
-Listen for a clearly audible, hummable fiddle-led Hungarian folk-rooted theme with acoustic tekerő buzz and short clarinet answers. Check distinct stone grinding, iron creak and wood/glass events against the visible movements. Give the smile a brief quieter pocket; the whole soundtrack must not collapse into generic ambience.
-
-At 480p, tiny text and background faces are not a final-quality test. Minor coherent irregularity is acceptable. If a central mechanism fails, name it before any further spending. An 8 s success does not prove full-block story density or 1080p quality.
-
-The accepted 2K W01 grid is a context reference for this mechanics test, not a literal opening frame. Each cell contains only a fraction of the sheet's total pixels; this pilot cannot establish final architectural sharpness. See [reference-detail guidance](../00_project/SETUP.md#reference-detail-and-contact-sheets) before preparing later nine-cell sheets or paid 1080p production.
-
-## 5. Only after a usable visual test: 4-second extension and audio
-
-First check that **Forward Extend accepts source video, new images and an audio reference together**. If not, do not generate the test narration for this route.
-
-Generate the five words in [test_narration.txt](test_narration.txt) once, using the [voice to retain](../00_project/VOICE.md), naturally around 2–3 s. Save as `TA01_TEST_NARRATION.wav`. Do not attach the full A01 recording to this four-second test.
-
-Forward Extend source: accepted `T01_CITY_8S_480P.mp4`. Added duration: **4 s**, 480p, 16:9, audio ON, one output. Images: the same C01, C02, W01 and T01. Audio: TA01. Prompt: [test_extend_4s.txt](test_extend_4s.txt), after its reference setup notice has cleared. Put the source video in the real Extend source field, not an ordinary image slot.
-
-Check stride, camera direction, traffic, rain and ambience at the eight-second boundary. Compare the spoken result with TA01. Record whether the output contains **12 continuous seconds or only a 4-second continuation**. Name and record the actual returned media rather than assuming a cumulative chain.
-
-Listen for the same tekerő/clarinet phrase continuing across the seam, intelligible supplied speech with no new speaker or visible lip-sync, and music/SFX staying below it. Verify the reference input actually supplies the intended audio; a locally bound token alone does not prove this. The detailed criteria are in the [voice plan](../00_project/VOICE.md#seven-recordings-one-continuing-speaker).
-
-## 6. Next step
-
-After a usable pilot, complete W01_4K: generate one 4K replacement under verified Unlimited, retain the old image until acceptance, and associate the replacement with the same World 01 Element. Then complete FULL_BUDGET, including actual audio-ON video and narration quotes and the hosted assembly/export route. Continue to [Film Block 01](../03_film/01/README.md) at the 30 s / 1080p target. Do not stretch the pilot into the final film or create seven draft versions. Reuse C01/C02 at 2K; keep the pilot video separate from the 3:20 production chain.
+Record whether the output contains the whole approximately 12-second chain or just the new four seconds. A short success does not establish full 30-second story density, 1080p detail or a complete 200-second hosted export. The seven final blocks, their exact narration texts and their necessary generation stages remain unchanged. There is no paid media operation performed by editing these files.

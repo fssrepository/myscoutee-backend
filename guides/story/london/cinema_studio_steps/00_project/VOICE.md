@@ -52,7 +52,7 @@ Use any available pre-generation duration estimate, then measure or inspect the 
 
 ## Pilot versus full narration
 
-[TA01](../01_pilot/test_narration.txt) is a five-word sentence, ideally about 2–3 s for the 4 s extension. It tests the voice/reference route quickly; it does not validate the timing of A04–A06.
+[TA01 text and preparation](../01_pilot/README.md#short-audio-preparation--included-here-no-separate-test-text-file) is a five-word sentence, ideally about 2–3 s for the 4 s extension. It tests the voice/reference route quickly; it does not validate the timing of A04–A06.
 
 Audio-reference input does not prove an unchanged soundtrack. Compare the source recording with the video output during the pilot and V01. Generate the remaining narrations as their blocks become necessary, so an early audio problem does not invalidate seven prepaid recordings.
 

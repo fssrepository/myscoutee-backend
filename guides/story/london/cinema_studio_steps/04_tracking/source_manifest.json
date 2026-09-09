@@ -1692,7 +1692,7 @@
       ]
     },
     {
-      "file": "01_pilot/test_memory_image.txt",
+      "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt",
       "sha256": "1b6057f0a9a77021edfc2dd45b2482f2a34c2274f71b4e73ea844171b4011f7c",
       "reference_elements": {
         "C01": "char_mys_protagonist_s1_v1",
@@ -1703,11 +1703,6 @@
         "C01",
         "C02"
       ]
-    },
-    {
-      "file": "01_pilot/test_narration.txt",
-      "sha256": "f8258caac81a34f59023992768fe7c50d2fe2057e242e4fdf2e25232def1ef8a",
-      "refs": []
     },
     {
       "file": "01_pilot/test_video_8s.txt",
