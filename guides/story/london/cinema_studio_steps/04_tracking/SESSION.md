@@ -1,5 +1,9 @@
 # Guided production session
 
+## Current MR001 image review
+
+The downloaded `hf_20260909_194343_c663f27c-24ac-4db1-b610-1de68b585d30.png` is rejected as a morph reference: the first three cells nearly repeat St Paul’s and the last retains source massing as a hybrid. MR001 now releases the source footprint/proportions while retaining the site and camera, and specifies substantial unfinished masonry, facade carving and roof geometry in both intermediate cells. The revised prompt has not been rendered or visually validated. Existing R006 remains the destination input. No video generation or new credit debit occurred.
+
 Current step: **6 / 77 — pilot visual review failed; revise wording before deciding on another generation**.
 Completed: **5**. Remaining including current step: **72**; after this step: **71**.
 Pilot: **step 6 / 8**. T01_IMAGE is visually accepted from the 14:39:25 result in MyScoutee. W01 is accepted and the creator explicitly confirmed completion after the Save instruction. C01 and C02 are visually accepted. The 14:19:35 screenshot confirms both saved image attachments in the MyScoutee Elements list. Their original generation history remains unresolved; this is distinct from the now-confirmed saved Element associations. Selected image controls and Unlimited are verified; actual charges and subscription expiry are not.

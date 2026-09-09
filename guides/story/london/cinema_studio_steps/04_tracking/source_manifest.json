@@ -1884,14 +1884,21 @@
         "R011",
         "R006"
       ],
-      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "status": "REVIEW_FAILED_PROMPT_REVISED_RENDER_PENDING",
       "generation_count": 1,
       "layout": "2x2 source/early/advanced/target",
       "intended_resolution": "4K",
       "production_reuse": [
         "03_film/01/video.txt"
       ],
-      "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed."
+      "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed.",
+      "prompt_sha256": "50a9878e7ae2bb170ff2ec76de1f9b90855cf290689722f4b0ae43543d5bbedc",
+      "latest_image_review": {
+        "file": "/home/raxim/Downloads/hf_20260909_194343_c663f27c-24ac-4db1-b610-1de68b585d30.png",
+        "accepted": false,
+        "reason": "First three cells nearly repeat St Pauls; final cell retains source massing and produces a hybrid. No substantial visible intermediate material geometry.",
+        "revision": "Allow target massing and support positions to change on the same site; specify conspicuous unfinished thick masonry, facade relief and roof intermediates."
+      }
     },
     "MR002": {
       "key": "MR002",
