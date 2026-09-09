@@ -2,6 +2,12 @@
 
 **Latest creator estimate: approximately 700 credits remaining.** Use 700 as the current planning baseline for all unfinished work. The previously reported remaining cap was 720; the updated rounded estimate is not evidence of a specific new 20-credit charge. **Recorded historical test spend remains 80 credits** until an actual later debit is reported. No top-up or additional protected 800 is assumed.
 
+## Creator-confirmed image preparation window
+
+On 2026-09-09 the creator confirmed seven-day Unlimited image generation in their Higgsfield web workflow: covered reference-image creation and revision cost time, not additional credits. Use that window to resolve objects, numerical cards, source/target building forms and material connections before another paid video attempt. The window's actual expiration time has not been supplied. Keep image preparation separate from the paid video budget; do not charge the covered images against the approximately 700-credit planning baseline. This confirmation covers the creator's web image workflow, not automated generation or unverified audio/export operations.
+
+Use [the consolidated reference-image prompts](../02_library/objects/REFERENCE_IMAGE_PROMPTS.md). These are reusable production assets, not additional video tests. No paid generation is triggered by writing or revising them.
+
 ## Visible pilot cost tracker — three tests
 
 | Test | Prompt | Next execution quote | New actual charge recorded |
