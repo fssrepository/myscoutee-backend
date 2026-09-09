@@ -39,3 +39,7 @@ The original 48 definitions, accepted restaurant supplement and 53 detail defini
 For the first 8-second test, render R011, R001, R006, R002 and R008. These five assets are reused in production. The broader library supplies detailed assets for the seven full-film blocks; it is not a requirement to render all 53 before testing. Native Extend reuses accepted references and adds R009 for its canopy. R051–R053 remain production street-opening studies. The narrated test reuses joined footage.
 
 Record the actual displayed IDs and accepted image versions after import/render; the R-numbers are local canonical keys, not fabricated platform handles. No import, render or credit charge has been executed by preparing these files.
+
+## Additional London landmark detail definitions — prepared for production
+
+[09_london_landmarks.md](09_london_landmarks.md) contains only three further definitions: R054 Elizabeth Tower / Big Ben, R055 Westminster Abbey and R056 Fisherman’s Bastion destination. These have not been reported imported or rendered. R054/R055 support the already-scripted Block 07 landmarks; R056 is a requested future production option. They do not change the current five-image pilot. The earlier 53-reference import remains intact and must not be repeated. Together the reference library now has 56 definitions; this is not a per-video input count.

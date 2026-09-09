@@ -6,7 +6,7 @@ Each linked `.txt` file contains only one complete image prompt. Copy its entire
 
 ## Reference sets for the actual tests and production
 
-There are **53 separate complete image-prompt files** in this directory. This is a reusable library, not an instruction to attach all 53 images plus the existing cast to every clip. The 50-input ceiling includes all inputs admitted by the actual composer. Existing accepted character and restaurant references remain in use; reuse accepted detail wherever it already resolves the required object. No additional video-test jobs are introduced.
+There are **56 R-numbered image prompts** are indexed here, with R008 now in `../morphs/`. Additional MR-numbered morph studies are in that separate directory. This is a reusable library, not an instruction to attach all library images plus the existing cast to every clip. The 50-input ceiling includes all inputs admitted by the actual composer. Existing accepted character and restaurant references remain in use; reuse accepted detail wherever it already resolves the required object. No additional video-test jobs are introduced.
 
 | Consumer | Reference numbers | Purpose |
 | --- | --- | --- |
@@ -20,12 +20,33 @@ There are **53 separate complete image-prompt files** in this directory. This is
 | Block 04 | 16–18, 21–23, 30, 49 | Solid doorway/room materials, cabinet-to-desk supports and procedural objects; retain W04/MW04 |
 | Block 05 | 16–18, 23, 34–35, 40–41, 48, 50 | Bridge pair, named riverfront landmarks, record/device structures; retain W05/MW05 |
 | Block 06 | 01, 12, 17–23, 28–30, 34–38, 40, 43–47, 49–50 | Crowds, recurring human-memory objects, Market Hall/Bálna roof pair and London scale anchors |
-| Block 07 | 01–04, 24–27, 33, 39–40; reuse accepted HRW07 | Current-city identity and objects, quieting route and unchanged clinical endpoint |
+| Block 07 | 01–04, 24–27, 33, 39–40, 54–55; reuse accepted HRW07 | Current-city identity and objects, quieting route and unchanged clinical endpoint |
 
 The first pilot prepares **five new images**, reusing the existing four bound character/world/restaurant inputs: nine planned image inputs in total, subject to actual accepted media and composer setup. The 24-image set previously listed here is superseded; its remaining detail studies belong to production preparation. The native Extend reuses the actual accepted source and relevant accepted references, adding R009 for its new canopy. The full production rows are reusable subject inventories, not an instruction to render every variant before this short pilot. The images produced for the pilot remain production assets. The library's 53 definitions have been reported imported by the creator; their actual IDs, rendered images and attachments are not yet verified.
 
 Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered `.txt` file is complete and directly copyable into the Higgsfield interface. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Use the already-imported R001–R053 Elements; do not import [the batch](../../00_project/elements/08_reference_assets.md) again. Render the selected five pilot images into their Elements using the matching `.txt` prompts, then record actual IDs and accepted image versions before binding them to the video. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
 
+
+## Recognisable landmarks for production
+
+These belong to the full-film reference library. The current pilot still uses the same five selected images. Preserve each named London source before any scripted local Budapest transformation; a material-detail study cannot replace the complete landmark's identity.
+
+| Landmark | Dedicated reference | Existing film use |
+| --- | --- | --- |
+| St Paul's Cathedral | R005; R011 supplies the pilot street view | Block 01 source |
+| St Stephen's Basilica | R006 | Block 01 destination and later inherited echoes |
+| Tower Bridge / Chain Bridge | R034 / R035 | Existing river passages in Blocks 05–06 |
+| London Eye | R036 | Block 06 London anchor |
+| Palace of Westminster — London Parliament | R039 | Block 07 London source/context |
+| Hungarian Parliament | R040 | Existing separate river/civic sightlines in Blocks 05–07 |
+| Elizabeth Tower / Big Ben detail | R054 | Block 07, already scripted |
+| Westminster Abbey | R055 | Block 07, already scripted as a separate landmark |
+| Nyugati / Hungarian State Opera | R032 / R033 | Existing travel/city landmarks |
+| Gresham / New York Palace | R041 / R042 | Existing historic river/work-city frontages |
+
+R054–R056 are newly prepared, not imported or rendered. Their separate short [import supplement](../../00_project/elements/09_london_landmarks.md) contains only those three definitions; never repeat the already-imported 53-entry batch. Prepare these for the applicable production block, not as additional prerequisites for the eight-second pilot. Actual Element IDs and accepted images must be recorded before binding them to that block's prompt.
+
+Architectural identity checked against the official [UK Parliament tower descriptions](https://www.parliament.uk/about/living-heritage/building/palace/architecture/palacestructure/towers-of-parliament/) and [Westminster Abbey architecture](https://www.westminster-abbey.org/history/explore-our-history/architecture). These are text research sources, not outside images to upload; render all reference media in Higgsfield as requested.
 
 ## Parallel preparation of the five pilot images
 
@@ -83,7 +104,7 @@ Attach the accepted complete source and destination cathedral images. Prepare th
 
 ### R008 — Café opening and furniture construction details
 
-[R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt)
+[R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt](../morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt)
 
 Attach the accepted restaurant still and existing London world image. Use only the world image’s London café/brick details for the source structure, not its Budapest skyline. Preserve the woman, remembered man and exact furniture identities whenever they are visible. The new R011 image is not a prerequisite.
 
@@ -441,3 +462,21 @@ Used by: Native Extend optional geometry guidance; never an animation test.
 
 Attach 51 and 52; retain their actual location, people and objects.
 
+
+### R054 — Big Ben Elizabeth Tower London source
+
+[R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt](R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt)
+
+Used by: existing Block 07 Westminster sequence; production reference only. Use an existing accepted Higgsfield image of this actual landmark for identity when available. The prompt defines its own complete source view and does not depend on another new render.
+
+### R055 — Westminster Abbey London source
+
+[R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt](R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt)
+
+Used by: existing Block 07 Westminster sequence; production reference only. Use an existing accepted Higgsfield image of this actual landmark for identity when available. The prompt defines its own complete source view and does not depend on another new render.
+
+### R056 — Fisherman's Bastion destination
+
+[R056_FISHERMANS_BASTION_DESTINATION.txt](R056_FISHERMANS_BASTION_DESTINATION.txt)
+
+Future production option requested by the creator: a recognisable Bastion form can grow from a London stone stair/parapet/arcade structure. Establish the actual source and matched intermediate volumes when a beat is selected. No forced new pilot scene or whole Budapest relocation. Not imported or rendered.

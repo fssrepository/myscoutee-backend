@@ -1679,6 +1679,51 @@
         "A07",
         "V06"
       ]
+    },
+    "MR001": {
+      "key": "MR001",
+      "path": "02_library/morphs/MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt",
+      "output": "MR001_ST_PAULS_TO_ST_STEPHENS_2X2.png",
+      "refs": [
+        "R011",
+        "R006"
+      ],
+      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "generation_count": 1,
+      "layout": "2x2 source/early/advanced/target",
+      "intended_resolution": "4K",
+      "production_reuse": [
+        "03_film/01/video.txt"
+      ],
+      "note": "Geometry sheet for existing cathedral subject. Standalone R006 destination remains an input; no additional Element or video job assumed."
+    },
+    "MR002": {
+      "key": "MR002",
+      "path": "02_library/morphs/MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt",
+      "output": "MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.png",
+      "refs": [
+        "R011",
+        "R006"
+      ],
+      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "generation_count": 1,
+      "layout": "2x2 source/early/advanced/target",
+      "intended_resolution": "4K",
+      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job."
+    },
+    "MR003": {
+      "key": "MR003",
+      "path": "02_library/morphs/MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt",
+      "output": "MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.png",
+      "refs": [
+        "R011",
+        "R006"
+      ],
+      "status": "REFERENCES_BOUND_RENDER_PENDING",
+      "generation_count": 1,
+      "layout": "2x2 source/early/advanced/target",
+      "intended_resolution": "4K",
+      "note": "Prepared façade-detail morph study; no new Element imported, no image generated, no extra mandatory pilot job."
     }
   },
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
@@ -1708,7 +1753,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "23c0e9e522c14a05f139879a21aa1ed2bcf08efeead889f4e4d8070087b8f78b",
+      "sha256": "28a562e57b2309374b5ffcec4036a07962f958069020728d8efc303250846ff5",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -2094,6 +2139,12 @@
       "mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1",
       "last_mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1",
       "evidence": "Creator supplied the complete copied Element mention in chat. Preserve uppercase MYS and s0. London image shown previously; image association reported by creator."
+    },
+    "R006": {
+      "alias": "R006_ST_STEPHENS_DESTINATION",
+      "mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
+      "last_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
+      "evidence": "Creator supplied the complete copied Element mention. Preserve uppercase MYS and scene s0. Existing Basilica image remains the destination input."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -2213,8 +2264,9 @@
         "R006": {
           "file": "02_library/objects/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
           "sha256": "aafe483731749dc7d802a83e65e5f490e4358657c2e183f92f433b642392809d",
-          "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
-          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
+          "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
+          "actual_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1"
         },
         "R007": {
           "file": "02_library/objects/R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt",
@@ -2222,10 +2274,12 @@
           "status": "PREPARED_NOT_RENDERED"
         },
         "R008": {
-          "file": "02_library/objects/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "edad7c87316e261ed25137ee1cac3a1941e6cc3d8293c7faffc00dc5c40cf647",
+          "file": "02_library/morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
+          "sha256": "2a50d9ceea86378be4ace6b2f4da6adde8f87bfd413c523a251b8bd3fb032454",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
-          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
+          "current_prompt_image_verified": false,
+          "prompt_note": "Four-cell 4K revision; previously shown image used the older three-view prompt. No new render performed."
         },
         "R009": {
           "file": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
@@ -2381,7 +2435,7 @@
         },
         "R039": {
           "file": "02_library/objects/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
-          "sha256": "9622dc9c941962d384a2abd8ed40c2ef6f128503dfb57a922751d9e1c8102910",
+          "sha256": "e04a519512c7556130dd6c58a28e9754c24045b161d1e579dd5361bc6807e0b9",
           "status": "PREPARED_NOT_RENDERED"
         },
         "R040": {
@@ -2456,6 +2510,48 @@
         }
       },
       "import_evidence": "Creator reports: ez importalva lett. No actual new IDs or rendered images verified."
+    },
+    {
+      "file": "00_project/elements/09_london_landmarks.md",
+      "canonical_keys": [
+        "R054",
+        "R055",
+        "R056"
+      ],
+      "expected_new_elements": 3,
+      "file_sha256": "152bbf5a2697fa14f733e509e22237f88ff689c635e7e1ec7624eb8fcb8793bd",
+      "status": "PREPARED_NOT_IMPORTED_NOT_RENDERED",
+      "media_embedded": false,
+      "generation_source": "02_library/objects/README.md",
+      "image_prompt_files": {
+        "R054": {
+          "file": "02_library/objects/R054_BIG_BEN_ELIZABETH_TOWER_LONDON_SOURCE.txt",
+          "sha256": "75c6abe35706c9ad3f77ba07a9f2f0cf82a7c8b48e6eb13c674739a107e8600f",
+          "status": "PREPARED_NOT_RENDERED",
+          "production_consumers": [
+            "03_film/07/video.txt",
+            "03_film/07/storyboard.txt",
+            "02_library/worlds/W07_MAIN_WORLD.txt"
+          ]
+        },
+        "R055": {
+          "file": "02_library/objects/R055_WESTMINSTER_ABBEY_LONDON_SOURCE.txt",
+          "sha256": "52796eb065cd1e37b97cc8da20324bc939e51faba22e6616fb222fbadbae0f4d",
+          "status": "PREPARED_NOT_RENDERED",
+          "production_consumers": [
+            "03_film/07/video.txt",
+            "03_film/07/storyboard.txt",
+            "02_library/worlds/W07_MAIN_WORLD.txt"
+          ]
+        },
+        "R056": {
+          "file": "02_library/objects/R056_FISHERMANS_BASTION_DESTINATION.txt",
+          "sha256": "5d2ba475f19a1bd75b9c2611f27a71846c5a0cb2005ea138fa3eb33ba9719872",
+          "status": "PREPARED_NOT_RENDERED",
+          "production_consumers": [],
+          "note": "Creator-requested future architectural destination option. No pilot or specific production beat added automatically."
+        }
+      }
     }
   ],
   "supplemental_reference_sets": {
@@ -2481,7 +2577,11 @@
           "R001"
         ]
       ],
-      "next_image": "R001, using the accepted R011 London image as reference; generate inside Higgsfield into the existing R001 Element."
+      "next_image": "R001, using the accepted R011 London image as reference; generate inside Higgsfield into the existing R001 Element.",
+      "morph_sheet_preparation": {
+        "MR001": "Prepare with R011 + R006; choose accepted sheet for cathedral geometry reference. Actual destination ID and sheet media pending.",
+        "R008": "Four-state 4K prompt in morphs; existing image retained until new result reviewed."
+      }
     },
     "test_extend_8s.txt": {
       "required": [
