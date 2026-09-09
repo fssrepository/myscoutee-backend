@@ -37,7 +37,7 @@ The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
 London provides the street/river/bridge geometry.
-Budapest/Hungary appears as selected replacement blocks and transit infrastructure inside that geometry.
+Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
 LOCATION-SPECIFIC GEOMETRY:

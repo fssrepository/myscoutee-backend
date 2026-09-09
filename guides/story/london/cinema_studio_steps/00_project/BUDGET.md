@@ -25,7 +25,9 @@ If the stated Nano Banana Pro allowance is active for the actual project operati
 
 ## Pilot allowance
 
-Recommended working ceiling: **100 credits total**, including paid reference images, short narration and both pilot videos. This is a spending limit, not a price estimate. Generate the 8 s test once; only if usable, generate its 4 s continuation once. No automatic retry or candidate series.
+**2026-09-09 creator-reported actual test spending: 80 credits.** This consumes the existing 100-credit total pilot allowance, leaving **20 credits for ALL remaining pilot work**, including narration and continuation. It is not another 100-credit allowance. No further retry is queued; do not spend that remainder without accounting for those outstanding checks. The 2200-credit project working ceiling consequently has at most 2120 credits left if there are no other charges; this is budget arithmetic, not a verified account balance. Keep the 800-credit reserve protected.
+
+Recommended working ceiling: **100 credits total**, including paid reference images, short narration and both pilot videos. This is a spending limit, not a price estimate. The original plan was one 8 s test and, if usable, one 4 s continuation. Multiple creator-run tests have now consumed 80 credits; use the actual remaining allowance above. No automatic retry or candidate series.
 
 C01, C02 and W01 are reusable final-film references. T01, the isolated memory still, and TA01, the short narration, are technical test assets. Reuse a suitable existing Soho-memory reference when its project provenance permits; do not build the complete MW01 library just for the pilot.
 

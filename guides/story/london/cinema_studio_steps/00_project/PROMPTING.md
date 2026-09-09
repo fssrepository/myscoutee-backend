@@ -1,6 +1,6 @@
 # Prompting evidence and working method
 
-Reviewed 2026-09-09. These are source-backed writing practices and our untested application, not a guarantee of generation quality. Keep the creator's continuous, gaze-led transformation and existing audio/identity requirements.
+Reviewed 2026-09-09. These are source-backed writing practices and our untested application, not a guarantee of generation quality. Keep the creator's continuous transformation and independently travelling camera and existing audio/identity requirements.
 
 ## Sources and limits
 
@@ -16,9 +16,9 @@ The rejected output and current prompt do not prove that the word `reconfigure` 
 
 The revised pilot separates four reference roles, selects the top-left world cell for the opening street axis, and treats remaining cells only as material information. Text-only cell selection remains unproven; it is not equivalent to supplying a separate full-frame image. No new image, Element, duration or paid job is introduced.
 
-The revised pilot begins with one forward tracking path at the café frontage, keeping the man small enough for the street to remain visible. Architecture changes at 1–3s; the complete life-size restaurant emerges directly at 3–5.5s and withdraws at 5.5–6.5s. His gaze then leads one smooth turn across the road, landing on a broad taxi/tram/architecture view through 8s. The wide ending reveals connected near, middle and distant city volumes changing together, with substantial transport and a recognisable landmark axis. The restaurant still supplies reconstruction information rather than an image to paste on glass. The same four image references remain; the revised camera path and ending have not been generated.
+The current pilot follows an independent travelling orbit around the walking man. London materials become a full-size restaurant, the room continues becoming an arcade, and the opposite frontage and London-to-Basilica change enter view along the same camera curve. The memory has no glass/projection prelude. Its human gesture remains the visual centre; world-scale changes overlap around it. The four image references remain the same. These directions now also govern all seven video/storyboard pairs and their source-reference preparation; this revision has not been proven in generated footage.
 
-Precision means stating the subject, starting shape, observable movement, final shape, spatial anchor, human gesture and corresponding sound. Keep those details even when they make the prompt longer. Avoid contradictory blanket rules: photographic material does not require ordinary city behaviour, and a memory need not remain confined to a reflective surface. Use PROJECTION, SPATIAL EMERGENCE and MATERIAL TRANSFORMATION as distinct beat-specific mechanisms. Source sheets remain direct, reusable views; film prompts determine how their content enters the impossible world.
+Precision means stating the source object, intermediate material change, resulting space, human action and camera path without contradictory glass-only or fixed-landmark instructions. Preserve the actual story, original monologue, card rules and final clinical reveal. Complete the pack-level edit before another paid generation; no new variation series is part of this revision.
 
 Keep current pedestrians' heads and full cards unobstructed, with no open umbrellas. A card has a persistent frosted body and visible fill bar; it is not a faint lens artefact. Its visibility must survive the actual composition, not only a sentence requesting it. Test the named scene and gesture, rather than accepting generic camera travel as an equivalent.
 

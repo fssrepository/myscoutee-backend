@@ -44,7 +44,7 @@ At least one of the first six cells must show a substantial side view of a red d
 MEMORY-COMPOSITING PREPARATION:
 Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
 These are only the PHYSICAL PRESENT surfaces.
-This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, moving projections and the specified memories that physically enter city space. Leave clear space above pedestrian heads for that later layer.
+This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, the specified embodied memories growing directly from city materials. Leave clear space above pedestrian heads for that later layer.
 The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
 
 LIGHTING / PHOTOGRAPHY:
@@ -63,7 +63,7 @@ Cell 8 = moving transit-window technical detail.
 Cell 9 = fused London–Budapest architecture + in-world signage technical detail.
 
 WORLD-SPECIFIC CONTENT:
-Cell 1 — Soho / Brewer Street / Old Compton Street after rain. Narrow recognizable London street geometry, pubs, cafés, bookshop and theatre frontage. A deep street-axis sightline terminates naturally in the dome and twin towers of ST STEPHEN'S BASILICA, integrated at believable urban scale rather than pasted into the background. Visible mixed signage includes KÖNYV and KÁVÉ beside normal English shop signs. 10–20 anonymous pedestrians.
+Cell 1 — Soho / Brewer Street / Old Compton Street after rain. Narrow recognizable London street geometry, pubs, cafés, bookshop and theatre frontage. At the end of the street axis, capture a London commercial building partway into ST STEPHEN'S BASILICA: an ordinary lower facade remains while a drum and copper dome rise above it and outer bays lengthen into bell towers. This reference describes the target transformation; the video starts from its London form. Visible mixed signage includes KÖNYV and KÁVÉ beside normal English shop signs. 10–20 anonymous pedestrians.
 
 Cell 2 — Same Soho world from another angle. British pub and restaurant ground floors beneath ornate Pest limestone upper floors and balconies. A black taxi is close enough for a broad wet side window; a yellow Budapest tram appears deeper in the street under trolley/tram wires. One small Hungarian BEJÁRAT sign is naturally integrated.
 
@@ -73,13 +73,13 @@ Cell 4 — Piccadilly transport view. A full-size red London double-decker occup
 
 Cell 5 — Coventry Street / Leicester Square cinema-theatre district. Large cinema lobbies, marquees, restaurants, wet plaza and strong glazing. One entire theatre/cultural block uses BUDAPEST NATIONAL THEATRE-inspired architecture adapted to the London footprint. Visible in-world MOZI and SZÍNHÁZ signs sit naturally among English cinema/theatre signage. 20–35 pedestrians.
 
-Cell 6 — Leicester / Haymarket-side public space. Keep the West End geometry, but include one KOSSUTH-STYLE HUNGARIAN CIVIC MONUMENT as a normal permanent public monument, clearly separate from Eros. Continue red bus / yellow tram / black taxi traces and reflective public glazing.
+Cell 6 — Leicester / Haymarket-side public space. Keep the West End geometry, but include one KOSSUTH-STYLE HUNGARIAN CIVIC MONUMENT as a temporarily emerged memory form inside the London public space, clearly separate from Eros. Continue red bus / yellow tram / black taxi traces and reflective public glazing.
 
 Cell 7 — Close detail of a very large cinema or shopfront pane from this exact world: fine rain droplets, cool city reflection, warm lobby depth, fragments of red bus / yellow tram / black taxi reflected simultaneously. No memory content.
 
 Cell 8 — Close transit detail: broad red double-decker side windows, broad yellow Budapest tram side windows and black taxi glass all readable; wet rails and London road markings visible.
 
-Cell 9 — Close architecture/signage detail of ONE coherent fused block: London pub/cinema/bookshop ground floor; Budapest limestone upper storeys, balconies and roof detail; tram-wire attachment; restrained readable Hungarian KÖNYV, KÁVÉ or BEJÁRAT beside English signage. The building must look historically native to one city.
+Cell 9 — Close architecture/signage detail of ONE coherent fused block: London pub/cinema/bookshop ground floor; Budapest limestone upper storeys, balconies and roof detail; tram-wire attachment; restrained readable Hungarian KÖNYV, KÁVÉ or BEJÁRAT beside English signage. Keep London materials legible through the deliberately impossible joined building geometry.
 
 FINAL CHECK:
 Exactly one image.
@@ -90,9 +90,8 @@ No presentation title/caption/legend/frame.
 All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 
-TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
-Photorealistic materials in an impossible world: sculpted limestone, layered iron balconies and connected London–Budapest architecture occupy one continuous street. Preserve every named landmark and all nine cells. This sheet captures sharp moments of an inhabited city whose structures can move; it is not a nine-shot video plan. Do not animate, blur or repeat a cell to show time.
-In Cell 3, show the curved Piccadilly facade midway through its change: brick bays on one side, pale carved limestone on the other, and one projecting balcony slab with a partly raised iron railing at their connected boundary. The unchanged shop doorway and Eros anchor the image. The joined building must be solid and sharp, not a dissolve between two exposures.
-The visible intermediate geometry is intentional architecture, not broken construction: solid connections, coherent perspective, matching shadows and no rubble. Maintain a clear walkable ground plane. Other cells show the same rich world from their assigned viewpoints. Later video shows the actual movement, visible cards and the contextual memory modes, including objects and room fragments emerging into city space.
 
-SPATIAL POTENTIAL: Leave depth beside the public path for a remembered room to unfold, a clear opening above the transport wires for a balloon, and visible joints in paving and railings that can change material. These are connected parts of the inhabited city, not isolated display screens. Do not pre-render those later memory events in this clean world sheet.
+TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
+London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
+A complete Piccadilly upper room hinges outward above the pavement; the adjacent window band bends upward while its entrance opens into a deep arcade. The original London roof along the Soho axis becomes the Basilica, not a permanently pre-existing landmark.
+In one of the broad environment cells, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.

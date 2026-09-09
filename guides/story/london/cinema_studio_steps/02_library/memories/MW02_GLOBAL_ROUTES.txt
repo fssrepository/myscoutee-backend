@@ -38,12 +38,12 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-Later STORYBOARD / VIDEO generation uses these literal source scenes for the contextual mode assigned to each beat: projection onto glass, a named object or room extending into the city, or a city material changing into a remembered form. This source sheet itself stays a clear direct view of the memory, without the city composite or cards.
+Later STORYBOARD / VIDEO reconstructs these people and places as full-size inhabited spaces growing from London paving, furniture and architecture. This source sheet remains a sharp direct view of the memory; its cells are not cuts or flat images to display in the video.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.
 Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
-No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Keep this source image sharp and literal so faces, furniture and room layout remain reconstructable. The film, unlike this source sheet, turns these places into impossible architecture within London.
 Each cell must be a usable literal location/event reference, not an illustration of an idea.
 
 IDENTITY ANCHORS — REQUIRED:

@@ -44,7 +44,7 @@ At least one of the first six cells must show a substantial side view of a red d
 MEMORY-COMPOSITING PREPARATION:
 Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
 These are only the PHYSICAL PRESENT surfaces.
-This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, moving projections and the specified memories that physically enter city space. Leave clear space above pedestrian heads for that later layer.
+This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds visible cards, the specified embodied memories growing directly from city materials. Leave clear space above pedestrian heads for that later layer.
 The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
 
 LIGHTING / PHOTOGRAPHY:
@@ -90,9 +90,8 @@ No presentation title/caption/legend/frame.
 All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 
-TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
-Photorealistic materials in an impossible world: sculpted limestone, layered iron balconies and connected London–Budapest architecture occupy one continuous street. Preserve every named landmark and all nine cells. This sheet captures sharp moments of an inhabited city whose structures can move; it is not a nine-shot video plan. Do not animate, blur or repeat a cell to show time.
-In the station/theatre environment view, show iron rib sections partly extended into the Nyugati span, with connected glass and one theatre cornice already opened into State Opera-style brackets. Keep the public entrances fixed and the supports connected.
-The visible intermediate geometry is intentional architecture, not broken construction: solid connections, coherent perspective, matching shadows and no rubble. Maintain a clear walkable ground plane. Other cells show the same rich world from their assigned viewpoints. Later video shows the actual movement, visible cards and the contextual memory modes, including objects and room fragments emerging into city space.
 
-SPATIAL POTENTIAL: Leave depth beside the public path for a remembered room to unfold, a clear opening above the transport wires for a balloon, and visible joints in paving and railings that can change material. These are connected parts of the inhabited city, not isolated display screens. Do not pre-render those later memory events in this clean world sheet.
+TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
+London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
+Station roof ribs separate and rise into the Nyugati span; a suspended stair threads through the Opera frontage while a London canopy becomes the balloon envelope. The walk and transport lanes remain connected.
+In one of the broad environment cells, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
