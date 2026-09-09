@@ -4,6 +4,12 @@ The seven `narration.txt` files preserve the master's **exact wording**, includi
 
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
+## The protagonist's inner voice
+
+The narration is the audible inner monologue of this exact walking protagonist: his own thoughts and recollections in an intimate, natural English male voice, approximately forty, restrained and slightly tired. He does not address another person or the audience, and nobody answers him. Keep his lips naturally at rest except for breathing; no visible speech or lip-sync. Keep the voice close and consistent in level as the camera moves, without street-distance filtering. Let thoughts breathe with natural pauses rather than filling every second. Preserve the supplied wording and established voice throughout the film; music and transformation sounds stay underneath it.
+
+All seven narration texts have been checked: they are a single personal recollection, not dialogue. The voice belongs to C01 even when a memory contains other people. Background human sounds may be wordless, but there is no second intelligible speaker. The initial 8-second pilot intentionally has no narration; the existing 4-second extension tests the short inner-monologue line. This does not add a new job or alter the seven scripts.
+
 ## Timing conflict in the master
 
 The first three scripts contain 45–46 whitespace-delimited tokens; the next three contain 61–66. The same rate and pause pattern cannot reliably fit all six into a narrow 23–27 s window. Fast camera movement does not shorten speech.

@@ -23,7 +23,7 @@ REFERENCES
 @UNBOUND_C20 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C21 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB02 = ordered nine-beat plan, never a visible grid.
-@UNBOUND_A02 = exact supplied off-screen narration; preserve words, voice and pacing.
+@UNBOUND_A02 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 
 PHYSICAL PRESENT AND MEMORY
 One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
@@ -65,7 +65,7 @@ Tie each main architectural transformation to one musical phrase: its first clea
 BLOCK MUSIC DIRECTION: Let the same motif breathe more openly during human encounters. During the existing rural-route memory, briefly reveal wind brushing corn leaves; then fold it back into the city. Keep the remembered paprika and corn fields near Orosháza at a child's low eye level, without adding a new visible child or a separate scene.
 
 AUDIO
-Use @UNBOUND_A02 as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+Use @UNBOUND_A02 as the sole off-screen voice, with its exact wording and timbre, once. The narration is the audible inner monologue of this exact walking protagonist: his own thoughts and recollections in an intimate, natural English male voice, approximately forty, restrained and slightly tired. He does not address another person or the audience, and nobody answers him. Keep his lips naturally at rest except for breathing; no visible speech or lip-sync. Keep the voice close and consistent in level as the camera moves, without street-distance filtering. Let thoughts breathe with natural pauses rather than filling every second. Preserve the supplied wording and established voice throughout the film; music and transformation sounds stay underneath it. Generate synchronized native city ambience, foley and the original Dél-Alföld-inspired tekerő and clarinet motif beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
 continue the same rainy London–Budapest city bed; station exterior rumble and footsteps.
 one realistic transit-gate confirmation beep and gate mechanism, brief indoor station resonance under the outdoor city layer.
 bus/coach interior rumble and seat/fabric movement, no intelligible passenger dialogue.

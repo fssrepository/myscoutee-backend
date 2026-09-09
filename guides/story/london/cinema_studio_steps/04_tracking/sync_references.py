@@ -23,10 +23,15 @@ def main():
     bindings = manifest["reference_bindings"]
     replacements = {}
     wanted = {}
+    owners = {}
     for key, binding in bindings.items():
         mention = binding["mention"]
         if mention and (not TOKEN.fullmatch(mention) or mention.startswith("@UNBOUND_")):
             raise ValueError(f"Invalid verified mention for {key}: {mention}")
+        if mention in owners:
+            raise ValueError(f"Mention shared by distinct assets {owners[mention]} and {key}: {mention}")
+        if mention:
+            owners[mention] = key
         wanted[key] = mention or f"@UNBOUND_{key}"
         for old in ("@" + binding["alias"], f"@UNBOUND_{key}", binding.get("last_mention"), mention):
             if old:
@@ -49,6 +54,9 @@ def main():
         if relative in prompts:
             result = WARNING.sub("", result)
             tokens = set(TOKEN.findall(result))
+            unknown_dependencies = [key for key in prompts[relative] if key not in wanted and not re.fullmatch(r"V\d+", key)]
+            if unknown_dependencies:
+                raise ValueError(f"Dependencies missing from binding registry in {relative}: {unknown_dependencies}")
             expected = {wanted[key] for key in prompts[relative] if key in wanted}
             if expected - tokens:
                 raise ValueError(f"Missing dependency mentions in {relative}: {sorted(expected - tokens)}")
@@ -76,8 +84,10 @@ def main():
         print(f"Updated {len(planned)} files. {sum(bool(b['mention']) for b in bindings.values())}/{len(bindings)} reference mentions verified.")
     if args.check:
         missing = missing_by_file.get(args.check, [])
-        print(f"{args.check}: " + ("MISSING " + ", ".join(missing) if missing else "All required mentions are bound; media availability and UI autoload still depend on Higgsfield."))
-        return 2 if missing or any(p.relative_to(ROOT).as_posix() == args.check for p in planned) else 0
+        stale = any(p.relative_to(ROOT).as_posix() == args.check for p in planned)
+        status = "MISSING " + ", ".join(missing) if missing else ("Bindings available; run --write to synchronize this prompt." if stale else "All required mentions are bound; media availability and UI autoload still depend on Higgsfield.")
+        print(f"{args.check}: {status}")
+        return 2 if missing or stale else 0
     print(f"{len(prompts) - len(missing_by_file)}/{len(prompts)} prompts have no unresolved mention slots.")
     return 0 if args.write else (2 if missing_by_file or planned else 0)
 
