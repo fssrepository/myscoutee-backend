@@ -25,18 +25,18 @@ For T01, the prompt uses the displayed C01/C02 Element IDs verified in the guide
 
 ### Give the accepted restaurant still its own Element
 
-In MyScoutee / Elements, use Add new:
+In MyScoutee / Elements, import [00_pilot_test_assets.md](../00_project/elements/00_pilot_test_assets.md). This replaces manual field entry and creates only the missing pilot Location definition. If the empty New element dialog is still open, cancel it first. If this Element was already created, reuse it instead of importing a duplicate. The imported fields should match:
 
 | Field | Value |
 | --- | --- |
 | Category | Location |
 | Name | Pilot Soho Restaurant Memory |
 | Version | v1 |
-| Description | Copy [test_memory_element_description.txt](test_memory_element_description.txt) into Description; this is metadata, not an image-generation prompt |
+| Description | Included in the import; [test_memory_element_description.txt](test_memory_element_description.txt) retains the same text for inspection or a manual field correction |
 | Image | Attach the accepted single restaurant still from MyScoutee / All assets |
 | Scene, if offered | 1 |
 
-Save the Element and copy its actual full Element ID. The assistant checks its association and binds it to T01_IMAGE throughout the pack before opening the video prompt for copying. Do not predict the generated ID from this name. Creating metadata and associating the existing still is part of the current reference-binding task, not a new image-generation job. The label "Pilot" describes its initial use; it does not prevent later reuse where this exact memory is needed.
+The import creates metadata only. Attach the accepted restaurant still, save the Element and copy its actual full Element ID. The assistant checks its association and binds it to T01_IMAGE throughout the pack before opening the video prompt for copying. Do not predict the generated ID from this name. Creating metadata and associating the existing still is part of the current reference-binding task, not a new image-generation job. The label "Pilot" describes its initial use; it does not prevent later reuse where this exact memory is needed.
 
 ## 3. Generate the 8-second video
 

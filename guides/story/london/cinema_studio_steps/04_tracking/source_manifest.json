@@ -2082,5 +2082,18 @@
       "evidence": "Complete ID and Prop / Score Cards label visible in 2026-09-09 15:31:04/49 screenshots; image slot empty.",
       "usage": "Retain imported metadata. Cards remain explicit video directions; this empty prop is not a required media input and adds no generation job."
     }
-  }
+  },
+  "supplemental_element_imports": [
+    {
+      "file": "00_project/elements/00_pilot_test_assets.md",
+      "canonical_keys": [
+        "T01_IMAGE"
+      ],
+      "expected_new_elements": 1,
+      "type": "Location",
+      "file_sha256": "3a4f2ebced178b2828cdfbe5141b37fdc88d65b2f7cd57b5a6b955b99f8f51bb",
+      "status": "PREPARED_NOT_IMPORTED",
+      "media_embedded": false
+    }
+  ]
 }
