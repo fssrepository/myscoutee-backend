@@ -2,12 +2,25 @@
 
 The creator’s sequence is: **detailed first video → native visual continuation → one joined test → narration on that joined test → review picture and sound together**. The accepted result becomes the practical reference for the full film. Preserve the complete first-scene prompt; do not shorten it to combine tests. Do not generate a separate video for each effect, card, camera or sound criterion.
 
-## Two active video prompts
+## Spend at a glance
+
+**Already spent: 80 credits. Remaining cap: 720 credits**, creator-reported.
+
+| Separate test | Price known now |
+| --- | --- |
+| First 8-second video | Earlier quote **20 credits**; confirm current quote |
+| Native 4-second continuation | **Not yet quoted** |
+| Narrated joined video | **Not yet quoted**; includes speech and mixing/output components |
+
+The total next-round cost is **not yet known**. No additional charge is recorded. If the next video actually costs 20, the cap becomes 700 before the other operations. See the [itemised cost tracker](../00_project/BUDGET.md#visible-pilot-cost-tracker--three-tests) for quotes, actual charges and the remaining cap. This is three test tasks; separately billed audio/finishing must remain visible inside the narrated-test cost.
+
+## Visual prompts and the separate narrated test
 
 | Prompt | Content | Operation |
 | --- | --- | --- |
 | [test_video_8s.txt](test_video_8s.txt) | Complete detailed first scene: London becoming embodied memory, independent camera flight, recognisable landmarks, numerical cards, Hungarian theme and material SFX | 8 s / 480p / 16:9 / audio ON / one output |
 | [test_extend_4s.txt](test_extend_4s.txt) | NEW action after its actual ending: the next arcade becomes a giant glass-and-iron canopy; camera, people, traffic and sound continue through the seam | Native Forward Extend / 4 added seconds / 480p / 16:9 / audio ON / one output |
+| [test_narrated_video.txt](test_narrated_video.txt) | Narration on the joined visual test, retaining its picture and music/SFX; a separately produced and reviewed result | Hosted narrated-video/audio-finishing test, with its own actual quote |
 
 Both visual segments have music/SFX without narration. The second is a continuation of the selected first result, not a replay of its restaurant, camera opening or cathedral transformation. Review the first result’s actual endpoint and adjust only the source-dependent staging of the continuation before copying it. No earlier rejected download is automatically selected as source.
 
@@ -19,17 +32,13 @@ Prefer the actual native cumulative Extend result if it contains the full approx
 
 Watch the whole moving result for seam, genuine three-dimensional memory, continuous material change, recognisable people/landmarks/transport, numerical ratings, and music/SFX attached to the movement. Review these together, not in independent paid test loops.
 
-## Short narration for the joined test
+## Separate narrated test — execution and credits
 
-Copy ONLY this sentence into the speech text field:
+Use the complete standalone prompt [test_narrated_video.txt](test_narrated_video.txt). It defines the exact sentence, voice, placement, unchanged picture and retained music/SFX. If a separate speech-text field is used, copy only the five-word sentence under EXACT SPOKEN TEXT from that file.
 
-```text
-Memory edits without asking permission.
-```
+This is a real test operation, not documentation-only preparation. The prompt file does not eliminate its charge. Quote the short clean speech generation and the narrated-video/hosted mixing operation separately when the selected route performs them separately. If the platform offers both in one actual operation, use its combined quote without counting a separate speech charge twice. Existing source media should be reused, but the narrated output still has to be produced and reviewed.
 
-Use the established voice if one is available; otherwise one adult male English voice, approximately forty, low-to-mid register, intimate and slightly tired. Aim for a natural 2–3-second sentence with clear consonants. Clean speech only, no music, effects, rain or extra words. Retain the selected voice/preset and returned recording. One short audio preparation, not paid auditions of multiple variants. Check the actual speech price.
-
-Add this recording over the joined test around its human-memory interval, using a verified hosted audio/finishing operation that preserves the accepted picture and its existing music/SFX. Keep the words clear while retaining the transformation’s material dynamics; inspect whether the operation permits the required level balance. Do not regenerate the visuals or assume audio replacement means audio mixing. The exact hosted operation and quote remain to be verified before purchase. The creator cannot repair the mix locally.
+Verify the chosen hosted operation accepts the joined source and preserves picture plus existing music/SFX while adding speech. Its exact control path and price are not yet established. Do not assume a voice-replacement feature is a mixer or silently regenerate the visuals to add narration. The creator cannot repair the result in a local editor.
 
 ## Acceptance before 1080p
 
@@ -39,4 +48,4 @@ Retain the actual approved video, narrated result, exact prompts, attached refer
 
 ## Cost scope
 
-80 credits already spent; maximum 720 remaining for all unfinished work, creator-reported. The historical 100-credit pilot allowance covered the whole pilot, not each TXT file. Price the actually remaining first/extension video, short speech and any required hosted joining/mixing together. The historical 20-credit standalone quote does not price the complete test. Avoid repeat image preparation, separate per-feature videos and automatic 4–5-attempt loops. Final seven blocks and exact monologues retain their existing production scope; their costs must fit the remaining cap.
+80 credits already spent; maximum 720 remaining for all unfinished work, creator-reported. The historical 100-credit pilot allowance covered the whole pilot, not each TXT file. Price the actually remaining first video, native extension, any required joining, short speech, and the separate narrated-video test. Preparing their prompt files consumes no Higgsfield credits; executing these operations does. The historical 20-credit standalone quote does not price the complete test. Avoid repeat image preparation, separate per-feature videos and automatic 4–5-attempt loops. Final seven blocks and exact monologues retain their existing production scope; their costs must fit the remaining cap.

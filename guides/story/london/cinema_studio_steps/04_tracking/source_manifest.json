@@ -1713,6 +1713,12 @@
         "W01",
         "T01_IMAGE"
       ]
+    },
+    {
+      "file": "01_pilot/test_narrated_video.txt",
+      "sha256": "8719f8c19d257ae7aac19327fe8e6c580db160f713d03ac299ef9178d252bb6c",
+      "refs": [],
+      "reference_note": "Separate narrated-output test using the existing joined video and optional prepared speech in the actual media fields. Hosted operation and price unverified; this file is not an executed test."
     }
   ],
   "current_project_observation": {
