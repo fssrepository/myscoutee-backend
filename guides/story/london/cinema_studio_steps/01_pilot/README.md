@@ -21,7 +21,22 @@ One row is one image request. The planned image model is **Nano Banana Pro in th
 | 3 | [W01 — city](../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
 | 4 | [T01 — single memory still](test_memory_image.txt) | C01 + C02 | `T01_SOHO_MEMORY.png` |
 
-For T01, the prompt now uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these @ identifiers automatically loads their Elements and accepted images in the composer. Use that autoload behavior; no separate manual selection, duplicate upload or binding screenshot is required unless an actual missing/wrong-reference symptom appears. A suitable existing Soho-memory source can replace this extra still when project provenance permits. T01 needs a verified persistent reference mention before the video can autoload it. It is currently a raw project image. Do not guess a handle or attach it to an unrelated canonical memory bank; establish the actual media-mention route or a distinct pilot reference container using the existing image. C01/C02/W01 carry forward into the film; T01 is a pilot source and does not replace the final film's complete MW01 bank.
+For T01, the prompt uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these identifiers automatically loads their Elements and accepted images in the composer. T01 is already an accepted raw project image. To give it the same reusable reference route, create the distinct Location Element below and attach that existing image. Do not regenerate it, reimport the full library or replace the final film's larger MW01 bank.
+
+### Give the accepted restaurant still its own Element
+
+In MyScoutee / Elements, use Add new:
+
+| Field | Value |
+| --- | --- |
+| Category | Location |
+| Name | Pilot Soho Restaurant Memory |
+| Version | v1 |
+| Description | Copy [test_memory_element_description.txt](test_memory_element_description.txt) into Description; this is metadata, not an image-generation prompt |
+| Image | Attach the accepted single restaurant still from MyScoutee / All assets |
+| Scene, if offered | 1 |
+
+Save the Element and copy its actual full Element ID. The assistant checks its association and binds it to T01_IMAGE throughout the pack before opening the video prompt for copying. Do not predict the generated ID from this name. Creating metadata and associating the existing still is part of the current reference-binding task, not a new image-generation job. The label "Pilot" describes its initial use; it does not prevent later reuse where this exact memory is needed.
 
 ## 3. Generate the 8-second video
 

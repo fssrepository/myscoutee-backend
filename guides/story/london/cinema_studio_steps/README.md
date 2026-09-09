@@ -34,6 +34,7 @@ The production list includes the outstanding reference binding, clean narration,
 | `00_project/elements/*.md`, excluding README | **Import Elements** only, and only for missing definitions |
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
 | `narration.txt`, `test_narration.txt` | TTS text field; spoken words only |
+| `test_memory_element_description.txt` | Description field of the Pilot Soho Restaurant Memory Element; metadata only |
 | `video.txt`, `test_video_8s.txt`, `test_extend_4s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 

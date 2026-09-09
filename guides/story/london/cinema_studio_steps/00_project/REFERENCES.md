@@ -15,7 +15,7 @@ For the current pilot, T01_IMAGE means the accepted single warm Soho sushi-resta
 | Required input | Where the actual identifier must come from | Needed before |
 | --- | --- | --- |
 | W01 | Existing Location / World 01 — The City Judges First — Soho / Piccadilly / Leicester, v1, Scene 1. Complete copied ID is verified and bound: `@loc_mys_world-01-the-city-judges-first-soho-piccadilly-leicester_s1_v1`. Reuse this binding for the later 4K replacement on the same Element. | Current T01_VIDEO and every later consumer of W01 |
-| T01_IMAGE | Accepted single Soho restaurant image in MyScoutee / All assets. Obtain its working persistent media mention, or use a distinct pilot reference container only if the UI requires one. Reuse the image. | Current T01_VIDEO and T01_EXTEND |
+| T01_IMAGE | Create Location / Pilot Soho Restaurant Memory / v1, attach the accepted single restaurant still, save and obtain its actual complete Element ID. See the [prepared metadata](../01_pilot/README.md#give-the-accepted-restaurant-still-its-own-element). Reuse the image. | Current T01_VIDEO and T01_EXTEND |
 | TA01 and A01–A07 | Actual accepted clean speech output, using the platform's supported audio-reference input. Image-Element autoload does not establish that audio mentions work the same way. Verify that input route before paying for speech for it. | Matching extension or film video |
 | Other characters, worlds, memories and storyboards | Existing matching Element or actual accepted output's persistent mention. Capture each available ID when that asset is handled; the pack's manifest already lists every consumer. | First dependent prompt, not after its generation |
 
@@ -25,7 +25,7 @@ If a media type has no supported persistent mention, identify the actual input m
 
 `@UNBOUND_T01_IMAGE` and similar tokens are deliberately incomplete slots, not usable Higgsfield mentions. A prompt with unresolved slots starts with **REFERENCE SETUP INCOMPLETE**. Do not paste it for generation yet. Once its real mentions are recorded and synchronized, that notice disappears automatically. This checks local binding completeness, not the availability of media or account permissions.
 
-For an existing Element, record its complete displayed ID with one leading `@` in its `mention` field. For raw images, storyboards and narration, record only a persistent media mention actually shown to work in the composer. Do not invent handles, reimport the 48 existing Elements, replace MW01 with the pilot restaurant still, or regenerate an accepted image merely to bind it. If the UI requires a separate pilot reference container for T01, associate the existing image with that distinct container.
+For an existing Element, record its complete displayed ID with one leading `@` in its `mention` field. For raw images, storyboards and narration, record only a persistent media mention actually shown to work in the composer. Do not invent handles, reimport the 48 existing Elements, replace MW01 with the pilot restaurant still, or regenerate an accepted image merely to bind it. T01 now has an explicit separate Location Element preparation step, using its accepted image; creation and its final ID are still pending.
 
 Assistant command, from the repository root, after updating a binding:
 
