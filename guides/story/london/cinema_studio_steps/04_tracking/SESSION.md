@@ -21,6 +21,9 @@ Pilot: **step 6 / 8**. T01_IMAGE is visually accepted from the 14:39:25 result i
 
 ## Current handoff
 
+Pilot consistency pass completed: encounter 2–4.8 s, physical arcade passage 4.8–5.5 s, then a single rising 5.5–8 s city arc. The close bus runs concurrently at 5.5–7 s and the corresponding historic cathedral materials change in that SAME view. Intro, action headings, SFX and ending now agree that the occupied café remains solid at exit. The earlier generic folding block and mandatory café exit-morph are superseded. No separate final target shot, dissolve or frame jump is requested. Extend inherits actual geometry and soundtrack; narration uses the joined approximately 16-second source. No paid job launched or newly charged amount inferred.
+
+
 Latest transition choice: matching forms use traceable solid material transformation; dissimilar spaces connect through a fast continuous camera passage with its destination already visible. Do not force every room into a morph. Prioritize recognisable historic landmarks for whole-building spectacle, especially St Paul’s → St Stephen’s; office memories retain their human content, but an anonymous office block is not an equivalent visual centre. Keep the close bus pass and camera speed variation. This supersedes the earlier requirement to mutate a room merely to leave it. No new generation or charge recorded.
 
 

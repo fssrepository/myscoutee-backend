@@ -56,7 +56,7 @@ Recorded historical test spend is 80; latest remaining estimate is approximately
 | --- | --- |
 | High discovery, fast descent, lateral human pass, rising world reveal; no slideshow or foreground wipes | First video, one connected camera path; continuation inherits its actual ending |
 | London base, St Paul's becoming a specific whole Basilica, substantial taxi/tram/red bus | First video; cathedral changes at about 5.5–7 s, resolved form held at 7–8 s |
-| Full-size restaurant and moving woman outside glass; London materials visibly become its floor/walls/furniture | First video, 2–5.5 s, with traceable edges, complete chair legs and changing parallax |
+| Full-size restaurant and moving woman outside glass; London materials visibly become its floor/walls/furniture | First video, 2–4.8 s, with traceable edges, complete chair legs and changing parallax |
 | Conflicting changes at different scales and quick partial reversals | First video's room/stair/walls, then a new immense canopy/gallery in the native continuation |
 | Numerical 6.2/9.2-style ratings, clear crown gaps, current versus remembered identity | First video and continuation; source card associations persist across the seam |
 | Audible Hungarian acoustic theme; material onset, sustained strain, reversal and distance | Both visual prompts, without narration, reviewed as the joined picture/SFX source |
@@ -98,3 +98,7 @@ Retain the accepted Soho woman/restaurant image. Its human gesture is carried in
 ## Last-second frame jump
 
 The latest reviewed `hf_20260909_172538_213973ce-20f0-43d5-8dd5-5a2fdd7f13aa.mp4` jumps to another square/camera composition near 7.6 s. This is a direct discontinuity, not merely a dissolve. The revised ending prohibits a separate destination-reference shot: the cathedral changes at its inherited site, the camera and street anchors continue through the final frame, and the Extend inherits that actual endpoint. No new generation or charge is recorded by this correction.
+
+## Current pilot timing, with parallel action made explicit
+
+0–1 s descending discovery; 1–2 s opening café and first glimpse; 2–4.8 s embodied encounter and smile; 4.8–5.5 s fast passage through the solid open arcade; 5.5–8 s the same outward rising curve with the close bus pass and historic cathedral changing concurrently. The bus’s 5.5–7 s description is parallel action, not an extra sequential shot. The café does not dissolve or undergo a compulsory second transformation during departure. Narration is applied later to the joined source, and Extend follows the actual ending.
