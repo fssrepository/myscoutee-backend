@@ -2088,6 +2088,12 @@
       "alias": "W07_MAIN_WORLD",
       "mention": null,
       "last_mention": "@UNBOUND_W07"
+    },
+    "R011": {
+      "alias": "R011_CLEAN_LONDON_OPENING",
+      "mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1",
+      "last_mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1",
+      "evidence": "Creator supplied the complete copied Element mention in chat. Preserve uppercase MYS and s0. London image shown previously; image association reported by creator."
     }
   },
   "reference_binding_note": "Only full verified Higgsfield mentions belong in mention. Null produces an explicit @UNBOUND_<key> slot and a do-not-generate notice. Run 04_tracking/sync_references.py --write once to propagate a binding across all prompts and guides. Previous videos remain in the actual Forward Extend source field. Raw-image, storyboard and audio autoload handles are unverified until observed; never guess an Element ID from a filename.",
@@ -2170,20 +2176,24 @@
       ],
       "expected_new_elements": 53,
       "file_sha256": "dbb46b904b25bc3a1cf90269ee72e2676ca6c5fa8e64b0757d5c7def5339e4e8",
-      "status": "IMPORT_REPORTED_IDS_AND_IMAGES_UNVERIFIED",
+      "status": "IMPORT_REPORTED_FOUR_IMAGE_ASSOCIATIONS_REPORTED_IDS_UNVERIFIED",
       "media_embedded": false,
       "generation_source": "02_library/objects/README.md",
       "note": "New-only first-import batch R001–R053 with short identity descriptions. Detailed image prompts are separate R-numbered .txt files, indexed in generation_source and image_prompt_files. No merge, import or render is performed locally.",
       "image_prompt_files": {
         "R001": {
           "file": "02_library/objects/R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt",
-          "sha256": "6207428449a594f276b9f9ab6fba9622ca4989c963385cfc334a3398232e2193",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "940315901ed6371a54d6c259a1e5fc0dea735c805316fa24b6bed2c0cf3598d2",
+          "status": "PREPARED_NOT_RENDERED",
+          "refs": [
+            "R011"
+          ]
         },
         "R002": {
           "file": "02_library/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
-          "sha256": "70806ea3887ed9447c15bca49df07f82af6d6a3ae73ecced735b7b0942038c84",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "d641eca11e7576a3664e5328c2c670feca87e79fc7c50609c12ce11322bb65d4",
+          "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
         },
         "R003": {
           "file": "02_library/objects/R003_BLACK_LONDON_TAXI.txt",
@@ -2202,8 +2212,9 @@
         },
         "R006": {
           "file": "02_library/objects/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
-          "sha256": "ee6f7ee65eb5f7c990b23ff3977da56e82e00db5de0a09fa3900ea57a3b352ad",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "aafe483731749dc7d802a83e65e5f490e4358657c2e183f92f433b642392809d",
+          "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
         },
         "R007": {
           "file": "02_library/objects/R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt",
@@ -2212,8 +2223,9 @@
         },
         "R008": {
           "file": "02_library/objects/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "14455549b33237c2f8a612bf64a89c18df3dc150c0da235488b437e331ef3fdf",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "edad7c87316e261ed25137ee1cac3a1941e6cc3d8293c7faffc00dc5c40cf647",
+          "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected."
         },
         "R009": {
           "file": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
@@ -2228,7 +2240,9 @@
         "R011": {
           "file": "02_library/objects/R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt",
           "sha256": "fe6f14ef356ec0a8653ea378e0f3c1ac89a4f0218923a684a5d49fcc95bd7935",
-          "status": "PREPARED_NOT_RENDERED"
+          "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
+          "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
+          "actual_mention": "@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1"
         },
         "R012": {
           "file": "02_library/objects/R012_THE_SAME_CURRENT_PEDESTRIANS_IN_LONDON_AND_PEST_ASSOCIATED_STATES.txt",
@@ -2455,7 +2469,19 @@
         "R008"
       ],
       "optional": [],
-      "production_reuse": "Block 01; remaining detail references stay in the production library."
+      "production_reuse": "Block 01; remaining detail references stay in the production library.",
+      "render_waves": [
+        [
+          "R011",
+          "R006",
+          "R002",
+          "R008"
+        ],
+        [
+          "R001"
+        ]
+      ],
+      "next_image": "R001, using the accepted R011 London image as reference; generate inside Higgsfield into the existing R001 Element."
     },
     "test_extend_8s.txt": {
       "required": [

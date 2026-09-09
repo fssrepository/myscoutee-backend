@@ -27,6 +27,12 @@ The first pilot prepares **five new images**, reusing the existing four bound ch
 Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered `.txt` file is complete and directly copyable into the Higgsfield interface. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Use the already-imported R001–R053 Elements; do not import [the batch](../../00_project/elements/08_reference_assets.md) again. Render the selected five pilot images into their Elements using the matching `.txt` prompts, then record actual IDs and accepted image versions before binding them to the video. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
 
 
+## Parallel preparation of the five pilot images
+
+First wave: R011, R006, R002 and R008 can be submitted independently using the existing accepted inputs specified below. Render one 16:9 image per Element in the creator's covered Higgsfield web workflow. If the interface admits fewer concurrent jobs, leave the remainder for its available queue; no parallel capacity is assumed or verified here. R002 and R008 each request several views within that one output image.
+
+Second wave: once R011 is rendered and accepted as the London source, use it for R001's inhabited rating-card image. This is the only dependency between the five new images. Inspect all five before using them in the next paid video test. No job has been submitted by preparing this order.
+
 ## Files, source attachments and use
 
 Only the five images in the pilot row are the current first-test preparation set. Other entries mentioning a pilot object describe possible reuse and production detail, not further mandatory pilot renders.
@@ -67,7 +73,7 @@ Use an accurate photographic St Paul’s reference where available; retain the n
 
 [R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt](R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt)
 
-Attach the accepted Basilica reference for its exact identity and the accepted St Paul’s reference for comparable framing only.
+Attach the existing accepted Basilica reference for building identity only (the Basilica view in W01 can supply that identity). R006 does not need the new R011 or a new St Paul’s image first; framing and lighting are specified in its own prompt.
 
 ### R007 — Optional solid intermediate illustration — not a motion test
 
@@ -79,7 +85,7 @@ Attach the accepted complete source and destination cathedral images. Prepare th
 
 [R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt)
 
-Attach the accepted restaurant still and existing London world image. Preserve the woman, remembered man and exact furniture identities whenever they are visible.
+Attach the accepted restaurant still and existing London world image. Use only the world image’s London café/brick details for the source structure, not its Budapest skyline. Preserve the woman, remembered man and exact furniture identities whenever they are visible. The new R011 image is not a prerequisite.
 
 ### R009 — Fanlight-to-canopy joint study for the Extend
 
@@ -94,6 +100,8 @@ Use the accepted source video endpoint or its next visible arch to define the ar
 Use the statue actually established in the accepted Piccadilly world as identity reference. This image supplies its shape and material, not proof of an animated jump.
 
 ### R011 — Clean London opening reference — priority source image
+
+Recorded Element mention: `@loc_MYS_mys-reference-11-clean-london-opening-reference-priority-source-image_s0_v1`. Supplied by the creator; embedded in the dependent R001 image prompt.
 
 [R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt](R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt)
 
