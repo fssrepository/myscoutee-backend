@@ -69,7 +69,7 @@ The test covers these reusable mechanisms together. Other full-film encounters a
 
 ## Weather correction from the latest result
 
-Use an overcast evening after the rain has stopped: retain wet paving and reflections, omit falling drizzle and umbrellas, and expose heads and numerical cards. This is synchronized in both visual tests, W01 and Block 01; the narrated test preserves the actual source ambience. The Extend must inherit the actual endpoint and visibly close any inherited umbrella rather than deleting it at the seam. Existing rendered reference images are not changed by this wording. The correction removes a competing visual cue; it does not prove successful rating-card generation. No new paid retry is scheduled by this edit.
+Use an overcast evening after the rain has stopped: retain wet paving and reflections, omit falling drizzle and umbrellas, and expose heads and numerical cards. This is synchronized in both visual tests, all seven world prompts and all seven film video/storyboard pairs; the narrated test preserves the actual source ambience. World prompts now render the numerical cards in the reference images themselves. The umbrella-free native Extend requires an umbrella-free source endpoint: it cannot erase umbrellas already recorded in the source or repair missing source ratings without altering that footage. Do not spend an Extend generation expecting it to fix these source defects. Existing rendered reference images are not changed by this wording. The correction removes a competing visual cue; it does not prove successful rating-card generation. No new paid retry is scheduled by this edit.
 
 ## Historic-building ending and camera pace
 
@@ -102,3 +102,5 @@ The latest reviewed `hf_20260909_172538_213973ce-20f0-43d5-8dd5-5a2fdd7f13aa.mp4
 ## Current pilot timing, with parallel action made explicit
 
 0–1 s descending discovery; 1–2 s opening café and first glimpse; 2–4.8 s embodied encounter and smile; 4.8–5.5 s fast passage through the solid open arcade; 5.5–8 s the same outward rising curve with the close bus pass and historic cathedral changing concurrently. The bus’s 5.5–7 s description is parallel action, not an extra sequential shot. The café does not dissolve or undergo a compulsory second transformation during departure. Narration is applied later to the joined source, and Extend follows the actual ending.
+
+Rating-card acceptance: readable numerical scores on the featured current pedestrians are required for the story, even when the transformations look excellent. Review the low camera pass for 6.2 and 9.2, the continued attachment of cards to their people, and uncovered heads on both street sides. A visually attractive output with blank or missing ratings has not passed this part of the pilot.

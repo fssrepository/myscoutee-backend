@@ -23,7 +23,7 @@ Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScou
 | Outputs | 1 | 1 |
 | Audio | ON; city ambience first, short speech reference in extension | ON; matching A01–A07 narration reference |
 | Mode | References, then Forward Extend | References, then verified native continuation |
-| Look | Contemporary rainy blue hour, natural skin and materials | Same |
+| Look | Contemporary overcast blue hour, damp streets and clear air, natural skin and materials | Same |
 | Optics | Approximately 24–28 mm; readable subject and environment | Same; fast movement directed in the prompt |
 
 For reference images, the intended model is **Nano Banana Pro during the stated seven-day unlimited window**, provided it is available inside this project, accepts the required reference set and the actual operation is covered. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition. Use the existing Element's visible **Add element image** entry point for its matching accepted image, following the controls actually offered next. Do not create another Element for the same person or location. The assistant maintains verified mentions centrally and propagates them across the pack. These Element mentions autoload in the creator's composer. Do not generate a prompt containing UNBOUND reference slots; see [reference binding](REFERENCES.md).

@@ -18,10 +18,13 @@ No title area, no header, no footer, no caption bands, no legend, no decorative 
 Do not render cell numbers or layout labels.
 In-world shop, street and transit signage is allowed and REQUIRED where specified below.
 
-All nine cells depict the SAME continuous photorealistic London–Budapest dream metropolis at the SAME late rainy evening continuity.
+All nine cells depict the SAME continuous photorealistic London–Budapest dream metropolis at the SAME overcast evening continuity with clear dry air and damp streets.
 
 STREET VISIBILITY:
-No open umbrellas. Show uncovered heads, separate pedestrian silhouettes and unobstructed space above their crowns. Fine drizzle, wet coats, dripping stone and tyre spray establish the rain. Keep broad vehicle windows and shopfront panes clear of foreground people and passing vehicles.
+Heavy overcast London sky with cool diffuse evening light. The air is clear and dry; the paving, puddles, coats and stone can remain damp from earlier weather. No falling rain, drizzle, rain streaks or rainfall sound. Every current pedestrian is bareheaded, with hoods down, hair and face exposed and hands lowered naturally. No umbrellas anywhere: none open, folded, carried, held above a head or attached to street furniture. Use uncovered heads and damp clothing even when a supplied reference suggests wet weather. Preserve empty air above each crown for its readable numerical rating card. Wet tyre hiss, footsteps and distant traffic provide the continuous street ambience.
+
+RATING CARDS IN THE REFERENCE IMAGE:
+In every cell containing current pedestrians, show a separate warm-white numerical card above each uncovered head. In the human-scale street cells place two foreground or middle-distance pedestrians with enough headroom to read bold dark 6.2 and 9.2 values, respectively. Their cards have a thin clean border, an air gap above the hair and a face about one-and-a-half head widths wide. Face the cards toward the view enough for the numerals to read. Keep people and cards clear of bus roofs, signs, foliage and one another. The scores are objects in the photographed world, not grid captions or a screen HUD. Distant people retain their own small cards. No blank grey tiles or fill-only bars. Architectural detail cells need no invented people. Do not add remembered or clinical people to this world sheet.
 
 PHYSICAL-PRESENT RULE:
 Every view looks into the connected exterior/public world: street, pavement, plaza, bridge, river walk or open passage. An exterior viewpoint may rise above this public space to expose roofs, both street fronts and the depth between them.
@@ -44,10 +47,10 @@ At least one of the first six cells must show a substantial side view of a red d
 SPATIAL TRANSFORMATION PREPARATION:
 Build open, three-dimensional architecture that can change directly into inhabited memory. Include visible floor edges, deep door recesses, street benches with legible timber joints, exposed arch ribs, iron glazing bars and ceilings whose attachment to the surrounding building is visible. Leave usable open pavement beside these structures for full-size people, tables and chairs. Let the camera see the front, side and underside of projecting elements in the same view: a near edge overlaps a farther column; light passes between them; solid objects cast contact shadows onto the wet street.
 Glass is one material among stone, iron, timber and plaster. Open-sided rooms, arcades and balconies must also have unobstructed sightlines directly into their depth. Do not make a glass pane or reflective display the obligatory boundary of an inhabited memory.
-This MAIN WORLD supplies architecture, materials and spatial structure. The separate memory references supply specific remembered people and encounters during video generation. Current pedestrians remain ordinary, solid inhabitants; keep clear space above their crowns for the film's numerical rating cards. No remembered actor or narrative event is baked into this architecture sheet.
+This MAIN WORLD supplies architecture, materials and spatial structure. The separate memory references supply specific remembered people and encounters during video generation. Current pedestrians remain ordinary, solid inhabitants. Render their numerical rating cards IN THIS WORLD IMAGE, already above their uncovered crowns; do not leave empty placeholders for a later video pass. No remembered actor or narrative event is baked into this architecture sheet.
 
 LIGHTING / PHOTOGRAPHY:
-Rainy blue hour progressing toward night.
+Overcast blue hour progressing toward night, with damp streets and no precipitation.
 Cool blue-grey exterior; warm tungsten cafés/restaurants; warm-neutral public interiors; realistic vehicle practicals.
 Photorealistic live-action European feature-film location photography.
 Environment views: approximately 24–28mm full-frame equivalent. Most retain human-height scale; one of the broad assigned environment views rises to a 5–8 metre exterior oblique position to show both street fronts, roof thickness, open passages and a continuous ground route. Keep vertical proportions and material detail readable.
@@ -74,7 +77,7 @@ Cell 5 — Closer exterior approach to the SAME dark-glass entrance. Large unint
 
 Cell 6 — Exterior context view proving the final entrance belongs naturally to the same London–Budapest block. Visible in-world BEJÁRAT, KÁVÉ or KÖNYV signs; no medical words, no hospital symbols. A distant Basilica dome or Parliament silhouette may echo through a separate sightline.
 
-Cell 7 — Close dark-glass material detail: rain droplets, current city reflection containing red bus / yellow tram / black taxi / Pest architecture, subtle ordinary depth behind glass. No clinical content.
+Cell 7 — Close dark-glass material detail: residual droplets on glass, current city reflection containing red bus / yellow tram / black taxi / Pest architecture, subtle ordinary depth behind glass. No clinical content.
 
 Cell 8 — Close final-door detail: broad dark panes, real handles, wet threshold, strong but not opaque reflection, ordinary warm-neutral architectural depth. No person, no memory, no medical clue.
 
