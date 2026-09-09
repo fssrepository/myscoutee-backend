@@ -1,9 +1,6 @@
-REFERENCE SETUP INCOMPLETE: C05
-Do not generate until these references are bound.
-
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C05 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
+@char_mys_final-nurse_s7_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

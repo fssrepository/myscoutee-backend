@@ -1,11 +1,11 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C25, C26
+REFERENCE SETUP INCOMPLETE: C03, C04, C26
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@UNBOUND_C25 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
+@char_mys_search-officer-male_s4_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
 @UNBOUND_C26 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:

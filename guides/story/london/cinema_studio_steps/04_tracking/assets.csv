@@ -3,17 +3,17 @@ C01,C01_PROTAGONIST.png,MyScoutee,char_mys_protagonist_s1_v1,,,,2K,,ACCEPTED,"20
 C02,C02_SOHO_WOMAN.png,MyScoutee,char_mys_soho-woman_s1_v1,,,,2K,,ACCEPTED,2026-09-09 14:17:50: usable C02 sheet in New project / Getting Started; Nano Banana Pro / 16:9 / 2K / Unlimited ON. 14:18:19: same image correctly attached in My elements / Character / Soho Woman / v1 / char_mys_soho-woman_s1_v1 / Scene 1 / apparent age 32-38. Visible description matches; off-screen fields not checked. Save pending; source launch route and MyScoutee generation history unresolved. 2026-09-09 14:19:35 supersedes pending/inferred Save: image persists on the correct named card in MyScoutee / Elements after editor closure. Original generation history remains unresolved in FULL_BUDGET.
 C03,C03_POLICEWOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C04,C04_APPOINTED_LAWYER.png,MyScoutee,,,,,,,NOT_CHECKED,
-C05,C05_FINAL_NURSE.png,MyScoutee,,,,,,,NOT_CHECKED,
+C05,C05_FINAL_NURSE.png,MyScoutee,char_mys_final-nurse_s7_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
 C06,C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png,MyScoutee,,,,,,,NOT_CHECKED,
 C07,C07_FX_MORTGAGE_HOUSEMATE.png,MyScoutee,,,,,,,NOT_CHECKED,
 C08,C08_FX_MORTGAGE_SPOUSE.png,MyScoutee,,,,,,,NOT_CHECKED,
-C09,C09_FX_MORTGAGE_CHILD.png,MyScoutee,,,,,,,NOT_CHECKED,
-C10,C10_BEGINNER_DANCE_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
+C09,C09_FX_MORTGAGE_CHILD.png,MyScoutee,char_mys_fx-mortgage-child_s1_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C10,C10_BEGINNER_DANCE_WOMAN.png,MyScoutee,char_mys_beginner-dance-woman_s1_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
 C11,C11_RUSSIAN_TRANSIT_PASSENGER.png,MyScoutee,,,,,,,NOT_CHECKED,
-C12,C12_AGRA_BUS_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
-C13,C13_SUDANESE_TRAVELER_MAN.png,MyScoutee,,,,,,,NOT_CHECKED,
-C14,C14_SUDANESE_TRAVELER_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
-C15,C15_CAIRO_TAXI_DRIVER.png,MyScoutee,,,,,,,NOT_CHECKED,
+C12,C12_AGRA_BUS_WOMAN.png,MyScoutee,char_mys_agra-bus-woman_s2_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C13,C13_SUDANESE_TRAVELER_MAN.png,MyScoutee,char_mys_sudanese-traveler-man_s2_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C14,C14_SUDANESE_TRAVELER_WOMAN.png,MyScoutee,char_mys_sudanese-traveler-woman_s2_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C15,C15_CAIRO_TAXI_DRIVER.png,MyScoutee,char_mys_cairo-taxi-driver_s2_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
 C16,C16_BALLOON_LOCAL_HELPER_MAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C17,C17_BALLOON_LOCAL_HELPER_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C18,C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png,MyScoutee,,,,,,,NOT_CHECKED,
@@ -21,14 +21,14 @@ C19,C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png,MyScoutee,,,,,,,NOT_CHECKED,
 C20,C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png,MyScoutee,,,,,,,NOT_CHECKED,
 C21,C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png,MyScoutee,,,,,,,NOT_CHECKED,
 C22,C22_ACCOUNTANT.png,MyScoutee,,,,,,,NOT_CHECKED,
-C23,C23_ADMIN_COLLEAGUE_A.png,MyScoutee,,,,,,,NOT_CHECKED,
-C24,C24_ADMIN_COLLEAGUE_B.png,MyScoutee,,,,,,,NOT_CHECKED,
-C25,C25_SEARCH_OFFICER_MALE.png,MyScoutee,,,,,,,NOT_CHECKED,
+C23,C23_ADMIN_COLLEAGUE_A.png,MyScoutee,char_mys_admin-colleague-a_s3_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C24,C24_ADMIN_COLLEAGUE_B.png,MyScoutee,char_mys_admin-colleague-b_s3_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C25,C25_SEARCH_OFFICER_MALE.png,MyScoutee,char_mys_search-officer-male_s4_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
 C26,C26_DEFENCE_OFFICE_SUBSTITUTE.png,MyScoutee,,,,,,,NOT_CHECKED,
 C27,C27_JUDGE.png,MyScoutee,,,,,,,NOT_CHECKED,
-C28,C28_FORENSIC_EXPERT_A.png,MyScoutee,,,,,,,NOT_CHECKED,
-C29,C29_FORENSIC_EXPERT_B.png,MyScoutee,,,,,,,NOT_CHECKED,
-C30,C30_COURT_CLERK.png,MyScoutee,,,,,,,NOT_CHECKED,
+C28,C28_FORENSIC_EXPERT_A.png,MyScoutee,char_mys_forensic-expert-a_s5_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C29,C29_FORENSIC_EXPERT_B.png,MyScoutee,char_mys_forensic-expert-b_s5_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
+C30,C30_COURT_CLERK.png,MyScoutee,char_mys_court-clerk_s5_v1,,,,,,AWAITING_IMAGE,"Full Element ID verified in supplied 2026-09-09 15:31:04/08 screenshots; matching character label, empty image slot. Metadata binding only; no image generated or accepted."
 C31,C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png,MyScoutee,,,,,,,NOT_CHECKED,
 MW01,MW01_LONDON_SOCIAL.png,MyScoutee,,,,,,,NOT_CHECKED,
 MW02,MW02_GLOBAL_ROUTES.png,MyScoutee,,,,,,,NOT_CHECKED,
@@ -75,4 +75,4 @@ SB07,SB07_STORYBOARD.png,MyScoutee,,,,,,,NOT_CHECKED,
 A07,A07_NARRATION.wav,MyScoutee,,,,,,,NOT_CHECKED,
 V07,V07_MASTER_0320.mp4,MyScoutee,,,,,,,NOT_CHECKED,
 T01_IMAGE,T01_SOHO_MEMORY.png,MyScoutee,,,,,2K,,ACCEPTED,"2026-09-09 14:39:25 screenshot: single warm Soho sushi-restaurant frame in MyScoutee / All assets. Both referenced characters recognizable; man beside restroom doors, woman seated with clear face and small smile; background diners out of focus. Suitable for pilot memory motion, no grid. Retain as project asset, no new canonical Element. 14:33:10 confirms highlighted @ IDs and two loaded character references. Nano Banana Pro / 16:9 / 2K / one output / Unlimited ON; no account debit history inspected."
-T01_VIDEO,T01_CITY_8S_480P.mp4,MyScoutee,,,,,,,AWAITING_VIDEO_CONTROLS_AND_QUOTE,"Next: open Video in MyScoutee / All assets. Target Cinema Studio 4.0 / Seedance 2.5 / References / 8 seconds / 480p / 16:9 / audio ON / one output; C01, C02, W01 and T01 restaurant still. Actual video controls, reference tokens, quote and continuation/export checks pending. No video submitted. W01 is context only, never a grid start frame."
+T01_VIDEO,T01_CITY_8S_480P.mp4,MyScoutee,,,,,,,AWAITING_REFERENCES_AND_FINAL_QUOTE,"The 2026-09-09 14:50:03 screenshot shows Cinema Studio 4.0 / 8 s / 480p / 16:9 / audio ON / one output / 20-credit quote, with only the two character references loaded. W01 full ID and T01_IMAGE persistent mention remain missing. The creator confirms real Element mentions autoload. Bind those existing accepted images; do not repeat Video navigation or character-autoload proof. Confirm the quote after all four references are loaded. No video submission or actual charge is confirmed."

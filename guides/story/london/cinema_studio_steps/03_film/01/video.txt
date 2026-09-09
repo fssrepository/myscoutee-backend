@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A01, C06, C07, C08, C09, MW01, MWP01, SB01, W01
+REFERENCE SETUP INCOMPLETE: A01, C06, C07, C08, MW01, MWP01, SB01, W01
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 01 — 30 SECONDS
@@ -13,7 +13,7 @@ REFERENCES
 @UNBOUND_C06 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C07 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C08 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C09 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_fx-mortgage-child_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB01 = ordered nine-beat plan, never a visible grid.
 @UNBOUND_A01 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

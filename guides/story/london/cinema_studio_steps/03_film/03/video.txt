@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A03, C22, C23, C24, MW03, MWP01, SB03, W03
+REFERENCE SETUP INCOMPLETE: A03, C22, MW03, MWP01, SB03, W03
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 03 — 30 SECONDS
@@ -11,8 +11,8 @@ REFERENCES
 @UNBOUND_MWP01 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C22 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C23 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C24 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_admin-colleague-a_s3_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_admin-colleague-b_s3_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB03 = ordered nine-beat plan, never a visible grid.
 @UNBOUND_A03 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.
 

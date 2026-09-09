@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C22, C23, C24, MW03, MWP01, W03
+REFERENCE SETUP INCOMPLETE: C22, MW03, MWP01, W03
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
@@ -7,8 +7,8 @@ REFERENCE INPUTS:
 @UNBOUND_MWP01 = LOCATION — MWP01 — MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS; the assigned remembered scenes; preserve the source identities and setting.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @UNBOUND_C22 = CHARACTER 22 — ACCOUNTANT; exact person identity; use only where this person appears.
-@UNBOUND_C23 = CHARACTER 23 — ADMIN COLLEAGUE A; exact person identity; use only where this person appears.
-@UNBOUND_C24 = CHARACTER 24 — ADMIN COLLEAGUE B; exact person identity; use only where this person appears.
+@char_mys_admin-colleague-a_s3_v1 = CHARACTER 23 — ADMIN COLLEAGUE A; exact person identity; use only where this person appears.
+@char_mys_admin-colleague-b_s3_v1 = CHARACTER 24 — ADMIN COLLEAGUE B; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

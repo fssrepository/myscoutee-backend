@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A05, C04, C27, C28, C29, C30, C31, MW05, MWP02, SB05, W05
+REFERENCE SETUP INCOMPLETE: A05, C04, C27, C31, MW05, MWP02, SB05, W05
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 05 — 30 SECONDS
@@ -12,9 +12,9 @@ REFERENCES
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C27 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C28 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C29 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C30 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_forensic-expert-a_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_forensic-expert-b_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_court-clerk_s5_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C31 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB05 = ordered nine-beat plan, never a visible grid.
 @UNBOUND_A05 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.

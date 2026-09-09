@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A07, C05, C06, C16, C17, HRW07, MW01, MW02, MWP01, SB07, W07
+REFERENCE SETUP INCOMPLETE: A07, C06, C16, C17, HRW07, MW01, MW02, MWP01, SB07, W07
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 07 — 20 SECONDS
@@ -12,7 +12,7 @@ REFERENCES
 @UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
 @UNBOUND_MW02 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C05 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_final-nurse_s7_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C06 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.

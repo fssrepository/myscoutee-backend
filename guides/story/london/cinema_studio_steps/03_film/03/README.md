@@ -7,6 +7,8 @@ Duration means NEW added footage. Select the previous accepted video in the actu
 
 ## Sequential preparation
 
+Image setup: Nano Banana Pro, 16:9, one output; characters and single-scene stills at 2K, worlds at 4K, and nine-cell memory/storyboard sheets at 4K when Unlimited covers the actual operation. Set the separate Unlimited switch ON and verify coverage at the selected resolution. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; the next dependent prompt must have all actual mentions bound.
+
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
 | Prompt | Required accepted references | Output name |
@@ -35,8 +37,8 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
 | C22 | `C22_ACCOUNTANT.png` | `@UNBOUND_C22` |
-| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@UNBOUND_C23` |
-| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@UNBOUND_C24` |
+| C23 | `C23_ADMIN_COLLEAGUE_A.png` | `@char_mys_admin-colleague-a_s3_v1` |
+| C24 | `C24_ADMIN_COLLEAGUE_B.png` | `@char_mys_admin-colleague-b_s3_v1` |
 | SB03 | `SB03_STORYBOARD.png` | `@UNBOUND_SB03` |
 | A03 | `A03_NARRATION.wav` | `@UNBOUND_A03` |
 

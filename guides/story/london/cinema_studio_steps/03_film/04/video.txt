@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A04, C03, C04, C25, C26, MW04, SB04, W04
+REFERENCE SETUP INCOMPLETE: A04, C03, C04, C26, MW04, SB04, W04
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 04 — 30 SECONDS
@@ -11,7 +11,7 @@ REFERENCES
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C03 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C04 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C25 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_search-officer-male_s4_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C26 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_SB04 = ordered nine-beat plan, never a visible grid.
 @UNBOUND_A04 = the protagonist's exact supplied inner-monologue voiceover; preserve words, voice and pacing.

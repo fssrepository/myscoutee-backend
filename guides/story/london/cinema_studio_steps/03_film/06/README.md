@@ -7,6 +7,8 @@ Duration means NEW added footage. Select the previous accepted video in the actu
 
 ## Sequential preparation
 
+Image setup: Nano Banana Pro, 16:9, one output; characters and single-scene stills at 2K, worlds at 4K, and nine-cell memory/storyboard sheets at 4K when Unlimited covers the actual operation. Set the separate Unlimited switch ON and verify coverage at the selected resolution. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; the next dependent prompt must have all actual mentions bound.
+
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
 | Prompt | Required accepted references | Output name |
@@ -39,13 +41,13 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | C02 | `C02_SOHO_WOMAN.png` | `@char_mys_soho-woman_s1_v1` |
 | C03 | `C03_POLICEWOMAN.png` | `@UNBOUND_C03` |
 | C04 | `C04_APPOINTED_LAWYER.png` | `@UNBOUND_C04` |
-| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@UNBOUND_C10` |
+| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@char_mys_beginner-dance-woman_s1_v1` |
 | C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@UNBOUND_C11` |
 | C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
 | C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
 | C27 | `C27_JUDGE.png` | `@UNBOUND_C27` |
-| C28 | `C28_FORENSIC_EXPERT_A.png` | `@UNBOUND_C28` |
-| C29 | `C29_FORENSIC_EXPERT_B.png` | `@UNBOUND_C29` |
+| C28 | `C28_FORENSIC_EXPERT_A.png` | `@char_mys_forensic-expert-a_s5_v1` |
+| C29 | `C29_FORENSIC_EXPERT_B.png` | `@char_mys_forensic-expert-b_s5_v1` |
 | SB06 | `SB06_STORYBOARD.png` | `@UNBOUND_SB06` |
 | A06 | `A06_NARRATION.wav` | `@UNBOUND_A06` |
 

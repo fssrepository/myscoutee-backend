@@ -1,6 +1,6 @@
 # MYSCOUTEE — Cinema Studio, step by step
 
-**Start here: [the short 480p pilot](01_pilot/README.md).** One 8-second shot tests fast camera movement, a living London–Budapest city, transforming architecture and moving memory inside glass. If usable, one 4-second extension tests the seam and a short narration reference. One output per request; no variation campaign.
+**Resume at [the current session](04_tracking/SESSION.md), using [the numbered production list](04_tracking/production_steps.csv).** Do not restart completed assets. The [short 480p pilot](01_pilot/README.md) tests fast camera movement, a living London–Budapest city, transforming architecture and moving memory inside glass. If usable, one 4-second extension tests the seam and a short narration reference. One output per request; no variation campaign.
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
 
@@ -11,8 +11,10 @@ This is the **September 9, 2026 manual production edition**. Final target: **See
 1. Read [setup and capability checks](00_project/SETUP.md) and the [budget](00_project/BUDGET.md). Use the price displayed for the actual operation.
 2. Continue in the existing **MyScoutee** project shown in the screenshot. If needed, paste [project_brief.txt](00_project/project_brief.txt) into its brief field. Existing Elements do not need re-importing.
 3. Follow the [numbered pilot steps](01_pilot/README.md). Do not build the whole asset library first.
-4. After a usable pilot, follow the film blocks below. Each README lists **prompt → required existing references → output name**.
-5. After V02, verify that the native 60-second result can continue and eventually export as one film before preparing the remaining blocks.
+4. After a usable pilot, complete the requested W01 replacement at 4K under verified Unlimited and the full-budget/hosted-delivery check, then follow the film blocks below. Each README lists **prompt → required existing references → output name**.
+5. After V02, verify the actual returned duration, voice/music seam and native continuation beyond 60 seconds before preparing the remaining blocks. Do not assume the result is cumulative or that a 60-second file is accepted by the source field.
+
+The production list includes the outstanding reference binding, clean narration, native sound, image resolution, budget and hosted export checks at their point of use. Image acceptance alone does not make an unbound downstream prompt ready. Before each generation the assistant gives the complete configuration in chat, opens the exact prompt and follows the [reference procedure](00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use). These checks add no media jobs beyond the already counted W01 replacement; the current total is 77.
 
 | Block | Timeline | Story |
 | --- | --- | --- |

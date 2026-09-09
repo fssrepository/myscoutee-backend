@@ -1,13 +1,13 @@
-REFERENCE SETUP INCOMPLETE: C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21
+REFERENCE SETUP INCOMPLETE: C11, C16, C17, C18, C19, C20, C21
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 @UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
-@UNBOUND_C12 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C13 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
-@UNBOUND_C14 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C15 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
+@char_mys_agra-bus-woman_s2_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-man_s2_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-woman_s2_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@char_mys_cairo-taxi-driver_s2_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
 @UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
 @UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.

@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C05, C06, C16, C17, HRW07, MW01, MW02, MWP01, W07
+REFERENCE SETUP INCOMPLETE: C06, C16, C17, HRW07, MW01, MW02, MWP01, W07
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
@@ -8,7 +8,7 @@ REFERENCE INPUTS:
 @UNBOUND_MW01 = LOCATION — MW01 — MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING; the assigned remembered scenes; preserve the source identities and setting.
 @UNBOUND_MW02 = LOCATION — MW02 — MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS; the assigned remembered scenes; preserve the source identities and setting.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C05 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
+@char_mys_final-nurse_s7_v1 = CHARACTER 05 — FINAL NURSE; exact person identity; use only where this person appears.
 @UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
 @UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
 @UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.

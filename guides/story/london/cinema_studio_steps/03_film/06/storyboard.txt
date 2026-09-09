@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C03, C04, C10, C11, C16, C17, C27, C28, C29, MW01, MW02, MW03, MW04, MW05, MW06, MWP02, W06
+REFERENCE SETUP INCOMPLETE: C03, C04, C11, C16, C17, C27, MW01, MW02, MW03, MW04, MW05, MW06, MWP02, W06
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
@@ -14,13 +14,13 @@ REFERENCE INPUTS:
 @char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@UNBOUND_C10 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
 @UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
 @UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
-@UNBOUND_C28 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
-@UNBOUND_C29 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

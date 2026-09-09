@@ -6,7 +6,7 @@ Budget: [at most 100 credits](../00_project/BUDGET.md) for the whole pilot, incl
 
 ## 1. Existing project and references
 
-Continue in the existing **MyScoutee** project shown in the supplied screenshot. Its visible Elements are already imported and show **Add element image** rather than rendered thumbnails. Use those existing containers; do not repeat their import. Check C01, C02 and W01 specifically and reuse any accepted images already available. The screenshot does not establish the state of off-screen entries.
+Continue in the existing **MyScoutee** project. C01, C02 and the 2K W01 already have accepted images on the matching imported Elements; the single T01 restaurant still is also accepted. Reuse them for this pilot. Do not repeat their generation or import. The pending pilot work is reference binding and the video itself; see the [current session](../04_tracking/SESSION.md).
 
 If Elements are missing, [00_pilot.md](../00_project/elements/00_pilot.md) starts with three definitions. This is metadata, not rendered imagery. If all 48 Elements were imported earlier, **do not import them again**. See the [import guide](../00_project/elements/README.md).
 
@@ -52,6 +52,8 @@ Forward Extend source: accepted `T01_CITY_8S_480P.mp4`. Added duration: **4 s**,
 
 Check stride, camera direction, traffic, rain and ambience at the eight-second boundary. Compare the spoken result with TA01. Record whether the output contains **12 continuous seconds or only a 4-second continuation**. Name and record the actual returned media rather than assuming a cumulative chain.
 
+Listen for the same tekerő/clarinet phrase continuing across the seam, intelligible supplied speech with no new speaker or visible lip-sync, and music/SFX staying below it. Verify the reference input actually supplies the intended audio; a locally bound token alone does not prove this. The detailed criteria are in the [voice plan](../00_project/VOICE.md#seven-recordings-one-continuing-speaker).
+
 ## 6. Next step
 
-After a usable pilot and a complete budget check, continue to [Film Block 01](../03_film/01/README.md) at the 30 s / 1080p target. Do not stretch the pilot into the final film or create seven draft versions. Retain the three accepted canonical images; keep the pilot video separate from the 3:20 production chain.
+After a usable pilot, complete W01_4K: generate one 4K replacement under verified Unlimited, retain the old image until acceptance, and associate the replacement with the same World 01 Element. Then complete FULL_BUDGET, including actual audio-ON video and narration quotes and the hosted assembly/export route. Continue to [Film Block 01](../03_film/01/README.md) at the 30 s / 1080p target. Do not stretch the pilot into the final film or create seven draft versions. Reuse C01/C02 at 2K; keep the pilot video separate from the 3:20 production chain.

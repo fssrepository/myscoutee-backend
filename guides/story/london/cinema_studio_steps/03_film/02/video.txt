@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: A02, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, C21, MW01, MW02, MWP01, SB02, W02
+REFERENCE SETUP INCOMPLETE: A02, C11, C16, C17, C18, C19, C20, C21, MW01, MW02, MWP01, SB02, W02
 Do not generate until these references are bound.
 
 MYSCOUTEE — BLOCK 02 — 30 SECONDS
@@ -11,12 +11,12 @@ REFERENCES
 @UNBOUND_MW01 = living remembered scene inside real glass; select only the assigned scene.
 @UNBOUND_MWP01 = living remembered scene inside real glass; select only the assigned scene.
 @char_mys_protagonist_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C10 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_beginner-dance-woman_s1_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C11 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C12 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C13 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C14 = exact face, age, hair and body; memory wardrobe follows its source scene.
-@UNBOUND_C15 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_agra-bus-woman_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_sudanese-traveler-man_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_sudanese-traveler-woman_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
+@char_mys_cairo-taxi-driver_s2_v1 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C16 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C17 = exact face, age, hair and body; memory wardrobe follows its source scene.
 @UNBOUND_C18 = exact face, age, hair and body; memory wardrobe follows its source scene.

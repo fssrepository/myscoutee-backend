@@ -7,6 +7,8 @@ Duration means NEW added footage. Select the previous accepted video in the actu
 
 ## Sequential preparation
 
+Image setup: Nano Banana Pro, 16:9, one output; characters and single-scene stills at 2K, worlds at 4K, and nine-cell memory/storyboard sheets at 4K when Unlimited covers the actual operation. Set the separate Unlimited switch ON and verify coverage at the selected resolution. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; the next dependent prompt must have all actual mentions bound.
+
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
 | Prompt | Required accepted references | Output name |
@@ -34,7 +36,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
 | MW02 | `MW02_GLOBAL_ROUTES.png` | `@UNBOUND_MW02` |
 | C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C05 | `C05_FINAL_NURSE.png` | `@UNBOUND_C05` |
+| C05 | `C05_FINAL_NURSE.png` | `@char_mys_final-nurse_s7_v1` |
 | C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
 | C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
 | C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |

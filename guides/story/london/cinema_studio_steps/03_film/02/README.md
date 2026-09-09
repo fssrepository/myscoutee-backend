@@ -7,6 +7,8 @@ Duration means NEW added footage. Select the previous accepted video in the actu
 
 ## Sequential preparation
 
+Image setup: Nano Banana Pro, 16:9, one output; characters and single-scene stills at 2K, worlds at 4K, and nine-cell memory/storyboard sheets at 4K when Unlimited covers the actual operation. Set the separate Unlimited switch ON and verify coverage at the selected resolution. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; the next dependent prompt must have all actual mentions bound.
+
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
 | Prompt | Required accepted references | Output name |
@@ -43,12 +45,12 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | MW01 | `MW01_LONDON_SOCIAL.png` | `@UNBOUND_MW01` |
 | MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@UNBOUND_MWP01` |
 | C01 | `C01_PROTAGONIST.png` | `@char_mys_protagonist_s1_v1` |
-| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@UNBOUND_C10` |
+| C10 | `C10_BEGINNER_DANCE_WOMAN.png` | `@char_mys_beginner-dance-woman_s1_v1` |
 | C11 | `C11_RUSSIAN_TRANSIT_PASSENGER.png` | `@UNBOUND_C11` |
-| C12 | `C12_AGRA_BUS_WOMAN.png` | `@UNBOUND_C12` |
-| C13 | `C13_SUDANESE_TRAVELER_MAN.png` | `@UNBOUND_C13` |
-| C14 | `C14_SUDANESE_TRAVELER_WOMAN.png` | `@UNBOUND_C14` |
-| C15 | `C15_CAIRO_TAXI_DRIVER.png` | `@UNBOUND_C15` |
+| C12 | `C12_AGRA_BUS_WOMAN.png` | `@char_mys_agra-bus-woman_s2_v1` |
+| C13 | `C13_SUDANESE_TRAVELER_MAN.png` | `@char_mys_sudanese-traveler-man_s2_v1` |
+| C14 | `C14_SUDANESE_TRAVELER_WOMAN.png` | `@char_mys_sudanese-traveler-woman_s2_v1` |
+| C15 | `C15_CAIRO_TAXI_DRIVER.png` | `@char_mys_cairo-taxi-driver_s2_v1` |
 | C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@UNBOUND_C16` |
 | C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@UNBOUND_C17` |
 | C18 | `C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png` | `@UNBOUND_C18` |

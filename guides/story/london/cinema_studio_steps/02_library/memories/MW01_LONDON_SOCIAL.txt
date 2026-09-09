@@ -1,4 +1,4 @@
-REFERENCE SETUP INCOMPLETE: C06, C07, C08, C09, C10
+REFERENCE SETUP INCOMPLETE: C06, C07, C08
 Do not generate until these references are bound.
 
 REFERENCE INPUTS:
@@ -7,8 +7,8 @@ REFERENCE INPUTS:
 @UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
 @UNBOUND_C07 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
 @UNBOUND_C08 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
-@UNBOUND_C09 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
-@UNBOUND_C10 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@char_mys_fx-mortgage-child_s1_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
+@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — NON-NEGOTIABLE:
 Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.

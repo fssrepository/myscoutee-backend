@@ -3,9 +3,11 @@
 Status: prepared prompt files; existing account media has not been checked. [Start](../../README.md).
 
 Seedance 2.5; 16:9; **30 s, 1080p target**, audio ON, one output.
-Complete the pilot and full-budget check first. Reuse accepted C01, C02 and W01 from the pilot. Accepted V01 becomes the final opening.
+Complete the pilot, the requested W01_4K replacement on the same Element, and the full-budget/hosted-delivery check first. Reuse C01/C02 at 2K and the accepted W01 at 4K. Accepted V01 becomes the final opening.
 
 ## Sequential preparation
+
+Image setup: Nano Banana Pro, 16:9, one output; characters and single-scene stills at 2K, worlds at 4K, and nine-cell memory/storyboard sheets at 4K when Unlimited covers the actual operation. Set the separate Unlimited switch ON and verify coverage at the selected resolution. Apply the [reference procedure](../../00_project/REFERENCES.md#remaining-binding-work-at-the-point-of-use) as each asset is accepted; the next dependent prompt must have all actual mentions bound.
 
 Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
 
@@ -43,7 +45,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@UNBOUND_C06` |
 | C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@UNBOUND_C07` |
 | C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@UNBOUND_C08` |
-| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@UNBOUND_C09` |
+| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@char_mys_fx-mortgage-child_s1_v1` |
 | SB01 | `SB01_STORYBOARD.png` | `@UNBOUND_SB01` |
 | A01 | `A01_NARRATION.wav` | `@UNBOUND_A01` |
 
