@@ -50,8 +50,9 @@ Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, 
 
 - Does the same protagonist walk at human speed while one connected camera path follows his gaze and keeps the transformation visible?
 - Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
-- Does the restaurant first appear on the café pane, then acquire depth beyond its original plane, with a recognisable turning/smiling woman? Keep the same street threshold visible; a full-screen cutaway or still photograph is not this spatial emergence.
-- Does the moving shot keep the human memory gesture readable, with cards above heads and no clinical reveal?
+- Does the whole restaurant emerge directly as a life-size three-dimensional room with solid furniture, both remembered people, contact shadows and a recognisable turning/smiling woman? Keep the same street threshold visible; a full-screen cutaway or still photograph is not this spatial emergence.
+- After the memory, does his gaze open the view across the same road, showing a substantial black taxi and yellow tram within a complete near-to-distant city whose architecture changes across multiple connected depths?
+- Are complete above-head cards visible in the opening and final wide view, with the human memory gesture readable in between and no clinical reveal?
 
 Listen for a clearly audible, hummable fiddle-led Hungarian folk-rooted theme with acoustic tekerő buzz and short clarinet answers. Check distinct stone grinding, iron creak and wood/glass events against the visible movements. Give the smile a brief quieter pocket; the whole soundtrack must not collapse into generic ambience.
 
