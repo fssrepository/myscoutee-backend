@@ -31,7 +31,7 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+Later STORYBOARD / VIDEO generation animates the selected scene and projects its moving image ONTO the assigned existing city pane. This source sheet supplies only the remembered content, without that pane, city reflections or above-head cards.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.

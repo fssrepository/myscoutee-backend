@@ -20,6 +20,9 @@ In-world shop, street and transit signage is allowed and REQUIRED where specifie
 
 All nine cells depict the SAME continuous photorealistic London–Budapest dream metropolis at the SAME late rainy evening continuity.
 
+STREET VISIBILITY:
+No open umbrellas. Show uncovered heads, separate pedestrian silhouettes and unobstructed space above their crowns. Fine drizzle, wet coats, dripping stone and tyre spray establish the rain. Keep broad vehicle windows and shopfront panes clear of foreground people and passing vehicles.
+
 PHYSICAL-PRESENT RULE:
 Every camera position is outside in public pedestrian space: street, pavement, plaza, bridge, river walk, open-air or publicly open passage.
 The current camera never becomes an office-room camera, bedroom camera, police-room camera, courtroom camera or clinical-room camera.
@@ -41,7 +44,7 @@ At least one of the first six cells must show a substantial side view of a red d
 MEMORY-COMPOSITING PREPARATION:
 Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
 These are only the PHYSICAL PRESENT surfaces.
-This MAIN WORLD contains NO narrative memory scene and NO score cards.
+This MAIN WORLD is the architecture source only: NO narrative memory scene and NO score cards are baked into this reference. Their absence here does not apply to the film: STORYBOARD / VIDEO adds projected memories and clearly visible above-head cards. Leave clear space above pedestrian heads for that later layer.
 The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
 
 LIGHTING / PHOTOGRAPHY:
@@ -88,5 +91,6 @@ All current camera positions remain exterior/public.
 Budapest must be specifically recognizable through the named anchors above, not genericized.
 
 TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
-This sheet defines recognizable material and spatial anchors for a moving city, not a prohibition on later architectural transformation. Keep every listed landmark and cell. In the corresponding environment view, show one coherent intermediate facade configuration with articulated solid masonry and intact street-level walking space. No motion-blurred contact sheet.
-During the lateral approach, one Piccadilly upper facade visibly articulates from London brick and cornices into Andrássy-style Pest limestone and balconies. Window bays slide into their new spacing; stone joints, shadows and wet reflections follow. Eros and the pavement remain fixed.
+Photorealistic materials in an impossible world: sculpted limestone, layered iron balconies and connected London–Budapest architecture occupy one continuous street. Preserve every named landmark and all nine cells. This sheet captures sharp moments of an inhabited city whose structures can move; it is not a nine-shot video plan. Do not animate, blur or repeat a cell to show time.
+In Cell 3, show the curved Piccadilly facade midway through its change: brick bays on one side, pale carved limestone on the other, and one projecting balcony slab with a partly raised iron railing at their connected boundary. The unchanged shop doorway and Eros anchor the image. The joined building must be solid and sharp, not a dissolve between two exposures.
+The visible intermediate geometry is intentional architecture, not broken construction: solid connections, coherent perspective, matching shadows and no rubble. Maintain a clear walkable ground plane. Other cells show the same rich world from their assigned viewpoints. Later video shows the actual movement, projections and cards.
