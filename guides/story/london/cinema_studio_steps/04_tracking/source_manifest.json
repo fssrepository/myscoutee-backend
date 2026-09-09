@@ -1699,7 +1699,8 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "2e8dc883e51d3da02ac6e4ebe40833567f9a7b287947e6edb91b9ada27e08c34"
+      "sha256": "a73fc8f32355adebdae65a4a634bcf4cf4ca604d4d25521f48a055811e13f641",
+      "reference_note": "Verified C01/C02 @ Element IDs autoload their images. Attach the existing W01 nine-view city sheet and T01 single restaurant still as image references from the project. These two images are described semantically in the prompt; no invented or unresolved @ IDs."
     }
   ],
   "current_project_observation": {
