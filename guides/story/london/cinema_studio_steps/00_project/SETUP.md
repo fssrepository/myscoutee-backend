@@ -2,7 +2,7 @@
 
 **Completion constraint:** the creator cannot perform local video editing, audio mixing or rendering. Each generated clip must arrive with its intended soundtrack, and the complete film must have a verified hosted assembly/export route within the existing budget. Do not assume a later desktop-editor repair. This clarifies the existing production requirement and adds no generation task.
 
-**Budget update:** 80 credits spent on tests and 720 maximum remaining, creator-reported. The former 1080p cost plan is superseded; see BUDGET.md before final production.
+**Budget update:** 80 credits recorded as historical test spend; latest remaining estimate approximately 700, creator-reported, with about 100 potentially needed for the remaining tests and a reserve for one or two 30-second retries. The former 1080p cost plan is superseded; see BUDGET.md before final production.
 
 Production plan; public documentation checked **2026-09-09**. The supplied screenshot from **2026-09-09 09:37:22** shows the existing project named **MyScoutee**, its Elements page, and visible imported entries displaying **Add element image**. This establishes existing metadata containers with no image shown on those visible entries; it does not establish the full Element count or off-screen media state. Continue in this project; do not create or import a duplicate because the old master used the name `AI Film Festival`.
 
@@ -18,7 +18,7 @@ Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScou
 | --- | --- | --- |
 | Interface / model | Cinema Studio 4.0 / Seedance 2.5 | Same |
 | Resolution | 480p | 1080p target |
-| Duration | 8 s, then 4 s added | 30 s opening; five 30 s additions and one 20 s addition |
+| Duration | 8 s, then 8 s added | 30 s opening; five 30 s additions and one 20 s addition |
 | Aspect ratio | 16:9 | 16:9 |
 | Outputs | 1 | 1 |
 | Audio | ON; city ambience first, short speech reference in extension | ON; matching A01–A07 narration reference |
@@ -34,7 +34,7 @@ Drama is a suitable Director's Panel starting point. The overload comes from cam
 
 The original W01 source (canonical pack, line 3058 onward) already specifies a 3x3 contact sheet. A 16:9 sheet with a long edge around 1920-2048 pixels provides only about 640-683 by 360-384 pixels per cell, before gutters. A 3840x2160 sheet provides about 1280x720 per cell. These are geometric examples, not verified dimensions of the downloaded files. Contact sheets divide the available detail; do not describe a 2K nine-view sheet as nine 2K images.
 
-**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the reported 720-credit remaining cap. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
+**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the latest approximately 700-credit remaining budget. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
 
 Use existing W01 as a context reference for the 480p motion/mechanics pilot, never as a literal multi-panel opening frame. References mode generates a new shot; native video resolution is a separate setting. This does not guarantee detailed architecture, readable signs, or preservation of every cell, and a successful 480p pilot does not establish final 1080p sharpness.
 
@@ -47,7 +47,7 @@ The creator reports approximately 3-5 minutes per image generation. Treat this a
 - Cinema Studio 4.0 uses Seedance 2.5 and documents clips up to 30 s with up to 50 references. **Forward / Backward Extend accepts an uploaded source video up to 30 s.** This does not establish that a cumulative 60–200 s file can be fed back into that field. [Cinema Studio help](https://higgsfield.ai/creator-hub/help-center/tools/how-do-i-use-cinema-studio)
 - The model overview lists native 480p, 720p and 1080p; a separate official pricing article describes only 480p/720p. **The sources disagree. The actual selected mode's resolution options and quote govern.** 1080p remains the target, not an account-verified capability in this session. [Model overview](https://higgsfield.ai/blog/seedance-2-5-on-higgsfield-2026), [pricing article](https://higgsfield.ai/blog/seedance-2-5-pricing-2026)
 
-If 8 s or 4 s is unavailable, adjust the pilot's timed sections to the nearest available short duration before generation and check its price. Do not change the final six-times-30-plus-20 plan as a side effect.
+If the requested 8 s is unavailable, adjust the pilot's timed sections to the nearest available short duration before generation and check its price. Do not change the final six-times-30-plus-20 plan as a side effect.
 
 ## Two capabilities a prompt cannot guarantee
 
@@ -57,7 +57,7 @@ The narration is generated first in Higgsfield Audio and provided as an input to
 
 ### Continuation and complete export
 
-For the current pilot, inspect native source-video continuation with the existing images and audio ON, then the hosted cumulative/joined output and the operation for adding narration afterward without changing accepted picture or destroying existing music/SFX. The 8+4 s test checks the short seam and the joined narrated result checks the complete dynamics. Separately verify source-video plus new image and narration-audio input support for the planned full-film route; the narrated pilot alone does not prove that input combination. After V01→V02, separately verify continuation beyond 60 s while retaining prior picture and sound. A separate continuation segment does not prove the old assumption that V07 will automatically contain a 3:20 master. Having several clips with sound is not proof that the full film can be assembled and exported without local editing. Resolve the hosted delivery path before committing the full production budget.
+For the current pilot, inspect native source-video continuation with the existing images and audio ON, then the hosted cumulative/joined output and the operation for adding narration afterward without changing accepted picture or destroying existing music/SFX. The 8+8 s test checks the short seam and the joined narrated result checks the complete dynamics. Separately verify source-video plus new image and narration-audio input support for the planned full-film route; the narrated pilot alone does not prove that input combination. After V01→V02, separately verify continuation beyond 60 s while retaining prior picture and sound. A separate continuation segment does not prove the old assumption that V07 will automatically contain a 3:20 master. Having several clips with sound is not proof that the full film can be assembled and exported without local editing. Resolve the hosted delivery path before committing the full production budget.
 
 This edition retains the Higgsfield-native completion goal. If the native route cannot deliver it, record the specific limitation before paying for more clips. Another assembly method is a separate production decision, not a hidden step here.
 

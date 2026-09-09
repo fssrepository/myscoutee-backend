@@ -4,22 +4,22 @@ The creator’s sequence is: **detailed first video → native visual continuati
 
 ## Spend at a glance
 
-**Already spent: 80 credits. Remaining cap: 720 credits**, creator-reported.
+**Recorded historical test spend: 80 credits. Latest remaining estimate: approximately 700 credits**, creator-reported. Plan approximately 100 for the remaining test workflow, leaving about 600 for production and its retry reserves; these are allowances, not quoted costs.
 
 | Separate test | Price known now |
 | --- | --- |
 | First 8-second video | Earlier quote **20 credits**; confirm current quote |
-| Native 4-second continuation | **Not yet quoted** |
+| Native 8-second continuation | **Not yet quoted** |
 | Narrated joined video | **Not yet quoted**; includes speech and mixing/output components |
 
-The total next-round cost is **not yet known**. No additional charge is recorded. If the next video actually costs 20, the cap becomes 700 before the other operations. See the [itemised cost tracker](../00_project/BUDGET.md#visible-pilot-cost-tracker--three-tests) for quotes, actual charges and the remaining cap. This is three test tasks; separately billed audio/finishing must remain visible inside the narrated-test cost.
+The total next-round cost is **not yet known**. No additional charge is recorded. If the next video actually costs 20, the current planning remainder becomes approximately 680 before the other operations. The change from the earlier 720 estimate does not itself record a new debit. See the [itemised cost tracker](../00_project/BUDGET.md#visible-pilot-cost-tracker--three-tests) for quotes, actual charges and the remaining cap. This is three test tasks; separately billed audio/finishing must remain visible inside the narrated-test cost.
 
 ## Visual prompts and the separate narrated test
 
 | Prompt | Content | Operation |
 | --- | --- | --- |
 | [test_video_8s.txt](test_video_8s.txt) | Complete detailed first scene: London becoming embodied memory, independent camera flight, recognisable landmarks, numerical cards, Hungarian theme and material SFX | 8 s / 480p / 16:9 / audio ON / one output |
-| [test_extend_4s.txt](test_extend_4s.txt) | NEW action after its actual ending: the next arcade becomes a giant glass-and-iron canopy; camera, people, traffic and sound continue through the seam | Native Forward Extend / 4 added seconds / 480p / 16:9 / audio ON / one output |
+| [test_extend_8s.txt](test_extend_8s.txt) | NEW action after its actual ending: the next arcade becomes a giant glass-and-iron canopy; camera, people, traffic and sound continue through the seam | Native Forward Extend / 8 added seconds / 480p / 16:9 / audio ON / one output |
 | [test_narrated_video.txt](test_narrated_video.txt) | Narration on the joined visual test, retaining its picture and music/SFX; a separately produced and reviewed result | Hosted narrated-video/audio-finishing test, with its own actual quote |
 
 Both visual segments have music/SFX without narration. The second is a continuation of the selected first result, not a replay of its restaurant, camera opening or cathedral transformation. Review the first result’s actual endpoint and adjust only the source-dependent staging of the continuation before copying it. No earlier rejected download is automatically selected as source.
@@ -28,13 +28,13 @@ The four image references C01, C02, W01 and T01 are already bound and reusable. 
 
 ## Join the two visual parts
 
-Prefer the actual native cumulative Extend result if it contains the full approximately 12-second sequence. Inspect the returned duration; a four-second segment alone is not an assembled test. If the interface returns separate parts, use a verified hosted assembly operation that preserves their frames and continuous sound. Establish that operation and its quote before paying; no local editing is assumed and no rerender of the whole scene is authorized merely to concatenate it.
+Prefer the actual native cumulative Extend result if it contains the full approximately 16-second sequence. Inspect the returned duration; a eight-second segment alone is not an assembled test. If the interface returns separate parts, use a verified hosted assembly operation that preserves their frames and continuous sound. Establish that operation and its quote before paying; no local editing is assumed and no rerender of the whole scene is authorized merely to concatenate it.
 
 Watch the whole moving result for seam, genuine three-dimensional memory, continuous material change, recognisable people/landmarks/transport, numerical ratings, and music/SFX attached to the movement. Review these together, not in independent paid test loops.
 
 ## Separate narrated test — execution and credits
 
-Use the complete standalone prompt [test_narrated_video.txt](test_narrated_video.txt). It defines the exact sentence, voice, placement, unchanged picture and retained music/SFX. If a separate speech-text field is used, copy only the five-word sentence under EXACT SPOKEN TEXT from that file.
+Use the complete standalone prompt [test_narrated_video.txt](test_narrated_video.txt). It defines the exact excerpt, voice, placement, unchanged picture and retained music/SFX. If a separate speech-text field is used, copy only the exact two-sentence excerpt under EXACT SPOKEN TEXT from that file.
 
 This is a real test operation, not documentation-only preparation. The prompt file does not eliminate its charge. Quote the short clean speech generation and the narrated-video/hosted mixing operation separately when the selected route performs them separately. If the platform offers both in one actual operation, use its combined quote without counting a separate speech charge twice. Existing source media should be reused, but the narrated output still has to be produced and reviewed.
 
@@ -48,4 +48,21 @@ Retain the actual approved video, narrated result, exact prompts, attached refer
 
 ## Cost scope
 
-80 credits already spent; maximum 720 remaining for all unfinished work, creator-reported. The historical 100-credit pilot allowance covered the whole pilot, not each TXT file. Price the actually remaining first video, native extension, any required joining, short speech, and the separate narrated-video test. Preparing their prompt files consumes no Higgsfield credits; executing these operations does. The historical 20-credit standalone quote does not price the complete test. Avoid repeat image preparation, separate per-feature videos and automatic 4–5-attempt loops. Final seven blocks and exact monologues retain their existing production scope; their costs must fit the remaining cap.
+Recorded historical test spend is 80; latest remaining estimate is approximately 700. Allow around 100 for the remaining three-test workflow, including speech and required joining/mixing/output. If that allowance is used, approximately 600 must still cover the full film, delivery and one or two possible 30-second additional attempts. Their actual price is unknown: available first-pass production funds are `600 − C30` or `600 − 2 × C30`. See the [cost tracker and retry scenarios](../00_project/BUDGET.md). Do not treat a failed effect as an automatic new video job or count any estimated allowance as already spent.
+
+## Three-prompt audit before the next attempt
+
+| Required mechanism | Where it is specified and checked |
+| --- | --- |
+| High discovery, fast descent, lateral human pass, rising world reveal; no slideshow or foreground wipes | First video, one connected camera path; continuation inherits its actual ending |
+| London base, St Paul's becoming a specific whole Basilica, substantial taxi/tram/red bus | First video; cathedral changes at about 5.5–7 s, resolved form held at 7–8 s |
+| Full-size restaurant and moving woman outside glass; London materials visibly become its floor/walls/furniture | First video, 2–5.5 s, with traceable edges, complete chair legs and changing parallax |
+| Conflicting changes at different scales and quick partial reversals | First video's room/stair/walls, then a new immense canopy/gallery in the native continuation |
+| Numerical 6.2/9.2-style ratings, clear crown gaps, current versus remembered identity | First video and continuation; source card associations persist across the seam |
+| Audible Hungarian acoustic theme; material onset, sustained strain, reversal and distance | Both visual prompts, without narration, reviewed as the joined picture/SFX source |
+| Narration through memory, stronger city action and the 8-second join | Separate narrated test: 16 exact source words, naturally about 7–9 s, around 2.5–10.5 s of the joined clip |
+| Original accepted picture, sound timing and duration retained after narration | Narrated test compared directly with the unnarrated joined source |
+
+Before payment, verify the actual image versions loaded by the existing four mentions: an edited world prompt does not replace the already-rendered W01 image. The recorded W01 asset is still the earlier 2K sheet; the new source/destination world design is not verified as rendered. Check whether the actual sheet clearly supplies the cathedral identity and required spatial detail. Resolve a missing reference property before the next video attempt, using the existing reference/Unlimited plan rather than silently adding a paid video retry.
+
+The test covers these reusable mechanisms together. Other full-film encounters and landmarks retain their own detailed prompts; this 16-second result does not claim to show every event in the 200-second film. Freeze the actual accepted source versions and settings as the reusable reference. If the 480p result still lacks a central mechanism or its SFX dynamics, the affected expensive production step is not ready.

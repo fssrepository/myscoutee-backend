@@ -8,11 +8,11 @@ The creator cannot edit or render the film locally. The planned route generates 
 
 Cinema Studio documents native speech, music and effects in the video pass, and Higgsfield documents generating speech first and using it as a Cinema Studio audio reference. These support the planned route, but do not guarantee verbatim speech, unchanged voice or a correct mix in our particular shot. [Cinema Studio help](https://higgsfield.ai/creator-hub/help-center/tools/how-do-i-use-cinema-studio), [Higgsfield Audio workflow](https://higgsfield.ai/blog/higgsfield-audio)
 
-The joined 8+4-second pilot receives its short narration afterward, following the current [pilot sequence](../01_pilot/README.md). Review that complete picture/music/SFX/voice result before full-film production. This does not itself verify A01–A07 as generation inputs. Keep the spoken line intelligible, preserve the music across the seam and prevent visible lip-sync. If the voice is missing or materially wrong, the narration path has not passed; do not proceed on an assumption that the creator can repair it locally. Native assembly and export of the complete 3:20 film remain a separate requirement in [SETUP.md](SETUP.md#continuation-and-complete-export).
+The joined 8+8-second pilot receives its short narration afterward, following the current [pilot sequence](../01_pilot/README.md). Review that complete picture/music/SFX/voice result before full-film production. This does not itself verify A01–A07 as generation inputs. Keep the spoken line intelligible, preserve the music across the seam and prevent visible lip-sync. If the voice is missing or materially wrong, the narration path has not passed; do not proceed on an assumption that the creator can repair it locally. Native assembly and export of the complete 3:20 film remain a separate requirement in [SETUP.md](SETUP.md#continuation-and-complete-export).
 
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
-Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The earlier 250-credit narration allowance is superseded by the creator’s maximum of 720 credits remaining for all unfinished work. Price A01–A07 and TA01 within that total before generation; no separate funded audio allowance is established. See [BUDGET.md](BUDGET.md).
+Request clean speech only in these audio jobs: no music, rain, transformation effects or added room ambience. Those layers belong to the audio-ON video generation. The earlier 250-credit narration allowance is superseded by the creator’s latest estimate of approximately 700 credits remaining for all unfinished work. Price A01–A07 and TA01 within that total before generation; no separate funded audio allowance is established. See [BUDGET.md](BUDGET.md).
 
 ## Seven recordings, one continuing speaker
 
@@ -20,7 +20,7 @@ The current plan has seven separate narration recordings, one per video block; t
 
 Compare A01 to the accepted TA01 voice and each subsequent recording to A01 and the preceding passage. Listen for changes in timbre, accent, apparent age, loudness and room sound. Each passage should finish its sentence within its own block, with a natural breath before the next passage. Do not split a word at a boundary or replay the preceding line. No extra calibration recordings are added.
 
-V02–V07 are planned as native Forward Extend operations from the preceding accepted video. Keep its last pose, stride, camera movement, exposure and rain state; preserve the sound bed and musical phrase through the boundary. New narration belongs only to the new portion. Native continuation and a fixed voice preset reduce sources of discontinuity but do not guarantee an invisible seam or unchanged audio-reference timbre. The 8+4 s pilot checks the initial picture/music seam, and the joined narrated version checks the intended final mix; A01→A02 is the first check of continuity between two full narration passages. The complete hosted export remains a separate verification in SETUP.md.
+V02–V07 are planned as native Forward Extend operations from the preceding accepted video. Keep its last pose, stride, camera movement, exposure and rain state; preserve the sound bed and musical phrase through the boundary. New narration belongs only to the new portion. Native continuation and a fixed voice preset reduce sources of discontinuity but do not guarantee an invisible seam or unchanged audio-reference timbre. The 8+8 s pilot checks the initial picture/music seam, and the joined narrated version checks the intended final mix; A01→A02 is the first check of continuity between two full narration passages. The complete hosted export remains a separate verification in SETUP.md.
 
 ## The protagonist's inner voice
 
@@ -52,7 +52,7 @@ Use any available pre-generation duration estimate, then measure or inspect the 
 
 ## Pilot versus full narration
 
-[TA01 text and preparation](../01_pilot/test_narrated_video.txt) is a five-word sentence, about 2–3 s, added to the joined visual test after assembly. It checks delivery and picture/music/SFX balance; it does not verify imported audio in video generation or the timing of A04–A06.
+[TA01 text and preparation](../01_pilot/test_narrated_video.txt) is a 16-word verbatim Block 01 excerpt, naturally about 7–9 s, added to the joined visual test after assembly. It checks delivery and picture/music/SFX balance; it does not verify imported audio in video generation or the timing of A04–A06.
 
 Audio-reference input does not prove an unchanged soundtrack. Compare the source recording with the video output during the pilot and V01. Generate the remaining narrations as their blocks become necessary, so an early audio problem does not invalidate seven prepaid recordings.
 

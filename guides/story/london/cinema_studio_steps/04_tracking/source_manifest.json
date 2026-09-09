@@ -1681,8 +1681,8 @@
   "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
   "pilot_files": [
     {
-      "file": "01_pilot/test_extend_4s.txt",
-      "sha256": "0279bcaababb3a668e6cdf95008e79b317b5e29342e8a6f0a3b5f58746db7079",
+      "file": "01_pilot/test_extend_8s.txt",
+      "sha256": "b225ab4647c912f2d5bf417ac2d516967fb58ac24d2864031d0a9c92ba3ece2c",
       "refs": [
         "C01",
         "C02",
@@ -1705,7 +1705,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "cf6671e19e4ed401c8714b6cb0740bf5fb985f7394df48f5068fe8a0f1af6576",
+      "sha256": "54ab5d585e14c56c128f6328f0a9739194853a6c5eac1e2d413688fef029b64d",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -1716,7 +1716,7 @@
     },
     {
       "file": "01_pilot/test_narrated_video.txt",
-      "sha256": "8719f8c19d257ae7aac19327fe8e6c580db160f713d03ac299ef9178d252bb6c",
+      "sha256": "78d0b69d55a3f725dc1c45f411351aef70fc629f99ec44900143b481228a99d4",
       "refs": [],
       "reference_note": "Separate narrated-output test using the existing joined video and optional prepared speech in the actual media fields. Hosted operation and price unverified; this file is not an executed test."
     }
@@ -1729,20 +1729,31 @@
     "subscription": "Planned one-month Ultra; creator reports seven-day Nano Banana Pro unlimited image offer; entitlement not verified"
   },
   "production_budget": {
-    "complete_film_working_ceiling_credits": 2200,
-    "protected_emergency_completion_reserve_credits": 800,
-    "absolute_limit_credits": 3000,
-    "pilot_included_max_credits": 100,
     "additional_funding_available": false,
     "live_costs_verified": false,
     "final_video_resolution": "1080p",
     "final_video_seconds": 200,
-    "video_allocation_credits": 1800,
-    "narration_allocation_credits": 250,
-    "finishing_and_other_allocation_credits": 50,
     "separate_music_sfx_jobs": 0,
     "narration_allocation_is_live_quote": false,
-    "hosted_finishing_cost_verified": false
+    "hosted_finishing_cost_verified": false,
+    "superseded_historical_allocation": {
+      "complete_film_working_ceiling_credits": 2200,
+      "protected_emergency_completion_reserve_credits": 800,
+      "absolute_limit_credits": 3000,
+      "pilot_included_max_credits": 100,
+      "video_allocation_credits": 1800,
+      "narration_allocation_credits": 250,
+      "finishing_and_other_allocation_credits": 50
+    },
+    "remaining_credits_creator_estimate": 700,
+    "recorded_historical_test_spend_credits": 80,
+    "provisional_remaining_test_allowance_credits": 100,
+    "pilot_video_seconds": 8,
+    "pilot_extend_added_seconds": 8,
+    "pilot_joined_seconds": 16,
+    "reserve_additional_30s_attempts": 2,
+    "additional_30s_attempt_quote_credits": null,
+    "budget_note": "Current approximate creator estimate; not a live account balance. Around 100 for remaining tests, then reserve one or two actual quoted 30-second attempts within the same remainder. No new charge inferred."
   },
   "reference_bindings": {
     "A01": {
@@ -2092,7 +2103,7 @@
       ],
       "expected_new_elements": 1,
       "type": "Location",
-      "file_sha256": "c3a2eba962e24a4ff7f6e6bdce53ed83f45e7f6d6dc8b41f6f0975c7ac366a5f",
+      "file_sha256": "a057c3c9a2bb88d32e2f891c3fd4fd1fab5fea955a86c95c94a74f8cc9b210a0",
       "status": "ELEMENT_ID_REPORTED_IMAGE_ASSOCIATION_UNVERIFIED",
       "media_embedded": false,
       "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"

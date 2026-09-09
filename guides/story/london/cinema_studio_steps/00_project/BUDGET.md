@@ -1,48 +1,46 @@
 # Current production budget
 
-**Creator-reported 2026-09-09: 80 credits already spent on tests; at most 720 credits available from now for ALL remaining work.** These are reported amounts, not a live account query. The 720 is remaining, so do not deduct the historical 80 twice. Do not assume the old 2200-credit working ceiling, 3000-credit total or an additional protected 800 are available. Those are superseded planning assumptions.
-
-The 720 must cover any further pilot work, seven final video blocks, exact inner-monologue inputs, required hosted assembly/export and any paid preparation. The creator cannot repair or assemble the film in a local editor. Covered Unlimited images consume no credits only when the selected operation actually confirms that coverage. No new media job is launched by a prompt edit.
+**Latest creator estimate: approximately 700 credits remaining.** Use 700 as the current planning baseline for all unfinished work. The previously reported remaining cap was 720; the updated rounded estimate is not evidence of a specific new 20-credit charge. **Recorded historical test spend remains 80 credits** until an actual later debit is reported. No top-up or additional protected 800 is assumed.
 
 ## Visible pilot cost tracker — three tests
 
-**Recorded spend: 80 credits. Creator-reported remaining cap: 720 credits.** No later charge has been reported or entered. These are the current planning figures, not a live account balance.
+| Test | Prompt | Next execution quote | New actual charge recorded |
+| --- | --- | --- | --- |
+| 1. Detailed first scene, 8 s / 480p | [test_video_8s.txt](../01_pilot/test_video_8s.txt) | Earlier standalone UI quote **20**; current complete-input quote unverified | Not reported |
+| 2. Native continuation, 8 added seconds / 480p | [test_extend_8s.txt](../01_pilot/test_extend_8s.txt) | **Unknown**; use the actual Extend price | Not reported |
+| 3. Narrated version of the joined test | [test_narrated_video.txt](../01_pilot/test_narrated_video.txt) | **Unknown**; include short speech, mixing/output and any separately charged joining | Not reported |
 
-| Test | Prompt | Quoted cost for next execution | New actual charge recorded | Remaining cap after execution |
-| --- | --- | --- | --- | --- |
-| 1. First visual scene, 8 s / 480p | [test_video_8s.txt](../01_pilot/test_video_8s.txt) | **20 credits was the earlier standalone UI quote**; current complete-input quote still needs confirmation | Not reported | **700 only if the next actual charge is 20** and no other new charge intervenes |
-| 2. Native continuation, 4 added seconds / 480p | [test_extend_4s.txt](../01_pilot/test_extend_4s.txt) | **Unknown**; inspect the actual Extend operation | Not reported | Prior remainder minus actual Extend charge |
-| 3. Narrated version of the joined test | [test_narrated_video.txt](../01_pilot/test_narrated_video.txt) | **Unknown**; include short speech + mixing/output, and any joining fee not already included | Not reported | Prior remainder minus all actual narrated-test charges |
+The continuation now adds eight seconds at the creator’s request: 1.5 s for seam/original form, 3 s for canopy growth, 2 s for gallery/reversal, and 1.5 s for a moving view of the result. This replaces the four-second test; it adds no fourth task. Obtain a new eight-second Extend quote rather than extrapolating a four-second price.
 
-Three test tasks do not necessarily mean exactly three account debits: test 3 may require separately priced speech and mixing. List those component quotes before execution, then record each actual charge once. If a single confirmed operation includes them, count its combined price once. Do not interpret an unknown price or unreported charge as zero.
+The narrated test now uses a 16-word excerpt from the approved monologue, approximately 7–9 seconds of speech across the joined visual sequence. Recheck its audio quote against this actual text, not the previous five-word sample. If one operation includes speech and mixing, count its combined quote once; otherwise record each component. Unknown prices and unreported charges are not zero. Three test tasks may generate more than three billing entries.
 
-**Full next test-round cost: not yet known.** With the historical first-video quote as a provisional value, the forecast is `20 + Extend quote + narrated-test components`. The spent total would be `80 + all new actual charges`; the remaining cap is `720 - all new actual charges`. This table does not claim a 500-credit test round or a 100-credit allowance per file.
+**Provisional remaining test allowance: about 100 credits**, reflecting the creator's latest estimate. This covers the remaining three-test workflow and its required audio/joining/output components together; it is not 100 per TXT file and is not authorization for repeated trials. The old 100-total/20-left pilot calculation is superseded for forward planning by this new estimate. No specific operation is declared affordable until its actual quote is known.
 
-Update this table and the [credit ledger](../04_tracking/credit_ledger.csv) whenever the creator supplies a new quote or actual debit. Older per-job prices cannot be inferred from the aggregate 80 already spent.
+## Leave room for one or two failed 30-second blocks
 
-## Testing and remaining budget
+Let `T` be all further test charges and `C30` the actual complete cost of one additional 30-second attempt at the selected production settings, including any other charge that must be repeated with it. Neither is a known live price yet.
 
-The original pilot ceiling was 100 credits total including its short narration and 4-second continuation check. With 80 spent, only 20 remains in that original allocation. A further 20-credit clip would use all of it and leave 700 of the reported overall remaining budget, with narration/continuation still unpriced. Do not treat either the historical quote or the available balance as approval for automatic retries. Keep the current generation, review its actual useful mechanisms, and complete textual preparation before any next operator submission.
+| Planning scenario | Available for the first successful production passes, narration and final delivery |
+| --- | --- |
+| Tests consume 100, no full-block retry | Approximately **600** |
+| Tests consume 100, one full-block retry reserved | Approximately **600 − C30** |
+| Tests consume 100, two full-block retries reserved | Approximately **600 − 2 × C30** |
 
-## Final production is not yet costed within 720
+The retry amounts are reserves, not money already spent or additional funding. Use two-attempt headroom for a cautious plan and release unused funds later. If those reserves leave too little for the first complete production passes and delivery, the route is not funded; do not hide the deficit by omitting audio, shortening the film or assuming upscale is free. Quote the actual 30-second operation before assigning a numeric reserve.
 
-The creative target remains 200 seconds (six 30-second blocks plus one 20-second ending) at 1080p. Plan one retained final take per block, without first generating seven full-length drafts. An 8-second 480p success would not guarantee a complete 30-second result or identical output at 1080p. Upscaling and native generation are different operations; no automatic paid upscale or reroll is assumed.
+## Complete production must fit the same remaining baseline
 
-The old indicative video-only estimate was 1800 credits, with another 250 for narration and 50 for finishing. That does NOT fit 720. These historical figures are not current account quotes, and the previous 1080p plan is not funded evidence. Obtain actual audio-ON References/Extend prices, speech costs and hosted finishing costs before treating the full route as affordable. Do not silently shorten the film, change resolution or drop narration to force the arithmetic.
-
-For each proposed paid operation, include the complete remaining work:
+The creative target remains 200 seconds: six 30-second blocks plus one 20-second ending, with the seven exact monologues and hosted final delivery. Full production resolution/operation quotes and hosted mixing/export costs remain unverified. The old indicative 1800 video + 250 narration + 50 finishing plan does not fit this budget and is not the current plan.
 
 ```text
-spending after the reported 720 snapshot
-+ next operation's actual quote
-+ quoted cost of all remaining necessary production and delivery
-<= 720 credits
+all further test costs
++ first required full-film video passes
++ full-film narration and necessary reference preparation charges
++ hosted assembly / mixing / export
++ reserved cost of one or two 30-second additional attempts
+<= approximately 700 credits
 ```
 
-Seven exact monologues remain planned in one retained voice. Native video supplies music and SFX; no separate music generation is added. The source-audio/continuation route and hosted final assembly remain unproven. Their costs must be included before committing the final blocks. Unknown prices make the forecast incomplete, not affordable by assumption.
+The creator cannot repair or assemble the film locally. Confirm the hosted route and actual prices before committing to the expensive stages. Preserve accepted references and picture; do not regenerate them merely to add speech or concatenate files. Covered Unlimited image work consumes no credits only when the actual operation confirms coverage.
 
-Record actual new charges once in [credit_ledger.csv](../04_tracking/credit_ledger.csv). The existing 80-credit entry is an aggregate, not four independently verified job charges. Do not invent an additional charge merely because another downloaded file is reviewed. No top-up or extra subscription is assumed.
-
-## Narrated pilot is a separate priced test
-
-The joined visual pilot must actually be rendered/mixed into a narrated result and reviewed. Its standalone prompt is `01_pilot/test_narrated_video.txt`; writing it does not perform that operation. Include the short speech preparation and the narrated-video/hosted mixing quote as distinct costs when they are distinct operations. If one confirmed operation includes both, count that actual combined charge once. Include any necessary hosted joining/export charge too. All amounts remain unquoted until shown by the selected interface; do not assume that preserving source frames makes the operation free. These costs fall inside the same remaining 720, not an additional allowance.
+After each reported actual debit, subtract it once from this planning baseline and record it in [credit_ledger.csv](../04_tracking/credit_ledger.csv). The historical aggregate 80 is not deducted again. Update the three-test table with current quotes and actual charges; no automatic 4–5-try loop follows a failed individual detail.

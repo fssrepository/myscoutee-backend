@@ -8,7 +8,7 @@ The London–Budapest walk, contextual memories, above-head judgment cards and o
 
 | Finding | Treatment in this edition |
 | --- | --- |
-| Mandatory MCP automation and no cheap proxy conflict with the current request | Manual Cinema Studio steps; 8 s 480p pilot and one 4 s continuation |
+| Mandatory MCP automation and no cheap proxy conflict with the current request | Manual Cinema Studio steps; 8 s 480p pilot and one 8 s continuation |
 | Restrained camera and fixed architecture miss the new direction | Fast movement, continuous city activity and specific material transformations in all seven blocks; stillness at the end |
 | Retry, spending and agent-approval instructions were inside video prompts | Moved to operator guidance; the model receives scene direction |
 | Extensive repeated rules | Clarified common rules and explicit material paths; all nine story beats retained per block; detail is retained where it disambiguates the action |

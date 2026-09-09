@@ -4,7 +4,7 @@
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
 
-**Current remaining cap: 720 credits; 80 already spent on tests (creator-reported).** This supersedes the old 2200/800 allocation. The full 1080p route still needs actual prices within that cap. See the [budget](00_project/BUDGET.md).
+**Latest remaining estimate: approximately 700 credits; recorded historical test spend: 80 (creator-reported).** This supersedes the old 2200/800 allocation. Allow roughly 100 for remaining tests and price reserves for one or two 30-second retries; the full 1080p route still needs actual prices within that same remaining budget. See the [budget](00_project/BUDGET.md).
 
 ## Order of work
 
@@ -35,7 +35,7 @@ The production list includes the outstanding reference binding, clean narration,
 | Character, world, memory and `storyboard.txt` | Image prompt field; one file per request |
 | `03_film/NN/narration.txt` | Full-film TTS text field; spoken words only |
 | `00_project/elements/00_pilot_test_assets.md` | Existing restaurant Element metadata; no generation |
-| `video.txt`, `test_video_8s.txt`, `test_extend_4s.txt` | Video prompt, once its reference setup notice has cleared |
+| `video.txt`, `test_video_8s.txt`, `test_extend_8s.txt` | Video prompt, once its reference setup notice has cleared |
 | README, other guides, CSV, JSON | Operator documentation; never paste into a generation field |
 
 Copy the entire `.txt` file once its reference setup notice has cleared. Verified `@` Element mentions autoload in the creator's composer. The assistant binds each ID once and propagates it throughout the pack; no per-file manual substitution. `@UNBOUND_…` marks a missing identifier, not a working Higgsfield handle. See [reference binding](00_project/REFERENCES.md).
