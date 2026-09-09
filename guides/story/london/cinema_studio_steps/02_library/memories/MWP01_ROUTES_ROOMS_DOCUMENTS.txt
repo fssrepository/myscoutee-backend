@@ -65,3 +65,6 @@ No present-city reflection layer.
 No score cards.
 No explanatory captions.
 These details exist to preserve biography, not to simplify it.
+
+SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
+The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; no additional cells or image requests. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.

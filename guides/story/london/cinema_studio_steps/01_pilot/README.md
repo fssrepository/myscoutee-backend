@@ -1,26 +1,25 @@
-# Pilot — detailed first scene, then one shared continuation test
+# Pilot — establish the reference at 480p before final production
 
-Two active video prompt files remain. The first scene keeps its complete detailed wording. The continuation tests NEW visible transformations, native camera/scene continuity, numerical rating cards and supplied speech with the music/SFX in the SAME output. Do not generate a separate video for each mechanism or replace the first scene with a shortened combined prompt.
+The creator’s sequence is: **detailed first video → native visual continuation → one joined test → narration on that joined test → review picture and sound together**. The accepted result becomes the practical reference for the full film. Preserve the complete first-scene prompt; do not shorten it to combine tests. Do not generate a separate video for each effect, card, camera or sound criterion.
 
-| File or input | What it does | Operation |
+## Two active video prompts
+
+| Prompt | Content | Operation |
 | --- | --- | --- |
-| [test_video_8s.txt](test_video_8s.txt) | Full first scene: living London, physical restaurant memory, camera flight, landmarks, cards and music/SFX | First video, 8 s / 480p / 16:9 / audio ON / one output |
-| Short audio input, exact text below | Supplies the one spoken thought for the continuation | One short audio preparation; reuse suitable existing audio if available |
-| [test_extend_4s.txt](test_extend_4s.txt) | Continues the actual first-scene ending with a new immense arcade-to-canopy transformation, checking the seam and audio together | Native Forward Extend, 4 added seconds / 480p / 16:9 / audio ON / one output |
+| [test_video_8s.txt](test_video_8s.txt) | Complete detailed first scene: London becoming embodied memory, independent camera flight, recognisable landmarks, numerical cards, Hungarian theme and material SFX | 8 s / 480p / 16:9 / audio ON / one output |
+| [test_extend_4s.txt](test_extend_4s.txt) | NEW action after its actual ending: the next arcade becomes a giant glass-and-iron canopy; camera, people, traffic and sound continue through the seam | Native Forward Extend / 4 added seconds / 480p / 16:9 / audio ON / one output |
 
-The [restaurant image source](../02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt) belongs to the reference library and has already produced an accepted image. Its [Element description](../00_project/elements/00_pilot_test_assets.md) is existing metadata. Neither is another pending pilot generation. Reuse C01, C02, W01 and T01 on their existing Elements; their four actual image mentions are bound. The rejected combined-first-scene file is not part of this workflow.
+Both visual segments have music/SFX without narration. The second is a continuation of the selected first result, not a replay of its restaurant, camera opening or cathedral transformation. Review the first result’s actual endpoint and adjust only the source-dependent staging of the continuation before copying it. No earlier rejected download is automatically selected as source.
 
-## Budget and input check before payment
+The four image references C01, C02, W01 and T01 are already bound and reusable. The completed [restaurant image source](../02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt) is in the library; its [Element description](../00_project/elements/00_pilot_test_assets.md) is metadata. Neither is a new test generation. Later world-reference improvements follow the existing image plan and verified Unlimited coverage; editing a world prompt does not update an existing rendered image automatically.
 
-Creator-reported: 80 credits already spent; maximum 720 remaining for all unfinished work. The historical 100-credit pilot allowance was for the ENTIRE pilot, not each file. It leaves 20 in that old allocation, which is not proof that another first video plus short audio plus Extend fits. Quote the operations actually remaining together. Record speech and video charges separately but review the resulting continuation together. No automatic 4–5-attempt loop and no retry per failed detail. See [BUDGET.md](../00_project/BUDGET.md).
+## Join the two visual parts
 
-Before generating the short audio, verify in the manual interface that the selected Forward Extend operation accepts the source video, the existing image references and the audio reference together. Identify the supported added duration and price. Resolve unsupported inputs before spending on an unusable reference. Inspect the hosted final assembly/export route without buying a calibration render merely to inspect controls.
+Prefer the actual native cumulative Extend result if it contains the full approximately 12-second sequence. Inspect the returned duration; a four-second segment alone is not an assembled test. If the interface returns separate parts, use a verified hosted assembly operation that preserves their frames and continuous sound. Establish that operation and its quote before paying; no local editing is assumed and no rerender of the whole scene is authorized merely to concatenate it.
 
-## First scene
+Watch the whole moving result for seam, genuine three-dimensional memory, continuous material change, recognisable people/landmarks/transport, numerical ratings, and music/SFX attached to the movement. Review these together, not in independent paid test loops.
 
-Use the complete [8-second prompt](test_video_8s.txt), with the existing four image references. The revised prompt is not itself a generated result. Review the actual output once: camera travel must be continuous, remembered people and furniture must occupy the street in full depth, surface changes must remain visible, ratings must contain numbers, and London/Budapest landmark forms and transport must be recognisable. Listen to the same output for its material sound and Hungarian theme. Keep useful earlier results as evidence; do not regenerate a completed source image for every video attempt.
-
-## Short audio preparation — included here, no separate test text file
+## Short narration for the joined test
 
 Copy ONLY this sentence into the speech text field:
 
@@ -28,14 +27,16 @@ Copy ONLY this sentence into the speech text field:
 Memory edits without asking permission.
 ```
 
-Use one adult English-speaking male voice, approximately forty, low-to-mid register, intimate and slightly tired. The delivery is a personal thought with clear consonants and a natural sentence ending, about 2–3 seconds. Generate clean speech only: no music, effects, rain or additional words. Retain the actual selected voice ID/preset if available and the returned recording. Use the established voice if a suitable recording/preset already exists; do not audition multiple paid variants. Full-film voice direction remains in [VOICE.md](../00_project/VOICE.md).
+Use the established voice if one is available; otherwise one adult male English voice, approximately forty, low-to-mid register, intimate and slightly tired. Aim for a natural 2–3-second sentence with clear consonants. Clean speech only, no music, effects, rain or extra words. Retain the selected voice/preset and returned recording. One short audio preparation, not paid auditions of multiple variants. Check the actual speech price.
 
-Save or identify the output as TA01_TEST_NARRATION. Obtain its actual supported audio reference and bind TA01 before copying the extension prompt. Do not paste `@UNBOUND_TA01` into the generator. A correct local mention is not proof that the interface loaded the audio: verify the actual attached recording. The cost comes from the displayed speech quote, not an assumed free step.
+Add this recording over the joined test around its human-memory interval, using a verified hosted audio/finishing operation that preserves the accepted picture and its existing music/SFX. Keep the words clear while retaining the transformation’s material dynamics; inspect whether the operation permits the required level balance. Do not regenerate the visuals or assume audio replacement means audio mixing. The exact hosted operation and quote remain to be verified before purchase. The creator cannot repair the mix locally.
 
-## One native continuation, one combined review
+## Acceptance before 1080p
 
-Put the selected first-scene video into the real Forward Extend source field. It determines the actual starting image, camera movement and sound. Inspect that endpoint and reconcile the continuation's source-dependent staging before copying it; no earlier rejected download is automatically selected. The prompt does not replay the restaurant smile, first camera descent or St Paul's-to-Basilica transformation. It advances into the next arcade, whose arch and fanlight visibly grow into a giant curved roof over the continuing city.
+The accepted joined, narrated 480p test must demonstrate the intended whole experience: independent continuous camera travel, material transformations with intermediate geometry, full-depth human memory, legible numerical cards, recognisable landmarks/transport, and music/SFX whose attacks, sustained strain and reversals match the visible motion. The voice must fit that sound world without making the material events disappear. If one of these central mechanisms remains missing, do not call the production foundation proven or advance to 1080p as its first meaningful test.
 
-Use [test_extend_4s.txt](test_extend_4s.txt) with the four existing images and bound short recording. Review ONE returned result for all of the following together: picture seam, continued camera path, new material transformation and spatial depth, persistent numerical cards, exact supplied words and voice, intelligible speech over continuous music/foley, and absence of visible lip-sync. Do not turn each finding into an independent test generation.
+Retain the actual approved video, narrated result, exact prompts, attached reference versions and working settings as the baseline for every full-film block. Match their physical depth, motion and sound dynamics while keeping each block’s own story; do not replay the pilot’s actions. A short pilot cannot prove every later 30-second event or guarantee a flawless final render. Any remaining essential uncertainty must be resolved before the affected expensive production step, not hidden by a resolution increase. No automatic additional test campaign is scheduled.
 
-Record whether the output contains the whole approximately 12-second chain or just the new four seconds. A short success does not establish full 30-second story density, 1080p detail or a complete 200-second hosted export. The seven final blocks, their exact narration texts and their necessary generation stages remain unchanged. There is no paid media operation performed by editing these files.
+## Cost scope
+
+80 credits already spent; maximum 720 remaining for all unfinished work, creator-reported. The historical 100-credit pilot allowance covered the whole pilot, not each TXT file. Price the actually remaining first/extension video, short speech and any required hosted joining/mixing together. The historical 20-credit standalone quote does not price the complete test. Avoid repeat image preparation, separate per-feature videos and automatic 4–5-attempt loops. Final seven blocks and exact monologues retain their existing production scope; their costs must fit the remaining cap.
