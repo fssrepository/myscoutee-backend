@@ -1682,7 +1682,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_4s.txt",
-      "sha256": "1b99c07cccff901c2c4f75f4c4486d528a5b3000787930a4b58b18b5ebff8267",
+      "sha256": "8c76229b805b19609d1ce5816da17f5ee2d4e2cbdd7dd24d4f8f04c3c4ae87e4",
       "refs": [
         "C01",
         "C02",
@@ -1711,7 +1711,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "b5f44d67f5901a0243a6f2b97e2fde2c4c1974a84521b3824d097148260ffaf0",
+      "sha256": "30c902ebb96f370838f82aaeda10618ec10f253a1e5a155d39c4fb4784bb4e2b",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -2030,8 +2030,9 @@
     },
     "T01_IMAGE": {
       "alias": "T01_SOHO_MEMORY",
-      "mention": null,
-      "last_mention": "@UNBOUND_T01_IMAGE"
+      "mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1",
+      "last_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1",
+      "evidence": "Complete Element ID copied by the creator after the pilot import instructions on 2026-09-09. Preserve uppercase MYS exactly; remove Markdown-only underscore escapes. Image association has not yet been shown."
     },
     "TA01": {
       "alias": "TA01_TEST_NARRATION",
@@ -2092,8 +2093,9 @@
       "expected_new_elements": 1,
       "type": "Location",
       "file_sha256": "3a4f2ebced178b2828cdfbe5141b37fdc88d65b2f7cd57b5a6b955b99f8f51bb",
-      "status": "PREPARED_NOT_IMPORTED",
-      "media_embedded": false
+      "status": "ELEMENT_ID_REPORTED_IMAGE_ASSOCIATION_UNVERIFIED",
+      "media_embedded": false,
+      "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"
     }
   ]
 }
