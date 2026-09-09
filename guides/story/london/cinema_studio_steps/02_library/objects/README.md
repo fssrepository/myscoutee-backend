@@ -1,0 +1,435 @@
+# Reference images — separate Higgsfield paste prompts
+
+Prepared for the creator-confirmed seven-day Unlimited web image workflow. Still images can verify shape, material detail, identity and legible numerical cards. They cannot test morph continuity, frame jumps, camera travel or timing; those remain video acceptance checks. An intermediate illustration is optional geometry guidance, never evidence that the morph works. These are image prompts, not extra video tests. Generate and inspect them in that covered workflow; no generation has been launched by this file. Use accepted assets wherever the required detail is already clear. This collection covers the pilot, native Extend and all seven production blocks. A world can use multiple source, target, underside, rooftop and street-level detail images; one world sheet is not a ceiling on reference preparation. Reuse the same accepted object across views, instead of generating unrelated designs for each camera angle.
+
+Each linked `.txt` file contains only one complete image prompt. Copy its entire contents into the Higgsfield image prompt field. Attach the stated existing references before using it. Preserve accepted source identities; assign real Element IDs only after actual images exist and are attached. Match each supplied reference to its stated geometry/material role in the video prompt. A reference contact sheet is never a request to reproduce its grid or its camera cuts in the output video.
+
+## Reference sets for the actual tests and production
+
+There are **53 separate complete image-prompt files** in this directory. This is a reusable library, not an instruction to attach all 53 images plus the existing cast to every clip. The 50-input ceiling includes all inputs admitted by the actual composer. Existing accepted character and restaurant references remain in use; reuse accepted detail wherever it already resolves the required object. No additional video-test jobs are introduced.
+
+| Consumer | Reference numbers | Purpose |
+| --- | --- | --- |
+| First 8-second test — main visual anchors | 11, 01, 05, 06, 02, 03, 04, 08, 10, 12 | London source, numerical cards, cathedral endpoints, transport, café, statue and current people |
+| First test — detailed material support | 14–27 | Window, glass, masonry, floor, bench, furniture, cup, doors, fixtures, ironwork, sign and returning roof geometry |
+| First test — optional geometry illustration | 07 | Intermediate cathedral volume only; not a motion test |
+| Native 8-second Extend | 01–04, 09, 12, 22–23, 25–30 | Inherited people/transport, roof and arcade/fanlight-to-canopy material detail; use actual source video as the continuation input |
+| Street opening while buildings morph — native Extend and matching production beats | 51–52; 53 optional | Source street section, opened destination and inspectable intermediate volume; no prescribed Piccadilly–Andrássy replacement |
+| Later open-square bus-interior passage | 02, 13 | Consistent bus exterior and a traversable actual door-to-aisle-to-door route; this is not automatically inserted into the current 8-second shot |
+| Block 01 | First-test sets, with approved C01/C02 and T01/MW01 scene references | Same reference evidence reused in production |
+| Block 02 | 17–18, 21–23, 28–33, 43–47 | Station/Opera targets, transit gate, seats, taxi cabin, balloon and ground material |
+| Block 03 | 16–18, 21–24, 30, 42, 48 | Historic exterior, workroom construction and meaningful real records |
+| Block 04 | 16–18, 21–23, 30, 49 | Solid doorway/room materials, cabinet-to-desk supports and procedural objects; retain W04/MW04 |
+| Block 05 | 16–18, 23, 34–35, 40–41, 48, 50 | Bridge pair, named riverfront landmarks, record/device structures; retain W05/MW05 |
+| Block 06 | 01, 12, 17–23, 28–30, 34–38, 40, 43–47, 49–50 | Crowds, recurring human-memory objects, Market Hall/Bálna roof pair and London scale anchors |
+| Block 07 | 01–04, 24–27, 33, 39–40; reuse accepted HRW07 | Current-city identity and objects, quieting route and unchanged clinical endpoint |
+
+The test sets above are explicit inputs to prepare, not assets already generated or attached. With the four existing image references, the first-test main/detail sets use at most 28 images, or 29 with optional 07. The Extend set uses 14 supplementary images, plus 51–52 for the street opening (16 supplementary images, or 17 with optional 53), the existing images and the selected source video. Confirm actual composer accounting when adding media; do not equate a contact sheet's cells with separate input slots.
+
+Generate these images in the creator's covered seven-day Unlimited web workflow. Each numbered `.txt` file is complete and directly copyable into the Higgsfield interface. Inspect the resulting still for its assigned task: accurate London/source identity, exact target shape, material thickness, readable card or usable depth. Import the missing definitions from [08_reference_assets.md](../../00_project/elements/08_reference_assets.md), render into those Elements using their complete image prompts, then record the actual persistent Element IDs and reference roles before the next paid video pass. An imported empty Element is not yet a usable image reference. The local reference checker only knows registered bindings; its previous four-reference success does not certify that this expanded set has been attached. No image generation or upload has been performed by creating this library.
+
+
+## Files, source attachments and use
+
+The `.txt` files contain no Markdown fences, headings, import metadata or operator notes. Required source attachments and consumers are listed here. The files preserve the full image-prompt wording. R-numbers identify local reference assets, not platform mentions.
+
+### R001 — Rating cards in the inhabited street
+
+[R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt](R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt)
+
+Attach the clean LONDON source view from section 11 for setting and materials. Do not use the old Budapest-heavy world image as the composition for these pedestrians. This image explicitly demonstrates readable numerical cards and uncovered heads.
+
+### R002 — The same red London bus from useful angles
+
+[R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt](R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt)
+
+Attach the clearest accepted bus frame for exact vehicle identity when available; retain that design.
+
+### R003 — Black London taxi
+
+[R003_BLACK_LONDON_TAXI.txt](R003_BLACK_LONDON_TAXI.txt)
+
+Use the taxi already accepted in the world/video as identity reference if it is clearly visible.
+
+### R004 — Yellow Budapest tram
+
+[R004_YELLOW_BUDAPEST_TRAM.txt](R004_YELLOW_BUDAPEST_TRAM.txt)
+
+Use the accepted world tram as the vehicle identity reference.
+
+### R005 — St Paul’s: complete source building
+
+[R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt](R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt)
+
+Use an accurate photographic St Paul’s reference where available; retain the named building rather than approximating a generic cathedral.
+
+### R006 — St Stephen’s: complete destination building
+
+[R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt](R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt)
+
+Attach the accepted Basilica reference for its exact identity and the accepted St Paul’s reference for comparable framing only.
+
+### R007 — Optional solid intermediate illustration — not a motion test
+
+[R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt](R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt)
+
+Attach the accepted complete source and destination cathedral images. Prepare this only from those actual images, not two unrelated generic domes.
+
+### R008 — Café opening and furniture construction details
+
+[R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt)
+
+Attach the accepted restaurant still and existing London world image. Preserve the woman, remembered man and exact furniture identities whenever they are visible.
+
+### R009 — Fanlight-to-canopy joint study for the Extend
+
+[R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt](R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt)
+
+Use the accepted source video endpoint or its next visible arch to define the arch, stone and glazing before adding detail.
+
+### R010 — Winged statue, plinth and contact detail
+
+[R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt](R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt)
+
+Use the statue actually established in the accepted Piccadilly world as identity reference. This image supplies its shape and material, not proof of an animated jump.
+
+### R011 — Clean London opening reference — priority source image
+
+[R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt](R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt)
+
+Generate this source view before judging another opening against the old Budapest-heavy world image. Attach accepted protagonist identity if he is included. Do not attach a Basilica destination image as the overall composition reference. This is an image-preparation task in the covered web workflow; no generation has been launched here.
+
+### R012 — The same current pedestrians in London and Pest-associated states
+
+[R012_THE_SAME_CURRENT_PEDESTRIANS_IN_LONDON_AND_PEST_ASSOCIATED_STATES.txt](R012_THE_SAME_CURRENT_PEDESTRIANS_IN_LONDON_AND_PEST_ASSOCIATED_STATES.txt)
+
+Attach the accepted card-bearing pedestrian reference from section 01. Use actual selected wardrobe references for the destination when available; do not assign nationality from facial appearance. This image defines endpoints for people and clothes, not their motion.
+
+### R013 — Red bus lower-deck passage and open-door geometry
+
+[R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt](R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt)
+
+Used by: Pilot close bus; later open-square camera-through-bus passage.
+
+Attach the accepted bus exterior from 02.
+
+### R014 — Original London café window before fracture
+
+[R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt](R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt)
+
+Used by: Pilot 1–2 s; Block 01 café.
+
+Attach the clean London opening from 11 and accepted restaurant source.
+
+### R015 — Glass source thickness and destination pendant shades
+
+[R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt](R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt)
+
+Used by: Pilot glass-to-pendant morph; Block 01 café.
+
+Attach the original window from 14 and accepted restaurant lighting.
+
+### R016 — Solid London brick and Pest carved-stone correspondence
+
+[R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt](R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt)
+
+Used by: Pilot pier/arch; all thick-masonry morphs.
+
+Use the clean London brick frontage and selected Pest carved-stone destination detail.
+
+### R017 — Stone sill, wet paving and supported timber threshold
+
+[R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt](R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt)
+
+Used by: Pilot sill/floor morph; later embodied-room floors.
+
+Attach the accepted café/restaurant source and the original window from 14.
+
+### R018 — London timber bench and curved floor border
+
+[R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt](R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt)
+
+Used by: Pilot secondary bench morph; Blocks 02/06 bench-based memories.
+
+Attach the bench visible in the London opening and the accepted restaurant floor detail.
+
+### R019 — Accepted restaurant table and chair from outside
+
+[R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt](R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt)
+
+Used by: Pilot human-memory depth; MW01 and Block 01/06.
+
+Attach the accepted Soho restaurant still.
+
+### R020 — Cup, hand contact and tabletop depth
+
+[R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt](R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt)
+
+Used by: Pilot woman’s gesture; narrated joined-test visual reference.
+
+Attach the accepted restaurant still and exact woman identity only if her hand is shown.
+
+### R021 — Restaurant rear doors and depth relationships
+
+[R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt](R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt)
+
+Used by: Pilot first glimpse and embodied room; MW01.
+
+Attach the accepted Soho restaurant source.
+
+### R022 — Street-light fittings and restaurant pendant connections
+
+[R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt](R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt)
+
+Used by: Pilot metal-fastener/pendant morph; local street-light changes.
+
+Attach the actual London window fasteners and accepted restaurant pendant source.
+
+### R023 — Balcony scroll and sideways stair structural parts
+
+[R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt](R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt)
+
+Used by: Pilot upper ironwork; later balcony/stair morphs.
+
+Use the actual London balcony source and assigned Pest ironwork destination.
+
+### R024 — Mounted English café sign and Hungarian destination sign
+
+[R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt](R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt)
+
+Used by: Pilot sign morph; London-to-Pest street details.
+
+Use the source London shop frontage; preserve its sign mount and frame.
+
+### R025 — Original London roof and chimney volumes
+
+[R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt](R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt)
+
+Used by: Pilot opening and 180-degree return.
+
+Attach the clean London source image from 11.
+
+### R026 — Target roof glazing, stone corbels and chimney crowns
+
+[R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt](R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt)
+
+Used by: Pilot returning rooftop morph; later overhead material changes.
+
+Attach the accepted source roof from 25.
+
+### R027 — Same London junction from the returning aerial angle
+
+[R027_SAME_LONDON_JUNCTION_FROM_THE_RETURNING_AERIAL_ANGLE.txt](R027_SAME_LONDON_JUNCTION_FROM_THE_RETURNING_AERIAL_ANGLE.txt)
+
+Used by: Pilot 180-degree upward ellipse; native Extend source orientation.
+
+Attach the accepted clean London opening image and source roof view from 25.
+
+### R028 — Original arcade arch and fanlight
+
+[R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt](R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt)
+
+Used by: Extend 0–1.5 s; later canopy sources.
+
+Use the arch actually visible at the accepted source endpoint, not an invented new entrance.
+
+### R029 — Full supported canopy destination
+
+[R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt](R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt)
+
+Used by: Extend 1.5–6.5 s; larger roof transformations.
+
+Attach the original fanlight/arch from 28.
+
+### R030 — Deep gallery through the unchanged threshold
+
+[R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt](R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt)
+
+Used by: Extend 4.5–6.5 s; repeated-column depth.
+
+Attach the accepted next arcade bay from 28.
+
+### R031 — London station source exterior and iron structure
+
+[R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt](R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt)
+
+Used by: Block 02 station transformation; W02 source.
+
+Use the assigned Charing Cross/Strand-side London station reference and its actual landmark identity.
+
+### R032 — Nyugati station destination and roof joints
+
+[R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt](R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt)
+
+Used by: Block 02 station target; W02.
+
+Use an accurate Nyugati Railway Station reference and the approved station-source orientation from 31.
+
+### R033 — Hungarian State Opera target facade and entry depth
+
+[R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt](R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt)
+
+Used by: Blocks 02/07; W02/W07 named target.
+
+Use the actual Hungarian State Opera House reference; preserve its specific identity.
+
+### R034 — Tower Bridge source structure
+
+[R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt](R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt)
+
+Used by: Block 05 bridge morph; W05 source.
+
+Use an accurate Tower Bridge reference from the selected riverward side.
+
+### R035 — Széchenyi Chain Bridge destination structure
+
+[R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt](R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt)
+
+Used by: Block 05 bridge morph; W05 target.
+
+Use an accurate Chain Bridge reference and match the source viewpoint from 34 as closely as practical.
+
+### R036 — London Eye and connected South Bank depth
+
+[R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt](R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt)
+
+Used by: Block 06 London identity and scale; W06.
+
+Use the accepted South Bank route/reference and accurate London Eye appearance.
+
+### R037 — Great Market Hall roof and brick source volume
+
+[R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt](R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt)
+
+Used by: Block 06 Great Market Hall-to-Bálna material pairing; W06.
+
+Use an accurate Great Market Hall image; this is a later established structure, not the film’s London opening.
+
+### R038 — Bálna curved-glass target volume
+
+[R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt](R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt)
+
+Used by: Block 06 target roof; W06.
+
+Use the actual Bálna Budapest reference and the established source orientation from 37.
+
+### R039 — Westminster and Parliament Square London source
+
+[R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt](R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt)
+
+Used by: Block 07 London source anchors; later returning camera views.
+
+Use accurate Westminster/Parliament Square source photography and the assigned route.
+
+### R040 — Hungarian Parliament complete destination silhouette
+
+[R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt](R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt)
+
+Used by: Blocks 05–07 named landmark; W05–W07.
+
+Use an accurate Hungarian Parliament reference; keep it separate from the London source image.
+
+### R041 — Gresham Palace frontage and deep stone details
+
+[R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt](R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt)
+
+Used by: Block 05; W05 named target.
+
+Use the actual Gresham Palace reference, maintaining the selected facade identity.
+
+### R042 — New York Palace historic exterior with occupied-bay depth
+
+[R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt](R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt)
+
+Used by: Block 03 work-world exterior; W03.
+
+Use the named New York Palace Budapest reference and W03 design; do not replace the accepted work-memory interiors.
+
+### R043 — London entrance rail and remembered transit gate
+
+[R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt](R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt)
+
+Used by: Block 02 FRAME 2; Block 06 transit recurrence.
+
+Attach the London entrance rail and accepted Russian transit-memory source.
+
+### R044 — Remembered bus seats, aisle and canopy-post correspondence
+
+[R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt](R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt)
+
+Used by: Block 02 FRAME 3; Agra memory.
+
+Attach the accepted Agra bus memory and the assigned London bench/canopy source.
+
+### R045 — Cairo taxi cabin, rear bench and luggage contact
+
+[R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt](R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt)
+
+Used by: Block 02 FRAME 4–5; Cairo memory.
+
+Attach the accepted Cairo taxi memory and driver/passenger identities only where people are included.
+
+### R046 — Canopy and balloon envelope, rigging and basket interfaces
+
+[R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt](R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt)
+
+Used by: Block 02 FRAME 6; balloon helpers memory.
+
+Attach the accepted balloon/helper memory and the actual station-canopy source.
+
+### R047 — Paving, soil, paprika/corn roots and rail sleepers
+
+[R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt](R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt)
+
+Used by: Block 02 FRAME 6/8/9; roots and travel transitions.
+
+Use the accepted Orosháza/Viharsarok memory material palette.
+
+### R048 — Administrative desk, actual documents and device geometry
+
+[R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt](R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt)
+
+Used by: Block 03; later records recurrences.
+
+Attach the accepted work-memory source and exact document props where legible text matters.
+
+### R049 — Cabinet, fingerprint desk and chair construction
+
+[R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt](R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt)
+
+Used by: Block 04 FRAME 4–5; Block 06 procedural recurrence.
+
+Use the accepted apartment cabinet and fingerprinting-memory references.
+
+### R050 — Court, file compartments and retained-device supports
+
+[R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt](R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt)
+
+Used by: Block 05 FRAME 2–6; records-based structures.
+
+Attach the accepted court/apartment/device-handling memory references.
+
+### R051 — Original London street cross-section and connected building bases
+
+[R051_ORIGINAL_LONDON_STREET_CROSS_SECTION_AND_CONNECTED_BUILDING_BASES.txt](R051_ORIGINAL_LONDON_STREET_CROSS_SECTION_AND_CONNECTED_BUILDING_BASES.txt)
+
+Used by: Native Extend street expansion; production street-opening beats.
+
+Use the accepted London world and actual selected source endpoint. Preserve existing building and transport identities.
+
+### R052 — Opened street volume with simultaneously changed historic buildings
+
+[R052_OPENED_STREET_VOLUME_WITH_SIMULTANEOUSLY_CHANGED_HISTORIC_BUILDINGS.txt](R052_OPENED_STREET_VOLUME_WITH_SIMULTANEOUSLY_CHANGED_HISTORIC_BUILDINGS.txt)
+
+Used by: Native Extend expanding space and canopy; matching production beats.
+
+Attach 51 and the accepted arch/canopy and historic destination detail images relevant to this beat.
+
+### R053 — Optional intermediate street depth with concurrent masonry morph
+
+[R053_OPTIONAL_INTERMEDIATE_STREET_DEPTH_WITH_CONCURRENT_MASONRY_MORPH.txt](R053_OPTIONAL_INTERMEDIATE_STREET_DEPTH_WITH_CONCURRENT_MASONRY_MORPH.txt)
+
+Used by: Native Extend optional geometry guidance; never an animation test.
+
+Attach 51 and 52; retain their actual location, people and objects.
+

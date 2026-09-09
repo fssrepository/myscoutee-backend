@@ -1,10 +1,10 @@
 # Elements — staged import without duplication
 
-These files are metadata for **Import Elements only**. They do not create rendered reference images and are not video prompts.
+These files define **Import Elements** batches. Import creates reference containers, not rendered images. The new detail batch also carries complete image-render prompts in its Description fields so the creator can render into each Element afterward.
 
 **Current starting point:** the supplied 2026-09-09 screenshot already shows imported Elements in **MyScoutee**, with empty **Add element image** slots on the visible entries. Skip import for those entries and supply their matching accepted images. The screenshot alone does not verify all 48 entries; only actually missing definitions need importing.
 
-If the project's original 48 Elements already exist, skip their canonical import batches. Use the correct image with each existing Element rather than creating another Element for the same canonical key. The separate pilot supplement below adds only the requested restaurant-memory container. Use the actual available image-binding control; this guide does not invent a move/copy operation.
+If the project's original 48 Elements already exist, skip their canonical import batches. Use the correct image with each existing Element rather than creating another Element for the same canonical key. The original pilot supplement adds the restaurant-memory container; the new reference-detail batch below adds separate reusable scene, object and material studies. Use the actual available image-binding control; this guide does not invent a move/copy operation.
 
 For an empty or partially populated project, use `00_pilot.md`, then `01_film.md` through `07_film.md` as needed. Each logical definition appears in exactly one batch. Pilot C01/C02/W01 therefore do not repeat in the first film batch. Together the batches preserve **31 characters + 16 locations + one score-card prop = 48 Elements**.
 
@@ -16,7 +16,7 @@ SCORE_CARDS has no new standalone image-generation requirement. Storyboard and v
 
 [00_pilot_test_assets.md](00_pilot_test_assets.md) is the versioned Import Elements file for the pilot's additional reusable reference. Import it into **MyScoutee** instead of filling the empty New element form by hand. It follows the existing Markdown definition format and contains **one Location: T01_IMAGE / Pilot Soho Restaurant Memory / v1**. If that Element was already created manually, reuse it and skip the import.
 
-The original eight canonical batches still contain 48 definitions; the supplement adds one, giving 49 intended Elements if both sets are present. The production task count remains 77 because metadata import and image association are part of the existing reference-binding task, not another generation.
+The original eight canonical batches still contain 48 definitions; the supplement adds one, giving 49 intended Elements if both sets are present. The original production plan remains separate. The additional reference renders below are real image jobs in the creator-confirmed covered Unlimited web workflow; they add preparation time and must not be counted as already generated or as extra video tests.
 
 | Pilot asset | Treatment |
 | --- | --- |
@@ -26,3 +26,13 @@ The original eight canonical batches still contain 48 definitions; the supplemen
 | T01_VIDEO, T01_EXTEND | Generated video outputs kept as project media; the accepted first video belongs in the actual Forward Extend source field |
 
 The metadata file contains no image bytes or media URL. After import, associate the existing restaurant still, save, and copy the actual complete Element ID. The assistant verifies the supplied association and propagates that ID through all dependent prompts. Do not replace MW01 with this individual memory or mark the pending pilot ready merely because import succeeded.
+
+## Expanded objects, façade details and world views — render into Elements
+
+Use [08_reference_assets.md](08_reference_assets.md) for **53 reusable reference containers**, R001–R053. Every definition includes its complete image-render prompt in `Description`, required source attachments and consuming test/film block. Import missing definitions, then render the images into those Elements. The readable [separate prompt files and per-test sets](../../02_library/objects/README.md) use the same numbering and render text. These definitions add no Character identities.
+
+The original 48 definitions, accepted restaurant supplement and 53 detail definitions total **102 defined Elements** if every container is needed and imported. This is the project library count, not one video's input count and not a count of images already rendered. One world may draw on several views and detail Elements. Reuse accepted subjects and supporting details wherever available; do not duplicate a world or character just to change the camera angle. R001 is an inhabited street/card example and does not replace the existing SCORE_CARDS prop.
+
+For the first 8-second test, prepare R011 first (clean London source), then the main and material sets listed in the collection. The Extend reuses accepted images and adds its canopy, gallery and opening-street source/target detail. R051–R052 specify that street volume; R053 is optional intermediate geometry guidance. Retain the selected actual video as the native continuation source. Rendering an image or importing an empty Element does not test motion. The narrated test reuses the joined footage.
+
+Record the actual displayed IDs and accepted image versions after import/render; the R-numbers are local canonical keys, not fabricated platform handles. No import, render or credit charge has been executed by preparing these files.

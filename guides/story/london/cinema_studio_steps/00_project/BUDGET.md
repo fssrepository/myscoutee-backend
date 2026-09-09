@@ -6,7 +6,7 @@
 
 On 2026-09-09 the creator confirmed seven-day Unlimited image generation in their Higgsfield web workflow: covered reference-image creation and revision cost time, not additional credits. Use that window to resolve objects, numerical cards, source/target building forms and material connections before another paid video attempt. The window's actual expiration time has not been supplied. Keep image preparation separate from the paid video budget; do not charge the covered images against the approximately 700-credit planning baseline. This confirmation covers the creator's web image workflow, not automated generation or unverified audio/export operations.
 
-Use [the consolidated reference-image prompts](../02_library/objects/REFERENCE_IMAGE_PROMPTS.md). These are reusable production assets, not additional video tests. No paid generation is triggered by writing or revising them.
+Use [the consolidated reference-image prompts](../02_library/objects/README.md). These are reusable production assets, not additional video tests. No paid generation is triggered by writing or revising them.
 
 ## Visible pilot cost tracker — three tests
 

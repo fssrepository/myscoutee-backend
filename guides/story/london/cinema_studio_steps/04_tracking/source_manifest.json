@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/W01_MAIN_WORLD.txt",
-      "file_sha256": "7ad5515c982dd47451a9de35dc692de1795ccf6a7491799f0cc2a058043ff3cd",
+      "file_sha256": "29215380bc3ed3f3aa3d1ac3058fe57ef3e8e395b9475923aaa13203d0d1600f",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/W02_MAIN_WORLD.txt",
-      "file_sha256": "8c7719e5cf70b80f9bff709ff3a6d0ceee46e96a567e1d5245c08fdf145f4f6e",
+      "file_sha256": "1c1b66fd262c103b1aa07a0e3c4b585b92e0b5eab7574c3628605cbca8d7a278",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/W03_MAIN_WORLD.txt",
-      "file_sha256": "65ae2bf0052d03f5d43b10d2385616273aea615fa2d64ce78bd10ad3b6548ed8",
+      "file_sha256": "4450830ed1fc4285f8c284c3e2a0885d3f8a80d9971df583fd9bcefd0fa11c9a",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/W04_MAIN_WORLD.txt",
-      "file_sha256": "003ce78e59670a109ba6206bf83dc0904d6a821405dcc3d870fa73e773fb86ee",
+      "file_sha256": "347c04fef21248487b6cc294b0cd348ac1a14ab2ea567381a2aae1c7aa8663ad",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/W05_MAIN_WORLD.txt",
-      "file_sha256": "bbce156b57882b34c17973cd10a02ea19c1a764881d51eef10c9ae656aadc3d4",
+      "file_sha256": "8e57eb909b68b82b7bff8dc3bcad48a0b73b0a35f8d63ccd3f39768b436a6cf0",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/W06_MAIN_WORLD.txt",
-      "file_sha256": "4e8a67f4e049c6be89dac52c494f00a98de3cb0c9c21f36701058af83bc343bc",
+      "file_sha256": "3a3d27320affdac534e9a2faa17f7dc1ba2068ecbc59a2532c8cf1a463a617b3",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/W07_MAIN_WORLD.txt",
-      "file_sha256": "79ad07680b0977262071109e3d50560b2239fda7d7d981b3d4b7512c431b9815",
+      "file_sha256": "7be01250c12931dc7651fa9c83f77e46fd4247d991e1f8b3822fcf1dc4ad602f",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "ff92db670e95c2737357b46e2a598534204a0bea764870fc0237037569e0c339",
+      "file_sha256": "1d555dfa054e10ee4f8714ec7d45ef36e3117755d4a7abaed3e35a90ee585c61",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "a0493343cc7780b62606ddf5517f08dee8a0a2ea346e494d6b455939079f8853",
+      "file_sha256": "8f2e72872aada1c330f15ec0b3dab642ea9357c05f2bca0a66533410b21a6c41",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "cf5210004b78985c5a9ece2cc22f4036ab5db3ad3d5b81de27b48cf6c93b2f7a",
+      "file_sha256": "efb23483724add0474ef442e6840e67b3eba6288667698998ad488a0230511ea",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "70415e549391b3e54ef1b3c0d78d9295f6ce81584891bc5184a81b7b24f79028",
+      "file_sha256": "0a28e7fe1f93105b2654b5d2f53c4f851e107e24fa934b085335c00ae0ad9ffd",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "a91f7dbbc753890440b0f94ad9face53858f2b91ae0511cbb53036f0d7e87bb7",
+      "file_sha256": "643da71dc5b8276064c0800d6d5fc512385b25fd3d5e2f94af1bc3d39bd39486",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "636aaa965cafeafa76083e3755bdfb83d066bb001f639a3b0f8db8db1cb85064",
+      "file_sha256": "6791a1bdb2faba868a8a746addab4f80f77ec63ce5f9ec0bed470d40c49a2b21",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "776e68589b3cfe7b2bf2018f7c493ec5d602841b2ada5312e04e7f9985e9c778",
+      "file_sha256": "15a11379685a1fb2b902e0e0b81b4d481a474224063ea320099e20476c7293e0",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "da14294c51648645d0f815e51d120d88d2282d57a3787348015cb3d0f86e024e",
+      "file_sha256": "52cc88d8f50d3afe6f626c0e00659c7fa1708ad386019de65139a7568a7f8f28",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "f2477e43d791640caaa4aa812cc53ffd13e031a2a2b181ed48055ec6b7a8ef6c",
+      "file_sha256": "ef332d10f6514dbb4cf83557b6946be4c3d1dd37970d980d421c988bdded2f2d",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "8ed623052454c470bb7d323148b2352784eb09251b28317019be8b8f4329f307",
+      "file_sha256": "96bb79345e509096c3e8c6fa4e79e4d49d5f3c43e2e38854a3095a57f7d7026f",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "787572ebb787abd3676015b3c9bd92dd6a84fc6c8fe0999e16a40b732f4fff53",
+      "file_sha256": "ee1ae3a1be0a4da94fc7f6d905cdbfc47f09231f3037e44c7aed5bd9ba48f67a",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "187fb47d5dae7120c8e9e2655119747d9d7b15da56195741c754345cddd31cc4",
+      "file_sha256": "5a30253a4bf5d7767966a4e633270e7594e34718efb9db8fc34a93ba2b1c254d",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "976dbd5b814b7355c3351885217c0f7570ff7250e01cc27b432604ddff7aa4fd",
+      "file_sha256": "25201cae4900f63456e2abcbb1144d9dffef1db8b6e2c5e095042a4b8d6e864a",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "1515387a5fbe6bdfc444b72529dc3b71dd9f254b1b9b8b90c5991cb3a515afed",
+      "file_sha256": "9dd42793745d401bf1acce2f12e28cf560454eadd1cefdaadca91e6ccd382a57",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     }
   ],
@@ -1685,7 +1685,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "4b4f15bfca146862050266cf4632930bf8d034d795b7b04df556004020171e41",
+      "sha256": "f1d0411e6b76636ec01a45fe18a47117ae62d274f7c76927615357141f45e82a",
       "refs": [
         "C01",
         "C02",
@@ -1708,7 +1708,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "5b45a977c182261d546e0e01d8bd3d32857f2b181a35d414959460d4d16d4e29",
+      "sha256": "a9b396fc9030d059dad31ef024accdc18e7f54431fb78967910011de5164d123",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
@@ -2110,6 +2110,399 @@
       "status": "ELEMENT_ID_REPORTED_IMAGE_ASSOCIATION_UNVERIFIED",
       "media_embedded": false,
       "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"
+    },
+    {
+      "file": "00_project/elements/08_reference_assets.md",
+      "canonical_keys": [
+        "R001",
+        "R002",
+        "R003",
+        "R004",
+        "R005",
+        "R006",
+        "R007",
+        "R008",
+        "R009",
+        "R010",
+        "R011",
+        "R012",
+        "R013",
+        "R014",
+        "R015",
+        "R016",
+        "R017",
+        "R018",
+        "R019",
+        "R020",
+        "R021",
+        "R022",
+        "R023",
+        "R024",
+        "R025",
+        "R026",
+        "R027",
+        "R028",
+        "R029",
+        "R030",
+        "R031",
+        "R032",
+        "R033",
+        "R034",
+        "R035",
+        "R036",
+        "R037",
+        "R038",
+        "R039",
+        "R040",
+        "R041",
+        "R042",
+        "R043",
+        "R044",
+        "R045",
+        "R046",
+        "R047",
+        "R048",
+        "R049",
+        "R050",
+        "R051",
+        "R052",
+        "R053"
+      ],
+      "expected_new_elements": 53,
+      "file_sha256": "bd754e8aefed5e2d80adcff2d6330f529f4119a9b51c871b33af756c6bdbe548",
+      "status": "PREPARED_NOT_IMPORTED_NOT_RENDERED",
+      "media_embedded": false,
+      "generation_source": "02_library/objects/README.md",
+      "note": "Complete image prompts embedded in import Descriptions; covered web image renders performed by creator. Library count is not per-video input count.",
+      "image_prompt_files": {
+        "R001": {
+          "file": "02_library/objects/R001_RATING_CARDS_IN_THE_INHABITED_STREET.txt",
+          "sha256": "6207428449a594f276b9f9ab6fba9622ca4989c963385cfc334a3398232e2193",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R002": {
+          "file": "02_library/objects/R002_THE_SAME_RED_LONDON_BUS_FROM_USEFUL_ANGLES.txt",
+          "sha256": "70806ea3887ed9447c15bca49df07f82af6d6a3ae73ecced735b7b0942038c84",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R003": {
+          "file": "02_library/objects/R003_BLACK_LONDON_TAXI.txt",
+          "sha256": "dfad4566ecae26415e9b5e13bbb3387d42176a3e22fa39beaeb7719ed440cd22",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R004": {
+          "file": "02_library/objects/R004_YELLOW_BUDAPEST_TRAM.txt",
+          "sha256": "cb06d1f2b8f498dac895bb3fca12f5b5b938ab3cb8d0eef89b5b486b3c004ce4",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R005": {
+          "file": "02_library/objects/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
+          "sha256": "5ff729b525efc7b3674c58e42c9ff9f6dae9f144fc71fcfcb461401b5650a4f1",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R006": {
+          "file": "02_library/objects/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
+          "sha256": "ee6f7ee65eb5f7c990b23ff3977da56e82e00db5de0a09fa3900ea57a3b352ad",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R007": {
+          "file": "02_library/objects/R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt",
+          "sha256": "5edcbb02c0d4fb89e886c16f061a974a2813c4c303e4b29b3ffd53639b1e8daa",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R008": {
+          "file": "02_library/objects/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
+          "sha256": "14455549b33237c2f8a612bf64a89c18df3dc150c0da235488b437e331ef3fdf",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R009": {
+          "file": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
+          "sha256": "c43e52a9a6e1c95d21f51ac6d38a87a8320979f568dc0692a7f7cdaf084b34b8",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R010": {
+          "file": "02_library/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
+          "sha256": "7292ace58d846fdac6c77f348bb3a5e48168e4896c604f027de4d0c9e6335da1",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R011": {
+          "file": "02_library/objects/R011_CLEAN_LONDON_OPENING_REFERENCE_PRIORITY_SOURCE_IMAGE.txt",
+          "sha256": "fe6f14ef356ec0a8653ea378e0f3c1ac89a4f0218923a684a5d49fcc95bd7935",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R012": {
+          "file": "02_library/objects/R012_THE_SAME_CURRENT_PEDESTRIANS_IN_LONDON_AND_PEST_ASSOCIATED_STATES.txt",
+          "sha256": "24c94a6d0a602ab9dc001921203e05342f038594654ace93fb6ece80e72c5cd3",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R013": {
+          "file": "02_library/objects/R013_RED_BUS_LOWER_DECK_PASSAGE_AND_OPEN_DOOR_GEOMETRY.txt",
+          "sha256": "61d7a5e2ed79169ad4c6b6b169faf93b157da109f90673665e3b39dfebf58ce6",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R014": {
+          "file": "02_library/objects/R014_ORIGINAL_LONDON_CAFE_WINDOW_BEFORE_FRACTURE.txt",
+          "sha256": "2df5ce1bcc7f9d97e4d8ce6be102c6a3f25d949592590790031c3f7a11cddbe1",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R015": {
+          "file": "02_library/objects/R015_GLASS_SOURCE_THICKNESS_AND_DESTINATION_PENDANT_SHADES.txt",
+          "sha256": "f1b7f3461a1e2c6ee0bdd9ba71d1679ffb0783c4add7cfc27c78a59c09782f46",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R016": {
+          "file": "02_library/objects/R016_SOLID_LONDON_BRICK_AND_PEST_CARVED_STONE_CORRESPONDENCE.txt",
+          "sha256": "9b918509839f552bddfd13c2c0e39e083ca1aca18816d001cebb28ebcaca98dc",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R017": {
+          "file": "02_library/objects/R017_STONE_SILL_WET_PAVING_AND_SUPPORTED_TIMBER_THRESHOLD.txt",
+          "sha256": "ea175394d8c2b0a27290d27dd68e6d9ec9f9384aea7abc4241aa0fbd5a03f6a1",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R018": {
+          "file": "02_library/objects/R018_LONDON_TIMBER_BENCH_AND_CURVED_FLOOR_BORDER.txt",
+          "sha256": "70e0f3ad00daa01378dbcc68bd255c52b31934bc144b925dfb0e014306dc4f0a",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R019": {
+          "file": "02_library/objects/R019_ACCEPTED_RESTAURANT_TABLE_AND_CHAIR_FROM_OUTSIDE.txt",
+          "sha256": "a331a1300cb2acf628b52b57c759177990299e8325ccb276147c9014e6e2cfef",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R020": {
+          "file": "02_library/objects/R020_CUP_HAND_CONTACT_AND_TABLETOP_DEPTH.txt",
+          "sha256": "57e46c00f544156a4e50428b18455af2d35faae2e5d23e6c9105fccd8c687ed1",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R021": {
+          "file": "02_library/objects/R021_RESTAURANT_REAR_DOORS_AND_DEPTH_RELATIONSHIPS.txt",
+          "sha256": "a6a34dee1d35b416a9ce4d0156f08ff6008005846af4e60e2090ee25468fde33",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R022": {
+          "file": "02_library/objects/R022_STREET_LIGHT_FITTINGS_AND_RESTAURANT_PENDANT_CONNECTIONS.txt",
+          "sha256": "b4001d895605adf5212aca71d1fe0c682143c0a8fd0f978fb07aebebc0b297b4",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R023": {
+          "file": "02_library/objects/R023_BALCONY_SCROLL_AND_SIDEWAYS_STAIR_STRUCTURAL_PARTS.txt",
+          "sha256": "014bae6811227dbf96489dd4d3981e07ba8b9aade6e3dd243041a4c41d448964",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R024": {
+          "file": "02_library/objects/R024_MOUNTED_ENGLISH_CAFE_SIGN_AND_HUNGARIAN_DESTINATION_SIGN.txt",
+          "sha256": "8bc4e15c89ab1e5717c41635000f9f37ff2f2c89f75cbc3b7b07929dcd0106af",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R025": {
+          "file": "02_library/objects/R025_ORIGINAL_LONDON_ROOF_AND_CHIMNEY_VOLUMES.txt",
+          "sha256": "255228bf328061de567bea74443d41136766aa6a18f85c8c4f1bcf72aa0364bf",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R026": {
+          "file": "02_library/objects/R026_TARGET_ROOF_GLAZING_STONE_CORBELS_AND_CHIMNEY_CROWNS.txt",
+          "sha256": "4e6041a426a7b5dc10c110214dc0a3972344b25ce77311149d240647f85f4067",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R027": {
+          "file": "02_library/objects/R027_SAME_LONDON_JUNCTION_FROM_THE_RETURNING_AERIAL_ANGLE.txt",
+          "sha256": "2091375b65affac1a8ae276682e322651278945d6e90d92dc5ae7f6ea42d2ea8",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R028": {
+          "file": "02_library/objects/R028_ORIGINAL_ARCADE_ARCH_AND_FANLIGHT.txt",
+          "sha256": "b84f154c28062afd3bb4c6fb792ca9cb434b46259c59995c28d4dbd8cc485b32",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R029": {
+          "file": "02_library/objects/R029_FULL_SUPPORTED_CANOPY_DESTINATION.txt",
+          "sha256": "1beb554fdd8f6b489117d2416066ebaeebb744068b319a5fb9071950eadc1759",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R030": {
+          "file": "02_library/objects/R030_DEEP_GALLERY_THROUGH_THE_UNCHANGED_THRESHOLD.txt",
+          "sha256": "e9e4507643cdeb2ea350b8830c3da73d0a5e5653447d097951bb003e36a48a97",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R031": {
+          "file": "02_library/objects/R031_LONDON_STATION_SOURCE_EXTERIOR_AND_IRON_STRUCTURE.txt",
+          "sha256": "435448f99fb665f9b804c1a68f2039cf2351972eddb2d4cbd5052c58633f2535",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R032": {
+          "file": "02_library/objects/R032_NYUGATI_STATION_DESTINATION_AND_ROOF_JOINTS.txt",
+          "sha256": "8bf56a736f99103d3634d4d15e67263ca23981b3df1ff1bca933e84c80501b91",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R033": {
+          "file": "02_library/objects/R033_HUNGARIAN_STATE_OPERA_TARGET_FACADE_AND_ENTRY_DEPTH.txt",
+          "sha256": "edad9b95a506e94b36d044f9b41143b434acc86cae486095d9ac7a7177b5e206",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R034": {
+          "file": "02_library/objects/R034_TOWER_BRIDGE_SOURCE_STRUCTURE.txt",
+          "sha256": "050a35abd2232c65824ad6ade5eba09e49d11ddbecb9ba80933d70e4fd03365f",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R035": {
+          "file": "02_library/objects/R035_SZECHENYI_CHAIN_BRIDGE_DESTINATION_STRUCTURE.txt",
+          "sha256": "3105ddb435701f232a57129ba8e2cc2b317bd67f9cceb9c5c116e860a3491c72",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R036": {
+          "file": "02_library/objects/R036_LONDON_EYE_AND_CONNECTED_SOUTH_BANK_DEPTH.txt",
+          "sha256": "48e0aba8597313237ad1e12235861a2f08acdbbd9af78449e3d21da9f436b235",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R037": {
+          "file": "02_library/objects/R037_GREAT_MARKET_HALL_ROOF_AND_BRICK_SOURCE_VOLUME.txt",
+          "sha256": "3905e593818fdf2496039b8cd1428395fa346ac3ce3f86a38ec61adf558d8bd4",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R038": {
+          "file": "02_library/objects/R038_BALNA_CURVED_GLASS_TARGET_VOLUME.txt",
+          "sha256": "dc402b95d7979a3f93889af0146ef5fefc64211b4aec2976ee4a6388beec6f77",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R039": {
+          "file": "02_library/objects/R039_WESTMINSTER_AND_PARLIAMENT_SQUARE_LONDON_SOURCE.txt",
+          "sha256": "9622dc9c941962d384a2abd8ed40c2ef6f128503dfb57a922751d9e1c8102910",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R040": {
+          "file": "02_library/objects/R040_HUNGARIAN_PARLIAMENT_COMPLETE_DESTINATION_SILHOUETTE.txt",
+          "sha256": "b13f4d9e8c1c37069e1db5d4e301ee376429be75685c898b5d1cfc31789c82eb",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R041": {
+          "file": "02_library/objects/R041_GRESHAM_PALACE_FRONTAGE_AND_DEEP_STONE_DETAILS.txt",
+          "sha256": "b0920a380b3d9c1fdf27c4af0f8c1f7fa9f81b3c3e54760fead4e7552833eef3",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R042": {
+          "file": "02_library/objects/R042_NEW_YORK_PALACE_HISTORIC_EXTERIOR_WITH_OCCUPIED_BAY_DEPTH.txt",
+          "sha256": "fb8434c60274300507ddb6ae8b3ea4985a31be8b8d800e13530335cfbb4c614e",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R043": {
+          "file": "02_library/objects/R043_LONDON_ENTRANCE_RAIL_AND_REMEMBERED_TRANSIT_GATE.txt",
+          "sha256": "e90457e88537fe71afba4673633201e0515f87941f7f95f6effaee3f8b63a233",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R044": {
+          "file": "02_library/objects/R044_REMEMBERED_BUS_SEATS_AISLE_AND_CANOPY_POST_CORRESPONDENCE.txt",
+          "sha256": "5085ab6358bd02a0c7b9ed78124cf51b490cca59f779678bf037828ce5b33380",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R045": {
+          "file": "02_library/objects/R045_CAIRO_TAXI_CABIN_REAR_BENCH_AND_LUGGAGE_CONTACT.txt",
+          "sha256": "1d4a7001de7a3a436fd845f23c972e9cf076398eed6452b98195ee956ab22eab",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R046": {
+          "file": "02_library/objects/R046_CANOPY_AND_BALLOON_ENVELOPE_RIGGING_AND_BASKET_INTERFACES.txt",
+          "sha256": "f10eee747e6c975bd933abbdb0a5c44a1d90ead0f25aa75e50de305f8df41094",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R047": {
+          "file": "02_library/objects/R047_PAVING_SOIL_PAPRIKA_CORN_ROOTS_AND_RAIL_SLEEPERS.txt",
+          "sha256": "0d8b6f1450d5cab00eac0cdb2d5470d42359c0cdf1309bda438eddebd140037e",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R048": {
+          "file": "02_library/objects/R048_ADMINISTRATIVE_DESK_ACTUAL_DOCUMENTS_AND_DEVICE_GEOMETRY.txt",
+          "sha256": "9dc86ca16a17cb1eb661e54bd8bea07570e5381e04d29888c74e7aaa2a274d22",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R049": {
+          "file": "02_library/objects/R049_CABINET_FINGERPRINT_DESK_AND_CHAIR_CONSTRUCTION.txt",
+          "sha256": "8eb27450b4fbf008e75e5a8aa6df9379397411326b9b56498a24d331b88484a2",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R050": {
+          "file": "02_library/objects/R050_COURT_FILE_COMPARTMENTS_AND_RETAINED_DEVICE_SUPPORTS.txt",
+          "sha256": "f81a8b59ba8fe8a86c7d801fb8a91b4da5d870a133fbcea14cf1dee61d806d79",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R051": {
+          "file": "02_library/objects/R051_ORIGINAL_LONDON_STREET_CROSS_SECTION_AND_CONNECTED_BUILDING_BASES.txt",
+          "sha256": "bf0b028d6235458302c620e00162badd7317e940299587a05bc4f4f183a0b90b",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R052": {
+          "file": "02_library/objects/R052_OPENED_STREET_VOLUME_WITH_SIMULTANEOUSLY_CHANGED_HISTORIC_BUILDINGS.txt",
+          "sha256": "fb92add59c487030a00ca6fcb242dc84b9b5066d2e643ebd98331cb0e063e69e",
+          "status": "PREPARED_NOT_RENDERED"
+        },
+        "R053": {
+          "file": "02_library/objects/R053_OPTIONAL_INTERMEDIATE_STREET_DEPTH_WITH_CONCURRENT_MASONRY_MORPH.txt",
+          "sha256": "7e8cb96cf7e090dedbc49769d02e9cc2e395cc4c153279d15359acdb3be32521",
+          "status": "PREPARED_NOT_RENDERED"
+        }
+      }
     }
-  ]
+  ],
+  "supplemental_reference_sets": {
+    "status": "PLANNED_IMAGES_AND_ACTUAL_HANDLES_PENDING",
+    "test_video_8s.txt": {
+      "required": [
+        "R011",
+        "R001",
+        "R005",
+        "R006",
+        "R002",
+        "R003",
+        "R004",
+        "R008",
+        "R010",
+        "R012",
+        "R014",
+        "R015",
+        "R016",
+        "R017",
+        "R018",
+        "R019",
+        "R020",
+        "R021",
+        "R022",
+        "R023",
+        "R024",
+        "R025",
+        "R026",
+        "R027"
+      ],
+      "optional": [
+        "R007"
+      ]
+    },
+    "test_extend_8s.txt": {
+      "required": [
+        "R001",
+        "R002",
+        "R003",
+        "R004",
+        "R009",
+        "R012",
+        "R022",
+        "R023",
+        "R025",
+        "R026",
+        "R027",
+        "R028",
+        "R029",
+        "R030",
+        "R051",
+        "R052"
+      ],
+      "optional": [
+        "R053"
+      ],
+      "native_source": "Actual selected first video; inherit its actual endpoint"
+    },
+    "test_narrated_video.txt": {
+      "additional_image_references": [],
+      "source": "Accepted joined approximately 16-second footage; no visual regeneration"
+    }
+  }
 }
