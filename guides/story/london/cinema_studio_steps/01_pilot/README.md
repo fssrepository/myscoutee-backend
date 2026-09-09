@@ -14,6 +14,16 @@ The creator’s sequence is: **detailed first video → native visual continuati
 
 The total next-round cost is **not yet known**. No additional charge is recorded. If the next video actually costs 20, the current planning remainder becomes approximately 680 before the other operations. The change from the earlier 720 estimate does not itself record a new debit. See the [itemised cost tracker](../00_project/BUDGET.md#visible-pilot-cost-tracker--three-tests) for quotes, actual charges and the remaining cap. This is three test tasks; separately billed audio/finishing must remain visible inside the narrated-test cost.
 
+## Free image-reference preparation before the next paid video
+
+The creator has confirmed a seven-day Unlimited web image window. Prepare the additional references there, using [the consolidated complete image prompts](../02_library/objects/REFERENCE_IMAGE_PROMPTS.md), and keep the same three video/audio test tasks.
+
+Start with section 11, the clean **London opening** with St Paul's, London transport and numerical cards. Next use section 01 for a **readable rating-card example** against that London setting. Sections 05 and 06 specify the complete **St Paul's source and Basilica destination**; reuse accepted imagery if it already resolves those actual buildings. Then add the bus/taxi/tram and café-object detail references in sections 02–04 and 08, the canopy in 09 and the statue in 10 where the current video needs them. Section 07 is an optional intermediate geometry illustration, not a morph test. All of these are image assets reusable in production, not separate paid effect videos.
+
+Inspect the generated stills for correct location, actual source/target shapes, solid material thickness and readable scores before attaching them. Use the clean London image for the opening; assign the Basilica image only to destination identity. Every added object image has an explicit shape/material role. Keep the four existing character/restaurant/world bindings until actual replacement or additional media are available; never invent an Element handle for an image that has not been generated and attached. Record real handles centrally, then update the reference-role paragraphs and check the actual video prompt before generation. The extra images have not been generated or attached by editing these files.
+
+The available assistant generation connector does not establish the creator's free web Unlimited route. Do the covered image jobs in the web composer; no chargeable automated image request is authorized by this preparation. Judge motion continuity, camera travel, morphs and frame jumps together in the next existing video test using the accepted additional references.
+
 ## Visual prompts and the separate narrated test
 
 | Prompt | Content | Operation |

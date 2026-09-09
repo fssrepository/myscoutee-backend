@@ -563,7 +563,7 @@
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
       "file": "02_library/worlds/W01_MAIN_WORLD.txt",
-      "file_sha256": "a99ca3393ac0e9085dee25cf0194ac68faefb626e428e7ac1a5fb8bf839cc3e6",
+      "file_sha256": "7ad5515c982dd47451a9de35dc692de1795ccf6a7491799f0cc2a058043ff3cd",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -587,7 +587,7 @@
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
       "file": "02_library/worlds/W02_MAIN_WORLD.txt",
-      "file_sha256": "b2573f6e26c1f9b7fa87cb331621cb0d611a877d132af5a9617f53b39dcf9bce",
+      "file_sha256": "8c7719e5cf70b80f9bff709ff3a6d0ceee46e96a567e1d5245c08fdf145f4f6e",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -611,7 +611,7 @@
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
       "file": "02_library/worlds/W03_MAIN_WORLD.txt",
-      "file_sha256": "21bb00653b88c9ed92c6a4d51504a6fd1f3defad8f205f5d052cb081fec6dcaf",
+      "file_sha256": "65ae2bf0052d03f5d43b10d2385616273aea615fa2d64ce78bd10ad3b6548ed8",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -635,7 +635,7 @@
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
       "file": "02_library/worlds/W04_MAIN_WORLD.txt",
-      "file_sha256": "51d202a0f7453a65d794c5851dc0fcad8f9d24861cd6e4feb907287cf9b29e0c",
+      "file_sha256": "003ce78e59670a109ba6206bf83dc0904d6a821405dcc3d870fa73e773fb86ee",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -659,7 +659,7 @@
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
       "file": "02_library/worlds/W05_MAIN_WORLD.txt",
-      "file_sha256": "921a595a18e54d3cfab17eb89dbe41232909ec4fe4bbf7688b841f0f44670f9e",
+      "file_sha256": "bbce156b57882b34c17973cd10a02ea19c1a764881d51eef10c9ae656aadc3d4",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -683,7 +683,7 @@
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
       "file": "02_library/worlds/W06_MAIN_WORLD.txt",
-      "file_sha256": "40aa032ff37fdb6f4abed9b4e84e1d8fefad3e1c399893549d4712f44da6f4d1",
+      "file_sha256": "4e8a67f4e049c6be89dac52c494f00a98de3cb0c9c21f36701058af83bc343bc",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -707,7 +707,7 @@
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
       "file": "02_library/worlds/W07_MAIN_WORLD.txt",
-      "file_sha256": "93961acf9377d0ca4a729b165efab2775d2f0f7bc1c6744a3ead96eb6bd48ea5",
+      "file_sha256": "79ad07680b0977262071109e3d50560b2239fda7d7d981b3d4b7512c431b9815",
       "changes": "Original cells retained; transformative architecture design added Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "e743150893634e50ba54c868d983311183c89cf92962a6da2b038ac417bde883",
+      "file_sha256": "ff92db670e95c2737357b46e2a598534204a0bea764870fc0237037569e0c339",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "33a84c77e8058f0bc464f53b3ca4c94e2ef59722e5ab4d1e9f40ada3ab5fba9a",
+      "file_sha256": "a0493343cc7780b62606ddf5517f08dee8a0a2ea346e494d6b455939079f8853",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "aa9a1a492f3c4996ed09a61ba30ba34aa5d688ea8bdb7e47e2827cd3fae4fdab",
+      "file_sha256": "cf5210004b78985c5a9ece2cc22f4036ab5db3ad3d5b81de27b48cf6c93b2f7a",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "5fd8e8a9631b8603c2e2f462c0098c6b21324f2ea8949d3060419ec2fe6f3858",
+      "file_sha256": "70415e549391b3e54ef1b3c0d78d9295f6ce81584891bc5184a81b7b24f79028",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "8ae9dfb4142161409dd3a4bf929a64114b845171c16669f186a15251eb973f49",
+      "file_sha256": "a91f7dbbc753890440b0f94ad9face53858f2b91ae0511cbb53036f0d7e87bb7",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "295eeed1e8b5ce86894c00616e6ebe3c1e069ae37aba10a5229c70d27f7521b4",
+      "file_sha256": "636aaa965cafeafa76083e3755bdfb83d066bb001f639a3b0f8db8db1cb85064",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "3b785a3f86c787f991f1b5979102761aa7b12c53f3de2be70a42ef0d8ba4aa07",
+      "file_sha256": "776e68589b3cfe7b2bf2018f7c493ec5d602841b2ada5312e04e7f9985e9c778",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "270da0aa86ca15924266b3267d426cbf464ba16b709511c8fe6048e8c827f84e",
+      "file_sha256": "da14294c51648645d0f815e51d120d88d2282d57a3787348015cb3d0f86e024e",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "3a1b5dc9ef06fa02502dac64becc6012a7b3baa1be00e8d7db4df58b9bbad2a4",
+      "file_sha256": "f2477e43d791640caaa4aa812cc53ffd13e031a2a2b181ed48055ec6b7a8ef6c",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "53b6f3e1faa86388a13074b19ec0525691999f8e507373ce8266bb57703fda91",
+      "file_sha256": "8ed623052454c470bb7d323148b2352784eb09251b28317019be8b8f4329f307",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "f36f1fcb501d7ece563faed3b8aeaef26cd576d241ad625e6587959cfb37ec8d",
+      "file_sha256": "787572ebb787abd3676015b3c9bd92dd6a84fc6c8fe0999e16a40b732f4fff53",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "534ae393a0ad629e21e387894bbe35e16060fb3534dd10ea237c26c469fe7905",
+      "file_sha256": "187fb47d5dae7120c8e9e2655119747d9d7b15da56195741c754345cddd31cc4",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "4dae45b6867af877435ed01c65d1a5dded53bb9e408439c766779c37993f51e0",
+      "file_sha256": "976dbd5b814b7355c3351885217c0f7570ff7250e01cc27b432604ddff7aa4fd",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "7994280c562104b1c8513739b75b44fe39639d519f08f7d2549e1882893ec850",
+      "file_sha256": "1515387a5fbe6bdfc444b72529dc3b71dd9f254b1b9b8b90c5991cb3a515afed",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     }
   ],
@@ -1685,7 +1685,7 @@
   "pilot_files": [
     {
       "file": "01_pilot/test_extend_8s.txt",
-      "sha256": "677653f8979b54921178d2cb048b7fa5960196e3f5260366c0c17f8c817bc210",
+      "sha256": "4b4f15bfca146862050266cf4632930bf8d034d795b7b04df556004020171e41",
       "refs": [
         "C01",
         "C02",
@@ -1708,7 +1708,7 @@
     },
     {
       "file": "01_pilot/test_video_8s.txt",
-      "sha256": "578f73641c3c657a033a0a24c67aad68c4cf2bee6181119d683de52e6493f161",
+      "sha256": "5b45a977c182261d546e0e01d8bd3d32857f2b181a35d414959460d4d16d4e29",
       "reference_note": "Reference mentions are maintained centrally in reference_bindings. UNBOUND slots must be resolved before generation; verified Element mentions autoload in the creator's composer.",
       "refs": [
         "C01",
