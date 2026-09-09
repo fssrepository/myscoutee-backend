@@ -21,7 +21,7 @@ One row is one image request. The planned image model is **Nano Banana Pro in th
 | 3 | [W01 — city](../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
 | 4 | [T01 — single memory still](test_memory_image.txt) | C01 + C02 | `T01_SOHO_MEMORY.png` |
 
-For T01, replace its two aliases with actual image-reference tokens. A suitable existing Soho-memory source can replace this extra still when project provenance permits. Bind the T01 alias to that real image. Do not import T01 as another canonical character/location. C01/C02/W01 carry forward into the film; T01 is a pilot source and does not replace the final film's complete MW01 bank.
+For T01, the prompt now uses the displayed C01/C02 Element IDs verified in the guided session. The creator confirms that pasting these @ identifiers automatically loads their Elements and accepted images in the composer. Use that autoload behavior; no separate manual selection, duplicate upload or binding screenshot is required unless an actual missing/wrong-reference symptom appears. A suitable existing Soho-memory source can replace this extra still when project provenance permits. Bind the T01 alias to that real image. Do not import T01 as another canonical character/location. C01/C02/W01 carry forward into the film; T01 is a pilot source and does not replace the final film's complete MW01 bank.
 
 ## 3. Generate the 8-second video
 
@@ -37,6 +37,8 @@ Attach the actual C01, C02, W01 and T01 images. Replace every alias in [test_vid
 - Does the fast move land on a readable human moment, with cards above heads and no clinical reveal?
 
 At 480p, tiny text and background faces are not a final-quality test. Minor coherent irregularity is acceptable. If a central mechanism fails, name it before any further spending. An 8 s success does not prove full-block story density or 1080p quality.
+
+The accepted 2K W01 grid is a context reference for this mechanics test, not a literal opening frame. Each cell contains only a fraction of the sheet's total pixels; this pilot cannot establish final architectural sharpness. See [reference-detail guidance](../00_project/SETUP.md#reference-detail-and-contact-sheets) before preparing later nine-cell sheets or paid 1080p production.
 
 ## 5. Only after a usable visual test: 4-second extension and audio
 

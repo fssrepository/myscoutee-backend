@@ -1,6 +1,6 @@
 asset_id,output_name,project,element_id,generation_id_or_ui_link,media_url,actual_duration_s,resolution,voice_id,status,note
-C01,C01_PROTAGONIST.png,MyScoutee,char_mys_protagonist_s1_v1,,,,,,ELEMENT_CONFIRMED_IMAGE_EMPTY,"User screenshot 2026-09-09 13:52:52: Protagonist, Character, empty upload area. Element ID is the displayed UI identifier, not a verified backend UUID. No generated media accepted."
-C02,C02_SOHO_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
+C01,C01_PROTAGONIST.png,MyScoutee,char_mys_protagonist_s1_v1,,,,2K,,ACCEPTED,"2026-09-09 14:11:33 screenshot: accepted C01 image visible in MyScoutee / Character / Protagonist / v1 / char_mys_protagonist_s1_v1 editor. Correct attachment; awaiting Save confirmation. Retain image. Original generation history was shown in New project and remains unverified; no speculative regeneration ordered. Nano Banana Pro / 16:9 / 2K / Unlimited ON; original file and actual charge not inspected. Creator requested the next step after Save instruction; treated as implicit Save confirmation, not a new observation of persistence. Generation-history question remains open in FULL_BUDGET. 2026-09-09 14:19:35 supersedes pending/inferred Save: image persists on the correct named card in MyScoutee / Elements after editor closure. Original generation history remains unresolved in FULL_BUDGET."
+C02,C02_SOHO_WOMAN.png,MyScoutee,char_mys_soho-woman_s1_v1,,,,2K,,ACCEPTED,2026-09-09 14:17:50: usable C02 sheet in New project / Getting Started; Nano Banana Pro / 16:9 / 2K / Unlimited ON. 14:18:19: same image correctly attached in My elements / Character / Soho Woman / v1 / char_mys_soho-woman_s1_v1 / Scene 1 / apparent age 32-38. Visible description matches; off-screen fields not checked. Save pending; source launch route and MyScoutee generation history unresolved. 2026-09-09 14:19:35 supersedes pending/inferred Save: image persists on the correct named card in MyScoutee / Elements after editor closure. Original generation history remains unresolved in FULL_BUDGET.
 C03,C03_POLICEWOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C04,C04_APPOINTED_LAWYER.png,MyScoutee,,,,,,,NOT_CHECKED,
 C05,C05_FINAL_NURSE.png,MyScoutee,,,,,,,NOT_CHECKED,
@@ -39,7 +39,7 @@ MW06,MW06_HUMAN_COUNTERMEMORIES.png,MyScoutee,,,,,,,NOT_CHECKED,
 MWP01,MWP01_ROUTES_ROOMS_DOCUMENTS.png,MyScoutee,,,,,,,NOT_CHECKED,
 MWP02,MWP02_SYSTEM_TIME_REVERSALS.png,MyScoutee,,,,,,,NOT_CHECKED,
 HRW07,HRW07_CLINICAL_REALITY.png,MyScoutee,,,,,,,NOT_CHECKED,
-W01,W01_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
+W01,W01_MAIN_WORLD.png,MyScoutee,,,,,2K,,ACCEPTED,"Generated in MyScoutee / All assets, Nano Banana Pro / 16:9 / 2K / Unlimited ON; reviewed for pilot. 2026-09-09 14:27:01 screenshot: accepted W01 nine-cell city sheet is attached in the editor for Location / World 01 - The City Judges First - Soho... / v1 / Scene 1. Full visible Description matches the opening London-Budapest walk. Element ID begins loc_mys_world-01-the-city-judges-fi; the remaining ID and name suffix are clipped and must not be invented. Correct association verified; awaiting Save. Creator explicitly confirmed completion after Save instruction and requested the next step."
 MAP01,MAP01_WALK_PLAN.png,MyScoutee,,,,,,,NOT_CHECKED,optional planning only
 W02,W02_MAIN_WORLD.png,MyScoutee,,,,,,,NOT_CHECKED,
 MAP02,MAP02_WALK_PLAN.png,MyScoutee,,,,,,,NOT_CHECKED,optional planning only
@@ -74,3 +74,5 @@ V06,V06_CHAIN_TO_0300.mp4,MyScoutee,,,,,,,NOT_CHECKED,
 SB07,SB07_STORYBOARD.png,MyScoutee,,,,,,,NOT_CHECKED,
 A07,A07_NARRATION.wav,MyScoutee,,,,,,,NOT_CHECKED,
 V07,V07_MASTER_0320.mp4,MyScoutee,,,,,,,NOT_CHECKED,
+T01_IMAGE,T01_SOHO_MEMORY.png,MyScoutee,,,,,2K,,ACCEPTED,"2026-09-09 14:39:25 screenshot: single warm Soho sushi-restaurant frame in MyScoutee / All assets. Both referenced characters recognizable; man beside restroom doors, woman seated with clear face and small smile; background diners out of focus. Suitable for pilot memory motion, no grid. Retain as project asset, no new canonical Element. 14:33:10 confirms highlighted @ IDs and two loaded character references. Nano Banana Pro / 16:9 / 2K / one output / Unlimited ON; no account debit history inspected."
+T01_VIDEO,T01_CITY_8S_480P.mp4,MyScoutee,,,,,,,AWAITING_VIDEO_CONTROLS_AND_QUOTE,"Next: open Video in MyScoutee / All assets. Target Cinema Studio 4.0 / Seedance 2.5 / References / 8 seconds / 480p / 16:9 / audio ON / one output; C01, C02, W01 and T01 restaurant still. Actual video controls, reference tokens, quote and continuation/export checks pending. No video submitted. W01 is context only, never a grid start frame."

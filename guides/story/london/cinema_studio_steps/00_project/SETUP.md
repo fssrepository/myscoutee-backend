@@ -6,6 +6,10 @@ The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unl
 
 Later evidence, 2026-09-09 13:54:14: the shared Cinema Studio Home model menu visibly labels Nano Banana Pro UNLIMITED. Soul 2.0 is still selected and its Generate quote is 0.125; this is not the quote for a selected Nano Banana Pro job. Confirm the intended model and actual coverage inside MyScoutee before generation. The Home-page view alone does not establish festival-project association or the allowance's expiry.
 
+Confirmed UI configuration, 2026-09-09 14:07:12: Image / Nano Banana Pro / 16:9 / 2K / output control 1/4, with a separate green Unlimited switch and an UNLIMITED generation button. The creator has generated the C01 sheet. The model-menu badge alone does not activate this switch. Use one output for the next character sheets and explicitly include Unlimited ON in each chat configuration. Actual charged credits and expiry are not shown. This screenshot is in New project / Getting Started; its association with the MyScoutee festival project remains unresolved.
+
+Project-scoped controls confirmed, 2026-09-09 14:10:52: open the existing MyScoutee festival project and select All assets. The image composer appears at the bottom with Nano Banana Pro, 16:9, 2K, output control 1/4, and Unlimited ON. Use this observed route for subsequent project generations. Canvas and the Element metadata editor are not required to reach it. The original C01 image from New project remains a reference candidate; its history has not been shown inside MyScoutee.
+
 | Setting | Pilot | Final film |
 | --- | --- | --- |
 | Interface / model | Cinema Studio 4.0 / Seedance 2.5 | Same |
@@ -21,6 +25,16 @@ Later evidence, 2026-09-09 13:54:14: the shared Cinema Studio Home model menu vi
 For reference images, the intended model is **Nano Banana Pro during the stated seven-day unlimited window**, provided it is available inside this project, accepts the required reference set and the actual operation is covered. Do not run a model comparison campaign. Character sheets and 3×3 boards are 16:9 images; their resolution is separate from the 480p video setting. Keep them detailed enough for recognition. Use the existing Element's visible **Add element image** entry point for its matching accepted image, following the controls actually offered next. Do not create another Element for the same person or location. The screenshot's real Element names differ from the pack aliases; insert the actual token after selecting the correct rendered reference, never a guessed or truncated name.
 
 Drama is a suitable Director's Panel starting point. The overload comes from camera movement and architecture; the man is not constantly shouting. A tempo control may change cutting density, so do not automatically select Chaotic if that fragments the continuous walk. Specific camera actions are already in each video prompt.
+
+## Reference detail and contact sheets
+
+The original W01 source (canonical pack, line 3058 onward) already specifies a 3x3 contact sheet. A 16:9 sheet with a long edge around 1920-2048 pixels provides only about 640-683 by 360-384 pixels per cell, before gutters. A 3840x2160 sheet provides about 1280x720 per cell. These are geometric examples, not verified dimensions of the downloaded files. Contact sheets divide the available detail; do not describe a 2K nine-view sheet as nine 2K images.
+
+Use existing W01 as a context reference for the 480p motion/mechanics pilot, never as a literal multi-panel opening frame. References mode generates a new shot; native video resolution is a separate setting. This does not guarantee detailed architecture, readable signs, or preservation of every cell, and a successful 480p pilot does not establish final 1080p sharpness.
+
+For remaining nine-cell world, memory and storyboard sheets, prefer 4K only when the selected operation remains Unlimited. Keep 2K for character sheets and individual full-frame stills unless an actual detail problem justifies a change. The prompts' 1920x1080 examples describe proportions; the selected output resolution governs the rendered canvas. Before paid 1080p production, review whether the available references support the intended detail; use a full-frame view for an essential detail if needed, rather than relying on enlargement of one small grid cell. Do not order blanket regeneration of accepted assets. Any additional required reference task must be recorded in the step count before it is requested.
+
+The creator reports approximately 3-5 minutes per image generation. Treat this as observed session latency, not a provider guarantee or a reason to select a paid queue. Prepare the next prompt/settings while a job runs and retain the first usable result.
 
 ## Documented capabilities and uncertainty
 

@@ -6,7 +6,7 @@
   "source_lines": 6426,
   "source_words": 68782,
   "elements_source_sha256": "58a54931b408149522939cdeae80b82db5a33f051fccbc8f47a3e4402d7f84a4",
-  "note": "Source files unchanged. Active video/storyboard/world prompts include 2026-09-09 direction. Source line numbers and hashes identify the original fenced prompts; output hashes identify this edition. No generations or account access performed.",
+  "note": "Source files unchanged. Active video/storyboard/world prompts include 2026-09-09 direction. Source line numbers and hashes identify the original fenced prompts; output hashes identify this edition. No generations or account access performed by the assistant. Creator-run generations and acceptance are tracked in SESSION.md and the CSV ledgers.",
   "element_import_batches": {
     "00_pilot": [
       "C01",
@@ -1686,7 +1686,12 @@
     },
     {
       "file": "01_pilot/test_memory_image.txt",
-      "sha256": "de22c4b970979560d500af6bd48fb0a8f735daa1b73d965aa6b06d1ac722708c"
+      "sha256": "986206f07c8f5ee667870aabbfd832a64e5dc56e1a5e5dd1aca548f11731c68b",
+      "reference_elements": {
+        "C01": "char_mys_protagonist_s1_v1",
+        "C02": "char_mys_soho-woman_s1_v1"
+      },
+      "reference_note": "Displayed Element IDs verified from creator screenshots. Creator confirms that pasted @ identifiers automatically load the Elements and their images; no redundant manual selection or reference-binding screenshot required."
     },
     {
       "file": "01_pilot/test_narration.txt",
