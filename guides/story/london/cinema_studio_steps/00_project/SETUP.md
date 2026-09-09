@@ -2,6 +2,8 @@
 
 **Completion constraint:** the creator cannot perform local video editing, audio mixing or rendering. Each generated clip must arrive with its intended soundtrack, and the complete film must have a verified hosted assembly/export route within the existing budget. Do not assume a later desktop-editor repair. This clarifies the existing production requirement and adds no generation task.
 
+**Budget update:** 80 credits spent on tests and 720 maximum remaining, creator-reported. The former 1080p cost plan is superseded; see BUDGET.md before final production.
+
 Production plan; public documentation checked **2026-09-09**. The supplied screenshot from **2026-09-09 09:37:22** shows the existing project named **MyScoutee**, its Elements page, and visible imported entries displaying **Add element image**. This establishes existing metadata containers with no image shown on those visible entries; it does not establish the full Element count or off-screen media state. Continue in this project; do not create or import a duplicate because the old master used the name `AI Film Festival`.
 
 The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unlimited image offer. Use that as the intended image-production route, conditional on the actual selected operation being covered. The screenshot does not show plan terms or an active subscription; the live entitlement and expiry have not been verified. The screenshot's all-credits-used notice is a pre-purchase observation, not evidence that this film consumed 3000 credits.
@@ -32,7 +34,7 @@ Drama is a suitable Director's Panel starting point. The overload comes from cam
 
 The original W01 source (canonical pack, line 3058 onward) already specifies a 3x3 contact sheet. A 16:9 sheet with a long edge around 1920-2048 pixels provides only about 640-683 by 360-384 pixels per cell, before gutters. A 3840x2160 sheet provides about 1280x720 per cell. These are geometric examples, not verified dimensions of the downloaded files. Contact sheets divide the available detail; do not describe a 2K nine-view sheet as nine 2K images.
 
-**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target and its budget remain 1080p. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
+**1280x720 is 720p; 1920x1080 is 1080p.** The number refers to vertical pixel count, with `p` denoting progressive scan. The final video target remains 1080p, but its cost must now be verified against the reported 720-credit remaining cap. A 720-pixel-high reference cell does not force a 720p output, but missing source detail cannot be assumed to return faithfully: generated fine detail may be invented. A full 3840x2160 grid is therefore not equivalent to nine 1080p references.
 
 Use existing W01 as a context reference for the 480p motion/mechanics pilot, never as a literal multi-panel opening frame. References mode generates a new shot; native video resolution is a separate setting. This does not guarantee detailed architecture, readable signs, or preservation of every cell, and a successful 480p pilot does not establish final 1080p sharpness.
 

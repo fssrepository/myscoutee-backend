@@ -25,7 +25,7 @@ DO NOT show the London–Budapest present city.
 DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
 DO NOT add rain/reflection layers from the present city.
 DO NOT add score cards.
-Later STORYBOARD / VIDEO generation animates the selected scene and projects its moving image ONTO the assigned existing city pane. This source sheet supplies clinical reality directly. In Block 07 only, tiny projected fragments precede the final full-room reveal and hard cut to this real room. No cards exist here.
+This source sheet supplies clinical reality directly. In Block 07 only, tiny light, coat, leg and sheet fragments intrude into embodied remembered rooms before the final dark-glass reality threshold and hard cut to this real room. No cards exist here.
 
 VISUAL LANGUAGE:
 Photorealistic live-action European feature-film realism.
@@ -65,7 +65,7 @@ Cell 5 — FINAL NURSE in the room preparing routine non-graphic clinical equipm
 
 Cell 6 — Nurse close/medium reference with the small everyday human smile that can echo earlier institutional smiles.
 
-Cell 7 — Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a pre-reveal projection on city glass without exposing the full room.
+Cell 7 — Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a brief embodied pre-reveal intrusion without exposing the full room.
 
 Cell 8 — Fragment composition combining a small portion of elevated leg, white sheet and metal restraint, again suitable for a sub-second cropped pre-reveal glimpse while still originating from this real room.
 

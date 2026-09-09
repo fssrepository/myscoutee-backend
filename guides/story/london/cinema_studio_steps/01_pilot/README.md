@@ -1,8 +1,8 @@
 # First test — 8 seconds, 480p
 
-**Purpose:** test continuous forward camera movement, physically transforming architecture, a living city and moving memory inside glass in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
+**Purpose:** test continuous forward camera movement, physically transforming architecture, a living city and an embodied memory growing from London materials in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
 
-Budget: [at most 100 credits](../00_project/BUDGET.md) for the whole pilot, including paid preparation. This is included in the complete-film 2200-credit working ceiling, not added on top; protect the other 800 credits and the cost of all unfinished production. One opening test, then one short continuation only if usable. No automatic rerolls.
+Budget: **80 credits already spent; 720 credits maximum available from now for all remaining work**, creator-reported. The earlier 100-credit pilot ceiling leaves only 20 for remaining pilot checks unless explicitly reallocated within 720. No automatic retry. See [current budget](../00_project/BUDGET.md).
 
 ## 1. Existing project and references
 
@@ -48,11 +48,11 @@ Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, 
 
 ## 4. Watch once and check the visual and audio mechanisms
 
-- Does the same protagonist walk at human speed while one connected camera path follows his gaze and keeps the transformation visible?
+- Does the same protagonist walk at human speed while one continuous high-to-low-to-wide camera flight reveals both street sides and keeps the transformation visible?
 - Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
-- Does the whole restaurant emerge directly as a life-size three-dimensional room with solid furniture, both remembered people, contact shadows and a recognisable turning/smiling woman? Keep the same street threshold visible; a full-screen cutaway or still photograph is not this spatial emergence.
-- After the memory, does his gaze open the view across the same road, showing a substantial black taxi and yellow tram within a complete near-to-distant city whose architecture changes across multiple connected depths?
-- Are complete above-head cards visible in the opening and final wide view, with the human memory gesture readable in between and no clinical reveal?
+- Does the whole restaurant emerge directly as a life-size three-dimensional room with solid furniture, both remembered people, contact shadows and a recognisable turning/smiling woman? Keep the continuous kerb and walking path visible; a full-screen cutaway or still photograph is not this spatial emergence.
+- After the memory, does the outward rising camera arc open the view across the same road, showing a substantial black taxi and yellow tram within a complete near-to-distant city whose architecture changes across multiple connected depths?
+- Are complete above-head numerical rating cards with readable decimal values visible in the opening and final wide view, with the human memory gesture readable in between and no clinical reveal?
 
 Listen for a clearly audible, hummable fiddle-led Hungarian folk-rooted theme with acoustic tekerő buzz and short clarinet answers. Check distinct stone grinding, iron creak and wood/glass events against the visible movements. Give the smile a brief quieter pocket; the whole soundtrack must not collapse into generic ambience.
 

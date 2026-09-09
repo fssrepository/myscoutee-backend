@@ -4,7 +4,7 @@ Sources: the [v2.2.57 master](../../promt_pack/myscoutee_canonical_prompt_pack.m
 
 ## Findings and repairs
 
-The London–Budapest walk, contextual memories, above-head judgment cards and ordinary clinical ending form the story system. The current creative revision permits projected memories, spatial emergence and material transformation: memories are no longer universally confined to glass. The practical problem is not simply the earlier model: the master accumulated a story bible, operator rules, automation history and generation instructions in one document.
+The London–Budapest walk, contextual memories, above-head judgment cards and ordinary clinical ending form the story system. The current creative revision makes remembered encounters embodied places within continuously transforming London; only the final clinical reality threshold retains its scripted reflection. Readable decimal rating cards replace vague grey panels. The practical problem is not simply the earlier model: the master accumulated a story bible, operator rules, automation history and generation instructions in one document.
 
 | Finding | Treatment in this edition |
 | --- | --- |

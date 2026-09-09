@@ -63,5 +63,5 @@ Type: Prop
 Canonical key: SCORE_CARDS
 Primary scene: Scene 01
 Also referenced by: Scenes 01–07.
-Description: Translucent score cards anchored above each person's head with a visible gap from the hairline; direct gaze causes only a modest increase in internal fill/light while position, size and baseline visibility remain stable.
+Description: Numerical rating cards anchored above each current person's head with a visible air gap. Large crisp decimal ratings such as 6.2 or 9.2 dominate a lightly translucent warm-white face with dark numerals; never blank grey tiles or progress bars alone. Direct gaze modestly increases only the viewed card's internal fill/light while its number stays readable and its person association remains stable.
 Generation source: score-card system specification in the canonical prompt pack.

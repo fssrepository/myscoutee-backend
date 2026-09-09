@@ -4,7 +4,7 @@
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.
 
-**Complete-film working ceiling: 2200 credits; protected reserve: 800.** Include all required finishing work before spending, not just the next clip. There is no additional funding if the original 3000 credits run out. See the [budget](00_project/BUDGET.md).
+**Current remaining cap: 720 credits; 80 already spent on tests (creator-reported).** This supersedes the old 2200/800 allocation. The full 1080p route still needs actual prices within that cap. See the [budget](00_project/BUDGET.md).
 
 ## Order of work
 
