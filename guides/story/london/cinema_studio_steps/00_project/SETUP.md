@@ -4,6 +4,8 @@ Production plan; public documentation checked **2026-09-09**. The supplied scree
 
 The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unlimited image offer. Use that as the intended image-production route, conditional on the actual selected operation being covered. The screenshot does not show plan terms or an active subscription; the live entitlement and expiry have not been verified. The screenshot's all-credits-used notice is a pre-purchase observation, not evidence that this film consumed 3000 credits.
 
+Later evidence, 2026-09-09 13:54:14: the shared Cinema Studio Home model menu visibly labels Nano Banana Pro UNLIMITED. Soul 2.0 is still selected and its Generate quote is 0.125; this is not the quote for a selected Nano Banana Pro job. Confirm the intended model and actual coverage inside MyScoutee before generation. The Home-page view alone does not establish festival-project association or the allowance's expiry.
+
 | Setting | Pilot | Final film |
 | --- | --- | --- |
 | Interface / model | Cinema Studio 4.0 / Seedance 2.5 | Same |

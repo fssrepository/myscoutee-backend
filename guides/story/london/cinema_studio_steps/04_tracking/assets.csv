@@ -1,5 +1,5 @@
 asset_id,output_name,project,element_id,generation_id_or_ui_link,media_url,actual_duration_s,resolution,voice_id,status,note
-C01,C01_PROTAGONIST.png,MyScoutee,,,,,,,NOT_CHECKED,
+C01,C01_PROTAGONIST.png,MyScoutee,char_mys_protagonist_s1_v1,,,,,,ELEMENT_CONFIRMED_IMAGE_EMPTY,"User screenshot 2026-09-09 13:52:52: Protagonist, Character, empty upload area. Element ID is the displayed UI identifier, not a verified backend UUID. No generated media accepted."
 C02,C02_SOHO_WOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C03,C03_POLICEWOMAN.png,MyScoutee,,,,,,,NOT_CHECKED,
 C04,C04_APPOINTED_LAWYER.png,MyScoutee,,,,,,,NOT_CHECKED,
