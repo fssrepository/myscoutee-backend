@@ -36,11 +36,11 @@ Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
 The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
-London provides the street/river/bridge geometry.
+London is the visual starting point. Real-world street/river/bridge distances and landmark order are not binding: compress, bend and reorder their masses into a continuous dream walk.
 Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
-LOCATION-SPECIFIC GEOMETRY:
+SUGGESTED LOCATION ASSOCIATIONS — NOT A REQUIRED REAL-WORLD ITINERARY:
 Continue directly from WORLD 03.
 Build a recognizable simplified Fleet Street corridor, Temple-edge public passages/open courtyards, Royal Courts-side exterior street geometry and then Ludgate / Blackfriars approach.
 Use four Hungarian replacement masses: Budapest Palace of Justice / former Kúria-style block, Hungarian National Museum-style classical block, a second Palace-of-Justice-derived formal block and a Pesti Vigadó-inspired cultural block toward Blackfriars.
@@ -52,3 +52,7 @@ Exactly one simple block-model location plan.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.
+
+DREAM-MAP FUNCTION:
+This is an optional proposal for local camera continuity, not a locked real map or mandatory sequence. Prioritise recognisable landmark massing and a connected pedestrian line. The film can depart from this placement through visible spatial transformation; it cannot teleport by slideshow cuts.
+Recognition targets: The Royal Courts of Justice read through their Gothic pointed entrances and clustered towers; a separate impossible London courtyard exposes Buckingham Palace's broad symmetrical frontage and forecourt. The Hungarian National Museum's wide columned portico and pediment and the Palace of Justice's monumental facade emerge in this institutional dream. Their recognisability is architectural, not an assertion that the fictional procedural events occurred in these actual institutions.

@@ -36,11 +36,11 @@ Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
 The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
-London provides the street/river/bridge geometry.
+London is the visual starting point. Real-world street/river/bridge distances and landmark order are not binding: compress, bend and reorder their masses into a continuous dream walk.
 Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
-LOCATION-SPECIFIC GEOMETRY:
+SUGGESTED LOCATION ASSOCIATIONS — NOT A REQUIRED REAL-WORLD ITINERARY:
 Continue directly from WORLD 02.
 Build simplified Aldwych / Kingsway and Holborn street blocks, then a sequence of professional/commercial façades leading toward Fleet Street edge.
 Keep one continuous exterior pavement path.
@@ -53,3 +53,7 @@ Exactly one simple block-model location plan.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.
+
+DREAM-MAP FUNCTION:
+This is an optional proposal for local camera continuity, not a locked real map or mandatory sequence. Prioritise recognisable landmark massing and a connected pedestrian line. The film can depart from this placement through visible spatial transformation; it cannot teleport by slideshow cuts.
+Recognition targets: London's Gherkin is unmistakable through its rounded tapering tower and diagonal glass pattern; the Shard appears in a separate sightline as a pointed glass mass. New York Palace's ornate corner frontage and Lechner Postal Savings Bank's patterned roof emerge from the work-city geometry. Their whole silhouettes and roofs matter, not only decorative stone pasted over anonymous offices.

@@ -36,11 +36,11 @@ Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
 The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
-London provides the street/river/bridge geometry.
+London is the visual starting point. Real-world street/river/bridge distances and landmark order are not binding: compress, bend and reorder their masses into a continuous dream walk.
 Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
-LOCATION-SPECIFIC GEOMETRY:
+SUGGESTED LOCATION ASSOCIATIONS — NOT A REQUIRED REAL-WORLD ITINERARY:
 Continue directly from WORLD 05.
 Build a simplified South Bank westbound river walk, Waterloo cultural blocks, London Eye zone and Westminster Bridge approach.
 Keep the London Eye as a small recognizable massing landmark.
@@ -54,3 +54,7 @@ Exactly one simple block-model location plan.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.
+
+DREAM-MAP FUNCTION:
+This is an optional proposal for local camera continuity, not a locked real map or mandatory sequence. Prioritise recognisable landmark massing and a connected pedestrian line. The film can depart from this placement through visible spatial transformation; it cannot teleport by slideshow cuts.
+Recognition targets: The London Eye has its complete circular wheel and visible capsules above the current walk. Great Market Hall shows its long brick hall and patterned pitched roof before opening into the curved glass Bálna volume. Keep Hungarian Parliament's dome and long facade clear across another depth. Tower Bridge or the inherited Chain Bridge remains in a distinct river sightline, with the six-person memory receiving a clear foreground interval.

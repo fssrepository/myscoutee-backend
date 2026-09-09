@@ -36,11 +36,11 @@ Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
 The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
-London provides the street/river/bridge geometry.
+London is the visual starting point. Real-world street/river/bridge distances and landmark order are not binding: compress, bend and reorder their masses into a continuous dream walk.
 Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
-LOCATION-SPECIFIC GEOMETRY:
+SUGGESTED LOCATION ASSOCIATIONS — NOT A REQUIRED REAL-WORLD ITINERARY:
 Continue directly from the previous end point.
 Build simplified Trafalgar / Charing Cross geometry, then a long Strand corridor, Aldwych / Somerset House blocks and the Temple / Embankment entrance area.
 Use four Hungarian replacement masses recognizable by silhouette only: Nyugati Railway Station iron/glass station massing inside Charing Cross, Hungarian State Opera massing on an Aldwych theatre block, Great Market Hall roof/iron massing on a Strand corner block, and a Budapest M4-style deep entrance volume visible only at the Underground entrance footprint.
@@ -52,3 +52,7 @@ Exactly one simple block-model location plan.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.
+
+DREAM-MAP FUNCTION:
+This is an optional proposal for local camera continuity, not a locked real map or mandatory sequence. Prioritise recognisable landmark massing and a connected pedestrian line. The film can depart from this placement through visible spatial transformation; it cannot teleport by slideshow cuts.
+Recognition targets: Trafalgar Square's Nelson's Column and the National Gallery frontage give way to a clearly recognisable Budapest Opera frontage and Nyugati station hall. Show Nyugati's large glazed end and iron roof as a whole hall; show the Opera's complete arcaded classical front. Heroes' Square can open beyond the travel memories: its tall central column and sweeping paired colonnades are visible together, distinct from Nelson's single column.

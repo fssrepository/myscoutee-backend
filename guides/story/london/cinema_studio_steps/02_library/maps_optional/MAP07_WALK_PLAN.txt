@@ -36,11 +36,11 @@ Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
 The recognizable geometry and building silhouettes carry the information.
 
 CITY LOGIC:
-London provides the street/river/bridge geometry.
+London is the visual starting point. Real-world street/river/bridge distances and landmark order are not binding: compress, bend and reorder their masses into a continuous dream walk.
 Budapest/Hungary appears as target transformation masses and transit infrastructure inside London geometry. These silhouettes locate where a London building can become its remembered form; they do not mean it must already exist at the start of a video.
 Keep the model simple: block massing + streets + one walk line.
 
-LOCATION-SPECIFIC GEOMETRY:
+SUGGESTED LOCATION ASSOCIATIONS — NOT A REQUIRED REAL-WORLD ITINERARY:
 Continue directly from WORLD 06.
 Build simplified Westminster Bridge crossing, Parliament Square / Whitehall public streets, a quieter final civic-commercial street and one final hybrid block with a broad street-facing entrance.
 Use distant/simplified Budapest identity anchors: Hungarian Parliament on a separated river sightline, St Stephen's Basilica dome/towers on a distant street axis, one State-Opera/Academy-style Pest block, and the final Gresham/Pest civic-stone block.
@@ -54,3 +54,7 @@ Exactly one simple block-model location plan.
 0 px outer margin.
 One continuous exterior walking line.
 No legend, captions, camera graphics or Google-Maps-style detail.
+
+DREAM-MAP FUNCTION:
+This is an optional proposal for local camera continuity, not a locked real map or mandatory sequence. Prioritise recognisable landmark massing and a connected pedestrian line. The film can depart from this placement through visible spatial transformation; it cannot teleport by slideshow cuts.
+Recognition targets: Before the final quiet threshold, show Elizabeth Tower / Big Ben with its clock faces and pointed crown attached to the long Palace of Westminster frontage; Westminster Abbey's paired west towers are a separate landmark. Across another opening the Hungarian Parliament's central dome and long facade remain recognisable, with St Stephen's Basilica echoing farther away. Stop new large transformations as the final clinical reveal approaches; do not carry landmarks into clinical reality.

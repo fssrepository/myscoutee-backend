@@ -30,7 +30,7 @@ Interior depth may be visible THROUGH real street-facing glass, but only as arch
 No literal memory event is visible in this WORLD asset.
 
 CITY FUSION RULE:
-London must remain immediately recognizable through street geometry, road proportions, junctions, pavements, red double-decker buses, black taxis, London street furniture and landmark relationships.
+London remains recognisable through named landmarks, street details, red double-decker buses and black taxis. Actual landmark distances, street order and map footprints may be rearranged into this continuous dream geography.
 Budapest/Hungary must be equally unmistakable through EXPLICIT named architectural anchors, yellow Budapest trams, tram/trolley wires, Hungarian signage and selected Budapest buildings physically replacing or fusing with London blocks.
 Do not reduce Budapest to generic Central-European façades.
 Do not separate London and Budapest into different districts.
@@ -67,7 +67,7 @@ Cell 1 — South Bank westbound public promenade. London river geometry and cult
 
 Cell 2 — Waterloo / South Bank cultural zone. One substantial building uses BUDAPEST NATIONAL THEATRE-inspired architecture integrated into London public-space geometry. Multiple broad panes, restaurants and shelters. Yellow tram, black taxi and red bus appear in layered depths.
 
-Cell 3 — London Eye-side public city. The London Eye is clearly recognizable at one depth while HUNGARIAN PARLIAMENT remains visible across the river at another, separated by bridge/building occlusion. No landmark pile-up. 35–50 pedestrians.
+Cell 3 — London Eye-side public city. The London Eye is clearly recognizable at one depth while HUNGARIAN PARLIAMENT remains visible across the river at another, separated by bridge/building occlusion. Separate landmark silhouettes in depth and framing so each is recognisable, while allowing impossible real-world adjacency. 35–50 pedestrians.
 
 Cell 4 — Westminster Bridge approach. Preserve unmistakable London bridge approach geometry but fuse selected SZÉCHENYI CHAIN BRIDGE stone/iron/lion detail into the structure. A yellow Budapest tram crosses or parallels the bridge approach in normal city operation; red bus and black taxi remain separate.
 
@@ -95,3 +95,11 @@ TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
 London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
 Market Hall ribs lift over the occupied memories; their roof rolls into the Bálna form while neighbouring windows bend into an upper street. Pause the largest change around the six-person gesture, maintaining smaller motion nearby.
 In one of the broad environment cells, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
+
+DREAM GEOGRAPHY AND LANDMARK RECOGNITION
+London is the present setting, but real geographic distance and the old map order are not binding. St Paul's can stand beyond a Soho corner, Tower Bridge can approach the next square, and a London frontage can become a Budapest landmark. Build these impossible adjacencies as connected inhabited space that the camera reaches continuously. Show intervening paving, changed perspective and material movement; do not use cuts or a full-screen replacement to relocate the walker. Map sheets are loose composition/association plans, not a compulsory itinerary.
+A famous building must be recognisable by its full characteristic silhouette AND several distinctive architectural features. Give it a clear three-quarter or frontal view, substantial screen area, useful focus and a readable interval before or after transformation. A generic dome, Gothic texture, skyline speck or sign spelling the name is insufficient. During a transformation, pass through traceable intermediate shapes, then resolve the named destination building clearly before the next large change obscures it. Distribute landmarks along the walk and across near/middle/distant views; never flatten them into a pasted skyline collage.
+
+RECOGNITION TARGETS ACROSS THE ASSIGNED VIEWS
+The London Eye has its complete circular wheel and visible capsules above the current walk. Great Market Hall shows its long brick hall and patterned pitched roof before opening into the curved glass Bálna volume. Keep Hungarian Parliament's dome and long facade clear across another depth. Tower Bridge or the inherited Chain Bridge remains in a distinct river sightline, with the six-person memory receiving a clear foreground interval.
+Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep the existing nine-cell count. These are reference views; later video supplies movement and continuity.

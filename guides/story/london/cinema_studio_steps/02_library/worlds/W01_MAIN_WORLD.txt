@@ -30,7 +30,7 @@ Interior depth may be visible THROUGH real street-facing glass, but only as arch
 No literal memory event is visible in this WORLD asset.
 
 CITY FUSION RULE:
-London must remain immediately recognizable through street geometry, road proportions, junctions, pavements, red double-decker buses, black taxis, London street furniture and landmark relationships.
+London remains recognisable through named landmarks, street details, red double-decker buses and black taxis. Actual landmark distances, street order and map footprints may be rearranged into this continuous dream geography.
 Budapest/Hungary must be equally unmistakable through EXPLICIT named architectural anchors, yellow Budapest trams, tram/trolley wires, Hungarian signage and selected Budapest buildings physically replacing or fusing with London blocks.
 Do not reduce Budapest to generic Central-European façades.
 Do not separate London and Budapest into different districts.
@@ -63,7 +63,7 @@ Cell 8 = moving transit-window technical detail.
 Cell 9 = fused London–Budapest architecture + in-world signage technical detail.
 
 WORLD-SPECIFIC CONTENT:
-Cell 1 — Soho / Brewer Street / Old Compton Street after rain. Narrow recognizable London street geometry, pubs, cafés, bookshop and theatre frontage. At the end of the street axis, capture a London commercial building partway into ST STEPHEN'S BASILICA: an ordinary lower facade remains while a drum and copper dome rise above it and outer bays lengthen into bell towers. This reference describes the target transformation; the video starts from its London form. Visible mixed signage includes KÖNYV and KÁVÉ beside normal English shop signs. 10–20 anonymous pedestrians.
+Cell 1 — Soho / Brewer Street / Old Compton Street after rain. Narrow recognizable London street geometry, pubs, cafés, bookshop and theatre frontage. At the end of the street axis, capture ST PAUL'S CATHEDRAL partway into ST STEPHEN'S BASILICA: the existing ribbed dome, west towers and classical entrance visibly reshape into the destination's dome curvature, twin bell towers and columned pedimented facade. This reference describes the target transformation; the video starts from its London form. Visible mixed signage includes KÖNYV and KÁVÉ beside normal English shop signs. 10–20 anonymous pedestrians.
 
 Cell 2 — Same Soho world from another angle. British pub and restaurant ground floors beneath ornate Pest limestone upper floors and balconies. A black taxi is close enough for a broad wet side window; a yellow Budapest tram appears deeper in the street under trolley/tram wires. One small Hungarian BEJÁRAT sign is naturally integrated.
 
@@ -75,7 +75,7 @@ Cell 5 — Coventry Street / Leicester Square cinema-theatre district. Large cin
 
 Cell 6 — Leicester / Haymarket-side public space. Keep the West End geometry, but include one KOSSUTH-STYLE HUNGARIAN CIVIC MONUMENT as a temporarily emerged memory form inside the London public space, clearly separate from Eros. Continue red bus / yellow tram / black taxi traces and reflective public glazing.
 
-Cell 7 — Close detail of a very large cinema or shopfront pane from this exact world: fine rain droplets, cool city reflection, warm lobby depth, fragments of red bus / yellow tram / black taxi reflected simultaneously. No memory content.
+Cell 7 — Clear exterior three-quarter view of ST PAUL'S CATHEDRAL as the untransformed London starting landmark. Show its full ribbed dome and drum, paired west towers and columned west front with enough surrounding space to identify the complete building. Sharp architectural detail, no morphing in this cell. This is the identity reference for the starting cathedral, not an extra video shot.
 
 Cell 8 — Close transit detail: broad red double-decker side windows, broad yellow Budapest tram side windows and black taxi glass all readable; wet rails and London road markings visible.
 
@@ -93,5 +93,13 @@ Budapest must be specifically recognizable through the named anchors above, not 
 
 TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
 London supplies the route and transport geometry. Named Hungarian buildings are transformation targets and inherited dream states; these views are spatial references, not a timeline of cuts. Keep all nine assigned locations and render sharp, solid intermediate geometry with moving parts shown in one captured position.
-A complete Piccadilly upper room hinges outward above the pavement; the adjacent window band bends upward while its entrance opens into a deep arcade. The original London roof along the Soho axis becomes the Basilica, not a permanently pre-existing landmark.
+St Paul's can occupy the next sightline despite its real distance from Soho. A complete Piccadilly upper room hinges outward above the pavement; the adjacent window band bends upward while its entrance opens into a deep arcade. The recognisable St Paul's Cathedral becomes the recognisable St Stephen's Basilica.
 In one of the broad environment cells, capture this block's impossible structure at a visibly intermediate stage while keeping the adjacent route clear. Preserve coherent contact shadows, material texture and perspective; avoid motion blur or double exposure. Leave open depth beside the route for entire remembered rooms and readable current pedestrians. Memory people and narrative encounters belong to later film generation, not this source sheet.
+
+DREAM GEOGRAPHY AND LANDMARK RECOGNITION
+London is the present setting, but real geographic distance and the old map order are not binding. St Paul's can stand beyond a Soho corner, Tower Bridge can approach the next square, and a London frontage can become a Budapest landmark. Build these impossible adjacencies as connected inhabited space that the camera reaches continuously. Show intervening paving, changed perspective and material movement; do not use cuts or a full-screen replacement to relocate the walker. Map sheets are loose composition/association plans, not a compulsory itinerary.
+A famous building must be recognisable by its full characteristic silhouette AND several distinctive architectural features. Give it a clear three-quarter or frontal view, substantial screen area, useful focus and a readable interval before or after transformation. A generic dome, Gothic texture, skyline speck or sign spelling the name is insufficient. During a transformation, pass through traceable intermediate shapes, then resolve the named destination building clearly before the next large change obscures it. Distribute landmarks along the walk and across near/middle/distant views; never flatten them into a pasted skyline collage.
+
+RECOGNITION TARGETS ACROSS THE ASSIGNED VIEWS
+St Paul's Cathedral: great ribbed dome on its drum, long classical body and paired west towers. Destination St Stephen's Basilica: its distinct broad dome, two symmetrical bell towers and columned entrance with triangular pediment, matched as a complete facade to the supplied Basilica reference. Piccadilly's curved frontage and Eros establish the nearby West End; Nelson's Column enters a later open sightline. St Paul's and the Basilica must read as two specific buildings, not one generic cathedral.
+Use broad environment cells for whole landmark silhouettes and architectural detail cells for distinctive features. Keep the existing nine-cell count. These are reference views; later video supplies movement and continuity.
