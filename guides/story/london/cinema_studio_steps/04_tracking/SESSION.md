@@ -6,6 +6,7 @@ Pilot: **step 6 / 8**. T01_IMAGE is visually accepted from the 14:39:25 result i
 
 ## Interaction contract
 
+- The creator cannot edit, mix or render locally. Generate narration in Higgsfield first and use it as a video-generation input; require combined sound in the returned clip. The existing short extension must prove this route, and full hosted assembly/export must be verified before committing the full production budget. No local-editor fallback or extra generation job is assumed.
 - Give one concrete operator step at a time in Hungarian chat; all repository text remains English.
 - Keep tracking brief: accepted assets, actual credit charges/quotes and the next action. Do not append a click-by-click narrative. The creator requires copy-ready image dependencies as real autoloading @ references, including W01 and the T01 memory image; obtain missing actual UI IDs before claiming the prompt is ready.
 - The creator confirms that pasted @ Element identifiers automatically load the corresponding Elements in the composer. Treat this as established operator-reported behavior: use verified full IDs in copy-ready prompts and do not ask for redundant manual reference selection, duplicate uploads or screenshots solely to prove autoload. Revisit binding only if a specific missing/wrong-reference symptom appears. Continue checking image-to-Element mapping whenever the creator supplies an Element screenshot.

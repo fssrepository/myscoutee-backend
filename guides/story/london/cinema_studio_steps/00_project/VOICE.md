@@ -2,6 +2,14 @@
 
 The seven `narration.txt` files preserve the master's **exact wording**, including the AI-survival acknowledgement in A04. They contain spoken words only. Never paste voice instructions into the TTS text field.
 
+## Delivery without local editing
+
+The creator cannot edit or render the film locally. The planned route generates each narration in Higgsfield Audio first, then supplies that accepted audio to Cinema Studio before video generation. A01–A07 and TA01 are generation inputs, not instructions to lay WAV files under silent footage in a desktop editor. The returned video must already contain the inner monologue, native music, ambience and effects.
+
+Cinema Studio documents native speech, music and effects in the video pass, and Higgsfield documents generating speech first and using it as a Cinema Studio audio reference. These support the planned route, but do not guarantee verbatim speech, unchanged voice or a correct mix in our particular shot. [Cinema Studio help](https://higgsfield.ai/creator-hub/help-center/tools/how-do-i-use-cinema-studio), [Higgsfield Audio workflow](https://higgsfield.ai/blog/higgsfield-audio)
+
+The existing 4-second pilot extension must demonstrate the combined result before full-film production. Keep the spoken line intelligible, preserve the music across the seam and prevent visible lip-sync. If the voice is missing or materially wrong, the narration path has not passed; do not proceed on an assumption that the creator can repair it locally. Native assembly and export of the complete 3:20 film remain a separate requirement in [SETUP.md](SETUP.md#continuation-and-complete-export).
+
 Use Higgsfield Audio / Seed Audio 1.0 if available for the project. Select one English-speaking adult male voice: approximately forty, low-to-mid register, intelligent, intimate, slightly tired and restrained; at most a light Central-European accent. Record the actual voice ID or preset in the [asset registry](../04_tracking/assets.csv) and retain it. Do not browse new voices per block.
 
 ## The protagonist's inner voice

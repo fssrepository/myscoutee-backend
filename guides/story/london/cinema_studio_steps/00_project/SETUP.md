@@ -1,5 +1,7 @@
 # Setup and checks before generation
 
+**Completion constraint:** the creator cannot perform local video editing, audio mixing or rendering. Each generated clip must arrive with its intended soundtrack, and the complete film must have a verified hosted assembly/export route within the existing budget. Do not assume a later desktop-editor repair. This clarifies the existing production requirement and adds no generation task.
+
 Production plan; public documentation checked **2026-09-09**. The supplied screenshot from **2026-09-09 09:37:22** shows the existing project named **MyScoutee**, its Elements page, and visible imported entries displaying **Add element image**. This establishes existing metadata containers with no image shown on those visible entries; it does not establish the full Element count or off-screen media state. Continue in this project; do not create or import a duplicate because the old master used the name `AI Film Festival`.
 
 The creator plans one month of Ultra and reports a seven-day Nano Banana Pro unlimited image offer. Use that as the intended image-production route, conditional on the actual selected operation being covered. The screenshot does not show plan terms or an active subscription; the live entitlement and expiry have not been verified. The screenshot's all-credits-used notice is a pre-purchase observation, not evidence that this film consumed 3000 credits.
@@ -47,7 +49,11 @@ If 8 s or 4 s is unavailable, adjust the pilot's timed sections to the nearest a
 
 **Narration:** an audio reference may condition generation rather than mix the original WAV unchanged. Compare the short source recording with the extension output. If it is re-voiced, changed or omitted, the exact-narration route remains unproven. Repeated full-block generations are not a remedy for an unsupported input contract.
 
-**Continuation and complete export:** before the pilot, inspect whether Extend accepts the source video together with new image and audio references, and identify the native complete-export route. The 8+4 s test checks a short seam. After V01→V02, separately verify continuation beyond 60 s while retaining prior picture and sound. A separate continuation segment does not prove the old assumption that V07 will automatically contain a 3:20 master.
+The narration is generated first in Higgsfield Audio and provided as an input to video generation. The finished clip must contain speech, music and effects together; no local soundtrack assembly is planned. The provider documents this audio-first reference workflow, but our actual combined output still needs the planned short extension check. [Higgsfield Audio](https://higgsfield.ai/blog/higgsfield-audio)
+
+### Continuation and complete export
+
+Before the pilot, inspect whether Extend accepts the source video together with new image and audio references, and identify the native complete-export route. The 8+4 s test checks a short seam. After V01→V02, separately verify continuation beyond 60 s while retaining prior picture and sound. A separate continuation segment does not prove the old assumption that V07 will automatically contain a 3:20 master. Having several clips with sound is not proof that the full film can be assembled and exported without local editing. Resolve the hosted delivery path before committing the full production budget.
 
 This edition retains the Higgsfield-native completion goal. If the native route cannot deliver it, record the specific limitation before paying for more clips. Another assembly method is a separate production decision, not a hidden step here.
 
