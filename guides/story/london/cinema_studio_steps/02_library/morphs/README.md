@@ -1,19 +1,43 @@
-# Morph reference sheets — one image, four states
+# Morph sheets — 22 distinct four-state studies
 
-Each `.txt` file is a complete Higgsfield image prompt. Render one 16:9 sheet at 4K with four equal 2×2 cells: source, early material change, advanced material change and destination. This is one output image, not four image jobs or four video shots. The output's actual motion remains a video-test criterion.
+Every linked TXT is one complete Higgsfield image prompt: 4K 3840×2160, 16:9, four edge-to-edge 1920×1080 cells, one image output. Each sheet contains the source, two visibly unfinished material states and the destination. The same comparison camera exposes actual shape changes. These are prepared prompts; revised/new outputs have not been accepted.
 
-| Prompt | Current use | Inputs / state |
+| Key / prompt | Four-state geometry / use | Production block |
 | --- | --- | --- |
-| [MR001 cathedral morph](MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt) | First 8-second test; then production Block 01 | Existing R011 London source and R006 accepted Basilica. Both exact Element IDs are now bound. Render is pending. |
-| [R008 café morph](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt) | First test and production's same restaurant | Existing accepted restaurant and London café materials. This new 2×2 prompt supersedes the earlier three-view prompt; the previously generated three-view image has not changed. |
+| [MR001](MR001_ST_PAULS_TO_ST_STEPHENS_2X2.txt) | St Paul’s → interrupted portico/arch reconstruction → unfinished Basilica massing → exact Basilica | 01 |
+| [MR002](MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt) | Shallow relief → projecting bust on block → half-released limbs with stone webs → full supporting sculpture | 01 |
+| [MR003](MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt) | Rectangular bay → half-stepped arch → full arch with unfinished capitals → complete carved bay | 01 |
+| [MR004](MR004_WINDOW_GLASS_TO_PENDANT_SHADE_2X2.txt) | Flat notched glass → concave shard → open-seam shade → complete shade | 01 |
+| [MR005](MR005_BRICK_COURSES_TO_CARVED_ARCH_2X2.txt) | Rectangular brick head → stepped wedge head → unfinished arch → carved stone arch | 01 |
+| [MR006](MR006_STONE_THRESHOLD_TO_SUPPORTED_TIMBER_FLOOR_2X2.txt) | Stone threshold → divided mineral/wood ribs → half-length boarded floor → full supported floor | 01 |
+| [MR007](MR007_BENCH_TO_CURVED_FLOOR_BORDER_2X2.txt) | Bench → splayed supported slats → open angular border → curved timber border | 01 |
+| [MR008](MR008_WINDOW_FITTINGS_TO_PENDANT_STEM_2X2.txt) | Short fixing → stepped elongated shank → bent unfinished socket → attached lamp stem | 01 |
+| [MR009](MR009_BALCONY_SCROLL_TO_SIDEWAYS_STAIR_2X2.txt) | Coiled rail → spreading thick plate segments → uneven half-stair → supported sideways stair | 01 |
+| [MR010](MR010_ENGLISH_SIGN_TO_KAVE_LETTERING_2X2.txt) | Mounted source letters → split raised strokes → partly formed target glyphs → KÁVÉ | 01 |
+| [MR011](MR011_SLATE_ROOF_TO_CURVED_GLAZING_2X2.txt) | Pitched slate roof → unequal bent ribs → half-glazed curved roof → complete glazing | 01 |
+| [MR012](MR012_CHIMNEY_SHAFTS_TO_SPIRAL_CROWNS_2X2.txt) | Square chimney pair → offset helical courses → open unfinished crowns → spiral stone uprights | 01 |
+| [MR013](MR013_ENTRANCE_RAIL_TO_TRANSIT_GATE_2X2.txt) | Railing → thickened post and split elbow → unfinished gate housing → complete transit gate | 02 |
+| [MR014](MR014_BENCH_AND_CANOPY_TO_BUS_SEATING_2X2.txt) | Bench and posts → divided seat shells → unfinished seat row/window pillars → remembered bus geometry | 02 |
+| [MR015](MR015_CANOPY_TO_BALLOON_ENVELOPE_2X2.txt) | Canopy → asymmetric rising ribs → partly rounded envelope → balloon with supported basket | 02 |
+| [MR016](MR016_CROP_STALKS_TO_RAIL_SLEEPERS_2X2.txt) | Rooted plants → thick bent stalk bundles → unfinished timber sleepers → supported rail bed | 02 |
+| [MR017](MR017_CABINET_TO_DESK_AND_CHAIR_2X2.txt) | Cabinet → extended top and divided panels → unfinished desk/chair → complete procedure furniture | 04 |
+| [MR018](MR018_HEARING_BENCH_TO_DOCUMENT_SHELVING_2X2.txt) | Hearing bench → split timber supports → half-shelf/half-compartment → complete file shelving | 05 |
+| [MR019](MR019_PAVING_AND_GUTTER_TO_STREET_TERRACE_2X2.txt) | Ordinary street → staggered extending courses → half-built terrace → open supported street pocket | 01 |
+| [MR020](MR020_ROPE_FIBRES_TO_SHEET_HEM_2X2.txt) | Rope → spreading fibre web → unfinished fabric hem → white sheet edge | 07 |
+| [R009](../objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt) | Upright fanlight → uneven rib fan → partial projecting canopy → complete supported roof | 01 |
+| [R008](R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt) | Intact window → fractured pane/partial arch → half-emerged floor and unfinished shades → occupied restaurant | 01 |
 
-| [MR002 relief → sculpted support](MR002_FACADE_RELIEF_TO_SCULPTED_SUPPORT_2X2.txt) | Close façade material study | R011 setting and R006 stone detail; both IDs embedded. Four states of the same stone mass, carved limbs and backing. |
-| [MR003 window/capital/cornice](MR003_FACADE_WINDOW_CAPITAL_AND_CORNICE_2X2.txt) | Close façade ornament study | R011 setting and R006 stone detail; both IDs embedded. Four states of the same bay, carving, frame and supports. |
+## Render and input state
 
-Keep the accepted standalone Basilica image: it is the destination input for the new cathedral sheet. After rendering and accepting the sheet in Higgsfield, associate the selected morph image with the intended video reference and record its real mention; no new Element has been imported or assumed here. The first-test set still covers the same five subjects. The new sheet supports the cathedral subject in place of relying on a destination-only image, not a new video test or new story event.
+- MR001–MR003 have verified R011/R006 input mentions. R008 now includes the verified accepted restaurant and R011 inputs. R009 and new object-specific sheets display missing-input notices until their actual object Element handles are supplied. `@UNBOUND_…` is a local blocking marker, not a real Higgsfield handle.
+- The new-only [MR001–MR020 import](../../00_project/elements/11_morph_reference_sheets.md) creates distinct output containers if imported. It excludes existing R objects and worlds. Its short descriptions are metadata, not render prompts. This import is prepared, not reported imported.
+- Existing R008/R009 containers stay separate from the new MR containers; do not reimport them. Existing generated images are unchanged. The previously reviewed MR001 image is rejected because it repeats St Paul’s and ends as a hybrid.
+- The catalogue maps studies to existing film beats. It does not require all 22 sheets before the pilot or add story events. Bind only a selected, rendered and accepted sheet to its matching video beat using the actual output mention; source-object handles and morph-output handles have different roles.
 
-State sheets carry the form and construction evidence. Video prompts still specify direction, duration, camera travel, identity, ratings and continuity; never interpolate the four complete cell compositions as a slideshow. Faster camera motion in open space and slower partial orbits around material changes remain part of the video direction. No forced global shortening of the existing prompts.
+## Acceptance before using a sheet in video
 
-4K is a selected output setting for these detailed sheets, not a guarantee of morph quality. It gives the four cells more pixel area than the same grid at 2K. Inspect thick edges, identifiable joints and source-to-target correspondence, not only image size. All media are generated inside the creator's Higgsfield workflow; no outside images are generated or imported by these files.
+At whole-sheet viewing size, all four silhouettes/openings/projections must be distinguishable. The first middle cell must visibly retain substantial source geometry and substantial reconstruction. The second must show a different large unfinished region, not the polished target again. Inspect one tracked joint/material patch, thick side faces, support and changing contact shadows across the states. Reject four similar finished objects, a texture recolour, a new camera angle presented as a morph, disappearing source mass, missing room inhabitants or an incorrect endpoint.
 
-MR002 and MR003 provide additional prepared choices for the creator's requested façade studies. They do not automatically add two required images to the current five-subject pilot, and no new Element containers or paid video tests have been created for them. Use a generated and accepted study only after its actual image association/mention is known. R006 is a material-style input to these local fantasy details, not proof that an invented sculpture belongs to the real Basilica.
+The sheet must not enter the video as four cuts. The video retains its own duration, camera trajectory, current people’s numerical cards and human memory. A slow partial orbit can expose the changing material depth, followed by acceleration through connected space. Still images guide geometry; only the video result can establish continuous movement.
+
+All actual image creation remains inside the creator’s Higgsfield workflow. A selected 4K setting does not guarantee correct intermediate shapes or actual downloaded dimensions.

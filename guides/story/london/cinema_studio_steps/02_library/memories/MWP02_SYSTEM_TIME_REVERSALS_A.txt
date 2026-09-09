@@ -1,44 +1,29 @@
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
 
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each cell must be a TRUE 16:9 widescreen rectangle.
-DO NOT create a square 1:1 canvas.
-DO NOT create square cells.
-DO NOT place a square contact sheet inside a wider canvas.
-DO NOT add letterboxing or pillarboxing.
-The grid fills the entire canvas edge-to-edge.
-Outer margin: 0 pixels.
-Use only hairline 1–2 pixel gutters BETWEEN cells.
-No title, header, footer, caption band, legend, decorative border or layout labels.
+PURPOSE — GALA ABSTRACTION LOCK:
+This is a STORY-PRESERVATION SOURCE BANK for the late moment when one private life collides with institutional time.
+The autobiographical STRUCTURE is preserved, but every contemporary political identifier is removed.
+Do NOT name or depict a real officeholder, party, named high-state body, international public-affairs body, named tax regime or identifiable current public event.
+These cells are not proof of causation and must not imply that the protagonist caused any later institutional change.
 
-FUNCTION:
-This is a STORY-PRESERVATION MEMORY SOURCE BANK.
-It restores short literal memories and threshold details that were present in the story-bible/addendum but were accidentally lost during later prompt simplification.
-These are NOT decorative inserts. They preserve the human biography that the system-world keeps trying to flatten.
+REFERENCE RULE:
+Use the supplied protagonist reference only where the protagonist is visible.
+All officials, senior officeholders and institutional staff remain fictional, anonymous and non-identifiable. No additional real-public-figure reference is required.
 
-Show every memory DIRECTLY, as if the camera were physically inside that remembered place.
-DO NOT show the present London–Budapest dream city.
-DO NOT put these memories inside windows or reflections in this reference sheet.
-DO NOT add score cards.
-Later STORYBOARD / VIDEO reconstructs these scenes as embodied places growing from London materials. Keep this source sheet a literal view of the memory itself.
-
-IDENTITY:
-Use CHARACTER 01 — PROTAGONIST wherever the protagonist is visible.
-Other incidental people may remain anonymous unless another canonical character reference is explicitly supplied in the final video block.
+SOURCE VERSUS FILM:
+These cells establish literal documents, rooms and people. Later film beats can extend their paper, furniture or architectural forms into the dream city; keep those transformations out of this reusable source sheet.
 
 VISUAL LANGUAGE:
-Photorealistic live-action realism.
-Literal ordinary environments and objects.
-No symbolic fantasy, no dream haze, no abstract graphics, no nostalgic glow.
-Human scale, practical light, believable wear and imperfection.
+Photorealistic live-action institutional realism.
+Ordinary paper, laptops, offices, review-room furniture and administrative architecture rather than symbolic fantasy.
+No news-graphics collage, campaign material, national insignia, parliamentary imagery, falling-head montage, propaganda poster or coup imagery.
+All destination names, regime names, office titles and document text remain unreadable or invented.
 
-PAGE A OF MWP01: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE A OF MWP02: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
@@ -46,24 +31,26 @@ A video can use several world and memory pages within the same 30-second block. 
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
-Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
+Ordinary protagonist desk / home-paperwork memory after a REQUEST FOR RELIEF IS REFUSED. A restrained generic refusal letter and envelope sit among the protagonist's existing case papers. The protagonist is present at human scale. No named office, no portrait, no triumph or rage, and no invented reason for the refusal.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
+Revised relief papers prepared later and deliberately set aside for a LATER INSTITUTIONAL OPENING. Show an ordinary dated document stack, envelope and neutral routing note indicating "hold / submit later" without naming an officeholder, ministry, government or real institution.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-Childhood near Orosháza in the Viharsarok: paprika rows and tall corn rows below a flat Great Plain horizon. View the agricultural rows from a child's low eye level, with no visible child, as a lived memory at the beginning of a route. Natural soil, leaves and daylight; no postcard framing.
+TWO LETTERS TO ONE DISTANT DOOR, FROM BELOW: the protagonist at an ordinary laptop/desk sending his own submission to an unnamed external review body. A small clock/time cue may suggest an ordinary afternoon send. This is the from-below image: one citizen, ordinary room, laptop, documents, no heroic staging.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
+TWO LETTERS TO ONE DISTANT DOOR, FROM ABOVE: an anonymous senior-institution desk where a different formal question is being prepared or sent to the SAME unnamed external review body. No identifiable officeholder is visible; use only hands, restrained stationery and generic institutional architecture.
 
 FINAL CHECK:
 Exactly one 16:9 image.
-Exactly nine literal photographic memory cells.
+Exactly four literal photographic cells in a 4K 2×2 grid.
 No present-city reflection layer.
 No score cards.
-No explanatory captions.
-These details exist to preserve biography, not to simplify it.
+No real politician or identifiable public figure.
+No named contemporary public institution, officeholder, current event, tax regime or international body.
+No causal claim that the protagonist produced later institutional outcomes.
+No narrative element in this bank may be silently deleted merely because it is a micro-flash.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
 The later film grows this exact remembered encounter from London materials. Supply enough geometry to reconstruct a solid place: a near seat or table corner with two readable sides, full supporting legs where furniture matters, visible floor contact, and a rear door, wall or landscape plane at a different distance. Use the existing widest relevant cell for the whole arrangement and the existing human-detail cell for the gesture; use the companion page when that required contextual view is assigned there. Keep principal faces, hands and interactions in useful focus. Show natural occlusion and contact shadows. Avoid hiding the relationship between a person, their chair, the floor and the rear doorway in shallow focus or tight crops. A detail cell may be close, but its contextual cell must retain the full arrangement. Preserve the assigned encounter and identity. These literal source shapes give the later film recognisable people and materials to carry through the impossible transformation.

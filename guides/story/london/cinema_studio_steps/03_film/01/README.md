@@ -13,7 +13,7 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W01](../../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
+| [W01](../../02_library/worlds/W01_MAIN_WORLD_A.txt) | None | `W01_MAIN_WORLD.png` |
 | [C01](../../02_library/characters/C01_PROTAGONIST.txt) | None | `C01_PROTAGONIST.png` |
 | [C02](../../02_library/characters/C02_SOHO_WOMAN.txt) | None | `C02_SOHO_WOMAN.png` |
 | [C06](../../02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt) | None | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` |
@@ -21,8 +21,8 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 | [C08](../../02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt) | None | `C08_FX_MORTGAGE_SPOUSE.png` |
 | [C09](../../02_library/characters/C09_FX_MORTGAGE_CHILD.txt) | None | `C09_FX_MORTGAGE_CHILD.png` |
 | [C10](../../02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt) | None | `C10_BEGINNER_DANCE_WOMAN.png` |
-| [MW01](../../02_library/memories/MW01_LONDON_SOCIAL.txt) | C01, C02, C06, C07, C08, C09, C10 | `MW01_LONDON_SOCIAL.png` |
-| [MWP01](../../02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt) | C01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` |
+| [MW01](../../02_library/memories/MW01_LONDON_SOCIAL_A.txt) | C01, C02, C06, C07, C08, C09, C10 | `MW01_LONDON_SOCIAL.png` |
+| [MWP01](../../02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt) | C01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` |
 | [SB01](storyboard.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09 | `SB01_STORYBOARD.png` |
 | [A01](narration.txt) | None | `A01_NARRATION.wav` |
 | [V01](video.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09, SB01, A01 | `V01_CITY_JUDGES_FIRST.mp4` |
@@ -57,6 +57,6 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W01 Page A](../../02_library/worlds/W01_MAIN_WORLD.txt), [Page B](../../02_library/worlds/W01_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W01_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+Use [W01 Page A](../../02_library/worlds/W01_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/W01_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W01_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W01 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

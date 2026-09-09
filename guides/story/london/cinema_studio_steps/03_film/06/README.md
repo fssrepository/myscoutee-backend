@@ -13,8 +13,8 @@ Generate only missing media. Reuse accepted dependencies from prior blocks. Each
 
 | Prompt | Required accepted references | Output name |
 | --- | --- | --- |
-| [W06](../../02_library/worlds/W06_MAIN_WORLD.txt) | None | `W06_MAIN_WORLD.png` |
-| [MW06](../../02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
+| [W06](../../02_library/worlds/W06_MAIN_WORLD_A.txt) | None | `W06_MAIN_WORLD.png` |
+| [MW06](../../02_library/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt) | C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `MW06_HUMAN_COUNTERMEMORIES.png` |
 | [SB06](storyboard.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29 | `SB06_STORYBOARD.png` |
 | [A06](narration.txt) | None | `A06_NARRATION.wav` |
 | [V06](video.txt) | W06, MW06, MWP02, MW01, MW02, MW03, MW04, MW05, C01, C02, C03, C04, C10, C11, C16, C17, C27, C28, C29, SB06, A06, V05 | `V06_CHAIN_TO_0300.mp4` |
@@ -59,6 +59,6 @@ Watch once with sound. Check all nine beats and their short secondary memories a
 
 ## World pages for this block
 
-Use [W06 Page A](../../02_library/worlds/W06_MAIN_WORLD.txt), [Page B](../../02_library/worlds/W06_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W06_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
+Use [W06 Page A](../../02_library/worlds/W06_MAIN_WORLD_A.txt), [Page B](../../02_library/worlds/W06_MAIN_WORLD_B.txt) and [Page C](../../02_library/worlds/W06_MAIN_WORLD_C.txt), each rendered as one 4K 2×2 image. Together they preserve all nine original view descriptions; the [world index](../../02_library/worlds/README.md) maps the repeated anchors. These are three inputs for this same film block, not three extra video jobs.
 
 The B/C Element definitions are in the [new-only companion import](../../00_project/elements/10_world_reference_pages.md); they have not been imported or rendered. Obtain their full actual IDs, check the accepted page images and replace the pending references before generating this block. The existing W06 Element still points to its previously associated image until Page A is accepted and associated. Do not use an old nine-cell image while telling the video that it is new Page A. Keep existing accepted media available and do not repeat earlier imports.

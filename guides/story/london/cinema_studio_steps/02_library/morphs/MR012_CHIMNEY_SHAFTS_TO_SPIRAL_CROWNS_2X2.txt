@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: R025, R026
+Do not generate until these references are bound.
+
 REFERENCE ROLES:
 @UNBOUND_R025 supplies the accepted source/target geometry and material relationships for this object study. Reconstruct those objects from the fixed comparison angle; do not copy reference layouts as panels.
 @UNBOUND_R026 supplies the accepted source/target geometry and material relationships for this object study. Reconstruct those objects from the fixed comparison angle; do not copy reference layouts as panels.

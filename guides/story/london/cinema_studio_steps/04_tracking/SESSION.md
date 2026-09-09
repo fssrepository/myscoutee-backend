@@ -1,5 +1,13 @@
 # Guided production session
 
+## Current reference expansion
+
+Prepared 22 four-state morph studies (MR001–MR020 plus R008/R009), including 17 new object-focused sheets. Intermediate states now require large unfinished supported volumes that differ at whole-sheet scale. Existing generated images remain unchanged; new/revised outputs require visual review. The prior MR001 output remains rejected.
+
+Normal worlds retain 21 prepared 4K 2×2 pages. Memory/clinical banks now have 27 pages preserving all 81 original views, plus a T01 restaurant detail page with four spatial views. Production video/storyboard prompts map memory B/C references; missing actual handles remain visibly blocked. Clinical sources remain Block 07 only. The current pilot’s five-subject scope, three video tests and recorded spend are unchanged.
+
+New-only imports: `11_morph_reference_sheets.md` (20 MR outputs) and `12_memory_reference_pages.md` (18 memory companions + T01_DETAILS). Both are prepared, NOT imported. Do not repeat old R/world/memory imports. All actual media creation remains in the creator’s Higgsfield UI. Next rendering choice should use one selected ready-bound prompt, not the entire prepared catalogue.
+
 ## Current MR001 image review
 
 The downloaded `hf_20260909_194343_c663f27c-24ac-4db1-b610-1de68b585d30.png` is rejected as a morph reference: the first three cells nearly repeat St Paul’s and the last retains source massing as a hybrid. MR001 now releases the source footprint/proportions while retaining the site and camera, and specifies substantial unfinished masonry, facade carving and roof geometry in both intermediate cells. The revised prompt has not been rendered or visually validated. Existing R006 remains the destination input. No video generation or new credit debit occurred.

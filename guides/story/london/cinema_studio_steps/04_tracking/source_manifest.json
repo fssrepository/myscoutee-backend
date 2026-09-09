@@ -454,8 +454,8 @@
         2453
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
-      "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
-      "file_sha256": "30d5cb7fce31e8a095443a345f5741f8f2f4b9eb0d97bb0d9a528d37ce213132",
+      "file": "02_library/memories/MW01_LONDON_SOCIAL_A.txt",
+      "file_sha256": "c79302d50a4e92be576a4f558a96df283b88a96781c164322846d30583e862b9",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -466,8 +466,8 @@
         2530
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
-      "file": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
-      "file_sha256": "7acea6013a5b6607d3b800eac82f335d0340f4ce803f4aac8b9406b9a8b39838",
+      "file": "02_library/memories/MW02_GLOBAL_ROUTES_A.txt",
+      "file_sha256": "b9e26d81eff120e4bb2954b5482816d6b16702403b506403856596102d2865ad",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -478,8 +478,8 @@
         2603
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
-      "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
-      "file_sha256": "5055330c1794c1178f8304621090ed56397e4a64c48c6675a5ef9a5ffd2e2e92",
+      "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
+      "file_sha256": "5e49aac4bf1c1d6407f33ad01b778cedbf0db8679b5bef16e8a19a91260ea06e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -490,8 +490,8 @@
         2678
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
-      "file": "02_library/memories/MW04_POLICE_DEFENCE.txt",
-      "file_sha256": "b5b7af8ea388c8856390ad84a731910b9aa8fa4160959202fb265fee72ae95b9",
+      "file": "02_library/memories/MW04_POLICE_DEFENCE_A.txt",
+      "file_sha256": "98d7ccd28b9e7deca2d8cb0351686d97708a0a445b432d271155cc208afebe78",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -502,8 +502,8 @@
         2753
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
-      "file": "02_library/memories/MW05_COURT_FILE.txt",
-      "file_sha256": "0d30010f5ec8e5820f1ebd6062f966b3927c6aa62bdbc78fb0e56bbb2f23dcba",
+      "file": "02_library/memories/MW05_COURT_FILE_A.txt",
+      "file_sha256": "2addf345ff2299bcd0a806abf0306314e7e17a608f63b4b157c9468189a3186e",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -514,8 +514,8 @@
         2832
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
-      "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
-      "file_sha256": "71990b17ef8ce7d04b5c8b1a633cfa00c63f6ff6efc47be5eeb1b23075229c76",
+      "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
+      "file_sha256": "d641c977e58aa22a5e97e26892564bdb538ae4cd57d4997ef65f31bd9665f907",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -526,8 +526,8 @@
         2907
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
-      "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
-      "file_sha256": "cac511e0799d9202895af3c33facc894d54cc90388913086b51bf2e5653318b9",
+      "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
+      "file_sha256": "6b82ddf0a2f591b4610fb2f8d66f2d8e589dcd32cb1046d42bbcacd1069147e0",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -538,8 +538,8 @@
         2967
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
-      "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
-      "file_sha256": "8645870e607a4502f1b465b332f84d6134b41246f3d85c5370ea1e9e8e759cce",
+      "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
+      "file_sha256": "11e8c22cb7968f29f185f2ddfbeaf32735617873fa654db3a6076574af303ede",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -550,8 +550,8 @@
         3048
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
-      "file": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
-      "file_sha256": "192e42f5a9d4be63f148b59105d0fed33c9dae9632f30dc442cf66666bee6ee6",
+      "file": "02_library/memories/HRW07_CLINICAL_REALITY_A.txt",
+      "file_sha256": "0c18b3b4043536431196eb55601a71cdec4f0bf73e7b8a93850be30db2ebc270",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -562,7 +562,7 @@
         3148
       ],
       "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
-      "file": "02_library/worlds/W01_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W01_MAIN_WORLD_A.txt",
       "file_sha256": "3c99b198d1a9c73018d0bf5f4b4bcfee3000e980fef2be816009cf2655be374e",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -586,7 +586,7 @@
         3242
       ],
       "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
-      "file": "02_library/worlds/W02_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W02_MAIN_WORLD_A.txt",
       "file_sha256": "3854bc39f80269fd90bf147f2946f7f6142ca85dab606cc6859bc81b35858249",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -610,7 +610,7 @@
         3336
       ],
       "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
-      "file": "02_library/worlds/W03_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W03_MAIN_WORLD_A.txt",
       "file_sha256": "38c4142401b94c622d8a99ec521b617e75d6de520e0a2977f2e3434b4eb1111e",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -634,7 +634,7 @@
         3430
       ],
       "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
-      "file": "02_library/worlds/W04_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W04_MAIN_WORLD_A.txt",
       "file_sha256": "b78050ab597bc8f747219a90581a4f832a5a1e5cfd9f7177049dd5a8fc2186a2",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -658,7 +658,7 @@
         3524
       ],
       "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
-      "file": "02_library/worlds/W05_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W05_MAIN_WORLD_A.txt",
       "file_sha256": "68af1d56dd087c8b7881a78aab66524bc12745d8dd2b388833552af3b6d646c8",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -682,7 +682,7 @@
         3618
       ],
       "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
-      "file": "02_library/worlds/W06_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W06_MAIN_WORLD_A.txt",
       "file_sha256": "e4255842b292917e4a027af1af7da253fa0d96349cabfcf3e42a64efe5fb35d6",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -706,7 +706,7 @@
         3712
       ],
       "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
-      "file": "02_library/worlds/W07_MAIN_WORLD.txt",
+      "file": "02_library/worlds/W07_MAIN_WORLD_A.txt",
       "file_sha256": "3e7ad1028b7c2c992c4e87a70130c1e63135c588e2fe19f59c6e1a466eb052f5",
       "changes": "4K 2×2 Page A; original views 1–4 retained verbatim except cross-view labels. Other original views preserved on companion B/C pages."
     },
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "1dc49d2828fd5cc7a1a3265b5c30ed62d6c6215080128de7e91bb196cd634bef",
+      "file_sha256": "4e90629db632cb495411d3e3bca631d5c475bca9d6101a845ebb14b68a627796",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "fbf458a14308fdd563787f7baf07037fd3485ae285e5608f99da81147b4e9006",
+      "file_sha256": "e436d2dae86c6c20f124dbc807a1742b4afaaf0255e198c5a070922025396ba4",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -767,7 +767,7 @@
       ],
       "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
       "file": "03_film/02/storyboard.txt",
-      "file_sha256": "3c39f5779ed0955864f65fd8d4177b4bd801550511428538f1a4a32835fe5858",
+      "file_sha256": "dcc91fb78667a2e609a5ab0b0ab3d6709662f2b08f936e2a2a16dbd6008148fb",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -791,7 +791,7 @@
       ],
       "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
       "file": "03_film/02/video.txt",
-      "file_sha256": "95699da08bb78196b6be4c13925b557671d84202c42a36ac394489926f0382e6",
+      "file_sha256": "2f95d71c2977aa2d27092ef3f3a9d86618be30f847c7a9fbc36226463bc7cd8d",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue; rural memory grounded in creator's Orosháza paprika/corn-field childhood Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -803,7 +803,7 @@
       ],
       "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
       "file": "03_film/03/storyboard.txt",
-      "file_sha256": "74d07f0a0cc39df6f354b8d013b54938fed171ba0b5287236deba1590dca9cd0",
+      "file_sha256": "88b81a3b14ed1fa556b6cb2f885a2cf6ace929dc25e163e44eae00636d1e292f",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -827,7 +827,7 @@
       ],
       "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
       "file": "03_film/03/video.txt",
-      "file_sha256": "290b01903a5e8057afa194e8868331fee315da287b549b7548221bed727ab5b8",
+      "file_sha256": "49cdea506c60a78071d5133e0f24e744656e0220715ec54cd75c5fd4e48a91b8",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -839,7 +839,7 @@
       ],
       "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
       "file": "03_film/04/storyboard.txt",
-      "file_sha256": "ca2266219e64607a6e074266691baa447b33273b75afe08ae21c2d23039816de",
+      "file_sha256": "4f4d721883f8bfa52c34c59e16fbd52fe4446fee74c76bede3802d186cc476fc",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -863,7 +863,7 @@
       ],
       "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
       "file": "03_film/04/video.txt",
-      "file_sha256": "1b180884b2a8a2da128d70ce095544d722ac4b8c9f12eee33e09d0d2cc944719",
+      "file_sha256": "c53073f45da232f57539bccbf3eca0a5eeaf9f8ff354faf5e5b71558a75716f7",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -875,7 +875,7 @@
       ],
       "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
       "file": "03_film/05/storyboard.txt",
-      "file_sha256": "8e4b3cb219ed9dbab822730e5247881a5cbc731cbb5329c007ece6b3b01e1e4d",
+      "file_sha256": "c60372d496a3d5960e5500e64923afd0b07c4afccf4f5121d80b5b6ff065d06a",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -899,7 +899,7 @@
       ],
       "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
       "file": "03_film/05/video.txt",
-      "file_sha256": "9961db651db049ff2c2cc87ee9e760b0e19e50ce375cd2bad158f41701e2de39",
+      "file_sha256": "7d95e455792ef1739907346edd40ddd93287792b2b7e51d52ef83da36c2e1fe0",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -911,7 +911,7 @@
       ],
       "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
       "file": "03_film/06/storyboard.txt",
-      "file_sha256": "7f0294c34bb04fa847df2855fb8f594e9d0d48a984f74bb1657f323bf69fe12e",
+      "file_sha256": "8119324a035e07993eccef8509db707aceafd82a71edd87054c4c58ae0c412ae",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -935,7 +935,7 @@
       ],
       "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
       "file": "03_film/06/video.txt",
-      "file_sha256": "45355e781c0e21b355cfadc115b8b4db615707e25dcf14820c09c1fecbc0c110",
+      "file_sha256": "cb78f67f972319928cf2eedf6b2e26b2aa19f95329950a660209468d58daa8df",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -947,7 +947,7 @@
       ],
       "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
       "file": "03_film/07/storyboard.txt",
-      "file_sha256": "2993435ee98805dec51cc0d8c2b0a277bc1c4d0112540e423da2b3b03256a063",
+      "file_sha256": "8d4d7f65ca8463da6d56de9c5e6cbdb5498d3b32913c9c5d4e50a6cd64703bc4",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -971,7 +971,7 @@
       ],
       "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
       "file": "03_film/07/video.txt",
-      "file_sha256": "08074779ab8c1e56da55b425b936171b7986c332ec30d880257071b54e14414d",
+      "file_sha256": "da28ab0975e38364bcb430dc6052b82bdd416e0f597a7a5fec0e1c450b09a5ab",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue Continuation preserves narrator timbre and a natural breath over an uninterrupted sound bed."
     },
     {
@@ -1151,7 +1151,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/memories/MW01_LONDON_SOCIAL_B.txt",
-      "file_sha256": "4c99d4c5344511ee3f5505b193eef04b4f27727f65f5a6be43666d55c2449624",
+      "file_sha256": "da3810a790090c5f9b5cfb354dffd6157c49c84f0d7e2e59214108641b98a26d",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1164,7 +1164,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/memories/MW01_LONDON_SOCIAL_C.txt",
-      "file_sha256": "17190be364d8e4065d86d26e3a3d590113911bf61657756e2bd98392a06fc062",
+      "file_sha256": "8257fe012b6f3958bda31ec87aa8d048f33b077971a290146f2e202028c81336",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1177,7 +1177,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/memories/MW02_GLOBAL_ROUTES_B.txt",
-      "file_sha256": "8bcd084dda7c6dcd278e098722425dcc468dbcae1458487e6a97eeed7295ba28",
+      "file_sha256": "7b588a8f287c59b5947565e5721cdc256347158dbd89a50683b89a3f8ba6a139",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1190,7 +1190,7 @@
       ],
       "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
       "file": "02_library/memories/MW02_GLOBAL_ROUTES_C.txt",
-      "file_sha256": "c3db8961bb17a23cd1f30c5ff50a73c5ab637d8934f869219193e7ca0f842ee2",
+      "file_sha256": "d2426238cd0ad43b5260df2c5b3c303dfb12905ce9cae63def498187dd7cd9ae",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1203,7 +1203,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_B.txt",
-      "file_sha256": "c83bf3f963600095e908c45d5320f9273e1ef1073d9fe0571dc64ff3c97b0469",
+      "file_sha256": "5c99f70532477815da6d992319a708407a19a1f623daf54df7e7d7b36b169f3d",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1216,7 +1216,7 @@
       ],
       "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
       "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_C.txt",
-      "file_sha256": "d65bbff880770a713c95a5d46e62135225d1c7b91b4673a77bed857cca5e15d9",
+      "file_sha256": "7847b715b010b2de548f112a1d5aa1aa8290bc318a62082f773f3e88be43cc4b",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1229,7 +1229,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/memories/MW04_POLICE_DEFENCE_B.txt",
-      "file_sha256": "eefbca3cdbe61ceaef6cc58b9f3b9c043eed33cd1ab93a2a5d9504ca588cedc0",
+      "file_sha256": "239be76e8b12c6be68886ac9e1e50514de5fd6787d6b40f8922a88d91d495d5f",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1242,7 +1242,7 @@
       ],
       "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
       "file": "02_library/memories/MW04_POLICE_DEFENCE_C.txt",
-      "file_sha256": "3fffe0a1d88d73d4af875e337e022d1ae1f198de15a8777975d50f25eba26812",
+      "file_sha256": "edd7c84081c723a1394f73d00365264e02607f1522a19efa55fa2869f3ff8181",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1255,7 +1255,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/memories/MW05_COURT_FILE_B.txt",
-      "file_sha256": "f7c67be89bde3dbc2156bcd0c67ac4f252e0e1e2b854565e7a5f7aeefad894a7",
+      "file_sha256": "7592cfe90c81cd92364ce6914d5e71a8d0b838c389c5a0b3d10cf8351f28859f",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1268,7 +1268,7 @@
       ],
       "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
       "file": "02_library/memories/MW05_COURT_FILE_C.txt",
-      "file_sha256": "4f9a0f90e83e756b7b52183d7d441d11ee0c75f1bc15e93f42b1723c4948e31b",
+      "file_sha256": "8c243bc111376a0a93b861fa0604cf6fa8a8029fab0b998009629de71e50b85f",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1281,7 +1281,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_B.txt",
-      "file_sha256": "42b7eb9f78d655b4d64de5d7e8ad61aa81ec3578dfbfe2ba52807d4340106124",
+      "file_sha256": "41091c6f62fadcff5d696faff9986af2fd072ec1f5821fdabaf0b7f3aa5ba870",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1294,7 +1294,7 @@
       ],
       "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
       "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_C.txt",
-      "file_sha256": "462640a492a17dd26a8d5857c65f5b5c3a2e1335261f98ce4fee15242955f645",
+      "file_sha256": "e55b70b279f220fde8e61d244d0743493314e1a937a9f2aea64d481402fe055d",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1307,7 +1307,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_B.txt",
-      "file_sha256": "79e905f1d85ec06b1850b1de007b06d3a18126ab3849559916c40dc893aec3d2",
+      "file_sha256": "3e2946c3b0e194e6afcf5fa9e5bc8c45050afce6974d1f65d7f1b56aab483d32",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1320,7 +1320,7 @@
       ],
       "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
       "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_C.txt",
-      "file_sha256": "30fabbe3b6f71e5dcde27f33c05c6116c98cc8f4569ebf66646b197443550417",
+      "file_sha256": "37f359b2b78dc357f685c032faa67feef912b3411000ccdcf7b088bf37905ae7",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs; rural memory grounded in creator's Orosháza paprika/corn-field childhood Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1333,7 +1333,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_B.txt",
-      "file_sha256": "4427f27578ddbb134e1589b7b63650bbc3fb10d6b146ff0b3f8e8a4ac574d259",
+      "file_sha256": "455e905e459384e589f98404a686a59bf59c47cff85b886207077d26683e4b68",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1346,7 +1346,7 @@
       ],
       "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
       "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_C.txt",
-      "file_sha256": "b4629aebddeb1e9c1e32c0feb63db0109e76cdb34dbdb76d0413a1f7cfc01f94",
+      "file_sha256": "306436e025c5f50dce70cc96db720524df1d97a8251e42421523ae7be70ab38b",
       "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     },
@@ -1359,7 +1359,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/memories/HRW07_CLINICAL_REALITY_B.txt",
-      "file_sha256": "547f82690f1b88ca0b4cd039374ef24d216aee00c68118336673c9230b854ce3",
+      "file_sha256": "c869b12e2e42857d41ae682f50b5dfc146f554c5972137f747dc8b1ab65110aa",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page B preserving original memory views."
     },
@@ -1372,7 +1372,7 @@
       ],
       "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
       "file": "02_library/memories/HRW07_CLINICAL_REALITY_C.txt",
-      "file_sha256": "44087f6b601054f0e31ad1077cd6ea9f190f6e1ff05d3d425d463eeb016846ec",
+      "file_sha256": "62512cc64067393a7c1533f64341c28e3f560e1f61d5a6f51090b4910cc7e590",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples.",
       "note": "Companion page C preserving original memory views."
     }
@@ -1566,7 +1566,7 @@
     },
     "MW01": {
       "key": "MW01",
-      "path": "02_library/memories/MW01_LONDON_SOCIAL.txt",
+      "path": "02_library/memories/MW01_LONDON_SOCIAL_A.txt",
       "output": "MW01_LONDON_SOCIAL.png",
       "refs": [
         "C01",
@@ -1586,7 +1586,7 @@
     },
     "MW02": {
       "key": "MW02",
-      "path": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
+      "path": "02_library/memories/MW02_GLOBAL_ROUTES_A.txt",
       "output": "MW02_GLOBAL_ROUTES.png",
       "refs": [
         "C01",
@@ -1610,7 +1610,7 @@
     },
     "MW03": {
       "key": "MW03",
-      "path": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
+      "path": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
       "output": "MW03_WORK_RULE_CHANGE_ADMIN.png",
       "refs": [
         "C01",
@@ -1626,7 +1626,7 @@
     },
     "MW04": {
       "key": "MW04",
-      "path": "02_library/memories/MW04_POLICE_DEFENCE.txt",
+      "path": "02_library/memories/MW04_POLICE_DEFENCE_A.txt",
       "output": "MW04_POLICE_DEFENCE.png",
       "refs": [
         "C01",
@@ -1643,7 +1643,7 @@
     },
     "MW05": {
       "key": "MW05",
-      "path": "02_library/memories/MW05_COURT_FILE.txt",
+      "path": "02_library/memories/MW05_COURT_FILE_A.txt",
       "output": "MW05_COURT_FILE.png",
       "refs": [
         "C01",
@@ -1662,7 +1662,7 @@
     },
     "MW06": {
       "key": "MW06",
-      "path": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
+      "path": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
       "output": "MW06_HUMAN_COUNTERMEMORIES.png",
       "refs": [
         "C01",
@@ -1685,7 +1685,7 @@
     },
     "MWP01": {
       "key": "MWP01",
-      "path": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
+      "path": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
       "output": "MWP01_ROUTES_ROOMS_DOCUMENTS.png",
       "refs": [
         "C01"
@@ -1698,7 +1698,7 @@
     },
     "MWP02": {
       "key": "MWP02",
-      "path": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
+      "path": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
       "output": "MWP02_SYSTEM_TIME_REVERSALS.png",
       "refs": [
         "C01"
@@ -1711,7 +1711,7 @@
     },
     "HRW07": {
       "key": "HRW07",
-      "path": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
+      "path": "02_library/memories/HRW07_CLINICAL_REALITY_A.txt",
       "output": "HRW07_CLINICAL_REALITY.png",
       "refs": [
         "C01",
@@ -1725,7 +1725,7 @@
     },
     "W01": {
       "key": "W01",
-      "path": "02_library/worlds/W01_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W01_MAIN_WORLD_A.txt",
       "output": "W01_MAIN_WORLD.png",
       "refs": []
     },
@@ -1737,7 +1737,7 @@
     },
     "W02": {
       "key": "W02",
-      "path": "02_library/worlds/W02_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W02_MAIN_WORLD_A.txt",
       "output": "W02_MAIN_WORLD.png",
       "refs": []
     },
@@ -1749,7 +1749,7 @@
     },
     "W03": {
       "key": "W03",
-      "path": "02_library/worlds/W03_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W03_MAIN_WORLD_A.txt",
       "output": "W03_MAIN_WORLD.png",
       "refs": []
     },
@@ -1761,7 +1761,7 @@
     },
     "W04": {
       "key": "W04",
-      "path": "02_library/worlds/W04_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W04_MAIN_WORLD_A.txt",
       "output": "W04_MAIN_WORLD.png",
       "refs": []
     },
@@ -1773,7 +1773,7 @@
     },
     "W05": {
       "key": "W05",
-      "path": "02_library/worlds/W05_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W05_MAIN_WORLD_A.txt",
       "output": "W05_MAIN_WORLD.png",
       "refs": []
     },
@@ -1785,7 +1785,7 @@
     },
     "W06": {
       "key": "W06",
-      "path": "02_library/worlds/W06_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W06_MAIN_WORLD_A.txt",
       "output": "W06_MAIN_WORLD.png",
       "refs": []
     },
@@ -1797,7 +1797,7 @@
     },
     "W07": {
       "key": "W07",
-      "path": "02_library/worlds/W07_MAIN_WORLD.txt",
+      "path": "02_library/worlds/W07_MAIN_WORLD_A.txt",
       "output": "W07_MAIN_WORLD.png",
       "refs": []
     },
@@ -2411,7 +2411,8 @@
         "R022"
       ],
       "four_state_summary": "Flat notched glass → concave shard → open-seam shade → complete shade",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "35557a5eb07fe1ee670f1ec8be09510052975169e8f4ffaf2bc032325774895b"
     },
     "MR005": {
       "key": "MR005",
@@ -2430,7 +2431,8 @@
         "R016"
       ],
       "four_state_summary": "Rectangular brick head → stepped wedge head → unfinished arch → carved stone arch",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "c61b7617cafd0165c2f2bc3545f94acbeddedabf0b1fb6408240868054ca61b6"
     },
     "MR006": {
       "key": "MR006",
@@ -2449,7 +2451,8 @@
         "R017"
       ],
       "four_state_summary": "Stone threshold → divided mineral/wood ribs → half-length boarded floor → full supported floor",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "712ab3605678d14e8ab67749cc92b410db1abe646443a60e8eb95cbf7cb38b84"
     },
     "MR007": {
       "key": "MR007",
@@ -2468,7 +2471,8 @@
         "R018"
       ],
       "four_state_summary": "Bench → splayed supported slats → open angular border → curved timber border",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "aab1f73348734402fa9b09d7b68f4bdd4c1ad49e2e0851a993e7b79573886dc9"
     },
     "MR008": {
       "key": "MR008",
@@ -2487,7 +2491,8 @@
         "R022"
       ],
       "four_state_summary": "Short fixing → stepped elongated shank → bent unfinished socket → attached lamp stem",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "8b3b36727d8f53df5cd9ee59d3cb43ab3f0e693a88abe09f9043e3aa0f80d8b9"
     },
     "MR009": {
       "key": "MR009",
@@ -2506,7 +2511,8 @@
         "R023"
       ],
       "four_state_summary": "Coiled rail → spreading thick plate segments → uneven half-stair → supported sideways stair",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "c39bf5790da32b95ec6be40468029592a07132905d780ad1efd9f3a6d9f679e3"
     },
     "MR010": {
       "key": "MR010",
@@ -2525,7 +2531,8 @@
         "R024"
       ],
       "four_state_summary": "Mounted source letters → split raised strokes → partly formed target glyphs → KÁVÉ",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "1cc50dd7c5641e4a57571e8c8da819b2f2d956aa43d3db74cab30bd75dd3de5f"
     },
     "MR011": {
       "key": "MR011",
@@ -2546,7 +2553,8 @@
         "R026"
       ],
       "four_state_summary": "Pitched slate roof → unequal bent ribs → half-glazed curved roof → complete glazing",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "9bd5b4431649b5953139b3d6322d6307f5470e76fd31cf0c862903a792b13c33"
     },
     "MR012": {
       "key": "MR012",
@@ -2567,7 +2575,8 @@
         "R026"
       ],
       "four_state_summary": "Square chimney pair → offset helical courses → open unfinished crowns → spiral stone uprights",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "62462b63ce792e7c545fd798b212a84838158b398fc395ab416b28f96c06fcbc"
     },
     "MR013": {
       "key": "MR013",
@@ -2586,7 +2595,8 @@
         "R043"
       ],
       "four_state_summary": "Railing → thickened post and split elbow → unfinished gate housing → complete transit gate",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "0f59cd7c8c0cf3628033baaa21964345d3b073ba553b9fba162da1f2cea59352"
     },
     "MR014": {
       "key": "MR014",
@@ -2605,7 +2615,8 @@
         "R044"
       ],
       "four_state_summary": "Bench and posts → divided seat shells → unfinished seat row/window pillars → remembered bus geometry",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "be34342e2e46d40468539cc557044bbb6932d1a5214e5c19d533504c8f69f7d6"
     },
     "MR015": {
       "key": "MR015",
@@ -2624,7 +2635,8 @@
         "R046"
       ],
       "four_state_summary": "Canopy → asymmetric rising ribs → partly rounded envelope → balloon with supported basket",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "51e66005e931db5eb2c107c38afbf83277d362747bf9b355287a450cba1a0a72"
     },
     "MR016": {
       "key": "MR016",
@@ -2643,7 +2655,8 @@
         "R047"
       ],
       "four_state_summary": "Rooted plants → thick bent stalk bundles → unfinished timber sleepers → supported rail bed",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "d3e00f7bbaee2401172856af0c4a9dad7c81fda2fe234972aca69f497c3122b3"
     },
     "MR017": {
       "key": "MR017",
@@ -2662,7 +2675,8 @@
         "R049"
       ],
       "four_state_summary": "Cabinet → extended top and divided panels → unfinished desk/chair → complete procedure furniture",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "c1495b3a9c26d82ab76501d21bc8d1b890024c97fe271084252f32b0b2a6d8a1"
     },
     "MR018": {
       "key": "MR018",
@@ -2681,7 +2695,8 @@
         "R050"
       ],
       "four_state_summary": "Hearing bench → split timber supports → half-shelf/half-compartment → complete file shelving",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "ffd1b46c3436ef6eda71e7d3c059c3b354d506a58db499b7fffa96bf49ffd9f5"
     },
     "MR019": {
       "key": "MR019",
@@ -2704,7 +2719,8 @@
         "R053"
       ],
       "four_state_summary": "Ordinary street → staggered extending courses → half-built terrace → open supported street pocket",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "c89a819a0bc5c225a4629dd5e67ef1b18d1f222cc7cb447a8128eaa4c35920d1"
     },
     "MR020": {
       "key": "MR020",
@@ -2723,7 +2739,8 @@
         "HRW07"
       ],
       "four_state_summary": "Rope → spreading fibre web → unfinished fabric hem → white sheet edge",
-      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed."
+      "note": "Prepared only; no render, imported container, paid video job or mandatory pilot dependency assumed.",
+      "prompt_sha256": "2c5a8c847ee970d3db252e00ecd93b7b6e449995a2f679c3c4cda2ac2b272969"
     },
     "R009_STUDY": {
       "key": "R009_STUDY",
@@ -2738,7 +2755,8 @@
         "01_pilot/test_extend_8s.txt",
         "03_film/01/video.txt"
       ],
-      "layout": "2x2 source/unfinished/unfinished/target"
+      "layout": "2x2 source/unfinished/unfinished/target",
+      "prompt_sha256": "7298654a9a05adc021525a411f29ea4cb95553246d4e116c0a4b50930241af3b"
     },
     "R008_STUDY": {
       "key": "R008_STUDY",
@@ -2753,7 +2771,8 @@
       "production_reuse": [
         "01_pilot/test_video_8s.txt",
         "03_film/01/video.txt"
-      ]
+      ],
+      "prompt_sha256": "e79e834e22da8dde516c6ca3b51b851ea307030decc247b68a6368c40525b1f1"
     },
     "MW01_B": {
       "key": "MW01_B",
@@ -3190,7 +3209,7 @@
     },
     {
       "file": "02_library/memories/T01_SOHO_RESTAURANT_SOURCE.txt",
-      "sha256": "474c55cd024d6beec3ceec1e88e74e147351c019b1bdccb8070ff84b96afece6",
+      "sha256": "77f41be7cb336133c33819c05eee1abe6b04456e072190629ebd75b5baa0a59c",
       "reference_elements": {
         "C01": "char_mys_protagonist_s1_v1",
         "C02": "char_mys_soho-woman_s1_v1"
@@ -3670,235 +3689,235 @@
     "R015": {
       "alias": "R015",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R015",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R022": {
       "alias": "R022",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R022",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R016": {
       "alias": "R016",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R016",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R017": {
       "alias": "R017",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R017",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R018": {
       "alias": "R018",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R018",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R023": {
       "alias": "R023",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R023",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R024": {
       "alias": "R024",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R024",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R025": {
       "alias": "R025",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R025",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R026": {
       "alias": "R026",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R026",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R043": {
       "alias": "R043",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R043",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R044": {
       "alias": "R044",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R044",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R046": {
       "alias": "R046",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R046",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R047": {
       "alias": "R047",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R047",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R049": {
       "alias": "R049",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R049",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R050": {
       "alias": "R050",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R050",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R051": {
       "alias": "R051",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R051",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R052": {
       "alias": "R052",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R052",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R053": {
       "alias": "R053",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R053",
       "evidence": "Existing imported object key; actual Higgsfield mention must be supplied before this dependent morph sheet is rendered."
     },
     "R028": {
       "alias": "R028",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R028",
       "evidence": "Actual imported Element mention not yet supplied."
     },
     "R029": {
       "alias": "R029",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_R029",
       "evidence": "Actual imported Element mention not yet supplied."
     },
     "MW01_B": {
       "alias": "MW01_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW01_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW01_C": {
       "alias": "MW01_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW01_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW02_B": {
       "alias": "MW02_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW02_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW02_C": {
       "alias": "MW02_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW02_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW03_B": {
       "alias": "MW03_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW03_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW03_C": {
       "alias": "MW03_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW03_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW04_B": {
       "alias": "MW04_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW04_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW04_C": {
       "alias": "MW04_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW04_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW05_B": {
       "alias": "MW05_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW05_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW05_C": {
       "alias": "MW05_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW05_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW06_B": {
       "alias": "MW06_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW06_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MW06_C": {
       "alias": "MW06_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MW06_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MWP01_B": {
       "alias": "MWP01_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MWP01_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MWP01_C": {
       "alias": "MWP01_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MWP01_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MWP02_B": {
       "alias": "MWP02_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MWP02_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "MWP02_C": {
       "alias": "MWP02_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_MWP02_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "HRW07_B": {
       "alias": "HRW07_B",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_HRW07_B",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "HRW07_C": {
       "alias": "HRW07_C",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_HRW07_C",
       "evidence": "Prepared new memory companion page; no imported Element or generated image reported."
     },
     "T01_DETAILS": {
       "alias": "T01_DETAILS",
       "mention": null,
-      "last_mention": null,
+      "last_mention": "@UNBOUND_T01_DETAILS",
       "evidence": "Prepared additional four-view coverage of accepted T01; not imported or rendered."
     }
   },
@@ -4013,33 +4032,41 @@
         },
         "R005": {
           "file": "02_library/objects/R005_ST_PAULS_COMPLETE_SOURCE_BUILDING.txt",
-          "sha256": "5ff729b525efc7b3674c58e42c9ff9f6dae9f144fc71fcfcb461401b5650a4f1",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "a5ccd6fb19de9a785aa6015e15752d50d087cad77ef810a1a7e26c5951f51389",
+          "status": "PREPARED_NOT_RENDERED",
+          "current_prompt_image_verified": false,
+          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R006": {
           "file": "02_library/objects/R006_ST_STEPHENS_COMPLETE_DESTINATION_BUILDING.txt",
-          "sha256": "aafe483731749dc7d802a83e65e5f490e4358657c2e183f92f433b642392809d",
+          "sha256": "11a7d62600eb148a82b08a41425330e260521a7ebe629e08d3551196920fbafb",
           "status": "ID_REPORTED_IMAGE_ASSOCIATION_REPORTED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
-          "actual_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1"
+          "actual_mention": "@loc_MYS_mys-reference-06-st-stephens-complete-destination-building_s0_v1",
+          "current_prompt_image_verified": false,
+          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R007": {
           "file": "02_library/objects/R007_OPTIONAL_SOLID_INTERMEDIATE_ILLUSTRATION_NOT_A_MOTION_TEST.txt",
-          "sha256": "5edcbb02c0d4fb89e886c16f061a974a2813c4c303e4b29b3ffd53639b1e8daa",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "bbdcacd9a4ae8d289720a32ee712ba1c19415263b296065c846110792c5de311",
+          "status": "PREPARED_NOT_RENDERED",
+          "current_prompt_image_verified": false,
+          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R008": {
           "file": "02_library/morphs/R008_CAFE_OPENING_AND_FURNITURE_CONSTRUCTION_DETAILS.txt",
-          "sha256": "2a50d9ceea86378be4ace6b2f4da6adde8f87bfd413c523a251b8bd3fb032454",
+          "sha256": "e79e834e22da8dde516c6ca3b51b851ea307030decc247b68a6368c40525b1f1",
           "status": "GENERATED_IMAGE_SEEN_ASSOCIATION_REPORTED_ID_UNVERIFIED",
           "evidence": "Four generated thumbnails visible in creator screenshot 2026-09-09 21-13-04. After Element-name mapping, creator reports elvileg megvan, menjunk tovabb. Full Element IDs and saved associations not independently inspected.",
           "current_prompt_image_verified": false,
-          "prompt_note": "Four-cell 4K revision; previously shown image used the older three-view prompt. No new render performed."
+          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R009": {
           "file": "02_library/objects/R009_FANLIGHT_TO_CANOPY_JOINT_STUDY_FOR_THE_EXTEND.txt",
-          "sha256": "c43e52a9a6e1c95d21f51ac6d38a87a8320979f568dc0692a7f7cdaf084b34b8",
-          "status": "PREPARED_NOT_RENDERED"
+          "sha256": "7298654a9a05adc021525a411f29ea4cb95553246d4e116c0a4b50930241af3b",
+          "status": "PREPARED_NOT_RENDERED",
+          "current_prompt_image_verified": false,
+          "prompt_note": "Revised geometry/reference wording; no new generated output reviewed."
         },
         "R010": {
           "file": "02_library/objects/R010_WINGED_STATUE_PLINTH_AND_CONTACT_DETAIL.txt",
@@ -4286,7 +4313,7 @@
           "production_consumers": [
             "03_film/07/video.txt",
             "03_film/07/storyboard.txt",
-            "02_library/worlds/W07_MAIN_WORLD.txt"
+            "02_library/worlds/W07_MAIN_WORLD_A.txt"
           ]
         },
         "R055": {
@@ -4296,7 +4323,7 @@
           "production_consumers": [
             "03_film/07/video.txt",
             "03_film/07/storyboard.txt",
-            "02_library/worlds/W07_MAIN_WORLD.txt"
+            "02_library/worlds/W07_MAIN_WORLD_A.txt"
           ]
         },
         "R056": {
@@ -4331,6 +4358,65 @@
       "status": "PREPARED_NOT_IMPORTED_NOT_RENDERED",
       "media_embedded": false,
       "note": "Companion B/C containers only. Existing W01–W07 remain their own Elements; accepted old images are not replaced by this local edit."
+    },
+    {
+      "file": "00_project/elements/11_morph_reference_sheets.md",
+      "canonical_keys": [
+        "MR001",
+        "MR002",
+        "MR003",
+        "MR004",
+        "MR005",
+        "MR006",
+        "MR007",
+        "MR008",
+        "MR009",
+        "MR010",
+        "MR011",
+        "MR012",
+        "MR013",
+        "MR014",
+        "MR015",
+        "MR016",
+        "MR017",
+        "MR018",
+        "MR019",
+        "MR020"
+      ],
+      "expected_new_elements": 20,
+      "file_sha256": "469e1b0e6c938990ffa8558624f0e5aa0aaa747cd919bbcebb2e1af4bcc99719",
+      "status": "PREPARED_NOT_IMPORTED",
+      "media_embedded": false,
+      "note": "New containers only; render prompts separate; no existing Element reimport or merge."
+    },
+    {
+      "file": "00_project/elements/12_memory_reference_pages.md",
+      "canonical_keys": [
+        "MW01_B",
+        "MW01_C",
+        "MW02_B",
+        "MW02_C",
+        "MW03_B",
+        "MW03_C",
+        "MW04_B",
+        "MW04_C",
+        "MW05_B",
+        "MW05_C",
+        "MW06_B",
+        "MW06_C",
+        "MWP01_B",
+        "MWP01_C",
+        "MWP02_B",
+        "MWP02_C",
+        "HRW07_B",
+        "HRW07_C",
+        "T01_DETAILS"
+      ],
+      "expected_new_elements": 19,
+      "file_sha256": "f7c34c78bf9faae5821af3e95bf92531905f889e441a26ccb2a9fb759220b08d",
+      "status": "PREPARED_NOT_IMPORTED",
+      "media_embedded": false,
+      "note": "New containers only; render prompts separate; no existing Element reimport or merge."
     }
   ],
   "supplemental_reference_sets": {
@@ -4411,7 +4497,7 @@
         {
           "page": "A",
           "asset": "W01",
-          "file": "02_library/worlds/W01_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W01_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4452,7 +4538,7 @@
         {
           "page": "A",
           "asset": "W02",
-          "file": "02_library/worlds/W02_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W02_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4493,7 +4579,7 @@
         {
           "page": "A",
           "asset": "W03",
-          "file": "02_library/worlds/W03_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W03_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4534,7 +4620,7 @@
         {
           "page": "A",
           "asset": "W04",
-          "file": "02_library/worlds/W04_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W04_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4575,7 +4661,7 @@
         {
           "page": "A",
           "asset": "W05",
-          "file": "02_library/worlds/W05_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W05_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4616,7 +4702,7 @@
         {
           "page": "A",
           "asset": "W06",
-          "file": "02_library/worlds/W06_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W06_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4657,7 +4743,7 @@
         {
           "page": "A",
           "asset": "W07",
-          "file": "02_library/worlds/W07_MAIN_WORLD.txt",
+          "file": "02_library/worlds/W07_MAIN_WORLD_A.txt",
           "original_views": [
             1,
             2,
@@ -4743,14 +4829,15 @@
         "pages": {
           "A": {
             "key": "MW01",
-            "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
+            "file": "02_library/memories/MW01_LONDON_SOCIAL_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "c79302d50a4e92be576a4f558a96df283b88a96781c164322846d30583e862b9"
           },
           "B": {
             "key": "MW01_B",
@@ -4761,7 +4848,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "da3810a790090c5f9b5cfb354dffd6157c49c84f0d7e2e59214108641b98a26d"
           },
           "C": {
             "key": "MW01_C",
@@ -4772,7 +4860,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "8257fe012b6f3958bda31ec87aa8d048f33b077971a290146f2e202028c81336"
           }
         },
         "original_views": 9,
@@ -4783,14 +4872,15 @@
         "pages": {
           "A": {
             "key": "MW02",
-            "file": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
+            "file": "02_library/memories/MW02_GLOBAL_ROUTES_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "b9e26d81eff120e4bb2954b5482816d6b16702403b506403856596102d2865ad"
           },
           "B": {
             "key": "MW02_B",
@@ -4801,7 +4891,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "7b588a8f287c59b5947565e5721cdc256347158dbd89a50683b89a3f8ba6a139"
           },
           "C": {
             "key": "MW02_C",
@@ -4812,7 +4903,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "d2426238cd0ad43b5260df2c5b3c303dfb12905ce9cae63def498187dd7cd9ae"
           }
         },
         "original_views": 9,
@@ -4823,14 +4915,15 @@
         "pages": {
           "A": {
             "key": "MW03",
-            "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
+            "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "5e49aac4bf1c1d6407f33ad01b778cedbf0db8679b5bef16e8a19a91260ea06e"
           },
           "B": {
             "key": "MW03_B",
@@ -4841,7 +4934,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "5c99f70532477815da6d992319a708407a19a1f623daf54df7e7d7b36b169f3d"
           },
           "C": {
             "key": "MW03_C",
@@ -4852,7 +4946,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "7847b715b010b2de548f112a1d5aa1aa8290bc318a62082f773f3e88be43cc4b"
           }
         },
         "original_views": 9,
@@ -4863,14 +4958,15 @@
         "pages": {
           "A": {
             "key": "MW04",
-            "file": "02_library/memories/MW04_POLICE_DEFENCE.txt",
+            "file": "02_library/memories/MW04_POLICE_DEFENCE_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "98d7ccd28b9e7deca2d8cb0351686d97708a0a445b432d271155cc208afebe78"
           },
           "B": {
             "key": "MW04_B",
@@ -4881,7 +4977,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "239be76e8b12c6be68886ac9e1e50514de5fd6787d6b40f8922a88d91d495d5f"
           },
           "C": {
             "key": "MW04_C",
@@ -4892,7 +4989,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "edd7c84081c723a1394f73d00365264e02607f1522a19efa55fa2869f3ff8181"
           }
         },
         "original_views": 9,
@@ -4903,14 +5001,15 @@
         "pages": {
           "A": {
             "key": "MW05",
-            "file": "02_library/memories/MW05_COURT_FILE.txt",
+            "file": "02_library/memories/MW05_COURT_FILE_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "2addf345ff2299bcd0a806abf0306314e7e17a608f63b4b157c9468189a3186e"
           },
           "B": {
             "key": "MW05_B",
@@ -4921,7 +5020,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "7592cfe90c81cd92364ce6914d5e71a8d0b838c389c5a0b3d10cf8351f28859f"
           },
           "C": {
             "key": "MW05_C",
@@ -4932,7 +5032,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "8c243bc111376a0a93b861fa0604cf6fa8a8029fab0b998009629de71e50b85f"
           }
         },
         "original_views": 9,
@@ -4943,14 +5044,15 @@
         "pages": {
           "A": {
             "key": "MW06",
-            "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
+            "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "d641c977e58aa22a5e97e26892564bdb538ae4cd57d4997ef65f31bd9665f907"
           },
           "B": {
             "key": "MW06_B",
@@ -4961,7 +5063,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "41091c6f62fadcff5d696faff9986af2fd072ec1f5821fdabaf0b7f3aa5ba870"
           },
           "C": {
             "key": "MW06_C",
@@ -4972,7 +5075,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "e55b70b279f220fde8e61d244d0743493314e1a937a9f2aea64d481402fe055d"
           }
         },
         "original_views": 9,
@@ -4983,14 +5087,15 @@
         "pages": {
           "A": {
             "key": "MWP01",
-            "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
+            "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "6b82ddf0a2f591b4610fb2f8d66f2d8e589dcd32cb1046d42bbcacd1069147e0"
           },
           "B": {
             "key": "MWP01_B",
@@ -5001,7 +5106,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "3e2946c3b0e194e6afcf5fa9e5bc8c45050afce6974d1f65d7f1b56aab483d32"
           },
           "C": {
             "key": "MWP01_C",
@@ -5012,7 +5118,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "37f359b2b78dc357f685c032faa67feef912b3411000ccdcf7b088bf37905ae7"
           }
         },
         "original_views": 9,
@@ -5023,14 +5130,15 @@
         "pages": {
           "A": {
             "key": "MWP02",
-            "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
+            "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "11e8c22cb7968f29f185f2ddfbeaf32735617873fa654db3a6076574af303ede"
           },
           "B": {
             "key": "MWP02_B",
@@ -5041,7 +5149,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "455e905e459384e589f98404a686a59bf59c47cff85b886207077d26683e4b68"
           },
           "C": {
             "key": "MWP02_C",
@@ -5052,7 +5161,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "306436e025c5f50dce70cc96db720524df1d97a8251e42421523ae7be70ab38b"
           }
         },
         "original_views": 9,
@@ -5063,14 +5173,15 @@
         "pages": {
           "A": {
             "key": "HRW07",
-            "file": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
+            "file": "02_library/memories/HRW07_CLINICAL_REALITY_A.txt",
             "original_views": [
               1,
               2,
               3,
               4
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "0c18b3b4043536431196eb55601a71cdec4f0bf73e7b8a93850be30db2ebc270"
           },
           "B": {
             "key": "HRW07_B",
@@ -5081,7 +5192,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "c869b12e2e42857d41ae682f50b5dfc146f554c5972137f747dc8b1ab65110aa"
           },
           "C": {
             "key": "HRW07_C",
@@ -5092,7 +5204,8 @@
               7,
               8
             ],
-            "status": "PREPARED_NOT_RENDERED"
+            "status": "PREPARED_NOT_RENDERED",
+            "sha256": "62512cc64067393a7c1533f64341c28e3f560e1f61d5a6f51090b4910cc7e590"
           }
         },
         "original_views": 9,

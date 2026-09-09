@@ -1,5 +1,7 @@
 # Current production budget
 
+Additional reference preparation now includes 22 morph-sheet prompts and 28 memory/clinical-page prompts. These are library options, not additional required pilot jobs or reported renders. No new debit is inferred from preparing them; covered Higgsfield web image generation remains governed by the creator’s actual Unlimited window.
+
 **Latest creator estimate: approximately 700 credits remaining.** Use 700 as the current planning baseline for all unfinished work. The previously reported remaining cap was 720; the updated rounded estimate is not evidence of a specific new 20-credit charge. **Recorded historical test spend remains 80 credits** until an actual later debit is reported. No top-up or additional protected 800 is assumed.
 
 ## Creator-confirmed image preparation window

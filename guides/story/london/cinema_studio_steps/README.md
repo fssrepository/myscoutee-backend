@@ -1,5 +1,7 @@
 # MYSCOUTEE — Cinema Studio, step by step
 
+Reference preparation: [22 morph sheets](02_library/morphs/README.md), [28 memory/clinical pages](02_library/memories/README.md), and [21 normal-world pages](02_library/worlds/README.md). These are reusable image prompts with explicit input state; no new media or extra video tests have been generated.
+
 **Resume at [the current session](04_tracking/SESSION.md), using [the numbered production list](04_tracking/production_steps.csv).** Do not restart completed assets. The [480p pilot](01_pilot/README.md) keeps the complete first scene and adds one native visual continuation. Join them, then add the short narration and review the whole picture/music/SFX result as the reference before 1080p. There are two active video-test prompts; completed image sources and metadata are not new tests. One output per request; no per-feature generation campaign.
 
 This is the **September 9, 2026 manual production edition**. Final target: **Seedance 2.5, 1080p, 16:9, six 30-second blocks plus 20 seconds = 3:20**. The pilot is a separate technical excerpt, not a shortened festival entry. Preparing this pack generated no media and spent no Higgsfield credits. The supplied screenshot shows the existing **MyScoutee** project and imported Elements with empty image slots; a complete account/media inventory and subscription entitlements remain unverified.

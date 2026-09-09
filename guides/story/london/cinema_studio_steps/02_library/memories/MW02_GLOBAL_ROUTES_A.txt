@@ -1,15 +1,19 @@
+REFERENCE SETUP INCOMPLETE: C11, C16, C17, C18, C19, C20, C21
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@char_mys_agra-bus-woman_s2_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-man_s2_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
+@char_mys_sudanese-traveler-woman_s2_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
+@char_mys_cairo-taxi-driver_s2_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
 @UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
 @UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
-@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
+@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
+@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
+@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -30,21 +34,19 @@ Keep this source image sharp and literal so faces, furniture and room layout rem
 Each cell must be a usable literal location/event reference, not an illustration of an idea.
 
 IDENTITY ANCHORS — REQUIRED:
-Use CHARACTER 01 — PROTAGONIST.
-Use CHARACTER 02 — SOHO WOMAN in original view 1.
-Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in original view 2.
-Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in original view 3.
-Use CHARACTER 03 — POLICEWOMAN in original view 4.
-Use CHARACTER 04 — APPOINTED LAWYER in original view 5.
-Use CHARACTER 27 — JUDGE and/or CHARACTER 28–29 — FORENSIC EXPERTS in original view 6 as specified by the selected memory.
-Use CHARACTER 10 — BEGINNER-DANCE WOMAN in original view 7.
-Keep every identity consistent with its original MEMORY WORLD version. Do not create replacement faces.
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in original view 1.
+Use CHARACTER 12 — AGRA BUS WOMAN in original view 2.
+Use CHARACTER 13 — SUDANESE TRAVELER — MAN and CHARACTER 14 — SUDANESE TRAVELER — WOMAN in original view 3 and, if they remain present, original view 4.
+Use CHARACTER 15 — CAIRO TAXI DRIVER in original view 3–4 when the driver is visible.
+Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in original view 5.
+Use CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION plus CHARACTER 19–21 — BARMOUTH ROAD-TRIP COMPANIONS in original view 9 when the traveling group is visible.
+Background passengers/crowds may remain anonymous, but do not replace any of the named character-reference identities above.
 
 PURPOSE:
-Create one compact reusable source bank for the late-film memory crescendo, so STORYBOARD 06 / video generation can use ONE memory reference instead of attaching many different memory-world sheets at once.
-These are not new events. They are clean re-stagings of already established literal memories in which ordinary humanity briefly breaks through a role, route or system.
+Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
 
-PAGE A OF MW06: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE A OF MW02: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
@@ -52,22 +54,22 @@ A video can use several world and memory pages within the same 30-second block. 
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
-SOHO WOMAN's small genuine smile toward the protagonist in the established Soho context.
+Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-Russian/local passenger calmly using a travel pass to help the protagonist through the transit gate.
+India / Agra bus interior. The protagonist sits among ordinary passengers while a woman speaks from behind or across the seat. Human proximity and voice are central; avoid iconic monument imagery and exoticized styling.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-Hot-air-balloon / vegetable-plot cooperation: hands and people helping one another solve the landing problem.
+Cairo taxi interior with the protagonist sharing the ride with a Sudanese couple. Tight but ordinary vehicle interior, temporary trust between strangers, warm human realism.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-POLICEWOMAN or another officer giving an embarrassed small human smile / struggling not to laugh during an otherwise formal procedure.
+Airport/roadside continuation of the Cairo trip: luggage unexpectedly falls from the taxi roof and people react practically. Capture surprise and immediate problem-solving, not slapstick.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-These are direct memory scenes, not reflections and not a collage.
-No present-city layer.
+Direct literal travel memories only.
+No present-city reflection composite.
 No score cards.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:

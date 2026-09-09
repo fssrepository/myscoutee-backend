@@ -1,17 +1,13 @@
+REFERENCE SETUP INCOMPLETE: MWP02
+Do not generate until these references are bound.
+
 PAGE CONTINUITY INPUT: @UNBOUND_MWP02 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
-
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-0 px outer margin. Image content touches all four outer edges.
-Only 1–2 px internal gutters between cells.
-Every cell is a literal photorealistic source scene, not a symbolic poster or infographic.
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
 
 PURPOSE — GALA ABSTRACTION LOCK:
 This is a STORY-PRESERVATION SOURCE BANK for the late moment when one private life collides with institutional time.
@@ -53,7 +49,7 @@ BLACK-HUMOUR TIMING ECHO: an earlier self-made note on the protagonist's desk ca
 
 FINAL CHECK:
 Exactly one 16:9 image.
-Exactly nine literal photographic source cells.
+Exactly four literal photographic cells in a 4K 2×2 grid.
 No present-city reflection layer.
 No score cards.
 No real politician or identifiable public figure.

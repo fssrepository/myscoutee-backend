@@ -1,16 +1,15 @@
+REFERENCE SETUP INCOMPLETE: C06, C07, C08
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
+@loc_MYS_pilot-soho-restaurant-memory_s1_v1 = accepted Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
-@char_mys_agra-bus-woman_s2_v1 = CHARACTER 12 — AGRA BUS WOMAN; exact person identity; use only where this person appears.
-@char_mys_sudanese-traveler-man_s2_v1 = CHARACTER 13 — SUDANESE TRAVELER — MAN; exact person identity; use only where this person appears.
-@char_mys_sudanese-traveler-woman_s2_v1 = CHARACTER 14 — SUDANESE TRAVELER — WOMAN; exact person identity; use only where this person appears.
-@char_mys_cairo-taxi-driver_s2_v1 = CHARACTER 15 — CAIRO TAXI DRIVER; exact person identity; use only where this person appears.
-@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
-@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C18 = CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION; exact person identity; use only where this person appears.
-@UNBOUND_C19 = CHARACTER 19 — BARMOUTH ROAD-TRIP COMPANION A; exact person identity; use only where this person appears.
-@UNBOUND_C20 = CHARACTER 20 — BARMOUTH ROAD-TRIP COMPANION B; exact person identity; use only where this person appears.
-@UNBOUND_C21 = CHARACTER 21 — BARMOUTH ROAD-TRIP COMPANION C; exact person identity; use only where this person appears.
+@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
+@UNBOUND_C07 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
+@UNBOUND_C08 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
+@char_mys_fx-mortgage-child_s1_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
+@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -32,18 +31,16 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in original view 1.
-Use CHARACTER 12 — AGRA BUS WOMAN in original view 2.
-Use CHARACTER 13 — SUDANESE TRAVELER — MAN and CHARACTER 14 — SUDANESE TRAVELER — WOMAN in original view 3 and, if they remain present, original view 4.
-Use CHARACTER 15 — CAIRO TAXI DRIVER in original view 3–4 when the driver is visible.
-Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in original view 5.
-Use CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION plus CHARACTER 19–21 — BARMOUTH ROAD-TRIP COMPANIONS in original view 9 when the traveling group is visible.
-Background passengers/crowds may remain anonymous, but do not replace any of the named character-reference identities above.
+Use CHARACTER 02 — SOHO WOMAN in original view 3 and any direct Soho-woman recurrence.
+Use CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE in original view 6.
+Use CHARACTER 07 — FX-MORTGAGE HOUSEMATE, CHARACTER 08 — FX-MORTGAGE SPOUSE and CHARACTER 09 — FX-MORTGAGE CHILD in original view 7.
+Use CHARACTER 10 — BEGINNER-DANCE WOMAN in original view 9.
+Keep every referenced identity, age, hair, body proportions and context-appropriate wardrobe stable across all relevant cells.
 
 PURPOSE:
-Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+Build the reusable literal London-life memory source bank: Soho work/social life, cramped shared housing, ordinary relationship/dating moments and the contrast between visible profile data and the whole person.
 
-PAGE A OF MW02: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE A OF MW01: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
@@ -51,22 +48,22 @@ A video can use several world and memory pages within the same 30-second block. 
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
-Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-India / Agra bus interior. The protagonist sits among ordinary passengers while a woman speaks from behind or across the seat. Human proximity and voice are central; avoid iconic monument imagery and exoticized styling.
+The same restaurant / corridor zone around the wrong-lavatory memory. A believable restaurant passage with two ordinary restroom doors and the protagonist realizing he has gone toward the wrong one. Keep the moment human and mildly awkward, not comic slapstick.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-Cairo taxi interior with the protagonist sharing the ride with a Sudanese couple. Tight but ordinary vehicle interior, temporary trust between strangers, warm human realism.
+The SOHO WOMAN in the same Soho context giving a small genuine human smile toward the protagonist. Natural eye line, ordinary restaurant/street-adjacent environment, no romantic glamour.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-Airport/roadside continuation of the Cairo trip: luggage unexpectedly falls from the taxi roof and people react practically. Capture surprise and immediate problem-solving, not slapstick.
+Soho lunch memory with colleagues at a table eating while the protagonist sits with them and quietly pretends not to be hungry. Observational, restrained, no melodrama.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Direct literal travel memories only.
-No present-city reflection composite.
+Every cell is a DIRECT memory-world scene, never a reflection.
+No present London–Budapest hybrid city layer.
 No score cards.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:

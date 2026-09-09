@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: R028, R029
+Do not generate until these references are bound.
+
 REFERENCE ROLES:
 @UNBOUND_R028 supplies the actual original arch and fanlight.
 @UNBOUND_R029 supplies the supported canopy destination. Use object geometry, not the source images camera positions.

@@ -1,23 +1,13 @@
+REFERENCE SETUP INCOMPLETE: MWP01
+Do not generate until these references are bound.
+
 PAGE CONTINUITY INPUT: @UNBOUND_MWP01 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
 
-OUTPUT GEOMETRY — NON-NEGOTIABLE:
-Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS at the full output resolution selected in the generation controls.
-Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
-
-GRID GEOMETRY:
-3 equal columns × 3 equal rows across the entire 16:9 canvas.
-Each cell must be a TRUE 16:9 widescreen rectangle.
-DO NOT create a square 1:1 canvas.
-DO NOT create square cells.
-DO NOT place a square contact sheet inside a wider canvas.
-DO NOT add letterboxing or pillarboxing.
-The grid fills the entire canvas edge-to-edge.
-Outer margin: 0 pixels.
-Use only hairline 1–2 pixel gutters BETWEEN cells.
-No title, header, footer, caption band, legend, decorative border or layout labels.
+OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
+Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
 
 FUNCTION:
 This is a STORY-PRESERVATION MEMORY SOURCE BANK.
@@ -61,7 +51,7 @@ Ordinary health-insurance / administrative form with one clearly empty field whi
 
 FINAL CHECK:
 Exactly one 16:9 image.
-Exactly nine literal photographic memory cells.
+Exactly four literal photographic cells in a 4K 2×2 grid.
 No present-city reflection layer.
 No score cards.
 No explanatory captions.

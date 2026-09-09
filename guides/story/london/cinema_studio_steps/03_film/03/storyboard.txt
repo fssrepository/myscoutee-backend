@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: C22, MW03, MW03_B, MW03_C, MWP01, MWP01_B, MWP01_C, W03, W03_B, W03_C
+Do not generate until these references are bound.
+
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 @UNBOUND_MW03 supplies MW03 Page A (original views 1–4); @UNBOUND_MW03_B supplies Page B (5–8); @UNBOUND_MW03_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 @UNBOUND_MWP01 supplies MWP01 Page A (original views 1–4); @UNBOUND_MWP01_B supplies Page B (5–8); @UNBOUND_MWP01_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.

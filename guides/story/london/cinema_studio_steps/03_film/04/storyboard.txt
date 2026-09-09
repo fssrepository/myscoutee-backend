@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04, MW04_B, MW04_C, W04, W04_B, W04_C
+Do not generate until these references are bound.
+
 MEMORY REFERENCE PAGES — DIRECT SOURCES, NOT EDITS:
 @UNBOUND_MW04 supplies MW04 Page A (original views 1–4); @UNBOUND_MW04_B supplies Page B (5–8); @UNBOUND_MW04_C supplies Page C (9, 1, 7, 8). Use the original-view assignment to select the actual place/event, not the sheet layout.
 Several pages may support the same block or remembered place. Reconstruct the people, objects, supports and entry/exit geometry at life size while following this video’s existing continuous route. Never switch scenes because a cell or page changes. Current-city cards remain on current people; remembered people have none. HRW07 pages remain exclusive to Block 07 and its scripted tiny fragments/final hard cut.

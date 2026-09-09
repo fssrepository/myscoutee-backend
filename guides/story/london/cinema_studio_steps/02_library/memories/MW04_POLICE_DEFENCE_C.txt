@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: C03, C04, C26, MW04
+Do not generate until these references are bound.
+
 PAGE CONTINUITY INPUT: @UNBOUND_MW04 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:

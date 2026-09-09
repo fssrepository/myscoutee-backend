@@ -14,13 +14,13 @@ A “view” is a stable identity from the previous world plan, not the new page
 
 | World | Page A | Page B | Page C |
 | --- | --- | --- | --- |
-| W01 | [W01_MAIN_WORLD.txt](W01_MAIN_WORLD.txt) | [Page B](W01_MAIN_WORLD_B.txt) | [Page C](W01_MAIN_WORLD_C.txt) |
-| W02 | [W02_MAIN_WORLD.txt](W02_MAIN_WORLD.txt) | [Page B](W02_MAIN_WORLD_B.txt) | [Page C](W02_MAIN_WORLD_C.txt) |
-| W03 | [W03_MAIN_WORLD.txt](W03_MAIN_WORLD.txt) | [Page B](W03_MAIN_WORLD_B.txt) | [Page C](W03_MAIN_WORLD_C.txt) |
-| W04 | [W04_MAIN_WORLD.txt](W04_MAIN_WORLD.txt) | [Page B](W04_MAIN_WORLD_B.txt) | [Page C](W04_MAIN_WORLD_C.txt) |
-| W05 | [W05_MAIN_WORLD.txt](W05_MAIN_WORLD.txt) | [Page B](W05_MAIN_WORLD_B.txt) | [Page C](W05_MAIN_WORLD_C.txt) |
-| W06 | [W06_MAIN_WORLD.txt](W06_MAIN_WORLD.txt) | [Page B](W06_MAIN_WORLD_B.txt) | [Page C](W06_MAIN_WORLD_C.txt) |
-| W07 | [W07_MAIN_WORLD.txt](W07_MAIN_WORLD.txt) | [Page B](W07_MAIN_WORLD_B.txt) | [Page C](W07_MAIN_WORLD_C.txt) |
+| W01 | [W01_MAIN_WORLD_A.txt](W01_MAIN_WORLD_A.txt) | [Page B](W01_MAIN_WORLD_B.txt) | [Page C](W01_MAIN_WORLD_C.txt) |
+| W02 | [W02_MAIN_WORLD_A.txt](W02_MAIN_WORLD_A.txt) | [Page B](W02_MAIN_WORLD_B.txt) | [Page C](W02_MAIN_WORLD_C.txt) |
+| W03 | [W03_MAIN_WORLD_A.txt](W03_MAIN_WORLD_A.txt) | [Page B](W03_MAIN_WORLD_B.txt) | [Page C](W03_MAIN_WORLD_C.txt) |
+| W04 | [W04_MAIN_WORLD_A.txt](W04_MAIN_WORLD_A.txt) | [Page B](W04_MAIN_WORLD_B.txt) | [Page C](W04_MAIN_WORLD_C.txt) |
+| W05 | [W05_MAIN_WORLD_A.txt](W05_MAIN_WORLD_A.txt) | [Page B](W05_MAIN_WORLD_B.txt) | [Page C](W05_MAIN_WORLD_C.txt) |
+| W06 | [W06_MAIN_WORLD_A.txt](W06_MAIN_WORLD_A.txt) | [Page B](W06_MAIN_WORLD_B.txt) | [Page C](W06_MAIN_WORLD_C.txt) |
+| W07 | [W07_MAIN_WORLD_A.txt](W07_MAIN_WORLD_A.txt) | [Page B](W07_MAIN_WORLD_B.txt) | [Page C](W07_MAIN_WORLD_C.txt) |
 
 ## Existing images and actual references
 

@@ -1,3 +1,6 @@
+REFERENCE SETUP INCOMPLETE: C11, C16, C17, C18, C19, C20, C21, MW02
+Do not generate until these references are bound.
+
 PAGE CONTINUITY INPUT: @UNBOUND_MW02 supplies the accepted Page A identities, shared material palette and any recurring room geometry. New places explicitly assigned to this page retain their own stated setting; do not copy Page A into every cell.
 
 REFERENCE INPUTS:

@@ -1,12 +1,14 @@
+REFERENCE SETUP INCOMPLETE: C04, C27, C31
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
-@loc_MYS_pilot-soho-restaurant-memory_s1_v1 = accepted Soho restaurant source, reused for original view 1–3. Preserve this exact room, warm lighting, modest wooden table, two restroom doors and the seated woman / remembered man arrangement when framing those details. These cells are different views of the accepted place, not a newly designed restaurant. Character references retain their identity roles.
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
-@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
-@UNBOUND_C06 = CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE; exact person identity; use only where this person appears.
-@UNBOUND_C07 = CHARACTER 07 — FX-MORTGAGE HOUSEMATE; exact person identity; use only where this person appears.
-@UNBOUND_C08 = CHARACTER 08 — FX-MORTGAGE SPOUSE; exact person identity; use only where this person appears.
-@char_mys_fx-mortgage-child_s1_v1 = CHARACTER 09 — FX-MORTGAGE CHILD; exact person identity; use only where this person appears.
-@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
+@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
+@char_mys_court-clerk_s5_v1 = CHARACTER 30 — COURT CLERK; exact person identity; use only where this person appears.
+@UNBOUND_C31 = CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -28,16 +30,16 @@ Each cell must be a usable literal location/event reference, not an illustration
 
 IDENTITY ANCHORS — REQUIRED:
 Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 02 — SOHO WOMAN in original view 3 and any direct Soho-woman recurrence.
-Use CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE in original view 6.
-Use CHARACTER 07 — FX-MORTGAGE HOUSEMATE, CHARACTER 08 — FX-MORTGAGE SPOUSE and CHARACTER 09 — FX-MORTGAGE CHILD in original view 7.
-Use CHARACTER 10 — BEGINNER-DANCE WOMAN in original view 9.
-Keep every referenced identity, age, hair, body proportions and context-appropriate wardrobe stable across all relevant cells.
+Use CHARACTER 04 — APPOINTED LAWYER where relevant.
+Use CHARACTER 27 — JUDGE in the court-hearing memory.
+Use CHARACTER 28 — FORENSIC EXPERT A and CHARACTER 29 — FORENSIC EXPERT B together in the two-expert examination memory.
+Use CHARACTER 30 — COURT CLERK in the recording/evidence-request memory.
+Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
 
 PURPOSE:
-Build the reusable literal London-life memory source bank: Soho work/social life, cramped shared housing, ordinary relationship/dating moments and the contrast between visible profile data and the whole person.
+Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
 
-PAGE A OF MW01: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE A OF MW05: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
@@ -45,22 +47,22 @@ A video can use several world and memory pages within the same 30-second block. 
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
-Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
+Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-The same restaurant / corridor zone around the wrong-lavatory memory. A believable restaurant passage with two ordinary restroom doors and the protagonist realizing he has gone toward the wrong one. Keep the moment human and mildly awkward, not comic slapstick.
+Questions about the Budapest apartment, belongings, savings and what else the protagonist owns. Show an ordinary hearing/desk context with small visual inserts of home/property only as literal items being discussed, not a crime montage.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-The SOHO WOMAN in the same Soho context giving a small genuine human smile toward the protagonist. Natural eye line, ordinary restaurant/street-adjacent environment, no romantic glamour.
+Retained devices/belongings: phone, laptop, storage media or personal property handled in ordinary evidence/property boxes or administrative packaging. No thriller evidence wall.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-Soho lunch memory with colleagues at a table eating while the protagonist sits with them and quietly pretends not to be hungry. Observational, restrained, no melodrama.
+'Person becomes file' reference: photograph, fingerprint sheet, signature, forms and closed folder arranged on a desk while the protagonist is physically present but visually less dominant.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Every cell is a DIRECT memory-world scene, never a reflection.
-No present London–Budapest hybrid city layer.
+Direct literal court/file/black-humour memories only.
+No present-city reflection composite.
 No score cards.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:

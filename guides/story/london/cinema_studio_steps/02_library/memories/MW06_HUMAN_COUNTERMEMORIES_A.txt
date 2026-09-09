@@ -1,9 +1,18 @@
+REFERENCE SETUP INCOMPLETE: C03, C04, C11, C16, C17, C27
+Do not generate until these references are bound.
+
 REFERENCE INPUTS:
 @char_mys_protagonist_s1_v1 = CHARACTER 01 — PROTAGONIST; exact person identity; use only where this person appears.
+@char_mys_soho-woman_s1_v1 = CHARACTER 02 — SOHO WOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C03 = CHARACTER 03 — POLICEWOMAN; exact person identity; use only where this person appears.
 @UNBOUND_C04 = CHARACTER 04 — APPOINTED LAWYER; exact person identity; use only where this person appears.
-@char_mys_search-officer-male_s4_v1 = CHARACTER 25 — SEARCH OFFICER — MALE; exact person identity; use only where this person appears.
-@UNBOUND_C26 = CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE; exact person identity; use only where this person appears.
+@char_mys_beginner-dance-woman_s1_v1 = CHARACTER 10 — BEGINNER-DANCE WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C11 = CHARACTER 11 — RUSSIAN TRANSIT PASSENGER; exact person identity; use only where this person appears.
+@UNBOUND_C16 = CHARACTER 16 — BALLOON LOCAL HELPER — MAN; exact person identity; use only where this person appears.
+@UNBOUND_C17 = CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN; exact person identity; use only where this person appears.
+@UNBOUND_C27 = CHARACTER 27 — JUDGE; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-a_s5_v1 = CHARACTER 28 — FORENSIC EXPERT A; exact person identity; use only where this person appears.
+@char_mys_forensic-expert-b_s5_v1 = CHARACTER 29 — FORENSIC EXPERT B; exact person identity; use only where this person appears.
 
 OUTPUT GEOMETRY — ONE 4K 2×2 REFERENCE PAGE:
 Generate ONE photographic 3840×2160 widescreen 16:9 image. Exactly FOUR equal edge-to-edge 1920×1080 cells in a 2×2 grid, without gutters, margins, letterboxing, labels, headings or captions. Select 4K for the entire output. Cell order is top-left, top-right, bottom-left, bottom-right. This is one image output, not four separate jobs.
@@ -24,17 +33,21 @@ Keep this source image sharp and literal so faces, furniture and room layout rem
 Each cell must be a usable literal location/event reference, not an illustration of an idea.
 
 IDENTITY ANCHORS — REQUIRED:
-Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
-Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially original view 6 and 9.
-Use CHARACTER 04 — APPOINTED LAWYER only where that recurring lawyer is intended.
-Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
-Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in original view 7.
-Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
+Use CHARACTER 01 — PROTAGONIST.
+Use CHARACTER 02 — SOHO WOMAN in original view 1.
+Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in original view 2.
+Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in original view 3.
+Use CHARACTER 03 — POLICEWOMAN in original view 4.
+Use CHARACTER 04 — APPOINTED LAWYER in original view 5.
+Use CHARACTER 27 — JUDGE and/or CHARACTER 28–29 — FORENSIC EXPERTS in original view 6 as specified by the selected memory.
+Use CHARACTER 10 — BEGINNER-DANCE WOMAN in original view 7.
+Keep every identity consistent with its original MEMORY WORLD version. Do not create replacement faces.
 
 PURPOSE:
-Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
+Create one compact reusable source bank for the late-film memory crescendo, so STORYBOARD 06 / video generation can use ONE memory reference instead of attaching many different memory-world sheets at once.
+These are not new events. They are clean re-stagings of already established literal memories in which ordinary humanity briefly breaks through a role, route or system.
 
-PAGE A OF MW04: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
+PAGE A OF MW06: This page contains original views 1, 2, 3, 4. Original-view numbers below are provenance identifiers, not cell positions. Render ONLY the four cell assignments on this page. Global identity rules apply only when their person actually occurs in an assigned view.
 
 REFERENCE COVERAGE FOR THE MOVING FILM:
 This page supplies the four assigned literal views, not four cuts, morph stages or interchangeable world designs. Make each view useful for its assigned purpose: room layout shows supports and an entry/exit; a gesture view retains its hand, furniture edge and background anchor; an object detail shows side/underside and contact. Different views of the SAME room preserve its floor plan, furniture, identities, clothes and light sources even when the viewpoint changes. Distinct memories remain distinct places; do not fuse them into one room to match the grid. Repeated anchor views on another page must preserve the same state and layout.
@@ -42,22 +55,22 @@ A video can use several world and memory pages within the same 30-second block. 
 
 FOUR ASSIGNED CELLS:
 CELL 1 — TOP-LEFT — ORIGINAL VIEW 01:
-Apartment-entry memory before the search: ordinary residential door/intercom context, someone outside announces themselves as a postman and the door is opened. Do not render the spoken word as a caption.
+SOHO WOMAN's small genuine smile toward the protagonist in the established Soho context.
 
 CELL 2 — TOP-RIGHT — ORIGINAL VIEW 02:
-Immediate continuation: ordinary police officers enter the apartment after the door opens. Calm procedural movement, no tactical-raid spectacle, no weapons emphasis.
+Russian/local passenger calmly using a travel pass to help the protagonist through the transit gate.
 
 CELL 3 — BOTTOM-LEFT — ORIGINAL VIEW 03:
-Apartment search in progress. Officers inspect ordinary rooms and belongings while the protagonist is present. Real domestic space, restrained procedure, no evidence-wall aesthetic.
+Hot-air-balloon / vegetable-plot cooperation: hands and people helping one another solve the landing problem.
 
 CELL 4 — BOTTOM-RIGHT — ORIGINAL VIEW 04:
-Search moment in which one officer is visibly speaking the remembered line about looking for cocaine. Do not place dialogue text on screen; the scene remains ordinary and procedural, with no drug glamorization.
+POLICEWOMAN or another officer giving an embarrassed small human smile / struggling not to laugh during an otherwise formal procedure.
 
 FINAL CHECK:
 Exactly one 16:9 image.
 Exactly four 1920×1080 photographic cells on this 3840×2160 2×2 page.
-Direct literal police/defence memories only.
-No present-city reflection composite.
+These are direct memory scenes, not reflections and not a collage.
+No present-city layer.
 No score cards.
 
 SPATIAL INFORMATION FOR LATER EMBODIED MEMORY:
