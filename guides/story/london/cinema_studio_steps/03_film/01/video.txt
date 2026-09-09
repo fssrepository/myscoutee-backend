@@ -1,0 +1,62 @@
+MYSCOUTEE — BLOCK 01 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Open in motion, already tracking the walking protagonist through wet Soho.
+
+REFERENCES
+@W01_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
+@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C02_SOHO_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C07_FX_MORTGAGE_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C08_FX_MORTGAGE_SPOUSE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C09_FX_MORTGAGE_CHILD = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB01_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A01_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 2: During the lateral approach, one Piccadilly upper facade visibly articulates from London brick and cornices into Andrássy-style Pest limestone and balconies. Window bays slide into their new spacing; stone joints, shadows and wet reflections follow. Eros and the pavement remain fixed.
+Each fast movement lands on a readable human beat before the next surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. The protagonist has no readable self-card yet.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Opening low forward tracking in wet hybrid Soho. The protagonist walks naturally through a real crowd. St Stephen's Basilica terminates a London street axis; KÖNYV/KÁVÉ signage and a yellow tram already exist inside Soho. Nobody reacts. Cards are already normally visible in their restrained translucent baseline state; they register without demanding attention.
+
+FRAME 2 — Wider Piccadilly Circus continuity with Eros clearly present. A red bus, yellow tram and black taxi move normally through the junction. Two pedestrians glance at each other; the viewed person's normally visible card takes on a slightly fuller internal light/fill for only a moment, then returns to normal.
+
+FRAME 3 — Lateral move beside a black taxi. In its rain-covered side window, a literal Soho restaurant/sushi memory appears: the wrong-lavatory moment and the SOHO WOMAN briefly visible with a small human smile. Keep current Piccadilly/Soho reflection layered on the glass.
+
+FRAME 4 — Large shopfront glass. Literal Soho lunch memory: the protagonist sits with colleagues while they eat; he quietly pretends he is not hungry. No melodrama. Present rain and London–Budapest reflection remain visible.
+
+FRAME 5 — Yellow tram side windows. Literal shared-London-house memory: a cramped room containing many Hungarian adult housemates, compressed domestic space, shoes and belongings. In an adjacent tram pane, preserve the DIFFERENT-SNORE memory: the same cramped bedroom at night, but one sleeping place has been silently replaced by another adult silhouette / housemate, furniture more stable than the people. Present tram frame and city reflection remain clear.
+
+FRAME 6 — Adjacent tram/bus pane. Literal foreign-currency-mortgage housemate memory: one Hungarian man living abroad while spouse/child/home obligations remain in Hungary. Show a small ordinary domestic/family fragment, not explanatory text.
+
+FRAME 7 — Cinema/theatre glass in Leicester. Literal dating memory: same photograph, phone/profile age field changes visually from 37 to 33; the human face does not change. Keep the phone/profile small inside the reflected memory and avoid UI spectacle.
+
+FRAME 8 — Camera arcs around the protagonist through the Leicester crowd. Several people look at one another; viewed cards take on and release a slightly fuller internal light/fill asynchronously. Nobody is the sole observer. The Kossuth-style monument and Hungarian cultural block remain in the current city. Two small secondary panes preserve earlier human thresholds: the fluorescent workers'-hostel corridor / closed door, and the canal-side shared-house entrance crowded with shoes against the open Lee Valley-like water and reeds.
+
+FRAME 9 — Wide Haymarket/Trafalgar-edge continuation. Red bus, yellow tram, black taxi, Eros/West-End depth and multiple wet panes coexist. The memories dim back into normal city reflections. The protagonist keeps walking.
+
+AUDIO
+Use @A01_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+rainy Soho / West End city bed, wet tyre hiss, distant red-bus brakes, soft tram rail noise, footsteps on wet stone.
+Piccadilly opens wider; crowd wash, one restrained tram bell, traffic moves past without a dramatic hit.
+taxi-window memory zone; very soft restaurant cutlery/glass clink and indoor room tone heard as if behind wet glass, while current rain remains audible.
+café/lunch ambience briefly joins the city bed, muffled and memory-like, never louder than narration.
+tram movement and soft rail squeal under a short enclosed shared-house room tone; for one brief beat a DIFFERENT SNORE is heard from the replaced sleeping arrangement, then it is swallowed by tram/city sound. No intelligible speech.
+return to clean wet-city ambience, with two almost subliminal threshold textures from the reflections: fluorescent hostel-corridor hum / door latch, then open canal-side air and distant reeds before bus/tram/taxi movement and footsteps take over again.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

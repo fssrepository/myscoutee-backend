@@ -1,0 +1,54 @@
+Create ONE SINGLE simplified FILM-PRODUCTION LOCATION PLAN.
+
+Use the SAME locked graphic language for every location plan in this project:
+- simple slightly oblique architectural block model, approximately 70–75 degrees downward,
+- clean simplified building masses and street footprints,
+- ONE continuous exterior pedestrian line as the dominant graphic element,
+- transport shown only as simple street/rail geometry,
+- selected Hungarian replacement blocks recognizable mainly through simplified silhouette/massing,
+- no photorealistic façades,
+- no Google Maps 3D look,
+- no satellite look,
+- no videogame city,
+- no decorative city render,
+- no legend box,
+- no paragraph text,
+- no camera labels,
+- no lighting labels,
+- no crowd labels,
+- no explanatory captions,
+- no large title band.
+
+CANVAS:
+The plan itself fills the complete final canvas edge-to-edge.
+Outer margin: 0 pixels.
+No surrounding grey/white/black presentation border.
+
+WALK:
+Show ONE uninterrupted pedestrian path.
+The path always stays on exterior public pavement, public crossings, open pedestrian passages, bridges, plazas or river walks.
+It never enters a building footprint, office, house, station platform, police room, courtroom or clinical space.
+Use a small start dot and small end dot only; no arrowheads and no written start/end labels.
+
+TEXT:
+Prefer no visible text at all.
+Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
+The recognizable geometry and building silhouettes carry the information.
+
+CITY LOGIC:
+London provides the street/river/bridge geometry.
+Budapest/Hungary appears as selected replacement blocks and transit infrastructure inside that geometry.
+Keep the model simple: block massing + streets + one walk line.
+
+LOCATION-SPECIFIC GEOMETRY:
+Build a compressed but walkable Central London block structure beginning in narrow Soho / Brewer / Old Compton geometry, opening into the wide radial junction of Piccadilly Circus, continuing through Coventry Street / Leicester Square pedestrian blocks and ending at Haymarket / Trafalgar edge.
+Preserve Eros as a small recognizable Piccadilly massing anchor.
+Include four visually distinct Hungarian replacement masses along the London blocks: a St Stephen's Basilica dome/twin-tower sightline block, an Andrássy-style curved palatial block, a Budapest National Theatre-inspired cultural block and a Kossuth-style civic-monument plaza element.
+Show a simple surface tram line, bus-capable main streets and taxi-capable roads, secondary to the walking path.
+The pedestrian line follows real-feeling pavements and crossings from Soho to the Trafalgar-side exit.
+
+FINAL CHECK:
+Exactly one simple block-model location plan.
+0 px outer margin.
+One continuous exterior walking line.
+No legend, captions, camera graphics or Google-Maps-style detail.

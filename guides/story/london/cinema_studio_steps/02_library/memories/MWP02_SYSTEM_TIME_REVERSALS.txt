@@ -1,0 +1,55 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+0 px outer margin. Image content touches all four outer edges.
+Only 1–2 px internal gutters between cells.
+Every cell is a literal photorealistic source scene, not a symbolic poster or infographic.
+
+PURPOSE — GALA ABSTRACTION LOCK:
+This is a STORY-PRESERVATION SOURCE BANK for the late moment when one private life collides with institutional time.
+The autobiographical STRUCTURE is preserved, but every contemporary political identifier is removed.
+Do NOT name or depict a real officeholder, party, named high-state body, international public-affairs body, named tax regime or identifiable current public event.
+These cells are not proof of causation and must not imply that the protagonist caused any later institutional change.
+
+REFERENCE RULE:
+Use the supplied protagonist reference only where the protagonist is visible.
+All officials, senior officeholders and institutional staff remain fictional, anonymous and non-identifiable. No additional real-public-figure reference is required.
+
+VISUAL LANGUAGE:
+Photorealistic live-action institutional realism.
+Ordinary paper, laptops, offices, review-room furniture and administrative architecture rather than symbolic fantasy.
+No news-graphics collage, campaign material, national insignia, parliamentary imagery, falling-head montage, propaganda poster or coup imagery.
+All destination names, regime names, office titles and document text remain unreadable or invented.
+
+NINE CELLS:
+
+Cell 1 — Ordinary protagonist desk / home-paperwork memory after a REQUEST FOR RELIEF IS REFUSED. A restrained generic refusal letter and envelope sit among the protagonist's existing case papers. The protagonist is present at human scale. No named office, no portrait, no triumph or rage, and no invented reason for the refusal.
+
+Cell 2 — Revised relief papers prepared later and deliberately set aside for a LATER INSTITUTIONAL OPENING. Show an ordinary dated document stack, envelope and neutral routing note indicating "hold / submit later" without naming an officeholder, ministry, government or real institution.
+
+Cell 3 — TWO LETTERS TO ONE DISTANT DOOR, FROM BELOW: the protagonist at an ordinary laptop/desk sending his own submission to an unnamed external review body. A small clock/time cue may suggest an ordinary afternoon send. This is the from-below image: one citizen, ordinary room, laptop, documents, no heroic staging.
+
+Cell 4 — TWO LETTERS TO ONE DISTANT DOOR, FROM ABOVE: an anonymous senior-institution desk where a different formal question is being prepared or sent to the SAME unnamed external review body. No identifiable officeholder is visible; use only hands, restrained stationery and generic institutional architecture.
+
+Cell 5 — The two distinct submissions made visually comparable without claiming causation: one ordinary citizen-side document/laptop source and one anonymous senior-institution source reach the SAME unreadable external review destination. Keep them clearly separate, equal in destination but radically different in scale and authority. No arrows, no cause/effect graphic, no named body.
+
+Cell 6 — REVIEW CHAMBER WITHOUT A QUORUM: a formal high-review room in which enough participants have stepped aside that the body cannot assemble to hear the question. Do not use an exact real-world seat count, robes, flags, court names, emblems or identifiable judges. The image is simply an unanswered room.
+
+Cell 7 — ONE CITIZEN / LAPTOP / REVIEW ROUTE FROM BELOW: the protagonist alone at an ordinary desk with a laptop, an ordinary document cursor and review papers, while the route stops before substantive consideration. Keep the ordinary document interface small; the human and the unanswered door are the point.
+
+Cell 8 — BLACK-HUMOUR TIMING ECHO: an earlier self-made note on the protagonist's desk carries the absurd tone of declaring an institution "fired"; nearby, later anonymous office-turnover traces appear — a removed nameplate, cleared desk or changed seating plan. Do not show news, campaign material, identifiable people or imply prediction, authority or causation. The irony is timing only.
+
+Cell 9 — EMPTY CHAIR HIGH IN THE SYSTEM: an anonymous formal senior-office chair stands empty after the office changes occupant. Restrained architecture, no portrait, flag, seal, title or recognizable seat of government. Quiet, institutional, non-triumphal. The chair is explicitly NOT a verdict in the protagonist's case; it only completes the structural irony that a request sent upward can remain still while the levels above it change.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine literal photographic source cells.
+No present-city reflection layer.
+No score cards.
+No real politician or identifiable public figure.
+No named contemporary public institution, officeholder, current event, tax regime or international body.
+No causal claim that the protagonist produced later institutional outcomes.
+No narrative element in this bank may be silently deleted merely because it is a micro-flash.

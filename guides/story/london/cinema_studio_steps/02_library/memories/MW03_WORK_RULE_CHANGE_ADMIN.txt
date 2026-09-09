@@ -1,0 +1,65 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 22 — ACCOUNTANT in accounting/delegation/repair scenes.
+Use CHARACTER 23 — ADMIN COLLEAGUE A and CHARACTER 24 — ADMIN COLLEAGUE B together with the protagonist in the three-people / no-shared-screen triangle.
+Do not redesign or substitute these people between cells. Other background office workers may remain anonymous. Nobody is visually coded as a villain.
+
+PURPOSE:
+Build the literal work/system memory source bank: cross-border remote work, long days, accounting delegation, forms, portal responsibility, inconsistent records and the low-trust triangle of three people without one shared screen.
+
+NINE CELLS:
+Cell 1 — Ordinary cross-border remote-work setup: protagonist on a professional call / computer task connected to an international contract. Real desk, laptop/monitor, notes, restrained workday atmosphere, no heroic tech montage.
+
+Cell 2 — Late long-workday memory suggesting 13–15-hour pressure: same ordinary workspace later in the day, tired posture, practical desk light, unfinished task, calendar and clock cues without melodrama.
+
+Cell 3 — Accounting/admin desk with invoice, calendar, printer, forms and ordinary paperwork while live work continues nearby. The need for professional delegation should be visible through context, not explanatory graphics.
+
+Cell 4 — The core 'three people / no shared screen' memory. Three people physically near one administrative problem, each looking at a different screen/document version. Clear triangular or three-way composition, no one malicious.
+
+Cell 5 — SMALL-WORKER TAX-RULE CHANGE memory expressed through an ordinary calendar/date, neutral administration-style notification/letter and a return/form that suddenly needs action or correction. Keep all regime names and most text unreadable; this is about a rule moving under ordinary work, not about politics.
+
+Cell 6 — Accountant / portal / delegated-action memory: hands, login screen, paperwork and responsibility passing between people. No cybersecurity holograms, no hacking visuals.
+
+Cell 7 — Repair attempt by phone: protagonist calls for clarification while another person checks a different record. Ordinary office/home-work setting, practical frustration, no shouting.
+
+Cell 8 — Multiple ordinary communication endpoints: desk phone, mobile, email/portal screen, printed form, different people each holding part of the process. Show fragmentation through physical objects, not abstract arrows.
+
+Cell 9 — Correction-chain memory: a previously inconsistent return/form, marked correction, resubmission or updated record, with the protagonist still trying to keep work and administration aligned. Grounded and procedural.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+Direct work/admin memories only.
+No present-city reflection composite.
+No score cards.

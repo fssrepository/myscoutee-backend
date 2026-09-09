@@ -1,0 +1,106 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 CINEMATIC STORYBOARD containing EXACTLY NINE equal frames.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each storyboard frame must therefore be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square storyboard frames.
+DO NOT place a square 3×3 contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The 3×3 grid itself must fill the entire 16:9 canvas edge-to-edge.
+Treat every cell as a real widescreen cinema frame intended to guide a 16:9 video shot.
+
+The nine frames occupy 100% of the final canvas and touch every outer edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN frames.
+No title band, no footer, no legend, no decorative frame, no explanatory text.
+The ONLY layout text allowed is one tiny simple frame number 1–9 in the upper-left corner of each frame.
+Normal in-world signage may appear where it belongs.
+
+REFERENCE USE:
+Use the supplied MAIN WORLD reference for the exact PHYSICAL PRESENT: current-city location, London–Budapest architecture, named Budapest anchors, lighting, weather, transport, glass/window geometry, wet surfaces and crowd continuity.
+
+Use the following separate MEMORY CONTENT reference(s):
+- HIDDEN REALITY WORLD 07 — CLINICAL ROOM / FINAL REVEAL ONLY
+- MEMORY PRESERVATION WORLD P01 — ROUTES / ROOMS / DOCUMENT THRESHOLDS (late memory-to-reality bridge)
+- MEMORY WORLD 01 — LONDON / SOCIAL / HOME / DATING (different-snore bedroom bridge only)
+- MEMORY WORLD 02 — GLOBAL ROUTES / HUMAN ENCOUNTERS (balloon-cooperation bridge only)
+
+MEMORY-COMPOSITING RULE:
+The MEMORY WORLD controls ONLY the remembered location/event, people, wardrobe, props and action.
+The selected memory is a short LIVING MOVING VIDEO FRAGMENT inside the surface — animate its people, objects and environment naturally for the brief beat; never leave it as a frozen still image or static projection.
+Do NOT copy the MEMORY WORLD 3×3 layout into the shot.
+Select only the relevant remembered scene/cell and place that literal scene INSIDE the real reflective/transparent surface already present in the MAIN WORLD.
+The MAIN WORLD still controls the window/pane frame, vehicle body, rain droplets, wet surface, current-city reflection and surrounding physical street.
+Keep at least some present-city reflection / rain / pane boundary readable so the viewer understands that the memory exists inside a real surface rather than replacing the current city.
+
+Use the supplied PROTAGONIST reference as the exact protagonist identity.
+
+CHARACTER REFERENCES FOR THIS BOARD — REQUIRED WHEN THEIR PERSON APPEARS:
+- CHARACTER 01 — PROTAGONIST
+- CHARACTER 05 — FINAL NURSE
+- CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE for the different-snore bridge
+- CHARACTER 16 — BALLOON LOCAL HELPER — MAN for the balloon-hand bridge
+- CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN for the balloon-hand bridge
+Do not replace a referenced person with a newly invented face.
+
+Keep protagonist face, age, body and hair identical. Current-city clothing follows the protagonist reference; remembered clothing may follow the period/context established by the MEMORY WORLD.
+
+PHYSICAL PRESENT:
+The protagonist is on ONE uninterrupted exterior walk through the London–Budapest dream city.
+Present-day city remains physically visible in every dream-city frame.
+He does not physically enter the remembered house, office, police room, lawyer room, courtroom or foreign-trip location.
+Literal memories appear only INSIDE real reflective / transparent surfaces: taxi windows, bus windows, tram windows, shopfront/cultural/entrance glass, wet polished stone or puddles.
+A memory can occupy a pane strongly, but the window frame, rain or some present-city reflection remains readable around/through it.
+Memory order is emotional, not chronological. Memory edits without asking permission.
+
+SCORE-CARD LAYER:
+Cards are intentionally uncomfortable SYSTEM-world classification, not a MyScoutee product interface.
+Every card is a clearly visible but restrained rounded translucent form positioned ABOVE its person's head, horizontally centered over the crown with a small but unmistakable gap of clear air between the card and the hair/head. It must never overlap the forehead, eyes, face, hair, head silhouette or body; never place it inside the face, beside the torso or floating elsewhere without a person anchor. The card tracks with that person as they move and remains physically imperfect like a reflection/lens artefact, not a crisp HUD.
+A tiny one/two-digit trace may exist but should usually be defocused.
+Cards are ALWAYS visibly present at a normal restrained translucent baseline, even when nobody is looking at that person. Everyone can judge everyone: when one person directly looks at another, the VIEWED person's ABOVE-HEAD card briefly gains a slightly fuller internal light/fill and becomes only a little easier to read, asynchronously, then eases back to the same normal baseline after the gaze passes. The gaze event enhances an already-visible card; it does not create the card from nothing. Do not use a flare, hard glow, or large opacity jump.
+Do not use flags, ethnicity stereotypes or face-based nationality coding.
+Do not bake cards into mirrors as independent floating screens; each card belongs only to its anchored person in the current dream city and stays above that person's head.
+
+VISUAL STYLE:
+Photorealistic live-action European feature film.
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+No static slideshow feeling, no 2.5D, no game engine, no uniform psychedelic color filter, no fantasy glow, no obvious sci-fi UI.
+Memories are literal events, not metaphors.
+
+CARD INTENSITY FOR THIS BLOCK:
+At the start, crowd cards and the protagonist's own card are equally clear. As the final glass reflection loses the city, reflected cards fade out one by one. In the clinical reality there are NO cards, contours or numbers.
+
+NINE ORDERED KEYFRAMES:
+FRAME 1 — Quieter Westminster / Whitehall exterior. The protagonist continues the same walk. Hungarian Parliament and a distant St Stephen's Basilica echo remain possible in separated sightlines. Cards are clearer but pedestrians are now more distant.
+
+FRAME 2 — A large dark street-facing pane first carries the literal Nile/Aswan hotel-window memory from MWP01: river light and the empty-half hotel room. For less than a second, the reflected water highlight bleaches into an ambiguous COLD WHITE CLINICAL LIGHT from the hidden-reality reference, then immediately returns to the normal city reflection. This is a memory-to-reality bridge, not a generic random white flash.
+
+FRAME 3 — Another passing window first catches the cramped shared-bedroom / DIFFERENT-SNORE memory from MEMORY WORLD 01. In the intended video, the snoring rhythm briefly becomes monitor-like for a single beat while only the edge of a WHITE COAT crosses the reflection, then everything immediately returns to the London–Budapest city. Do not show a complete clinical room.
+
+FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED / ELEVATED LEG, less than a second, still mixed with rain and current street reflection. Do not show a complete clinical room.
+
+FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
+
+FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still visibly present at the normal restrained baseline.
+
+FRAME 7 — Same glass surface, closer. Without fantasy effects, the reflected city loses information and the pane appears to show a cold ordinary clinical room directly behind him. The last reflected cards disappear. The protagonist turns. This is the last dream-city frame.
+
+FRAME 8 — HARD CUT to the real clinical room. Same protagonist, conscious, not waking up. One leg elevated and immobilized; one arm restrained. A calm ordinary NURSE is nearby preparing routine non-graphic equipment for an enema/endoscopy-related procedure. No horror, no gore, no supernatural quality, no cards. The nurse has a small ordinary human smile.
+
+FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. WITHIN THIS SAME HIGGSFIELD-GENERATED FINAL BLOCK, make a clean hard transition to black and render the final title exactly as two restrained centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. No external editor or later post-production title insertion. Do not turn this frame into a dream wake-up or explanatory ending.
+
+FINAL CHECK:
+Exactly one 16:9 final canvas with exactly nine equal numbered cinematic frames arranged 3×3.
+Every individual frame is a true 16:9 widescreen composition, never square or 1:1.
+0 px outer margin; only 1–2 px internal gutters.
+Use the nine frames as ordered temporal keyframes, not nine unrelated illustrations.
+The present remains one continuous exterior walk until the hard cut in STORYBOARD 07.
+
+ARCHITECTURAL TRANSFORMATION KEYFRAME
+Frame 1: One last upper facade lengthens and settles into Gresham/Pest stone as the camera decelerates. By the handle approach all architectural motion stops; the final dark-glass doorway stays rigid. After the clinical hard cut the camera and room are entirely still.
+The static board records stages of a moving sequence; never turn the finished film into nine held stills.

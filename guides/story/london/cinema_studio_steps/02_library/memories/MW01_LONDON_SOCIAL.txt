@@ -1,0 +1,67 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 02 — SOHO WOMAN in Cells 3 and any direct Soho-woman recurrence.
+Use CHARACTER 06 — SHARED-HOUSE SUBSTITUTE / SNORING HOUSEMATE in Cell 6.
+Use CHARACTER 07 — FX-MORTGAGE HOUSEMATE, CHARACTER 08 — FX-MORTGAGE SPOUSE and CHARACTER 09 — FX-MORTGAGE CHILD in Cell 7.
+Use CHARACTER 10 — BEGINNER-DANCE WOMAN in Cell 9.
+Keep every referenced identity, age, hair, body proportions and context-appropriate wardrobe stable across all relevant cells.
+
+PURPOSE:
+Build the reusable literal London-life memory source bank: Soho work/social life, cramped shared housing, ordinary relationship/dating moments and the contrast between visible profile data and the whole person.
+
+NINE CELLS:
+Cell 1 — Small realistic Soho sushi/restaurant interior during an ordinary evening. Compact London layout, warm practical light, tables close together, no glamour. The protagonist is present naturally.
+
+Cell 2 — The same restaurant / corridor zone around the wrong-lavatory memory. A believable restaurant passage with two ordinary restroom doors and the protagonist realizing he has gone toward the wrong one. Keep the moment human and mildly awkward, not comic slapstick.
+
+Cell 3 — The SOHO WOMAN in the same Soho context giving a small genuine human smile toward the protagonist. Natural eye line, ordinary restaurant/street-adjacent environment, no romantic glamour.
+
+Cell 4 — Soho lunch memory with colleagues at a table eating while the protagonist sits with them and quietly pretends not to be hungry. Observational, restrained, no melodrama.
+
+Cell 5 — Crowded low-cost London shared-house communal interior with many Hungarian adult housemates, compressed furniture, coats, shoes, bags and ordinary domestic clutter. It must feel inhabited, not dirty caricature.
+
+Cell 6 — Cramped shared bedroom from the same house at night: beds close together, limited personal space, one sleeping arrangement replaced by another adult silhouette in the same area, visually supporting the different-snore memory. No joke staging.
+
+Cell 7 — Ordinary memory of a Hungarian housemate living in London while spouse/child/home obligations remain in Hungary. Show a modest shared-room context with a family photograph / call / small domestic cue, not explanatory text and not a melodramatic separation scene.
+
+Cell 8 — Dating-profile memory: the SAME unchanged photograph appears while only the age field changes visibly from 37 to 33. Keep the device/profile interface small and realistic; the face itself must not change. This is the one cell where the numerals 37 and 33 may be clearly readable.
+
+Cell 9 — Beginner dance-floor / social-room memory: ordinary adults learning or dancing imperfectly, the protagonist participating without glamour or performance-show staging. Warm human context, natural awkwardness, possibility of connection without guaranteed romance.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+Every cell is a DIRECT memory-world scene, never a reflection.
+No present London–Budapest hybrid city layer.
+No score cards.

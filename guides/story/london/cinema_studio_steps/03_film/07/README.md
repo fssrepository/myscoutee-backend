@@ -1,0 +1,48 @@
+# Block 07 — 03:00–03:20
+
+Status: prepared prompt files; existing account media has not been checked. [Start](../../README.md).
+
+Seedance 2.5; 16:9; **20 s, 1080p target**, audio ON, one output.
+Duration means NEW added footage. Select the previous accepted video in the actual Forward Extend source field. A filename alone does not establish an extension. HRW07 and C05 enter video references only here. The man is conscious, not waking up. All transformation stops at the clinical cut.
+
+## Sequential preparation
+
+Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
+
+| Prompt | Required accepted references | Output name |
+| --- | --- | --- |
+| [W07](../../02_library/worlds/W07_MAIN_WORLD.txt) | None | `W07_MAIN_WORLD.png` |
+| [C05](../../02_library/characters/C05_FINAL_NURSE.txt) | None | `C05_FINAL_NURSE.png` |
+| [HRW07](../../02_library/memories/HRW07_CLINICAL_REALITY.txt) | C01, C05 | `HRW07_CLINICAL_REALITY.png` |
+| [SB07](storyboard.txt) | W07, HRW07, MWP01, MW01, MW02, C01, C05, C06, C16, C17 | `SB07_STORYBOARD.png` |
+| [A07](narration.txt) | None | `A07_NARRATION.wav` |
+| [V07](video.txt) | W07, HRW07, MWP01, MW01, MW02, C01, C05, C06, C16, C17, SB07, A07, V06 | `V07_MASTER_0320.mp4` |
+
+## Before video generation
+
+- [narration.txt](narration.txt) contains only spoken words: 33 whitespace-delimited tokens, original target 15–19 s, approximately 104–132 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
+- [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
+- All nine story beats remain. Fast camera movement and architectural transformation are already included.
+- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
+
+| ID | Actual media to select | Prompt alias to replace |
+| --- | --- | --- |
+| W07 | `W07_MAIN_WORLD.png` | `@W07_MAIN_WORLD` |
+| HRW07 | `HRW07_CLINICAL_REALITY.png` | `@HRW07_CLINICAL_REALITY` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
+| MW02 | `MW02_GLOBAL_ROUTES.png` | `@MW02_GLOBAL_ROUTES` |
+| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
+| C05 | `C05_FINAL_NURSE.png` | `@C05_FINAL_NURSE` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE` |
+| C16 | `C16_BALLOON_LOCAL_HELPER_MAN.png` | `@C16_BALLOON_LOCAL_HELPER_MAN` |
+| C17 | `C17_BALLOON_LOCAL_HELPER_WOMAN.png` | `@C17_BALLOON_LOCAL_HELPER_WOMAN` |
+| SB07 | `SB07_STORYBOARD.png` | `@SB07_STORYBOARD` |
+| A07 | `A07_NARRATION.wav` | `@A07_NARRATION` |
+
+## After generation
+
+Watch once with sound. Check all nine beats and their short secondary memories against the [story checklist](../../04_tracking/story_beats.csv). Verify identity, the exterior present, moving memories, correct narration and continuation of the previous camera/sound state where applicable. Keep the first usable take; name any missing story beat before considering a paid repair. Minor coherent generative irregularities are acceptable.
+
+`CHAIN` and `MASTER` names describe intended outputs. Treat an output as a cumulative master only if the actual native export contains all preceding footage and sound. A separate continuation segment is not that master.

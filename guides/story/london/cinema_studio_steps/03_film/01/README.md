@@ -1,0 +1,54 @@
+# Block 01 — 00:00–00:30
+
+Status: prepared prompt files; existing account media has not been checked. [Start](../../README.md).
+
+Seedance 2.5; 16:9; **30 s, 1080p target**, audio ON, one output.
+Complete the pilot and full-budget check first. Reuse accepted C01, C02 and W01 from the pilot. Accepted V01 becomes the final opening.
+
+## Sequential preparation
+
+Generate only missing media. Reuse accepted dependencies from prior blocks. Each row lists existing image/audio/video inputs, the complete `.txt` prompt to paste into the appropriate field, and the output name to assign after generation. Output filenames do not imply that local media already exists. One row means one output.
+
+| Prompt | Required accepted references | Output name |
+| --- | --- | --- |
+| [W01](../../02_library/worlds/W01_MAIN_WORLD.txt) | None | `W01_MAIN_WORLD.png` |
+| [C01](../../02_library/characters/C01_PROTAGONIST.txt) | None | `C01_PROTAGONIST.png` |
+| [C02](../../02_library/characters/C02_SOHO_WOMAN.txt) | None | `C02_SOHO_WOMAN.png` |
+| [C06](../../02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt) | None | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` |
+| [C07](../../02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt) | None | `C07_FX_MORTGAGE_HOUSEMATE.png` |
+| [C08](../../02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt) | None | `C08_FX_MORTGAGE_SPOUSE.png` |
+| [C09](../../02_library/characters/C09_FX_MORTGAGE_CHILD.txt) | None | `C09_FX_MORTGAGE_CHILD.png` |
+| [C10](../../02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt) | None | `C10_BEGINNER_DANCE_WOMAN.png` |
+| [MW01](../../02_library/memories/MW01_LONDON_SOCIAL.txt) | C01, C02, C06, C07, C08, C09, C10 | `MW01_LONDON_SOCIAL.png` |
+| [MWP01](../../02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt) | C01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` |
+| [SB01](storyboard.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09 | `SB01_STORYBOARD.png` |
+| [A01](narration.txt) | None | `A01_NARRATION.wav` |
+| [V01](video.txt) | W01, MW01, MWP01, C01, C02, C06, C07, C08, C09, SB01, A01 | `V01_CITY_JUDGES_FIRST.mp4` |
+
+## Before video generation
+
+- [narration.txt](narration.txt) contains only spoken words: 46 whitespace-delimited tokens, original target 23–27 s, approximately 102–120 words/minute. Keep the same male voice and exact wording. Follow the [voice plan](../../00_project/VOICE.md); a natural shorter recording is not an automatic failure.
+- [storyboard.txt](storyboard.txt) generates one 3×3 image. [video.txt](video.txt) generates one moving sequence. Never paste them together.
+- All nine story beats remain. Fast camera movement and architectural transformation are already included.
+- Select real media first. Replace every alias below with the actual reference token inserted by the UI. Do not assume an alias resolves automatically.
+- Enter the actual quote in the [credit ledger](../../04_tracking/credit_ledger.csv) and leave sufficient funds for the remaining film.
+
+| ID | Actual media to select | Prompt alias to replace |
+| --- | --- | --- |
+| W01 | `W01_MAIN_WORLD.png` | `@W01_MAIN_WORLD` |
+| MW01 | `MW01_LONDON_SOCIAL.png` | `@MW01_LONDON_SOCIAL` |
+| MWP01 | `MWP01_ROUTES_ROOMS_DOCUMENTS.png` | `@MWP01_ROUTES_ROOMS_DOCUMENTS` |
+| C01 | `C01_PROTAGONIST.png` | `@C01_PROTAGONIST` |
+| C02 | `C02_SOHO_WOMAN.png` | `@C02_SOHO_WOMAN` |
+| C06 | `C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png` | `@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE` |
+| C07 | `C07_FX_MORTGAGE_HOUSEMATE.png` | `@C07_FX_MORTGAGE_HOUSEMATE` |
+| C08 | `C08_FX_MORTGAGE_SPOUSE.png` | `@C08_FX_MORTGAGE_SPOUSE` |
+| C09 | `C09_FX_MORTGAGE_CHILD.png` | `@C09_FX_MORTGAGE_CHILD` |
+| SB01 | `SB01_STORYBOARD.png` | `@SB01_STORYBOARD` |
+| A01 | `A01_NARRATION.wav` | `@A01_NARRATION` |
+
+## After generation
+
+Watch once with sound. Check all nine beats and their short secondary memories against the [story checklist](../../04_tracking/story_beats.csv). Verify identity, the exterior present, moving memories, correct narration and continuation of the previous camera/sound state where applicable. Keep the first usable take; name any missing story beat before considering a paid repair. Minor coherent generative irregularities are acceptable.
+
+`CHAIN` and `MASTER` names describe intended outputs. Treat an output as a cumulative master only if the actual native export contains all preceding footage and sound. A separate continuation segment is not that master.

@@ -1,0 +1,76 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+CRITICAL ROLE:
+This is NOT a normal memory world. It is the hidden physical reality used ONLY in STORYBOARD 07 and the final video reveal.
+Do not reference or expose this world in STORYBOARD 01–06.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST as the exact patient identity.
+Use CHARACTER 05 — FINAL NURSE as the exact nurse identity.
+Do not substitute or redesign either person in the reveal.
+
+CLINICAL TONE:
+Ordinary contemporary European clinical room.
+Cold-neutral institutional light, practical equipment, clean but not futuristic.
+No horror, no gore, no sinister staff, no psychiatric-horror coding, no supernatural quality.
+The protagonist is conscious; he does NOT wake up.
+One leg is elevated and immobilized.
+One arm is restrained.
+The nurse is calm, competent and ordinary, with a small genuine everyday smile.
+Any enema/endoscopy-related preparation is routine and NON-GRAPHIC; no invasive detail.
+
+NINE CELLS:
+Cell 1 — Wide establishing view of the entire ordinary clinical room, showing bed, practical furniture, cold-neutral light and enough spatial layout for later shot continuity.
+
+Cell 2 — Medium-wide side view of the protagonist lying conscious in bed, one leg elevated/immobilized, body physically vulnerable but calm.
+
+Cell 3 — Close physical reference of the elevated/immobilized leg and supporting equipment, non-graphic and clinically ordinary.
+
+Cell 4 — Close physical reference of the restrained arm / metal restraint with white-sheet edge, non-graphic, no punishment aesthetic.
+
+Cell 5 — FINAL NURSE in the room preparing routine non-graphic clinical equipment for an enema/endoscopy-related procedure. Competent, ordinary, no menace.
+
+Cell 6 — Nurse close/medium reference with the small everyday human smile that can echo earlier institutional smiles.
+
+Cell 7 — Clinical white-coat / cold-light fragment composition designed so only a tiny crop could plausibly appear in a pre-reveal reflection without exposing the full room.
+
+Cell 8 — Fragment composition combining a small portion of elevated leg, white sheet and metal restraint, again suitable for a sub-second cropped pre-reveal glimpse while still originating from this real room.
+
+Cell 9 — Final restrained two-shot / eyeline composition: protagonist looks toward the nurse; she remains ordinary and human; room tone and stillness implied. This is the basis for the final hold before black.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+No score cards.
+No dream effects.
+No London–Budapest city.
+This reference is forbidden before STORYBOARD 07.

@@ -1,0 +1,44 @@
+Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
+
+EXACT LAYOUT:
+Three vertical photographic panels filling the complete canvas:
+LEFT = full-body FRONT view.
+CENTER = full-body BACK view.
+RIGHT = frontal CLOSE-UP HEADSHOT.
+
+The same exact person appears in all three panels.
+The studio background reaches all four physical canvas edges.
+No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
+Only hairline internal separators between the three panels.
+
+BACKGROUND / LIGHT:
+Seamless neutral MID-GREY professional casting/VFX studio background.
+Soft even neutral light, minimal soft floor shadow, neutral white balance.
+No city, no furniture, no story props, no cinematic environment.
+
+CONSISTENCY:
+Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
+Do not beautify or change age in the headshot.
+Natural skin texture and asymmetry.
+Accurate anatomy.
+
+CAMERA:
+Full-body panels approximately 50–70mm full-frame equivalent, complete body including shoes.
+Headshot approximately 85mm, upper shoulders upward.
+Technical identity asset, not a film scene.
+
+CHARACTER:
+Fictional British/European man, apparent age about 45–55, average height and ordinary professional build, intelligent slightly tired face, short dark or greying brown hair, natural age lines, calm restrained professional presence. Not a television-lawyer archetype, not sinister, not glamorous.
+
+Wardrobe: conservative dark charcoal/navy suit, pale shirt, muted understated tie, dark leather shoes, simple watch if visible. Slightly lived-in rather than fashion-perfect. No wig, no robe.
+
+Front view: neutral full-body professional posture.
+Back view: exact same suit and proportions.
+Headshot: direct frontal close-up, subtle tiredness, calm professional expression, natural skin texture.
+
+FINAL CHECK:
+One person only.
+Three panels only: front full-body / back full-body / frontal headshot.
+Same exact identity and wardrobe.
+Mid-grey background reaches the canvas edges.
+No title or outer frame.

@@ -1,0 +1,63 @@
+MYSCOUTEE — BLOCK 07 — 20 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W07_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@HRW07_CLINICAL_REALITY = clinical reality, only in the final reveal beats.
+@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
+@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
+@MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C05_FINAL_NURSE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C17_BALLOON_LOCAL_HELPER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB07_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A07_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 1: One last upper facade lengthens and settles into Gresham/Pest stone as the camera decelerates. By the handle approach all architectural motion stops; the final dark-glass doorway stays rigid. After the clinical hard cut the camera and room are entirely still.
+Movement drains away into stillness; do not sustain peak chaos through the clinical ending.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. His card starts as clear as nearby cards. Reflected cards disappear one by one near the final door; none remain in the real room.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Quieter Westminster / Whitehall exterior. The protagonist continues the same walk. Hungarian Parliament and a distant St Stephen's Basilica echo remain possible in separated sightlines. Cards are clearer but pedestrians are now more distant.
+
+FRAME 2 — A large dark street-facing pane first carries the literal Nile/Aswan hotel-window memory from MWP01: river light and the empty-half hotel room. For less than a second, the reflected water highlight bleaches into an ambiguous COLD WHITE CLINICAL LIGHT from the hidden-reality reference, then immediately returns to the normal city reflection. This is a memory-to-reality bridge, not a generic random white flash.
+
+FRAME 3 — Another passing window first catches the cramped shared-bedroom / DIFFERENT-SNORE memory from MEMORY WORLD 01. In the intended video, the snoring rhythm briefly becomes monitor-like for a single beat while only the edge of a WHITE COAT crosses the reflection, then everything immediately returns to the London–Budapest city. Do not show a complete clinical room.
+
+FRAME 4 — Final-building glass briefly contains a fragment of an IMMOBILIZED / ELEVATED LEG, less than a second, still mixed with rain and current street reflection. Do not show a complete clinical room.
+
+FRAME 5 — Another extremely short reflection begins with the literal hot-air-balloon / vegetable-plot cooperation: hands and rope solving the landing problem. For one beat, those helping hands visually match into hands touching a WHITE SHEET / METAL RESTRAINT edge from the hidden reality, then return to the street reflection. The reflected pedestrians' cards begin fading one by one as the protagonist nears the final doors.
+
+FRAME 6 — The protagonist stands immediately outside the broad dark-glass entrance. His hand approaches the real handle. The glass strongly reflects the hybrid city: red bus colour, yellow tram, black taxi, Pest stone, wet street. His own card is still visibly present at the normal restrained baseline.
+
+FRAME 7 — Same glass surface, closer. Without fantasy effects, the reflected city loses information and the pane appears to show a cold ordinary clinical room directly behind him. The last reflected cards disappear. The protagonist turns. This is the last dream-city frame.
+
+FRAME 8 — HARD CUT to the real clinical room. Same protagonist, conscious, not waking up. One leg elevated and immobilized; one arm restrained. A calm ordinary NURSE is nearby preparing routine non-graphic equipment for an enema/endoscopy-related procedure. No horror, no gore, no supernatural quality, no cards. The nurse has a small ordinary human smile.
+
+FRAME 9 — Quiet final hold in the same real room: protagonist looks toward the nurse, breathing/room-tone feeling, ordinary clinical reality. WITHIN THIS SAME HIGGSFIELD-GENERATED FINAL BLOCK, make a clean hard transition to black and render the final title exactly as two restrained centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. Do not turn this frame into a dream wake-up or explanatory ending.
+
+AUDIO
+Use @A07_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+the city is quieter now: rain, isolated footsteps, distant tram/traffic, more empty space between sounds. A very brief Nile/Aswan room-and-river ambience enters through the first reflection before the cold-white-light intrusion.
+the shared-bedroom DIFFERENT SNORE appears for a moment and its rhythm becomes monitor-like for a single ambiguous beat beneath the rain; an almost subliminal cold ventilation / fluorescent electrical hum accompanies the white-coat edge. Immediately return to city sound.
+balloon-rope / hand-effort / vegetation sound flashes for a moment, then matches into one faint metal contact and white-sheet/fabric movement while city ambience remains present. The connection is physical and brief, not a dream whoosh.
+final glass approach; footsteps stop, rain and reflected traffic thin rapidly, no dream whoosh and no horror rise.
+At the clinical HARD CUT: city/rain stop instantly. Replace them with flat real clinical room tone, ventilation, quiet breathing, bed linen, one small ordinary metal/equipment click.
+clinical ambience only under the end of narration. No sting, no heartbeat effect, no ominous music, no supernatural sound.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+Only this final block may show clinical fragments: brief light/coat/leg/restraint glimpses in beats 2–5; the full room appears in the glass in beat 7 immediately before the hard cut in beat 8. The man stays conscious; he does not wake up. Aim for the hard cut near 15s, an ordinary still human hold, then the last approximately 2s on black with two exact centered lines: MYSCOUTEE / THE PATH BETWEEN PEOPLE. City sound and score stop at the clinical cut; keep ordinary room tone. No morph, camera stunt or cards in the clinical room.

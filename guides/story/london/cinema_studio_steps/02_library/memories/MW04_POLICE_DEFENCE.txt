@@ -1,0 +1,67 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 03 — POLICEWOMAN for the recurring policewoman, especially Cells 6 and 9.
+Use CHARACTER 04 — APPOINTED LAWYER only where that recurring lawyer is intended.
+Use CHARACTER 25 — SEARCH OFFICER — MALE in the apartment-search sequence, especially the accidental-foot-step memory.
+Use CHARACTER 26 — DEFENCE-OFFICE SUBSTITUTE for the discontinuous appointed-defence handoff in Cell 7.
+Other background officers may remain anonymous, but do not replace or merge the fixed identities above.
+
+PURPOSE:
+Build the literal police/procedure memory source bank. The tone is ordinary institutional reality containing moments of vulnerability, confusion and humanity — not an action thriller and not a conspiracy tableau.
+
+NINE CELLS:
+Cell 1 — Apartment-entry memory before the search: ordinary residential door/intercom context, someone outside announces themselves as a postman and the door is opened. Do not render the spoken word as a caption.
+
+Cell 2 — Immediate continuation: ordinary police officers enter the apartment after the door opens. Calm procedural movement, no tactical-raid spectacle, no weapons emphasis.
+
+Cell 3 — Apartment search in progress. Officers inspect ordinary rooms and belongings while the protagonist is present. Real domestic space, restrained procedure, no evidence-wall aesthetic.
+
+Cell 4 — Search moment in which one officer is visibly speaking the remembered line about looking for cocaine. Do not place dialogue text on screen; the scene remains ordinary and procedural, with no drug glamorization.
+
+Cell 5 — Continuation in the apartment: an officer accidentally steps on the protagonist's recently operated foot. Sudden physical pain and vulnerability, no gore, no medical reveal, no exaggerated violence.
+
+Cell 6 — Fingerprinting / formal processing with the recurring POLICEWOMAN. The procedure is ordinary. Include the awkward contradiction of attraction / embarrassed human expression without romantic staging.
+
+Cell 7 — Appointed-defence discontinuity: a substitute/person from the defence office appears instead of the expected lawyer, or a handoff between defence contacts is visibly unclear. Show discontinuity, not villainy.
+
+Cell 8 — Attempts to reach police/prosecution/court/defence routes by phone and in corridors/offices. Different ordinary people redirect the protagonist; no one appears sinister.
+
+Cell 9 — Human break-through inside procedure: the POLICEWOMAN or another officer struggles not to laugh / gives a small embarrassed smile during a formal moment. Nothing procedural changes; the role and the person briefly coexist.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+Direct literal police/defence memories only.
+No present-city reflection composite.
+No score cards.

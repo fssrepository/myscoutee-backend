@@ -1,0 +1,64 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+FUNCTION:
+This is a STORY-PRESERVATION MEMORY SOURCE BANK.
+It restores short literal memories and threshold details that were present in the story-bible/addendum but were accidentally lost during later prompt simplification.
+These are NOT decorative inserts. They preserve the human biography that the system-world keeps trying to flatten.
+
+Show every memory DIRECTLY, as if the camera were physically inside that remembered place.
+DO NOT show the present London–Budapest dream city.
+DO NOT put these memories inside windows or reflections in this reference sheet.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO prompts may use these scenes as sub-second or short reflection memories.
+
+IDENTITY:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist is visible.
+Other incidental people may remain anonymous unless another canonical character reference is explicitly supplied in the final video block.
+
+VISUAL LANGUAGE:
+Photorealistic live-action realism.
+Literal ordinary environments and objects.
+No symbolic fantasy, no dream haze, no abstract graphics, no nostalgic glow.
+Human scale, practical light, believable wear and imperfection.
+
+NINE CELLS:
+
+Cell 1 — Budapest workers' hostel corridor at night, ordinary institutional fluorescent light, a closed room door and the protagonist forced to remain in the corridor after returning too late. Quiet, practical, lonely, not melodramatic.
+
+Cell 2 — Exterior of the low-rise shared London home beside canal / Lee Valley-like water and reeds. Several pairs of ordinary shoes crowd the entrance, visually connecting many Hungarian lives under one roof with the open landscape outside.
+
+Cell 3 — Rural field / corn-row memory: grounded agricultural rows leading the eye toward distance, the beginning of a route rather than a postcard landscape.
+
+Cell 4 — Trivandrum / Thiruvananthapuram airport or arrival-zone clock and ordinary travel threshold, luggage and fluorescent public architecture. This is the next literal route fragment after the field, not a graphic morph.
+
+Cell 5 — A rented-car key resting on an ordinary budget-hotel table during a self-organized journey. Include mundane travel objects such as folded route notes, receipts or a cheap room keycard; no luxury travel styling.
+
+Cell 6 — A phone displaying an ordinary camel photograph while airport/security personnel remain naturally visible in the remembered background. Keep the moment observational, not threatening and not exoticized.
+
+Cell 7 — Nile / Aswan hotel-room memory: a modest room prepared for two people but occupied by only the protagonist, with two sleeping places and a real window toward the river. The empty half of the room matters more than tourism spectacle.
+
+Cell 8 — Ordinary health-insurance / administrative form with one clearly empty field while the protagonist handles the paperwork. Keep most text unreadable; the missing field and human hand are the visual fact.
+
+Cell 9 — Education / belonging / record threshold: an ordinary diploma/certificate and supporting paperwork where a required language-exam stamp/credential is visibly absent, with the edge of later Brexit/work-coverage paperwork in the same physical document stack. No infographic, no accusatory montage.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine literal photographic memory cells.
+No present-city reflection layer.
+No score cards.
+No explanatory captions.
+These details exist to preserve biography, not to simplify it.

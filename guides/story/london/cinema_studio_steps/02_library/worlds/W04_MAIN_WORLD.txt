@@ -1,0 +1,92 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each photographic cell must therefore be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square 3×3 contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The 3×3 grid itself must fill the entire 16:9 canvas edge-to-edge.
+
+The nine photographic cells occupy 100% of the final canvas and touch all four physical canvas edges.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN adjacent cells.
+No title area, no header, no footer, no caption bands, no legend, no decorative framing, no unused space.
+Do not render cell numbers or layout labels.
+In-world shop, street and transit signage is allowed and REQUIRED where specified below.
+
+All nine cells depict the SAME continuous photorealistic London–Budapest dream metropolis at the SAME late rainy evening continuity.
+
+PHYSICAL-PRESENT RULE:
+Every camera position is outside in public pedestrian space: street, pavement, plaza, bridge, river walk, open-air or publicly open passage.
+The current camera never becomes an office-room camera, bedroom camera, police-room camera, courtroom camera or clinical-room camera.
+Interior depth may be visible THROUGH real street-facing glass, but only as architectural depth.
+No literal memory event is visible in this WORLD asset.
+
+CITY FUSION RULE:
+London must remain immediately recognizable through street geometry, road proportions, junctions, pavements, red double-decker buses, black taxis, London street furniture and landmark relationships.
+Budapest/Hungary must be equally unmistakable through EXPLICIT named architectural anchors, yellow Budapest trams, tram/trolley wires, Hungarian signage and selected Budapest buildings physically replacing or fusing with London blocks.
+Do not reduce Budapest to generic Central-European façades.
+Do not separate London and Budapest into different districts.
+Nobody reacts to the fusion.
+
+TRANSPORT:
+Use red London double-decker buses, black London taxis and yellow Budapest trams naturally.
+Tram rails share London road geometry; London road markings may cross the rails; Budapest tram/trolley wires attach directly to fused façades.
+At least one of the first six cells must show a substantial side view of a red double-decker and at least one must show a substantial side view of a yellow tram so their windows are usable later.
+
+MEMORY-COMPOSITING PREPARATION:
+Include broad physically realistic vehicle windows, shopfront/cultural glass, entrance glass and wet reflective surfaces naturally where specified by the cells below.
+These are only the PHYSICAL PRESENT surfaces.
+This MAIN WORLD contains NO narrative memory scene and NO score cards.
+The remembered content will come later from separate MEMORY WORLD references during STORYBOARD / VIDEO generation.
+
+LIGHTING / PHOTOGRAPHY:
+Rainy blue hour progressing toward night.
+Cool blue-grey exterior; warm tungsten cafés/restaurants; warm-neutral public interiors; realistic vehicle practicals.
+Photorealistic live-action European feature-film location photography.
+Environment views: approximately 28mm full-frame equivalent, camera height about 1.6 m.
+Detail views: approximately 35–50mm.
+ARRI Alexa LF photographic character, natural Cooke-style rendering, soft highlight roll-off, rich shadow detail, fine organic film grain, real wet stone, real glass, real transport materials.
+No fantasy glow, no psychedelic haze, no game-engine appearance, no obvious sci-fi interface.
+
+NINE-CELL FUNCTION:
+Cells 1–6 = six exterior environment views along this section of the walk.
+Cell 7 = major glass / reflection-surface technical detail.
+Cell 8 = moving transit-window technical detail.
+Cell 9 = fused London–Budapest architecture + in-world signage technical detail.
+
+WORLD-SPECIFIC CONTENT:
+Cell 1 — Fleet Street exterior, recognizable London street geometry, bookshops, cafés, professional frontage and broad wet windows. One large stone block uses the historic BUDAPEST PALACE OF JUSTICE / former Kúria architectural language while remaining an ordinary street-facing London block. No courtroom or institutional event is shown.
+
+Cell 2 — Temple-edge public stone passage and open courtyard entrance. Fuse the London passage with HUNGARIAN NATIONAL MUSEUM-style classical stone proportions on one adjoining block. Keep cafés/bookshops and large street-facing glass so the environment remains public and alive. 10–20 pedestrians.
+
+Cell 3 — Royal Courts-side exterior geometry, but selected façade massing is replaced by the historic BUDAPEST PALACE OF JUSTICE / KOSSUTH-SQUARE civic language. The camera is on the pavement; only neutral lobby depth is visible behind broad glass. No explicit court action and no interior room.
+
+Cell 4 — Formal public glass frontage on the same street. Long entrance glazing, warm-neutral lobby depth, red bus side, yellow tram infrastructure and black taxi. Budapest stone ornament is physically attached to London street proportions.
+
+Cell 5 — Ludgate / Blackfriars approach exterior. One cultural/public block uses PESTI VIGADÓ-inspired façade rhythm and ornament within London geometry. Longer sightlines begin opening toward the Thames. 15–25 pedestrians.
+
+Cell 6 — Mixed formal street at blue-hour-to-night transition. Several Hungarian architectural identities coexist without collage: Palace-of-Justice stone, National Museum classicism and restrained Pest balconies, all integrated into ordinary London blocks. Visible KÖNYV, KÁVÉ, BEJÁRAT signs mix with English signs.
+
+Cell 7 — Close exterior institutional-looking glass detail prepared for later police/lawyer/court memories: rain + current city + ordinary lobby depth only. No memory content.
+
+Cell 8 — Close transit detail: full red-bus side windows, yellow-tram side windows and black-taxi glass against formal London–Budapest stone façades.
+
+Cell 9 — Close fused formal architecture detail: London public/commercial ground floor, specifically Hungarian Palace-of-Justice / National-Museum stone language above, tram-wire attachment and restrained Hungarian signage. No generic anonymous office block.
+
+FINAL CHECK:
+Exactly one image.
+Exactly nine equal photographic cells in a 3×3 grid.
+0 px outer margin.
+Only 1–2 px internal gutters.
+No presentation title/caption/legend/frame.
+All current camera positions remain exterior/public.
+Budapest must be specifically recognizable through the named anchors above, not genericized.
+
+TRANSFORMATIVE CITY DESIGN — STILL REFERENCE
+This sheet defines recognizable material and spatial anchors for a moving city, not a prohibition on later architectural transformation. Keep every listed landmark and cell. In the corresponding environment view, show one coherent intermediate facade configuration with articulated solid masonry and intact street-level walking space. No motion-blurred contact sheet.
+During one fast half-orbit, Temple arches repeat into an apparently endless exterior colonnade and stone columns slide into Budapest civic proportions. The pavement remains walkable; no walls crush or threaten anybody. Each procedural memory stays inside its own glass.

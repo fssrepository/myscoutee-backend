@@ -1,0 +1,71 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST.
+Use CHARACTER 02 — SOHO WOMAN in Cell 1.
+Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in Cell 2.
+Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in Cell 3.
+Use CHARACTER 03 — POLICEWOMAN in Cell 4.
+Use CHARACTER 04 — APPOINTED LAWYER in Cell 5.
+Use CHARACTER 27 — JUDGE and/or CHARACTER 28–29 — FORENSIC EXPERTS in Cell 6 as specified by the selected memory.
+Use CHARACTER 10 — BEGINNER-DANCE WOMAN in Cell 7.
+Keep every identity consistent with its original MEMORY WORLD version. Do not create replacement faces.
+
+PURPOSE:
+Create one compact reusable source bank for the late-film memory crescendo, so STORYBOARD 06 / video generation can use ONE memory reference instead of attaching many different memory-world sheets at once.
+These are not new events. They are clean re-stagings of already established literal memories in which ordinary humanity briefly breaks through a role, route or system.
+
+NINE CELLS:
+Cell 1 — SOHO WOMAN's small genuine smile toward the protagonist in the established Soho context.
+
+Cell 2 — Russian/local passenger calmly using a travel pass to help the protagonist through the transit gate.
+
+Cell 3 — Hot-air-balloon / vegetable-plot cooperation: hands and people helping one another solve the landing problem.
+
+Cell 4 — POLICEWOMAN or another officer giving an embarrassed small human smile / struggling not to laugh during an otherwise formal procedure.
+
+Cell 5 — Appointed lawyer / defence-room moment showing ordinary discomfort, practical help or a request to move to another room; no hero framing.
+
+Cell 6 — Judge/expert/official expression changing for a moment from formal role to ordinary human recognition. Anonymous official, restrained warmth.
+
+Cell 7 — Beginner dance-floor memory: awkward real participation and brief mutual attention, no glamour.
+
+Cell 8 — Six ordinary people around a real table / shared activity setting, faces and voices finally larger than profile cards. Natural conversation, no product-ad feeling.
+
+Cell 9 — Quiet composite SOURCE MOMENT staged as one real room, not a collage: protagonist among several ordinary people from different contexts, each behaving as a person rather than a role. Keep it plausible, grounded and human.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+These are direct memory scenes, not reflections and not a collage.
+No present-city layer.
+No score cards.

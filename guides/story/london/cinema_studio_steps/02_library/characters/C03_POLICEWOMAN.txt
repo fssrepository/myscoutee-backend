@@ -1,0 +1,44 @@
+Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
+
+EXACT LAYOUT:
+Three vertical photographic panels filling the complete canvas:
+LEFT = full-body FRONT view.
+CENTER = full-body BACK view.
+RIGHT = frontal CLOSE-UP HEADSHOT.
+
+The same exact person appears in all three panels.
+The studio background reaches all four physical canvas edges.
+No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
+Only hairline internal separators between the three panels.
+
+BACKGROUND / LIGHT:
+Seamless neutral MID-GREY professional casting/VFX studio background.
+Soft even neutral light, minimal soft floor shadow, neutral white balance.
+No city, no furniture, no story props, no cinematic environment.
+
+CONSISTENCY:
+Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
+Do not beautify or change age in the headshot.
+Natural skin texture and asymmetry.
+Accurate anatomy.
+
+CAMERA:
+Full-body panels approximately 50–70mm full-frame equivalent, complete body including shoes.
+Headshot approximately 85mm, upper shoulders upward.
+Technical identity asset, not a film scene.
+
+CHARACTER:
+Fictional British/European woman, apparent age about 35–45, average height, fit but ordinary professional build, serious practical face, intelligent eyes, natural brown/dark-blonde hair secured simply, minimal makeup, realistic skin. She must look like an ordinary working police officer, calm and procedural rather than aggressive; never an action-film or villain archetype.
+
+Wardrobe: contemporary British police-style normal non-tactical urban duty uniform in dark navy, practical trousers and black shoes, restrained normal duty equipment. No riot gear, no helmet, no assault styling, no weapon emphasis.
+
+Front view: neutral upright professional stance, arms relaxed.
+Back view: exact same uniform and hairstyle.
+Headshot: neutral procedural expression, no anger, no smile.
+
+FINAL CHECK:
+One person only.
+Three panels only: front full-body / back full-body / frontal headshot.
+Same exact identity and wardrobe.
+Mid-grey background reaches the canvas edges.
+No title or outer frame.

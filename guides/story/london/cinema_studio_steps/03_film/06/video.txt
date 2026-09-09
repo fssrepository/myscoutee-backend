@@ -1,0 +1,73 @@
+MYSCOUTEE — BLOCK 06 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W06_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW06_HUMAN_COUNTERMEMORIES = living remembered scene inside real glass; select only the assigned scene.
+@MWP02_SYSTEM_TIME_REVERSALS = living remembered scene inside real glass; select only the assigned scene.
+@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
+@MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
+@MW03_WORK_RULE_CHANGE_ADMIN = living remembered scene inside real glass; select only the assigned scene.
+@MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
+@MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C02_SOHO_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C10_BEGINNER_DANCE_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C11_RUSSIAN_TRANSIT_PASSENGER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C17_BALLOON_LOCAL_HELPER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C27_JUDGE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C28_FORENSIC_EXPERT_A = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C29_FORENSIC_EXPERT_B = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB06_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A06_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 6: At the visual peak, the Great Market Hall roof ribs unfold into the glass curvature of Bálna, upper window rows extend and concertina inward, and moving traffic reflections travel across the reshaping stone and glass. Keep one dominant transformation readable at a time; the human memory panes stay legible beneath it.
+Each fast movement lands on a readable human beat before the next surge. The six-person table receives a settled view before the final surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. His own card first becomes clearly readable ABOVE his crown in beat 8; same appearance as everyone else's.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Continue west along South Bank in the maximum-density hybrid city: Great Market Hall / National Theatre / Bálna elements, London Eye and separated Hungarian Parliament sightline. Many current pedestrians carry increasingly visible cards.
+
+FRAME 2 — Lateral move along red bus + yellow tram windows. Several literal positive memories coexist across different panes: Soho woman's small smile, Russian passenger opening the gate, balloon/vegetable-plot hands helping. Keep each pane distinct and readable, not collage mush.
+
+FRAME 3 — Large public glass. Literal police/humanity memory: the POLICEWOMAN or another officer struggles not to laugh / gives an embarrassed human smile during an otherwise formal procedure. Nothing procedural changes.
+
+FRAME 4 — Bus window. Literal lawyer memory: a lawyer asks for another room / shows a moment of ordinary human discomfort or practical help. Avoid hero/villain framing.
+
+FRAME 5 — Tram/cultural glass. Brief judge/expert/official expression changes, then a warm human memory such as dance-floor or stranger cooperation. The reflection then resolves clearly into SIX ORDINARY PEOPLE AROUND ONE REAL TABLE / SHARED ACTIVITY: faces, voices and small acts of attention are visually larger and more important than any profile card. This six-person human scene is mandatory, not optional. The point is that roles and scores are not whole people.
+
+FRAME 6 — Multiple architectural panes at once: court/file/work/police fragments overlap with shared-house/travel/relationship fragments. Two additional narrow panes from @MWP02_SYSTEM_TIME_REVERSALS carry the institutional parallel: an anonymous high-review chamber unable to assemble a quorum after multiple participants step aside, and the protagonist alone with a laptop / ordinary document cursor trying to reach review from below. The two routes are different and neither decides the other; the shared image is simply an unanswered institutional door. No real court, office, country or current public event is identifiable. Keep the present city frame and reflections physically readable. This is dense but not psychedelic.
+
+FRAME 7 — Current crowd interaction becomes the focus. Many people look at other people; viewed cards gain a slightly fuller internal light/fill at different moments, creating a living web of judgments. The protagonist is not the only observer and not the only judged person.
+
+FRAME 8 — For the first time, the protagonist's OWN card becomes clearly visible ABOVE his head with a visible gap above the crown at the same sharpness as nearby cards. He notices only briefly; restrained reaction, no panic. He is visually one record among many.
+
+FRAME 9 — Westminster Bridge approach begins to clear. Traffic and crowd density reduce slightly; the city remains wet and real. In one final civic-glass reflection, @MWP02_SYSTEM_TIME_REVERSALS briefly shows an EMPTY CHAIR HIGH IN THE SYSTEM after the office has changed occupant; it is quiet, anonymous and explicitly NOT a verdict in the protagonist's case. No title, flag, seal, recognizable government room or public figure. The earlier absurd "institution fired" gesture may echo only as timing, never as prediction or cause. The reflection clears and the protagonist walks toward a quieter continuation. NO clinical imagery yet.
+
+AUDIO
+Use @A06_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+denser South Bank city bed, rain, crowd, bus brakes, tram rail, taxi tyre hiss.
+brief transit-gate beep, then a soft human breath-smile; both feel like memory fragments inside separate glass surfaces.
+balloon fabric/rope/hand effort, soil and vegetation movement, immediately followed by current-city traffic.
+quiet procedural room tone with one restrained suppressed laugh / warm exhale, no words.
+lawyer/court paper movement and chair shift, then a few dance-floor shoe steps and room ambience, no music beat.
+the six-person table memory becomes briefly dominant: ordinary chairs, cups, quiet natural room tone, several people breathing/moving and one soft human laugh without intelligible dialogue.
+multiple memory sound fragments overlap lightly but remain intelligible; add one brief dry review-room chair shift / paper pause and a small ordinary laptop-key texture, then a final quiet empty-office room tone for the high-chair reflection. No public speech, applause, anthem, resignation sting, campaign cue or causal sound cue. Simplify to footsteps, rain and the city continuing toward Westminster.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

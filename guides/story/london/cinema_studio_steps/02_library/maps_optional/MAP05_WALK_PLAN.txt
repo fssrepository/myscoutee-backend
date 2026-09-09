@@ -1,0 +1,55 @@
+Create ONE SINGLE simplified FILM-PRODUCTION LOCATION PLAN.
+
+Use the SAME locked graphic language for every location plan in this project:
+- simple slightly oblique architectural block model, approximately 70–75 degrees downward,
+- clean simplified building masses and street footprints,
+- ONE continuous exterior pedestrian line as the dominant graphic element,
+- transport shown only as simple street/rail geometry,
+- selected Hungarian replacement blocks recognizable mainly through simplified silhouette/massing,
+- no photorealistic façades,
+- no Google Maps 3D look,
+- no satellite look,
+- no videogame city,
+- no decorative city render,
+- no legend box,
+- no paragraph text,
+- no camera labels,
+- no lighting labels,
+- no crowd labels,
+- no explanatory captions,
+- no large title band.
+
+CANVAS:
+The plan itself fills the complete final canvas edge-to-edge.
+Outer margin: 0 pixels.
+No surrounding grey/white/black presentation border.
+
+WALK:
+Show ONE uninterrupted pedestrian path.
+The path always stays on exterior public pavement, public crossings, open pedestrian passages, bridges, plazas or river walks.
+It never enters a building footprint, office, house, station platform, police room, courtroom or clinical space.
+Use a small start dot and small end dot only; no arrowheads and no written start/end labels.
+
+TEXT:
+Prefer no visible text at all.
+Do not label buildings, roads, transport, cameras, glass surfaces or landmarks.
+The recognizable geometry and building silhouettes carry the information.
+
+CITY LOGIC:
+London provides the street/river/bridge geometry.
+Budapest/Hungary appears as selected replacement blocks and transit infrastructure inside that geometry.
+Keep the model simple: block massing + streets + one walk line.
+
+LOCATION-SPECIFIC GEOMETRY:
+Continue directly from WORLD 04.
+Build simplified Thames geometry at Blackfriars north bank, Blackfriars Bridge crossing and South Bank public riverfront.
+Keep the London river and bridge alignment unmistakable.
+Use Hungarian replacement/silhouette anchors: Hungarian Parliament across one river sightline, Gresham Palace on one north-bank block, Chain Bridge-inspired stone/iron details integrated into the London bridge massing, and a Pesti Vigadó-inspired public block on the opposite bank.
+The walking path follows the river pavement, crosses the bridge on the pedestrian side and continues on South Bank.
+Show a simple riverside tram line where plausible, plus bus/taxi roads.
+
+FINAL CHECK:
+Exactly one simple block-model location plan.
+0 px outer margin.
+One continuous exterior walking line.
+No legend, captions, camera graphics or Google-Maps-style detail.

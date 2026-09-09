@@ -1,0 +1,61 @@
+MYSCOUTEE — BLOCK 04 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W04_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW04_POLICE_DEFENCE = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C03_POLICEWOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C25_SEARCH_OFFICER_MALE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C26_DEFENCE_OFFICE_SUBSTITUTE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB04_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A04_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 8: During one fast half-orbit, Temple arches repeat into an apparently endless exterior colonnade and stone columns slide into Budapest civic proportions. The pavement remains walkable; no walls crush or threaten anybody. Each procedural memory stays inside its own glass.
+Each fast movement lands on a readable human beat before the next surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. The protagonist has no readable self-card yet.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Continue outside along Fleet Street / Temple formal city. Budapest Palace-of-Justice / National-Museum architecture is fused into London blocks. The protagonist remains on the pavement.
+
+FRAME 2 — Large wet shopfront/entrance glass. Literal memory: buzzer/door-entry moment in which someone announces 'postman' and the apartment door opens, followed immediately by ordinary police entering. Do not render the word as text; show it as a spoken action.
+
+FRAME 3 — Black taxi side window. Literal police-search memory: officers search an apartment and one officer is visibly speaking the remembered line about looking for cocaine. No action-thriller style, no drugs glamorization; ordinary procedural search.
+
+FRAME 4 — Yellow tram window. Continuation of the same memory: one officer accidentally steps on the protagonist's recently operated foot. Show sudden pain and physical vulnerability, not a medical reveal and not gore.
+
+FRAME 5 — Bus-shelter or broad civic glass. Literal fingerprinting memory with the recurring POLICEWOMAN present. The scene contains the awkward human contradiction of attraction / embarrassed expression during a formal procedure. No romance staging.
+
+FRAME 6 — Red-bus side window. Literal appointed-defence memory: a substitute/person from the appointed-defence office appears instead of the expected lawyer; later defenders are difficult to contact. Use the recurring LAWYER only where appropriate, and show discontinuity rather than villainy.
+
+FRAME 7 — Dark entrance glass. Literal phone/corridor memory of attempts to contact police, prosecution, court and defence routes. Different people redirect the protagonist. Keep all speakers anonymous and ordinary.
+
+FRAME 8 — 180–270 degree current-city arc around the walking protagonist. Several formal glass surfaces simultaneously carry one-second procedural fragments; present pedestrians look at each other and the viewed cards briefly gain a slightly fuller internal light/fill asynchronously. Everyone remains human locally.
+
+FRAME 9 — Blackfriars-approach wide exterior. The institutional memories fade, but the formal Budapest-in-London architecture remains physically present. The protagonist keeps walking outside.
+
+AUDIO
+Use @A04_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+formal rainy city street, close footsteps, distant traffic; tension remains grounded.
+ordinary residential buzzer / door mechanism and approaching footsteps, no spoken 'postman' line in the audio.
+apartment room tone, drawers/objects handled carefully, paper and fabric movement; no raid spectacle, no sirens.
+one sudden shoe contact / misstep followed by a restrained involuntary breath of pain, no gore and no dramatic impact effect.
+fingerprint/processing room tone, small scanner/desk sounds, paper handling.
+telephone connection / corridor ambience suggesting defence handoff, no intelligible dialogue.
+one tiny suppressed human chuckle or breath-smile, then return to rain and forward footsteps. No comedy sting.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

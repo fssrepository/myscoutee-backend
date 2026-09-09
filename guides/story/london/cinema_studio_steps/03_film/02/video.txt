@@ -1,0 +1,71 @@
+MYSCOUTEE — BLOCK 02 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W02_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW02_GLOBAL_ROUTES = living remembered scene inside real glass; select only the assigned scene.
+@MW01_LONDON_SOCIAL = living remembered scene inside real glass; select only the assigned scene.
+@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C10_BEGINNER_DANCE_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C11_RUSSIAN_TRANSIT_PASSENGER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C12_AGRA_BUS_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C13_SUDANESE_TRAVELER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C14_SUDANESE_TRAVELER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C15_CAIRO_TAXI_DRIVER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C16_BALLOON_LOCAL_HELPER_MAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C17_BALLOON_LOCAL_HELPER_WOMAN = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C19_BARMOUTH_ROAD_TRIP_COMPANION_A = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C20_BARMOUTH_ROAD_TRIP_COMPANION_B = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C21_BARMOUTH_ROAD_TRIP_COMPANION_C = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB02_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A02_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 1: Charing Cross iron ribs telescope into Nyugati station geometry above the street while a Strand theatre cornice unfurls into Hungarian State Opera stonework. Keep the street-level route, pedestrians and current window frames continuous.
+Each fast movement lands on a readable human beat before the next surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. The protagonist has no readable self-card yet.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Continue through Charing Cross / Strand with the Nyugati-hybrid station frontage and Hungarian State Opera block visible in the present. The protagonist walks; the city remains normal.
+
+FRAME 2 — London Underground entrance glass viewed from outside. Literal Moscow/St Petersburg memory: a local passenger uses their monthly travel card/pass to let the protagonist through a gate. Keep the present METRÓ/London entrance reflection around the memory; the current walker never descends.
+
+FRAME 3 — Full red-bus side window. Literal India / Agra memory: the protagonist sits on a bus; a woman speaks from behind or across the seat, creating a human voice/contact moment. Avoid tourist-postcard monuments and exoticizing imagery.
+
+FRAME 4 — Black taxi window. Literal Cairo memory: protagonist sharing a taxi with a Sudanese couple, ordinary temporary trust between strangers. A very brief adjacent reflection may show the remembered camel photograph on a phone with ordinary security personnel behind it. Current Strand reflection and rain remain layered on the taxi glass.
+
+FRAME 5 — Another moving pane continues Cairo: luggage unexpectedly falls from the taxi roof near an airport/exit context. Capture surprise and practical reaction, not slapstick. Before the pane clears, include a short literal Nile/Aswan hotel-room flash: a room prepared for two but occupied by one, the empty half of the room clearly readable.
+
+FRAME 6 — Large passage/cultural glass. Literal hot-air-balloon memory: balloon lands in a vegetable plot near a wall; local people and passengers cooperate hand-to-hand to solve the situation. Warm human cooperation, no fantasy.
+
+FRAME 7 — Restaurant/shop glass. Literal beginner dance-floor memory: awkward but real social participation, ordinary people, no glamour. A direct gaze between two present pedestrians briefly gives the viewed card a slightly fuller internal light/fill over the current glass reflection.
+
+FRAME 8 — Wet bus shelter / glass canopy. Very fast route montage inside separate panes, preserving the full human route chain rather than reducing it: rural field/corn row → railway track → Trivandrum airport clock → Budapest tram wire → London transport line → rented-car key on a budget-hotel table → wet long-distance bus window → BARMOUTH low-tide shore with the five-person road-trip group at human scale. Do not make it abstract animation; every fragment is a literal remembered place/object and the Barmouth image must be visibly present before the montage returns to the city.
+
+FRAME 9 — Wide Aldwych / Embankment-side exterior. Opera/Nyugati/M4/Hungarian signage remain unmistakable in the present city. Memory panes return to normal reflections as the protagonist continues the exterior walk.
+
+AUDIO
+Use @A02_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+continue the same rainy London–Budapest city bed; station exterior rumble and footsteps.
+one realistic transit-gate confirmation beep and gate mechanism, brief indoor station resonance under the outdoor city layer.
+bus/coach interior rumble and seat/fabric movement, no intelligible passenger dialogue.
+Cairo taxi engine, road texture and restrained distant horn; human presence without spoken lines.
+one luggage impact / slide, practical and not comedic.
+balloon fabric, rope tension, soil/vegetation movement and several people exerting effort; no shouted words.
+open coastal wind and soft waves from the Barmouth memory dissolve back into rain and city movement.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

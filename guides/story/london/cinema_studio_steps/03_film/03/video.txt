@@ -1,0 +1,60 @@
+MYSCOUTEE — BLOCK 03 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W03_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW03_WORK_RULE_CHANGE_ADMIN = living remembered scene inside real glass; select only the assigned scene.
+@MWP01_ROUTES_ROOMS_DOCUMENTS = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C22_ACCOUNTANT = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C23_ADMIN_COLLEAGUE_A = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C24_ADMIN_COLLEAGUE_B = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB03_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A03_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 4: Above the three-screen memory, office window bays multiply and compress like an immense filing mechanism; London masonry resolves into New York Palace stonework and Lechner roof detail. Keep the three people and their separate records clearly visible in the stable lower panes.
+Each fast movement lands on a readable human beat before the next surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. The protagonist has no readable self-card yet.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Continue through the work-city exterior: New York Palace / Academy / Lechner-derived Budapest blocks inside London geometry. The protagonist walks beside large office glass; IRODA/KÖNYVELÉS signs exist as normal city signage.
+
+FRAME 2 — Large office-façade pane. Literal cross-border remote-work memory: protagonist on an international work call/computer task, ordinary long-day professional environment, not a heroic tech montage. Present rain and city reflection remain visible.
+
+FRAME 3 — Accounting-frontage glass. Literal memory of 13–15-hour workdays, invoice/forms/calendar/printer, the need to delegate accounting while a live foreign contract continues. Show ordinary pressure, not villainy.
+
+FRAME 4 — Three adjacent panes / one large divided façade. Literal 'three people / no shared screen' memory: three people dealing with the same administrative problem, each looking at a different document/screen version. They are physically near but informationally separated. No one is evil.
+
+FRAME 5 — Wet civic glass. Literal SMALL-WORKER TAX-RULE CHANGE memory: calendar/date, neutral administration-style notification/letter and a return/form needing correction. Keep regime names and most text unreadable; show process through objects and reactions. A secondary document pane preserves the health-insurance form with one conspicuously empty field; do not turn it into explanatory UI.
+
+FRAME 6 — Taxi or tram window. Literal delegation/password/accounting memory: accountant, portal/login responsibility and correction chain implied by hands, screen and paperwork, without turning it into cybersecurity graphics.
+
+FRAME 7 — Café/office pane. The protagonist in memory tries to repair the situation by phone while another person checks a different record. Present pedestrians cross the glass; their viewed cards briefly gain a slightly fuller internal light/fill when they look at one another.
+
+FRAME 8 — Dark office entrance glass. Multiple remembered voices are suggested visually by mouths/phones/people in different panes, but do not render subtitles. The current protagonist pauses, hearing the system's different versions. Brief document flashes preserve the diploma/certificate with the missing language-exam credential and the later Brexit/work-coverage paper edge: separate literal records, not an infographic.
+
+FRAME 9 — Wide Holborn/Fleet-edge continuation. The current city is still exterior, wet and crowded. The protagonist keeps walking; cards are slightly clearer around professional crowds than in Soho, but the phenomenon remains unexplained.
+
+AUDIO
+Use @A03_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+wet professional-city ambience, rain on glass, distant tram and traffic.
+keyboard taps and ordinary office ventilation appear softly behind the city, as if memories are inside windows.
+printer feed, paper handling, one subdued phone vibration / notification tone.
+three slightly separated workstations implied by alternating keyboard/paper sounds; never turn this into a sci-fi computer soundscape.
+phone call connection tone, page turn, restrained desk movement; a health-insurance form and empty-field memory is carried only by paper/pen handling, no intelligible second speaker.
+corrected form/paper movement, diploma/credential papers and a later Brexit/work-coverage document edge handled as ordinary records, then one quiet confirmation tone while the rain/city bed continues underneath.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

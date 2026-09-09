@@ -1,0 +1,69 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 11 — RUSSIAN TRANSIT PASSENGER in Cell 1.
+Use CHARACTER 12 — AGRA BUS WOMAN in Cell 2.
+Use CHARACTER 13 — SUDANESE TRAVELER — MAN and CHARACTER 14 — SUDANESE TRAVELER — WOMAN in Cell 3 and, if they remain present, Cell 4.
+Use CHARACTER 15 — CAIRO TAXI DRIVER in Cells 3–4 when the driver is visible.
+Use CHARACTER 16 — BALLOON LOCAL HELPER — MAN and CHARACTER 17 — BALLOON LOCAL HELPER — WOMAN in Cell 5.
+Use CHARACTER 18 — BARMOUTH ROAD-TRIP DRIVER / COMPANION plus CHARACTER 19–21 — BARMOUTH ROAD-TRIP COMPANIONS in Cell 9 when the traveling group is visible.
+Background passengers/crowds may remain anonymous, but do not replace any of the named character-reference identities above.
+
+PURPOSE:
+Build the reusable literal travel-memory source bank around the principle: Global route. Local encounter. The important subject is ordinary human contact inside movement, not postcard tourism.
+
+NINE CELLS:
+Cell 1 — Moscow / Saint Petersburg metro or transit-gate memory. A local passenger calmly uses a monthly travel card/pass to help the protagonist through a gate. Ordinary station, realistic crowd, no heroic gesture.
+
+Cell 2 — India / Agra bus interior. The protagonist sits among ordinary passengers while a woman speaks from behind or across the seat. Human proximity and voice are central; avoid iconic monument imagery and exoticized styling.
+
+Cell 3 — Cairo taxi interior with the protagonist sharing the ride with a Sudanese couple. Tight but ordinary vehicle interior, temporary trust between strangers, warm human realism.
+
+Cell 4 — Airport/roadside continuation of the Cairo trip: luggage unexpectedly falls from the taxi roof and people react practically. Capture surprise and immediate problem-solving, not slapstick.
+
+Cell 5 — Hot-air-balloon landing in a vegetable plot near a low wall. Passengers/local people cooperate hand-to-hand to solve the situation. Real dirt, plants, basket, fabric and human effort; no fantasy balloon spectacle.
+
+Cell 6 — Literal route-memory fragment: a rural field edge meeting railway track, the visual origin of a long route. Keep it grounded and photographic, not a graphic transition.
+
+Cell 7 — Budapest tram-wire / rail-memory fragment viewed from an ordinary street perspective, emphasizing physical route lines and infrastructure rather than landmark tourism.
+
+Cell 8 — Wet bus/coach window on a mountain or long-distance route, with real landscape beyond and a passenger reflection only if naturally produced by that remembered vehicle itself. This is still the remembered world, not the present London–Budapest city.
+
+Cell 9 — Barmouth / North-Wales low-tide memory: broad exposed shore, town held against the slope, ordinary travelers at human scale. No postcard saturation, no tourism-ad composition.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+Direct literal travel memories only.
+No present-city reflection composite.
+No score cards.

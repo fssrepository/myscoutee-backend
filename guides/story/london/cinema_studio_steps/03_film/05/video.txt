@@ -1,0 +1,63 @@
+MYSCOUTEE — BLOCK 05 — 30 SECONDS
+One 16:9 photorealistic moving film sequence. Continue the supplied previous accepted video FORWARD. Start from its last visible moment: same protagonist, stride, camera heading and velocity, exposure, rain, traffic and continuous sound bed. Carry that movement into this block before any new acceleration. Do not re-establish the city or start a new music cue. Only the added continuation uses the new narration.
+
+REFERENCES
+@W05_MAIN_WORLD = physical city, route, materials and recognizable architecture; transformation allowed as directed.
+@MW05_COURT_FILE = living remembered scene inside real glass; select only the assigned scene.
+@MWP02_SYSTEM_TIME_REVERSALS = living remembered scene inside real glass; select only the assigned scene.
+@C01_PROTAGONIST = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C04_APPOINTED_LAWYER = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C27_JUDGE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C28_FORENSIC_EXPERT_A = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C29_FORENSIC_EXPERT_B = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C30_COURT_CLERK = exact face, age, hair and body; memory wardrobe follows its source scene.
+@C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE = exact face, age, hair and body; memory wardrobe follows its source scene.
+@SB05_STORYBOARD = ordered nine-beat plan, never a visible grid.
+@A05_NARRATION = exact supplied off-screen narration; preserve words, voice and pacing.
+
+PHYSICAL PRESENT AND MEMORY
+One continuous exterior walk through an impossible London–Budapest city at rainy blue hour into night. Keep the protagonist's face, age, hair, dark jacket and body stable. The camera and walker stay on exterior public space until the final reveal. London supplies street geometry; Budapest supplies explicit recognizable architecture, yellow trams and Hungarian signage beside English signs. Keep rain, warm interiors and real wet materials. No stage or chapter reset.
+Memories are moving human events within actual taxi/bus/tram windows, shopfront glass or wet reflections: people turn, hands act, objects move. Retain the pane edge, droplets and some current-city reflection. A remembered room never becomes the physical location of the walker. Never show reference sheets, split-screen grids or layout labels. Fictional institutional people and records stay non-identifying; institutional changes are not caused by his letters. The AI acknowledgement is carried by narration; laptops in existing memories show ordinary documents, not a new AI interface.
+
+SUBJECTIVE CAMERA AND LIVING CITY
+The protagonist walks at human speed, spellbound and increasingly overwhelmed, trying to orient himself in a city on the edge of perceptual collapse. The camera moves much faster around him: low forward rushes, strong lateral parallax, short whip-pans caught on a face or window, purposeful 90–180-degree arcs and close bus/umbrella wipes. Accelerate between story anchors, briefly settle on the important human gesture, then surge onward. Keep faces and memory actions readable; motion blur belongs primarily to transitions. No endless spinning or permanent shake.
+The city is continuously alive: pedestrians overtake and cross, umbrellas turn, buses brake and pass, trams glide, taxis throw wet tyre spray, rain runs over glass. Architecture physically transforms between recognizable London and Budapest forms, with articulated masonry, moving window bays, coherent depth, weight, shadows and reflections. Only architecture and its reflections deform: bodies, faces, wardrobe, transport and the walking surface stay stable. No explosions, particle portals, neon magic, melting skin or hologram city. Bystanders carry on normally. This is a subjective experience, without naming a diagnosis.
+
+BLOCK TRANSFORMATION
+Frame 1: As the camera accelerates along the river, a nearby facade articulates into Gresham Palace ornament and bridge ironwork reconfigures into Chain Bridge detail. The distant Parliament and London Eye remain distinct, readable anchors, never a collapsing landmark pile-up.
+Each fast movement lands on a readable human beat before the next surge.
+
+SCORE CARDS
+People in the current city carry restrained, continuously visible translucent cards centered ABOVE their crowns with a visible air gap. Cards track the person, never cover a face, and never attach to memory characters. Direct gaze gives only the VIEWED person's existing card slightly fuller internal light, then it returns to baseline. Soft digits, no HUD, flare or ethnicity coding. The protagonist has no readable self-card yet.
+
+ORDERED STORY BEATS — 1 THROUGH 9
+FRAME 1 — Continue along Blackfriars riverfront with Hungarian Parliament and Gresham Palace anchors physically present in London Thames geometry. The protagonist remains outside.
+
+FRAME 2 — Very large riverside cultural glass. Literal court-hearing memory: a judge at a hearing asks the protagonist the remembered prison question. Do not render dialogue as subtitles. Keep the judge anonymous/non-identifiable and the moment restrained, not melodramatic.
+
+FRAME 3 — Black taxi glass. Literal memory of questions about the Budapest apartment, belongings, savings and what else he owns. Show the apartment/home and ordinary possessions becoming items of inquiry; the memory should feel like a human archive being reduced to assets.
+
+FRAME 4 — Red-bus side windows. Literal memory of retained devices/belongings and paperwork: phone/laptop/storage/closed evidence or property boxes, ordinary administrative handling. No crime-thriller evidence wall.
+
+FRAME 5 — Yellow tram windows. Literal file sequence: photograph, fingerprint sheet, signature, closed folder, forms. Across successive panes, the record occupies more visual space than the person's face.
+
+FRAME 6 — Restaurant/cultural glass. Literal forensic-examination memory: two expert chairs, differing reactions, one asks what happened; the protagonist remains calm/cooperative. Do not imply a single unified expert voice.
+
+FRAME 7 — Dark public glass. Black-humour memory: first the self-made "THE SYSTEM'S MOST WANTED" / impossible police-career application visual or CV fragment; include a very brief self-made institutional-dismissal paper carrying the absurd "institution fired" tone; then, in an adjacent pane, the anonymous fictional cardboard public figure with a deliberately ridiculous hat and an asylum-request joke tone. Use CHARACTER 31 for this fictional non-identifiable figure. No real name, politician likeness, party branding, campaign slogan or identifiable contemporary office is attached to the cardboard figure. The "institution fired" line is black humour from below, not authority, prediction or causation. No advocacy and no large readable text.
+
+FRAME 8 — Broad entrance glass. Keep the literal clerk/court-route memory dominant: request for recording/evidence, discussion of expensive official recording and future complaint/appeal routes while present correction remains unresolved. In two adjacent narrow panes, add the late system-time chain from @MWP02_SYSTEM_TIME_REVERSALS: first a refused request for relief / revised papers deliberately held for a later institutional opening; then TWO LETTERS TO ONE DISTANT DOOR — his ordinary laptop submission from below and an anonymous senior-institution submission from above reaching the same unnamed external review body. No destination name is readable. Do NOT imply that his letter caused any later institutional change.
+
+FRAME 9 — Wide river city. Hungarian Parliament, London bridge geometry, yellow tram, red bus and black taxi remain in the physical present. The protagonist is visually smaller among many panes and many normally visible restrained cards; the city feels like it can classify everyone.
+
+AUDIO
+Use @A05_NARRATION as the sole off-screen voice, with its exact wording and timbre, once. The visible protagonist does not lip-sync. Generate synchronized native city ambience, foley and a sparse low non-lyrical score beneath it; duck all effects under speech. At continuation boundaries preserve the established sound world. Align the following sounds with their visible actions rather than forcing a separate competing edit:
+rainy river/civic-city ambience, footsteps and distant traffic.
+quiet courtroom/administrative room tone enters through glass, paper set on a desk, chair movement, no intelligible judicial dialogue.
+folder opening, photograph/paper handling, pen/signature scratch, one soft stamp or file closure.
+evidence/property bag or box movement, phone/laptop object handling, still ordinary and non-thriller.
+forensic-room ventilation, two chairs shifting at different moments, page turn, restrained clock tick.
+brief self-made-paper/cardboard handling carries the black-humour sequence — "the system's most wanted" / police-career joke, the absurd institutional-dismissal note and the anonymous ridiculous-hat cardboard-public-figure / asylum-request flash — then a generic relief-refusal envelope, revised document stack and two distinct document-send/keyboard cues for unequal submissions reaching the same unnamed distant review door. End with folder close and exterior rain becoming dominant again. No rally sound, public speech, resignation sting, national anthem, campaign cue or causal sound design.
+No intelligible secondary dialogue, spoken labels, subtitles, lyrics, trailer impacts or magical transition sounds.
+
+ENDING / REVEAL
+No clinical imagery or medical sound in this block.

@@ -1,0 +1,1700 @@
+{
+  "edition": "manual-cinema-steps-2026-09-09",
+  "source": "../promt_pack/myscoutee_canonical_prompt_pack.md",
+  "source_sha256": "d8a8857556e04b4bb6d664132de141a32195200ba942b77f723cc7702e5b3eaa",
+  "source_bytes": 489147,
+  "source_lines": 6426,
+  "source_words": 68782,
+  "elements_source_sha256": "58a54931b408149522939cdeae80b82db5a33f051fccbc8f47a3e4402d7f84a4",
+  "note": "Source files unchanged. Active video/storyboard/world prompts include 2026-09-09 direction. Source line numbers and hashes identify the original fenced prompts; output hashes identify this edition. No generations or account access performed.",
+  "element_import_batches": {
+    "00_pilot": [
+      "C01",
+      "C02",
+      "W01"
+    ],
+    "01_film": [
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "MW01",
+      "MWP01",
+      "SCORE_CARDS"
+    ],
+    "02_film": [
+      "W02",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C20",
+      "C21",
+      "MW02"
+    ],
+    "03_film": [
+      "W03",
+      "C22",
+      "C23",
+      "C24",
+      "MW03"
+    ],
+    "04_film": [
+      "W04",
+      "C03",
+      "C04",
+      "C25",
+      "C26",
+      "MW04"
+    ],
+    "05_film": [
+      "W05",
+      "C27",
+      "C28",
+      "C29",
+      "C30",
+      "C31",
+      "MW05",
+      "MWP02"
+    ],
+    "06_film": [
+      "W06",
+      "MW06"
+    ],
+    "07_film": [
+      "W07",
+      "C05",
+      "HRW07"
+    ]
+  },
+  "prompts": [
+    {
+      "asset": "C01",
+      "source_heading": "CHARACTER 01 —",
+      "source_lines": [
+        832,
+        875
+      ],
+      "source_prompt_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
+      "file": "02_library/characters/C01_PROTAGONIST.txt",
+      "file_sha256": "1c7f054229ec7c5295ee6e424c9d169831af8221220b92deea92c9a83f564005",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C02",
+      "source_heading": "CHARACTER 02 —",
+      "source_lines": [
+        882,
+        925
+      ],
+      "source_prompt_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
+      "file": "02_library/characters/C02_SOHO_WOMAN.txt",
+      "file_sha256": "1c84a4aee0d00d764205f4d31ce7919c94264d76932fb45ddbe57b3e6b970581",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C03",
+      "source_heading": "CHARACTER 03 —",
+      "source_lines": [
+        932,
+        975
+      ],
+      "source_prompt_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
+      "file": "02_library/characters/C03_POLICEWOMAN.txt",
+      "file_sha256": "0cec9d04f9314393840ada226c7ca8e576f97e74b19eb9e5b473801db325befc",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C04",
+      "source_heading": "CHARACTER 04 —",
+      "source_lines": [
+        982,
+        1025
+      ],
+      "source_prompt_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
+      "file": "02_library/characters/C04_APPOINTED_LAWYER.txt",
+      "file_sha256": "5d09e227111b9df2ff0c6019138233806fcb4790776ceddadfab334f392c53aa",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C05",
+      "source_heading": "CHARACTER 05 —",
+      "source_lines": [
+        1032,
+        1075
+      ],
+      "source_prompt_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
+      "file": "02_library/characters/C05_FINAL_NURSE.txt",
+      "file_sha256": "db066590815046c07c45129a8145d1633cd1c18c0c3aea32cfdd7b7bf6e36650",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C06",
+      "source_heading": "CHARACTER 06 —",
+      "source_lines": [
+        1081,
+        1125
+      ],
+      "source_prompt_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
+      "file": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
+      "file_sha256": "0e736b3252fe3cbd8ca19c597663879f0e480bb6803e168de6902c32a3173d0c",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C07",
+      "source_heading": "CHARACTER 07 —",
+      "source_lines": [
+        1131,
+        1175
+      ],
+      "source_prompt_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
+      "file": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
+      "file_sha256": "35f31171b6f526d520600915de5d7227a0bb7fadaef7748c0d8d978fc51cbd87",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C08",
+      "source_heading": "CHARACTER 08 —",
+      "source_lines": [
+        1181,
+        1225
+      ],
+      "source_prompt_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
+      "file": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
+      "file_sha256": "fd0d8ef7f58a40bac83ccdf0bd9e0701aa59f5177acecc8f2a2ae28025580208",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C09",
+      "source_heading": "CHARACTER 09 —",
+      "source_lines": [
+        1231,
+        1275
+      ],
+      "source_prompt_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
+      "file": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
+      "file_sha256": "27a9a08fc7ed627c3682c4c3af3959d7fd0a60589df5325211a885cda92acdb3",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C10",
+      "source_heading": "CHARACTER 10 —",
+      "source_lines": [
+        1281,
+        1325
+      ],
+      "source_prompt_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
+      "file": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
+      "file_sha256": "5e625999f68a36e46c2cdbe8f0c1dc0798b1a4bc650893d174b94c60eaf276f0",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C11",
+      "source_heading": "CHARACTER 11 —",
+      "source_lines": [
+        1331,
+        1375
+      ],
+      "source_prompt_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
+      "file": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
+      "file_sha256": "c89e0907e8d5955412e5e56b23efa3f600f4b088b6fa44683517aa90fee06828",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C12",
+      "source_heading": "CHARACTER 12 —",
+      "source_lines": [
+        1381,
+        1425
+      ],
+      "source_prompt_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
+      "file": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
+      "file_sha256": "0637e995e66788c7056925bf5c184e8f3db67839dd38b5d24a184426b4ef1300",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C13",
+      "source_heading": "CHARACTER 13 —",
+      "source_lines": [
+        1431,
+        1475
+      ],
+      "source_prompt_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
+      "file": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
+      "file_sha256": "dd7cde7a051d4e7efa789d56f00bad57dd9bd3dbae401add10ea0405f3dd3680",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C14",
+      "source_heading": "CHARACTER 14 —",
+      "source_lines": [
+        1481,
+        1525
+      ],
+      "source_prompt_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
+      "file": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
+      "file_sha256": "9b54f9727e485a512c40c097a6cfdd96b4c2bbcf6d7f89dec10eaca3f46da85a",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C15",
+      "source_heading": "CHARACTER 15 —",
+      "source_lines": [
+        1531,
+        1575
+      ],
+      "source_prompt_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
+      "file": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
+      "file_sha256": "bafc8b624584a7e92edd1cf23479a0edda633a8f32de85747772b6fc5d145c8a",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C16",
+      "source_heading": "CHARACTER 16 —",
+      "source_lines": [
+        1581,
+        1625
+      ],
+      "source_prompt_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
+      "file": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
+      "file_sha256": "0b8f95ede83e5818a8408fd70ecef99fce85cc0c12b653ef7bd7c624032e9228",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C17",
+      "source_heading": "CHARACTER 17 —",
+      "source_lines": [
+        1631,
+        1675
+      ],
+      "source_prompt_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
+      "file": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
+      "file_sha256": "1401cf11e115f3131028751d2e03931c9124eacccaa3ce274e2e97a263c01cea",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C18",
+      "source_heading": "CHARACTER 18 —",
+      "source_lines": [
+        1681,
+        1725
+      ],
+      "source_prompt_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
+      "file": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
+      "file_sha256": "9fe383e2200879b7ccd69a703e0547bdccc844248da93276d655f2a4a8d8ccd0",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C19",
+      "source_heading": "CHARACTER 19 —",
+      "source_lines": [
+        1731,
+        1775
+      ],
+      "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "file": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
+      "file_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C20",
+      "source_heading": "CHARACTER 20 —",
+      "source_lines": [
+        1781,
+        1825
+      ],
+      "source_prompt_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
+      "file": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
+      "file_sha256": "dbfae744902e96125296d850d700ddd9a3b88581db7ad6b4ae796e99ed90e8e3",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C21",
+      "source_heading": "CHARACTER 21 —",
+      "source_lines": [
+        1831,
+        1875
+      ],
+      "source_prompt_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "file": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
+      "file_sha256": "d301056bdcf14c631e8c6309a5e72c9574ce2ca47efa0ce5e5f9525c87d6562d",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C22",
+      "source_heading": "CHARACTER 22 —",
+      "source_lines": [
+        1881,
+        1925
+      ],
+      "source_prompt_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
+      "file": "02_library/characters/C22_ACCOUNTANT.txt",
+      "file_sha256": "2dd89f6a917bf16ade5f432d3650934ad8e8b7275710b8f73b0b5bfd35a0b923",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C23",
+      "source_heading": "CHARACTER 23 —",
+      "source_lines": [
+        1931,
+        1975
+      ],
+      "source_prompt_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
+      "file": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
+      "file_sha256": "cd3a8c255aba3556764d83315d95bafe0400dd967abe76bde806ebf4ed8030ad",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C24",
+      "source_heading": "CHARACTER 24 —",
+      "source_lines": [
+        1981,
+        2025
+      ],
+      "source_prompt_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
+      "file": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
+      "file_sha256": "21a8f008db7ef74b242a1e5e092e760b77f0b921e69bd2aec33f2a8073632a5f",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C25",
+      "source_heading": "CHARACTER 25 —",
+      "source_lines": [
+        2031,
+        2075
+      ],
+      "source_prompt_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
+      "file": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
+      "file_sha256": "f483821bc97864c6c680e22a7a12f8ebc22ab7dbde55952c08bbfe79bea17c47",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C26",
+      "source_heading": "CHARACTER 26 —",
+      "source_lines": [
+        2081,
+        2125
+      ],
+      "source_prompt_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
+      "file": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
+      "file_sha256": "1f0d7b11e5ae7a974429d747a769b30186288e53f3d3be0cdb523a9544e81854",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C27",
+      "source_heading": "CHARACTER 27 —",
+      "source_lines": [
+        2131,
+        2175
+      ],
+      "source_prompt_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
+      "file": "02_library/characters/C27_JUDGE.txt",
+      "file_sha256": "933b7e1083ca0a8d0a00c2f2cf6ee79b8f2c7bb189c9c7ccd1813ad99cb31a53",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C28",
+      "source_heading": "CHARACTER 28 —",
+      "source_lines": [
+        2181,
+        2225
+      ],
+      "source_prompt_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
+      "file": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
+      "file_sha256": "8ea1c2f09462e040525d4f7b0a174e433e51849d4187b2ca5f8b45caace89acd",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C29",
+      "source_heading": "CHARACTER 29 —",
+      "source_lines": [
+        2231,
+        2275
+      ],
+      "source_prompt_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
+      "file": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
+      "file_sha256": "2a575da9d93e6c68fb8c32b6160b00e16804931a97796e8e73277f312e1b30c5",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C30",
+      "source_heading": "CHARACTER 30 —",
+      "source_lines": [
+        2281,
+        2325
+      ],
+      "source_prompt_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
+      "file": "02_library/characters/C30_COURT_CLERK.txt",
+      "file_sha256": "60c8a27d366272250614c6103c2d64812940613e2bf365697be04e78b991e55a",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "C31",
+      "source_heading": "CHARACTER 31 —",
+      "source_lines": [
+        2331,
+        2375
+      ],
+      "source_prompt_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
+      "file": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
+      "file_sha256": "5dc948b39e6864ba0f13158690ed2ec4ddfa0ccf0e5fabcc68705716f96dfb24",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW01",
+      "source_heading": "MEMORY WORLD 01 —",
+      "source_lines": [
+        2387,
+        2453
+      ],
+      "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
+      "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
+      "file_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW02",
+      "source_heading": "MEMORY WORLD 02 —",
+      "source_lines": [
+        2462,
+        2530
+      ],
+      "source_prompt_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
+      "file": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
+      "file_sha256": "6e25c11571314fb9f353911cdd369b867c1b90a45dcc5228ce69c24e48b7ba9c",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW03",
+      "source_heading": "MEMORY WORLD 03 —",
+      "source_lines": [
+        2539,
+        2603
+      ],
+      "source_prompt_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
+      "file": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
+      "file_sha256": "374ea4b6d0ac33d692653a08a02e706d01e0f45e4279451b364aba2f7263928d",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW04",
+      "source_heading": "MEMORY WORLD 04 —",
+      "source_lines": [
+        2612,
+        2678
+      ],
+      "source_prompt_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
+      "file": "02_library/memories/MW04_POLICE_DEFENCE.txt",
+      "file_sha256": "7eacf040519edefdb7aa215ca4fb1e1c6524f4ed06dc69d6ef758048002745f9",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW05",
+      "source_heading": "MEMORY WORLD 05 —",
+      "source_lines": [
+        2687,
+        2753
+      ],
+      "source_prompt_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
+      "file": "02_library/memories/MW05_COURT_FILE.txt",
+      "file_sha256": "cac300bae4bd6f33e50ec5936c56622c5858e341d0494d281a87e70ed4ee9a04",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MW06",
+      "source_heading": "MEMORY WORLD 06 —",
+      "source_lines": [
+        2762,
+        2832
+      ],
+      "source_prompt_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
+      "file": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
+      "file_sha256": "d53e141d60aa5359c28d8695bb7cb84134a480bf043551062606e199558cda02",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MWP01",
+      "source_heading": "MEMORY PRESERVATION WORLD P01 —",
+      "source_lines": [
+        2844,
+        2907
+      ],
+      "source_prompt_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
+      "file": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
+      "file_sha256": "16bf4be44836d9fb010f7825cc24770d0ce78cbd05373fc417d2155eba6ae1e1",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "MWP02",
+      "source_heading": "MEMORY PRESERVATION WORLD P02 —",
+      "source_lines": [
+        2913,
+        2967
+      ],
+      "source_prompt_sha256": "557e0016d71cfd83bfd2c240538a5a77f6b6d8785ceb0f79bb97e387e1ccbd6f",
+      "file": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
+      "file_sha256": "8a03c17c4e168a7bc79b4197ee82686e5f90b65ad9fb8ff2bfc95efb7a7f972d",
+      "changes": "AI-specific screen becomes ordinary document cursor; citizen/review beat retained"
+    },
+    {
+      "asset": "HRW07",
+      "source_heading": "HIDDEN REALITY WORLD 07 —",
+      "source_lines": [
+        2973,
+        3048
+      ],
+      "source_prompt_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
+      "file": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
+      "file_sha256": "521c52dc6be7a4c8e015a67fab11b219bc387a315f00463f84acb191c81fc773",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W01",
+      "source_heading": "WORLD 01 —",
+      "source_lines": [
+        3061,
+        3148
+      ],
+      "source_prompt_sha256": "5cdfb4fae9342940c46fc1581ed8ca6f6481867cdcc4013aa4537451325d4f48",
+      "file": "02_library/worlds/W01_MAIN_WORLD.txt",
+      "file_sha256": "b7f71498004eb3f0e6447e23ad2edaec9fe1a9c3a1233c3f1bd02d68477745fa",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP01",
+      "source_heading": "MAP 01 —",
+      "source_lines": [
+        3719,
+        3772
+      ],
+      "source_prompt_sha256": "d17c313b21fd8a06e590648b5efce4bcd2a5615ae3ee41517df9785b405ef18f",
+      "file": "02_library/maps_optional/MAP01_WALK_PLAN.txt",
+      "file_sha256": "d17c313b21fd8a06e590648b5efce4bcd2a5615ae3ee41517df9785b405ef18f",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W02",
+      "source_heading": "WORLD 02 —",
+      "source_lines": [
+        3155,
+        3242
+      ],
+      "source_prompt_sha256": "0e42331ed1ef827f8b328b1bbf1ea9e9deb06c2d06683d277006b4cbda428369",
+      "file": "02_library/worlds/W02_MAIN_WORLD.txt",
+      "file_sha256": "fa1693a82509df05fca93393484d9b9b2f499a36dd34eb3aab64264edc5518f5",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP02",
+      "source_heading": "MAP 02 —",
+      "source_lines": [
+        3779,
+        3832
+      ],
+      "source_prompt_sha256": "f903008054943c65cb7c5bb33451ad12693382280969e3b093f12a772ade1bf5",
+      "file": "02_library/maps_optional/MAP02_WALK_PLAN.txt",
+      "file_sha256": "f903008054943c65cb7c5bb33451ad12693382280969e3b093f12a772ade1bf5",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W03",
+      "source_heading": "WORLD 03 —",
+      "source_lines": [
+        3249,
+        3336
+      ],
+      "source_prompt_sha256": "619d7b50151da12db8c1f5c28ea43f590c0317767ad6b6c81dcaeb65bab4754d",
+      "file": "02_library/worlds/W03_MAIN_WORLD.txt",
+      "file_sha256": "29e61754c4ce03154fd59009ac97fae3a01c0856e58cbd0772148f65a7693326",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP03",
+      "source_heading": "MAP 03 —",
+      "source_lines": [
+        3839,
+        3893
+      ],
+      "source_prompt_sha256": "ce815bef8231aa00e80297ebf08bf134f897dbc5630592cc97988f695ced7286",
+      "file": "02_library/maps_optional/MAP03_WALK_PLAN.txt",
+      "file_sha256": "ce815bef8231aa00e80297ebf08bf134f897dbc5630592cc97988f695ced7286",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W04",
+      "source_heading": "WORLD 04 —",
+      "source_lines": [
+        3343,
+        3430
+      ],
+      "source_prompt_sha256": "d0ad91dc25cf2e4e702dbe0d94d5ad6149a30b804b5bbd4eebb66e1de5790756",
+      "file": "02_library/worlds/W04_MAIN_WORLD.txt",
+      "file_sha256": "f099f7ad6416ead697f5bd804f59cec9ce4828c06df74c08b406c85c8ed7a403",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP04",
+      "source_heading": "MAP 04 —",
+      "source_lines": [
+        3900,
+        3953
+      ],
+      "source_prompt_sha256": "8fafe1022b9a2dec2b08a1d80d78e0874725475a7b209f2f696ebc5c51ddbd54",
+      "file": "02_library/maps_optional/MAP04_WALK_PLAN.txt",
+      "file_sha256": "8fafe1022b9a2dec2b08a1d80d78e0874725475a7b209f2f696ebc5c51ddbd54",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W05",
+      "source_heading": "WORLD 05 —",
+      "source_lines": [
+        3437,
+        3524
+      ],
+      "source_prompt_sha256": "77d7e2df07c49c63c7caa5fe39d6f1cdea60e2c321eb458971a8750d5225f09e",
+      "file": "02_library/worlds/W05_MAIN_WORLD.txt",
+      "file_sha256": "f269926890ff40f3861c5be396f96fa59ae29cf95738fe8753c36983c269d53d",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP05",
+      "source_heading": "MAP 05 —",
+      "source_lines": [
+        3960,
+        4014
+      ],
+      "source_prompt_sha256": "1bac54a7ebe1e68b27976d666df9fb3932ce6563c92abc7290171cd6f016fe14",
+      "file": "02_library/maps_optional/MAP05_WALK_PLAN.txt",
+      "file_sha256": "1bac54a7ebe1e68b27976d666df9fb3932ce6563c92abc7290171cd6f016fe14",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W06",
+      "source_heading": "WORLD 06 —",
+      "source_lines": [
+        3531,
+        3618
+      ],
+      "source_prompt_sha256": "19a64b93172e7531c5e50f91108f40d61f72300aee7c7a444208cc28a7fd2c2d",
+      "file": "02_library/worlds/W06_MAIN_WORLD.txt",
+      "file_sha256": "3207c56d0c8ac70b6ad45d4908e1020dc75a06454c5a1252de2a52f68c477a04",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP06",
+      "source_heading": "MAP 06 —",
+      "source_lines": [
+        4021,
+        4076
+      ],
+      "source_prompt_sha256": "0498c830606974434a69d66ded596a964cec23c7e4dfc03f0b5d32089e153401",
+      "file": "02_library/maps_optional/MAP06_WALK_PLAN.txt",
+      "file_sha256": "0498c830606974434a69d66ded596a964cec23c7e4dfc03f0b5d32089e153401",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "W07",
+      "source_heading": "WORLD 07 —",
+      "source_lines": [
+        3625,
+        3712
+      ],
+      "source_prompt_sha256": "a82a51ff228ecd6bd99c6018e59cd64495bc98fe46e349b64bbe805e0b18319f",
+      "file": "02_library/worlds/W07_MAIN_WORLD.txt",
+      "file_sha256": "f3c62de8688b19d9d56215321635714d28bc28ef3dc628b6493d08ee68ce48b7",
+      "changes": "Original cells retained; transformative architecture design added"
+    },
+    {
+      "asset": "MAP07",
+      "source_heading": "MAP 07 —",
+      "source_lines": [
+        4083,
+        4138
+      ],
+      "source_prompt_sha256": "206c692d99013e01a38d509633f51062e93bdc43ee7da30504317eece9e0a6d3",
+      "file": "02_library/maps_optional/MAP07_WALK_PLAN.txt",
+      "file_sha256": "206c692d99013e01a38d509633f51062e93bdc43ee7da30504317eece9e0a6d3",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "SB01",
+      "source_heading": "STORYBOARD 01 —",
+      "source_lines": [
+        4149,
+        4247
+      ],
+      "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
+      "file": "03_film/01/storyboard.txt",
+      "file_sha256": "d87cc2ee7dd19e177fa5003c98c36cc16c865e18924edc7a3f43645ddff7cf98",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A01",
+      "source_heading": "NARRATION 01 —",
+      "source_lines": [
+        4908,
+        4908
+      ],
+      "source_prompt_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
+      "file": "03_film/01/narration.txt",
+      "file_sha256": "0a23bff68df30ef4f1011862f5508eddc76e26743cda0800c0f1d1e67c20090e",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V01",
+      "source_heading": "CINEMA BLOCK 01 —",
+      "source_lines": [
+        5078,
+        5188
+      ],
+      "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
+      "file": "03_film/01/video.txt",
+      "file_sha256": "a0e0046bb26fd8efc75335f5a3e2986e5e48321227f49c548f772829ae372176",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB02",
+      "source_heading": "STORYBOARD 02 —",
+      "source_lines": [
+        4254,
+        4357
+      ],
+      "source_prompt_sha256": "28ff9c6f1fdfeb4618c4696283c1e38722a62ee2792af219b5b9f14cc9bcfc29",
+      "file": "03_film/02/storyboard.txt",
+      "file_sha256": "c9d5ad680241bf01ada13a0ae617fa315602a02e54bb265617712d8fcabcca0e",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A02",
+      "source_heading": "NARRATION 02 —",
+      "source_lines": [
+        4923,
+        4923
+      ],
+      "source_prompt_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
+      "file": "03_film/02/narration.txt",
+      "file_sha256": "7f851264f25e5344924b5a4bf32ac10bec8cda53e90f2102b5d6420aeefabf19",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V02",
+      "source_heading": "CINEMA BLOCK 02 —",
+      "source_lines": [
+        5254,
+        5376
+      ],
+      "source_prompt_sha256": "1ee3bb2feea06f9cb11dac2f33cac0b6c8a0735bc0a73938e537a716ad9146ba",
+      "file": "03_film/02/video.txt",
+      "file_sha256": "c45d7164984750a83d0e44f18965a764319f19ead0d972bb20ce52b9e93d973e",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB03",
+      "source_heading": "STORYBOARD 03 —",
+      "source_lines": [
+        4364,
+        4460
+      ],
+      "source_prompt_sha256": "533e440baa4117a4d2f7733e327dfca304ea8a54d066010cc8ab8722cadb259c",
+      "file": "03_film/03/storyboard.txt",
+      "file_sha256": "eab67d8b12db7d9d7d609a1c02f887c2a4f828364b4530ac31b4325b884aec09",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A03",
+      "source_heading": "NARRATION 03 —",
+      "source_lines": [
+        4938,
+        4938
+      ],
+      "source_prompt_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
+      "file": "03_film/03/narration.txt",
+      "file_sha256": "8dbf6f97a5bbdc57e7f7949beab851a0549b402fcb506f656eb303cdd0fe965e",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V03",
+      "source_heading": "CINEMA BLOCK 03 —",
+      "source_lines": [
+        5422,
+        5533
+      ],
+      "source_prompt_sha256": "4970f288124db4473bf4af10c0fb6a9d66f5bae619718ed4d3907489e0c8cc95",
+      "file": "03_film/03/video.txt",
+      "file_sha256": "70e859902203c97c10197dc21a4a332b8233ec4f6ec26434a64af5754dc3b333",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB04",
+      "source_heading": "STORYBOARD 04 —",
+      "source_lines": [
+        4467,
+        4563
+      ],
+      "source_prompt_sha256": "5459cc1d93853c47aacf113a3e593f61ee6cb49aa0fe81079b89706e0588086a",
+      "file": "03_film/04/storyboard.txt",
+      "file_sha256": "9afa34290e74646d836166ac216b0be8cd04f86bb90f531664f56cf77411ca60",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A04",
+      "source_heading": "NARRATION 04 —",
+      "source_lines": [
+        4953,
+        4953
+      ],
+      "source_prompt_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
+      "file": "03_film/04/narration.txt",
+      "file_sha256": "7c03c47fa2a236b4412aa2ad3eef14214fa16fd4f9fd15259a156769d90e7727",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V04",
+      "source_heading": "CINEMA BLOCK 04 —",
+      "source_lines": [
+        5579,
+        5694
+      ],
+      "source_prompt_sha256": "dcfdef2b9227d2f0528bbca68b9dad63fc71b2087b289dbfbb25c8dfb8ff6370",
+      "file": "03_film/04/video.txt",
+      "file_sha256": "124b9b9e70ec9bc23ad70167d28fa2c323256d75c946d515ed3e27c40fb28a9d",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB05",
+      "source_heading": "STORYBOARD 05 —",
+      "source_lines": [
+        4570,
+        4669
+      ],
+      "source_prompt_sha256": "e80c1062f8699884509043c0dc23d9205573f2eae58119513f6f3bdb1d3cf9b1",
+      "file": "03_film/05/storyboard.txt",
+      "file_sha256": "0c8eac111f73b08e7aa6de7f179a30228ee5bbd848af156c19b55811473e5f02",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A05",
+      "source_heading": "NARRATION 05 —",
+      "source_lines": [
+        4968,
+        4968
+      ],
+      "source_prompt_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
+      "file": "03_film/05/narration.txt",
+      "file_sha256": "f2431b1f66cf118227294e02d49b9a3057469166a35029af21b538ab25ec42ec",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V05",
+      "source_heading": "CINEMA BLOCK 05 —",
+      "source_lines": [
+        5746,
+        5860
+      ],
+      "source_prompt_sha256": "2c24d5a0b90307baa614606b633838697ec3355e0dbb1df515d095dee403fdd6",
+      "file": "03_film/05/video.txt",
+      "file_sha256": "5ea8dd1eb7eb7ae724fa9e3ca295896d0b299c22344df68c5aea6a58ec9b6356",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB06",
+      "source_heading": "STORYBOARD 06 —",
+      "source_lines": [
+        4676,
+        4777
+      ],
+      "source_prompt_sha256": "6e57e8c9f69656463159011cd13b16d6b88d02db6738131013a82f4f5f778aec",
+      "file": "03_film/06/storyboard.txt",
+      "file_sha256": "7f39a5159b833cd666cde904ebb694ce0bae86e5fab0353282ae66eaff574d4f",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A06",
+      "source_heading": "NARRATION 06 —",
+      "source_lines": [
+        4983,
+        4983
+      ],
+      "source_prompt_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
+      "file": "03_film/06/narration.txt",
+      "file_sha256": "8eea05414eb6ec2153d183414746f388f8b9f99186ee2e9abc9e57de4055f221",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V06",
+      "source_heading": "CINEMA BLOCK 06 —",
+      "source_lines": [
+        5920,
+        6039
+      ],
+      "source_prompt_sha256": "52008590a700611bd6959ec7ae9cb86efeb01101257fce007de3b9eaa75417e6",
+      "file": "03_film/06/video.txt",
+      "file_sha256": "86faad0d1f5ed46e14bd47ec0fc8aafe706186f46e6e49ed05e5a9d2c0a459cb",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    },
+    {
+      "asset": "SB07",
+      "source_heading": "STORYBOARD 07 —",
+      "source_lines": [
+        4784,
+        4883
+      ],
+      "source_prompt_sha256": "2b7b76d2d3593fcff5854695f2ee366e9486822241fe7b80f3f09df0035291d4",
+      "file": "03_film/07/storyboard.txt",
+      "file_sha256": "0962b4e779ddd4b34d9a60363d3fef65ca9f1af655bf8f7c2cf1b31c1df5c7ca",
+      "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired"
+    },
+    {
+      "asset": "A07",
+      "source_heading": "NARRATION 07 —",
+      "source_lines": [
+        4998,
+        4998
+      ],
+      "source_prompt_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
+      "file": "03_film/07/narration.txt",
+      "file_sha256": "7e52c85c6fc3805308ad2b2fe5f520db0813137d06960c8a826e992ecf20b792",
+      "changes": "Verbatim fenced prompt"
+    },
+    {
+      "asset": "V07",
+      "source_heading": "CINEMA BLOCK 07 —",
+      "source_lines": [
+        6091,
+        6204
+      ],
+      "source_prompt_sha256": "ac40bf3eee9daac90310ed6ff05a2b72832c27347255c481694023e8db6f759b",
+      "file": "03_film/07/video.txt",
+      "file_sha256": "b209b6beb397565f4c2e966e48f9ab946c6fea85d3f1b3100342bd0291b0b206",
+      "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired"
+    }
+  ],
+  "assets": {
+    "C01": {
+      "key": "C01",
+      "path": "02_library/characters/C01_PROTAGONIST.txt",
+      "output": "C01_PROTAGONIST.png",
+      "refs": []
+    },
+    "C02": {
+      "key": "C02",
+      "path": "02_library/characters/C02_SOHO_WOMAN.txt",
+      "output": "C02_SOHO_WOMAN.png",
+      "refs": []
+    },
+    "C03": {
+      "key": "C03",
+      "path": "02_library/characters/C03_POLICEWOMAN.txt",
+      "output": "C03_POLICEWOMAN.png",
+      "refs": []
+    },
+    "C04": {
+      "key": "C04",
+      "path": "02_library/characters/C04_APPOINTED_LAWYER.txt",
+      "output": "C04_APPOINTED_LAWYER.png",
+      "refs": []
+    },
+    "C05": {
+      "key": "C05",
+      "path": "02_library/characters/C05_FINAL_NURSE.txt",
+      "output": "C05_FINAL_NURSE.png",
+      "refs": []
+    },
+    "C06": {
+      "key": "C06",
+      "path": "02_library/characters/C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.txt",
+      "output": "C06_SHARED_HOUSE_SUBSTITUTE_SNORING_HOUSEMATE.png",
+      "refs": []
+    },
+    "C07": {
+      "key": "C07",
+      "path": "02_library/characters/C07_FX_MORTGAGE_HOUSEMATE.txt",
+      "output": "C07_FX_MORTGAGE_HOUSEMATE.png",
+      "refs": []
+    },
+    "C08": {
+      "key": "C08",
+      "path": "02_library/characters/C08_FX_MORTGAGE_SPOUSE.txt",
+      "output": "C08_FX_MORTGAGE_SPOUSE.png",
+      "refs": []
+    },
+    "C09": {
+      "key": "C09",
+      "path": "02_library/characters/C09_FX_MORTGAGE_CHILD.txt",
+      "output": "C09_FX_MORTGAGE_CHILD.png",
+      "refs": []
+    },
+    "C10": {
+      "key": "C10",
+      "path": "02_library/characters/C10_BEGINNER_DANCE_WOMAN.txt",
+      "output": "C10_BEGINNER_DANCE_WOMAN.png",
+      "refs": []
+    },
+    "C11": {
+      "key": "C11",
+      "path": "02_library/characters/C11_RUSSIAN_TRANSIT_PASSENGER.txt",
+      "output": "C11_RUSSIAN_TRANSIT_PASSENGER.png",
+      "refs": []
+    },
+    "C12": {
+      "key": "C12",
+      "path": "02_library/characters/C12_AGRA_BUS_WOMAN.txt",
+      "output": "C12_AGRA_BUS_WOMAN.png",
+      "refs": []
+    },
+    "C13": {
+      "key": "C13",
+      "path": "02_library/characters/C13_SUDANESE_TRAVELER_MAN.txt",
+      "output": "C13_SUDANESE_TRAVELER_MAN.png",
+      "refs": []
+    },
+    "C14": {
+      "key": "C14",
+      "path": "02_library/characters/C14_SUDANESE_TRAVELER_WOMAN.txt",
+      "output": "C14_SUDANESE_TRAVELER_WOMAN.png",
+      "refs": []
+    },
+    "C15": {
+      "key": "C15",
+      "path": "02_library/characters/C15_CAIRO_TAXI_DRIVER.txt",
+      "output": "C15_CAIRO_TAXI_DRIVER.png",
+      "refs": []
+    },
+    "C16": {
+      "key": "C16",
+      "path": "02_library/characters/C16_BALLOON_LOCAL_HELPER_MAN.txt",
+      "output": "C16_BALLOON_LOCAL_HELPER_MAN.png",
+      "refs": []
+    },
+    "C17": {
+      "key": "C17",
+      "path": "02_library/characters/C17_BALLOON_LOCAL_HELPER_WOMAN.txt",
+      "output": "C17_BALLOON_LOCAL_HELPER_WOMAN.png",
+      "refs": []
+    },
+    "C18": {
+      "key": "C18",
+      "path": "02_library/characters/C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.txt",
+      "output": "C18_BARMOUTH_ROAD_TRIP_DRIVER_COMPANION.png",
+      "refs": []
+    },
+    "C19": {
+      "key": "C19",
+      "path": "02_library/characters/C19_BARMOUTH_ROAD_TRIP_COMPANION_A.txt",
+      "output": "C19_BARMOUTH_ROAD_TRIP_COMPANION_A.png",
+      "refs": []
+    },
+    "C20": {
+      "key": "C20",
+      "path": "02_library/characters/C20_BARMOUTH_ROAD_TRIP_COMPANION_B.txt",
+      "output": "C20_BARMOUTH_ROAD_TRIP_COMPANION_B.png",
+      "refs": []
+    },
+    "C21": {
+      "key": "C21",
+      "path": "02_library/characters/C21_BARMOUTH_ROAD_TRIP_COMPANION_C.txt",
+      "output": "C21_BARMOUTH_ROAD_TRIP_COMPANION_C.png",
+      "refs": []
+    },
+    "C22": {
+      "key": "C22",
+      "path": "02_library/characters/C22_ACCOUNTANT.txt",
+      "output": "C22_ACCOUNTANT.png",
+      "refs": []
+    },
+    "C23": {
+      "key": "C23",
+      "path": "02_library/characters/C23_ADMIN_COLLEAGUE_A.txt",
+      "output": "C23_ADMIN_COLLEAGUE_A.png",
+      "refs": []
+    },
+    "C24": {
+      "key": "C24",
+      "path": "02_library/characters/C24_ADMIN_COLLEAGUE_B.txt",
+      "output": "C24_ADMIN_COLLEAGUE_B.png",
+      "refs": []
+    },
+    "C25": {
+      "key": "C25",
+      "path": "02_library/characters/C25_SEARCH_OFFICER_MALE.txt",
+      "output": "C25_SEARCH_OFFICER_MALE.png",
+      "refs": []
+    },
+    "C26": {
+      "key": "C26",
+      "path": "02_library/characters/C26_DEFENCE_OFFICE_SUBSTITUTE.txt",
+      "output": "C26_DEFENCE_OFFICE_SUBSTITUTE.png",
+      "refs": []
+    },
+    "C27": {
+      "key": "C27",
+      "path": "02_library/characters/C27_JUDGE.txt",
+      "output": "C27_JUDGE.png",
+      "refs": []
+    },
+    "C28": {
+      "key": "C28",
+      "path": "02_library/characters/C28_FORENSIC_EXPERT_A.txt",
+      "output": "C28_FORENSIC_EXPERT_A.png",
+      "refs": []
+    },
+    "C29": {
+      "key": "C29",
+      "path": "02_library/characters/C29_FORENSIC_EXPERT_B.txt",
+      "output": "C29_FORENSIC_EXPERT_B.png",
+      "refs": []
+    },
+    "C30": {
+      "key": "C30",
+      "path": "02_library/characters/C30_COURT_CLERK.txt",
+      "output": "C30_COURT_CLERK.png",
+      "refs": []
+    },
+    "C31": {
+      "key": "C31",
+      "path": "02_library/characters/C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.txt",
+      "output": "C31_ANONYMOUS_FICTIONAL_POLITICAL_FIGURE.png",
+      "refs": []
+    },
+    "MW01": {
+      "key": "MW01",
+      "path": "02_library/memories/MW01_LONDON_SOCIAL.txt",
+      "output": "MW01_LONDON_SOCIAL.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10"
+      ]
+    },
+    "MW02": {
+      "key": "MW02",
+      "path": "02_library/memories/MW02_GLOBAL_ROUTES.txt",
+      "output": "MW02_GLOBAL_ROUTES.png",
+      "refs": [
+        "C01",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21"
+      ]
+    },
+    "MW03": {
+      "key": "MW03",
+      "path": "02_library/memories/MW03_WORK_RULE_CHANGE_ADMIN.txt",
+      "output": "MW03_WORK_RULE_CHANGE_ADMIN.png",
+      "refs": [
+        "C01",
+        "C22",
+        "C23",
+        "C24"
+      ]
+    },
+    "MW04": {
+      "key": "MW04",
+      "path": "02_library/memories/MW04_POLICE_DEFENCE.txt",
+      "output": "MW04_POLICE_DEFENCE.png",
+      "refs": [
+        "C01",
+        "C03",
+        "C04",
+        "C25",
+        "C26"
+      ]
+    },
+    "MW05": {
+      "key": "MW05",
+      "path": "02_library/memories/MW05_COURT_FILE.txt",
+      "output": "MW05_COURT_FILE.png",
+      "refs": [
+        "C01",
+        "C04",
+        "C27",
+        "C28",
+        "C29",
+        "C30",
+        "C31"
+      ]
+    },
+    "MW06": {
+      "key": "MW06",
+      "path": "02_library/memories/MW06_HUMAN_COUNTERMEMORIES.txt",
+      "output": "MW06_HUMAN_COUNTERMEMORIES.png",
+      "refs": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C16",
+        "C17",
+        "C27",
+        "C28",
+        "C29"
+      ]
+    },
+    "MWP01": {
+      "key": "MWP01",
+      "path": "02_library/memories/MWP01_ROUTES_ROOMS_DOCUMENTS.txt",
+      "output": "MWP01_ROUTES_ROOMS_DOCUMENTS.png",
+      "refs": [
+        "C01"
+      ]
+    },
+    "MWP02": {
+      "key": "MWP02",
+      "path": "02_library/memories/MWP02_SYSTEM_TIME_REVERSALS.txt",
+      "output": "MWP02_SYSTEM_TIME_REVERSALS.png",
+      "refs": [
+        "C01"
+      ]
+    },
+    "HRW07": {
+      "key": "HRW07",
+      "path": "02_library/memories/HRW07_CLINICAL_REALITY.txt",
+      "output": "HRW07_CLINICAL_REALITY.png",
+      "refs": [
+        "C01",
+        "C05"
+      ]
+    },
+    "W01": {
+      "key": "W01",
+      "path": "02_library/worlds/W01_MAIN_WORLD.txt",
+      "output": "W01_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP01": {
+      "key": "MAP01",
+      "path": "02_library/maps_optional/MAP01_WALK_PLAN.txt",
+      "output": "MAP01_WALK_PLAN.png",
+      "refs": []
+    },
+    "W02": {
+      "key": "W02",
+      "path": "02_library/worlds/W02_MAIN_WORLD.txt",
+      "output": "W02_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP02": {
+      "key": "MAP02",
+      "path": "02_library/maps_optional/MAP02_WALK_PLAN.txt",
+      "output": "MAP02_WALK_PLAN.png",
+      "refs": []
+    },
+    "W03": {
+      "key": "W03",
+      "path": "02_library/worlds/W03_MAIN_WORLD.txt",
+      "output": "W03_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP03": {
+      "key": "MAP03",
+      "path": "02_library/maps_optional/MAP03_WALK_PLAN.txt",
+      "output": "MAP03_WALK_PLAN.png",
+      "refs": []
+    },
+    "W04": {
+      "key": "W04",
+      "path": "02_library/worlds/W04_MAIN_WORLD.txt",
+      "output": "W04_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP04": {
+      "key": "MAP04",
+      "path": "02_library/maps_optional/MAP04_WALK_PLAN.txt",
+      "output": "MAP04_WALK_PLAN.png",
+      "refs": []
+    },
+    "W05": {
+      "key": "W05",
+      "path": "02_library/worlds/W05_MAIN_WORLD.txt",
+      "output": "W05_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP05": {
+      "key": "MAP05",
+      "path": "02_library/maps_optional/MAP05_WALK_PLAN.txt",
+      "output": "MAP05_WALK_PLAN.png",
+      "refs": []
+    },
+    "W06": {
+      "key": "W06",
+      "path": "02_library/worlds/W06_MAIN_WORLD.txt",
+      "output": "W06_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP06": {
+      "key": "MAP06",
+      "path": "02_library/maps_optional/MAP06_WALK_PLAN.txt",
+      "output": "MAP06_WALK_PLAN.png",
+      "refs": []
+    },
+    "W07": {
+      "key": "W07",
+      "path": "02_library/worlds/W07_MAIN_WORLD.txt",
+      "output": "W07_MAIN_WORLD.png",
+      "refs": []
+    },
+    "MAP07": {
+      "key": "MAP07",
+      "path": "02_library/maps_optional/MAP07_WALK_PLAN.txt",
+      "output": "MAP07_WALK_PLAN.png",
+      "refs": []
+    },
+    "SB01": {
+      "key": "SB01",
+      "path": "03_film/01/storyboard.txt",
+      "output": "SB01_STORYBOARD.png",
+      "refs": [
+        "W01",
+        "MW01",
+        "MWP01",
+        "C01",
+        "C02",
+        "C06",
+        "C07",
+        "C08",
+        "C09"
+      ]
+    },
+    "A01": {
+      "key": "A01",
+      "path": "03_film/01/narration.txt",
+      "output": "A01_NARRATION.wav",
+      "refs": []
+    },
+    "V01": {
+      "key": "V01",
+      "path": "03_film/01/video.txt",
+      "output": "V01_CITY_JUDGES_FIRST.mp4",
+      "refs": [
+        "W01",
+        "MW01",
+        "MWP01",
+        "C01",
+        "C02",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "SB01",
+        "A01"
+      ]
+    },
+    "SB02": {
+      "key": "SB02",
+      "path": "03_film/02/storyboard.txt",
+      "output": "SB02_STORYBOARD.png",
+      "refs": [
+        "W02",
+        "MW02",
+        "MW01",
+        "MWP01",
+        "C01",
+        "C10",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21"
+      ]
+    },
+    "A02": {
+      "key": "A02",
+      "path": "03_film/02/narration.txt",
+      "output": "A02_NARRATION.wav",
+      "refs": []
+    },
+    "V02": {
+      "key": "V02",
+      "path": "03_film/02/video.txt",
+      "output": "V02_CHAIN_TO_0100.mp4",
+      "refs": [
+        "W02",
+        "MW02",
+        "MW01",
+        "MWP01",
+        "C01",
+        "C10",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "SB02",
+        "A02",
+        "V01"
+      ]
+    },
+    "SB03": {
+      "key": "SB03",
+      "path": "03_film/03/storyboard.txt",
+      "output": "SB03_STORYBOARD.png",
+      "refs": [
+        "W03",
+        "MW03",
+        "MWP01",
+        "C01",
+        "C22",
+        "C23",
+        "C24"
+      ]
+    },
+    "A03": {
+      "key": "A03",
+      "path": "03_film/03/narration.txt",
+      "output": "A03_NARRATION.wav",
+      "refs": []
+    },
+    "V03": {
+      "key": "V03",
+      "path": "03_film/03/video.txt",
+      "output": "V03_CHAIN_TO_0130.mp4",
+      "refs": [
+        "W03",
+        "MW03",
+        "MWP01",
+        "C01",
+        "C22",
+        "C23",
+        "C24",
+        "SB03",
+        "A03",
+        "V02"
+      ]
+    },
+    "SB04": {
+      "key": "SB04",
+      "path": "03_film/04/storyboard.txt",
+      "output": "SB04_STORYBOARD.png",
+      "refs": [
+        "W04",
+        "MW04",
+        "C01",
+        "C03",
+        "C04",
+        "C25",
+        "C26"
+      ]
+    },
+    "A04": {
+      "key": "A04",
+      "path": "03_film/04/narration.txt",
+      "output": "A04_NARRATION.wav",
+      "refs": []
+    },
+    "V04": {
+      "key": "V04",
+      "path": "03_film/04/video.txt",
+      "output": "V04_CHAIN_TO_0200.mp4",
+      "refs": [
+        "W04",
+        "MW04",
+        "C01",
+        "C03",
+        "C04",
+        "C25",
+        "C26",
+        "SB04",
+        "A04",
+        "V03"
+      ]
+    },
+    "SB05": {
+      "key": "SB05",
+      "path": "03_film/05/storyboard.txt",
+      "output": "SB05_STORYBOARD.png",
+      "refs": [
+        "W05",
+        "MW05",
+        "MWP02",
+        "C01",
+        "C04",
+        "C27",
+        "C28",
+        "C29",
+        "C30",
+        "C31"
+      ]
+    },
+    "A05": {
+      "key": "A05",
+      "path": "03_film/05/narration.txt",
+      "output": "A05_NARRATION.wav",
+      "refs": []
+    },
+    "V05": {
+      "key": "V05",
+      "path": "03_film/05/video.txt",
+      "output": "V05_CHAIN_TO_0230.mp4",
+      "refs": [
+        "W05",
+        "MW05",
+        "MWP02",
+        "C01",
+        "C04",
+        "C27",
+        "C28",
+        "C29",
+        "C30",
+        "C31",
+        "SB05",
+        "A05",
+        "V04"
+      ]
+    },
+    "SB06": {
+      "key": "SB06",
+      "path": "03_film/06/storyboard.txt",
+      "output": "SB06_STORYBOARD.png",
+      "refs": [
+        "W06",
+        "MW06",
+        "MWP02",
+        "MW01",
+        "MW02",
+        "MW03",
+        "MW04",
+        "MW05",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C16",
+        "C17",
+        "C27",
+        "C28",
+        "C29"
+      ]
+    },
+    "A06": {
+      "key": "A06",
+      "path": "03_film/06/narration.txt",
+      "output": "A06_NARRATION.wav",
+      "refs": []
+    },
+    "V06": {
+      "key": "V06",
+      "path": "03_film/06/video.txt",
+      "output": "V06_CHAIN_TO_0300.mp4",
+      "refs": [
+        "W06",
+        "MW06",
+        "MWP02",
+        "MW01",
+        "MW02",
+        "MW03",
+        "MW04",
+        "MW05",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C16",
+        "C17",
+        "C27",
+        "C28",
+        "C29",
+        "SB06",
+        "A06",
+        "V05"
+      ]
+    },
+    "SB07": {
+      "key": "SB07",
+      "path": "03_film/07/storyboard.txt",
+      "output": "SB07_STORYBOARD.png",
+      "refs": [
+        "W07",
+        "HRW07",
+        "MWP01",
+        "MW01",
+        "MW02",
+        "C01",
+        "C05",
+        "C06",
+        "C16",
+        "C17"
+      ]
+    },
+    "A07": {
+      "key": "A07",
+      "path": "03_film/07/narration.txt",
+      "output": "A07_NARRATION.wav",
+      "refs": []
+    },
+    "V07": {
+      "key": "V07",
+      "path": "03_film/07/video.txt",
+      "output": "V07_MASTER_0320.mp4",
+      "refs": [
+        "W07",
+        "HRW07",
+        "MWP01",
+        "MW01",
+        "MW02",
+        "C01",
+        "C05",
+        "C06",
+        "C16",
+        "C17",
+        "SB07",
+        "A07",
+        "V06"
+      ]
+    }
+  },
+  "operator_language": "English; Hungarian in-world signage and proper names are intentional story content.",
+  "pilot_files": [
+    {
+      "file": "01_pilot/test_extend_4s.txt",
+      "sha256": "9eabdaeccf6befe1349eb4461e1f180f45b98140466fbfbc5fb4b740a5c42c49"
+    },
+    {
+      "file": "01_pilot/test_memory_image.txt",
+      "sha256": "de22c4b970979560d500af6bd48fb0a8f735daa1b73d965aa6b06d1ac722708c"
+    },
+    {
+      "file": "01_pilot/test_narration.txt",
+      "sha256": "f8258caac81a34f59023992768fe7c50d2fe2057e242e4fdf2e25232def1ef8a"
+    },
+    {
+      "file": "01_pilot/test_video_8s.txt",
+      "sha256": "2e8dc883e51d3da02ac6e4ebe40833567f9a7b287947e6edb91b9ada27e08c34"
+    }
+  ]
+}

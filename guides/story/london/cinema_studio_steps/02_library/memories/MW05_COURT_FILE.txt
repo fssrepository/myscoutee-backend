@@ -1,0 +1,67 @@
+OUTPUT GEOMETRY — NON-NEGOTIABLE:
+Generate a WIDESCREEN LANDSCAPE image with a TRUE 16:9 FINAL CANVAS, equivalent to 1920×1080.
+Inside that 16:9 canvas, create ONE SINGLE FULL-BLEED 3×3 grid containing EXACTLY NINE equal photographic cells.
+
+GRID GEOMETRY:
+3 equal columns × 3 equal rows across the entire 16:9 canvas.
+Each cell must be a TRUE 16:9 widescreen rectangle, equivalent to 640×360 within a 1920×1080 canvas.
+DO NOT create a square 1:1 canvas.
+DO NOT create square cells.
+DO NOT place a square contact sheet inside a wider canvas.
+DO NOT add letterboxing or pillarboxing.
+The grid fills the entire canvas edge-to-edge.
+Outer margin: 0 pixels.
+Use only hairline 1–2 pixel gutters BETWEEN cells.
+No title, header, footer, caption band, legend, decorative border or layout labels.
+
+MEMORY-WORLD FUNCTION:
+This is a CLEAN VISUAL SOURCE REFERENCE for a remembered place/event.
+Show the memory scene DIRECTLY, as if the camera were physically inside the remembered world.
+DO NOT show the London–Budapest present city.
+DO NOT place the memory inside a taxi window, bus window, tram window, shopfront, puddle or mirror.
+DO NOT add rain/reflection layers from the present city.
+DO NOT add score cards.
+Later STORYBOARD / VIDEO generation will take the relevant memory scene from this reference and composite it into a real reflective/transparent surface that already exists in the MAIN WORLD.
+
+VISUAL LANGUAGE:
+Photorealistic live-action European feature-film realism.
+Natural human proportions, realistic contemporary wardrobe and props, ordinary practical lighting, believable interiors/exteriors.
+No fantasy glow, no dream haze, no collage, no split reality, no floating UI, no symbolic surrealism.
+Each cell must be a usable literal location/event reference, not an illustration of an idea.
+
+IDENTITY ANCHORS — REQUIRED:
+Use CHARACTER 01 — PROTAGONIST wherever the protagonist appears.
+Use CHARACTER 04 — APPOINTED LAWYER where relevant.
+Use CHARACTER 27 — JUDGE in the court-hearing memory.
+Use CHARACTER 28 — FORENSIC EXPERT A and CHARACTER 29 — FORENSIC EXPERT B together in the two-expert examination memory.
+Use CHARACTER 30 — COURT CLERK in the recording/evidence-request memory.
+Use CHARACTER 31 — ANONYMOUS FICTIONAL CARDBOARD PUBLIC FIGURE for the cardboard absurdity memory; it must remain non-identifiable and must not resemble a real politician, party leader or identifiable public figure.
+
+PURPOSE:
+Build the literal court/file/classification memory source bank: hearing, assets, retained belongings, forensic examination, documents replacing biography, complaint routes and black humour used as a human response to an absurd process.
+
+NINE CELLS:
+Cell 1 — Court-hearing memory with an anonymous judge addressing the protagonist during a debate over legal classification. The remembered prison-question moment is carried by facial/body language; do not render subtitles or dialogue text.
+
+Cell 2 — Questions about the Budapest apartment, belongings, savings and what else the protagonist owns. Show an ordinary hearing/desk context with small visual inserts of home/property only as literal items being discussed, not a crime montage.
+
+Cell 3 — Retained devices/belongings: phone, laptop, storage media or personal property handled in ordinary evidence/property boxes or administrative packaging. No thriller evidence wall.
+
+Cell 4 — 'Person becomes file' reference: photograph, fingerprint sheet, signature, forms and closed folder arranged on a desk while the protagonist is physically present but visually less dominant.
+
+Cell 5 — Forensic-examination memory with two expert chairs / two experts. The protagonist is calm and cooperative; the experts' reactions differ. Do not imply a single unified expert voice.
+
+Cell 6 — Clerk / recording / evidence-request memory: phone, hearing paperwork, request for official recording or witnesses/evidence, and the practical response that the route is costly or deferred. Keep written text mostly unreadable.
+
+Cell 7 — Black-humour memory source: a small self-made "THE SYSTEM'S MOST WANTED" satirical visual and/or impossible police-career CV/application joke on a desk or screen. Keep it clearly self-made absurdism, never an official notice, and avoid large readable text.
+
+Cell 8 — Public-role absurdity memory source: an anonymous fictional cardboard public figure with a deliberately ridiculous hat and the tone of an asylum-request joke. Keep the joke recognizably absurd, but attach no real name, real politician likeness, party branding, campaign slogan or identifiable contemporary office. No advocacy and no policy statement.
+
+Cell 9 — Decision/appeal-route memory: ordinary posted ruling/letter, phone, folders and the sense of a future complaint/appeal/Strasbourg route replacing immediate correction. Focus on process and human scale, not readable legal exposition.
+
+FINAL CHECK:
+Exactly one 16:9 image.
+Exactly nine 16:9 photographic cells in a 3×3 grid.
+Direct literal court/file/black-humour memories only.
+No present-city reflection composite.
+No score cards.

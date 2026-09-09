@@ -1,0 +1,44 @@
+Create ONE SINGLE photorealistic technical CHARACTER IDENTITY SHEET for ONE exact fictional person.
+
+EXACT LAYOUT:
+Three vertical photographic panels filling the complete canvas:
+LEFT = full-body FRONT view.
+CENTER = full-body BACK view.
+RIGHT = frontal CLOSE-UP HEADSHOT.
+
+The same exact person appears in all three panels.
+The studio background reaches all four physical canvas edges.
+No outer frame, no title, no header, no footer, no caption bands, no labels, no extra panels.
+Only hairline internal separators between the three panels.
+
+BACKGROUND / LIGHT:
+Seamless neutral MID-GREY professional casting/VFX studio background.
+Soft even neutral light, minimal soft floor shadow, neutral white balance.
+No city, no furniture, no story props, no cinematic environment.
+
+CONSISTENCY:
+Preserve identical age, face shape, eyes, nose, mouth, ears, hairline, hair colour, skin tone, body build, clothing and footwear across views.
+Do not beautify or change age in the headshot.
+Natural skin texture and asymmetry.
+Accurate anatomy.
+
+CAMERA:
+Full-body panels approximately 50–70mm full-frame equivalent, complete body including shoes.
+Headshot approximately 85mm, upper shoulders upward.
+Technical identity asset, not a film scene.
+
+CHARACTER:
+Hungarian / Central-European man, apparent age about 38–42, average height, lean-to-average build, physically ordinary. Intelligent restrained face, observant brown/hazel eyes, slight natural fatigue, short medium-to-dark brown hair, natural hairline, very light stubble, fair/light Central-European complexion. He must look like a real educated European man who can disappear into a London crowd: not glamorous, not heroic, not a fashion model.
+
+Wardrobe locked for the dream-city walk: dark navy or charcoal lightweight rain jacket, dark charcoal crew-neck layer, dark trousers, understated dark urban walking shoes. No visible brand logos, no hat, no scarf, no backpack, no bright colour.
+
+Front view: neutral upright posture, arms relaxed, restrained neutral expression.
+Back view: exact same clothing and proportions.
+Headshot: direct eye contact, mouth naturally closed, calm observant expression, subtle fatigue, no dramatic emotion.
+
+FINAL CHECK:
+One person only.
+Three panels only: front full-body / back full-body / frontal headshot.
+Same exact identity and wardrobe.
+Mid-grey background reaches the canvas edges.
+No title or outer frame.
