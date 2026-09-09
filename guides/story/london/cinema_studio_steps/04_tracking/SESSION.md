@@ -21,6 +21,9 @@ Pilot: **step 6 / 8**. T01_IMAGE is visually accepted from the 14:39:25 result i
 
 ## Current handoff
 
+Latest transition choice: matching forms use traceable solid material transformation; dissimilar spaces connect through a fast continuous camera passage with its destination already visible. Do not force every room into a morph. Prioritize recognisable historic landmarks for whole-building spectacle, especially St Paul’s → St Stephen’s; office memories retain their human content, but an anonymous office block is not an equivalent visual centre. Keep the close bus pass and camera speed variation. This supersedes the earlier requirement to mutate a room merely to leave it. No new generation or charge recorded.
+
+
 Latest visual rule: no crossfade or replacement composition anywhere in an architectural/memory transition. All seven film video/storyboard pairs now specify scene-local solid material paths; both moving pilots and world/memory/map sources carry the same rule. First partial glimpse and full remembered encounter remain at the same developing opening. The background near 6–7 s is a solid bay-folding correction, distinct from the linked café-window opening. Original spoken scripts, character identity sources and clinical image remain unchanged; the final clinical/title hard cuts remain. No generation launched.
 
 

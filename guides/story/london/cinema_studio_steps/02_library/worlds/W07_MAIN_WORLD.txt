@@ -34,7 +34,7 @@ London remains recognisable through named landmarks, street details, red double-
 Budapest/Hungary must be equally unmistakable through EXPLICIT named architectural anchors, yellow Budapest trams, tram/trolley wires, Hungarian signage and selected Budapest buildings physically replacing or fusing with London blocks.
 Do not reduce Budapest to generic Central-European façades.
 Do not separate London and Budapest into different districts.
-Nobody reacts to the fusion.
+People remain ordinary inhabitants: they continue their gestures while adapting their pace and gathering around the developing tram stop or café frontage. Their changing activities belong to the same continuously occupied street.
 
 TRANSPORT:
 Use red London double-decker buses, black London taxis and yellow Budapest trams naturally.
@@ -105,3 +105,10 @@ Use broad environment cells for whole landmark silhouettes and architectural det
 
 SOLID SOURCE GEOMETRY FOR CONTINUOUS TRANSFORMATION:
 Each cell is a single opaque photographic state, not a blended before/after overlay. Where the described architecture is changing, show original and extended portions joined in the SAME structure: opened mortar joints with individually turned bricks, exposed side faces, a connected sill or floor, and moving parts at distinct intermediate angles. The old corner must be identifiable in the new doorway, rib or balcony edge. Show the actual empty gap made by displaced material, with thick side walls and contact shadows; no building fades into a second skyline. Keep three-dimensional room depth visible through the developing opening so later video can glimpse its people there and approach that same place continuously. Specific remembered people are supplied by their memory/character references. The cells supply solid geometry and materials, never instructions to dissolve between camera setups.
+
+LANDMARK IDENTITY AND STRUCTURAL CORRESPONDENCE:
+Retain recognisable Westminster and the inherited Hungarian landmarks before the final quiet approach. Do not introduce a fresh building mutation merely to demonstrate the rule at the ending. The ordinary final door, clinical reveal and title retain their scripted sequence; no crossfade is used. Each source cell is a sharp physical view. Provide the original structural parts, an attached intermediate where specified and the identifiable destination. Similarity is visual and structural; do not claim shared historical origin. A merely anonymous facade with a familiar sign is insufficient.
+
+INHABITED LONDON-TO-PEST IDENTITY:
+The London starting view and the Budapest-associated resolved view must differ through recognisable place-specific architecture AND their surrounding street life. Preserve the same connected kerb and route across the sheet's related views. In the Budapest-associated view, give the named historic building substantial screen area alongside a readable yellow tram, its rails and wires, Hungarian KÁVÉ signage and a warm café frontage with solid tables at the street edge. Ordinary people wait by the tram, approach the tables or turn toward companions, with separate silhouettes and clear space above their crowns for the later video cards. These are specific activities in this composition, not claims about national character. The remaining red bus and black taxi preserve the London origin at another depth. Avoid an anonymous office block or generic lobby as the main geographical cue. For intermediate views, keep each sign, light and furniture part attached to its actual support; no blended crowds or colour-grade overlays. This world image supplies the current street population and architecture, while the accepted restaurant source supplies its particular remembered woman and room unchanged.
+Apply these street-life cues only to the inherited city before its quiet final threshold; the clinical reveal does not acquire city crowds or café activity.

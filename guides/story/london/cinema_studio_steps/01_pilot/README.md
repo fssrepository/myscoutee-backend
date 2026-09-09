@@ -71,10 +71,30 @@ The test covers these reusable mechanisms together. Other full-film encounters a
 
 Use an overcast evening after the rain has stopped: retain wet paving and reflections, omit falling drizzle and umbrellas, and expose heads and numerical cards. This is synchronized in both visual tests, W01 and Block 01; the narrated test preserves the actual source ambience. The Extend must inherit the actual endpoint and visibly close any inherited umbrella rather than deleting it at the seam. Existing rendered reference images are not changed by this wording. The correction removes a competing visual cue; it does not prove successful rating-card generation. No new paid retry is scheduled by this edit.
 
-## Background transformation correction, 6.5–8 s
+## Historic-building ending and camera pace
 
-The reviewed result blended the background frontage into another composition. The revised first-video prompt specifies one opaque three-bay building: its central bay retreats, the adjoining wall strips unfold into deep loggia sides, its side bays rotate outward, and its cornice folds at the same joints. Rooted piers, doorway, floors, shadows and uninterrupted camera parallax make each intermediate volume traceable. The final Block 01 video/storyboard use the same mechanism. This correction concerns the background block, not the restaurant wall.
+The generic three-bay folding block has been superseded by the creator's historic-building direction. After the readable café encounter, the camera accelerates through the open arcade, carries into the close bus pass, then rises and eases around the SAME St Paul's becoming St Stephen's Basilica. Solid dome ribs, roof seams, tower courses and portico columns move continuously; the resolved whole cathedral holds at the ending. Camera velocity changes, not scene time. The bus spectacle remains, with no cut or background dissolve.
 
 ## Pack-wide continuity revision
 
 Every film block and both moving pilots now carry explicit solid-material continuity, with scene-specific paths for openings, furniture, transit, landmarks and ground. World/memory/map prompts support solid intermediate geometry and the same local opening from first human glimpse to full encounter. Backgrounds cannot dissolve or be exchanged as pictures. The final clinical and title hard cuts remain explicit; even the final glass reveal uses a physical changing sightline rather than a crossfade. This revision adds no generation task.
+
+## Retain the close bus spectacle
+
+The first pilot and final Block 01 retain a close moving red bus as a major visual subject. The correction concerns the discontinuity or blended composition during the camera's passage, not the successful bus spectacle. The café edge, bus pillars, kerb and vehicle trajectories remain traceable across the pass. No new telescoping upper deck or roof mutation is prescribed. The Extend inherits the actual bus state. No additional generation is launched by this wording change.
+
+## Café exit through the existing arcade
+
+After the smile, the pilot camera accelerates through the already-open street-side arcade at about 4.8–5.5 s, keeping the street visible through its exit. The masonry stays solid; the occupied restaurant is left behind by camera travel. The continuing bus pass and background-building transformation remain separate events. This replaces an unnecessary exit transformation of the café wall and does not add a test or cut.
+
+## Material correspondence versus camera passage
+
+Use attached material changes where forms correspond, and fast continuous camera travel through a visible opening where they do not. The pilot preserves the café gesture and arcade exit, the close bus pass, and the main historic cathedral transformation. Recognisable St Paul’s becomes St Stephen’s through dome, tower and portico correspondences; an anonymous office block is not an equivalent destination. Camera acceleration and easing provide the rhythm without changing scene time or inserting a dissolve. This choice governs the full pack, without adding generation tasks.
+
+## Place identity around the human memory
+
+Retain the accepted Soho woman/restaurant image. Its human gesture is carried into the London-to-Pest street change through the same visible arcade: recognisable cathedral, yellow tram, Hungarian café sign, actual warm frontage lights and continuously changing pedestrian activities. The restaurant does not have to carry all the geographical identification by itself. Current people keep their rating cards; the named remembered people keep their identities. World-prompt edits prepare these cues but do not change already-rendered reference images or require a new restaurant generation.
+
+## Last-second frame jump
+
+The latest reviewed `hf_20260909_172538_213973ce-20f0-43d5-8dd5-5a2fdd7f13aa.mp4` jumps to another square/camera composition near 7.6 s. This is a direct discontinuity, not merely a dissolve. The revised ending prohibits a separate destination-reference shot: the cathedral changes at its inherited site, the camera and street anchors continue through the final frame, and the Extend inherits that actual endpoint. No new generation or charge is recorded by this correction.
