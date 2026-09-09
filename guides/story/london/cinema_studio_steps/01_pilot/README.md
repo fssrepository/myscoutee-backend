@@ -1,6 +1,6 @@
 # First test — 8 seconds, 480p
 
-**Purpose:** test fast camera movement, physically transforming architecture, a living city and moving memory inside glass in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
+**Purpose:** test continuous forward camera movement, physically transforming architecture, a living city and moving memory inside glass in one short shot. This is a technical excerpt, not the entire first block compressed into eight seconds.
 
 Budget: [at most 100 credits](../00_project/BUDGET.md) for the whole pilot, including paid preparation. This is included in the complete-film 2200-credit working ceiling, not added on top; protect the other 800 credits and the cost of all unfinished production. One opening test, then one short continuation only if usable. No automatic rerolls.
 
@@ -40,16 +40,18 @@ The import creates metadata only. Attach the accepted restaurant still, save the
 
 ## 3. Generate the 8-second video
 
+The first downloaded pilot failed visual review. The current prompt is an untested revision informed by [published examples and the 2.5 guide](../00_project/PROMPTING.md). It retains all four references and uses one forward camera path; no automatic reroll is authorized by this document.
+
 Cinema Studio 4.0 → Seedance 2.5 → References; **8 s, 480p, 16:9, audio ON, one output**. If any setting is unavailable, follow the [setup guide](../00_project/SETUP.md) before paying.
 
 [test_video_8s.txt](test_video_8s.txt) explicitly names C01, C02, W01 and T01 through reference mentions. The assistant binds each actual identifier once for the whole pack; paste the full file after its reference setup notice has cleared. See [reference binding](../00_project/REFERENCES.md). Check the quote for one output. Save as `T01_CITY_8S_480P.mp4`.
 
 ## 4. Watch once and check the visual and audio mechanisms
 
-- Does the same protagonist walk at human speed while the camera moves fast?
+- Does the same protagonist walk at human speed while one connected camera path follows his gaze and keeps the transformation visible?
 - Does the **visible facade itself transform**, with readable material change? A different building revealed behind a wipe is insufficient.
 - Is traffic alive, and does the woman actually turn/smile inside the taxi glass? The memory must not become a full-screen cutaway or still photograph.
-- Does the fast move land on a readable human moment, with cards above heads and no clinical reveal?
+- Does the moving shot keep the human memory gesture readable, with cards above heads and no clinical reveal?
 
 Also listen for the quiet Hungarian folk-rooted motif and material foley synchronized with the visible facade movement; neither should bury the human moment.
 
