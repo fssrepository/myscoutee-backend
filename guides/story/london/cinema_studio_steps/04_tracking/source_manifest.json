@@ -455,7 +455,7 @@
       ],
       "source_prompt_sha256": "717f8a13a997263b4988a3087369787649a75542e70f60f5bc32565a4a5fc759",
       "file": "02_library/memories/MW01_LONDON_SOCIAL.txt",
-      "file_sha256": "b79c292297adba46a477639d024c4a74762721fa40ba7d4ab0df65a42633f149",
+      "file_sha256": "a1bb478a1fd71b9ea09625b63b2cad137e28fe2c218dd9690585261a054e0ebc",
       "changes": "Verbatim fenced prompt; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -731,7 +731,7 @@
       ],
       "source_prompt_sha256": "76a53b46490f7087051a6b61360543112b874118c1dec4b28d592f08a5c3ed46",
       "file": "03_film/01/storyboard.txt",
-      "file_sha256": "80538f50e25e60a1b6230892e43b8d31108c074811e94118e73dd0817798514a",
+      "file_sha256": "c75d41c50ed373aa97f149544de260afebc7827aba31c67178fc63a9f7741947",
       "changes": "All nine beats retained; requested camera/architecture added; card and AI-screen contradictions corrected; SB06 memory dependencies repaired; explicit centrally maintained reference inputs Grid geometry uses the full selected image resolution instead of fixed pixel examples."
     },
     {
@@ -755,7 +755,7 @@
       ],
       "source_prompt_sha256": "d111e179fa9211ddb262d74468ee38305f1776d75138a0c33a3e229ff58dff3d",
       "file": "03_film/01/video.txt",
-      "file_sha256": "19f0e5d5bfac062d1bda73d9a99c7ee38f95d229caa0be336f048941eb5bd9af",
+      "file_sha256": "58ba9cb2ea017d8f21d53d9cc916705315e13c096eddb7a9a81dfa6c2c475368",
       "changes": "Operator/retry prose and repeated rules removed; all nine story beats retained; camera/architecture updated; audio cues follow visuals; reveal and reference contradictions repaired; Verified C01/C02 Element IDs substituted for local aliases; explicit reference binding; original Hungarian folk-rooted score and synchronized material transformation foley; researched Dél-Alföld tekerő/clarinet arrangement, phrase-synchronized facade motion, explicit protagonist inner monologue"
     },
     {
@@ -1173,7 +1173,8 @@
         "C07",
         "C08",
         "C09",
-        "C10"
+        "C10",
+        "T01_IMAGE"
       ]
     },
     "MW02": {
@@ -1372,7 +1373,8 @@
         "C06",
         "C07",
         "C08",
-        "C09"
+        "C09",
+        "T01_IMAGE"
       ]
     },
     "A01": {
@@ -1396,7 +1398,8 @@
         "C08",
         "C09",
         "SB01",
-        "A01"
+        "A01",
+        "T01_IMAGE"
       ]
     },
     "SB02": {
@@ -2103,7 +2106,7 @@
       ],
       "expected_new_elements": 1,
       "type": "Location",
-      "file_sha256": "a057c3c9a2bb88d32e2f891c3fd4fd1fab5fea955a86c95c94a74f8cc9b210a0",
+      "file_sha256": "bd8cfc2a932f64f51bba234701c8715ec0409f2a89482549227e2cd8a59f0fc6",
       "status": "ELEMENT_ID_REPORTED_IMAGE_ASSOCIATION_UNVERIFIED",
       "media_embedded": false,
       "actual_mention": "@loc_MYS_pilot-soho-restaurant-memory_s1_v1"
